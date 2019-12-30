@@ -32,12 +32,12 @@ import io.spine.test.validate.CustomMessageRequiredStringFieldValue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.validate.MessageValidatorTest.MESSAGE_VALIDATOR_SHOULD;
+import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName(MESSAGE_VALIDATOR_SHOULD
+@DisplayName(VALIDATION_SHOULD
           + "propagate proper error message if custom message set and required")
-class ErrorMessageTest extends MessageValidatorTest {
+class ErrorMessageTest extends ValidationOfConstraintTest {
 
     @Test
     @DisplayName("Message field is NOT set")

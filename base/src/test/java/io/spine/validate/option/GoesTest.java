@@ -20,21 +20,24 @@
 
 package io.spine.validate.option;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.util.Timestamps;
 import io.spine.test.validate.Payment;
 import io.spine.test.validate.PaymentData;
 import io.spine.test.validate.PaymentId;
 import io.spine.test.validate.PaymentWithExternalConstraint;
 import io.spine.test.validate.WithFieldNotFound;
-import io.spine.validate.MessageValidatorTest;
+import io.spine.validate.ValidationOfConstraintTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.base.Identifier.newUuid;
-import static io.spine.validate.MessageValidatorTest.MESSAGE_VALIDATOR_SHOULD;
+import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName(MESSAGE_VALIDATOR_SHOULD + "analyze (goes) option and find out that ")
-final class GoesTest extends MessageValidatorTest {
+@DisplayName(VALIDATION_SHOULD + "analyze (goes) option and find out that ")
+final class GoesTest extends ValidationOfConstraintTest {
 
     @DisplayName("(goes).with fields are both optional")
     @Test
@@ -87,9 +90,13 @@ final class GoesTest extends MessageValidatorTest {
         WithFieldNotFound msg = WithFieldNotFound
                 .newBuilder()
                 .setId(newUuid())
-                .setCredits(1444L)
+                .setAvatar(ByteString.copyFrom(new byte[]{0, 1, 2}))
                 .build();
-        assertNotValid(msg);
+        Exception exception = assertThrows(IllegalStateException.class, () -> validate(msg));
+        assertThat(exception)
+                .hasCauseThat()
+                .hasMessageThat()
+                .contains("user_id");
     }
 
     @DisplayName("(goes).with is set as external constraint")

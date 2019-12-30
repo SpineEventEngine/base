@@ -144,7 +144,7 @@ class FieldDeclarationTest {
                                                    .get(0);
             FieldDeclaration declaration = new FieldDeclaration(int64Field);
             String typeName = declaration.javaTypeName();
-            assertThat(typeName).isEqualTo(ByteString.class.getName());
+            assertThat(typeName).isEqualTo(ByteString.class.getCanonicalName());
         }
 
         @Test
@@ -154,7 +154,7 @@ class FieldDeclarationTest {
                                               .findFieldByName("protocol");
             FieldDeclaration declaration = new FieldDeclaration(messageField);
             String typeName = declaration.javaTypeName();
-            assertThat(typeName).isEqualTo(Protocol.class.getName());
+            assertThat(typeName).isEqualTo(Protocol.class.getCanonicalName());
         }
 
         @Test
@@ -164,7 +164,7 @@ class FieldDeclarationTest {
                                                     .findFieldByName("schema");
             FieldDeclaration declaration = new FieldDeclaration(enumField);
             String typeName = declaration.javaTypeName();
-            assertThat(typeName).isEqualTo(Uri.Schema.class.getName());
+            assertThat(typeName).isEqualTo(Uri.Schema.class.getCanonicalName());
         }
     }
 

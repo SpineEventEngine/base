@@ -39,12 +39,12 @@ public final class GeneratedBySpine {
     /** Obtains the name for annotation field. */
     @SuppressWarnings("DuplicateStringLiteralInspection")
     // Each occurrence has a different semantics.
-    public String getFieldName() {
+    public String fieldName() {
         return "value";
     }
 
     /** Obtains the code block for the annotation value. */
-    public String getCodeBlock() {
+    public String codeBlock() {
         return "\"by Spine Model Compiler\"";
     }
 }

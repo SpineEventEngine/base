@@ -22,6 +22,7 @@ package io.spine.code.proto;
 
 import com.google.common.base.Objects;
 import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.Any;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
@@ -128,21 +129,35 @@ public final class FieldDeclaration {
     }
 
     /**
-     * Obtains fully-qualified name of the Java class that corresponds to the declared type
-     * of the field.
+     * Obtains fully-qualified canonical name of the Java class that corresponds to the declared
+     * type of the field.
+     *
+     * <p>If the field is {@code repeated}, obtains the name of the elements.
+     *
+     * <p>If the field is a {@code map}, obtains the name of the values.
      */
     public String javaTypeName() {
+        return isMap()
+               ? javaTypeName(valueDeclaration().field)
+               : javaTypeName(this.field);
+    }
+
+    private static String javaTypeName(FieldDescriptor field) {
         FieldDescriptor.Type fieldType = field.getType();
         if (fieldType == MESSAGE) {
-            return messageClassName();
+            MessageType messageType =
+                    new MessageType(field.getMessageType());
+            return messageType.javaClassName()
+                              .canonicalName();
         }
 
         if (fieldType == ENUM) {
-            return enumClassName();
+            EnumType enumType = EnumType.create(field.getEnumType());
+            return enumType.javaClassName()
+                           .canonicalName();
         }
 
-        return ScalarType.javaTypeName(field.toProto()
-                                            .getType());
+        return ScalarType.javaTypeName(field.toProto().getType());
     }
 
     private String messageClassName() {
@@ -161,11 +176,6 @@ public final class FieldDeclaration {
         }
     }
 
-    private String enumClassName() {
-        EnumType enumType = EnumType.create(field.getEnumType());
-        return enumType.javaClassName().value();
-    }
-
     /**
      * Determines whether the field is an entity ID.
      *
@@ -177,21 +187,28 @@ public final class FieldDeclaration {
      * </ul>
      *
      * @return {@code true} if the field is an entity ID, {@code false} otherwise
+     * @see #isId()
      */
     public boolean isEntityId() {
         return isFirstField() && isEntityField() && isNotCollection();
     }
 
     /**
-     * Determines whether the field is a command ID.
+     * Determines whether the field is an ID.
      *
-     * <p>A command ID is the first field of a message declared in a
-     * {@link MessageFile#COMMANDS commands file}.
+     * <p>An ID satisfies the following conditions:
+     * <ul>
+     *     <li>Declared as the first field.
+     *     <li>Declared inside an {@linkplain EntityOption#getKind() entity state message} or
+     *         a {@linkplain io.spine.base.CommandMessage command message};
+     *     <li>Is not a map or a repeated field.
+     * </ul>
      *
-     * @return {@code true} if the field is a command ID, {@code false} otherwise
+     * @return {@code true} if the field is an entity ID, {@code false} otherwise
      */
-    public boolean isCommandId() {
-        return isFirstField() && isCommandsFile();
+    public boolean isId() {
+        boolean fieldMatches = isFirstField() && isNotCollection();
+        return fieldMatches && (isCommandsFile() || isEntityField());
     }
 
     /**
@@ -209,14 +226,26 @@ public final class FieldDeclaration {
     }
 
     /**
-     * Tells if the field is of enum type.
+     * Tells if the field is of an enum type.
      */
     public boolean isEnum() {
         return field.getType() == ENUM;
     }
 
+    /**
+     * Tells if the field is of a message type.
+     */
     public boolean isMessage() {
         return field.getType() == MESSAGE;
+    }
+
+    /**
+     * Tells if the field is of type {@code google.protobuf.Any}.
+     */
+    public boolean isAny() {
+        return isMessage() && field.getMessageType()
+                                   .getFullName()
+                                   .equals(Any.getDescriptor().getFullName());
     }
 
     /**
@@ -355,5 +384,15 @@ public final class FieldDeclaration {
     @Override
     public int hashCode() {
         return Objects.hashCode(declaringMessage, field.getFullName());
+    }
+
+    /**
+     * Obtains qualified name of this field.
+     *
+     * <p>Example: {@code spine.net.Uri.protocol}.
+     */
+    @Override
+    public String toString() {
+        return field.getFullName();
     }
 }

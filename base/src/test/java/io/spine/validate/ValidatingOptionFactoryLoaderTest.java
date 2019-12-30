@@ -20,15 +20,14 @@
 
 package io.spine.validate;
 
-import io.spine.validate.option.PrimitiveValidatingOptionFactory;
-import io.spine.validate.option.ValidatingOptionFactory;
+import io.spine.validate.option.NonPrimitiveOptionFactory;
+import io.spine.validate.option.NumberOptionFactory;
 import io.spine.validate.option.ValidatingOptionsLoader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.Correspondences.type;
 
 @DisplayName("ValidatingOptionsLoader should")
 class ValidatingOptionFactoryLoaderTest {
@@ -36,10 +35,8 @@ class ValidatingOptionFactoryLoaderTest {
     @Test
     @DisplayName("load common options")
     void loadCommon() {
-        List<ValidatingOptionFactory> implementations = ValidatingOptionsLoader.INSTANCE
-                .implementations()
-                .asList();
-        assertThat(implementations).hasSize(1);
-        assertThat(implementations.get(0)).isInstanceOf(PrimitiveValidatingOptionFactory.class);
+        assertThat(ValidatingOptionsLoader.INSTANCE.implementations())
+                .comparingElementsUsing(type())
+                .containsExactly(NumberOptionFactory.class, NonPrimitiveOptionFactory.class);
     }
 }

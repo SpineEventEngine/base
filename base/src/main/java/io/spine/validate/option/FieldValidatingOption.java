@@ -28,7 +28,6 @@ import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldOption;
 import io.spine.validate.ExternalConstraintOptions;
-import io.spine.validate.FieldValue;
 
 import java.util.Optional;
 
@@ -41,13 +40,11 @@ import static java.lang.String.format;
  *
  * @param <T>
  *         type of value held by this option
- * @param <F>
- *         type of field that this option is applied to
  */
 @Immutable
-public abstract class FieldValidatingOption<@ImmutableTypeParameter T, @ImmutableTypeParameter F>
+public abstract class FieldValidatingOption<@ImmutableTypeParameter T>
         extends FieldOption<T>
-        implements ValidatingOption<T, FieldDescriptor, FieldValue<F>> {
+        implements ValidatingOption<T, FieldContext, FieldDescriptor> {
 
     /** Specifies the extension that corresponds to this option. */
     protected FieldValidatingOption(GeneratedExtension<FieldOptions, T> optionExtension) {
@@ -59,17 +56,14 @@ public abstract class FieldValidatingOption<@ImmutableTypeParameter T, @Immutabl
      *
      * @apiNote Should only be called by subclasses in circumstances that assume presence of
      *         the option. For all other cases please refer to
-     *         {@link #valueFrom(com.google.protobuf.Descriptors.FieldDescriptor, FieldContext)}.
+     *         {@link #valueFrom(FieldContext)}.
      */
-    protected T optionValue(FieldValue<F> value) throws IllegalStateException {
-        FieldDescriptor field = value.declaration()
-                                     .descriptor();
-        FieldContext context = value.context();
-        Optional<T> option = valueFrom(field, context);
+    protected T optionValue(FieldContext field) throws IllegalStateException {
+        Optional<T> option = valueFrom(field);
         return option.orElseThrow(() -> {
             FieldDescriptor descriptor = extension().getDescriptor();
 
-            String fieldName = value.declaration()
+            String fieldName = field.targetDeclaration()
                                     .name()
                                     .value();
             String containingTypeName = descriptor.getContainingType()
@@ -95,8 +89,6 @@ public abstract class FieldValidatingOption<@ImmutableTypeParameter T, @Immutabl
      * <p>The value is firstly obtained from the external constraint and if an external constraint
      * is not present, the value is obtained from the actual field constraint.
      *
-     * @param field
-     *         descriptor of the field
      * @param context
      *         context of the field
      * @return an {@code Optional} with an option value if such exists, otherwise an empty
@@ -106,24 +98,21 @@ public abstract class FieldValidatingOption<@ImmutableTypeParameter T, @Immutabl
      *         optionsFrom(FieldDescriptor)} when {@code FieldContext} matters, e.g. when handling
      *         {@code (validation_for)} options.
      */
-    public Optional<T> valueFrom(FieldDescriptor field, FieldContext context) {
+    public Optional<T> valueFrom(FieldContext context) {
         Optional<T> externalConstraint =
                 ExternalConstraintOptions.getOptionValue(context, extension());
         return externalConstraint.isPresent()
                ? externalConstraint
-               : valueFrom(field);
+               : valueFrom(context.target());
     }
 
     /**
-     * Returns {@code true} if this option exists for the specified field value,
-     * {@code false} otherwise.
+     * Returns {@code true} if this option exists for the specified field, {@code false} otherwise.
      *
-     * @param value
+     * @param context
      *         the value to be validated
      */
-    public boolean shouldValidate(FieldValue<F> value) {
-        Optional<T> externalConstraint =
-                ExternalConstraintOptions.getOptionValue(value.context(), extension());
-        return externalConstraint.isPresent() || valueFrom(value.descriptor()).isPresent();
+    public boolean shouldValidate(FieldContext context) {
+        return valueFrom(context).isPresent();
     }
 }

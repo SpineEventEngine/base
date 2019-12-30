@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package spine.test.tools.validate;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.test.tools.validate";
+option java_outer_classname = "CustomConstraintsProto";
+option java_multiple_files = true;
+
+message ByteMatrix {
+
+    repeated bytes value = 1 [(required) = true];
+}

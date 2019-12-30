@@ -26,13 +26,12 @@ import io.spine.tools.protoc.TypeParameters;
 /**
  * An interface which already exists.
  */
-final class PredefinedInterface implements MessageInterface {
+public final class PredefinedInterface implements MessageInterface {
 
     private final ClassName name;
     private final TypeParameters parameters;
 
-    PredefinedInterface(ClassName name,
-                        TypeParameters parameters) {
+    public PredefinedInterface(ClassName name, TypeParameters parameters) {
         this.name = name;
         this.parameters = parameters;
     }

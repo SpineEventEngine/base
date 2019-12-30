@@ -46,8 +46,7 @@ public final class OptionExtensionRegistry {
     }
 
     /**
-     * Obtains the {@link ExtensionRegistry} with all the {@code
-     * spine/options.proto} extensions.
+     * Obtains the {@link ExtensionRegistry} with all the {@code spine/options.proto} extensions.
      */
     public static ExtensionRegistry instance() {
         return EXTENSIONS;

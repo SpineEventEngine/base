@@ -26,8 +26,8 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.google.protobuf.compiler.PluginProtos.Version;
 import io.spine.test.protoc.BuilderTestProto;
+import io.spine.tools.protoc.CodeGenerator;
 import io.spine.tools.protoc.NoOpGenerator;
-import io.spine.tools.protoc.SpineProtoGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ class BuilderGeneratorTest {
     @Test
     @DisplayName("produce builder insertion points")
     void produceBuilderInsertionPoints() {
-        SpineProtoGenerator generator =
+        CodeGenerator generator =
                 BuilderGenerator.instance(SpineProtocConfig.getDefaultInstance());
         FileDescriptor file = BuilderTestProto.getDescriptor();
         CodeGeneratorRequest request = CodeGeneratorRequest
@@ -64,7 +64,7 @@ class BuilderGeneratorTest {
                 .newBuilder()
                 .setSkipValidatingBuilders(true)
                 .build();
-        SpineProtoGenerator generator =
+        CodeGenerator generator =
                 BuilderGenerator.instance(config);
         assertThat(generator).isInstanceOf(NoOpGenerator.class);
     }

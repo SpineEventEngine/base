@@ -20,10 +20,11 @@
 
 package io.spine.test.options;
 
-import com.google.common.collect.ImmutableList;
-import com.google.protobuf.ByteString;
-import io.spine.validate.FieldValue;
-import io.spine.validate.option.Constraint;
+import io.spine.code.proto.FieldContext;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.validate.Constraint;
+import io.spine.validate.ConstraintTranslator;
+import io.spine.validate.option.FieldConstraint;
 import io.spine.validate.option.FieldValidatingOption;
 
 import static io.spine.test.options.BytesDirectionOptionProto.direction;
@@ -34,17 +35,26 @@ import static io.spine.test.options.BytesDirectionOptionProto.direction;
  * <p>This option is used for testing the custom options loading. The constraint produced by this
  * option cannot be violated.
  */
-public final class Direction extends FieldValidatingOption<BytesDirection, ByteString> {
-
-    private static final Constraint<FieldValue<ByteString>> NO_OP_CONSTRAINT =
-            byteString -> ImmutableList.of();
+public final class Direction extends FieldValidatingOption<BytesDirection> {
 
     Direction() {
         super(direction);
     }
 
     @Override
-    public Constraint<FieldValue<ByteString>> constraintFor(FieldValue<ByteString> value) {
-        return NO_OP_CONSTRAINT;
+    public Constraint constraintFor(FieldContext field) {
+        FieldDeclaration declaration = field.targetDeclaration();
+        BytesDirection optionValue = optionValue(field);
+        return new FieldConstraint<BytesDirection>(optionValue, declaration) {
+            @Override
+            public String errorMessage(FieldContext field) {
+                return "";
+            }
+
+            @Override
+            public void accept(ConstraintTranslator<?> visitor) {
+                // NoOp.
+            }
+        };
     }
 }

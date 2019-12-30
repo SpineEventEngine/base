@@ -21,31 +21,27 @@
 package io.spine.validate.option;
 
 import com.google.errorprone.annotations.Immutable;
-import com.google.errorprone.annotations.ImmutableTypeParameter;
+import io.spine.code.proto.FieldContext;
 import io.spine.option.OptionsProto;
-import io.spine.validate.FieldValue;
+import io.spine.validate.Constraint;
 
 /**
  * A validating option that limits a numeric field to be in the specified range.
- *
- * @param <V>
- *         a value that this option is applied to
  */
 @Immutable
-final class Range<@ImmutableTypeParameter V extends Number & Comparable<V>>
-        extends FieldValidatingOption<String, V> {
+final class Range extends FieldValidatingOption<String> {
 
     private Range() {
         super(OptionsProto.range);
     }
 
     /** Creates a new instance of this option. */
-    static <@ImmutableTypeParameter V extends Number & Comparable<V>> Range<V> create() {
-        return new Range<>();
+    static Range create() {
+        return new Range();
     }
 
     @Override
-    public Constraint<FieldValue<V>> constraintFor(FieldValue<V> value) {
-        return new RangeConstraint<>(optionValue(value));
+    public Constraint constraintFor(FieldContext field) {
+        return new RangeConstraint(optionValue(field), field.targetDeclaration());
     }
 }

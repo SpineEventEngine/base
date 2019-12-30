@@ -20,71 +20,34 @@
 
 package io.spine.validate.option;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
-import com.google.errorprone.annotations.ImmutableTypeParameter;
-import io.spine.base.FieldPath;
+import io.spine.code.proto.FieldContext;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.IfMissingOption;
-import io.spine.type.TypeName;
-import io.spine.validate.ConstraintViolation;
-import io.spine.validate.FieldValue;
-
-import java.util.Optional;
-
-import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
+import io.spine.validate.ConstraintTranslator;
+import io.spine.validate.diags.ViolationText;
 
 /**
  * A constraint that, when applied to a field, checks whether the field is set to a non-default
  * value.
- *
- * @param <T>
- *         type of the value that the constrained field holds
  */
 @Immutable
-final class RequiredConstraint<@ImmutableTypeParameter T> implements Constraint<FieldValue<T>> {
+public final class RequiredConstraint extends FieldConstraint<Boolean> {
 
-    private static final String ERROR_MESSAGE = "Value must be set.";
-    /**
-     * Types for which field presence of the field value can be checked.
-     */
-    private final ImmutableSet<JavaType> allowedTypes;
-
-    RequiredConstraint(ImmutableSet<JavaType> allowedTypes) {
-        this.allowedTypes = allowedTypes;
+    RequiredConstraint(boolean required,
+                       FieldDeclaration declaration) {
+        super(required, declaration);
     }
 
     @Override
-    public ImmutableList<ConstraintViolation> check(FieldValue<T> value) {
-        boolean canNotCheckPresence = !allowedTypes.contains(value.javaType());
-        if (canNotCheckPresence) {
-            return ImmutableList.of();
-        }
-        return value.isDefault()
-               ? requiredViolated(value)
-               : ImmutableList.of();
-    }
-
-    private ImmutableList<ConstraintViolation> requiredViolated(FieldValue<T> fieldValue) {
-        FieldPath path = fieldValue.context()
-                                   .fieldPath();
-        TypeName declaringType = fieldValue.declaration()
-                                           .declaringType()
-                                           .name();
-        ConstraintViolation violation = ConstraintViolation
-                .newBuilder()
-                .setMsgFormat(msgFormat(fieldValue))
-                .setTypeName(declaringType.value())
-                .setFieldPath(path)
-                .build();
-        return ImmutableList.of(violation);
-    }
-
-    private String msgFormat(FieldValue<T> fieldValue) {
+    public String errorMessage(FieldContext field) {
         IfMissing ifMissing = new IfMissing();
-        Optional<IfMissingOption> ifMissingValue = ifMissing.valueFrom(fieldValue.descriptor());
-        return ifMissingValue.isPresent()
-               ? ifMissingValue.get().getMsgFormat()
-               : ERROR_MESSAGE;
+        IfMissingOption option = ifMissing.valueOrDefault(field.target());
+        return ViolationText.errorMessage(option, option.getMsgFormat());
+    }
+
+    @Override
+    public void accept(ConstraintTranslator<?> visitor) {
+        visitor.visitRequired(this);
     }
 }

@@ -22,12 +22,12 @@ package io.spine.validate.option;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
-import com.google.errorprone.annotations.ImmutableTypeParameter;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
+import io.spine.code.proto.FieldContext;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.logging.Logging;
 import io.spine.option.OptionsProto;
-import io.spine.validate.FieldValue;
+import io.spine.validate.Constraint;
 
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.BYTE_STRING;
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.ENUM;
@@ -40,10 +40,10 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.STRING;
  * <p>If a {@code required} field is missing, an error is produced.
  */
 @Immutable
-public class Required<@ImmutableTypeParameter T>
-        extends FieldValidatingOption<Boolean, T> implements Logging {
+public class Required
+        extends FieldValidatingOption<Boolean> implements Logging {
 
-    private static final ImmutableSet<JavaType> CAN_BE_REQUIRED = ImmutableSet.of(
+    static final ImmutableSet<JavaType> CAN_BE_REQUIRED = ImmutableSet.of(
             MESSAGE, ENUM, STRING, BYTE_STRING
     );
 
@@ -64,23 +64,25 @@ public class Required<@ImmutableTypeParameter T>
      * @param strict
      *         specifies if a field is assumed to be a required one regardless of the actual
      *         Protobuf option value
-     * @param <T>
-     *         type of value that the returned option is applied to
      * @return a new instance of the {@code Required} option
      */
-    public static <@ImmutableTypeParameter T> Required<T> create(boolean strict) {
+    public static Required create(boolean strict) {
         return strict
-               ? new AlwaysRequired<>()
-               : new Required<>();
+               ? new AlwaysRequired()
+               : new Required();
     }
 
-    private boolean notAssumingRequired(FieldDescriptor field) {
-        return valueFrom(field).orElse(false);
+    private boolean notAssumingRequired(FieldContext context) {
+        boolean defaultValue = context
+                .targetDeclaration()
+                .isId();
+        return valueFrom(context.target())
+                .orElse(defaultValue);
     }
 
     @Override
-    public boolean shouldValidate(FieldValue<T> value) {
-        return notAssumingRequired(value.descriptor());
+    public boolean shouldValidate(FieldContext context) {
+        return notAssumingRequired(context);
     }
 
     /**
@@ -92,21 +94,22 @@ public class Required<@ImmutableTypeParameter T>
      * @param field
      *         a value that the option is applied to
      */
-    void checkUsage(FieldDescriptor field) {
-        JavaType type = field.getJavaType();
-        if (!CAN_BE_REQUIRED.contains(type)) {
-            String typeName = field.getType().name();
+    void checkUsage(FieldDeclaration field) {
+        JavaType type = field.javaType();
+        if (!CAN_BE_REQUIRED.contains(type) && field.isNotCollection()) {
+            String typeName = field.descriptor().getType().name();
             _warn().log("The field `%s.%s` has the type %s and" +
                                 " should not be declared as `(required)`.",
-                  field.getContainingType().getFullName(),
-                  field.getName(),
+                  field.declaringType().name(),
+                  field.name(),
                   typeName);
         }
     }
 
     @Override
-    public Constraint<FieldValue<T>> constraintFor(FieldValue<T> fieldValue) {
-        checkUsage(fieldValue.descriptor());
-        return new RequiredConstraint<>(CAN_BE_REQUIRED);
+    public Constraint constraintFor(FieldContext context) {
+        checkUsage(context.targetDeclaration());
+        boolean value = notAssumingRequired(context);
+        return new RequiredConstraint(value, context.targetDeclaration());
     }
 }

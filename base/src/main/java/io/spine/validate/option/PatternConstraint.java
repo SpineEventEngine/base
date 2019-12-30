@@ -20,57 +20,32 @@
 
 package io.spine.validate.option;
 
-import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.base.FieldPath;
+import io.spine.code.proto.FieldContext;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.PatternOption;
-import io.spine.type.TypeName;
-import io.spine.validate.ConstraintViolation;
-import io.spine.validate.FieldValue;
-
-import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.protobuf.TypeConverter.toAny;
-import static io.spine.validate.FieldValidator.errorMsgFormat;
+import io.spine.validate.ConstraintTranslator;
+import io.spine.validate.diags.ViolationText;
 
 /**
  * A constraint, which when applied to a string field, checks whether that field matches the
  * specified pattern.
  */
 @Immutable
-final class PatternConstraint extends FieldValueConstraint<String, PatternOption> {
+public final class PatternConstraint extends FieldConstraint<PatternOption> {
 
-    PatternConstraint(PatternOption optionValue) {
-        super(optionValue);
+    PatternConstraint(PatternOption optionValue, FieldDeclaration field) {
+        super(optionValue, field);
     }
 
     @Override
-    public ImmutableList<ConstraintViolation> check(FieldValue<String> fieldValue) {
-        String regex = optionValue().getRegex();
-        ImmutableList<String> values = fieldValue.asList();
-        ImmutableList<ConstraintViolation> violations =
-                values.stream()
-                      .filter(value -> !value.matches(regex))
-                      .map(value -> newViolation(fieldValue, value))
-                      .collect(toImmutableList());
-        return violations;
+    public String errorMessage(FieldContext field) {
+        PatternOption option = optionValue();
+        return ViolationText.errorMessage(option, option.getMsgFormat());
     }
 
-    private ConstraintViolation newViolation(FieldValue<String> fieldValue, String rawValue) {
-        String msg = errorMsgFormat(optionValue(), optionValue().getMsgFormat());
-        FieldPath fieldPath = fieldValue.context()
-                                        .fieldPath();
-        String regex = optionValue().getRegex();
-        TypeName declaringType = fieldValue.declaration()
-                                           .declaringType()
-                                           .name();
-        ConstraintViolation violation = ConstraintViolation
-                .newBuilder()
-                .setMsgFormat(msg)
-                .addParam(regex)
-                .setFieldPath(fieldPath)
-                .setTypeName(declaringType.value())
-                .setFieldValue(toAny(rawValue))
-                .build();
-        return violation;
+    @Override
+    public void accept(ConstraintTranslator<?> visitor) {
+        visitor.visitPattern(this);
     }
 }

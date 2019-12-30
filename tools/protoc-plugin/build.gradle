@@ -23,14 +23,19 @@ import java.nio.file.Files
 group = 'io.spine.tools'
 
 dependencies {
-    implementation project(':tool-base')
-    implementation project(':protoc-api')
-    implementation deps.gen.javaPoet
+    implementation(
+            project(':tool-base'),
+            project(':protoc-api'),
+            project(':validation-generator'),
+            deps.gen.javaPoet
+    )
 
     testCompile project(':base')
-    testImplementation project(':testlib')
-    testImplementation project(':mute-logging')
-    testImplementation deps.test.truth
+    testImplementation(
+            project(':testlib'),
+            project(':mute-logging'),
+            deps.test.truth
+    )
 }
 
 protobuf {
@@ -41,8 +46,12 @@ protobuf {
 }
 
 jar {
-    dependsOn project(':protoc-api').jar, project(':tool-base').jar
-    
+    dependsOn(
+            project(':protoc-api').jar,
+            project(':tool-base').jar,
+            project(':validation-generator').jar
+    )
+
     manifest {
         attributes 'Main-Class': 'io.spine.tools.protoc.Plugin'
     }

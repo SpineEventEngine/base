@@ -53,7 +53,7 @@ message WithFieldNotFound {
 
     string id = 1;
 
-    int64 credits = 2 [(goes).with = "user_id"];
+    bytes avatar = 2 [(goes).with = "user_id"];
 }
 
 message PaymentData {

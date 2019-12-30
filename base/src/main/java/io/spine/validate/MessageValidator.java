@@ -21,127 +21,279 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.UnmodifiableIterator;
-import com.google.protobuf.Descriptors.OneofDescriptor;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Range;
 import com.google.protobuf.Message;
-import io.spine.annotation.Internal;
+import io.spine.base.FieldPath;
 import io.spine.code.proto.FieldContext;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldName;
+import io.spine.option.PatternOption;
+import io.spine.type.MessageType;
+import io.spine.type.TypeName;
+import io.spine.validate.option.DistinctConstraint;
+import io.spine.validate.option.GoesConstraint;
+import io.spine.validate.option.PatternConstraint;
+import io.spine.validate.option.RangedConstraint;
+import io.spine.validate.option.RequiredConstraint;
+import io.spine.validate.option.RequiredFieldConstraint;
+import io.spine.validate.option.ValidateConstraint;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.protobuf.Messages.ensureMessage;
+import static io.spine.protobuf.TypeConverter.toAny;
+import static io.spine.util.Exceptions.newIllegalStateException;
+import static io.spine.validate.MessageValue.atTopLevel;
+import static io.spine.validate.MessageValue.nestedIn;
+import static java.util.stream.Collectors.toList;
 
 /**
- * Validates messages according to Spine custom Protobuf options and
- * provides found constraint violations.
+ * Validates a given message according to the constraints.
+ *
+ * <p>The output result of this {@link ConstraintTranslator} is a {@link ValidationError}.
  */
-@Internal
-public class MessageValidator {
+final class MessageValidator implements ConstraintTranslator<Optional<ValidationError>> {
 
     private final MessageValue message;
-    private final ImmutableList.Builder<ConstraintViolation> result = ImmutableList.builder();
+    private final List<ConstraintViolation> violations;
+
+    MessageValidator(Message message) {
+        this(atTopLevel(checkNotNull(message)));
+    }
 
     private MessageValidator(MessageValue message) {
         this.message = message;
+        this.violations = new ArrayList<>();
     }
 
-    /**
-     * Validates the passed message against constraints defined in the message type.
-     *
-     * @return the list of violations or empty list if no violations are found.
-     */
-    public static List<ConstraintViolation> validate(Message message) {
-        MessageValidator validator = newInstance(message);
-        List<ConstraintViolation> result = validator.validate();
-        return result;
+    @Override
+    public void visitRange(RangedConstraint<?> constraint) {
+        FieldValue value = message.valueOf(constraint.field());
+        Range<ComparableNumber> range = constraint.range();
+        checkTypeConsistency(range, value);
+        value.values()
+             .map(num -> new ComparableNumber((Number) num))
+             .filter(range.negate())
+             .map(number -> violation(constraint, value, number.value()))
+             .forEach(violations::add);
     }
 
-    /**
-     * Validates a message inside another message.
-     *
-     * @param message
-     *         the message to validate
-     * @param messageContext
-     *         the context of the message
-     */
-    static List<ConstraintViolation> validate(Message message, FieldContext messageContext) {
-        MessageValidator validator = newInstance(message, messageContext);
-        List<ConstraintViolation> result = validator.validate();
-        return result;
-    }
-
-    /**
-     * Creates a validator for a top-level message.
-     *
-     * @deprecated please use {@link #validate(Message)}
-     */
-    @Deprecated
-    public static MessageValidator newInstance(Message message) {
-        MessageValue messageValue = MessageValue.atTopLevel(message);
-        return new MessageValidator(messageValue);
-    }
-
-    /**
-     * Creates a validator for a message inside another message.
-     *
-     * @param message
-     *         the message to validate
-     * @param messageContext
-     *         the context of the message
-     */
-    private static MessageValidator newInstance(Message message, FieldContext messageContext) {
-        MessageValue messageValue = MessageValue.nestedIn(messageContext, message);
-        return new MessageValidator(messageValue);
-    }
-
-    /**
-     * Validates messages according to Spine custom protobuf options and returns constraint
-     * violations found.
-     *
-     * @deprecated please use {@link #validate(Message)}
-     */
-    @Deprecated
-    public List<ConstraintViolation> validate() {
-        validateAlternativeFields();
-        validateOneofFields();
-        validateFields();
-        validateGoesWithFields();
-        return result.build();
-    }
-
-    private void validateGoesWithFields() {
-        GoesWithValidator goesWithValidator = new GoesWithValidator(message);
-        result.addAll(goesWithValidator.validate());
-    }
-
-    private void validateAlternativeFields() {
-        AlternativeFieldValidator altFieldValidator = new AlternativeFieldValidator(message);
-        result.addAll(altFieldValidator.validate());
-    }
-
-    /**
-     * Validates fields except fields from {@code Oneof} declarations.
-     *
-     * <p>{@code Oneof} fields are validated {@linkplain #validateOneofFields()
-     * separately}.
-     */
-    private void validateFields() {
-        ImmutableList<FieldValue<?>> values = message.fieldsExceptOneofs();
-        for (FieldValue<?> value : values) {
-            FieldValidator<?> fieldValidator = value.createValidator();
-            List<ConstraintViolation> violations = fieldValidator.validate();
-            result.addAll(violations);
+    @Override
+    public void visitRequired(RequiredConstraint constraint) {
+        if (constraint.optionValue()) {
+            FieldValue fieldValue = message.valueOf(constraint.field());
+            if (fieldValue.isDefault()) {
+                violations.add(violation(constraint, fieldValue));
+            }
         }
     }
 
-    /**
-     * Validates every {@code Oneof} declaration in the message.
-     */
-    private void validateOneofFields() {
-        UnmodifiableIterator<OneofDescriptor> descriptors = message.oneofDescriptors();
-        while (descriptors.hasNext()) {
-            OneofDescriptor oneof = descriptors.next();
-            OneofValidator validator = new OneofValidator(oneof, message);
-            ImmutableList<ConstraintViolation> oneofViolations = validator.validate();
-            result.addAll(oneofViolations);
+    @Override
+    public void visitPattern(PatternConstraint constraint) {
+        FieldValue fieldValue = message.valueOf(constraint.field());
+        PatternOption pattern = constraint.optionValue();
+        String regex = pattern.getRegex();
+        Pattern compiledPattern = Pattern.compile(regex);
+        fieldValue.nonDefault()
+                  .filter(value -> !compiledPattern.matcher((CharSequence) value).matches())
+                  .map(value -> violation(constraint, fieldValue, value)
+                          .toBuilder()
+                          .addParam(regex)
+                          .build())
+                  .forEach(violations::add);
+    }
+
+    @Override
+    public void visitDistinct(DistinctConstraint constraint) {
+        FieldValue fieldValue = message.valueOf(constraint.field());
+        Set<?> duplicates = findDuplicates(fieldValue);
+        violations.addAll(
+                duplicates.stream()
+                          .map(duplicate -> violation(constraint, fieldValue, duplicate))
+                          .collect(toImmutableList())
+        );
+    }
+
+    @Override
+    public void visitGoesWith(GoesConstraint constraint) {
+        FieldValue value = message.valueOf(constraint.field());
+        Optional<FieldDeclaration> declaration = withField(message, constraint);
+        checkState(declaration.isPresent(),
+                   "Field `%s` noted in `(goes).with` option is not found.",
+                   constraint.optionValue().getWith());
+        FieldDeclaration withField = declaration.get();
+        if (!value.isDefault() && fieldValueNotSet(withField)) {
+            ConstraintViolation withFieldNotSet =
+                    violation(constraint, value)
+                            .toBuilder()
+                            .addParam(constraint.field().name().value())
+                            .addParam(constraint.optionValue().getWith())
+                            .build();
+            violations.add(withFieldNotSet);
         }
+    }
+
+    @Override
+    public void visitValidate(ValidateConstraint constraint) {
+        FieldValue fieldValue = message.valueOf(constraint.field());
+        if (!fieldValue.isDefault()) {
+            List<ConstraintViolation> childViolations = fieldValue
+                    .values()
+                    .map(val -> ensureMessage((Message) val))
+                    .flatMap(msg -> childViolations(fieldValue.context(), msg).stream())
+                    .collect(toList());
+            if (!childViolations.isEmpty()) {
+                ConstraintViolation parentViolation = violation(constraint, fieldValue)
+                        .toBuilder()
+                        .addAllViolation(childViolations)
+                        .build();
+                violations.add(parentViolation);
+            }
+        }
+    }
+
+    @Override
+    public void visitRequiredField(RequiredFieldConstraint constraint) {
+        RequiredFieldCheck check = new RequiredFieldCheck(constraint.optionValue(),
+                                                          constraint.alternatives(),
+                                                          message);
+        Optional<ConstraintViolation> violation = check.perform();
+        violation.ifPresent(violations::add);
+    }
+
+    @Override
+    public void visitCustom(CustomConstraint constraint) {
+        ImmutableList<ConstraintViolation> violations = constraint.validate(message);
+        this.violations.addAll(violations);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Obtains the resulting {@link ValidationError} or an {@code Optional.empty()} if
+     * the message value is valid.
+     */
+    @Override
+    public Optional<ValidationError> translate() {
+        if (violations.isEmpty()) {
+            return Optional.empty();
+        } else {
+            ValidationError error = ValidationError
+                    .newBuilder()
+                    .addAllConstraintViolation(violations)
+                    .build();
+            return Optional.of(error);
+        }
+    }
+
+    private static List<ConstraintViolation> childViolations(FieldContext field, Message message) {
+        MessageValue messageValue = nestedIn(field, ensureMessage(message));
+        MessageValidator childInterpreter = new MessageValidator(messageValue);
+        return Constraints
+                .of(MessageType.of(message), field)
+                .runThrough(childInterpreter)
+                .map(ValidationError::getConstraintViolationList)
+                .orElse(ImmutableList.of());
+    }
+
+    private static void checkTypeConsistency(Range<ComparableNumber> range, FieldValue value) {
+        if (range.hasLowerBound() && range.hasUpperBound()) {
+            NumberText upper = range.upperEndpoint()
+                                    .toText();
+            NumberText lower = range.lowerEndpoint()
+                                    .toText();
+            if (!upper.isOfSameType(lower)) {
+                String errorMessage = "Boundaries have inconsistent types: lower %s, upper %s";
+                throw newIllegalStateException(errorMessage, upper, lower);
+            }
+            checkBoundaryAndValue(upper, value);
+        } else {
+            checkSingleBoundary(range, value);
+        }
+    }
+
+    private static void checkSingleBoundary(Range<ComparableNumber> range, FieldValue value) {
+        NumberText singleBoundary = range.hasLowerBound()
+                                    ? range.lowerEndpoint()
+                                           .toText()
+                                    : range.upperEndpoint()
+                                           .toText();
+        checkBoundaryAndValue(singleBoundary, value);
+    }
+
+    private static void checkBoundaryAndValue(NumberText boundary, FieldValue value) {
+        ComparableNumber boundaryNumber = boundary.toNumber();
+        Number valueNumber = (Number) value.singleValue();
+        if (!NumberConversion.check(boundaryNumber, valueNumber)) {
+            String errorMessage =
+                    "Boundary values must have types consistent with values they bind: " +
+                            "boundary %s, value %s";
+            throw newIllegalStateException(errorMessage, boundary, valueNumber);
+        }
+    }
+
+    private static Set<?> findDuplicates(FieldValue fieldValue) {
+        Set<? super Object> uniques = new HashSet<>();
+        ImmutableSet.Builder<? super Object> duplicates = ImmutableSet.builder();
+        fieldValue.values().forEach(potentialDuplicate -> {
+            if (uniques.contains(potentialDuplicate)) {
+                duplicates.add(potentialDuplicate);
+            } else {
+                uniques.add(potentialDuplicate);
+            }
+        });
+        return duplicates.build();
+    }
+
+    private boolean fieldValueNotSet(FieldDeclaration field) {
+        return message
+                .valueOf(field.descriptor())
+                .map(FieldValue::isDefault)
+                .orElse(false);
+    }
+
+    private static Optional<FieldDeclaration>
+    withField(MessageValue messageValue, GoesConstraint constraint) {
+        FieldName withField = FieldName.of(constraint.optionValue()
+                                                     .getWith());
+        for (FieldDeclaration field : messageValue.declaration()
+                                                  .fields()) {
+            if (withField.equals(field.name())) {
+                return Optional.of(field);
+            }
+        }
+        return Optional.empty();
+    }
+
+    private static ConstraintViolation violation(Constraint constraint, FieldValue value) {
+        return violation(constraint, value, null);
+    }
+
+    private static ConstraintViolation violation(Constraint constraint,
+                                                 FieldValue value,
+                                                 @Nullable Object violatingValue) {
+        FieldContext context = value.context();
+        FieldPath fieldPath = context.fieldPath();
+        TypeName typeName = constraint.targetType()
+                                      .name();
+        ConstraintViolation.Builder violation = ConstraintViolation
+                .newBuilder()
+                .setMsgFormat(constraint.errorMessage(context))
+                .setFieldPath(fieldPath)
+                .setTypeName(typeName.value());
+        if (violatingValue != null) {
+            violation.setFieldValue(toAny(violatingValue));
+        }
+        return violation.build();
     }
 }

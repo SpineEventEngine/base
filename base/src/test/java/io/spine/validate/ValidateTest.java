@@ -28,6 +28,7 @@ import io.spine.base.Time;
 import io.spine.net.Url;
 import io.spine.people.PersonName;
 import io.spine.test.validate.Passport;
+import io.spine.test.validate.RequiredMsgFieldValue;
 import io.spine.testing.UtilityClassTest;
 import io.spine.testing.logging.MuteLogging;
 import io.spine.type.TypeName;
@@ -43,6 +44,8 @@ import static com.google.protobuf.TextFormat.shortDebugString;
 import static io.spine.testing.TestValues.newUuidValue;
 import static io.spine.validate.Validate.checkDefault;
 import static io.spine.validate.Validate.checkValidChange;
+import static io.spine.validate.Validate.violationsOf;
+import static io.spine.validate.Validate.violationsOfCustomConstraints;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -94,6 +97,16 @@ class ValidateTest extends UtilityClassTest<Validate> {
         assertEquals(defaultValue, checkDefault(defaultValue, "error message"));
     }
 
+    @Test
+    @DisplayName("run custom validation " +
+            "and obtain no violations if there are no custom constraints")
+    void customValidation() {
+        RequiredMsgFieldValue message = RequiredMsgFieldValue.getDefaultInstance();
+        List<ConstraintViolation> violations = violationsOf(message);
+        List<ConstraintViolation> customViolations = violationsOfCustomConstraints(message);
+        assertThat(violations).hasSize(1);
+        assertThat(customViolations).isEmpty();
+    }
 
     @Test
     @DisplayName("format message from constraint violation")
