@@ -137,7 +137,7 @@ subprojects {
         testImplementation deps.test.junit5Runner
         testImplementation deps.test.junitPioneer
 
-        runtime deps.runtime.floggerSystemBackend
+        runtimeOnly deps.runtime.floggerSystemBackend
     }
 
     forceConfiguration(project)

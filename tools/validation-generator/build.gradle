@@ -23,6 +23,6 @@ group = 'io.spine.tools'
 dependencies {
     api deps.gen.javaPoet
     implementation project(':tool-base')
-    testCompile project(':base')
+    testImplementation project(':base')
     testImplementation project(':testlib')
 }
