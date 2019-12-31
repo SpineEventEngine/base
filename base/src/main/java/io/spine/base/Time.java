@@ -24,6 +24,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Timestamp;
 import io.spine.annotation.Internal;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.time.Instant;
 import java.time.ZoneId;
 
@@ -138,11 +139,44 @@ public final class Time {
         @Override
         public Timestamp currentTime() {
             Instant now = Instant.now();
+            int nanosOnly = IncrementalNanos.value();
             Timestamp result = Timestamp.newBuilder()
                                         .setSeconds(now.getEpochSecond())
-                                        .setNanos(now.getNano())
+                                        .setNanos(now.getNano() + nanosOnly)
                                         .build();
             return result;
+        }
+    }
+
+    /**
+     * Provides an incremental value of nanoseconds for the local JVM.
+     *
+     * <p>In most cases, the JVM provides the millisecond-level precision at best. Messages produced
+     * in a single virtual machine are often stamped with the same time value. While for the
+     * most of message-ordering routines having the distinct time values is necessary.
+     *
+     * <p>The nanosecond value returned by this class never exceeds {@code 999'999}, so that
+     * the millisecond value provided by a typical-JVM system clock is left intact.
+     */
+    @ThreadSafe
+    static final class IncrementalNanos {
+
+        private static final int MAX_VALUE = 999_999;
+        private static final IncrementalNanos instance = new IncrementalNanos();
+
+        private int counter;
+
+        private synchronized int getNextValue() {
+            counter++;
+            counter = counter % MAX_VALUE;
+            return counter;
+        }
+
+        /**
+         * Obtains the next version value.
+         */
+        static int value() {
+            return instance.getNextValue();
         }
     }
 }
