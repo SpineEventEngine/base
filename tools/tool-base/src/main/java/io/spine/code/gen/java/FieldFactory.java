@@ -25,7 +25,9 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import io.spine.base.FieldPath;
 import io.spine.base.SimpleField;
+import io.spine.base.SubscribableField;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FieldDeclaration;
@@ -100,7 +102,8 @@ public final class FieldFactory implements NestedClassFactory, Logging {
                 .methodBuilder(fieldName.javaCase())
                 .addModifiers(PUBLIC, STATIC)
                 .returns(returnType.value())
-                .addStatement("return new $T()", returnType.value())
+                .addStatement("return new $T($T.newBuilder().addFieldName(\"$L\").build())",
+                              returnType.value(), FieldPath.class, fieldName.value())
                 .build();
         return result;
     }
@@ -139,14 +142,25 @@ public final class FieldFactory implements NestedClassFactory, Logging {
     private static TypeSpec declarationOf(MessageType type) {
         TypeSpec.Builder spec = TypeSpec.classBuilder(format("%sField", type.javaClassName()
                                                                             .toSimple()))
-                                        .addModifiers(PUBLIC, STATIC, FINAL);
+                                        .addModifiers(PUBLIC, STATIC, FINAL)
+                                        .superclass(SubscribableField.class);
+        String argName = "fieldPath";
+        MethodSpec ctor = MethodSpec
+                .constructorBuilder()
+                .addModifiers(PRIVATE)
+                .addParameter(FieldPath.class, argName)
+                .addStatement("super($L)", argName)
+                .build();
+        spec.addMethod(ctor);
+
         for (FieldDeclaration field : type.fields()) {
             JavaPoetName returnType = fieldTypeName(field);
             MethodSpec getter = MethodSpec
                     .methodBuilder(field.name().javaCase())
                     .addModifiers(PUBLIC)
                     .returns(returnType.value())
-                    .addStatement("return new $T()", returnType.value())
+                    .addStatement("return new $T(getFieldPath().toBuilder().addFieldName(\"$L\").build())",
+                                  returnType.value(), field.name().value())
                     .build();
             spec.addMethod(getter);
         }

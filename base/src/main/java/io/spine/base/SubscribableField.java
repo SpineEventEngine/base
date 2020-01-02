@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, TeamDev. All rights reserved.
+ * Copyright 2020, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,5 +20,18 @@
 
 package io.spine.base;
 
-public interface SubscribableField {
+public class SubscribableField {
+
+    private final FieldPath fieldPath;
+
+    protected SubscribableField(FieldPath fieldPath) {
+        this.fieldPath = fieldPath;
+    }
+
+    /**
+     * @apiNote Named with "get-" prefix on purpose, to avoid clashing with any field names.
+     */
+    protected FieldPath getFieldPath() {
+        return fieldPath;
+    }
 }
