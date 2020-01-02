@@ -53,10 +53,6 @@ public enum ModelCompilerTaskName implements TaskName {
      */
     generateTestColumnInterfaces,
 
-    generateFieldDeclarations,
-
-    generateTestFieldDeclarations,
-
     /**
      * Annotates the Java sources generated from {@code .proto} files the {@code main} scope.
      */

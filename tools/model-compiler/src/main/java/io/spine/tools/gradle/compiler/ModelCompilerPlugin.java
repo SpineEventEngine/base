@@ -56,7 +56,6 @@ public class ModelCompilerPlugin implements Plugin<Project>, Logging {
                   new DescriptorSetMergerPlugin(),
                   new RejectionGenPlugin(),
                   new ColumnGenPlugin(),
-                  new FieldGenPlugin(),
                   new ProtoAnnotatorPlugin(),
                   new JavaProtocConfigurationPlugin(),
                   new ErrorProneChecksPlugin())

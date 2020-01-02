@@ -33,10 +33,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.gradle.SourceScope.main;
 import static io.spine.tools.gradle.SourceScope.test;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenColumnsRootDir;
-import static io.spine.tools.gradle.compiler.Extension.getTargetGenFieldsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenColumnsRootDir;
-import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenFieldsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenRejectionsRootDir;
 
 /**
@@ -161,18 +159,6 @@ final class ProtoModule {
      */
     FileCollection testCompiledColumns() {
         String targetDir = getTargetTestGenColumnsRootDir(project);
-        FileCollection files = project.fileTree(targetDir);
-        return files;
-    }
-
-    FileCollection compiledFields() {
-        String targetDir = getTargetGenFieldsRootDir(project);
-        FileCollection files = project.fileTree(targetDir);
-        return files;
-    }
-
-    FileCollection testCompiledFields() {
-        String targetDir = getTargetTestGenFieldsRootDir(project);
         FileCollection files = project.fileTree(targetDir);
         return files;
     }
