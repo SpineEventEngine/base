@@ -24,6 +24,8 @@ import io.spine.value.StringTypeValue;
 
 public final class EntityColumn extends StringTypeValue {
 
+    private static final long serialVersionUID = 0L;
+
     public EntityColumn(String value) {
         super(value);
     }
