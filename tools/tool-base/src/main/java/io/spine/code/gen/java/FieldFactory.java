@@ -84,14 +84,10 @@ public final class FieldFactory implements NestedClassFactory, Logging {
     private static JavaPoetName fieldTypeName(FieldDeclaration field) {
         JavaPoetName returnType;
         if (field.isMessage() && !field.isCollection()) {
-            ClassName className = field.declaringType()
-                                       .javaClassName();
-            JavaPoetName javaPoetName = JavaPoetName.of(className);
             String fieldTypeName = field.javaTypeName();
-            SimpleClassName simple = ClassName.of(fieldTypeName)
-                                              .toSimple();
-            returnType = javaPoetName.nested("Fields")
-                                     .nested(format("%sField", simple));
+            SimpleClassName simpleClassName = ClassName.of(fieldTypeName)
+                                                       .toSimple();
+            returnType = JavaPoetName.of(format("%sField", simpleClassName));
         } else {
             returnType = JavaPoetName.of(SimpleField.class);
         }

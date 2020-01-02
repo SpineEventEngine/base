@@ -24,6 +24,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
+import org.checkerframework.checker.signature.qual.ClassGetSimpleName;
 
 import java.lang.reflect.Type;
 
@@ -45,6 +46,11 @@ public final class JavaPoetName {
         return new JavaPoetName(typeName);
     }
 
+    public static JavaPoetName of(@ClassGetSimpleName String simpleName) {
+        TypeName value = ClassName.get("", simpleName);
+        return new JavaPoetName(value);
+    }
+
     public static JavaPoetName of(io.spine.code.java.ClassName className) {
         PackageName packageName = className.packageName();
         SimpleClassName topLevel = className.topLevelClass();
@@ -56,12 +62,6 @@ public final class JavaPoetName {
                                                .toArray(String[]::new);
         TypeName value = ClassName.get(packageName.value(), topLevel.value(), nestingChain);
         return new JavaPoetName(value);
-    }
-
-    public JavaPoetName nested(String nestedName) {
-        ClassName value = className();
-        ClassName name = value.nestedClass(nestedName);
-        return new JavaPoetName(name);
     }
 
     public TypeName value() {
