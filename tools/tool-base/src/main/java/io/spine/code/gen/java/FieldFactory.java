@@ -22,26 +22,35 @@ package io.spine.code.gen.java;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.SimpleField;
 import io.spine.code.java.ClassName;
+import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
+import io.spine.logging.Logging;
 import io.spine.tools.protoc.nested.GeneratedNestedClass;
 import io.spine.tools.protoc.nested.NestedClassFactory;
 import io.spine.type.MessageType;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.collect.Sets.newLinkedHashSet;
 import static java.lang.String.format;
+import static java.util.stream.Collectors.toList;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
 @Immutable
-public final class FieldFactory implements NestedClassFactory {
+public final class FieldFactory implements NestedClassFactory, Logging {
 
     @Override
     public List<GeneratedNestedClass> createFor(MessageType messageType) {
@@ -53,32 +62,96 @@ public final class FieldFactory implements NestedClassFactory {
                 .classBuilder("Fields")
                 .addModifiers(PUBLIC, STATIC, FINAL)
                 .addMethod(privateCtor);
-        for (FieldDeclaration field : messageType.fields()) {
-            addFieldDeclaration(field, typeSpec);
-        }
+        generateFields(typeSpec, messageType);
         String generatedCode = typeSpec.build()
                                        .toString();
         GeneratedNestedClass result = new GeneratedNestedClass(generatedCode);
         return ImmutableList.of(result);
     }
 
-    private static void addFieldDeclaration(FieldDeclaration field, TypeSpec.Builder typeSpec) {
+    private static void generateFields(TypeSpec.Builder spec, MessageType type) {
+        Set<MessageType> nestedTypes = newLinkedHashSet();
+        for (FieldDeclaration field : type.fields()) {
+            JavaPoetName fieldTypeName = fieldTypeName(field);
+            MethodSpec fieldGetter = fieldGetter(field, fieldTypeName);
+            nestedTypes.addAll(nestedTypes(field));
+            spec.addMethod(fieldGetter);
+        }
+        List<TypeSpec> nested = nestedTypeDeclarations(nestedTypes);
+        spec.addTypes(nested);
+    }
+
+    private static JavaPoetName fieldTypeName(FieldDeclaration field) {
         JavaPoetName returnType;
-        if (field.isMessage()) {
+        if (field.isMessage() && !field.isCollection()) {
+            ClassName className = field.declaringType()
+                                       .javaClassName();
+            JavaPoetName javaPoetName = JavaPoetName.of(className);
             String fieldTypeName = field.javaTypeName();
-            String returnTypeName = format("%sField", fieldTypeName);
-            ClassName className = ClassName.of(returnTypeName);
-            returnType = JavaPoetName.of(className);
+            SimpleClassName simple = ClassName.of(fieldTypeName)
+                                              .toSimple();
+            returnType = javaPoetName.nested("Fields")
+                                     .nested(format("%sField", simple));
         } else {
             returnType = JavaPoetName.of(SimpleField.class);
         }
+        return returnType;
+    }
+
+    private static MethodSpec fieldGetter(FieldDeclaration field, JavaPoetName returnType) {
         FieldName fieldName = field.name();
-        MethodSpec method = MethodSpec
+        MethodSpec result = MethodSpec
                 .methodBuilder(fieldName.javaCase())
                 .addModifiers(PUBLIC, STATIC)
                 .returns(returnType.value())
                 .addStatement("return new $T()", returnType.value())
                 .build();
-        typeSpec.addMethod(method);
+        return result;
+    }
+
+    private static List<MessageType> nestedTypes(FieldDeclaration field) {
+        if (!field.isMessage() || field.isCollection()) {
+            return new ArrayList<>();
+        }
+        MessageType messageType = messageTypeOf(field);
+        List<MessageType> allTypes = new ArrayList<>();
+        allTypes.add(messageType);
+        int index = 0;
+        while (index < allTypes.size()) {
+            MessageType type = allTypes.get(index);
+            for (FieldDeclaration declaration : type.fields()) {
+                if (declaration.isMessage() && !declaration.isCollection()) {
+                    MessageType nestedType = messageTypeOf(declaration);
+                    if (!allTypes.contains(nestedType)) {
+                        allTypes.add(nestedType);
+                    }
+                }
+            }
+            index++;
+        }
+        return allTypes;
+    }
+
+    private static List<TypeSpec> nestedTypeDeclarations(Collection<MessageType> nestedTypes) {
+        List<TypeSpec> result = nestedTypes
+                .stream()
+                .map(FieldFactory::declarationOf)
+                .collect(toList());
+        return result;
+    }
+
+    private static TypeSpec declarationOf(MessageType type) {
+        TypeSpec fieldTypeSpec = TypeSpec
+                .classBuilder(format("%sField", type.javaClassName().toSimple()))
+                .addModifiers(PUBLIC, STATIC, FINAL)
+                .build();
+        return fieldTypeSpec;
+    }
+
+    private static MessageType messageTypeOf(FieldDeclaration field) {
+        checkArgument(field.isMessage() && !field.isCollection());
+        Descriptor descriptor = field.descriptor()
+                                     .getMessageType();
+        return new MessageType(descriptor);
     }
 }

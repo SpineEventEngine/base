@@ -20,22 +20,12 @@
 
 package io.spine.tools.gradle.compiler;
 
-import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.gen.Indent;
-import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FileSet;
-import io.spine.code.proto.SourceProtoBelongsToModule;
-import io.spine.tools.compiler.gen.GeneratedTypeSpec;
-import io.spine.tools.compiler.gen.field.FieldSpec;
 import io.spine.tools.gradle.CodeGenerationAction;
-import io.spine.type.MessageType;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
-import java.util.List;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
@@ -63,30 +53,7 @@ final class FieldGenAction extends CodeGenerationAction {
 
     @Override
     public void execute(Task task) {
-        Predicate<FileDescriptor> belongsToModule =
-                new SourceProtoBelongsToModule(protoSrcDir()).forDescriptor();
-        FileSet fileSet = protoFiles().get()
-                                      .filter(belongsToModule);
-        List<MessageType> types = fileSet.topLevelMessages();
-        types.forEach(type -> {
-            if (type.isEntityState() || type.isEvent()) {
-                scanMessageFields(type);
-            }
-        });
-    }
-
-    private void scanMessageFields(MessageType type) {
-        ImmutableList<FieldDeclaration> fields = type.fields();
-        for (FieldDeclaration field : fields) {
-            if (field.isMessage()) {
-                Descriptor fieldTypeDescriptor = field.descriptor()
-                                                      .getMessageType();
-                MessageType messageType = new MessageType(fieldTypeDescriptor);
-                GeneratedTypeSpec spec = new FieldSpec(messageType);
-                spec.writeToFile(targetDir().toPath(), indent());
-                scanMessageFields(messageType);
-            }
-        }
+        // Do nothing for now.
     }
 
     @Override

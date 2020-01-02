@@ -58,6 +58,12 @@ public final class JavaPoetName {
         return new JavaPoetName(value);
     }
 
+    public JavaPoetName nested(String nestedName) {
+        ClassName value = className();
+        ClassName name = value.nestedClass(nestedName);
+        return new JavaPoetName(name);
+    }
+
     public TypeName value() {
         return value;
     }
