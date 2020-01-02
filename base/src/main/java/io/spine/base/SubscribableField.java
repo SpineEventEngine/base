@@ -31,7 +31,7 @@ public class SubscribableField {
     /**
      * @apiNote Named with "get-" prefix on purpose, to avoid clashing with any field names.
      */
-    protected FieldPath getFieldPath() {
+    public FieldPath getFieldPath() {
         return fieldPath;
     }
 }
