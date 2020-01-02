@@ -20,11 +20,7 @@
 
 package io.spine.base;
 
-import io.spine.value.ValueHolder;
-
-public final class SimpleField extends ValueHolder<FieldPath> {
-
-    private static final long serialVersionUID = 0L;
+public final class SimpleField extends SubscribableField {
 
     public SimpleField() {
         this("temporarily empty");
