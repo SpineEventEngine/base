@@ -137,11 +137,20 @@ public final class FieldFactory implements NestedClassFactory, Logging {
     }
 
     private static TypeSpec declarationOf(MessageType type) {
-        TypeSpec fieldTypeSpec = TypeSpec
-                .classBuilder(format("%sField", type.javaClassName().toSimple()))
-                .addModifiers(PUBLIC, STATIC, FINAL)
-                .build();
-        return fieldTypeSpec;
+        TypeSpec.Builder spec = TypeSpec.classBuilder(format("%sField", type.javaClassName()
+                                                                            .toSimple()))
+                                        .addModifiers(PUBLIC, STATIC, FINAL);
+        for (FieldDeclaration field : type.fields()) {
+            JavaPoetName returnType = fieldTypeName(field);
+            MethodSpec getter = MethodSpec
+                    .methodBuilder(field.name().javaCase())
+                    .addModifiers(PUBLIC)
+                    .returns(returnType.value())
+                    .addStatement("return new $T()", returnType.value())
+                    .build();
+            spec.addMethod(getter);
+        }
+        return spec.build();
     }
 
     private static MessageType messageTypeOf(FieldDeclaration field) {
