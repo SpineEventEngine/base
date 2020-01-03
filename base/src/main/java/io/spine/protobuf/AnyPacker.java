@@ -46,9 +46,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class AnyPacker {
 
-    private static final Function<@Nullable Any, @Nullable Message> ANY_UNPACKER =
-            (@Nullable Any any) -> any == null ? null : unpack(any);
-
     /**
      * Prevents the utility class instantiation.
      */
@@ -142,7 +139,13 @@ public final class AnyPacker {
      *
      * <p>The function returns {@code null} for {@code null} input.
      */
-    public static Function<Any, @Nullable Message> unpackFunc() {
-        return ANY_UNPACKER;
+    public static Function<@Nullable Any, @Nullable Message> unpackFunc() {
+        return AnyPacker::unpackOrNull;
+    }
+
+    private static @Nullable Message unpackOrNull(@Nullable Any any) {
+        return any == null
+               ? null
+               : unpack(any);
     }
 }
