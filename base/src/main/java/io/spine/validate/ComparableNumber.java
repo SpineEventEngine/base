@@ -31,6 +31,7 @@ import com.google.errorprone.annotations.Immutable;
  * yield incorrect comparison results.
  */
 @Immutable
+@SuppressWarnings("ComparableType") // Can be compared to any number.
 public final class ComparableNumber extends Number implements Comparable<Number> {
 
     private static final long serialVersionUID = 0L;
@@ -60,9 +61,7 @@ public final class ComparableNumber extends Number implements Comparable<Number>
         if (thisLong == thatLong) {
             return Double.compare(doubleValue(), anotherNumber.doubleValue());
         }
-        return thisLong > thatLong
-               ? 1
-               : -1;
+        return Long.compare(thisLong, thatLong);
     }
 
     @Override
