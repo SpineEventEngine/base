@@ -65,7 +65,6 @@ ext {
 }
 
 allprojects {
-    apply plugin: 'maven'
     apply plugin: 'jacoco'
     apply plugin: 'idea'
     apply plugin: 'project-report'
@@ -124,21 +123,24 @@ subprojects {
         errorproneJavac deps.build.errorProneJavac
         // For dependencies config. based on version of Java, see:
         //  https://github.com/epeee/junit-jupiter-extension-testing/blob/57b7ba75ab64ed8c229d2a5b14a954d6ae359189/gradle/errorprone.gradle
-        
-        api deps.build.protobuf
-        api deps.build.flogger
 
-        implementation deps.build.guava
-        implementation deps.build.checkerAnnotations
-        implementation deps.build.errorProneAnnotations
-        implementation deps.build.jsr305Annotations
-
-        testImplementation deps.test.guavaTestlib
-        testImplementation deps.test.junit5Api
-        testImplementation deps.test.junit5Runner
-        testImplementation deps.test.junitPioneer
-
-        runtime deps.runtime.floggerSystemBackend
+        api(
+                deps.build.protobuf,
+                deps.build.flogger
+        )
+        implementation(
+                deps.build.guava,
+                deps.build.checkerAnnotations,
+                deps.build.errorProneAnnotations,
+                deps.build.jsr305Annotations
+        )
+        testImplementation(
+                deps.test.guavaTestlib,
+                deps.test.junit5Api,
+                deps.test.junit5Runner,
+                deps.test.junitPioneer
+        )
+        runtimeOnly deps.runtime.floggerSystemBackend
     }
 
     forceConfiguration(project)
@@ -242,7 +244,6 @@ apply from: deps.scripts.jacoco
 apply from: deps.scripts.publish
 apply from: deps.scripts.runBuild
 apply from: deps.scripts.generatePom
-
 apply from: deps.scripts.repoLicenseReport
 
 task smokeTests  {

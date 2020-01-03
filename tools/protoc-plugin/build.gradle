@@ -30,7 +30,7 @@ dependencies {
             deps.gen.javaPoet
     )
 
-    testCompile project(':base')
+    testImplementation project(':base')
     testImplementation(
             project(':testlib'),
             project(':mute-logging'),
