@@ -86,6 +86,20 @@ class TimeTest {
             assertNotNull(SystemTimeProvider.INSTANCE);
             assertHasPrivateParameterlessCtor(SystemTimeProvider.class);
         }
+
+        @Test
+        @DisplayName("which emulate nanosecond resolution")
+        void providesNanos() {
+            int allNanos = systemTime().getNanos();
+            int startingFromMicros = allNanos % 1_000_000;
+            assertThat(startingFromMicros).isGreaterThan(0);
+        }
+
+        @Test
+        @DisplayName("which provides different values for two consecutive calls")
+        void differentValuesForConsecutive() {
+            assertThat(systemTime()).isNotEqualTo(systemTime());
+        }
     }
 
     @Test
