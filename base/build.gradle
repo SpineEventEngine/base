@@ -22,8 +22,6 @@ import java.nio.file.Files
 
 group = 'io.spine'
 
-apply plugin: 'java'
-
 apply from: "$projectDir/script/protobuf.gradle"
 
 apply from: deps.scripts.testArtifacts
@@ -37,8 +35,10 @@ dependencies {
     // ErrorProne Annotations is part of our API.
     api deps.build.errorProneAnnotations
 
-    testImplementation project(path: ":testlib")
-    testImplementation project(path: ":mute-logging")
+    testImplementation(
+            project(path: ":testlib"),
+            project(path: ":mute-logging")
+    )
 }
 
 sourceSets {
