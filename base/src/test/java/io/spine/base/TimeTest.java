@@ -43,7 +43,7 @@ import static io.spine.base.given.GivenDurations.DURATION_5_MINUTES;
 import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@DisplayName("Time class should")
+@DisplayName("`Time` class should")
 class TimeTest {
 
     @AfterEach
@@ -52,7 +52,7 @@ class TimeTest {
     }
 
     @Test
-    @DisplayName("accept TimeProvider")
+    @DisplayName("accept `TimeProvider`")
     void acceptProvider() {
         Timestamp fiveMinutesAgo = subtract(currentTime(), DURATION_5_MINUTES);
 
@@ -66,7 +66,7 @@ class TimeTest {
     }
 
     @Test
-    @DisplayName("resent TimeProvider to default value")
+    @DisplayName("reset `TimeProvider` to default value")
     void reset() {
         Timestamp aMinuteAgo = subtract(systemTime(), DURATION_1_MINUTE);
 
@@ -77,7 +77,7 @@ class TimeTest {
     }
 
     @Nested
-    @DisplayName("Have SystemTimeProvider")
+    @DisplayName("Have `SystemTimeProvider`")
     class SystemTime {
 
         @Test
@@ -88,7 +88,7 @@ class TimeTest {
         }
 
         @Test
-        @DisplayName("which emulate nanosecond resolution")
+        @DisplayName("which emulates nanosecond resolution")
         void providesNanos() {
             int allNanos = systemTime().getNanos();
             int startingFromMicros = allNanos % 1_000_000;
@@ -103,7 +103,7 @@ class TimeTest {
     }
 
     @Test
-    @DisplayName("obtain system time even if TimeProvider is set")
+    @DisplayName("obtain system time even if `TimeProvider` is set")
     void gettingSystemTime() {
         setProvider(new ConstantTimeProvider(Timestamp.getDefaultInstance()));
 
