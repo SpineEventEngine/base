@@ -22,11 +22,18 @@ package io.spine.base;
 
 import io.spine.value.StringTypeValue;
 
-public final class EntityColumn extends StringTypeValue {
+public final class EntityColumn<S extends EntityState> extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
 
-    public EntityColumn(String value) {
+    private final Class<S> enclosingMessage;
+
+    public EntityColumn(String value, Class<S> message) {
         super(value);
+        this.enclosingMessage = message;
+    }
+
+    public Class<S> enclosingMessage() {
+        return enclosingMessage;
     }
 }

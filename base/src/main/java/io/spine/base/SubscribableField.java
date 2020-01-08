@@ -20,12 +20,16 @@
 
 package io.spine.base;
 
-public class SubscribableField {
+import com.google.protobuf.Message;
+
+public abstract class SubscribableField<M extends Message> {
 
     private final FieldPath fieldPath;
+    private final Class<M> enclosingMessage;
 
-    protected SubscribableField(FieldPath fieldPath) {
+    protected SubscribableField(FieldPath fieldPath, Class<M> message) {
         this.fieldPath = fieldPath;
+        this.enclosingMessage = message;
     }
 
     /**
@@ -33,5 +37,9 @@ public class SubscribableField {
      */
     public FieldPath getFieldPath() {
         return fieldPath;
+    }
+
+    public Class<M> enclosingMessage() {
+        return enclosingMessage;
     }
 }

@@ -24,6 +24,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.FieldPath;
 import io.spine.base.SimpleField;
@@ -74,16 +76,16 @@ public final class FieldFactory implements NestedClassFactory, Logging {
     private static void generateFields(TypeSpec.Builder spec, MessageType type) {
         Set<MessageType> nestedTypes = newLinkedHashSet();
         for (FieldDeclaration field : type.fields()) {
-            JavaPoetName fieldTypeName = fieldTypeName(field);
-            MethodSpec fieldGetter = fieldGetter(field, fieldTypeName);
+            JavaPoetName fieldTypeName = fieldTypeName(field, type);
+            MethodSpec fieldGetter = fieldGetter(field, fieldTypeName, type);
             nestedTypes.addAll(nestedTypes(field));
             spec.addMethod(fieldGetter);
         }
-        List<TypeSpec> nested = nestedTypeDeclarations(nestedTypes);
+        List<TypeSpec> nested = nestedTypeDeclarations(nestedTypes, type);
         spec.addTypes(nested);
     }
 
-    private static JavaPoetName fieldTypeName(FieldDeclaration field) {
+    private static JavaPoetName fieldTypeName(FieldDeclaration field, MessageType enclosing) {
         JavaPoetName returnType;
         if (field.isMessage() && !field.isCollection()) {
             String fieldTypeName = field.javaTypeName();
@@ -91,21 +93,34 @@ public final class FieldFactory implements NestedClassFactory, Logging {
                                                        .toSimple();
             returnType = JavaPoetName.of(format("%sField", simpleClassName));
         } else {
-            returnType = JavaPoetName.of(SimpleField.class);
+            com.squareup.javapoet.ClassName name = JavaPoetName.of(SimpleField.class)
+                                                               .className();
+            JavaPoetName parameterName = JavaPoetName.of(enclosing.javaClassName());
+            ParameterizedTypeName typeName = ParameterizedTypeName.get(name, parameterName.value());
+            returnType = JavaPoetName.of(typeName);
         }
         return returnType;
     }
 
-    private static MethodSpec fieldGetter(FieldDeclaration field, JavaPoetName returnType) {
+    private static MethodSpec
+    fieldGetter(FieldDeclaration field, JavaPoetName returnType, MessageType enclosingType) {
         FieldName fieldName = field.name();
-        MethodSpec result = MethodSpec
+        MethodSpec.Builder methodSpec = MethodSpec
                 .methodBuilder(fieldName.javaCase())
                 .addModifiers(PUBLIC, STATIC)
-                .returns(returnType.value())
-                .addStatement("return new $T($T.newBuilder().addFieldName(\"$L\").build())",
-                              returnType.value(), FieldPath.class, fieldName.value())
-                .build();
-        return result;
+                .returns(returnType.value());
+        if (returnType.value().toString().contains("SimpleField")) {
+            TypeName enclosingClassName = JavaPoetName.of(enclosingType.javaClassName())
+                                         .value();
+            methodSpec.addStatement(
+                    "return new $T($T.newBuilder().addFieldName(\"$L\").build(), $T.class)",
+                    returnType.value(), FieldPath.class, fieldName.value(), enclosingClassName
+            );
+        } else {
+            methodSpec.addStatement("return new $T($T.newBuilder().addFieldName(\"$L\").build())",
+                                    returnType.value(), FieldPath.class, fieldName.value());
+        }
+        return methodSpec.build();
     }
 
     private static List<MessageType> nestedTypes(FieldDeclaration field) {
@@ -131,38 +146,62 @@ public final class FieldFactory implements NestedClassFactory, Logging {
         return allTypes;
     }
 
-    private static List<TypeSpec> nestedTypeDeclarations(Collection<MessageType> nestedTypes) {
+    private static List<TypeSpec>
+    nestedTypeDeclarations(Collection<MessageType> nestedTypes, MessageType enclosingType) {
         List<TypeSpec> result = nestedTypes
                 .stream()
-                .map(FieldFactory::declarationOf)
+                .map(nested -> declarationOf(nested, enclosingType))
                 .collect(toList());
         return result;
     }
 
-    private static TypeSpec declarationOf(MessageType type) {
-        TypeSpec.Builder spec = TypeSpec.classBuilder(format("%sField", type.javaClassName()
-                                                                            .toSimple()))
+    private static TypeSpec declarationOf(MessageType nested, MessageType enclosing) {
+        ClassName enclosingClass = enclosing.javaClassName();
+        TypeName enclosingClassName = JavaPoetName.of(enclosingClass)
+                                     .value();
+        JavaPoetName nestedTypeName = JavaPoetName.of(SubscribableField.class);
+        ParameterizedTypeName superclass =
+                ParameterizedTypeName.get(nestedTypeName.className(), enclosingClassName);
+        TypeSpec.Builder spec = TypeSpec.classBuilder(format("%sField", nested.javaClassName()
+                                                                              .toSimple()))
                                         .addModifiers(PUBLIC, STATIC, FINAL)
-                                        .superclass(SubscribableField.class);
+                                        .superclass(superclass);
         String argName = "fieldPath";
         MethodSpec ctor = MethodSpec
                 .constructorBuilder()
                 .addModifiers(PRIVATE)
                 .addParameter(FieldPath.class, argName)
-                .addStatement("super($L)", argName)
+                // TODO:2019-12-20:dmytro.kuzmin:WIP: Check if we can rid of `JavaPoetName.of()`.
+                .addStatement("super($L, $T.class)", argName, enclosingClassName)
                 .build();
         spec.addMethod(ctor);
 
-        for (FieldDeclaration field : type.fields()) {
-            JavaPoetName returnType = fieldTypeName(field);
-            MethodSpec getter = MethodSpec
-                    .methodBuilder(field.name().javaCase())
+        for (FieldDeclaration field : nested.fields()) {
+            JavaPoetName returnType = fieldTypeName(field, enclosing);
+            MethodSpec.Builder methodSpec = MethodSpec
+                    .methodBuilder(field.name()
+                                        .javaCase())
                     .addModifiers(PUBLIC)
-                    .returns(returnType.value())
-                    .addStatement("return new $T(getFieldPath().toBuilder().addFieldName(\"$L\").build())",
-                                  returnType.value(), field.name().value())
-                    .build();
-            spec.addMethod(getter);
+                    .returns(returnType.value());
+            // TODO:2019-12-20:dmytro.kuzmin:WIP: Implement more robust check.
+            if (returnType.value().toString().contains("SimpleField")) {
+                methodSpec.addStatement("return new $T(" +
+                                                "getFieldPath()" +
+                                                ".toBuilder()" +
+                                                ".addFieldName(\"$L\")" +
+                                                ".build(), $T.class)",
+                                        returnType.value(), field.name().value(),
+                                        enclosingClassName);
+            } else {
+                methodSpec.addStatement("return new $T(" +
+                                                "getFieldPath()" +
+                                                ".toBuilder()" +
+                                                ".addFieldName(\"$L\")" +
+                                                ".build())",
+                                        returnType.value(), field.name()
+                                                                 .value());
+            }
+            spec.addMethod(methodSpec.build());
         }
         return spec.build();
     }

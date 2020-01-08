@@ -27,8 +27,11 @@ import io.spine.code.java.SimpleClassName;
 import org.checkerframework.checker.signature.qual.ClassGetSimpleName;
 
 import java.lang.reflect.Type;
+import java.util.Objects;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A value holder of JavaPoet {@link TypeName}.
@@ -41,17 +44,25 @@ public final class JavaPoetName {
         this.value = value;
     }
 
+    public static JavaPoetName of(TypeName value) {
+        checkNotNull(value);
+        return new JavaPoetName(value);
+    }
+
     public static JavaPoetName of(Type type) {
+        checkNotNull(type);
         TypeName typeName = TypeName.get(type);
         return new JavaPoetName(typeName);
     }
 
     public static JavaPoetName of(@ClassGetSimpleName String simpleName) {
+        checkNotEmptyOrBlank(simpleName);
         TypeName value = ClassName.get("", simpleName);
         return new JavaPoetName(value);
     }
 
     public static JavaPoetName of(io.spine.code.java.ClassName className) {
+        checkNotNull(className);
         PackageName packageName = className.packageName();
         SimpleClassName topLevel = className.topLevelClass();
         String[] nestingChain = NestedClassName.from(className)
@@ -81,5 +92,22 @@ public final class JavaPoetName {
                    value.getClass()
                         .getCanonicalName(), ClassName.class.getCanonicalName());
         return (ClassName) value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        JavaPoetName name = (JavaPoetName) o;
+        return Objects.equals(value, name.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }

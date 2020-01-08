@@ -20,17 +20,11 @@
 
 package io.spine.base;
 
-public final class SimpleField extends SubscribableField {
+import com.google.protobuf.Message;
 
-    public SimpleField() {
-        this("temporarily empty");
-    }
+public final class SimpleField<M extends Message> extends SubscribableField<M> {
 
-    public SimpleField(FieldPath value) {
-        super(value);
-    }
-
-    public SimpleField(String value) {
-        super(FieldPath.newBuilder().addFieldName(value).build());
+    public SimpleField(FieldPath value, Class<M> message) {
+        super(value, message);
     }
 }

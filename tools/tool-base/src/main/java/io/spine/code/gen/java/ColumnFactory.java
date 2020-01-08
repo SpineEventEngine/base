@@ -23,8 +23,11 @@ package io.spine.code.gen.java;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.EntityColumn;
+import io.spine.code.java.ClassName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 import io.spine.tools.protoc.nested.GeneratedNestedClass;
@@ -62,13 +65,21 @@ public final class ColumnFactory implements NestedClassFactory {
     }
 
     private static void addColumnDeclaration(FieldDeclaration column, TypeSpec.Builder typeSpec) {
-        JavaPoetName returnType = JavaPoetName.of(EntityColumn.class);
+        JavaPoetName entityColumnType = JavaPoetName.of(EntityColumn.class);
+        ClassName enclosingClass = column.declaringType()
+                                         .javaClassName();
+        TypeName enclosingClassName = JavaPoetName.of(enclosingClass)
+                                                  .value();
+        ParameterizedTypeName typeName = ParameterizedTypeName.get(entityColumnType.className(),
+                                                               enclosingClassName);
+        JavaPoetName returnType = JavaPoetName.of(typeName);
         FieldName columnName = column.name();
         MethodSpec method = MethodSpec
                 .methodBuilder(columnName.javaCase())
                 .addModifiers(PUBLIC, STATIC)
                 .returns(returnType.value())
-                .addStatement("return new $T(\"$L\")", EntityColumn.class, columnName)
+                .addStatement("return new $T<>(\"$L\", $T.class)",
+                              EntityColumn.class, columnName, enclosingClassName)
                 .build();
         typeSpec.addMethod(method);
     }
