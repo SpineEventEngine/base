@@ -313,9 +313,14 @@ public final class Validate {
     }
 
     private static List<ConstraintViolation> validateAtRuntime(Message message) {
+        return validateAtRuntime(message, FieldContext.empty());
+    }
+
+    public static List<ConstraintViolation>
+    validateAtRuntime(Message message, FieldContext context) {
         Optional<ValidationError> error =
                 Constraints.of(MessageType.of(message))
-                           .runThrough(new MessageValidator(message));
+                           .runThrough(new MessageValidator(message, context));
         List<ConstraintViolation> violations =
                 error.map(ValidationError::getConstraintViolationList)
                      .orElse(ImmutableList.of());

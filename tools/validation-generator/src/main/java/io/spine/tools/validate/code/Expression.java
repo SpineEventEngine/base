@@ -78,6 +78,11 @@ public interface Expression<R> {
         return new CodeExpression<>(code.toString());
     }
 
+    static <R> Expression<R> fromCode(String code, Object... args) {
+        checkNotNull(code);
+        return of(CodeBlock.of(code, args));
+    }
+
     /**
      * Creates an {@code Expression} by formatting the given template string by the rules of
      * {@code String.format()}.

@@ -86,6 +86,10 @@ public final class FieldDeclaration {
         return FieldName.of(field.toProto());
     }
 
+    public int number() {
+        return field.getNumber();
+    }
+
     /**
      * Obtains descriptor of the field.
      */

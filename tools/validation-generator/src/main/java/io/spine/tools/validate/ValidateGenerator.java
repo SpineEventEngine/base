@@ -130,18 +130,20 @@ public final class ValidateGenerator {
                 .builder(Generated.class)
                 .addMember(bySpine.fieldName(), bySpine.codeBlock())
                 .build();
-        return TypeSpec
+        TypeSpec.Builder type = TypeSpec
                 .classBuilder(validatorSimpleName)
                 .addAnnotation(generated)
                 .addModifiers(PRIVATE, STATIC, FINAL)
-                .addMethod(ctor)
-                .addMethods(generateMembers())
-                .build();
+                .addMethod(ctor);
+        generateMembers().forEach(
+                member -> member.attachTo(type)
+        );
+        return type.build();
     }
 
-    private Set<MethodSpec> generateMembers() {
+    private Set<ClassMember> generateMembers() {
         Constraints constraints = Constraints.of(type);
-        Set<MethodSpec> methods = constraints
+        Set<ClassMember> methods = constraints
                 .runThrough(new ValidationCodeGenerator(VALIDATE_METHOD, type));
         return methods;
     }

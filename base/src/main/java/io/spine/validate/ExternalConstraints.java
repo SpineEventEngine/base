@@ -25,6 +25,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
 import com.google.protobuf.DescriptorProtos;
+import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.annotation.Internal;
 import io.spine.type.KnownTypes;
 import io.spine.type.MessageType;
@@ -78,6 +79,12 @@ public final class ExternalConstraints implements Serializable {
      */
     static ImmutableSet<ExternalMessageConstraint> all() {
         return Holder.instance.constraints;
+    }
+
+    public static boolean definedFor(Descriptor containerType, String fieldName) {
+        return all()
+                .stream()
+                .anyMatch(constraint -> constraint.hasTarget(containerType, fieldName));
     }
 
     /**

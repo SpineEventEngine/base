@@ -61,6 +61,13 @@ public final class ConditionalStatement {
         return code;
     }
 
+    public CodeBlock orElse(CodeBlock negativeBranch) {
+        code.nextControlFlow("else");
+        code.add(negativeBranch);
+        code.add(lineSeparator());
+        return toCode();
+    }
+
     /**
      * Converts this statement into Java code.
      *

@@ -72,9 +72,16 @@ final class ValidateMethod {
     }
 
     /**
+     * Creates a {@code ClassMember} representing this method.
+     */
+    ClassMember asClassMember() {
+        return new Method(spec());
+    }
+
+    /**
      * Creates a {@code MethodSpec} for this method.
      */
-    MethodSpec spec() {
+    private MethodSpec spec() {
         SimpleClassName messageSimpleName = validatedType.javaClassName().toSimple();
         MethodSpec validateMethod = MethodSpec
                 .methodBuilder(methodName)
@@ -103,5 +110,4 @@ final class ValidateMethod {
                        .addStatement("return $N.build()", VIOLATIONS)
                        .build();
     }
-
 }
