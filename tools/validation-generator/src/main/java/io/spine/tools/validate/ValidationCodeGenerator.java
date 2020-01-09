@@ -254,7 +254,7 @@ final class ValidationCodeGenerator implements ConstraintTranslator<Set<ClassMem
         return fieldAccess -> {
             IsSet isSet = new IsSet(field);
             CodeBlock assignViolations = isSet
-                    .valueIsPresent(fieldAccess)
+                    .valueIsNotSet(fieldAccess)
                     .ifTrue(assignToEmpty(violationsVar))
                     .elseIf(validatedExternally.value(),
                             externalViolations(field, violationsVar, fieldAccess))
