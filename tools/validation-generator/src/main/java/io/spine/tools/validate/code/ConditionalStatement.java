@@ -61,6 +61,16 @@ public final class ConditionalStatement {
         return code;
     }
 
+    public ConditionalStatement elseIf(BooleanExpression condition, CodeBlock alternative) {
+        checkNotNull(condition);
+        checkNotNull(alternative);
+
+        code.nextControlFlow("else if ($L)", condition);
+        code.add(alternative);
+        code.add(lineSeparator());
+        return this;
+    }
+
     public CodeBlock orElse(CodeBlock negativeBranch) {
         code.nextControlFlow("else");
         code.add(negativeBranch);

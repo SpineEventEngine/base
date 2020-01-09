@@ -252,13 +252,17 @@ final class ValidationCodeGenerator implements ConstraintTranslator<Set<ClassMem
         possiblyExternalFields.add(validatedExternally);
         CodeBlock findExternal = validatedExternally.assignValue();
         return fieldAccess -> {
-            CodeBlock violationAssignment = validatedExternally
-                    .ifTrue(intrinsicViolations(field, violationsVar, fieldAccess))
-                    .orElse(externalViolations(field, violationsVar, fieldAccess));
+            IsSet isSet = new IsSet(field);
+            CodeBlock assignViolations = isSet
+                    .valueIsPresent(fieldAccess)
+                    .ifTrue(assignToEmpty(violationsVar))
+                    .elseIf(validatedExternally.value(),
+                            externalViolations(field, violationsVar, fieldAccess))
+                    .orElse(intrinsicViolations(field, violationsVar, fieldAccess));
             return CodeBlock.builder()
                             .addStatement(findExternal)
                             .addStatement("$T $N", listOfViolations, violationsVar.toString())
-                            .addStatement(violationAssignment)
+                            .addStatement(assignViolations)
                             .build();
         };
     }
@@ -267,12 +271,14 @@ final class ValidationCodeGenerator implements ConstraintTranslator<Set<ClassMem
     intrinsicViolations(FieldDeclaration field,
                         Expression<List<ConstraintViolation>> violationsVar,
                         FieldAccess fieldAccess) {
-        return CodeBlock.of("$N = $L ? $T.violationsOf($L) : $T.of();",
+        return CodeBlock.of("$N = $T.violationsOf($L);",
                             violationsVar.toString(),
-                            new IsSet(field).valueIsPresent(fieldAccess),
                             Validate.class,
-                            unpackedMessage(field, fieldAccess),
-                            ImmutableList.class);
+                            unpackedMessage(field, fieldAccess));
+    }
+
+    private static CodeBlock assignToEmpty(Expression<List<ConstraintViolation>> violationsVar) {
+        return CodeBlock.of("$N = $T.of();", violationsVar.toString(), ImmutableList.class);
     }
 
     private static CodeBlock
@@ -284,13 +290,11 @@ final class ValidationCodeGenerator implements ConstraintTranslator<Set<ClassMem
                 Expression.fromCode("$T.create($T.getDescriptor().findFieldByNumber($L))",
                                     FieldContext.class,
                                     typeName, field.number());
-        return CodeBlock.of("$N = $L ? $T.validateAtRuntime($L, $L) : $T.of();",
+        return CodeBlock.of("$N = $T.validateAtRuntime($L, $L);",
                             violationsVar.toString(),
-                            new IsSet(field).valueIsPresent(fieldAccess),
                             Validate.class,
                             unpackedMessage(field, fieldAccess),
-                            fieldContextExpression,
-                            ImmutableList.class);
+                            fieldContextExpression);
     }
 
     private static Expression<?> unpackedMessage(FieldDeclaration field, FieldAccess fieldAccess) {

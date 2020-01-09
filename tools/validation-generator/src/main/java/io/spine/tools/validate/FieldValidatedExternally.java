@@ -27,7 +27,6 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.validate.code.BooleanExpression;
-import io.spine.tools.validate.code.ConditionalStatement;
 import io.spine.tools.validate.code.Expression;
 import io.spine.validate.ExternalConstraints;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -45,16 +44,15 @@ final class FieldValidatedExternally {
 
     FieldValidatedExternally(FieldDeclaration field) {
         this.declaration = checkNotNull(field);
-        this.field = formatted("is%sValidatedExternally", field.name().toCamelCase());
+        this.field = formatted("is%sValidatedExternally", field.name()
+                                                               .toCamelCase());
     }
 
-    ConditionalStatement ifTrue(CodeBlock codeBlock) {
-        return BooleanExpression.fromCode(field.toCode())
-                                .ifTrue(codeBlock);
+    BooleanExpression value() {
+        return BooleanExpression.fromCode("$L", field);
     }
 
     /**
-     *
      * @return
      * @see ExternalConstraints#definedFor(Descriptors.Descriptor, String)
      */
