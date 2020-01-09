@@ -21,6 +21,8 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableSet;
+import io.spine.net.Uri;
+import io.spine.test.validation.AMessage;
 import io.spine.test.validation.AnExternalConstraint;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
@@ -37,5 +39,19 @@ final class ExternalConstraintsTest {
         MessageType ruleType = new MessageType(AnExternalConstraint.getDescriptor());
         ExternalConstraints.updateFrom(ImmutableSet.of(ruleType));
         assertThat(ExternalConstraints.all()).hasSize(6);
+    }
+
+    @Test
+    @DisplayName("tell if an external constraint is defined for a field")
+    void checkIfDefined() {
+        boolean defined = ExternalConstraints.definedFor(AMessage.getDescriptor(), "field");
+        assertThat(defined).isTrue();
+    }
+
+    @Test
+    @DisplayName("tell if an external constraint is NOT defined for a field")
+    void checkIfNotDefined() {
+        boolean defined = ExternalConstraints.definedFor(Uri.getDescriptor(), "host");
+        assertThat(defined).isFalse();
     }
 }
