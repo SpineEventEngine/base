@@ -36,11 +36,11 @@ import static javax.lang.model.element.Modifier.STATIC;
 
 final class ColumnSpec {
 
-    private final JavaPoetName simpleMessageName;
+    private final MessageType messageType;
     private final ImmutableList<FieldDeclaration> columns;
 
     private ColumnSpec(MessageType messageType) {
-        this.simpleMessageName = JavaPoetName.of(messageType.simpleJavaClassName());
+        this.messageType = messageType;
         this.columns = columnsOf(messageType);
     }
 
@@ -71,13 +71,18 @@ final class ColumnSpec {
                 .addModifiers(PUBLIC, STATIC)
                 .returns(columnType().value())
                 .addStatement("return new $T<>(\"$L\", $T.class)",
-                              EntityColumn.class, name, simpleMessageName.value())
+                              EntityColumn.class, name, simpleMessageName().value())
                 .build();
         return result;
     }
 
     private JavaPoetName columnType() {
-        JavaPoetName result = JavaPoetName.parameterized(EntityColumn.class, simpleMessageName);
+        JavaPoetName result = JavaPoetName.parameterized(EntityColumn.class, simpleMessageName());
+        return result;
+    }
+
+    private JavaPoetName simpleMessageName() {
+        JavaPoetName result = JavaPoetName.of(messageType.simpleJavaClassName());
         return result;
     }
 }
