@@ -21,17 +21,17 @@
 package io.spine.code.gen.java;
 
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
-import org.checkerframework.checker.signature.qual.ClassGetSimpleName;
 
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A value holder of JavaPoet {@link TypeName}.
@@ -55,9 +55,9 @@ public final class JavaPoetName {
         return new JavaPoetName(typeName);
     }
 
-    public static JavaPoetName of(@ClassGetSimpleName String simpleName) {
-        checkNotEmptyOrBlank(simpleName);
-        TypeName value = ClassName.get("", simpleName);
+    public static JavaPoetName of(SimpleClassName simpleName) {
+        checkNotNull(simpleName);
+        TypeName value = toClassName(simpleName);
         return new JavaPoetName(value);
     }
 
@@ -73,6 +73,15 @@ public final class JavaPoetName {
                                                .toArray(String[]::new);
         TypeName value = ClassName.get(packageName.value(), topLevel.value(), nestingChain);
         return new JavaPoetName(value);
+    }
+
+    public static JavaPoetName parameterized(Class<?> rawType, JavaPoetName... arguments) {
+        ClassName rawTypeName = ClassName.get(rawType);
+        TypeName[] args = Arrays.stream(arguments)
+                                .map(JavaPoetName::value)
+                                .toArray(TypeName[]::new);
+        ParameterizedTypeName parameterized = ParameterizedTypeName.get(rawTypeName, args);
+        return new JavaPoetName(parameterized);
     }
 
     public TypeName value() {
@@ -92,6 +101,10 @@ public final class JavaPoetName {
                    value.getClass()
                         .getCanonicalName(), ClassName.class.getCanonicalName());
         return (ClassName) value;
+    }
+
+    private static ClassName toClassName(SimpleClassName simpleName) {
+        return ClassName.get("", simpleName.value());
     }
 
     @Override

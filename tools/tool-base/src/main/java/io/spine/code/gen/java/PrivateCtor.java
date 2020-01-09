@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, TeamDev. All rights reserved.
+ * Copyright 2020, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,27 +20,26 @@
 
 package io.spine.code.gen.java;
 
-import com.google.common.collect.ImmutableList;
-import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.protoc.nested.GeneratedNestedClass;
-import io.spine.tools.protoc.nested.NestedClassFactory;
-import io.spine.type.MessageType;
+import com.squareup.javapoet.MethodSpec;
 
-import java.util.List;
+import static javax.lang.model.element.Modifier.PRIVATE;
 
-import static javax.lang.model.element.Modifier.FINAL;
-import static javax.lang.model.element.Modifier.PUBLIC;
-import static javax.lang.model.element.Modifier.STATIC;
+public final class PrivateCtor {
 
-@Immutable
-public final class ColumnFactory implements NestedClassFactory {
+    private static final MethodSpec PRIVATE_CTOR = privateCtorSpec();
 
-    @Override
-    public List<GeneratedNestedClass> createFor(MessageType messageType) {
-        String generatedCode = ColumnSpec.of(messageType)
-                                         .asTypeSpec(PUBLIC, STATIC, FINAL)
-                                         .toString();
-        GeneratedNestedClass result = new GeneratedNestedClass(generatedCode);
-        return ImmutableList.of(result);
+    private PrivateCtor() {
+    }
+
+    public static MethodSpec spec() {
+        return PRIVATE_CTOR;
+    }
+
+    private static MethodSpec privateCtorSpec() {
+        MethodSpec result = MethodSpec
+                .constructorBuilder()
+                .addModifiers(PRIVATE)
+                .build();
+        return result;
     }
 }
