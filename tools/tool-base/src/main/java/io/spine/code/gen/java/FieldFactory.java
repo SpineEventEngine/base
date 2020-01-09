@@ -95,7 +95,8 @@ public final class FieldFactory implements NestedClassFactory, Logging {
         } else {
             com.squareup.javapoet.ClassName name = JavaPoetName.of(SimpleField.class)
                                                                .className();
-            JavaPoetName parameterName = JavaPoetName.of(enclosing.javaClassName());
+            JavaPoetName parameterName =
+                    JavaPoetName.of(enclosing.javaClassName().toSimple().value());
             ParameterizedTypeName typeName = ParameterizedTypeName.get(name, parameterName.value());
             returnType = JavaPoetName.of(typeName);
         }
@@ -110,8 +111,8 @@ public final class FieldFactory implements NestedClassFactory, Logging {
                 .addModifiers(PUBLIC, STATIC)
                 .returns(returnType.value());
         if (returnType.value().toString().contains("SimpleField")) {
-            TypeName enclosingClassName = JavaPoetName.of(enclosingType.javaClassName())
-                                         .value();
+            TypeName enclosingClassName =
+                    JavaPoetName.of(enclosingType.javaClassName().toSimple().value()).value();
             methodSpec.addStatement(
                     "return new $T($T.newBuilder().addFieldName(\"$L\").build(), $T.class)",
                     returnType.value(), FieldPath.class, fieldName.value(), enclosingClassName
@@ -157,8 +158,8 @@ public final class FieldFactory implements NestedClassFactory, Logging {
 
     private static TypeSpec declarationOf(MessageType nested, MessageType enclosing) {
         ClassName enclosingClass = enclosing.javaClassName();
-        TypeName enclosingClassName = JavaPoetName.of(enclosingClass)
-                                     .value();
+        TypeName enclosingClassName = JavaPoetName.of(enclosingClass.toSimple().value())
+                                                  .value();
         JavaPoetName nestedTypeName = JavaPoetName.of(SubscribableField.class);
         ParameterizedTypeName superclass =
                 ParameterizedTypeName.get(nestedTypeName.className(), enclosingClassName);

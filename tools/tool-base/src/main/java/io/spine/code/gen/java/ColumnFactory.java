@@ -68,7 +68,7 @@ public final class ColumnFactory implements NestedClassFactory {
         JavaPoetName entityColumnType = JavaPoetName.of(EntityColumn.class);
         ClassName enclosingClass = column.declaringType()
                                          .javaClassName();
-        TypeName enclosingClassName = JavaPoetName.of(enclosingClass)
+        TypeName enclosingClassName = JavaPoetName.of(enclosingClass.toSimple().value())
                                                   .value();
         ParameterizedTypeName typeName = ParameterizedTypeName.get(entityColumnType.className(),
                                                                enclosingClassName);
