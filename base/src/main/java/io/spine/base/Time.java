@@ -163,13 +163,13 @@ public final class Time {
      *
      * <p>In most cases, the JVM and underlying OS provides the millisecond-level precision at best.
      * Therefore, the messages produced in such a virtual machine are often stamped
-     * with the same time value. However, the most of message-ordering routines require
+     * with the same time value. However, most of the message-ordering routines require
      * the distinct time values for proper work.
      *
      * <p>This class is designed to emulate the nanoseconds and provide incremental values
      * for the consecutive calls.
      *
-     * <p>The returned nanosecond value starts at {@code 0} and never exceeds {@code 999 999},
+     * <p>The returned nanosecond value starts at {@code 0} and never exceeds {@code 999 999}.
      * It is designed to keep the millisecond value provided by a typical-JVM system clock intact.
      * Once the upper bound of the nanos is reached , the nanosecond value is reset
      * back to {@code 0}.
