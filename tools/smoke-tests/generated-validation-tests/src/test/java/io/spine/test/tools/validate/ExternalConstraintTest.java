@@ -34,7 +34,8 @@ class ExternalConstraintTest {
     @DisplayName("call external validation")
     void validateExternal() {
         User user = User.newBuilder()
-                        .addContact(Email.newBuilder().setValue("not an email"))
+                        .addContact(Email.newBuilder()
+                                         .setValue("not an email"))
                         .buildPartial();
         ImmutableList<ConstraintViolation> violations = user.validate();
         assertThat(violations)
@@ -43,5 +44,37 @@ class ExternalConstraintTest {
                              .getFieldPath()
                              .getFieldName(0))
                 .isEqualTo("contact");
+    }
+
+    @Test
+    @DisplayName("invoke generated validation if no external validation is defined")
+    void noExternal() {
+        ShippingAddress address = ShippingAddress
+                .newBuilder()
+                .setSecondLine("first line is required and not set")
+                .buildPartial();
+        User user = User.newBuilder()
+                        .addShippingAddress(address)
+                        .buildPartial();
+        ImmutableList<ConstraintViolation> violations = user.validate();
+        assertThat(violations)
+                .hasSize(1);
+        assertThat(violations.get(0)
+                             .getFieldPath()
+                             .getFieldName(0))
+                .isEqualTo("shipping_address");
+    }
+
+    @Test
+    @DisplayName("ignore external constraints if `(validate)` is not set")
+    void noValidate() {
+        PersonName name = PersonName.newBuilder()
+                                 .setValue("A")
+                                 .buildPartial();
+        User user = User.newBuilder()
+                        .setName(name)
+                        .buildPartial();
+        assertThat(user.validate())
+                .isEmpty();
     }
 }
