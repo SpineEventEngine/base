@@ -61,6 +61,15 @@ public final class ConditionalStatement {
         return code;
     }
 
+    /**
+     * Adds an alternative branch to this statement.
+     *
+     * @param condition
+     *         the condition of the new {@code if}
+     * @param alternative
+     *         the alternative branch
+     * @return {@code this} for method chaining
+     */
     public ConditionalStatement elseIf(BooleanExpression condition, CodeBlock alternative) {
         checkNotNull(condition);
         checkNotNull(alternative);
@@ -71,6 +80,15 @@ public final class ConditionalStatement {
         return this;
     }
 
+    /**
+     * Adds the {@code else} branch to this statement.
+     *
+     * <p>Completes this statement. If the statement is already complete, throws
+     * an {@link IllegalStateException}.
+     *
+     * @param negativeBranch
+     *         the alternative branch
+     */
     public CodeBlock orElse(CodeBlock negativeBranch) {
         code.nextControlFlow("else");
         code.add(negativeBranch);

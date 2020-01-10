@@ -37,23 +37,41 @@ import static io.spine.tools.validate.code.Expression.formatted;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.STATIC;
 
-final class FieldValidatedExternally {
+/**
+ * A boolean flag in the generated code which signifies whether or not a field has externally
+ * defined constraints.
+ *
+ * <p>Such a flag is only generated for message fields marked with {@code (validate) = true}. Other
+ * fields cannot be target for external constraints.
+ */
+final class ExternalConstraintFlag {
 
     private final FieldDeclaration declaration;
     private final Expression<@Nullable Boolean> field;
 
-    FieldValidatedExternally(FieldDeclaration field) {
+    ExternalConstraintFlag(FieldDeclaration field) {
         this.declaration = checkNotNull(field);
         this.field = formatted("is%sValidatedExternally", field.name()
                                                                .toCamelCase());
     }
 
+    /**
+     * Generated an expression which obtains the value of this flag.
+     *
+     * <p>The value of the flag must be set when this expression is used. Otherwise,
+     * a {@code NullPointerException} is thrown.
+     *
+     * @return an expression of the primitive value of the flag
+     */
     BooleanExpression value() {
-        return BooleanExpression.fromCode("$L", field);
+        return BooleanExpression.fromCode("$L.booleanValue()", field);
     }
 
     /**
-     * @return
+     * Generates code which assigns a value to the field by searching for the external constraints
+     * in the {@linkplain ExternalConstraints global registry}.
+     *
+     * @return assignment code
      * @see ExternalConstraints#definedFor(Descriptors.Descriptor, String)
      */
     CodeBlock assignValue() {
@@ -71,6 +89,9 @@ final class FieldValidatedExternally {
                             .toCode();
     }
 
+    /**
+     * Obtains this flag as a {@link ClassMember}.
+     */
     ClassMember asClassMember() {
         FieldSpec spec = FieldSpec
                 .builder(Boolean.class, field.toString(), PRIVATE, STATIC)
@@ -83,10 +104,10 @@ final class FieldValidatedExternally {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof FieldValidatedExternally)) {
+        if (!(o instanceof ExternalConstraintFlag)) {
             return false;
         }
-        FieldValidatedExternally that = (FieldValidatedExternally) o;
+        ExternalConstraintFlag that = (ExternalConstraintFlag) o;
         return Objects.equal(declaration, that.declaration);
     }
 

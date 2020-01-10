@@ -86,6 +86,9 @@ public final class FieldDeclaration {
         return FieldName.of(field.toProto());
     }
 
+    /**
+     * Obtains the Protobuf field number.
+     */
     public int number() {
         return field.getNumber();
     }

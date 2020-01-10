@@ -94,7 +94,7 @@ final class ValidationCodeGenerator implements ConstraintTranslator<Set<ClassMem
     private static final MessageAccess messageAccess = MessageAccess.of("msg");
 
     private final List<CodeBlock> compiledConstraints;
-    private final Set<FieldValidatedExternally> possiblyExternalFields;
+    private final Set<ExternalConstraintFlag> externalConstraintFlags;
     private final AccumulateViolations violationAccumulator;
     private final FieldContext fieldContext;
     private final String methodName;
@@ -127,7 +127,7 @@ final class ValidationCodeGenerator implements ConstraintTranslator<Set<ClassMem
         this.compiledConstraints = new ArrayList<>();
         this.violationAccumulator =
                 violation -> formatted("%s.add(%s);", VIOLATIONS, violation);
-        this.possiblyExternalFields = new HashSet<>();
+        this.externalConstraintFlags = new HashSet<>();
     }
 
     @Override
@@ -248,16 +248,15 @@ final class ValidationCodeGenerator implements ConstraintTranslator<Set<ClassMem
 
     private Function<FieldAccess, CodeBlock>
     obtainViolations(FieldDeclaration field, Expression<List<ConstraintViolation>> violationsVar) {
-        FieldValidatedExternally validatedExternally = new FieldValidatedExternally(field);
-        possiblyExternalFields.add(validatedExternally);
-        CodeBlock findExternal = validatedExternally.assignValue();
+        ExternalConstraintFlag flag = new ExternalConstraintFlag(field);
+        externalConstraintFlags.add(flag);
+        CodeBlock findExternal = flag.assignValue();
         return fieldAccess -> {
             IsSet isSet = new IsSet(field);
             CodeBlock assignViolations = isSet
                     .valueIsNotSet(fieldAccess)
                     .ifTrue(assignToEmpty(violationsVar))
-                    .elseIf(validatedExternally.value(),
-                            externalViolations(field, violationsVar, fieldAccess))
+                    .elseIf(flag.value(), externalViolations(field, violationsVar, fieldAccess))
                     .orElse(intrinsicViolations(field, violationsVar, fieldAccess));
             return CodeBlock.builder()
                             .addStatement(findExternal)
@@ -353,9 +352,9 @@ final class ValidationCodeGenerator implements ConstraintTranslator<Set<ClassMem
                 .collect(toList());
         ValidateMethod validateMethod =
                 new ValidateMethod(type, methodName, messageAccess, compiledConstraints);
-        List<ClassMember> externalFlags = possiblyExternalFields
+        List<ClassMember> externalFlags = externalConstraintFlags
                 .stream()
-                .map(FieldValidatedExternally::asClassMember)
+                .map(ExternalConstraintFlag::asClassMember)
                 .collect(toList());
         ImmutableSet<ClassMember> methods = ImmutableSet
                 .<ClassMember>builder()

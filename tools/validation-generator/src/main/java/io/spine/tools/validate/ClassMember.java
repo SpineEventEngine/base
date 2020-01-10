@@ -22,6 +22,11 @@ package io.spine.tools.validate;
 
 import com.squareup.javapoet.TypeSpec;
 
+/**
+ * A member of a Java class.
+ *
+ * <p>The member can be {@linkplain #attachTo attached} to a type constructed with Java Poet.
+ */
 public interface ClassMember {
 
     void attachTo(TypeSpec.Builder type);

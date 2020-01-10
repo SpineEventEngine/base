@@ -80,6 +80,9 @@ final class ExternalMessageConstraint {
         return targets;
     }
 
+    /**
+     * Checks that this constraint targets the field with the given name defined in the given type.
+     */
     boolean hasTarget(Descriptor containingType, String fieldName) {
         return targets.stream()
                       .anyMatch(field -> isSame(field, containingType, fieldName));

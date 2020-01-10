@@ -26,6 +26,9 @@ import com.squareup.javapoet.TypeSpec;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * A method to be attached to a Java class.
+ */
 final class Method implements ClassMember {
 
     private final MethodSpec methodSpec;

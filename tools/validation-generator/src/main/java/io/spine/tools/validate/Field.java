@@ -26,6 +26,9 @@ import com.squareup.javapoet.TypeSpec;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * A field to be attached to a Java class.
+ */
 final class Field implements ClassMember {
 
     private final FieldSpec fieldSpec;
