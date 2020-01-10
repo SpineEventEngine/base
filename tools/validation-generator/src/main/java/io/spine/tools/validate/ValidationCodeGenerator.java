@@ -281,15 +281,15 @@ final class ValidationCodeGenerator implements ConstraintTranslator<Set<ClassMem
         return CodeBlock.of("$N = $T.of();", violationsVar.toString(), ImmutableList.class);
     }
 
-    private static CodeBlock
-    externalViolations(FieldDeclaration field,
-                       Expression<List<ConstraintViolation>> violationsVar,
-                       FieldAccess fieldAccess) {
-        ClassName typeName = ClassName.bestGuess(field.javaTypeName());
+    private CodeBlock externalViolations(FieldDeclaration field,
+                                         Expression<List<ConstraintViolation>> violationsVar,
+                                         FieldAccess fieldAccess) {
+        ClassName typeName = ClassName.bestGuess(type.javaClassName().value());
         Expression<FieldContext> fieldContextExpression =
                 Expression.fromCode("$T.create($T.getDescriptor().findFieldByNumber($L))",
                                     FieldContext.class,
-                                    typeName, field.number());
+                                    typeName,
+                                    field.number());
         return CodeBlock.of("$N = $T.validateAtRuntime($L, $L);",
                             violationsVar.toString(),
                             Validate.class,
