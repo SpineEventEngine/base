@@ -82,8 +82,8 @@ public final class ExternalConstraints implements Serializable {
     }
 
     /**
-     * Checks if is in external constraint targeting the field with the given name in the given
-     * type.
+     * Checks if there is in external constraint targeting the field with the given name in
+     * the given type.
      *
      * <p>Example. If an external constraint is declared as follows:
      * {@code (constraint_for) = "foo.example.Customer.name"}, a call to this method with params

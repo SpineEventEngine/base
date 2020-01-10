@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Message;
+import io.spine.annotation.Internal;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
@@ -316,8 +317,21 @@ public final class Validate {
         return validateAtRuntime(message, FieldContext.empty());
     }
 
-    public static List<ConstraintViolation>
-    validateAtRuntime(Message message, FieldContext context) {
+    /**
+     * Validates the given message ignoring the generated validation code.
+     *
+     * <p>Use {@link #violationsOf(Message)} over this method. It is declared {@code public} only
+     * to be accessible in the generated code.
+     *
+     * @param message
+     *         the message to validate
+     * @param context
+     *         the validation field context
+     * @return violations of the validation rules or an empty list if the message is valid
+     */
+    @Internal
+    public static List<ConstraintViolation> validateAtRuntime(Message message,
+                                                              FieldContext context) {
         Optional<ValidationError> error =
                 Constraints.of(MessageType.of(message), context)
                            .runThrough(new MessageValidator(message, context));
