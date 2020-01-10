@@ -53,18 +53,18 @@ final class ColumnSpec {
                 .classBuilder("Columns")
                 .addModifiers(modifiers)
                 .addMethod(PrivateCtor.spec())
-                .addMethods(columns())
+                .addMethods(columnMethods())
                 .build();
         return result;
     }
 
-    private Iterable<MethodSpec> columns() {
+    private Iterable<MethodSpec> columnMethods() {
         ImmutableList.Builder<MethodSpec> builder = ImmutableList.builder();
-        columns.forEach(column -> builder.add(columnSpec(column)));
+        columns.forEach(column -> builder.add(columnMethodSpec(column)));
         return builder.build();
     }
 
-    private MethodSpec columnSpec(FieldDeclaration column) {
+    private MethodSpec columnMethodSpec(FieldDeclaration column) {
         FieldName name = column.name();
         MethodSpec result = MethodSpec
                 .methodBuilder(name.javaCase())

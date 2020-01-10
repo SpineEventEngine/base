@@ -23,6 +23,7 @@ package io.spine.code.proto;
 import com.google.common.base.Objects;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Descriptors.FileDescriptor;
@@ -42,6 +43,7 @@ import io.spine.type.UnknownTypeException;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.DescriptorProtos.DescriptorProto.FIELD_FIELD_NUMBER;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
@@ -255,6 +257,12 @@ public final class FieldDeclaration {
      */
     public boolean isMap() {
         return FieldTypes.isMap(field);
+    }
+
+    public MessageType messageType() {
+        checkState(isMessage());
+        Descriptor messageType = descriptor().getMessageType();
+        return new MessageType(messageType);
     }
 
     /** Obtains the Java type of the declaration. */

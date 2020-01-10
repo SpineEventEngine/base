@@ -58,14 +58,10 @@ public final class FieldFactory implements NestedClassFactory, Logging {
 
     @Override
     public List<GeneratedNestedClass> createFor(MessageType messageType) {
-        MethodSpec privateCtor = MethodSpec
-                .constructorBuilder()
-                .addModifiers(PRIVATE)
-                .build();
         TypeSpec.Builder typeSpec = TypeSpec
                 .classBuilder("Fields")
                 .addModifiers(PUBLIC, STATIC, FINAL)
-                .addMethod(privateCtor);
+                .addMethod(PrivateCtor.spec());
         generateFields(typeSpec, messageType);
         String generatedCode = typeSpec.build()
                                        .toString();
