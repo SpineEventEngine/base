@@ -247,19 +247,18 @@ final class ValidationCodeGenerator implements ConstraintTranslator<Set<ClassMem
     }
 
     private Function<FieldAccess, CodeBlock>
-    obtainViolations(FieldDeclaration field, Expression<List<ConstraintViolation>> violationsVar) {
+    obtainViolations(FieldDeclaration field,
+                     Expression<List<ConstraintViolation>> violationsVar) {
         ExternalConstraintFlag flag = new ExternalConstraintFlag(field);
         externalConstraintFlags.add(flag);
-        CodeBlock findExternal = flag.assignValue();
+        IsSet isSet = new IsSet(field);
         return fieldAccess -> {
-            IsSet isSet = new IsSet(field);
             CodeBlock assignViolations = isSet
                     .valueIsNotSet(fieldAccess)
                     .ifTrue(assignToEmpty(violationsVar))
                     .elseIf(flag.value(), externalViolations(field, violationsVar, fieldAccess))
                     .orElse(intrinsicViolations(field, violationsVar, fieldAccess));
             return CodeBlock.builder()
-                            .addStatement(findExternal)
                             .addStatement("$T $N", listOfViolations, violationsVar.toString())
                             .addStatement(assignViolations)
                             .build();

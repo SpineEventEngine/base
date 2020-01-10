@@ -21,19 +21,16 @@
 package io.spine.tools.validate;
 
 import com.google.common.base.Objects;
-import com.google.protobuf.Descriptors;
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.validate.code.BooleanExpression;
 import io.spine.tools.validate.code.Expression;
 import io.spine.validate.ExternalConstraints;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.validate.code.BooleanExpression.isNull;
-import static io.spine.tools.validate.code.Expression.formatted;
+import static java.lang.String.format;
+import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.STATIC;
 
@@ -47,12 +44,12 @@ import static javax.lang.model.element.Modifier.STATIC;
 final class ExternalConstraintFlag {
 
     private final FieldDeclaration declaration;
-    private final Expression<@Nullable Boolean> field;
+    private final BooleanExpression field;
 
     ExternalConstraintFlag(FieldDeclaration field) {
         this.declaration = checkNotNull(field);
-        this.field = formatted("is%sValidatedExternally", field.name()
-                                                               .toCamelCase());
+        String name = format("is%sValidatedExternally", field.name().toCamelCase());
+        this.field = BooleanExpression.fromCode(name);
     }
 
     /**
@@ -64,17 +61,13 @@ final class ExternalConstraintFlag {
      * @return an expression of the primitive value of the flag
      */
     BooleanExpression value() {
-        return BooleanExpression.fromCode("$L.booleanValue()", field);
+        return field;
     }
 
     /**
-     * Generates code which assigns a value to the field by searching for the external constraints
-     * in the {@linkplain ExternalConstraints global registry}.
-     *
-     * @return assignment code
-     * @see ExternalConstraints#definedFor(Descriptors.Descriptor, String)
+     * Obtains this flag as a {@link ClassMember}.
      */
-    CodeBlock assignValue() {
+    ClassMember asClassMember() {
         ClassName containingTypeName = ClassName.bestGuess(declaration.declaringType()
                                                                       .javaClassName()
                                                                       .toString());
@@ -84,17 +77,9 @@ final class ExternalConstraintFlag {
                 containingTypeName,
                 declaration.name()
         );
-        CodeBlock assignment = CodeBlock.of("$L = $L;", field, externallyValidated);
-        return isNull(field).ifTrue(assignment)
-                            .toCode();
-    }
-
-    /**
-     * Obtains this flag as a {@link ClassMember}.
-     */
-    ClassMember asClassMember() {
         FieldSpec spec = FieldSpec
-                .builder(Boolean.class, field.toString(), PRIVATE, STATIC)
+                .builder(Boolean.TYPE, field.toString(), PRIVATE, FINAL, STATIC)
+                .initializer(externallyValidated.toCode())
                 .build();
         return new Field(spec);
     }

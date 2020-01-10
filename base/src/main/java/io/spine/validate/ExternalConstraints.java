@@ -97,9 +97,12 @@ public final class ExternalConstraints implements Serializable {
      *         {@code false} otherwise
      */
     public static boolean definedFor(Descriptor containerType, String fieldName) {
-        return all()
-                .stream()
-                .anyMatch(constraint -> constraint.hasTarget(containerType, fieldName));
+        for (ExternalMessageConstraint constraint : all()) {
+            if (constraint.hasTarget(containerType, fieldName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
