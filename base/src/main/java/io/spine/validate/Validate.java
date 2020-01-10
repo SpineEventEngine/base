@@ -319,7 +319,7 @@ public final class Validate {
     public static List<ConstraintViolation>
     validateAtRuntime(Message message, FieldContext context) {
         Optional<ValidationError> error =
-                Constraints.of(MessageType.of(message))
+                Constraints.of(MessageType.of(message), context)
                            .runThrough(new MessageValidator(message, context));
         List<ConstraintViolation> violations =
                 error.map(ValidationError::getConstraintViolationList)
