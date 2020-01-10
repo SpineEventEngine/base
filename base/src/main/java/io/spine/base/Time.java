@@ -24,6 +24,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Timestamp;
 import io.spine.annotation.Internal;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.time.Instant;
 import java.time.ZoneId;
 
@@ -34,9 +35,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class Time {
 
-    private static final ThreadLocal<Provider> timeProvider = ThreadLocal.withInitial(
-            () -> SystemTimeProvider.INSTANCE
-    );
+    private static Provider timeProvider = SystemTimeProvider.INSTANCE;
 
     /** Prevents instantiation of this utility class. */
     private Time() {
@@ -48,17 +47,23 @@ public final class Time {
      * @return current time
      * @see #setProvider(Provider)
      */
-    public static Timestamp currentTime() {
-        Timestamp result = timeProvider.get()
-                                       .currentTime();
+    public static synchronized Timestamp currentTime() {
+        Timestamp result = timeProvider.currentTime();
         return result;
     }
 
     /**
      * Obtains system time.
      *
-     * <p>Unlike {@link #currentTime()}, this method <strong>always</strong> uses
-     * system time millis.
+     * <p>The values returned are guaranteed to be different for the consecutive calls in scope
+     * of a single JVM. This is achieved by incrementing the default system time millis
+     * by the emulated nanosecond value.
+     *
+     * <p>The nanoseconds are computed in a thread-safe incremental way starting at zero
+     * and ending by {@code 999 999}, leaving the millisecond value intact.
+     *
+     * <p>Unlike {@link #currentTime()}, this method <strong>always</strong> relies on the system
+     * milliseconds.
      *
      * @return current system time
      */
@@ -71,9 +76,8 @@ public final class Time {
      *
      * @return the {@link ZoneId} of the current time zone
      */
-    public static ZoneId currentTimeZone() {
-        return timeProvider.get()
-                           .currentZone();
+    public static synchronized ZoneId currentTimeZone() {
+        return timeProvider.currentZone();
     }
 
     /**
@@ -87,15 +91,18 @@ public final class Time {
      */
     @Internal
     @VisibleForTesting
-    public static void setProvider(Provider provider) {
-        timeProvider.set(checkNotNull(provider));
+    public static synchronized void setProvider(Provider provider) {
+        timeProvider = checkNotNull(provider);
     }
 
     /**
-     * Sets the default current time provider that obtains current time from system millis.
+     * Sets the default current time provider that obtains current time based on the system
+     * millis and the emulated nanosecond value.
+     *
+     * @see #systemTime() for more details
      */
-    public static void resetProvider() {
-        timeProvider.set(SystemTimeProvider.INSTANCE);
+    public static synchronized void resetProvider() {
+        timeProvider = SystemTimeProvider.INSTANCE;
     }
 
     /**
@@ -115,7 +122,8 @@ public final class Time {
         /**
          * Obtains the current time zone ID.
          *
-         * @implSpec The default implementation uses the {@link ZoneId#systemDefault()} zone.
+         * @implSpec The default implementation uses the {@link ZoneId#systemDefault()}
+         *         zone.
          */
         default ZoneId currentZone() {
             return ZoneId.systemDefault();
@@ -123,7 +131,10 @@ public final class Time {
     }
 
     /**
-     * Default implementation of current time provider based on {@link Instant#now()}.
+     * Default implementation of current time provider based on {@link Instant#now()} and
+     * the emulated nanosecond value.
+     *
+     * @see IncrementalNanos for more details on the nanosecond emulation
      */
     @VisibleForTesting
     static class SystemTimeProvider implements Provider {
@@ -138,11 +149,50 @@ public final class Time {
         @Override
         public Timestamp currentTime() {
             Instant now = Instant.now();
+            int nanosOnly = IncrementalNanos.value();
             Timestamp result = Timestamp.newBuilder()
                                         .setSeconds(now.getEpochSecond())
-                                        .setNanos(now.getNano())
+                                        .setNanos(now.getNano() + nanosOnly)
                                         .build();
             return result;
+        }
+    }
+
+    /**
+     * Provides an incremental value of nanoseconds for the local JVM.
+     *
+     * <p>In most cases, the JVM and underlying OS provides the millisecond-level precision at best.
+     * Therefore, the messages produced in such a virtual machine are often stamped
+     * with the same time value. However, most of the message-ordering routines require
+     * the distinct time values for proper work.
+     *
+     * <p>This class is designed to emulate the nanoseconds and provide incremental values
+     * for the consecutive calls.
+     *
+     * <p>The returned nanosecond value starts at {@code 0} and never exceeds {@code 999 999}.
+     * It is designed to keep the millisecond value provided by a typical-JVM system clock intact.
+     * Once the upper bound of the nanos is reached , the nanosecond value is reset
+     * back to {@code 0}.
+     */
+    @ThreadSafe
+    static final class IncrementalNanos {
+
+        private static final int MAX_VALUE = 999_999;
+        private static final IncrementalNanos instance = new IncrementalNanos();
+
+        private int counter;
+
+        private synchronized int getNextValue() {
+            counter++;
+            counter = counter % MAX_VALUE;
+            return counter;
+        }
+
+        /**
+         * Obtains the next nanosecond value.
+         */
+        static int value() {
+            return instance.getNextValue();
         }
     }
 }
