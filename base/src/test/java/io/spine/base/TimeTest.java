@@ -90,6 +90,7 @@ class TimeTest {
         @Test
         @DisplayName("which emulates nanosecond resolution")
         void providesNanos() {
+            @SuppressWarnings("ProtoTimestampGetSecondsGetNano")
             int allNanos = systemTime().getNanos();
             int startingFromMicros = allNanos % 1_000_000;
             assertThat(startingFromMicros).isGreaterThan(0);
