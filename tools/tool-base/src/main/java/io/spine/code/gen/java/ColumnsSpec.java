@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.EntityColumn;
+import io.spine.code.java.PackageName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 import io.spine.type.MessageType;
@@ -34,21 +35,27 @@ import static io.spine.code.proto.ColumnOption.columnsOf;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
-final class ColumnSpec {
+final class ColumnsSpec implements GeneratedTypeSpec {
 
     private final MessageType messageType;
     private final ImmutableList<FieldDeclaration> columns;
 
-    private ColumnSpec(MessageType messageType) {
+    private ColumnsSpec(MessageType messageType) {
         this.messageType = messageType;
         this.columns = columnsOf(messageType);
     }
 
-    static ColumnSpec of(MessageType messageType) {
-        return new ColumnSpec(messageType);
+    static ColumnsSpec of(MessageType messageType) {
+        return new ColumnsSpec(messageType);
     }
 
-    TypeSpec asTypeSpec(Modifier... modifiers) {
+    @Override
+    public PackageName packageName() {
+        return messageType.javaPackage();
+    }
+
+    @Override
+    public TypeSpec typeSpec(Modifier... modifiers) {
         TypeSpec result = TypeSpec
                 .classBuilder("Columns")
                 .addModifiers(modifiers)

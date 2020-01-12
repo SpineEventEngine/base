@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, TeamDev. All rights reserved.
+ * Copyright 2020, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,13 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.gen;
+package io.spine.code.gen.java;
 
 import com.squareup.javapoet.TypeSpec;
-import io.spine.code.gen.Indent;
 import io.spine.code.java.PackageName;
 
-import java.nio.file.Path;
+import javax.lang.model.element.Modifier;
 
 /**
  * A JavaPoet-based spec of a generated type.
@@ -39,18 +38,6 @@ public interface GeneratedTypeSpec {
     /**
      * A JavaPoet spec of the type.
      */
-    TypeSpec typeSpec();
-
-    /**
-     * Writes the generated type to a file.
-     *
-     * @param targetDir
-     *         the root dir to write to
-     * @param indent
-     *         the indent to use
-     */
-    default void writeToFile(Path targetDir, Indent indent) {
-        TypeSpecWriter writer = new TypeSpecWriter(this, indent);
-        writer.write(targetDir);
-    }
+    // TODO:2019-12-20:dmytro.kuzmin:WIP: Consolidate singular/plural name usage after varargs.
+    TypeSpec typeSpec(Modifier... modifiers);
 }

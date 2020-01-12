@@ -27,13 +27,15 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.EntityWithColumns;
+import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.PackageName;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.tools.compiler.gen.GeneratedTypeSpec;
 import io.spine.type.MessageType;
+
+import javax.lang.model.element.Modifier;
 
 import static io.spine.code.proto.ColumnOption.columnsOf;
 import static io.spine.code.proto.ScalarType.isScalarType;
@@ -72,12 +74,12 @@ public final class EntityWithColumnsSpec implements GeneratedTypeSpec {
     }
 
     @Override
-    public TypeSpec typeSpec() {
+    public TypeSpec typeSpec(Modifier... modifiers) {
         TypeSpec.Builder builder =
                 TypeSpec.interfaceBuilder(className())
                         .addJavadoc(classJavadoc())
                         .addAnnotation(generatedBySpineModelCompiler())
-                        .addModifiers(PUBLIC)
+                        .addModifiers(modifiers)
                         .addSuperinterface(EntityWithColumns.class);
         addColumnGetters(builder);
         return builder.build();

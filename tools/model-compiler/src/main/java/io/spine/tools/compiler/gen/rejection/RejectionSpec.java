@@ -27,13 +27,15 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.ThrowableMessage;
 import io.spine.code.gen.java.FieldName;
+import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.java.PackageName;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.logging.Logging;
-import io.spine.tools.compiler.gen.GeneratedTypeSpec;
 import io.spine.tools.compiler.gen.NoArgMethod;
 import io.spine.type.RejectionType;
+
+import javax.lang.model.element.Modifier;
 
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
 import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
@@ -78,14 +80,14 @@ public final class RejectionSpec implements GeneratedTypeSpec, Logging {
     }
 
     @Override
-    public TypeSpec typeSpec() {
+    public TypeSpec typeSpec(Modifier... modifiers) {
         String className = declaration.simpleJavaClassName()
                                       .value();
         TypeSpec rejection =
                 TypeSpec.classBuilder(className)
                         .addJavadoc(classJavadoc())
                         .addAnnotation(generatedBySpineModelCompiler())
-                        .addModifiers(PUBLIC)
+                        .addModifiers(modifiers)
                         .superclass(ThrowableMessage.class)
                         .addField(serialVersionUID())
                         .addMethod(constructor())

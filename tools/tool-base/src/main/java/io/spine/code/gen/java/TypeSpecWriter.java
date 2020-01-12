@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, TeamDev. All rights reserved.
+ * Copyright 2020, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,13 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.gen;
+package io.spine.code.gen.java;
 
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.code.gen.Indent;
 import io.spine.logging.Logging;
 
+import javax.lang.model.element.Modifier;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,12 +33,12 @@ import java.nio.file.Path;
 /**
  * Writes the {@link GeneratedTypeSpec} to a file.
  */
-final class TypeSpecWriter implements Logging {
+public final class TypeSpecWriter implements Logging {
 
     private final GeneratedTypeSpec spec;
     private final Indent indent;
 
-    TypeSpecWriter(GeneratedTypeSpec spec, Indent indent) {
+    public TypeSpecWriter(GeneratedTypeSpec spec, Indent indent) {
         this.spec = spec;
         this.indent = indent;
     }
@@ -48,12 +49,12 @@ final class TypeSpecWriter implements Logging {
      * @param outputDir
      *         the root dir to write to
      */
-    void write(Path outputDir) {
+    public void write(Path outputDir, Modifier... modifiers) {
         try {
             _debug().log("Creating the output directory `%s`.", outputDir);
             Files.createDirectories(outputDir);
 
-            TypeSpec typeSpec = this.spec.typeSpec();
+            TypeSpec typeSpec = this.spec.typeSpec(modifiers);
             String className = typeSpec.name;
             _debug().log("Writing `%s.java`.", className);
 

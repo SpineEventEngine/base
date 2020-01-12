@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.concurrent.LazyInit;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import io.spine.code.java.PackageName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
@@ -33,7 +34,7 @@ import java.util.List;
 
 import static com.google.common.collect.Lists.newLinkedList;
 
-final class FieldSpec {
+final class FieldsSpec implements GeneratedTypeSpec {
 
     private final MessageType messageType;
     private final ImmutableList<FieldDeclaration> fields;
@@ -41,17 +42,22 @@ final class FieldSpec {
     @LazyInit
     private @MonotonicNonNull List<MessageType> nestedFieldTypes;
 
-    private FieldSpec(MessageType messageType) {
+    private FieldsSpec(MessageType messageType) {
         this.messageType = messageType;
         this.fields = messageType.fields();
     }
 
-    static FieldSpec of(MessageType messageType) {
-        return new FieldSpec(messageType);
+    static FieldsSpec of(MessageType messageType) {
+        return new FieldsSpec(messageType);
     }
 
-    // TODO:2019-12-20:dmytro.kuzmin:WIP: Consolidate singular/plural name usage after varargs.
-    TypeSpec asTypeSpec(Modifier... modifiers) {
+    @Override
+    public PackageName packageName() {
+        return messageType.javaPackage();
+    }
+
+    @Override
+    public TypeSpec typeSpec(Modifier... modifiers) {
         TypeSpec result = TypeSpec
                 .classBuilder("Fields")
                 .addModifiers(modifiers)

@@ -37,9 +37,9 @@ public final class ColumnFactory implements NestedClassFactory {
 
     @Override
     public List<GeneratedNestedClass> createFor(MessageType messageType) {
-        String generatedCode = ColumnSpec.of(messageType)
-                                         .asTypeSpec(PUBLIC, STATIC, FINAL)
-                                         .toString();
+        String generatedCode = ColumnsSpec.of(messageType)
+                                          .typeSpec(PUBLIC, STATIC, FINAL)
+                                          .toString();
         GeneratedNestedClass result = new GeneratedNestedClass(generatedCode);
         return ImmutableList.of(result);
     }
