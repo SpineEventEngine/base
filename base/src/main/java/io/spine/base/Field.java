@@ -162,6 +162,14 @@ public final class Field extends ValueHolder<FieldPath> {
         return value();
     }
 
+    public Field nested(String fieldName) {
+        checkName(fieldName);
+        FieldPath newPath = path().toBuilder()
+                                  .addFieldName(fieldName)
+                                  .build();
+        return create(newPath);
+    }
+
     /**
      * Obtains the value of the field in the passed message.
      *

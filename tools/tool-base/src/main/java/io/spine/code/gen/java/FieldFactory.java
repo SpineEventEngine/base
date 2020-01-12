@@ -27,7 +27,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
-import io.spine.base.FieldPath;
+import io.spine.base.Field;
 import io.spine.base.SimpleField;
 import io.spine.base.SubscribableField;
 import io.spine.code.java.ClassName;
@@ -110,12 +110,13 @@ public final class FieldFactory implements NestedClassFactory, Logging {
             TypeName enclosingClassName =
                     JavaPoetName.of(enclosingType.javaClassName().toSimple()).value();
             methodSpec.addStatement(
-                    "return new $T($T.newBuilder().addFieldName(\"$L\").build(), $T.class)",
-                    returnType.value(), FieldPath.class, fieldName.value(), enclosingClassName
+                    // return new SimpleField<>(FieldPath.newBuilder().addFieldName("field_name").build(), EnclosingMessage.class);
+                    "return new $T<>($T.named(\"$L\"), $T.class)",
+                    SimpleField.class, Field.class, fieldName.value(), enclosingClassName
             );
         } else {
-            methodSpec.addStatement("return new $T($T.newBuilder().addFieldName(\"$L\").build())",
-                                    returnType.value(), FieldPath.class, fieldName.value());
+            methodSpec.addStatement("return new $T($T.named(\"$L\"))",
+                                    returnType.value(), Field.class, fieldName.value());
         }
         return methodSpec.build();
     }
@@ -163,11 +164,11 @@ public final class FieldFactory implements NestedClassFactory, Logging {
                                                                               .toSimple()))
                                         .addModifiers(PUBLIC, STATIC, FINAL)
                                         .superclass(superclass);
-        String argName = "fieldPath";
+        String argName = "field";
         MethodSpec ctor = MethodSpec
                 .constructorBuilder()
                 .addModifiers(PRIVATE)
-                .addParameter(FieldPath.class, argName)
+                .addParameter(Field.class, argName)
                 // TODO:2019-12-20:dmytro.kuzmin:WIP: Check if we can rid of `JavaPoetName.of()`.
                 .addStatement("super($L, $T.class)", argName, enclosingClassName)
                 .build();
@@ -182,21 +183,12 @@ public final class FieldFactory implements NestedClassFactory, Logging {
                     .returns(returnType.value());
             // TODO:2019-12-20:dmytro.kuzmin:WIP: Implement more robust check.
             if (returnType.value().toString().contains("SimpleField")) {
-                methodSpec.addStatement("return new $T(" +
-                                                "getFieldPath()" +
-                                                ".toBuilder()" +
-                                                ".addFieldName(\"$L\")" +
-                                                ".build(), $T.class)",
+                methodSpec.addStatement("return new $T(getField().nested(\"$L\"), $T.class)",
                                         returnType.value(), field.name().value(),
                                         enclosingClassName);
             } else {
-                methodSpec.addStatement("return new $T(" +
-                                                "getFieldPath()" +
-                                                ".toBuilder()" +
-                                                ".addFieldName(\"$L\")" +
-                                                ".build())",
-                                        returnType.value(), field.name()
-                                                                 .value());
+                methodSpec.addStatement("return new $T(getField().nested(\"$L\"))",
+                                        returnType.value(), field.name().value());
             }
             spec.addMethod(methodSpec.build());
         }

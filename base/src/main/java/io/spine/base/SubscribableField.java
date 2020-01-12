@@ -24,19 +24,22 @@ import com.google.protobuf.Message;
 
 public abstract class SubscribableField<M extends Message> {
 
-    private final FieldPath fieldPath;
+    private final Field field;
     private final Class<M> enclosingMessage;
 
-    protected SubscribableField(FieldPath fieldPath, Class<M> message) {
-        this.fieldPath = fieldPath;
+    protected SubscribableField(Field field, Class<M> message) {
+        this.field = field;
         this.enclosingMessage = message;
     }
 
     /**
-     * @apiNote Named with "get-" prefix on purpose, to avoid clashing with any field names.
+     * Returns the enclosed field.
+     *
+     * @apiNote Named with otherwise redundant "get-" prefix on purpose, to avoid clashing with any
+     *        field names.
      */
-    public FieldPath getFieldPath() {
-        return fieldPath;
+    public Field getField() {
+        return field;
     }
 
     public Class<M> enclosingMessage() {

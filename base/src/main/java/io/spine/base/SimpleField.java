@@ -22,9 +22,10 @@ package io.spine.base;
 
 import com.google.protobuf.Message;
 
+// TODO:2019-12-20:dmytro.kuzmin:WIP: Get rid of this class and leave just `SubscribableField`.
 public final class SimpleField<M extends Message> extends SubscribableField<M> {
 
-    public SimpleField(FieldPath value, Class<M> message) {
+    public SimpleField(Field value, Class<M> message) {
         super(value, message);
     }
 }
