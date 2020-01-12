@@ -46,14 +46,18 @@ final class ColumnSpec implements GeneratedMethodSpec {
                 .addModifiers(modifiers)
                 .returns(columnType().value())
                 .addStatement("return new $T<>(\"$L\", $T.class)",
-                              EntityColumn.class, name, messageName.value())
+                              EntityColumn.class, name, enclosingMessageName().value())
                 .build();
         return result;
     }
 
     private JavaPoetName columnType() {
-        JavaPoetName enclosingMessageName = JavaPoetName.of(messageName);
-        JavaPoetName result = JavaPoetName.parameterized(EntityColumn.class, enclosingMessageName);
+        JavaPoetName result =
+                JavaPoetName.parameterized(EntityColumn.class, enclosingMessageName());
         return result;
+    }
+
+    private JavaPoetName enclosingMessageName() {
+        return JavaPoetName.of(messageName);
     }
 }
