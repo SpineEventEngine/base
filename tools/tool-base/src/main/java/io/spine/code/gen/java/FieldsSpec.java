@@ -32,7 +32,10 @@ import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import javax.lang.model.element.Modifier;
 import java.util.List;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Lists.newLinkedList;
+import static javax.lang.model.element.Modifier.PUBLIC;
+import static javax.lang.model.element.Modifier.STATIC;
 
 final class FieldsSpec implements GeneratedTypeSpec {
 
@@ -68,9 +71,13 @@ final class FieldsSpec implements GeneratedTypeSpec {
         return result;
     }
 
-    private Iterable<MethodSpec> fieldMethods() {
-        ImmutableList.Builder<MethodSpec> result = ImmutableList.builder();
-        return result.build();
+    private ImmutableList<MethodSpec> fieldMethods() {
+        ImmutableList<MethodSpec> result =
+                fields.stream()
+                      .map(this::fieldSpec)
+                      .map(spec -> spec.methodSpec(PUBLIC, STATIC))
+                      .collect(toImmutableList());
+        return result;
     }
 
     private Iterable<TypeSpec> nestedFields() {
@@ -82,6 +89,10 @@ final class FieldsSpec implements GeneratedTypeSpec {
             nestedFieldTypes = collectNestedFieldTypes();
         }
         return nestedFieldTypes;
+    }
+
+    private FieldSpec fieldSpec(FieldDeclaration field) {
+        return new FieldSpec(field, messageType.simpleJavaClassName());
     }
 
     private List<MessageType> collectNestedFieldTypes() {
