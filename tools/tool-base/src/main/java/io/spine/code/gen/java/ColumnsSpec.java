@@ -23,14 +23,13 @@ package io.spine.code.gen.java;
 import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
-import io.spine.base.EntityColumn;
 import io.spine.code.java.PackageName;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.code.proto.FieldName;
 import io.spine.type.MessageType;
 
 import javax.lang.model.element.Modifier;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.code.proto.ColumnOption.columnsOf;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
@@ -65,31 +64,16 @@ final class ColumnsSpec implements GeneratedTypeSpec {
         return result;
     }
 
-    private Iterable<MethodSpec> columnMethods() {
-        ImmutableList.Builder<MethodSpec> builder = ImmutableList.builder();
-        columns.forEach(column -> builder.add(columnMethodSpec(column)));
-        return builder.build();
-    }
-
-    private MethodSpec columnMethodSpec(FieldDeclaration column) {
-        FieldName name = column.name();
-        MethodSpec result = MethodSpec
-                .methodBuilder(name.javaCase())
-                .addModifiers(PUBLIC, STATIC)
-                .returns(columnType().value())
-                .addStatement("return new $T<>(\"$L\", $T.class)",
-                              EntityColumn.class, name, simpleMessageName().value())
-                .build();
+    private ImmutableList<MethodSpec> columnMethods() {
+        ImmutableList<MethodSpec> result =
+                columns.stream()
+                       .map(this::columnSpec)
+                       .map(columnSpec -> columnSpec.methodSpec(PUBLIC, STATIC))
+                       .collect(toImmutableList());
         return result;
     }
 
-    private JavaPoetName columnType() {
-        JavaPoetName result = JavaPoetName.parameterized(EntityColumn.class, simpleMessageName());
-        return result;
-    }
-
-    private JavaPoetName simpleMessageName() {
-        JavaPoetName result = JavaPoetName.of(messageType.simpleJavaClassName());
-        return result;
+    private ColumnSpec columnSpec(FieldDeclaration column) {
+        return new ColumnSpec(column, messageType.simpleJavaClassName());
     }
 }
