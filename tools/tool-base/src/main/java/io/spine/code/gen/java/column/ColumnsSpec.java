@@ -23,8 +23,8 @@ package io.spine.code.gen.java.column;
 import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import io.spine.code.gen.java.EmptyPrivateCtor;
 import io.spine.code.gen.java.GeneratedTypeSpec;
-import io.spine.code.gen.java.PrivateCtor;
 import io.spine.code.java.PackageName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;
@@ -62,7 +62,7 @@ public final class ColumnsSpec implements GeneratedTypeSpec {
         TypeSpec result = TypeSpec
                 .classBuilder("Columns")
                 .addModifiers(modifiers)
-                .addMethod(PrivateCtor.spec())
+                .addMethod(EmptyPrivateCtor.spec())
                 .addMethods(columnAccessors())
                 .build();
         return result;

@@ -24,11 +24,11 @@ import com.squareup.javapoet.MethodSpec;
 
 import static javax.lang.model.element.Modifier.PRIVATE;
 
-public final class PrivateCtor {
+public final class EmptyPrivateCtor {
 
     private static final MethodSpec PRIVATE_CTOR = privateCtorSpec();
 
-    private PrivateCtor() {
+    private EmptyPrivateCtor() {
     }
 
     public static MethodSpec spec() {
