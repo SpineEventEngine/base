@@ -33,6 +33,10 @@ public final class EntityColumn<S extends EntityState> extends StringTypeValue {
         this.enclosingMessage = message;
     }
 
+    public String name() {
+        return value();
+    }
+
     public Class<S> enclosingMessage() {
         return enclosingMessage;
     }

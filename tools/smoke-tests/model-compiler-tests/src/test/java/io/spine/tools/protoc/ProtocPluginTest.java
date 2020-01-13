@@ -23,9 +23,11 @@ package io.spine.tools.protoc;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Message;
 import io.spine.base.CommandMessage;
+import io.spine.base.EntityColumn;
 import io.spine.base.EventMessage;
 import io.spine.base.Identifier;
 import io.spine.base.RejectionMessage;
+import io.spine.base.SimpleField;
 import io.spine.base.UuidValue;
 import io.spine.test.protoc.EducationalInstitution;
 import io.spine.test.protoc.Kindergarten;
@@ -33,6 +35,7 @@ import io.spine.test.protoc.Outer;
 import io.spine.test.protoc.School;
 import io.spine.test.protoc.University;
 import io.spine.test.protoc.Wrapped;
+import io.spine.test.tools.protoc.Movie;
 import io.spine.test.tools.protoc.WeatherForecast;
 import io.spine.tools.protoc.test.PIUserEvent;
 import io.spine.tools.protoc.test.UserInfo;
@@ -44,11 +47,7 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.Method;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 @DisplayName("ProtocPlugin should")
@@ -236,8 +235,8 @@ final class ProtocPluginTest {
         }
     }
 
-    @DisplayName("generate a custom method for a message using")
     @Nested
+    @DisplayName("generate a custom method for a message using")
     final class GenerateMethods {
 
         @Test
@@ -265,23 +264,39 @@ final class ProtocPluginTest {
         }
     }
 
-    @DisplayName("generate methods for MFGTMessage using")
     @Nested
+    @DisplayName("generate methods for MFGTMessage using")
     final class MultiFactoryGeneration {
 
-        @DisplayName("UuidMethodFactory")
         @Test
+        @DisplayName("UuidMethodFactory")
         void uuidMethodFactory() {
             assertNotEquals(MFGTMessage.generate(), MFGTMessage.generate());
             String uuid = Identifier.newUuid();
             assertEquals(MFGTMessage.of(uuid), MFGTMessage.of(uuid));
         }
 
-        @DisplayName("TestMethodFactory")
         @Test
+        @DisplayName("TestMethodFactory")
         void testMethodFactory() {
             assertEquals(new MessageType(MFGTMessage.getDescriptor()), MFGTMessage.ownType());
         }
+    }
+
+    @Test
+    @DisplayName("generate columns for queryable entity type")
+    void generateColumns() {
+        EntityColumn<Movie> column = Movie.Columns.title();
+        String expectedName = "title";
+        assertEquals(expectedName, column.name());
+    }
+
+    @Test
+    @DisplayName("generate fields for subscribable message type")
+    void generateFields() {
+        SimpleField<MovieTitleChanged> field = MovieTitleChanged.Fields.oldTitle().value();
+        String expectedFieldPath = "old_title.value";
+        assertEquals(expectedFieldPath, field.getField().toString());
     }
 
     @CanIgnoreReturnValue
