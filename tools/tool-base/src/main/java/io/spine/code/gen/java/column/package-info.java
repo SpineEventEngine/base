@@ -18,30 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.gen.java;
+/**
+ * This package contains the routines for generating strongly-typed columns for the queryable
+ * types.
+ */
 
-import com.google.common.collect.ImmutableList;
-import com.google.errorprone.annotations.Immutable;
-import io.spine.code.gen.java.field.FieldsSpec;
-import io.spine.tools.protoc.nested.GeneratedNestedClass;
-import io.spine.tools.protoc.nested.NestedClassFactory;
-import io.spine.type.MessageType;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.code.gen.java.column;
 
-import java.util.List;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-import static javax.lang.model.element.Modifier.FINAL;
-import static javax.lang.model.element.Modifier.PUBLIC;
-import static javax.lang.model.element.Modifier.STATIC;
-
-@Immutable
-public final class FieldFactory implements NestedClassFactory {
-
-    @Override
-    public List<GeneratedNestedClass> createFor(MessageType messageType) {
-        String generatedCode = FieldsSpec.of(messageType)
-                                         .typeSpec(PUBLIC, STATIC, FINAL)
-                                         .toString();
-        GeneratedNestedClass result = new GeneratedNestedClass(generatedCode);
-        return ImmutableList.of(result);
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

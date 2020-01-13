@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.gen.java;
+package io.spine.code.gen.java.field;
 
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;

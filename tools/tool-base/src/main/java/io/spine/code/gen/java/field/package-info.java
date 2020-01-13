@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2019, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,33 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.gen.java;
+/**
+ * This package contains the routines for generating strongly-typed fields for the subscribable
+ * types.
+ */
 
-import com.squareup.javapoet.CodeBlock;
-import io.spine.base.Field;
-import io.spine.base.SimpleField;
-import io.spine.code.java.SimpleClassName;
-import io.spine.code.proto.FieldDeclaration;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.code.gen.java.field;
 
-final class TopLevelFieldSpec extends FieldSpec {
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    TopLevelFieldSpec(FieldDeclaration field, SimpleClassName messageName) {
-        super(field, messageName);
-    }
-
-    @Override
-    CodeBlock returnNestedFieldsContainer() {
-        return CodeBlock.of(
-                "return new $T($T.named(\"$L\"))",
-                returnType().value(), Field.class, fieldName().value()
-        );
-    }
-
-    @Override
-    CodeBlock returnSimpleField() {
-        return CodeBlock.of(
-                "return new $T<>($T.named(\"$L\"), $T.class)",
-                SimpleField.class, Field.class, fieldName().value(), enclosingMessageName().value()
-        );
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

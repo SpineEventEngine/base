@@ -18,40 +18,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.gen.java;
+package io.spine.code.gen.java.column;
 
 import com.google.common.collect.ImmutableList;
-import com.google.errorprone.annotations.concurrent.LazyInit;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import io.spine.code.gen.java.GeneratedTypeSpec;
+import io.spine.code.gen.java.PrivateCtor;
 import io.spine.code.java.PackageName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import javax.lang.model.element.Modifier;
-import java.util.List;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static javax.lang.model.element.Modifier.FINAL;
+import static io.spine.code.proto.ColumnOption.columnsOf;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
-final class FieldsSpec implements GeneratedTypeSpec {
+public final class ColumnsSpec implements GeneratedTypeSpec {
 
     private final MessageType messageType;
-    private final ImmutableList<FieldDeclaration> fields;
+    private final ImmutableList<FieldDeclaration> columns;
 
-    @LazyInit
-    private @MonotonicNonNull List<MessageType> nestedFieldTypes;
-
-    private FieldsSpec(MessageType messageType) {
+    private ColumnsSpec(MessageType messageType) {
         this.messageType = messageType;
-        this.fields = messageType.fields();
+        this.columns = columnsOf(messageType);
     }
 
-    static FieldsSpec of(MessageType messageType) {
-        return new FieldsSpec(messageType);
+    public static ColumnsSpec of(MessageType messageType) {
+        checkNotNull(messageType);
+        return new ColumnsSpec(messageType);
     }
 
     @Override
@@ -59,46 +57,27 @@ final class FieldsSpec implements GeneratedTypeSpec {
         return messageType.javaPackage();
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     @Override
     public TypeSpec typeSpec(Modifier... modifiers) {
         TypeSpec result = TypeSpec
-                .classBuilder("Fields")
+                .classBuilder("Columns")
                 .addModifiers(modifiers)
                 .addMethod(PrivateCtor.spec())
-                .addMethods(fieldAccessors())
-                .addTypes(nestedFieldContainers())
+                .addMethods(columnAccessors())
                 .build();
         return result;
     }
 
-    private ImmutableList<MethodSpec> fieldAccessors() {
+    private ImmutableList<MethodSpec> columnAccessors() {
         ImmutableList<MethodSpec> result =
-                fields.stream()
-                      .map(this::topLevelFieldSpec)
-                      .map(spec -> spec.methodSpec(PUBLIC, STATIC))
-                      .collect(toImmutableList());
+                columns.stream()
+                       .map(this::columnSpec)
+                       .map(columnSpec -> columnSpec.methodSpec(PUBLIC, STATIC))
+                       .collect(toImmutableList());
         return result;
     }
 
-    private ImmutableList<TypeSpec> nestedFieldContainers() {
-        ImmutableList<TypeSpec> result =
-                nestedFieldTypes().stream()
-                                  .map(type -> new NestedFieldContainer(type, messageType))
-                                  .map(type -> type.typeSpec(PUBLIC, STATIC, FINAL))
-                                  .collect(toImmutableList());
-        return result;
-    }
-
-    private List<MessageType> nestedFieldTypes() {
-        if (nestedFieldTypes == null) {
-            NestedFieldScanner scanner = new NestedFieldScanner(messageType);
-            nestedFieldTypes = scanner.scan();
-        }
-        return nestedFieldTypes;
-    }
-
-    private FieldSpec topLevelFieldSpec(FieldDeclaration field) {
-        return new TopLevelFieldSpec(field, messageType.simpleJavaClassName());
+    private ColumnSpec columnSpec(FieldDeclaration column) {
+        return new ColumnSpec(column, messageType.simpleJavaClassName());
     }
 }

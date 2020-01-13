@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.gen.java;
+package io.spine.code.gen.java.field;
 
 import com.squareup.javapoet.CodeBlock;
 import io.spine.code.java.SimpleClassName;

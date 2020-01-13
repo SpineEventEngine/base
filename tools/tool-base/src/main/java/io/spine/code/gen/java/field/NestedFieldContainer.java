@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.gen.java;
+package io.spine.code.gen.java.field;
 
 import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.MethodSpec;
@@ -27,6 +27,8 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.Field;
 import io.spine.base.SubscribableField;
+import io.spine.code.gen.java.GeneratedTypeSpec;
+import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.type.MessageType;
