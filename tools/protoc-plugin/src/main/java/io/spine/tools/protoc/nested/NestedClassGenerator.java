@@ -24,9 +24,9 @@ import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.AddNestedClasses;
 import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CodeGenerationTasks;
+import io.spine.tools.protoc.CodeGenerator;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.ExternalClassLoader;
-import io.spine.tools.protoc.SpineProtoGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
@@ -36,7 +36,7 @@ import java.util.Collection;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.protobuf.Messages.isNotDefault;
 
-public final class NestedClassGenerator extends SpineProtoGenerator {
+public final class NestedClassGenerator extends CodeGenerator {
 
     private final CodeGenerationTasks codeGenerationTasks;
 

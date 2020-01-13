@@ -24,9 +24,6 @@ message SpineProtocConfig {
     // Methods generation tasks.
     AddMethods add_methods = 2;
 
-    // Nested classes generation tasks.
-    AddNestedClasses add_nested_classes = 4;
-
     // Determines if the generation of `ValidatingBuilder` should be skipped.
     //
     // If set to `true`, message builder classes will NOT implement
@@ -41,6 +38,9 @@ message SpineProtocConfig {
     // metadata over all the combinations of fields and options at the program runtime.
     //
     bool generate_validation = 4;
+
+    // Nested classes generation tasks.
+    AddNestedClasses add_nested_classes = 5;
 }
 
 // Interfaces generation configuration.

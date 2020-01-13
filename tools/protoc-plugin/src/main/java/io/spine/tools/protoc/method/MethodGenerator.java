@@ -27,6 +27,7 @@ import io.spine.tools.protoc.CodeGenerationTasks;
 import io.spine.tools.protoc.CodeGenerator;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.ConfigByPattern;
+import io.spine.tools.protoc.ExternalClassLoader;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
@@ -58,13 +59,14 @@ public final class MethodGenerator extends CodeGenerator {
     public static MethodGenerator instance(SpineProtocConfig spineProtocConfig) {
         checkNotNull(spineProtocConfig);
         AddMethods config = spineProtocConfig.getAddMethods();
-        MethodFactories methodFactories = new MethodFactories(config.getFactoryClasspath());
+        ExternalClassLoader<MethodFactory> classLoader =
+                new ExternalClassLoader<>(config.getFactoryClasspath(), MethodFactory.class);
         ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();
         if (isNotDefault(config.getUuidFactory())) {
-            tasks.add(new GenerateUuidMethods(methodFactories, config.getUuidFactory()));
+            tasks.add(new GenerateUuidMethods(classLoader, config.getUuidFactory()));
         }
         for (ConfigByPattern byPattern : config.getFactoryByPatternList()) {
-            tasks.add(new GenerateMethods(methodFactories, byPattern));
+            tasks.add(new GenerateMethods(classLoader, byPattern));
         }
         return new MethodGenerator(tasks.build());
     }
