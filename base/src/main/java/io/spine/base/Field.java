@@ -157,17 +157,17 @@ public final class Field extends ValueHolder<FieldPath> {
         return result;
     }
 
-    /** Obtains the path of the field. */
-    public FieldPath path() {
-        return value();
-    }
-
     public Field nested(String fieldName) {
         checkName(fieldName);
         FieldPath newPath = path().toBuilder()
                                   .addFieldName(fieldName)
                                   .build();
         return create(newPath);
+    }
+
+    /** Obtains the path of the field. */
+    public FieldPath path() {
+        return value();
     }
 
     /**

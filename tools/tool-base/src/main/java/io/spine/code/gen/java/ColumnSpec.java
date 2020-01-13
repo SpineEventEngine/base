@@ -20,6 +20,7 @@
 
 package io.spine.code.gen.java;
 
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import io.spine.base.EntityColumn;
 import io.spine.code.java.SimpleClassName;
@@ -40,13 +41,12 @@ final class ColumnSpec implements GeneratedMethodSpec {
 
     @Override
     public MethodSpec methodSpec(Modifier... modifiers) {
-        FieldName name = column.name();
+        FieldName name = columnName();
         MethodSpec result = MethodSpec
                 .methodBuilder(name.javaCase())
                 .addModifiers(modifiers)
                 .returns(columnType().value())
-                .addStatement("return new $T<>(\"$L\", $T.class)",
-                              EntityColumn.class, name, enclosingMessageName().value())
+                .addStatement(methodBody())
                 .build();
         return result;
     }
@@ -57,7 +57,18 @@ final class ColumnSpec implements GeneratedMethodSpec {
         return result;
     }
 
+    private CodeBlock methodBody() {
+        return CodeBlock.of(
+                "return new $T<>(\"$L\", $T.class)",
+                EntityColumn.class, columnName(), enclosingMessageName().value()
+        );
+    }
+
     private JavaPoetName enclosingMessageName() {
         return JavaPoetName.of(messageName);
+    }
+
+    private FieldName columnName() {
+        return column.name();
     }
 }

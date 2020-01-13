@@ -74,7 +74,7 @@ final class FieldsSpec implements GeneratedTypeSpec {
     private ImmutableList<MethodSpec> fieldMethods() {
         ImmutableList<MethodSpec> result =
                 fields.stream()
-                      .map(this::fieldSpec)
+                      .map(this::topLevelFieldSpec)
                       .map(spec -> spec.methodSpec(PUBLIC, STATIC))
                       .collect(toImmutableList());
         return result;
@@ -91,8 +91,8 @@ final class FieldsSpec implements GeneratedTypeSpec {
         return nestedFieldTypes;
     }
 
-    private FieldSpec fieldSpec(FieldDeclaration field) {
-        return new FieldSpec(field, messageType.simpleJavaClassName());
+    private FieldSpec topLevelFieldSpec(FieldDeclaration field) {
+        return new TopLevelFieldSpec(field, messageType.simpleJavaClassName());
     }
 
     private List<MessageType> collectNestedFieldTypes() {

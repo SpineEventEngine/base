@@ -110,7 +110,6 @@ public final class FieldFactory implements NestedClassFactory, Logging {
             TypeName enclosingClassName =
                     JavaPoetName.of(enclosingType.javaClassName().toSimple()).value();
             methodSpec.addStatement(
-                    // return new SimpleField<>(FieldPath.newBuilder().addFieldName("field_name").build(), EnclosingMessage.class);
                     "return new $T<>($T.named(\"$L\"), $T.class)",
                     SimpleField.class, Field.class, fieldName.value(), enclosingClassName
             );

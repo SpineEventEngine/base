@@ -20,6 +20,7 @@
 
 package io.spine.code.gen.java;
 
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import io.spine.base.SimpleField;
 import io.spine.code.java.ClassName;
@@ -29,7 +30,7 @@ import io.spine.code.proto.FieldName;
 
 import javax.lang.model.element.Modifier;
 
-final class FieldSpec implements GeneratedMethodSpec {
+abstract class FieldSpec implements GeneratedMethodSpec {
 
     private final FieldDeclaration field;
     private final SimpleClassName messageName;
@@ -41,19 +42,29 @@ final class FieldSpec implements GeneratedMethodSpec {
 
     @Override
     public MethodSpec methodSpec(Modifier... modifiers) {
-        FieldName fieldName = field.name();
         MethodSpec result = MethodSpec
-                .methodBuilder(fieldName.javaCase())
+                .methodBuilder(fieldName().javaCase())
                 .addModifiers(modifiers)
                 .returns(returnType().value())
+                .addStatement(methodBody())
                 .build();
         return result;
     }
 
-    private JavaPoetName returnType() {
+    FieldName fieldName() {
+        return field.name();
+    }
+
+    JavaPoetName returnType() {
         return hasNestedFields()
                ? nestedFieldsContainer()
                : simpleField();
+    }
+
+    private CodeBlock methodBody() {
+        return hasNestedFields()
+               ? returnNestedFieldsContainer()
+               : returnSimpleField();
     }
 
     private boolean hasNestedFields() {
@@ -68,15 +79,23 @@ final class FieldSpec implements GeneratedMethodSpec {
     }
 
     private JavaPoetName simpleField() {
-        JavaPoetName enclosingMessageName = JavaPoetName.of(messageName);
+        JavaPoetName enclosingMessageName = enclosingMessageName();
         JavaPoetName type = JavaPoetName.parameterized(SimpleField.class, enclosingMessageName);
         return type;
     }
+
+    abstract CodeBlock returnNestedFieldsContainer();
+
+    abstract CodeBlock returnSimpleField();
 
     private SimpleClassName fieldReturnType() {
         String fieldTypeName = field.javaTypeName();
         SimpleClassName result = ClassName.of(fieldTypeName)
                                           .toSimple();
         return result;
+    }
+
+    JavaPoetName enclosingMessageName() {
+        return JavaPoetName.of(messageName);
     }
 }
