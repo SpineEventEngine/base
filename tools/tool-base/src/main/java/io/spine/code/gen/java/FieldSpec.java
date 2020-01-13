@@ -56,19 +56,19 @@ abstract class FieldSpec implements GeneratedMethodSpec {
     }
 
     JavaPoetName returnType() {
-        return hasNestedFields()
+        return shouldExposeNestedFields()
                ? nestedFieldsContainer()
                : simpleField();
     }
 
     private CodeBlock methodBody() {
-        return hasNestedFields()
+        return shouldExposeNestedFields()
                ? returnNestedFieldsContainer()
                : returnSimpleField();
     }
 
-    private boolean hasNestedFields() {
-        return field.isMessage() && !field.isCollection();
+    private boolean shouldExposeNestedFields() {
+        return shouldExposeNestedFields(field);
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
@@ -97,5 +97,9 @@ abstract class FieldSpec implements GeneratedMethodSpec {
 
     JavaPoetName enclosingMessageName() {
         return JavaPoetName.of(messageName);
+    }
+
+    static boolean shouldExposeNestedFields(FieldDeclaration field) {
+        return field.isMessage() && !field.isCollection();
     }
 }

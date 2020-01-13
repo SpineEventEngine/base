@@ -33,7 +33,6 @@ import javax.lang.model.element.Modifier;
 import java.util.List;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static com.google.common.collect.Lists.newLinkedList;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
@@ -93,37 +92,13 @@ final class FieldsSpec implements GeneratedTypeSpec {
 
     private List<MessageType> nestedFieldTypes() {
         if (nestedFieldTypes == null) {
-            nestedFieldTypes = collectNestedFieldTypes();
+            NestedFieldScanner scanner = new NestedFieldScanner(messageType);
+            nestedFieldTypes = scanner.scan();
         }
         return nestedFieldTypes;
     }
 
     private FieldSpec topLevelFieldSpec(FieldDeclaration field) {
         return new TopLevelFieldSpec(field, messageType.simpleJavaClassName());
-    }
-
-    private List<MessageType> collectNestedFieldTypes() {
-        List<MessageType> result = newLinkedList();
-        int index = -1;
-        while (index < result.size()) {
-            if (index == -1) {
-                addMessageFields(this.messageType, result);
-            } else {
-                MessageType messageType = result.get(index);
-                addMessageFields(messageType, result);
-            }
-            index++;
-        }
-        return result;
-    }
-
-    private static void addMessageFields(MessageType messageType, List<MessageType> result) {
-        messageType.fields()
-                   .stream()
-                   .filter(FieldDeclaration::isMessage)
-                   .filter(field -> !field.isCollection())
-                   .map(FieldDeclaration::messageType)
-                   .filter(type -> !result.contains(type))
-                   .forEach(result::add);
     }
 }
