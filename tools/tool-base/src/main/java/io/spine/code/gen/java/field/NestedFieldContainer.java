@@ -62,7 +62,7 @@ final class NestedFieldContainer implements GeneratedTypeSpec {
                 .addModifiers(modifiers)
                 .superclass(superclass())
                 .addMethod(constructor())
-                .addMethods(fieldAccessors())
+                .addMethods(fields())
                 .build();
         return result;
     }
@@ -93,7 +93,7 @@ final class NestedFieldContainer implements GeneratedTypeSpec {
         return result;
     }
 
-    private Iterable<MethodSpec> fieldAccessors() {
+    private Iterable<MethodSpec> fields() {
         ImmutableList<MethodSpec> result =
                 messageType.fields()
                            .stream()

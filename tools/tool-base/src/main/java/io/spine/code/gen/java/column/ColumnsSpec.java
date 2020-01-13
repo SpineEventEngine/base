@@ -63,12 +63,12 @@ public final class ColumnsSpec implements GeneratedTypeSpec {
                 .classBuilder("Columns")
                 .addModifiers(modifiers)
                 .addMethod(EmptyPrivateCtor.spec())
-                .addMethods(columnAccessors())
+                .addMethods(columns())
                 .build();
         return result;
     }
 
-    private ImmutableList<MethodSpec> columnAccessors() {
+    private ImmutableList<MethodSpec> columns() {
         ImmutableList<MethodSpec> result =
                 columns.stream()
                        .map(this::columnSpec)

@@ -70,13 +70,13 @@ public final class FieldsSpec implements GeneratedTypeSpec {
                 .classBuilder("Fields")
                 .addModifiers(modifiers)
                 .addMethod(EmptyPrivateCtor.spec())
-                .addMethods(fieldAccessors())
+                .addMethods(fields())
                 .addTypes(nestedFieldContainers())
                 .build();
         return result;
     }
 
-    private ImmutableList<MethodSpec> fieldAccessors() {
+    private ImmutableList<MethodSpec> fields() {
         ImmutableList<MethodSpec> result =
                 fields.stream()
                       .map(this::topLevelFieldSpec)
