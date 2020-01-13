@@ -44,7 +44,7 @@ final class TopLevelFieldSpec extends FieldSpec {
     CodeBlock returnSimpleField() {
         return CodeBlock.of(
                 "return new $T<>($T.named(\"$L\"), $T.class)",
-                SimpleField.class, Field.class, fieldName().value(), enclosingMessageName()
+                SimpleField.class, Field.class, fieldName().value(), enclosingMessageName().value()
         );
     }
 }

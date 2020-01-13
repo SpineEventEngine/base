@@ -34,6 +34,7 @@ import java.util.List;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Lists.newLinkedList;
+import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
@@ -59,19 +60,20 @@ final class FieldsSpec implements GeneratedTypeSpec {
         return messageType.javaPackage();
     }
 
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     @Override
     public TypeSpec typeSpec(Modifier... modifiers) {
         TypeSpec result = TypeSpec
                 .classBuilder("Fields")
                 .addModifiers(modifiers)
                 .addMethod(PrivateCtor.spec())
-                .addMethods(fieldMethods())
-                .addTypes(nestedFields())
+                .addMethods(fieldAccessors())
+                .addTypes(nestedFieldContainers())
                 .build();
         return result;
     }
 
-    private ImmutableList<MethodSpec> fieldMethods() {
+    private ImmutableList<MethodSpec> fieldAccessors() {
         ImmutableList<MethodSpec> result =
                 fields.stream()
                       .map(this::topLevelFieldSpec)
@@ -80,8 +82,13 @@ final class FieldsSpec implements GeneratedTypeSpec {
         return result;
     }
 
-    private Iterable<TypeSpec> nestedFields() {
-        return ImmutableList.of();
+    private ImmutableList<TypeSpec> nestedFieldContainers() {
+        ImmutableList<TypeSpec> result =
+                nestedFieldTypes().stream()
+                                  .map(type -> new NestedFieldContainer(type, messageType))
+                                  .map(type -> type.typeSpec(PUBLIC, STATIC, FINAL))
+                                  .collect(toImmutableList());
+        return result;
     }
 
     private List<MessageType> nestedFieldTypes() {
@@ -116,6 +123,7 @@ final class FieldsSpec implements GeneratedTypeSpec {
                    .filter(FieldDeclaration::isMessage)
                    .filter(field -> !field.isCollection())
                    .map(FieldDeclaration::messageType)
+                   .filter(type -> !result.contains(type))
                    .forEach(result::add);
     }
 }

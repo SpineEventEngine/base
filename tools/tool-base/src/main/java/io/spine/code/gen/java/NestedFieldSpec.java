@@ -42,7 +42,7 @@ final class NestedFieldSpec extends FieldSpec {
     CodeBlock returnSimpleField() {
         return CodeBlock.of(
                 "return new $T(getField().nested(\"$L\"), $T.class)",
-                returnType().value(), fieldName().value(), enclosingMessageName()
+                returnType().value(), fieldName().value(), enclosingMessageName().value()
         );
     }
 }
