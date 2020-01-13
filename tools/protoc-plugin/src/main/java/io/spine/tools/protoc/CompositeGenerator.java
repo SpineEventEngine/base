@@ -33,9 +33,9 @@ import static com.google.common.collect.Lists.newArrayList;
 /**
  * A generator which calls other generators and merges their results.
  */
-public final class CompositeGenerator extends SpineProtoGenerator {
+public final class CompositeGenerator extends CodeGenerator {
 
-    private final ImmutableList<? extends SpineProtoGenerator> generators;
+    private final ImmutableList<? extends CodeGenerator> generators;
 
     private CompositeGenerator(Builder builder) {
         super();
@@ -63,7 +63,7 @@ public final class CompositeGenerator extends SpineProtoGenerator {
      */
     public static final class Builder {
 
-        private final List<SpineProtoGenerator> generators = newArrayList();
+        private final List<CodeGenerator> generators = newArrayList();
 
         /**
          * Prevents direct instantiation.
@@ -71,7 +71,7 @@ public final class CompositeGenerator extends SpineProtoGenerator {
         private Builder() {
         }
 
-        public Builder add(SpineProtoGenerator generator) {
+        public Builder add(CodeGenerator generator) {
             checkNotNull(generator);
             generators.add(generator);
             return this;

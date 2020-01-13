@@ -21,160 +21,47 @@
 package io.spine.validate.option;
 
 import com.google.common.collect.BoundType;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
 import com.google.errorprone.annotations.Immutable;
 import com.google.errorprone.annotations.ImmutableTypeParameter;
-import io.spine.base.FieldPath;
-import io.spine.type.TypeName;
+import io.spine.code.proto.FieldContext;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.validate.ComparableNumber;
-import io.spine.validate.ConstraintViolation;
-import io.spine.validate.FieldValue;
-import io.spine.validate.NumberText;
 
 import static com.google.common.collect.BoundType.CLOSED;
-import static io.spine.protobuf.TypeConverter.toAny;
-import static io.spine.util.Exceptions.newIllegalStateException;
-import static java.lang.String.format;
 
 /**
  * A constraint that puts a numeric field value into a range.
  *
  * <p>A field which violates this constraint of its value is out of the range.
  *
- * @param <V>
- *         numeric value that the option is applied to
  * @param <T>
  *         value of the option
  */
 @Immutable
-abstract class RangedConstraint<@ImmutableTypeParameter V extends Number & Comparable<V>,
-                                @ImmutableTypeParameter T>
-        extends NumericFieldConstraint<V, T> {
+public abstract class RangedConstraint<@ImmutableTypeParameter T> extends FieldConstraint<T> {
 
-    private static final String OR_EQUAL_TO = "or equal to";
+    private static final String OR_EQUAL_TO = "or equal to ";
 
     private final Range<ComparableNumber> range;
 
-    RangedConstraint(T optionValue, Range<ComparableNumber> range) {
-        super(optionValue);
+    RangedConstraint(T optionValue, Range<ComparableNumber> range, FieldDeclaration field) {
+        super(optionValue, field);
         this.range = range;
     }
 
-    @Override
-    boolean satisfies(FieldValue<V> value) {
-        checkTypeConsistency(value);
-        return value.asList()
-                    .stream()
-                    .map(ComparableNumber::new)
-                    .allMatch(range);
-    }
-
-    private void checkTypeConsistency(FieldValue<V> value) {
-        if (hasBothBoundaries()) {
-            NumberText upper = range.upperEndpoint().toText();
-            NumberText lower = range.lowerEndpoint().toText();
-            if (!upper.isOfSameType(lower)) {
-                String errorMessage = "Boundaries have inconsistent types: lower %s, upper %s";
-                throw newIllegalStateException(errorMessage, upper, lower);
-            }
-            checkBoundaryAndValue(upper, value);
-        } else {
-            checkSingleBoundary(value);
-        }
-    }
-
-    private void checkBoundaryAndValue(NumberText boundary, FieldValue<V> value) {
-        ComparableNumber boundaryNumber = boundary.toNumber();
-        V valueNumber = value.singleValue();
-        if (!NumberConversionChecker.check(boundaryNumber, valueNumber)) {
-            String errorMessage =
-                    "Boundary values must have types consistent with values they bind: " +
-                            "boundary %s, value %s";
-            throw newIllegalStateException(errorMessage, boundary, valueNumber);
-        }
-    }
-
-    private void checkSingleBoundary(FieldValue<V> value) {
-        NumberText singleBoundary = range.hasLowerBound()
-                                               ? range.lowerEndpoint().toText()
-                                               : range.upperEndpoint().toText();
-        checkBoundaryAndValue(singleBoundary, value);
-    }
-
-    private boolean hasBothBoundaries() {
-        return range.hasLowerBound() && range.hasUpperBound();
+    public final Range<ComparableNumber> range() {
+        return range;
     }
 
     @Override
-    ImmutableList<ConstraintViolation> constraintViolated(FieldValue<V> value) {
-        FieldPath path = value.context()
-                              .fieldPath();
-        TypeName declaringType = value.declaration()
-                                      .declaringType()
-                                      .name();
-        ConstraintViolation violation = ConstraintViolation
-                .newBuilder()
-                .setMsgFormat(errorMsgFormat())
-                .addAllParam(formatParams())
-                .setTypeName(declaringType.value())
-                .setFieldPath(path)
-                .setFieldValue(toAny(value.singleValue()))
-                .build();
-        return ImmutableList.of(violation);
+    public String errorMessage(FieldContext field) {
+        return compileErrorMessage(range);
     }
 
-    private String errorMsgFormat() {
-        StringBuilder result = new StringBuilder("Number must be ");
-        if (range.hasLowerBound() && range.hasUpperBound()) {
-            result.append(forLowerBound());
-            result.append(" and ");
-            result.append(forUpperBound());
-            return endOfSentence(result).toString();
-        }
-        if (range.hasLowerBound()) {
-            result.append(forLowerBound());
-        }
-        if (range.hasUpperBound()) {
-            result.append(forUpperBound());
-        }
-        return endOfSentence(result).toString();
-    }
+    protected abstract String compileErrorMessage(Range<ComparableNumber> range);
 
-    private ImmutableSet<String> formatParams() {
-        ImmutableSet.Builder<String> result = ImmutableSet.builder();
-        if (range.hasLowerBound()) {
-            result.add(range.lowerEndpoint()
-                            .toString());
-        }
-        if (range.hasUpperBound()) {
-            result.add(range.upperEndpoint()
-                            .toString());
-        }
-        return result.build();
+    static String orEqualTo(BoundType type) {
+        return type == CLOSED ? OR_EQUAL_TO : "";
     }
-
-    private String forLowerBound() {
-        String greaterThan = "greater than %s";
-        String appendix = appendix(range.lowerBoundType());
-        return format(greaterThan, appendix);
-    }
-
-    private String forUpperBound() {
-        String lessThan = "less than %s";
-        String appendix = appendix(range.upperBoundType());
-        return format(lessThan, appendix);
-    }
-
-    private static StringBuilder endOfSentence(StringBuilder builder) {
-        return builder.append('.');
-    }
-
-    private static String appendix(BoundType type) {
-        return type == CLOSED
-               ? OR_EQUAL_TO + " %s"
-               : "%s";
-    }
-
 }

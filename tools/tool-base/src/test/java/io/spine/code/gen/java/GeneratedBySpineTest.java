@@ -34,9 +34,9 @@ class GeneratedBySpineTest {
     void byModelCompiler() {
         GeneratedBySpine annotation = GeneratedBySpine.instance();
         assertNotNull(annotation);
-        assertFalse(annotation.getFieldName()
+        assertFalse(annotation.fieldName()
                               .isEmpty());
-        assertFalse(annotation.getCodeBlock()
+        assertFalse(annotation.codeBlock()
                               .isEmpty());
     }
 }

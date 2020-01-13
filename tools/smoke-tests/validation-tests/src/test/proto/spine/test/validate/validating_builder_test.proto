@@ -215,7 +215,7 @@ message InconsistentBoundaries {
 }
 
 // This message declares a field the ranges of which have whitespaces.
-message SpacedOutBoundaries{
+message SpacedOutBoundaries {
 
     // The spaces in the range definition should not break the validation.
     int32 value = 1 [(range) = " [  31..32 ) "];

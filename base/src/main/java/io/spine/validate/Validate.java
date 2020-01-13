@@ -20,14 +20,18 @@
 
 package io.spine.validate;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Message;
+import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 import io.spine.protobuf.Diff;
+import io.spine.protobuf.MessageWithConstraints;
 import io.spine.protobuf.Messages;
+import io.spine.type.MessageType;
 import io.spine.type.TypeName;
 import io.spine.util.Preconditions2;
 import io.spine.validate.option.SetOnce;
@@ -43,11 +47,11 @@ import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.protobuf.TextFormat.shortDebugString;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
-import static io.spine.validate.MessageValidator.validate;
 
 /**
  * This class provides general validation routines.
  */
+@SuppressWarnings("ClassWithTooManyMethods") // Many deprecated methods will be removed in the future.
 public final class Validate {
 
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
@@ -290,10 +294,54 @@ public final class Validate {
      */
     public static void checkValid(Message message) throws ValidationException {
         checkNotNull(message);
-        List<ConstraintViolation> violations = validate(message);
+        List<ConstraintViolation> violations = violationsOf(message);
         if (!violations.isEmpty()) {
             throw new ValidationException(violations);
         }
+    }
+
+    /**
+     * Validates the given message according to its definition and returns the constrain violations,
+     * if any.
+     *
+     * @return violations of the validation rules or an empty list if the message is valid
+     */
+    public static List<ConstraintViolation> violationsOf(Message message) {
+        return message instanceof MessageWithConstraints
+               ? ((MessageWithConstraints) message).validate()
+               : validateAtRuntime(message);
+    }
+
+    private static List<ConstraintViolation> validateAtRuntime(Message message) {
+        Optional<ValidationError> error =
+                Constraints.of(MessageType.of(message))
+                           .runThrough(new MessageValidator(message));
+        List<ConstraintViolation> violations =
+                error.map(ValidationError::getConstraintViolationList)
+                     .orElse(ImmutableList.of());
+        return violations;
+    }
+
+    /**
+     * Validates the given message according to custom validation constraints.
+     *
+     * <p>If there are user-defined {@link io.spine.validate.option.ValidatingOptionFactory} in
+     * the classpath, they are used to create validating options and assemble constraints. If there
+     * are no such factories, this method always returns an empty list.
+     *
+     * @param message
+     *         the message to validate
+     * @return a list of violations; an empty list if the message is valid
+     */
+    public static List<ConstraintViolation> violationsOfCustomConstraints(Message message) {
+        checkNotNull(message);
+        Optional<ValidationError> error =
+                Constraints.onlyCustom(MessageType.of(message), FieldContext.empty())
+                           .runThrough(new MessageValidator(message));
+        List<ConstraintViolation> violations =
+                error.map(ValidationError::getConstraintViolationList)
+                     .orElse(ImmutableList.of());
+        return violations;
     }
 
     /**

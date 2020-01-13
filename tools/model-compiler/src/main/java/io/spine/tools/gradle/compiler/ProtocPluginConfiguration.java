@@ -45,6 +45,7 @@ import static io.spine.tools.gradle.compiler.Extension.getInterfaces;
 import static io.spine.tools.gradle.compiler.Extension.getMethods;
 import static io.spine.tools.gradle.compiler.Extension.getNestedClasses;
 import static io.spine.tools.gradle.compiler.Extension.shouldGenerateValidatingBuilders;
+import static io.spine.tools.gradle.compiler.Extension.shouldGenerateValidation;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -91,6 +92,7 @@ final class ProtocPluginConfiguration {
         GeneratedMethods methods = getMethods(project);
         GeneratedNestedClasses nestedClasses = getNestedClasses(project);
         boolean shouldGenerateVBuilders = shouldGenerateValidatingBuilders(project);
+        boolean shouldGenerateValidation = shouldGenerateValidation(project);
         Classpath projectClasspath = projectClasspath(project);
         AddMethods methodsGeneration = methods
                 .asProtocConfig()
@@ -108,6 +110,7 @@ final class ProtocPluginConfiguration {
                 .setAddMethods(methodsGeneration)
                 .setAddNestedClasses(nestedClassesGeneration)
                 .setSkipValidatingBuilders(!shouldGenerateVBuilders)
+                .setGenerateValidation(shouldGenerateValidation)
                 .build();
         return result;
     }

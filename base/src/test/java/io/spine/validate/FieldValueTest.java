@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import static com.google.common.truth.Truth.assertThat;
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.STRING;
 import static com.google.protobuf.Syntax.SYNTAX_PROTO3;
 import static io.spine.base.Identifier.newUuid;
@@ -48,28 +49,28 @@ class FieldValueTest {
     @DisplayName("convert")
     class Convert {
 
-        @DisplayName("a map to values")
         @Test
+        @DisplayName("a map to values")
         void map() {
             Map<String, String> map = ImmutableMap.of(newUuid(), newUuid(), newUuid(), newUuid());
-            FieldValue<ImmutableMap<String, String>> fieldValue = FieldValue.of(map, mapContext());
+            FieldValue fieldValue = FieldValue.of(map, mapContext());
             assertConversion(map.values(), fieldValue);
         }
 
-        @DisplayName("a repeated field")
         @Test
+        @DisplayName("a repeated field")
         void repeated() {
             List<String> repeated = ImmutableList.of(newUuid(), newUuid());
-            FieldValue<ImmutableList<String>> fieldValue =
+            FieldValue fieldValue =
                     FieldValue.of(repeated, repeatedContext());
             assertConversion(repeated, fieldValue);
         }
 
-        @DisplayName("a scalar field")
         @Test
+        @DisplayName("a scalar field")
         void scalar() {
             String scalar = newUuid();
-            FieldValue<String> fieldValue = FieldValue.of(scalar, scalarContext());
+            FieldValue fieldValue = FieldValue.of(scalar, scalarContext());
             assertConversion(singletonList(scalar), fieldValue);
         }
     }
@@ -78,33 +79,73 @@ class FieldValueTest {
     @DisplayName("determine JavaType for")
     class DetermineJavaType {
 
-        @DisplayName("a map")
         @Test
+        @DisplayName("a map")
         void map() {
-            FieldValue<ImmutableMap<String, String>> mapValue =
+            FieldValue mapValue =
                     FieldValue.of(ImmutableMap.<String, String>of(), mapContext());
             assertEquals(STRING, mapValue.javaType());
         }
 
-        @DisplayName("a repeated")
         @Test
+        @DisplayName("a repeated")
         void repeated() {
-            FieldValue<ImmutableList<String>> mapValue =
+            FieldValue repeatedValue =
                     FieldValue.of(ImmutableList.<String>of(), repeatedContext());
-            assertEquals(STRING, mapValue.javaType());
+            assertEquals(STRING, repeatedValue.javaType());
         }
     }
 
-    @DisplayName("handle Enum value")
     @Test
+    @DisplayName("handle Enum value")
     void enumValue() {
         Syntax rawValue = SYNTAX_PROTO3;
-        FieldValue<Syntax> enumValue = FieldValue.of(rawValue, scalarContext());
+        FieldValue enumValue = FieldValue.of(rawValue, scalarContext());
         List<EnumValueDescriptor> expectedValues = singletonList(rawValue.getValueDescriptor());
         assertConversion(expectedValues, enumValue);
     }
 
+    @Nested
+    @DisplayName("check if the value is default for a")
+    @SuppressWarnings("Immutable")
+    class Default {
+
+        @Test
+        @DisplayName("repeated fields")
+        void repeatedField() {
+            assertDefault(FieldValue.of(ImmutableList.of("", "", ""), repeatedContext()));
+            assertNotDefault(FieldValue.of(ImmutableList.of("", "abc", ""), repeatedContext()));
+        }
+
+        @Test
+        @DisplayName("map fields")
+        void mapField() {
+            assertDefault(FieldValue.of(ImmutableMap.of("aaaa", ""), mapContext()));
+            assertNotDefault(FieldValue.of(ImmutableMap.of("", "",
+                                                           "aaaa", "aaa",
+                                                           " ", ""),
+                                           mapContext()));
+        }
+
+        @Test
+        @DisplayName("string fields")
+        void stringField() {
+            assertDefault(FieldValue.of("", scalarContext()));
+            assertNotDefault(FieldValue.of(" ", scalarContext()));
+        }
+
+        private void assertDefault(FieldValue value) {
+            assertThat(value.isDefault()).isTrue();
+        }
+
+        private void assertNotDefault(FieldValue value) {
+            assertThat(value.isDefault()).isFalse();
+        }
+    }
+
     private static <T> void assertConversion(Collection<T> expectedValues, FieldValue fieldValue) {
-        assertEquals(expectedValues, fieldValue.asList());
+        assertThat(fieldValue.values().toArray())
+                .asList()
+                .containsExactlyElementsIn(expectedValues);
     }
 }

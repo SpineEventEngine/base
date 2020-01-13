@@ -27,7 +27,6 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.net.EmailAddresses.isValid;
-import static io.spine.net.EmailAddresses.valueOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("EmailAddresses utility class should")
@@ -66,7 +65,7 @@ class EmailAddressesTest extends UtilityClassTest<EmailAddresses> {
     void create() {
         String email = "jdoe@spine.org";
 
-        EmailAddress emailAddress = valueOf(email);
+        EmailAddress emailAddress = EmailAddresses.valueOf(email);
 
         assertThat(emailAddress.getValue())
                 .isEqualTo(email);
@@ -77,7 +76,7 @@ class EmailAddressesTest extends UtilityClassTest<EmailAddresses> {
     void reject_invalid_email() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> valueOf("fiz baz")
+                () -> EmailAddresses.valueOf("fiz baz")
         );
     }
 }

@@ -29,19 +29,19 @@ import io.spine.test.validate.MinInclusiveNumberFieldValue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.validate.MessageValidatorTest.MESSAGE_VALIDATOR_SHOULD;
+import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
 import static io.spine.validate.given.MessageValidatorTestEnv.EQUAL_MAX;
 import static io.spine.validate.given.MessageValidatorTestEnv.EQUAL_MIN;
 import static io.spine.validate.given.MessageValidatorTestEnv.GREATER_MAX_MSG;
 import static io.spine.validate.given.MessageValidatorTestEnv.GREATER_THAN_MAX;
 import static io.spine.validate.given.MessageValidatorTestEnv.GREATER_THAN_MIN;
+import static io.spine.validate.given.MessageValidatorTestEnv.LESS_MIN_MSG;
 import static io.spine.validate.given.MessageValidatorTestEnv.LESS_THAN_MAX;
 import static io.spine.validate.given.MessageValidatorTestEnv.LESS_THAN_MIN;
-import static io.spine.validate.given.MessageValidatorTestEnv.LESS_THAN_MIN_MSG;
 import static io.spine.validate.given.MessageValidatorTestEnv.VALUE;
 
-@DisplayName(MESSAGE_VALIDATOR_SHOULD + "analyze (min) and (max) options and")
-class NumberRangeTest extends MessageValidatorTest {
+@DisplayName(VALIDATION_SHOULD + "analyze (min) and (max) options and")
+class NumberRangeTest extends ValidationOfConstraintTest {
 
     @Test
     @DisplayName("Consider number field is valid if no number options set")
@@ -92,7 +92,7 @@ class NumberRangeTest extends MessageValidatorTest {
     @DisplayName("provide one valid violation if number is less than min")
     void provideOneValidViolationIfNumberIsLessThanDecimalMin() {
         minNumberTest(LESS_THAN_MIN, true, false);
-        assertSingleViolation(LESS_THAN_MIN_MSG, VALUE);
+        assertSingleViolation(LESS_MIN_MSG, VALUE);
     }
 
     @Test

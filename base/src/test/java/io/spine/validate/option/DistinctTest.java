@@ -22,16 +22,16 @@ package io.spine.validate.option;
 
 import io.spine.test.validate.DistinctValues;
 import io.spine.test.validate.DistinctValuesWithExternalConstraint;
-import io.spine.validate.MessageValidatorTest;
+import io.spine.validate.ValidationOfConstraintTest;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.validate.MessageValidatorTest.MESSAGE_VALIDATOR_SHOULD;
+import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
 
-@DisplayName(MESSAGE_VALIDATOR_SHOULD + "analyze (distinct) option and")
-final class DistinctTest extends MessageValidatorTest {
+@DisplayName(VALIDATION_SHOULD + "analyze (distinct) option and")
+final class DistinctTest extends ValidationOfConstraintTest {
 
     @DisplayName("find out that empty message does not violate the contract")
     @Test

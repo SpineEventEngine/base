@@ -26,6 +26,7 @@ import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
 import io.spine.base.UuidValue;
@@ -40,12 +41,16 @@ import io.spine.option.EntityOption;
 import io.spine.option.OptionsProto;
 
 import java.util.Deque;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Lists.newLinkedList;
+import static com.google.common.collect.Streams.concat;
 import static io.spine.code.proto.FileDescriptors.sameFiles;
 import static io.spine.option.EntityOption.Kind.KIND_UNKNOWN;
 import static io.spine.option.EntityOption.Kind.UNRECOGNIZED;
@@ -54,13 +59,35 @@ import static io.spine.option.EntityOption.Kind.UNRECOGNIZED;
  * A message type as declared in a proto file.
  */
 @Immutable
+@SuppressWarnings("ClassWithTooManyMethods")
 public class MessageType extends Type<Descriptor, DescriptorProto> implements Logging {
+
+    private final ImmutableList<FieldDeclaration> fields;
 
     /**
      * Creates a new instance by the given message descriptor.
      */
     public MessageType(Descriptor descriptor) {
         super(descriptor, true);
+        this.fields = collectFields();
+    }
+
+    private ImmutableList<FieldDeclaration> collectFields() {
+        List<FieldDescriptor> descriptors = descriptor().getFields();
+        ImmutableList.Builder<FieldDeclaration> fields =
+                ImmutableList.builderWithExpectedSize(descriptors.size());
+        for (FieldDescriptor field : descriptors) {
+            fields.add(new FieldDeclaration(field, this));
+        }
+        return fields.build();
+    }
+
+    /**
+     * Obtains the type of the given message.
+     */
+    public static MessageType of(Message message) {
+        checkNotNull(message);
+        return new MessageType(message.getDescriptorForType());
     }
 
     /**
@@ -231,15 +258,45 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     }
 
     /**
+     * Obtains all the nested message and enum declarations.
+     *
+     * <p>Includes only the immediate declarations. Types declared inside the types declared inside
+     * this type are not obtained.
+     */
+    public ImmutableList<Type<?, ?>> nestedDeclarations() {
+        Stream<Type<?, ?>> messageTypes = descriptor()
+                .getNestedTypes()
+                .stream()
+                .map(MessageType::new);
+        Stream<Type<?, ?>> enumTypes = descriptor()
+                .getEnumTypes()
+                .stream()
+                .map(EnumType::create);
+        return concat(messageTypes, enumTypes)
+                .collect(toImmutableList());
+    }
+
+    /**
      * Obtains fields declared in the message type.
      */
     public ImmutableList<FieldDeclaration> fields() {
-        ImmutableList<FieldDeclaration> result =
-                descriptor().getFields()
-                            .stream()
-                            .map(field -> new FieldDeclaration(field, this))
-                            .collect(toImmutableList());
-        return result;
+        return fields;
+    }
+
+    /**
+     * Finds a {@linkplain FieldDeclaration declaration} of a field by the field name.
+     *
+     * <p>Throws an {@link IllegalArgumentException} if a field with such a name is not declared in
+     * this message type.
+     *
+     * @param name the name of a Protobuf field
+     * @return the field declaration
+     */
+    public FieldDeclaration field(String name) {
+        FieldDescriptor fieldDescriptor = descriptor()
+                .findFieldByName(name);
+        checkArgument(fieldDescriptor != null, name);
+        return new FieldDeclaration(fieldDescriptor, this);
     }
 
     /**
@@ -291,8 +348,8 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         if (!file.hasSourceCodeInfo()) {
             _warn().log(
                     "Unable to obtain proto source code info. " +
-                    "Please configure the Gradle Protobuf plugin as follows:%n" +
-                    "`task.descriptorSetOptions.includeSourceInfo = true`."
+                            "Please configure the Gradle Protobuf plugin as follows:%n" +
+                            "`task.descriptorSetOptions.includeSourceInfo = true`."
             );
             return Optional.empty();
         }

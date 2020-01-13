@@ -28,11 +28,11 @@ import io.spine.test.validate.anyfields.UncheckedAnyContainer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.validate.MessageValidatorTest.MESSAGE_VALIDATOR_SHOULD;
+import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
 import static io.spine.validate.given.MessageValidatorTestEnv.newStringValue;
 
-@DisplayName(MESSAGE_VALIDATOR_SHOULD + "when validating google.protobuf.Any")
-class AnyTest extends MessageValidatorTest {
+@DisplayName(VALIDATION_SHOULD + "when validating google.protobuf.Any")
+class AnyTest extends ValidationOfConstraintTest {
 
     @Test
     @DisplayName("consider Any valid if content is valid")

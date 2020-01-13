@@ -21,19 +21,16 @@
 package io.spine.validate.option;
 
 import com.google.errorprone.annotations.Immutable;
-import com.google.errorprone.annotations.ImmutableTypeParameter;
+import io.spine.code.proto.FieldContext;
 import io.spine.option.OptionsProto;
-import io.spine.validate.FieldValue;
+import io.spine.validate.Constraint;
 
 /**
- * An option that can be applied to {@code repeated} Protobuf fields to specify that values
- * represented by that {@code repeated} field should not contain duplicates.
- *
- * @param <T>
- *         type of value that this option is applied to
+ * An option that can be applied to {@code repeated} and {@code map} Protobuf fields to specify that
+ * values represented by that field should not contain duplicates.
  */
 @Immutable
-public final class Distinct<@ImmutableTypeParameter T> extends FieldValidatingOption<Boolean, T> {
+public final class Distinct extends FieldValidatingOption<Boolean> {
 
     private Distinct() {
         super(OptionsProto.distinct);
@@ -41,16 +38,13 @@ public final class Distinct<@ImmutableTypeParameter T> extends FieldValidatingOp
 
     /**
      * Returns a new instance of this option.
-     *
-     * @param <T>
-     *         type of fields that can be checked against this option
      */
-    public static <@ImmutableTypeParameter T> Distinct<T> create() {
-        return new Distinct<>();
+    public static Distinct create() {
+        return new Distinct();
     }
 
     @Override
-    public Constraint<FieldValue<T>> constraintFor(FieldValue<T> fieldValue) {
-        return new DistinctConstraint<>(optionValue(fieldValue));
+    public Constraint constraintFor(FieldContext fieldValue) {
+        return new DistinctConstraint(optionValue(fieldValue), fieldValue.targetDeclaration());
     }
 }

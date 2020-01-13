@@ -24,18 +24,18 @@ import com.google.protobuf.StringValue;
 import io.spine.test.validate.PatternStringFieldValue;
 import io.spine.test.validate.SimpleStringValue;
 import io.spine.test.validate.WithStringValue;
-import io.spine.validate.MessageValidatorTest;
+import io.spine.validate.ValidationOfConstraintTest;
 import org.checkerframework.checker.regex.qual.Regex;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.validate.MessageValidatorTest.MESSAGE_VALIDATOR_SHOULD;
+import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
 import static io.spine.validate.given.MessageValidatorTestEnv.EMAIL;
 import static io.spine.validate.given.MessageValidatorTestEnv.MATCH_REGEXP_MSG;
 import static java.lang.String.format;
 
-@DisplayName(MESSAGE_VALIDATOR_SHOULD + "analyze (pattern) option and")
-class PatternTest extends MessageValidatorTest {
+@DisplayName(VALIDATION_SHOULD + "analyze (pattern) option and")
+class PatternTest extends ValidationOfConstraintTest {
 
     @Test
     @DisplayName("find out that string matches to regex pattern")

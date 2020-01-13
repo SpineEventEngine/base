@@ -63,7 +63,7 @@ message OneofWithValidation {
 
     oneof fields {
         string no_validation = 1;
-        string with_validation = 2 [(validate) = true, (pattern).regex = "^[A-Za-z0-9+]+$"];
+        string with_validation = 2 [(pattern).regex = "^[A-Za-z0-9+]+$"];
     }
 }
 
@@ -72,7 +72,7 @@ message RequiredOneofWithValidation {
     option (required_field) = "raw_value | valid_value";
 
     oneof fields {
-        int32 raw_value = 1;
-        int32 valid_value = 2 [(validate) = true, (min).value = "1"];
+        string raw_value = 1;
+        string valid_value = 2 [(pattern).regex = "^[A-Za-z0-9+]+$"];
     }
 }

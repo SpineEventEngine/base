@@ -97,12 +97,33 @@ public final class FieldContext {
     }
 
     /**
+     * Obtains {@code FieldContext} for the specified child.
+     *
+     * @param child
+     *         the child declaration
+     * @return the child declaration context
+     */
+    public FieldContext forChild(FieldDeclaration child) {
+        return forChild(child.descriptor());
+    }
+
+    /**
      * Obtains target of this context.
      *
      * @return the target descriptor
      */
     public FieldDescriptor target() {
         return checkNotNull(target, "Empty context cannot have a target.");
+    }
+
+    /**
+     * Obtains target of this context as a {@link FieldDeclaration}.
+     *
+     * @return the target declaration
+     */
+    public FieldDeclaration targetDeclaration() {
+        FieldDescriptor target = target();
+        return new FieldDeclaration(target);
     }
 
     private Optional<FieldDescriptor> targetParent() {
@@ -164,12 +185,16 @@ public final class FieldContext {
             return false;
         }
         FieldContext context = (FieldContext) o;
-        return Objects.equals(target, context.target) &&
-                Objects.equals(parent, context.parent);
+        return Objects.equals(targetNameOrEmpty(), context.targetNameOrEmpty())
+                && Objects.equals(parent, context.parent);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(target, parent);
+        return Objects.hash(targetNameOrEmpty(), parent);
+    }
+
+    private String targetNameOrEmpty() {
+        return target != null ? target.getFullName() : "";
     }
 }

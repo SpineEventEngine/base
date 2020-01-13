@@ -26,7 +26,6 @@ import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import io.spine.annotation.Internal;
 import io.spine.code.proto.FieldContext;
 
 import java.io.Serializable;
@@ -90,7 +89,6 @@ public final class ExternalConstraintOptions implements Serializable {
      * @apiNote This class is package-private for allowing constraints options update being
      *         triggered whenever {@link ExternalConstraints} are updated.
      */
-    @Internal
     static final class Holder {
 
         private static final FluentLogger logger = FluentLogger.forEnclosingClass();

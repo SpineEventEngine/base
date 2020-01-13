@@ -20,15 +20,14 @@
 
 package io.spine.validate.given;
 
-import com.google.common.collect.ImmutableList;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.ProtocolStringList;
 import com.google.protobuf.StringValue;
 import io.spine.base.FieldPath;
 import io.spine.validate.ConstraintViolation;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.base.Identifier.newUuid;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MessageValidatorTestEnv {
 
@@ -39,17 +38,14 @@ public class MessageValidatorTestEnv {
     public static final double EQUAL_MAX = 64.5;
     public static final double GREATER_THAN_MAX = EQUAL_MAX + 5;
 
-    public static final double INT_DIGIT_COUNT_GREATER_THAN_MAX = 123.5;
-    public static final double INT_DIGIT_COUNT_EQUAL_MAX = 12.5;
-
     public static final String VALUE = "value";
     public static final String EMAIL = "email";
     public static final String OUTER_MSG_FIELD = "outer_msg_field";
-    public static final String LESS_THAN_MIN_MSG = "Number must be greater than or equal to 16.5.";
-    public static final String GREATER_MAX_MSG = "Number must be less than or equal to 64.5.";
-    public static final String MATCH_REGEXP_MSG = "String must match the regular expression `%s`.";
+    public static final String LESS_MIN_MSG = "The number must be greater than or equal to 16.5.";
+    public static final String GREATER_MAX_MSG = "The number must be less than or equal to 64.5.";
+    public static final String MATCH_REGEXP_MSG =
+            "The string must match the regular expression `%s`.";
 
-    public static final double INT_DIGIT_COUNT_LESS_THAN_MAX = 1.5;
     public static final double LESS_THAN_MAX = EQUAL_MAX - 5;
 
     /** Prevent instantiation of this test environment. */
@@ -59,8 +55,8 @@ public class MessageValidatorTestEnv {
     public static void assertFieldPathIs(ConstraintViolation violation, String... expectedFields) {
         FieldPath path = violation.getFieldPath();
         ProtocolStringList actualFields = path.getFieldNameList();
-        assertEquals(expectedFields.length, actualFields.size());
-        assertEquals(ImmutableList.copyOf(expectedFields), ImmutableList.copyOf(actualFields));
+        assertThat(actualFields)
+                .containsExactlyElementsIn(expectedFields);
     }
 
     public static StringValue newStringValue() {

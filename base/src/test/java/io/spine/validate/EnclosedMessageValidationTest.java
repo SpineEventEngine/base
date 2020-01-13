@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static io.spine.validate.MessageValidatorTest.MESSAGE_VALIDATOR_SHOULD;
+import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
 import static io.spine.validate.given.MessageValidatorTestEnv.EMAIL;
 import static io.spine.validate.given.MessageValidatorTestEnv.MATCH_REGEXP_MSG;
 import static io.spine.validate.given.MessageValidatorTestEnv.OUTER_MSG_FIELD;
@@ -40,8 +40,8 @@ import static io.spine.validate.given.MessageValidatorTestEnv.assertFieldPathIs;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName(MESSAGE_VALIDATOR_SHOULD + "validate enclosed messages and")
-class EnclosedMessageValidationTest extends MessageValidatorTest {
+@DisplayName(VALIDATION_SHOULD + "validate enclosed messages and")
+class EnclosedMessageValidationTest extends ValidationOfConstraintTest {
 
     @Test
     @DisplayName("find out that enclosed message field is valid")
@@ -92,16 +92,18 @@ class EnclosedMessageValidationTest extends MessageValidatorTest {
     @Test
     @DisplayName("provide valid violations if enclosed message field is not valid")
     void provideValidViolationsIfEnclosedMessageFieldIsNotValid() {
-        PatternStringFieldValue enclosedMsg = PatternStringFieldValue.newBuilder()
-                                                                     .setEmail("invalid email")
-                                                                     .build();
-        EnclosedMessageFieldValue msg = EnclosedMessageFieldValue.newBuilder()
-                                                                 .setOuterMsgField(enclosedMsg)
-                                                                 .build();
+        PatternStringFieldValue enclosedMsg = PatternStringFieldValue
+                .newBuilder()
+                .setEmail("invalid email")
+                .build();
+        EnclosedMessageFieldValue msg = EnclosedMessageFieldValue
+                .newBuilder()
+                .setOuterMsgField(enclosedMsg)
+                .build();
         validate(msg);
 
         ConstraintViolation violation = singleViolation();
-        assertEquals("Message must have valid properties.", violation.getMsgFormat());
+        assertEquals("The message must have valid properties.", violation.getMsgFormat());
         assertFieldPathIs(violation, OUTER_MSG_FIELD);
         List<ConstraintViolation> innerViolations = violation.getViolationList();
         assertEquals(1, innerViolations.size());

@@ -21,9 +21,9 @@
 package io.spine.tools.protoc.builder;
 
 import com.google.common.collect.ImmutableSet;
+import io.spine.tools.protoc.CodeGenerator;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.NoOpGenerator;
-import io.spine.tools.protoc.SpineProtoGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
@@ -36,7 +36,7 @@ import static io.spine.tools.protoc.builder.BuilderImplements.implementValidatin
  * A code generator which makes the generated message builders implement
  * {@link io.spine.protobuf.ValidatingBuilder}.
  */
-public final class BuilderGenerator extends SpineProtoGenerator {
+public final class BuilderGenerator extends CodeGenerator {
 
     /**
      * Prevents direct instantiation.
@@ -48,7 +48,7 @@ public final class BuilderGenerator extends SpineProtoGenerator {
     /**
      * Creates a new instance of the generator.
      */
-    public static SpineProtoGenerator instance(SpineProtocConfig config) {
+    public static CodeGenerator instance(SpineProtocConfig config) {
         return config.getSkipValidatingBuilders()
                ? NoOpGenerator.instance()
                : new BuilderGenerator();

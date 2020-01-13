@@ -20,70 +20,30 @@
 
 package io.spine.validate.option;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
-import com.google.errorprone.annotations.ImmutableTypeParameter;
-import io.spine.base.FieldPath;
-import io.spine.type.TypeName;
-import io.spine.validate.ConstraintViolation;
-import io.spine.validate.FieldValue;
+import io.spine.code.proto.FieldContext;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.validate.ConstraintTranslator;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.protobuf.TypeConverter.toAny;
+import static java.lang.String.format;
 
 /**
  * A repeated field constraint that requires values to be distinct.
- *
- * @param <T>
- *         type of values that this constraint is applicable to
  */
 @Immutable
-final class DistinctConstraint<@ImmutableTypeParameter T> extends FieldValueConstraint<T, Boolean> {
+public final class DistinctConstraint extends FieldConstraint<Boolean> {
 
-    DistinctConstraint(Boolean optionValue) {
-        super(optionValue);
+    DistinctConstraint(Boolean optionValue, FieldDeclaration field) {
+        super(optionValue, field);
     }
 
     @Override
-    public ImmutableList<ConstraintViolation> check(FieldValue<T> fieldValue) {
-        ImmutableList<T> values = fieldValue.asList();
-        Set<T> duplicates = findDuplicates(values);
-        ImmutableList<ConstraintViolation> violations =
-                duplicates.stream()
-                          .map(duplicate -> distinctViolated(fieldValue, duplicate))
-                          .collect(toImmutableList());
-        return violations;
+    public String errorMessage(FieldContext field) {
+        return format("`%s` must not contain duplicates.", field.targetDeclaration());
     }
 
-    private ConstraintViolation distinctViolated(FieldValue<T> value, T duplicate) {
-        FieldPath path = value.context()
-                              .fieldPath();
-        TypeName declaringTypeName = value.declaration()
-                                          .declaringType()
-                                          .name();
-        return ConstraintViolation
-                .newBuilder()
-                .setMsgFormat("Values must be distinct.")
-                .setFieldPath(path)
-                .setFieldValue(toAny(duplicate))
-                .setTypeName(declaringTypeName.value())
-                .build();
-    }
-
-    private static <T> Set<T> findDuplicates(Iterable<T> potentialDuplicates) {
-        Set<T> uniques = new HashSet<>();
-        ImmutableSet.Builder<T> duplicates = ImmutableSet.builder();
-        for (T potentialDuplicate : potentialDuplicates) {
-            if (uniques.contains(potentialDuplicate)) {
-                duplicates.add(potentialDuplicate);
-            } else {
-                uniques.add(potentialDuplicate);
-            }
-        }
-        return duplicates.build();
+    @Override
+    public void accept(ConstraintTranslator<?> visitor) {
+        visitor.visitDistinct(this);
     }
 }

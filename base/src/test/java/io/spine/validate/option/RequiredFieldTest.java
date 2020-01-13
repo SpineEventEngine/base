@@ -25,7 +25,7 @@ import io.spine.test.validate.requiredfield.EveryFieldOptional;
 import io.spine.test.validate.requiredfield.EveryFieldRequired;
 import io.spine.test.validate.requiredfield.OneofFieldAndOtherFieldRequired;
 import io.spine.test.validate.requiredfield.OneofRequired;
-import io.spine.validate.MessageValidatorTest;
+import io.spine.validate.ValidationOfConstraintTest;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -35,11 +35,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static io.spine.validate.MessageValidatorTest.MESSAGE_VALIDATOR_SHOULD;
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName(
-        MESSAGE_VALIDATOR_SHOULD + "analyze (required_field) message option and consider message")
-final class RequiredFieldTest extends MessageValidatorTest {
+@DisplayName(VALIDATION_SHOULD + "analyze (required_field) message option and consider message")
+final class RequiredFieldTest extends ValidationOfConstraintTest {
 
     @DisplayName("valid if")
     @Nested
@@ -172,17 +173,14 @@ final class RequiredFieldTest extends MessageValidatorTest {
         @DisplayName("oneof or other field is not set")
         @Test
         void oneofOrOtherNotSet() {
-            assertNotValid(OneofFieldAndOtherFieldRequired.getDefaultInstance(), false);
-            OneofFieldAndOtherFieldRequired withOneofOnly = OneofFieldAndOtherFieldRequired
-                    .newBuilder()
-                    .setSecond("oneof set")
-                    .build();
-            assertNotValid(withOneofOnly, false);
-            OneofFieldAndOtherFieldRequired withOtherFieldOnly = OneofFieldAndOtherFieldRequired
-                    .newBuilder()
-                    .setThird("other field set")
-                    .build();
-            assertNotValid(withOtherFieldOnly, false);
+            Exception exception = assertThrows(
+                    IllegalStateException.class,
+                    () -> validate(OneofFieldAndOtherFieldRequired.getDefaultInstance())
+            );
+            assertThat(exception)
+                    .hasCauseThat()
+                    .hasMessageThat()
+                    .contains("(");
         }
 
         @Disabled("See https://github.com/SpineEventEngine/base/issues/381")

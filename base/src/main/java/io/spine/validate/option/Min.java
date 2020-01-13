@@ -21,32 +21,29 @@
 package io.spine.validate.option;
 
 import com.google.errorprone.annotations.Immutable;
-import com.google.errorprone.annotations.ImmutableTypeParameter;
+import io.spine.code.proto.FieldContext;
 import io.spine.option.MinOption;
 import io.spine.option.OptionsProto;
-import io.spine.validate.FieldValue;
+import io.spine.validate.Constraint;
 
 /**
  * An option that defines a minimum value for a numeric field.
- *
- * @param <V>
- *         numeric value type that this option is applied to
  */
 @Immutable
-final class Min<@ImmutableTypeParameter V extends Number & Comparable<V>>
-        extends FieldValidatingOption<MinOption, V> {
+final class Min
+        extends FieldValidatingOption<MinOption> {
 
     private Min() {
         super(OptionsProto.min);
     }
 
     /** Creates a new instance of this option. */
-    static <@ImmutableTypeParameter V extends Number & Comparable<V>> Min<V> create() {
-        return new Min<>();
+    static Min create() {
+        return new Min();
     }
 
     @Override
-    public Constraint<FieldValue<V>> constraintFor(FieldValue<V> fieldValue) {
-        return new MinConstraint<>(optionValue(fieldValue));
+    public Constraint constraintFor(FieldContext fieldValue) {
+        return new MinConstraint(optionValue(fieldValue), fieldValue.targetDeclaration());
     }
 }

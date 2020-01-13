@@ -22,32 +22,26 @@ package io.spine.validate;
 
 import io.spine.test.validate.AggregateState;
 import io.spine.test.validate.ProjectionState;
-import io.spine.test.validate.command.EntityIdByteStringFieldValue;
-import io.spine.test.validate.command.EntityIdDoubleFieldValue;
-import io.spine.test.validate.command.EntityIdIntFieldValue;
-import io.spine.test.validate.command.EntityIdLongFieldValue;
 import io.spine.test.validate.command.EntityIdMsgFieldValue;
-import io.spine.test.validate.command.EntityIdRepeatedFieldValue;
 import io.spine.test.validate.command.EntityIdStringFieldValue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.base.Identifier.newUuid;
-import static io.spine.validate.MessageValidatorTest.MESSAGE_VALIDATOR_SHOULD;
+import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
 import static io.spine.validate.given.MessageValidatorTestEnv.VALUE;
-import static io.spine.validate.given.MessageValidatorTestEnv.newByteString;
 import static io.spine.validate.given.MessageValidatorTestEnv.newStringValue;
 
-@DisplayName(MESSAGE_VALIDATOR_SHOULD + "validate an entity ID")
-class EntityIdTest extends MessageValidatorTest {
+@DisplayName(VALIDATION_SHOULD + "validate an entity ID")
+class EntityIdTest extends ValidationOfConstraintTest {
     
     @Nested
     @DisplayName("in a command file and")
     class InCommandFile {
 
         @Test
-        @DisplayName("find out that Message is valid")
+        @DisplayName("find out that non-default message is valid")
         void findOutThatMessageEntityIdInCommandIsValid() {
             EntityIdMsgFieldValue msg = EntityIdMsgFieldValue.newBuilder()
                                                              .setValue(newStringValue())
@@ -56,14 +50,14 @@ class EntityIdTest extends MessageValidatorTest {
         }
 
         @Test
-        @DisplayName("find out that Message is NOT valid")
+        @DisplayName("find out that default message is NOT valid")
         void findOutThatMessageEntityIdInCommandIsNotValid() {
             EntityIdMsgFieldValue msg = EntityIdMsgFieldValue.getDefaultInstance();
             assertNotValid(msg);
         }
 
         @Test
-        @DisplayName("find out that String is valid")
+        @DisplayName("find out that non-empty string is valid")
         void findOutThatStringEntityIdInCommandIsValid() {
             EntityIdStringFieldValue msg = EntityIdStringFieldValue.newBuilder()
                                                                    .setValue(newUuid())
@@ -72,36 +66,9 @@ class EntityIdTest extends MessageValidatorTest {
         }
 
         @Test
-        @DisplayName("find out that String is NOT valid")
+        @DisplayName("find out that empty string is NOT valid")
         void findOutThatStringEntityIdInCommandIsNotValid() {
             EntityIdStringFieldValue msg = EntityIdStringFieldValue.getDefaultInstance();
-            assertNotValid(msg);
-        }
-
-        @Test
-        @DisplayName("find out that Integer is valid")
-        void findOutThatIntegerEntityIdInCommandIsValid() {
-            EntityIdIntFieldValue msg = EntityIdIntFieldValue.newBuilder()
-                                                             .setValue(5)
-                                                             .build();
-            assertValid(msg);
-        }
-
-        @Test
-        @DisplayName("find out that Long is valid")
-        void findOutThatLongEntityIdInCommandIsValid() {
-            EntityIdLongFieldValue msg = EntityIdLongFieldValue.newBuilder()
-                                                               .setValue(5)
-                                                               .build();
-            assertValid(msg);
-        }
-
-        @Test
-        @DisplayName("find out that repeated is NOT valid")
-        void findOutThatRepeatedEntityIdInCommandIsNotValid() {
-            EntityIdRepeatedFieldValue msg = EntityIdRepeatedFieldValue.newBuilder()
-                                                                       .addValue(newUuid())
-                                                                       .build();
             assertNotValid(msg);
         }
 
@@ -138,31 +105,6 @@ class EntityIdTest extends MessageValidatorTest {
         void notRequiredIfOptionIsFalse() {
             ProjectionState stateWithDefaultId = ProjectionState.getDefaultInstance();
             assertValid(stateWithDefaultId);
-        }
-    }
-
-    @Nested
-    @DisplayName("and reject")
-    class Reject {
-
-        @Test
-        @DisplayName("ByteString")
-        void findOutThatEntityIdInCommandCannotBeByteString() {
-            EntityIdByteStringFieldValue msg = EntityIdByteStringFieldValue
-                    .newBuilder()
-                    .setValue(newByteString())
-                    .build();
-            assertNotValid(msg);
-        }
-
-        @Test
-        @DisplayName("Float")
-        void findOutThatEntityIdInCommandCannotBeFloatNumber() {
-            EntityIdDoubleFieldValue msg = EntityIdDoubleFieldValue
-                    .newBuilder()
-                    .setValue(1.1)
-                    .build();
-            assertNotValid(msg);
         }
     }
 }

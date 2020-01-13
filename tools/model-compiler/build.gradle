@@ -105,8 +105,6 @@ copyProtocPluginTestArtifact.doLast(copyPluginJarAction)
 copyProtocPluginTestArtifact.dependsOn project.project(':protoc-plugin').publishToMavenLocal
 
 // Tests use the Protobuf plugin.
-compileTestJava {
-    dependsOn copyProtocPluginTestArtifact
-}
+compileTestJava.dependsOn copyProtocPluginTestArtifact
 
 test.dependsOn project(':errorprone-checks').publishToMavenLocal

@@ -22,21 +22,24 @@ package io.spine.validate.option;
 
 import com.google.common.collect.Range;
 import com.google.errorprone.annotations.Immutable;
-import com.google.errorprone.annotations.ImmutableTypeParameter;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.MinOption;
 import io.spine.validate.ComparableNumber;
+import io.spine.validate.ConstraintTranslator;
 import io.spine.validate.NumberText;
+import io.spine.validate.diags.ViolationText;
+
+import static java.lang.String.format;
 
 /**
  * A constraint that, when applied to a numeric field, checks whether the value of that field is
  * greater than (or equal to, if specified by the value of the respective option) a min value.
  */
 @Immutable
-final class MinConstraint<@ImmutableTypeParameter V extends Number & Comparable<V>>
-        extends RangedConstraint<V, MinOption> {
+public final class MinConstraint extends RangedConstraint<MinOption> {
 
-    MinConstraint(MinOption optionValue) {
-        super(optionValue, minRange(optionValue));
+    MinConstraint(MinOption optionValue, FieldDeclaration field) {
+        super(optionValue, minRange(optionValue), field);
     }
 
     private static Range<ComparableNumber> minRange(MinOption option) {
@@ -45,5 +48,17 @@ final class MinConstraint<@ImmutableTypeParameter V extends Number & Comparable<
         return inclusive
                ? Range.atLeast(minValue.toNumber())
                : Range.greaterThan(minValue.toNumber());
+    }
+
+    @Override
+    protected String compileErrorMessage(Range<ComparableNumber> range) {
+        MinOption min = optionValue();
+        String template = ViolationText.errorMessage(min, min.getMsgFormat());
+        return format(template, orEqualTo(range.lowerBoundType()), range.lowerEndpoint());
+    }
+
+    @Override
+    public void accept(ConstraintTranslator<?> visitor) {
+        visitor.visitRange(this);
     }
 }

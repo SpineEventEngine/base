@@ -27,7 +27,6 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.net.InternetDomains.isValid;
-import static io.spine.net.InternetDomains.valueOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -40,7 +39,7 @@ class InternetDomainsTest extends UtilityClassTest<InternetDomains> {
 
     @Test
     @DisplayName("validate char sequence")
-    void provide_matching_pattern() {
+    void provideMatchingPattern() {
         assertValid("spine.io");
 
         assertValid("teamdev.com");
@@ -69,15 +68,15 @@ class InternetDomainsTest extends UtilityClassTest<InternetDomains> {
     void create() {
         String domainName = "example.org";
 
-        assertEquals(domainName, valueOf(domainName).getValue());
+        assertEquals(domainName, InternetDomains.valueOf(domainName).getValue());
     }
 
     @Test
     @SuppressWarnings("CheckReturnValue")
-    void reject_invalid_name() {
+    void rejectInvalidName() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> valueOf("1.0")
+                () -> InternetDomains.valueOf("1.0")
         );
     }
 }

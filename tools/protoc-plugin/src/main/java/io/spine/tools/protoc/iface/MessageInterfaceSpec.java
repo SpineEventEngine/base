@@ -134,7 +134,7 @@ final class MessageInterfaceSpec {
         GeneratedBySpine bySpine = GeneratedBySpine.instance();
         return AnnotationSpec
                 .builder(Generated.class)
-                .addMember(bySpine.getFieldName(), CodeBlock.of(bySpine.getCodeBlock()))
+                .addMember(bySpine.fieldName(), CodeBlock.of(bySpine.codeBlock()))
                 .build();
     }
 }

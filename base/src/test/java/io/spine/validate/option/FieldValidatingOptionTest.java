@@ -23,7 +23,8 @@ package io.spine.validate.option;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.StringValue;
+import com.google.protobuf.Message;
+import io.spine.code.proto.FieldContext;
 import io.spine.test.validate.option.ATestMessage;
 import io.spine.test.validate.option.ATestMessageConstraint;
 import io.spine.test.validate.option.ATestMessageWithConstraint;
@@ -31,7 +32,9 @@ import io.spine.test.validate.option.ATestMessageWithExternalConstraintOnly;
 import io.spine.test.validate.option.NoValidationTestMessage;
 import io.spine.test.validate.option.TestFieldOptionProto;
 import io.spine.type.MessageType;
+import io.spine.validate.Constraint;
 import io.spine.validate.ConstraintViolation;
+import io.spine.validate.CustomConstraint;
 import io.spine.validate.ExternalConstraints;
 import io.spine.validate.FieldValue;
 import io.spine.validate.MessageValue;
@@ -40,12 +43,14 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.truth.Truth8.assertThat;
 import static io.spine.testing.TestValues.randomString;
+import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SuppressWarnings({"OptionalGetWithoutIsPresent", "unchecked"})
 @DisplayName("FieldValidatingOption should")
 final class FieldValidatingOptionTest {
 
@@ -60,17 +65,17 @@ final class FieldValidatingOptionTest {
     void returnEmptyValueIfNotPresent() {
         ATestMessageWithConstraint msg = ATestMessageWithConstraint.getDefaultInstance();
         MessageValue value = MessageValue.atTopLevel(msg);
-        FieldValue<StringValue> fieldValue = valueField(value);
+        FieldValue fieldValue = valueField(value);
         MaxLength maxLength = new MaxLength();
-        assertThat(maxLength.valueFrom(fieldValue.descriptor(), fieldValue.context())).isEmpty();
+        assertThat(maxLength.valueFrom(fieldValue.context())).isEmpty();
     }
 
     @DisplayName("return value if option is present in external constraint only")
     @Test
     void returnValueIfOptionIsPresentInExternalConstraint() {
-        FieldValue<StringValue> fieldValue = valueFieldWithExternalConstraint();
+        FieldValue fieldValue = valueFieldWithExternalConstraint();
         MaxLength maxLength = new MaxLength();
-        assertThat(maxLength.valueFrom(fieldValue.descriptor(), fieldValue.context())).isPresent();
+        assertThat(maxLength.valueFrom(fieldValue.context())).isPresent();
     }
 
     @DisplayName("return value if option is present in field option")
@@ -81,9 +86,9 @@ final class FieldValidatingOptionTest {
                 .setValue(randomString())
                 .build();
         MessageValue value = MessageValue.atTopLevel(msg);
-        FieldValue<StringValue> fieldValue = valueField(value);
+        FieldValue fieldValue = valueField(value);
         MaxLength maxLength = new MaxLength();
-        assertThat(maxLength.valueFrom(fieldValue.descriptor(), fieldValue.context())).isPresent();
+        assertThat(maxLength.valueFrom(fieldValue.context())).isPresent();
     }
 
     @DisplayName("throw IllegalStateException if a specified option is not as field option")
@@ -91,11 +96,10 @@ final class FieldValidatingOptionTest {
     void throwISEIfOptionIsNotPresentInFieldOption() {
         ATestMessageWithConstraint msg = ATestMessageWithConstraint.getDefaultInstance();
         MessageValue value = MessageValue.atTopLevel(msg);
-        FieldValue<StringValue> fieldValue = valueField(value);
+        FieldValue fieldValue = valueField(value);
         MaxLength maxLength = new MaxLength();
-        Assertions.assertThrows(IllegalStateException.class, () -> {
-            maxLength.optionValue(fieldValue);
-        });
+        assertThrows(IllegalStateException.class,
+                     () -> maxLength.optionValue(fieldValue.context()));
     }
 
     @DisplayName("not validate field if option is not present in external or field constraints")
@@ -106,17 +110,17 @@ final class FieldValidatingOptionTest {
                 .setValue(randomString())
                 .build();
         MessageValue value = MessageValue.atTopLevel(msg);
-        FieldValue<StringValue> fieldValue = valueField(value);
+        FieldValue fieldValue = valueField(value);
         MaxLength maxLength = new MaxLength();
-        assertFalse(maxLength.shouldValidate(fieldValue));
+        assertFalse(maxLength.shouldValidate(fieldValue.context()));
     }
 
     @DisplayName("validate field if option is present in external constraint")
     @Test
     void validateIfOptionIsPresentInExternalConstraint() {
-        FieldValue<StringValue> fieldValue = valueFieldWithExternalConstraint();
+        FieldValue fieldValue = valueFieldWithExternalConstraint();
         MaxLength maxLength = new MaxLength();
-        assertTrue(maxLength.shouldValidate(fieldValue));
+        assertTrue(maxLength.shouldValidate(fieldValue.context()));
     }
 
     @DisplayName("validate field if option is present in field option")
@@ -127,12 +131,12 @@ final class FieldValidatingOptionTest {
                 .setValue(randomString())
                 .build();
         MessageValue value = MessageValue.atTopLevel(msg);
-        FieldValue<StringValue> fieldValue = valueField(value);
+        FieldValue fieldValue = valueField(value);
         MaxLength maxLength = new MaxLength();
-        assertTrue(maxLength.shouldValidate(fieldValue));
+        assertTrue(maxLength.shouldValidate(fieldValue.context()));
     }
 
-    private static FieldValue<StringValue> valueFieldWithExternalConstraint() {
+    private static FieldValue valueFieldWithExternalConstraint() {
         NoValidationTestMessage testMessage = NoValidationTestMessage
                 .newBuilder()
                 .setValue(randomString())
@@ -142,37 +146,37 @@ final class FieldValidatingOptionTest {
                 .setMessage(testMessage)
                 .build();
         MessageValue value = MessageValue.atTopLevel(msg);
-        FieldValue<NoValidationTestMessage> messageValue = (FieldValue<NoValidationTestMessage>) value
+        FieldValue messageValue = value
                 .valueOf("message")
-                .get();
+                .orElseGet(Assertions::fail);
         MessageValue withExternalConstraints = MessageValue
-                .nestedIn(messageValue.context(), messageValue.singleValue());
+                .nestedIn(messageValue.context(), (Message) messageValue.singleValue());
         return valueField(withExternalConstraints);
     }
 
-    private static FieldValue<StringValue> valueField(MessageValue value) {
-        return (FieldValue<StringValue>) value
+    private static FieldValue valueField(MessageValue value) {
+        return value
                 .valueOf("value")
-                .get();
+                .orElseGet(Assertions::fail);
     }
 
     @Immutable
     private static final class MaxLength
-            extends FieldValidatingOption<Integer, StringValue> {
+            extends FieldValidatingOption<Integer> {
 
         private MaxLength() {
             super(TestFieldOptionProto.maxLength);
         }
 
         @Override
-        public Constraint<FieldValue<StringValue>> constraintFor(FieldValue<StringValue> value) {
-            return new MaxLengthConstraint(optionValue(value));
+        public Constraint constraintFor(FieldContext field) {
+            return new MaxLengthConstraint(optionValue(field), field);
         }
     }
 
     @Immutable
     private static final class MaxLengthConstraint
-            extends FieldValueConstraint<StringValue, Integer> {
+            extends FieldConstraint<Integer> implements CustomConstraint {
 
         /**
          * Creates a new instance of this constraint.
@@ -180,13 +184,32 @@ final class FieldValidatingOptionTest {
          * @param optionValue
          *         a value that describes the field constraints
          */
-        private MaxLengthConstraint(int optionValue) {
-            super(optionValue);
+        private MaxLengthConstraint(int optionValue, FieldContext field) {
+            super(optionValue, field.targetDeclaration());
         }
 
         @Override
-        public ImmutableList<ConstraintViolation> check(FieldValue<StringValue> value) {
-            return ImmutableList.of();
+        public String errorMessage(FieldContext field) {
+            return format("Value of `%s` must not be longer than `%d`.",
+                          field.targetDeclaration(),
+                          optionValue());
+        }
+
+        @Override
+        public ImmutableList<ConstraintViolation> validate(MessageValue containingMessage) {
+            FieldValue value = containingMessage.valueOf(field());
+            int maxLength = optionValue();
+            FieldContext context = value.context();
+            return value.nonDefault()
+                        .filter(val -> val.toString().length() > maxLength)
+                        .map(val -> ConstraintViolation.newBuilder()
+                                                       .setFieldPath(context.fieldPath())
+                                                       .setTypeName(containingMessage.declaration()
+                                                                                     .name()
+                                                                                     .value())
+                                                       .setMsgFormat(errorMessage(context))
+                                                       .build())
+                        .collect(toImmutableList());
         }
     }
 }

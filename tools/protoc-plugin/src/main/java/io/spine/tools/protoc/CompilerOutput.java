@@ -33,4 +33,14 @@ public interface CompilerOutput {
      * @return compiler output as a {@link File}
      */
     File asFile();
+
+    /**
+     * Creates a new {@code CompilerOutput} with the given file.
+     *
+     * @param file
+     *         the Protobuf compiler output file
+     */
+    static CompilerOutput wrapping(File file) {
+        return new FileOutput(file);
+    }
 }

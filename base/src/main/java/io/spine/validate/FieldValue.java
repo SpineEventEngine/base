@@ -22,7 +22,6 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import com.google.errorprone.annotations.ImmutableTypeParameter;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
@@ -37,9 +36,10 @@ import io.spine.protobuf.TypeConverter;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.format;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * A field value to validate.
@@ -55,7 +55,7 @@ import static java.lang.String.format;
  */
 @Immutable
 @Internal
-public final class FieldValue<@ImmutableTypeParameter T> {
+public final class FieldValue {
 
     /**
      * Actual field values.
@@ -68,11 +68,12 @@ public final class FieldValue<@ImmutableTypeParameter T> {
      * For a map fields, a list contains a list of values, since the map values are being validated,
      * not the keys.
      */
-    private final ImmutableList<T> values;
+    @SuppressWarnings("Immutable")
+    private final ImmutableList<?> values;
     private final FieldContext context;
     private final FieldDeclaration declaration;
 
-    private FieldValue(Collection<T> values, FieldContext context, FieldDeclaration declaration) {
+    private FieldValue(Collection<?> values, FieldContext context, FieldDeclaration declaration) {
         this.values = ImmutableList.copyOf(values);
         this.context = context;
         this.declaration = declaration;
@@ -87,18 +88,16 @@ public final class FieldValue<@ImmutableTypeParameter T> {
      *         the context of the field
      * @return a new instance
      */
-    // Object to T is always safe since validating builders only receive `T`s.
-    @SuppressWarnings("unchecked")
-    static <@ImmutableTypeParameter T> FieldValue<T> of(Object rawValue, FieldContext context) {
+    static FieldValue of(Object rawValue, FieldContext context) {
         checkNotNull(rawValue);
         checkNotNull(context);
-        T value = rawValue instanceof ProtocolMessageEnum
-                  ? (T) ((ProtocolMessageEnum) rawValue).getValueDescriptor()
-                  : (T) rawValue;
+        Object value = rawValue instanceof ProtocolMessageEnum
+                  ? ((ProtocolMessageEnum) rawValue).getValueDescriptor()
+                  : rawValue;
         FieldDescriptor fieldDescriptor = context.target();
         FieldDeclaration declaration = new FieldDeclaration(fieldDescriptor);
 
-        FieldValue<T> result = resolveType(declaration, context, value);
+        FieldValue result = resolveType(declaration, context, value);
         return result;
     }
 
@@ -111,81 +110,18 @@ public final class FieldValue<@ImmutableTypeParameter T> {
      *
      * @return a properly typed {@code FieldValue} instance.
      */
-    @SuppressWarnings({
-            "unchecked", // Raw value is always of a correct type, see Javadoc for details.
-            "ChainOfInstanceofChecks" // No common ancestors.
-    })
-    private static <@ImmutableTypeParameter T>
-    FieldValue<T> resolveType(FieldDeclaration field, FieldContext context, T value) {
+    @SuppressWarnings("ChainOfInstanceofChecks")
+    private static
+    FieldValue resolveType(FieldDeclaration field, FieldContext context, Object value) {
         if (value instanceof List) {
-            List<T> values = (List<T>) value;
-            return new FieldValue<>(values, context, field);
+            List<?> values = (List<?>) value;
+            return new FieldValue(values, context, field);
         } else if (value instanceof Map) {
-            Map<?, T> map = (Map<?, T>) value;
-            return new FieldValue<>(map.values(), context, field);
+            Map<?, ?> map = (Map<?, ?>) value;
+            return new FieldValue(map.values(), context, field);
         } else {
-            return new FieldValue<>(ImmutableList.of(value), context, field);
+            return new FieldValue(ImmutableList.of(value), context, field);
         }
-    }
-
-    FieldValidator<?> createValidator() {
-        return createValidator(false);
-    }
-
-    public FieldValidator<?> createValidatorAssumingRequired() {
-        return createValidator(true);
-    }
-
-    /**
-     * Creates a new validator instance according to the type of the value.
-     *
-     * @param assumeRequired
-     *         if {@code true} validators would always assume that the field is required even
-     *         if the constraint is not set explicitly
-     */
-    @SuppressWarnings("OverlyComplexMethod")
-    private FieldValidator<?> createValidator(boolean assumeRequired) {
-        JavaType fieldType = javaType();
-        switch (fieldType) {
-            case MESSAGE:
-                return new MessageFieldValidator(castThis(), assumeRequired);
-            case INT:
-                return new IntegerFieldValidator(castThis());
-            case LONG:
-                return new LongFieldValidator(castThis());
-            case FLOAT:
-                return new FloatFieldValidator(castThis());
-            case DOUBLE:
-                return new DoubleFieldValidator(castThis());
-            case STRING:
-                return new StringFieldValidator(castThis(), assumeRequired);
-            case BYTE_STRING:
-                return new ByteStringFieldValidator(castThis());
-            case BOOLEAN:
-                return new BooleanFieldValidator(castThis());
-            case ENUM:
-                return new EnumFieldValidator(castThis());
-            default:
-                throw fieldTypeIsNotSupported(fieldType);
-        }
-    }
-
-    /**
-     * Casts this value to a more accurately typed {@code FieldValue}.
-     */
-    @SuppressWarnings("unchecked"
-            /* Casting is safe since {@link JavaType}, that is being checked by
-            * `#createValidator()` maps 1 to 1 to all `FieldValidator` subclasses, i.e. there
-            * is always going to be fitting validator.
-            */
-    )
-    private <S> FieldValue<S> castThis() {
-        return (FieldValue<S>) this;
-    }
-
-    private static IllegalArgumentException fieldTypeIsNotSupported(JavaType type) {
-        String msg = format("The field type is not supported for validation: %s", type);
-        throw new IllegalArgumentException(msg);
     }
 
     public FieldDescriptor descriptor() {
@@ -197,7 +133,7 @@ public final class FieldValue<@ImmutableTypeParameter T> {
      *
      * <p>For a map, returns the type of the values.
      *
-     * @return {@link JavaType} of {@linkplain #asList() list} elements
+     * @return {@link JavaType} of the field elements
      */
     public JavaType javaType() {
         if (!declaration.isMap()) {
@@ -212,27 +148,67 @@ public final class FieldValue<@ImmutableTypeParameter T> {
      * Converts the value to a list.
      *
      * @return the value as a list
+     * @deprecated Use {@link #values()} instead.
      */
-    public final ImmutableList<T> asList() {
+    @Deprecated
+    public final ImmutableList<?> asList() {
         return values;
     }
 
-    public T singleValue() {
+    /**
+     * Creates a stream of all the values of this field.
+     *
+     * <p>If the field is singular, obtains the only value. If the field is {@code repeated},
+     * obtains all the values of the list. If the field is a {@code map}, obtains all the map values
+     * (but not the keys).
+     */
+    public final Stream<?> values() {
+        return values.stream();
+    }
+
+    /**
+     * Creates a stream of non-default values of this field.
+     *
+     * <p>Behaves similarly to {@link #values()} but also filters out default values.
+     *
+     * <p>{@code 0} number values, {@code false} boolean values, {@code 0}-number enum instances,
+     * empty char and byte strings, and empty messages are considered default values.
+     */
+    public final Stream<?> nonDefault() {
+        return values().filter(val -> !isDefault(val));
+    }
+
+    /**
+     * Obtains the single value of this field.
+     *
+     * <p>If the field is a {@linkplain FieldDeclaration#isCollection() collection}, obtains
+     * the first element. If the first element is not available, throws
+     * an {@code IllegalStateException}.
+     *
+     * @return a single value of this field
+     */
+    public Object singleValue() {
+        checkState(!values.isEmpty(),
+                   "Unable to get the first element of an empty collection for the field `%s`.",
+                   declaration());
         return values.get(0);
     }
 
     /** Returns {@code true} if this field is default, {@code false} otherwise. */
     public boolean isDefault() {
-        return values.isEmpty() || (declaration.isNotCollection() &&
-                isSingleValueDefault());
+        return values.isEmpty() || allDefault();
     }
 
-    @SuppressWarnings("OverlyStrongTypeCast") // Casting to a sensible public class.
-    private boolean isSingleValueDefault() {
-        if (this.singleValue() instanceof EnumValueDescriptor) {
-            return ((EnumValueDescriptor) this.singleValue()).getNumber() == 0;
+    private boolean allDefault() {
+        return values.stream()
+                     .allMatch(FieldValue::isDefault);
+    }
+
+    private static boolean isDefault(Object singleValue) {
+        if (singleValue instanceof EnumValueDescriptor) {
+            return ((EnumValueDescriptor) singleValue).getNumber() == 0;
         }
-        Message thisAsMessage = TypeConverter.toMessage(singleValue());
+        Message thisAsMessage = TypeConverter.toMessage(singleValue);
         return Messages.isDefault(thisAsMessage);
     }
 

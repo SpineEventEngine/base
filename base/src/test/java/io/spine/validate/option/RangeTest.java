@@ -24,7 +24,7 @@ import com.google.common.collect.ImmutableList;
 import io.spine.test.validate.Hours;
 import io.spine.test.validate.NumRanges;
 import io.spine.test.validate.RangesHolder;
-import io.spine.validate.MessageValidatorTest;
+import io.spine.validate.ValidationOfConstraintTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -36,11 +36,11 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import static io.spine.validate.MessageValidatorTest.MESSAGE_VALIDATOR_SHOULD;
+import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
 
 @SuppressWarnings("unused") // methods are invoked via `@MethodSource`.
-@DisplayName(MESSAGE_VALIDATOR_SHOULD + "analyze (range) option and find out that")
-final class RangeTest extends MessageValidatorTest {
+@DisplayName(VALIDATION_SHOULD + "analyze (range) option and find out that")
+final class RangeTest extends ValidationOfConstraintTest {
 
     @Nested
     @DisplayName("integers")

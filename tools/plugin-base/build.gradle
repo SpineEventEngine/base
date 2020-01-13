@@ -25,7 +25,7 @@ group = 'io.spine.tools'
 dependencies {
     api gradleApi()
     api deps.build.gradlePlugins.protobuf
-    compile project(':tool-base')
+    api project(':tool-base')
 
     testImplementation project(':testlib')
     testImplementation project(':plugin-testlib')

@@ -21,99 +21,112 @@
 package io.spine.validate.option;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 import com.google.errorprone.annotations.Immutable;
-import com.google.errorprone.annotations.ImmutableTypeParameter;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.validate.ComparableNumber;
+import io.spine.validate.ConstraintTranslator;
 import io.spine.validate.NumberText;
 
-import static io.spine.util.Exceptions.newIllegalStateException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.Range.closed;
+import static com.google.common.collect.Range.closedOpen;
+import static com.google.common.collect.Range.open;
+import static com.google.common.collect.Range.openClosed;
+import static java.lang.String.format;
 
 /**
  * A constraint that checks whether a value fits the ranged described by expressions such as
  * {@code int32 value = 5 [(range) = "[3..5)]}, describing a value that is at least 3 and less
  * than 5.
- *
- * @param <V>
- *         numeric value that this constraint is applied to
  */
 @Immutable
-final class RangeConstraint<@ImmutableTypeParameter V extends Number & Comparable<V>>
-        extends RangedConstraint<V, String> {
+public final class RangeConstraint extends RangedConstraint<String> {
 
-    private static final Splitter RANGE_SPLITTER = Splitter.on("..");
+    /**
+     * The regular expression for parsing number ranges.
+     *
+     * <p>Defines four groups:
+     * <ol>
+     *     <li>The opening bracket (a {@code [} or a {@code (}).
+     *     <li>The lower numerical bound.
+     *     <li>The higher numerical bound.
+     *     <li>The closing bracket (a {@code ]} or a {@code )}).
+     * </ol>
+     *
+     * <p>All the groups as well as a {@code ..} divider between the numerical bounds must be
+     * matched. Extra spaces among the groups and the divider are allowed.
+     *
+     * <p>Examples of a valid number range:
+     * <ul>
+     *     <li>{@code [0..1]}
+     *     <li>{@code ( -17.3 .. +146.0 ]}
+     *     <li>{@code [+1..+100)}
+     * </ul>
+     *
+     * <p>Examples of an invalid number range:
+     * <ul>
+     *     <li>{@code 1..5} - missing brackets.
+     *     <li>{@code [0 - 1]} - wrong divider.
+     *     <li>{@code [0 . . 1]} - divider cannot be split with spaces.
+     *     <li>{@code ( .. 0)} - missing lower bound.
+     * </ul>
+     */
+    private static final Pattern NUMBER_RANGE =
+            Pattern.compile("([\\[(])\\s*([+\\-]?[\\d.]+)\\s*\\.\\.\\s*([+\\-]?[\\d.]+)\\s*([])])");
 
-    RangeConstraint(String optionValue) {
-        super(optionValue, rangeFromOption(optionValue));
+    RangeConstraint(String optionValue, FieldDeclaration field) {
+        super(optionValue, rangeFromOption(optionValue, field), field);
     }
 
     @VisibleForTesting
-    static Range<ComparableNumber> rangeFromOption(String value) {
-        String trimmed = value.trim();
-        RangeType range = RangeType.parse(trimmed);
-        EdgeValues edgeValues = edgeValues(withoutBraces(trimmed));
-        ComparableNumber left = edgeValues.leftEdge.toNumber();
-        ComparableNumber right = edgeValues.rightEdge.toNumber();
-        Range<ComparableNumber> result = range.create(left, right);
-        return result;
+    static Range<ComparableNumber> rangeFromOption(String rangeOption, FieldDeclaration field) {
+        return !rangeOption.isEmpty()
+               ? compileRange(rangeOption, field)
+               : Range.all();
     }
 
-    private static EdgeValues edgeValues(String value) {
-        String trimmed = value.trim();
-        ImmutableList<String> edges = ImmutableList.copyOf(RANGE_SPLITTER.split(trimmed));
-        String leftEdge = edges.get(0);
-        String rightEdge = edges.get(1);
-        return EdgeValues.of(leftEdge, rightEdge);
+    private static Range<ComparableNumber>
+    compileRange(String rangeOption, FieldDeclaration field) {
+        Matcher rangeMatcher = NUMBER_RANGE.matcher(rangeOption.trim());
+        checkState(rangeMatcher.matches(),
+                   "Malformed range `%s` on the field `%s`. " +
+                   "Must have a form of `[a..b]` " +
+                   "where `a` and `b` are valid literals of the type `%s`. " +
+                   "See doc of `(range)` for more details.",
+                   rangeOption, field, field.javaTypeName());
+        boolean minInclusive = rangeMatcher.group(1).equals("[");
+        ComparableNumber minValue = new NumberText(rangeMatcher.group(2)).toNumber();
+        ComparableNumber maxValue = new NumberText(rangeMatcher.group(3)).toNumber();
+        boolean maxInclusive = rangeMatcher.group(4).equals("]");
+        if (minInclusive) {
+            return maxInclusive ? closed(minValue, maxValue) : closedOpen(minValue, maxValue);
+        } else {
+            return maxInclusive ? openClosed(minValue, maxValue) : open(minValue, maxValue);
+        }
     }
 
-    private static String withoutBraces(String value) {
-        return value.substring(1, value.length() - 1);
+    @Override
+    protected String compileErrorMessage(Range<ComparableNumber> range) {
+        return format("The value of the field `%s` is out of range. Must be %s%s and %s%s.",
+                      field(),
+                      forLowerBound(range), range.lowerEndpoint(),
+                      forUpperBound(range), range.upperEndpoint());
     }
 
-    /**
-     * Edge values of a range.
-     */
-    private static class EdgeValues {
+    private static String forLowerBound(Range<?> range) {
+        return format("greater than %s", orEqualTo(range.lowerBoundType()));
+    }
 
-        private final NumberText leftEdge;
-        private final NumberText rightEdge;
+    private static String forUpperBound(Range<?> range) {
+        return format("less than %s", orEqualTo(range.upperBoundType()));
+    }
 
-        private EdgeValues(NumberText leftEdge, NumberText rightEdge) {
-            this.leftEdge = leftEdge;
-            this.rightEdge = rightEdge;
-        }
-
-        /**
-         * Creates a new instance of {@code EdgeValues} given their string representations.
-         *
-         * <p>If given strings represent numbers of different types, e.g.
-         * {@code "0.0"} and {@code "2"}, which represent a {@code Double} and an {@code Integer},
-         * an {@code IllegalStateException} is thrown.
-         *
-         * @param leftEdge
-         *         left edge of the range
-         * @param rightEdge
-         *         right edge of the range
-         * @return a new instance of {@code EdgeValues}
-         */
-        private static EdgeValues of(String leftEdge, String rightEdge)
-                throws IllegalStateException {
-            NumberText left = new NumberText(leftEdge);
-            NumberText right = new NumberText(rightEdge);
-            checkTypes(left, right);
-            return new EdgeValues(left, right);
-        }
-
-        private static void checkTypes(NumberText left, NumberText right)
-                throws IllegalStateException {
-            if (!left.isOfSameType(right)) {
-                String errorMessage =
-                        "Could not construct edge values, since left and right" +
-                                "edge values are of different type: %s and %s.";
-                throw newIllegalStateException(errorMessage, left, right);
-            }
-        }
+    @Override
+    public void accept(ConstraintTranslator<?> visitor) {
+        visitor.visitRange(this);
     }
 }

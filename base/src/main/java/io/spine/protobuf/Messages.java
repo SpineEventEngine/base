@@ -25,6 +25,7 @@ import com.google.common.cache.LoadingCache;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import com.google.protobuf.MessageLite;
+import com.google.protobuf.ProtocolMessageEnum;
 import io.spine.annotation.Internal;
 
 import java.lang.reflect.InvocationTargetException;
@@ -135,6 +136,30 @@ public final class Messages {
         checkNotNull(object);
         boolean result = !isDefault(object);
         return result;
+    }
+
+    /**
+     * Verifies if the passed Protobuf enum element is the enum's default state.
+     *
+     * @param messageEnum
+     *         the enum element to inspect
+     * @return {@code true} if the passed enum is default, {@code false} otherwise
+     */
+    public static boolean isDefault(ProtocolMessageEnum messageEnum) {
+        checkNotNull(messageEnum);
+        return messageEnum.getNumber() == 0;
+    }
+
+    /**
+     * Verifies if the passed Protobuf enum element is NOT the enum's default state.
+     *
+     * @param messageEnum
+     *         the enum element to inspect
+     * @return {@code false} if the passed enum is default, {@code true} otherwise
+     */
+    public static boolean isNotDefault(ProtocolMessageEnum messageEnum) {
+        checkNotNull(messageEnum);
+        return !isDefault(messageEnum);
     }
 
     /**

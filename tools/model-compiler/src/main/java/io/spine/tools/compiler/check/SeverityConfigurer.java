@@ -71,16 +71,9 @@ public final class SeverityConfigurer implements Logging {
      * {@code projectEvaluated} stage of the project.
      */
     public void addConfigureSeverityAction() {
-        Action<Gradle> configureCheckSeverity = configureSeverityAction();
+        Action<Gradle> configureCheckSeverity = g -> configureCheckSeverity();
         Gradle gradle = project.getGradle();
         gradle.projectsEvaluated(configureCheckSeverity);
-    }
-
-    /**
-     * Converts the {@link #configureCheckSeverity()} method to the Gradle {@link Action}.
-     */
-    private Action<Gradle> configureSeverityAction() {
-        return gradle -> configureCheckSeverity();
     }
 
     /**

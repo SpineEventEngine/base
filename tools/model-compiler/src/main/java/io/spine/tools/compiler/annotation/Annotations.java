@@ -34,8 +34,8 @@ public final class Annotations {
 
     private static final AnnotationSpec GENERATED =
             AnnotationSpec.builder(Generated.class)
-                          .addMember(GeneratedBySpine.instance().getFieldName(),
-                                     CodeBlock.of(GeneratedBySpine.instance().getCodeBlock()))
+                          .addMember(GeneratedBySpine.instance().fieldName(),
+                                     CodeBlock.of(GeneratedBySpine.instance().codeBlock()))
                           .build();
 
     private static final AnnotationSpec CAN_IGNORE_RETURN_VALUE =

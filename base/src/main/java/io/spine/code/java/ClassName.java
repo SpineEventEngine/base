@@ -34,8 +34,8 @@ import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import java.util.Deque;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.code.java.SimpleClassName.OR_BUILDER_SUFFIX;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
@@ -313,11 +313,16 @@ public final class ClassName extends StringTypeValue {
      * Obtains the name of the package of this class.
      */
     public PackageName packageName() {
+        int packageEndIndex = packageEndIndex();
+        String result = value().substring(0, packageEndIndex);
+        return PackageName.of(result);
+    }
+
+    private int packageEndIndex() {
         String fullName = value();
         int lastDotIndex = fullName.lastIndexOf(DOT_SEPARATOR);
-        checkArgument(lastDotIndex > 0, "%s should be qualified.", fullName);
-        String result = fullName.substring(0, lastDotIndex);
-        return PackageName.of(result);
+        checkState(lastDotIndex > 0, "%s should be qualified.", fullName);
+        return lastDotIndex;
     }
 
     /**

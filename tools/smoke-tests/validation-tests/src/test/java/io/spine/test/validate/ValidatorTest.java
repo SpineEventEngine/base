@@ -22,7 +22,7 @@ package io.spine.test.validate;
 
 import com.google.protobuf.Message;
 import io.spine.validate.ConstraintViolation;
-import io.spine.validate.MessageValidator;
+import io.spine.validate.Validate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -62,7 +62,7 @@ class ValidatorTest {
     }
 
     private void validate(Message msg) {
-        violations = MessageValidator.validate(msg);
+        violations = Validate.violationsOf(msg);
     }
 
     private void assertIsValid() {
