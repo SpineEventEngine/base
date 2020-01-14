@@ -22,27 +22,25 @@ package io.spine.base;
 
 import com.google.protobuf.Message;
 
+/**
+ * @apiNote Methods in this class are named with otherwise redundant "get-" prefix to avoid
+ *        clashing with any of the field names in the generated descendant classes.
+ */
 public abstract class SubscribableField<M extends Message> {
 
     private final Field field;
-    private final Class<M> enclosingMessage;
+    private final Class<M> messageType;
 
-    protected SubscribableField(Field field, Class<M> message) {
+    protected SubscribableField(Field field, Class<M> messageType) {
         this.field = field;
-        this.enclosingMessage = message;
+        this.messageType = messageType;
     }
 
-    /**
-     * Returns the enclosed field.
-     *
-     * @apiNote Named with otherwise redundant "get-" prefix on purpose, to avoid clashing with any
-     *        field names.
-     */
     public Field getField() {
         return field;
     }
 
-    public Class<M> enclosingMessage() {
-        return enclosingMessage;
+    public Class<M> getEnclosingMessage() {
+        return messageType;
     }
 }
