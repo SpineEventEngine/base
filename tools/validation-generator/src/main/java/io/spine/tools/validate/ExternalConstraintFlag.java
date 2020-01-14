@@ -29,6 +29,7 @@ import io.spine.tools.validate.code.Expression;
 import io.spine.validate.ExternalConstraints;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.squareup.javapoet.ClassName.bestGuess;
 import static java.lang.String.format;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
@@ -45,11 +46,15 @@ final class ExternalConstraintFlag {
 
     private final FieldDeclaration declaration;
     private final BooleanExpression field;
+    private final ClassName messageClassName;
 
     ExternalConstraintFlag(FieldDeclaration field) {
         this.declaration = checkNotNull(field);
         String name = format("is%sValidatedExternally", field.name().toCamelCase());
         this.field = BooleanExpression.fromCode(name);
+        this.messageClassName = bestGuess(field.declaringType()
+                                               .javaClassName()
+                                               .toString());
     }
 
     /**
@@ -68,13 +73,10 @@ final class ExternalConstraintFlag {
      * Obtains this flag as a {@link ClassMember}.
      */
     ClassMember asClassMember() {
-        ClassName containingTypeName = ClassName.bestGuess(declaration.declaringType()
-                                                                      .javaClassName()
-                                                                      .toString());
         Expression<?> externallyValidated = BooleanExpression.fromCode(
                 "$T.isDefinedFor($T.getDescriptor(), $S)",
                 ExternalConstraints.class,
-                containingTypeName,
+                messageClassName,
                 declaration.name()
         );
         FieldSpec spec = FieldSpec
