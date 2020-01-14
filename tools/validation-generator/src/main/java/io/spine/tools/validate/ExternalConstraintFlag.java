@@ -35,11 +35,11 @@ import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.STATIC;
 
 /**
- * A boolean flag in the generated code which signifies whether or not a field has externally
- * defined constraints.
+ * A boolean flag in the generated code which signifies whether a field has externally defined
+ * constraints.
  *
- * <p>Such a flag is only generated for message fields marked with {@code (validate) = true}. Other
- * fields cannot be target for external constraints.
+ * <p>Such a flag is only generated for message fields marked with {@code (validate) = true} since
+ * external constraints can only target those fields.
  */
 final class ExternalConstraintFlag {
 

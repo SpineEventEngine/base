@@ -29,5 +29,8 @@ import com.squareup.javapoet.TypeSpec;
  */
 public interface ClassMember {
 
+    /**
+     * Adds this member to the constructed {@code type}.
+     */
     void attachTo(TypeSpec.Builder type);
 }

@@ -28,6 +28,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A field to be attached to a Java class.
+ *
+ * @implNote A {@code Field} wraps a JavaPoet {@link FieldSpec} which can be added to a JavaPoet
+ *         {@link TypeSpec} builder.
  */
 final class Field implements ClassMember {
 

@@ -28,6 +28,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A method to be attached to a Java class.
+ *
+ * @implNote A {@code Method} wraps a JavaPoet {@link MethodSpec} which can be added to a JavaPoet
+ *         {@link TypeSpec} builder.
  */
 final class Method implements ClassMember {
 
