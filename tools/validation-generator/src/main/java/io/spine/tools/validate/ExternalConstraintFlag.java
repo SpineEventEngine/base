@@ -72,7 +72,7 @@ final class ExternalConstraintFlag {
                                                                       .javaClassName()
                                                                       .toString());
         Expression<?> externallyValidated = BooleanExpression.fromCode(
-                "$T.definedFor($T.getDescriptor(), $S)",
+                "$T.isDefinedFor($T.getDescriptor(), $S)",
                 ExternalConstraints.class,
                 containingTypeName,
                 declaration.name()

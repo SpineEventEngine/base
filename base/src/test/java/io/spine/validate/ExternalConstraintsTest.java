@@ -44,14 +44,14 @@ final class ExternalConstraintsTest {
     @Test
     @DisplayName("tell if an external constraint is defined for a field")
     void checkIfDefined() {
-        boolean defined = ExternalConstraints.definedFor(AMessage.getDescriptor(), "field");
+        boolean defined = ExternalConstraints.isDefinedFor(AMessage.getDescriptor(), "field");
         assertThat(defined).isTrue();
     }
 
     @Test
     @DisplayName("tell if an external constraint is NOT defined for a field")
     void checkIfNotDefined() {
-        boolean defined = ExternalConstraints.definedFor(Uri.getDescriptor(), "host");
+        boolean defined = ExternalConstraints.isDefinedFor(Uri.getDescriptor(), "host");
         assertThat(defined).isFalse();
     }
 }

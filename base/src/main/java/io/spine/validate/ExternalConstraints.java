@@ -82,12 +82,12 @@ public final class ExternalConstraints implements Serializable {
     }
 
     /**
-     * Checks if there is in external constraint targeting the field with the given name in
+     * Checks if there is an external constraint targeting the field with the given name in
      * the given type.
      *
      * <p>Example. If an external constraint is declared as follows:
      * {@code (constraint_for) = "foo.example.Customer.name"}, a call to this method with params
-     * {@code definedFor(Customer.getDescriptor(), "name")} will return {@code true}.
+     * {@code isDefinedFor(Customer.getDescriptor(), "name")} will return {@code true}.
      *
      * @param containerType
      *         the type which contains the target field
@@ -96,7 +96,7 @@ public final class ExternalConstraints implements Serializable {
      * @return {@code true} if there is an external constraint targeting the field,
      *         {@code false} otherwise
      */
-    public static boolean definedFor(Descriptor containerType, String fieldName) {
+    public static boolean isDefinedFor(Descriptor containerType, String fieldName) {
         for (ExternalMessageConstraint constraint : all()) {
             if (constraint.hasTarget(containerType, fieldName)) {
                 return true;
