@@ -20,24 +20,23 @@
 
 package io.spine.base;
 
-import io.spine.value.StringTypeValue;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-public final class EntityColumn<S extends EntityState> extends StringTypeValue {
+public final class EntityColumn<S extends EntityState> {
 
-    private static final long serialVersionUID = 0L;
+    private final String name;
+    private final Class<S> messageType;
 
-    private final Class<S> enclosingMessage;
-
-    public EntityColumn(String value, Class<S> message) {
-        super(value);
-        this.enclosingMessage = message;
+    public EntityColumn(String name, Class<S> messageType) {
+        this.name = checkNotNull(name);
+        this.messageType = checkNotNull(messageType);
     }
 
     public String name() {
-        return value();
+        return name;
     }
 
-    public Class<S> enclosingMessage() {
-        return enclosingMessage;
+    public Class<S> messageType() {
+        return messageType;
     }
 }
