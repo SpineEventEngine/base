@@ -57,6 +57,18 @@ final class MessageSelectorFactoryTest {
     }
 
     @Test
+    @DisplayName("create `Queryable` selector")
+    void createQueryableSelector() {
+        assertThat(factory.queryable()).isInstanceOf(QueryableMessage.class);
+    }
+
+    @Test
+    @DisplayName("create `Subscribable` selector")
+    void createSubscribableSelector() {
+        assertThat(factory.subscribable()).isInstanceOf(SubscribableMessage.class);
+    }
+
+    @Test
     @DisplayName("create all messages selector")
     void createAllSelector() {
         PatternSelector allSelector = factory.all();

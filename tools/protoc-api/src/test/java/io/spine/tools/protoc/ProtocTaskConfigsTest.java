@@ -63,6 +63,22 @@ final class ProtocTaskConfigsTest extends UtilityClassTest<ProtocTaskConfigs> {
         }
 
         @Test
+        @DisplayName("`QueryableConfig`")
+        void queryableConfig() {
+            ClassName className = ClassName.of("TestProjection");
+            QueryableConfig actual = ProtocTaskConfigs.queryableConfig(className);
+            assertThat(actual.getValue()).isEqualTo(className.value());
+        }
+
+        @Test
+        @DisplayName("`SubscribableConfig`")
+        void subscribableConfig() {
+            ClassName className = ClassName.of("TestEvent");
+            SubscribableConfig actual = ProtocTaskConfigs.subscribableConfig(className);
+            assertThat(actual.getValue()).isEqualTo(className.value());
+        }
+
+        @Test
         @DisplayName("`ConfigByPattern`")
         void configByPattern() {
             ClassName className = ClassName.of("test-value");
