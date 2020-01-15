@@ -25,7 +25,7 @@ import static java.lang.String.format;
 /**
  * Exception that is thrown when a particular class passed by FQN cannot be instantiated.
  */
-final class ClassInstantiationException extends RuntimeException {
+public final class ClassInstantiationException extends RuntimeException {
 
     private static final long serialVersionUID = 0L;
 
