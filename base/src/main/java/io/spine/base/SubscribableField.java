@@ -26,12 +26,12 @@ import com.google.protobuf.Message;
  * @apiNote Methods in this class are named with otherwise redundant "get-" prefix to avoid
  *        clashing with any of the field names in the generated descendant classes.
  */
-public abstract class SubscribableField<M extends Message> {
+public class SubscribableField<M extends Message> {
 
     private final Field field;
     private final Class<M> messageType;
 
-    protected SubscribableField(Field field, Class<M> messageType) {
+    public SubscribableField(Field field, Class<M> messageType) {
         this.field = field;
         this.messageType = messageType;
     }

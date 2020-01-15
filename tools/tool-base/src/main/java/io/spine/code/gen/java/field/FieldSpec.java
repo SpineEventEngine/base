@@ -22,7 +22,7 @@ package io.spine.code.gen.java.field;
 
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
-import io.spine.base.SimpleField;
+import io.spine.base.SubscribableField;
 import io.spine.code.gen.java.GeneratedMethodSpec;
 import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.java.ClassName;
@@ -60,7 +60,7 @@ abstract class FieldSpec implements GeneratedMethodSpec {
     JavaPoetName returnType() {
         return shouldExposeNestedFields()
                ? nestedFieldsContainer()
-               : simpleField();
+               : subscribableField();
     }
 
     private CodeBlock methodBody() {
@@ -80,9 +80,10 @@ abstract class FieldSpec implements GeneratedMethodSpec {
         return type;
     }
 
-    private JavaPoetName simpleField() {
+    private JavaPoetName subscribableField() {
         JavaPoetName enclosingMessageName = enclosingMessageName();
-        JavaPoetName type = JavaPoetName.parameterized(SimpleField.class, enclosingMessageName);
+        JavaPoetName type =
+                JavaPoetName.parameterized(SubscribableField.class, enclosingMessageName);
         return type;
     }
 

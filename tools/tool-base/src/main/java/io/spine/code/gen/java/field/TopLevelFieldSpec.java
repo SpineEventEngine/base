@@ -22,7 +22,7 @@ package io.spine.code.gen.java.field;
 
 import com.squareup.javapoet.CodeBlock;
 import io.spine.base.Field;
-import io.spine.base.SimpleField;
+import io.spine.base.SubscribableField;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FieldDeclaration;
 
@@ -44,7 +44,8 @@ final class TopLevelFieldSpec extends FieldSpec {
     CodeBlock returnSimpleField() {
         return CodeBlock.of(
                 "return new $T<>($T.named(\"$L\"), $T.class)",
-                SimpleField.class, Field.class, fieldName().value(), enclosingMessageName().value()
+                SubscribableField.class, Field.class,
+                fieldName().value(), enclosingMessageName().value()
         );
     }
 }

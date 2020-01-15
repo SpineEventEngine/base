@@ -21,6 +21,7 @@
 package io.spine.code.gen.java.field;
 
 import com.squareup.javapoet.CodeBlock;
+import io.spine.base.SubscribableField;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FieldDeclaration;
 
@@ -41,8 +42,8 @@ final class NestedFieldSpec extends FieldSpec {
     @Override
     CodeBlock returnSimpleField() {
         return CodeBlock.of(
-                "return new $T(getField().nested(\"$L\"), $T.class)",
-                returnType().value(), fieldName().value(), enclosingMessageName().value()
+                "return new $T<>(getField().nested(\"$L\"), $T.class)",
+                SubscribableField.class, fieldName().value(), enclosingMessageName().value()
         );
     }
 }
