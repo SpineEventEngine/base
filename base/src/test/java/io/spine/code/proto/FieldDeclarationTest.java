@@ -40,6 +40,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("FieldDeclaration should")
@@ -176,5 +177,24 @@ class FieldDeclarationTest {
         FieldDeclaration declaration = new FieldDeclaration(field);
         String javaGetterName = declaration.javaGetterName();
         assertThat(javaGetterName).isEqualTo("getUserName");
+    }
+
+    @Test
+    @DisplayName("obtain the message type of the field")
+    void obtainMessageType() {
+        FieldDescriptor field = Uri.getDescriptor()
+                                   .findFieldByName("auth");
+        FieldDeclaration declaration = new FieldDeclaration(field);
+        MessageType authorization = new MessageType(Uri.Authorization.getDescriptor());
+        assertThat(declaration.messageType()).isEqualTo(authorization);
+    }
+
+    @Test
+    @DisplayName("throw an `ISE` if the field is of non-message type")
+    void throwOnWrongType() {
+        FieldDescriptor field = Uri.Authorization.getDescriptor()
+                                                 .findFieldByName("user_name");
+        FieldDeclaration declaration = new FieldDeclaration(field);
+        assertThrows(IllegalStateException.class, declaration::messageType);
     }
 }

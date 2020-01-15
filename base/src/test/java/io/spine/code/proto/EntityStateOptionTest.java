@@ -71,6 +71,14 @@ class EntityStateOptionTest {
         assertOption(EsoPublicProjection.getDescriptor(), PROJECTION, FULL);
     }
 
+    @Test
+    @DisplayName("obtain the kind of the entity")
+    void obtainEntityKind() {
+        Optional<Kind> kind = EntityStateOption.entityTypeOf(EsoPublicProjection.getDescriptor());
+        Truth8.assertThat(kind).isPresent();
+        assertThat(kind.get()).isEqualTo(PROJECTION);
+    }
+
     void assertOption(Descriptor type, Kind kind, Visibility visibility) {
         Optional<EntityOption> found = EntityStateOption.valueOf(type);
         Truth8.assertThat(found).isPresent();
