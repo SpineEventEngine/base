@@ -34,6 +34,7 @@ import io.spine.option.MinOption;
 import io.spine.test.code.proto.command.MttStartProject;
 import io.spine.test.code.proto.event.MttProjectStarted;
 import io.spine.test.code.proto.rejections.TestRejections;
+import io.spine.test.code.proto.uuid.MttEntityState;
 import io.spine.test.code.proto.uuid.MttUuidMessage;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
@@ -120,6 +121,12 @@ final class MessageTypeTest {
                 assertQuality(MessageType::isUuidValue, MttUuidMessage.getDescriptor());
             }
 
+            @DisplayName("an entity state")
+            @Test
+            void entityState() {
+                assertQuality(MessageType::isEntityState, MttEntityState.getDescriptor());
+            }
+
             @Nested
             @DisplayName("not")
             class NotA {
@@ -152,6 +159,12 @@ final class MessageTypeTest {
                 @Test
                 void uuid() {
                     assertQuality(not(MessageType::isUuidValue), MttProjectStarted.getDescriptor());
+                }
+
+                @DisplayName("an entity state")
+                @Test
+                void entityState() {
+                    assertQuality(not(MessageType::isEntityState), MttStartProject.getDescriptor());
                 }
             }
 

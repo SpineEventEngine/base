@@ -35,25 +35,28 @@ class SubscribableFieldTest {
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
         new NullPointerTester()
+                .setDefault(Field.class, field())
                 .testAllPublicConstructors(SubscribableField.class);
     }
 
     @Test
     @DisplayName("expose the field reference")
     void exposeColumnName() {
-        Field field = Field.named("some-field");
         SubscribableField<FakeEntityState> subscribableField =
-                new SubscribableField<>(field, FakeEntityState.class);
-        assertThat(subscribableField.getField()).isEqualTo(field);
+                new SubscribableField<>(field(), FakeEntityState.class);
+        assertThat(subscribableField.getField()).isEqualTo(field());
     }
 
     @Test
     @DisplayName("expose the message type")
     void exposeMessageType() {
         Class<FakeEntityState> messageType = FakeEntityState.class;
-        Field field = Field.named("some-field");
         SubscribableField<FakeEntityState> subscribableField =
-                new SubscribableField<>(field, messageType);
+                new SubscribableField<>(field(), messageType);
         assertThat(subscribableField.getMessageType()).isEqualTo(messageType);
+    }
+
+    private static Field field() {
+        return Field.named("some-field");
     }
 }
