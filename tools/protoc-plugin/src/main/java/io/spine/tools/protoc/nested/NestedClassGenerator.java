@@ -26,6 +26,7 @@ import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CodeGenerationTasks;
 import io.spine.tools.protoc.CodeGenerator;
 import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.ExternalClassLoader;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
@@ -56,6 +57,9 @@ public final class NestedClassGenerator extends CodeGenerator {
         }
         if (isNotDefault(config.getSubscribableFactory())) {
             tasks.add(new GenerateFields(classLoader, config.getSubscribableFactory()));
+        }
+        for (ConfigByPattern byPattern : config.getFactoryByPatternList()) {
+            tasks.add(new GenerateNestedClasses(classLoader, byPattern));
         }
         return new NestedClassGenerator(tasks.build());
     }

@@ -27,7 +27,7 @@ import io.spine.base.EntityColumn;
 import io.spine.base.EventMessage;
 import io.spine.base.Identifier;
 import io.spine.base.RejectionMessage;
-import io.spine.base.SimpleField;
+import io.spine.base.SubscribableField;
 import io.spine.base.UuidValue;
 import io.spine.test.protoc.EducationalInstitution;
 import io.spine.test.protoc.Kindergarten;
@@ -47,7 +47,11 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.Method;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 @DisplayName("ProtocPlugin should")
@@ -265,6 +269,32 @@ final class ProtocPluginTest {
     }
 
     @Nested
+    @DisplayName("generate a custom nested class to be for a message using")
+    final class GenerateNestedClasses {
+
+        @Test
+        @DisplayName("prefix pattern")
+        void basedOnNamePrefix() {
+            Class<?> ownClass = MessageEnhancedWithPrefixGenerations.SomeNestedClass.messageClass();
+            assertEquals(MessageEnhancedWithPrefixGenerations.class, ownClass);
+        }
+
+        @Test
+        @DisplayName("regex pattern")
+        void basedOnNameMatchingRegex() {
+            Class<?> ownClass = MessageEnhancedWithRegexGenerations.SomeNestedClass.messageClass();
+            assertEquals(MessageEnhancedWithRegexGenerations.class, ownClass);
+        }
+
+        @Test
+        @DisplayName("suffix pattern")
+        void basedOnNameSuffix() {
+            Class<?> ownClass = MessageEnhancedWithSuffixGenerations.SomeNestedClass.messageClass();
+            assertEquals(MessageEnhancedWithSuffixGenerations.class, ownClass);
+        }
+    }
+
+    @Nested
     @DisplayName("generate methods for MFGTMessage using")
     final class MultiFactoryGeneration {
 
@@ -294,7 +324,7 @@ final class ProtocPluginTest {
     @Test
     @DisplayName("generate fields for subscribable message type")
     void generateFields() {
-        SimpleField<MovieTitleChanged> field = MovieTitleChanged.Fields.oldTitle().value();
+        SubscribableField<MovieTitleChanged> field = MovieTitleChanged.Fields.oldTitle().value();
         String expectedFieldPath = "old_title.value";
         assertEquals(expectedFieldPath, field.getField().toString());
     }

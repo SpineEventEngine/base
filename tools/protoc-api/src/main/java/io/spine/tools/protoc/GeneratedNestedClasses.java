@@ -33,6 +33,12 @@ public final class GeneratedNestedClasses extends GeneratedConfigurations<AddNes
     private QueryableConfig queryableConfig = QueryableConfig.getDefaultInstance();
     private SubscribableConfig subscribableConfig  = SubscribableConfig.getDefaultInstance();
 
+    public final void applyFactory(@FullyQualifiedName String factory, PatternSelector selector) {
+        checkNotNull(factory);
+        checkNotNull(selector);
+        addPattern(selector, ClassName.of(factory));
+    }
+
     public final void applyFactory(@FullyQualifiedName String factory, QueryableMessage selector) {
         checkNotNull(selector);
         queryableConfig = queryableConfig(ClassName.of(factory));
@@ -47,11 +53,14 @@ public final class GeneratedNestedClasses extends GeneratedConfigurations<AddNes
     @Internal
     @Override
     public AddNestedClasses asProtocConfig() {
-        AddNestedClasses result = AddNestedClasses
+        AddNestedClasses.Builder result = AddNestedClasses
                 .newBuilder()
                 .setQueryableFactory(queryableConfig)
-                .setSubscribableFactory(subscribableConfig)
-                .build();
-        return result;
+                .setSubscribableFactory(subscribableConfig);
+        patternConfigurations()
+                .stream()
+                .map(GeneratedConfigurations::toPatternConfig)
+                .forEach(result::addFactoryByPattern);
+        return result.build();
     }
 }

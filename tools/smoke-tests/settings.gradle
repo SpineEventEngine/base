@@ -24,7 +24,7 @@ include 'generated-validation-tests'
 include 'known-types-tests'
 include 'model-compiler-tests'
 include 'rejection-tests'
-include 'test-method-factory'
+include 'test-factories'
 include 'validating-options-tests'
 include 'validation-tests'
 

@@ -19,7 +19,7 @@
  */
 
 dependencies {
-    testImplementation project(':test-method-factory')
+    testImplementation project(':test-factories')
     testImplementation deps.test.truth
 }
 
@@ -37,5 +37,11 @@ modelCompiler {
         applyFactory "io.spine.tools.protoc.TestMethodFactory", messages().inFiles(prefix: 'spine/tools/protoc/prefix_generation')
         applyFactory "io.spine.tools.protoc.TestMethodFactory", messages().inFiles(regex: '.*regex.*test.*')
         applyFactory "io.spine.tools.protoc.TestMethodFactory", messages().inFiles(regex: '.*multi.*factory.*test.*')
+    }
+
+    nestedClasses {
+        applyFactory "io.spine.tools.protoc.TestNestedClassFactory", messages().inFiles(suffix: 'suffix_generation_test.proto')
+        applyFactory "io.spine.tools.protoc.TestNestedClassFactory", messages().inFiles(prefix: 'spine/tools/protoc/prefix_generation')
+        applyFactory "io.spine.tools.protoc.TestNestedClassFactory", messages().inFiles(regex: '.*regex.*test.*')
     }
 }

@@ -74,7 +74,9 @@ message AddNestedClasses {
 
     SubscribableConfig subscribable_factory = 2;
 
-    Classpath factory_classpath = 3;
+    repeated ConfigByPattern factory_by_pattern = 3;
+
+    Classpath factory_classpath = 4;
 }
 
 // UUID value code generation configuration.
