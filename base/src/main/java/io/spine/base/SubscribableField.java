@@ -22,6 +22,8 @@ package io.spine.base;
 
 import com.google.protobuf.Message;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * @apiNote Methods in this class are named with otherwise redundant "get-" prefix to avoid
  *        clashing with any of the field names in the generated descendant classes.
@@ -32,15 +34,15 @@ public class SubscribableField<M extends Message> {
     private final Class<M> messageType;
 
     public SubscribableField(Field field, Class<M> messageType) {
-        this.field = field;
-        this.messageType = messageType;
+        this.field = checkNotNull(field);
+        this.messageType = checkNotNull(messageType);
     }
 
     public Field getField() {
         return field;
     }
 
-    public Class<M> getEnclosingMessage() {
+    public Class<M> getMessageType() {
         return messageType;
     }
 }
