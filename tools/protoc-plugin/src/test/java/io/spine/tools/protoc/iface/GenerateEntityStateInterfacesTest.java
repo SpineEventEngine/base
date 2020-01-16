@@ -112,7 +112,8 @@ class GenerateEntityStateInterfacesTest {
         return markEntityStatesAs(ClassName.of(className));
     }
 
-    private static GenerateEntityStateInterfaces markEntityStatesAs(Class<? extends EntityState> clazz) {
+    private static GenerateEntityStateInterfaces
+    markEntityStatesAs(Class<? extends EntityState> clazz) {
         return markEntityStatesAs(ClassName.of(clazz));
     }
 
