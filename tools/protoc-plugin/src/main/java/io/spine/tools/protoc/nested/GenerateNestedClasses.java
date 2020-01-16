@@ -34,7 +34,8 @@ final class GenerateNestedClasses extends NestedClassGenerationTask {
 
     private final FilePatternMatcher patternMatcher;
 
-    GenerateNestedClasses(ExternalClassLoader<NestedClassFactory> classLoader, ConfigByPattern config) {
+    GenerateNestedClasses(ExternalClassLoader<NestedClassFactory> classLoader,
+                          ConfigByPattern config) {
         super(classLoader, config.getValue());
         checkNotDefaultArg(config.getPattern());
         this.patternMatcher = new FilePatternMatcher(config.getPattern());

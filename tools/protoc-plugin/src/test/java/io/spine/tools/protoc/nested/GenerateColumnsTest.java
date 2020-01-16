@@ -25,6 +25,7 @@ import com.google.common.testing.NullPointerTester;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.ExternalClassLoader;
 import io.spine.tools.protoc.QueryableConfig;
+import io.spine.tools.protoc.given.TestNestedClassFactory;
 import io.spine.tools.protoc.nested.given.TestClassLoader;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
@@ -39,17 +40,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("`GenerateColumns` should")
 class GenerateColumnsTest {
 
-    private static final String TEST_FACTORY_FQN =
-            "io.spine.tools.protoc.given.TestNestedClassFactory";
-
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
         new NullPointerTester()
                 .testAllPublicConstructors(GenerateColumns.class);
         new NullPointerTester()
-                .testAllPublicInstanceMethods(new GenerateColumns(testClassLoader(),
-                                                                  newConfig(TEST_FACTORY_FQN)));
+                .testAllPublicInstanceMethods(newTask());
     }
 
     @Test
@@ -109,7 +106,8 @@ class GenerateColumnsTest {
     }
 
     private static GenerateColumns newTask() {
-        return new GenerateColumns(testClassLoader(), newConfig(TEST_FACTORY_FQN));
+        return new GenerateColumns(testClassLoader(),
+                                   newConfig(TestNestedClassFactory.class.getName()));
     }
     private static ExternalClassLoader<NestedClassFactory> testClassLoader() {
         return TestClassLoader.instance();

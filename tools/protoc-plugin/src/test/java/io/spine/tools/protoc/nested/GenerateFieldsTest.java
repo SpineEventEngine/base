@@ -26,6 +26,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.ExternalClassLoader;
 import io.spine.tools.protoc.SubscribableConfig;
+import io.spine.tools.protoc.given.TestNestedClassFactory;
 import io.spine.tools.protoc.nested.Rejections.OrderAlreadyExists;
 import io.spine.tools.protoc.nested.given.TestClassLoader;
 import io.spine.type.MessageType;
@@ -41,17 +42,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("`GenerateFields` should")
 class GenerateFieldsTest {
 
-    private static final String TEST_FACTORY_FQN =
-            "io.spine.tools.protoc.given.TestNestedClassFactory";
-
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
         new NullPointerTester()
                 .testAllPublicConstructors(GenerateFields.class);
         new NullPointerTester()
-                .testAllPublicInstanceMethods(new GenerateFields(testClassLoader(),
-                                                                 newConfig(TEST_FACTORY_FQN)));
+                .testAllPublicInstanceMethods(newTask());
     }
 
     @Test
@@ -117,7 +114,8 @@ class GenerateFieldsTest {
     }
 
     private static GenerateFields newTask() {
-        return new GenerateFields(testClassLoader(), newConfig(TEST_FACTORY_FQN));
+        return new GenerateFields(testClassLoader(),
+                                  newConfig(TestNestedClassFactory.class.getName()));
     }
 
     private static ExternalClassLoader<NestedClassFactory> testClassLoader() {
