@@ -21,6 +21,7 @@
 package io.spine.base;
 
 import com.google.protobuf.Message;
+import io.spine.annotation.Internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -38,10 +39,12 @@ public class SubscribableField<M extends Message> {
         this.messageType = checkNotNull(messageType);
     }
 
+    @Internal
     public Field getField() {
         return field;
     }
 
+    @Internal
     public Class<M> getMessageType() {
         return messageType;
     }

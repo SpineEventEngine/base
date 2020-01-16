@@ -20,6 +20,8 @@
 
 package io.spine.base;
 
+import io.spine.annotation.Internal;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class EntityColumn<S extends EntityState> {
@@ -32,10 +34,12 @@ public final class EntityColumn<S extends EntityState> {
         this.messageType = checkNotNull(messageType);
     }
 
+    @Internal
     public String name() {
         return name;
     }
 
+    @Internal
     public Class<S> messageType() {
         return messageType;
     }
