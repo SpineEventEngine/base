@@ -95,7 +95,7 @@ final class GenerateNestedClassesTest {
     @DisplayName("generate nested classes if the message matches the pattern")
     void generateNewMethods() {
         ConfigByPattern config = newTaskConfig()
-                .setPattern(FilePatterns.fileSuffix("fields.proto"))
+                .setPattern(FilePatterns.fileSuffix("test_fields.proto"))
                 .build();
         assertThat(newTask(config).generateFor(testType()))
                 .isNotEmpty();

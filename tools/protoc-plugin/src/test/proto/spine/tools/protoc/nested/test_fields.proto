@@ -41,6 +41,13 @@ message Task {
     TaskId id = 1;
     string description = 2;
     string assignee = 3;
+    Priority priority = 4;
+
+    enum Priority {
+        UNDEFINED = 0;
+        LOW = 1;
+        HIGH = 2;
+    }
 }
 
 message TaskId {
