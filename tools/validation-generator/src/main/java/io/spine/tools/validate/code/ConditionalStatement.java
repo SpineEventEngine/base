@@ -43,7 +43,7 @@ public final class ConditionalStatement {
      * @param condition
      *         the {@code if} condition
      * @param positiveBranch
-     *         the code which should be executed if {@code condition} is {@code true}
+     *         the code to be executed if the {@code condition} is {@code true}
      */
     ConditionalStatement(BooleanExpression condition, CodeBlock positiveBranch) {
         checkNotNull(condition);
@@ -59,6 +59,41 @@ public final class ConditionalStatement {
         code.add(positiveBranch);
         code.add(lineSeparator());
         return code;
+    }
+
+    /**
+     * Adds an alternative branch to this statement.
+     *
+     * @param condition
+     *         the condition of the new {@code if}
+     * @param alternative
+     *         the code to be executed if the {@code condition} is {@code true}
+     * @return {@code this} for method chaining
+     */
+    public ConditionalStatement elseIf(BooleanExpression condition, CodeBlock alternative) {
+        checkNotNull(condition);
+        checkNotNull(alternative);
+
+        code.nextControlFlow("else if ($L)", condition);
+        code.add(alternative);
+        code.add(lineSeparator());
+        return this;
+    }
+
+    /**
+     * Adds the {@code else} branch to this statement.
+     *
+     * <p>Completes this statement. If the statement is already complete, throws
+     * an {@link IllegalStateException}.
+     *
+     * @param alternativeBranch
+     *         the code to be executed if none of the {@code if} conditions is {@code true}
+     */
+    public CodeBlock orElse(CodeBlock alternativeBranch) {
+        code.nextControlFlow("else");
+        code.add(alternativeBranch);
+        code.add(lineSeparator());
+        return toCode();
     }
 
     /**

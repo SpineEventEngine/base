@@ -73,7 +73,7 @@ public final class Constraints {
         ImmutableList.Builder<Constraint> constraintBuilder = ImmutableList.builder();
         type.fields()
             .stream()
-            .map(field -> context.forChild(field.descriptor()))
+            .map(context::forChild)
             .flatMap(FieldConstraints::of)
             .forEach(constraintBuilder::add);
         addRequiredField(type, constraintBuilder);

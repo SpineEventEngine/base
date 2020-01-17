@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package spine.test.validate;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.test.tools.validate";
+option java_outer_classname = "ExternalConstraintProto";
+option java_multiple_files = true;
+
+message ShippingAddress {
+
+    string first_line = 1 [(required) = true];
+
+    string second_line = 2;
+}
+
+message Email {
+
+    string value = 1;
+}
+
+message PersonName {
+
+    string value = 1;
+}
+
+message User {
+
+    PersonName name = 1 [(.validate) = false];
+
+    repeated ShippingAddress shipping_address = 2 [(.validate) = true];
+
+    repeated Email contact = 3 [(.validate) = true];
+}
+
+message ValidEmail {
+    option (constraint_for) = "spine.test.validate.User.contact";
+
+    string value = 1 [(pattern).regex = ".+@.+"];
+}
+
+message ValidName {
+    option (constraint_for) = "spine.test.validate.User.name";
+
+    string value = 1 [(pattern).regex = ".{2,}"];
+}

@@ -87,6 +87,13 @@ public final class FieldDeclaration {
     }
 
     /**
+     * Obtains the Protobuf field number.
+     */
+    public int number() {
+        return field.getNumber();
+    }
+
+    /**
      * Obtains descriptor of the field.
      */
     public FieldDescriptor descriptor() {

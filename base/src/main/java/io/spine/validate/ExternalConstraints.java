@@ -25,6 +25,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
 import com.google.protobuf.DescriptorProtos;
+import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.annotation.Internal;
 import io.spine.type.KnownTypes;
 import io.spine.type.MessageType;
@@ -78,6 +79,30 @@ public final class ExternalConstraints implements Serializable {
      */
     static ImmutableSet<ExternalMessageConstraint> all() {
         return Holder.instance.constraints;
+    }
+
+    /**
+     * Checks if there is an external constraint targeting the field with the given name in
+     * the given type.
+     *
+     * <p>Example. If an external constraint is declared as follows:
+     * {@code (constraint_for) = "foo.example.Customer.name"}, a call to this method with params
+     * {@code isDefinedFor(Customer.getDescriptor(), "name")} will return {@code true}.
+     *
+     * @param containerType
+     *         the type which contains the target field
+     * @param fieldName
+     *         the target field
+     * @return {@code true} if there is an external constraint targeting the field,
+     *         {@code false} otherwise
+     */
+    public static boolean isDefinedFor(Descriptor containerType, String fieldName) {
+        for (ExternalMessageConstraint constraint : all()) {
+            if (constraint.hasTarget(containerType, fieldName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

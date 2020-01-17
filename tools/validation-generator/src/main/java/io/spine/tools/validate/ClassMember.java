@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, TeamDev. All rights reserved.
+ * Copyright 2020, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,18 +18,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.validate;
+
+import com.squareup.javapoet.TypeSpec;
+
 /**
- * The versions of the libraries used.
+ * A member of a Java class.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * <p>The member can be {@linkplain #attachTo attached} to a type constructed with Java Poet.
  */
+public interface ClassMember {
 
-final def SPINE_VERSION = '1.4.2'
-
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
-
-    versionToPublish = SPINE_VERSION
+    /**
+     * Adds this member to the constructed {@code type}.
+     */
+    void attachTo(TypeSpec.Builder type);
 }

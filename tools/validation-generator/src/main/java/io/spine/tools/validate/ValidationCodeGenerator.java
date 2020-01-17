@@ -24,8 +24,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
 import com.google.common.reflect.TypeToken;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.MethodSpec;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.GoesOption;
@@ -59,6 +59,7 @@ import io.spine.validate.option.ValidateConstraint;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -84,7 +85,8 @@ import static java.util.stream.Collectors.toList;
  * the message class. Note that some methods are declared as {@code static}. Thus, they cannot be
  * placed into an inner (non-static) class.
  */
-final class ValidationCodeGenerator implements ConstraintTranslator<Set<MethodSpec>> {
+@SuppressWarnings("OverlyCoupledClass")
+final class ValidationCodeGenerator implements ConstraintTranslator<Set<ClassMember>> {
 
     @SuppressWarnings("UnstableApiUsage")
     private static final Type listOfViolations =
@@ -92,9 +94,9 @@ final class ValidationCodeGenerator implements ConstraintTranslator<Set<MethodSp
     private static final MessageAccess messageAccess = MessageAccess.of("msg");
 
     private final List<CodeBlock> compiledConstraints;
+    private final Set<ExternalConstraintFlag> externalConstraintFlags;
     private final AccumulateViolations violationAccumulator;
     private final FieldContext fieldContext;
-    private final ImmutableSet.Builder<MethodSpec> generatedMethods;
     private final String methodName;
     private final MessageType type;
 
@@ -125,7 +127,7 @@ final class ValidationCodeGenerator implements ConstraintTranslator<Set<MethodSp
         this.compiledConstraints = new ArrayList<>();
         this.violationAccumulator =
                 violation -> formatted("%s.add(%s);", VIOLATIONS, violation);
-        this.generatedMethods = ImmutableSet.builder();
+        this.externalConstraintFlags = new HashSet<>();
     }
 
     @Override
@@ -229,17 +231,7 @@ final class ValidationCodeGenerator implements ConstraintTranslator<Set<MethodSp
         Expression<List<ConstraintViolation>> violationsVar =
                 Expression.formatted("%sViolations", field.name()
                                                           .javaCase());
-
-        Function<FieldAccess, CodeBlock> nestedViolations = fieldAccess ->
-                CodeBlock.builder()
-                         .addStatement("$T $N = $L ? $T.violationsOf($L) : $T.of()",
-                                       listOfViolations,
-                                       violationsVar.toString(),
-                                       new IsSet(field).valueIsPresent(fieldAccess),
-                                       Validate.class,
-                                       unpackedMessage(field, fieldAccess),
-                                       ImmutableList.class)
-                         .build();
+        Function<FieldAccess, CodeBlock> nestedViolations = obtainViolations(field, violationsVar);
         Check check = fieldAccess -> isEmpty(violationsVar).negate();
         IfInvalidOption errorMessageOption = new IfInvalid().valueOrDefault(field.descriptor());
         String errorMessage = errorMessage(errorMessageOption, errorMessageOption.getMsgFormat());
@@ -252,6 +244,55 @@ final class ValidationCodeGenerator implements ConstraintTranslator<Set<MethodSp
                        .conditionCheck(check)
                        .createViolation(violation)
                        .build());
+    }
+
+    private Function<FieldAccess, CodeBlock>
+    obtainViolations(FieldDeclaration field,
+                     Expression<List<ConstraintViolation>> violationsVar) {
+        ExternalConstraintFlag flag = new ExternalConstraintFlag(field);
+        externalConstraintFlags.add(flag);
+        IsSet isSet = new IsSet(field);
+        return fieldAccess -> {
+            CodeBlock assignViolations = isSet
+                    .valueIsNotSet(fieldAccess)
+                    .ifTrue(assignToEmpty(violationsVar))
+                    .elseIf(flag.value(), externalViolations(field, violationsVar, fieldAccess))
+                    .orElse(intrinsicViolations(field, violationsVar, fieldAccess));
+            return CodeBlock.builder()
+                            .addStatement("$T $N", listOfViolations, violationsVar.toString())
+                            .addStatement(assignViolations)
+                            .build();
+        };
+    }
+
+    private static CodeBlock
+    intrinsicViolations(FieldDeclaration field,
+                        Expression<List<ConstraintViolation>> violationsVar,
+                        FieldAccess fieldAccess) {
+        return CodeBlock.of("$N = $T.violationsOf($L);",
+                            violationsVar.toString(),
+                            Validate.class,
+                            unpackedMessage(field, fieldAccess));
+    }
+
+    private static CodeBlock assignToEmpty(Expression<List<ConstraintViolation>> violationsVar) {
+        return CodeBlock.of("$N = $T.of();", violationsVar.toString(), ImmutableList.class);
+    }
+
+    private CodeBlock externalViolations(FieldDeclaration field,
+                                         Expression<List<ConstraintViolation>> violationsVar,
+                                         FieldAccess fieldAccess) {
+        ClassName typeName = ClassName.bestGuess(type.javaClassName().value());
+        Expression<FieldContext> fieldContextExpression =
+                Expression.fromCode("$T.create($T.getDescriptor().findFieldByNumber($L))",
+                                    FieldContext.class,
+                                    typeName,
+                                    field.number());
+        return CodeBlock.of("$N = $T.validateAtRuntime($L, $L);",
+                            violationsVar.toString(),
+                            Validate.class,
+                            unpackedMessage(field, fieldAccess),
+                            fieldContextExpression);
     }
 
     private static Expression<?> unpackedMessage(FieldDeclaration field, FieldAccess fieldAccess) {
@@ -299,20 +340,26 @@ final class ValidationCodeGenerator implements ConstraintTranslator<Set<MethodSp
     }
 
     @Override
-    public ImmutableSet<MethodSpec> translate() {
+    public ImmutableSet<ClassMember> translate() {
         compileCustomConstraints();
-        List<MethodSpec> isSetMethods = type
+        List<ClassMember> isSetMethods = type
                 .fields()
                 .stream()
                 .map(IsSet::new)
                 .map(IsSet::method)
+                .map(Method::new)
                 .collect(toList());
         ValidateMethod validateMethod =
                 new ValidateMethod(type, methodName, messageAccess, compiledConstraints);
-        ImmutableSet<MethodSpec> methods = generatedMethods
-                .add()
-                .add(validateMethod.spec())
+        List<ClassMember> externalFlags = externalConstraintFlags
+                .stream()
+                .map(ExternalConstraintFlag::asClassMember)
+                .collect(toList());
+        ImmutableSet<ClassMember> methods = ImmutableSet
+                .<ClassMember>builder()
+                .add(validateMethod.asClassMember())
                 .addAll(isSetMethods)
+                .addAll(externalFlags)
                 .build();
         return methods;
     }

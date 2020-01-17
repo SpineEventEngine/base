@@ -41,4 +41,9 @@ public final class Valid extends FieldValidatingOption<Boolean> {
         boolean shouldValidate = optionValue(field);
         return new ValidateConstraint(shouldValidate, field.targetDeclaration());
     }
+
+    @Override
+    public boolean shouldValidate(FieldContext context) {
+        return valueFrom(context).orElse(false);
+    }
 }

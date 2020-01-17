@@ -80,6 +80,21 @@ final class ExternalMessageConstraint {
         return targets;
     }
 
+    /**
+     * Checks that this constraint targets the field with the given name defined in the given type.
+     */
+    boolean hasTarget(Descriptor containingType, String fieldName) {
+        return targets.stream()
+                      .anyMatch(field -> isSame(field, containingType, fieldName));
+    }
+
+    private static boolean isSame(FieldDescriptor field, Descriptor containerType,
+                                  String fieldName) {
+        return field.getContainingType()
+                    .getFullName()
+                    .equals(containerType.getFullName()) && field.getName().equals(fieldName);
+    }
+
     private static ImmutableSet<FieldDescriptor>
     constructTargets(Descriptor constraint, Iterable<String> targetPaths) {
         ImmutableSet.Builder<FieldDescriptor> targets = ImmutableSet.builder();

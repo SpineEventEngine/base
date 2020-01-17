@@ -79,6 +79,20 @@ public interface Expression<R> {
     }
 
     /**
+     * Creates an {@code Expression} from the given code.
+     *
+     * @param code
+     *         Java code formatted as for {@link CodeBlock#of(String, Object...)}
+     * @param args
+     *         formatting arguments as for {@link CodeBlock#of(String, Object...)}
+     * @return new expression
+     */
+    static <R> Expression<R> fromCode(String code, Object... args) {
+        checkNotNull(code);
+        return of(CodeBlock.of(code, args));
+    }
+
+    /**
      * Creates an {@code Expression} by formatting the given template string by the rules of
      * {@code String.format()}.
      */
