@@ -29,7 +29,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 
 @DisplayName("`ProtocPlugin`, when generating subscribable fields, should")
-class FieldFactoryTest {
+class FieldsTest {
 
     @Test
     @DisplayName("generate a nested `Fields` class with a private c-tor")

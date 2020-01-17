@@ -33,7 +33,7 @@ import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 
 @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
 @DisplayName("`ProtocPlugin`, when generating entity columns, should")
-class ColumnFactoryTest {
+class ColumnsTest {
 
     @Test
     @DisplayName("generate a nested `Columns` class with a private c-tor")
@@ -68,7 +68,7 @@ class ColumnFactoryTest {
     }
 
     private static Correspondence<Method, String> nameCorrespondence() {
-        return Correspondence.from(ColumnFactoryTest::hasName, "has the same name");
+        return Correspondence.from(ColumnsTest::hasName, "has the same name");
     }
 
     private static boolean hasName(Method method, String name) {
