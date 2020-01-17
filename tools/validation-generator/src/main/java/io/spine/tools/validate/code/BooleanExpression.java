@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, TeamDev. All rights reserved.
+ * Copyright 2020, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -52,6 +52,17 @@ public final class BooleanExpression extends CodeExpression<Boolean> {
      * Creates a {@code BooleanExpression} from the given code.
      *
      * @param code
+     *         Java code
+     * @return new expression
+     */
+    public static BooleanExpression fromCode(CodeBlock code) {
+        return new BooleanExpression(code.toString());
+    }
+
+    /**
+     * Creates a {@code BooleanExpression} from the given code.
+     *
+     * @param code
      *         Java code formatted as for {@link CodeBlock#of(String, Object...)}
      * @param args
      *         formatting arguments as for {@link CodeBlock#of(String, Object...)}
@@ -74,6 +85,15 @@ public final class BooleanExpression extends CodeExpression<Boolean> {
      */
     public static BooleanExpression falseLiteral() {
         return FALSE;
+    }
+
+    /**
+     * Obtains a {@code BooleanExpression} which checks if the result of the given expression
+     * is {@code null}.
+     */
+    public static BooleanExpression isNull(Expression<?> value) {
+        checkNotNull(value);
+        return fromCode("$L == null",value);
     }
 
     /**

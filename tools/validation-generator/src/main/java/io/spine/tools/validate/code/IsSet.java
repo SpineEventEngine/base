@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, TeamDev. All rights reserved.
+ * Copyright 2020, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -146,6 +146,18 @@ public final class IsSet {
      * @return the boolean expression testing if the value is non-default
      */
     public BooleanExpression valueIsPresent(Expression<?> valueAccess) {
+        return valueIsNotSet(valueAccess).negate();
+    }
+
+    /**
+     * Produces an expression which tests if a single value of the field is not set.
+     *
+     * @param valueAccess
+     *         the value to be tested
+     * @return the boolean expression testing if the value is default
+     * @see #valueIsPresent(Expression)
+     */
+    public BooleanExpression valueIsNotSet(Expression<?> valueAccess) {
         JavaType javaType = field.isMap()
                             ? field.valueDeclaration()
                                    .javaType()
@@ -154,20 +166,18 @@ public final class IsSet {
             case STRING:
             case BYTE_STRING:
                 return Containers
-                        .isEmpty(valueAccess)
-                        .negate();
+                        .isEmpty(valueAccess);
             case ENUM:
             case MESSAGE:
                 return Containers
-                        .isDefault(valueAccess)
-                        .negate();
+                        .isDefault(valueAccess);
             case BOOLEAN:
             case INT:
             case LONG:
             case FLOAT:
             case DOUBLE:
             default:
-                return trueLiteral();
+                return falseLiteral();
         }
     }
 

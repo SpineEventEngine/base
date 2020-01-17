@@ -45,6 +45,11 @@ message PhoneNumber {
     string digits = 1 [(pattern).regex = "\\d+", (required) = true];
 }
 
+message EmailAddress {
+
+    string value = 1 [(pattern).regex = ".+@.+"];
+}
+
 message DeliveryReceiver {
 
     spine.people.PersonName name = 1 [(required) = true, (.validate) = true];
@@ -52,4 +57,6 @@ message DeliveryReceiver {
     Address address = 2 [(required) = true, (.validate) = true];
 
     repeated PhoneNumber contact = 3 [(.validate) = true];
+
+    repeated EmailAddress email = 4 [(.validate) = false];
 }

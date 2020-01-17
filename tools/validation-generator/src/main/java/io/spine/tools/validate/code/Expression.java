@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, TeamDev. All rights reserved.
+ * Copyright 2020, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -76,6 +76,20 @@ public interface Expression<R> {
     static <R> Expression<R> of(CodeBlock code) {
         checkNotNull(code);
         return new CodeExpression<>(code.toString());
+    }
+
+    /**
+     * Creates an {@code Expression} from the given code.
+     *
+     * @param code
+     *         Java code formatted as for {@link CodeBlock#of(String, Object...)}
+     * @param args
+     *         formatting arguments as for {@link CodeBlock#of(String, Object...)}
+     * @return new expression
+     */
+    static <R> Expression<R> fromCode(String code, Object... args) {
+        checkNotNull(code);
+        return of(CodeBlock.of(code, args));
     }
 
     /**

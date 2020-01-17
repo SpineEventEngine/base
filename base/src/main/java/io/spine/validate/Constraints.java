@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, TeamDev. All rights reserved.
+ * Copyright 2020, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -73,7 +73,7 @@ public final class Constraints {
         ImmutableList.Builder<Constraint> constraintBuilder = ImmutableList.builder();
         type.fields()
             .stream()
-            .map(field -> context.forChild(field.descriptor()))
+            .map(context::forChild)
             .flatMap(FieldConstraints::of)
             .forEach(constraintBuilder::add);
         addRequiredField(type, constraintBuilder);

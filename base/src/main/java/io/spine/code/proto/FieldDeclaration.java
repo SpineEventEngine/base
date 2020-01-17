@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, TeamDev. All rights reserved.
+ * Copyright 2020, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -86,6 +86,13 @@ public final class FieldDeclaration {
      */
     public FieldName name() {
         return FieldName.of(field.toProto());
+    }
+
+    /**
+     * Obtains the Protobuf field number.
+     */
+    public int number() {
+        return field.getNumber();
     }
 
     /**

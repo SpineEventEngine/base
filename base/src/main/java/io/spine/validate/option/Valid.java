@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, TeamDev. All rights reserved.
+ * Copyright 2020, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -40,5 +40,10 @@ public final class Valid extends FieldValidatingOption<Boolean> {
     public Constraint constraintFor(FieldContext field) {
         boolean shouldValidate = optionValue(field);
         return new ValidateConstraint(shouldValidate, field.targetDeclaration());
+    }
+
+    @Override
+    public boolean shouldValidate(FieldContext context) {
+        return valueFrom(context).orElse(false);
     }
 }

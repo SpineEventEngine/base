@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, TeamDev. All rights reserved.
+ * Copyright 2020, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -78,6 +78,21 @@ final class ExternalMessageConstraint {
      */
     ImmutableSet<FieldDescriptor> getTargets() {
         return targets;
+    }
+
+    /**
+     * Checks that this constraint targets the field with the given name defined in the given type.
+     */
+    boolean hasTarget(Descriptor containingType, String fieldName) {
+        return targets.stream()
+                      .anyMatch(field -> isSame(field, containingType, fieldName));
+    }
+
+    private static boolean isSame(FieldDescriptor field, Descriptor containerType,
+                                  String fieldName) {
+        return field.getContainingType()
+                    .getFullName()
+                    .equals(containerType.getFullName()) && field.getName().equals(fieldName);
     }
 
     private static ImmutableSet<FieldDescriptor>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, TeamDev. All rights reserved.
+ * Copyright 2020, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -62,6 +62,7 @@ import static java.util.stream.Collectors.toList;
  *
  * <p>The output result of this {@link ConstraintTranslator} is a {@link ValidationError}.
  */
+@SuppressWarnings("OverlyCoupledClass")
 final class MessageValidator implements ConstraintTranslator<Optional<ValidationError>> {
 
     private final MessageValue message;
@@ -69,6 +70,10 @@ final class MessageValidator implements ConstraintTranslator<Optional<Validation
 
     MessageValidator(Message message) {
         this(atTopLevel(checkNotNull(message)));
+    }
+
+    MessageValidator(Message message, FieldContext context) {
+        this(nestedIn(checkNotNull(context), checkNotNull(message)));
     }
 
     private MessageValidator(MessageValue message) {

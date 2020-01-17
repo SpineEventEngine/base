@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, TeamDev. All rights reserved.
+ * Copyright 2020, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -25,6 +25,7 @@ import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import io.spine.base.Field;
 import io.spine.base.Time;
+import io.spine.code.proto.FieldContext;
 import io.spine.net.Url;
 import io.spine.people.PersonName;
 import io.spine.test.validate.Passport;
@@ -59,7 +60,8 @@ class ValidateTest extends UtilityClassTest<Validate> {
     @Override
     protected void configure(NullPointerTester tester) {
         super.configure(tester);
-        tester.setDefault(Message.class, Time.currentTime());
+        tester.setDefault(Message.class, Time.currentTime())
+              .setDefault(FieldContext.class, FieldContext.empty());
     }
 
 

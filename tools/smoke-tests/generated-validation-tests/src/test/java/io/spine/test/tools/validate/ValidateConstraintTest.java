@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, TeamDev. All rights reserved.
+ * Copyright 2020, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -102,5 +102,23 @@ class ValidateConstraintTest {
                 .build();
         List<ConstraintViolation> violations = tree.validate();
         assertThat(violations).isEmpty();
+    }
+
+    @Test
+    @DisplayName("not run validation if option value is `false`")
+    void ignoreIfFalse() {
+        DeliveryReceiver receiver = DeliveryReceiver
+                .newBuilder()
+                .setName(PersonName.newBuilder()
+                                   .setGivenName("Shawn"))
+                .setAddress(Address.newBuilder()
+                                   .setFirstLine("Window St. 2")
+                                   .setTown(Town.newBuilder()
+                                                .setCity("Kharkiv")
+                                                .setCountry("Ukraine")))
+                .addEmail(EmailAddress.newBuilder().setValue("definitely not an email"))
+                .build();
+        assertThat(receiver.validate())
+                .isEmpty();
     }
 }
