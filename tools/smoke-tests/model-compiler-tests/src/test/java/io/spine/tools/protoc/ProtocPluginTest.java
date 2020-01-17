@@ -54,7 +54,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("InnerClassMayBeStatic")
-@DisplayName("ProtocPlugin should")
+@DisplayName("`ProtocPlugin` should")
 final class ProtocPluginTest {
 
     private static final String EVENT_INTERFACE_FQN =
@@ -161,13 +161,13 @@ final class ProtocPluginTest {
     }
 
     @Test
-    @DisplayName("mark nested message declarations by (is) option")
+    @DisplayName("mark nested message declarations by `(is)` option")
     void markNestedTypes() {
         assertThat(Outer.Inner.class).isAssignableTo(Wrapped.class);
     }
 
     @Test
-    @DisplayName("mark nested message declarations by (every_is) option")
+    @DisplayName("mark nested message declarations by `(every_is)` option")
     void markEveryNested() {
         assertThat(Kindergarten.class).isAssignableTo(EducationalInstitution.class);
         assertThat(School.class).isAssignableTo(EducationalInstitution.class);
@@ -186,7 +186,7 @@ final class ProtocPluginTest {
     }
 
     @Test
-    @DisplayName("generate a custom method for an .endsWith() pattern")
+    @DisplayName("generate a custom method for an `.endsWith()` pattern")
     void generateCustomPatternBasedMethod() {
         MessageType expectedType =
                 new MessageType(MessageEnhancedWithSuffixGenerations.getDescriptor());
@@ -194,7 +194,7 @@ final class ProtocPluginTest {
     }
 
     @Test
-    @DisplayName("mark a message with interface using .endsWith() pattern")
+    @DisplayName("mark a message with interface using `.endsWith()` pattern")
     void markMessageWithInterfaceUsingEndsWithPattern() {
         assertThat(MessageEnhancedWithSuffixGenerations.getDefaultInstance())
                 .isInstanceOf(SuffixedMessage.class);
@@ -269,7 +269,7 @@ final class ProtocPluginTest {
     }
 
     @Nested
-    @DisplayName("generate a custom nested class to be for a message using")
+    @DisplayName("generate a custom nested class for a message using")
     final class GenerateNestedClasses {
 
         @Test
@@ -295,11 +295,11 @@ final class ProtocPluginTest {
     }
 
     @Nested
-    @DisplayName("generate methods for MFGTMessage using")
+    @DisplayName("generate methods for `MFGTMessage` using")
     final class MultiFactoryGeneration {
 
         @Test
-        @DisplayName("UuidMethodFactory")
+        @DisplayName("`UuidMethodFactory`")
         void uuidMethodFactory() {
             assertNotEquals(MFGTMessage.generate(), MFGTMessage.generate());
             String uuid = Identifier.newUuid();
@@ -307,7 +307,7 @@ final class ProtocPluginTest {
         }
 
         @Test
-        @DisplayName("TestMethodFactory")
+        @DisplayName("`TestMethodFactory`")
         void testMethodFactory() {
             assertEquals(new MessageType(MFGTMessage.getDescriptor()), MFGTMessage.ownType());
         }
