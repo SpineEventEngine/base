@@ -37,10 +37,19 @@ final class GenerateFields extends NestedClassGenerationTask {
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
-        boolean isSubscribableType = type.isEntityState() || type.isEvent() || type.isRejection();
-        if (!isSubscribableType) {
+        if (!isSubscribableType(type)) {
             return ImmutableList.of();
         }
         return generateNestedClassesFor(type);
+    }
+
+    private static boolean isSubscribableType(MessageType type) {
+        String typeFqn = type.name()
+                             .value();
+        return type.isEntityState()
+                || type.isEvent()
+                || type.isRejection()
+                || "spine.core.Event".equals(typeFqn)
+                || "spine.core.EventContext".equals(typeFqn);
     }
 }
