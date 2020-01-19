@@ -23,13 +23,12 @@ package io.spine.code.gen.java.field;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.base.Field;
 import io.spine.base.SubscribableField;
-import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FieldDeclaration;
 
 final class TopLevelFieldSpec extends FieldSpec {
 
-    TopLevelFieldSpec(FieldDeclaration field, SimpleClassName messageName) {
-        super(field, messageName);
+    TopLevelFieldSpec(FieldDeclaration field, Class<? extends SubscribableField> fieldSupertype) {
+        super(field, fieldSupertype);
     }
 
     @Override
@@ -43,9 +42,8 @@ final class TopLevelFieldSpec extends FieldSpec {
     @Override
     CodeBlock returnSimpleField() {
         return CodeBlock.of(
-                "return new $T<>($T.named(\"$L\"), $T.class)",
-                SubscribableField.class, Field.class,
-                fieldName().value(), enclosingMessageName().value()
+                "return new $T($T.named(\"$L\"))",
+                fieldSupertype(), Field.class, fieldName().value()
         );
     }
 }

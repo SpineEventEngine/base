@@ -21,13 +21,11 @@
 package io.spine.code.gen.java;
 
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -73,15 +71,6 @@ public final class JavaPoetName {
                                                .toArray(String[]::new);
         TypeName value = ClassName.get(packageName.value(), topLevel.value(), nestingChain);
         return new JavaPoetName(value);
-    }
-
-    public static JavaPoetName parameterized(Class<?> rawType, JavaPoetName... arguments) {
-        ClassName rawTypeName = ClassName.get(rawType);
-        TypeName[] args = Arrays.stream(arguments)
-                                .map(JavaPoetName::value)
-                                .toArray(TypeName[]::new);
-        ParameterizedTypeName parameterized = ParameterizedTypeName.get(rawTypeName, args);
-        return new JavaPoetName(parameterized);
     }
 
     public TypeName value() {

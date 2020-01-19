@@ -21,7 +21,6 @@
 package io.spine.base;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.base.given.FakeEntityState;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -35,25 +34,18 @@ class SubscribableFieldTest {
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
         new NullPointerTester()
-                .setDefault(Field.class, field())
-                .testAllPublicConstructors(SubscribableField.class);
+                .testAllPublicConstructors(EntityStateField.class);
+        new NullPointerTester()
+                .testAllPublicConstructors(EventMessageField.class);
+        new NullPointerTester()
+                .testAllPublicConstructors(EventContextField.class);
     }
 
     @Test
     @DisplayName("expose the field reference")
     void exposeColumnName() {
-        SubscribableField<FakeEntityState> subscribableField =
-                new SubscribableField<>(field(), FakeEntityState.class);
+        SubscribableField subscribableField = new EntityStateField(field());
         assertThat(subscribableField.getField()).isEqualTo(field());
-    }
-
-    @Test
-    @DisplayName("expose the message type")
-    void exposeMessageType() {
-        Class<FakeEntityState> messageType = FakeEntityState.class;
-        SubscribableField<FakeEntityState> subscribableField =
-                new SubscribableField<>(field(), messageType);
-        assertThat(subscribableField.getMessageType()).isEqualTo(messageType);
     }
 
     private static Field field() {

@@ -35,11 +35,11 @@ import javax.lang.model.element.Modifier;
 abstract class FieldSpec implements GeneratedMethodSpec {
 
     private final FieldDeclaration field;
-    private final SimpleClassName messageName;
+    private final Class<? extends SubscribableField> fieldSupertype;
 
-    FieldSpec(FieldDeclaration field, SimpleClassName messageName) {
+    FieldSpec(FieldDeclaration field, Class<? extends SubscribableField> fieldSupertype) {
         this.field = field;
-        this.messageName = messageName;
+        this.fieldSupertype = fieldSupertype;
     }
 
     @Override
@@ -75,15 +75,12 @@ abstract class FieldSpec implements GeneratedMethodSpec {
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     private JavaPoetName nestedFieldsContainer() {
-        SimpleClassName simpleClassName = fieldReturnType();
-        JavaPoetName type = JavaPoetName.of(simpleClassName.with("Field"));
+        JavaPoetName type = JavaPoetName.of(fieldTypeName().with("Field"));
         return type;
     }
 
     private JavaPoetName subscribableField() {
-        JavaPoetName enclosingMessageName = enclosingMessageName();
-        JavaPoetName type =
-                JavaPoetName.parameterized(SubscribableField.class, enclosingMessageName);
+        JavaPoetName type = JavaPoetName.of(fieldSupertype);
         return type;
     }
 
@@ -91,15 +88,15 @@ abstract class FieldSpec implements GeneratedMethodSpec {
 
     abstract CodeBlock returnSimpleField();
 
-    private SimpleClassName fieldReturnType() {
+    private SimpleClassName fieldTypeName() {
         String fieldTypeName = field.javaTypeName();
         SimpleClassName result = ClassName.of(fieldTypeName)
                                           .toSimple();
         return result;
     }
 
-    JavaPoetName enclosingMessageName() {
-        return JavaPoetName.of(messageName);
+    final Class<? extends SubscribableField> fieldSupertype() {
+        return fieldSupertype;
     }
 
     static boolean shouldExposeNestedFields(FieldDeclaration field) {

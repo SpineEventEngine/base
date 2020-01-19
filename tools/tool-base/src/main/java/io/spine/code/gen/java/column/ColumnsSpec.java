@@ -71,13 +71,9 @@ public final class ColumnsSpec implements GeneratedTypeSpec {
     private ImmutableList<MethodSpec> columns() {
         ImmutableList<MethodSpec> result =
                 columns.stream()
-                       .map(this::columnSpec)
+                       .map(ColumnSpec::new)
                        .map(columnSpec -> columnSpec.methodSpec(PUBLIC, STATIC))
                        .collect(toImmutableList());
         return result;
-    }
-
-    private ColumnSpec columnSpec(FieldDeclaration column) {
-        return new ColumnSpec(column, messageType.simpleJavaClassName());
     }
 }

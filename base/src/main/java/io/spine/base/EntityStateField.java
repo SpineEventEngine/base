@@ -18,31 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.gen.java.field;
+package io.spine.base;
 
-import com.squareup.javapoet.CodeBlock;
-import io.spine.base.SubscribableField;
-import io.spine.code.proto.FieldDeclaration;
+public class EntityStateField extends SubscribableField {
 
-final class NestedFieldSpec extends FieldSpec {
-
-    NestedFieldSpec(FieldDeclaration field, Class<? extends SubscribableField> fieldSupertype) {
-        super(field, fieldSupertype);
-    }
-
-    @Override
-    CodeBlock returnNestedFieldsContainer() {
-        return CodeBlock.of(
-                "return new $T(getField().nested(\"$L\"))",
-                returnType().value(), fieldName().value()
-        );
-    }
-
-    @Override
-    CodeBlock returnSimpleField() {
-        return CodeBlock.of(
-                "return new $T(getField().nested(\"$L\"))",
-                fieldSupertype(), fieldName().value()
-        );
+    public EntityStateField(Field field) {
+        super(field);
     }
 }

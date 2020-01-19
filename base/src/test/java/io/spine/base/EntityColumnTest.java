@@ -21,7 +21,6 @@
 package io.spine.base;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.base.given.FakeEntityState;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -42,17 +41,8 @@ class EntityColumnTest {
     @DisplayName("expose the column name")
     void exposeColumnName() {
         String columnName = "some-column";
-        EntityColumn<FakeEntityState> column =
-                new EntityColumn<>(columnName, FakeEntityState.class);
+        EntityColumn column =
+                new EntityColumn(columnName);
         assertThat(column.name()).isEqualTo(columnName);
-    }
-
-    @Test
-    @DisplayName("expose the message type")
-    void exposeMessageType() {
-        Class<FakeEntityState> messageType = FakeEntityState.class;
-        EntityColumn<FakeEntityState> column =
-                new EntityColumn<>("some-other-column", messageType);
-        assertThat(column.messageType()).isEqualTo(messageType);
     }
 }

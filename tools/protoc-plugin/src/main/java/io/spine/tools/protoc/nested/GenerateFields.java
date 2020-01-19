@@ -27,6 +27,7 @@ import io.spine.tools.protoc.SubscribableConfig;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.code.gen.java.FieldFactory.eligibleForFieldsGeneration;
 
 final class GenerateFields extends NestedClassGenerationTask {
 
@@ -44,12 +45,6 @@ final class GenerateFields extends NestedClassGenerationTask {
     }
 
     private static boolean isSubscribableType(MessageType type) {
-        String typeFqn = type.name()
-                             .value();
-        return type.isEntityState()
-                || type.isEvent()
-                || type.isRejection()
-                || "spine.core.Event".equals(typeFqn)
-                || "spine.core.EventContext".equals(typeFqn);
+        return eligibleForFieldsGeneration(type);
     }
 }

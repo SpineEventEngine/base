@@ -25,7 +25,6 @@ import com.squareup.javapoet.MethodSpec;
 import io.spine.base.EntityColumn;
 import io.spine.code.gen.java.GeneratedMethodSpec;
 import io.spine.code.gen.java.JavaPoetName;
-import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 
@@ -34,11 +33,9 @@ import javax.lang.model.element.Modifier;
 final class ColumnSpec implements GeneratedMethodSpec {
 
     private final FieldDeclaration column;
-    private final SimpleClassName messageName;
 
-    ColumnSpec(FieldDeclaration column, SimpleClassName messageName) {
+    ColumnSpec(FieldDeclaration column) {
         this.column = column;
-        this.messageName = messageName;
     }
 
     @Override
@@ -53,21 +50,15 @@ final class ColumnSpec implements GeneratedMethodSpec {
         return result;
     }
 
-    private JavaPoetName columnType() {
-        JavaPoetName result =
-                JavaPoetName.parameterized(EntityColumn.class, enclosingMessageName());
+    private static JavaPoetName columnType() {
+        JavaPoetName result = JavaPoetName.of(EntityColumn.class);
         return result;
     }
 
     private CodeBlock methodBody() {
         return CodeBlock.of(
-                "return new $T<>(\"$L\", $T.class)",
-                EntityColumn.class, columnName(), enclosingMessageName().value()
+                "return new $T(\"$L\")", EntityColumn.class, columnName()
         );
-    }
-
-    private JavaPoetName enclosingMessageName() {
-        return JavaPoetName.of(messageName);
     }
 
     private FieldName columnName() {

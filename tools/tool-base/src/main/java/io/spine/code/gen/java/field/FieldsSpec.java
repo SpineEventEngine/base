@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.concurrent.LazyInit;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import io.spine.base.SubscribableField;
 import io.spine.code.gen.java.EmptyPrivateCtor;
 import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.java.PackageName;
@@ -36,11 +37,14 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.code.gen.java.FieldFactory.isEvent;
+import static io.spine.code.gen.java.FieldFactory.isEventContext;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
-public final class FieldsSpec implements GeneratedTypeSpec {
+public abstract class FieldsSpec implements GeneratedTypeSpec {
 
     private final MessageType messageType;
     private final ImmutableList<FieldDeclaration> fields;
@@ -48,14 +52,26 @@ public final class FieldsSpec implements GeneratedTypeSpec {
     @LazyInit
     private @MonotonicNonNull List<MessageType> nestedFieldTypes;
 
-    private FieldsSpec(MessageType messageType) {
+    FieldsSpec(MessageType messageType) {
         this.messageType = messageType;
         this.fields = messageType.fields();
     }
 
     public static FieldsSpec of(MessageType messageType) {
         checkNotNull(messageType);
-        return new FieldsSpec(messageType);
+        if (messageType.isEntityState() || isEvent(messageType)) {
+            return new EntityStateFields(messageType);
+        }
+        if (messageType.isEvent() || messageType.isRejection()) {
+            return new EventMessageFields(messageType);
+        }
+        if (isEventContext(messageType)) {
+            return new EventContextFields(messageType);
+        }
+        throw newIllegalArgumentException(
+                "Unexpected message type during subscribable fields generation: %s.",
+                messageType.name()
+        );
     }
 
     @Override
@@ -88,10 +104,14 @@ public final class FieldsSpec implements GeneratedTypeSpec {
     private ImmutableList<TypeSpec> nestedFieldContainers() {
         ImmutableList<TypeSpec> result =
                 nestedFieldTypes().stream()
-                                  .map(type -> new NestedFieldContainer(type, messageType))
+                                  .map(type -> new NestedFieldContainer(type, fieldSupertype()))
                                   .map(type -> type.typeSpec(PUBLIC, STATIC, FINAL))
                                   .collect(toImmutableList());
         return result;
+    }
+
+    private FieldSpec topLevelFieldSpec(FieldDeclaration field) {
+        return new TopLevelFieldSpec(field, fieldSupertype());
     }
 
     private List<MessageType> nestedFieldTypes() {
@@ -102,7 +122,5 @@ public final class FieldsSpec implements GeneratedTypeSpec {
         return nestedFieldTypes;
     }
 
-    private FieldSpec topLevelFieldSpec(FieldDeclaration field) {
-        return new TopLevelFieldSpec(field, messageType.simpleJavaClassName());
-    }
+    protected abstract Class<? extends SubscribableField> fieldSupertype();
 }

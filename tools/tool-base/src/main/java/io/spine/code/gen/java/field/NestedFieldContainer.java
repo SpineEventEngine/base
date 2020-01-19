@@ -22,7 +22,6 @@ package io.spine.code.gen.java.field;
 
 import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.Field;
@@ -30,7 +29,6 @@ import io.spine.base.SubscribableField;
 import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.java.PackageName;
-import io.spine.code.java.SimpleClassName;
 import io.spine.type.MessageType;
 
 import javax.lang.model.element.Modifier;
@@ -40,14 +38,16 @@ import static java.lang.String.format;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
+@SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication of the generated code.
 final class NestedFieldContainer implements GeneratedTypeSpec {
 
     private final MessageType messageType;
-    private final MessageType topLevelType;
+    private final Class<? extends SubscribableField> fieldSupertype;
 
-    NestedFieldContainer(MessageType nestedType, MessageType topLevelType) {
+    NestedFieldContainer(MessageType nestedType,
+                         Class<? extends SubscribableField> fieldSupertype) {
         this.messageType = nestedType;
-        this.topLevelType = topLevelType;
+        this.fieldSupertype = fieldSupertype;
     }
 
     @Override
@@ -72,23 +72,18 @@ final class NestedFieldContainer implements GeneratedTypeSpec {
     }
 
     private TypeName superclass() {
-        JavaPoetName rawType = JavaPoetName.of(SubscribableField.class);
-        JavaPoetName argType = JavaPoetName.of(topLevelType.javaClassName()
-                                                           .toSimple());
-        ParameterizedTypeName result =
-                ParameterizedTypeName.get(rawType.className(), argType.value());
+        JavaPoetName type = JavaPoetName.of(fieldSupertype);
+        TypeName result = type.value();
         return result;
     }
 
-    private MethodSpec constructor() {
+    private static MethodSpec constructor() {
         String argName = "field";
-        TypeName topLevelTypeName = JavaPoetName.of(topLevelTypeName())
-                                                .value();
         MethodSpec result = MethodSpec
                 .constructorBuilder()
                 .addModifiers(PRIVATE)
                 .addParameter(Field.class, argName)
-                .addStatement("super($L, $T.class)", argName, topLevelTypeName)
+                .addStatement("super($L)", argName)
                 .build();
         return result;
     }
@@ -97,13 +92,9 @@ final class NestedFieldContainer implements GeneratedTypeSpec {
         ImmutableList<MethodSpec> result =
                 messageType.fields()
                            .stream()
-                           .map(field -> new NestedFieldSpec(field, topLevelTypeName()))
+                           .map(field -> new NestedFieldSpec(field, fieldSupertype))
                            .map(spec -> spec.methodSpec(PUBLIC))
                            .collect(toImmutableList());
         return result;
-    }
-
-    private SimpleClassName topLevelTypeName() {
-        return topLevelType.simpleJavaClassName();
     }
 }

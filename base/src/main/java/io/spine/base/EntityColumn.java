@@ -24,23 +24,16 @@ import io.spine.annotation.Internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public final class EntityColumn<S extends EntityState> {
+public final class EntityColumn {
 
     private final String name;
-    private final Class<S> messageType;
 
-    public EntityColumn(String name, Class<S> messageType) {
+    public EntityColumn(String name) {
         this.name = checkNotNull(name);
-        this.messageType = checkNotNull(messageType);
     }
 
     @Internal
     public String name() {
         return name;
-    }
-
-    @Internal
-    public Class<S> messageType() {
-        return messageType;
     }
 }

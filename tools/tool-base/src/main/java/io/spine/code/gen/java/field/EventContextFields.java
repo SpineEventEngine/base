@@ -20,29 +20,18 @@
 
 package io.spine.code.gen.java.field;
 
-import com.squareup.javapoet.CodeBlock;
+import io.spine.base.EventContextField;
 import io.spine.base.SubscribableField;
-import io.spine.code.proto.FieldDeclaration;
+import io.spine.type.MessageType;
 
-final class NestedFieldSpec extends FieldSpec {
+final class EventContextFields extends FieldsSpec {
 
-    NestedFieldSpec(FieldDeclaration field, Class<? extends SubscribableField> fieldSupertype) {
-        super(field, fieldSupertype);
+    EventContextFields(MessageType messageType) {
+        super(messageType);
     }
 
     @Override
-    CodeBlock returnNestedFieldsContainer() {
-        return CodeBlock.of(
-                "return new $T(getField().nested(\"$L\"))",
-                returnType().value(), fieldName().value()
-        );
-    }
-
-    @Override
-    CodeBlock returnSimpleField() {
-        return CodeBlock.of(
-                "return new $T(getField().nested(\"$L\"))",
-                fieldSupertype(), fieldName().value()
-        );
+    protected Class<? extends SubscribableField> fieldSupertype() {
+        return EventContextField.class;
     }
 }
