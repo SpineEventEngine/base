@@ -52,11 +52,11 @@ public final class FieldFactory implements NestedClassFactory {
         return type.isEntityState()
                 || type.isEvent()
                 || type.isRejection()
-                || isEvent(type)
+                || isSpineCoreEvent(type)
                 || isEventContext(type);
     }
 
-    public static boolean isEvent(MessageType type) {
+    public static boolean isSpineCoreEvent(MessageType type) {
         String typeName = type.name().value();
         return EVENT.equals(typeName);
     }
