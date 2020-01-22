@@ -28,6 +28,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @apiNote Methods in this class are named with otherwise redundant "get-" prefix to avoid
  *        clashing with any of the field names in the generated descendant classes.
  */
+// TODO:2019-12-20:dmytro.kuzmin:WIP: `extends ValueHolder<Field>`?
 public abstract class SubscribableField {
 
     private final Field field;
