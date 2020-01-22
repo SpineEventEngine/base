@@ -165,6 +165,14 @@ public final class Field extends ValueHolder<FieldPath> {
         return create(newPath);
     }
 
+    public Field nested(Field other) {
+        checkNotNull(other);
+        FieldPath newPath = path().toBuilder()
+                                  .addAllFieldName(other.path().getFieldNameList())
+                                  .build();
+        return create(newPath);
+    }
+
     /** Obtains the path of the field. */
     public FieldPath path() {
         return value();
