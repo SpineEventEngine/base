@@ -20,15 +20,25 @@
 
 package io.spine.reflect;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
+import static java.lang.invoke.MethodHandles.publicLookup;
 
 /**
  * A utility for working with Java {@linkplain Method methods}.
  */
 public final class Methods {
+
+    private static final Lock accessibilityLock = new ReentrantLock();
+    private static final Lookup publicLookup = publicLookup();
 
     /** Prevents instantiation of this utility class. */
     private Methods() {
@@ -46,6 +56,7 @@ public final class Methods {
      *         if an exception is thrown during the method invocation
      */
     public static Object setAccessibleAndInvoke(Method method, Object target) {
+        checkNotNull(method);
         boolean accessible = method.isAccessible();
         try {
             method.setAccessible(true);
@@ -55,9 +66,38 @@ public final class Methods {
             throw newIllegalStateException(
                     e,
                     "Method `%s` invocation on target `%s` of class `%s` failed.",
-                    method.getName(), target, target.getClass().getCanonicalName());
+                    method.getName(), target, target.getClass()
+                                                    .getCanonicalName());
         } finally {
             method.setAccessible(accessible);
         }
+    }
+
+    /**
+     * Converts the given {@link Method} into a {@link MethodHandle}.
+     *
+     * <p>The accessibility parameter of the input method, i.e. {@code method.isAccessible()}, is
+     * preserved by this method. However, the attributes may be changes in a non-synchronized
+     * manner, i.e. the {@code asHandle(..)} is not designed to operate concurrently.
+     */
+    public static MethodHandle asHandle(Method method) {
+        checkNotNull(method);
+        boolean accessible = method.isAccessible();
+        if (!accessible) {
+            method.setAccessible(true);
+        }
+        MethodHandle handle;
+        try {
+            handle = publicLookup.unreflect(method);
+        } catch (IllegalAccessException exception) {
+            throw newIllegalArgumentException(exception,
+                                              "Unable to obtain method handle for `%s`.",
+                                              method);
+        } finally {
+            if (!accessible) {
+                method.setAccessible(false);
+            }
+        }
+        return handle;
     }
 }

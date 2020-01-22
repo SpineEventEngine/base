@@ -25,28 +25,30 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.reflect.given.MethodsTestEnv.ClassWithPrivateMethod.METHOD_RESULT;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`Methods` utility should")
 class MethodsTest {
 
-    private Method method;
+    private Method privateMethod;
 
     @BeforeEach
     void obtainMethod() throws NoSuchMethodException {
-        method = ClassWithPrivateMethod.class.getDeclaredMethod("privateMethod");
+        privateMethod = ClassWithPrivateMethod.class.getDeclaredMethod("privateMethod");
     }
 
     @Test
     @DisplayName("set the method accessible and invoke")
     void setAccessibleAndInvoke() {
         ClassWithPrivateMethod target = new ClassWithPrivateMethod();
-        Object result = Methods.setAccessibleAndInvoke(method, target);
+        Object result = Methods.setAccessibleAndInvoke(privateMethod, target);
 
-        assertThat(result).isEqualTo(ClassWithPrivateMethod.METHOD_RESULT);
+        assertThat(result).isEqualTo(METHOD_RESULT);
     }
 
     @SuppressWarnings("CheckReturnValue") // Called to throw exception.
@@ -56,7 +58,7 @@ class MethodsTest {
         Object wrongTarget = new Object();
 
         assertThrows(IllegalArgumentException.class,
-                     () -> Methods.setAccessibleAndInvoke(method, wrongTarget));
+                     () -> Methods.setAccessibleAndInvoke(privateMethod, wrongTarget));
     }
 
     @SuppressWarnings("CheckReturnValue") // Called to throw exception.
@@ -68,5 +70,29 @@ class MethodsTest {
 
         assertThrows(IllegalStateException.class,
                      () -> Methods.setAccessibleAndInvoke(method, target));
+    }
+
+    @Test
+    @DisplayName("convert a visible method to a handle")
+    void convertToHandle() throws Throwable {
+        Method method = ClassWithPrivateMethod.class.getMethod("publicMethod");
+        MethodHandle handle = Methods.asHandle(method);
+        assertThat(handle).isNotNull();
+
+        Object invocationResult = handle.bindTo(new ClassWithPrivateMethod())
+                                        .invoke();
+        assertThat(invocationResult)
+                .isEqualTo(METHOD_RESULT);
+    }
+
+    @Test
+    @DisplayName("convert an invisible method to a handle")
+    void convertInvisibleToHandle() throws Throwable {
+        MethodHandle handle = Methods.asHandle(privateMethod);
+        assertThat(handle).isNotNull();
+
+        Object invocationResult = handle.invoke(new ClassWithPrivateMethod());
+        assertThat(invocationResult)
+                .isEqualTo(METHOD_RESULT);
     }
 }

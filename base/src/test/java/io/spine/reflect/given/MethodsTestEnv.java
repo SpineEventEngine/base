@@ -31,6 +31,10 @@ public final class MethodsTestEnv {
 
         public static final String METHOD_RESULT = "the-result-string";
 
+        public String publicMethod() {
+            return METHOD_RESULT;
+        }
+
         private String privateMethod() {
             return METHOD_RESULT;
         }
