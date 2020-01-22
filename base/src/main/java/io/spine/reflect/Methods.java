@@ -87,9 +87,11 @@ public final class Methods {
         try {
             handle = publicLookup.unreflect(method);
         } catch (IllegalAccessException exception) {
-            throw newIllegalArgumentException(exception,
-                                              "Unable to obtain method handle for `%s`.",
-                                              method);
+            throw newIllegalArgumentException(
+                    exception,
+                    "Unable to obtain method handle for `%s`." +
+                    " The method's accessibility was probably changed concurrently.",
+                    method);
         } finally {
             if (!accessible) {
                 method.setAccessible(false);
