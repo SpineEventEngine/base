@@ -21,6 +21,7 @@
 package io.spine.reflect;
 
 import io.spine.reflect.given.MethodsTestEnv.ClassWithPrivateMethod;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,11 @@ class MethodsTest {
     @BeforeEach
     void obtainMethod() throws NoSuchMethodException {
         privateMethod = ClassWithPrivateMethod.class.getDeclaredMethod("privateMethod");
+    }
+
+    @AfterEach
+    void resetMethod() {
+        privateMethod.setAccessible(false);
     }
 
     @Test
@@ -89,6 +95,20 @@ class MethodsTest {
     @DisplayName("convert an invisible method to a handle")
     void convertInvisibleToHandle() throws Throwable {
         MethodHandle handle = Methods.asHandle(privateMethod);
+        assertThat(handle).isNotNull();
+        assertThat(privateMethod.isAccessible()).isFalse();
+
+        Object invocationResult = handle.invoke(new ClassWithPrivateMethod());
+        assertThat(invocationResult)
+                .isEqualTo(METHOD_RESULT);
+    }
+
+    @Test
+    @DisplayName("convert an accessible method to a handle")
+    void convertAccessibleToHandle() throws Throwable {
+        privateMethod.setAccessible(true);
+        MethodHandle handle = Methods.asHandle(privateMethod);
+        assertThat(privateMethod.isAccessible()).isTrue();
         assertThat(handle).isNotNull();
 
         Object invocationResult = handle.invoke(new ClassWithPrivateMethod());
