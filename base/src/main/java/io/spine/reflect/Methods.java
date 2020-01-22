@@ -24,8 +24,6 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
@@ -37,7 +35,6 @@ import static java.lang.invoke.MethodHandles.publicLookup;
  */
 public final class Methods {
 
-    private static final Lock accessibilityLock = new ReentrantLock();
     private static final Lookup publicLookup = publicLookup();
 
     /** Prevents instantiation of this utility class. */
