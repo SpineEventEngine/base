@@ -56,11 +56,14 @@ class FieldsTest {
     @Test
     @DisplayName("generate nested classes only once in case of cyclic field references")
     void handleCyclicReferences() {
-        checkField(Project.Fields.parentProject().parentProject(), "parent_project.parent_project");
+        Project.Fields.ProjectField parentProjectField = Project.Fields.parentProject();
+
+        checkField(parentProjectField.parentProject(), "parent_project.parent_project");
+        assertThat(parentProjectField.getClass())
+                .isEqualTo(parentProjectField.parentProject().getClass());
     }
 
-    private static void checkField(SubscribableField<Project> field, String fieldPath) {
-        assertThat(field.getField().toString()).isEqualTo(fieldPath);
-        assertThat(field.getMessageType()).isEqualTo(Project.class);
+    private static void checkField(SubscribableField field, String expectedFieldPath) {
+        assertThat(field.getField().toString()).isEqualTo(expectedFieldPath);
     }
 }

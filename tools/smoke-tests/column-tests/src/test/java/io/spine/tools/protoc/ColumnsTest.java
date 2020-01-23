@@ -44,8 +44,8 @@ class ColumnsTest {
     @Test
     @DisplayName("generate a method which returns an `EntityColumn` for each message column")
     void generateColumnMethods() {
-        checkNameAndType(ProjectView.Columns.projectName(), "project_name");
-        checkNameAndType(ProjectView.Columns.status(), "status");
+        checkColumn(ProjectView.Columns.projectName(), "project_name");
+        checkColumn(ProjectView.Columns.status(), "status");
     }
 
     @Test
@@ -55,9 +55,8 @@ class ColumnsTest {
         assertDoesNotContainMethod(ProjectView.Columns.class, "name");
     }
 
-    private static void checkNameAndType(EntityColumn<ProjectView> column, String name) {
-        assertThat(column.name()).isEqualTo(name);
-        assertThat(column.messageType()).isEqualTo(ProjectView.class);
+    private static void checkColumn(EntityColumn column, String expectedName) {
+        assertThat(column.name()).isEqualTo(expectedName);
     }
 
     private static void assertDoesNotContainMethod(Class<?> type, String methodNames) {
