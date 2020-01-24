@@ -20,8 +20,8 @@
 
 package io.spine.code.gen.java.field;
 
-import io.spine.base.EventContextField;
-import io.spine.base.SubscribableField;
+import io.spine.gen.EventContextField;
+import io.spine.gen.SubscribableField;
 import io.spine.type.MessageType;
 
 final class EventContextFields extends FieldsSpec {

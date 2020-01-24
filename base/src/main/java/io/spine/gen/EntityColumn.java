@@ -18,31 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.gen;
 
-import com.google.common.testing.NullPointerTester;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import io.spine.annotation.Internal;
 
-import static com.google.common.truth.Truth.assertThat;
-import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-@DisplayName("`EntityColumn` should")
-class EntityColumnTest {
+public final class EntityColumn {
 
-    @Test
-    @DisplayName(NOT_ACCEPT_NULLS)
-    void passNullToleranceCheck() {
-        new NullPointerTester()
-                .testAllPublicConstructors(EntityColumn.class);
+    private final String name;
+
+    public EntityColumn(String name) {
+        this.name = checkNotNull(name);
     }
 
-    @Test
-    @DisplayName("expose the column name")
-    void exposeColumnName() {
-        String columnName = "some-column";
-        EntityColumn column =
-                new EntityColumn(columnName);
-        assertThat(column.name()).isEqualTo(columnName);
+    @Internal
+    public String name() {
+        return name;
     }
 }

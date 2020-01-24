@@ -18,11 +18,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.gen;
 
-public class EntityStateField extends SubscribableField {
+import io.spine.annotation.Internal;
+import io.spine.base.Field;
 
-    public EntityStateField(Field field) {
-        super(field);
+import static com.google.common.base.Preconditions.checkNotNull;
+
+/**
+ * @apiNote Methods in this class are named with otherwise redundant "get-" prefix to avoid
+ *        clashing with any of the proto field names in the generated descendant classes. For the
+ *        same reason the class does not inherit from {@link io.spine.value.ValueHolder}, as
+ *        methods like {@code ValueHolder#value()}) are likely to produce a name clash with
+ *        Protobuf fields.
+ */
+@SuppressWarnings("AbstractClassWithoutAbstractMethods")
+// Prevent instantiation in favor of concrete subclasses.
+public abstract class SubscribableField {
+
+    private final Field field;
+
+    public SubscribableField(Field field) {
+        this.field = checkNotNull(field);
+    }
+
+    @Internal
+    public Field getField() {
+        return field;
     }
 }

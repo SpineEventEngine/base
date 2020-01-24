@@ -18,11 +18,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.gen;
 
-public class EventMessageField extends SubscribableField {
+import com.google.common.testing.NullPointerTester;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-    public EventMessageField(Field field) {
-        super(field);
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+
+@DisplayName("`EntityColumn` should")
+class EntityColumnTest {
+
+    @Test
+    @DisplayName(NOT_ACCEPT_NULLS)
+    void passNullToleranceCheck() {
+        new NullPointerTester()
+                .testAllPublicConstructors(EntityColumn.class);
+    }
+
+    @Test
+    @DisplayName("expose the column name")
+    void exposeColumnName() {
+        String columnName = "some-column";
+        EntityColumn column =
+                new EntityColumn(columnName);
+        assertThat(column.name()).isEqualTo(columnName);
     }
 }

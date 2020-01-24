@@ -18,20 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.gen.java.field;
+package io.spine.gen;
 
-import io.spine.gen.EventMessageField;
-import io.spine.gen.SubscribableField;
-import io.spine.type.MessageType;
+import io.spine.base.Field;
 
-final class EventMessageFields extends FieldsSpec {
+public class EventContextField extends SubscribableField {
 
-    EventMessageFields(MessageType messageType) {
-        super(messageType);
-    }
-
-    @Override
-    protected Class<? extends SubscribableField> fieldSupertype() {
-        return EventMessageField.class;
+    public EventContextField(Field field) {
+        super(field);
     }
 }

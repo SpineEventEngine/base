@@ -22,11 +22,11 @@ package io.spine.code.gen.java.column;
 
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
-import io.spine.base.EntityColumn;
 import io.spine.code.gen.java.GeneratedMethodSpec;
 import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
+import io.spine.gen.EntityColumn;
 
 import javax.lang.model.element.Modifier;
 
