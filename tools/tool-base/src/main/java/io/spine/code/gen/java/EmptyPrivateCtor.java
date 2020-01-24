@@ -39,6 +39,7 @@ public final class EmptyPrivateCtor {
         MethodSpec result = MethodSpec
                 .constructorBuilder()
                 .addModifiers(PRIVATE)
+                .addJavadoc("Prevents instantiation of this class.")
                 .build();
         return result;
     }
