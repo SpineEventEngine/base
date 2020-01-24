@@ -33,6 +33,7 @@ import javax.lang.model.element.Modifier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
 import static io.spine.code.proto.ColumnOption.columnsOf;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
@@ -62,6 +63,7 @@ public final class ColumnsSpec implements GeneratedTypeSpec {
         TypeSpec result = TypeSpec
                 .classBuilder("Columns")
                 .addModifiers(modifiers)
+                .addAnnotation(generatedBySpineModelCompiler())
                 .addMethod(EmptyPrivateCtor.spec())
                 .addMethods(columns())
                 .build();

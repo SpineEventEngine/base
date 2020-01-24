@@ -37,6 +37,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
 import static io.spine.code.gen.java.FieldFactory.isEvent;
 import static io.spine.code.gen.java.FieldFactory.isEventContext;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
@@ -85,6 +86,7 @@ public abstract class FieldsSpec implements GeneratedTypeSpec {
         TypeSpec result = TypeSpec
                 .classBuilder("Fields")
                 .addModifiers(modifiers)
+                .addAnnotation(generatedBySpineModelCompiler())
                 .addMethod(EmptyPrivateCtor.spec())
                 .addMethods(fields())
                 .addTypes(nestedFieldContainers())

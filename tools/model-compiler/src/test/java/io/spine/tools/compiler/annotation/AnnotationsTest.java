@@ -23,14 +23,15 @@ package io.spine.tools.compiler.annotation;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.TypeName;
+import io.spine.code.gen.java.Annotations;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.Generated;
 
-import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValue;
-import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
+import static io.spine.code.gen.java.Annotations.canIgnoreReturnValue;
+import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Annotations utility class should")

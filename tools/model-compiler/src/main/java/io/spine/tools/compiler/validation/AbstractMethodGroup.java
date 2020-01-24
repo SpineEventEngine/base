@@ -30,7 +30,7 @@ import io.spine.code.gen.java.FieldName;
 import javax.lang.model.element.Modifier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValue;
+import static io.spine.code.gen.java.Annotations.canIgnoreReturnValue;
 
 /**
  * An abstract base for method constructors.
