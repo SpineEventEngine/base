@@ -21,19 +21,21 @@
 package io.spine.gen;
 
 import io.spine.annotation.Internal;
+import io.spine.code.proto.FieldName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class EntityColumn {
 
-    private final String name;
+    private final FieldName name;
 
     public EntityColumn(String name) {
-        this.name = checkNotNull(name);
+        checkNotNull(name);
+        this.name = FieldName.of(name);
     }
 
     @Internal
-    public String name() {
+    public FieldName name() {
         return name;
     }
 }

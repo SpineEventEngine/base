@@ -43,6 +43,6 @@ class EntityColumnTest {
         String columnName = "some-column";
         EntityColumn column =
                 new EntityColumn(columnName);
-        assertThat(column.name()).isEqualTo(columnName);
+        assertThat(column.name().value()).isEqualTo(columnName);
     }
 }
