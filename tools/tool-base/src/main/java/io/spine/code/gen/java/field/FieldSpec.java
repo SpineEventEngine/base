@@ -32,6 +32,9 @@ import io.spine.code.proto.FieldName;
 
 import javax.lang.model.element.Modifier;
 
+
+// TODO:2019-12-20:dmytro.kuzmin:WIP: Add field type/column type to the generated fields and
+//  columns doc.
 abstract class FieldSpec implements GeneratedMethodSpec {
 
     private final FieldDeclaration field;

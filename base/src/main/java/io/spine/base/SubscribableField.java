@@ -26,9 +26,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * @apiNote Methods in this class are named with otherwise redundant "get-" prefix to avoid
- *        clashing with any of the field names in the generated descendant classes.
+ *        clashing with any of the proto field names in the generated descendant classes. For the
+ *        same reason the class does not inherit from {@link io.spine.value.ValueHolder}, as the
+ *        methods like {@code ValueHolder#value()}) are likely to produce a name clash with
+ *        Protobuf fields.
  */
-// TODO:2019-12-20:dmytro.kuzmin:WIP: `extends ValueHolder<Field>`?
+@SuppressWarnings("AbstractClassWithoutAbstractMethods")
+// Prevent instantiation in favor of concrete subclasses.
 public abstract class SubscribableField {
 
     private final Field field;
