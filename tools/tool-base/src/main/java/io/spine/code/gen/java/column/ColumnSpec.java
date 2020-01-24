@@ -24,6 +24,7 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import io.spine.code.gen.java.GeneratedMethodSpec;
 import io.spine.code.gen.java.JavaPoetName;
+import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 import io.spine.gen.EntityColumn;
@@ -45,6 +46,7 @@ final class ColumnSpec implements GeneratedMethodSpec {
                 .methodBuilder(name.javaCase())
                 .addModifiers(modifiers)
                 .returns(columnType().value())
+                .addJavadoc(javadoc())
                 .addStatement(methodBody())
                 .build();
         return result;
@@ -63,5 +65,49 @@ final class ColumnSpec implements GeneratedMethodSpec {
 
     private FieldName columnName() {
         return column.name();
+    }
+
+    private CodeBlock javadoc() {
+        CodeBlock firstParagraphText = CodeBlock
+                .builder()
+                .add("Returns the $L \"$L\" column.", columnKind(), column.name())
+                .build();
+        JavadocText firstParagraph = JavadocText.fromEscaped(firstParagraphText.toString())
+                                         .withNewLine()
+                                         .withNewLine();
+        CodeBlock secondParagraphText = CodeBlock
+                .builder()
+                .add("The $L type is {@code $L}.", elementDescribedByType(), column.javaTypeName())
+                .build();
+        JavadocText secondParagraph = JavadocText.fromEscaped(secondParagraphText.toString())
+                                                 .withPTag()
+                                                 .withNewLine();
+        CodeBlock value = CodeBlock
+                .builder()
+                .add(firstParagraph.value())
+                .add(secondParagraph.value())
+                .build();
+        return value;
+    }
+
+    private String columnKind() {
+        if (column.isRepeated()) {
+            return "{@code repeated}";
+        }
+        if (column.isMap()) {
+            return "{@code map}";
+        }
+        return "";
+    }
+
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
+    private String elementDescribedByType() {
+        if (column.isRepeated()) {
+            return "element";
+        }
+        if (column.isMap()) {
+            return "value";
+        }
+        return "column";
     }
 }

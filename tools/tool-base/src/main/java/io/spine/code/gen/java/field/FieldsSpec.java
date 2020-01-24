@@ -24,7 +24,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.concurrent.LazyInit;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
-import io.spine.code.gen.java.EmptyPrivateCtor;
 import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.java.PackageName;
 import io.spine.code.proto.FieldDeclaration;
@@ -38,6 +37,7 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
+import static io.spine.code.gen.java.EmptyCtorSpec.privateEmptyCtor;
 import static io.spine.code.gen.java.FieldFactory.isEvent;
 import static io.spine.code.gen.java.FieldFactory.isEventContext;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
@@ -87,7 +87,7 @@ public abstract class FieldsSpec implements GeneratedTypeSpec {
                 .classBuilder("Fields")
                 .addModifiers(modifiers)
                 .addAnnotation(generatedBySpineModelCompiler())
-                .addMethod(EmptyPrivateCtor.spec())
+                .addMethod(privateEmptyCtor())
                 .addMethods(fields())
                 .addTypes(nestedFieldContainers())
                 .build();
