@@ -22,10 +22,12 @@ package io.spine.code.gen.java.field;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.concurrent.LazyInit;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.java.PackageName;
+import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.gen.SubscribableField;
 import io.spine.type.MessageType;
@@ -41,6 +43,7 @@ import static io.spine.code.gen.java.EmptyCtorSpec.privateEmptyCtor;
 import static io.spine.code.gen.java.FieldFactory.isEvent;
 import static io.spine.code.gen.java.FieldFactory.isEventContext;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
+import static java.lang.String.format;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
@@ -70,8 +73,7 @@ public abstract class FieldsSpec implements GeneratedTypeSpec {
             return new EventContextFields(messageType);
         }
         throw newIllegalArgumentException(
-                "Unexpected message type during subscribable fields generation: %s.",
-                messageType.name()
+                "Unexpected message type during fields generation: %s.", messageType.name()
         );
     }
 
@@ -85,6 +87,7 @@ public abstract class FieldsSpec implements GeneratedTypeSpec {
     public TypeSpec typeSpec(Modifier... modifiers) {
         TypeSpec result = TypeSpec
                 .classBuilder("Fields")
+                .addJavadoc(javadoc())
                 .addModifiers(modifiers)
                 .addAnnotation(generatedBySpineModelCompiler())
                 .addMethod(privateEmptyCtor())
@@ -125,4 +128,45 @@ public abstract class FieldsSpec implements GeneratedTypeSpec {
     }
 
     protected abstract Class<? extends SubscribableField> fieldSupertype();
+
+    private static CodeBlock javadoc() {
+        CodeBlock firstParagraphText = CodeBlock
+                .builder()
+                .add("The listing of all fields of the message type.")
+                .build();
+        JavadocText firstParagraph = JavadocText.fromEscaped(firstParagraphText.toString())
+                                                .withNewLine()
+                                                .withNewLine();
+        String secondParagraphText = format(
+                "The fields exposed by this class can be provided to a subscription filter%s" +
+                        "on creation.",
+                JavadocText.lineSeparator()
+        );
+        JavadocText secondParagraph = JavadocText.fromEscaped(secondParagraphText)
+                                                 .withPTag()
+                                                 .withNewLine()
+                                                 .withNewLine();
+        String thirdParagraphText =
+                "Use static methods of this class to access the top-level fields of the message.";
+        JavadocText thirdParagraph = JavadocText.fromEscaped(thirdParagraphText)
+                                                .withPTag()
+                                                .withNewLine()
+                                                .withNewLine();
+        String fourthParagraphText = format(
+                "The nested fields can be accessed using the values returned by the top-level%s" +
+                        "field accessors, through method chaining.",
+                JavadocText.lineSeparator()
+        );
+        JavadocText fourthParagraph = JavadocText.fromEscaped(fourthParagraphText)
+                                                 .withPTag()
+                                                 .withNewLine();
+        CodeBlock value = CodeBlock
+                .builder()
+                .add(firstParagraph.value())
+                .add(secondParagraph.value())
+                .add(thirdParagraph.value())
+                .add(fourthParagraph.value())
+                .build();
+        return value;
+    }
 }

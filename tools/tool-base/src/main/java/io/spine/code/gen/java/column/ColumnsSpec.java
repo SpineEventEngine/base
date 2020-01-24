@@ -86,11 +86,10 @@ public final class ColumnsSpec implements GeneratedTypeSpec {
     /**
      * Obtains the class Javadoc.
      */
-    private CodeBlock javadoc() {
+    private static CodeBlock javadoc() {
         CodeBlock firstParagraphText = CodeBlock
                 .builder()
-                .add("A listing of all entity columns of {@code $L} message type.",
-                     messageType.javaClassName())
+                .add("The listing of all entity columns of the type.")
                 .build();
         JavadocText firstParagraph = JavadocText.fromEscaped(firstParagraphText.toString())
                                                 .withNewLine()

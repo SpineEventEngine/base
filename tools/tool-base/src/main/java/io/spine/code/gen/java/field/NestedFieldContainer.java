@@ -21,6 +21,7 @@
 package io.spine.code.gen.java.field;
 
 import com.google.common.collect.ImmutableList;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
@@ -28,6 +29,7 @@ import io.spine.base.Field;
 import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.java.PackageName;
+import io.spine.code.javadoc.JavadocText;
 import io.spine.gen.SubscribableField;
 import io.spine.type.MessageType;
 
@@ -59,6 +61,7 @@ final class NestedFieldContainer implements GeneratedTypeSpec {
     public TypeSpec typeSpec(Modifier... modifiers) {
         TypeSpec result = TypeSpec
                 .classBuilder(typeName())
+                .addJavadoc(javadoc())
                 .addModifiers(modifiers)
                 .superclass(superclass())
                 .addMethod(constructor())
@@ -96,5 +99,22 @@ final class NestedFieldContainer implements GeneratedTypeSpec {
                            .map(spec -> spec.methodSpec(PUBLIC))
                            .collect(toImmutableList());
         return result;
+    }
+
+    /**
+     * Obtains the class Javadoc.
+     */
+    private static CodeBlock javadoc() {
+        CodeBlock firstParagraphText = CodeBlock
+                .builder()
+                .add("The listing of nested fields of the message type.")
+                .build();
+        JavadocText firstParagraph = JavadocText.fromEscaped(firstParagraphText.toString())
+                                                .withNewLine();
+        CodeBlock value = CodeBlock
+                .builder()
+                .add(firstParagraph.value())
+                .build();
+        return value;
     }
 }
