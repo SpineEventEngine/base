@@ -18,13 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gen;
+package io.spine.base;
 
-import io.spine.base.Field;
+public class EventContextField extends SubscribableField {
 
-public class EventMessageField extends SubscribableField {
-
-    public EventMessageField(Field field) {
+    public EventContextField(Field field) {
         super(field);
     }
 }

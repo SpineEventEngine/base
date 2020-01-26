@@ -22,6 +22,7 @@ package io.spine.code.gen.java.field;
 
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
+import io.spine.base.SubscribableField;
 import io.spine.code.gen.java.FieldJavadoc;
 import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.gen.java.GeneratedMethodSpec;
@@ -30,7 +31,6 @@ import io.spine.code.java.ClassName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
-import io.spine.gen.SubscribableField;
 
 import javax.lang.model.element.Modifier;
 

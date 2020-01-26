@@ -26,11 +26,11 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.Field;
+import io.spine.base.SubscribableField;
 import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.java.PackageName;
 import io.spine.code.javadoc.JavadocText;
-import io.spine.gen.SubscribableField;
 import io.spine.type.MessageType;
 
 import javax.lang.model.element.Modifier;

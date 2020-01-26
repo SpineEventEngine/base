@@ -20,8 +20,8 @@
 
 package io.spine.code.gen.java.field;
 
-import io.spine.gen.EventMessageField;
-import io.spine.gen.SubscribableField;
+import io.spine.base.EventMessageField;
+import io.spine.base.SubscribableField;
 import io.spine.type.MessageType;
 
 final class EventMessageFields extends FieldsSpec {

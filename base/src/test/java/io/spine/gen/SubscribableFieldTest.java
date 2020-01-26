@@ -21,7 +21,11 @@
 package io.spine.gen;
 
 import com.google.common.testing.NullPointerTester;
+import io.spine.base.EntityStateField;
+import io.spine.base.EventContextField;
+import io.spine.base.EventMessageField;
 import io.spine.base.Field;
+import io.spine.base.SubscribableField;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

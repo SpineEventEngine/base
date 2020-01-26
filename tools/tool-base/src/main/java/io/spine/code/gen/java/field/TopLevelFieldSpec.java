@@ -22,8 +22,8 @@ package io.spine.code.gen.java.field;
 
 import com.squareup.javapoet.CodeBlock;
 import io.spine.base.Field;
+import io.spine.base.SubscribableField;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.gen.SubscribableField;
 
 final class TopLevelFieldSpec extends FieldSpec {
 

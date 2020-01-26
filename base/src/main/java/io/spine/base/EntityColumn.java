@@ -18,13 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gen;
+package io.spine.base;
 
-import io.spine.base.Field;
+import io.spine.annotation.Internal;
+import io.spine.code.proto.FieldName;
 
-public class EventContextField extends SubscribableField {
+import static com.google.common.base.Preconditions.checkNotNull;
 
-    public EventContextField(Field field) {
-        super(field);
+public final class EntityColumn {
+
+    private final FieldName name;
+
+    public EntityColumn(String name) {
+        checkNotNull(name);
+        this.name = FieldName.of(name);
+    }
+
+    @Internal
+    public FieldName name() {
+        return name;
     }
 }

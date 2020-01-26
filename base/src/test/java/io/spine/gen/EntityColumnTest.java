@@ -21,6 +21,7 @@
 package io.spine.gen;
 
 import com.google.common.testing.NullPointerTester;
+import io.spine.base.EntityColumn;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
