@@ -30,6 +30,7 @@ import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
+import com.google.protobuf.ProtocolStringList;
 import io.spine.code.proto.ScalarType;
 import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
@@ -157,6 +158,9 @@ public final class Field extends ValueHolder<FieldPath> {
         return result;
     }
 
+    /**
+     * Appends a field name to the current field path to form a nested field.
+     */
     public Field nested(String fieldName) {
         checkName(fieldName);
         FieldPath newPath = path().toBuilder()
@@ -165,10 +169,15 @@ public final class Field extends ValueHolder<FieldPath> {
         return create(newPath);
     }
 
+    /**
+     * Appends the path enclosed by the {@code other} to the current field path.
+     */
     public Field nested(Field other) {
         checkNotNull(other);
+        ProtocolStringList fieldNames = other.path()
+                                             .getFieldNameList();
         FieldPath newPath = path().toBuilder()
-                                  .addAllFieldName(other.path().getFieldNameList())
+                                  .addAllFieldName(fieldNames)
                                   .build();
         return create(newPath);
     }
