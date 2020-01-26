@@ -18,31 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.code.gen.java;
 
-import com.google.common.testing.NullPointerTester;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.squareup.javapoet.CodeBlock;
 
-import static com.google.common.truth.Truth.assertThat;
-import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+public interface GeneratedJavadoc {
 
-@DisplayName("`EntityColumn` should")
-class EntityColumnTest {
-
-    @Test
-    @DisplayName(NOT_ACCEPT_NULLS)
-    void passNullToleranceCheck() {
-        new NullPointerTester()
-                .testAllPublicConstructors(EntityColumn.class);
-    }
-
-    @Test
-    @DisplayName("expose the column name")
-    void exposeColumnName() {
-        String columnName = "some-column";
-        EntityColumn column =
-                new EntityColumn(columnName);
-        assertThat(column.name()).isEqualTo(columnName);
-    }
+    CodeBlock spec();
 }

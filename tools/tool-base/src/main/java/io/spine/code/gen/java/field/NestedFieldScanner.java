@@ -40,22 +40,28 @@ final class NestedFieldScanner {
         int index = -1;
         while (index < result.size()) {
             if (index == -1) {
-                addMessageFields(this.messageType, result);
+                addMessageFields(result, this.messageType);
             } else {
                 MessageType messageType = result.get(index);
-                addMessageFields(messageType, result);
+                addMessageFields(result, messageType);
             }
             index++;
         }
         return result;
     }
 
-    private static void addMessageFields(MessageType messageType, List<MessageType> result) {
+    private static void addMessageFields(List<MessageType> result, MessageType messageType) {
         messageType.fields()
                    .stream()
                    .filter(FieldSpec::shouldExposeNestedFields)
                    .map(FieldDeclaration::messageType)
-                   .filter(type -> !result.contains(type))
+                   .filter(type -> !containsTypeWithSameName(result, type))
                    .forEach(result::add);
+    }
+
+    private static boolean containsTypeWithSameName(List<MessageType> result, MessageType type) {
+        return result.stream()
+                     .map(MessageType::simpleJavaClassName)
+                     .anyMatch(name -> name.equals(type.simpleJavaClassName()));
     }
 }

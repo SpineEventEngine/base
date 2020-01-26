@@ -20,26 +20,44 @@
 
 package io.spine.code.gen.java;
 
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
+import io.spine.code.javadoc.JavadocText;
+
+import javax.lang.model.element.Modifier;
 
 import static javax.lang.model.element.Modifier.PRIVATE;
 
-public final class EmptyPrivateCtor {
+public final class EmptyCtorSpec implements GeneratedMethodSpec {
 
-    private static final MethodSpec PRIVATE_CTOR = privateCtorSpec();
+    private static final EmptyCtorSpec INSTANCE = new EmptyCtorSpec();
 
-    private EmptyPrivateCtor() {
+    private EmptyCtorSpec() {
     }
 
-    public static MethodSpec spec() {
-        return PRIVATE_CTOR;
+    public static MethodSpec privateEmptyCtor() {
+        return INSTANCE.methodSpec(PRIVATE);
     }
 
-    private static MethodSpec privateCtorSpec() {
+    @Override
+    public MethodSpec methodSpec(Modifier... modifiers) {
         MethodSpec result = MethodSpec
                 .constructorBuilder()
-                .addModifiers(PRIVATE)
+                .addModifiers(modifiers)
+                .addJavadoc(javadoc())
                 .build();
-        return result;
+        return result; }
+
+    /**
+     * Obtains a class-level Javadoc.
+     */
+    private static CodeBlock javadoc() {
+        JavadocText javadoc = JavadocText.fromEscaped("Prevents instantiation of this class.")
+                                         .withNewLine();
+        CodeBlock value = CodeBlock
+                .builder()
+                .add(javadoc.value())
+                .build();
+        return value;
     }
 }

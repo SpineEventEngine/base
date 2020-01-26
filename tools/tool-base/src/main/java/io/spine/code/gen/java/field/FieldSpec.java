@@ -22,16 +22,21 @@ package io.spine.code.gen.java.field;
 
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
-import io.spine.base.SubscribableField;
+import io.spine.code.gen.java.FieldJavadoc;
+import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.gen.java.GeneratedMethodSpec;
 import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
+import io.spine.gen.SubscribableField;
 
 import javax.lang.model.element.Modifier;
 
+
+@SuppressWarnings("DuplicateStringLiteralInspection")
+// Random duplication of some generated code elements.
 abstract class FieldSpec implements GeneratedMethodSpec {
 
     private final FieldDeclaration field;
@@ -46,6 +51,7 @@ abstract class FieldSpec implements GeneratedMethodSpec {
     public MethodSpec methodSpec(Modifier... modifiers) {
         MethodSpec result = MethodSpec
                 .methodBuilder(fieldName().javaCase())
+                .addJavadoc(javadoc())
                 .addModifiers(modifiers)
                 .returns(returnType().value())
                 .addStatement(methodBody())
@@ -73,7 +79,6 @@ abstract class FieldSpec implements GeneratedMethodSpec {
         return shouldExposeNestedFields(field);
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     private JavaPoetName nestedFieldsContainer() {
         JavaPoetName type = JavaPoetName.of(fieldTypeName().with("Field"));
         return type;
@@ -101,5 +106,10 @@ abstract class FieldSpec implements GeneratedMethodSpec {
 
     static boolean shouldExposeNestedFields(FieldDeclaration field) {
         return field.isMessage() && !field.isCollection();
+    }
+
+    private CodeBlock javadoc() {
+        GeneratedJavadoc javadoc = new FieldJavadoc(this.field, "field");
+        return javadoc.spec();
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019, TeamDev. All rights reserved.
+ * Copyright 2020, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,22 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.gen;
 
-import io.spine.annotation.Internal;
+import io.spine.base.Field;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+public class EntityStateField extends SubscribableField {
 
-public final class EntityColumn {
-
-    private final String name;
-
-    public EntityColumn(String name) {
-        this.name = checkNotNull(name);
-    }
-
-    @Internal
-    public String name() {
-        return name;
+    public EntityStateField(Field field) {
+        super(field);
     }
 }

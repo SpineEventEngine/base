@@ -18,26 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+/**
+ * This package provides classes that describe entities and concepts defined in Spine-generated
+ * code.
+ */
+@Internal
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.gen;
 
+import com.google.errorprone.annotations.CheckReturnValue;
 import io.spine.annotation.Internal;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-/**
- * @apiNote Methods in this class are named with otherwise redundant "get-" prefix to avoid
- *        clashing with any of the field names in the generated descendant classes.
- */
-public abstract class SubscribableField {
-
-    private final Field field;
-
-    public SubscribableField(Field field) {
-        this.field = checkNotNull(field);
-    }
-
-    @Internal
-    public Field getField() {
-        return field;
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

@@ -27,7 +27,7 @@ import io.spine.type.MessageType;
 import java.util.List;
 
 /**
- * Creates methods that are inserted into the Protoc-compiled Java code.
+ * Creates nested classes that are inserted into the Protoc-compiled Java code.
  */
 @SPI
 @Immutable

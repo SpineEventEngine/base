@@ -58,7 +58,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  * on this package. Thus, {@code GeneratedMixin} cannot be used for augmenting generated classes
  * that belong to it.
  */
-@SuppressWarnings("ClassWithTooManyMethods") // A lot of field-related utilities.
+@SuppressWarnings("ClassWithTooManyMethods") // A lot of `FieldPath`-related utilities.
 @Immutable
 public final class Field extends ValueHolder<FieldPath> {
 
@@ -161,6 +161,14 @@ public final class Field extends ValueHolder<FieldPath> {
         checkName(fieldName);
         FieldPath newPath = path().toBuilder()
                                   .addFieldName(fieldName)
+                                  .build();
+        return create(newPath);
+    }
+
+    public Field nested(Field other) {
+        checkNotNull(other);
+        FieldPath newPath = path().toBuilder()
+                                  .addAllFieldName(other.path().getFieldNameList())
                                   .build();
         return create(newPath);
     }

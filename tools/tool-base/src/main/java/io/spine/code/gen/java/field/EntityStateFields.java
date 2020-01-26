@@ -20,8 +20,8 @@
 
 package io.spine.code.gen.java.field;
 
-import io.spine.base.EntityStateField;
-import io.spine.base.SubscribableField;
+import io.spine.gen.EntityStateField;
+import io.spine.gen.SubscribableField;
 import io.spine.type.MessageType;
 
 final class EntityStateFields extends FieldsSpec {

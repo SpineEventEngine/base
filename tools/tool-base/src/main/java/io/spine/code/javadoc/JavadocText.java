@@ -74,4 +74,8 @@ public class JavadocText extends StringTypeValue {
     public JavadocText withPTag() {
         return new JavadocText(P_TAG + value());
     }
+
+    public static String lineSeparator() {
+        return LINE_SEPARATOR;
+    }
 }

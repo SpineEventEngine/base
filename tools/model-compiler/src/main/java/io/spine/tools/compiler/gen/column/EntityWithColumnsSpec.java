@@ -37,10 +37,10 @@ import io.spine.type.MessageType;
 
 import javax.lang.model.element.Modifier;
 
+import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
 import static io.spine.code.proto.ColumnOption.columnsOf;
 import static io.spine.code.proto.ScalarType.isScalarType;
 import static io.spine.code.proto.ScalarType.javaType;
-import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
 import static java.lang.String.format;
 import static javax.lang.model.element.Modifier.ABSTRACT;
 import static javax.lang.model.element.Modifier.PUBLIC;

@@ -18,20 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.gen.java.field;
+package io.spine.gen;
 
-import io.spine.gen.EventMessageField;
-import io.spine.gen.SubscribableField;
-import io.spine.type.MessageType;
+import io.spine.annotation.Internal;
+import io.spine.code.proto.FieldName;
 
-final class EventMessageFields extends FieldsSpec {
+import static com.google.common.base.Preconditions.checkNotNull;
 
-    EventMessageFields(MessageType messageType) {
-        super(messageType);
+public final class EntityColumn {
+
+    private final FieldName name;
+
+    public EntityColumn(String name) {
+        checkNotNull(name);
+        this.name = FieldName.of(name);
     }
 
-    @Override
-    protected Class<? extends SubscribableField> fieldSupertype() {
-        return EventMessageField.class;
+    @Internal
+    public FieldName name() {
+        return name;
     }
 }
