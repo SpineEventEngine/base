@@ -40,8 +40,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
 import static io.spine.code.gen.java.EmptyCtorSpec.privateEmptyCtor;
-import static io.spine.code.gen.java.FieldFactory.isEvent;
 import static io.spine.code.gen.java.FieldFactory.isEventContext;
+import static io.spine.code.gen.java.FieldFactory.isSpineCoreEvent;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static java.lang.String.format;
 import static javax.lang.model.element.Modifier.FINAL;
@@ -63,7 +63,7 @@ public abstract class FieldsSpec implements GeneratedTypeSpec {
 
     public static FieldsSpec of(MessageType messageType) {
         checkNotNull(messageType);
-        if (messageType.isEntityState() || isEvent(messageType)) {
+        if (messageType.isEntityState() || isSpineCoreEvent(messageType)) {
             return new EntityStateFields(messageType);
         }
         if (messageType.isEvent() || messageType.isRejection()) {
