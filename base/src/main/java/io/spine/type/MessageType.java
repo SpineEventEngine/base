@@ -31,7 +31,6 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
 import io.spine.base.UuidValue;
 import io.spine.code.java.ClassName;
-import io.spine.code.proto.EntityStateOption;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.LocationPath;
@@ -51,6 +50,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.collect.Streams.concat;
+import static io.spine.code.proto.EntityStateOption.entityKindOf;
 import static io.spine.code.proto.FileDescriptors.sameFiles;
 import static io.spine.option.EntityOption.Kind.KIND_UNKNOWN;
 import static io.spine.option.EntityOption.Kind.UNRECOGNIZED;
@@ -214,10 +214,10 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     }
 
     public boolean isEntityState() {
-        Optional<EntityOption.Kind> entityType = EntityStateOption.entityTypeOf(descriptor());
-        return entityType.isPresent()
-                && entityType.get() != UNRECOGNIZED
-                && entityType.get() != KIND_UNKNOWN;
+        Optional<EntityOption.Kind> entityKind = entityKindOf(descriptor());
+        return entityKind.isPresent()
+                && entityKind.get() != UNRECOGNIZED
+                && entityKind.get() != KIND_UNKNOWN;
     }
 
     /**

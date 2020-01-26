@@ -295,15 +295,21 @@ public final class FieldDeclaration {
         return FieldTypes.isMap(field);
     }
 
+    /** Obtains the Java type of the declaration. */
+    public JavaType javaType() {
+        return field.getJavaType();
+    }
+
+    /**
+     * Returns the message type of the field.
+     *
+     * @throws IllegalStateException
+     *         if the field is of non-{@link Message} type
+     */
     public MessageType messageType() {
         checkState(isMessage());
         Descriptor messageType = descriptor().getMessageType();
         return new MessageType(messageType);
-    }
-
-    /** Obtains the Java type of the declaration. */
-    public JavaType javaType() {
-        return field.getJavaType();
     }
 
     /** Obtains the descriptor of the value of a map. */
