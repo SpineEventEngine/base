@@ -29,12 +29,19 @@ import io.spine.type.MessageType;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.proto.ColumnOption.hasColumns;
 
+/**
+ * Generates nested classes for the supplied queryable message type based on the
+ * {@link QueryableConfig passed configuration}.
+ */
 final class GenerateColumns extends NestedClassGenerationTask {
 
     GenerateColumns(ExternalClassLoader<NestedClassFactory> classLoader, QueryableConfig config) {
         super(classLoader, config.getValue());
     }
 
+    /**
+     * Applies the column factory if the type is eligible for column generation.
+     */
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);

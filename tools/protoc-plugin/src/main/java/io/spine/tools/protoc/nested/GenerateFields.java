@@ -28,6 +28,10 @@ import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * Generates nested classes for the supplied subscribable message type based on the
+ * {@link SubscribableConfig passed configuration}.
+ */
 final class GenerateFields extends NestedClassGenerationTask {
 
     GenerateFields(ExternalClassLoader<NestedClassFactory> classLoader, SubscribableConfig config) {
@@ -35,10 +39,11 @@ final class GenerateFields extends NestedClassGenerationTask {
     }
 
     /**
-     * {@inheritDoc}
+     * Applies the field factory if the passed type is eligible for field generation.
      *
-     * <p>By default, generates field for all messages, allowing factories to define which message
-     * types are eligible for field generation.
+     * <p>Apart from the types that can be subscription targets, i.e. entity states and events,
+     * there are also a number of built-in types to which the field generation is applied, as
+     * required by the Spine routines.
      */
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {

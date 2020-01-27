@@ -30,6 +30,10 @@ import io.spine.type.MessageType;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 
+/**
+ * Generates nested classes for the supplied type based on
+ * {@link ConfigByPattern pattern configuration}.
+ */
 final class GenerateNestedClasses extends NestedClassGenerationTask {
 
     private final FilePatternMatcher patternMatcher;
@@ -41,6 +45,12 @@ final class GenerateNestedClasses extends NestedClassGenerationTask {
         this.patternMatcher = new FilePatternMatcher(config.getPattern());
     }
 
+    /**
+     * Generates nested classes for the given type.
+     *
+     * <p>No methods are generated if the type file name does not match the supplied
+     * {@link io.spine.tools.protoc.FilePattern pattern}.
+     */
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
