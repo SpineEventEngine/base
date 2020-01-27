@@ -43,6 +43,17 @@ final class GenerateFields extends NestedClassGenerationTask {
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
+        if (!eligibleForFieldsGeneration(type)) {
+            return ImmutableList.of();
+        }
         return generateNestedClassesFor(type);
+    }
+
+    private static boolean eligibleForFieldsGeneration(MessageType type) {
+        return type.isEntityState()
+                || type.isEvent()
+                || type.isRejection()
+                || type.isSpineCoreEvent()
+                || type.isEventContext();
     }
 }

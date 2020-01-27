@@ -36,36 +36,12 @@ import static javax.lang.model.element.Modifier.STATIC;
 @Immutable
 public final class FieldFactory implements NestedClassFactory {
 
-    private static final String EVENT = "spine.core.Event";
-    private static final String EVENT_CONTEXT = "spine.core.EventContext";
-
     @Override
     public List<GeneratedNestedClass> createFor(MessageType messageType) {
-        if (!eligibleForFieldsGeneration(messageType)) {
-            return ImmutableList.of();
-        }
         String generatedCode = FieldsSpec.of(messageType)
                                          .typeSpec(PUBLIC, STATIC, FINAL)
                                          .toString();
         GeneratedNestedClass result = new GeneratedNestedClass(generatedCode);
         return ImmutableList.of(result);
-    }
-
-    public static boolean eligibleForFieldsGeneration(MessageType type) {
-        return type.isEntityState()
-                || type.isEvent()
-                || type.isRejection()
-                || isSpineCoreEvent(type)
-                || isEventContext(type);
-    }
-
-    public static boolean isSpineCoreEvent(MessageType type) {
-        String typeName = type.name().value();
-        return EVENT.equals(typeName);
-    }
-
-    public static boolean isEventContext(MessageType type) {
-        String typeName = type.name().value();
-        return EVENT_CONTEXT.equals(typeName);
     }
 }

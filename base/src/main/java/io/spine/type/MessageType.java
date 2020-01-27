@@ -62,6 +62,9 @@ import static io.spine.option.EntityOption.Kind.UNRECOGNIZED;
 @SuppressWarnings("ClassWithTooManyMethods")
 public class MessageType extends Type<Descriptor, DescriptorProto> implements Logging {
 
+    private static final String EVENT = "spine.core.Event";
+    private static final String EVENT_CONTEXT = "spine.core.EventContext";
+
     private final ImmutableList<FieldDeclaration> fields;
 
     /**
@@ -213,11 +216,26 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         return result;
     }
 
+    /**
+     * Tells if this message is an entity state.
+     */
     public boolean isEntityState() {
         Optional<EntityOption.Kind> entityKind = entityKindOf(descriptor());
-        return entityKind.isPresent()
-                && entityKind.get() != UNRECOGNIZED
-                && entityKind.get() != KIND_UNKNOWN;
+        boolean result =
+                entityKind.isPresent()
+                        && entityKind.get() != UNRECOGNIZED
+                        && entityKind.get() != KIND_UNKNOWN;
+        return result;
+    }
+
+    public boolean isSpineCoreEvent() {
+        boolean result = EVENT.equals(name().value());
+        return result;
+    }
+
+    public boolean isEventContext() {
+        boolean result = EVENT_CONTEXT.equals(name().value());
+        return result;
     }
 
     /**

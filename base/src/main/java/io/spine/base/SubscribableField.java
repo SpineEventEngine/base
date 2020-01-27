@@ -33,7 +33,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @apiNote Among others, this class is normally inherited by the nested field containers, which
  *        expose nested message fields as public instance methods, for example:
  *        <pre>
- *            public EntityStateField someFieldName() {...}
+ *        public EntityStateField someFieldName() {...}
  *        </pre>
  *        Thus, this class has to avoid name clashes with proto fields declared this way. Hence the
  *        otherwise redundant "get-" prefix on the {@link #getField()} method. For the same reason
