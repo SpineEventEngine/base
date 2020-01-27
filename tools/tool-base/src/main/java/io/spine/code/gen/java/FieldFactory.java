@@ -41,6 +41,9 @@ public final class FieldFactory implements NestedClassFactory {
 
     @Override
     public List<GeneratedNestedClass> createFor(MessageType messageType) {
+        if (!eligibleForFieldsGeneration(messageType)) {
+            return ImmutableList.of();
+        }
         String generatedCode = FieldsSpec.of(messageType)
                                          .typeSpec(PUBLIC, STATIC, FINAL)
                                          .toString();

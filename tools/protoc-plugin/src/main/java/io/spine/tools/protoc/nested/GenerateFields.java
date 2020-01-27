@@ -27,7 +27,6 @@ import io.spine.tools.protoc.SubscribableConfig;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.gen.java.FieldFactory.eligibleForFieldsGeneration;
 
 final class GenerateFields extends NestedClassGenerationTask {
 
@@ -35,16 +34,15 @@ final class GenerateFields extends NestedClassGenerationTask {
         super(classLoader, config.getValue());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>By default, generates field for all messages, allowing factories to define which message
+     * types are eligible for field generation.
+     */
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
-        if (!isSubscribableType(type)) {
-            return ImmutableList.of();
-        }
         return generateNestedClassesFor(type);
-    }
-
-    private static boolean isSubscribableType(MessageType type) {
-        return eligibleForFieldsGeneration(type);
     }
 }
