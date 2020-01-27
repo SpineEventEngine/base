@@ -58,21 +58,33 @@ final class ColumnSpec implements GeneratedMethodSpec {
         return result;
     }
 
+    /**
+     * Returns the column name as defined in Protobuf.
+     */
     private FieldName columnName() {
         return column.name();
     }
 
+    /**
+     * Returns the name of the Java type of a column.
+     */
     private static JavaPoetName columnType() {
         JavaPoetName result = JavaPoetName.of(EntityColumn.class);
         return result;
     }
 
+    /**
+     * Returns the method body which instantiates the {@link EntityColumn}.
+     */
     private CodeBlock methodBody() {
         return CodeBlock.of(
                 "return new $T(\"$L\")", EntityColumn.class, columnName()
         );
     }
 
+    /**
+     * Returns the method Javadoc.
+     */
     private CodeBlock javadoc() {
         GeneratedJavadoc javadoc = new FieldJavadoc(this.column, "column");
         return javadoc.spec();
