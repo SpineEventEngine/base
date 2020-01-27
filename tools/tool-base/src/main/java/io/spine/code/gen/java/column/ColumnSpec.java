@@ -32,6 +32,11 @@ import io.spine.code.proto.FieldName;
 
 import javax.lang.model.element.Modifier;
 
+/**
+ * A spec of the method which returns an entity column as an {@link EntityColumn} instance.
+ *
+ * <p>The name of the method is a column name in {@code javaCase}.
+ */
 final class ColumnSpec implements GeneratedMethodSpec {
 
     private final FieldDeclaration column;
@@ -53,6 +58,10 @@ final class ColumnSpec implements GeneratedMethodSpec {
         return result;
     }
 
+    private FieldName columnName() {
+        return column.name();
+    }
+
     private static JavaPoetName columnType() {
         JavaPoetName result = JavaPoetName.of(EntityColumn.class);
         return result;
@@ -62,10 +71,6 @@ final class ColumnSpec implements GeneratedMethodSpec {
         return CodeBlock.of(
                 "return new $T(\"$L\")", EntityColumn.class, columnName()
         );
-    }
-
-    private FieldName columnName() {
-        return column.name();
     }
 
     private CodeBlock javadoc() {
