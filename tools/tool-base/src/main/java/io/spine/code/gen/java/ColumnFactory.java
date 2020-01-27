@@ -33,6 +33,11 @@ import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
+/**
+ * Generates an entity columns enumeration for the given message type.
+ *
+ * @see ColumnsSpec
+ */
 @Immutable
 public final class ColumnFactory implements NestedClassFactory {
 

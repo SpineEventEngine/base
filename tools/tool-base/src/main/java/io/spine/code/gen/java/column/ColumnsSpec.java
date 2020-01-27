@@ -41,6 +41,43 @@ import static java.lang.String.format;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
+/**
+ * A spec which represents a class which is a enumeration of the columns of an entity.
+ *
+ * <p>For the given message type with columns, the spec defines a {@code Columns} class which:
+ * <ol>
+ *     <li>Exposes all entity columns through the static methods whose names match the column names
+ *         in {@code javaCase}.
+ *     <li>Is non-instantiable.
+ * </ol>
+ *
+ * <p>For example:
+ * <pre>
+ * // Given the proto declaration of a message.
+ * message ProjectDetails {
+ *     option (entity).kind = PROJECTION;
+ *     ProjectId id = 1;
+ *     ProjectName name = 2 [(column) = true];
+ *     int32 task_count = 3 [(column) = true];
+ * }
+ *
+ * // The following Java class will be generated.
+ * class Columns {
+ *     private Columns() {
+ *         // Prevent instantiation.
+ *     }
+ *
+ *     public static io.spine.base.EntityColumn name() {...}
+ *
+ *     public static io.spine.base.EntityColumn taskCount() {...}
+ * }
+ * </pre>
+ *
+ * <p>The `EntityColumn` instances retrieved in such way can be passed to the query filters to form
+ * an entity query.
+ *
+ * <p>The nested columns are ignored.
+ */
 public final class ColumnsSpec implements GeneratedTypeSpec {
 
     private final MessageType messageType;
@@ -74,6 +111,10 @@ public final class ColumnsSpec implements GeneratedTypeSpec {
         return result;
     }
 
+    /**
+     * Generates the methods which return entity columns as {@link io.spine.base.EntityColumn}
+     * instances.
+     */
     private ImmutableList<MethodSpec> columns() {
         ImmutableList<MethodSpec> result =
                 columns.stream()
@@ -84,7 +125,7 @@ public final class ColumnsSpec implements GeneratedTypeSpec {
     }
 
     /**
-     * Obtains the class Javadoc.
+     * Generates the class Javadoc.
      */
     private static CodeBlock javadoc() {
         CodeBlock firstParagraphText = CodeBlock
