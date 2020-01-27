@@ -33,6 +33,11 @@ import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
+/**
+ * Generates a field enumeration for the given message type.
+ *
+ * @see FieldsSpec
+ */
 @Immutable
 public final class FieldFactory implements NestedClassFactory {
 

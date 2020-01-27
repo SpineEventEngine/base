@@ -46,6 +46,68 @@ import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
+/**
+ * A spec of a type which is a enumeration of the fields of a message type.
+ *
+ * <p>For the given message type, the spec defines a {@code Fields} class which:
+ * <ol>
+ *     <li>Exposes all message fields through the static methods with names that match the field
+ *         names in {@code javaCase}.
+ *     <li>Defines nested classes which expose nested message fields and instances of which are
+ *         returned from the higher level methods.
+ *     <li>Is non-instantiable.
+ * </ol>
+ *
+ * <p>For example:
+ * <pre>
+ * // Given message declarations.
+ * message OrderView {
+ *     option (entity).kind = PROJECTION;
+ *
+ *     OrderId id = 1;
+ *     // ...
+ * }
+ *
+ * message OrderId {
+ *     string uuid = 1;
+ * }
+ *
+ * // The following Java class will be generated for the `OrderView` message type.
+ * class Fields {
+ *
+ *     private Fields {
+ *         // Prevent instantiation.
+ *     }
+ *
+ *     // The `OrderIdField` instance can both be passed to the filter builder itself and used for
+ *     // obtaining more nested message fields.
+ *
+ *     public static OrderIdField id() {
+ *         return new OrderIdField(...);
+ *     }
+ *
+ *     public static final class OrderIdField extends EntityStateField {
+ *
+ *         // Instantiation is allowed only inside the `Fields` class.
+ *         private OrderIdField(...) {...}
+ *
+ *         public EntityStateField value() {
+ *             return new EntityStateField(...);
+ *         }
+ *     }
+ * }
+ * </pre>
+ *
+ * <p>The values obtained from the `Fields` class can then be passed to subscription filters to
+ * form a subscription request.
+ *
+ * <p>Please note that for {@code repeated} and {@code map} fields the nested fields are not
+ * exposed (because targeting them in a filter won't always be processed properly on the server).
+ *
+ * <p>The descendants of this type differentiate between entity state, event and event context
+ * fields allowing to pass a specific field type to the filter builder to form a typed subscription
+ * filter.
+ */
 public abstract class FieldsSpec implements GeneratedTypeSpec {
 
     private final MessageType messageType;
@@ -59,6 +121,12 @@ public abstract class FieldsSpec implements GeneratedTypeSpec {
         this.fields = messageType.fields();
     }
 
+    /**
+     * Creates a {@code FieldsSpec} for the given message type.
+     *
+     * @throws IllegalArgumentException
+     *         if the field generation for the passed message type is not supported
+     */
     public static FieldsSpec of(MessageType messageType) {
         checkNotNull(messageType);
         if (messageType.isEntityState() || messageType.isSpineCoreEvent()) {
@@ -95,6 +163,9 @@ public abstract class FieldsSpec implements GeneratedTypeSpec {
         return result;
     }
 
+    /**
+     * Generates the static methods which expose the top-level message fields.
+     */
     private ImmutableList<MethodSpec> fields() {
         ImmutableList<MethodSpec> result =
                 fields.stream()
@@ -104,6 +175,9 @@ public abstract class FieldsSpec implements GeneratedTypeSpec {
         return result;
     }
 
+    /**
+     * Generates the nested classes which expose the nested message fields.
+     */
     private ImmutableList<TypeSpec> nestedFieldContainers() {
         ImmutableList<TypeSpec> result =
                 nestedFieldTypes().stream()
@@ -125,8 +199,17 @@ public abstract class FieldsSpec implements GeneratedTypeSpec {
         return nestedFieldTypes;
     }
 
+    /**
+     * Returns the supertype with which all returned fields are marked.
+     *
+     * <p>The field supertype defines the filter type whose instance is constructed when the field
+     * is passed to the filter builder.
+     */
     protected abstract Class<? extends SubscribableField> fieldSupertype();
 
+    /**
+     * Generates the class Javadoc.
+     */
     private static CodeBlock javadoc() {
         CodeBlock firstParagraphText = CodeBlock
                 .builder()

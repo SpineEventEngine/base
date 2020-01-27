@@ -42,20 +42,21 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
 /**
- * A spec which represents a class which is a enumeration of the columns of an entity.
+ * A spec of a type which is a enumeration of the columns of an entity.
  *
- * <p>For the given message type with columns, the spec defines a {@code Columns} class which:
+ * <p>For the given entity state type, the spec defines a {@code Columns} class which:
  * <ol>
- *     <li>Exposes all entity columns through the static methods whose names match the column names
- *         in {@code javaCase}.
+ *     <li>Exposes all entity columns through the static methods with names that match the column
+ *         names in {@code javaCase}.
  *     <li>Is non-instantiable.
  * </ol>
  *
  * <p>For example:
  * <pre>
- * // Given the proto declaration of a message.
+ * // Given a message declaration.
  * message ProjectDetails {
  *     option (entity).kind = PROJECTION;
+ *
  *     ProjectId id = 1;
  *     ProjectName name = 2 [(column) = true];
  *     int32 task_count = 3 [(column) = true];
@@ -63,6 +64,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  *
  * // The following Java class will be generated.
  * class Columns {
+ *
  *     private Columns() {
  *         // Prevent instantiation.
  *     }
