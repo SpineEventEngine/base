@@ -35,6 +35,10 @@ import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
+/**
+ * A test-only implementation of a {@link NestedClassFactory}.
+ */
+@SuppressWarnings("unused") // Used through an external class loader in Model Compiler tests.
 @Immutable
 public final class TestNestedClassFactory implements NestedClassFactory {
 
