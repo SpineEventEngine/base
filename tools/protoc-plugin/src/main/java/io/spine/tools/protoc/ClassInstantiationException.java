@@ -23,7 +23,8 @@ package io.spine.tools.protoc;
 import static java.lang.String.format;
 
 /**
- * Exception that is thrown when a particular class passed by FQN cannot be instantiated.
+ * Exception that is thrown when a particular class cannot be instantiated by the
+ * {@link ExternalClassLoader}.
  */
 public final class ClassInstantiationException extends RuntimeException {
 
