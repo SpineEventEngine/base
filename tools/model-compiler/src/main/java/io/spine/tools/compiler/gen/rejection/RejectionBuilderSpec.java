@@ -86,7 +86,7 @@ final class RejectionBuilderSpec implements GeneratedTypeSpec {
     public TypeSpec typeSpec(Modifier... modifiers) {
         TypeSpec typeSpec = TypeSpec
                 .classBuilder(name.value())
-                .addModifiers(PUBLIC, STATIC)
+                .addModifiers(modifiers)
                 .addJavadoc(classJavadoc().value())
                 .addField(initializedProtoBuilder())
                 .addMethod(constructor())

@@ -93,11 +93,12 @@ public final class RejectionSpec implements GeneratedTypeSpec, Logging {
                         .addMethod(constructor())
                         .addMethod(messageThrown())
                         .addMethod(builder.newBuilder())
-                        .addType(builder.typeSpec())
+                        .addType(builder.typeSpec(PUBLIC, STATIC))
                         .build();
         return rejection;
     }
 
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     private MethodSpec constructor() {
         _debug().log("Creating the constructor for the type `%s`.",
                     declaration.simpleJavaClassName());
