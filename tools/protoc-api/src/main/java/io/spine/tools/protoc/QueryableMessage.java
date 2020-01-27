@@ -20,7 +20,11 @@
 
 package io.spine.tools.protoc;
 
-public final class QueryableMessage extends MessageSelector {
+/**
+ * A selector which signalizes that the configuration should be applied to all messages that
+ * represent a queryable entity state with columns.
+ */
+final class QueryableMessage extends MessageSelector {
 
     QueryableMessage() {
         super();

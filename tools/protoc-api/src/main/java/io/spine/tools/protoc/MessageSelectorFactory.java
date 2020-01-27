@@ -62,10 +62,16 @@ public final class MessageSelectorFactory {
         return new EntityState();
     }
 
+    /**
+     * Creates a new {@link QueryableMessage} selector.
+     */
     public QueryableMessage queryable() {
         return new QueryableMessage();
     }
 
+    /**
+     * Creates a new {@link SubscribableMessage} selector.
+     */
     public SubscribableMessage subscribable() {
         return new SubscribableMessage();
     }

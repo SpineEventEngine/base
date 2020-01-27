@@ -68,12 +68,16 @@ message AddMethods {
     Classpath factory_classpath = 3;
 }
 
+// Nested classes generation configuration.
 message AddNestedClasses {
 
+    // A configuration of generated nested classes for queryable messages.
     QueryableConfig queryable_factory = 1;
 
+    // A configuration of generated nested classes for subscribable messages.
     SubscribableConfig subscribable_factory = 2;
 
+    // Pattern-based nested class factories.
     repeated ConfigByPattern factory_by_pattern = 3;
 
     Classpath factory_classpath = 4;
@@ -99,6 +103,8 @@ message EntityStateConfig {
     string value = 1;
 }
 
+// The code generation configuration for queryable messages.
+//
 message QueryableConfig {
 
     // A fully-qualified name of the target.
@@ -108,6 +114,8 @@ message QueryableConfig {
     string value = 1;
 }
 
+// The code generation configuration for subscribable messages.
+//
 message SubscribableConfig {
 
     // A fully-qualified name of the target.
@@ -124,7 +132,7 @@ message ConfigByPattern {
 
     // A fully-qualified name of the target.
     //
-    // Currently interface name or method factory name is expected.
+    // Currently interface name,method factory name or nested class factory name is expected.
     //
     string value = 1;
 

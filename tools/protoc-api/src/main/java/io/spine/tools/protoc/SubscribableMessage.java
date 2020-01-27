@@ -20,7 +20,11 @@
 
 package io.spine.tools.protoc;
 
-public final class SubscribableMessage extends MessageSelector {
+/**
+ * A selector which signalizes that the configuration should be applied to all messages that
+ * represent a message which can be a subscription target.
+ */
+final class SubscribableMessage extends MessageSelector {
 
     SubscribableMessage() {
         super();
