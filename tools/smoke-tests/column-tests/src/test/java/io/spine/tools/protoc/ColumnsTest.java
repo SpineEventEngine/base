@@ -67,7 +67,7 @@ class ColumnsTest {
     }
 
     private static Correspondence<Method, String> nameCorrespondence() {
-        return Correspondence.from(ColumnsTest::hasName, "has the same name");
+        return Correspondence.from(ColumnsTest::hasName, "has a name");
     }
 
     private static boolean hasName(Method method, String name) {
