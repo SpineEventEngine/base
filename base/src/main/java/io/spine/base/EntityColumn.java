@@ -29,7 +29,7 @@ import io.spine.value.ValueHolder;
  * <p>Normally instances of this class should not be constructed by the user directly but are
  * instead provided by the Spine-generated column enumerations.
  *
- * <p>See the {@code Columns} class in the entity state messages declarations.
+ * <p>See the {@code Columns} class in the entity state message declarations.
  */
 public final class EntityColumn extends ValueHolder<FieldName> {
 

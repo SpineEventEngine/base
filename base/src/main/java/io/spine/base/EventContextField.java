@@ -20,6 +20,15 @@
 
 package io.spine.base;
 
+/**
+ * A subscribable field of an event context.
+ *
+ * <p>Such field can be passed to event subscription filters to filter the events by some values
+ * specified in the event context (e.g. event origin).
+ *
+ * <p>Normally this class shouldn't be instantiated or inherited in the user code directly but is
+ * instead used by the Spine routines which generate the message field enumerations.
+ */
 public class EventContextField extends SubscribableField {
 
     public EventContextField(Field field) {

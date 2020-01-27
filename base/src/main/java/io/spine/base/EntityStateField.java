@@ -20,6 +20,14 @@
 
 package io.spine.base;
 
+/**
+ * A subscribable field of an {@link EntityState entity state}.
+ *
+ * <p>Normally this class shouldn't be instantiated or inherited in the user code directly but is
+ * instead used by the Spine routines which generate the message field enumerations.
+ *
+ * <p>See the {@code Fields} class in the entity state message declarations.
+ */
 public class EntityStateField extends SubscribableField {
 
     public EntityStateField(Field field) {

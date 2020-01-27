@@ -28,7 +28,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>Normally this class shouldn't be inherited in the client code and is instead used by the
  * Spine routines which provide generated field enumerations.
  *
- * <p>See {@code Fields} class in the event and entity state messages declarations.
+ * <p>See the {@code Fields} class in the event and entity state message declarations.
  *
  * @apiNote Among others, this class is normally inherited by the nested field containers, which
  *        expose nested message fields as public instance methods, for example:
@@ -37,7 +37,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *        </pre>
  *        Thus, this class has to avoid name clashes with proto fields declared this way. Hence the
  *        otherwise redundant "get-" prefix on the {@link #getField()} method. For the same reason
- *        the class does not inherit from the {@link io.spine.value.ValueHolder}.
+ *        the class does not inherit from {@link io.spine.value.ValueHolder}.
  */
 @SuppressWarnings("AbstractClassWithoutAbstractMethods")
 // Prevent instantiation in favor of concrete subclasses.
