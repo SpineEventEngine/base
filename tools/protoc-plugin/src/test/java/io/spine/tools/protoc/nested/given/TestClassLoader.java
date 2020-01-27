@@ -24,6 +24,9 @@ import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.ExternalClassLoader;
 import io.spine.tools.protoc.nested.NestedClassFactory;
 
+/**
+ * A test wrapper for the {@link ExternalClassLoader}.
+ */
 public final class TestClassLoader {
 
     private static final ExternalClassLoader<NestedClassFactory> INSTANCE =
