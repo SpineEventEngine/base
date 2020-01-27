@@ -20,22 +20,26 @@
 
 package io.spine.base;
 
-import io.spine.annotation.Internal;
 import io.spine.code.proto.FieldName;
+import io.spine.value.ValueHolder;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+/**
+ * A queryable column of an entity which can be passed to query filters.
+ *
+ * <p>Normally instances of this class should not be constructed by the user directly but are
+ * instead provided by the Spine-generated column enumerations.
+ *
+ * <p>See the {@code Columns} class in the entity state messages declarations.
+ */
+public final class EntityColumn extends ValueHolder<FieldName> {
 
-public final class EntityColumn {
+    private static final long serialVersionUID = 0L;
 
-    private final FieldName name;
-
-    public EntityColumn(String name) {
-        checkNotNull(name);
-        this.name = FieldName.of(name);
+    public EntityColumn(String fieldName) {
+        super(FieldName.of(fieldName));
     }
 
-    @Internal
     public FieldName name() {
-        return name;
+        return value();
     }
 }

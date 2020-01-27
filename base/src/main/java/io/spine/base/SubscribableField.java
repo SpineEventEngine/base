@@ -20,16 +20,24 @@
 
 package io.spine.base;
 
-import io.spine.annotation.Internal;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * @apiNote Methods in this class are named with otherwise redundant "get-" prefix to avoid
- *        clashing with any of the proto field names in the generated descendant classes. For the
- *        same reason the class does not inherit from {@link io.spine.value.ValueHolder}, as
- *        methods like {@code ValueHolder#value()}) are likely to produce a name clash with
- *        Protobuf fields.
+ * A subscribable message field which can be passed to subscription filters.
+ *
+ * <p>Normally this class shouldn't be inherited in the client code and is instead used by the
+ * Spine routines which provide generated field enumerations.
+ *
+ * <p>See {@code Fields} class in the event and entity state messages declarations.
+ *
+ * @apiNote Among others, this class is normally inherited by the nested field containers, which
+ *        expose nested message fields as public instance methods, for example:
+ *        <pre>
+ *            public EntityStateField someFieldName() {...}
+ *        </pre>
+ *        Thus, this class has to avoid name clashes with proto fields declared this way. Hence the
+ *        otherwise redundant "get-" prefix on the {@link #getField()} method. For the same reason
+ *        the class does not inherit from the {@link io.spine.value.ValueHolder}.
  */
 @SuppressWarnings("AbstractClassWithoutAbstractMethods")
 // Prevent instantiation in favor of concrete subclasses.
@@ -37,11 +45,15 @@ public abstract class SubscribableField {
 
     private final Field field;
 
-    public SubscribableField(Field field) {
+    protected SubscribableField(Field field) {
         this.field = checkNotNull(field);
     }
 
-    @Internal
+    /**
+     * Returns a wrapped field.
+     *
+     * <p>See the class doc for the naming motivation.
+     */
     public Field getField() {
         return field;
     }
