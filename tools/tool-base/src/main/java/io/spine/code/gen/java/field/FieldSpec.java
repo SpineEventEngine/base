@@ -34,7 +34,16 @@ import io.spine.code.proto.FieldName;
 
 import javax.lang.model.element.Modifier;
 
+import static com.google.common.base.Preconditions.checkState;
 
+/**
+ * A spec of the method which returns a message field as a {@link SubscribableField} instance.
+ *
+ * <p>The name of the method is a column name in {@code javaCase}.
+ *
+ * <p>The descendants of this class differentiate between top-level and nested fields to enable the
+ * field path propagation.
+ */
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Random duplication of some generated code elements.
 abstract class FieldSpec implements GeneratedMethodSpec {
@@ -59,55 +68,98 @@ abstract class FieldSpec implements GeneratedMethodSpec {
         return result;
     }
 
+    /**
+     * Returns the field name as defined in Protobuf.
+     */
     FieldName fieldName() {
         return field.name();
     }
 
+    /**
+     * Obtains the method return type.
+     */
     JavaPoetName returnType() {
         return shouldExposeNestedFields()
                ? nestedFieldsContainer()
-               : subscribableField();
+               : simpleField();
     }
 
+    /**
+     * Obtains the method body.
+     */
     private CodeBlock methodBody() {
         return shouldExposeNestedFields()
                ? returnNestedFieldsContainer()
                : returnSimpleField();
     }
 
+    /**
+     * Checks if the wrapped field has nested fields and should expose them to subscribers.
+     */
     private boolean shouldExposeNestedFields() {
         return shouldExposeNestedFields(field);
     }
 
+    /**
+     * Obtains a Java Poet name for the type representing a nested field container which is
+     * returned from this method.
+     */
     private JavaPoetName nestedFieldsContainer() {
         JavaPoetName type = JavaPoetName.of(fieldTypeName().with("Field"));
         return type;
     }
 
-    private JavaPoetName subscribableField() {
+    /**
+     * Obtains a Java Poet name for the simple field (i.e. the one which doesn't expose nested
+     * ones) returned by this method.
+     */
+    private JavaPoetName simpleField() {
         JavaPoetName type = JavaPoetName.of(fieldSupertype);
         return type;
     }
 
+    /**
+     * A return statement which instantiates a nested fields container.
+     */
     abstract CodeBlock returnNestedFieldsContainer();
 
+    /**
+     * A return statement which instantiates a simple field.
+     */
     abstract CodeBlock returnSimpleField();
 
+    /**
+     * A simple name of the field type.
+     *
+     * <p>Assumes the wrapped field is a {@link com.google.protobuf.Message Message}.
+     */
     private SimpleClassName fieldTypeName() {
+        checkState(field.isMessage());
         String fieldTypeName = field.javaTypeName();
         SimpleClassName result = ClassName.of(fieldTypeName)
                                           .toSimple();
         return result;
     }
 
+    /**
+     * The supertype from which the returned field should inherit.
+     *
+     * <p>Enables the typed filter creation on the client side.
+     */
     final Class<? extends SubscribableField> fieldSupertype() {
         return fieldSupertype;
     }
 
+    /**
+     * Checks whether a field should expose its nested fields to the subscribers.
+     */
     static boolean shouldExposeNestedFields(FieldDeclaration field) {
         return field.isMessage() && !field.isCollection();
     }
 
+    /**
+     * Generates the method Javadoc.
+     */
     private CodeBlock javadoc() {
         GeneratedJavadoc javadoc = new FieldJavadoc(this.field, "field");
         return javadoc.spec();
