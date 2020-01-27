@@ -19,7 +19,8 @@
  */
 
 /**
- * // TODO:2019-12-20:dmytro.kuzmin:WIP: Document.
+ * This package contains routines which perform the generation of additional nested classes for the
+ * Protobuf messages.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

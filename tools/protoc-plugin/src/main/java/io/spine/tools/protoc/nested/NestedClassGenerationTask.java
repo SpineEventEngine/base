@@ -32,7 +32,7 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * An abstract base for the method code generation tasks.
+ * An abstract base for the nested classes generation tasks.
  */
 abstract class NestedClassGenerationTask implements CodeGenerationTask {
 
