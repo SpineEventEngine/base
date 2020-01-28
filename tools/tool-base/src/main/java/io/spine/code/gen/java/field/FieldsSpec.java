@@ -47,7 +47,7 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
 /**
- * A spec for the generated type which exposes message fields as strongly-typed values.
+ * A spec of the generated type which exposes message fields as strongly-typed values.
  *
  * <p>For the given message type, the spec defines a {@code Fields} class which:
  * <ol>

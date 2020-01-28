@@ -42,7 +42,7 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
 /**
- * A spec for the generated type which exposes columns of an entity as strongly-typed values.
+ * A spec of the generated type which exposes columns of an entity as strongly-typed values.
  *
  * <p>For the given entity state type, the spec defines a {@code Columns} class which:
  * <ol>

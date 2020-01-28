@@ -41,7 +41,7 @@ import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**
- * A spec for the generated type which represents
+ * A spec of the generated type which represents
  * a {@link com.google.protobuf.Message Message}-typed field of a message.
  *
  * <p>Such type, being a {@linkplain SubscribableField strongly-typed field} itself, can be both
