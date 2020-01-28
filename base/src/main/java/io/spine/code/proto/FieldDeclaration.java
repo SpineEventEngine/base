@@ -258,6 +258,13 @@ public final class FieldDeclaration {
     }
 
     /**
+     * Tells if the field is a singular field of message type.
+     */
+    public boolean isSingularMessage() {
+        return isMessage() && isNotCollection();
+    }
+
+    /**
      * Determines whether the declaration is a singular value.
      *
      * @return {@code true} if the declaration neither map nor repeated, {@code false} otherwise

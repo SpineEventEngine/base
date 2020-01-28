@@ -24,6 +24,9 @@ import com.squareup.javapoet.CodeBlock;
 import io.spine.base.SubscribableField;
 import io.spine.code.proto.FieldDeclaration;
 
+/**
+ * A spec of the method which returns a nested message field.
+ */
 final class NestedFieldSpec extends FieldSpec {
 
     NestedFieldSpec(FieldDeclaration field, Class<? extends SubscribableField> fieldSupertype) {

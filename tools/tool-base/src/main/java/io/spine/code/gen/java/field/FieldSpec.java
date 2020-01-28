@@ -97,7 +97,7 @@ abstract class FieldSpec implements GeneratedMethodSpec {
      * Checks if the wrapped field has nested fields and should expose them to subscribers.
      */
     private boolean shouldExposeNestedFields() {
-        return shouldExposeNestedFields(field);
+        return field.isSingularMessage();
     }
 
     /**
@@ -148,13 +148,6 @@ abstract class FieldSpec implements GeneratedMethodSpec {
      */
     final Class<? extends SubscribableField> fieldSupertype() {
         return fieldSupertype;
-    }
-
-    /**
-     * Checks whether a field should expose its nested fields to the subscribers.
-     */
-    static boolean shouldExposeNestedFields(FieldDeclaration field) {
-        return field.isMessage() && !field.isCollection();
     }
 
     /**

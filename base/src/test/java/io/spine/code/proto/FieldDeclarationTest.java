@@ -197,4 +197,29 @@ class FieldDeclarationTest {
         FieldDeclaration declaration = new FieldDeclaration(field);
         assertThrows(IllegalStateException.class, declaration::messageType);
     }
+
+    @Test
+    @DisplayName("tell if the field is a singular field of a message type")
+    void checkSingularMessage() {
+        FieldDescriptor field = Uri.getDescriptor()
+                                   .findFieldByName("auth");
+        FieldDeclaration declaration = new FieldDeclaration(field);
+        assertThat(declaration.isSingularMessage()).isTrue();
+    }
+
+    @Test
+    @DisplayName("tell if the field is not a singular field of a message type")
+    void checkNotSingularMessage() {
+        // Check non-`Message` type.
+        FieldDescriptor host = Uri.getDescriptor()
+                                  .findFieldByName("host");
+        FieldDeclaration nonMessage = new FieldDeclaration(host);
+        assertThat(nonMessage.isSingularMessage()).isFalse();
+
+        // Check non-singular type.
+        FieldDescriptor query = Uri.getDescriptor()
+                                   .findFieldByName("query");
+        FieldDeclaration nonSingular = new FieldDeclaration(query);
+        assertThat(nonSingular.isSingularMessage()).isFalse();
+    }
 }

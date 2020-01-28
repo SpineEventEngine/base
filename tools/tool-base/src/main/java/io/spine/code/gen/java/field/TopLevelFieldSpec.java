@@ -25,6 +25,9 @@ import io.spine.base.Field;
 import io.spine.base.SubscribableField;
 import io.spine.code.proto.FieldDeclaration;
 
+/**
+ * A spec of the method which returns a top-level message field.
+ */
 final class TopLevelFieldSpec extends FieldSpec {
 
     TopLevelFieldSpec(FieldDeclaration field, Class<? extends SubscribableField> fieldSupertype) {
