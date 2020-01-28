@@ -30,8 +30,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <p>See the {@code Fields} class in the subscribable message declarations.
  *
- * @apiNote Among others, this class is normally inherited by the nested field containers, which
- *        expose nested message fields as public instance methods, for example:
+ * @apiNote Among others, this class is normally inherited by the generated nested message fields
+ *        which declare own properties as public instance methods, for example:
  *        <pre>
  *        public EntityStateField someFieldName() {...}
  *        </pre>
