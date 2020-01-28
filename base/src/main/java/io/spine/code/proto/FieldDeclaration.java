@@ -29,6 +29,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
+import io.spine.annotation.Internal;
 import io.spine.base.MessageFile;
 import io.spine.code.java.ClassName;
 import io.spine.option.EntityOption;
@@ -313,6 +314,7 @@ public final class FieldDeclaration {
      * @throws IllegalStateException
      *         if the field is of non-{@link Message} type
      */
+    @Internal
     public MessageType messageType() {
         checkState(isMessage());
         Descriptor messageType = descriptor().getMessageType();
