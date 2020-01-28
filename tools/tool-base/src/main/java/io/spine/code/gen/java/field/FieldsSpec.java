@@ -47,7 +47,7 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
 /**
- * A spec of a type which is a enumeration of the fields of a message type.
+ * A spec for the generated type which exposes message fields as strongly-typed values.
  *
  * <p>For the given message type, the spec defines a {@code Fields} class which:
  * <ol>
@@ -110,6 +110,9 @@ import static javax.lang.model.element.Modifier.STATIC;
  */
 public abstract class FieldsSpec implements GeneratedTypeSpec {
 
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
+    private static final String CLASS_NAME = "Fields";
+
     private final MessageType messageType;
     private final ImmutableList<FieldDeclaration> fields;
 
@@ -148,11 +151,10 @@ public abstract class FieldsSpec implements GeneratedTypeSpec {
         return messageType.javaPackage();
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     @Override
     public TypeSpec typeSpec(Modifier... modifiers) {
         TypeSpec result = TypeSpec
-                .classBuilder("Fields")
+                .classBuilder(CLASS_NAME)
                 .addJavadoc(javadoc())
                 .addModifiers(modifiers)
                 .addAnnotation(generatedBySpineModelCompiler())

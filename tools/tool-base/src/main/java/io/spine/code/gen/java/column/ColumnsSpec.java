@@ -42,7 +42,7 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
 /**
- * A spec of a type which is a enumeration of the columns of an entity.
+ * A spec for the generated type which exposes columns of an entity as strongly-typed values.
  *
  * <p>For the given entity state type, the spec defines a {@code Columns} class which:
  * <ol>
@@ -75,12 +75,15 @@ import static javax.lang.model.element.Modifier.STATIC;
  * }
  * </pre>
  *
- * <p>The `EntityColumn` instances retrieved in such way can be passed to the query filters to form
- * an entity query.
+ * <p>The {@code EntityColumn} instances retrieved from the {@code Columns} type can be passed to
+ * the query filters to form an entity query.
  *
- * <p>The nested columns are ignored.
+ * <p>The nested columns are ignored during the class generation as they are currently not
+ * supported on the server side.
  */
 public final class ColumnsSpec implements GeneratedTypeSpec {
+
+    private static final String CLASS_NAME = "Columns";
 
     private final MessageType messageType;
     private final ImmutableList<FieldDeclaration> columns;
@@ -103,7 +106,7 @@ public final class ColumnsSpec implements GeneratedTypeSpec {
     @Override
     public TypeSpec typeSpec(Modifier... modifiers) {
         TypeSpec result = TypeSpec
-                .classBuilder("Columns")
+                .classBuilder(CLASS_NAME)
                 .addJavadoc(javadoc())
                 .addAnnotation(generatedBySpineModelCompiler())
                 .addModifiers(modifiers)
