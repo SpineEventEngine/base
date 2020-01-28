@@ -80,7 +80,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  *     }
  *
  *     // The `OrderIdField` instance can both be passed to the filter builder itself and used for
- *     // obtaining more nested message fields.
+ *     // obtaining more nested properties.
  *
  *     public static OrderIdField id() {
  *         return new OrderIdField(...);
@@ -160,7 +160,7 @@ public abstract class FieldsSpec implements GeneratedTypeSpec {
                 .addAnnotation(generatedBySpineModelCompiler())
                 .addMethod(privateEmptyCtor())
                 .addMethods(fields())
-                .addTypes(nestedFieldContainers())
+                .addTypes(messageTypeFields())
                 .build();
         return result;
     }
@@ -178,12 +178,18 @@ public abstract class FieldsSpec implements GeneratedTypeSpec {
     }
 
     /**
-     * Generates the nested classes which expose the nested message fields.
+     * Generates a nested class for each top-level or nested field of the message which is of
+     * a {@link com.google.protobuf.Message Message} type itself.
+     *
+     * <p>Such classes allow to obtain the nested fields of a message in a strongly-typed manner,
+     * building up the required field path through the chain of method calls.
+     *
+     * @see MessageTypedField
      */
-    private ImmutableList<TypeSpec> nestedFieldContainers() {
+    private ImmutableList<TypeSpec> messageTypeFields() {
         ImmutableList<TypeSpec> result =
                 nestedFieldTypes().stream()
-                                  .map(type -> new NestedFieldContainer(type, fieldSupertype()))
+                                  .map(type -> new MessageTypedField(type, fieldSupertype()))
                                   .map(type -> type.typeSpec(PUBLIC, STATIC, FINAL))
                                   .collect(toImmutableList());
         return result;

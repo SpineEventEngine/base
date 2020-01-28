@@ -24,7 +24,7 @@ import io.spine.code.proto.FieldName;
 import io.spine.value.ValueHolder;
 
 /**
- * A queryable column of an entity which can be passed to query filters.
+ * A queryable column of an entity which can be passed to the query filters.
  *
  * <p>Normally instances of this class should not be constructed by the user directly but are
  * instead provided by the Spine-generated column enumerations.

@@ -25,10 +25,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A subscribable message field which can be passed to subscription filters.
  *
- * <p>Normally this class shouldn't be inherited in the client code and is instead used by the
+ * <p>Normally this type shouldn't be inherited in the client code and is instead used by the
  * Spine routines which provide generated field enumerations.
  *
- * <p>See the {@code Fields} class in the event and entity state message declarations.
+ * <p>See the {@code Fields} class in the subscribable message declarations.
  *
  * @apiNote Among others, this class is normally inherited by the nested field containers, which
  *        expose nested message fields as public instance methods, for example:

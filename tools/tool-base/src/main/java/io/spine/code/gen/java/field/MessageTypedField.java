@@ -30,24 +30,42 @@ import io.spine.base.SubscribableField;
 import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.java.PackageName;
+import io.spine.code.java.SimpleClassName;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.type.MessageType;
 
 import javax.lang.model.element.Modifier;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static java.lang.String.format;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
+/**
+ * A spec for the generated type which represents
+ * a {@link com.google.protobuf.Message Message}-typed field of a message.
+ *
+ * <p>Such type, being a {@linkplain SubscribableField strongly-typed field} itself, can be both
+ * passed to the message filters and used to obtain the more nested message properties.
+ *
+ * <p>More formally, for the given message type, the spec will define a class which:
+ * <ol>
+ *     <li>Is named by combining the message Java name and the {@code Field} suffix, for example,
+ *         {@code UserIdField}.
+ *     <li>Inherits from a {@link SubscribableField}.
+ *     <li>Takes the initial {@linkplain Field field path} on construction.
+ *     <li>Exposes nested message fields through the instance methods which append the name of the
+ *         requested field to the wrapped field path.
+ * </ol>
+ *
+ * <p>See the {@link FieldsSpec} for the example usage.
+ */
 @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication of the generated code.
-final class NestedFieldContainer implements GeneratedTypeSpec {
+final class MessageTypedField implements GeneratedTypeSpec {
 
     private final MessageType messageType;
     private final Class<? extends SubscribableField> fieldSupertype;
 
-    NestedFieldContainer(MessageType nestedType,
-                         Class<? extends SubscribableField> fieldSupertype) {
+    MessageTypedField(MessageType nestedType, Class<? extends SubscribableField> fieldSupertype) {
         this.messageType = nestedType;
         this.fieldSupertype = fieldSupertype;
     }
@@ -60,7 +78,7 @@ final class NestedFieldContainer implements GeneratedTypeSpec {
     @Override
     public TypeSpec typeSpec(Modifier... modifiers) {
         TypeSpec result = TypeSpec
-                .classBuilder(typeName())
+                .classBuilder(typeName().value())
                 .addJavadoc(javadoc())
                 .addModifiers(modifiers)
                 .superclass(superclass())
@@ -70,8 +88,10 @@ final class NestedFieldContainer implements GeneratedTypeSpec {
         return result;
     }
 
-    private String typeName() {
-        return format("%sField", messageType.javaClassName().toSimple());
+    private SimpleClassName typeName() {
+        return messageType.javaClassName()
+                          .toSimple()
+                          .with("Field");
     }
 
     private TypeName superclass() {
