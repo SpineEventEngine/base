@@ -25,19 +25,17 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A subscribable message field which can be passed to subscription filters.
  *
- * <p>Normally this type shouldn't be inherited in the client code and is instead used by the
- * Spine routines which provide generated field enumerations.
+ * <p>See descendants for details.
  *
- * <p>See the {@code Fields} class in the subscribable message declarations.
- *
- * @apiNote Among others, this class is normally inherited by the generated nested message fields
- *        which declare own properties as public instance methods, for example:
+ * @apiNote Among others, this class is normally inherited by the generated types which represent
+ *        nested message fields and declare own properties as public instance methods, as follows:
  *        <pre>
  *        public EntityStateField someFieldName() {...}
  *        </pre>
- *        Thus, this class has to avoid name clashes with proto fields declared this way. Hence the
- *        otherwise redundant "get-" prefix on the {@link #getField()} method. For the same reason
- *        the class does not inherit from {@link io.spine.value.ValueHolder}.
+ *        Thus, the {@code SubscribableField} class has to avoid name clashes with proto fields
+ *        declared like this, hence the otherwise redundant "get-" prefix on the
+ *        {@link #getField()} method. For the same reason the class does not inherit from
+ *        {@link io.spine.value.ValueHolder}.
  */
 @SuppressWarnings("AbstractClassWithoutAbstractMethods")
 // Prevent instantiation in favor of concrete subclasses.
@@ -49,11 +47,6 @@ public abstract class SubscribableField {
         this.field = checkNotNull(field);
     }
 
-    /**
-     * Returns a wrapped field.
-     *
-     * <p>See the class doc for the naming motivation.
-     */
     public Field getField() {
         return field;
     }

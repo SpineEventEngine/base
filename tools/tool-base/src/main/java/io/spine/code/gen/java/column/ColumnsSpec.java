@@ -42,7 +42,7 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
 /**
- * A spec of the generated type which exposes columns of an entity as strongly-typed values.
+ * A spec which defines a type that exposes columns of an entity as strongly-typed values.
  *
  * <p>For the given entity state type, the spec defines a {@code Columns} class which:
  * <ol>
@@ -75,8 +75,8 @@ import static javax.lang.model.element.Modifier.STATIC;
  * }
  * </pre>
  *
- * <p>The {@code EntityColumn} instances retrieved from the {@code Columns} type can be passed to
- * the query filters to form an entity query.
+ * <p>The {@code EntityColumn} instances retrieved from the {@code Columns} methods can be passed
+ * to the query filters to form an entity query.
  *
  * <p>The nested columns are ignored during the class generation as they are currently not
  * supported on the server side.

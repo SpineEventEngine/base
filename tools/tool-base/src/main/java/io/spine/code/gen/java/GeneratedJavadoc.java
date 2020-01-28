@@ -23,7 +23,7 @@ package io.spine.code.gen.java;
 import com.squareup.javapoet.CodeBlock;
 
 /**
- * A generated Javadoc.
+ * A JavaPoet-based spec of a generated Javadoc text.
  */
 public interface GeneratedJavadoc {
 

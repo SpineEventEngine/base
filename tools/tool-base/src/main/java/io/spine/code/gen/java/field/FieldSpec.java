@@ -42,7 +42,7 @@ import static com.google.common.base.Preconditions.checkState;
  * <p>The name of the method matches the field name in {@code javaCase}.
  *
  * <p>The descendants of this class differentiate between top-level and nested fields to enable the
- * field path propagation.
+ * correct field path propagation.
  */
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Random duplication of some generated code elements.

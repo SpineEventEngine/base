@@ -38,7 +38,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.protobuf.Messages.isNotDefault;
 
 /**
- * The {@link CodeGenerator} implementation generating additional nested classes for the message.
+ * The {@link CodeGenerator} implementation which generates additional nested classes for
+ * the message.
  *
  * <p>The generator produces {@link CompilerOutput compiler output} that fits into the message's
  * {@link io.spine.tools.protoc.InsertionPoint#class_scope class scope} insertion point.

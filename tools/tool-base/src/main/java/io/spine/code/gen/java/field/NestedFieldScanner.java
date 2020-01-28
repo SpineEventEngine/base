@@ -28,8 +28,8 @@ import java.util.List;
 import static com.google.common.collect.Lists.newLinkedList;
 
 /**
- * A recursive collector of {@link com.google.protobuf.Message Message}-typed fields from a message
- * type.
+ * A recursive collector of {@link com.google.protobuf.Message Message}-typed fields from
+ * a message.
  */
 final class NestedFieldScanner {
 
@@ -40,8 +40,8 @@ final class NestedFieldScanner {
     }
 
     /**
-     * Traverses all top-level and nested fields of the enclosed message type recursively to
-     * retrieve those that are singular {@link com.google.protobuf.Message Message}-typed fields.
+     * Traverses all top-level and nested fields of the enclosed message type to retrieve those
+     * that are singular {@link com.google.protobuf.Message Message}-typed fields.
      */
     List<MessageType> scan() {
         List<MessageType> result = newLinkedList();

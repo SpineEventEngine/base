@@ -47,12 +47,12 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
 /**
- * A spec of the generated type which exposes message fields as strongly-typed values.
+ * A spec which defines a type that exposes message fields as strongly-typed values.
  *
  * <p>For the given message type, the spec defines a {@code Fields} class which:
  * <ol>
- *     <li>Exposes all message fields through the static methods with names that match the field
- *         names in {@code javaCase}.
+ *     <li>Exposes all top-level message fields through the static methods with names that match
+ *         the field names in {@code javaCase}.
  *     <li>Defines nested classes which expose nested message fields and instances of which are
  *         returned from the higher level methods.
  *     <li>Is non-instantiable.
@@ -106,7 +106,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  *
  * <p>The descendants of this type differentiate between entity state, event and event context
  * fields allowing to pass a specific field type to the filter builder to form a typed subscription
- * filter.
+ * request.
  */
 public abstract class FieldsSpec implements GeneratedTypeSpec {
 

@@ -64,12 +64,12 @@ import static io.spine.option.EntityOption.Kind.UNRECOGNIZED;
 public class MessageType extends Type<Descriptor, DescriptorProto> implements Logging {
 
     /**
-     * A hard-coded name of the message which is used by the Spine engine as an event type.
+     * A name of the message which is used by the Spine engine as an event type.
      */
     private static final String EVENT = "spine.core.Event";
 
     /**
-     * A hard-coded name of the message which is used by the Spine engine as an event context type.
+     * A name of the message which is used by the Spine engine as an event context type.
      */
     private static final String EVENT_CONTEXT = "spine.core.EventContext";
 

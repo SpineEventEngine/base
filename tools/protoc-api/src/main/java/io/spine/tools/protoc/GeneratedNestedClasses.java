@@ -51,9 +51,9 @@ public final class GeneratedNestedClasses extends GeneratedConfigurations<AddNes
      * applyFactory "io.spine.code.CustomNestedClassFactory", messages().inFiles(suffix: "events.proto")
      * </pre>
      *
-     * <p>The statement above configures all message types which are declared in proto files whose
-     * name end with {@code events.proto} to use the {@code CustomNestedClassFactory} for nested
-     * class code generation. It is expected that {@code CustomNestedClassFactory} is an
+     * <p>The statement above configures all message types which are declared in proto files with
+     * names ending with {@code events.proto} to use the {@code CustomNestedClassFactory} for
+     * nested class code generation. It is expected that {@code CustomNestedClassFactory} is an
      * implementation of the {@link io.spine.tools.protoc.nested.NestedClassFactory} interface.
      *
      * <p>NOTE: in order for the framework components to function properly, the implementation

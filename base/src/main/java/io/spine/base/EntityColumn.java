@@ -26,10 +26,10 @@ import io.spine.value.ValueHolder;
 /**
  * A queryable column of an entity which can be passed to the query filters.
  *
- * <p>Normally instances of this class should not be constructed by the user directly but are
- * instead provided by the Spine-generated column enumerations.
+ * <p>Normally instances of this class should not be constructed by the user directly and are
+ * instead provided by the Spine-generated column enumeration.
  *
- * <p>See the {@code Columns} class in the entity state message declarations.
+ * <p>See the nested {@code Columns} class in the entity state message declarations.
  */
 public final class EntityColumn extends ValueHolder<FieldName> {
 

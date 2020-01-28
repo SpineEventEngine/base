@@ -40,7 +40,7 @@ public final class FieldJavadoc implements GeneratedJavadoc {
     private final FieldDeclaration field;
 
     /**
-     * The alias which allows to call the field some other name in doc, e.g. "column".
+     * The field alias or how it is called in the doc, e.g. "column".
      */
     private final String fieldAlias;
 

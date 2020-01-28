@@ -23,10 +23,10 @@ package io.spine.base;
 /**
  * A subscribable field of an {@link EventMessage event message}.
  *
- * <p>Normally this class shouldn't be instantiated or inherited in the user code directly but is
- * instead used by the Spine routines which generate the message field enumerations.
+ * <p>Normally this class shouldn't be instantiated or inherited in the user code directly and is
+ * instead provided by the Spine routines which generate the message field enumerations.
  *
- * <p>See the {@code Fields} class in the event message declarations.
+ * <p>See the nested {@code Fields} class in the event message declarations.
  */
 public class EventMessageField extends SubscribableField {
 

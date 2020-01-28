@@ -25,7 +25,7 @@ import io.spine.base.SubscribableField;
 import io.spine.type.MessageType;
 
 /**
- * A spec of the generated type which exposes event message fields as strongly-typed objects.
+ * A spec which defines a type that exposes event message fields as strongly-typed objects.
  *
  * @see FieldsSpec
  */
