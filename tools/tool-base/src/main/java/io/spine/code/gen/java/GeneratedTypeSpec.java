@@ -38,6 +38,5 @@ public interface GeneratedTypeSpec {
     /**
      * A JavaPoet spec of the type.
      */
-    // TODO:2019-12-20:dmytro.kuzmin:WIP: Consolidate singular/plural name usage after varargs.
     TypeSpec typeSpec(Modifier... modifiers);
 }
