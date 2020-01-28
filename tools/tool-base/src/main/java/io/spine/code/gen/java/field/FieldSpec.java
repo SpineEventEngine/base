@@ -37,9 +37,9 @@ import javax.lang.model.element.Modifier;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * A spec of the method which returns a message field as a {@link SubscribableField} instance.
+ * A spec of the method which returns a {@linkplain SubscribableField strongly-typed message field}.
  *
- * <p>The name of the method is a column name in {@code javaCase}.
+ * <p>The name of the method matches the field name in {@code javaCase}.
  *
  * <p>The descendants of this class differentiate between top-level and nested fields to enable the
  * field path propagation.

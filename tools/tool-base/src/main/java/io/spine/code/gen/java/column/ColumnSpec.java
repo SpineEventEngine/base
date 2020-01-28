@@ -33,9 +33,9 @@ import io.spine.code.proto.FieldName;
 import javax.lang.model.element.Modifier;
 
 /**
- * A spec of the method which returns an entity column as an {@link EntityColumn} instance.
+ * A spec of the method which returns a {@linkplain EntityColumn strongly-typed entity column}.
  *
- * <p>The name of the method is a column name in {@code javaCase}.
+ * <p>The name of the method matches the column name in {@code javaCase}.
  */
 final class ColumnSpec implements GeneratedMethodSpec {
 
