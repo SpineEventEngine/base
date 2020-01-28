@@ -36,7 +36,7 @@ import static javax.lang.model.element.Modifier.STATIC;
 /**
  * Generates an entity columns enumeration for the given message type.
  *
- * @see ColumnsSpec
+ * <p>See {@link ColumnsSpec} for details.
  */
 @Immutable
 public final class ColumnFactory implements NestedClassFactory {

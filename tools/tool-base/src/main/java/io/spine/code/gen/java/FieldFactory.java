@@ -36,7 +36,7 @@ import static javax.lang.model.element.Modifier.STATIC;
 /**
  * Generates a field enumeration for the given message type.
  *
- * @see FieldsSpec
+ * <p>See {@link FieldsSpec} for details.
  */
 @Immutable
 public final class FieldFactory implements NestedClassFactory {
