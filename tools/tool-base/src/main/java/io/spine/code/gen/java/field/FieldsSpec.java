@@ -113,9 +113,21 @@ public abstract class FieldsSpec implements GeneratedTypeSpec {
     @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     private static final String CLASS_NAME = "Fields";
 
+    /**
+     * A message type for which the class is generated.
+     */
     private final MessageType messageType;
+
+    /**
+     * The top-level message fields.
+     */
     private final ImmutableList<FieldDeclaration> fields;
 
+    /**
+     * The recursively-collected nested field types.
+     *
+     * @see NestedFieldScanner
+     */
     @LazyInit
     private @MonotonicNonNull List<MessageType> nestedFieldTypes;
 
@@ -181,7 +193,7 @@ public abstract class FieldsSpec implements GeneratedTypeSpec {
      * Generates a nested class for each top-level or nested field of the message which is of
      * a {@link com.google.protobuf.Message Message} type itself.
      *
-     * <p>Such classes allow to obtain the nested fields of a message in a strongly-typed manner,
+     * <p>Such classes allow to retrieve the nested fields of a message in a strongly-typed manner,
      * building up the required field path through the chain of method calls.
      *
      * @see MessageTypedField
