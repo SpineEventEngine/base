@@ -69,7 +69,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  * }
  *
  * message OrderId {
- *     string uuid = 1;
+ *     string value = 1;
  * }
  *
  * // The following Java class will be generated for the `OrderView` message type.
