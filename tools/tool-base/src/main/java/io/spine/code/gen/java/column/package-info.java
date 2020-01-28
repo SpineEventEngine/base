@@ -19,10 +19,9 @@
  */
 
 /**
- * This package contains the routines for generating strongly-typed columns for the queryable
- * types.
+ * This package contains the routines for generating strongly-typed columns for the entity state
+ * messages.
  */
-
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.code.gen.java.column;

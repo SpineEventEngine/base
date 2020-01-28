@@ -20,9 +20,8 @@
 
 /**
  * This package contains the routines for generating strongly-typed fields for the subscribable
- * types.
+ * message types.
  */
-
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.code.gen.java.field;
