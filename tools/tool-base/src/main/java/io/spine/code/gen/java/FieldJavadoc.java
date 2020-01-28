@@ -24,10 +24,23 @@ import com.squareup.javapoet.CodeBlock;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
 
+/**
+ * The Javadoc of a method which returns a strongly-typed proto field.
+ *
+ * @see io.spine.base.SubscribableField
+ * @see io.spine.base.EntityColumn
+ */
 // TODO:2019-12-20:dmytro.kuzmin:WIP: Mark everything that needs to be internal as `@Internal`.
 public final class FieldJavadoc implements GeneratedJavadoc {
 
+    /**
+     * The field which is returned.
+     */
     private final FieldDeclaration field;
+
+    /**
+     * The alias which allows to call the field some other name in doc, e.g. "column".
+     */
     private final String fieldAlias;
 
     public FieldJavadoc(FieldDeclaration field, String fieldAlias) {
