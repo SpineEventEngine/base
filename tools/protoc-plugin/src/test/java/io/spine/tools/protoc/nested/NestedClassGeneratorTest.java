@@ -74,7 +74,7 @@ class NestedClassGeneratorTest {
     }
 
     @Test
-    @DisplayName("ignore non-message types")
+    @DisplayName("ignore non-`Message` types")
     void ignoreNonMessageTypes() {
         ConfigByPattern pattern = ConfigByPattern
                 .newBuilder()
