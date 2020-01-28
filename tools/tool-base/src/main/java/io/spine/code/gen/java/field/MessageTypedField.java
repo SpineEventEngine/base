@@ -47,14 +47,14 @@ import static javax.lang.model.element.Modifier.PUBLIC;
  * <p>Such type, being a {@linkplain SubscribableField strongly-typed field} itself, can be both
  * passed to the message filters and used to obtain the more nested message properties.
  *
- * <p>More formally, for the given message type, the spec will define a class which:
+ * <p>More formally, for the given field type, the spec will define a class which:
  * <ol>
- *     <li>Is named by combining the message Java name and the {@code Field} suffix, for example,
+ *     <li>Is named by combining the type Java name and the {@code Field} suffix, for example,
  *         {@code UserIdField}.
  *     <li>Inherits from a {@link SubscribableField}.
- *     <li>Takes the initial {@linkplain Field field path} on construction.
+ *     <li>Accepts an initial {@linkplain Field field path} on construction.
  *     <li>Exposes nested message fields through the instance methods which append the name of the
- *         requested field to the wrapped field path.
+ *         requested field to the enclosed field path.
  * </ol>
  *
  * <p>See the {@link FieldsSpec} for the example usage.
@@ -62,17 +62,17 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication of the generated code.
 final class MessageTypedField implements GeneratedTypeSpec {
 
-    private final MessageType messageType;
+    private final MessageType fieldType;
     private final Class<? extends SubscribableField> fieldSupertype;
 
-    MessageTypedField(MessageType nestedType, Class<? extends SubscribableField> fieldSupertype) {
-        this.messageType = nestedType;
+    MessageTypedField(MessageType fieldType, Class<? extends SubscribableField> fieldSupertype) {
+        this.fieldType = fieldType;
         this.fieldSupertype = fieldSupertype;
     }
 
     @Override
     public PackageName packageName() {
-        return messageType.javaPackage();
+        return fieldType.javaPackage();
     }
 
     @Override
@@ -89,9 +89,9 @@ final class MessageTypedField implements GeneratedTypeSpec {
     }
 
     private SimpleClassName typeName() {
-        return messageType.javaClassName()
-                          .toSimple()
-                          .with("Field");
+        return fieldType.javaClassName()
+                        .toSimple()
+                        .with("Field");
     }
 
     private TypeName superclass() {
@@ -113,11 +113,11 @@ final class MessageTypedField implements GeneratedTypeSpec {
 
     private Iterable<MethodSpec> fields() {
         ImmutableList<MethodSpec> result =
-                messageType.fields()
-                           .stream()
-                           .map(field -> new NestedFieldSpec(field, fieldSupertype))
-                           .map(spec -> spec.methodSpec(PUBLIC))
-                           .collect(toImmutableList());
+                fieldType.fields()
+                         .stream()
+                         .map(field -> new NestedFieldSpec(field, fieldSupertype))
+                         .map(spec -> spec.methodSpec(PUBLIC))
+                         .collect(toImmutableList());
         return result;
     }
 
