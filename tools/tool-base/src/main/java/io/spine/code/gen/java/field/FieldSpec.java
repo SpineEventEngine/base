@@ -101,7 +101,7 @@ abstract class FieldSpec implements GeneratedMethodSpec {
     }
 
     /**
-     * Obtains a Java Poet name for the type representing a nested field container which is
+     * Obtains a JavaPoet name for the type representing a nested field container which is
      * returned from this method.
      */
     private JavaPoetName nestedFieldsContainer() {
@@ -110,7 +110,7 @@ abstract class FieldSpec implements GeneratedMethodSpec {
     }
 
     /**
-     * Obtains a Java Poet name for the simple field (i.e. the one which doesn't expose nested
+     * Obtains a JavaPoet name for the simple field (i.e. the one which doesn't expose nested
      * ones) returned by this method.
      */
     private JavaPoetName simpleField() {
