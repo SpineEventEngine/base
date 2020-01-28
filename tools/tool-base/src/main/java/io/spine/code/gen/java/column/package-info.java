@@ -22,10 +22,12 @@
  * This package contains the routines for generating strongly-typed columns for the entity state
  * messages.
  */
+@Internal
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.code.gen.java.column;
 
 import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.annotation.Internal;
 
 import javax.annotation.ParametersAreNonnullByDefault;

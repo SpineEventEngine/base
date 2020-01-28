@@ -22,10 +22,12 @@
  * This package contains the routines for generating strongly-typed fields for the subscribable
  * message types.
  */
+@Internal
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.code.gen.java.field;
 
 import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.annotation.Internal;
 
 import javax.annotation.ParametersAreNonnullByDefault;

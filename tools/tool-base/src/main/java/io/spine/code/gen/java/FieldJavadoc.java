@@ -21,6 +21,7 @@
 package io.spine.code.gen.java;
 
 import com.squareup.javapoet.CodeBlock;
+import io.spine.annotation.Internal;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
 
@@ -30,7 +31,7 @@ import io.spine.code.proto.FieldDeclaration;
  * @see io.spine.base.SubscribableField
  * @see io.spine.base.EntityColumn
  */
-// TODO:2019-12-20:dmytro.kuzmin:WIP: Mark everything that needs to be internal as `@Internal`.
+@Internal
 public final class FieldJavadoc implements GeneratedJavadoc {
 
     /**
