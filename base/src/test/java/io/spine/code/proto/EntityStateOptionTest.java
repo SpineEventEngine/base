@@ -72,7 +72,7 @@ class EntityStateOptionTest {
     }
 
     @Test
-    @DisplayName("obtain the kind of the entity")
+    @DisplayName("obtain the kind of an entity")
     void obtainEntityKind() {
         Optional<Kind> kind = EntityStateOption.entityKindOf(EsoPublicProjection.getDescriptor());
         Truth8.assertThat(kind).isPresent();
