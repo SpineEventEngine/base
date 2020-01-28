@@ -28,15 +28,28 @@ import javax.lang.model.element.Modifier;
 
 import static javax.lang.model.element.Modifier.PRIVATE;
 
+/**
+ * A spec of an empty parameter-less constructor.
+ */
 public final class EmptyCtorSpec implements GeneratedMethodSpec {
 
     private static final EmptyCtorSpec INSTANCE = new EmptyCtorSpec();
 
+    /**
+     * Prevents instantiation of this class in favor of using a single created {@link #INSTANCE}.
+     */
     private EmptyCtorSpec() {
     }
 
+    /**
+     * Returns a spec for private empty parameter-less constructor.
+     */
     public static MethodSpec privateEmptyCtor() {
-        return INSTANCE.methodSpec(PRIVATE);
+        MethodSpec spec = INSTANCE.methodSpec(PRIVATE)
+                                  .toBuilder()
+                                  .addJavadoc(privateCtorJavadoc())
+                                  .build();
+        return spec;
     }
 
     @Override
@@ -44,14 +57,14 @@ public final class EmptyCtorSpec implements GeneratedMethodSpec {
         MethodSpec result = MethodSpec
                 .constructorBuilder()
                 .addModifiers(modifiers)
-                .addJavadoc(javadoc())
                 .build();
-        return result; }
+        return result;
+    }
 
     /**
      * Obtains a class-level Javadoc.
      */
-    private static CodeBlock javadoc() {
+    private static CodeBlock privateCtorJavadoc() {
         JavadocText javadoc = JavadocText.fromEscaped("Prevents instantiation of this class.")
                                          .withNewLine();
         CodeBlock value = CodeBlock
