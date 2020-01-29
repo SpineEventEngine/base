@@ -23,8 +23,6 @@ package io.spine.code.gen.java;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.code.java.PackageName;
 
-import javax.lang.model.element.Modifier;
-
 /**
  * A JavaPoet-based spec of a generated type.
  */
@@ -38,5 +36,5 @@ public interface GeneratedTypeSpec {
     /**
      * A JavaPoet spec of the type.
      */
-    TypeSpec typeSpec(Modifier... modifiers);
+    TypeSpec typeSpec();
 }

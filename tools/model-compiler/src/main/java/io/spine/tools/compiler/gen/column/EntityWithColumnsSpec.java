@@ -35,8 +35,6 @@ import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;
 
-import javax.lang.model.element.Modifier;
-
 import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
 import static io.spine.code.proto.ColumnOption.columnsOf;
 import static io.spine.code.proto.ScalarType.isScalarType;
@@ -74,12 +72,12 @@ public final class EntityWithColumnsSpec implements GeneratedTypeSpec {
     }
 
     @Override
-    public TypeSpec typeSpec(Modifier... modifiers) {
+    public TypeSpec typeSpec() {
         TypeSpec.Builder builder =
                 TypeSpec.interfaceBuilder(className())
                         .addJavadoc(classJavadoc())
                         .addAnnotation(generatedBySpineModelCompiler())
-                        .addModifiers(modifiers)
+                        .addModifiers(PUBLIC)
                         .addSuperinterface(EntityWithColumns.class);
         addColumnGetters(builder);
         return builder.build();

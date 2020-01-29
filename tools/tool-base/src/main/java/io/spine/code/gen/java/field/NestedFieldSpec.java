@@ -20,9 +20,14 @@
 
 package io.spine.code.gen.java.field;
 
+import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.base.SubscribableField;
 import io.spine.code.proto.FieldDeclaration;
+
+import javax.lang.model.element.Modifier;
+
+import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**
  * A spec of the method which returns a nested message field.
@@ -31,6 +36,11 @@ final class NestedFieldSpec extends FieldSpec {
 
     NestedFieldSpec(FieldDeclaration field, Class<? extends SubscribableField> fieldSupertype) {
         super(field, fieldSupertype);
+    }
+
+    @Override
+    Iterable<Modifier> modifiers() {
+        return ImmutableList.of(PUBLIC);
     }
 
     @Override

@@ -24,39 +24,35 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import io.spine.code.javadoc.JavadocText;
 
-import javax.lang.model.element.Modifier;
-
 import static javax.lang.model.element.Modifier.PRIVATE;
 
 /**
  * A spec of an empty parameter-less constructor.
  */
-public final class EmptyCtorSpec implements GeneratedMethodSpec {
+public final class EmptyPrivateCtor implements GeneratedMethodSpec {
 
-    private static final EmptyCtorSpec INSTANCE = new EmptyCtorSpec();
+    private static final EmptyPrivateCtor INSTANCE = new EmptyPrivateCtor();
 
     /**
      * Prevents instantiation of this class in favor of using a single created {@link #INSTANCE}.
      */
-    private EmptyCtorSpec() {
+    private EmptyPrivateCtor() {
     }
 
     /**
      * Returns a spec for private empty parameter-less constructor.
      */
-    public static MethodSpec privateEmptyCtor() {
-        MethodSpec spec = INSTANCE.methodSpec(PRIVATE)
-                                  .toBuilder()
-                                  .addJavadoc(privateCtorJavadoc())
-                                  .build();
+    public static MethodSpec spec() {
+        MethodSpec spec = INSTANCE.methodSpec();
         return spec;
     }
 
     @Override
-    public MethodSpec methodSpec(Modifier... modifiers) {
+    public MethodSpec methodSpec() {
         MethodSpec result = MethodSpec
                 .constructorBuilder()
-                .addModifiers(modifiers)
+                .addJavadoc(javadoc())
+                .addModifiers(PRIVATE)
                 .build();
         return result;
     }
@@ -64,7 +60,7 @@ public final class EmptyCtorSpec implements GeneratedMethodSpec {
     /**
      * Obtains a class-level Javadoc.
      */
-    private static CodeBlock privateCtorJavadoc() {
+    private static CodeBlock javadoc() {
         JavadocText javadoc = JavadocText.fromEscaped("Prevents instantiation of this class.")
                                          .withNewLine();
         CodeBlock value = CodeBlock

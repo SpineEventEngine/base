@@ -30,7 +30,8 @@ import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 
-import javax.lang.model.element.Modifier;
+import static javax.lang.model.element.Modifier.PUBLIC;
+import static javax.lang.model.element.Modifier.STATIC;
 
 /**
  * A spec of the method which returns a {@linkplain EntityColumn strongly-typed entity column}.
@@ -46,13 +47,13 @@ final class ColumnSpec implements GeneratedMethodSpec {
     }
 
     @Override
-    public MethodSpec methodSpec(Modifier... modifiers) {
+    public MethodSpec methodSpec() {
         FieldName name = columnName();
         MethodSpec result = MethodSpec
                 .methodBuilder(name.javaCase())
-                .addModifiers(modifiers)
-                .returns(columnType().value())
                 .addJavadoc(javadoc())
+                .addModifiers(PUBLIC, STATIC)
+                .returns(columnType().value())
                 .addStatement(methodBody())
                 .build();
         return result;

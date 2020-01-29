@@ -57,11 +57,11 @@ abstract class FieldSpec implements GeneratedMethodSpec {
     }
 
     @Override
-    public MethodSpec methodSpec(Modifier... modifiers) {
+    public MethodSpec methodSpec() {
         MethodSpec result = MethodSpec
                 .methodBuilder(fieldName().javaCase())
                 .addJavadoc(javadoc())
-                .addModifiers(modifiers)
+                .addModifiers(modifiers())
                 .returns(returnType().value())
                 .addStatement(methodBody())
                 .build();
@@ -119,12 +119,17 @@ abstract class FieldSpec implements GeneratedMethodSpec {
     }
 
     /**
-     * A return statement which instantiates a nested fields container.
+     * Returns the modifiers which are applied to the generated method.
+     */
+    abstract Iterable<Modifier> modifiers();
+
+    /**
+     * Obtains a return statement which instantiates a nested fields container.
      */
     abstract CodeBlock returnNestedFieldsContainer();
 
     /**
-     * A return statement which instantiates a simple field.
+     * Obtains a return statement which instantiates a simple field.
      */
     abstract CodeBlock returnSimpleField();
 

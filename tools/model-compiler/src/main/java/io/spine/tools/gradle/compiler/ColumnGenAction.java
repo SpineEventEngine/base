@@ -37,7 +37,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static io.spine.code.proto.ColumnOption.hasColumns;
-import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**
  * Does the generation of helper interfaces for declaring columns.
@@ -73,7 +72,7 @@ final class ColumnGenAction extends CodeGenerationAction {
             if (hasColumns(type)) {
                 GeneratedTypeSpec spec = new EntityWithColumnsSpec(type);
                 TypeSpecWriter writer = new TypeSpecWriter(spec, indent());
-                writer.write(targetDir().toPath(), PUBLIC);
+                writer.write(targetDir().toPath());
             }
         });
     }

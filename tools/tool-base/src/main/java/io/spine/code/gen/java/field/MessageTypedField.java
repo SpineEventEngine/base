@@ -34,11 +34,11 @@ import io.spine.code.java.SimpleClassName;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.type.MessageType;
 
-import javax.lang.model.element.Modifier;
-
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
+import static javax.lang.model.element.Modifier.STATIC;
 
 /**
  * A spec of the generated type which represents
@@ -76,11 +76,11 @@ final class MessageTypedField implements GeneratedTypeSpec {
     }
 
     @Override
-    public TypeSpec typeSpec(Modifier... modifiers) {
+    public TypeSpec typeSpec() {
         TypeSpec result = TypeSpec
                 .classBuilder(typeName().value())
                 .addJavadoc(javadoc())
-                .addModifiers(modifiers)
+                .addModifiers(PUBLIC, STATIC, FINAL)
                 .superclass(superclass())
                 .addMethod(constructor())
                 .addMethods(fields())
@@ -116,7 +116,7 @@ final class MessageTypedField implements GeneratedTypeSpec {
                 fieldType.fields()
                          .stream()
                          .map(field -> new NestedFieldSpec(field, fieldSupertype))
-                         .map(spec -> spec.methodSpec(PUBLIC))
+                         .map(FieldSpec::methodSpec)
                          .collect(toImmutableList());
         return result;
     }

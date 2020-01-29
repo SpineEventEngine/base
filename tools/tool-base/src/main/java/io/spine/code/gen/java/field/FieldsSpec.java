@@ -33,13 +33,12 @@ import io.spine.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
-import javax.lang.model.element.Modifier;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
-import static io.spine.code.gen.java.EmptyCtorSpec.privateEmptyCtor;
+import static io.spine.code.gen.java.EmptyPrivateCtor.spec;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static java.lang.String.format;
 import static javax.lang.model.element.Modifier.FINAL;
@@ -73,7 +72,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  * }
  *
  * // The following Java class will be generated for the `OrderView` message type.
- * class Fields {
+ * public static final class Fields {
  *
  *     private Fields {
  *         // Prevent instantiation.
@@ -164,13 +163,13 @@ public abstract class FieldsSpec implements GeneratedTypeSpec {
     }
 
     @Override
-    public TypeSpec typeSpec(Modifier... modifiers) {
+    public TypeSpec typeSpec() {
         TypeSpec result = TypeSpec
                 .classBuilder(CLASS_NAME)
                 .addJavadoc(javadoc())
-                .addModifiers(modifiers)
+                .addModifiers(PUBLIC, STATIC, FINAL)
                 .addAnnotation(generatedBySpineModelCompiler())
-                .addMethod(privateEmptyCtor())
+                .addMethod(spec())
                 .addMethods(fields())
                 .addTypes(messageTypeFields())
                 .build();
@@ -184,7 +183,7 @@ public abstract class FieldsSpec implements GeneratedTypeSpec {
         ImmutableList<MethodSpec> result =
                 fields.stream()
                       .map(this::topLevelFieldSpec)
-                      .map(spec -> spec.methodSpec(PUBLIC, STATIC))
+                      .map(FieldSpec::methodSpec)
                       .collect(toImmutableList());
         return result;
     }
@@ -202,7 +201,7 @@ public abstract class FieldsSpec implements GeneratedTypeSpec {
         ImmutableList<TypeSpec> result =
                 nestedFieldTypes().stream()
                                   .map(type -> new MessageTypedField(type, fieldSupertype()))
-                                  .map(type -> type.typeSpec(PUBLIC, STATIC, FINAL))
+                                  .map(MessageTypedField::typeSpec)
                                   .collect(toImmutableList());
         return result;
     }

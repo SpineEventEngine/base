@@ -41,7 +41,6 @@ import java.util.function.Supplier;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.flogger.LazyArgs.lazy;
 import static io.spine.code.proto.RejectionsFile.findAll;
-import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**
  * Generates source code of rejections.
@@ -101,7 +100,7 @@ final class RejectionGenAction extends CodeGenerationAction {
 
             GeneratedTypeSpec spec = new RejectionSpec(rejectionType);
             TypeSpecWriter writer = new TypeSpecWriter(spec, indent());
-            writer.write(targetDir().toPath(), PUBLIC);
+            writer.write(targetDir().toPath());
         }
     }
 

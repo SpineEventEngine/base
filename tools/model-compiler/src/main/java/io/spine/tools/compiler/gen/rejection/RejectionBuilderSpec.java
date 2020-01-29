@@ -40,7 +40,6 @@ import io.spine.tools.compiler.gen.NoArgMethod;
 import io.spine.type.RejectionType;
 import io.spine.validate.Validate;
 
-import javax.lang.model.element.Modifier;
 import java.util.List;
 import java.util.Optional;
 
@@ -83,10 +82,10 @@ final class RejectionBuilderSpec implements GeneratedTypeSpec {
     }
 
     @Override
-    public TypeSpec typeSpec(Modifier... modifiers) {
+    public TypeSpec typeSpec() {
         TypeSpec typeSpec = TypeSpec
                 .classBuilder(name.value())
-                .addModifiers(modifiers)
+                .addModifiers(PUBLIC, STATIC)
                 .addJavadoc(classJavadoc().value())
                 .addField(initializedProtoBuilder())
                 .addMethod(constructor())
@@ -193,6 +192,7 @@ final class RejectionBuilderSpec implements GeneratedTypeSpec {
                           .withNewLine();
     }
 
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Random generated code duplication.
     private FieldSpec initializedProtoBuilder() {
         ClassName protoBuilderClass = messageClass.className()
                                                   .nestedClass(SimpleClassName.ofBuilder()

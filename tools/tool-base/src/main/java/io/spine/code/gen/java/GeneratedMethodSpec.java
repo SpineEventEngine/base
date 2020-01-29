@@ -22,8 +22,6 @@ package io.spine.code.gen.java;
 
 import com.squareup.javapoet.MethodSpec;
 
-import javax.lang.model.element.Modifier;
-
 /**
  * A JavaPoet-based spec of a generated method.
  */
@@ -32,5 +30,5 @@ public interface GeneratedMethodSpec {
     /**
      * A JavaPoet spec of the method.
      */
-    MethodSpec methodSpec(Modifier... modifiers);
+    MethodSpec methodSpec();
 }

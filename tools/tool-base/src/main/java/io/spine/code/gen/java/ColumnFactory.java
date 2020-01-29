@@ -29,10 +29,6 @@ import io.spine.type.MessageType;
 
 import java.util.List;
 
-import static javax.lang.model.element.Modifier.FINAL;
-import static javax.lang.model.element.Modifier.PUBLIC;
-import static javax.lang.model.element.Modifier.STATIC;
-
 /**
  * Generates an entity columns enumeration for the given message type.
  *
@@ -44,7 +40,7 @@ public final class ColumnFactory implements NestedClassFactory {
     @Override
     public List<GeneratedNestedClass> createFor(MessageType messageType) {
         String generatedCode = ColumnsSpec.of(messageType)
-                                          .typeSpec(PUBLIC, STATIC, FINAL)
+                                          .typeSpec()
                                           .toString();
         GeneratedNestedClass result = new GeneratedNestedClass(generatedCode);
         return ImmutableList.of(result);

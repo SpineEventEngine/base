@@ -30,14 +30,13 @@ import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;
 
-import javax.lang.model.element.Modifier;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
-import static io.spine.code.gen.java.EmptyCtorSpec.privateEmptyCtor;
+import static io.spine.code.gen.java.EmptyPrivateCtor.spec;
 import static io.spine.code.proto.ColumnOption.columnsOf;
 import static java.lang.String.format;
+import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
@@ -63,7 +62,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  * }
  *
  * // The following Java class will be generated.
- * class Columns {
+ * public static final class Columns {
  *
  *     private Columns() {
  *         // Prevent instantiation.
@@ -104,13 +103,13 @@ public final class ColumnsSpec implements GeneratedTypeSpec {
     }
 
     @Override
-    public TypeSpec typeSpec(Modifier... modifiers) {
+    public TypeSpec typeSpec() {
         TypeSpec result = TypeSpec
                 .classBuilder(CLASS_NAME)
                 .addJavadoc(javadoc())
                 .addAnnotation(generatedBySpineModelCompiler())
-                .addModifiers(modifiers)
-                .addMethod(privateEmptyCtor())
+                .addModifiers(PUBLIC, STATIC, FINAL)
+                .addMethod(spec())
                 .addMethods(columns())
                 .build();
         return result;
@@ -124,7 +123,7 @@ public final class ColumnsSpec implements GeneratedTypeSpec {
         ImmutableList<MethodSpec> result =
                 columns.stream()
                        .map(ColumnSpec::new)
-                       .map(columnSpec -> columnSpec.methodSpec(PUBLIC, STATIC))
+                       .map(ColumnSpec::methodSpec)
                        .collect(toImmutableList());
         return result;
     }
