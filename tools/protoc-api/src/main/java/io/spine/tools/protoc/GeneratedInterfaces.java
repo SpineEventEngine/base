@@ -46,9 +46,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      *
      * <p>Sample usage is as follows:
      * <pre>
-     *     {@code
-     *     mark messages().inFiles(suffix: "events.proto"), asType("my.custom.EventMessage")
-     *     }
+     * mark messages().inFiles(suffix: "events.proto"), asType("my.custom.EventMessage")
      * </pre>
      *
      * <p>The statement in the example above configures all message types declared in a file which
@@ -64,25 +62,23 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      *
      * Example of a safe way to override standard interfaces:
      * <pre>
-     *     In my/custom/EventMessage.java:
-     *     {@code
-     *     package my.custom;
+     * // In my/custom/EventMessage.java:
      *
-     *     public interface EventMessage extends io.spine.base.EventMessage {
-     *         // ...
-     *     }
-     *     }
+     * package my.custom;
      *
-     *     In build.gradle:
-     *     {@code
-     *     // ...
+     * public interface EventMessage extends io.spine.base.EventMessage {
+     * // ...
+     * }
      *
-     *     modelCompiler {
-     *         interfaces {
-     *             mark messages().inFiles(suffix: "events.proto"), asType("my.custom.EventMessage")
-     *         }
+     * // In build.gradle:
+     *
+     * // ...
+     *
+     * modelCompiler {
+     *     interfaces {
+     *         mark messages().inFiles(suffix: "events.proto"), asType("my.custom.EventMessage")
      *     }
-     *     }
+     * }
      * </pre>
      *
      * <p>In the example above, {@code my.custom.EventMessage} extends
@@ -108,9 +104,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      *
      * <p>Sample usage is as follows:
      * <pre>
-     *      {@code
-     *      mark messages().uuid(), asType("my.custom.Identifier")
-     *      }
+     * mark messages().uuid(), asType("my.custom.Identifier")
      * </pre>
      */
     public final void mark(UuidMessage uuidMessage, ClassName interfaceName) {
@@ -126,9 +120,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      *
      * <p>Sample usage is as follows:
      * <pre>
-     *      {@code
-     *      mark messages().entityState(), asType("my.custom.EntityState")
-     *      }
+     * mark messages().entityState(), asType("my.custom.EntityState")
      * </pre>
      *
      * <p>Note that it is required for the provided interface to extend the

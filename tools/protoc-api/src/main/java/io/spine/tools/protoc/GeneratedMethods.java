@@ -42,11 +42,9 @@ public final class GeneratedMethods extends GeneratedConfigurations<AddMethods> 
     /**
      * Configures method generation for messages declared in files matching a given pattern.
      *
-     * <p>Sample usage is:
+     * <p>Sample usage is as follows:
      * <pre>
-     *     {@code
-     *     applyFactory "io.spine.code.CustomMethodFactory",messages().inFiles(suffix: "events.proto")
-     *     }
+     * applyFactory "io.spine.code.CustomMethodFactory",messages().inFiles(suffix: "events.proto")
      * </pre>
      *
      * <p>The statement in the example above configures all message types declared in a file which
@@ -60,31 +58,29 @@ public final class GeneratedMethods extends GeneratedConfigurations<AddMethods> 
      *
      * Example of a possible implementation:
      * <pre>
-     *     In io/spine/code/CustomMethodFactory.java:
-     *     {@code
-     *     package io.spine.code;
+     * // In io/spine/code/CustomMethodFactory.java:
      *
-     *     public CustomMethodFactory implements io.spine.tools.protoc.method.MethodFactory {
+     * package io.spine.code;
      *
-     *         public CustomMethodFactory(){
-     *         }
+     * public CustomMethodFactory implements io.spine.tools.protoc.method.MethodFactory {
      *
-     *         List<MethodBody> createFor(MessageType messageType) {
-     *             // ...
-     *         }
-     *     }
+     *     public CustomMethodFactory(){
      *     }
      *
-     *     In build.gradle:
-     *     {@code
-     *     // ...
+     *    {@literal List<MethodBody>} createFor(MessageType messageType) {
+     *         // ...
+     *     }
+     * }
      *
-     *     modelCompiler {
-     *         methods {
-     *             applyFactory "io.spine.code.CustomMethodFactory", messages().inFiles(suffix: "events.proto")
-     *         }
+     * // In build.gradle:
+     *
+     * // ...
+     *
+     * modelCompiler {
+     *     methods {
+     *         applyFactory "io.spine.code.CustomMethodFactory", messages().inFiles(suffix: "events.proto")
      *     }
-     *     }
+     * }
      * </pre>
      */
     public final void applyFactory(@FullyQualifiedName String factory, PatternSelector selector) {
@@ -101,11 +97,9 @@ public final class GeneratedMethods extends GeneratedConfigurations<AddMethods> 
      * except
      * the file in which the message type is defined does not matter.
      *
-     * <p>Sample usage is:
+     * <p>Example:
      * <pre>
-     *      {@code
-     *      applyFactory "io.spine.code.CustomMethodFactory", messages().uuid()
-     *      }
+     * applyFactory "io.spine.code.CustomMethodFactory", messages().uuid()
      * </pre>
      */
     public final void applyFactory(@FullyQualifiedName String factory, UuidMessage selector) {

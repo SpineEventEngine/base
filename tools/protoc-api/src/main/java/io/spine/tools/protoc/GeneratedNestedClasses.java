@@ -46,7 +46,7 @@ public final class GeneratedNestedClasses extends GeneratedConfigurations<AddNes
     /**
      * Configures nested class generation for messages declared in files matching a given pattern.
      *
-     * <p>Sample usage is:
+     * <p>Example:
      * <pre>
      * applyFactory "io.spine.code.CustomNestedClassFactory", messages().inFiles(suffix: "events.proto")
      * </pre>
@@ -69,7 +69,7 @@ public final class GeneratedNestedClasses extends GeneratedConfigurations<AddNes
     /**
      * Configures entity column generation for queryable entities.
      *
-     * <p>Sample usage is:
+     * <p>Example:
      * <pre>
      * applyFactory "io.spine.code.CustomColumnFactory", messages().queryable()
      * </pre>
@@ -96,7 +96,7 @@ public final class GeneratedNestedClasses extends GeneratedConfigurations<AddNes
      * <p>The subscribable messages include {@link io.spine.base.EventMessage event messages},
      * {@link io.spine.base.EntityState entity states} and several other types.
      *
-     * <p>Sample usage is:
+     * <p>Example:
      * <pre>
      * applyFactory "io.spine.code.CustomFieldFactory", messages().subscribable()
      * </pre>
