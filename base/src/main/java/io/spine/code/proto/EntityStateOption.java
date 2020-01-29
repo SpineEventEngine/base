@@ -61,7 +61,7 @@ public final class EntityStateOption extends MessageOption<EntityOption> {
     }
 
     /**
-     * Obtains an entity kind of the message as defined by the {@code entity} option.
+     * Obtains an entity kind of the message as defined by the {@code (entity)} option.
      *
      * @return an {@code Optional} containing the entity kind if the option is present and an empty
      *         {@code Optional} otherwise
