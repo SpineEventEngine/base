@@ -94,12 +94,12 @@ final class ExternalClassLoaderTest {
         @Test
         void classIsNotFound() {
             assertThrows(ClassInstantiationException.class,
-                         () -> classLoader.newInstance("com.example.NonExistingMethodFactory"));
+                         () -> classLoader.newInstance("com.example.NonExistingClass"));
         }
 
-        @DisplayName("if supplied class does not implement MethodFactory")
+        @DisplayName("if supplied class does not implement the loaded class")
         @Test
-        void doesNotImplementMethodFactory() {
+        void doesNotImplementLoadedClass() {
             assertThrows(ClassInstantiationException.class,
                          () -> newInstanceFor(NotMethodFactory.class));
         }
