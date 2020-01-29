@@ -56,9 +56,10 @@ public final class GeneratedNestedClasses extends GeneratedConfigurations<AddNes
      * nested class code generation. It is expected that {@code CustomNestedClassFactory} is an
      * implementation of the {@link io.spine.tools.protoc.nested.NestedClassFactory} interface.
      *
-     * <p>NOTE: in order for the framework components to function properly, the implementation
-     * of {@code NestedClassFactory} should always be public and have a no-argument public
-     * constructor.
+     * @apiNote When loading the factory class passed by FQN, Spine class loader assumes it is
+     *        already accessible and instantiable with no additional arguments. So, the provided
+     *        implementation of {@code NestedClassFactory} should be {@code public} and have a
+     *        {@code public} no-argument constructor.
      */
     public final void applyFactory(@FullyQualifiedName String factory, PatternSelector selector) {
         checkNotNull(factory);
@@ -74,15 +75,19 @@ public final class GeneratedNestedClasses extends GeneratedConfigurations<AddNes
      * applyFactory "io.spine.code.CustomColumnFactory", messages().queryable()
      * </pre>
      *
-     * <p>The statement above will apply the {@code io.spine.code.CustomColumnFactory} nested class
-     * factory to all messages that are entity states and have entity columns.
+     * <p>The statement above will apply the {@code io.spine.code.CustomColumnFactory} code
+     * generator to all messages that represent entity states and have entity columns.
      *
      * <p>By default, Spine uses this configuration to generate strongly-typed column enumerations
      * for all queryable message types.
      *
-     * <p>NOTE: it is expected, that the {@code CustomColumnFactory} is an implementation of
-     * {@link io.spine.tools.protoc.nested.NestedClassFactory}, and also is public and has a
-     * no-argument public constructor.
+     * <p>It is expected that the provided {@code CustomColumnFactory} is an implementation of
+     * {@link io.spine.tools.protoc.nested.NestedClassFactory}.
+     *
+     * @apiNote When loading the factory class passed by FQN, Spine class loader assumes it is
+     *        already accessible and instantiable with no additional arguments. So, the provided
+     *        implementation of {@code NestedClassFactory} should be {@code public} and have a
+     *        {@code public} no-argument constructor.
      */
     public final void applyFactory(@FullyQualifiedName String factory, QueryableMessage selector) {
         checkNotNull(selector);
@@ -101,16 +106,20 @@ public final class GeneratedNestedClasses extends GeneratedConfigurations<AddNes
      * applyFactory "io.spine.code.CustomFieldFactory", messages().subscribable()
      * </pre>
      *
-     * <p>The statement above will apply the {@code io.spine.code.CustomFieldFactory} nested class
-     * factory to all messages that can be subscription targets and also several others, as
+     * <p>The statement above will apply the {@code io.spine.code.CustomFieldFactory} code
+     * generator to all messages that can be subscription targets and also several others, as
      * required by the Spine routines.
      *
      * <p>By default, this configuration is used to generate strongly-typed field enumerations
      * for all types that qualify as subscribable message types.
      *
-     * <p>NOTE: it is expected, that the {@code CustomFieldFactory} is an implementation of
-     * {@link io.spine.tools.protoc.nested.NestedClassFactory}, and also is public and has a
-     * no-argument public constructor.
+     * <p>It is expected that the provided {@code CustomFieldFactory} is an implementation of
+     * {@link io.spine.tools.protoc.nested.NestedClassFactory}.
+     *
+     * @apiNote When loading the factory class passed by FQN, Spine class loader assumes it is
+     *        already accessible and instantiable with no additional arguments. So, the provided
+     *        implementation of {@code NestedClassFactory} should be {@code public} and have a
+     *        {@code public} no-argument constructor.
      */
     public final void
     applyFactory(@FullyQualifiedName String factory, SubscribableMessage selector) {

@@ -52,10 +52,6 @@ public final class GeneratedMethods extends GeneratedConfigurations<AddMethods> 
      * a custom method factory. It is expected that {@code io.spine.code.CustomMethodFactory} is
      * an implementation of the {@link MethodFactory} interface.
      *
-     * <p>Caution. In order for the framework components to function properly, the implementation
-     * of the {@code MethodFactory} should always be public and has a no-argument public
-     * constructor.
-     *
      * Example of a possible implementation:
      * <pre>
      * // In io/spine/code/CustomMethodFactory.java:
@@ -82,6 +78,11 @@ public final class GeneratedMethods extends GeneratedConfigurations<AddMethods> 
      *     }
      * }
      * </pre>
+     *
+     * @apiNote When loading the factory class passed by FQN, Spine class loader assumes it is
+     *        already accessible and instantiable with no additional arguments. So, the provided
+     *        implementation of {@code MethodFactory} should be {@code public} and have a
+     *        {@code public} no-argument constructor.
      */
     public final void applyFactory(@FullyQualifiedName String factory, PatternSelector selector) {
         checkNotNull(factory);
@@ -94,13 +95,17 @@ public final class GeneratedMethods extends GeneratedConfigurations<AddMethods> 
      * {@code uuid}.
      *
      * <p>This method functions similarly to the {@link #applyFactory(String, PatternSelector)}
-     * except
-     * the file in which the message type is defined does not matter.
+     * except the file in which the message type is defined does not matter.
      *
      * <p>Example:
      * <pre>
      * applyFactory "io.spine.code.CustomMethodFactory", messages().uuid()
      * </pre>
+     *
+     * @apiNote When loading the factory class passed by FQN, Spine class loader assumes it is
+     *        already accessible and instantiable with no additional arguments. So, the provided
+     *        implementation of {@code MethodFactory} should be {@code public} and have a
+     *        {@code public} no-argument constructor.
      */
     public final void applyFactory(@FullyQualifiedName String factory, UuidMessage selector) {
         checkNotNull(selector);
