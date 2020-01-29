@@ -46,7 +46,7 @@ public final class GeneratedNestedClasses extends GeneratedConfigurations<AddNes
     /**
      * Configures nested class generation for messages declared in files matching a given pattern.
      *
-     * <p>Sample usage is:
+     * <p>Example:
      * <pre>
      * applyFactory "io.spine.code.CustomNestedClassFactory", messages().inFiles(suffix: "events.proto")
      * </pre>
