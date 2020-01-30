@@ -23,7 +23,6 @@ package io.spine.code.gen.java.field;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import io.spine.base.SubscribableField;
-import io.spine.code.gen.java.FieldJavadoc;
 import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.gen.java.GeneratedMethodSpec;
 import io.spine.code.gen.java.JavaPoetName;
@@ -159,7 +158,7 @@ abstract class FieldSpec implements GeneratedMethodSpec {
      * Generates the method Javadoc.
      */
     private CodeBlock javadoc() {
-        GeneratedJavadoc javadoc = new FieldJavadoc(this.field, "field");
+        GeneratedJavadoc javadoc = new FieldDoc(this.field);
         return javadoc.spec();
     }
 }

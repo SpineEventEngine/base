@@ -23,7 +23,6 @@ package io.spine.code.gen.java.column;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import io.spine.base.EntityColumn;
-import io.spine.code.gen.java.FieldJavadoc;
 import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.gen.java.GeneratedMethodSpec;
 import io.spine.code.gen.java.JavaPoetName;
@@ -87,7 +86,7 @@ final class ColumnSpec implements GeneratedMethodSpec {
      * Returns the method Javadoc.
      */
     private CodeBlock javadoc() {
-        GeneratedJavadoc javadoc = new FieldJavadoc(this.column, "column");
+        GeneratedJavadoc javadoc = new ColumnDoc(this.column);
         return javadoc.spec();
     }
 }

@@ -26,7 +26,6 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.java.PackageName;
-import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;
 
@@ -35,7 +34,6 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
 import static io.spine.code.gen.java.EmptyPrivateCtor.spec;
 import static io.spine.code.proto.ColumnOption.columnsOf;
-import static java.lang.String.format;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
@@ -132,27 +130,6 @@ public final class ColumnsSpec implements GeneratedTypeSpec {
      * Generates the class Javadoc.
      */
     private static CodeBlock javadoc() {
-        CodeBlock firstParagraphText = CodeBlock
-                .builder()
-                .add("The listing of all entity columns of the type.")
-                .build();
-        JavadocText firstParagraph = JavadocText.fromEscaped(firstParagraphText.toString())
-                                                .withNewLine()
-                                                .withNewLine();
-
-        String secondParagraphText = format(
-                "Use static methods of this class to access the columns of the entity%s" +
-                        "which can then be used for query filters creation.",
-                JavadocText.lineSeparator()
-        );
-        JavadocText secondParagraph = JavadocText.fromEscaped(secondParagraphText)
-                                                 .withPTag()
-                                                 .withNewLine();
-        CodeBlock value = CodeBlock
-                .builder()
-                .add(firstParagraph.value())
-                .add(secondParagraph.value())
-                .build();
-        return value;
+        return new ColumnsDoc().spec();
     }
 }

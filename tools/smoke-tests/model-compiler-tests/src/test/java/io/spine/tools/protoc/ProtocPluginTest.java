@@ -318,7 +318,7 @@ final class ProtocPluginTest {
     void generateColumns() {
         EntityColumn column = Movie.Columns.title();
         String expectedName = "title";
-        assertEquals(expectedName, column.name());
+        assertEquals(expectedName, column.name().value());
     }
 
     @Test

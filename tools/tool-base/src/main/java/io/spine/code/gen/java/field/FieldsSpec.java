@@ -28,7 +28,6 @@ import com.squareup.javapoet.TypeSpec;
 import io.spine.base.SubscribableField;
 import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.java.PackageName;
-import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
@@ -40,7 +39,6 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
 import static io.spine.code.gen.java.EmptyPrivateCtor.spec;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
-import static java.lang.String.format;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
@@ -230,43 +228,6 @@ public abstract class FieldsSpec implements GeneratedTypeSpec {
      * Generates the class Javadoc.
      */
     private static CodeBlock javadoc() {
-        CodeBlock firstParagraphText = CodeBlock
-                .builder()
-                .add("The listing of all fields of the message type.")
-                .build();
-        JavadocText firstParagraph = JavadocText.fromEscaped(firstParagraphText.toString())
-                                                .withNewLine()
-                                                .withNewLine();
-        String secondParagraphText = format(
-                "The fields exposed by this class can be provided to a subscription filter%s" +
-                        "on creation.",
-                JavadocText.lineSeparator()
-        );
-        JavadocText secondParagraph = JavadocText.fromEscaped(secondParagraphText)
-                                                 .withPTag()
-                                                 .withNewLine()
-                                                 .withNewLine();
-        String thirdParagraphText =
-                "Use static methods of this class to access the top-level fields of the message.";
-        JavadocText thirdParagraph = JavadocText.fromEscaped(thirdParagraphText)
-                                                .withPTag()
-                                                .withNewLine()
-                                                .withNewLine();
-        String fourthParagraphText = format(
-                "The nested fields can be accessed using the values returned by the top-level%s" +
-                        "field accessors, through method chaining.",
-                JavadocText.lineSeparator()
-        );
-        JavadocText fourthParagraph = JavadocText.fromEscaped(fourthParagraphText)
-                                                 .withPTag()
-                                                 .withNewLine();
-        CodeBlock value = CodeBlock
-                .builder()
-                .add(firstParagraph.value())
-                .add(secondParagraph.value())
-                .add(thirdParagraph.value())
-                .add(fourthParagraph.value())
-                .build();
-        return value;
+        return new FieldsDoc().spec();
     }
 }

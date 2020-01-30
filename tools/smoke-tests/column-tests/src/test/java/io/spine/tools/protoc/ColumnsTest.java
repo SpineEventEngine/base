@@ -56,7 +56,7 @@ class ColumnsTest {
     }
 
     private static void checkColumn(EntityColumn column, String expectedName) {
-        assertThat(column.name()).isEqualTo(expectedName);
+        assertThat(column.name().value()).isEqualTo(expectedName);
     }
 
     private static void assertDoesNotContainMethod(Class<?> type, String methodNames) {

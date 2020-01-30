@@ -29,9 +29,9 @@ import io.spine.base.Field;
 import io.spine.base.SubscribableField;
 import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.gen.java.JavaPoetName;
+import io.spine.code.gen.java.SingleParagraphDoc;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
-import io.spine.code.javadoc.JavadocText;
 import io.spine.type.MessageType;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
@@ -125,16 +125,17 @@ final class MessageTypedField implements GeneratedTypeSpec {
      * Obtains the class Javadoc.
      */
     private static CodeBlock javadoc() {
-        CodeBlock firstParagraphText = CodeBlock
-                .builder()
-                .add("The listing of nested fields of the message type.")
-                .build();
-        JavadocText firstParagraph = JavadocText.fromEscaped(firstParagraphText.toString())
-                                                .withNewLine();
-        CodeBlock value = CodeBlock
-                .builder()
-                .add(firstParagraph.value())
-                .build();
-        return value;
+        return new Javadoc().spec();
+    }
+
+    /**
+     * The class-level Javadoc.
+     */
+    private static class Javadoc extends SingleParagraphDoc {
+
+        @Override
+        protected void addParagraph(CodeBlock.Builder text) {
+            text.add("The listing of nested fields of the message type.");
+        }
     }
 }

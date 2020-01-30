@@ -18,59 +18,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.gen.java;
+package io.spine.code.gen.java.field;
 
 import com.squareup.javapoet.CodeBlock;
-import io.spine.annotation.Internal;
-import io.spine.code.javadoc.JavadocText;
+import io.spine.code.gen.java.TwoParagraphDoc;
 import io.spine.code.proto.FieldDeclaration;
 
 /**
  * The Javadoc of a method which returns a strongly-typed proto field.
  *
- * @see io.spine.base.SubscribableField
- * @see io.spine.base.EntityColumn
+ * @see FieldSpec
  */
-@Internal
-public final class FieldJavadoc implements GeneratedJavadoc {
+final class FieldDoc extends TwoParagraphDoc {
 
     /**
      * The field which is returned.
      */
     private final FieldDeclaration field;
 
-    /**
-     * The field alias or how it is called in the doc, e.g. "column".
-     */
-    private final String fieldAlias;
-
-    public FieldJavadoc(FieldDeclaration field, String fieldAlias) {
+    FieldDoc(FieldDeclaration field) {
+        super();
         this.field = field;
-        this.fieldAlias = fieldAlias;
     }
 
     @Override
-    public CodeBlock spec() {
-        CodeBlock firstParagraphText = CodeBlock
-                .builder()
-                .add("Returns the $L\"$L\" $L.", fieldKind(), field.name(), fieldAlias)
-                .build();
-        JavadocText firstParagraph = JavadocText.fromEscaped(firstParagraphText.toString())
-                                                .withNewLine()
-                                                .withNewLine();
-        CodeBlock secondParagraphText = CodeBlock
-                .builder()
-                .add("The $L type is {@code $L}.", elementDescribedByType(), field.javaTypeName())
-                .build();
-        JavadocText secondParagraph = JavadocText.fromEscaped(secondParagraphText.toString())
-                                                 .withPTag()
-                                                 .withNewLine();
-        CodeBlock value = CodeBlock
-                .builder()
-                .add(firstParagraph.value())
-                .add(secondParagraph.value())
-                .build();
-        return value;
+    protected void addFirstParagraph(CodeBlock.Builder text) {
+        text.add("Returns the $L\"$L\" field.", fieldKind(), field.name());
+    }
+
+    @Override
+    protected void addSecondParagraph(CodeBlock.Builder text) {
+        text.add("The $L Java type is {@code $L}.", elementDescribedByType(), field.javaTypeName());
     }
 
     private String fieldKind() {
@@ -91,6 +69,6 @@ public final class FieldJavadoc implements GeneratedJavadoc {
         if (field.isMap()) {
             return "value";
         }
-        return fieldAlias;
+        return "field";
     }
 }
