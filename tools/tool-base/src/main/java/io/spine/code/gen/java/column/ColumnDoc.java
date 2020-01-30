@@ -43,7 +43,7 @@ final class ColumnDoc extends TwoParagraphDoc {
 
     @Override
     protected void addFirstParagraph(CodeBlock.Builder text) {
-        text.add("Returns the \"$L\" column.", column.name());
+        text.add("Returns the $S column.", column.name());
     }
 
     @Override

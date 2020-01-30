@@ -75,6 +75,11 @@ abstract class FieldSpec implements GeneratedMethodSpec {
     }
 
     /**
+     * Returns the modifiers which are applied to the generated method.
+     */
+    abstract Iterable<Modifier> modifiers();
+
+    /**
      * Obtains the method return type.
      */
     JavaPoetName returnType() {
@@ -86,11 +91,7 @@ abstract class FieldSpec implements GeneratedMethodSpec {
     /**
      * Obtains the method body.
      */
-    private CodeBlock methodBody() {
-        return shouldExposeNestedFields()
-               ? returnNestedFieldsContainer()
-               : returnSimpleField();
-    }
+    abstract CodeBlock methodBody();
 
     /**
      * Checks if the wrapped field has nested fields and should expose them to subscribers.
@@ -116,21 +117,6 @@ abstract class FieldSpec implements GeneratedMethodSpec {
         JavaPoetName type = JavaPoetName.of(fieldSupertype);
         return type;
     }
-
-    /**
-     * Returns the modifiers which are applied to the generated method.
-     */
-    abstract Iterable<Modifier> modifiers();
-
-    /**
-     * Obtains a return statement which instantiates a nested fields container.
-     */
-    abstract CodeBlock returnNestedFieldsContainer();
-
-    /**
-     * Obtains a return statement which instantiates a simple field.
-     */
-    abstract CodeBlock returnSimpleField();
 
     /**
      * A simple name of the field type.

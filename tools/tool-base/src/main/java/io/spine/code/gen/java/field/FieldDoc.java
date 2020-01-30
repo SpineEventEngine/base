@@ -43,7 +43,7 @@ final class FieldDoc extends TwoParagraphDoc {
 
     @Override
     protected void addFirstParagraph(CodeBlock.Builder text) {
-        text.add("Returns the $L\"$L\" field.", fieldKind(), field.name());
+        text.add("Returns the $L$S field.", fieldKind(), field.name());
     }
 
     @Override

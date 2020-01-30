@@ -46,18 +46,10 @@ final class TopLevelFieldSpec extends FieldSpec {
     }
 
     @Override
-    CodeBlock returnNestedFieldsContainer() {
+    CodeBlock methodBody() {
         return CodeBlock.of(
-                "return new $T($T.named(\"$L\"))",
+                "return new $T($T.named($S))",
                 returnType().value(), Field.class, fieldName().value()
-        );
-    }
-
-    @Override
-    CodeBlock returnSimpleField() {
-        return CodeBlock.of(
-                "return new $T($T.named(\"$L\"))",
-                fieldSupertype(), Field.class, fieldName().value()
         );
     }
 }

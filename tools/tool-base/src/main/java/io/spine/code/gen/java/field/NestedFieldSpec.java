@@ -44,18 +44,10 @@ final class NestedFieldSpec extends FieldSpec {
     }
 
     @Override
-    CodeBlock returnNestedFieldsContainer() {
+    CodeBlock methodBody() {
         return CodeBlock.of(
-                "return new $T(getField().nested(\"$L\"))",
+                "return new $T(getField().nested($S))",
                 returnType().value(), fieldName().value()
-        );
-    }
-
-    @Override
-    CodeBlock returnSimpleField() {
-        return CodeBlock.of(
-                "return new $T(getField().nested(\"$L\"))",
-                fieldSupertype(), fieldName().value()
         );
     }
 }

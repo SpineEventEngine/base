@@ -78,7 +78,7 @@ final class ColumnSpec implements GeneratedMethodSpec {
      */
     private CodeBlock methodBody() {
         return CodeBlock.of(
-                "return new $T(\"$L\")", EntityColumn.class, columnName()
+                "return new $T($S)", EntityColumn.class, columnName()
         );
     }
 
