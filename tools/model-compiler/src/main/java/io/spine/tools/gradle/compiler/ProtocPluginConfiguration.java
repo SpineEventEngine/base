@@ -94,16 +94,8 @@ final class ProtocPluginConfiguration {
         boolean shouldGenerateVBuilders = shouldGenerateValidatingBuilders(project);
         boolean shouldGenerateValidation = shouldGenerateValidation(project);
         Classpath projectClasspath = projectClasspath(project);
-        AddMethods methodsGeneration = methods
-                .asProtocConfig()
-                .toBuilder()
-                .setFactoryClasspath(projectClasspath)
-                .build();
-        AddNestedClasses nestedClassesGeneration = nestedClasses
-                .asProtocConfig()
-                .toBuilder()
-                .setFactoryClasspath(projectClasspath)
-                .build();
+        AddMethods methodsGeneration = methods.asProtocConfig();
+        AddNestedClasses nestedClassesGeneration = nestedClasses.asProtocConfig();
         SpineProtocConfig result = SpineProtocConfig
                 .newBuilder()
                 .setAddInterfaces(interfaces.asProtocConfig())
@@ -111,6 +103,7 @@ final class ProtocPluginConfiguration {
                 .setAddNestedClasses(nestedClassesGeneration)
                 .setSkipValidatingBuilders(!shouldGenerateVBuilders)
                 .setGenerateValidation(shouldGenerateValidation)
+                .setFactoryClasspath(projectClasspath)
                 .build();
         return result;
     }

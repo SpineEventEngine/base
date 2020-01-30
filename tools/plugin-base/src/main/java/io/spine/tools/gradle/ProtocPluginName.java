@@ -58,7 +58,8 @@ public enum ProtocPluginName {
     /**
      * The Spine code generation plugin.
      *
-     * <p>Generates message interfaces and additional message methods.
+     * <p>Generates message interfaces as well as additional methods and nested classes for
+     * messages.
      *
      * @see <a href="https://github.com/SpineEventEngine/base/tree/master/tools/protoc-plugin">the
      *         plugin feature overview</a>

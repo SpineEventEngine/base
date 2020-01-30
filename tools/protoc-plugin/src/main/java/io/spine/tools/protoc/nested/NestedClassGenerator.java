@@ -22,6 +22,7 @@ package io.spine.tools.protoc.nested;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.AddNestedClasses;
+import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CodeGenerationTasks;
 import io.spine.tools.protoc.CodeGenerator;
@@ -58,9 +59,10 @@ public final class NestedClassGenerator extends CodeGenerator {
      */
     public static NestedClassGenerator instance(SpineProtocConfig spineProtocConfig) {
         checkNotNull(spineProtocConfig);
-        AddNestedClasses config = spineProtocConfig.getAddNestedClasses();
+        Classpath factoryClasspath = spineProtocConfig.getFactoryClasspath();
         ExternalClassLoader<NestedClassFactory> classLoader =
-                new ExternalClassLoader<>(config.getFactoryClasspath(), NestedClassFactory.class);
+                new ExternalClassLoader<>(factoryClasspath, NestedClassFactory.class);
+        AddNestedClasses config = spineProtocConfig.getAddNestedClasses();
         ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();
         if (isNotDefault(config.getQueryableFactory())) {
             tasks.add(new GenerateColumns(classLoader, config.getQueryableFactory()));

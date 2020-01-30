@@ -22,6 +22,7 @@ package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.AddMethods;
+import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CodeGenerationTasks;
 import io.spine.tools.protoc.CodeGenerator;
@@ -58,9 +59,10 @@ public final class MethodGenerator extends CodeGenerator {
      */
     public static MethodGenerator instance(SpineProtocConfig spineProtocConfig) {
         checkNotNull(spineProtocConfig);
-        AddMethods config = spineProtocConfig.getAddMethods();
+        Classpath factoryClasspath = spineProtocConfig.getFactoryClasspath();
         ExternalClassLoader<MethodFactory> classLoader =
-                new ExternalClassLoader<>(config.getFactoryClasspath(), MethodFactory.class);
+                new ExternalClassLoader<>(factoryClasspath, MethodFactory.class);
+        AddMethods config = spineProtocConfig.getAddMethods();
         ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();
         if (isNotDefault(config.getUuidFactory())) {
             tasks.add(new GenerateUuidMethods(classLoader, config.getUuidFactory()));

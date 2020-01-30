@@ -59,11 +59,11 @@ class NestedClassGeneratorTest {
         AddNestedClasses addNestedClasses = AddNestedClasses
                 .newBuilder()
                 .setQueryableFactory(factory)
-                .setFactoryClasspath(Classpath.getDefaultInstance())
                 .build();
         SpineProtocConfig config = SpineProtocConfig
                 .newBuilder()
                 .setAddNestedClasses(addNestedClasses)
+                .setFactoryClasspath(Classpath.getDefaultInstance())
                 .build();
 
         NestedClassGenerator generator = NestedClassGenerator.instance(config);
@@ -84,11 +84,11 @@ class NestedClassGeneratorTest {
         AddNestedClasses addNestedClasses = AddNestedClasses
                 .newBuilder()
                 .addFactoryByPattern(pattern)
-                .setFactoryClasspath(Classpath.getDefaultInstance())
                 .build();
         SpineProtocConfig config = SpineProtocConfig
                 .newBuilder()
                 .setAddNestedClasses(addNestedClasses)
+                .setFactoryClasspath(Classpath.getDefaultInstance())
                 .build();
 
         NestedClassGenerator generator = NestedClassGenerator.instance(config);
