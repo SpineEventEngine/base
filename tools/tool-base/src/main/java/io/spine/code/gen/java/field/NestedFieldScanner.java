@@ -21,14 +21,17 @@
 package io.spine.code.gen.java.field;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;
 
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Lists.newLinkedList;
+import static com.google.common.collect.Sets.newHashSet;
 
 /**
  * A recursive collector of {@link com.google.protobuf.Message Message}-typed fields from
@@ -45,6 +48,12 @@ final class NestedFieldScanner {
     /**
      * Traverses all top-level and nested fields of the enclosed message type to retrieve those
      * that are singular {@link com.google.protobuf.Message Message}-typed fields.
+     *
+     * <p>The returned results are unique-by-name. The reason for that is that uniqueness-by-name
+     * is required for the uniqueness of the generated types among message strongly-typed fields.
+     *
+     * @see FieldsSpec
+     * @see MessageTypedField
      */
     List<MessageType> scan() {
         List<MessageType> resultTypes = newLinkedList();
@@ -61,20 +70,16 @@ final class NestedFieldScanner {
     /**
      * Obtains {@code Message}-typed fields of a message with names that not yet occur among
      * the result types.
-     *
-     * <p>The reason uniqueness-by-name is used is it being a requirement for the uniqueness of
-     * the generated types in the field generation process.
-     *
-     * @see FieldsSpec
-     * @see MessageTypedField
      */
     private static ImmutableList<MessageType> uniqueMessageFields(MessageType messageType,
                                                                   List<MessageType> resultTypes) {
+        Set<SimpleClassName> distinctNames = newHashSet();
         ImmutableList<MessageType> uniqueMessageTypes =
                 messageType.fields()
                            .stream()
                            .filter(FieldDeclaration::isSingularMessage)
                            .map(FieldDeclaration::messageType)
+                           .filter(type -> distinctNames.add(type.simpleJavaClassName()))
                            .filter(type -> !containsTypeWithSameName(resultTypes, type))
                            .collect(toImmutableList());
         return uniqueMessageTypes;
