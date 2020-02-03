@@ -26,6 +26,7 @@ dependencies {
     api gradleApi()
     api deps.build.gradlePlugins.protobuf
     api project(':tool-base')
+    api project(':code-gen')
 
     testImplementation project(':testlib')
     testImplementation project(':plugin-testlib')

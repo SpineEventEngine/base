@@ -22,16 +22,13 @@ package io.spine.tools.protoc.nested;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
-import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.ExternalClassLoader;
 import io.spine.tools.protoc.SubscribableConfig;
 import io.spine.tools.protoc.given.TestNestedClassFactory;
-import io.spine.tools.protoc.nested.Rejections.OrderAlreadyExists;
 import io.spine.tools.protoc.nested.given.TestClassLoader;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -67,50 +64,19 @@ class GenerateFieldsTest {
                      () -> new GenerateFields(testClassLoader(), newConfig(effectivelyEmptyName)));
     }
 
-    @Nested
-    @DisplayName("generate compiler output")
-    class GenerateCompilerOutput {
-
-        @Test
-        @DisplayName("for an entity state type")
-        void forEntityState() {
-            testGeneratesOutputFor(Task.getDescriptor());
-        }
-
-        @Test
-        @DisplayName("for an event type")
-        void forEventType() {
-            testGeneratesOutputFor(TaskCreated.getDescriptor());
-        }
-
-        @Test
-        @DisplayName("for a rejection type")
-        void forRejectionType() {
-            testGeneratesOutputFor(OrderAlreadyExists.getDescriptor());
-        }
-
-        private void testGeneratesOutputFor(Descriptor type) {
-            GenerateFields fields = newTask();
-            MessageType messageType = new MessageType(type);
-            ImmutableList<CompilerOutput> output = fields.generateFor(messageType);
-
-            assertThat(output).hasSize(1);
-
-            CompilerOutput compilerOutput = output.get(0);
-            String insertionPoint = compilerOutput.asFile()
-                                                  .getInsertionPoint();
-            assertThat(insertionPoint).startsWith(class_scope.name());
-        }
-    }
-
     @Test
-    @DisplayName("generate empty compiler output for non-subscribable messages")
-    void generateEmptyOutput() {
+    @DisplayName("generate compiler output for the specified type")
+    void generateCompilerOutput() {
         GenerateFields fields = newTask();
-        MessageType messageType = new MessageType(OrderId.getDescriptor());
+        MessageType messageType = new MessageType(Task.getDescriptor());
         ImmutableList<CompilerOutput> output = fields.generateFor(messageType);
 
-        assertThat(output).hasSize(0);
+        assertThat(output).hasSize(1);
+
+        CompilerOutput compilerOutput = output.get(0);
+        String insertionPoint = compilerOutput.asFile()
+                                              .getInsertionPoint();
+        assertThat(insertionPoint).startsWith(class_scope.name());
     }
 
     private static GenerateFields newTask() {

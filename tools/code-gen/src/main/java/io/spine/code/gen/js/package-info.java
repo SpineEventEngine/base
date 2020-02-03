@@ -18,34 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'spine-base'
-
-include 'base'
-
-include 'testlib'
-
 /**
- * Includes a module and sets custom project directory to it.
+ * This package contains tools for generating JavaScript code as well as working with already
+ * generated code.
  */
-final def module = { final String name ->
-    include name
-    project(":$name").projectDir = new File("$rootDir/tools/$name")
-}
 
-module 'tool-base'
-module 'plugin-base'
-module 'plugin-testlib'
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.code.gen.js;
 
-module 'code-gen'
-module 'mute-logging'
-module 'errorprone-checks'
-module 'javadoc-filter'
-module 'javadoc-prettifier'
-module 'model-compiler'
+import com.google.errorprone.annotations.CheckReturnValue;
 
-module 'proto-dart-plugin'
-module 'proto-js-plugin'
-
-module 'protoc-api'
-module 'validation-generator'
-module 'protoc-plugin'
+import javax.annotation.ParametersAreNonnullByDefault;

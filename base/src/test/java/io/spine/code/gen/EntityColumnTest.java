@@ -18,34 +18,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'spine-base'
+package io.spine.code.gen;
 
-include 'base'
+import com.google.common.testing.NullPointerTester;
+import io.spine.base.EntityColumn;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-include 'testlib'
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 
-/**
- * Includes a module and sets custom project directory to it.
- */
-final def module = { final String name ->
-    include name
-    project(":$name").projectDir = new File("$rootDir/tools/$name")
+@DisplayName("`EntityColumn` should")
+class EntityColumnTest {
+
+    @Test
+    @DisplayName(NOT_ACCEPT_NULLS)
+    void passNullToleranceCheck() {
+        new NullPointerTester()
+                .testAllPublicConstructors(EntityColumn.class);
+    }
+
+    @Test
+    @DisplayName("expose the column name")
+    void exposeColumnName() {
+        String columnName = "some-column";
+        EntityColumn column =
+                new EntityColumn(columnName);
+        assertThat(column.name().value()).isEqualTo(columnName);
+    }
 }
-
-module 'tool-base'
-module 'plugin-base'
-module 'plugin-testlib'
-
-module 'code-gen'
-module 'mute-logging'
-module 'errorprone-checks'
-module 'javadoc-filter'
-module 'javadoc-prettifier'
-module 'model-compiler'
-
-module 'proto-dart-plugin'
-module 'proto-js-plugin'
-
-module 'protoc-api'
-module 'validation-generator'
-module 'protoc-plugin'
