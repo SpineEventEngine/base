@@ -132,15 +132,6 @@ abstract class FieldSpec implements GeneratedMethodSpec {
     }
 
     /**
-     * The supertype from which the returned field should inherit.
-     *
-     * <p>Enables the typed filter creation on the client side.
-     */
-    final Class<? extends SubscribableField> fieldSupertype() {
-        return fieldSupertype;
-    }
-
-    /**
      * Generates the method Javadoc.
      */
     private CodeBlock javadoc() {
