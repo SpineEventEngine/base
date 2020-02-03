@@ -1,4 +1,4 @@
-`/*
+/*
  * Copyright 2020, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without

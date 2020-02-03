@@ -24,6 +24,7 @@ group = 'io.spine.tools'
 
 dependencies {
     implementation(
+            project(':code-gen'),
             project(':tool-base'),
             project(':protoc-api'),
             project(':validation-generator'),
