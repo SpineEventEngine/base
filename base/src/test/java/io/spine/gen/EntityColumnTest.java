@@ -18,11 +18,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+package io.spine.gen;
 
-dependencies {
-    api deps.gen.javaPoet
-    implementation project(':tool-base')
-    testImplementation project(':base')
-    testImplementation project(':testlib')
+import com.google.common.testing.NullPointerTester;
+import io.spine.base.EntityColumn;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+
+@DisplayName("`EntityColumn` should")
+class EntityColumnTest {
+
+    @Test
+    @DisplayName(NOT_ACCEPT_NULLS)
+    void passNullToleranceCheck() {
+        new NullPointerTester()
+                .testAllPublicConstructors(EntityColumn.class);
+    }
+
+    @Test
+    @DisplayName("expose the column name")
+    void exposeColumnName() {
+        String columnName = "some-column";
+        EntityColumn column =
+                new EntityColumn(columnName);
+        assertThat(column.name().value()).isEqualTo(columnName);
+    }
 }

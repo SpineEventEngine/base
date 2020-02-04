@@ -46,7 +46,6 @@ ext {
         'testlib',
         'mute-logging',
         'errorprone-checks',
-        'code-gen',
 
         // Gradle plugins
         'plugin-base',

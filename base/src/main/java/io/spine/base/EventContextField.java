@@ -18,11 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+package io.spine.base;
 
-dependencies {
-    api deps.gen.javaPoet
-    implementation project(':tool-base')
-    testImplementation project(':base')
-    testImplementation project(':testlib')
+/**
+ * A subscribable field of an event context.
+ *
+ * <p>Such field can be passed to the event subscription filters to filter events by some value
+ * specified in the event context (e.g. origin).
+ *
+ * <p>Normally this class shouldn't be instantiated or inherited in the user code directly and is
+ * instead provided by the Spine routines which generate the message field enumerations.
+ *
+ * <p>See the nested {@code Fields} class in the event context declaration.
+ */
+public class EventContextField extends SubscribableField {
+
+    public EventContextField(Field field) {
+        super(field);
+    }
 }

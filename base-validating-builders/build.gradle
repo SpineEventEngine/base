@@ -49,7 +49,6 @@ buildscript {
         }
 
         classpath files([
-                "$projectDir/../tools/code-gen/build/libs/code-gen-${spineVersion}.jar",
                 "$projectDir/../tools/protoc-api/build/libs/protoc-api-${spineVersion}.jar",
                 "$projectDir/../tools/model-compiler/build/libs/model-compiler-${spineVersion}.jar",
                 "$projectDir/../tools/plugin-base/build/libs/plugin-base-${spineVersion}.jar",

@@ -36,7 +36,6 @@ module 'tool-base'
 module 'plugin-base'
 module 'plugin-testlib'
 
-module 'code-gen'
 module 'mute-logging'
 module 'errorprone-checks'
 module 'javadoc-filter'

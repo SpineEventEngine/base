@@ -29,6 +29,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
+import io.spine.annotation.Internal;
 import io.spine.base.UuidValue;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.FieldDeclaration;
@@ -61,6 +62,16 @@ import static io.spine.option.EntityOption.Kind.UNRECOGNIZED;
 @Immutable
 @SuppressWarnings("ClassWithTooManyMethods")
 public class MessageType extends Type<Descriptor, DescriptorProto> implements Logging {
+
+    /**
+     * A name of the message which is used by the Spine engine as an event type.
+     */
+    private static final String EVENT = "spine.core.Event";
+
+    /**
+     * A name of the message which is used by the Spine engine as an event context type.
+     */
+    private static final String EVENT_CONTEXT = "spine.core.EventContext";
 
     private final ImmutableList<FieldDeclaration> fields;
 
@@ -222,6 +233,18 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
                 entityKind.isPresent()
                         && entityKind.get() != UNRECOGNIZED
                         && entityKind.get() != KIND_UNKNOWN;
+        return result;
+    }
+
+    @Internal
+    public boolean isSpineCoreEvent() {
+        boolean result = EVENT.equals(name().value());
+        return result;
+    }
+
+    @Internal
+    public boolean isEventContext() {
+        boolean result = EVENT_CONTEXT.equals(name().value());
         return result;
     }
 

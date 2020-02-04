@@ -41,12 +41,24 @@ final class GenerateFields extends NestedClassGenerationTask {
     /**
      * Applies the field factory if the passed type is eligible for field generation.
      *
-     * @implNote By default generates strongly-typed fields for all messages, allowing the passed
-     *         factory to decide whether the code should be generated for the given type.
+     * <p>Apart from the types that can be subscription targets, i.e. entity states and events,
+     * there are also a number of built-in types to which the field generation is applied, as
+     * required by the Spine routines.
      */
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
+        if (!eligibleForFieldsGeneration(type)) {
+            return ImmutableList.of();
+        }
         return generateNestedClassesFor(type);
+    }
+
+    private static boolean eligibleForFieldsGeneration(MessageType type) {
+        return type.isEntityState()
+                || type.isEvent()
+                || type.isRejection()
+                || type.isSpineCoreEvent()
+                || type.isEventContext();
     }
 }

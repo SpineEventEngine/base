@@ -18,11 +18,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+package io.spine.code.gen.java.field;
 
-dependencies {
-    api deps.gen.javaPoet
-    implementation project(':tool-base')
-    testImplementation project(':base')
-    testImplementation project(':testlib')
+import io.spine.base.EventMessageField;
+import io.spine.base.SubscribableField;
+import io.spine.type.MessageType;
+
+/**
+ * A spec which defines a type that exposes event message fields as strongly-typed objects.
+ *
+ * @see FieldsSpec
+ */
+final class EventMessageFields extends FieldsSpec {
+
+    EventMessageFields(MessageType messageType) {
+        super(messageType);
+    }
+
+    @Override
+    protected Class<? extends SubscribableField> fieldSupertype() {
+        return EventMessageField.class;
+    }
 }

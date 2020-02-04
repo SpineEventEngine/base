@@ -54,7 +54,7 @@ public final class GeneratedNestedClasses extends GeneratedConfigurations<AddNes
      * <p>The statement above configures all message types which are declared in proto files with
      * names ending with {@code events.proto} to use the {@code CustomNestedClassFactory} for
      * nested class code generation. It is expected that {@code CustomNestedClassFactory} is an
-     * implementation of the {@code io.spine.tools.protoc.nested.NestedClassFactory} interface.
+     * implementation of the {@link io.spine.tools.protoc.nested.NestedClassFactory} interface.
      *
      * @apiNote When loading the factory class passed by FQN, Spine class loader assumes it is
      *        already accessible and instantiable with no additional arguments. So, the provided
@@ -82,7 +82,7 @@ public final class GeneratedNestedClasses extends GeneratedConfigurations<AddNes
      * for all queryable message types.
      *
      * <p>It is expected that the provided {@code CustomColumnFactory} is an implementation of
-     * {@code io.spine.tools.protoc.nested.NestedClassFactory}.
+     * {@link io.spine.tools.protoc.nested.NestedClassFactory}.
      *
      * @apiNote When loading the factory class passed by FQN, Spine class loader assumes it is
      *        already accessible and instantiable with no additional arguments. So, the provided
@@ -114,7 +114,7 @@ public final class GeneratedNestedClasses extends GeneratedConfigurations<AddNes
      * for all types that qualify as subscribable message types.
      *
      * <p>It is expected that the provided {@code CustomFieldFactory} is an implementation of
-     * {@code io.spine.tools.protoc.nested.NestedClassFactory}.
+     * {@link io.spine.tools.protoc.nested.NestedClassFactory}.
      *
      * @apiNote When loading the factory class passed by FQN, Spine class loader assumes it is
      *        already accessible and instantiable with no additional arguments. So, the provided

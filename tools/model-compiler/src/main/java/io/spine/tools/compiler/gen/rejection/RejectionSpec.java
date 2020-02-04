@@ -30,7 +30,7 @@ import io.spine.code.gen.java.FieldName;
 import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.java.PackageName;
-import io.spine.code.gen.javadoc.JavadocText;
+import io.spine.code.javadoc.JavadocText;
 import io.spine.logging.Logging;
 import io.spine.tools.compiler.gen.NoArgMethod;
 import io.spine.type.RejectionType;

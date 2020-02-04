@@ -18,11 +18,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+package io.spine.code.gen.java;
 
-dependencies {
-    api deps.gen.javaPoet
-    implementation project(':tool-base')
-    testImplementation project(':base')
-    testImplementation project(':testlib')
+import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.code.gen.java.field.FieldsSpec;
+import io.spine.tools.protoc.nested.GeneratedNestedClass;
+import io.spine.tools.protoc.nested.NestedClassFactory;
+import io.spine.type.MessageType;
+
+import java.util.List;
+
+/**
+ * Generates a field enumeration for the given message type.
+ *
+ * <p>See {@link FieldsSpec} for details.
+ */
+@Immutable
+public final class FieldFactory implements NestedClassFactory {
+
+    @Override
+    public List<GeneratedNestedClass> createFor(MessageType messageType) {
+        String generatedCode = FieldsSpec.of(messageType)
+                                         .typeSpec()
+                                         .toString();
+        GeneratedNestedClass result = new GeneratedNestedClass(generatedCode);
+        return ImmutableList.of(result);
+    }
 }

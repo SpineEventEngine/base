@@ -18,11 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+/**
+ * This package contains the routines for generating strongly-typed fields for the subscribable
+ * message types.
+ */
+@Internal
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.code.gen.java.field;
 
-dependencies {
-    api deps.gen.javaPoet
-    implementation project(':tool-base')
-    testImplementation project(':base')
-    testImplementation project(':testlib')
-}
+import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.annotation.Internal;
+
+import javax.annotation.ParametersAreNonnullByDefault;

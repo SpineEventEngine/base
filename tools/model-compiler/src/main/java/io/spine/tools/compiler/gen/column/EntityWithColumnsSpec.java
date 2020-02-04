@@ -32,7 +32,7 @@ import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.gen.java.TwoParagraphDoc;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.PackageName;
-import io.spine.code.gen.javadoc.JavadocText;
+import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;
 
