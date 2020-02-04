@@ -22,9 +22,13 @@ package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.io.Files2;
+import io.spine.tools.protoc.AddColumns;
+import io.spine.tools.protoc.AddFields;
 import io.spine.tools.protoc.AddMethods;
 import io.spine.tools.protoc.AddNestedClasses;
 import io.spine.tools.protoc.Classpath;
+import io.spine.tools.protoc.GeneratedColumns;
+import io.spine.tools.protoc.GeneratedFields;
 import io.spine.tools.protoc.GeneratedInterfaces;
 import io.spine.tools.protoc.GeneratedMethods;
 import io.spine.tools.protoc.GeneratedNestedClasses;
@@ -41,6 +45,8 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Set;
 
+import static io.spine.tools.gradle.compiler.Extension.getColumns;
+import static io.spine.tools.gradle.compiler.Extension.getFields;
 import static io.spine.tools.gradle.compiler.Extension.getInterfaces;
 import static io.spine.tools.gradle.compiler.Extension.getMethods;
 import static io.spine.tools.gradle.compiler.Extension.getNestedClasses;
@@ -91,16 +97,24 @@ final class ProtocPluginConfiguration {
         GeneratedInterfaces interfaces = getInterfaces(project);
         GeneratedMethods methods = getMethods(project);
         GeneratedNestedClasses nestedClasses = getNestedClasses(project);
+        GeneratedColumns columns = getColumns(project);
+        GeneratedFields fields = getFields(project);
         boolean shouldGenerateVBuilders = shouldGenerateValidatingBuilders(project);
         boolean shouldGenerateValidation = shouldGenerateValidation(project);
         Classpath projectClasspath = projectClasspath(project);
+
         AddMethods methodsGeneration = methods.asProtocConfig();
         AddNestedClasses nestedClassesGeneration = nestedClasses.asProtocConfig();
+        AddColumns columnGeneration = columns.asProtocConfig();
+        AddFields fieldGeneration = fields.asProtocConfig();
+
         SpineProtocConfig result = SpineProtocConfig
                 .newBuilder()
                 .setAddInterfaces(interfaces.asProtocConfig())
                 .setAddMethods(methodsGeneration)
                 .setAddNestedClasses(nestedClassesGeneration)
+                .setAddColumns(columnGeneration)
+                .setAddFields(fieldGeneration)
                 .setSkipValidatingBuilders(!shouldGenerateVBuilders)
                 .setGenerateValidation(shouldGenerateValidation)
                 .setFactoryClasspath(projectClasspath)

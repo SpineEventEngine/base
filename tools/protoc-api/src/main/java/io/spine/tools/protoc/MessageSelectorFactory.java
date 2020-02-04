@@ -63,20 +63,6 @@ public final class MessageSelectorFactory {
     }
 
     /**
-     * Creates a new {@link QueryableMessage} selector.
-     */
-    public QueryableMessage queryable() {
-        return new QueryableMessage();
-    }
-
-    /**
-     * Creates a new {@link SubscribableMessage} selector.
-     */
-    public SubscribableMessage subscribable() {
-        return new SubscribableMessage();
-    }
-
-    /**
      * Creates a {@link PatternSelector} out of the supplied configuration.
      *
      * <p>The supported configuration parameters are:

@@ -21,13 +21,16 @@
 package io.spine.code.gen.java;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.code.gen.java.field.FieldsSpec;
+import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.nested.GeneratedNestedClass;
 import io.spine.tools.protoc.nested.NestedClassFactory;
 import io.spine.type.MessageType;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Generates a field enumeration for the given message type.
@@ -36,6 +39,12 @@ import java.util.List;
  */
 @Immutable
 public final class FieldFactory implements NestedClassFactory {
+
+    private ImmutableMap<Class<?>, ClassName> configByType;
+
+    public FieldFactory(Map<Class<?>, ClassName> configByType) {
+        this.configByType = ImmutableMap.copyOf(configByType);
+    }
 
     @Override
     public List<GeneratedNestedClass> createFor(MessageType messageType) {

@@ -36,7 +36,6 @@ import io.spine.type.Type;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.protobuf.Messages.isNotDefault;
 
 /**
  * The {@link CodeGenerator} implementation which generates additional nested classes for
@@ -59,20 +58,17 @@ public final class NestedClassGenerator extends CodeGenerator {
      */
     public static NestedClassGenerator instance(SpineProtocConfig spineProtocConfig) {
         checkNotNull(spineProtocConfig);
-        Classpath factoryClasspath = spineProtocConfig.getFactoryClasspath();
+        Classpath classpath = spineProtocConfig.getFactoryClasspath();
         ExternalClassLoader<NestedClassFactory> classLoader =
-                new ExternalClassLoader<>(factoryClasspath, NestedClassFactory.class);
+                new ExternalClassLoader<>(classpath, NestedClassFactory.class);
         AddNestedClasses config = spineProtocConfig.getAddNestedClasses();
         ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();
-        if (isNotDefault(config.getQueryableFactory())) {
-            tasks.add(new GenerateColumns(classLoader, config.getQueryableFactory()));
-        }
-        if (isNotDefault(config.getSubscribableFactory())) {
-            tasks.add(new GenerateFields(classLoader, config.getSubscribableFactory()));
-        }
         for (ConfigByPattern byPattern : config.getFactoryByPatternList()) {
             tasks.add(new GenerateNestedClasses(classLoader, byPattern));
         }
+        boolean generateColumns = spineProtocConfig.getAddColumns()
+                                                   .getGenerate();
+        tasks.add(new GenerateColumns(generateColumns));
         return new NestedClassGenerator(tasks.build());
     }
 

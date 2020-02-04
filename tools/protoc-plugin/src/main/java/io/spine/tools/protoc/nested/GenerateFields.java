@@ -21,21 +21,29 @@
 package io.spine.tools.protoc.nested;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.code.gen.java.FieldFactory;
+import io.spine.code.java.ClassName;
+import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.ExternalClassLoader;
-import io.spine.tools.protoc.SubscribableConfig;
+import io.spine.tools.protoc.ConfigByType;
 import io.spine.type.MessageType;
 
+import java.util.Collection;
+import java.util.Map;
+
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Maps.newHashMap;
 
 /**
- * Generates nested classes for the supplied subscribable message type based on the
- * {@link SubscribableConfig passed configuration}.
+ * Generates nested classes for the supplied subscribable message type based on the passed
+ * configuration.
  */
 final class GenerateFields extends NestedClassGenerationTask {
 
-    GenerateFields(ExternalClassLoader<NestedClassFactory> classLoader, SubscribableConfig config) {
-        super(classLoader, config.getValue());
+    private ImmutableList<String> generateFor;
+
+    GenerateFields(Classpath classpath, Collection<ConfigByType> config) {
+        super(new FieldFactory(generatedFieldsConfig(config)));
     }
 
     /**
@@ -54,11 +62,14 @@ final class GenerateFields extends NestedClassGenerationTask {
         return generateNestedClassesFor(type);
     }
 
+    private static Map<Class<?>, ClassName>
+    generatedFieldsConfig(Collection<ConfigByType> configByType) {
+        return newHashMap();
+    }
+
     private static boolean eligibleForFieldsGeneration(MessageType type) {
         return type.isEntityState()
                 || type.isEvent()
-                || type.isRejection()
-                || type.isSpineCoreEvent()
-                || type.isEventContext();
+                || type.isRejection();
     }
 }

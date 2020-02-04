@@ -24,26 +24,32 @@ message SpineProtocConfig {
     // Methods generation tasks.
     AddMethods add_methods = 2;
 
+    // Nested classes generation tasks.
+    AddNestedClasses add_nested_classes = 3;
+
+    // Column generation tasks.
+    AddColumns add_columns = 4;
+
+    // Field generation tasks.
+    AddFields add_fields = 5;
+
     // Determines if the generation of `ValidatingBuilder` should be skipped.
     //
     // If set to `true`, message builder classes will NOT implement
     // `io.spine.protobuf.ValidatingBuilder`. Default value is `false`, i.e. the message classes
     // should implement the `ValidatingBuilder` interface.
     //
-    bool skip_validating_builders = 3;
+    bool skip_validating_builders = 6;
 
     // Determines if the validation code should be generated for the message types.
     //
     // The benefit of the generated validation code is performance. It is not required to assemble
     // metadata over all the combinations of fields and options at the program runtime.
     //
-    bool generate_validation = 4;
+    bool generate_validation = 7;
 
-    // Nested classes generation tasks.
-    AddNestedClasses add_nested_classes = 5;
-
-    // The classpath used to lookup factories by their fully-qualified names.
-    Classpath factory_classpath = 6;
+    // The classpath used to lookup types by their fully-qualified names.
+    Classpath classpath = 8;
 }
 
 // Interfaces generation configuration.
@@ -72,14 +78,18 @@ message AddMethods {
 // Nested classes generation configuration.
 message AddNestedClasses {
 
-    // A configuration of generated nested classes for queryable messages.
-    QueryableConfig queryable_factory = 1;
-
-    // A configuration of generated nested classes for subscribable messages.
-    SubscribableConfig subscribable_factory = 2;
-
     // Pattern-based nested class factories.
-    repeated ConfigByPattern factory_by_pattern = 3;
+    repeated ConfigByPattern factory_by_pattern = 1;
+}
+
+message AddColumns {
+
+    bool generate = 1;
+}
+
+message AddFields {
+
+    repeated ConfigByType by_type = 1;
 }
 
 // UUID value code generation configuration.
@@ -102,28 +112,6 @@ message EntityStateConfig {
     string value = 1;
 }
 
-// The code generation configuration for queryable messages.
-//
-message QueryableConfig {
-
-    // A fully-qualified name of the target.
-    //
-    // Currently, only the nested class factory name is expected.
-    //
-    string value = 1;
-}
-
-// The code generation configuration for subscribable messages.
-//
-message SubscribableConfig {
-
-    // A fully-qualified name of the target.
-    //
-    // Currently, only the nested class factory name is expected.
-    //
-    string value = 1;
-}
-
 // Code generation configuration based on the FilePattern.
 //
 message ConfigByPattern {
@@ -137,6 +125,13 @@ message ConfigByPattern {
 
     // A file pattern that defines for which message types code should be generated.
     FilePattern pattern = 2;
+}
+
+message ConfigByType {
+
+    string type = 1;
+
+    string mark_as = 2;
 }
 
 // File pattern which is used to filter messages.

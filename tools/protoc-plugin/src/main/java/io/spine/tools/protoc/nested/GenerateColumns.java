@@ -21,22 +21,24 @@
 package io.spine.tools.protoc.nested;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.code.gen.java.ColumnFactory;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.ExternalClassLoader;
-import io.spine.tools.protoc.QueryableConfig;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.proto.ColumnOption.hasColumns;
 
 /**
- * Generates nested classes for the supplied queryable message type based on the
- * {@link QueryableConfig passed configuration}.
+ * Generates nested classes for the supplied queryable message type based on the passed
+ * configuration.
  */
 final class GenerateColumns extends NestedClassGenerationTask {
 
-    GenerateColumns(ExternalClassLoader<NestedClassFactory> classLoader, QueryableConfig config) {
-        super(classLoader, config.getValue());
+    private final boolean generate;
+
+    GenerateColumns(boolean generate) {
+        super(new ColumnFactory());
+        this.generate = generate;
     }
 
     /**
@@ -45,10 +47,13 @@ final class GenerateColumns extends NestedClassGenerationTask {
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
-        boolean isEntityWithColumns = type.isEntityState() && hasColumns(type);
-        if (!isEntityWithColumns) {
+        if (!generate || !isEntityWithColumns(type)) {
             return ImmutableList.of();
         }
         return generateNestedClassesFor(type);
+    }
+
+    private static boolean isEntityWithColumns(MessageType type) {
+        return type.isEntityState() && hasColumns(type);
     }
 }

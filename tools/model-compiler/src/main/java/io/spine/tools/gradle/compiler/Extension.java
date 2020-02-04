@@ -27,6 +27,8 @@ import io.spine.annotation.Beta;
 import io.spine.code.fs.java.DefaultJavaProject;
 import io.spine.code.gen.Indent;
 import io.spine.tools.gradle.GradleExtension;
+import io.spine.tools.protoc.GeneratedColumns;
+import io.spine.tools.protoc.GeneratedFields;
 import io.spine.tools.protoc.GeneratedInterfaces;
 import io.spine.tools.protoc.GeneratedMethods;
 import io.spine.tools.protoc.GeneratedNestedClasses;
@@ -170,6 +172,10 @@ public class Extension extends GradleExtension {
     public final GeneratedMethods methods = new GeneratedMethods();
 
     public final GeneratedNestedClasses nestedClasses = new GeneratedNestedClasses();
+
+    public final GeneratedColumns columns = new GeneratedColumns();
+
+    public final GeneratedFields fields = new GeneratedFields();
 
     public boolean generateValidatingBuilders = true;
 
@@ -370,6 +376,25 @@ public class Extension extends GradleExtension {
         action.execute(nestedClasses);
     }
 
+    @SuppressWarnings("unused") // Configures `nestedClasses` closure.
+    public void columns(Closure closure) {
+        ConfigureUtil.configure(closure, columns);
+    }
+
+    @SuppressWarnings("unused") // Configures `nestedClasses` closure.
+    public void columns(Action<? super GeneratedColumns> action) {
+        action.execute(columns);
+    }
+    @SuppressWarnings("unused") // Configures `nestedClasses` closure.
+    public void fields(Closure closure) {
+        ConfigureUtil.configure(closure, fields);
+    }
+
+    @SuppressWarnings("unused") // Configures `nestedClasses` closure.
+    public void fields(Action<? super GeneratedFields> action) {
+        action.execute(fields);
+    }
+
     public static CodeGenAnnotations getCodeGenAnnotations(Project project) {
         CodeGenAnnotations annotations = extension(project).generateAnnotations;
         return annotations;
@@ -388,6 +413,16 @@ public class Extension extends GradleExtension {
     public static GeneratedNestedClasses getNestedClasses(Project project) {
         GeneratedNestedClasses nestedClasses = extension(project).nestedClasses;
         return nestedClasses;
+    }
+
+    public static GeneratedColumns getColumns(Project project) {
+        GeneratedColumns columns = extension(project).columns;
+        return columns;
+    }
+
+    public static GeneratedFields getFields(Project project) {
+        GeneratedFields fields = extension(project).fields;
+        return fields;
     }
 
     public static boolean shouldGenerateValidatingBuilders(Project project) {

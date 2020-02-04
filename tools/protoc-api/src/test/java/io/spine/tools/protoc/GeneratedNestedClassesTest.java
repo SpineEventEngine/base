@@ -41,15 +41,9 @@ class GeneratedNestedClassesTest {
     void convertToProperProtocConfiguration() {
         GeneratedNestedClasses classes = new GeneratedNestedClasses();
         MessageSelectorFactory messages = classes.messages();
-        classes.applyFactory(FACTORY, messages.queryable());
-        classes.applyFactory(FACTORY, messages.subscribable());
         classes.applyFactory(FACTORY, messages.inFiles(suffix("_test.proto")));
         AddNestedClasses config = classes.asProtocConfig();
 
-        assertEquals(FACTORY, config.getQueryableFactory()
-                                    .getValue());
-        assertEquals(FACTORY, config.getSubscribableFactory()
-                                    .getValue());
         assertEquals(FACTORY, config.getFactoryByPattern(0)
                                     .getValue());
     }

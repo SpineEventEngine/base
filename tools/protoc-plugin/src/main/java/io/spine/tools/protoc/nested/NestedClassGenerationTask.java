@@ -36,24 +36,33 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  */
 abstract class NestedClassGenerationTask implements CodeGenerationTask {
 
-    private final ExternalClassLoader<NestedClassFactory> classLoader;
-    private final String factoryName;
+    /**
+     * The factory used for code generation.
+     */
+    private final NestedClassFactory factory;
+
+    NestedClassGenerationTask(NestedClassFactory factory) {
+        this.factory = factory;
+    }
 
     NestedClassGenerationTask(ExternalClassLoader<NestedClassFactory> classLoader,
                               String factoryName) {
-        this.classLoader = checkNotNull(classLoader);
-        this.factoryName = checkNotEmptyOrBlank(factoryName);
+        this(factoryInstance(checkNotNull(classLoader), checkNotEmptyOrBlank(factoryName)));
     }
 
     /**
-     * Performs the actual code generation using the supplied {@linkplain #factoryName factory}.
+     * Performs the actual code generation using the supplied {@linkplain #factory factory}.
      */
     ImmutableList<CompilerOutput> generateNestedClassesFor(@NonNull MessageType type) {
-        NestedClassFactory factory = classLoader.newInstance(factoryName);
         return factory
                 .createFor(type)
                 .stream()
                 .map(classBody -> NestedClass.from(classBody, type))
                 .collect(toImmutableList());
+    }
+
+    private static NestedClassFactory
+    factoryInstance(ExternalClassLoader<NestedClassFactory> classLoader, String factoryName) {
+        return classLoader.newInstance(factoryName);
     }
 }
