@@ -11,7 +11,24 @@ import static com.google.common.collect.Maps.newHashMap;
 
 public final class GeneratedFields extends GeneratedConfigurations<AddFields> {
 
+    private boolean generate;
+    private EntityStateConfig entityStateConfig = EntityStateConfig.getDefaultInstance();
     private final Map<String, ClassName> byType = newHashMap();
+
+    public final void generate(boolean generate) {
+        this.generate = generate;
+    }
+
+    public final void generateFor(EntityState entityState, ClassName markAs) {
+        entityStateConfig = EntityStateConfig
+                .newBuilder()
+                .setValue(markAs.value())
+                .build();
+    }
+
+    public final void generateFor(PatternSelector pattern, ClassName markAs) {
+        addPattern(pattern, markAs);
+    }
 
     public final void generateFor(String type, ClassName markAs) {
         byType.put(type, markAs);
@@ -28,11 +45,16 @@ public final class GeneratedFields extends GeneratedConfigurations<AddFields> {
     @Internal
     @Override
     public AddFields asProtocConfig() {
-        AddFields result = AddFields
+        AddFields.Builder result = AddFields
                 .newBuilder()
-                .addAllByType(generatedTypes())
-                .build();
-        return result;
+                .setGenerate(generate)
+                .setEntityStateSupertype(entityStateConfig)
+                .addAllSupertypeByType(generatedTypes());
+        patternConfigurations()
+                .stream()
+                .map(GeneratedConfigurations::toPatternConfig)
+                .forEach(result::addSupertypeByPattern);
+        return result.build();
     }
 
     private Iterable<ConfigByType> generatedTypes() {
@@ -45,10 +67,14 @@ public final class GeneratedFields extends GeneratedConfigurations<AddFields> {
     }
 
     private static ConfigByType configByType(String type, ClassName markAs) {
+        TypePattern pattern = TypePattern
+                .newBuilder()
+                .setExpectedType(type)
+                .build();
         ConfigByType result = ConfigByType
                 .newBuilder()
-                .setType(type)
-                .setMarkAs(markAs.value())
+                .setValue(markAs.value())
+                .setPattern(pattern)
                 .build();
         return result;
     }

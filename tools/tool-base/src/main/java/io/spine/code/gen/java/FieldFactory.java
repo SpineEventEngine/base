@@ -23,6 +23,7 @@ package io.spine.code.gen.java;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.errorprone.annotations.Immutable;
+import io.spine.base.SubscribableField;
 import io.spine.code.gen.java.field.FieldsSpec;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.nested.GeneratedNestedClass;
@@ -40,14 +41,13 @@ import java.util.Map;
 @Immutable
 public final class FieldFactory implements NestedClassFactory {
 
-    private ImmutableMap<Class<?>, ClassName> configByType;
-
-    public FieldFactory(Map<Class<?>, ClassName> configByType) {
-        this.configByType = ImmutableMap.copyOf(configByType);
-    }
-
     @Override
     public List<GeneratedNestedClass> createFor(MessageType messageType) {
+        return createFor(messageType, ClassName.of(SubscribableField.class));
+    }
+
+    public List<GeneratedNestedClass> createFor(MessageType messageType,
+                                                ClassName fieldSupertype) {
         String generatedCode = FieldsSpec.of(messageType)
                                          .typeSpec()
                                          .toString();

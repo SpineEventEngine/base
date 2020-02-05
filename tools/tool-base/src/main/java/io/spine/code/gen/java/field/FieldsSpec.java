@@ -105,7 +105,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  * fields allowing to pass a specific field type to the filter builder to form a typed subscription
  * request.
  */
-public abstract class FieldsSpec implements GeneratedTypeSpec {
+public final class FieldsSpec implements GeneratedTypeSpec {
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     private static final String CLASS_NAME = "Fields";
@@ -141,15 +141,6 @@ public abstract class FieldsSpec implements GeneratedTypeSpec {
      */
     public static FieldsSpec of(MessageType messageType) {
         checkNotNull(messageType);
-        if (messageType.isEntityState() || messageType.isSpineCoreEvent()) {
-            return new EntityStateFields(messageType);
-        }
-        if (messageType.isEvent() || messageType.isRejection()) {
-            return new EventMessageFields(messageType);
-        }
-        if (messageType.isEventContext()) {
-            return new EventContextFields(messageType);
-        }
         throw newIllegalArgumentException(
                 "Unexpected message type during fields generation: %s.", messageType.name()
         );
@@ -198,14 +189,14 @@ public abstract class FieldsSpec implements GeneratedTypeSpec {
     private ImmutableList<TypeSpec> messageTypeFields() {
         ImmutableList<TypeSpec> result =
                 nestedFieldTypes().stream()
-                                  .map(type -> new MessageTypedField(type, fieldSupertype()))
+                                  .map(type -> new MessageTypedField(type, SubscribableField.class))
                                   .map(MessageTypedField::typeSpec)
                                   .collect(toImmutableList());
         return result;
     }
 
     private FieldSpec topLevelFieldSpec(FieldDeclaration field) {
-        return new TopLevelFieldSpec(field, fieldSupertype());
+        return new TopLevelFieldSpec(field, SubscribableField.class);
     }
 
     private List<MessageType> nestedFieldTypes() {
@@ -215,14 +206,6 @@ public abstract class FieldsSpec implements GeneratedTypeSpec {
         }
         return nestedFieldTypes;
     }
-
-    /**
-     * Returns the supertype with which all returned fields are marked.
-     *
-     * <p>The field supertype defines the filter type whose instance is constructed when the field
-     * is passed to the filter builder.
-     */
-    protected abstract Class<? extends SubscribableField> fieldSupertype();
 
     /**
      * Generates the class Javadoc.

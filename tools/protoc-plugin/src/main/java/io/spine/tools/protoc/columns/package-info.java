@@ -18,25 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.gen.java.field;
+// TODO:2020-02-05:dmytro.kuzmin: Document.
 
-import io.spine.base.EntityStateField;
-import io.spine.base.SubscribableField;
-import io.spine.type.MessageType;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.protoc.columns;
 
-/**
- * A spec which defines a type that exposes entity state fields as strongly-typed objects.
- *
- * @see FieldsSpec
- */
-final class EntityStateFields extends FieldsSpec {
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    EntityStateFields(MessageType messageType) {
-        super(messageType);
-    }
-
-    @Override
-    protected Class<? extends SubscribableField> fieldSupertype() {
-        return EntityStateField.class;
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

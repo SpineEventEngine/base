@@ -18,42 +18,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.nested;
+package io.spine.tools.protoc.fields;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.gen.java.ColumnFactory;
+import io.spine.code.gen.java.FieldFactory;
+import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.ExternalClassLoader;
+import io.spine.tools.protoc.NestedMember;
+import io.spine.tools.protoc.nested.NestedClassFactory;
 import io.spine.type.MessageType;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.proto.ColumnOption.hasColumns;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 
 /**
- * Generates nested classes for the supplied queryable message type based on the passed
- * configuration.
+ * An abstract base for field generation tasks.
  */
-final class GenerateColumns extends NestedClassGenerationTask {
+abstract class FieldGenerationTask implements CodeGenerationTask {
 
-    private final boolean generate;
+    /**
+     * The factory used for code generation.
+     */
+    private final FieldFactory factory = new FieldFactory();
 
-    GenerateColumns(boolean generate) {
-        super(new ColumnFactory());
-        this.generate = generate;
+    FieldGenerationTask() {
     }
 
     /**
-     * Applies the column factory if the type is eligible for column generation.
+     * Performs the actual code generation using the supplied {@linkplain #factory}.
      */
-    @Override
-    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
-        checkNotNull(type);
-        if (!generate || !isEntityWithColumns(type)) {
-            return ImmutableList.of();
-        }
-        return generateNestedClassesFor(type);
+    ImmutableList<CompilerOutput> generateFieldsFor(MessageType type) {
+        return factory
+                .createFor(type)
+                .stream()
+                .map(classBody -> NestedMember.from(classBody, type))
+                .collect(toImmutableList());
     }
 
-    private static boolean isEntityWithColumns(MessageType type) {
-        return type.isEntityState() && hasColumns(type);
+    private static NestedClassFactory
+    factoryInstance(ExternalClassLoader<NestedClassFactory> classLoader, String factoryName) {
+        return classLoader.newInstance(factoryName);
     }
 }

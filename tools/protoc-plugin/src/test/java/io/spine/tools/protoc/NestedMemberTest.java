@@ -18,18 +18,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.method;
+package io.spine.tools.protoc;
 
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.code.fs.java.SourceFile;
+import io.spine.tools.protoc.method.GeneratedMethod;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("MessageMethod should")
-final class MessageMethodTest {
+@DisplayName("`NestedMember` should")
+final class NestedMemberTest {
 
     private static final String INSERTION_POINT_FORMAT = "class_scope:%s";
 
@@ -39,7 +40,7 @@ final class MessageMethodTest {
         String methodBody = "public void test(){}";
         GeneratedMethod method = new GeneratedMethod(methodBody);
         MessageType type = new MessageType(EnhancedMessage.getDescriptor());
-        MessageMethod result = MessageMethod.from(method, type);
+        NestedMember result = NestedMember.from(method, type);
         File file = result.asFile();
 
         assertEquals(methodBody, file.getContent());

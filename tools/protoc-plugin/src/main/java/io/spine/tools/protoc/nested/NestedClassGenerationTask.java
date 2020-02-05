@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.ExternalClassLoader;
+import io.spine.tools.protoc.NestedMember;
 import io.spine.type.MessageType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -36,33 +37,24 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  */
 abstract class NestedClassGenerationTask implements CodeGenerationTask {
 
-    /**
-     * The factory used for code generation.
-     */
-    private final NestedClassFactory factory;
-
-    NestedClassGenerationTask(NestedClassFactory factory) {
-        this.factory = factory;
-    }
+    private final ExternalClassLoader<NestedClassFactory> classLoader;
+    private final String factoryName;
 
     NestedClassGenerationTask(ExternalClassLoader<NestedClassFactory> classLoader,
                               String factoryName) {
-        this(factoryInstance(checkNotNull(classLoader), checkNotEmptyOrBlank(factoryName)));
+        this.classLoader = checkNotNull(classLoader);
+        this.factoryName = checkNotEmptyOrBlank(factoryName);
     }
 
     /**
-     * Performs the actual code generation using the supplied {@linkplain #factory factory}.
+     * Performs the actual code generation using the supplied {@linkplain #factoryName factory}.
      */
     ImmutableList<CompilerOutput> generateNestedClassesFor(@NonNull MessageType type) {
+        NestedClassFactory factory = classLoader.newInstance(factoryName);
         return factory
                 .createFor(type)
                 .stream()
-                .map(classBody -> NestedClass.from(classBody, type))
+                .map(classBody -> NestedMember.from(classBody, type))
                 .collect(toImmutableList());
-    }
-
-    private static NestedClassFactory
-    factoryInstance(ExternalClassLoader<NestedClassFactory> classLoader, String factoryName) {
-        return classLoader.newInstance(factoryName);
     }
 }

@@ -58,7 +58,7 @@ public final class NestedClassGenerator extends CodeGenerator {
      */
     public static NestedClassGenerator instance(SpineProtocConfig spineProtocConfig) {
         checkNotNull(spineProtocConfig);
-        Classpath classpath = spineProtocConfig.getFactoryClasspath();
+        Classpath classpath = spineProtocConfig.getClasspath();
         ExternalClassLoader<NestedClassFactory> classLoader =
                 new ExternalClassLoader<>(classpath, NestedClassFactory.class);
         AddNestedClasses config = spineProtocConfig.getAddNestedClasses();
@@ -66,9 +66,6 @@ public final class NestedClassGenerator extends CodeGenerator {
         for (ConfigByPattern byPattern : config.getFactoryByPatternList()) {
             tasks.add(new GenerateNestedClasses(classLoader, byPattern));
         }
-        boolean generateColumns = spineProtocConfig.getAddColumns()
-                                                   .getGenerate();
-        tasks.add(new GenerateColumns(generateColumns));
         return new NestedClassGenerator(tasks.build());
     }
 

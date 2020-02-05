@@ -18,14 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.nested;
+package io.spine.tools.protoc.fields;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.gen.java.FieldFactory;
-import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.Classpath;
+import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.ConfigByType;
+import io.spine.tools.protoc.ExternalClassLoader;
 import io.spine.type.MessageType;
 
 import java.util.Collection;
@@ -38,32 +38,30 @@ import static com.google.common.collect.Maps.newHashMap;
  * Generates nested classes for the supplied subscribable message type based on the passed
  * configuration.
  */
-final class GenerateFields extends NestedClassGenerationTask {
+final class GenerateFields implements CodeGenerationTask {
 
     private ImmutableList<String> generateFor;
 
     GenerateFields(Classpath classpath, Collection<ConfigByType> config) {
-        super(new FieldFactory(generatedFieldsConfig(config)));
     }
 
     /**
      * Applies the field factory if the passed type is eligible for field generation.
      *
      * <p>Apart from the types that can be subscription targets, i.e. entity states and events,
-     * there are also a number of built-in types to which the field generation is applied, as
+     * there is also a number of built-in types to which the field generation is applied, as
      * required by the Spine routines.
      */
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
-        if (!eligibleForFieldsGeneration(type)) {
-            return ImmutableList.of();
-        }
-        return generateNestedClassesFor(type);
+        return ImmutableList.of();
     }
 
-    private static Map<Class<?>, ClassName>
-    generatedFieldsConfig(Collection<ConfigByType> configByType) {
+    private static Map<Class<?>, Class<?>>
+    generatedFieldsConfig(Classpath classpath, Collection<ConfigByType> configByType) {
+        ExternalClassLoader<?> loader = new ExternalClassLoader<>(classpath, Object.class);
+
         return newHashMap();
     }
 

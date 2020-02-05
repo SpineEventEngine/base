@@ -26,6 +26,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.ExternalClassLoader;
 import io.spine.tools.protoc.SubscribableConfig;
+import io.spine.tools.protoc.fields.GenerateFields;
 import io.spine.tools.protoc.given.TestNestedClassFactory;
 import io.spine.tools.protoc.nested.Rejections.OrderAlreadyExists;
 import io.spine.tools.protoc.nested.given.TestClassLoader;
