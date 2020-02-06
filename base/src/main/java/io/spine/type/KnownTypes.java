@@ -147,7 +147,7 @@ public class KnownTypes implements Serializable {
     }
 
     /**
-     * Assembles the known types into a {@code JsonFormat.TypeRegistry}.
+     * Assembles the known types into a {@code TypeRegistry}.
      *
      * <p>The resulting registry contains all the known Protobuf message types.
      */
