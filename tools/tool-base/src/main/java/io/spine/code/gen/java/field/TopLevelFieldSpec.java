@@ -23,7 +23,7 @@ package io.spine.code.gen.java.field;
 import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.base.Field;
-import io.spine.base.SubscribableField;
+import io.spine.code.java.ClassName;
 import io.spine.code.proto.FieldDeclaration;
 
 import javax.lang.model.element.Modifier;
@@ -36,7 +36,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  */
 final class TopLevelFieldSpec extends FieldSpec {
 
-    TopLevelFieldSpec(FieldDeclaration field, Class<? extends SubscribableField> fieldSupertype) {
+    TopLevelFieldSpec(FieldDeclaration field, ClassName fieldSupertype) {
         super(field, fieldSupertype);
     }
 

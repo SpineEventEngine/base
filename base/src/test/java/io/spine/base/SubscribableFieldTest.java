@@ -18,14 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gen;
+package io.spine.base;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.base.EntityStateField;
-import io.spine.base.EventContextField;
-import io.spine.base.EventMessageField;
-import io.spine.base.Field;
-import io.spine.base.SubscribableField;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -42,8 +37,6 @@ class SubscribableFieldTest {
                 .testAllPublicConstructors(EntityStateField.class);
         new NullPointerTester()
                 .testAllPublicConstructors(EventMessageField.class);
-        new NullPointerTester()
-                .testAllPublicConstructors(EventContextField.class);
     }
 
     @Test

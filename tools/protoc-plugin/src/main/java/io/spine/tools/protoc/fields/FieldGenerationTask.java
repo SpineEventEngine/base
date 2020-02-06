@@ -22,11 +22,10 @@ package io.spine.tools.protoc.fields;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.gen.java.FieldFactory;
+import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.ExternalClassLoader;
 import io.spine.tools.protoc.NestedMember;
-import io.spine.tools.protoc.nested.NestedClassFactory;
 import io.spine.type.MessageType;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
@@ -36,12 +35,12 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
  */
 abstract class FieldGenerationTask implements CodeGenerationTask {
 
-    /**
-     * The factory used for code generation.
-     */
-    private final FieldFactory factory = new FieldFactory();
+    private final ClassName fieldSupertype;
+    private final FieldFactory factory;
 
-    FieldGenerationTask() {
+    FieldGenerationTask(ClassName fieldSupertype, FieldFactory factory) {
+        this.fieldSupertype = fieldSupertype;
+        this.factory = factory;
     }
 
     /**
@@ -49,14 +48,9 @@ abstract class FieldGenerationTask implements CodeGenerationTask {
      */
     ImmutableList<CompilerOutput> generateFieldsFor(MessageType type) {
         return factory
-                .createFor(type)
+                .createFor(type, fieldSupertype)
                 .stream()
                 .map(classBody -> NestedMember.from(classBody, type))
                 .collect(toImmutableList());
-    }
-
-    private static NestedClassFactory
-    factoryInstance(ExternalClassLoader<NestedClassFactory> classLoader, String factoryName) {
-        return classLoader.newInstance(factoryName);
     }
 }

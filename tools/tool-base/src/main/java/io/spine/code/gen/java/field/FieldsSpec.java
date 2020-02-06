@@ -25,8 +25,8 @@ import com.google.errorprone.annotations.concurrent.LazyInit;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
-import io.spine.base.SubscribableField;
 import io.spine.code.gen.java.GeneratedTypeSpec;
+import io.spine.code.java.ClassName;
 import io.spine.code.java.PackageName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;
@@ -38,7 +38,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
 import static io.spine.code.gen.java.EmptyPrivateCtor.spec;
-import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
@@ -120,6 +119,8 @@ public final class FieldsSpec implements GeneratedTypeSpec {
      */
     private final ImmutableList<FieldDeclaration> fields;
 
+    private final ClassName fieldSupertype;
+
     /**
      * The recursively-collected nested field types.
      *
@@ -128,22 +129,10 @@ public final class FieldsSpec implements GeneratedTypeSpec {
     @LazyInit
     private @MonotonicNonNull List<MessageType> nestedFieldTypes;
 
-    FieldsSpec(MessageType messageType) {
-        this.messageType = messageType;
+    public FieldsSpec(MessageType messageType, ClassName fieldSupertype) {
+        this.messageType = checkNotNull(messageType);
         this.fields = messageType.fields();
-    }
-
-    /**
-     * Creates a {@code FieldsSpec} for the given message type.
-     *
-     * @throws IllegalArgumentException
-     *         if the field generation for the passed message type is not supported
-     */
-    public static FieldsSpec of(MessageType messageType) {
-        checkNotNull(messageType);
-        throw newIllegalArgumentException(
-                "Unexpected message type during fields generation: %s.", messageType.name()
-        );
+        this.fieldSupertype = checkNotNull(fieldSupertype);
     }
 
     @Override
@@ -189,14 +178,14 @@ public final class FieldsSpec implements GeneratedTypeSpec {
     private ImmutableList<TypeSpec> messageTypeFields() {
         ImmutableList<TypeSpec> result =
                 nestedFieldTypes().stream()
-                                  .map(type -> new MessageTypedField(type, SubscribableField.class))
+                                  .map(type -> new MessageTypedField(type, fieldSupertype))
                                   .map(MessageTypedField::typeSpec)
                                   .collect(toImmutableList());
         return result;
     }
 
     private FieldSpec topLevelFieldSpec(FieldDeclaration field) {
-        return new TopLevelFieldSpec(field, SubscribableField.class);
+        return new TopLevelFieldSpec(field, fieldSupertype);
     }
 
     private List<MessageType> nestedFieldTypes() {

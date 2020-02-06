@@ -26,8 +26,6 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.code.fs.java.SourceFile;
-import io.spine.code.gen.java.ColumnFactory;
-import io.spine.code.gen.java.FieldFactory;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.OptionExtensionRegistry;
 import io.spine.protobuf.ValidatingBuilder;
@@ -36,8 +34,6 @@ import io.spine.tools.protoc.given.TestMethodFactory;
 import io.spine.tools.protoc.given.TestNestedClassFactory;
 import io.spine.tools.protoc.given.UuidMethodFactory;
 import io.spine.tools.protoc.method.TestMethodProtos;
-import io.spine.tools.protoc.nested.TestColumnProtos;
-import io.spine.tools.protoc.nested.TestFieldProtos;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -127,39 +123,13 @@ final class PluginTest {
     @Test
     @DisplayName("generate `Columns` nested class")
     void generateColumns() {
-        GeneratedNestedClasses config = new GeneratedNestedClasses();
-        MessageSelectorFactory messages = config.messages();
-        config.applyFactory(ColumnFactory.class.getName(), messages.queryable());
-
-        CodeGeneratorRequest request = requestBuilder()
-                .addProtoFile(TestColumnProtos.getDescriptor()
-                                              .toProto())
-                .addFileToGenerate("spine/tools/protoc/nested/test_columns.proto")
-                .setParameter(protocConfig(config, testPluginConfig))
-                .build();
-        CodeGeneratorResponse response = runPlugin(request);
-
-        List<File> files = filterFiles(response, InsertionPoint.class_scope);
-        assertEquals(1, files.size());
+        // TODO:2020-02-06:dmytro.kuzmin: Implement.
     }
 
     @Test
     @DisplayName("generate `Fields` nested class")
     void generateFields() {
-        GeneratedNestedClasses config = new GeneratedNestedClasses();
-        MessageSelectorFactory messages = config.messages();
-        config.applyFactory(FieldFactory.class.getName(), messages.subscribable());
-
-        CodeGeneratorRequest request = requestBuilder()
-                .addProtoFile(TestFieldProtos.getDescriptor()
-                                             .toProto())
-                .addFileToGenerate("spine/tools/protoc/nested/test_fields.proto")
-                .setParameter(protocConfig(config, testPluginConfig))
-                .build();
-        CodeGeneratorResponse response = runPlugin(request);
-
-        List<File> files = filterFiles(response, InsertionPoint.class_scope);
-        assertEquals(2, files.size());
+        // TODO:2020-02-06:dmytro.kuzmin: Implement.
     }
 
     @Test

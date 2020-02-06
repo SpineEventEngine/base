@@ -26,9 +26,9 @@ import com.google.common.truth.Truth;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import io.spine.code.gen.java.ColumnFactory;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.given.TestInterface;
+import io.spine.tools.protoc.given.TestNestedClassFactory;
 import io.spine.tools.protoc.given.UuidMethodFactory;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
@@ -69,7 +69,8 @@ final class CodeGeneratorTest {
         GeneratedMethods methods = new GeneratedMethods();
         methods.applyFactory(UuidMethodFactory.class.getName(), messages.uuid());
         GeneratedNestedClasses nestedClasses = new GeneratedNestedClasses();
-        nestedClasses.applyFactory(ColumnFactory.class.getName(), messages.queryable());
+        nestedClasses.applyFactory(TestNestedClassFactory.class.getCanonicalName(),
+                                   new SuffixSelector("*file.proto"));
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())

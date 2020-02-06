@@ -39,7 +39,7 @@ final class NestedMemberTest {
     void createValidCompilerOutput() {
         String methodBody = "public void test(){}";
         GeneratedMethod method = new GeneratedMethod(methodBody);
-        MessageType type = new MessageType(EnhancedMessage.getDescriptor());
+        MessageType type = new MessageType(MessageWithClassScopeInsertion.getDescriptor());
         NestedMember result = NestedMember.from(method, type);
         File file = result.asFile();
 

@@ -42,7 +42,7 @@ public final class GeneratedNestedClasses extends GeneratedConfigurations<AddNes
      * <p>The statement above configures all message types which are declared in proto files with
      * names ending with {@code events.proto} to use the {@code CustomNestedClassFactory} for
      * nested class code generation. It is expected that {@code CustomNestedClassFactory} is an
-     * implementation of the {@link io.spine.tools.protoc.nested.NestedClassFactory} interface.
+     * implementation of the {@code io.spine.tools.protoc.nested.NestedClassFactory} interface.
      *
      * @apiNote When loading the factory class passed by FQN, Spine class loader assumes it is
      *        already accessible and instantiable with no additional arguments. So, the provided

@@ -48,9 +48,9 @@ import static com.google.common.base.Preconditions.checkState;
 abstract class FieldSpec implements GeneratedMethodSpec {
 
     private final FieldDeclaration field;
-    private final Class<? extends SubscribableField> fieldSupertype;
+    private final ClassName fieldSupertype;
 
-    FieldSpec(FieldDeclaration field, Class<? extends SubscribableField> fieldSupertype) {
+    FieldSpec(FieldDeclaration field, ClassName fieldSupertype) {
         this.field = field;
         this.fieldSupertype = fieldSupertype;
     }

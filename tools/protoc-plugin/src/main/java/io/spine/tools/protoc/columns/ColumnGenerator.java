@@ -22,6 +22,7 @@ public final class ColumnGenerator extends CodeGenerator {
     private final boolean generate;
 
     private ColumnGenerator(boolean generate) {
+        super();
         this.generate = generate;
     }
 

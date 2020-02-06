@@ -17,23 +17,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+syntax = "proto3";
 
-package io.spine.base;
+package spine.tools.protoc;
 
-/**
- * A subscribable field of an event context.
- *
- * <p>Such field can be passed to the event subscription filters to filter events by some value
- * specified in the event context (e.g. origin).
- *
- * <p>Normally this class shouldn't be instantiated or inherited in the user code directly and is
- * instead provided by the Spine routines which generate the message field enumerations.
- *
- * <p>See the nested {@code Fields} class in the event context declaration.
- */
-public class EventContextField extends SubscribableField {
+import "spine/options.proto";
 
-    public EventContextField(Field field) {
-        super(field);
-    }
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.tools.protoc";
+option java_outer_classname = "TestProtocProtos";
+option java_multiple_files = true;
+
+message MessageWithClassScopeInsertion {
+    string value = 1;
 }

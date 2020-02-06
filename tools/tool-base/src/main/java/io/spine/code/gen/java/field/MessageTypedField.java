@@ -30,6 +30,7 @@ import io.spine.base.SubscribableField;
 import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.gen.java.SingleParagraphDoc;
+import io.spine.code.java.ClassName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.type.MessageType;
@@ -63,9 +64,9 @@ import static javax.lang.model.element.Modifier.STATIC;
 final class MessageTypedField implements GeneratedTypeSpec {
 
     private final MessageType fieldType;
-    private final Class<? extends SubscribableField> fieldSupertype;
+    private final ClassName fieldSupertype;
 
-    MessageTypedField(MessageType fieldType, Class<? extends SubscribableField> fieldSupertype) {
+    MessageTypedField(MessageType fieldType, ClassName fieldSupertype) {
         this.fieldType = fieldType;
         this.fieldSupertype = fieldSupertype;
     }

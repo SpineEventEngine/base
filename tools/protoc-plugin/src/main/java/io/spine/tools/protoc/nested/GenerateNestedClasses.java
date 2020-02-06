@@ -48,7 +48,7 @@ final class GenerateNestedClasses extends NestedClassGenerationTask {
     /**
      * Generates nested classes for the given type.
      *
-     * <p>No methods are generated if the type file name does not match the supplied
+     * <p>No code is generated if the type file name does not match the supplied
      * {@link io.spine.tools.protoc.FilePattern pattern}.
      */
     @Override

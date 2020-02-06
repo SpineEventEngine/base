@@ -59,9 +59,9 @@ public final class MethodGenerator extends CodeGenerator {
      */
     public static MethodGenerator instance(SpineProtocConfig spineProtocConfig) {
         checkNotNull(spineProtocConfig);
-        Classpath factoryClasspath = spineProtocConfig.getFactoryClasspath();
+        Classpath classpath = spineProtocConfig.getClasspath();
         ExternalClassLoader<MethodFactory> classLoader =
-                new ExternalClassLoader<>(factoryClasspath, MethodFactory.class);
+                new ExternalClassLoader<>(classpath, MethodFactory.class);
         AddMethods config = spineProtocConfig.getAddMethods();
         ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();
         if (isNotDefault(config.getUuidFactory())) {

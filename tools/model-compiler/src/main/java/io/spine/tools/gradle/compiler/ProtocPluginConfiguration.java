@@ -117,7 +117,7 @@ final class ProtocPluginConfiguration {
                 .setAddFields(fieldGeneration)
                 .setSkipValidatingBuilders(!shouldGenerateVBuilders)
                 .setGenerateValidation(shouldGenerateValidation)
-                .setFactoryClasspath(projectClasspath)
+                .setClasspath(projectClasspath)
                 .build();
         return result;
     }
