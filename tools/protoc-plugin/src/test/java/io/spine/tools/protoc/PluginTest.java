@@ -78,8 +78,8 @@ final class PluginTest {
         testPluginConfig = tempDirPath.resolve("test-spine-protoc-plugin.pb");
     }
 
-    @DisplayName("process suffix patterns")
     @Test
+    @DisplayName("process suffix patterns")
     void processSuffixPatterns() {
         GeneratedInterfaces interfaces = new GeneratedInterfaces();
         MessageSelectorFactory messages = interfaces.messages();
@@ -100,8 +100,8 @@ final class PluginTest {
         checkGenerated(response);
     }
 
-    @DisplayName("generate UUID message")
     @Test
+    @DisplayName("generate UUID message")
     void generateUuidMethod() {
         GeneratedMethods methods = new GeneratedMethods();
         MessageSelectorFactory messages = methods.messages();
@@ -118,18 +118,6 @@ final class PluginTest {
         List<File> messageMethods =
                 filterFiles(response, InsertionPoint.class_scope);
         assertEquals(1, messageMethods.size());
-    }
-
-    @Test
-    @DisplayName("generate `Columns` nested class")
-    void generateColumns() {
-        // TODO:2020-02-06:dmytro.kuzmin: Implement.
-    }
-
-    @Test
-    @DisplayName("generate `Fields` nested class")
-    void generateFields() {
-        // TODO:2020-02-06:dmytro.kuzmin: Implement.
     }
 
     @Test
@@ -179,7 +167,7 @@ final class PluginTest {
     }
 
     @Test
-    @DisplayName("mark generated message builders with the ValidatingBuilder interface")
+    @DisplayName("mark generated message builders with the `ValidatingBuilder` interface")
     void markBuildersWithInterface() {
         FileDescriptor testGeneratorsDescriptor = TestGeneratorsProto.getDescriptor();
         String protocConfigPath = protocConfig(new GeneratedInterfaces(),

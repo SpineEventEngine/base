@@ -20,8 +20,14 @@
 
 package io.spine.tools.protoc;
 
+import io.spine.base.EntityStateField;
+import io.spine.base.EventMessageField;
 import io.spine.base.SubscribableField;
 import io.spine.tools.column.Project;
+import io.spine.tools.column.ProjectCreated;
+import io.spine.tools.column.ProjectName;
+import io.spine.tools.column.ProjectView;
+import io.spine.tools.protoc.given.ProjectNameField;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -61,6 +67,27 @@ class FieldsTest {
         checkField(parentProjectField.parentProject(), "parent_project.parent_project");
         assertThat(parentProjectField.getClass())
                 .isEqualTo(parentProjectField.parentProject().getClass());
+    }
+
+    @Test
+    @DisplayName("mark event message fields as `EventMessageField`")
+    void markEventMessageFields() {
+        ProjectCreated.Fields.ProjectIdField field = ProjectCreated.Fields.id();
+        assertThat(field.getClass()).isAssignableTo(EventMessageField.class);
+    }
+
+    @Test
+    @DisplayName("mark entity state fields as `EntityStateField`")
+    void markEntityStateFields() {
+        ProjectView.Fields.ProjectIdField field = ProjectView.Fields.id();
+        assertThat(field.getClass()).isAssignableTo(EntityStateField.class);
+    }
+
+    @Test
+    @DisplayName("generate fields for a custom type according to the Model Compiler configuration")
+    void markCustomTypes() {
+        ProjectNameField field = ProjectName.Fields.value();
+        assertThat(field.getClass()).isAssignableTo(ProjectNameField.class);
     }
 
     private static void checkField(SubscribableField field, String expectedFieldPath) {
