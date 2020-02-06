@@ -23,7 +23,7 @@ package io.spine.json;
 import com.google.common.collect.Lists;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.StringValue;
-import com.google.protobuf.util.JsonFormat;
+import com.google.protobuf.TypeRegistry;
 import io.spine.json.given.Node;
 import io.spine.json.given.WrappedString;
 import io.spine.testing.Tests;
@@ -54,8 +54,8 @@ class JsonTest extends UtilityClassTest<Json> {
 
     @Test
     @DisplayName("build JsonFormat registry for known types")
-    void build_JsonFormat_registry_for_known_types() {
-        JsonFormat.TypeRegistry typeRegistry = Json.typeRegistry();
+    void knownTypes() {
+        TypeRegistry typeRegistry = Json.typeRegistry();
 
         List<Descriptor> found = Lists.newLinkedList();
         for (TypeUrl typeUrl : KnownTypes.instance()
@@ -72,21 +72,21 @@ class JsonTest extends UtilityClassTest<Json> {
 
     @Test
     @DisplayName("not allow null message")
-    void toJson_fail_on_null() {
+    void rejectNulls() {
         assertThrows(NullPointerException.class,
                      () -> toJson(Tests.nullRef()));
     }
 
     @Test
     @DisplayName("print to JSON")
-    void print_to_json() {
+    void print() {
         StringValue value = StringValue.of("print_to_json");
         assertFalse(toJson(value).isEmpty());
     }
 
     @Test
     @DisplayName("print to compact JSON")
-    void print_to_compact_json() {
+    void printCompact() {
         String idValue = newUuid();
         Node node = Node.newBuilder()
                         .setName(idValue)
@@ -99,7 +99,7 @@ class JsonTest extends UtilityClassTest<Json> {
 
     @Test
     @DisplayName("parse from JSON")
-    void parse_from_json() {
+    void parse() {
         String idValue = newUuid();
         String jsonMessage = format("{value:%s}", idValue);
         WrappedString parsedValue = fromJson(jsonMessage, WrappedString.class);

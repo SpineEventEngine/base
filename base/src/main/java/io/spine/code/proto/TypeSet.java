@@ -28,7 +28,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import com.google.protobuf.util.JsonFormat.TypeRegistry;
+import com.google.protobuf.TypeRegistry;
 import io.spine.type.EnumType;
 import io.spine.type.MessageType;
 import io.spine.type.ServiceType;
