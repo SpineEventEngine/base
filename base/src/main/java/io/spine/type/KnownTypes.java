@@ -152,7 +152,7 @@ public class KnownTypes implements Serializable {
      * <p>The resulting registry contains all the known Protobuf message types.
      */
     public TypeRegistry typeRegistry() {
-        return typeSet.toJsonPrinterRegistry();
+        return typeSet.toTypeRegistry();
     }
 
     /**

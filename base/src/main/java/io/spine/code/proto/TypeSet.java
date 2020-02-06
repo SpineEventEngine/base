@@ -175,9 +175,9 @@ public final class TypeSet {
     }
 
     /**
-     * Writes all the types in this set into a {@link TypeRegistry JsonFormat.TypeRegistry}.
+     * Writes all the types in this set into a {@link TypeRegistry}.
      */
-    public TypeRegistry toJsonPrinterRegistry() {
+    public TypeRegistry toTypeRegistry() {
         TypeRegistry.Builder registry = TypeRegistry.newBuilder();
         messageTypes.values()
                     .stream()
