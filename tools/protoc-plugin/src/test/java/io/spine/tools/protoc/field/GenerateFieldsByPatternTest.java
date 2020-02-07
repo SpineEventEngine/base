@@ -18,15 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.nested;
+package io.spine.tools.protoc.field;
 
 import com.google.common.testing.NullPointerTester;
+import io.spine.base.SubscribableField;
+import io.spine.code.gen.java.FieldFactory;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.ConfigByPattern;
-import io.spine.tools.protoc.ExternalClassLoader;
 import io.spine.tools.protoc.FilePatterns;
-import io.spine.tools.protoc.given.TestNestedClassFactory;
-import io.spine.tools.protoc.nested.given.TestClassLoader;
+import io.spine.tools.protoc.nested.TaskView;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -38,8 +38,10 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("`GenerateNestedClasses` should")
-class GenerateNestedClassesTest {
+@DisplayName("`GenerateFieldsByPattern` task should")
+final class GenerateFieldsByPatternTest {
+
+    private final FieldFactory factory = new FieldFactory();
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
@@ -48,34 +50,33 @@ class GenerateNestedClassesTest {
                 .testAllPublicInstanceMethods(newTask());
     }
 
-    @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
-    // Method called to throw exception.
+    @SuppressWarnings("CheckReturnValue") // The method called to throw an exception.
     @Test
     @DisplayName("throw `IAE` if `FilePattern` is not set")
     void rejectEmptyFilePattern() {
         assertThrows(IllegalArgumentException.class, () -> newTask(newTaskConfig().build()));
     }
 
+    @SuppressWarnings("CheckReturnValue") // The method called to throw an exception.
     @Test
-    @DisplayName("reject empty factory name")
-    void rejectEmptyFactoryName() {
+    @DisplayName("reject empty field supertype name")
+    void rejectEmptyFieldTypeName() {
         String emptyName = "";
         ConfigByPattern config = newTaskConfig(emptyName)
                 .setPattern(FilePatterns.filePrefix("non-default"))
                 .build();
-        assertThrows(IllegalArgumentException.class, () ->
-                new GenerateNestedClasses(testClassLoader(), config));
+        assertThrows(IllegalArgumentException.class, () -> newTask(config));
     }
 
+    @SuppressWarnings("CheckReturnValue") // The method called to throw an exception.
     @Test
-    @DisplayName("reject effectively emtpy factory name")
+    @DisplayName("reject effectively empty field supertype name")
     void rejectEffectivelyEmptyFactoryName() {
         String effectivelyEmptyName = "   ";
         ConfigByPattern config = newTaskConfig(effectivelyEmptyName)
                 .setPattern(FilePatterns.filePrefix("non-default"))
                 .build();
-        assertThrows(IllegalArgumentException.class, () ->
-                new GenerateNestedClasses(testClassLoader(), config));
+        assertThrows(IllegalArgumentException.class, () -> newTask(config));
     }
 
     @Nested
@@ -94,7 +95,7 @@ class GenerateNestedClassesTest {
     }
 
     @Test
-    @DisplayName("generate nested classes if the message matches the pattern")
+    @DisplayName("generate fields if the message matches the pattern")
     void generateNewMethods() {
         ConfigByPattern config = newTaskConfig()
                 .setPattern(FilePatterns.fileSuffix("test_fields.proto"))
@@ -103,27 +104,23 @@ class GenerateNestedClassesTest {
         assertThat(output).isNotEmpty();
     }
 
-    private static GenerateNestedClasses newTask() {
+    private GenerateFieldsByPattern newTask() {
         return newTask(newTaskConfig()
-                               .setPattern(FilePatterns.fileSuffix("test_columns.proto"))
+                               .setPattern(FilePatterns.fileSuffix("fields.proto"))
                                .build());
     }
 
-    private static GenerateNestedClasses newTask(ConfigByPattern config) {
-        return new GenerateNestedClasses(testClassLoader(), config);
+    private GenerateFieldsByPattern newTask(ConfigByPattern config) {
+        return new GenerateFieldsByPattern(config, factory);
     }
 
     private static ConfigByPattern.Builder newTaskConfig() {
-        return newTaskConfig(TestNestedClassFactory.class.getName());
+        return newTaskConfig(SubscribableField.class.getCanonicalName());
     }
 
     private static ConfigByPattern.Builder newTaskConfig(String factoryName) {
         return ConfigByPattern.newBuilder()
                               .setValue(factoryName);
-    }
-
-    private static ExternalClassLoader<NestedClassFactory> testClassLoader() {
-        return TestClassLoader.instance();
     }
 
     private static MessageType testType() {

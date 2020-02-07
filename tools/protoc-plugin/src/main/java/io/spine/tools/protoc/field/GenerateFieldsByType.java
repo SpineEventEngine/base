@@ -9,18 +9,21 @@ import io.spine.type.MessageType;
 import io.spine.type.TypeName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Preconditions2.checkNotDefaultArg;
 
 final class GenerateFieldsByType extends FieldGenerationTask {
 
     private final TypeName expectedType;
 
     GenerateFieldsByType(ConfigByType config, FieldFactory factory) {
-        super(fieldSupertype(checkNotNull(config)), factory);
+        super(fieldSupertype(checkNotNull(config)), checkNotNull(factory));
+        checkNotDefaultArg(config.getPattern());
         this.expectedType = expectedType(config);
     }
 
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
+        checkNotNull(type);
         boolean isExpectedType = expectedType.equals(type.name());
         if (!isExpectedType) {
             return ImmutableList.of();

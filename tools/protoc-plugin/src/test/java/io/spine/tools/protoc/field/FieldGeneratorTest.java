@@ -18,16 +18,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.nested;
+package io.spine.tools.protoc.field;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.tools.protoc.AddNestedClasses;
+import io.spine.base.SubscribableField;
+import io.spine.tools.protoc.AddFields;
 import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.FilePatterns;
 import io.spine.tools.protoc.SpineProtocConfig;
-import io.spine.tools.protoc.given.TestNestedClassFactory;
+import io.spine.tools.protoc.nested.Task;
+import io.spine.tools.protoc.nested.TaskView;
 import io.spine.type.EnumType;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
@@ -38,14 +40,14 @@ import java.util.Collection;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 
-@DisplayName("`NestedClassGenerator` should")
-class NestedClassGeneratorTest {
+@DisplayName("`FieldGenerator` should")
+class FieldGeneratorTest {
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
         new NullPointerTester()
-                .testAllPublicStaticMethods(NestedClassGenerator.class);
+                .testAllPublicStaticMethods(FieldGenerator.class);
     }
 
     @Test
@@ -53,7 +55,7 @@ class NestedClassGeneratorTest {
     void generateCodeForMessages() {
         SpineProtocConfig config = newConfig();
 
-        NestedClassGenerator generator = NestedClassGenerator.instance(config);
+        FieldGenerator generator = FieldGenerator.instance(config);
         MessageType type = new MessageType(TaskView.getDescriptor());
         Collection<CompilerOutput> output = generator.generate(type);
 
@@ -65,7 +67,7 @@ class NestedClassGeneratorTest {
     void ignoreNonMessageTypes() {
         SpineProtocConfig config = newConfig();
 
-        NestedClassGenerator generator = NestedClassGenerator.instance(config);
+        FieldGenerator generator = FieldGenerator.instance(config);
         EnumType enumType = EnumType.create(Task.Priority.getDescriptor());
         Collection<CompilerOutput> output = generator.generate(enumType);
 
@@ -75,16 +77,16 @@ class NestedClassGeneratorTest {
     private static SpineProtocConfig newConfig() {
         ConfigByPattern pattern = ConfigByPattern
                 .newBuilder()
-                .setValue(TestNestedClassFactory.class.getName())
+                .setValue(SubscribableField.class.getName())
                 .setPattern(FilePatterns.fileSuffix("test_fields.proto"))
                 .build();
-        AddNestedClasses addNestedClasses = AddNestedClasses
+        AddFields addFields = AddFields
                 .newBuilder()
-                .addFactoryByPattern(pattern)
+                .addSupertypeByPattern(pattern)
                 .build();
         SpineProtocConfig result = SpineProtocConfig
                 .newBuilder()
-                .setAddNestedClasses(addNestedClasses)
+                .setAddFields(addFields)
                 .setClasspath(Classpath.getDefaultInstance())
                 .build();
         return result;

@@ -12,11 +12,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 final class GenerateEntityStateFields extends FieldGenerationTask {
 
     GenerateEntityStateFields(EntityStateConfig config, FieldFactory factory) {
-        super(fieldSupertype(checkNotNull(config)), factory);
+        super(fieldSupertype(checkNotNull(config)), checkNotNull(factory));
     }
 
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
+        checkNotNull(type);
         if (!type.isEntityState()) {
             return ImmutableList.of();
         }

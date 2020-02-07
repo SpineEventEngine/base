@@ -13,6 +13,7 @@ import io.spine.type.Type;
 import java.util.Collection;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.code.proto.ColumnOption.hasColumns;
 
@@ -27,6 +28,7 @@ public final class ColumnGenerator extends CodeGenerator {
     }
 
     public static ColumnGenerator instance(SpineProtocConfig config) {
+        checkNotNull(config);
         boolean generate = config.getAddColumns()
                                  .getGenerate();
         return new ColumnGenerator(generate);
@@ -34,6 +36,7 @@ public final class ColumnGenerator extends CodeGenerator {
 
     @Override
     protected Collection<CompilerOutput> generate(Type<?, ?> type) {
+        checkNotNull(type);
         if (!generate || !isEntityStateWithColumns(type)) {
             return ImmutableList.of();
         }

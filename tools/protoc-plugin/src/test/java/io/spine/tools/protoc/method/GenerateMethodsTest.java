@@ -39,12 +39,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("GenerateMethods should")
 final class GenerateMethodsTest {
 
-    @DisplayName("throw NullPointerException if")
     @Nested
+    @DisplayName("throw NullPointerException if")
     class ThrowNpe {
 
-        @DisplayName("is created with `null` arguments")
         @Test
+        @DisplayName("is created with `null` arguments")
         void isCreatedWithNullArguments() {
             assertThrows(NullPointerException.class, () ->
                     new GenerateMethods(null, ConfigByPattern.getDefaultInstance()));
@@ -53,8 +53,8 @@ final class GenerateMethodsTest {
             );
         }
 
-        @DisplayName("`null` MessageType is supplied")
         @Test
+        @DisplayName("`null` MessageType is supplied")
         void nullMessageTypeIsSupplied() {
             ConfigByPattern config = newTaskConfig("test")
                     .setPattern(FilePatterns.filePrefix("non-default"))
@@ -64,8 +64,8 @@ final class GenerateMethodsTest {
         }
     }
 
-    @DisplayName("reject empty `FilePattern`")
     @Test
+    @DisplayName("reject empty `FilePattern`")
     void rejectEmptyFilePattern() {
         assertThrows(IllegalArgumentException.class, () ->
                 newTask(newTaskConfig("not-empty-name").build()));
@@ -82,12 +82,12 @@ final class GenerateMethodsTest {
                 new GenerateMethods(testClassLoader(), config));
     }
 
-    @DisplayName("generate empty result if")
     @Nested
+    @DisplayName("generate empty result if")
     class GenerateEmptyResult {
 
-        @DisplayName("message does not match pattern")
         @Test
+        @DisplayName("message does not match pattern")
         void messageDoesNotMatchPattern() {
             assertEmptyResult(TestMethodFactory.class.getName(), FilePatterns.fileRegex("wrong"));
         }
@@ -101,8 +101,8 @@ final class GenerateMethodsTest {
         }
     }
 
-    @DisplayName("generate new methods")
     @Test
+    @DisplayName("generate new methods")
     void generateNewMethods() {
         ConfigByPattern config = newTaskConfig(TestMethodFactory.class.getName())
                 .setPattern(FilePatterns.fileSuffix("test_patterns.proto"))

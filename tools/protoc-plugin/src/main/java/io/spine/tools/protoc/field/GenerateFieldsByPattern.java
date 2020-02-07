@@ -10,6 +10,7 @@ import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 final class GenerateFieldsByPattern extends FieldGenerationTask {
 
@@ -38,6 +39,7 @@ final class GenerateFieldsByPattern extends FieldGenerationTask {
 
     private static ClassName fieldSupertype(ConfigByPattern config) {
         String typeName = config.getValue();
+        checkNotEmptyOrBlank(typeName);
         return ClassName.of(typeName);
     }
 }
