@@ -58,7 +58,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  *         requested field to the enclosed field path.
  * </ol>
  *
- * <p>See the {@link FieldsSpec} for the example usage.
+ * <p>See the {@link FieldContainerSpec} for the example usage.
  */
 @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication of the generated code.
 final class MessageTypedField implements GeneratedTypeSpec {
@@ -116,8 +116,8 @@ final class MessageTypedField implements GeneratedTypeSpec {
         ImmutableList<MethodSpec> result =
                 fieldType.fields()
                          .stream()
-                         .map(field -> new NestedFieldSpec(field, fieldSupertype))
-                         .map(FieldSpec::methodSpec)
+                         .map(field -> new NestedFieldAccessor(field, fieldSupertype))
+                         .map(FieldAccessor::methodSpec)
                          .collect(toImmutableList());
         return result;
     }

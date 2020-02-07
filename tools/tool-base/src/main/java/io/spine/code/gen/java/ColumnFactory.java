@@ -22,7 +22,7 @@ package io.spine.code.gen.java;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.code.gen.java.column.ColumnsSpec;
+import io.spine.code.gen.java.column.ColumnContainerSpec;
 import io.spine.tools.protoc.nested.GeneratedNestedClass;
 import io.spine.tools.protoc.nested.NestedClassFactory;
 import io.spine.type.MessageType;
@@ -32,16 +32,16 @@ import java.util.List;
 /**
  * Generates an entity columns enumeration for the given message type.
  *
- * <p>See {@link ColumnsSpec} for details.
+ * <p>See {@link ColumnContainerSpec} for details.
  */
 @Immutable
 public final class ColumnFactory implements NestedClassFactory {
 
     @Override
     public List<GeneratedNestedClass> createFor(MessageType messageType) {
-        String generatedCode = ColumnsSpec.of(messageType)
-                                          .typeSpec()
-                                          .toString();
+        String generatedCode = ColumnContainerSpec.of(messageType)
+                                                  .typeSpec()
+                                                  .toString();
         GeneratedNestedClass result = new GeneratedNestedClass(generatedCode);
         return ImmutableList.of(result);
     }

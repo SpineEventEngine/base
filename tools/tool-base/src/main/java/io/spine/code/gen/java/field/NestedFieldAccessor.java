@@ -22,34 +22,32 @@ package io.spine.code.gen.java.field;
 
 import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.CodeBlock;
-import io.spine.base.Field;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.FieldDeclaration;
 
 import javax.lang.model.element.Modifier;
 
 import static javax.lang.model.element.Modifier.PUBLIC;
-import static javax.lang.model.element.Modifier.STATIC;
 
 /**
- * A spec of the method which returns a top-level message field.
+ * A spec of the method which returns a nested message field.
  */
-final class TopLevelFieldSpec extends FieldSpec {
+final class NestedFieldAccessor extends FieldAccessor {
 
-    TopLevelFieldSpec(FieldDeclaration field, ClassName fieldSupertype) {
+    NestedFieldAccessor(FieldDeclaration field, ClassName fieldSupertype) {
         super(field, fieldSupertype);
     }
 
     @Override
     Iterable<Modifier> modifiers() {
-        return ImmutableList.of(PUBLIC, STATIC);
+        return ImmutableList.of(PUBLIC);
     }
 
     @Override
     CodeBlock methodBody() {
         return CodeBlock.of(
-                "return new $T($T.named($S))",
-                returnType().value(), Field.class, fieldName().value()
+                "return new $T(getField().nested($S))",
+                returnType().value(), fieldName().value()
         );
     }
 }

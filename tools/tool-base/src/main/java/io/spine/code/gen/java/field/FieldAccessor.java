@@ -45,12 +45,12 @@ import static com.google.common.base.Preconditions.checkState;
  */
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Random duplication of some generated code elements.
-abstract class FieldSpec implements GeneratedMethodSpec {
+abstract class FieldAccessor implements GeneratedMethodSpec {
 
     private final FieldDeclaration field;
     private final ClassName fieldSupertype;
 
-    FieldSpec(FieldDeclaration field, ClassName fieldSupertype) {
+    FieldAccessor(FieldDeclaration field, ClassName fieldSupertype) {
         this.field = field;
         this.fieldSupertype = fieldSupertype;
     }
@@ -135,7 +135,7 @@ abstract class FieldSpec implements GeneratedMethodSpec {
      * Generates the method Javadoc.
      */
     private CodeBlock javadoc() {
-        GeneratedJavadoc javadoc = new FieldDoc(this.field);
+        GeneratedJavadoc javadoc = new FieldAccessorDoc(this.field);
         return javadoc.spec();
     }
 }

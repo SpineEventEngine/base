@@ -39,9 +39,9 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
 /**
- * A spec which defines a type that exposes columns of an entity as strongly-typed values.
+ * A spec of a generated type which exposes columns of an entity as strongly-typed values.
  *
- * <p>For the given entity state type, the spec defines a {@code Columns} class which:
+ * <p>For the given entity state type, the spec defines a {@code Column} class which:
  * <ol>
  *     <li>Exposes all entity columns through the static methods with names that match the column
  *         names in {@code javaCase}.
@@ -60,9 +60,9 @@ import static javax.lang.model.element.Modifier.STATIC;
  * }
  *
  * // The following Java class will be generated.
- * public static final class Columns {
+ * public static final class Column {
  *
- *     private Columns() {
+ *     private Column() {
  *         // Prevent instantiation.
  *     }
  *
@@ -72,27 +72,27 @@ import static javax.lang.model.element.Modifier.STATIC;
  * }
  * </pre>
  *
- * <p>The {@code EntityColumn} instances retrieved from the {@code Columns} methods can be passed
+ * <p>The {@code EntityColumn} instances retrieved from the {@code Column} methods can be passed
  * to the query filters to form an entity query.
  *
  * <p>The nested columns are ignored during the class generation as they are currently not
  * supported on the server side.
  */
-public final class ColumnsSpec implements GeneratedTypeSpec {
+public final class ColumnContainerSpec implements GeneratedTypeSpec {
 
-    private static final String CLASS_NAME = "Columns";
+    private static final String CLASS_NAME = "Column";
 
     private final MessageType messageType;
     private final ImmutableList<FieldDeclaration> columns;
 
-    private ColumnsSpec(MessageType messageType) {
+    private ColumnContainerSpec(MessageType messageType) {
         this.messageType = messageType;
         this.columns = columnsOf(messageType);
     }
 
-    public static ColumnsSpec of(MessageType messageType) {
+    public static ColumnContainerSpec of(MessageType messageType) {
         checkNotNull(messageType);
-        return new ColumnsSpec(messageType);
+        return new ColumnContainerSpec(messageType);
     }
 
     @Override
@@ -120,8 +120,8 @@ public final class ColumnsSpec implements GeneratedTypeSpec {
     private ImmutableList<MethodSpec> columns() {
         ImmutableList<MethodSpec> result =
                 columns.stream()
-                       .map(ColumnSpec::new)
-                       .map(ColumnSpec::methodSpec)
+                       .map(ColumnAccessor::new)
+                       .map(ColumnAccessor::methodSpec)
                        .collect(toImmutableList());
         return result;
     }
@@ -130,6 +130,6 @@ public final class ColumnsSpec implements GeneratedTypeSpec {
      * Generates the class Javadoc.
      */
     private static CodeBlock javadoc() {
-        return new ColumnsDoc().spec();
+        return new ColumnContainerDoc().spec();
     }
 }

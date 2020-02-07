@@ -52,7 +52,7 @@ final class NestedFieldScanner {
      * <p>The returned results are unique-by-name. The reason for that is that uniqueness-by-name
      * is required for the uniqueness of the generated types among message strongly-typed fields.
      *
-     * @see FieldsSpec
+     * @see FieldContainerSpec
      * @see MessageTypedField
      */
     List<MessageType> scan() {

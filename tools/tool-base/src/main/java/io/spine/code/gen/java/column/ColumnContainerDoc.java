@@ -7,9 +7,9 @@ import io.spine.code.javadoc.JavadocText;
 /**
  * A Javadoc of the class which is a listing of columns of the entity.
  *
- * @see ColumnsSpec
+ * @see ColumnContainerSpec
  */
-final class ColumnsDoc extends TwoParagraphDoc {
+final class ColumnContainerDoc extends TwoParagraphDoc {
 
     @Override
     protected void addFirstParagraph(CodeBlock.Builder text) {

@@ -37,11 +37,11 @@ import static javax.lang.model.element.Modifier.STATIC;
  *
  * <p>The name of the method matches the column name in {@code javaCase}.
  */
-final class ColumnSpec implements GeneratedMethodSpec {
+final class ColumnAccessor implements GeneratedMethodSpec {
 
     private final FieldDeclaration column;
 
-    ColumnSpec(FieldDeclaration column) {
+    ColumnAccessor(FieldDeclaration column) {
         this.column = column;
     }
 
@@ -86,7 +86,7 @@ final class ColumnSpec implements GeneratedMethodSpec {
      * Returns the method Javadoc.
      */
     private CodeBlock javadoc() {
-        GeneratedJavadoc javadoc = new ColumnDoc(this.column);
+        GeneratedJavadoc javadoc = new ColumnAccessorDoc(this.column);
         return javadoc.spec();
     }
 }

@@ -36,7 +36,7 @@ import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 class ColumnsTest {
 
     @Test
-    @DisplayName("generate a nested `Columns` class with a private c-tor")
+    @DisplayName("generate a nested `Column` class with a private c-tor")
     void havePrivateCtor() {
         assertHasPrivateParameterlessCtor(ProjectView.Columns.class);
     }

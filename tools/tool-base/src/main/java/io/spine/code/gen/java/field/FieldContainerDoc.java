@@ -7,9 +7,9 @@ import io.spine.code.javadoc.JavadocText;
 /**
  * A Javadoc of the type which is a listing of message fields.
  *
- * @see FieldsSpec
+ * @see FieldContainerSpec
  */
-final class FieldsDoc extends ThreeParagraphDoc {
+final class FieldContainerDoc extends ThreeParagraphDoc {
 
     @Override
     protected void addFirstParagraph(CodeBlock.Builder text) {

@@ -38,7 +38,7 @@ import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 class FieldsTest {
 
     @Test
-    @DisplayName("generate a nested `Fields` class with a private c-tor")
+    @DisplayName("generate a nested `Field` class with a private c-tor")
     void havePrivateCtor() {
         assertHasPrivateParameterlessCtor(Project.Fields.class);
     }

@@ -159,7 +159,7 @@ public final class EntityWithColumnsSpec implements GeneratedTypeSpec {
 
         @Override
         protected void addFirstParagraph(CodeBlock.Builder text) {
-            text.add("Entity Columns of proto type {@code $L}.", messageType.javaClassName());
+            text.add("Entity сolumns of proto type {@code $L}.", messageType.javaClassName());
         }
 
         @Override

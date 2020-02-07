@@ -27,16 +27,16 @@ import io.spine.code.proto.FieldDeclaration;
 /**
  * The Javadoc of a method which returns a strongly-typed proto field.
  *
- * @see FieldSpec
+ * @see FieldAccessor
  */
-final class FieldDoc extends TwoParagraphDoc {
+final class FieldAccessorDoc extends TwoParagraphDoc {
 
     /**
      * The field which is returned.
      */
     private final FieldDeclaration field;
 
-    FieldDoc(FieldDeclaration field) {
+    FieldAccessorDoc(FieldDeclaration field) {
         super();
         this.field = field;
     }

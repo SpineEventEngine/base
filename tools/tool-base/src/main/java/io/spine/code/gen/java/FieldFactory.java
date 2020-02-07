@@ -23,7 +23,7 @@ package io.spine.code.gen.java;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.base.SubscribableField;
-import io.spine.code.gen.java.field.FieldsSpec;
+import io.spine.code.gen.java.field.FieldContainerSpec;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.nested.GeneratedNestedClass;
 import io.spine.tools.protoc.nested.NestedClassFactory;
@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * Generates a field enumeration for the given message type.
  *
- * <p>See {@link FieldsSpec} for details.
+ * <p>See {@link FieldContainerSpec} for details.
  */
 @Immutable
 public final class FieldFactory implements NestedClassFactory {
@@ -47,7 +47,7 @@ public final class FieldFactory implements NestedClassFactory {
     public List<GeneratedNestedClass>
     createFor(MessageType messageType, ClassName fieldSupertype) {
         String generatedCode =
-                new FieldsSpec(messageType, fieldSupertype)
+                new FieldContainerSpec(messageType, fieldSupertype)
                         .typeSpec()
                         .toString();
         GeneratedNestedClass result = new GeneratedNestedClass(generatedCode);

@@ -27,16 +27,16 @@ import io.spine.code.proto.FieldDeclaration;
 /**
  * The Javadoc of a method which returns a strongly-typed entity column.
  *
- * @see ColumnSpec
+ * @see ColumnAccessor
  */
-final class ColumnDoc extends TwoParagraphDoc {
+final class ColumnAccessorDoc extends TwoParagraphDoc {
 
     /**
      * The field which is returned.
      */
     private final FieldDeclaration column;
 
-    ColumnDoc(FieldDeclaration column) {
+    ColumnAccessorDoc(FieldDeclaration column) {
         super();
         this.column = column;
     }

@@ -43,9 +43,9 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
 /**
- * A spec which defines a type that exposes message fields as strongly-typed values.
+ * A spec of a generated type which exposes message fields as strongly-typed values.
  *
- * <p>For the given message type, the spec defines a {@code Fields} class which:
+ * <p>For the given message type, the spec defines a {@code Field} class which:
  * <ol>
  *     <li>Exposes all top-level message fields through the static methods with names that match
  *         the field names in {@code javaCase}.
@@ -69,9 +69,9 @@ import static javax.lang.model.element.Modifier.STATIC;
  * }
  *
  * // The following Java class will be generated for the `OrderView` message type.
- * public static final class Fields {
+ * public static final class Field {
  *
- *     private Fields {
+ *     private Field {
  *         // Prevent instantiation.
  *     }
  *
@@ -94,20 +94,16 @@ import static javax.lang.model.element.Modifier.STATIC;
  * }
  * </pre>
  *
- * <p>The values obtained from the `Fields` class can then be passed to subscription filters to
- * form a subscription request.
+ * <p>The values obtained from the {@code Field} class can then be passed to subscription filters
+ * to form a subscription request.
  *
  * <p>Please note that for {@code repeated} and {@code map} fields the nested fields are not
  * exposed (because targeting them in a filter won't always be processed properly on the server).
- *
- * <p>The descendants of this type differentiate between entity state, event and event context
- * fields allowing to pass a specific field type to the filter builder to form a typed subscription
- * request.
  */
-public final class FieldsSpec implements GeneratedTypeSpec {
+public final class FieldContainerSpec implements GeneratedTypeSpec {
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
-    private static final String CLASS_NAME = "Fields";
+    private static final String CLASS_NAME = "Field";
 
     /**
      * A message type for which the class is generated.
@@ -129,7 +125,7 @@ public final class FieldsSpec implements GeneratedTypeSpec {
     @LazyInit
     private @MonotonicNonNull List<MessageType> nestedFieldTypes;
 
-    public FieldsSpec(MessageType messageType, ClassName fieldSupertype) {
+    public FieldContainerSpec(MessageType messageType, ClassName fieldSupertype) {
         this.messageType = checkNotNull(messageType);
         this.fields = messageType.fields();
         this.fieldSupertype = checkNotNull(fieldSupertype);
@@ -161,7 +157,7 @@ public final class FieldsSpec implements GeneratedTypeSpec {
         ImmutableList<MethodSpec> result =
                 fields.stream()
                       .map(this::topLevelFieldSpec)
-                      .map(FieldSpec::methodSpec)
+                      .map(FieldAccessor::methodSpec)
                       .collect(toImmutableList());
         return result;
     }
@@ -184,8 +180,8 @@ public final class FieldsSpec implements GeneratedTypeSpec {
         return result;
     }
 
-    private FieldSpec topLevelFieldSpec(FieldDeclaration field) {
-        return new TopLevelFieldSpec(field, fieldSupertype);
+    private FieldAccessor topLevelFieldSpec(FieldDeclaration field) {
+        return new TopLevelFieldAccessor(field, fieldSupertype);
     }
 
     private List<MessageType> nestedFieldTypes() {
@@ -200,6 +196,6 @@ public final class FieldsSpec implements GeneratedTypeSpec {
      * Generates the class Javadoc.
      */
     private static CodeBlock javadoc() {
-        return new FieldsDoc().spec();
+        return new FieldContainerDoc().spec();
     }
 }
