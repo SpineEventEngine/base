@@ -22,7 +22,7 @@
 
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.protoc.fields;
+package io.spine.tools.protoc.field;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

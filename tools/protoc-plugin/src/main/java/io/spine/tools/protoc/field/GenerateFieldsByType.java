@@ -1,4 +1,4 @@
-package io.spine.tools.protoc.fields;
+package io.spine.tools.protoc.field;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.gen.java.FieldFactory;

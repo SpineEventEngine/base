@@ -1,4 +1,4 @@
-package io.spine.tools.protoc.columns;
+package io.spine.tools.protoc.column;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.gen.java.ColumnFactory;
