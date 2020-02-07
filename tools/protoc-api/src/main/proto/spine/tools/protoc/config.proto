@@ -89,13 +89,11 @@ message AddColumns {
 
 message AddFields {
 
-    bool generate = 1;
+    EntityStateConfig entity_state_supertype = 1;
 
-    EntityStateConfig entity_state_supertype = 2;
+    repeated ConfigByPattern supertype_by_pattern = 2;
 
-    repeated ConfigByPattern supertype_by_pattern = 3;
-
-    repeated ConfigByType supertype_by_type = 4;
+    repeated ConfigByType supertype_by_type = 3;
 }
 
 // UUID value code generation configuration.

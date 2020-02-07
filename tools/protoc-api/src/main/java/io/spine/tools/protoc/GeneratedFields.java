@@ -11,13 +11,8 @@ import static com.google.common.collect.Maps.newHashMap;
 
 public final class GeneratedFields extends GeneratedConfigurations<AddFields> {
 
-    private boolean generate;
     private EntityStateConfig entityStateConfig = EntityStateConfig.getDefaultInstance();
     private final Map<String, ClassName> byType = newHashMap();
-
-    public final void generate(boolean generate) {
-        this.generate = generate;
-    }
 
     public final void generateFor(EntityState entityState, ClassName markAs) {
         entityStateConfig = EntityStateConfig
@@ -47,7 +42,6 @@ public final class GeneratedFields extends GeneratedConfigurations<AddFields> {
     public AddFields asProtocConfig() {
         AddFields.Builder result = AddFields
                 .newBuilder()
-                .setGenerate(generate)
                 .setEntityStateSupertype(entityStateConfig)
                 .addAllSupertypeByType(generatedTypes());
         patternConfigurations()

@@ -41,7 +41,6 @@ class GeneratedFieldsTest {
     void convertToProperProtocConfiguration() {
         GeneratedFields config = new GeneratedFields();
         MessageSelectorFactory messages = config.messages();
-        config.generate(true);
         config.generateFor(messages.entityState(), config.markAs(ENTITY_STATE_FIELD));
         config.generateFor(messages.inFiles(suffix("_test.proto")),
                            config.markAs(GENERIC_FIELD));
@@ -49,7 +48,6 @@ class GeneratedFieldsTest {
 
         AddFields protocConfig = config.asProtocConfig();
 
-        assertThat(protocConfig.getGenerate()).isTrue();
         assertThat(protocConfig.getEntityStateSupertype().getValue())
                 .isEqualTo(ENTITY_STATE_FIELD);
         assertThat(protocConfig.getSupertypeByPatternCount())
