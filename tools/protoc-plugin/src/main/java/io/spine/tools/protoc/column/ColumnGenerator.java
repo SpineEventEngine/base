@@ -40,6 +40,9 @@ public final class ColumnGenerator extends CodeGenerator {
         this.generate = generate;
     }
 
+    /**
+     * Creates a new instance based on the passed Protoc config.
+     */
     public static ColumnGenerator instance(SpineProtocConfig config) {
         checkNotNull(config);
         boolean generate = config.getAddColumns()
