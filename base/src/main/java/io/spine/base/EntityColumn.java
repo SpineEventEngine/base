@@ -26,10 +26,40 @@ import io.spine.value.ValueHolder;
 /**
  * A queryable column of an entity which can be passed to the query filters.
  *
- * <p>Normally instances of this class should not be constructed by the user directly and are
- * instead provided by the Spine-generated column enumeration.
+ * <p>Normally, instances of this class are provided by the Spine-generated column enumeration and
+ * should not be constructed in the user code directly.
  *
- * <p>See the nested {@code Column} class in the entity state message declarations.
+ * <p>For each message which represents an entity state and has columns, the Spine routines will
+ * generate a nested {@code Column} class which exposes all columns of the entity as
+ * {@code EntityColumn} instances. Example:
+ * <pre>
+ * // Given a message declaration.
+ * message ProjectDetails {
+ *     option (entity).kind = PROJECTION;
+ *
+ *     ProjectId id = 1;
+ *     ProjectName name = 2 [(column) = true];
+ *     int32 task_count = 3 [(column) = true];
+ * }
+ *
+ * // The following Java class will be generated.
+ * public static final class Column {
+ *
+ *     private Column() {
+ *         // Prevent instantiation.
+ *     }
+ *
+ *     public static io.spine.base.EntityColumn name() {...}
+ *
+ *     public static io.spine.base.EntityColumn taskCount() {...}
+ * }
+ * </pre>
+ *
+ * <p>The values retrieved via {@code static} methods of the {@code Column} type may then be passed
+ * to a client to form a query request.
+ *
+ * <p>See the Spine code generation routines in the {@code tool-base} module for extensive details
+ * on how the types are generated.
  */
 public final class EntityColumn extends ValueHolder<FieldName> {
 

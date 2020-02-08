@@ -85,8 +85,9 @@ import static javax.lang.model.element.Modifier.STATIC;
  *
  *     public static final class OrderIdField extends EntityStateField {
  *
- *         // Instantiation is allowed only inside the `Fields` class.
- *         private OrderIdField(...) {...}
+ *         private OrderIdField(...) {
+ *             // Instantiation is allowed only inside the `Field` class.
+ *         }
  *
  *         public EntityStateField value() {
  *             return new EntityStateField(...);
