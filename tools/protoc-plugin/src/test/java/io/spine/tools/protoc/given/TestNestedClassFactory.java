@@ -35,7 +35,7 @@ import java.util.List;
 public final class TestNestedClassFactory implements NestedClassFactory {
 
     public static final GeneratedNestedClass NESTED_CLASS =
-            new GeneratedNestedClass("class NestedClass {}");
+            new GeneratedNestedClass("static class NestedClass {}");
 
     @Override
     public List<GeneratedNestedClass> createFor(MessageType messageType) {
