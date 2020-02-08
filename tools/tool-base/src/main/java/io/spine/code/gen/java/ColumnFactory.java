@@ -30,7 +30,7 @@ import io.spine.type.MessageType;
 import java.util.List;
 
 /**
- * Generates an entity columns enumeration for the given message type.
+ * Generates an entity column enumeration for the given message type.
  *
  * <p>See {@link ColumnContainerSpec} for details.
  */
