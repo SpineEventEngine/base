@@ -22,6 +22,7 @@
  * This package contains the routines for generating strongly-typed columns for the entity state
  * messages.
  */
+
 @Internal
 @CheckReturnValue
 @ParametersAreNonnullByDefault
