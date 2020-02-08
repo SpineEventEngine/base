@@ -4,7 +4,7 @@ import io.spine.base.Field;
 import io.spine.base.SubscribableField;
 
 /**
- * A test-only subscribable field to mark the generated strongly-typed fields with.
+ * A test-only subscribable field which marks the generated strongly-typed fields of a message.
  *
  * <p>See {@code build.gradle} for usage.
  */

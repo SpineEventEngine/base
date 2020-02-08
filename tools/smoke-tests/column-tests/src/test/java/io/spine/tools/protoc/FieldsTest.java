@@ -40,31 +40,31 @@ class FieldsTest {
     @Test
     @DisplayName("generate a nested `Field` class with a private c-tor")
     void havePrivateCtor() {
-        assertHasPrivateParameterlessCtor(Project.Fields.class);
+        assertHasPrivateParameterlessCtor(Project.Field.class);
     }
 
     @Test
     @DisplayName("generate a method which returns a `SubscribableField` for each message field")
     void generateFieldMethods() {
-        checkField(Project.Fields.id(), "id");
-        checkField(Project.Fields.projectName(), "project_name");
-        checkField(Project.Fields.status(), "status");
-        checkField(Project.Fields.parentProject(), "parent_project");
-        checkField(Project.Fields.assignee(), "assignee");
+        checkFieldPath(Project.Field.id(), "id");
+        checkFieldPath(Project.Field.projectName(), "project_name");
+        checkFieldPath(Project.Field.status(), "status");
+        checkFieldPath(Project.Field.parentProject(), "parent_project");
+        checkFieldPath(Project.Field.assignee(), "assignee");
     }
 
     @Test
     @DisplayName("expose nested fields through recursively generated nested classes")
     void generateNestedFields() {
-        checkField(Project.Fields.projectName().value(), "project_name.value");
+        checkFieldPath(Project.Field.projectName().value(), "project_name.value");
     }
 
     @Test
     @DisplayName("generate nested classes only once in case of cyclic field references")
     void handleCyclicReferences() {
-        Project.Fields.ProjectField parentProjectField = Project.Fields.parentProject();
+        Project.Field.ProjectField parentProjectField = Project.Field.parentProject();
 
-        checkField(parentProjectField.parentProject(), "parent_project.parent_project");
+        checkFieldPath(parentProjectField.parentProject(), "parent_project.parent_project");
         assertThat(parentProjectField.getClass())
                 .isEqualTo(parentProjectField.parentProject().getClass());
     }
@@ -72,25 +72,25 @@ class FieldsTest {
     @Test
     @DisplayName("mark event message fields as `EventMessageField`")
     void markEventMessageFields() {
-        ProjectCreated.Fields.ProjectIdField field = ProjectCreated.Fields.id();
+        ProjectCreated.Field.ProjectIdField field = ProjectCreated.Field.id();
         assertThat(field.getClass()).isAssignableTo(EventMessageField.class);
     }
 
     @Test
     @DisplayName("mark entity state fields as `EntityStateField`")
     void markEntityStateFields() {
-        ProjectView.Fields.ProjectIdField field = ProjectView.Fields.id();
+        ProjectView.Field.ProjectIdField field = ProjectView.Field.id();
         assertThat(field.getClass()).isAssignableTo(EntityStateField.class);
     }
 
     @Test
     @DisplayName("generate fields for a custom type according to the Model Compiler configuration")
     void markCustomTypes() {
-        ProjectNameField field = ProjectName.Fields.value();
+        ProjectNameField field = ProjectName.Field.value();
         assertThat(field.getClass()).isAssignableTo(ProjectNameField.class);
     }
 
-    private static void checkField(SubscribableField field, String expectedFieldPath) {
+    private static void checkFieldPath(SubscribableField field, String expectedFieldPath) {
         assertThat(field.getField().toString()).isEqualTo(expectedFieldPath);
     }
 }

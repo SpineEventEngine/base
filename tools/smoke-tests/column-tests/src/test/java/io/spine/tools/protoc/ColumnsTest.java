@@ -38,24 +38,24 @@ class ColumnsTest {
     @Test
     @DisplayName("generate a nested `Column` class with a private c-tor")
     void havePrivateCtor() {
-        assertHasPrivateParameterlessCtor(ProjectView.Columns.class);
+        assertHasPrivateParameterlessCtor(ProjectView.Column.class);
     }
 
     @Test
     @DisplayName("generate a method which returns an `EntityColumn` for each message column")
     void generateColumnMethods() {
-        checkColumn(ProjectView.Columns.projectName(), "project_name");
-        checkColumn(ProjectView.Columns.status(), "status");
+        checkColumnName(ProjectView.Column.projectName(), "project_name");
+        checkColumnName(ProjectView.Column.status(), "status");
     }
 
     @Test
     @DisplayName("ignore nested columns")
     void ignoreNestedColumns() {
-        assertDoesNotContainMethod(ProjectView.Columns.class, "assignee");
-        assertDoesNotContainMethod(ProjectView.Columns.class, "name");
+        assertDoesNotContainMethod(ProjectView.Column.class, "assignee");
+        assertDoesNotContainMethod(ProjectView.Column.class, "name");
     }
 
-    private static void checkColumn(EntityColumn column, String expectedName) {
+    private static void checkColumnName(EntityColumn column, String expectedName) {
         assertThat(column.name().value()).isEqualTo(expectedName);
     }
 
