@@ -27,7 +27,7 @@ import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
-import com.google.protobuf.util.JsonFormat;
+import com.google.protobuf.TypeRegistry;
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.FileSet;
@@ -147,12 +147,12 @@ public class KnownTypes implements Serializable {
     }
 
     /**
-     * Assembles the known types into a {@code JsonFormat.TypeRegistry}.
+     * Assembles the known types into a {@code TypeRegistry}.
      *
      * <p>The resulting registry contains all the known Protobuf message types.
      */
-    public JsonFormat.TypeRegistry typeRegistry() {
-        return typeSet.toJsonPrinterRegistry();
+    public TypeRegistry typeRegistry() {
+        return typeSet.toTypeRegistry();
     }
 
     /**

@@ -23,6 +23,7 @@ package io.spine.json;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
+import com.google.protobuf.TypeRegistry;
 import io.spine.type.KnownTypes;
 import io.spine.type.UnknownTypeException;
 
@@ -31,7 +32,6 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Throwables.getRootCause;
 import static com.google.protobuf.util.JsonFormat.Parser;
 import static com.google.protobuf.util.JsonFormat.Printer;
-import static com.google.protobuf.util.JsonFormat.TypeRegistry;
 import static com.google.protobuf.util.JsonFormat.parser;
 import static com.google.protobuf.util.JsonFormat.printer;
 import static io.spine.protobuf.Messages.builderFor;
