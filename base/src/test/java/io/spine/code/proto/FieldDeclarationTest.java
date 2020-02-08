@@ -210,16 +210,16 @@ class FieldDeclarationTest {
     @Test
     @DisplayName("tell if the field is not a singular field of a message type")
     void checkNotSingularMessage() {
-        // Check non-`Message` type.
-        FieldDescriptor host = Uri.getDescriptor()
-                                  .findFieldByName("host");
-        FieldDeclaration nonMessage = new FieldDeclaration(host);
-        assertThat(nonMessage.isSingularMessage()).isFalse();
-
         // Check non-singular type.
         FieldDescriptor query = Uri.getDescriptor()
                                    .findFieldByName("query");
         FieldDeclaration nonSingular = new FieldDeclaration(query);
         assertThat(nonSingular.isSingularMessage()).isFalse();
+
+        // Check non-`Message` type.
+        FieldDescriptor host = Uri.getDescriptor()
+                                  .findFieldByName("host");
+        FieldDeclaration nonMessage = new FieldDeclaration(host);
+        assertThat(nonMessage.isSingularMessage()).isFalse();
     }
 }

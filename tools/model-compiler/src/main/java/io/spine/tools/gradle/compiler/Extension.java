@@ -337,7 +337,7 @@ public class Extension extends GradleExtension {
     }
 
     @SuppressWarnings("unused") // Configures `generateAnnotations` closure.
-    public void generateAnnotations(Closure closure) {
+    public void generateAnnotations(Closure<?> closure) {
         ConfigureUtil.configure(closure, generateAnnotations);
     }
 
@@ -347,7 +347,7 @@ public class Extension extends GradleExtension {
     }
 
     @SuppressWarnings("unused") // Configures `interfaces` closure.
-    public void interfaces(Closure closure) {
+    public void interfaces(Closure<?> closure) {
         ConfigureUtil.configure(closure, interfaces);
     }
 
@@ -357,7 +357,7 @@ public class Extension extends GradleExtension {
     }
 
     @SuppressWarnings("unused") // Configures `methods` closure.
-    public void methods(Closure closure) {
+    public void methods(Closure<?> closure) {
         ConfigureUtil.configure(closure, methods);
     }
 
@@ -367,7 +367,7 @@ public class Extension extends GradleExtension {
     }
 
     @SuppressWarnings("unused") // Configures `nestedClasses` closure.
-    public void nestedClasses(Closure closure) {
+    public void nestedClasses(Closure<?> closure) {
         ConfigureUtil.configure(closure, nestedClasses);
     }
 
@@ -376,21 +376,21 @@ public class Extension extends GradleExtension {
         action.execute(nestedClasses);
     }
 
-    @SuppressWarnings("unused") // Configures `nestedClasses` closure.
-    public void columns(Closure closure) {
+    @SuppressWarnings("unused") // Configures `columns` closure.
+    public void columns(Closure<?> closure) {
         ConfigureUtil.configure(closure, columns);
     }
 
-    @SuppressWarnings("unused") // Configures `nestedClasses` closure.
+    @SuppressWarnings("unused") // Configures `columns` closure.
     public void columns(Action<? super GeneratedColumns> action) {
         action.execute(columns);
     }
-    @SuppressWarnings("unused") // Configures `nestedClasses` closure.
-    public void fields(Closure closure) {
+    @SuppressWarnings("unused") // Configures `fields` closure.
+    public void fields(Closure<?> closure) {
         ConfigureUtil.configure(closure, fields);
     }
 
-    @SuppressWarnings("unused") // Configures `nestedClasses` closure.
+    @SuppressWarnings("unused") // Configures `fields` closure.
     public void fields(Action<? super GeneratedFields> action) {
         action.execute(fields);
     }

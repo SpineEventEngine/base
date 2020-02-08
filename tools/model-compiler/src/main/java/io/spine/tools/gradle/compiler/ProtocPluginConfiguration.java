@@ -22,10 +22,6 @@ package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.io.Files2;
-import io.spine.tools.protoc.AddColumns;
-import io.spine.tools.protoc.AddFields;
-import io.spine.tools.protoc.AddMethods;
-import io.spine.tools.protoc.AddNestedClasses;
 import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.GeneratedColumns;
 import io.spine.tools.protoc.GeneratedFields;
@@ -103,18 +99,13 @@ final class ProtocPluginConfiguration {
         boolean shouldGenerateValidation = shouldGenerateValidation(project);
         Classpath projectClasspath = projectClasspath(project);
 
-        AddMethods methodsGeneration = methods.asProtocConfig();
-        AddNestedClasses nestedClassesGeneration = nestedClasses.asProtocConfig();
-        AddColumns columnGeneration = columns.asProtocConfig();
-        AddFields fieldGeneration = fields.asProtocConfig();
-
         SpineProtocConfig result = SpineProtocConfig
                 .newBuilder()
                 .setAddInterfaces(interfaces.asProtocConfig())
-                .setAddMethods(methodsGeneration)
-                .setAddNestedClasses(nestedClassesGeneration)
-                .setAddColumns(columnGeneration)
-                .setAddFields(fieldGeneration)
+                .setAddMethods(methods.asProtocConfig())
+                .setAddNestedClasses(nestedClasses.asProtocConfig())
+                .setAddColumns(columns.asProtocConfig())
+                .setAddFields(fields.asProtocConfig())
                 .setSkipValidatingBuilders(!shouldGenerateVBuilders)
                 .setGenerateValidation(shouldGenerateValidation)
                 .setClasspath(projectClasspath)

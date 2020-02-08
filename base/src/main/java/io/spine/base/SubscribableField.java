@@ -27,14 +27,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <p>See descendants for details.
  *
- * @apiNote Among others, this class is normally inherited by the generated types which represent
- *        nested message fields and declare own properties as public instance methods, as follows:
+ * @apiNote In the generated code, this class is, among others, inherited by the types which
+ *        declare certain message fields as own public instance methods, as follows:
  *        <pre>
  *        public EntityStateField someFieldName() {...}
  *        </pre>
  *        Thus, the {@code SubscribableField} class has to avoid name clashes with proto fields
- *        declared like this, hence the otherwise redundant "get-" prefix on the
- *        {@link #getField()} method. For the same reason the class does not inherit from
+ *        declared this way, hence the otherwise redundant "get-" prefix on the {@link #getField()}
+ *        method. For the same reason the class does not inherit from
  *        {@link io.spine.value.ValueHolder}.
  */
 @SuppressWarnings("AbstractClassWithoutAbstractMethods")
