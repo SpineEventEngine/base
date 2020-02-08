@@ -20,6 +20,8 @@
 
 package io.spine.base;
 
+import io.spine.annotation.Internal;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -94,6 +96,7 @@ public abstract class SubscribableField {
         this.field = checkNotNull(field);
     }
 
+    @Internal
     public Field getField() {
         return field;
     }

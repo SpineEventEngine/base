@@ -20,6 +20,7 @@
 
 package io.spine.base;
 
+import io.spine.annotation.Internal;
 import io.spine.code.proto.FieldName;
 import io.spine.value.ValueHolder;
 
@@ -69,6 +70,7 @@ public final class EntityColumn extends ValueHolder<FieldName> {
         super(FieldName.of(fieldName));
     }
 
+    @Internal
     public FieldName name() {
         return value();
     }
