@@ -73,56 +73,56 @@ final class MessageTypeTest {
             assertTrue(result);
         }
 
-        @DisplayName("is")
         @Nested
+        @DisplayName("is")
         final class Is {
 
-            @DisplayName("nested")
             @Test
+            @DisplayName("nested")
             void nested() {
                 assertQuality(MessageType::isNested, Uri.Protocol.getDescriptor());
                 assertQuality(not(MessageType::isNested), Url.getDescriptor());
             }
 
-            @DisplayName("top-level")
             @Test
+            @DisplayName("top-level")
             void topLevel() {
                 assertQuality(MessageType::isTopLevel, Url.getDescriptor());
                 assertQuality(not(MessageType::isTopLevel), Uri.Protocol.getDescriptor());
             }
 
-            @DisplayName("a rejection")
             @Test
+            @DisplayName("a rejection")
             void rejection() {
                 assertQuality(MessageType::isRejection,
                               TestRejections.MttSampleRejection.getDescriptor()
                 );
             }
 
-            @DisplayName("a command")
             @Test
+            @DisplayName("a command")
             void command() {
                 assertQuality(MessageType::isCommand,
                               MttStartProject.getDescriptor()
                 );
             }
 
-            @DisplayName("an event")
             @Test
+            @DisplayName("an event")
             void event() {
                 assertQuality(MessageType::isEvent,
                               MttProjectStarted.getDescriptor()
                 );
             }
 
-            @DisplayName("a UUID value")
             @Test
+            @DisplayName("a UUID value")
             void uuid() {
                 assertQuality(MessageType::isUuidValue, MttUuidMessage.getDescriptor());
             }
 
-            @DisplayName("an entity state")
             @Test
+            @DisplayName("an entity state")
             void entityState() {
                 assertQuality(MessageType::isEntityState, MttEntityState.getDescriptor());
             }
@@ -131,38 +131,38 @@ final class MessageTypeTest {
             @DisplayName("not")
             class NotA {
 
-                @DisplayName("a rejection")
                 @Test
+                @DisplayName("a rejection")
                 void rejection() {
                     assertQuality(not(MessageType::isRejection),
                                   TestRejections.MttSampleRejection.Details.getDescriptor()
                     );
                 }
 
-                @DisplayName("a command")
                 @Test
+                @DisplayName("a command")
                 void command() {
                     assertQuality(not(MessageType::isCommand),
                                   MttStartProject.Details.getDescriptor()
                     );
                 }
 
-                @DisplayName("an event")
                 @Test
+                @DisplayName("an event")
                 void event() {
                     assertQuality(not(MessageType::isEvent),
                                   MttProjectStarted.Details.getDescriptor()
                     );
                 }
 
-                @DisplayName("a UUID value")
                 @Test
+                @DisplayName("a UUID value")
                 void uuid() {
                     assertQuality(not(MessageType::isUuidValue), MttProjectStarted.getDescriptor());
                 }
 
-                @DisplayName("an entity state")
                 @Test
+                @DisplayName("an entity state")
                 void entityState() {
                     assertQuality(not(MessageType::isEntityState), MttStartProject.getDescriptor());
                 }
