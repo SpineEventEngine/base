@@ -18,7 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// TODO:2020-02-05:dmytro.kuzmin: Document.
+/**
+ * This package contains the routines of generating the strongly-typed fields for the Protobuf
+ * messages.
+ */
 
 @CheckReturnValue
 @ParametersAreNonnullByDefault

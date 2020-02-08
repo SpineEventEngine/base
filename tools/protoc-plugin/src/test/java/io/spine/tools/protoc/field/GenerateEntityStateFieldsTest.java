@@ -60,7 +60,7 @@ final class GenerateEntityStateFieldsTest {
 
     @SuppressWarnings("CheckReturnValue") // The method called to throw an exception.
     @Nested
-    @DisplayName("throw `IllegalArgumentException` when the specified field supertype name is")
+    @DisplayName("throw `IllegalArgumentException` when the specified field type name is")
     class ThrowOnClassName {
 
         @Test
@@ -122,10 +122,10 @@ final class GenerateEntityStateFieldsTest {
         return config(SubscribableField.class.getCanonicalName());
     }
 
-    private static EntityStateConfig config(String fieldSupertype) {
+    private static EntityStateConfig config(String fieldType) {
         EntityStateConfig result = EntityStateConfig
                 .newBuilder()
-                .setValue(fieldSupertype)
+                .setValue(fieldType)
                 .build();
         return result;
     }

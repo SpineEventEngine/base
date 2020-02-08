@@ -29,8 +29,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("`NestedMember` should")
-final class NestedMemberTest {
+@DisplayName("`NestedComponent` should")
+final class NestedComponentTest {
 
     private static final String INSERTION_POINT_FORMAT = "class_scope:%s";
 
@@ -40,7 +40,7 @@ final class NestedMemberTest {
         String methodBody = "public void test(){}";
         GeneratedMethod method = new GeneratedMethod(methodBody);
         MessageType type = new MessageType(MessageWithClassScopeInsertion.getDescriptor());
-        NestedMember result = NestedMember.from(method, type);
+        NestedComponent result = NestedComponent.from(method, type);
         File file = result.asFile();
 
         assertEquals(methodBody, file.getContent());

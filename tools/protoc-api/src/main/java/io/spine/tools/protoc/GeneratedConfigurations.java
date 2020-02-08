@@ -63,8 +63,8 @@ abstract class GeneratedConfigurations<C extends Message> {
     /**
      * Adds a new {@link PatternSelector} configuration with a supplied {@link ClassName}.
      *
-     * <p>The {@code className} can represent a fully-qualified name of an interfac, method
-     * factory, nested class factory or field supertype.
+     * <p>The {@code className} can represent a fully-qualified name of an interface, method
+     * factory, nested class factory or field type.
      */
     void addPattern(PatternSelector pattern, ClassName className) {
         patterns.put(pattern, className);

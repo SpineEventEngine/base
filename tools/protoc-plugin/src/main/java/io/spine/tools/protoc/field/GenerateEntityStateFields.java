@@ -9,6 +9,10 @@ import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * Generates the strongly-typed fields for the passed {@link MessageType} if the type is recognized
+ * as entity state.
+ */
 final class GenerateEntityStateFields extends FieldGenerationTask {
 
     GenerateEntityStateFields(EntityStateConfig config, FieldFactory factory) {

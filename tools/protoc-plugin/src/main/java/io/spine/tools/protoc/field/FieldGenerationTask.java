@@ -25,7 +25,7 @@ import io.spine.code.gen.java.FieldFactory;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.NestedMember;
+import io.spine.tools.protoc.NestedComponent;
 import io.spine.type.MessageType;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
@@ -50,7 +50,7 @@ abstract class FieldGenerationTask implements CodeGenerationTask {
         return factory
                 .createFor(type, fieldSupertype)
                 .stream()
-                .map(classBody -> NestedMember.from(classBody, type))
+                .map(classBody -> NestedComponent.from(classBody, type))
                 .collect(toImmutableList());
     }
 }

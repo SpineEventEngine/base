@@ -12,6 +12,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
+/**
+ * Generates the strongly-typed fields for the passed {@link MessageType} if the type is declared
+ * in a file that matches the provided {@linkplain io.spine.tools.protoc.FilePattern pattern}.
+ */
 final class GenerateFieldsByPattern extends FieldGenerationTask {
 
     private final FilePatternMatcher patternMatcher;
@@ -22,12 +26,6 @@ final class GenerateFieldsByPattern extends FieldGenerationTask {
         this.patternMatcher = new FilePatternMatcher(config.getPattern());
     }
 
-    /**
-     * Generates fields for the given type.
-     *
-     * <p>No code is generated if the type file name does not match the supplied
-     * {@link io.spine.tools.protoc.FilePattern pattern}.
-     */
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);

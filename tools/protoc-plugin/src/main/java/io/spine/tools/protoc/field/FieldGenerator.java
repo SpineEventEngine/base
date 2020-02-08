@@ -19,6 +19,17 @@ import java.util.Collection;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.protobuf.Messages.isNotDefault;
 
+/**
+ * A code generator which adds the strongly-typed fields to a message type.
+ *
+ * <p>The generator produces {@link CompilerOutput compiler output} that fits into the message's
+ * {@link io.spine.tools.protoc.InsertionPoint#class_scope class_scope} insertion point.
+ *
+ * <p>Generates output based on the passed
+ * {@linkplain io.spine.tools.protoc.GeneratedFields Protoc config}.
+ *
+ * @see io.spine.base.SubscribableField
+ */
 public final class FieldGenerator extends CodeGenerator {
 
     /**

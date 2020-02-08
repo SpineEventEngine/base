@@ -59,7 +59,7 @@ final class GenerateFieldsByTypeTest {
 
     @SuppressWarnings("CheckReturnValue") // The method called to throw an exception.
     @Test
-    @DisplayName("reject empty field supertype name")
+    @DisplayName("reject empty field type name")
     void rejectEmptyFieldTypeName() {
         String emptyName = "";
         assertThrows(IllegalArgumentException.class, () -> newTask(emptyName));
@@ -67,7 +67,7 @@ final class GenerateFieldsByTypeTest {
 
     @SuppressWarnings("CheckReturnValue") // The method called to throw an exception.
     @Test
-    @DisplayName("reject effectively empty field supertype name")
+    @DisplayName("reject effectively empty field type name")
     void rejectEffectivelyEmptyFactoryName() {
         String effectivelyEmptyName = "   ";
         assertThrows(IllegalArgumentException.class, () -> newTask(effectivelyEmptyName));

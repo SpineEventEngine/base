@@ -11,6 +11,9 @@ import io.spine.type.TypeName;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 
+/**
+ * Generates the strongly-typed fields for the type with the specified {@linkplain TypeName name}.
+ */
 final class GenerateFieldsByType extends FieldGenerationTask {
 
     private final TypeName expectedType;

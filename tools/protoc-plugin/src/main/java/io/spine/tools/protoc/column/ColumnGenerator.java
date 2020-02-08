@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import io.spine.code.gen.java.ColumnFactory;
 import io.spine.tools.protoc.CodeGenerator;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.NestedMember;
+import io.spine.tools.protoc.NestedComponent;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.nested.GeneratedNestedClass;
 import io.spine.type.MessageType;
@@ -17,8 +17,23 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.code.proto.ColumnOption.hasColumns;
 
+/**
+ * A code generator which adds the strongly-typed columns to a message type.
+ *
+ * <p>The generator produces {@link CompilerOutput compiler output} that fits into the message's
+ * {@link io.spine.tools.protoc.InsertionPoint#class_scope class_scope} insertion point.
+ *
+ * <p>Generates output only for those message types that represent an
+ * {@linkplain MessageType#isEntityState() entity state} with
+ * {@linkplain io.spine.code.proto.ColumnOption columns}.
+ *
+ * @see io.spine.base.EntityColumn
+ */
 public final class ColumnGenerator extends CodeGenerator {
 
+    /**
+     * The factory which is used for code generation.
+     */
     private final ColumnFactory factory = new ColumnFactory();
     private final boolean generate;
 
@@ -47,7 +62,7 @@ public final class ColumnGenerator extends CodeGenerator {
         List<GeneratedNestedClass> generatedClasses = factory.createFor(type);
         ImmutableList<CompilerOutput> result =
                 generatedClasses.stream()
-                                .map(cls -> NestedMember.from(cls, type))
+                                .map(cls -> NestedComponent.from(cls, type))
                                 .collect(toImmutableList());
         return result;
     }
