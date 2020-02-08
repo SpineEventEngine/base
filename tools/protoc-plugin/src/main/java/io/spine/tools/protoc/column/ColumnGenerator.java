@@ -2,9 +2,9 @@ package io.spine.tools.protoc.column;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.gen.java.ColumnFactory;
+import io.spine.tools.protoc.ClassMember;
 import io.spine.tools.protoc.CodeGenerator;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.NestedComponent;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.nested.GeneratedNestedClass;
 import io.spine.type.MessageType;
@@ -62,7 +62,7 @@ public final class ColumnGenerator extends CodeGenerator {
         List<GeneratedNestedClass> generatedClasses = factory.createFor(type);
         ImmutableList<CompilerOutput> result =
                 generatedClasses.stream()
-                                .map(cls -> NestedComponent.from(cls, type))
+                                .map(cls -> ClassMember.from(cls, type))
                                 .collect(toImmutableList());
         return result;
     }

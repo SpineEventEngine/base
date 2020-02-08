@@ -21,10 +21,10 @@
 package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.tools.protoc.ClassMember;
 import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.ExternalClassLoader;
-import io.spine.tools.protoc.NestedComponent;
 import io.spine.type.MessageType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -54,7 +54,7 @@ abstract class MethodGenerationTask implements CodeGenerationTask {
         return factory
                 .createFor(type)
                 .stream()
-                .map(methodBody -> NestedComponent.from(methodBody, type))
+                .map(methodBody -> ClassMember.from(methodBody, type))
                 .collect(toImmutableList());
     }
 }
