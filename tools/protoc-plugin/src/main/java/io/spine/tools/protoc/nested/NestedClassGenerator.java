@@ -38,7 +38,7 @@ import java.util.Collection;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The {@link CodeGenerator} implementation which generates additional nested classes for
+ * The {@link CodeGenerator} implementation which inserts additional nested classes into
  * the message.
  *
  * <p>The generator produces {@link CompilerOutput compiler output} that fits into the message's
