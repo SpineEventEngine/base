@@ -27,7 +27,7 @@ import io.spine.code.javadoc.JavadocText;
 import static javax.lang.model.element.Modifier.PRIVATE;
 
 /**
- * A spec of an empty parameter-less constructor.
+ * A spec of a {@code private} parameter-less constructor.
  */
 public final class EmptyPrivateCtor implements GeneratedMethodSpec {
 
