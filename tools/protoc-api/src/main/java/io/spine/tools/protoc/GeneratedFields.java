@@ -31,8 +31,9 @@ public final class GeneratedFields extends GeneratedConfigurations<AddFields> {
      * represent an entity state and marks the generated fields as {@code some.custom.Field}.
      *
      * <p>It is expected by the Spine routines that the type passed to the {@code markAs} method is
-     * a descendant of {@link io.spine.base.EntityStateField} and has a constructor accepting a
-     * single {@link io.spine.base.Field Field} argument.
+     * a {@code public} non-{@code final} descendant of {@link io.spine.base.EntityStateField} and
+     * has a {@code public} constructor accepting a single {@link io.spine.base.Field Field}
+     * argument.
      */
     @SuppressWarnings("unused") // Gradle DSL.
     public final void generateFor(EntityState entityState, ClassName markAs) {
@@ -56,12 +57,13 @@ public final class GeneratedFields extends GeneratedConfigurations<AddFields> {
      * {@code some.custom.Field}.
      *
      * <p>It is expected by the Spine routines that the type passed to the {@code markAs} method is
-     * a descendant of {@link io.spine.base.SubscribableField} and has a constructor accepting a
-     * single {@link io.spine.base.Field Field} argument.
+     * a {@code public} non-{@code final} descendant of {@link io.spine.base.SubscribableField} and
+     * has a {@code public} constructor accepting a single {@link io.spine.base.Field Field}
+     * argument.
      *
      * <p>In case the field generation is configured for {@link io.spine.base.EventMessage event}
-     * and {@link io.spine.base.RejectionMessage rejection} messages, it is expected that the
-     * passed field type inherits from {@link io.spine.base.EventMessageField}.
+     * and {@link io.spine.base.RejectionMessage rejection} messages, the passed field type should
+     * inherit from {@link io.spine.base.EventMessageField}.
      *
      * <p>The configuration may be applied multiple times to enable code generation for multiple
      * file patterns.
@@ -83,8 +85,9 @@ public final class GeneratedFields extends GeneratedConfigurations<AddFields> {
      * {@code some.custom.Field}.
      *
      * <p>It is expected by the Spine routines that the type passed to the {@code markAs} method is
-     * a descendant of {@link io.spine.base.SubscribableField} and has a constructor accepting a
-     * single {@link io.spine.base.Field Field} argument.
+     * a {@code public} non-{@code final} descendant of {@link io.spine.base.SubscribableField} and
+     * has a {@code public} constructor accepting a single {@link io.spine.base.Field Field}
+     * argument.
      *
      * <p>The configuration may be applied multiple times to enable code generation for multiple
      * message types.
