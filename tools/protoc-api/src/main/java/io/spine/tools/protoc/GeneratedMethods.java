@@ -80,9 +80,9 @@ public final class GeneratedMethods extends GeneratedConfigurations<AddMethods> 
      * </pre>
      *
      * @apiNote When loading the factory class passed by FQN, Spine class loader assumes it is
-     *        already accessible and instantiable with no additional arguments. So, the provided
-     *        implementation of {@code MethodFactory} should be {@code public} and have a
-     *        {@code public} no-argument constructor.
+     *        already accessible and instantiable with no additional configurations. So, the
+     *        provided implementation of {@code MethodFactory} should be {@code public} and have
+     *        a {@code public} no-argument constructor.
      */
     public final void applyFactory(@FullyQualifiedName String factory, PatternSelector selector) {
         checkNotNull(factory);
@@ -103,9 +103,9 @@ public final class GeneratedMethods extends GeneratedConfigurations<AddMethods> 
      * </pre>
      *
      * @apiNote When loading the factory class passed by FQN, Spine class loader assumes it is
-     *        already accessible and instantiable with no additional arguments. So, the provided
-     *        implementation of {@code MethodFactory} should be {@code public} and have a
-     *        {@code public} no-argument constructor.
+     *        already accessible and instantiable with no additional configurations. So, the
+     *        provided implementation of {@code MethodFactory} should be {@code public} and have
+     *        a {@code public} no-argument constructor.
      */
     public final void applyFactory(@FullyQualifiedName String factory, UuidMessage selector) {
         checkNotNull(selector);

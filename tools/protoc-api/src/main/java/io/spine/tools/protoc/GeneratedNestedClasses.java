@@ -45,9 +45,9 @@ public final class GeneratedNestedClasses extends GeneratedConfigurations<AddNes
      * implementation of the {@code io.spine.tools.protoc.nested.NestedClassFactory} interface.
      *
      * @apiNote When loading the factory class passed by FQN, Spine class loader assumes it is
-     *        already accessible and instantiable with no additional arguments. So, the provided
-     *        implementation of {@code NestedClassFactory} should be {@code public} and have a
-     *        {@code public} no-argument constructor.
+     *        already accessible and instantiable with no additional configurations. So, the
+     *        provided implementation of {@code NestedClassFactory} should be {@code public} and
+     *        have a {@code public} no-argument constructor.
      */
     public final void applyFactory(@FullyQualifiedName String factory, PatternSelector selector) {
         checkNotNull(factory);
