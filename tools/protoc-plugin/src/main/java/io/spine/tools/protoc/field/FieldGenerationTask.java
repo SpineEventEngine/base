@@ -31,7 +31,7 @@ import io.spine.type.MessageType;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 
 /**
- * An abstract base for strongly-typed fields generation tasks.
+ * An abstract base for strongly-typed field generation tasks.
  */
 abstract class FieldGenerationTask implements CodeGenerationTask {
 
