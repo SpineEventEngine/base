@@ -60,7 +60,7 @@ public final class GeneratedMethods extends GeneratedConfigurations<AddMethods> 
      *
      * public CustomMethodFactory implements io.spine.tools.protoc.method.MethodFactory {
      *
-     *     public CustomMethodFactory(){
+     *     public CustomMethodFactory() {
      *     }
      *
      *    {@literal List<MethodBody>} createFor(MessageType messageType) {
