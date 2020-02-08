@@ -52,7 +52,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  * <ol>
  *     <li>Is named by combining the type Java name and the {@code Field} suffix, for example,
  *         {@code UserIdField}.
- *     <li>Inherits from a {@link SubscribableField}.
+ *     <li>Inherits from a {@link SubscribableField} or one of its descendants.
  *     <li>Accepts an initial {@linkplain Field field path} on construction.
  *     <li>Exposes nested message fields through the instance methods which append the name of the
  *         requested field to the enclosed field path.

@@ -49,8 +49,9 @@ final class NestedFieldScanner {
      * Traverses all top-level and nested fields of the enclosed message type to retrieve those
      * that are singular {@link com.google.protobuf.Message Message}-typed fields.
      *
-     * <p>The returned results are unique-by-name. The reason for that is that uniqueness-by-name
-     * is required for the uniqueness of the generated types among message strongly-typed fields.
+     * @apiNote The returned results are unique-by-name. The reason for that is that
+     *        uniqueness-by-name is required by the Spine routines when generating the
+     *        strongly-typed fields of the message.
      *
      * @see FieldContainerSpec
      * @see MessageTypedField

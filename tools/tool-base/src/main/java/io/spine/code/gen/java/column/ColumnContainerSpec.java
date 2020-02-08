@@ -43,8 +43,8 @@ import static javax.lang.model.element.Modifier.STATIC;
  *
  * <p>For the given entity state type, the spec defines a {@code Column} class which:
  * <ol>
- *     <li>Exposes all entity columns through the static methods with names that match the column
- *         names in {@code javaCase}.
+ *     <li>Exposes all entity columns through the {@code static} methods with names that match
+ *         the column names in {@code javaCase}.
  *     <li>Is non-instantiable.
  * </ol>
  *
@@ -127,7 +127,7 @@ public final class ColumnContainerSpec implements GeneratedTypeSpec {
     }
 
     /**
-     * Generates the class Javadoc.
+     * Obtains the class Javadoc.
      */
     private static CodeBlock javadoc() {
         return new ColumnContainerDoc().spec();

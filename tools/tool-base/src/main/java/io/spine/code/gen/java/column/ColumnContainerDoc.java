@@ -5,7 +5,7 @@ import io.spine.code.gen.java.TwoParagraphDoc;
 import io.spine.code.javadoc.JavadocText;
 
 /**
- * A Javadoc of the class which is a listing of columns of the entity.
+ * The Javadoc of a class which is a listing of columns of the entity.
  *
  * @see ColumnContainerSpec
  */

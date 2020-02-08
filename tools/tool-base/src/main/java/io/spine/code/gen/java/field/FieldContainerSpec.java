@@ -47,10 +47,11 @@ import static javax.lang.model.element.Modifier.STATIC;
  *
  * <p>For the given message type, the spec defines a {@code Field} class which:
  * <ol>
- *     <li>Exposes all top-level message fields through the static methods with names that match
- *         the field names in {@code javaCase}.
+ *     <li>Exposes all top-level message fields through the {@code static} methods with names that
+ *         match the field names in {@code javaCase}.
  *     <li>Defines nested classes which expose nested message fields and instances of which are
  *         returned from the higher level methods.
+ *     <li>Marks all exposed fields with the provided {@link #fieldSupertype}.
  *     <li>Is non-instantiable.
  * </ol>
  *
@@ -115,6 +116,12 @@ public final class FieldContainerSpec implements GeneratedTypeSpec {
      */
     private final ImmutableList<FieldDeclaration> fields;
 
+    /**
+     * A type to mark the generated fields with.
+     *
+     * <p>An example of such type could be the {@link io.spine.base.EntityStateField} or
+     * {@link io.spine.base.EventMessageField} along with custom user-defined field types.
+     */
     private final ClassName fieldSupertype;
 
     /**
@@ -151,7 +158,7 @@ public final class FieldContainerSpec implements GeneratedTypeSpec {
     }
 
     /**
-     * Generates the static methods which expose the top-level message fields.
+     * Generates the {@code static} methods which expose the top-level message fields.
      */
     private ImmutableList<MethodSpec> fields() {
         ImmutableList<MethodSpec> result =
@@ -193,7 +200,7 @@ public final class FieldContainerSpec implements GeneratedTypeSpec {
     }
 
     /**
-     * Generates the class Javadoc.
+     * Obtains the class Javadoc.
      */
     private static CodeBlock javadoc() {
         return new FieldContainerDoc().spec();

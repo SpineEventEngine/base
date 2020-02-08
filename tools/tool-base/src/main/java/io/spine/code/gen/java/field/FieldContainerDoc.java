@@ -5,7 +5,7 @@ import io.spine.code.gen.java.ThreeParagraphDoc;
 import io.spine.code.javadoc.JavadocText;
 
 /**
- * A Javadoc of the type which is a listing of message fields.
+ * The Javadoc of a type which is a listing of message fields.
  *
  * @see FieldContainerSpec
  */
