@@ -43,7 +43,7 @@ import static javax.lang.model.element.Modifier.STATIC;
 
 /**
  * A spec of the generated type which represents
- * a {@link com.google.protobuf.Message Message}-typed field of a message.
+ * a {@link com.google.protobuf.Message Message}-typed field of the message.
  *
  * <p>Such type, being a {@linkplain SubscribableField strongly-typed field} itself, can be both
  * passed to the message filters and used to obtain the more nested message properties.
