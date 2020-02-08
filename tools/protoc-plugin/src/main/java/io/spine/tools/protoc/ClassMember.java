@@ -5,7 +5,7 @@ import io.spine.type.MessageType;
 import io.spine.value.StringTypeValue;
 
 /**
- * Alters a generated message class with an additional method or nested type.
+ * A compiler output which alters a generated message with an additional method or nested type.
  *
  * <p>The output is added on the {@link InsertionPoint#class_scope class_scope} insertion point.
  */
