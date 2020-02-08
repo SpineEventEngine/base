@@ -26,8 +26,6 @@ import static io.spine.code.proto.ColumnOption.hasColumns;
  * <p>Generates output only for those message types that represent an
  * {@linkplain MessageType#isEntityState() entity state} with
  * {@linkplain io.spine.code.proto.ColumnOption columns}.
- *
- * @see io.spine.base.EntityColumn
  */
 public final class ColumnGenerator extends CodeGenerator {
 

@@ -82,7 +82,7 @@ class FieldGeneratorTest {
                 .build();
         AddFields addFields = AddFields
                 .newBuilder()
-                .addSupertypeByPattern(pattern)
+                .addConfigByPattern(pattern)
                 .build();
         SpineProtocConfig result = SpineProtocConfig
                 .newBuilder()

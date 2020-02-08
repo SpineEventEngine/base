@@ -48,15 +48,15 @@ class GeneratedFieldsTest {
 
         AddFields protocConfig = config.asProtocConfig();
 
-        assertThat(protocConfig.getEntityStateSupertype().getValue())
+        assertThat(protocConfig.getEntityStateConfig().getValue())
                 .isEqualTo(ENTITY_STATE_FIELD);
-        assertThat(protocConfig.getSupertypeByPatternCount())
+        assertThat(protocConfig.getConfigByPatternCount())
                 .isEqualTo(1);
-        assertThat(protocConfig.getSupertypeByPattern(0).getValue())
+        assertThat(protocConfig.getConfigByPattern(0).getValue())
                 .isEqualTo(GENERIC_FIELD);
-        assertThat(protocConfig.getSupertypeByTypeCount())
+        assertThat(protocConfig.getConfigByTypeCount())
                 .isEqualTo(1);
-        assertThat(protocConfig.getSupertypeByType(0).getValue())
+        assertThat(protocConfig.getConfigByType(0).getValue())
                 .isEqualTo(GENERIC_FIELD);
     }
 
@@ -73,7 +73,7 @@ class GeneratedFieldsTest {
 
         AddFields protocConfig = config.asProtocConfig();
 
-        assertThat(protocConfig.getSupertypeByPatternCount()).isEqualTo(3);
+        assertThat(protocConfig.getConfigByPatternCount()).isEqualTo(3);
     }
 
     @Test
@@ -87,6 +87,6 @@ class GeneratedFieldsTest {
 
         AddFields protocConfig = config.asProtocConfig();
 
-        assertThat(protocConfig.getSupertypeByTypeCount()).isEqualTo(2);
+        assertThat(protocConfig.getConfigByTypeCount()).isEqualTo(2);
     }
 }

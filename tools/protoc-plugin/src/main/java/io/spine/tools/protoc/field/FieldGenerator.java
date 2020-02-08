@@ -27,8 +27,6 @@ import static io.spine.protobuf.Messages.isNotDefault;
  *
  * <p>Generates output based on the passed
  * {@linkplain io.spine.tools.protoc.GeneratedFields Protoc config}.
- *
- * @see io.spine.base.SubscribableField
  */
 public final class FieldGenerator extends CodeGenerator {
 
@@ -53,14 +51,14 @@ public final class FieldGenerator extends CodeGenerator {
         AddFields config = spineProtocConfig.getAddFields();
 
         ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();
-        EntityStateConfig entityStateConfig = config.getEntityStateSupertype();
+        EntityStateConfig entityStateConfig = config.getEntityStateConfig();
         if (isNotDefault(entityStateConfig)) {
             tasks.add(new GenerateEntityStateFields(entityStateConfig, factory));
         }
-        for (ConfigByPattern byPattern : config.getSupertypeByPatternList()) {
+        for (ConfigByPattern byPattern : config.getConfigByPatternList()) {
             tasks.add(new GenerateFieldsByPattern(byPattern, factory));
         }
-        for (ConfigByType byType : config.getSupertypeByTypeList()) {
+        for (ConfigByType byType : config.getConfigByTypeList()) {
             tasks.add(new GenerateFieldsByType(byType, factory));
         }
         return new FieldGenerator(tasks.build());

@@ -316,7 +316,7 @@ final class ProtocPluginTest {
     @Test
     @DisplayName("generate columns for a queryable entity type")
     void generateColumns() {
-        EntityColumn column = Movie.Columns.title();
+        EntityColumn column = Movie.Column.title();
         String expectedName = "title";
         assertEquals(expectedName, column.name().value());
     }
@@ -324,7 +324,7 @@ final class ProtocPluginTest {
     @Test
     @DisplayName("generate fields for a subscribable message type")
     void generateFields() {
-        SubscribableField field = MovieTitleChanged.Fields.oldTitle().value();
+        SubscribableField field = MovieTitleChanged.Field.oldTitle().value();
         String expectedFieldPath = "old_title.value";
         assertEquals(expectedFieldPath, field.getField().toString());
     }

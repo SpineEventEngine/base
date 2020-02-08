@@ -106,12 +106,12 @@ public final class GeneratedFields extends GeneratedConfigurations<AddFields> {
     public AddFields asProtocConfig() {
         AddFields.Builder result = AddFields
                 .newBuilder()
-                .setEntityStateSupertype(entityStateConfig)
-                .addAllSupertypeByType(generatedTypes());
+                .setEntityStateConfig(entityStateConfig)
+                .addAllConfigByType(generatedTypes());
         patternConfigurations()
                 .stream()
                 .map(GeneratedConfigurations::toPatternConfig)
-                .forEach(result::addSupertypeByPattern);
+                .forEach(result::addConfigByPattern);
         return result.build();
     }
 
