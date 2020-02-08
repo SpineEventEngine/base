@@ -44,23 +44,28 @@ import io.spine.value.ValueHolder;
  * }
  *
  * // The following Java class will be generated.
- * public static final class Column {
+ * public final class ProjectDetails // implements Message, etc. {
  *
- *     private Column() {
- *         // Prevent instantiation.
+ *     // ...
+ *
+ *     public static final class Column {
+ *
+ *         private Column() {
+ *             // Prevent instantiation.
+ *         }
+ *
+ *         public static io.spine.base.EntityColumn name() {...}
+ *
+ *         public static io.spine.base.EntityColumn taskCount() {...}
  *     }
- *
- *     public static io.spine.base.EntityColumn name() {...}
- *
- *     public static io.spine.base.EntityColumn taskCount() {...}
  * }
  * </pre>
  *
  * <p>The values retrieved via {@code static} methods of the {@code Column} type may then be passed
  * to a client to form a query request.
  *
- * <p>See the Spine code generation routines in the {@code tool-base} module for extensive details
- * on how the types are generated.
+ * <p>See the Spine code generation routines in {@code tool-base} for extensive details on how the
+ * types are generated.
  */
 public final class EntityColumn extends ValueHolder<FieldName> {
 

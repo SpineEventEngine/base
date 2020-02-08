@@ -43,25 +43,30 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *     string value = 1;
  * }
  *
- * // The following Java class will be generated for the `OrderView` message type.
- * public static final class Field {
+ * // The following Java class will be generated.
+ * public final class OrderView // implements Message, etc. {
  *
- *     private Field {
- *         // Prevent instantiation.
- *     }
+ *     // ...
  *
- *     public static OrderIdField id() {
- *         return new OrderIdField(...);
- *     }
+ *     public static final class Field {
  *
- *     public static final class OrderIdField extends EntityStateField {
- *
- *         private OrderIdField(...) {
- *             // Instantiation is allowed only inside the `Field` class.
+ *         private Field {
+ *             // Prevent instantiation.
  *         }
  *
- *         public EntityStateField value() {
- *             return new EntityStateField(...);
+ *         public static OrderIdField id() {
+ *             return new OrderIdField(...);
+ *         }
+ *
+ *         public static final class OrderIdField extends EntityStateField {
+ *
+ *             private OrderIdField(...) {
+ *                 // Instantiation is allowed only inside the `Field` class.
+ *             }
+ *
+ *             public EntityStateField value() {
+ *                 return new EntityStateField(...);
+ *             }
  *         }
  *     }
  * }
@@ -76,7 +81,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>See the Spine code generation routines in the {@code tool-base} module for extensive details
  * on how the types are generated.
  *
- * @apiNote In the generated code, this class is, among others, inherited by the types which
+ * @apiNote In the generated code this class is, among others, inherited by the types which
  *        declare nested message fields as own public instance methods, as follows:
  *        <pre>
  *        public EntityStateField someFieldName() {...}
