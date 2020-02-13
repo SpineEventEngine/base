@@ -246,11 +246,13 @@ final class PluginTest {
                 TestInterface.class.getName() + ',',
                 BUILDER_INTERFACE
         );
-        ImmutableList<String> possibleClassScopeInsertions = ImmutableList.of(
-                TestMethodFactory.TEST_METHOD.value() + TestNestedClassFactory.NESTED_CLASS.value(),
-                TestNestedClassFactory.NESTED_CLASS.value() + TestMethodFactory.TEST_METHOD.value()
+        ImmutableList<String> possibleInsertions = ImmutableList.of(
+                TestMethodFactory.TEST_METHOD.toString()
+                        + TestNestedClassFactory.NESTED_CLASS.toString(),
+                TestNestedClassFactory.NESTED_CLASS.toString()
+                        + TestMethodFactory.TEST_METHOD.toString()
         );
-        assertThat(fileContents).containsAnyIn(possibleClassScopeInsertions);
+        assertThat(fileContents).containsAnyIn(possibleInsertions);
     }
 
     private static List<String> contentsOf(List<File> files) {

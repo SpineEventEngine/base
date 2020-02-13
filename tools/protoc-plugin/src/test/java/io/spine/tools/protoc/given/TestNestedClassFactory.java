@@ -22,11 +22,15 @@ package io.spine.tools.protoc.given;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
+import com.squareup.javapoet.TypeSpec;
 import io.spine.tools.protoc.nested.GeneratedNestedClass;
 import io.spine.tools.protoc.nested.NestedClassFactory;
 import io.spine.type.MessageType;
 
 import java.util.List;
+
+import static javax.lang.model.element.Modifier.PUBLIC;
+import static javax.lang.model.element.Modifier.STATIC;
 
 /**
  * A test-only implementation of a {@link NestedClassFactory}.
@@ -35,10 +39,18 @@ import java.util.List;
 public final class TestNestedClassFactory implements NestedClassFactory {
 
     public static final GeneratedNestedClass NESTED_CLASS =
-            new GeneratedNestedClass("static class NestedClass {}");
+            new GeneratedNestedClass(testNestedClass());
 
     @Override
     public List<GeneratedNestedClass> createFor(MessageType messageType) {
         return ImmutableList.of(NESTED_CLASS);
+    }
+
+    private static TypeSpec testNestedClass() {
+        TypeSpec result = TypeSpec
+                .classBuilder("TestNestedClass")
+                .addModifiers(PUBLIC, STATIC)
+                .build();
+        return result;
     }
 }

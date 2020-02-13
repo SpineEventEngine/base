@@ -54,7 +54,7 @@ abstract class MethodGenerationTask implements CodeGenerationTask {
         return factory
                 .createFor(type)
                 .stream()
-                .map(methodBody -> ClassMember.from(methodBody, type))
+                .map(methodBody -> ClassMember.method(methodBody, type))
                 .collect(toImmutableList());
     }
 }

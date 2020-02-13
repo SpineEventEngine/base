@@ -53,7 +53,7 @@ final class UuidMethodFactoryTest {
             MessageType uuidType = new MessageType(UuidMessage.getDescriptor());
             List<GeneratedMethod> methods = factory.createFor(uuidType);
             GeneratedMethod generate = methods.get(0);
-            assertThat(generate.value())
+            assertThat(generate.toString())
                     .isEqualTo("/**\n" +
                                        " * Creates a new instance with a random UUID value.\n" +
                                        " * @see java.util.UUID#randomUUID\n" +
@@ -69,7 +69,7 @@ final class UuidMethodFactoryTest {
             MessageType uuidType = new MessageType(UuidMessage.getDescriptor());
             List<GeneratedMethod> methods = factory.createFor(uuidType);
             GeneratedMethod of = methods.get(1);
-            assertThat(of.value())
+            assertThat(of.toString())
                     .isEqualTo("/**\n" +
                                        " * Creates a new instance from the passed value.\n" +
                                        " * @throws java.lang.IllegalArgumentException if the passed value is not a valid UUID string\n" +

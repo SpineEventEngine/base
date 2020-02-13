@@ -63,7 +63,7 @@ public final class ColumnGenerator extends CodeGenerator {
         List<GeneratedNestedClass> generatedClasses = factory.createFor(type);
         ImmutableList<CompilerOutput> result =
                 generatedClasses.stream()
-                                .map(cls -> ClassMember.from(cls, type))
+                                .map(cls -> ClassMember.nestedClass(cls, type))
                                 .collect(toImmutableList());
         return result;
     }

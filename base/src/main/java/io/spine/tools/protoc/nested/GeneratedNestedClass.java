@@ -20,8 +20,7 @@
 
 package io.spine.tools.protoc.nested;
 
-import com.google.errorprone.annotations.Immutable;
-import io.spine.value.StringTypeValue;
+import com.squareup.javapoet.TypeSpec;
 
 /**
  * A generated Java nested class source code.
@@ -32,15 +31,19 @@ import io.spine.value.StringTypeValue;
  * <p>The actual compilation of the class is performed as a part of the compilation of other
  * Protobuf-generated sources.
  */
-@Immutable
-public final class GeneratedNestedClass extends StringTypeValue {
+public final class GeneratedNestedClass {
 
-    private static final long serialVersionUID = 0L;
+    private final TypeSpec spec;
 
     /**
      * Creates a new instance of the generated code holder.
      */
-    public GeneratedNestedClass(String value) {
-        super(value);
+    public GeneratedNestedClass(TypeSpec value) {
+        this.spec = value;
+    }
+
+    @Override
+    public String toString() {
+        return spec.toString();
     }
 }

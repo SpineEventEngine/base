@@ -50,7 +50,7 @@ abstract class FieldGenerationTask implements CodeGenerationTask {
         return factory
                 .createFor(type, fieldSupertype)
                 .stream()
-                .map(classBody -> ClassMember.from(classBody, type))
+                .map(classBody -> ClassMember.nestedClass(classBody, type))
                 .collect(toImmutableList());
     }
 }

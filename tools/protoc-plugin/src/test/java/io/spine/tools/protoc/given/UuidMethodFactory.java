@@ -22,12 +22,17 @@ package io.spine.tools.protoc.given;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
+import com.squareup.javapoet.MethodSpec;
 import io.spine.tools.protoc.UuidMessage;
 import io.spine.tools.protoc.method.GeneratedMethod;
 import io.spine.tools.protoc.method.MethodFactory;
 import io.spine.type.MessageType;
 
 import java.util.List;
+
+import static com.squareup.javapoet.TypeName.BOOLEAN;
+import static javax.lang.model.element.Modifier.PUBLIC;
+import static javax.lang.model.element.Modifier.STATIC;
 
 /**
  * A test-only implementation of a {@link MethodFactory} to be used with
@@ -36,11 +41,20 @@ import java.util.List;
 @Immutable
 public class UuidMethodFactory implements MethodFactory {
 
-    private static final GeneratedMethod TEST_METHOD =
-            new GeneratedMethod("public static boolean isUuid(){return true;}");
+    private static final GeneratedMethod TEST_METHOD = new GeneratedMethod(uuidMethod());
 
     @Override
     public List<GeneratedMethod> createFor(MessageType messageType) {
         return ImmutableList.of(TEST_METHOD);
+    }
+
+    private static MethodSpec uuidMethod() {
+        MethodSpec result = MethodSpec
+                .methodBuilder("isUuid")
+                .addModifiers(PUBLIC, STATIC)
+                .returns(BOOLEAN)
+                .addStatement("return true")
+                .build();
+        return result;
     }
 }

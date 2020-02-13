@@ -20,8 +20,7 @@
 
 package io.spine.tools.protoc.method;
 
-import com.google.errorprone.annotations.Immutable;
-import io.spine.value.StringTypeValue;
+import com.squareup.javapoet.MethodSpec;
 
 /**
  * A generated Java method source code.
@@ -32,15 +31,19 @@ import io.spine.value.StringTypeValue;
  * <p>The actual compilation of the generated method is performed as a part of the compilation
  * of other Protobuf-generated sources.
  */
-@Immutable
-public final class GeneratedMethod extends StringTypeValue {
+public final class GeneratedMethod {
 
-    private static final long serialVersionUID = 0L;
+    private final MethodSpec spec;
 
     /**
      * Creates a new instance of the method value holder.
      */
-    public GeneratedMethod(String value) {
-        super(value);
+    public GeneratedMethod(MethodSpec value) {
+        this.spec = value;
+    }
+
+    @Override
+    public String toString() {
+        return spec.toString();
     }
 }

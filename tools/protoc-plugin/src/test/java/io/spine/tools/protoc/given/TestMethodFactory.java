@@ -22,11 +22,15 @@ package io.spine.tools.protoc.given;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
+import com.squareup.javapoet.MethodSpec;
 import io.spine.tools.protoc.method.GeneratedMethod;
 import io.spine.tools.protoc.method.MethodFactory;
 import io.spine.type.MessageType;
 
 import java.util.List;
+
+import static com.squareup.javapoet.TypeName.VOID;
+import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**
  * A test-only implementation of a {@link MethodFactory}.
@@ -34,10 +38,19 @@ import java.util.List;
 @Immutable
 public final class TestMethodFactory implements MethodFactory {
 
-    public static final GeneratedMethod TEST_METHOD = new GeneratedMethod("public void test(){}");
+    public static final GeneratedMethod TEST_METHOD = new GeneratedMethod(testMethod());
 
     @Override
     public List<GeneratedMethod> createFor(MessageType messageType) {
         return ImmutableList.of(TEST_METHOD);
+    }
+
+    private static MethodSpec testMethod() {
+        MethodSpec result = MethodSpec
+                .methodBuilder("someTestMethod")
+                .addModifiers(PUBLIC)
+                .returns(VOID)
+                .build();
+        return result;
     }
 }
