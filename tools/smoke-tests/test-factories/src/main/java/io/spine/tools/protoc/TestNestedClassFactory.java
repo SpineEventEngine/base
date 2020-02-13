@@ -57,7 +57,7 @@ public final class TestNestedClassFactory implements NestedClassFactory {
                 .addModifiers(PUBLIC, STATIC, FINAL)
                 .addMethod(ownClass)
                 .build();
-        GeneratedNestedClass generatedClass = new GeneratedNestedClass(spec.toString());
+        GeneratedNestedClass generatedClass = new GeneratedNestedClass(spec);
         return ImmutableList.of(generatedClass);
     }
 }
