@@ -21,14 +21,113 @@
 package io.spine.code.gen.java;
 
 import com.squareup.javapoet.CodeBlock;
+import io.spine.code.javadoc.JavadocText;
 
 /**
  * A JavaPoet-based spec of a generated Javadoc text.
  */
-public interface GeneratedJavadoc {
+public final class GeneratedJavadoc {
+
+    private final CodeBlock spec;
+
+    private GeneratedJavadoc(CodeBlock spec) {
+        this.spec = spec;
+    }
+
+    /**
+     * Creates a single paragraph Javadoc.
+     *
+     * <p>The specified {@code paragraph} should contain only plain Javadoc text, without any
+     * additional formatting.
+     *
+     * <p>Example:
+     * <pre>
+     * GeneratedJavadoc.singleParagraph(
+     *     CodeBlock.of("The Javadoc text.")
+     * );
+     * </pre>
+     */
+    public static GeneratedJavadoc singleParagraph(CodeBlock paragraph) {
+        JavadocText paragraphText = JavadocText.fromEscaped(paragraph.toString())
+                                               .withNewLine();
+        CodeBlock value = CodeBlock
+                .builder()
+                .add(paragraphText.value())
+                .build();
+        return new GeneratedJavadoc(value);
+    }
+
+    /**
+     * Creates a two-paragraph Javadoc.
+     *
+     * <p>The specified paragraphs should contain only plain Javadoc text, without any additional
+     * formatting.
+     *
+     * <p>Example:
+     * <pre>
+     * GeneratedJavadoc.twoParagraph(
+     *     CodeBlock.of("First paragraph text."),
+     *     CodeBlock.of("Second paragraph text.")
+     * );
+     * </pre>
+     */
+    public static GeneratedJavadoc twoParagraph(CodeBlock firstParagraph,
+                                                CodeBlock secondParagraph) {
+        JavadocText firstParagraphText = JavadocText.fromEscaped(firstParagraph.toString())
+                                                    .withNewLine()
+                                                    .withNewLine();
+        JavadocText secondParagraphText = JavadocText.fromEscaped(secondParagraph.toString())
+                                                     .withPTag()
+                                                     .withNewLine();
+        CodeBlock value = CodeBlock
+                .builder()
+                .add(firstParagraphText.value())
+                .add(secondParagraphText.value())
+                .build();
+        return new GeneratedJavadoc(value);
+    }
+
+    /**
+     * Creates a three-paragraph Javadoc.
+     *
+     * <p>The specified paragraphs should contain only plain Javadoc text, without any additional
+     * formatting.
+     *
+     * <p>Example:
+     * <pre>
+     * GeneratedJavadoc.threeParagraph(
+     *     CodeBlock.of("First paragraph text."),
+     *     CodeBlock.of("Second paragraph text."),
+     *     CodeBlock.of("Third paragraph text.")
+     * );
+     * </pre>
+     */
+    public static GeneratedJavadoc threeParagraph(CodeBlock firstParagraph,
+                                                  CodeBlock secondParagraph,
+                                                  CodeBlock thirdParagraph) {
+        JavadocText firstParagraphText = JavadocText.fromEscaped(firstParagraph.toString())
+                                                    .withNewLine()
+                                                    .withNewLine();
+        JavadocText secondParagraphText = JavadocText.fromEscaped(secondParagraph.toString())
+                                                     .withPTag()
+                                                     .withNewLine()
+                                                     .withNewLine();
+        JavadocText thirdParagraphText = JavadocText.fromEscaped(thirdParagraph.toString())
+                                                    .withPTag()
+                                                    .withNewLine();
+        CodeBlock value = CodeBlock
+                .builder()
+                .add(firstParagraphText.value())
+                .add(secondParagraphText.value())
+                .add(thirdParagraphText.value())
+                .build();
+        return new GeneratedJavadoc(value);
+    }
 
     /**
      * Returns the generated Javadoc as JavaPoet {@code CodeBlock}.
      */
-    CodeBlock spec();
+    public CodeBlock spec() {
+        return spec;
+    }
 }

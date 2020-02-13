@@ -21,7 +21,7 @@
 package io.spine.code.gen.java.field;
 
 import com.squareup.javapoet.CodeBlock;
-import io.spine.code.gen.java.TwoParagraphDoc;
+import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.proto.FieldDeclaration;
 
 /**
@@ -29,29 +29,21 @@ import io.spine.code.proto.FieldDeclaration;
  *
  * @see FieldAccessor
  */
-final class FieldAccessorDoc extends TwoParagraphDoc {
+final class FieldAccessorDoc {
 
-    /**
-     * The field which is returned.
-     */
-    private final FieldDeclaration field;
-
-    FieldAccessorDoc(FieldDeclaration field) {
-        super();
-        this.field = field;
+    /** Prevents instantiation of this class. */
+    private FieldAccessorDoc() {
     }
 
-    @Override
-    protected void addFirstParagraph(CodeBlock.Builder text) {
-        text.add("Returns the $L$S field.", fieldKind(), field.name());
+    static GeneratedJavadoc generateFor(FieldDeclaration field) {
+        return GeneratedJavadoc.twoParagraph(
+                CodeBlock.of("Returns the $L$S field.", fieldKind(field), field.name()),
+                CodeBlock.of("The $L Java type is {@code $L}.", elementDescribedByType(field),
+                             field.javaTypeName())
+        );
     }
 
-    @Override
-    protected void addSecondParagraph(CodeBlock.Builder text) {
-        text.add("The $L Java type is {@code $L}.", elementDescribedByType(), field.javaTypeName());
-    }
-
-    private String fieldKind() {
+    private static String fieldKind(FieldDeclaration field) {
         if (field.isRepeated()) {
             return "{@code repeated} ";
         }
@@ -62,7 +54,7 @@ final class FieldAccessorDoc extends TwoParagraphDoc {
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
-    private String elementDescribedByType() {
+    private static String elementDescribedByType(FieldDeclaration field) {
         if (field.isRepeated()) {
             return "element";
         }

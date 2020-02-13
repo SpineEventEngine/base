@@ -24,8 +24,10 @@ import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.java.PackageName;
+import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;
 
@@ -104,7 +106,7 @@ public final class ColumnContainerSpec implements GeneratedTypeSpec {
     public TypeSpec typeSpec() {
         TypeSpec result = TypeSpec
                 .classBuilder(CLASS_NAME)
-                .addJavadoc(javadoc())
+                .addJavadoc(javadoc().spec())
                 .addAnnotation(generatedBySpineModelCompiler())
                 .addModifiers(PUBLIC, STATIC, FINAL)
                 .addMethod(spec())
@@ -129,7 +131,12 @@ public final class ColumnContainerSpec implements GeneratedTypeSpec {
     /**
      * Obtains the class Javadoc.
      */
-    private static CodeBlock javadoc() {
-        return new ColumnContainerDoc().spec();
+    private static GeneratedJavadoc javadoc() {
+        return GeneratedJavadoc.twoParagraph(
+                CodeBlock.of("A listing of all entity columns of the type."),
+                CodeBlock.of("Use static methods of this class to access the columns of the " +
+                                     "entity$L which can then be used for query filters creation.",
+                             JavadocText.lineSeparator())
+        );
     }
 }

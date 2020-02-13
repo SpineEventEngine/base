@@ -59,7 +59,7 @@ abstract class FieldAccessor implements GeneratedMethodSpec {
     public MethodSpec methodSpec() {
         MethodSpec result = MethodSpec
                 .methodBuilder(fieldName().javaCase())
-                .addJavadoc(javadoc())
+                .addJavadoc(javadoc().spec())
                 .addModifiers(modifiers())
                 .returns(returnType().value())
                 .addStatement(methodBody())
@@ -134,8 +134,7 @@ abstract class FieldAccessor implements GeneratedMethodSpec {
     /**
      * Generates the method Javadoc.
      */
-    private CodeBlock javadoc() {
-        GeneratedJavadoc javadoc = new FieldAccessorDoc(this.field);
-        return javadoc.spec();
+    private GeneratedJavadoc javadoc() {
+        return FieldAccessorDoc.generateFor(this.field);
     }
 }

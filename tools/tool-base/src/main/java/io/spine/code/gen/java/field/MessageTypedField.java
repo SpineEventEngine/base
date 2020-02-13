@@ -27,9 +27,9 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.Field;
 import io.spine.base.SubscribableField;
+import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.gen.java.JavaPoetName;
-import io.spine.code.gen.java.SingleParagraphDoc;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
@@ -80,7 +80,7 @@ final class MessageTypedField implements GeneratedTypeSpec {
     public TypeSpec typeSpec() {
         TypeSpec result = TypeSpec
                 .classBuilder(typeName().value())
-                .addJavadoc(javadoc())
+                .addJavadoc(javadoc().spec())
                 .addModifiers(PUBLIC, STATIC, FINAL)
                 .superclass(superclass())
                 .addMethod(constructor())
@@ -125,18 +125,8 @@ final class MessageTypedField implements GeneratedTypeSpec {
     /**
      * Obtains the class Javadoc.
      */
-    private static CodeBlock javadoc() {
-        return new Javadoc().spec();
-    }
-
-    /**
-     * The class-level Javadoc.
-     */
-    private static class Javadoc extends SingleParagraphDoc {
-
-        @Override
-        protected void addParagraph(CodeBlock.Builder text) {
-            text.add("The listing of nested fields of the message type.");
-        }
+    private static GeneratedJavadoc javadoc() {
+        CodeBlock text = CodeBlock.of("The listing of nested fields of the message type.");
+        return GeneratedJavadoc.singleParagraph(text);
     }
 }

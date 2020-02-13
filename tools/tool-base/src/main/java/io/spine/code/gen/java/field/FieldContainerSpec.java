@@ -25,9 +25,11 @@ import com.google.errorprone.annotations.concurrent.LazyInit;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.PackageName;
+import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
@@ -148,7 +150,7 @@ public final class FieldContainerSpec implements GeneratedTypeSpec {
     public TypeSpec typeSpec() {
         TypeSpec result = TypeSpec
                 .classBuilder(CLASS_NAME)
-                .addJavadoc(javadoc())
+                .addJavadoc(javadoc().spec())
                 .addModifiers(PUBLIC, STATIC, FINAL)
                 .addAnnotation(generatedBySpineModelCompiler())
                 .addMethod(spec())
@@ -203,7 +205,16 @@ public final class FieldContainerSpec implements GeneratedTypeSpec {
     /**
      * Obtains the class Javadoc.
      */
-    private static CodeBlock javadoc() {
-        return new FieldContainerDoc().spec();
+    private static GeneratedJavadoc javadoc() {
+        return GeneratedJavadoc.threeParagraph(
+                CodeBlock.of("The listing of all fields of the message type."),
+                CodeBlock.of("The fields exposed by this class can be provided to " +
+                                     "a subscription filter on creation."),
+                CodeBlock.of("Use static methods of this class to access the top-level fields " +
+                                     "of the message. The nested$L fields can be accessed using " +
+                                     "the values returned by the top-level field accessors, " +
+                                     "through$L method chaining.",
+                             JavadocText.lineSeparator(), JavadocText.lineSeparator())
+        );
     }
 }

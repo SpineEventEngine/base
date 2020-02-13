@@ -50,7 +50,7 @@ final class ColumnAccessor implements GeneratedMethodSpec {
         FieldName name = columnName();
         MethodSpec result = MethodSpec
                 .methodBuilder(name.javaCase())
-                .addJavadoc(javadoc())
+                .addJavadoc(javadoc().spec())
                 .addModifiers(PUBLIC, STATIC)
                 .returns(columnType().value())
                 .addStatement(methodBody())
@@ -85,8 +85,10 @@ final class ColumnAccessor implements GeneratedMethodSpec {
     /**
      * Returns the method Javadoc.
      */
-    private CodeBlock javadoc() {
-        GeneratedJavadoc javadoc = new ColumnAccessorDoc(this.column);
-        return javadoc.spec();
+    private GeneratedJavadoc javadoc() {
+        return GeneratedJavadoc.twoParagraph(
+                CodeBlock.of("Returns the $S column.", column.name()),
+                CodeBlock.of("The column Java type is {@code $L}.", column.javaTypeName())
+        );
     }
 }

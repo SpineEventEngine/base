@@ -27,9 +27,9 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.EntityWithColumns;
+import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.gen.java.JavaPoetName;
-import io.spine.code.gen.java.TwoParagraphDoc;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.PackageName;
 import io.spine.code.javadoc.JavadocText;
@@ -76,7 +76,7 @@ public final class EntityWithColumnsSpec implements GeneratedTypeSpec {
     public TypeSpec typeSpec() {
         TypeSpec.Builder builder =
                 TypeSpec.interfaceBuilder(className())
-                        .addJavadoc(classJavadoc())
+                        .addJavadoc(classJavadoc().spec())
                         .addAnnotation(generatedBySpineModelCompiler())
                         .addModifiers(PUBLIC)
                         .addSuperinterface(EntityWithColumns.class);
@@ -143,28 +143,15 @@ public final class EntityWithColumnsSpec implements GeneratedTypeSpec {
     /**
      * Obtains a class-level Javadoc.
      */
-    private CodeBlock classJavadoc() {
-        return new Javadoc().spec();
+    private GeneratedJavadoc classJavadoc() {
+        return GeneratedJavadoc.twoParagraph(
+                CodeBlock.of("Entity сolumns of proto type {@code $L}.", messageType.javaClassName()),
+                CodeBlock.of("Implement this type to manually override the entity column values.")
+        );
     }
 
     private String className() {
         String result = format(NAME_FORMAT, messageType.simpleJavaClassName());
         return result;
-    }
-
-    /**
-     * The class-level doc.
-     */
-    private class Javadoc extends TwoParagraphDoc {
-
-        @Override
-        protected void addFirstParagraph(CodeBlock.Builder text) {
-            text.add("Entity сolumns of proto type {@code $L}.", messageType.javaClassName());
-        }
-
-        @Override
-        protected void addSecondParagraph(CodeBlock.Builder text) {
-            text.add("Implement this type to manually override the entity column values.");
-        }
     }
 }
