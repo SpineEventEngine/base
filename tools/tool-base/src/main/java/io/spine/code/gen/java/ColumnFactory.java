@@ -22,7 +22,6 @@ package io.spine.code.gen.java;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import com.squareup.javapoet.TypeSpec;
 import io.spine.code.gen.java.column.ColumnContainerSpec;
 import io.spine.tools.protoc.nested.GeneratedNestedClass;
 import io.spine.tools.protoc.nested.NestedClassFactory;
@@ -40,9 +39,10 @@ public final class ColumnFactory implements NestedClassFactory {
 
     @Override
     public List<GeneratedNestedClass> createFor(MessageType messageType) {
-        TypeSpec spec = ColumnContainerSpec.of(messageType)
-                                           .typeSpec();
-        GeneratedNestedClass result = new GeneratedNestedClass(spec);
+        String generatedCode = ColumnContainerSpec.of(messageType)
+                                                  .typeSpec()
+                                                  .toString();
+        GeneratedNestedClass result = new GeneratedNestedClass(generatedCode);
         return ImmutableList.of(result);
     }
 }

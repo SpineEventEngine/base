@@ -21,15 +21,12 @@
 package io.spine.tools.protoc;
 
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import com.squareup.javapoet.MethodSpec;
 import io.spine.code.fs.java.SourceFile;
 import io.spine.tools.protoc.method.GeneratedMethod;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.squareup.javapoet.TypeName.VOID;
-import static javax.lang.model.element.Modifier.PUBLIC;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("`ClassMember` should")
@@ -40,17 +37,13 @@ final class ClassMemberTest {
     @DisplayName("create valid compiler output")
     @Test
     void createValidCompilerOutput() {
-        MethodSpec spec = MethodSpec
-                .methodBuilder("testMethod")
-                .addModifiers(PUBLIC)
-                .returns(VOID)
-                .build();
-        GeneratedMethod method = new GeneratedMethod(spec);
+        String methodBody = "public void test(){}";
+        GeneratedMethod method = new GeneratedMethod(methodBody);
         MessageType type = new MessageType(MessageWithClassScopeInsertion.getDescriptor());
         ClassMember result = ClassMember.method(method, type);
         File file = result.asFile();
 
-        assertEquals(spec.toString(), file.getContent());
+        assertEquals(methodBody, file.getContent());
         assertEquals(insertionPoint(type), file.getInsertionPoint());
         assertEquals(sourceName(type), file.getName());
     }

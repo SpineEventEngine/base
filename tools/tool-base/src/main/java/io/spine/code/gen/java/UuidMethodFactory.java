@@ -108,7 +108,7 @@ public final class UuidMethodFactory implements MethodFactory {
                 .addJavadoc("@throws $T if the passed value is not a valid UUID string\n",
                             IllegalArgumentException.class)
                 .build();
-        return new GeneratedMethod(spec);
+        return new GeneratedMethod(spec.toString());
     }
 
     /**
@@ -132,6 +132,6 @@ public final class UuidMethodFactory implements MethodFactory {
                 .addJavadoc("Creates a new instance with a random UUID value.\n")
                 .addJavadoc("@see $T#randomUUID\n", UUID.class)
                 .build();
-        return new GeneratedMethod(spec);
+        return new GeneratedMethod(spec.toString());
     }
 }

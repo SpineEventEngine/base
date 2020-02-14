@@ -43,6 +43,6 @@ public final class TestMethodFactory implements MethodFactory {
                 .addJavadoc("Returns {@link $T MessageType} of the current message.\n",
                             MessageType.class)
                 .build();
-        return ImmutableList.of(new GeneratedMethod(spec));
+        return ImmutableList.of(new GeneratedMethod(spec.toString()));
     }
 }

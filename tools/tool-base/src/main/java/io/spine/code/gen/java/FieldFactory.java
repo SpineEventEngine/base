@@ -22,7 +22,6 @@ package io.spine.code.gen.java;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import com.squareup.javapoet.TypeSpec;
 import io.spine.base.SubscribableField;
 import io.spine.code.gen.java.field.FieldContainerSpec;
 import io.spine.code.java.ClassName;
@@ -47,8 +46,11 @@ public final class FieldFactory implements NestedClassFactory {
 
     public List<GeneratedNestedClass>
     createFor(MessageType messageType, ClassName fieldSupertype) {
-        TypeSpec spec = new FieldContainerSpec(messageType, fieldSupertype).typeSpec();
-        GeneratedNestedClass result = new GeneratedNestedClass(spec);
+        String generatedCode =
+                new FieldContainerSpec(messageType, fieldSupertype)
+                        .typeSpec()
+                        .toString();
+        GeneratedNestedClass result = new GeneratedNestedClass(generatedCode);
         return ImmutableList.of(result);
     }
 }

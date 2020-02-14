@@ -35,8 +35,6 @@ dependencies {
     // ErrorProne Annotations is part of our API.
     api deps.build.errorProneAnnotations
 
-    implementation deps.gen.javaPoet
-
     testImplementation(
             project(path: ":testlib"),
             project(path: ":mute-logging")
