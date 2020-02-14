@@ -21,8 +21,10 @@
 package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.tools.protoc.ClassMember;
 import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.ExternalClassLoader;
 import io.spine.type.MessageType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -35,23 +37,24 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  */
 abstract class MethodGenerationTask implements CodeGenerationTask {
 
-    private final MethodFactories methodFactories;
+    private final ExternalClassLoader<MethodFactory> classLoader;
     private final String factoryName;
 
-    MethodGenerationTask(MethodFactories methodFactories, String factoryName) {
-        this.methodFactories = checkNotNull(methodFactories);
+    MethodGenerationTask(ExternalClassLoader<MethodFactory> classLoader, String factoryName) {
+        this.classLoader = checkNotNull(classLoader);
         this.factoryName = checkNotEmptyOrBlank(factoryName);
     }
 
     /**
-     * Performs the actual method code generation using supplied {@link MethodFactories}.
+     * Performs the actual method code generation using the supplied
+     * {@linkplain #factoryName factory}.
      */
     ImmutableList<CompilerOutput> generateMethodsFor(@NonNull MessageType type) {
-        MethodFactory factory = methodFactories.newFactory(factoryName);
+        MethodFactory factory = classLoader.newInstance(factoryName);
         return factory
                 .createFor(type)
                 .stream()
-                .map(methodBody -> MessageMethod.from(methodBody, type))
+                .map(methodBody -> ClassMember.method(methodBody, type))
                 .collect(toImmutableList());
     }
 }

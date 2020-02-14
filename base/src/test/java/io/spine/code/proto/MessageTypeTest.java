@@ -34,6 +34,7 @@ import io.spine.option.MinOption;
 import io.spine.test.code.proto.command.MttStartProject;
 import io.spine.test.code.proto.event.MttProjectStarted;
 import io.spine.test.code.proto.rejections.TestRejections;
+import io.spine.test.code.proto.uuid.MttEntityState;
 import io.spine.test.code.proto.uuid.MttUuidMessage;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
@@ -72,86 +73,98 @@ final class MessageTypeTest {
             assertTrue(result);
         }
 
-        @DisplayName("is")
         @Nested
+        @DisplayName("is")
         final class Is {
 
-            @DisplayName("nested")
             @Test
+            @DisplayName("nested")
             void nested() {
                 assertQuality(MessageType::isNested, Uri.Protocol.getDescriptor());
                 assertQuality(not(MessageType::isNested), Url.getDescriptor());
             }
 
-            @DisplayName("top-level")
             @Test
+            @DisplayName("top-level")
             void topLevel() {
                 assertQuality(MessageType::isTopLevel, Url.getDescriptor());
                 assertQuality(not(MessageType::isTopLevel), Uri.Protocol.getDescriptor());
             }
 
-            @DisplayName("a rejection")
             @Test
+            @DisplayName("a rejection")
             void rejection() {
                 assertQuality(MessageType::isRejection,
                               TestRejections.MttSampleRejection.getDescriptor()
                 );
             }
 
-            @DisplayName("a command")
             @Test
+            @DisplayName("a command")
             void command() {
                 assertQuality(MessageType::isCommand,
                               MttStartProject.getDescriptor()
                 );
             }
 
-            @DisplayName("an event")
             @Test
+            @DisplayName("an event")
             void event() {
                 assertQuality(MessageType::isEvent,
                               MttProjectStarted.getDescriptor()
                 );
             }
 
-            @DisplayName("a UUID value")
             @Test
+            @DisplayName("a UUID value")
             void uuid() {
                 assertQuality(MessageType::isUuidValue, MttUuidMessage.getDescriptor());
+            }
+
+            @Test
+            @DisplayName("an entity state")
+            void entityState() {
+                assertQuality(MessageType::isEntityState, MttEntityState.getDescriptor());
             }
 
             @Nested
             @DisplayName("not")
             class NotA {
 
-                @DisplayName("a rejection")
                 @Test
+                @DisplayName("a rejection")
                 void rejection() {
                     assertQuality(not(MessageType::isRejection),
                                   TestRejections.MttSampleRejection.Details.getDescriptor()
                     );
                 }
 
-                @DisplayName("a command")
                 @Test
+                @DisplayName("a command")
                 void command() {
                     assertQuality(not(MessageType::isCommand),
                                   MttStartProject.Details.getDescriptor()
                     );
                 }
 
-                @DisplayName("an event")
                 @Test
+                @DisplayName("an event")
                 void event() {
                     assertQuality(not(MessageType::isEvent),
                                   MttProjectStarted.Details.getDescriptor()
                     );
                 }
 
-                @DisplayName("a UUID value")
                 @Test
+                @DisplayName("a UUID value")
                 void uuid() {
                     assertQuality(not(MessageType::isUuidValue), MttProjectStarted.getDescriptor());
+                }
+
+                @Test
+                @DisplayName("an entity state")
+                void entityState() {
+                    assertQuality(not(MessageType::isEntityState), MttStartProject.getDescriptor());
                 }
             }
 

@@ -36,7 +36,7 @@ public final class ProtocTaskConfigs {
     }
 
     /**
-     * Creates a new {@link UuidConfig} instance from the supplied {@code className}.
+     * Creates a new {@code UuidConfig} instance from the supplied {@code className}.
      */
     public static UuidConfig uuidConfig(ClassName className) {
         checkNotNull(className);
@@ -47,7 +47,7 @@ public final class ProtocTaskConfigs {
     }
 
     /**
-     * Creates a new {@link EntityStateConfig} instances from the supplied {@code className}.
+     * Creates a new {@code EntityStateConfig} instance from the supplied {@code className}.
      */
     public static EntityStateConfig entityStateConfig(ClassName className) {
         checkNotNull(className);

@@ -36,6 +36,7 @@ import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.LocationPath;
 import io.spine.code.proto.TypeSet;
 import io.spine.logging.Logging;
+import io.spine.option.EntityOption;
 import io.spine.option.OptionsProto;
 
 import java.util.Deque;
@@ -49,7 +50,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.collect.Streams.concat;
+import static io.spine.code.proto.EntityStateOption.entityKindOf;
 import static io.spine.code.proto.FileDescriptors.sameFiles;
+import static io.spine.option.EntityOption.Kind.KIND_UNKNOWN;
+import static io.spine.option.EntityOption.Kind.UNRECOGNIZED;
 
 /**
  * A message type as declared in a proto file.
@@ -206,6 +210,18 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      */
     public boolean isEvent() {
         boolean result = isTopLevel() && declaringFileName().isEvents();
+        return result;
+    }
+
+    /**
+     * Tells if this message is an entity state.
+     */
+    public boolean isEntityState() {
+        Optional<EntityOption.Kind> entityKind = entityKindOf(descriptor());
+        boolean result =
+                entityKind.isPresent()
+                        && entityKind.get() != UNRECOGNIZED
+                        && entityKind.get() != KIND_UNKNOWN;
         return result;
     }
 

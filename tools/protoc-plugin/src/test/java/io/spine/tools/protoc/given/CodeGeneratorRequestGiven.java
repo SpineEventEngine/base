@@ -25,6 +25,7 @@ import com.google.protobuf.compiler.PluginProtos;
 import io.spine.option.OptionsProto;
 import io.spine.tools.protoc.GeneratedInterfaces;
 import io.spine.tools.protoc.GeneratedMethods;
+import io.spine.tools.protoc.GeneratedNestedClasses;
 import io.spine.tools.protoc.SpineProtocConfig;
 
 import java.io.File;
@@ -78,7 +79,17 @@ public final class CodeGeneratorRequestGiven {
      * @see #protocConfig(GeneratedInterfaces, GeneratedMethods, File)
      */
     public static String protocConfig(GeneratedMethods methods, Path configPath) {
-        return protocConfig(new GeneratedInterfaces(), methods, configPath);
+        return protocConfig(new GeneratedInterfaces(),
+                            methods,
+                            new GeneratedNestedClasses(),
+                            configPath);
+    }
+
+    public static String protocConfig(GeneratedNestedClasses nestedClasses, Path configPath) {
+        return protocConfig(new GeneratedInterfaces(),
+                            new GeneratedMethods(),
+                            nestedClasses,
+                            configPath);
     }
 
     /**
@@ -89,7 +100,10 @@ public final class CodeGeneratorRequestGiven {
      * @see #protocConfig(GeneratedInterfaces, GeneratedMethods, File)
      */
     public static String protocConfig(GeneratedInterfaces interfaces, Path configPath) {
-        return protocConfig(interfaces, new GeneratedMethods(), configPath);
+        return protocConfig(interfaces,
+                            new GeneratedMethods(),
+                            new GeneratedNestedClasses(),
+                            configPath);
     }
 
     /**
@@ -98,12 +112,15 @@ public final class CodeGeneratorRequestGiven {
      *
      * @return base64 encoded path to the plugin configuration
      */
-    public static String
-    protocConfig(GeneratedInterfaces interfaces, GeneratedMethods methods, Path configPath) {
+    public static String protocConfig(GeneratedInterfaces interfaces,
+                                      GeneratedMethods methods,
+                                      GeneratedNestedClasses nestedClasses,
+                                      Path configPath) {
         SpineProtocConfig config = SpineProtocConfig
                 .newBuilder()
                 .setAddInterfaces(interfaces.asProtocConfig())
                 .setAddMethods(methods.asProtocConfig())
+                .setAddNestedClasses(nestedClasses.asProtocConfig())
                 .build();
         try (FileOutputStream fos = new FileOutputStream(configPath.toFile())) {
             config.writeTo(fos);

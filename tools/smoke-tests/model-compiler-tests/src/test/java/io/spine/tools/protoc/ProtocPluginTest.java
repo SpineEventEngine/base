@@ -23,9 +23,11 @@ package io.spine.tools.protoc;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Message;
 import io.spine.base.CommandMessage;
+import io.spine.base.EntityColumn;
 import io.spine.base.EventMessage;
 import io.spine.base.Identifier;
 import io.spine.base.RejectionMessage;
+import io.spine.base.SubscribableField;
 import io.spine.base.UuidValue;
 import io.spine.test.protoc.EducationalInstitution;
 import io.spine.test.protoc.Kindergarten;
@@ -33,6 +35,7 @@ import io.spine.test.protoc.Outer;
 import io.spine.test.protoc.School;
 import io.spine.test.protoc.University;
 import io.spine.test.protoc.Wrapped;
+import io.spine.test.tools.protoc.Movie;
 import io.spine.test.tools.protoc.WeatherForecast;
 import io.spine.tools.protoc.test.PIUserEvent;
 import io.spine.tools.protoc.test.UserInfo;
@@ -51,7 +54,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("InnerClassMayBeStatic")
-@DisplayName("ProtocPlugin should")
+@DisplayName("`ProtocPlugin` should")
 final class ProtocPluginTest {
 
     private static final String EVENT_INTERFACE_FQN =
@@ -158,13 +161,13 @@ final class ProtocPluginTest {
     }
 
     @Test
-    @DisplayName("mark nested message declarations by (is) option")
+    @DisplayName("mark nested message declarations by `(is)` option")
     void markNestedTypes() {
         assertThat(Outer.Inner.class).isAssignableTo(Wrapped.class);
     }
 
     @Test
-    @DisplayName("mark nested message declarations by (every_is) option")
+    @DisplayName("mark nested message declarations by `(every_is)` option")
     void markEveryNested() {
         assertThat(Kindergarten.class).isAssignableTo(EducationalInstitution.class);
         assertThat(School.class).isAssignableTo(EducationalInstitution.class);
@@ -183,7 +186,7 @@ final class ProtocPluginTest {
     }
 
     @Test
-    @DisplayName("generate a custom method for an .endsWith() pattern")
+    @DisplayName("generate a custom method for an `.endsWith()` pattern")
     void generateCustomPatternBasedMethod() {
         MessageType expectedType =
                 new MessageType(MessageEnhancedWithSuffixGenerations.getDescriptor());
@@ -191,7 +194,7 @@ final class ProtocPluginTest {
     }
 
     @Test
-    @DisplayName("mark a message with interface using .endsWith() pattern")
+    @DisplayName("mark a message with interface using `.endsWith()` pattern")
     void markMessageWithInterfaceUsingEndsWithPattern() {
         assertThat(MessageEnhancedWithSuffixGenerations.getDefaultInstance())
                 .isInstanceOf(SuffixedMessage.class);
@@ -236,8 +239,8 @@ final class ProtocPluginTest {
         }
     }
 
-    @DisplayName("generate a custom method for a message using")
     @Nested
+    @DisplayName("generate a custom method for a message using")
     final class GenerateMethods {
 
         @Test
@@ -265,23 +268,65 @@ final class ProtocPluginTest {
         }
     }
 
-    @DisplayName("generate methods for MFGTMessage using")
     @Nested
+    @DisplayName("generate a custom nested class for a message using")
+    final class GenerateNestedClasses {
+
+        @Test
+        @DisplayName("prefix pattern")
+        void basedOnNamePrefix() {
+            Class<?> ownClass = MessageEnhancedWithPrefixGenerations.SomeNestedClass.messageClass();
+            assertEquals(MessageEnhancedWithPrefixGenerations.class, ownClass);
+        }
+
+        @Test
+        @DisplayName("regex pattern")
+        void basedOnNameMatchingRegex() {
+            Class<?> ownClass = MessageEnhancedWithRegexGenerations.SomeNestedClass.messageClass();
+            assertEquals(MessageEnhancedWithRegexGenerations.class, ownClass);
+        }
+
+        @Test
+        @DisplayName("suffix pattern")
+        void basedOnNameSuffix() {
+            Class<?> ownClass = MessageEnhancedWithSuffixGenerations.SomeNestedClass.messageClass();
+            assertEquals(MessageEnhancedWithSuffixGenerations.class, ownClass);
+        }
+    }
+
+    @Nested
+    @DisplayName("generate methods for `MFGTMessage` using")
     final class MultiFactoryGeneration {
 
-        @DisplayName("UuidMethodFactory")
         @Test
+        @DisplayName("`UuidMethodFactory`")
         void uuidMethodFactory() {
             assertNotEquals(MFGTMessage.generate(), MFGTMessage.generate());
             String uuid = Identifier.newUuid();
             assertEquals(MFGTMessage.of(uuid), MFGTMessage.of(uuid));
         }
 
-        @DisplayName("TestMethodFactory")
         @Test
+        @DisplayName("`TestMethodFactory`")
         void testMethodFactory() {
             assertEquals(new MessageType(MFGTMessage.getDescriptor()), MFGTMessage.ownType());
         }
+    }
+
+    @Test
+    @DisplayName("generate columns for a queryable entity type")
+    void generateColumns() {
+        EntityColumn column = Movie.Column.title();
+        String expectedName = "title";
+        assertEquals(expectedName, column.name().value());
+    }
+
+    @Test
+    @DisplayName("generate fields for a subscribable message type")
+    void generateFields() {
+        SubscribableField field = MovieTitleChanged.Field.oldTitle().value();
+        String expectedFieldPath = "old_title.value";
+        assertEquals(expectedFieldPath, field.getField().toString());
     }
 
     @CanIgnoreReturnValue

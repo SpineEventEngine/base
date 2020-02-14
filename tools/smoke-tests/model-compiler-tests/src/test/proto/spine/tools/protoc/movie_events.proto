@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package spine.test.tools.protoc;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.tools.protoc";
+option java_outer_classname = "MovieEventsProto";
+option java_multiple_files = true;
+
+import "spine/tools/protoc/movies.proto";
+
+message MovieTitleChanged {
+    MovieId id = 1;
+    MovieTitle old_title = 2;
+    MovieTitle new_title = 3;
+}

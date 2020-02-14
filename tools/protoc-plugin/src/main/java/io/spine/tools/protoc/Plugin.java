@@ -25,8 +25,11 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import io.spine.code.proto.OptionExtensionRegistry;
 import io.spine.tools.protoc.builder.BuilderGenerator;
+import io.spine.tools.protoc.column.ColumnGenerator;
+import io.spine.tools.protoc.field.FieldGenerator;
 import io.spine.tools.protoc.iface.InterfaceGenerator;
 import io.spine.tools.protoc.method.MethodGenerator;
+import io.spine.tools.protoc.nested.NestedClassGenerator;
 import io.spine.tools.protoc.validation.ValidatorCode;
 
 import java.io.FileInputStream;
@@ -68,6 +71,9 @@ public final class Plugin {
                 .add(MethodGenerator.instance(config))
                 .add(BuilderGenerator.instance(config))
                 .add(ValidatorCode.instance(config))
+                .add(NestedClassGenerator.instance(config))
+                .add(ColumnGenerator.instance(config))
+                .add(FieldGenerator.instance(config))
                 .build();
         CodeGeneratorResponse response = generator.process(request);
         writeResponse(response);

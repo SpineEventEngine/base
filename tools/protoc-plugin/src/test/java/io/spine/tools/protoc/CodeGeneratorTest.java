@@ -28,6 +28,7 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.given.TestInterface;
+import io.spine.tools.protoc.given.TestNestedClassFactory;
 import io.spine.tools.protoc.given.UuidMethodFactory;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
@@ -47,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 @ExtendWith(TempDirectory.class)
-@DisplayName("SpineProtoGenerator should")
+@DisplayName("`SpineProtoGenerator` should")
 final class CodeGeneratorTest {
 
     private static final String TEST_PROTO_FILE = "spine/tools/protoc/test_generators.proto";
@@ -59,7 +60,7 @@ final class CodeGeneratorTest {
         testPluginConfig = tempDirPath.resolve("test-spine-protoc-plugin.pb");
     }
 
-    @DisplayName("process valid CodeGeneratorRequest")
+    @DisplayName("process valid `CodeGeneratorRequest`")
     @Test
     void processValidRequest() {
         GeneratedInterfaces interfaces = new GeneratedInterfaces();
@@ -67,11 +68,14 @@ final class CodeGeneratorTest {
         interfaces.mark(messages.uuid(), ClassName.of(TestInterface.class));
         GeneratedMethods methods = new GeneratedMethods();
         methods.applyFactory(UuidMethodFactory.class.getName(), messages.uuid());
+        GeneratedNestedClasses nestedClasses = new GeneratedNestedClasses();
+        nestedClasses.applyFactory(TestNestedClassFactory.class.getCanonicalName(),
+                                   new SuffixSelector("*file.proto"));
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())
                 .addFileToGenerate(TEST_PROTO_FILE)
-                .setParameter(protocConfig(interfaces, methods, testPluginConfig))
+                .setParameter(protocConfig(interfaces, methods, nestedClasses, testPluginConfig))
                 .build();
         MessageType type = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
         File firstFile = File

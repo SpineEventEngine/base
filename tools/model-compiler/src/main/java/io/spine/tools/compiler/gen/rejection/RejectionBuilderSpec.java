@@ -27,7 +27,8 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
-import io.spine.code.gen.Indent;
+import io.spine.code.gen.java.GeneratedTypeSpec;
+import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.javadoc.JavadocText;
@@ -35,19 +36,15 @@ import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 import io.spine.protobuf.Messages;
 import io.spine.tools.compiler.field.type.FieldType;
-import io.spine.tools.compiler.gen.GeneratedTypeSpec;
-import io.spine.tools.compiler.gen.JavaPoetName;
 import io.spine.tools.compiler.gen.NoArgMethod;
 import io.spine.type.RejectionType;
 import io.spine.validate.Validate;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
-import static io.spine.util.Exceptions.unsupported;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -97,11 +94,6 @@ final class RejectionBuilderSpec implements GeneratedTypeSpec {
                 .addMethod(build())
                 .build();
         return typeSpec;
-    }
-
-    @Override
-    public void writeToFile(Path targetDir, Indent indent) {
-        throw unsupported("Rejection builder shouldn't be written to a file as a separate spec.");
     }
 
     /**
@@ -200,6 +192,7 @@ final class RejectionBuilderSpec implements GeneratedTypeSpec {
                           .withNewLine();
     }
 
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Random generated code duplication.
     private FieldSpec initializedProtoBuilder() {
         ClassName protoBuilderClass = messageClass.className()
                                                   .nestedClass(SimpleClassName.ofBuilder()

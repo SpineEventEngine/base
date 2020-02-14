@@ -21,7 +21,8 @@
 package io.spine.tools.gradle.compiler;
 
 import io.spine.base.EntityWithColumns;
-import io.spine.tools.column.ProjectView;
+import io.spine.tools.column.Project;
+import io.spine.tools.column.ProjectName;
 import io.spine.tools.column.ProjectViewWithColumns;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,9 +49,9 @@ class ColumnGenPluginTest {
         assertThat(declaredMethods).hasLength(2);
 
         Method getProjectName = generatedClass.getDeclaredMethod("getProjectName");
-        assertThat(getProjectName.getReturnType()).isEqualTo(String.class);
+        assertThat(getProjectName.getReturnType()).isEqualTo(ProjectName.class);
 
         Method getStatus = generatedClass.getDeclaredMethod("getStatus");
-        assertThat(getStatus.getReturnType()).isEqualTo(ProjectView.Status.class);
+        assertThat(getStatus.getReturnType()).isEqualTo(Project.Status.class);
     }
 }

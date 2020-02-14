@@ -27,18 +27,19 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.EntityWithColumns;
+import io.spine.code.gen.java.GeneratedJavadoc;
+import io.spine.code.gen.java.GeneratedTypeSpec;
+import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.PackageName;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.tools.compiler.gen.GeneratedTypeSpec;
-import io.spine.tools.compiler.gen.JavaPoetName;
 import io.spine.type.MessageType;
 
+import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
 import static io.spine.code.proto.ColumnOption.columnsOf;
 import static io.spine.code.proto.ScalarType.isScalarType;
 import static io.spine.code.proto.ScalarType.javaType;
-import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
 import static java.lang.String.format;
 import static javax.lang.model.element.Modifier.ABSTRACT;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -75,7 +76,7 @@ public final class EntityWithColumnsSpec implements GeneratedTypeSpec {
     public TypeSpec typeSpec() {
         TypeSpec.Builder builder =
                 TypeSpec.interfaceBuilder(className())
-                        .addJavadoc(classJavadoc())
+                        .addJavadoc(classJavadoc().spec())
                         .addAnnotation(generatedBySpineModelCompiler())
                         .addModifiers(PUBLIC)
                         .addSuperinterface(EntityWithColumns.class);
@@ -142,25 +143,11 @@ public final class EntityWithColumnsSpec implements GeneratedTypeSpec {
     /**
      * Obtains a class-level Javadoc.
      */
-    private CodeBlock classJavadoc() {
-        CodeBlock sourceProtoNote = CodeBlock
-                .builder()
-                .add("Entity Columns of proto type ")
-                .add("{@code $L}.", messageType.javaClassName())
-                .build();
-        JavadocText firstParagraph = JavadocText.fromEscaped(sourceProtoNote.toString())
-                                                .withNewLine()
-                                                .withNewLine();
-        JavadocText secondParagraph = JavadocText.fromEscaped(
-                "Implement this type to manually override the entity column values.")
-                                                 .withPTag()
-                                                 .withNewLine();
-        CodeBlock value = CodeBlock
-                .builder()
-                .add(firstParagraph.value())
-                .add(secondParagraph.value())
-                .build();
-        return value;
+    private GeneratedJavadoc classJavadoc() {
+        return GeneratedJavadoc.twoParagraph(
+                CodeBlock.of("Entity сolumns of proto type {@code $L}.", messageType.javaClassName()),
+                CodeBlock.of("Implement this type to manually override the entity column values.")
+        );
     }
 
     private String className() {

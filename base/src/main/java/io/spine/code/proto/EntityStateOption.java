@@ -40,23 +40,32 @@ public final class EntityStateOption extends MessageOption<EntityOption> {
     }
 
     /**
-     * Obtains the value of the {@code entity} option from the specified message.
+     * Obtains the value of the {@code (entity)} option from the specified message.
      *
      * @param message
      *         the message to obtain the option value from
-     * @return either an {@code Optional} containing the value of the {@code entity} option
-     *         or an empty {@code Optional}.
+     * @return either an {@code Optional} containing the value of the {@code (entity)} option
+     *         or an empty {@code Optional}
      * @apiNote This method is just a shorthand for
-     *      <pre>
-     *      {@code
-     *      EntityStateOption option = new EntityStateOption();
-     *      option.valueFrom(messageDescriptor);
-     *      }
-     *      </pre>
-     * to avoid instantiating an object.
+     *        <pre>
+     *        EntityStateOption option = new EntityStateOption();
+     *        option.valueFrom(messageDescriptor);
+     *        </pre>
+     *        to avoid instantiating an object.
      */
     public static Optional<EntityOption> valueOf(Descriptor message) {
         EntityStateOption option = new EntityStateOption();
         return option.valueFrom(message);
+    }
+
+    /**
+     * Obtains an entity kind of the message as defined by the {@code (entity)} option.
+     *
+     * @return an {@code Optional} containing the entity kind if the option is present and an empty
+     *         {@code Optional} otherwise
+     */
+    public static Optional<EntityOption.Kind> entityKindOf(Descriptor message) {
+        Optional<EntityOption> option = valueOf(message);
+        return option.map(EntityOption::getKind);
     }
 }

@@ -22,6 +22,7 @@ package io.spine.tools.protoc.method;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.ExternalClassLoader;
 import io.spine.tools.protoc.UuidConfig;
 import io.spine.type.MessageType;
 
@@ -32,8 +33,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 final class GenerateUuidMethods extends MethodGenerationTask {
 
-    GenerateUuidMethods(MethodFactories methodFactories, UuidConfig config) {
-        super(methodFactories, config.getValue());
+    GenerateUuidMethods(ExternalClassLoader<MethodFactory> classLoader, UuidConfig config) {
+        super(classLoader, config.getValue());
     }
 
     /**

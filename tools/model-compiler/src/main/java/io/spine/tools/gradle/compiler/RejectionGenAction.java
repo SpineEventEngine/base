@@ -22,12 +22,13 @@ package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableSet;
 import io.spine.code.gen.Indent;
+import io.spine.code.gen.java.GeneratedTypeSpec;
+import io.spine.code.gen.java.TypeSpecWriter;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.RejectionsFile;
 import io.spine.code.proto.SourceProtoBelongsToModule;
-import io.spine.tools.compiler.gen.GeneratedTypeSpec;
 import io.spine.tools.compiler.gen.rejection.RejectionSpec;
 import io.spine.tools.gradle.CodeGenerationAction;
 import io.spine.type.RejectionType;
@@ -91,14 +92,15 @@ final class RejectionGenAction extends CodeGenerationAction {
         if (rejections.isEmpty()) {
             return;
         }
-
         logGeneratingForFile(source);
         for (RejectionType rejectionType : rejections) {
             // The name of the generated `ThrowableMessage` will be the same
             // as for the Protobuf message.
             _debug().log("Processing rejection `%s`.", rejectionType.simpleJavaClassName());
+
             GeneratedTypeSpec spec = new RejectionSpec(rejectionType);
-            spec.writeToFile(targetDir().toPath(), indent());
+            TypeSpecWriter writer = new TypeSpecWriter(spec, indent());
+            writer.write(targetDir().toPath());
         }
     }
 

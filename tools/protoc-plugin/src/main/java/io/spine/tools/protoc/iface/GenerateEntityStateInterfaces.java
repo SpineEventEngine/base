@@ -21,17 +21,11 @@
 package io.spine.tools.protoc.iface;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.proto.EntityStateOption;
-import io.spine.option.EntityOption;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.EntityStateConfig;
 import io.spine.type.MessageType;
 
-import java.util.Optional;
-
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.option.EntityOption.Kind.KIND_UNKNOWN;
-import static io.spine.option.EntityOption.Kind.UNRECOGNIZED;
 
 /**
  * Marks the provided message type with the {@link io.spine.base.EntityState EntityState} interface
@@ -46,13 +40,7 @@ final class GenerateEntityStateInterfaces extends InterfaceGenerationTask {
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
-        Optional<EntityOption> entityOption = EntityStateOption.valueOf(type.descriptor());
-        if (!entityOption.isPresent()) {
-            return ImmutableList.of();
-        }
-        EntityOption.Kind kind = entityOption.get()
-                                             .getKind();
-        if (kind == UNRECOGNIZED || kind == KIND_UNKNOWN) {
+        if (!type.isEntityState()) {
             return ImmutableList.of();
         }
         return generateInterfacesFor(type);

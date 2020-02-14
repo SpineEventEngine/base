@@ -27,8 +27,11 @@ import io.spine.annotation.Beta;
 import io.spine.code.fs.java.DefaultJavaProject;
 import io.spine.code.gen.Indent;
 import io.spine.tools.gradle.GradleExtension;
+import io.spine.tools.protoc.GeneratedColumns;
+import io.spine.tools.protoc.GeneratedFields;
 import io.spine.tools.protoc.GeneratedInterfaces;
 import io.spine.tools.protoc.GeneratedMethods;
+import io.spine.tools.protoc.GeneratedNestedClasses;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -167,6 +170,12 @@ public class Extension extends GradleExtension {
     public final GeneratedInterfaces interfaces = new GeneratedInterfaces();
 
     public final GeneratedMethods methods = new GeneratedMethods();
+
+    public final GeneratedNestedClasses nestedClasses = new GeneratedNestedClasses();
+
+    public final GeneratedColumns columns = new GeneratedColumns();
+
+    public final GeneratedFields fields = new GeneratedFields();
 
     public boolean generateValidatingBuilders = true;
 
@@ -328,7 +337,7 @@ public class Extension extends GradleExtension {
     }
 
     @SuppressWarnings("unused") // Configures `generateAnnotations` closure.
-    public void generateAnnotations(Closure closure) {
+    public void generateAnnotations(Closure<?> closure) {
         ConfigureUtil.configure(closure, generateAnnotations);
     }
 
@@ -338,7 +347,7 @@ public class Extension extends GradleExtension {
     }
 
     @SuppressWarnings("unused") // Configures `interfaces` closure.
-    public void interfaces(Closure closure) {
+    public void interfaces(Closure<?> closure) {
         ConfigureUtil.configure(closure, interfaces);
     }
 
@@ -348,13 +357,42 @@ public class Extension extends GradleExtension {
     }
 
     @SuppressWarnings("unused") // Configures `methods` closure.
-    public void methods(Closure closure) {
+    public void methods(Closure<?> closure) {
         ConfigureUtil.configure(closure, methods);
     }
 
     @SuppressWarnings("unused") // Configures `methods` closure.
     public void methods(Action<? super GeneratedMethods> action) {
         action.execute(methods);
+    }
+
+    @SuppressWarnings("unused") // Configures `nestedClasses` closure.
+    public void nestedClasses(Closure<?> closure) {
+        ConfigureUtil.configure(closure, nestedClasses);
+    }
+
+    @SuppressWarnings("unused") // Configures `nestedClasses` closure.
+    public void nestedClasses(Action<? super GeneratedNestedClasses> action) {
+        action.execute(nestedClasses);
+    }
+
+    @SuppressWarnings("unused") // Configures `columns` closure.
+    public void columns(Closure<?> closure) {
+        ConfigureUtil.configure(closure, columns);
+    }
+
+    @SuppressWarnings("unused") // Configures `columns` closure.
+    public void columns(Action<? super GeneratedColumns> action) {
+        action.execute(columns);
+    }
+    @SuppressWarnings("unused") // Configures `fields` closure.
+    public void fields(Closure<?> closure) {
+        ConfigureUtil.configure(closure, fields);
+    }
+
+    @SuppressWarnings("unused") // Configures `fields` closure.
+    public void fields(Action<? super GeneratedFields> action) {
+        action.execute(fields);
     }
 
     public static CodeGenAnnotations getCodeGenAnnotations(Project project) {
@@ -370,6 +408,21 @@ public class Extension extends GradleExtension {
     public static GeneratedMethods getMethods(Project project) {
         GeneratedMethods methods = extension(project).methods;
         return methods;
+    }
+
+    public static GeneratedNestedClasses getNestedClasses(Project project) {
+        GeneratedNestedClasses nestedClasses = extension(project).nestedClasses;
+        return nestedClasses;
+    }
+
+    public static GeneratedColumns getColumns(Project project) {
+        GeneratedColumns columns = extension(project).columns;
+        return columns;
+    }
+
+    public static GeneratedFields getFields(Project project) {
+        GeneratedFields fields = extension(project).fields;
+        return fields;
     }
 
     public static boolean shouldGenerateValidatingBuilders(Project project) {

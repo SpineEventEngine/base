@@ -357,6 +357,18 @@ class FieldTest {
     }
 
     @Test
+    @DisplayName("obtain the instance which is a nested field in the current field type")
+    void returnNested() {
+        String topLevelField = "top-level-field";
+        Field topLevel = Field.named(topLevelField);
+        String nestedField = "nested-field";
+        Field nested = topLevel.nested(nestedField);
+
+        FieldPath path = nested.path();
+        assertThat(path.getFieldNameList()).containsExactly(topLevelField, nestedField);
+    }
+
+    @Test
     @DisplayName("obtain the instance by number in a message type")
     void byNumber() {
         Field seconds = Field.withNumberIn(1, Timestamp.getDescriptor());

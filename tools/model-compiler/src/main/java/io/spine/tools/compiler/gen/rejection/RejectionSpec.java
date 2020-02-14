@@ -27,16 +27,16 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.ThrowableMessage;
 import io.spine.code.gen.java.FieldName;
+import io.spine.code.gen.java.GeneratedTypeSpec;
+import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.java.PackageName;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.logging.Logging;
-import io.spine.tools.compiler.gen.GeneratedTypeSpec;
-import io.spine.tools.compiler.gen.JavaPoetName;
 import io.spine.tools.compiler.gen.NoArgMethod;
 import io.spine.type.RejectionType;
 
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
-import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
+import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -96,6 +96,7 @@ public final class RejectionSpec implements GeneratedTypeSpec, Logging {
         return rejection;
     }
 
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     private MethodSpec constructor() {
         _debug().log("Creating the constructor for the type `%s`.",
                     declaration.simpleJavaClassName());

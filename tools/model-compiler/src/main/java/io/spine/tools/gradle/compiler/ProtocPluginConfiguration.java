@@ -22,10 +22,12 @@ package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.io.Files2;
-import io.spine.tools.protoc.AddMethods;
 import io.spine.tools.protoc.Classpath;
+import io.spine.tools.protoc.GeneratedColumns;
+import io.spine.tools.protoc.GeneratedFields;
 import io.spine.tools.protoc.GeneratedInterfaces;
 import io.spine.tools.protoc.GeneratedMethods;
+import io.spine.tools.protoc.GeneratedNestedClasses;
 import io.spine.tools.protoc.SpineProtocConfig;
 import org.gradle.api.Project;
 import org.gradle.api.file.FileCollection;
@@ -39,8 +41,11 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Set;
 
+import static io.spine.tools.gradle.compiler.Extension.getColumns;
+import static io.spine.tools.gradle.compiler.Extension.getFields;
 import static io.spine.tools.gradle.compiler.Extension.getInterfaces;
 import static io.spine.tools.gradle.compiler.Extension.getMethods;
+import static io.spine.tools.gradle.compiler.Extension.getNestedClasses;
 import static io.spine.tools.gradle.compiler.Extension.shouldGenerateValidatingBuilders;
 import static io.spine.tools.gradle.compiler.Extension.shouldGenerateValidation;
 import static io.spine.util.Exceptions.newIllegalStateException;
@@ -87,19 +92,23 @@ final class ProtocPluginConfiguration {
     private static SpineProtocConfig assembleSpineProtocConfig(Project project) {
         GeneratedInterfaces interfaces = getInterfaces(project);
         GeneratedMethods methods = getMethods(project);
+        GeneratedNestedClasses nestedClasses = getNestedClasses(project);
+        GeneratedColumns columns = getColumns(project);
+        GeneratedFields fields = getFields(project);
         boolean shouldGenerateVBuilders = shouldGenerateValidatingBuilders(project);
         boolean shouldGenerateValidation = shouldGenerateValidation(project);
-        AddMethods methodsGeneration = methods
-                .asProtocConfig()
-                .toBuilder()
-                .setFactoryClasspath(projectClasspath(project))
-                .build();
+        Classpath projectClasspath = projectClasspath(project);
+
         SpineProtocConfig result = SpineProtocConfig
                 .newBuilder()
                 .setAddInterfaces(interfaces.asProtocConfig())
-                .setAddMethods(methodsGeneration)
+                .setAddMethods(methods.asProtocConfig())
+                .setAddNestedClasses(nestedClasses.asProtocConfig())
+                .setAddColumns(columns.asProtocConfig())
+                .setAddFields(fields.asProtocConfig())
                 .setSkipValidatingBuilders(!shouldGenerateVBuilders)
                 .setGenerateValidation(shouldGenerateValidation)
+                .setClasspath(projectClasspath)
                 .build();
         return result;
     }

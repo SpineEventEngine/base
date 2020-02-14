@@ -38,6 +38,18 @@ message SpineProtocConfig {
     // metadata over all the combinations of fields and options at the program runtime.
     //
     bool generate_validation = 4;
+
+    // Nested classes generation tasks.
+    AddNestedClasses add_nested_classes = 5;
+
+    // Column generation tasks.
+    AddColumns add_columns = 6;
+
+    // Field generation tasks.
+    AddFields add_fields = 7;
+
+    // The classpath used to lookup types by their fully-qualified names.
+    Classpath classpath = 8;
 }
 
 // Interfaces generation configuration.
@@ -62,7 +74,36 @@ message AddMethods {
     // Pattern-based method factories.
     repeated ConfigByPattern factory_by_pattern = 2;
 
-    Classpath factory_classpath = 3;
+    // Field number and name reservation due to a deleted field.
+    reserved 3;
+    reserved "factory_classpath";
+}
+
+// Nested classes generation configuration.
+message AddNestedClasses {
+
+    // Pattern-based nested class factories.
+    repeated ConfigByPattern factory_by_pattern = 1;
+}
+
+// Strongly-typed columns generation configuration.
+message AddColumns {
+
+    // The flag which allows to enable and disable the column generation.
+    bool generate = 1;
+}
+
+// Strongly-typed fields generation configuration.
+message AddFields {
+
+    // Enables strongly-typed field generation for messages that represent entity states.
+    EntityStateConfig entity_state_config = 1;
+
+    // Enables strongly-typed field generation by file pattern.
+    repeated ConfigByPattern config_by_pattern = 2;
+
+    // Enables strongly-typed field generation for specific types.
+    repeated ConfigByType config_by_type = 3;
 }
 
 // UUID value code generation configuration.
@@ -76,6 +117,17 @@ message UuidConfig {
     string value = 1;
 }
 
+// The code generation configuration for entity state messages.
+//
+message EntityStateConfig {
+
+    // A fully-qualified name of the target.
+    //
+    // Currently, the interface name or field type name is expected.
+    //
+    string value = 1;
+}
+
 // Code generation configuration based on the FilePattern.
 //
 message ConfigByPattern {
@@ -83,7 +135,8 @@ message ConfigByPattern {
 
     // A fully-qualified name of the target.
     //
-    // Currently interface name or method factory name is expected.
+    // Currently interface name, method factory name, nested class factory name or field type name
+    // is expected.
     //
     string value = 1;
 
@@ -91,13 +144,18 @@ message ConfigByPattern {
     FilePattern pattern = 2;
 }
 
-// The code generation configuration for entity state messages.
+// Code generation configuration which affects the specific type.
 //
-message EntityStateConfig {
+message ConfigByType {
 
-    // A fully-qualified name of the interface to mark the entity state messages with.
+    // A fully-qualified name of the target.
+    //
+    // Currently, only the field type name is expected.
     //
     string value = 1;
+
+    // A pattern for the type name.
+    TypePattern pattern = 2;
 }
 
 // File pattern which is used to filter messages.
@@ -127,6 +185,15 @@ message FilePattern {
         //
         string regex = 3;
     }
+}
+
+// A type name pattern.
+message TypePattern {
+
+    // A pattern which is used to check for a strict match between the type name and the specified
+    // expected type.
+    //
+    string expected_type = 1;
 }
 
 // A container for the java classpath items.

@@ -24,10 +24,12 @@ import com.google.common.base.Objects;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Any;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
+import io.spine.annotation.Internal;
 import io.spine.base.MessageFile;
 import io.spine.code.java.ClassName;
 import io.spine.option.EntityOption;
@@ -43,6 +45,7 @@ import io.spine.type.UnknownTypeException;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.DescriptorProtos.DescriptorProto.FIELD_FIELD_NUMBER;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
@@ -256,6 +259,13 @@ public final class FieldDeclaration {
     }
 
     /**
+     * Tells if the field is a singular field of message type.
+     */
+    public boolean isSingularMessage() {
+        return isMessage() && isNotCollection();
+    }
+
+    /**
      * Determines whether the declaration is a singular value.
      *
      * @return {@code true} if the declaration neither map nor repeated, {@code false} otherwise
@@ -296,6 +306,19 @@ public final class FieldDeclaration {
     /** Obtains the Java type of the declaration. */
     public JavaType javaType() {
         return field.getJavaType();
+    }
+
+    /**
+     * Returns the message type of the field.
+     *
+     * @throws IllegalStateException
+     *         if the field is of non-{@link Message} type
+     */
+    @Internal
+    public MessageType messageType() {
+        checkState(isMessage());
+        Descriptor messageType = descriptor().getMessageType();
+        return new MessageType(messageType);
     }
 
     /** Obtains the descriptor of the value of a map. */

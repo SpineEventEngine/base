@@ -22,6 +22,7 @@ package io.spine.tools.protoc.method;
 
 import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.ConfigByPattern;
+import io.spine.tools.protoc.ExternalClassLoader;
 import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.FilePatterns;
 import io.spine.tools.protoc.given.TestMethodFactory;
@@ -38,33 +39,33 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("GenerateMethods should")
 final class GenerateMethodsTest {
 
-    @DisplayName("throw NullPointerException if")
     @Nested
+    @DisplayName("throw NullPointerException if")
     class ThrowNpe {
 
-        @DisplayName("is created with `null` arguments")
         @Test
+        @DisplayName("is created with `null` arguments")
         void isCreatedWithNullArguments() {
             assertThrows(NullPointerException.class, () ->
                     new GenerateMethods(null, ConfigByPattern.getDefaultInstance()));
             assertThrows(NullPointerException.class, () ->
-                    new GenerateMethods(testMethodFactories(), null)
+                    new GenerateMethods(testClassLoader(), null)
             );
         }
 
-        @DisplayName("`null` MessageType is supplied")
         @Test
+        @DisplayName("`null` MessageType is supplied")
         void nullMessageTypeIsSupplied() {
             ConfigByPattern config = newTaskConfig("test")
                     .setPattern(FilePatterns.filePrefix("non-default"))
                     .build();
-            GenerateMethods generateMethods = new GenerateMethods(testMethodFactories(), config);
+            GenerateMethods generateMethods = new GenerateMethods(testClassLoader(), config);
             assertThrows(NullPointerException.class, () -> generateMethods.generateFor(null));
         }
     }
 
-    @DisplayName("reject empty `FilePattern`")
     @Test
+    @DisplayName("reject empty `FilePattern`")
     void rejectEmptyFilePattern() {
         assertThrows(IllegalArgumentException.class, () ->
                 newTask(newTaskConfig("not-empty-name").build()));
@@ -78,15 +79,15 @@ final class GenerateMethodsTest {
                 .setPattern(FilePatterns.filePrefix("non-default"))
                 .build();
         assertThrows(IllegalArgumentException.class, () ->
-                new GenerateMethods(testMethodFactories(), config));
+                new GenerateMethods(testClassLoader(), config));
     }
 
-    @DisplayName("generate empty result if")
     @Nested
+    @DisplayName("generate empty result if")
     class GenerateEmptyResult {
 
-        @DisplayName("message does not match pattern")
         @Test
+        @DisplayName("message does not match pattern")
         void messageDoesNotMatchPattern() {
             assertEmptyResult(TestMethodFactory.class.getName(), FilePatterns.fileRegex("wrong"));
         }
@@ -100,8 +101,8 @@ final class GenerateMethodsTest {
         }
     }
 
-    @DisplayName("generate new methods")
     @Test
+    @DisplayName("generate new methods")
     void generateNewMethods() {
         ConfigByPattern config = newTaskConfig(TestMethodFactory.class.getName())
                 .setPattern(FilePatterns.fileSuffix("test_patterns.proto"))
@@ -116,11 +117,11 @@ final class GenerateMethodsTest {
     }
 
     private static GenerateMethods newTask(ConfigByPattern config) {
-        return new GenerateMethods(testMethodFactories(), config);
+        return new GenerateMethods(testClassLoader(), config);
     }
 
-    private static MethodFactories testMethodFactories() {
-        return new MethodFactories(Classpath.getDefaultInstance());
+    private static ExternalClassLoader<MethodFactory> testClassLoader() {
+        return new ExternalClassLoader<>(Classpath.getDefaultInstance(), MethodFactory.class);
     }
 
     private static MessageType testType() {

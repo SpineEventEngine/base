@@ -22,9 +22,10 @@ package io.spine.tools.gradle.compiler;
 
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.gen.Indent;
+import io.spine.code.gen.java.GeneratedTypeSpec;
+import io.spine.code.gen.java.TypeSpecWriter;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.SourceProtoBelongsToModule;
-import io.spine.tools.compiler.gen.GeneratedTypeSpec;
 import io.spine.tools.compiler.gen.column.EntityWithColumnsSpec;
 import io.spine.tools.gradle.CodeGenerationAction;
 import io.spine.type.MessageType;
@@ -70,7 +71,8 @@ final class ColumnGenAction extends CodeGenerationAction {
         types.forEach(type -> {
             if (hasColumns(type)) {
                 GeneratedTypeSpec spec = new EntityWithColumnsSpec(type);
-                spec.writeToFile(targetDir().toPath(), indent());
+                TypeSpecWriter writer = new TypeSpecWriter(spec, indent());
+                writer.write(targetDir().toPath());
             }
         });
     }

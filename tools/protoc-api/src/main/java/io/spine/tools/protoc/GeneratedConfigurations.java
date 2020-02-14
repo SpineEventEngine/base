@@ -37,6 +37,9 @@ import static io.spine.tools.protoc.ProtocTaskConfigs.byPatternConfig;
  *         Protobuf configuration
  * @see GeneratedInterfaces
  * @see GeneratedMethods
+ * @see GeneratedNestedClasses
+ * @see GeneratedColumns
+ * @see GeneratedFields
  */
 abstract class GeneratedConfigurations<C extends Message> {
 
@@ -62,8 +65,8 @@ abstract class GeneratedConfigurations<C extends Message> {
     /**
      * Adds a new {@link PatternSelector} configuration with a supplied {@link ClassName}.
      *
-     * <p>The {@code className} can represent a fully-qualified name of an interface or a
-     * method factory.
+     * <p>The {@code className} can represent a fully-qualified name of an interface, method
+     * factory, nested class factory or field type.
      */
     void addPattern(PatternSelector pattern, ClassName className) {
         patterns.put(pattern, className);
