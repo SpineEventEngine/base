@@ -16,12 +16,31 @@ public final class ClassMember extends AbstractCompilerOutput {
         super(file);
     }
 
+    /**
+     * Creates a compiler output which alters the generated message with an additional method.
+     *
+     * @param generatedMethod
+     *         the source code of the added method
+     * @param messageType
+     *         the generated message type
+     * @return a new instance of the {@code ClassMember} compiler output
+     */
     public static ClassMember method(GeneratedMethod generatedMethod, MessageType messageType) {
         CodeGeneratorResponse.File response =
                 codeGeneratorResponse(generatedMethod.toString(), messageType);
         return new ClassMember(response);
     }
 
+    /**
+     * Creates a compiler output which alters the generated message with
+     * an additional nested class.
+     *
+     * @param generatedNestedClass
+     *         the source code of the added nested class
+     * @param messageType
+     *         the generated message type
+     * @return a new instance of the {@code ClassMember} compiler output
+     */
     public static ClassMember nestedClass(GeneratedNestedClass generatedNestedClass,
                                           MessageType messageType) {
         CodeGeneratorResponse.File response =
