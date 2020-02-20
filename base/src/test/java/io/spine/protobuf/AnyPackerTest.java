@@ -20,33 +20,36 @@
 
 package io.spine.protobuf;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
+import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import io.spine.test.protobuf.MessageToPack;
 import io.spine.testing.Tests;
+import io.spine.testing.UtilityClassTest;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
+import java.util.function.Function;
 
+import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.protobuf.AnyPacker.pack;
 import static io.spine.protobuf.AnyPacker.unpack;
 import static io.spine.protobuf.AnyPacker.unpackFunc;
-import static io.spine.testing.DisplayNames.HAVE_PARAMETERLESS_CTOR;
 import static io.spine.testing.TestValues.newUuidValue;
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("AnyPacker utility class should")
-class AnyPackerTest {
+class AnyPackerTest extends UtilityClassTest<AnyPacker> {
 
     /** A message with type URL standard to Google Protobuf. */
     private final StringValue googleMsg = StringValue.of(newUuid());
@@ -56,15 +59,21 @@ class AnyPackerTest {
                                                         .setValue(newUuidValue())
                                                         .build();
 
-    @Test
-    @DisplayName(HAVE_PARAMETERLESS_CTOR)
-    void have_private_constructor() {
-        assertHasPrivateParameterlessCtor(AnyPacker.class);
+    AnyPackerTest() {
+        super(AnyPacker.class);
+    }
+
+    @Override
+    protected void configure(NullPointerTester tester) {
+        super.configure(tester);
+        tester.setDefault(Message.class, Empty.getDefaultInstance())
+              .setDefault(Any.class, Any.pack(Empty.getDefaultInstance()))
+              .setDefault(Class.class, Empty.class);
     }
 
     @Test
     @DisplayName("pack Spine message to Any")
-    void pack_spine_message_to_Any() {
+    void packSpineMessageToAny() {
         Any actual = pack(spineMsg);
         TypeUrl typeUrl = TypeUrl.of(spineMsg);
 
@@ -75,7 +84,7 @@ class AnyPackerTest {
 
     @Test
     @DisplayName("unpack Spine message from Any")
-    void unpack_spine_message_from_Any() {
+    void unpackSpineMessageFromAny() {
         Any any = pack(spineMsg);
 
         MessageToPack actual = (MessageToPack) unpack(any);
@@ -85,7 +94,7 @@ class AnyPackerTest {
 
     @Test
     @DisplayName("pack Google message to Any")
-    void pack_google_message_to_Any() {
+    void packGoogleMessageToAny() {
         Any expected = Any.pack(googleMsg);
 
         Any actual = pack(googleMsg);
@@ -95,7 +104,7 @@ class AnyPackerTest {
 
     @Test
     @DisplayName("unpack Google message from Any")
-    void unpack_google_message_from_Any() {
+    void unpackGoogleMessageFromAny() {
         Any any = Any.pack(googleMsg);
 
         StringValue actual = (StringValue) unpack(any);
@@ -105,7 +114,7 @@ class AnyPackerTest {
 
     @Test
     @DisplayName("return Any if it is passes to pack")
-    void return_Any_if_it_is_passed_to_pack() {
+    void returnAnyIfItIsPassedToPack() {
         Any any = Any.pack(googleMsg);
 
         assertSame(any, pack(any));
@@ -113,36 +122,49 @@ class AnyPackerTest {
 
     @Test
     @DisplayName("fail on attempt to pack null")
-    void fail_on_attempt_to_pack_null() {
+    void failOnAttemptToPackNull() {
         assertThrows(NullPointerException.class,
                      () -> pack(Tests.<Message>nullRef()));
     }
 
     @Test
     @DisplayName("fail on attempt to unpack null")
-    void fail_on_attempt_to_unpack_null() {
+    void failOnAttemptToUnpackNull() {
         assertThrows(NullPointerException.class,
                      () -> unpack(Tests.nullRef()));
     }
 
     @Test
     @DisplayName("create packing iterator")
-    void create_packing_iterator() {
-        Iterator<Message> iterator = Lists.<Message>newArrayList(newUuidValue()).iterator();
-        assertNotNull(pack(iterator));
+    void createPackingIterator() {
+        StringValue value = newUuidValue();
+        Iterator<Message> iterator = Lists.<Message>newArrayList(value).iterator();
+        Iterator<Any> packingIterator = pack(iterator);
+        assertThat(ImmutableList.copyOf(packingIterator))
+             .containsExactly(pack(value));
     }
 
     @Test
     @DisplayName("have null accepting function")
-    void have_null_accepting_func() {
+    void haveNullAcceptingFunc() {
         assertNull(unpackFunc().apply(null));
     }
 
     @Test
-    @DisplayName("have unpacking function")
-    void have_unpacking_func() {
+    @DisplayName("provide unpacking function")
+    void unpackingFunc() {
         StringValue value = newUuidValue();
+        assertThat(unpackFunc().apply(Any.pack(value)))
+                .isEqualTo(value);
+    }
 
-        assertEquals(value, unpackFunc().apply(Any.pack(value)));
+    @Test
+    @DisplayName("provide typed unpacking function")
+    void typedUnpackingFunc() {
+        StringValue value = newUuidValue();
+        Function<Any, StringValue> function = unpackFunc(StringValue.class);
+        StringValue unpacked = function.apply(Any.pack(value));
+        assertThat(unpacked)
+                  .isEqualTo(value);
     }
 }

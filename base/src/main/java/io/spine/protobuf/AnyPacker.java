@@ -62,6 +62,7 @@ public final class AnyPacker {
      * @return the wrapping instance of {@link Any} or the message itself, if it is {@code Any}
      */
     public static Any pack(Message message) {
+        checkNotNull(message);
         if (message instanceof Any) {
             return (Any) message;
         }
@@ -106,6 +107,9 @@ public final class AnyPacker {
      *         {@code is(Class)} sub-call) and parse its contents.
      */
     public static <T extends Message> T unpack(Any any, Class<T> cls) {
+        checkNotNull(any);
+        checkNotNull(cls);
+
         T defaultInstance = Messages.defaultInstance(cls);
         TypeUrl expectedTypeUrl = TypeUrl.of(defaultInstance);
         checkType(any, expectedTypeUrl);
@@ -127,6 +131,7 @@ public final class AnyPacker {
      * @return the packing iterator
      */
     public static Iterator<Any> pack(Iterator<Message> iterator) {
+        checkNotNull(iterator);
         return new PackingIterator(iterator);
     }
 
@@ -152,6 +157,7 @@ public final class AnyPacker {
      */
     public static <T extends Message> Function<@Nullable Any, @Nullable T>
     unpackFunc(Class<T> type) {
+        checkNotNull(type);
         T defaultInstance = Messages.defaultInstance(type);
         @SuppressWarnings("unchecked")
         Parser<T> parser = (Parser<T>) defaultInstance.getParserForType();
