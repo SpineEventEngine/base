@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
@@ -31,7 +32,10 @@ import io.spine.test.protobuf.MessageToPack;
 import io.spine.testing.Tests;
 import io.spine.testing.UtilityClassTest;
 import io.spine.type.TypeUrl;
+import io.spine.type.UnexpectedTypeException;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
@@ -166,5 +170,55 @@ class AnyPackerTest extends UtilityClassTest<AnyPacker> {
         StringValue unpacked = function.apply(Any.pack(value));
         assertThat(unpacked)
                   .isEqualTo(value);
+    }
+
+    @Nested
+    @DisplayName("throw UnexpectedTypeException if")
+    class Throw {
+
+        @Test
+        @DisplayName("type URL and class do not match")
+        void type() {
+            Any any = Any.pack(spineMsg);
+            assertThrows(UnexpectedTypeException.class, () -> unpack(any, Empty.class));
+        }
+
+        @Test
+        @DisplayName("type URL and the predefined class do not match")
+        void typeInFunction() {
+            Any any = Any.pack(spineMsg);
+            Function<@Nullable Any, @Nullable Empty> fun = unpackFunc(Empty.class);
+            assertThrows(UnexpectedTypeException.class, () -> fun.apply(any));
+        }
+
+        @Test
+        @DisplayName("bytes don't match the type URL")
+        void malformed() {
+            Any malformed = Any
+                    .newBuilder()
+                    .setTypeUrl(TypeUrl.of(Empty.class).value())
+                    .setValue(ByteString.copyFromUtf8("malformed bytes"))
+                    .build();
+            assertThrows(UnexpectedTypeException.class, () -> unpack(malformed));
+        }
+
+        @Test
+        @DisplayName("bytes don't match the function's predefined class")
+        void malformedInFunction() {
+            Any malformed = Any
+                    .newBuilder()
+                    .setTypeUrl(TypeUrl.of(Empty.class).value())
+                    .setValue(ByteString.copyFromUtf8("malformed bytes"))
+                    .build();
+            Function<@Nullable Any, @Nullable Empty> fun = unpackFunc(Empty.class);
+            assertThrows(UnexpectedTypeException.class, () -> fun.apply(malformed));
+        }
+    }
+
+    @Test
+    @DisplayName("throw UnexpectedTypeException on a type URL and class mismatch")
+    void unexpectedTypeInFunction() {
+        Any any = Any.pack(spineMsg);
+        assertThrows(UnexpectedTypeException.class, () -> unpack(any, Empty.class));
     }
 }
