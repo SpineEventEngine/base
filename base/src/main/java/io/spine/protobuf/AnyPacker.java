@@ -23,6 +23,7 @@ package io.spine.protobuf;
 import com.google.protobuf.Any;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
+import com.google.protobuf.Parser;
 import io.spine.type.TypeUrl;
 import io.spine.type.UnexpectedTypeException;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -106,13 +107,8 @@ public final class AnyPacker {
      */
     public static <T extends Message> T unpack(Any any, Class<T> cls) {
         T defaultInstance = Messages.defaultInstance(cls);
-
-        String actualTypeUrl = any.getTypeUrl();
         TypeUrl expectedTypeUrl = TypeUrl.of(defaultInstance);
-        if (!expectedTypeUrl.value().equals(actualTypeUrl)) {
-            throw new UnexpectedTypeException(expectedTypeUrl, TypeUrl.parse(actualTypeUrl));
-        }
-
+        checkType(any, expectedTypeUrl);
         try {
             @SuppressWarnings("unchecked")  // Ensured by the check above.
             T result = (T) defaultInstance
@@ -141,6 +137,46 @@ public final class AnyPacker {
      */
     public static Function<@Nullable Any, @Nullable Message> unpackFunc() {
         return AnyPacker::unpackOrNull;
+    }
+
+    /**
+     * Provides the function for unpacking messages of a given type from {@code Any}.
+     *
+     * <p>The function returns {@code null} for {@code null} input.
+     *
+     * <p>The function throws a {@link UnexpectedTypeException} if the actual type of the message
+     * does not match the given class.
+     *
+     * @param type
+     *         expected class of the messages
+     */
+    public static <T extends Message> Function<@Nullable Any, @Nullable T>
+    unpackFunc(Class<T> type) {
+        T defaultInstance = Messages.defaultInstance(type);
+        @SuppressWarnings("unchecked")
+        Parser<T> parser = (Parser<T>) defaultInstance.getParserForType();
+        TypeUrl expectedTypeUrl = TypeUrl.of(defaultInstance);
+        return any -> any == null
+                      ? null
+                      : parseMessage(parser, expectedTypeUrl, any);
+    }
+
+    private static <T extends Message> T
+    parseMessage(Parser<T> parser, TypeUrl expectedTypeUrl, Any any) {
+        checkType(any, expectedTypeUrl);
+        try {
+            T message = parser.parseFrom(any.getValue());
+            return message;
+        } catch (InvalidProtocolBufferException e) {
+            throw new UnexpectedTypeException(e);
+        }
+    }
+
+    private static void checkType(Any any, TypeUrl expectedType) {
+        TypeUrl actualType = TypeUrl.ofEnclosed(any);
+        if (!actualType.equals(expectedType)) {
+            throw new UnexpectedTypeException(expectedType, actualType);
+        }
     }
 
     private static @Nullable Message unpackOrNull(@Nullable Any any) {
