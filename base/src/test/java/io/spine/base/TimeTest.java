@@ -91,15 +91,6 @@ class TimeTest {
         }
 
         @Test
-        @DisplayName("which emulates nanosecond resolution starting from zero")
-        void providesNanosStartingFromZero() {
-            @SuppressWarnings("ProtoTimestampGetSecondsGetNano")
-            int allNanos = systemTime().getNanos();
-            int startingFromMicros = allNanos % 1_000_000;
-            assertThat(startingFromMicros).isEqualTo(0);
-        }
-
-        @Test
         @DisplayName("which provides different values for two consecutive calls")
         void differentValuesForConsecutive() {
             assertThat(systemTime()).isNotEqualTo(systemTime());
