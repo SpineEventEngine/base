@@ -184,7 +184,6 @@ public final class Time {
      * <p>In case the upper bound of the nanos is reached, meaning that there were more than
      * {@code 1 000} calls to this class within a millisecond, the nanosecond value is reset
      * back to {@code 0}.
-     *
      */
     @ThreadSafe
     static final class IncrementalNanos {
@@ -202,7 +201,7 @@ public final class Time {
         private synchronized int getNextValue(Instant forTime) {
             if (forTime.equals(previousValue)) {
                 previousValue = forTime;
-                counter+= NANOS_PER_MICROSECOND;
+                counter += NANOS_PER_MICROSECOND;
                 counter = counter % MAX_VALUE;
             } else {
                 previousValue = forTime;
