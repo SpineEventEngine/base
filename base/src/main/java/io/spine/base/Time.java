@@ -29,6 +29,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.concurrent.TimeUnit.MICROSECONDS;
 
 /**
  * Utilities for working with time information.
@@ -149,7 +150,7 @@ public final class Time {
         @Override
         public Timestamp currentTime() {
             Instant now = Instant.now();
-            int nanosOnly = IncrementalNanos.value();
+            int nanosOnly = IncrementalNanos.valueForTime(now);
             Timestamp result = Timestamp.newBuilder()
                                         .setSeconds(now.getEpochSecond())
                                         .setNanos(now.getNano() + nanosOnly)
@@ -169,30 +170,51 @@ public final class Time {
      * <p>This class is designed to emulate the nanoseconds and provide incremental values
      * for the consecutive calls.
      *
+     * <p>Due to the limitations of the most storage engines, which round the time values to
+     * the nearest or the lowest microsecond, the nanosecond values produced by
+     * this class are incremented by {@code 1 000} nanoseconds, i.e. by {@code 1} microsecond
+     * per call.
+     *
      * <p>The returned nanosecond value starts at {@code 0} and never exceeds {@code 999 999}.
      * It is designed to keep the millisecond value provided by a typical-JVM system clock intact.
-     * Once the upper bound of the nanos is reached , the nanosecond value is reset
+     *
+     * <p>The nanosecond value is reset for each new passed {@link Instant} value.
+     * That allows to receive {@code 1 000} distinct time values per millisecond.
+     *
+     * <p>In case the upper bound of the nanos is reached, meaning that there were more than
+     * {@code 1 000} calls to this class within a millisecond, the nanosecond value is reset
      * back to {@code 0}.
      */
     @ThreadSafe
     static final class IncrementalNanos {
 
-        private static final int MAX_VALUE = 999_999;
+        private static final int MAX_VALUE = 1_000_000;
+
+        @SuppressWarnings("NumericCastThatLosesPrecision")
+        private static final int NANOS_PER_MICROSECOND = (int) MICROSECONDS.toNanos(1);
+
         private static final IncrementalNanos instance = new IncrementalNanos();
 
         private int counter;
+        private Instant previousValue;
 
-        private synchronized int getNextValue() {
-            counter++;
-            counter = counter % MAX_VALUE;
+        private synchronized int getNextValue(Instant forTime) {
+            if (forTime.equals(previousValue)) {
+                previousValue = forTime;
+                counter += NANOS_PER_MICROSECOND;
+                counter = counter % MAX_VALUE;
+            } else {
+                previousValue = forTime;
+                counter = 0;
+            }
             return counter;
         }
 
         /**
          * Obtains the next nanosecond value.
          */
-        static int value() {
-            return instance.getNextValue();
+        static int valueForTime(Instant forTime) {
+            return instance.getNextValue(forTime);
         }
     }
 }

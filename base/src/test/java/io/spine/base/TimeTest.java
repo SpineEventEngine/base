@@ -22,6 +22,7 @@ package io.spine.base;
 
 import com.google.common.truth.Subject;
 import com.google.protobuf.Timestamp;
+import io.spine.base.Time.IncrementalNanos;
 import io.spine.base.Time.SystemTimeProvider;
 import io.spine.base.given.ConstantTimeProvider;
 import io.spine.base.given.FakeTimeProvider;
@@ -30,7 +31,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.protobuf.util.Timestamps.subtract;
@@ -88,18 +91,34 @@ class TimeTest {
         }
 
         @Test
-        @DisplayName("which emulates nanosecond resolution")
-        void providesNanos() {
-            @SuppressWarnings("ProtoTimestampGetSecondsGetNano")
-            int allNanos = systemTime().getNanos();
-            int startingFromMicros = allNanos % 1_000_000;
-            assertThat(startingFromMicros).isGreaterThan(0);
-        }
-
-        @Test
         @DisplayName("which provides different values for two consecutive calls")
         void differentValuesForConsecutive() {
             assertThat(systemTime()).isNotEqualTo(systemTime());
+        }
+    }
+
+    @Nested
+    @DisplayName("Have an emulator of nanosecond values")
+    class IncrementalNanosEmulator {
+
+        @Test
+        @DisplayName("which returns incremental emulated values if called several times" +
+                " within a single point of wall-clock time")
+        void differentValuesForTheSameTime() {
+            Instant now = Instant.now();
+            assertThat(IncrementalNanos.valueForTime(now))
+                    .isLessThan(IncrementalNanos.valueForTime(now));
+        }
+
+        @SuppressWarnings("ResultOfMethodCallIgnored")
+        @Test
+        @DisplayName("which returns zero nanosecond value for each new point in time")
+        void resetsNanosForNewInstant() {
+            Instant now = Instant.now();
+            Instant oneMsLater = now.plus(1, ChronoUnit.MILLIS);
+            IncrementalNanos.valueForTime(now); // Ignore this value.
+            int value = IncrementalNanos.valueForTime(oneMsLater);
+            assertThat(value).isEqualTo(0);
         }
     }
 
