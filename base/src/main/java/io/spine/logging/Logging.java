@@ -24,6 +24,8 @@ import com.google.common.flogger.FluentLogger;
 
 import java.util.logging.Level;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Utility interface for objects that require logging output.
  *
@@ -53,6 +55,14 @@ public interface Logging {
     /** Returns {@link Level#SEVERE} as the convention for logging errors. */
     static Level errorLevel() {
         return Level.SEVERE;
+    }
+
+    /**
+     * Obtains {@code FluentLogger} instance for the given.
+     */
+    static FluentLogger loggerFor(Class<?> cls) {
+        checkNotNull(cls);
+        return FloggerClassValue.loggerOf(cls);
     }
 
     /**
