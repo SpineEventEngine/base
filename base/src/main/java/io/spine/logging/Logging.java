@@ -58,7 +58,7 @@ public interface Logging {
     }
 
     /**
-     * Obtains {@code FluentLogger} instance for the given.
+     * Obtains {@code FluentLogger} instance for the given class.
      */
     static FluentLogger loggerFor(Class<?> cls) {
         checkNotNull(cls);
