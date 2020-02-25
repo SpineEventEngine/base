@@ -24,6 +24,7 @@ import com.google.common.flogger.FluentLogger;
 import com.google.common.flogger.LogContext;
 import com.google.common.flogger.LoggerConfig;
 import com.google.common.flogger.backend.LogData;
+import com.google.common.truth.Subject;
 import io.spine.logging.given.LoggingObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -63,6 +64,15 @@ class LoggingTest {
              .isSameInstanceAs(logger);
         assertThat(new LoggingObject().logger())
              .isSameInstanceAs(logger);
+    }
+
+    @Test
+    @DisplayName("provide a static API to obtain a logger for a class")
+    void staticApi() {
+        FluentLogger logger = Logging.loggerFor(LoggingObject.class);
+        Subject assertLogger = assertThat(logger);
+        assertLogger.isNotNull();
+        assertLogger.isSameInstanceAs(new LoggingObject().logger());
     }
 
     @Nested
