@@ -104,7 +104,7 @@ public class LogRecordSubject extends Subject {
     }
 
     /** Obtains a subject for asserting the source method name associated with the log record. */
-    public StringSubject hasMethodThat() {
+    public StringSubject hasMethodNameThat() {
         if (actual == null) {
             shouldExistButDoesNot();
             return ignoreCheck().that((String) null);
@@ -114,7 +114,7 @@ public class LogRecordSubject extends Subject {
     }
 
     /** Obtains a subject for asserting the source class name associated with the log record. */
-    public StringSubject hasClassThat() {
+    public StringSubject hasClassNameThat() {
         if (actual == null) {
             shouldExistButDoesNot();
             return ignoreCheck().that((String) null);

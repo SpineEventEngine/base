@@ -145,13 +145,13 @@ class LogRecordSubjectTest extends SubjectTest<LogRecordSubject, LogRecord> {
 
     @Test
     void hasMethodThat() {
-        String method = "hasMethodThat";
+        String method = "hasMethodNameThat";
         record.setSourceMethodName(method);
         assertWithSubjectThat(record)
-                .hasMethodThat()
+                .hasMethodNameThat()
                 .isEqualTo(method);
         expectSomeFailure(whenTesting -> whenTesting.that(record)
-                                                    .hasMethodThat()
+                                                    .hasMethodNameThat()
                                                     .isEmpty());
     }
 
@@ -160,10 +160,10 @@ class LogRecordSubjectTest extends SubjectTest<LogRecordSubject, LogRecord> {
         String className = LogRecordSubjectTest.class.getName();
         record.setSourceClassName(className);
         assertWithSubjectThat(record)
-                .hasClassThat()
+                .hasClassNameThat()
                 .isEqualTo(className);
         expectSomeFailure(whenTesting -> whenTesting.that(record)
-                                                    .hasClassThat()
+                                                    .hasClassNameThat()
                                                     .isEmpty());
     }
 }
