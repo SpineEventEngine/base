@@ -99,8 +99,28 @@ public class LogRecordSubject extends Subject {
             shouldExistButDoesNot();
             return ignoreCheck().that((Throwable) null);
         }
-        StandardSubjectBuilder check = check("getThrow()");
+        StandardSubjectBuilder check = check("getThrown()");
         return check.that(actual.getThrown());
+    }
+
+    /** Obtains a subject for asserting the source method name associated with the log record. */
+    public StringSubject hasMethodThat() {
+        if (actual == null) {
+            shouldExistButDoesNot();
+            return ignoreCheck().that((String) null);
+        }
+        StandardSubjectBuilder check = check("getSourceMethodName()");
+        return check.that(actual.getSourceMethodName());
+    }
+
+    /** Obtains a subject for asserting the source class name associated with the log record. */
+    public StringSubject hasClassThat() {
+        if (actual == null) {
+            shouldExistButDoesNot();
+            return ignoreCheck().that((String) null);
+        }
+        StandardSubjectBuilder check = check("getSourceClassName()");
+        return check.that(actual.getSourceClassName());
     }
 
     private void shouldExistButDoesNot() {
