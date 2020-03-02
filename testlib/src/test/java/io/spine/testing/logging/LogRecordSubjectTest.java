@@ -20,6 +20,7 @@
 
 package io.spine.testing.logging;
 
+import com.google.common.truth.ExpectFailure.SimpleSubjectBuilderCallback;
 import com.google.common.truth.Subject;
 import com.google.common.truth.TruthFailureSubject;
 import io.spine.testing.SubjectTest;
@@ -63,8 +64,19 @@ class LogRecordSubjectTest extends SubjectTest<LogRecordSubject, LogRecord> {
     @Test
     @DisplayName("the check for no logged records")
     void noRecords() {
-        AssertionError failure = expectFailure(whenTesting -> whenTesting.that(null)
-                                                                         .hasLevelThat());
+        checkFails(whenTesting -> whenTesting.that(null).hasLevelThat());
+        checkFails(whenTesting -> whenTesting.that(null).hasClassNameThat());
+        checkFails(whenTesting -> whenTesting.that(null).hasMethodNameThat());
+        checkFails(whenTesting -> whenTesting.that(null).hasMessageThat());
+        checkFails(whenTesting -> whenTesting.that(null).hasParametersThat());
+        checkFails(whenTesting -> whenTesting.that(null).hasThrowableThat());
+        checkFails(whenTesting -> whenTesting.that(null).isDebug());
+        checkFails(whenTesting -> whenTesting.that(null).isError());
+    }
+
+    private void
+    checkFails(SimpleSubjectBuilderCallback<LogRecordSubject, LogRecord> assertionCallback) {
+        AssertionError failure = expectFailure(assertionCallback);
         assertThat(failure)
                 .factKeys()
                 .contains(NO_LOG_RECORD);
@@ -141,5 +153,29 @@ class LogRecordSubjectTest extends SubjectTest<LogRecordSubject, LogRecord> {
         expectSomeFailure(whenTesting -> whenTesting.that(record)
                                                     .hasThrowableThat()
                                                     .isNull());
+    }
+
+    @Test
+    void hasMethodThat() {
+        String method = "hasMethodNameThat";
+        record.setSourceMethodName(method);
+        assertWithSubjectThat(record)
+                .hasMethodNameThat()
+                .isEqualTo(method);
+        expectSomeFailure(whenTesting -> whenTesting.that(record)
+                                                    .hasMethodNameThat()
+                                                    .isEmpty());
+    }
+
+    @Test
+    void hasClassThat() {
+        String className = LogRecordSubjectTest.class.getName();
+        record.setSourceClassName(className);
+        assertWithSubjectThat(record)
+                .hasClassNameThat()
+                .isEqualTo(className);
+        expectSomeFailure(whenTesting -> whenTesting.that(record)
+                                                    .hasClassNameThat()
+                                                    .isEmpty());
     }
 }
