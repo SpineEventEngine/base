@@ -39,6 +39,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.logging.Level;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
@@ -46,7 +47,7 @@ import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static com.google.common.flogger.LazyArgs.lazy;
 import static io.spine.code.proto.Linker.link;
 import static io.spine.io.Files2.checkExists;
-import static io.spine.util.Exceptions.newIllegalStateException;
+import static java.util.logging.Level.FINE;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -109,7 +110,8 @@ public final class FileSet {
                                                  .stream()
                                                  .map(FileName::from)
                                                  .collect(toSet());
-        Map<FileName, FileDescriptor> knownFiles = KnownTypes.instance()
+        Map<FileName, FileDescriptor> knownFiles = KnownTypes
+                .instance()
                 .asTypeSet()
                 .allTypes()
                 .stream()
@@ -120,21 +122,31 @@ public final class FileSet {
                                (left, right) -> left // On duplicates, take the first option.
                 ));
         if (knownFiles.size() != fileNames.size()) {
-            return onUnknownFile(knownFiles.keySet(), fileNames);
+            onUnknownFiles(knownFiles.keySet(), fileNames, descriptorSet);
         }
         FileSet result = new FileSet(knownFiles);
         return result;
     }
 
-    private static FileSet onUnknownFile(Set<FileName> knownFiles, Set<FileName> requestedFiles) {
-        logger.atFine()
-              .log("Could not find files: %s.", lazy(() ->
-                  requestedFiles
-                          .stream()
-                          .filter(fileName -> !knownFiles.contains(fileName))
-                          .map(FileName::toString)
-                          .collect(joining(", "))));
-        throw newIllegalStateException("Some files are not known.");
+    private static void onUnknownFiles(Set<FileName> knownFiles,
+                                       Set<FileName> requestedFiles,
+                                       File descriptorSetFile) {
+        Level detailLevel = FINE;
+        logger.atWarning().log(
+                "Some files are unknown. " +
+                "%s are present in classpath but are %s discovered is `%s`.%n" +
+                "This means that they may be empty or that they are missing from the classpath. " +
+                "Enable `%s` logs for more info.",
+                knownFiles.size(),
+                requestedFiles.size(),
+                descriptorSetFile,
+                detailLevel);
+        logger.at(detailLevel)
+              .log("Could not find files: %s.", lazy(() -> requestedFiles
+                      .stream()
+                      .filter(fileName -> !knownFiles.contains(fileName))
+                      .map(FileName::toString)
+                      .collect(joining(", "))));
     }
 
     /**
