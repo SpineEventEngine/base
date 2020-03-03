@@ -68,15 +68,15 @@ public final class RejectionsFile extends SourceFile {
         checkArgument(isRejections(descriptor),
                       "`%s`. A rejection file must have a name ending in `rejections.proto`.",
                       file);
-        checkArgument(descriptor.getOptions().getJavaMultipleFiles(),
-                      "`%s`. A rejection file should generate Java classes into a single file." +
+        checkArgument(!descriptor.getOptions().getJavaMultipleFiles(),
+                      "`%s`. A rejection file should generate Java classes into a single file. " +
                               "Please set `java_multiple_files` to `false`.",
                       file);
         Optional<SimpleClassName> outerClass = SimpleClassName.declaredOuterClassName(descriptor);
         outerClass.ifPresent(name -> checkArgument(
                 isValidOuterClassName(name),
-                "%s. A rejection file must have the `java_outer_classname` ending in `Rejections` " +
-                        "or have none at all.",
+                "%s. A rejection file must have the `java_outer_classname` ending in " +
+                        "`Rejections` or have none at all.",
                 file)
         );
     }
