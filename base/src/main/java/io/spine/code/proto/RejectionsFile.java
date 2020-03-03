@@ -24,16 +24,27 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.java.SimpleClassName;
 import io.spine.type.RejectionType;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static io.spine.type.RejectionType.isValidOuterClassName;
 
 /**
  * A proto file with declarations of {@linkplain io.spine.base.RejectionMessage rejections}.
+ *
+ * <p>A valid rejections file must:
+ * <ul>
+ *     <li>be named ending on {@link io.spine.base.MessageFile#REJECTIONS “rejections.proto”};
+ *     <li>have the {@code java_multiple_files} option set to {@code false};
+ *     <li>not have the option {@code java_outer_classname} or have a value which ends with
+ *         {@linkplain RejectionType#isValidOuterClassName(SimpleClassName)} “Rejections”}.
+ * </ul>
  */
 public final class RejectionsFile extends SourceFile {
 
@@ -42,14 +53,32 @@ public final class RejectionsFile extends SourceFile {
     }
 
     /**
-     * Creates an instance by the passed {@linkplain SourceFile#isRejections()} rejections file}.
+     * Creates an instance by the passed rejections file.
      */
     public static RejectionsFile from(SourceFile file) {
         checkNotNull(file);
-        checkArgument(file.isRejections());
+        checkMatchesConvention(file);
 
         RejectionsFile result = new RejectionsFile(file.descriptor());
         return result;
+    }
+
+    private static void checkMatchesConvention(SourceFile file) {
+        FileDescriptor descriptor = file.descriptor();
+        checkArgument(isRejections(descriptor),
+                      "`%s`. A rejection file must have a name ending in `rejections.proto`.",
+                      file);
+        checkArgument(descriptor.getOptions().getJavaMultipleFiles(),
+                      "`%s`. A rejection file should generate Java classes into a single file." +
+                              "Please set `java_multiple_files` to `false`.",
+                      file);
+        Optional<SimpleClassName> outerClass = SimpleClassName.declaredOuterClassName(descriptor);
+        outerClass.ifPresent(name -> checkArgument(
+                isValidOuterClassName(name),
+                "%s. A rejection file must have the `java_outer_classname` ending in `Rejections` " +
+                        "or have none at all.",
+                file)
+        );
     }
 
     /**
