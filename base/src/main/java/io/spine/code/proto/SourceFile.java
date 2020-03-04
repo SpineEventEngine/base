@@ -68,16 +68,19 @@ public class SourceFile extends AbstractSourceFile implements Logging {
     /**
      * Returns {@code true} if the source file matches conventions for rejection files.
      *
-     * <p>A valid rejections file must have:
+     * <p>A valid rejections file must:
      * <ul>
-     *     <li>The file name which ends on
-     *         {@link io.spine.base.MessageFile#REJECTIONS “rejections.proto”}.
-     *     <li>The option {@code java_multiple_files} set to {@code false}.
-     *     <li>
+     *     <li>be named ending on {@link io.spine.base.MessageFile#REJECTIONS “rejections.proto”};
+     *     <li>have the {@code java_multiple_files} option set to {@code false};
+     *     <li>either have a {@code java_outer_classname} value which ends with
+     *         {@linkplain RejectionType#isValidOuterClassName(SimpleClassName)} “Rejections”},
+     *         or not have the {@code java_outer_classname} option set at all.
      * </ul>
-     * Also such file does not have the option {@code java_outer_classname} or value which ends
-     * with {@linkplain RejectionType#isValidOuterClassName(SimpleClassName)} “Rejections”}.
+     *
+     * @deprecated Source file must not know if it matches a convention for specific types, such as
+     * rejections. Use {@link RejectionsFile} instead.
      */
+    @Deprecated
     public boolean isRejections() {
         // By convention, rejections are generated into one file.
         if (descriptor.getOptions()
