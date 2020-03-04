@@ -42,8 +42,10 @@ import static io.spine.type.RejectionType.isValidOuterClassName;
  * <ul>
  *     <li>be named ending on {@link io.spine.base.MessageFile#REJECTIONS “rejections.proto”};
  *     <li>have the {@code java_multiple_files} option set to {@code false};
- *     <li>not have the option {@code java_outer_classname} or have a value which ends with
- *         {@linkplain RejectionType#isValidOuterClassName(SimpleClassName)} “Rejections”}.
+ *     <li>either have a {@code java_outer_classname} value which ends with
+ *         {@linkplain RejectionType#isValidOuterClassName(SimpleClassName)} “Rejections”},
+ *         or not have the {@code java_outer_classname} option set at all.
+ *
  * </ul>
  */
 public final class RejectionsFile extends SourceFile {
@@ -76,7 +78,7 @@ public final class RejectionsFile extends SourceFile {
         outerClass.ifPresent(name -> checkArgument(
                 isValidOuterClassName(name),
                 "%s. A rejection file must have the `java_outer_classname` ending in " +
-                        "`Rejections` or have none at all.",
+                        "`Rejections` or not have a `java_outer_classname` option at all.",
                 file)
         );
     }
