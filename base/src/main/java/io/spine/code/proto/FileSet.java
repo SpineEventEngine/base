@@ -134,13 +134,14 @@ public final class FileSet {
         Level detailLevel = FINE;
         logger.atWarning().log(
                 "Some files are unknown. " +
-                "%s are present in classpath but are %s discovered is `%s`.%n" +
+                "%s files are present in classpath but %s files are discovered in `%s`.%n" +
                 "This means that they may be empty or that they are missing from the classpath. " +
                 "Enable `%s` logs for more info.",
                 knownFiles.size(),
                 requestedFiles.size(),
                 descriptorSetFile,
-                detailLevel);
+                detailLevel
+        );
         logger.at(detailLevel)
               .log("Could not find files: %s.", lazy(() -> requestedFiles
                       .stream()
