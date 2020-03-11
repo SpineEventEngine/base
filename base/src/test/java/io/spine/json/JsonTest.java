@@ -101,7 +101,17 @@ class JsonTest extends UtilityClassTest<Json> {
     @DisplayName("parse from JSON")
     void parse() {
         String idValue = newUuid();
-        String jsonMessage = format("{value:%s}", idValue);
+        String jsonMessage = format("{\"value\": \"%s\"}", idValue);
+        WrappedString parsedValue = fromJson(jsonMessage, WrappedString.class);
+        assertNotNull(parsedValue);
+        assertEquals(idValue, parsedValue.getValue());
+    }
+
+    @Test
+    @DisplayName("parse from JSON with unknown values")
+    void parseUnknown() {
+        String idValue = newUuid();
+        String jsonMessage = format("{\"value\": \"%s\", \"newField\": \"newValue\"}", idValue);
         WrappedString parsedValue = fromJson(jsonMessage, WrappedString.class);
         assertNotNull(parsedValue);
         assertEquals(idValue, parsedValue.getValue());
