@@ -39,6 +39,17 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * Utilities for working with JSON.
+ *
+ * <p>Both {@linkplain #toJson(Message) parsing} and {@linkplain #fromJson(String, Class) printing}
+ * functionality acknowledges presence of the custom Protobuf message types relying on
+ * the {@link KnownTypes} for this.
+ *
+ * <p>The parsing functionality follows the default Protobuf ignorance strategy for unknown fields,
+ * i.e. the unknown fields are {@linkplain Parser#ignoringUnknownFields() ignored} when a JSON
+ * string is parsed.
+ *
+ * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#unknowns">
+ *         Protobuf Unknown Fields</a>
  */
 public final class Json {
 
@@ -46,7 +57,8 @@ public final class Json {
                                                                .typeRegistry();
     private static final Printer PRINTER = printer().usingTypeRegistry(typeRegistry);
     private static final Printer COMPACT_PRINTER = PRINTER.omittingInsignificantWhitespace();
-    private static final Parser PARSER = parser().usingTypeRegistry(typeRegistry);
+    private static final Parser PARSER = parser().ignoringUnknownFields()
+                                                 .usingTypeRegistry(typeRegistry);
 
     /**
      * Prevents the utility class instantiation.
@@ -57,7 +69,8 @@ public final class Json {
     /**
      * Converts passed message into Json representation.
      *
-     * @param message the message object
+     * @param message
+     *         the message object
      * @return JSON string
      */
     public static String toJson(Message message) {
@@ -70,7 +83,8 @@ public final class Json {
      *
      * <p>The resulted JSON does not contain the line separators.
      *
-     * @param message the {@code Message} object
+     * @param message
+     *         the {@code Message} object
      * @return the converted message to JSON
      */
     public static String toCompactJson(Message message) {
