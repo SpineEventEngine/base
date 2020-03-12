@@ -39,6 +39,17 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * Utilities for working with JSON.
+ *
+ * <p>Both {@linkplain #toJson(Message) parsing} and {@linkplain #fromJson(String, Class) printing}
+ * functionality acknowledges presence of the custom Protobuf message types relying on
+ * the {@link KnownTypes} for this.
+ *
+ * <p>The parsing functionality follows the default Protobuf ignorance strategy for unknown fields,
+ * i.e. the unknown fields are {@linkplain Parser#ignoringUnknownFields() ignored} when a JSON
+ * string is parsed.
+ *
+ * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#unknowns">
+ *         Protobuf Unknown Fields</a>
  */
 public final class Json {
 
