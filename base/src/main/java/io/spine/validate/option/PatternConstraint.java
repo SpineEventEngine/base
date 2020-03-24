@@ -24,8 +24,17 @@ import com.google.errorprone.annotations.Immutable;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.PatternOption;
+import io.spine.option.PatternOption.Modifier;
 import io.spine.validate.ConstraintTranslator;
 import io.spine.validate.diags.ViolationText;
+
+import java.util.List;
+
+import static io.spine.option.PatternOption.Modifier.PARTIAL_MATCH;
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
+import static java.util.regex.Pattern.DOTALL;
+import static java.util.regex.Pattern.MULTILINE;
+import static java.util.regex.Pattern.UNICODE_CHARACTER_CLASS;
 
 /**
  * A constraint, which when applied to a string field, checks whether that field matches the
@@ -47,5 +56,42 @@ public final class PatternConstraint extends FieldConstraint<PatternOption> {
     @Override
     public void accept(ConstraintTranslator<?> visitor) {
         visitor.visitPattern(this);
+    }
+
+    public String regex() {
+        return optionValue().getRegex();
+    }
+
+    public boolean allowsPartialMatch() {
+        PatternOption option = optionValue();
+        List<Modifier> modifiers = option.getModifierList();
+        return modifiers.contains(PARTIAL_MATCH);
+    }
+
+    public int flagsMask() {
+        int result = 0;
+        PatternOption option = optionValue();
+        for (Modifier modifier : option.getModifierList()) {
+            switch (modifier) {
+                case DOT_ALL:
+                    result |= DOTALL;
+                    break;
+                case UNICODE:
+                    result |= UNICODE_CHARACTER_CLASS;
+                    break;
+                case MULTILINE:
+                    result |= MULTILINE;
+                    break;
+                case CASE_INSENSITIVE:
+                    result |= CASE_INSENSITIVE;
+                    break;
+                case UNRECOGNIZED:
+                case REGEX_MODIFIER_UNKNOWN:
+                case PARTIAL_MATCH:
+                default:
+                    // Do nothing.
+            }
+        }
+        return result;
     }
 }
