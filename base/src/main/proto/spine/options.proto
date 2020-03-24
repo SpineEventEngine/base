@@ -615,10 +615,70 @@ message PatternOption {
     string regex = 1;
 
     // The regex flag.
-    int32 flag = 2;
+    //
+    // Has no effect. Use `modifier` instead.
+    //
+    int32 flag = 2 [deprecated = true];
+
+    // Modifiers for this pattern.
+    repeated Modifier modifier = 4;
 
     // A user-defined validation error format message.
     string msg_format = 3;
+
+    // Regular expression modifiers.
+    //
+    // These modifiers are specifically selected to be supported in many implementation platforms.
+    //
+    enum Modifier {
+
+        // The default instance. Has no effect on matching.
+        REGEX_MODIFIER_UNKNOWN = 0;
+
+        // Enables the dot (`.`) symbol to match all the characters.
+        //
+        // By default, the dot does not match line break characters.
+        //
+        // May also be known in some platforms as "single line" mode and be encoded with the `s`
+        // flag.
+        //
+        DOT_ALL = 1;
+
+        // Allows to ignore the case of the matched symbols.
+        //
+        // For example, this modifier is specified, string `ABC` would be a complete match for
+        // the regex `[a-z]+`.
+        //
+        // On some platforms may be represented by the `i` flag.
+        //
+        CASE_INSENSITIVE = 2;
+
+        // Enables the `^` (caret) and `$` (dollar) signs to match a start and an end of a line
+        // instead of a start and an end of the whole expression.
+        //
+        // On some platforms may be represented by the `m` flag.
+        //
+        MULTILINE = 3;
+
+        // Enables matching the whole UTF-8 sequences,
+        //
+        // On some platforms may be represented by the `u` flag.
+        //
+        UNICODE = 4;
+
+        // Allows the matched strings to contain a full match to the pattern and some other
+        // characters as well.
+        //
+        // By default, a string only matches a pattern if it is a full match, i.e. there are no
+        // unaccounted for leading and/or trailing characters.
+        //
+        // This modifier is usually not represented programming languages, as the control over
+        // weather to match an entire string or only its part is provided to the user by other
+        // language means. For example, in Java, this would be the difference between methods
+        // `matches()` and `find()` of the `java.util.regex.Matcher` class.
+        //
+        PARTIAL_MATCH = 5;
+    }
 }
 
 // Specifies the message to show if a validated field happens to be invalid.
