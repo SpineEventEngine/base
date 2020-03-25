@@ -621,7 +621,7 @@ message PatternOption {
     int32 flag = 2 [deprecated = true];
 
     // Modifiers for this pattern.
-    repeated Modifier modifier = 4;
+    Modifier modifier = 4;
 
     // A user-defined validation error format message.
     string msg_format = 3;
@@ -630,10 +630,7 @@ message PatternOption {
     //
     // These modifiers are specifically selected to be supported in many implementation platforms.
     //
-    enum Modifier {
-
-        // The default instance. Has no effect on matching.
-        REGEX_MODIFIER_UNKNOWN = 0;
+    message Modifier {
 
         // Enables the dot (`.`) symbol to match all the characters.
         //
@@ -642,7 +639,7 @@ message PatternOption {
         // May also be known in some platforms as "single line" mode and be encoded with the `s`
         // flag.
         //
-        DOT_ALL = 1;
+        bool dot_all = 1;
 
         // Allows to ignore the case of the matched symbols.
         //
@@ -651,20 +648,20 @@ message PatternOption {
         //
         // On some platforms may be represented by the `i` flag.
         //
-        CASE_INSENSITIVE = 2;
+        bool case_insensitive = 2;
 
         // Enables the `^` (caret) and `$` (dollar) signs to match a start and an end of a line
         // instead of a start and an end of the whole expression.
         //
         // On some platforms may be represented by the `m` flag.
         //
-        MULTILINE = 3;
+        bool multiline = 3;
 
         // Enables matching the whole UTF-8 sequences,
         //
         // On some platforms may be represented by the `u` flag.
         //
-        UNICODE = 4;
+        bool unicode = 4;
 
         // Allows the matched strings to contain a full match to the pattern and some other
         // characters as well.
@@ -677,7 +674,7 @@ message PatternOption {
         // language means. For example, in Java, this would be the difference between methods
         // `matches()` and `find()` of the `java.util.regex.Matcher` class.
         //
-        PARTIAL_MATCH = 5;
+        bool partial_match = 5;
     }
 }
 

@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package spine.test.validate;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.test.validate";
+option java_outer_classname = "PatternsProto";
+option java_multiple_files = true;
+
+message AllThePatterns {
+
+    string letters = 1 [
+            (pattern).regex = "[a-z]+",
+            (pattern).modifier.case_insensitive = true
+    ];
+
+    string many_lines = 2 [
+             (pattern).regex = ".+$\n^.+",
+             (pattern).modifier.multiline = true
+    ];
+
+    string partial = 3 [
+             (pattern).regex = "World",
+             (pattern).modifier.partial_match = true
+    ];
+
+    string utf8 = 4 [
+             (pattern).regex = "[їґє]",
+             (pattern).modifier.unicode = true
+    ];
+
+    string dot_all = 5 [
+             (pattern).regex = ".*",
+             (pattern).modifier.dot_all = true
+    ];
+}

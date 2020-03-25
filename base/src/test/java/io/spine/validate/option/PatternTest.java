@@ -21,6 +21,7 @@
 package io.spine.validate.option;
 
 import com.google.protobuf.StringValue;
+import io.spine.test.validate.AllThePatterns;
 import io.spine.test.validate.PatternStringFieldValue;
 import io.spine.test.validate.SimpleStringValue;
 import io.spine.test.validate.WithStringValue;
@@ -82,6 +83,80 @@ class PatternTest extends ValidationOfConstraintTest {
                 .build();
         assertValid(stringValue);
         assertNotValid(msg);
+    }
+
+    @Test
+    @DisplayName("validate with `case_insensitive` modifier")
+    void caseInsensitive() {
+        AllThePatterns message = AllThePatterns
+                .newBuilder()
+                .setLetters("AbC")
+                .buildPartial();
+        assertValid(message);
+
+        AllThePatterns invalid = AllThePatterns
+                .newBuilder()
+                .setLetters("12345")
+                .buildPartial();
+        assertNotValid(invalid);
+    }
+
+    @Test
+    @DisplayName("validate with `multiline` modifier")
+    void multiline() {
+        AllThePatterns message = AllThePatterns
+                .newBuilder()
+                .setManyLines("text" + System.lineSeparator() + "more text")
+                .buildPartial();
+        assertValid(message);
+
+        AllThePatterns invalid = AllThePatterns
+                .newBuilder()
+                .setManyLines("single line text")
+                .buildPartial();
+        assertNotValid(invalid);
+    }
+
+    @Test
+    @DisplayName("validate with `partial` modifier")
+    void partial() {
+        AllThePatterns message = AllThePatterns
+                .newBuilder()
+                .setPartial("Hello World!")
+                .buildPartial();
+        assertValid(message);
+
+        AllThePatterns invalid = AllThePatterns
+                .newBuilder()
+                .setPartial("123456")
+                .buildPartial();
+        assertNotValid(invalid);
+    }
+
+    @Test
+    @DisplayName("validate with `unicode` modifier")
+    void utf8() {
+        AllThePatterns message = AllThePatterns
+                .newBuilder()
+                .setUtf8("ґ")
+                .buildPartial();
+        assertValid(message);
+
+        AllThePatterns invalid = AllThePatterns
+                .newBuilder()
+                .setUtf8("\\\\")
+                .buildPartial();
+        assertNotValid(invalid);
+    }
+
+    @Test
+    @DisplayName("validate with `dot_all` modifier")
+    void dotAll() {
+        AllThePatterns message = AllThePatterns
+                .newBuilder()
+                .setDotAll("ab" + System.lineSeparator() + "cd")
+                .buildPartial();
+        assertValid(message);
     }
 
     private static PatternStringFieldValue patternStringFor(String email) {

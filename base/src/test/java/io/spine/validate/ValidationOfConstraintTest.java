@@ -20,7 +20,6 @@
 
 package io.spine.validate;
 
-import com.google.common.truth.Truth;
 import com.google.protobuf.Message;
 
 import java.util.List;
@@ -29,7 +28,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.validate.Validate.violationsOf;
 import static io.spine.validate.given.MessageValidatorTestEnv.assertFieldPathIs;
 import static java.lang.String.format;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public abstract class ValidationOfConstraintTest {
