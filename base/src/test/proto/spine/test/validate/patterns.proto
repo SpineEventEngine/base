@@ -17,7 +17,7 @@ message AllThePatterns {
     ];
 
     string many_lines = 2 [
-             (pattern).regex = ".+$\n^.+",
+             (pattern).regex = ".+$\r?\n^.+",
              (pattern).modifier.multiline = true
     ];
 
