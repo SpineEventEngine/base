@@ -23,7 +23,6 @@ package io.spine.tools.gradle.compiler;
 import io.spine.tools.gradle.SourceScope;
 import org.gradle.api.Project;
 import org.gradle.api.file.FileCollection;
-import org.gradle.api.internal.file.collections.ImmutableFileCollection;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
 
@@ -88,7 +87,8 @@ final class ProtoModule {
     private FileCollection protoSource(SourceScope sourceScope) {
         SourceSet sourceSet = sourceSet(sourceScope);
         Optional<FileCollection> files = protoSource(sourceSet);
-        return files.orElse(ImmutableFileCollection.of());
+        FileCollection emptyCollection = project.getLayout().files();
+        return files.orElse(emptyCollection);
     }
 
     private static Optional<FileCollection> protoSource(SourceSet sourceSet) {

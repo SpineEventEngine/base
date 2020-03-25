@@ -23,7 +23,7 @@ package io.spine.tools.gradle;
 import io.spine.tools.gradle.testing.NoOp;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.internal.file.collections.ImmutableFileCollection;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -153,9 +153,10 @@ class SpinePluginBuilderTest {
     void createTaskWithGivenInputs() throws IOException {
         SpinePlugin plugin = TestPlugin.INSTANCE;
         File input = new File(".").getAbsoluteFile();
+        FileCollection files = project.getLayout().files(input);
         plugin.newTask(preClean, NoOp.action())
               .insertBeforeTask(clean)
-              .withInputFiles(ImmutableFileCollection.of(input))
+              .withInputFiles(files)
               .applyNowTo(project);
         Task task = project.getTasks()
                            .findByPath(preClean.name());
