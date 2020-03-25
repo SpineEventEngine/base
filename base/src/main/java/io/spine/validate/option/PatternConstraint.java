@@ -55,16 +55,30 @@ public final class PatternConstraint extends FieldConstraint<PatternOption> {
         visitor.visitPattern(this);
     }
 
+    /**
+     * Obtains the regular expression as a string.
+     */
     public String regex() {
         return optionValue().getRegex();
     }
 
+    /**
+     * Checks if the pattern allows a partial match.
+     *
+     * <p>If {@code true}, the whole string value does not have to match the regex, but only its
+     * substring.
+     */
     public boolean allowsPartialMatch() {
         PatternOption option = optionValue();
         Modifier modifier = option.getModifier();
         return modifier.getPartialMatch();
     }
 
+    /**
+     * Obtains the pattern modifiers as a bit mask for the {@link Pattern} flags.
+     *
+     * <p>If no modifiers are specified, returns {@code 0}.
+     */
     public int flagsMask() {
         int result = 0;
         PatternOption option = optionValue();
