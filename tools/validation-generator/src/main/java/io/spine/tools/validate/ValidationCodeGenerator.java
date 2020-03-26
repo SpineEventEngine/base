@@ -63,6 +63,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.validate.ValidateMethod.VIOLATIONS;
@@ -169,7 +170,13 @@ final class ValidationCodeGenerator implements ConstraintTranslator<Set<ClassMem
         FieldDeclaration field = constraint.field();
         String pattern = constraint.optionValue()
                                    .getRegex();
-        Check check = fieldAccess -> fromCode("$L.matches($S)", fieldAccess, pattern).negate();
+        String matcher = "$T.compile($S, $L).matcher($L).";
+        String method = constraint.allowsPartialMatch()
+                        ? "find()"
+                        : "matches()";
+        Check check = fieldAccess -> fromCode(
+                matcher + method, Pattern.class, pattern, constraint.flagsMask(), fieldAccess
+        ).negate();
         CreateViolation violation = fieldAccess -> newViolation(field, constraint)
                 .setFieldValue(fieldAccess)
                 .addParam(pattern)

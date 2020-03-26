@@ -28,7 +28,6 @@ import io.spine.base.FieldPath;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
-import io.spine.option.PatternOption;
 import io.spine.type.MessageType;
 import io.spine.type.TypeName;
 import io.spine.validate.option.DistinctConstraint;
@@ -45,6 +44,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -106,16 +106,30 @@ final class MessageValidator implements ConstraintTranslator<Optional<Validation
     @Override
     public void visitPattern(PatternConstraint constraint) {
         FieldValue fieldValue = message.valueOf(constraint.field());
-        PatternOption pattern = constraint.optionValue();
-        String regex = pattern.getRegex();
-        Pattern compiledPattern = Pattern.compile(regex);
+        String regex = constraint.regex();
+        int flags = constraint.flagsMask();
+        @SuppressWarnings("MagicConstant")
+        Pattern compiledPattern = Pattern.compile(regex, flags);
+        boolean partialMatch = constraint.allowsPartialMatch();
         fieldValue.nonDefault()
-                  .filter(value -> !compiledPattern.matcher((CharSequence) value).matches())
+                  .filter(value -> partialMatch
+                                   ? noPartialMatch(compiledPattern, (String) value)
+                                   : noCompleteMatch(compiledPattern, (String) value))
                   .map(value -> violation(constraint, fieldValue, value)
                           .toBuilder()
                           .addParam(regex)
                           .build())
                   .forEach(violations::add);
+    }
+
+    private static boolean noCompleteMatch(Pattern pattern, String value) {
+        Matcher matcher = pattern.matcher(value);
+        return !matcher.matches();
+    }
+
+    private static boolean noPartialMatch(Pattern pattern, String value) {
+        Matcher matcher = pattern.matcher(value);
+        return !matcher.find();
     }
 
     @Override
