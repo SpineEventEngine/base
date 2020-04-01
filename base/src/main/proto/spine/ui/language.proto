@@ -171,7 +171,11 @@ enum Language {
     // Icelandic
     is = 67;
     // Ido
-    io = 68;
+    //
+    // This member has the underscore suffix to avoid the name clash with the top package name "io"
+    // of the generated Java code.
+    //
+    io_ = 68;
     // Igbo
     ig = 69;
     // Indonesian
