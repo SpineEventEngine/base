@@ -68,7 +68,7 @@ public final class RequiredFieldConstraint implements Constraint {
         return optionValue;
     }
 
-        public ImmutableSet<Alternative> alternatives() {
+    public ImmutableSet<Alternative> alternatives() {
         return alternatives;
     }
 }
