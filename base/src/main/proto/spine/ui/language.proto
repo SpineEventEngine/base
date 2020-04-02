@@ -396,15 +396,15 @@ enum Language {
     cy = 177;
     // Western Frisian
     fy = 178;
-    //	Wolof
+    // Wolof
     wo = 179;
     // Xhosa
     xh = 180;
     // Yiddish
     yi = 181;
-    //	Yoruba
+    // Yoruba
     yo = 182;
-    //	Zhuang, Chuang
+    // Zhuang, Chuang
     za = 183;
     // Zulu
     zu = 184;
