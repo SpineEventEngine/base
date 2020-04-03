@@ -26,6 +26,7 @@ import io.spine.validate.option.PatternConstraint;
 import io.spine.validate.option.RangedConstraint;
 import io.spine.validate.option.RequiredConstraint;
 import io.spine.validate.option.RequiredFieldConstraint;
+import io.spine.validate.option.RequiredFieldsConstraint;
 import io.spine.validate.option.ValidateConstraint;
 
 /**
@@ -100,6 +101,14 @@ public interface ConstraintTranslator<T> {
      *         the constraint of a field combination
      */
     void visitRequiredField(RequiredFieldConstraint constraint);
+
+    /**
+     * Translates the given {@link RequiredFieldsConstraint}.
+     *
+     * @param constraint
+     *         the constraint of a oneof group
+     */
+    void visitRequiredOneof(RequiredFieldsConstraint constraint);
 
     /**
      * Translates the given {@link CustomConstraint}.

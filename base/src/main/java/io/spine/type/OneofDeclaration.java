@@ -18,22 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.gen.java;
+package io.spine.type;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.OneofDescriptor;
-import io.spine.code.java.ClassName;
-import io.spine.code.java.SimpleClassName;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
-import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static java.lang.String.format;
 
 /**
  * A declaration of a {@code oneof} field.
  */
+@Immutable
 public final class OneofDeclaration {
 
     private final OneofDescriptor oneof;
@@ -62,22 +63,14 @@ public final class OneofDeclaration {
         return FieldName.of(oneof.getName());
     }
 
-    /**
-     * Obtains the name of an enum which represents cases of the {@code oneof} field.
-     *
-     * <p>Such an enum should be nested in the declaring message class.
-     *
-     * <p>If the declaring message class name is {@code com.acme.cms.Customer} and the {@code oneof}
-     * name is {@code auth_provider}, the resulting class name would be
-     * {@code com.acme.cms.Customer$AuthProviderCase}.
-     *
-     * @return the case enum FQN
-     */
-    public ClassName javaCaseEnum() {
-        ClassName declaringClassName = declaringType.javaClassName();
-        io.spine.code.gen.java.FieldName oneofName =
-                io.spine.code.gen.java.FieldName.from(name());
-        SimpleClassName enumName = SimpleClassName.create(format("%sCase", oneofName.capitalize()));
-        return declaringClassName.withNested(enumName);
+    public MessageType declaringType() {
+        return declaringType;
+    }
+
+    public ImmutableList<FieldDeclaration> fields() {
+        return oneof.getFields()
+                    .stream()
+                    .map(field -> new FieldDeclaration(field, declaringType))
+                    .collect(toImmutableList());
     }
 }

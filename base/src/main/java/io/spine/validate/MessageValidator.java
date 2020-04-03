@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
 import com.google.protobuf.Message;
+import io.spine.base.Field;
 import io.spine.base.FieldPath;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
@@ -36,6 +37,7 @@ import io.spine.validate.option.PatternConstraint;
 import io.spine.validate.option.RangedConstraint;
 import io.spine.validate.option.RequiredConstraint;
 import io.spine.validate.option.RequiredFieldConstraint;
+import io.spine.validate.option.RequiredFieldsConstraint;
 import io.spine.validate.option.ValidateConstraint;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -188,6 +190,23 @@ final class MessageValidator implements ConstraintTranslator<Optional<Validation
                                                           message);
         Optional<ConstraintViolation> violation = check.perform();
         violation.ifPresent(violations::add);
+    }
+
+    @Override
+    public void visitRequiredOneof(RequiredFieldsConstraint constraint) {
+        ImmutableList<FieldDeclaration> fields = constraint.fields();
+        boolean noneSet = fields.stream()
+                                .allMatch(this::fieldValueNotSet);
+        if (noneSet) {
+            MessageType targetType = constraint.targetType();
+            ConstraintViolation violation = ConstraintViolation
+                    .newBuilder()
+                    .setMsgFormat(constraint.errorMessage(message.context()))
+                    .setFieldPath(Field.named(constraint.oneofName().value()).path())
+                    .setTypeName(targetType.name().value())
+                    .build();
+            violations.add(violation);
+        }
     }
 
     @Override

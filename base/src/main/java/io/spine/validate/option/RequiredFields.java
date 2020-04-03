@@ -18,31 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-syntax = "proto3";
+package io.spine.validate.option;
 
-package spine.test.code.generate;
+import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.Descriptors.OneofDescriptor;
+import io.spine.type.OneofDeclaration;
+import io.spine.validate.Constraint;
 
-import "spine/options.proto";
+import java.util.Optional;
 
-option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.test.code.generate";
-option java_outer_classname = "OneofDeclarationTestProto";
-option java_multiple_files = true;
+import static io.spine.option.OptionsProto.requiredFields;
 
-message Transmission {
+@Immutable
+public class RequiredFields implements ValidatingOption<Boolean, OneofDeclaration, OneofDescriptor> {
 
-    oneof type {
-        Manual manual = 1;
-        Automatic automatic = 2;
+    @Override
+    public Constraint constraintFor(OneofDeclaration field) {
+        return new RequiredFieldsConstraint(field);
     }
-}
 
-message Manual {
-
-    uint32 gear_count = 1;
-}
-
-message Automatic {
-
-    string name = 1;
+    @Override
+    public Optional<Boolean> valueFrom(OneofDescriptor descriptor) {
+        boolean value = descriptor.getOptions()
+                                  .getExtension(requiredFields);
+        return value ? Optional.of(true) : Optional.empty();
+    }
 }

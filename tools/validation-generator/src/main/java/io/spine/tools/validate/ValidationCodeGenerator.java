@@ -54,6 +54,7 @@ import io.spine.validate.option.PatternConstraint;
 import io.spine.validate.option.RangedConstraint;
 import io.spine.validate.option.RequiredConstraint;
 import io.spine.validate.option.RequiredFieldConstraint;
+import io.spine.validate.option.RequiredFieldsConstraint;
 import io.spine.validate.option.ValidateConstraint;
 
 import java.lang.reflect.Type;
@@ -331,6 +332,11 @@ final class ValidationCodeGenerator implements ConstraintTranslator<Set<ClassMem
                                                    .toCode())
                                    .toCode();
         compiledConstraints.add(check);
+    }
+
+    @Override
+    public void visitRequiredOneof(RequiredFieldsConstraint constraint) {
+        // TODO:2020-04-03:dmytro.dashenkov: Implement.
     }
 
     @Override

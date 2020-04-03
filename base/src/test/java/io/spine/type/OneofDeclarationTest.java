@@ -18,14 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.gen.java;
+package io.spine.type;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Empty;
 import io.spine.code.proto.FieldName;
-import io.spine.test.code.generate.Transmission;
-import io.spine.type.MessageType;
+import io.spine.test.type.Transmission;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
