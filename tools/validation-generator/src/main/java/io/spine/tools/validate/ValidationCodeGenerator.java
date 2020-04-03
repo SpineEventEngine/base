@@ -337,15 +337,14 @@ final class ValidationCodeGenerator implements ConstraintTranslator<Set<ClassMem
     @Override
     public void visitRequiredOneof(IsRequiredConstraint constraint) {
         ImmutableList<FieldDeclaration> fields = constraint.fields();
-        BooleanExpression fieldsAreSet = fields
+        BooleanExpression condition = fields
                 .stream()
                 .map(field -> new IsSet(field).valueIsNotSet(messageAccess.get(field)))
-                .reduce(BooleanExpression::or)
+                .reduce(BooleanExpression::and)
                 .orElseThrow(() -> new IllegalStateException(
                         "An empty `oneof` group cannot be required."
                 ));
-        BooleanExpression condition = fieldsAreSet.negate();
-                Expression<ConstraintViolation> violation = NewViolation
+        Expression<ConstraintViolation> violation = NewViolation
                 .forMessage(fieldContext, type)
                 .setMessage(constraint.errorMessage(fieldContext))
                 .setField(fieldContext.fieldPath())
