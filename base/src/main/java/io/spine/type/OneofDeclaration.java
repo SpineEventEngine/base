@@ -27,7 +27,7 @@ import io.spine.code.proto.FieldName;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A declaration of a {@code oneof} field.
+ * A declaration of a {@code oneof} field group.
  */
 @Immutable
 public final class OneofDeclaration {
@@ -54,6 +54,9 @@ public final class OneofDeclaration {
         return oneof;
     }
 
+    /**
+     * Obtains the type containing this group.
+     */
     public MessageType declaringType() {
         return declaringType;
     }

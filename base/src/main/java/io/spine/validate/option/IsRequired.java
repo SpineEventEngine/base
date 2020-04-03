@@ -29,6 +29,11 @@ import java.util.Optional;
 
 import static io.spine.option.OptionsProto.isRequired;
 
+/**
+ * A {@code oneof} validation option which constrains the target {@code oneof} group to be set.
+ *
+ * <p>If the value of the option is {@code true}, one of the fields in the group must be set.
+ */
 @Immutable
 public class IsRequired implements ValidatingOption<Boolean, OneofDeclaration, OneofDescriptor> {
 
