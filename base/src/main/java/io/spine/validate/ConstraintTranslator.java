@@ -22,11 +22,11 @@ package io.spine.validate;
 
 import io.spine.validate.option.DistinctConstraint;
 import io.spine.validate.option.GoesConstraint;
+import io.spine.validate.option.IsRequiredConstraint;
 import io.spine.validate.option.PatternConstraint;
 import io.spine.validate.option.RangedConstraint;
 import io.spine.validate.option.RequiredConstraint;
 import io.spine.validate.option.RequiredFieldConstraint;
-import io.spine.validate.option.RequiredFieldsConstraint;
 import io.spine.validate.option.ValidateConstraint;
 
 /**
@@ -103,12 +103,12 @@ public interface ConstraintTranslator<T> {
     void visitRequiredField(RequiredFieldConstraint constraint);
 
     /**
-     * Translates the given {@link RequiredFieldsConstraint}.
+     * Translates the given {@link IsRequiredConstraint}.
      *
      * @param constraint
      *         the constraint of a oneof group
      */
-    void visitRequiredOneof(RequiredFieldsConstraint constraint);
+    void visitRequiredOneof(IsRequiredConstraint constraint);
 
     /**
      * Translates the given {@link CustomConstraint}.

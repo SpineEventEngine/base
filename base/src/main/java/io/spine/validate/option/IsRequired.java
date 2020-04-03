@@ -20,45 +20,27 @@
 
 package io.spine.validate.option;
 
-import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.code.proto.FieldContext;
-import io.spine.code.proto.FieldDeclaration;
-import io.spine.code.proto.FieldName;
-import io.spine.type.MessageType;
+import com.google.protobuf.Descriptors.OneofDescriptor;
 import io.spine.type.OneofDeclaration;
 import io.spine.validate.Constraint;
-import io.spine.validate.ConstraintTranslator;
+
+import java.util.Optional;
+
+import static io.spine.option.OptionsProto.isRequired;
 
 @Immutable
-public final class RequiredFieldsConstraint implements Constraint {
+public class IsRequired implements ValidatingOption<Boolean, OneofDeclaration, OneofDescriptor> {
 
-    private final OneofDeclaration declaration;
-
-    RequiredFieldsConstraint(OneofDeclaration declaration) {
-        this.declaration = declaration;
+    @Override
+    public Constraint constraintFor(OneofDeclaration field) {
+        return new IsRequiredConstraint(field);
     }
 
     @Override
-    public MessageType targetType() {
-        return declaration.declaringType();
-    }
-
-    @Override
-    public String errorMessage(FieldContext field) {
-        return String.format("One of fields in group `%s` must be set.", declaration.name());
-    }
-
-    @Override
-    public void accept(ConstraintTranslator<?> visitor) {
-        visitor.visitRequiredOneof(this);
-    }
-
-    public FieldName oneofName() {
-        return declaration.name();
-    }
-
-    public ImmutableList<FieldDeclaration> fields() {
-        return declaration.fields();
+    public Optional<Boolean> valueFrom(OneofDescriptor descriptor) {
+        boolean value = descriptor.getOptions()
+                                  .getExtension(isRequired);
+        return value ? Optional.of(true) : Optional.empty();
     }
 }

@@ -33,11 +33,11 @@ import io.spine.type.MessageType;
 import io.spine.type.TypeName;
 import io.spine.validate.option.DistinctConstraint;
 import io.spine.validate.option.GoesConstraint;
+import io.spine.validate.option.IsRequiredConstraint;
 import io.spine.validate.option.PatternConstraint;
 import io.spine.validate.option.RangedConstraint;
 import io.spine.validate.option.RequiredConstraint;
 import io.spine.validate.option.RequiredFieldConstraint;
-import io.spine.validate.option.RequiredFieldsConstraint;
 import io.spine.validate.option.ValidateConstraint;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -193,7 +193,7 @@ final class MessageValidator implements ConstraintTranslator<Optional<Validation
     }
 
     @Override
-    public void visitRequiredOneof(RequiredFieldsConstraint constraint) {
+    public void visitRequiredOneof(IsRequiredConstraint constraint) {
         ImmutableList<FieldDeclaration> fields = constraint.fields();
         boolean noneSet = fields.stream()
                                 .allMatch(this::fieldValueNotSet);

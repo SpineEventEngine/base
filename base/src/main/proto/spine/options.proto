@@ -273,7 +273,7 @@ extend google.protobuf.OneofOptions {
     // Alternative to `(required_field)` with all the field in the group joined with the OR
     // operator.
     //
-    bool required_fields = 73891;
+    bool is_required = 73891;
 
     // Reserved 73892 to 73899 for future options.
 }
