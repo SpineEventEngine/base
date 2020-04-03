@@ -27,6 +27,14 @@ message Greenhouse {
     HumidityRange humidity = 5 [(required) = true, (.validate) = true];
 
     repeated Sort sort = 6 [(required) = false, (distinct) = true];
+
+    oneof lighting {
+        option (is_required) = true;
+
+        LightBulb incandescent = 7 [deprecated = true];
+
+        UvLightStrip uv = 8;
+    }
 }
 
 message Sort {
@@ -55,4 +63,13 @@ message HumidityRange {
     Humidity lowest_allowed = 1 [(required) = true, (.validate) = true];
 
     Humidity highest_allowed = 2 [(required) = true, (.validate) = true];
+}
+
+message LightBulb {
+    uint32 wattage = 1 [(min).value = "1"];
+}
+
+message UvLightStrip {
+    float min_wave_length = 1;
+    float max_wave_length = 2;
 }
