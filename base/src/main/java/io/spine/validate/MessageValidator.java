@@ -194,9 +194,8 @@ final class MessageValidator implements ConstraintTranslator<Optional<Validation
 
     @Override
     public void visitRequiredOneof(IsRequiredConstraint constraint) {
-        ImmutableList<FieldDeclaration> fields = constraint.fields();
-        boolean noneSet = fields.stream()
-                                .allMatch(this::fieldValueNotSet);
+        Optional<FieldValue> fieldValue = message.valueOf(constraint.declaration());
+        boolean noneSet = !fieldValue.isPresent();
         if (noneSet) {
             MessageType targetType = constraint.targetType();
             ConstraintViolation violation = ConstraintViolation

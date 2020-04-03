@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
 import com.google.common.reflect.TypeToken;
+import com.google.protobuf.ProtocolMessageEnum;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldContext;
@@ -336,14 +337,9 @@ final class ValidationCodeGenerator implements ConstraintTranslator<Set<ClassMem
 
     @Override
     public void visitRequiredOneof(IsRequiredConstraint constraint) {
-        ImmutableList<FieldDeclaration> fields = constraint.fields();
-        BooleanExpression condition = fields
-                .stream()
-                .map(field -> new IsSet(field).valueIsNotSet(messageAccess.get(field)))
-                .reduce(BooleanExpression::and)
-                .orElseThrow(() -> new IllegalStateException(
-                        "An empty `oneof` group cannot be required."
-                ));
+        Expression<ProtocolMessageEnum> caseValue =
+                messageAccess.oneofCase(constraint.declaration());
+        BooleanExpression condition = fromCode("$L.getNumber() == $L", caseValue, 0);
         Expression<ConstraintViolation> violation = NewViolation
                 .forMessage(fieldContext, type)
                 .setMessage(constraint.errorMessage(fieldContext))

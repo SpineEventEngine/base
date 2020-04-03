@@ -20,16 +20,17 @@
 
 package io.spine.validate.option;
 
-import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.code.proto.FieldContext;
-import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 import io.spine.type.MessageType;
 import io.spine.type.OneofDeclaration;
 import io.spine.validate.Constraint;
 import io.spine.validate.ConstraintTranslator;
 
+/**
+ * A {@code oneof} group constraint which signifies that one of the fields must be set.
+ */
 @Immutable
 public final class IsRequiredConstraint implements Constraint {
 
@@ -54,11 +55,17 @@ public final class IsRequiredConstraint implements Constraint {
         visitor.visitRequiredOneof(this);
     }
 
+    /**
+     * Obtains the name of the {@code oneof} group.
+     */
     public FieldName oneofName() {
         return declaration.name();
     }
 
-    public ImmutableList<FieldDeclaration> fields() {
-        return declaration.fields();
+    /**
+     * Obtains the {@code oneof} declaration.
+     */
+    public OneofDeclaration declaration() {
+        return declaration;
     }
 }

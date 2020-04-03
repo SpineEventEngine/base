@@ -20,16 +20,11 @@
 
 package io.spine.type;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.OneofDescriptor;
-import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableList.toImmutableList;
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
 
 /**
  * A declaration of a {@code oneof} field.
@@ -45,17 +40,6 @@ public final class OneofDeclaration {
         this.declaringType = checkNotNull(type);
     }
 
-    public static ImmutableSet<OneofDeclaration> allFromType(MessageType declaringType) {
-        checkNotNull(declaringType);
-        ImmutableSet<OneofDeclaration> result =
-                declaringType.descriptor()
-                             .getOneofs()
-                             .stream()
-                             .map(oneof -> new OneofDeclaration(oneof, declaringType))
-                             .collect(toImmutableSet());
-        return result;
-    }
-
     /**
      * Obtains the name of the {@code oneof} field.
      */
@@ -63,14 +47,14 @@ public final class OneofDeclaration {
         return FieldName.of(oneof.getName());
     }
 
-    public MessageType declaringType() {
-        return declaringType;
+    /**
+     * Obtains the {@code oneof} descriptor.
+     */
+    public OneofDescriptor descriptor() {
+        return oneof;
     }
 
-    public ImmutableList<FieldDeclaration> fields() {
-        return oneof.getFields()
-                    .stream()
-                    .map(field -> new FieldDeclaration(field, declaringType))
-                    .collect(toImmutableList());
+    public MessageType declaringType() {
+        return declaringType;
     }
 }

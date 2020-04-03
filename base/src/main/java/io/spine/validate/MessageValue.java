@@ -28,6 +28,7 @@ import com.google.protobuf.Message;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;
+import io.spine.type.OneofDeclaration;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Optional;
@@ -147,10 +148,10 @@ public final class MessageValue {
     }
 
     /**
-     * Obtains the value of a populated {@code Oneof} field.
+     * Obtains the value of a populated {@code oneof} field.
      *
      * @param oneof
-     *         the {@code Oneof} descriptor
+     *         the {@code oneof} descriptor
      * @return a value of the populated field
      *         or {@code Optional.empty()} if the field was not populated
      * @throws IllegalArgumentException
@@ -161,6 +162,20 @@ public final class MessageValue {
                                 .contains(oneof));
         FieldDescriptor field = message.getOneofFieldDescriptor(oneof);
         return valueOfNullable(field);
+    }
+
+    /**
+     * Obtains the value of a populated {@code oneof} field.
+     *
+     * @param oneof
+     *         the {@code oneof} declaration
+     * @return a value of the populated field
+     *         or {@code Optional.empty()} if the field was not populated
+     * @throws IllegalArgumentException
+     *         if the if the message doesn't declare this oneof
+     */
+    public Optional<FieldValue> valueOf(OneofDeclaration oneof) {
+        return valueOf(oneof.descriptor());
     }
 
     /** Returns the context of the message. */
@@ -188,5 +203,4 @@ public final class MessageValue {
     private Object readValue(FieldDescriptor field) {
         return asFieldAware == null ? message.getField(field) : asFieldAware.readValue(field);
     }
-
 }

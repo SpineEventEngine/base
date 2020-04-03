@@ -64,10 +64,18 @@ public final class RequiredFieldConstraint implements Constraint {
         visitor.visitRequiredField(this);
     }
 
+    /**
+     * Obtains the raw option value.
+     */
     public String optionValue() {
         return optionValue;
     }
 
+    /**
+     * Obtains the set of alternative conjunctive field expressions.
+     *
+     * @see Alternative
+     */
     public ImmutableSet<Alternative> alternatives() {
         return alternatives;
     }
