@@ -25,7 +25,7 @@ package spine.test.code.generate;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.test.code.generate";
+option java_package = "io.spine.test.type";
 option java_outer_classname = "OneofDeclarationTestProto";
 option java_multiple_files = true;
 

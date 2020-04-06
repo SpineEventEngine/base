@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
 import com.google.common.reflect.TypeToken;
+import com.google.protobuf.ProtocolMessageEnum;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldContext;
@@ -50,6 +51,7 @@ import io.spine.validate.Validate;
 import io.spine.validate.option.DistinctConstraint;
 import io.spine.validate.option.GoesConstraint;
 import io.spine.validate.option.IfInvalid;
+import io.spine.validate.option.IsRequiredConstraint;
 import io.spine.validate.option.PatternConstraint;
 import io.spine.validate.option.RangedConstraint;
 import io.spine.validate.option.RequiredConstraint;
@@ -325,6 +327,23 @@ final class ValidationCodeGenerator implements ConstraintTranslator<Set<ClassMem
                 .setMessage("Required fields are not set. Must match pattern `%s`.")
                 .setField(fieldContext.fieldPath())
                 .addParam(constraint.optionValue())
+                .build();
+        CodeBlock check = condition.ifTrue(violationAccumulator
+                                                   .apply(violation)
+                                                   .toCode())
+                                   .toCode();
+        compiledConstraints.add(check);
+    }
+
+    @Override
+    public void visitRequiredOneof(IsRequiredConstraint constraint) {
+        Expression<ProtocolMessageEnum> caseValue =
+                messageAccess.oneofCase(constraint.declaration());
+        BooleanExpression condition = fromCode("$L.getNumber() == $L", caseValue, 0);
+        Expression<ConstraintViolation> violation = NewViolation
+                .forMessage(fieldContext, type)
+                .setMessage(constraint.errorMessage(fieldContext))
+                .setField(fieldContext.fieldPath())
                 .build();
         CodeBlock check = condition.ifTrue(violationAccumulator
                                                    .apply(violation)

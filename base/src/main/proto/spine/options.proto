@@ -261,9 +261,21 @@ extend google.protobuf.FieldOptions {
     //
     bool column = 73854;
 
-    // Reserved 73855 to 73899 for future options.
+    // Reserved 73855 to 73890 for future options.
 
     // Reserved 73900 for removed `by` option.
+}
+
+extend google.protobuf.OneofOptions {
+
+    // Marks a `oneof` group, in which one field *must* be set.
+    //
+    // Alternative to `(required_field)` with all the field in the group joined with the OR
+    // operator.
+    //
+    bool is_required = 73891;
+
+    // Reserved 73892 to 73899 for future options.
 }
 
 extend google.protobuf.MessageOptions {
@@ -282,7 +294,7 @@ extend google.protobuf.MessageOptions {
     //
     // Unlike the `required` field constraint which always require corresponding field,
     // this message option allows to require alternative fields or a combination of them as
-    // an alternative.
+    // an alternative. Field names and `oneof` group names are acceptable.
     //
     // Field names are separated using the pipe (`|`) symbol. The combination of fields is defined
     // using the ampersand (`&`) symbol.

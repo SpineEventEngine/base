@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package spine.test.tools.validate;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.test.tools.validate";
+option java_outer_classname = "RequiredFieldsProto";
+option java_multiple_files = true;
+
+message Meal {
+
+    oneof choice {
+        option (is_required) = true;
+
+        Fish fish = 1;
+        Meat meat = 2;
+        Vegetables veggies = 3;
+    }
+
+    oneof sauce {
+        option (is_required) = false;
+
+        Sauce ketchup = 4;
+        Sauce cheese = 5;
+    }
+}
+
+message Fish {
+    string description = 1;
+}
+
+message Meat {
+    string description = 1;
+}
+
+message Vegetables {
+    string description = 1;
+}
+
+message Sauce {
+    string description = 1;
+}

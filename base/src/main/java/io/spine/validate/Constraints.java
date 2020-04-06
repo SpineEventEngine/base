@@ -23,7 +23,9 @@ package io.spine.validate;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.code.proto.FieldContext;
+import io.spine.code.proto.OneofDeclaration;
 import io.spine.type.MessageType;
+import io.spine.validate.option.IsRequired;
 import io.spine.validate.option.RequiredField;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -77,6 +79,7 @@ public final class Constraints {
             .flatMap(FieldConstraints::of)
             .forEach(constraintBuilder::add);
         addRequiredField(type, constraintBuilder);
+        scanIsRequired(type, constraintBuilder);
         return new Constraints(constraintBuilder.build());
     }
 
@@ -87,6 +90,18 @@ public final class Constraints {
             Constraint requiredFieldConstraint = requiredField.constraintFor(type);
             constraintBuilder.add(requiredFieldConstraint);
         }
+    }
+
+    private static void scanIsRequired(MessageType type,
+                                       ImmutableList.Builder<Constraint> builder) {
+        IsRequired option = new IsRequired();
+        type.descriptor()
+            .getOneofs()
+            .stream()
+            .filter(option::valuePresent)
+            .map(descriptor -> new OneofDeclaration(descriptor, type))
+            .map(option::constraintFor)
+            .forEach(builder::add);
     }
 
     /**

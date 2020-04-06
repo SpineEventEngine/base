@@ -21,11 +21,15 @@
 package io.spine.tools.validate;
 
 import com.google.protobuf.Message;
+import com.google.protobuf.ProtocolMessageEnum;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.code.proto.OneofDeclaration;
 import io.spine.tools.validate.code.CodeExpression;
+import io.spine.tools.validate.code.Expression;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.validate.FieldAccess.fieldOfMessage;
+import static io.spine.tools.validate.code.Expression.formatted;
 
 /**
  * An expression which yields a message.
@@ -48,5 +52,14 @@ public final class MessageAccess extends CodeExpression<Message> {
      */
     public FieldAccess get(FieldDeclaration field) {
         return fieldOfMessage(this, field);
+    }
+
+    /**
+     * Builds an expression which yields the {@code oneof} case for the given {@code oneof}.
+     *
+     * <p>The case is represented by an enum value. See the Protobuf doc for more info on the enum.
+     */
+    public Expression<ProtocolMessageEnum> oneofCase(OneofDeclaration declaration) {
+        return formatted("%s.get%sCase()", this, declaration.name().toCamelCase());
     }
 }

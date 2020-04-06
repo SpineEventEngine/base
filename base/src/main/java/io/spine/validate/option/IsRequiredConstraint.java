@@ -20,63 +20,52 @@
 
 package io.spine.validate.option;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.code.proto.FieldContext;
+import io.spine.code.proto.FieldName;
+import io.spine.code.proto.OneofDeclaration;
 import io.spine.type.MessageType;
-import io.spine.validate.Alternative;
 import io.spine.validate.Constraint;
 import io.spine.validate.ConstraintTranslator;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.format;
-
 /**
- * A constraint that, when applied to a message, checks whether the specified combination of fields
- * has non-default values.
+ * A {@code oneof} group constraint which signifies that one of the fields must be set.
  */
 @Immutable
-public final class RequiredFieldConstraint implements Constraint {
+public final class IsRequiredConstraint implements Constraint {
 
-    private final String optionValue;
-    private final MessageType messageType;
-    private final ImmutableSet<Alternative> alternatives;
+    private final OneofDeclaration declaration;
 
-    RequiredFieldConstraint(String optionValue, MessageType messageType) {
-        this.optionValue = checkNotNull(optionValue);
-        this.messageType = checkNotNull(messageType);
-        checkNotNull(optionValue);
-        this.alternatives = Alternative.parse(optionValue, messageType);
+    IsRequiredConstraint(OneofDeclaration declaration) {
+        this.declaration = declaration;
     }
 
     @Override
     public MessageType targetType() {
-        return messageType;
+        return declaration.declaringType();
     }
 
     @Override
     public String errorMessage(FieldContext field) {
-        return format("Field named `%s` is not found.", field.targetDeclaration());
+        return String.format("One of fields in group `%s` must be set.", declaration.name());
     }
 
     @Override
     public void accept(ConstraintTranslator<?> visitor) {
-        visitor.visitRequiredField(this);
+        visitor.visitRequiredOneof(this);
     }
 
     /**
-     * Obtains the raw option value.
+     * Obtains the name of the {@code oneof} group.
      */
-    public String optionValue() {
-        return optionValue;
+    public FieldName oneofName() {
+        return declaration.name();
     }
 
     /**
-     * Obtains the set of alternative conjunctive field expressions.
-     *
-     * @see Alternative
+     * Obtains the {@code oneof} declaration.
      */
-    public ImmutableSet<Alternative> alternatives() {
-        return alternatives;
+    public OneofDeclaration declaration() {
+        return declaration;
     }
 }

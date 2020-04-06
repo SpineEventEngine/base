@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
 import com.google.protobuf.Message;
+import io.spine.base.Field;
 import io.spine.base.FieldPath;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
@@ -32,6 +33,7 @@ import io.spine.type.MessageType;
 import io.spine.type.TypeName;
 import io.spine.validate.option.DistinctConstraint;
 import io.spine.validate.option.GoesConstraint;
+import io.spine.validate.option.IsRequiredConstraint;
 import io.spine.validate.option.PatternConstraint;
 import io.spine.validate.option.RangedConstraint;
 import io.spine.validate.option.RequiredConstraint;
@@ -188,6 +190,22 @@ final class MessageValidator implements ConstraintTranslator<Optional<Validation
                                                           message);
         Optional<ConstraintViolation> violation = check.perform();
         violation.ifPresent(violations::add);
+    }
+
+    @Override
+    public void visitRequiredOneof(IsRequiredConstraint constraint) {
+        Optional<FieldValue> fieldValue = message.valueOf(constraint.declaration());
+        boolean noneSet = !fieldValue.isPresent();
+        if (noneSet) {
+            MessageType targetType = constraint.targetType();
+            ConstraintViolation violation = ConstraintViolation
+                    .newBuilder()
+                    .setMsgFormat(constraint.errorMessage(message.context()))
+                    .setFieldPath(Field.named(constraint.oneofName().value()).path())
+                    .setTypeName(targetType.name().value())
+                    .build();
+            violations.add(violation);
+        }
     }
 
     @Override

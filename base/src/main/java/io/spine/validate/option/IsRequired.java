@@ -18,14 +18,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.validate.option;
+
+import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.Descriptors.OneofDescriptor;
+import io.spine.code.proto.OneofDeclaration;
+import io.spine.validate.Constraint;
+
+import java.util.Optional;
+
+import static io.spine.option.OptionsProto.isRequired;
+
 /**
- * Tests of validating builders are placed into this package
- * to simulate usage of the public API.
+ * A {@code oneof} validation option which constrains the target {@code oneof} group to be set.
+ *
+ * <p>If the value of the option is {@code true}, one of the fields in the group must be set.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.validate.builders;
+@Immutable
+public class IsRequired implements ValidatingOption<Boolean, OneofDeclaration, OneofDescriptor> {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    @Override
+    public Constraint constraintFor(OneofDeclaration field) {
+        return new IsRequiredConstraint(field);
+    }
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    @Override
+    public Optional<Boolean> valueFrom(OneofDescriptor descriptor) {
+        boolean value = descriptor.getOptions()
+                                  .getExtension(isRequired);
+        return value ? Optional.of(true) : Optional.empty();
+    }
+}

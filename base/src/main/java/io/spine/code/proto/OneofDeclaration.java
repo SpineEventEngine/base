@@ -18,22 +18,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.gen.java;
+package io.spine.code.proto;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.OneofDescriptor;
-import io.spine.code.java.ClassName;
-import io.spine.code.java.SimpleClassName;
-import io.spine.code.proto.FieldName;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static java.lang.String.format;
 
 /**
- * A declaration of a {@code oneof} field.
+ * A declaration of a {@code oneof} field group.
  */
+@Immutable
 public final class OneofDeclaration {
 
     private final OneofDescriptor oneof;
@@ -44,17 +40,6 @@ public final class OneofDeclaration {
         this.declaringType = checkNotNull(type);
     }
 
-    public static ImmutableSet<OneofDeclaration> allFromType(MessageType declaringType) {
-        checkNotNull(declaringType);
-        ImmutableSet<OneofDeclaration> result =
-                declaringType.descriptor()
-                             .getOneofs()
-                             .stream()
-                             .map(oneof -> new OneofDeclaration(oneof, declaringType))
-                             .collect(toImmutableSet());
-        return result;
-    }
-
     /**
      * Obtains the name of the {@code oneof} field.
      */
@@ -63,21 +48,16 @@ public final class OneofDeclaration {
     }
 
     /**
-     * Obtains the name of an enum which represents cases of the {@code oneof} field.
-     *
-     * <p>Such an enum should be nested in the declaring message class.
-     *
-     * <p>If the declaring message class name is {@code com.acme.cms.Customer} and the {@code oneof}
-     * name is {@code auth_provider}, the resulting class name would be
-     * {@code com.acme.cms.Customer$AuthProviderCase}.
-     *
-     * @return the case enum FQN
+     * Obtains the {@code oneof} descriptor.
      */
-    public ClassName javaCaseEnum() {
-        ClassName declaringClassName = declaringType.javaClassName();
-        io.spine.code.gen.java.FieldName oneofName =
-                io.spine.code.gen.java.FieldName.from(name());
-        SimpleClassName enumName = SimpleClassName.create(format("%sCase", oneofName.capitalize()));
-        return declaringClassName.withNested(enumName);
+    public OneofDescriptor descriptor() {
+        return oneof;
+    }
+
+    /**
+     * Obtains the type containing this group.
+     */
+    public MessageType declaringType() {
+        return declaringType;
     }
 }
