@@ -23,8 +23,8 @@ package io.spine.validate;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.code.proto.FieldContext;
+import io.spine.code.proto.OneofDeclaration;
 import io.spine.type.MessageType;
-import io.spine.type.OneofDeclaration;
 import io.spine.validate.option.IsRequired;
 import io.spine.validate.option.RequiredField;
 

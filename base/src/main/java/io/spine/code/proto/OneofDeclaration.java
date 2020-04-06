@@ -18,11 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.type;
+package io.spine.code.proto;
 
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.OneofDescriptor;
-import io.spine.code.proto.FieldName;
+import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

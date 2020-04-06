@@ -18,13 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.type;
+package io.spine.code.proto;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Empty;
-import io.spine.code.proto.FieldName;
 import io.spine.test.type.Transmission;
+import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -46,8 +46,6 @@ class OneofDeclarationTest {
 
     @Test
     @DisplayName("obtain name")
-    @SuppressWarnings("DuplicateStringLiteralInspection")
-        // "type" is also used in generated code.
     void obtainName() {
         Descriptors.Descriptor declaringType = Transmission.getDescriptor();
         Descriptors.OneofDescriptor protocolOneof = declaringType

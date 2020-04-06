@@ -23,9 +23,9 @@ package io.spine.tools.validate;
 import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolMessageEnum;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.code.proto.OneofDeclaration;
 import io.spine.tools.validate.code.CodeExpression;
 import io.spine.tools.validate.code.Expression;
-import io.spine.type.OneofDeclaration;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.validate.FieldAccess.fieldOfMessage;
