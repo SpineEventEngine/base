@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.resolve;
+package io.spine.tools.code;
 
 import com.google.common.testing.EqualsTester;
 import com.google.common.testing.NullPointerTester;

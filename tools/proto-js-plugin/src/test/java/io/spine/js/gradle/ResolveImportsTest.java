@@ -18,12 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.resolve;
+package io.spine.js.gradle;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.truth.IterableSubject;
 import io.spine.code.fs.js.Directory;
 import io.spine.js.generate.given.GivenProject;
+import io.spine.tools.code.DirectoryPattern;
+import io.spine.tools.code.ExternalModule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -33,8 +35,8 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.js.generate.resolve.given.Given.newModule;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 @DisplayName("ResolveImports task should")
 class ResolveImportsTest {
@@ -147,5 +149,11 @@ class ResolveImportsTest {
 
     private ResolveImports newTask(ExternalModule module) {
         return new ResolveImports(generatedProtoDir, ImmutableList.of(module));
+    }
+
+    private static ExternalModule newModule(String moduleName, String directoryPattern) {
+        DirectoryPattern pattern = DirectoryPattern.of(directoryPattern);
+        List<DirectoryPattern> patterns = singletonList(pattern);
+        return new ExternalModule(moduleName, patterns);
     }
 }

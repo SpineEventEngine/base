@@ -21,6 +21,8 @@
 package io.spine.generate.dart;
 
 import io.spine.code.fs.dart.DefaultDartProject;
+import io.spine.tools.code.DirectoryPattern;
+import io.spine.tools.code.ExternalModule;
 import io.spine.tools.gradle.GradleExtension;
 import org.gradle.api.Project;
 import org.gradle.api.file.DirectoryProperty;
@@ -29,6 +31,14 @@ import org.gradle.api.provider.Property;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
+import static io.spine.tools.code.ExternalModule.predefinedModules;
+import static java.util.stream.Collectors.toList;
 
 /**
  * DSL extension for configuring Protobuf-to-Dart compilation.
@@ -50,6 +60,38 @@ public final class Extension extends GradleExtension {
     private final DirectoryProperty testDir;
     private final DirectoryProperty mainGeneratedDir;
     private final DirectoryProperty testGeneratedDir;
+
+    /**
+     * Names of JavaScript modules and directories they provide.
+     *
+     * <p>Information about modules is used to resolve imports in generated Protobuf files.
+     *
+     * <p>Additionally to modules specified via the property,
+     * the {@linkplain ExternalModule#predefinedModules() predefined Spine} modules are used.
+     *
+     * <p>An example of the definition:
+     * <pre>{@code
+     * modules = [
+     *      // The module provides `company/client` directory (not including subdirectories).
+     *      // So, an import path like {@code ../company/client/file.js}
+     *      // becomes {@code client/company/client/file.js}.
+     *      'client' : ['company/client'],
+     *
+     *      // The module provides `company/server` directory (including subdirectories).
+     *      // So, an import path like {@code ../company/server/nested/file.js}
+     *      // becomes {@code server/company/server/nested/file.js}.
+     *      'server' : ['company/server/*'],
+     *
+     *      // The module provides 'proto/company` directory.
+     *      // So, an import pah like {@code ../company/file.js}
+     *      // becomes {@code common-types/proto/company/file.js}.
+     *      'common-types' : ['proto/company']
+     * ]
+     * }</pre>
+     */
+    @SuppressWarnings("PublicField" /* Expose fields as a Gradle extension */)
+    public Map<String, List<String>> modules = newHashMap();
+
     private final Project project;
 
     Extension(Project project) {
@@ -225,6 +267,17 @@ public final class Extension extends GradleExtension {
                                     .toPath();
     }
 
+    public List<ExternalModule> modules() {
+        List<ExternalModule> modules = newArrayList();
+        for (String moduleName : this.modules.keySet()) {
+            List<DirectoryPattern> patterns = patterns(this.modules.get(moduleName));
+            ExternalModule module = new ExternalModule(moduleName, patterns);
+            modules.add(module);
+        }
+        modules.addAll(predefinedModules());
+        return modules;
+    }
+
     /**
      * Finalizes all configurable values.
      *
@@ -243,6 +296,12 @@ public final class Extension extends GradleExtension {
 
     private File file(Property<Object> property) {
         return project.file(property.get());
+    }
+
+    private static List<DirectoryPattern> patterns(Collection<String> rawPatterns) {
+        return rawPatterns.stream()
+                          .map(DirectoryPattern::of)
+                          .collect(toList());
     }
 
     @Override

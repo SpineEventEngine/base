@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.resolve;
+package io.spine.tools.code;
 
 import io.spine.code.fs.js.FileReference;
 import io.spine.logging.Logging;
@@ -66,7 +66,7 @@ public class ImportStatement implements Logging {
     /**
      * Obtains the file reference used in this import.
      */
-    FileReference path() {
+    public FileReference path() {
         int beginIndex = text.indexOf(IMPORT_BEGIN_SIGN) + IMPORT_BEGIN_SIGN.length();
         int endIndex = text.indexOf(IMPORT_END_SIGN, beginIndex);
         String importPath = text.substring(beginIndex, endIndex);
@@ -76,7 +76,7 @@ public class ImportStatement implements Logging {
     /**
      * Obtains a new instance with the updated path in the import statement.
      */
-    ImportStatement replacePath(CharSequence newPath) {
+    public ImportStatement replacePath(CharSequence newPath) {
         String updatedText = text.replace(path().value(), newPath);
         return new ImportStatement(updatedText, originFile);
     }
@@ -91,7 +91,7 @@ public class ImportStatement implements Logging {
     /**
      * Tells whether the imported file is present on a file system.
      */
-    boolean importedFileExists() {
+    public boolean importedFileExists() {
         Path filePath = importedFilePath();
         boolean exists = filePath.toFile()
                                  .exists();
@@ -102,7 +102,7 @@ public class ImportStatement implements Logging {
     /**
      * Obtains the absolute path to the imported file.
      */
-    Path importedFilePath() {
+    public Path importedFilePath() {
         FileReference fileReference = path();
         Path filePath = sourceDirectory().resolve(fileReference.value());
         return filePath.normalize();
@@ -111,7 +111,7 @@ public class ImportStatement implements Logging {
     /**
      * Obtains the path of the directory with the file containing this import.
      */
-    Path sourceDirectory() {
+    public Path sourceDirectory() {
         return originFile.getParentFile()
                          .toPath();
     }

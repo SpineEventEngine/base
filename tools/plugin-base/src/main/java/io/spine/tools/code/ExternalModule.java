@@ -18,9 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.resolve;
+package io.spine.tools.code;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import io.spine.code.fs.js.DirectoryReference;
 import io.spine.code.fs.js.FileReference;
@@ -65,7 +66,7 @@ public final class ExternalModule {
      * @throws IllegalStateException
      *         if the file is not provided by the module
      */
-    FileReference fileInModule(FileReference fileReference) {
+    public FileReference fileInModule(FileReference fileReference) {
         Optional<DirectoryPattern> matchingDirectory = matchingDirectory(fileReference);
         checkState(matchingDirectory.isPresent());
         DirectoryReference directory = matchingDirectory.get()
@@ -83,7 +84,7 @@ public final class ExternalModule {
      *         the file to check
      * @return {@code true} if the module provides the file
      */
-    boolean provides(FileReference fileReference) {
+    public boolean provides(FileReference fileReference) {
         boolean result = matchingDirectory(fileReference).isPresent();
         return result;
     }
@@ -131,6 +132,10 @@ public final class ExternalModule {
                 DirectoryPattern.of("spine/users/*")
         );
         return new ExternalModule("spine-users", directories);
+    }
+
+    public static ImmutableList<ExternalModule> predefinedModules() {
+        return ImmutableList.of(spineWeb(), spineUsers());
     }
 
     @Override

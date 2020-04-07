@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.resolve;
+package io.spine.tools.code;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
@@ -62,7 +62,6 @@ public final class DirectoryPattern {
      *         the value of the pattern
      * @return a new instance
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored" /* The result can be ignored. */)
     public static DirectoryPattern of(String value) {
         checkNotEmptyOrBlank(value);
         boolean includeNested = value.endsWith(INCLUDE_NESTED_PATTERN_ENDING);

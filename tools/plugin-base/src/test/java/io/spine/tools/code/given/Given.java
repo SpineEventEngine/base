@@ -18,12 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.resolve.given;
+package io.spine.tools.code.given;
 
 import io.spine.code.fs.js.Directory;
-import io.spine.js.generate.resolve.DirectoryPattern;
-import io.spine.js.generate.resolve.ExternalModule;
-import io.spine.js.generate.resolve.ImportStatement;
+import io.spine.tools.code.DirectoryPattern;
+import io.spine.tools.code.ExternalModule;
+import io.spine.tools.code.ImportStatement;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -42,14 +42,6 @@ public class Given {
     public static ImportStatement importWithPath(String path, File importOrigin) {
         String importText = format("let foo = require('%s');", path);
         return new ImportStatement(importText, importOrigin);
-    }
-
-    public static Directory mainProtoRoot() {
-        return protoRoot("main");
-    }
-
-    public static Directory testProtoRoot() {
-        return protoRoot("test");
     }
 
     public static String relativeImportPath() {

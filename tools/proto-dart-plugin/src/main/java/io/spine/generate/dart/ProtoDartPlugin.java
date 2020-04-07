@@ -35,6 +35,7 @@ import java.io.File;
 import static io.spine.tools.gradle.BaseTaskName.assemble;
 import static io.spine.tools.gradle.ProtoDartTaskName.copyGeneratedDart;
 import static io.spine.tools.gradle.ProtoDartTaskName.copyTestGeneratedDart;
+import static io.spine.tools.gradle.ProtoDartTaskName.resolveImports;
 import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
 import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 import static io.spine.tools.gradle.ProtocPluginName.dart;
@@ -62,6 +63,7 @@ public final class ProtoDartPlugin extends SpinePlugin {
 
         createMainCopyTask(project, extension);
         createTestCopyTask(project, extension);
+        createResolveImportTask(project, extension);
     }
 
     private static void createMainCopyTask(Project project, Extension extension) {
@@ -93,5 +95,14 @@ public final class ProtoDartPlugin extends SpinePlugin {
         project.getTasks()
                .getByName(assemble.name())
                .dependsOn(taskName.name());
+    }
+
+    private void createResolveImportTask(Project project, Extension extension) {
+        newTask(resolveImports, task -> {
+
+        })
+                .insertAfterTask(copyGeneratedDart)
+                .insertBeforeTask(assemble)
+                .applyNowTo(project);
     }
 }

@@ -21,12 +21,11 @@
 package io.spine.js.gradle;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableList;
 import io.spine.code.fs.DefaultProject;
 import io.spine.code.fs.js.DefaultJsProject;
 import io.spine.code.fs.js.Directory;
-import io.spine.js.generate.resolve.DirectoryPattern;
-import io.spine.js.generate.resolve.ExternalModule;
+import io.spine.tools.code.DirectoryPattern;
+import io.spine.tools.code.ExternalModule;
 import io.spine.tools.gradle.GradleExtension;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -78,7 +77,7 @@ public class Extension extends GradleExtension {
      * <p>Information about modules is used to resolve imports in generated Protobuf files.
      *
      * <p>Additionally to modules specified via the property,
-     * the {@linkplain #predefinedModules() predefined Spine} modules are used.
+     * the {@linkplain ExternalModule#predefinedModules() predefined Spine} modules are used.
      *
      * <p>An example of the definition:
      * <pre>{@code
@@ -144,7 +143,7 @@ public class Extension extends GradleExtension {
             ExternalModule module = new ExternalModule(moduleName, patterns);
             modules.add(module);
         }
-        modules.addAll(predefinedModules());
+        modules.addAll(ExternalModule.predefinedModules());
         return modules;
     }
 
@@ -170,17 +169,6 @@ public class Extension extends GradleExtension {
         return (Extension)
                 project.getExtensions()
                        .getByName(extensionName());
-    }
-
-    /**
-     * Obtains the external modules published by Spine.
-     */
-    @VisibleForTesting
-    static List<ExternalModule> predefinedModules() {
-        return ImmutableList.of(
-                ExternalModule.spineWeb(),
-                ExternalModule.spineUsers()
-        );
     }
 
     private static List<DirectoryPattern> patterns(Collection<String> rawPatterns) {

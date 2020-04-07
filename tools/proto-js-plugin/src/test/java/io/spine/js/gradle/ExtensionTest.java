@@ -22,7 +22,7 @@ package io.spine.js.gradle;
 
 import io.spine.code.fs.js.DefaultJsProject;
 import io.spine.code.fs.js.Directory;
-import io.spine.js.generate.resolve.ExternalModule;
+import io.spine.tools.code.ExternalModule;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.PluginManager;
 import org.gradle.testfixtures.ProjectBuilder;
@@ -75,7 +75,8 @@ class ExtensionTest {
         Directory directory = Extension.getMainGenProto(project);
         Directory expected = defaultProject.proto()
                                            .mainJs();
-        assertEquals(expected, directory);
+        assertThat(directory)
+                .isEqualTo(expected);
     }
 
     @Test
@@ -94,7 +95,8 @@ class ExtensionTest {
         Directory directory = Extension.getTestGenProtoDir(project);
         Directory expected = defaultProject.proto()
                                            .testJs();
-        assertEquals(expected, directory);
+        assertThat(directory)
+                .isEqualTo(expected);
     }
 
     @Test
@@ -104,7 +106,8 @@ class ExtensionTest {
         pluginExtension().testGenProtoDir = customPath;
         Directory directory = Extension.getTestGenProtoDir(project);
         Directory expected = Directory.at(Paths.get(customPath));
-        assertEquals(expected, directory);
+        assertThat(directory)
+                .isEqualTo(expected);
     }
 
     @Test
@@ -117,7 +120,8 @@ class ExtensionTest {
         File expected = mainDescriptors
                 .resolve(GROUP_ID + '_' + project.getName() + '_' + VERSION + ".desc")
                 .toFile();
-        assertEquals(expected, file);
+        assertThat(file)
+                .isEqualTo(expected);
     }
 
     @Test
@@ -127,7 +131,8 @@ class ExtensionTest {
         pluginExtension().mainDescriptorSetPath = customPath;
         File file = Extension.getMainDescriptorSet(project);
         File expected = new File(customPath);
-        assertEquals(expected, file);
+        assertThat(file)
+                .isEqualTo(expected);
     }
 
     @Test
@@ -140,7 +145,8 @@ class ExtensionTest {
         File expected = testDescriptors
                 .resolve(GROUP_ID + '_' + project.getName() + '_' + VERSION + "_test.desc")
                 .toFile();
-        assertEquals(expected, file);
+        assertThat(file)
+                .isEqualTo(expected);
     }
 
     @Test
@@ -150,14 +156,8 @@ class ExtensionTest {
         pluginExtension().testDescriptorSetPath = customPath;
         File file = Extension.getTestDescriptorSet(project);
         File expected = new File(customPath);
-        assertEquals(expected, file);
-    }
-
-    @Test
-    @DisplayName("include predefined Spine modules")
-    void includePredefinedModules() {
-        List<ExternalModule> modules = Extension.modules(project);
-        assertThat(modules).containsAtLeastElementsIn(Extension.predefinedModules());
+        assertThat(file)
+                .isEqualTo(expected);
     }
 
     @Test
@@ -167,8 +167,8 @@ class ExtensionTest {
         Map<String, List<String>> modulesExt = pluginExtension().modules;
         modulesExt.put(moduleName, emptyList());
         List<ExternalModule> modules = Extension.modules(project);
-        assertThat(modules).containsAtLeastElementsIn(Extension.predefinedModules());
-        assertThat(modules).contains(new ExternalModule(moduleName, emptyList()));
+        assertThat(modules)
+                .contains(new ExternalModule(moduleName, emptyList()));
     }
 
     private Extension pluginExtension() {
