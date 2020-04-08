@@ -174,7 +174,7 @@ public final class ProtoDartPlugin extends SpinePlugin {
         String name = file.getName();
         return name.endsWith(".pb.dart")
                 || name.endsWith(".pbenum.dart")
-                || name.endsWith(".pbservice.dart")
+                || name.endsWith(".pbserver.dart")
                 || name.endsWith(".pbjson.dart");
     }
 }
