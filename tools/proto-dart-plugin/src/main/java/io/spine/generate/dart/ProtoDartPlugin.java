@@ -125,6 +125,7 @@ public final class ProtoDartPlugin extends SpinePlugin {
         if (!isPbDartFile(sourceFile)) {
             return;
         }
+        _debug().log("Resolving imports in file %s", sourceFile);
         List<String> lines;
         Path asPath = sourceFile.toPath();
         try {
@@ -133,28 +134,39 @@ public final class ProtoDartPlugin extends SpinePlugin {
             throw new GradleException(format("Unable to read file `%s`.", sourceFile), e);
         }
         List<ExternalModule> modules = extension.modules();
-        Pattern importPattern = Pattern.compile("import \"(.+)\" as (.+);");
+        Pattern importPattern = Pattern.compile("import [\"']([^:]+)[\"'] as (.+);");
         List<String> resultLines = new ArrayList<>(lines.size());
         for (String line : lines) {
             Matcher matcher = importPattern.matcher(line);
             if (matcher.find()) {
+                _debug().log("Import found: `%s`", line);
                 String path = matcher.group(1);
-                Path absolutePath = asPath.resolve(path)
+                Path absolutePath = asPath.getParent()
+                                          .resolve(path)
                                           .normalize();
+                _debug().log("Resolved against this file: `%s`", absolutePath);
                 Path libPath = extension.getLibDir()
                                         .getAsFile()
                                         .map(File::toPath)
                                         .get();
                 Path relativeImport = libPath.relativize(absolutePath);
+                _debug().log("Relative: `%s`", relativeImport);
                 FileReference reference = FileReference.of(relativeImport.toString());
+                boolean match = false;
                 for (ExternalModule module : modules) {
                     if (module.provides(reference)) {
-                        String importStatement = format("import \"package:%s/%s\" as %s;",
+                        String importStatement = format("import 'package:%s/%s' as %s;",
                                                         module.name(),
                                                         relativeImport,
                                                         matcher.group(2));
                         resultLines.add(importStatement);
+                        match = true;
+                        _debug().log("Replacing with %s", importStatement);
+                        break;
                     }
+                }
+                if (!match) {
+                    resultLines.add(line);
                 }
             } else {
                 resultLines.add(line);
