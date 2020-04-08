@@ -20,6 +20,7 @@
 
 package io.spine.generate.dart;
 
+import com.google.common.collect.ImmutableList;
 import io.spine.code.fs.dart.DefaultDartProject;
 import io.spine.tools.code.DirectoryPattern;
 import io.spine.tools.code.ExternalModule;
@@ -35,7 +36,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static java.util.stream.Collectors.toList;
 
@@ -266,14 +266,14 @@ public final class Extension extends GradleExtension {
                                     .toPath();
     }
 
-    public List<ExternalModule> modules() {
-        List<ExternalModule> modules = newArrayList();
+    ImmutableList<ExternalModule> modules() {
+        ImmutableList.Builder<ExternalModule> modules = ImmutableList.builder();
         for (String moduleName : this.modules.keySet()) {
             List<DirectoryPattern> patterns = patterns(this.modules.get(moduleName));
             ExternalModule module = new ExternalModule(moduleName, patterns);
             modules.add(module);
         }
-        return modules;
+        return modules.build();
     }
 
     /**

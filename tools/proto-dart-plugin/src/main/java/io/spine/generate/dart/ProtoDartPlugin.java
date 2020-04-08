@@ -21,13 +21,10 @@
 package io.spine.generate.dart;
 
 import com.google.common.collect.ImmutableMap;
-import io.spine.code.fs.js.FileReference;
-import io.spine.tools.code.ExternalModule;
 import io.spine.tools.gradle.ProtoDartTaskName;
 import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.gradle.TaskName;
-import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.file.DirectoryProperty;
@@ -35,13 +32,9 @@ import org.gradle.api.file.FileTree;
 import org.gradle.api.tasks.Copy;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import static io.spine.generate.dart.SourceFile.isGeneratedDart;
 import static io.spine.tools.gradle.BaseTaskName.assemble;
 import static io.spine.tools.gradle.ProtoDartTaskName.copyGeneratedDart;
 import static io.spine.tools.gradle.ProtoDartTaskName.copyTestGeneratedDart;
@@ -51,9 +44,6 @@ import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 import static io.spine.tools.gradle.ProtocPluginName.dart;
 import static io.spine.tools.gradle.SourceScope.main;
 import static io.spine.tools.gradle.SourceScope.test;
-import static java.lang.String.format;
-import static java.nio.file.Files.readAllLines;
-import static java.nio.file.Files.write;
 import static org.gradle.api.Task.TASK_TYPE;
 
 /**
@@ -122,71 +112,17 @@ public final class ProtoDartPlugin extends SpinePlugin {
     }
 
     private void resolveImports(File sourceFile, Extension extension) {
-        if (!isPbDartFile(sourceFile)) {
+        Path asPath = sourceFile.toPath();
+        if (!isGeneratedDart(asPath)) {
             return;
         }
         _debug().log("Resolving imports in file %s", sourceFile);
-        List<String> lines;
-        Path asPath = sourceFile.toPath();
-        try {
-            lines = readAllLines(asPath);
-        } catch (IOException e) {
-            throw new GradleException(format("Unable to read file `%s`.", sourceFile), e);
-        }
-        List<ExternalModule> modules = extension.modules();
-        Pattern importPattern = Pattern.compile("import [\"']([^:]+)[\"'] as (.+);");
-        List<String> resultLines = new ArrayList<>(lines.size());
-        for (String line : lines) {
-            Matcher matcher = importPattern.matcher(line);
-            if (matcher.find()) {
-                _debug().log("Import found: `%s`", line);
-                String path = matcher.group(1);
-                Path absolutePath = asPath.getParent()
-                                          .resolve(path)
-                                          .normalize();
-                _debug().log("Resolved against this file: `%s`", absolutePath);
-                Path libPath = extension.getLibDir()
-                                        .getAsFile()
-                                        .map(File::toPath)
-                                        .get();
-                Path relativeImport = libPath.relativize(absolutePath);
-                _debug().log("Relative: `%s`", relativeImport);
-                FileReference reference = FileReference.of(relativeImport.toString());
-                boolean match = false;
-                for (ExternalModule module : modules) {
-                    if (module.provides(reference)) {
-                        String importStatement = format("import 'package:%s/%s' as %s;",
-                                                        module.name(),
-                                                        relativeImport,
-                                                        matcher.group(2));
-                        resultLines.add(importStatement);
-                        match = true;
-                        _debug().log("Replacing with %s", importStatement);
-                        break;
-                    }
-                }
-                if (!match) {
-                    resultLines.add(line);
-                }
-            } else {
-                resultLines.add(line);
-            }
-        }
-        try {
-            write(asPath, resultLines);
-        } catch (IOException e) {
-            throw new GradleException(format("Unable to write file `%s`.", sourceFile), e);
-        }
-    }
-
-    private static boolean isPbDartFile(File file) {
-        if (!file.isFile()) {
-            return false;
-        }
-        String name = file.getName();
-        return name.endsWith(".pb.dart")
-                || name.endsWith(".pbenum.dart")
-                || name.endsWith(".pbserver.dart")
-                || name.endsWith(".pbjson.dart");
+        SourceFile file = SourceFile.read(sourceFile.toPath());
+        Path libPath = extension.getLibDir()
+                                .getAsFile()
+                                .map(File::toPath)
+                                .get();
+        file.resolveImports(extension.modules(), libPath);
+        file.store();
     }
 }
