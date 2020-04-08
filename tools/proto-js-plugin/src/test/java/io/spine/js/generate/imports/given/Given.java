@@ -18,20 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.code.given;
+package io.spine.js.generate.imports.given;
 
-import io.spine.code.fs.js.Directory;
-import io.spine.tools.code.DirectoryPattern;
-import io.spine.tools.code.ExternalModule;
-import io.spine.tools.code.ImportStatement;
+import io.spine.js.generate.imports.ImportStatement;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
 
 import static java.lang.String.format;
-import static java.util.Collections.singletonList;
 
 public class Given {
 
@@ -46,18 +39,5 @@ public class Given {
 
     public static String relativeImportPath() {
         return "../path-relative-to-parent.js";
-    }
-
-    private static Directory protoRoot(String sourceSetName) {
-        Path path = Paths.get("src")
-                         .resolve(sourceSetName)
-                         .resolve("proto");
-        return Directory.at(path.toAbsolutePath());
-    }
-
-    public static ExternalModule newModule(String moduleName, String directoryPattern) {
-        DirectoryPattern pattern = DirectoryPattern.of(directoryPattern);
-        List<DirectoryPattern> patterns = singletonList(pattern);
-        return new ExternalModule(moduleName, patterns);
     }
 }

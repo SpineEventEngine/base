@@ -296,7 +296,7 @@ public final class GradleTask {
             }
             if (followingTask != null) {
                 TaskContainer existingTasks = project.getTasks();
-                existingTasks.getByPath(followingTask.name())
+                existingTasks.getByName(followingTask.name())
                              .dependsOn(task);
             }
             if (previousTaskOfAllProjects != null) {

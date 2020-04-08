@@ -37,7 +37,6 @@ import java.util.Map;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.tools.code.ExternalModule.predefinedModules;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -274,7 +273,6 @@ public final class Extension extends GradleExtension {
             ExternalModule module = new ExternalModule(moduleName, patterns);
             modules.add(module);
         }
-        modules.addAll(predefinedModules());
         return modules;
     }
 

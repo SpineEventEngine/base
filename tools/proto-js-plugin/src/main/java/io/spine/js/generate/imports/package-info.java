@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2020, TeamDev. All rights reserved.
  *
@@ -21,7 +20,7 @@
 
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.code.given;
+package io.spine.js.generate.imports;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.gradle;
+package io.spine.js.generate.imports;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
@@ -32,8 +32,6 @@ import io.spine.code.proto.FileSet;
 import io.spine.js.generate.GenerationTask;
 import io.spine.logging.Logging;
 import io.spine.tools.code.ExternalModule;
-import io.spine.tools.code.ImportStatement;
-import io.spine.tools.code.JsFile;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.nio.file.Path;

@@ -89,6 +89,10 @@ public final class ExternalModule {
         return result;
     }
 
+    public String name() {
+        return name;
+    }
+
     private Optional<DirectoryPattern> matchingDirectory(FileReference fileReference) {
         DirectoryReference directory = fileReference.directory();
         for (DirectoryPattern pattern : directories) {

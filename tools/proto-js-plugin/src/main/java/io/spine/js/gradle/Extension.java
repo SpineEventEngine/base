@@ -42,6 +42,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static io.spine.js.gradle.ProtoJsPlugin.extensionName;
+import static io.spine.tools.code.ExternalModule.predefinedModules;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -143,7 +144,7 @@ public class Extension extends GradleExtension {
             ExternalModule module = new ExternalModule(moduleName, patterns);
             modules.add(module);
         }
-        modules.addAll(ExternalModule.predefinedModules());
+        modules.addAll(predefinedModules());
         return modules;
     }
 

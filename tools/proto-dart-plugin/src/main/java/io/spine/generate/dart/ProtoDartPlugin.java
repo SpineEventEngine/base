@@ -21,16 +21,26 @@
 package io.spine.generate.dart;
 
 import com.google.common.collect.ImmutableMap;
+import io.spine.code.fs.js.FileReference;
+import io.spine.tools.code.ExternalModule;
 import io.spine.tools.gradle.ProtoDartTaskName;
 import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.gradle.TaskName;
+import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.FileTree;
 import org.gradle.api.tasks.Copy;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static io.spine.tools.gradle.BaseTaskName.assemble;
 import static io.spine.tools.gradle.ProtoDartTaskName.copyGeneratedDart;
@@ -41,6 +51,9 @@ import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 import static io.spine.tools.gradle.ProtocPluginName.dart;
 import static io.spine.tools.gradle.SourceScope.main;
 import static io.spine.tools.gradle.SourceScope.test;
+import static java.lang.String.format;
+import static java.nio.file.Files.readAllLines;
+import static java.nio.file.Files.write;
 import static org.gradle.api.Task.TASK_TYPE;
 
 /**
@@ -99,10 +112,69 @@ public final class ProtoDartPlugin extends SpinePlugin {
 
     private void createResolveImportTask(Project project, Extension extension) {
         newTask(resolveImports, task -> {
-
+            FileTree generatedDir = extension.getMainGeneratedDir()
+                                             .getAsFileTree();
+            generatedDir.forEach(file -> resolveImports(file, extension));
         })
                 .insertAfterTask(copyGeneratedDart)
                 .insertBeforeTask(assemble)
                 .applyNowTo(project);
+    }
+
+    private void resolveImports(File sourceFile, Extension extension) {
+        if (!isPbDartFile(sourceFile)) {
+            return;
+        }
+        List<String> lines;
+        Path asPath = sourceFile.toPath();
+        try {
+            lines = readAllLines(asPath);
+        } catch (IOException e) {
+            throw new GradleException(format("Unable to read file `%s`.", sourceFile), e);
+        }
+        List<ExternalModule> modules = extension.modules();
+        Pattern importPattern = Pattern.compile("import \"(.+)\" as (.+);");
+        List<String> resultLines = new ArrayList<>(lines.size());
+        for (String line : lines) {
+            Matcher matcher = importPattern.matcher(line);
+            if (matcher.find()) {
+                String path = matcher.group(1);
+                Path absolutePath = asPath.resolve(path)
+                                          .normalize();
+                Path libPath = extension.getLibDir()
+                                        .getAsFile()
+                                        .map(File::toPath)
+                                        .get();
+                Path relativeImport = libPath.relativize(absolutePath);
+                FileReference reference = FileReference.of(relativeImport.toString());
+                for (ExternalModule module : modules) {
+                    if (module.provides(reference)) {
+                        String importStatement = format("import \"package:%s/%s\" as %s;",
+                                                        module.name(),
+                                                        relativeImport,
+                                                        matcher.group(2));
+                        resultLines.add(importStatement);
+                    }
+                }
+            } else {
+                resultLines.add(line);
+            }
+        }
+        try {
+            write(asPath, resultLines);
+        } catch (IOException e) {
+            throw new GradleException(format("Unable to write file `%s`.", sourceFile), e);
+        }
+    }
+
+    private static boolean isPbDartFile(File file) {
+        if (!file.isFile()) {
+            return false;
+        }
+        String name = file.getName();
+        return name.endsWith(".pb.dart")
+                || name.endsWith(".pbenum.dart")
+                || name.endsWith(".pbservice.dart")
+                || name.endsWith(".pbjson.dart");
     }
 }

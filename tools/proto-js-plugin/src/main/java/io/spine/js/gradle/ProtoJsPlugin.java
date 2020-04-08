@@ -26,6 +26,7 @@ import io.spine.code.fs.js.Directory;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.AppendTypeUrlGetter;
 import io.spine.js.generate.GenerationTask;
+import io.spine.js.generate.imports.ResolveImports;
 import io.spine.js.generate.index.GenerateIndexFile;
 import io.spine.js.generate.parse.GenerateKnownTypeParsers;
 import io.spine.tools.code.ExternalModule;

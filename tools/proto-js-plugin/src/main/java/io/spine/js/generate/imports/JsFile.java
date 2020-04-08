@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.code;
+package io.spine.js.generate.imports;
 
 import com.google.common.base.Charsets;
 

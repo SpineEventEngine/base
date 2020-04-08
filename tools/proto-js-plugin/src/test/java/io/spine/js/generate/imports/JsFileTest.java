@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.code;
+package io.spine.js.generate.imports;
 
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +35,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.tools.code.given.Given.importWithPath;
+import static io.spine.js.generate.imports.given.Given.importWithPath;
 
 @ExtendWith(TempDirectory.class)
 @DisplayName("JavaScript file should")
