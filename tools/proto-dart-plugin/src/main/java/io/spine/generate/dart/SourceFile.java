@@ -42,6 +42,9 @@ import static java.nio.file.Files.write;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
 
+/**
+ * A Dart source file.
+ */
 final class SourceFile extends AbstractSourceFile implements Logging {
 
     @Regex(2)
@@ -54,6 +57,9 @@ final class SourceFile extends AbstractSourceFile implements Logging {
         this.lines = lines;
     }
 
+    /**
+     * Reads the file from disc.
+     */
     static SourceFile read(Path path) {
         checkNotNull(path);
         try {
@@ -74,6 +80,9 @@ final class SourceFile extends AbstractSourceFile implements Logging {
                 || file.endsWith(".pbjson.dart");
     }
 
+    /**
+     * Resolves the relative imports in the file into absolute ones with the given modules.
+     */
     void resolveImports(ImmutableList<ExternalModule> modules, Path libPath) {
         lines = lines.stream()
                      .map(line -> resolveImportInLine(line, modules, libPath))
@@ -108,6 +117,9 @@ final class SourceFile extends AbstractSourceFile implements Logging {
         return line;
     }
 
+    /**
+     * Rewrites this file.
+     */
     void store() {
         Path path = path();
         try {

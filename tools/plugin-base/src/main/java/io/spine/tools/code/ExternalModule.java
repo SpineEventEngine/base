@@ -89,6 +89,9 @@ public final class ExternalModule {
         return result;
     }
 
+    /**
+     * Obtains the name of the module.
+     */
     public String name() {
         return name;
     }
@@ -138,6 +141,9 @@ public final class ExternalModule {
         return new ExternalModule("spine-users", directories);
     }
 
+    /**
+     * All the modules in {@link #spineWeb()} and {@link #spineUsers()}.
+     */
     public static ImmutableList<ExternalModule> predefinedModules() {
         return ImmutableList.of(spineWeb(), spineUsers());
     }
