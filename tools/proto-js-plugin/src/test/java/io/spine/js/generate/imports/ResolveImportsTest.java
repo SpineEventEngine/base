@@ -41,7 +41,9 @@ import static java.util.Arrays.asList;
 class ResolveImportsTest {
 
     private final Directory generatedProtoDir = GivenProject.mainProtoSources();
-    private final ExternalModule module = newModule("test-module", "root-dir");
+    private final ExternalModule module = new ExternalModule(
+            "test-module", ImmutableList.of(DirectoryPattern.of("root-dir"))
+    );
     private final Path tempDirectory = generatedProtoDir.path();
     private final Path testFile = tempDirectory.resolve("js/with-imports.js");
 
@@ -148,11 +150,5 @@ class ResolveImportsTest {
 
     private ResolveImports newTask(ExternalModule module) {
         return new ResolveImports(generatedProtoDir, ImmutableList.of(module));
-    }
-
-    private static ExternalModule newModule(String moduleName, String directoryPattern) {
-        DirectoryPattern pattern = DirectoryPattern.of(directoryPattern);
-        List<DirectoryPattern> patterns = singletonList(pattern);
-        return new ExternalModule(moduleName, patterns);
     }
 }
