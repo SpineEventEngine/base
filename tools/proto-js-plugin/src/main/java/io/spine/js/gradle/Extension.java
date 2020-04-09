@@ -24,8 +24,8 @@ import com.google.common.annotations.VisibleForTesting;
 import io.spine.code.fs.DefaultProject;
 import io.spine.code.fs.js.DefaultJsProject;
 import io.spine.code.fs.js.Directory;
-import io.spine.tools.code.DirectoryPattern;
-import io.spine.tools.code.ExternalModule;
+import io.spine.tools.code.structure.DirectoryPattern;
+import io.spine.tools.code.structure.ExternalModule;
 import io.spine.tools.gradle.GradleExtension;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -42,7 +42,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static io.spine.js.gradle.ProtoJsPlugin.extensionName;
-import static io.spine.tools.code.ExternalModule.predefinedModules;
+import static io.spine.tools.code.structure.ExternalModule.predefinedModules;
 import static java.util.stream.Collectors.toList;
 
 /**

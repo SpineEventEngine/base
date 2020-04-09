@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.fs.js;
+package io.spine.code.fs;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
@@ -29,7 +29,7 @@ import java.util.List;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * A path to a file used in a JavaScript import statement.
+ * A path to a file used in an import statement.
  */
 public final class FileReference extends StringTypeValue {
 

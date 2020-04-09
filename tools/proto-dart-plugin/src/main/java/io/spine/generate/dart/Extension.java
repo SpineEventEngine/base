@@ -22,8 +22,8 @@ package io.spine.generate.dart;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.fs.dart.DefaultDartProject;
-import io.spine.tools.code.DirectoryPattern;
-import io.spine.tools.code.ExternalModule;
+import io.spine.tools.code.structure.DirectoryPattern;
+import io.spine.tools.code.structure.ExternalModule;
 import io.spine.tools.gradle.GradleExtension;
 import org.gradle.api.Project;
 import org.gradle.api.file.DirectoryProperty;
@@ -61,30 +61,31 @@ public final class Extension extends GradleExtension {
     private final DirectoryProperty testGeneratedDir;
 
     /**
-     * Names of JavaScript modules and directories they provide.
+     * Names of Dart modules and directories they provide.
      *
      * <p>Information about modules is used to resolve imports in generated Protobuf files.
      *
-     * <p>Additionally to modules specified via the property,
-     * the {@linkplain ExternalModule#predefinedModules() predefined Spine} modules are used.
+     * <p>Import resolution only applies to Dart files generated from Protobuf. Such files must
+     * have one of extensions: {@code .pb.dart}, {@code .pbenum.dart}, {@code .pbserver.dart}, or
+     * {@code .pbjson.dart}. All other files are ignored.
      *
      * <p>An example of the definition:
      * <pre>{@code
      * modules = [
      *      // The module provides `company/client` directory (not including subdirectories).
-     *      // So, an import path like {@code ../company/client/file.js}
-     *      // becomes {@code client/company/client/file.js}.
+     *      // So, an import path like {@code ../company/client/file.pb.dart}
+     *      // becomes {@code package:client/company/client/file.pb.dart}.
      *      'client' : ['company/client'],
      *
      *      // The module provides `company/server` directory (including subdirectories).
-     *      // So, an import path like {@code ../company/server/nested/file.js}
-     *      // becomes {@code server/company/server/nested/file.js}.
+     *      // So, an import path like {@code ../company/server/nested/file.pb.dart}
+     *      // becomes {@code package:server/company/server/nested/file.pb.dart}.
      *      'server' : ['company/server/*'],
      *
      *      // The module provides 'proto/company` directory.
-     *      // So, an import pah like {@code ../company/file.js}
-     *      // becomes {@code common-types/proto/company/file.js}.
-     *      'common-types' : ['proto/company']
+     *      // So, an import pah like {@code ../company/file.pbenum.dart}
+     *      // becomes {@code package:common_types/proto/company/file.pbenum.dart}.
+     *      'common_types' : ['proto/company']
      * ]
      * }</pre>
      */

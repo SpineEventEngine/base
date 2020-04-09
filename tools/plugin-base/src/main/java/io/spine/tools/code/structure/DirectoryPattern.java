@@ -18,12 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.code;
+package io.spine.tools.code.structure;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
-import io.spine.code.fs.js.DirectoryReference;
-import io.spine.code.fs.js.FileReference;
+import io.spine.code.fs.DirectoryReference;
+import io.spine.code.fs.FileReference;
 
 import java.util.List;
 import java.util.Objects;

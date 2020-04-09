@@ -18,13 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.code;
+package io.spine.tools.code.structure;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import io.spine.code.fs.js.DirectoryReference;
-import io.spine.code.fs.js.FileReference;
+import io.spine.code.fs.DirectoryReference;
+import io.spine.code.fs.FileReference;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -35,9 +35,9 @@ import static com.google.common.base.Preconditions.checkState;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * An external JavaScript module used in a project.
+ * An external library module used in a project.
  *
- * <p>External means that it is provided by an artifact repository like NPM.
+ * <p>An external module is typically provided by a package manager, such as NPM or Pub.
  */
 public final class ExternalModule {
 

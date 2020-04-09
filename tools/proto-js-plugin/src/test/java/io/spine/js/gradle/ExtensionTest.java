@@ -22,7 +22,7 @@ package io.spine.js.gradle;
 
 import io.spine.code.fs.js.DefaultJsProject;
 import io.spine.code.fs.js.Directory;
-import io.spine.tools.code.ExternalModule;
+import io.spine.tools.code.structure.ExternalModule;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.PluginManager;
 import org.gradle.testfixtures.ProjectBuilder;

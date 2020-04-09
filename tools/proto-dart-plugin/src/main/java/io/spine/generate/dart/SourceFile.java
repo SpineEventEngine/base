@@ -22,14 +22,15 @@ package io.spine.generate.dart;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.AbstractSourceFile;
-import io.spine.code.fs.js.FileReference;
+import io.spine.code.fs.FileReference;
 import io.spine.logging.Logging;
-import io.spine.tools.code.ExternalModule;
+import io.spine.tools.code.structure.ExternalModule;
 import org.checkerframework.checker.regex.qual.Regex;
 import org.gradle.api.GradleException;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,7 +41,6 @@ import static java.nio.file.Files.isRegularFile;
 import static java.nio.file.Files.readAllLines;
 import static java.nio.file.Files.write;
 import static java.util.regex.Pattern.compile;
-import static java.util.stream.Collectors.toList;
 
 /**
  * A Dart source file.
@@ -58,7 +58,7 @@ final class SourceFile extends AbstractSourceFile implements Logging {
     }
 
     /**
-     * Reads the file from disc.
+     * Reads the file from the local file system.
      */
     static SourceFile read(Path path) {
         checkNotNull(path);
@@ -84,9 +84,12 @@ final class SourceFile extends AbstractSourceFile implements Logging {
      * Resolves the relative imports in the file into absolute ones with the given modules.
      */
     void resolveImports(ImmutableList<ExternalModule> modules, Path libPath) {
-        lines = lines.stream()
-                     .map(line -> resolveImportInLine(line, modules, libPath))
-                     .collect(toList());
+        List<String> processedLines = new ArrayList<>();
+        for (String line : lines) {
+            String processedLine = resolveImportInLine(line, modules, libPath);
+            processedLines.add(processedLine);
+        }
+        lines = processedLines;
     }
 
     private String resolveImportInLine(String line,
