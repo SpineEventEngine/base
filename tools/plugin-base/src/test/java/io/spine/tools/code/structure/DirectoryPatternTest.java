@@ -18,11 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.resolve;
+package io.spine.tools.code.structure;
 
 import com.google.common.testing.EqualsTester;
 import com.google.common.testing.NullPointerTester;
-import io.spine.code.fs.js.DirectoryReference;
+import io.spine.code.fs.DirectoryReference;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

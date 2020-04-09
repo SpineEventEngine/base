@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.fs.js;
+package io.spine.code.fs;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;

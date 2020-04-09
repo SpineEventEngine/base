@@ -19,17 +19,13 @@
  */
 
 /**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * Classes for resolving JS imports.
  */
 
-final def SPINE_VERSION = '1.5.5'
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.js.generate.imports;
 
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    versionToPublish = SPINE_VERSION
-}
+import javax.annotation.ParametersAreNonnullByDefault;

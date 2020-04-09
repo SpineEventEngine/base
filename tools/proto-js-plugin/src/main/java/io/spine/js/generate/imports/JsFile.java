@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.resolve;
+package io.spine.js.generate.imports;
 
 import com.google.common.base.Charsets;
 
@@ -39,13 +39,13 @@ import static java.util.stream.Collectors.toList;
 /**
  * A JavaScript file present on a file system.
  */
-final class JsFile {
+public final class JsFile {
 
     private static final String EXTENSION = ".js";
 
     private final Path path;
 
-    JsFile(Path path) {
+    public JsFile(Path path) {
         checkArgument(path.toString()
                           .endsWith(EXTENSION), "A JavaScript file is expected.");
         checkArgument(path.toFile()
@@ -63,7 +63,7 @@ final class JsFile {
      * @param processFunction
      *         the function processing an import
      */
-    void processImports(Predicate<ImportStatement> importFilter,
+    public void processImports(Predicate<ImportStatement> importFilter,
                         ProcessImport processFunction) {
         try (Stream<String> lines = Files.lines(path)) {
             List<String> updatedLines = lines
@@ -101,6 +101,6 @@ final class JsFile {
     /**
      * A function processing an import statement.
      */
-    interface ProcessImport extends UnaryOperator<ImportStatement> {
+    public interface ProcessImport extends UnaryOperator<ImportStatement> {
     }
 }

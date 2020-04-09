@@ -18,15 +18,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.resolve;
+package io.spine.tools.code.structure;
 
 import com.google.common.testing.EqualsTester;
-import io.spine.code.fs.js.FileReference;
+import io.spine.code.fs.FileReference;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.js.generate.resolve.given.Given.newModule;
+import java.util.List;
+
 import static java.util.Collections.emptySet;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -103,5 +105,11 @@ class ExternalModuleTest {
                 IllegalStateException.class,
                 () -> module.fileInModule(reference)
         );
+    }
+
+    private static ExternalModule newModule(String moduleName, String directoryPattern) {
+        DirectoryPattern pattern = DirectoryPattern.of(directoryPattern);
+        List<DirectoryPattern> patterns = singletonList(pattern);
+        return new ExternalModule(moduleName, patterns);
     }
 }

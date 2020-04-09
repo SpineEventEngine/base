@@ -20,6 +20,7 @@
 
 package io.spine.code.fs.js;
 
+import io.spine.code.fs.DirectoryReference;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

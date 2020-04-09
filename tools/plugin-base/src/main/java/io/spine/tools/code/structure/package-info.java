@@ -19,17 +19,11 @@
  */
 
 /**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * Classes which work with source code directory structure.
  */
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.code.structure;
 
-final def SPINE_VERSION = '1.5.5'
-
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
-
-    versionToPublish = SPINE_VERSION
-}
+import javax.annotation.CheckReturnValue;
+import javax.annotation.ParametersAreNonnullByDefault;

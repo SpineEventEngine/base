@@ -18,9 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.resolve;
+package io.spine.js.generate.imports;
 
-import io.spine.code.fs.js.FileReference;
+import io.spine.code.fs.FileReference;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -29,8 +29,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.js.generate.resolve.given.Given.importWithPath;
-import static io.spine.js.generate.resolve.given.Given.relativeImportPath;
+import static io.spine.js.generate.imports.given.Given.importWithPath;
+import static io.spine.js.generate.imports.given.Given.relativeImportPath;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("ImportStatement should")

@@ -18,19 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.resolve;
+package io.spine.js.generate.imports;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.fs.FileReference;
 import io.spine.code.fs.js.Directory;
 import io.spine.code.fs.js.FileName;
-import io.spine.code.fs.js.FileReference;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.GenerationTask;
 import io.spine.logging.Logging;
+import io.spine.tools.code.structure.ExternalModule;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.nio.file.Path;

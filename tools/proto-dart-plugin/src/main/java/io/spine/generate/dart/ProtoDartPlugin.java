@@ -28,13 +28,17 @@ import io.spine.tools.gradle.TaskName;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.FileTree;
 import org.gradle.api.tasks.Copy;
 
 import java.io.File;
+import java.nio.file.Path;
 
+import static io.spine.generate.dart.SourceFile.isGeneratedDart;
 import static io.spine.tools.gradle.BaseTaskName.assemble;
 import static io.spine.tools.gradle.ProtoDartTaskName.copyGeneratedDart;
 import static io.spine.tools.gradle.ProtoDartTaskName.copyTestGeneratedDart;
+import static io.spine.tools.gradle.ProtoDartTaskName.resolveImports;
 import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
 import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 import static io.spine.tools.gradle.ProtocPluginName.dart;
@@ -62,6 +66,7 @@ public final class ProtoDartPlugin extends SpinePlugin {
 
         createMainCopyTask(project, extension);
         createTestCopyTask(project, extension);
+        createResolveImportTask(project, extension);
     }
 
     private static void createMainCopyTask(Project project, Extension extension) {
@@ -93,5 +98,31 @@ public final class ProtoDartPlugin extends SpinePlugin {
         project.getTasks()
                .getByName(assemble.name())
                .dependsOn(taskName.name());
+    }
+
+    private void createResolveImportTask(Project project, Extension extension) {
+        newTask(resolveImports, task -> {
+            FileTree generatedDir = extension.getMainGeneratedDir()
+                                             .getAsFileTree();
+            generatedDir.forEach(file -> resolveImports(file, extension));
+        })
+                .insertAfterTask(copyGeneratedDart)
+                .insertBeforeTask(assemble)
+                .applyNowTo(project);
+    }
+
+    private void resolveImports(File sourceFile, Extension extension) {
+        Path asPath = sourceFile.toPath();
+        if (!isGeneratedDart(asPath)) {
+            return;
+        }
+        _debug().log("Resolving imports in file %s", sourceFile);
+        SourceFile file = SourceFile.read(sourceFile.toPath());
+        Path libPath = extension.getLibDir()
+                                .getAsFile()
+                                .map(File::toPath)
+                                .get();
+        file.resolveImports(extension.modules(), libPath);
+        file.store();
     }
 }

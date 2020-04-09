@@ -18,12 +18,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * The classes which resolve imports in generated code.
- */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.js.generate.resolve;
+package io.spine.js.generate.imports.given;
 
-import javax.annotation.CheckReturnValue;
-import javax.annotation.ParametersAreNonnullByDefault;
+import io.spine.js.generate.imports.ImportStatement;
+
+import java.io.File;
+
+import static java.lang.String.format;
+
+public class Given {
+
+    /** Prevents instantiation of this utility class. */
+    private Given() {
+    }
+
+    public static ImportStatement importWithPath(String path, File importOrigin) {
+        String importText = format("let foo = require('%s');", path);
+        return new ImportStatement(importText, importOrigin);
+    }
+
+    public static String relativeImportPath() {
+        return "../path-relative-to-parent.js";
+    }
+}

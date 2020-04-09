@@ -20,6 +20,7 @@
 
 package io.spine.generate.dart;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.tools.gradle.TaskName;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -35,6 +36,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.gradle.BaseTaskName.assemble;
 import static io.spine.tools.gradle.ProtoDartTaskName.copyGeneratedDart;
 import static io.spine.tools.gradle.ProtoDartTaskName.copyTestGeneratedDart;
+import static io.spine.tools.gradle.ProtoDartTaskName.resolveImports;
 
 @DisplayName("`ProtoDartPlugin` should")
 class ProtoDartPluginTest {
@@ -57,10 +59,10 @@ class ProtoDartPluginTest {
         ProtoDartPlugin plugin = new ProtoDartPlugin();
         plugin.apply(project);
 
-        Task task = task(copyGeneratedDart);
+        Task task = findTask(copyGeneratedDart);
         assertThat(task.getDependsOn()).isNotEmpty();
 
-        Task assembleTask = task(assemble);
+        Task assembleTask = findTask(assemble);
         assertThat(assembleTask.getDependsOn()).contains(task.getName());
     }
 
@@ -70,14 +72,24 @@ class ProtoDartPluginTest {
         ProtoDartPlugin plugin = new ProtoDartPlugin();
         plugin.apply(project);
 
-        Task task = task(copyTestGeneratedDart);
+        Task task = findTask(copyTestGeneratedDart);
         assertThat(task.getDependsOn()).isNotEmpty();
 
-        Task assembleTask = task(assemble);
+        Task assembleTask = findTask(assemble);
         assertThat(assembleTask.getDependsOn()).contains(task.getName());
     }
 
-    private Task task(TaskName name) {
+    @Test
+    @DisplayName("create `resolveImports` task")
+    void createResolveTask() {
+        ProtoDartPlugin plugin = new ProtoDartPlugin();
+        plugin.apply(project);
+
+        findTask(resolveImports);
+    }
+
+    @CanIgnoreReturnValue
+    private Task findTask(TaskName name) {
         Task task = project.getTasks()
                            .findByName(name.name());
         assertThat(task).isNotNull();

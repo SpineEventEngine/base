@@ -58,5 +58,10 @@ public enum ProtoDartTaskName implements TaskName {
      *
      * <p>Works only with the {@code test} scope files.
      */
-    copyTestGeneratedDart
+    copyTestGeneratedDart,
+
+    /**
+     * Rewrites the Dart source files generated from Protobuf with the resolved absolute imports.
+     */
+    resolveImports
 }

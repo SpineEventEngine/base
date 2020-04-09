@@ -18,12 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.resolve;
+package io.spine.tools.code.structure;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import io.spine.code.fs.js.DirectoryReference;
-import io.spine.code.fs.js.FileReference;
+import io.spine.code.fs.DirectoryReference;
+import io.spine.code.fs.FileReference;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -34,9 +35,9 @@ import static com.google.common.base.Preconditions.checkState;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * An external JavaScript module used in a project.
+ * An external library module used in a project.
  *
- * <p>External means that it is provided by an artifact repository like NPM.
+ * <p>An external module is typically provided by a package manager, such as NPM or Pub.
  */
 public final class ExternalModule {
 
@@ -65,7 +66,7 @@ public final class ExternalModule {
      * @throws IllegalStateException
      *         if the file is not provided by the module
      */
-    FileReference fileInModule(FileReference fileReference) {
+    public FileReference fileInModule(FileReference fileReference) {
         Optional<DirectoryPattern> matchingDirectory = matchingDirectory(fileReference);
         checkState(matchingDirectory.isPresent());
         DirectoryReference directory = matchingDirectory.get()
@@ -83,9 +84,16 @@ public final class ExternalModule {
      *         the file to check
      * @return {@code true} if the module provides the file
      */
-    boolean provides(FileReference fileReference) {
+    public boolean provides(FileReference fileReference) {
         boolean result = matchingDirectory(fileReference).isPresent();
         return result;
+    }
+
+    /**
+     * Obtains the name of the module.
+     */
+    public String name() {
+        return name;
     }
 
     private Optional<DirectoryPattern> matchingDirectory(FileReference fileReference) {
@@ -131,6 +139,13 @@ public final class ExternalModule {
                 DirectoryPattern.of("spine/users/*")
         );
         return new ExternalModule("spine-users", directories);
+    }
+
+    /**
+     * All the modules in {@link #spineWeb()} and {@link #spineUsers()}.
+     */
+    public static ImmutableList<ExternalModule> predefinedModules() {
+        return ImmutableList.of(spineWeb(), spineUsers());
     }
 
     @Override

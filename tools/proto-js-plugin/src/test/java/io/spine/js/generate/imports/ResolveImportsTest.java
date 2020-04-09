@@ -18,12 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.resolve;
+package io.spine.js.generate.imports;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.truth.IterableSubject;
 import io.spine.code.fs.js.Directory;
 import io.spine.js.generate.given.GivenProject;
+import io.spine.tools.code.structure.DirectoryPattern;
+import io.spine.tools.code.structure.ExternalModule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -33,14 +35,15 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.js.generate.resolve.given.Given.newModule;
 import static java.util.Arrays.asList;
 
 @DisplayName("ResolveImports task should")
 class ResolveImportsTest {
 
     private final Directory generatedProtoDir = GivenProject.mainProtoSources();
-    private final ExternalModule module = newModule("test-module", "root-dir");
+    private final ExternalModule module = new ExternalModule(
+            "test-module", ImmutableList.of(DirectoryPattern.of("root-dir"))
+    );
     private final Path tempDirectory = generatedProtoDir.path();
     private final Path testFile = tempDirectory.resolve("js/with-imports.js");
 

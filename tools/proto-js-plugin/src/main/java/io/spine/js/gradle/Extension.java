@@ -21,12 +21,11 @@
 package io.spine.js.gradle;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableList;
 import io.spine.code.fs.DefaultProject;
 import io.spine.code.fs.js.DefaultJsProject;
 import io.spine.code.fs.js.Directory;
-import io.spine.js.generate.resolve.DirectoryPattern;
-import io.spine.js.generate.resolve.ExternalModule;
+import io.spine.tools.code.structure.DirectoryPattern;
+import io.spine.tools.code.structure.ExternalModule;
 import io.spine.tools.gradle.GradleExtension;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -43,6 +42,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static io.spine.js.gradle.ProtoJsPlugin.extensionName;
+import static io.spine.tools.code.structure.ExternalModule.predefinedModules;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -78,7 +78,7 @@ public class Extension extends GradleExtension {
      * <p>Information about modules is used to resolve imports in generated Protobuf files.
      *
      * <p>Additionally to modules specified via the property,
-     * the {@linkplain #predefinedModules() predefined Spine} modules are used.
+     * the {@linkplain ExternalModule#predefinedModules() predefined Spine} modules are used.
      *
      * <p>An example of the definition:
      * <pre>{@code
@@ -170,17 +170,6 @@ public class Extension extends GradleExtension {
         return (Extension)
                 project.getExtensions()
                        .getByName(extensionName());
-    }
-
-    /**
-     * Obtains the external modules published by Spine.
-     */
-    @VisibleForTesting
-    static List<ExternalModule> predefinedModules() {
-        return ImmutableList.of(
-                ExternalModule.spineWeb(),
-                ExternalModule.spineUsers()
-        );
     }
 
     private static List<DirectoryPattern> patterns(Collection<String> rawPatterns) {
