@@ -19,7 +19,7 @@
  */
 
 /**
- * The classes which resolve imports in generated code.
+ * Classes which work with source code directory structure.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

@@ -18,6 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * Classes for resolving JS imports.
+ */
+
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.js.generate.imports;
