@@ -79,6 +79,8 @@ jar {
     }
 }
 
+apply from: deps.scripts.publishProto
+
 task rebuildProtobuf {
     dependsOn(rootProject.subprojects*.getTasksByName('publishToMavenLocal', false))
 
