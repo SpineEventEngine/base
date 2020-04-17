@@ -75,14 +75,17 @@ subprojects {
     apply from: "$baseRoot/config/gradle/model-compiler.gradle"
 
     dependencies {
-        implementation "io.spine:spine-base:$spineVersion"
-
-        implementation deps.build.errorProneCore
-        implementation deps.build.errorProneAnnotations
+        implementation(
+                deps.build.errorProneCore,
+                deps.build.errorProneAnnotations,
+                "io.spine:spine-base:$spineVersion"
+        )
 
         testImplementation "io.spine:spine-testlib:$spineVersion"
         testRuntimeOnly deps.test.junit5Runner
     }
+
+    forceConfiguration(project)
 
     idea.module {
         generatedSourceDirs += file("$projectDir/generated/main/java")

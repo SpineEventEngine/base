@@ -187,6 +187,11 @@ public final class PackageGraph implements Graph<PackageInfo> {
     }
 
     @Override
+    public ElementOrder<PackageInfo> incidentEdgeOrder() {
+        return impl.incidentEdgeOrder();
+    }
+
+    @Override
     public Set<PackageInfo> adjacentNodes(PackageInfo node) {
         return impl.adjacentNodes(node);
     }
