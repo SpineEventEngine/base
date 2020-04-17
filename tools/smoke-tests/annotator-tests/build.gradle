@@ -43,6 +43,8 @@ modelCompiler {
 }
 
 dependencies {
-    testImplementation deps.grpc.grpcStub
-    testImplementation deps.grpc.grpcProtobuf
+    testImplementation(
+            deps.grpc.grpcStub,
+            deps.grpc.grpcProtobuf
+    )
 }
