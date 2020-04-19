@@ -52,5 +52,4 @@ public abstract class SimpleLoggingTest extends LoggingTest {
     void resetLogging() {
         restoreLogging();
     }
-
 }
