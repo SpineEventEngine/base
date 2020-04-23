@@ -24,11 +24,12 @@ dependencies {
         Expose tools we use as transitive dependencies to simplify dependency management in
         sub-projects.
     */
-    api deps.build.protobuf
-    api deps.test.junit5Api
-    api deps.test.truth
-    api deps.test.guavaTestlib
-    api deps.test.hamcrest
+    api(deps.build.protobuf,
+        deps.test.junit5Api,
+        deps.test.truth,
+        deps.test.guavaTestlib,
+        deps.test.hamcrest)
+    implementation project(':base')
 }
 
 /*
