@@ -20,10 +20,10 @@
 
 package io.spine.testing.logging;
 
-import com.google.common.flogger.LoggerConfig;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -35,8 +35,8 @@ public final class Interceptor {
 
     /** The class which performs the log operations. */
     private final Class<?> loggingClass;
-    /** The helper to set logger configuration. */
-    private final LoggerConfig config;
+    /** The {@code java.util.logging} logger. */
+    private final Logger julLogger;
     /** The value of the property used by the logger before the test. */
     private boolean useParentHandler;
     /** The value the logger had before the tests. */
@@ -53,8 +53,8 @@ public final class Interceptor {
     public Interceptor(Class<?> loggingClass, Level level) {
         this.loggingClass = checkNotNull(loggingClass);
         this.level = checkNotNull(level);
-        this.config = LoggerConfig.getConfig(this.loggingClass);
-        this.previousLevel = config.getLevel();
+        this.julLogger = Logger.getLogger(loggingClass.getName());
+        this.previousLevel = julLogger.getLevel();
     }
 
     /**
@@ -68,10 +68,10 @@ public final class Interceptor {
     public void intercept() {
         handler = new AssertingHandler();
         handler.setLevel(this.level);
-        useParentHandler = config.getUseParentHandlers();
-        config.setLevel(this.level);
-        config.addHandler(handler);
-        config.setUseParentHandlers(false);
+        useParentHandler = julLogger.getUseParentHandlers();
+        julLogger.setLevel(this.level);
+        julLogger.addHandler(handler);
+        julLogger.setUseParentHandlers(false);
     }
 
     /**
@@ -81,9 +81,9 @@ public final class Interceptor {
         if (handler == null) {
             return;
         }
-        config.removeHandler(handler);
-        config.setUseParentHandlers(useParentHandler);
-        config.setLevel(previousLevel);
+        julLogger.removeHandler(handler);
+        julLogger.setUseParentHandlers(useParentHandler);
+        julLogger.setLevel(previousLevel);
         handler = null;
     }
 

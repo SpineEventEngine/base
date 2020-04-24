@@ -21,7 +21,7 @@
 package io.spine.logging;
 
 import com.google.common.flogger.FluentLogger;
-import com.google.common.flogger.LoggerConfig;
+import com.google.common.flogger.LogContext;
 import io.spine.logging.given.Base;
 import io.spine.logging.given.ChildOne;
 import io.spine.logging.given.ChildTwo;
@@ -59,7 +59,8 @@ class LoggingHierarchyTest {
     }
 
     private static void assertLogger(FluentLogger logger, Class<?> cls) {
-        assertThat(LoggerConfig.of(logger).getName())
-                .contains(cls.getName());
+        LogContext<?, ?> context = (LogContext<?, ?>) logger.atSevere();
+        assertThat(context.getLoggerName())
+                .isEqualTo(cls.getName());
     }
 }

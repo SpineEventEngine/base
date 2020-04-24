@@ -22,7 +22,6 @@ package io.spine.logging;
 
 import com.google.common.flogger.FluentLogger;
 import com.google.common.flogger.LogContext;
-import com.google.common.flogger.LoggerConfig;
 import com.google.common.flogger.backend.LogData;
 import com.google.common.truth.Subject;
 import io.spine.logging.given.LoggingObject;
@@ -33,6 +32,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.function.Supplier;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static io.spine.testing.logging.LogTruth.assertThat;
 
@@ -80,12 +80,12 @@ class LoggingTest {
     class Shortcuts {
 
         private Logging object;
-        private FluentLogger logger;
+        private Logger julLogger;
 
         @BeforeEach
         void createLoggingObject() {
             object = new LoggingObject();
-            logger = object.logger();
+            julLogger = Logger.getLogger(object.getClass().getName());
         }
 
         @Test
@@ -109,9 +109,7 @@ class LoggingTest {
         }
 
         private void assertApi(Supplier<FluentLogger.Api> method, Level expectedLevel) {
-            LoggerConfig.of(logger)
-                        .setLevel(expectedLevel);
-
+            julLogger.setLevel(expectedLevel);
             FluentLogger.Api api = method.get();
             assertThat(api)
                     .isInstanceOf(LogContext.class);
