@@ -365,7 +365,8 @@ public final class Validate {
 
     /**
      * Checks that when transitioning a message state from {@code previous} to {@code current},
-     * the {@code set_once} constrains are met.
+     * the {@code set_once} constrains are met and throws a {@link ValidationException} if
+     * the value transition is not valid.
      *
      * @param previous
      *         the previous state of the message
@@ -374,14 +375,36 @@ public final class Validate {
      * @param <M>
      *         the type of the message
      * @throws ValidationException
-     *          the value transition is not valid
+     *          if the value transition is not valid
      */
     public static <M extends Message> void checkValidChange(M previous, M current) {
         checkNotNull(previous);
         checkNotNull(current);
+        ImmutableSet<ConstraintViolation> setOnceViolations = validateChange(previous, current);
+        if (!setOnceViolations.isEmpty()) {
+            throw new ValidationException(setOnceViolations);
+        }
+    }
+
+    /**
+     * Checks that when transitioning a message state from {@code previous} to {@code current},
+     * the {@code set_once} constrains are met.
+     *
+     * @param previous
+     *         the previous state of the message
+     * @param current
+     *         the new state of the message
+     * @param <M>
+     *         the type of the message
+     * @return list of constraint violations, if the transaction is invalid, an empty list otherwise
+     */
+    public static <M extends Message> ImmutableSet<ConstraintViolation>
+    validateChange(M previous, M current) {
+        checkNotNull(previous);
+        checkNotNull(current);
 
         Diff diff = Diff.between(previous, current);
-        ImmutableSet<ConstraintViolation> setOnceViolations = current
+        ImmutableSet<ConstraintViolation> violations = current
                 .getDescriptorForType()
                 .getFields()
                 .stream()
@@ -394,9 +417,7 @@ public final class Validate {
                 })
                 .map(Validate::violatedSetOnce)
                 .collect(toImmutableSet());
-        if (!setOnceViolations.isEmpty()) {
-            throw new ValidationException(setOnceViolations);
-        }
+        return violations;
     }
 
     /**
