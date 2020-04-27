@@ -41,6 +41,9 @@ import static io.spine.protobuf.Messages.isNotDefault;
  * The {@link CodeGenerator} implementation generating the specific interfaces implemented by
  * some message types.
  *
+ * <p>This generator processes interfaces obtained from {@code (is)} and {@code (every_is)} options
+ * as well as interfaces defined for {@linkplain CodeGenerationTask file patterns}.
+ *
  * <p>The generator produces two types of {@link File CodeGeneratorResponse.File} instances
  * representing:
  * <ul>
@@ -101,18 +104,13 @@ public final class InterfaceGenerator extends CodeGenerator {
     }
 
     private ImmutableList<CompilerOutput> processMessageType(MessageType type) {
-        ImmutableList.Builder<CompilerOutput> result = ImmutableList.builder();
-
         ImmutableList<CompilerOutput> matched = codeGenerationTasks.generateFor(type);
-        result.addAll(matched);
-
         Collection<CompilerOutput> fromMsgOption = MessageAndInterface.scanMsgOption(type);
-        result.addAll(fromMsgOption);
-
-        if (fromMsgOption.isEmpty()) {
-            Collection<CompilerOutput> fromFileOption = MessageAndInterface.scanFileOption(type);
-            result.addAll(fromFileOption);
-        }
-        return result.build();
+        Collection<CompilerOutput> fromFileOption = MessageAndInterface.scanFileOption(type);
+        return ImmutableList.<CompilerOutput>builder()
+                            .addAll(matched)
+                            .addAll(fromMsgOption)
+                            .addAll(fromFileOption)
+                            .build();
     }
 }
