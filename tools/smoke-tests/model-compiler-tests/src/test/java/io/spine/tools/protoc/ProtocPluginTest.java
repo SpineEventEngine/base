@@ -93,12 +93,12 @@ final class ProtocPluginTest {
     }
 
     @Test
-    @DisplayName("use `IS` in priority to `EVERY IS`")
+    @DisplayName("use `IS` and `EVERY IS` together")
     void useIsInPriorityToEveryIs() {
         assertThat(PIUserCreated.getDefaultInstance()).isInstanceOf(PIUserEvent.class);
         assertThat(PIUserNameUpdated.getDefaultInstance()).isInstanceOf(PIUserEvent.class);
 
-        assertThat(UserName.getDefaultInstance()).isNotInstanceOf(PIUserEvent.class);
+        assertThat(UserName.getDefaultInstance()).isInstanceOf(PIUserEvent.class);
         assertThat(UserName.getDefaultInstance()).isInstanceOf(UserInfo.class);
     }
 

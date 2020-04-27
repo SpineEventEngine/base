@@ -51,7 +51,7 @@ message Hamster {
 }
 ```
 
-If both `(is)` and `(every_is)` options are found, `(is)` value is taken.
+If both `(is)` and `(every_is)` options are found, both are applied.
 
 Also, both `(is)` and `(every_is)` options support shorter syntax with no explicit package 
 declaration. In this case, the package of the current file (either `java_package` or Protobuf
