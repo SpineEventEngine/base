@@ -130,7 +130,6 @@ class ValidateTest extends UtilityClassTest<Validate> {
     @DisplayName("test message changes upon (set_once) and")
     class SetOnce {
 
-        private static final String ID = "id";
         private static final String BIRTHPLACE = "birthplace";
 
         @Test
@@ -148,7 +147,7 @@ class ValidateTest extends UtilityClassTest<Validate> {
         }
 
         @Test
-        @DisplayName("throw ValidationException if an entity ID is overridden")
+        @DisplayName("ignore ID changes by default")
         void reportIdChanges() {
             Passport oldValue = Passport
                     .newBuilder()
@@ -158,7 +157,7 @@ class ValidateTest extends UtilityClassTest<Validate> {
                     .newBuilder()
                     .setId("JC 424242424242")
                     .build();
-            checkViolated(oldValue, newValue, ID);
+            checkValidChange(oldValue, newValue);
         }
 
         @Test
@@ -174,7 +173,7 @@ class ValidateTest extends UtilityClassTest<Validate> {
                     .setId("JC 424")
                     .setBirthplace("Edinburgh")
                     .build();
-            checkViolated(oldValue, newValue, ID, BIRTHPLACE);
+            checkViolated(oldValue, newValue, BIRTHPLACE);
         }
 
         @Test

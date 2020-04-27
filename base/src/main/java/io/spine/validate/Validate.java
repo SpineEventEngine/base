@@ -454,9 +454,7 @@ public final class Validate {
     private static boolean markedSetOnce(FieldDeclaration declaration) {
         Optional<Boolean> setOnceDeclaration = SetOnce.from(declaration.descriptor());
         boolean setOnceValue = setOnceDeclaration.orElse(false);
-        boolean requiredByDefault = declaration.isEntityId()
-                && !setOnceDeclaration.isPresent();
-        return setOnceValue || requiredByDefault;
+        return setOnceValue;
     }
 
     private static void onSetOnceMisuse(FieldDeclaration field) {
