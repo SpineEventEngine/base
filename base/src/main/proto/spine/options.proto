@@ -432,7 +432,7 @@ extend google.protobuf.MessageOptions {
     // In the example above, `CreateProject` message is a `ProjectCommand`.
     //
     // To specify a characteristic for every message in a `.proto` file, use `(every_is)` file
-    // option. If both `(is)` and `(every_is)` options are found, `(is)` value is taken.
+    // option. If both `(is)` and `(every_is)` options are found, both are applied.
     //
     // When targeting Java, specify the name of a Java interface to be implemented by this
     // message via `(is).java_type`.
@@ -492,7 +492,7 @@ extend google.protobuf.FileOptions {
     // messages are `ProjectCommand`-s.
     //
     // To specify a characteristic for a single message, use `(is)` message option. If both `(is)`
-    // and `(every_is)` options are found, `(is)` value is taken.
+    // and `(every_is)` options are found, both are applied.
     //
     // When targeting Java, specify the name of a Java interface to be implemented by these
     // message types via `(every_is).java_type`.
@@ -824,6 +824,9 @@ message IsOption {
     // If fully-qualified name given, the package of the generated type matches the fully-qualified
     // name. When a simple name is set in the option, the package of the interface matches the
     // package of the message class.
+    //
+    // If both `(is)` and `(every_is)` options specify a Java interface, the message class
+    // implements both interfaces.
     //
     string java_type = 2;
 }
