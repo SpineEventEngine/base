@@ -20,8 +20,10 @@
 
 package io.spine.code.gen.java.column;
 
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
 import io.spine.base.EntityColumn;
 import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.gen.java.GeneratedMethodSpec;
@@ -40,9 +42,13 @@ import static javax.lang.model.element.Modifier.STATIC;
 final class ColumnAccessor implements GeneratedMethodSpec {
 
     private final FieldDeclaration column;
+    private final ClassName entityStateName;
+    private final ClassName returningValueName;
 
     ColumnAccessor(FieldDeclaration column) {
         this.column = column;
+        this.entityStateName = JavaPoetName.of(column.declaringType().javaClassName()).className();
+        this.returningValueName = JavaPoetName.of(columnType(column)).className();
     }
 
     @Override
@@ -52,7 +58,7 @@ final class ColumnAccessor implements GeneratedMethodSpec {
                 .methodBuilder(name.javaCase())
                 .addJavadoc(javadoc().spec())
                 .addModifiers(PUBLIC, STATIC)
-                .returns(columnType().value())
+                .returns(columnType())
                 .addStatement(methodBody())
                 .build();
         return result;
@@ -68,9 +74,11 @@ final class ColumnAccessor implements GeneratedMethodSpec {
     /**
      * Returns the name of the Java type of a column.
      */
-    private static JavaPoetName columnType() {
+    private ParameterizedTypeName columnType() {
         JavaPoetName result = JavaPoetName.of(EntityColumn.class);
-        return result;
+        ParameterizedTypeName parameterizedResult =
+                ParameterizedTypeName.get(result.className(), entityStateName, returningValueName);
+        return parameterizedResult;
     }
 
     /**
@@ -78,8 +86,25 @@ final class ColumnAccessor implements GeneratedMethodSpec {
      */
     private CodeBlock methodBody() {
         return CodeBlock.of(
-                "return new $T($S)", EntityColumn.class, columnName()
+                "return new $T<>($S, $T.class, $T.class)",
+                EntityColumn.class,
+                columnName(),
+                entityStateName,
+                returningValueName
         );
+    }
+
+    /**
+     * Returns the type of the column value in a form suitable for the code generation.
+     */
+    private static ClassName columnType(FieldDeclaration column) {
+        String rawTypeName = column.javaTypeName();
+        boolean scalar = column.isScalar();
+        io.spine.code.java.ClassName className = io.spine.code.java.ClassName.of(rawTypeName);
+        String packageName = scalar ? ""
+                                    : className.packageName()
+                                               .value();
+        return ClassName.get(packageName, className.withoutPackage());
     }
 
     /**

@@ -20,9 +20,12 @@
 
 package io.spine.base;
 
+import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 import io.spine.code.proto.FieldName;
 import io.spine.value.ValueHolder;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A queryable column of an entity which can be passed to the query filters.
@@ -54,6 +57,7 @@ import io.spine.value.ValueHolder;
  *             // Prevent instantiation.
  *         }
  *
+ *          //TODO:2020-04-30:alex.tymchenko: add the docs
  *         public static io.spine.base.EntityColumn name() {...}
  *
  *         public static io.spine.base.EntityColumn taskCount() {...}
@@ -66,17 +70,34 @@ import io.spine.value.ValueHolder;
  *
  * <p>See the Spine code generation routines in {@code tool-base} for extensive details on how the
  * types are generated.
+ *
+ * @param <S> the type of the state of the {@code Entity}
+ * @param <V> the type of the column type
  */
-public final class EntityColumn extends ValueHolder<FieldName> {
+public final class EntityColumn<S extends EntityState, V extends Message>
+        extends ValueHolder<FieldName> {
 
     private static final long serialVersionUID = 0L;
 
-    public EntityColumn(String fieldName) {
+    private final Class<S> entityStateType;
+    private final Class<V> valueType;
+
+    public EntityColumn(String fieldName, Class<S> entityStateType, Class<V> valueType) {
         super(FieldName.of(fieldName));
+        this.entityStateType = checkNotNull(entityStateType, "The type of the entity state must be set.");
+        this.valueType = checkNotNull(valueType, "The type of the returning value must be set.");
     }
 
     @Internal
     public FieldName name() {
         return value();
+    }
+
+    public Class<S> entityStateType() {
+        return entityStateType;
+    }
+
+    public Class<V> valueType() {
+        return valueType;
     }
 }

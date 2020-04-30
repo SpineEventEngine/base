@@ -21,6 +21,8 @@
 package io.spine.base;
 
 import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.Timestamp;
+import io.spine.base.given.FakeEntityState;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -34,15 +36,20 @@ class EntityColumnTest {
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
         new NullPointerTester()
+                .setDefault(String.class, "non-empty-column-name")
                 .testAllPublicConstructors(EntityColumn.class);
     }
 
     @Test
-    @DisplayName("expose the column name")
+    @DisplayName("expose the its attributes")
     void exposeColumnName() {
         String columnName = "some-column";
-        EntityColumn column =
-                new EntityColumn(columnName);
+        Class<FakeEntityState> stateType = FakeEntityState.class;
+        Class<Timestamp> returningValueType = Timestamp.class;
+        EntityColumn<FakeEntityState, Timestamp> column =
+                new EntityColumn<>(columnName, stateType, returningValueType);
         assertThat(column.name().value()).isEqualTo(columnName);
+        assertThat(column.entityStateType()).isEqualTo(stateType);
+        assertThat(column.valueType()).isEqualTo(returningValueType);
     }
 }
