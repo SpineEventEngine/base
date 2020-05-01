@@ -20,7 +20,6 @@
 
 package io.spine.base;
 
-import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 import io.spine.code.proto.FieldName;
 import io.spine.value.ValueHolder;
@@ -74,7 +73,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @param <S> the type of the state of the {@code Entity}
  * @param <V> the type of the column type
  */
-public final class EntityColumn<S extends EntityState, V extends Message>
+public final class EntityColumn<S extends EntityState, V>
         extends ValueHolder<FieldName> {
 
     private static final long serialVersionUID = 0L;
