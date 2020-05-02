@@ -24,6 +24,8 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
+import java.util.Optional;
+
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -79,7 +81,7 @@ public enum ScalarType {
      * @return the corresponding Java type
      */
     public static Class<?> javaType(Type protoScalar) {
-        for (ScalarType scalarType : ScalarType.values()) {
+        for (ScalarType scalarType : values()) {
             if (scalarType.protoScalarType == protoScalar) {
                 return scalarType.javaClass;
             }
@@ -102,15 +104,36 @@ public enum ScalarType {
      * Verifies if the passed field has scalar type.
      */
     public static boolean isScalarType(FieldDescriptorProto field) {
+        return of(field).isPresent();
+    }
+
+    /**
+     * Finds the scalar type corresponding to the type of the passed field.
+     *
+     * <p>Returns {@code Optional.empty()} if no such type exists.
+     *
+     * @see #isScalarType(FieldDescriptorProto)
+     */
+    public static Optional<ScalarType> of(FieldDescriptorProto field) {
         Type type = field.getType();
         for (ScalarType scalarType : values()) {
             if (scalarType.protoScalarType() == type) {
-                return true;
+                return Optional.of(scalarType);
             }
         }
-        return false;
+        return Optional.empty();
     }
 
+    /**
+     * Returns the Java class corresponding to this scalar type.
+     */
+    public Class<?> javaClass() {
+        return javaClass;
+    }
+
+    /**
+     * Returns the Protobuf scalar type corresponding to this instance.
+     */
     public Type protoScalarType() {
         return protoScalarType;
     }

@@ -20,6 +20,7 @@
 
 package io.spine.code.gen.java.column;
 
+import com.google.gson.internal.Primitives;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
@@ -30,6 +31,9 @@ import io.spine.code.gen.java.GeneratedMethodSpec;
 import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
+import io.spine.code.proto.ScalarType;
+
+import java.util.Optional;
 
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
@@ -48,7 +52,7 @@ final class ColumnAccessor implements GeneratedMethodSpec {
     ColumnAccessor(FieldDeclaration column) {
         this.column = column;
         this.entityStateName = JavaPoetName.of(column.declaringType().javaClassName()).className();
-        this.returningValueName = JavaPoetName.of(columnType(column)).className();
+        this.returningValueName = columnType(column);
     }
 
     @Override
@@ -96,15 +100,30 @@ final class ColumnAccessor implements GeneratedMethodSpec {
 
     /**
      * Returns the type of the column value in a form suitable for the code generation.
+     *
+     * <p>If the type of the column value is a primitive type, its wrapper is used instead.
      */
     private static ClassName columnType(FieldDeclaration column) {
         String rawTypeName = column.javaTypeName();
-        boolean scalar = column.isScalar();
-        io.spine.code.java.ClassName className = io.spine.code.java.ClassName.of(rawTypeName);
-        String packageName = scalar ? ""
-                                    : className.packageName()
-                                               .value();
-        return ClassName.get(packageName, className.withoutPackage());
+        Optional<ScalarType> maybeScalar = ScalarType.of(column.descriptor()
+                                                               .toProto());
+        io.spine.code.java.ClassName className;
+        if (maybeScalar.isPresent()) {
+            ScalarType scalar = maybeScalar.get();
+            Class<?> javaType = scalar.javaClass();
+            if (javaType.isPrimitive()) {
+                Class<?> wrapper = Primitives.wrap(javaType);
+                className = io.spine.code.java.ClassName.of(wrapper);
+            } else {
+                className = io.spine.code.java.ClassName.of(javaType);
+            }
+        } else {
+            className = io.spine.code.java.ClassName.of(rawTypeName);
+        }
+        String packageName = className.packageName()
+                                      .value();
+        ClassName result = ClassName.get(packageName, className.withoutPackage());
+        return result;
     }
 
     /**
