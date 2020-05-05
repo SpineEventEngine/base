@@ -25,11 +25,11 @@
  * as we want to manage the versions in a single source.
  */
 
-final def SPINE_VERSION = '1.5.11'
+val SPINE_VERSION = "1.5.11"
 
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
+project.extra.apply {
+    set("spineVersion", SPINE_VERSION)
+    set("spineBaseVersion", SPINE_VERSION) // Used by `filter-internal-javadoc.gradle`.
 
-    versionToPublish = SPINE_VERSION
+    set("versionToPublish", SPINE_VERSION)
 }

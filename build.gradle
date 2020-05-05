@@ -22,7 +22,7 @@ buildscript { final scriptHandler ->
     // As long as `buildscript` section is always evaluated first,
     // we need to apply explicitly here.
     apply from: "$rootDir/config/gradle/dependencies.gradle"
-    apply from: "$rootDir/version.gradle"
+    apply from: "$rootDir/version.gradle.kts"
 
     defaultRepositories(scriptHandler)
     dependencies {
@@ -34,7 +34,7 @@ buildscript { final scriptHandler ->
     forceConfiguration(scriptHandler)
 }
 
-apply from: 'version.gradle'
+apply from: 'version.gradle.kts'
 
 ext {
     groupId = 'io.spine'
@@ -76,7 +76,7 @@ allprojects {
 subprojects {
     buildscript { final scriptHandler ->
 
-        apply from: "$rootDir/version.gradle"
+        apply from: "$rootDir/version.gradle.kts"
 
         defaultRepositories(scriptHandler)
         dependencies {

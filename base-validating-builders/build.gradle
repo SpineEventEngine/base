@@ -19,7 +19,7 @@
  */
 
 buildscript {
-    apply from: "$projectDir/../version.gradle"
+    apply from: "$projectDir/../version.gradle.kts"
     apply from: "$projectDir/../config/gradle/dependencies.gradle"
 
     repositories {

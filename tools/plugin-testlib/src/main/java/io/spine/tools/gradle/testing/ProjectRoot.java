@@ -28,17 +28,18 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.nio.file.Files.exists;
 
 /**
- * Finds a root of a project by presence of the {@link #VERSION_GRADLE_NAME version.gradle} file.
+ * Finds a root of a project by presence of the {@link #VERSION_GRADLE_NAME version.gradle.kts}
+ * file.
  *
  * <p>Starts from the current directory, climbing up, until the file is found. By convention
- * a project should have only one {@link #VERSION_GRADLE_NAME version.gradle} file, which is
+ * a project should have only one {@link #VERSION_GRADLE_NAME version.gradle.kts} file, which is
  * placed in the root directory of the project.
  */
 enum ProjectRoot {
 
     INSTANCE;
 
-    private static final String VERSION_GRADLE_NAME = "version.gradle";
+    private static final String VERSION_GRADLE_NAME = "version.gradle.kts";
 
     static ProjectRoot instance() {
         return INSTANCE;
@@ -48,7 +49,7 @@ enum ProjectRoot {
      * Obtains a root directory of the project.
      *
      * @throws IllegalStateException
-     *         if the {@link #VERSION_GRADLE_NAME version.gradle} file is not found
+     *         if the {@link #VERSION_GRADLE_NAME version.gradle.kts} file is not found
      */
     Path toPath() {
         Path workingFolderPath = Paths.get(".")
@@ -69,7 +70,7 @@ enum ProjectRoot {
      * Obtains root directory of the project.
      *
      * @throws IllegalStateException
-     *         if the {@link #VERSION_GRADLE_NAME version.gradle} file is not found
+     *         if the {@link #VERSION_GRADLE_NAME version.gradle.kts} file is not found
      * @see #toPath()
      */
     File toFile() {

@@ -24,7 +24,7 @@ buildscript {
     apply from: "$rootDir/test-env.gradle"
 
     apply from: "$enclosingRootDir/config/gradle/dependencies.gradle"
-    apply from: "$enclosingRootDir/version.gradle"
+    apply from: "$enclosingRootDir/version.gradle.kts"
 
     repositories {
         mavenLocal()
