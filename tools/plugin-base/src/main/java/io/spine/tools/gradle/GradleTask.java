@@ -205,8 +205,9 @@ public final class GradleTask {
             checkNotNull(inputs, "Task inputs");
             if (this.inputs == null) {
                 this.inputs = new UnionFileCollection();
+            } else {
+                this.inputs = new UnionFileCollection(this.inputs, inputs);
             }
-            this.inputs.addToUnion(inputs);
             return this;
         }
 
@@ -249,8 +250,9 @@ public final class GradleTask {
             checkNotNull(outputs, "Task outputs");
             if (this.outputs == null) {
                 this.outputs = new UnionFileCollection();
+            } else {
+                this.outputs = new UnionFileCollection(this.outputs, outputs);
             }
-            this.outputs.addToUnion(outputs);
             return this;
         }
 
