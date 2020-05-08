@@ -28,8 +28,7 @@
 val SPINE_VERSION = "1.5.11"
 
 project.extra.apply {
-    set("spineVersion", SPINE_VERSION)
-    set("spineBaseVersion", SPINE_VERSION) // Used by `filter-internal-javadoc.gradle`.
-
-    set("versionToPublish", SPINE_VERSION)
+    this["spineVersion"] = SPINE_VERSION
+    this["spineBaseVersion"] = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
+    this["versionToPublish"] = SPINE_VERSION
 }
