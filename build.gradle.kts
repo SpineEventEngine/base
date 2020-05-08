@@ -21,6 +21,7 @@
 import io.spine.gradle.internal.DependencyResolution
 import io.spine.gradle.internal.Deps
 import io.spine.gradle.internal.PublishingRepos
+import io.spine.gradle.internal.RunBuild
 import org.gradle.internal.os.OperatingSystem
 
 buildscript {
@@ -216,18 +217,14 @@ subprojects {
 apply {
     from(Deps.scripts.jacoco(project))
     from(Deps.scripts.publish(project))
-    from(Deps.scripts.runBuild(project))
     from(Deps.scripts.generatePom(project))
     from(Deps.scripts.repoLicenseReport(project))
 }
 
 val smokeTests = "smokeTests"
 
-tasks.register(smokeTests) {
-    doLast {
-        val runBuild: (String) -> Unit by extra
-        runBuild("$rootDir/tools/smoke-tests")
-    }
+tasks.register(smokeTests, RunBuild::class) {
+    directory = "$rootDir/tools/smoke-tests"
 }
 
 tasks.register("buildAll") {
