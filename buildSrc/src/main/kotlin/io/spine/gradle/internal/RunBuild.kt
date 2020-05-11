@@ -26,8 +26,20 @@ import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.os.OperatingSystem
 import java.io.File
 
+/**
+ * A Gradle task which runs another Gradle build.
+ *
+ * Launches Gradle wrapper under a given [directory] with the `build` task. The `clean` task is also
+ * run if current build includes a `clean` task.
+ *
+ * The build writes verbose log into `$directory/build/debug-out.txt`. The error output is written
+ * into `$directory/build/error-out.txt`.
+ */
 open class RunBuild : AbstractTask() {
 
+    /**
+     * Path to the directory which contains a Gradle wrapper script.
+     */
     lateinit var directory: String
 
     @TaskAction
@@ -56,7 +68,7 @@ open class RunBuild : AbstractTask() {
         val command = mutableListOf<String>()
         command.add("${project.rootDir}/$script")
         val shouldClean = project.gradle
-                                 .getTaskGraph()
+                                 .taskGraph
                                  .hasTask(":clean")
         if (shouldClean) {
             command.add("clean")
@@ -75,5 +87,4 @@ open class RunBuild : AbstractTask() {
                     .redirectError(errorOut)
                     .redirectOutput(debugOut)
                     .start()
-
 }
