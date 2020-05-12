@@ -18,6 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
+import io.spine.gradle.internal.RunBuild
+
 import java.nio.file.Files
 
 group = 'io.spine'
@@ -25,7 +28,6 @@ group = 'io.spine'
 apply from: "$projectDir/script/protobuf.gradle"
 
 apply from: deps.scripts.testArtifacts
-apply from: deps.scripts.runBuild
 
 dependencies {
     annotationProcessor deps.build.autoService.processor
@@ -81,12 +83,11 @@ jar {
 
 apply from: deps.scripts.publishProto
 
-task rebuildProtobuf {
-    dependsOn(rootProject.subprojects*.getTasksByName('publishToMavenLocal', false))
+task rebuildProtobuf(type: RunBuild) {
 
-    doLast {
-        runBuild("$rootDir/base-validating-builders")
-    }
+    directory = "$rootDir/base-validating-builders"
+
+    dependsOn(rootProject.subprojects*.getTasksByName('publishToMavenLocal', false))
 }
 
 project.getTasksByName('publish', false)*.dependsOn rebuildProtobuf
