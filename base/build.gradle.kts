@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.ProtobufConfigurator
+import com.google.protobuf.gradle.ProtobufConfigurator.JavaGenerateProtoTaskCollection
 import groovy.lang.Closure
 import groovy.lang.GString
 import io.spine.gradle.internal.Deps
@@ -26,6 +26,7 @@ import io.spine.gradle.internal.RunBuild
 import java.nio.file.Files.isSameFile
 
 plugins {
+    `java-library`
     id("com.google.protobuf")
 }
 
@@ -35,30 +36,29 @@ apply(from = Deps.scripts.testArtifacts(project))
 
 configurations {
     // Avoid collisions of Java classes defined both in `protobuf-lite` and `protobuf-java`
-    named("runtimeClasspath").get().exclude(group = "com.google.protobuf", module = "protobuf-lite")
-    named("testRuntimeClasspath").get().exclude(group = "com.google.protobuf", module = "protobuf-lite")
+    runtimeClasspath.get().exclude(group = "com.google.protobuf", module = "protobuf-lite")
+    testRuntimeClasspath.get().exclude(group = "com.google.protobuf", module = "protobuf-lite")
 }
 
 dependencies {
-    Deps.build.protobuf.forEach { "protobuf"(it) }
-    "annotationProcessor"(Deps.build.autoService.processor)
-    "compileOnly"(Deps.build.autoService.annotations)
-    Deps.build.errorProneAnnotations.forEach { "api"(it) }
-    "testImplementation"(project(":testlib"))
-    "testImplementation"(project(":mute-logging"))
+    Deps.build.protobuf.forEach { protobuf(it) }
+    annotationProcessor(Deps.build.autoService.processor)
+    compileOnly(Deps.build.autoService.annotations)
+    Deps.build.errorProneAnnotations.forEach { api(it) }
+    testImplementation(project(":testlib"))
+    testImplementation(project(":mute-logging"))
 }
 
-the<SourceSetContainer>().apply {
-    named("main") {
+sourceSets {
+    main {
         resources.srcDir("$buildDir/descriptors/main")
         proto.setSrcDirs(listOf("$projectDir/src/main/proto"))
     }
-    named("test") {
+    test {
         resources.srcDir("$buildDir/descriptors/test")
         proto.setSrcDirs(listOf("$projectDir/src/test/proto"))
     }
 }
-
 
 /**
  * The JAR task assembles class files with a respect to the re-built message classes.
@@ -66,9 +66,7 @@ the<SourceSetContainer>().apply {
  * The task checks each input file for a newer version in the `base-validating-builders`. If such
  * a version is found, the older version is excluded.
  */
-val jar by tasks.getting(type = Jar::class)
-
-jar.apply {
+tasks.jar.configure {
     // See `base-validating-builders/README.md`
     val compiledProtoPath = "$rootDir/base-validating-builders/compiled-proto"
     val compiledProtos = fileTree(compiledProtoPath)
@@ -91,31 +89,31 @@ jar.apply {
 
 apply(from = Deps.scripts.publishProto(project))
 
-tasks.register(name = "rebuildProtobuf", type = RunBuild::class) {
+val rebuildProtobuf by tasks.registering(RunBuild::class) {
     directory = "$rootDir/base-validating-builders"
     dependsOn(rootProject.subprojects.map { p -> p.tasks["publishToMavenLocal"] })
 }
 
-tasks["publish"].dependsOn("rebuildProtobuf")
-tasks["build"].finalizedBy("rebuildProtobuf")
+tasks.publish.get().dependsOn(rebuildProtobuf)
+tasks.build.get().finalizedBy(rebuildProtobuf)
 
 val compiledProtoRoot = "$projectDir/generated"
 val googlePackagePrefix = "com/google"
 
 val pruneGoogleProtos by tasks.registering(type = Delete::class) {
     delete("$compiledProtoRoot/main/java/$googlePackagePrefix")
-    tasks["compileJava"].dependsOn(this)
+    tasks.compileJava.get().dependsOn(this)
 }
 
 val pruneTestGoogleProtos by tasks.registering(type = Delete::class) {
     delete("$compiledProtoRoot/test/java/$googlePackagePrefix")
-    tasks["compileTestJava"].dependsOn(this)
+    tasks.compileTestJava.get().dependsOn(this)
 }
 
 protobuf {
     protobuf.generatedFilesBaseDir = compiledProtoRoot
     protobuf.generateProtoTasks(object : Closure<Any>(this) {
-        fun doCall(tasks: ProtobufConfigurator.JavaGenerateProtoTaskCollection) {
+        private fun doCall(tasks: JavaGenerateProtoTaskCollection) {
             for (task in tasks.all()) {
                 val scope = task.sourceSet.name
                 task.generateDescriptorSet = true
