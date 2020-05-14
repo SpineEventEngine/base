@@ -18,11 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+group = "io.spine.tools"
 
 dependencies {
-    implementation project(':plugin-base')
-    implementation project(':testlib')
-    implementation gradleApi()
-    implementation gradleTestKit()
+    implementation(project(":plugin-base"))
+    testImplementation(project(":testlib"))
 }

@@ -99,6 +99,8 @@ subprojects {
         DependencyResolution.forceConfiguration(configurations)
     }
 
+    apply(from = "$rootDir/version.gradle.kts")
+
     val sourcesRootDir by extra("$projectDir/src")
     val generatedRootDir by extra("$projectDir/generated")
     val generatedJavaDir by extra("$generatedRootDir/main/java")
