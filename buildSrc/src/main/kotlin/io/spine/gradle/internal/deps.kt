@@ -123,6 +123,7 @@ object Build {
             "org.checkerframework:javacutil:${Versions.checkerFramework}"
     )
     val autoCommon             = "com.google.auto:auto-common:${Versions.autoCommon}"
+    val autoService            = AutoService
     val jsr305Annotations      = "com.google.code.findbugs:jsr305:${Versions.findBugs}"
     val guava                  = "com.google.guava:guava:${Versions.guava}"
     val flogger                = "com.google.flogger:flogger:${Versions.flogger}"
@@ -144,7 +145,7 @@ object Build {
     @Deprecated("Use Flogger over SLF4J.", replaceWith = ReplaceWith("flogger"))
     val slf4j                  = "org.slf4j:slf4j-api:${Versions.slf4j}"
 
-    object autoService {
+    object AutoService {
         val annotations = "com.google.auto.service:auto-service-annotations:${Versions.autoService}"
         val processor = "com.google.auto.service:auto-service:${Versions.autoService}"
     }
@@ -181,7 +182,9 @@ object Grpc {
 
 object Runtime {
 
-    object flogger {
+    val flogger = Flogger
+
+    object Flogger {
         val systemBackend = "com.google.flogger:flogger-system-backend:${Versions.flogger}"
         val log4J         = "com.google.flogger:flogger-log4j:${Versions.flogger}"
         val slf4J         = "com.google.flogger:slf4j-backend-factory:${Versions.flogger}"
