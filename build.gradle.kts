@@ -22,7 +22,6 @@ import io.spine.gradle.internal.DependencyResolution
 import io.spine.gradle.internal.Deps
 import io.spine.gradle.internal.PublishingRepos
 import io.spine.gradle.internal.RunBuild
-import org.gradle.internal.os.OperatingSystem
 
 buildscript {
     apply(from = "$rootDir/version.gradle.kts")
@@ -107,9 +106,6 @@ subprojects {
     val generatedTestJavaDir by extra("$generatedRootDir/test/java")
     val generatedSpineDir by extra("$generatedRootDir/main/spine")
     val generatedTestSpineDir by extra("$generatedRootDir/test/spine")
-
-    // TODO: Move to the usage site.
-    extra["runsOnWindows"] = OperatingSystem.current().isWindows
 
     apply {
         plugin("java-library")

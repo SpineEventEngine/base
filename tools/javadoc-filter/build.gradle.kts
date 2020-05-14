@@ -28,7 +28,7 @@ dependencies {
     implementation(files("${System.getProperty("java.home")}/../lib/tools.jar"))
     implementation(project(":base"))
     implementation("javax.annotation:javax.annotation-api:$javaxAnnotationsVersion")
-    implementation(Deps.grpc.grpcCore)
+    implementation(Deps.grpc.core)
     testImplementation(project(":testlib"))
     testImplementation(project(":mute-logging"))
 }
