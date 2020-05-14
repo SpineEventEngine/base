@@ -143,6 +143,7 @@ object Build {
     val ci = "true".equals(System.getenv("CI"))
     val gradlePlugins = GradlePlugins
     @Deprecated("Use Flogger over SLF4J.", replaceWith = ReplaceWith("flogger"))
+    @Suppress("DEPRECATION")
     val slf4j                  = "org.slf4j:slf4j-api:${Versions.slf4j}"
 
     object AutoService {
@@ -163,7 +164,7 @@ object Grpc {
     val netty       = "io.grpc:grpc-netty:${Versions.grpc}"
     val nettyShaded = "io.grpc:grpc-netty-shaded:${Versions.grpc}"
     val context     = "io.grpc:grpc-context:${Versions.grpc}"
-    
+
     @Deprecated("Use the shorter form.", replaceWith = ReplaceWith("core"))
     val grpcCore = core
     @Deprecated("Use the shorter form.", replaceWith = ReplaceWith("stub"))
@@ -217,6 +218,7 @@ object Test {
     )
     @Deprecated("Use Flogger over SLF4J.",
                 replaceWith = ReplaceWith("Deps.runtime.floggerSystemBackend"))
+    @Suppress("DEPRECATION")
     val slf4j         = "org.slf4j:slf4j-jdk14:${Versions.slf4j}"
 }
 
@@ -270,6 +272,7 @@ object DependencyResolution {
             config.resolutionStrategy { strategy ->
                 strategy.failOnVersionConflict()
                 strategy.cacheChangingModulesFor(0, "seconds")
+                @Suppress("DEPRECATION")
                 strategy.force(
                         Deps.build.slf4j,
                         Deps.build.errorProneAnnotations,
