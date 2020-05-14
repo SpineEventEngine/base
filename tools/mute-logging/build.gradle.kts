@@ -18,19 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+import io.spine.gradle.internal.Deps
 
-dependencies {
-    implementation deps.build.guava
-
-    implementation project(':base')
-    implementation project(':plugin-base')
-
-    testImplementation project(':plugin-testlib')
-    testImplementation gradleTestKit()
+plugins {
+    `java-library`
 }
 
-test.dependsOn(publishToMavenLocal,
-               project(':base').publishToMavenLocal,
-               project(':tool-base').publishToMavenLocal,
-               project(':plugin-base').publishToMavenLocal)
+group = "io.spine.tools"
+
+dependencies {
+    implementation(project(":base"))
+    implementation(project(":testlib"))
+    Deps.test.junit5Api.forEach { implementation(it) }
+}

@@ -18,10 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+import io.spine.gradle.internal.Deps
+
+plugins {
+    java
+}
+
+group = "io.spine.tools"
+
+val javaxAnnotationsVersion = "1.3.1"
 
 dependencies {
-    implementation project(':base')
-    implementation project(':testlib')
-    implementation deps.test.junit5Api
+    implementation(files("${System.getProperty("java.home")}/../lib/tools.jar"))
+    implementation(project(":base"))
+    implementation("javax.annotation:javax.annotation-api:$javaxAnnotationsVersion")
+    implementation(Deps.grpc.grpcCore)
+    testImplementation(project(":testlib"))
+    testImplementation(project(":mute-logging"))
+}
+
+// We need to include module dependencies to JAR.
+// In particular, we need @Internal Spine annotation.
+tasks.jar.configure {
+    from(configurations.runtime.get().map {
+            if(it.isDirectory()) it else zipTree(it)
+    })
 }

@@ -18,26 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+import io.spine.gradle.internal.Deps
 
-ext {
-    javaxAnnotationsVersion = '1.3.1'
-}
+group = "io.spine.tools"
 
 dependencies {
-    implementation files("${System.properties['java.home']}/../lib/tools.jar")
-    implementation project(':base')
-    implementation "javax.annotation:javax.annotation-api:$javaxAnnotationsVersion"
-    implementation deps.grpc.grpcCore
-    
-    testImplementation project(':testlib')
-    testImplementation project(':mute-logging')
+    "implementation"(Deps.build.guava)
+    "implementation"(project(":base"))
+    "implementation"(project(":plugin-base"))
+    "testImplementation"(project(":plugin-testlib"))
+    "testImplementation"(gradleTestKit())
 }
 
-// We need to include module dependencies to JAR.
-// In particular, we need @Internal Spine annotation.
-jar {
-    from {
-        configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-}
+val test by tasks.getting(Test::class)
+test.dependsOn("publishToMavenLocal",
+               ":base:publishToMavenLocal",
+               ":tool-base:publishToMavenLocal",
+               ":plugin-base:publishToMavenLocal")
