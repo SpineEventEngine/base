@@ -1,3 +1,5 @@
+import io.spine.gradle.internal.Deps
+
 /*
  * Copyright 2020, TeamDev. All rights reserved.
  *
@@ -18,24 +20,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+group = "io.spine"
 
 dependencies {
-    implementation project(':base')
-    implementation project(':plugin-base')
-
-    testProtobuf project(':base')
-    testImplementation project(':testlib')
-    testImplementation project(':plugin-testlib')
-    testImplementation gradleTestKit()
-
-    testImplementation deps.test.junit5Api
-    testImplementation deps.test.junit5Runner
-}
-
-protobuf {
-    generatedFilesBaseDir = generatedRootDir
-    protoc {
-        artifact = deps.build.protoc
-    }
+    /*
+        Expose tools we use as transitive dependencies to simplify dependency management in
+        sub-projects.
+    */
+    Deps.build.protobuf.forEach { api(it) }
+    Deps.test.junit5Api.forEach { api(it) }
+    Deps.test.truth.forEach { api(it) }
+    api(Deps.test.guavaTestlib)
+    api(Deps.test.hamcrest)
+    implementation(project(":base"))
 }

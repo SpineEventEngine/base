@@ -18,10 +18,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    `java-library`
-}
-
 group = "io.spine.tools"
 
 dependencies {

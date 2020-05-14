@@ -25,11 +25,6 @@ import io.spine.gradle.internal.Deps
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
-plugins {
-    java
-    id("com.google.protobuf")
-}
-
 group = "io.spine.tools"
 
 var protocPluginDependency: Dependency? = null

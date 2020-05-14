@@ -18,58 +18,49 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import io.spine.gradle.internal.Deps
 import java.nio.file.Files
 
-group = 'io.spine.tools'
+group = "io.spine.tools"
 
 dependencies {
-    implementation(
-            project(':tool-base'),
-            project(':protoc-api'),
-            project(':validation-generator'),
-            deps.gen.javaPoet
-    )
+    implementation(project(":tool-base"))
+    implementation(project(":protoc-api"))
+    implementation(project(":validation-generator"))
+    implementation(Deps.gen.javaPoet)
 
-    testImplementation project(':base')
-    testImplementation(
-            project(':testlib'),
-            project(':mute-logging'),
-            deps.test.truth
-    )
+    testImplementation(project(":base"))
+    testImplementation(project(":testlib"))
+    testImplementation(project(":mute-logging"))
+    Deps.test.truth.forEach { testImplementation(it) }
 }
 
-protobuf {
-    generatedFilesBaseDir = generatedRootDir
-    protoc {
-        artifact = deps.build.protoc
-    }
-}
-
-jar {
-    dependsOn(
-            project(':protoc-api').jar,
-            project(':tool-base').jar,
-            project(':validation-generator').jar
-    )
+tasks.jar {
+    dependsOn(":protoc-api:jar",
+              ":tool-base:jar",
+              ":validation-generator:jar")
 
     manifest {
-        attributes 'Main-Class': 'io.spine.tools.protoc.Plugin'
+        attributes(mapOf("Main-Class" to "io.spine.tools.protoc.Plugin"))
     }
     // Assemble "Fat-JAR" artifact containing all the dependencies.
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
+    from(configurations.runtimeClasspath.get().map {
+        when {
+            it.isDirectory() -> it
+            else -> zipTree(it)
+        }
+    })
 }
 
-final def shellRunner = injectVersion(file('plugin_runner.sh'))
-final def batchRunner = injectVersion(file('plugin_runner.bat'))
+val shellRunner = injectVersion(file("plugin_runner.sh"))
+val batchRunner = injectVersion(file("plugin_runner.bat"))
 
 artifacts {
     archives(shellRunner) {
-        classifier "script"
+        classifier = "script"
     }
     archives(batchRunner) {
-        classifier "script"
+        classifier = "script"
     }
 }
 
@@ -87,11 +78,14 @@ artifacts {
  * @param scriptFile the script file to modify
  * @return the new script file to publish
  */
-def injectVersion(final File scriptFile) {
-    def text = scriptFile.text
-    text = text.replace("{version}", project.version)
-    final def tempFile = Files.createTempFile("build", scriptFile.name.endsWith(".sh") ? ".sh" : ".bat")
-    tempFile.text = text
-    final result = file(tempFile.toAbsolutePath())
-    return result
+fun injectVersion(scriptFile: File): File {
+    var text = scriptFile.readText()
+    text = text.replace("{version}", project.version as String)
+    val extension = when {
+        scriptFile.name.endsWith(".sh") -> ".sh"
+        else -> ".bat"
+    }
+    val tempFile = Files.createTempFile("build", extension)
+    tempFile.toFile().writeText(text)
+    return project.file(tempFile.toAbsolutePath())
 }

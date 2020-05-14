@@ -23,15 +23,16 @@ import io.spine.gradle.internal.Deps
 group = "io.spine.tools"
 
 dependencies {
-    "implementation"(Deps.build.guava)
-    "implementation"(project(":base"))
-    "implementation"(project(":plugin-base"))
-    "testImplementation"(project(":plugin-testlib"))
-    "testImplementation"(gradleTestKit())
+    implementation(Deps.build.guava)
+    implementation(project(":base"))
+    implementation(project(":plugin-base"))
+    testImplementation(project(":plugin-testlib"))
+    testImplementation(gradleTestKit())
 }
 
-val test by tasks.getting(Test::class)
-test.dependsOn("publishToMavenLocal",
-               ":base:publishToMavenLocal",
-               ":tool-base:publishToMavenLocal",
-               ":plugin-base:publishToMavenLocal")
+tasks.test.configure {
+    dependsOn("publishToMavenLocal",
+              ":base:publishToMavenLocal",
+              ":tool-base:publishToMavenLocal",
+              ":plugin-base:publishToMavenLocal")
+}

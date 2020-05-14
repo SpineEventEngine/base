@@ -20,10 +20,6 @@
 
 import io.spine.gradle.internal.Deps
 
-plugins {
-    `java-library`
-}
-
 group = "io.spine.tools"
 
 dependencies {

@@ -18,11 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+group = "io.spine.tools"
 
 dependencies {
-    api project(':base')
-    implementation deps.gen.javaPoet
+    implementation(project(":base"))
+    testImplementation(project(":testlib"))
+}
 
-    testImplementation project(':testlib')
+sourceSets.main {
+    java.srcDir("$projectDir/generated/main/java")
+    proto.srcDir("$projectDir/src/main/proto")
 }

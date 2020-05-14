@@ -25,12 +25,6 @@ import groovy.lang.GString
 import io.spine.gradle.internal.Deps
 import java.util.*
 import kotlin.collections.HashMap
-import kotlin.collections.MutableMap
-
-plugins {
-    `java-library`
-    id("com.google.protobuf")
-}
 
 group = "io.spine.tools"
 

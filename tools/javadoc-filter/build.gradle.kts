@@ -20,10 +20,6 @@
 
 import io.spine.gradle.internal.Deps
 
-plugins {
-    java
-}
-
 group = "io.spine.tools"
 
 val javaxAnnotationsVersion = "1.3.1"

@@ -22,10 +22,6 @@ import io.spine.gradle.internal.Deps
 import io.spine.gradle.internal.Repos
 import java.net.URI
 
-plugins {
-    `java-library`
-}
-
 group = "io.spine.tools"
 
 repositories {
