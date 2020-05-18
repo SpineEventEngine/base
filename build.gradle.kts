@@ -81,7 +81,6 @@ allprojects {
         from("$rootDir/config/gradle/dependencies.gradle")
     }
     version = rootProject.extra["versionToPublish"]!!
-    version = rootProject.extra["versionToPublish"]!!
 }
 
 subprojects {
