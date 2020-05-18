@@ -31,19 +31,17 @@ buildscript {
     @Suppress("RemoveRedundantQualifierName")
     val deps = io.spine.gradle.internal.Deps
     resolution.defaultRepositories(repositories)
-    dependencies {
-        classpath(deps.build.gradlePlugins.protobuf)
-        classpath(deps.build.gradlePlugins.errorProne)
-    }
     resolution.forceConfiguration(configurations)
 }
 
 // Apply some plugins to make type-safe extension accessors available in this script file.
 plugins {
-    java
+    `java-library`
     idea
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
     id("com.google.protobuf").version(io.spine.gradle.internal.Deps.versions.protobufPlugin)
+    @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
+    id("net.ltgt.errorprone").version(io.spine.gradle.internal.Deps.versions.errorPronePlugin)
 }
 
 apply(from = "$rootDir/version.gradle.kts")
@@ -123,33 +121,37 @@ subprojects {
 
     DependencyResolution.defaultRepositories(repositories)
     dependencies {
-        "errorprone"(Deps.build.errorProneCore)
-        "errorproneJavac"(Deps.build.errorProneJavac)
-        Deps.build.protobuf.forEach { "api"(it) }
-        "api"(Deps.build.flogger)
-        "implementation"(Deps.build.guava)
-        "implementation"(Deps.build.checkerAnnotations)
-        "implementation"(Deps.build.jsr305Annotations)
-        Deps.build.errorProneAnnotations.forEach { "implementation"(it) }
-        "testImplementation"(Deps.test.guavaTestlib)
-        "testImplementation"(Deps.test.junit5Runner)
-        "testImplementation"(Deps.test.junitPioneer)
-        Deps.test.junit5Api.forEach { "testImplementation"(it) }
-        "runtimeOnly"(Deps.runtime.floggerSystemBackend)
+        errorprone(Deps.build.errorProneCore)
+        errorproneJavac(Deps.build.errorProneJavac)
+        Deps.build.protobuf.forEach { api(it) }
+        api(Deps.build.flogger)
+        implementation(Deps.build.guava)
+        implementation(Deps.build.checkerAnnotations)
+        implementation(Deps.build.jsr305Annotations)
+        Deps.build.errorProneAnnotations.forEach { implementation(it) }
+        testImplementation(Deps.test.guavaTestlib)
+        testImplementation(Deps.test.junit5Runner)
+        testImplementation(Deps.test.junitPioneer)
+        Deps.test.junit5Api.forEach { testImplementation(it) }
+        runtimeOnly(Deps.runtime.flogger.systemBackend)
     }
 
     DependencyResolution.forceConfiguration(configurations)
     configurations {
-        named("runtime").get().exclude(group = "com.google.protobuf", module = "protobuf-lite")
-        named("testRuntime").get().exclude(group = "com.google.protobuf", module = "protobuf-lite")
+        runtime {
+            exclude(group = "com.google.protobuf", module = "protobuf-lite")
+        }
+        testRuntime {
+            exclude(group = "com.google.protobuf", module = "protobuf-lite")
+        }
     }
 
-    java {
-        sourceSets["main"].apply {
+    sourceSets {
+        main {
             java.srcDirs(generatedJavaDir, "$sourcesRootDir/main/java", generatedSpineDir)
             resources.srcDirs("$sourcesRootDir/main/resources", "$generatedRootDir/main/resources")
         }
-        sourceSets["test"].apply {
+        test {
             java.srcDirs(generatedTestJavaDir, "$sourcesRootDir/test/java", generatedTestSpineDir)
             resources.srcDirs("$sourcesRootDir/test/resources", "$generatedRootDir/test/resources")
         }
@@ -165,7 +167,7 @@ subprojects {
         })
     }
 
-    (tasks["test"] as Test).apply {
+    tasks.test.configure {
         useJUnitPlatform {
             includeEngines("junit-jupiter")
         }
@@ -207,7 +209,9 @@ subprojects {
         delete("$projectDir/generated")
     }
 
-    tasks["clean"].dependsOn(cleanGenerated)
+    tasks.clean.configure {
+        dependsOn(cleanGenerated)
+    }
 
     apply(from = Deps.scripts.pmd(project))
 }
@@ -219,12 +223,10 @@ apply {
     from(Deps.scripts.repoLicenseReport(project))
 }
 
-val smokeTests = "smokeTests"
-
-tasks.register(smokeTests, RunBuild::class) {
+val smokeTests by tasks.registering(RunBuild::class) {
     directory = "$rootDir/tools/smoke-tests"
 }
 
 tasks.register("buildAll") {
-    dependsOn("build", smokeTests)
+    dependsOn(tasks.build, smokeTests)
 }
