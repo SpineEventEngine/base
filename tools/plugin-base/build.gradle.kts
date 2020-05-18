@@ -78,5 +78,3 @@ tasks.processResources.get().dependsOn(prepareProtocConfigVersions)
 sourceSets.test {
     resources.srcDir("$projectDir/src/test/resources")
 }
-
-
