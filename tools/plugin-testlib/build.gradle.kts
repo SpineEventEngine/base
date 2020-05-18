@@ -17,27 +17,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-group = 'io.spine'
+
+group = "io.spine.tools"
 
 dependencies {
-    /*
-        Expose tools we use as transitive dependencies to simplify dependency management in
-        sub-projects.
-    */
-    api(deps.build.protobuf,
-        deps.test.junit5Api,
-        deps.test.truth,
-        deps.test.guavaTestlib,
-        deps.test.hamcrest)
-    implementation project(':base')
-}
-
-/*
- * This module declares protobuf messages and uses them in tests, hence the need for the Protobuf
- * compiler
- */
-protobuf {
-    protoc {
-        artifact = deps.build.protoc
-    }
+    implementation(project(":plugin-base"))
+    implementation(project(":testlib"))
+    implementation(gradleApi())
+    implementation(gradleTestKit())
 }

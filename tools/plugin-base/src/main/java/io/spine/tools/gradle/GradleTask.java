@@ -22,18 +22,19 @@ package io.spine.tools.gradle;
 
 import com.google.common.base.MoreObjects;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.file.FileCollection;
-import org.gradle.api.internal.file.UnionFileCollection;
 import org.gradle.api.tasks.TaskContainer;
 
+import java.io.File;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -99,9 +100,11 @@ public final class GradleTask {
 
         private boolean allowNoDependencies;
 
-        private @MonotonicNonNull UnionFileCollection inputs;
+        private boolean hasInputFiles = false;
+        private final Set<File> inputs = new HashSet<>();
         private Map<String, @Nullable Object> inputProperties;
-        private @MonotonicNonNull UnionFileCollection outputs;
+        private boolean hasOutputFiles = false;
+        private final Set<File> outputs = new HashSet<>();
 
         Builder(TaskName name, Action<Task> action) {
             this.name = name;
@@ -203,10 +206,8 @@ public final class GradleTask {
          */
         public Builder withInputFiles(FileCollection inputs) {
             checkNotNull(inputs, "Task inputs");
-            if (this.inputs == null) {
-                this.inputs = new UnionFileCollection();
-            }
-            this.inputs.addToUnion(inputs);
+            this.inputs.addAll(inputs.getFiles());
+            hasInputFiles = true;
             return this;
         }
 
@@ -247,10 +248,8 @@ public final class GradleTask {
          */
         public Builder withOutputFiles(FileCollection outputs) {
             checkNotNull(outputs, "Task outputs");
-            if (this.outputs == null) {
-                this.outputs = new UnionFileCollection();
-            }
-            this.outputs.addToUnion(outputs);
+            this.outputs.addAll(outputs.getFiles());
+            hasOutputFiles = true;
             return this;
         }
 
@@ -317,7 +316,7 @@ public final class GradleTask {
         }
 
         private void addTaskIO(Task task) {
-            if (inputs != null) {
+            if (hasInputFiles) {
                 task.getInputs()
                     .files(inputs)
                     .skipWhenEmpty()
@@ -327,7 +326,7 @@ public final class GradleTask {
                 task.getInputs()
                     .properties(inputProperties);
             }
-            if (outputs != null) {
+            if (hasOutputFiles) {
                 task.getOutputs()
                     .files(outputs)
                     .optional();

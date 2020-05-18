@@ -18,19 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+import io.spine.gradle.internal.Deps
+
+group = "io.spine.tools"
 
 dependencies {
-    implementation deps.build.guava
-
-    implementation project(':base')
-    implementation project(':plugin-base')
-
-    testImplementation project(':plugin-testlib')
-    testImplementation gradleTestKit()
+    implementation(Deps.build.guava)
+    implementation(project(":base"))
+    implementation(project(":plugin-base"))
+    testImplementation(project(":plugin-testlib"))
+    testImplementation(gradleTestKit())
 }
 
-test.dependsOn(publishToMavenLocal,
-               project(':base').publishToMavenLocal,
-               project(':tool-base').publishToMavenLocal,
-               project(':plugin-base').publishToMavenLocal)
+tasks.test.configure {
+    dependsOn("publishToMavenLocal",
+              ":base:publishToMavenLocal",
+              ":tool-base:publishToMavenLocal",
+              ":plugin-base:publishToMavenLocal")
+}

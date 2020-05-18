@@ -18,18 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+rootProject.name = "spine-base"
+
+include("base")
+
+include("testlib")
+
 /**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * Includes a module and sets custom project directory to it.
  */
-
-final def SPINE_VERSION = '1.5.11'
-
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
-
-    versionToPublish = SPINE_VERSION
+fun module(name: String) {
+    include(name)
+    project(":$name").projectDir = File("$rootDir/tools/$name")
 }
+
+module("tool-base")
+module("plugin-base")
+module("plugin-testlib")
+
+module("mute-logging")
+module("errorprone-checks")
+module("javadoc-filter")
+module("javadoc-prettifier")
+module("model-compiler")
+
+module("proto-dart-plugin")
+module("proto-js-plugin")
+
+module("protoc-api")
+module("validation-generator")
+module("protoc-plugin")

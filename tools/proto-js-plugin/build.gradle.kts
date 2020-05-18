@@ -18,11 +18,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+import io.spine.gradle.internal.Deps
+
+group = "io.spine.tools"
 
 dependencies {
-    implementation project(':plugin-base')
-    implementation project(':testlib')
-    implementation gradleApi()
-    implementation gradleTestKit()
+    implementation(project(":base"))
+    implementation(project(":plugin-base"))
+    testProtobuf(project(":base"))
+    testImplementation(project(":testlib"))
+    testImplementation(project(":plugin-testlib"))
+    testImplementation(gradleTestKit())
+    Deps.test.junit5Api.forEach { testImplementation(it) }
+    testImplementation(Deps.test.junit5Runner)
 }

@@ -18,44 +18,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+import io.spine.gradle.internal.Deps
+import io.spine.gradle.internal.Repos
+import java.net.URI
+
+group = "io.spine.tools"
 
 repositories {
-    maven { url = repos.sonatypeSnapshots }
+    maven { url = URI(Repos.sonatypeSnapshots) }
 }
 
 dependencies {
-    annotationProcessor deps.build.autoService.processor
-    compileOnly deps.build.autoService.annotations
-
-    implementation project(':base')
-    implementation project(':plugin-base')
-
-    implementation deps.build.errorProneCore
-    implementation deps.build.errorProneAnnotations
-
-    testImplementation deps.build.errorProneTestHelpers
+    annotationProcessor(Deps.build.autoService.processor)
+    compileOnly(Deps.build.autoService.annotations)
+    implementation(project(":base"))
+    implementation(project(":plugin-base"))
+    implementation(Deps.build.errorProneCore)
+    Deps.build.errorProneAnnotations.forEach { implementation(it) }
+    testImplementation(Deps.build.errorProneTestHelpers)
 }
 
-def getResolvedArtifactFor(final dependency) {
-    final def resolvedTestClasspath = configurations.testRuntimeClasspath.resolvedConfiguration
-    final def javacDependency = resolvedTestClasspath.resolvedArtifacts.findAll {
+fun getResolvedArtifactFor(dependency: String): String {
+    val resolvedTestClasspath = configurations.testRuntimeClasspath.get().resolvedConfiguration
+    val javacDependency = resolvedTestClasspath.resolvedArtifacts.filter {
         it.name == dependency
     }
-    if (javacDependency.empty) {
-        throw new MissingResourceException("The 'javac' dependency is not found among the " +
+    if (javacDependency.isEmpty()) {
+        throw MissingResourceException("The 'javac' dependency is not found among the " +
                 "resolved artifacts")
     }
-    final def path = javacDependency[0].file.absolutePath
-    return path
+    return javacDependency[0].file.absolutePath
 }
 
-test.dependsOn project(':base').getTasksByName('rebuildProtobuf', false)
+val test: Test = tasks.test.get()
+test.dependsOn(project(":base").getTasksByName("rebuildProtobuf", false))
 
 afterEvaluate {
-    final def javacPath = getResolvedArtifactFor("javac")
-
-    test {
-        jvmArgs "-Xbootclasspath/p:$javacPath"
-    }
+    val javacPath = getResolvedArtifactFor("javac")
+    test.jvmArgs("-Xbootclasspath/p:$javacPath")
 }

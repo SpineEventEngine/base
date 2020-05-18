@@ -1,3 +1,5 @@
+import io.spine.gradle.internal.Deps
+
 /*
  * Copyright 2020, TeamDev. All rights reserved.
  *
@@ -18,11 +20,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+group = "io.spine"
 
 dependencies {
-    api project(':base')
-    implementation deps.gen.javaPoet
-
-    testImplementation project(':testlib')
+    /*
+        Expose tools we use as transitive dependencies to simplify dependency management in
+        sub-projects.
+    */
+    Deps.build.protobuf.forEach { api(it) }
+    Deps.test.junit5Api.forEach { api(it) }
+    Deps.test.truth.forEach { api(it) }
+    api(Deps.test.guavaTestlib)
+    api(Deps.test.hamcrest)
+    implementation(project(":base"))
 }

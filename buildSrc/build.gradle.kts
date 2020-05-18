@@ -18,9 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+plugins {
+    kotlin("jvm").version("1.3.72")
+}
 
-dependencies {
-    implementation project(':plugin-base')
-    testImplementation project(':testlib')
+repositories {
+    mavenLocal()
+    jcenter()
 }

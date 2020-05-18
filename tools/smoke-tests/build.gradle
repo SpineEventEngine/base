@@ -20,7 +20,7 @@
 
 buildscript {
     ext.baseRoot = "$rootDir/../.."
-    ext.versionGradle = "$baseRoot/version.gradle"
+    ext.versionGradle = "$baseRoot/version.gradle.kts"
 
 
     apply from: versionGradle
