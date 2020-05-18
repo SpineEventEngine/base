@@ -36,8 +36,10 @@ apply(from = Deps.scripts.testArtifacts(project))
 
 configurations {
     // Avoid collisions of Java classes defined both in `protobuf-lite` and `protobuf-java`
-    runtimeClasspath.get().exclude(group = "com.google.protobuf", module = "protobuf-lite")
-    testRuntimeClasspath.get().exclude(group = "com.google.protobuf", module = "protobuf-lite")
+    val group = "com.google.protobuf"
+    val name = "protobuf-lite"
+    runtimeClasspath.get().exclude(group = group, module = name)
+    testRuntimeClasspath.get().exclude(group = group, module = name)
 }
 
 dependencies {
@@ -134,8 +136,8 @@ protobuf {
 /**
  * Checks if the given file belongs to the Google `.proto` sources.
  */
-fun isGoogleProtoSource(file: FileTreeElement): Boolean {
-    val pathSegments = file.relativePath.segments
+fun FileTreeElement.isGoogleProtoSource(): Boolean {
+    val pathSegments = relativePath.segments
     return pathSegments.isNotEmpty() && pathSegments[0].equals("google")
 }
 
@@ -143,6 +145,6 @@ fun isGoogleProtoSource(file: FileTreeElement): Boolean {
  * From all artifacts, exclude Google `.proto` sources.
  */
 tasks.withType(Jar::class) {
-    exclude { isGoogleProtoSource(it) }
+    exclude { it.isGoogleProtoSource() }
 }
 
