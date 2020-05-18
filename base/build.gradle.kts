@@ -21,6 +21,7 @@
 import com.google.protobuf.gradle.ProtobufConfigurator.JavaGenerateProtoTaskCollection
 import groovy.lang.Closure
 import groovy.lang.GString
+import io.spine.gradle.internal.DependencyResolution
 import io.spine.gradle.internal.Deps
 import io.spine.gradle.internal.RunBuild
 import java.nio.file.Files.isSameFile
@@ -34,13 +35,7 @@ group = "io.spine"
 
 apply(from = Deps.scripts.testArtifacts(project))
 
-configurations {
-    // Avoid collisions of Java classes defined both in `protobuf-lite` and `protobuf-java`
-    val group = "com.google.protobuf"
-    val name = "protobuf-lite"
-    runtimeClasspath.get().exclude(group = group, module = name)
-    testRuntimeClasspath.get().exclude(group = group, module = name)
-}
+DependencyResolution.excludeProtobufLite(configurations)
 
 dependencies {
     Deps.build.protobuf.forEach { protobuf(it) }

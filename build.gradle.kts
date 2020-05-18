@@ -136,14 +136,7 @@ subprojects {
     }
 
     DependencyResolution.forceConfiguration(configurations)
-    configurations {
-        runtime {
-            exclude(group = "com.google.protobuf", module = "protobuf-lite")
-        }
-        testRuntime {
-            exclude(group = "com.google.protobuf", module = "protobuf-lite")
-        }
-    }
+    DependencyResolution.excludeProtobufLite(configurations)
 
     sourceSets {
         main {

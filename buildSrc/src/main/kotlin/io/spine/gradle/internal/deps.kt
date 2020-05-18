@@ -316,6 +316,17 @@ object DependencyResolution {
         }
     }
 
+    fun excludeProtobufLite(configurations: ConfigurationContainer) {
+        excludeProtoLite(configurations, "runtime")
+        excludeProtoLite(configurations, "testRuntime")
+    }
+
+    private fun excludeProtoLite(configurations: ConfigurationContainer,
+                                 configurationName: String) {
+        configurations.named(configurationName).get()
+                .exclude(mapOf("group" to "com.google.protobuf", "module" to "protobuf-lite"))
+    }
+
     fun defaultRepositories(repositories: RepositoryHandler) {
         repositories.mavenLocal()
         repositories.maven { repository ->
