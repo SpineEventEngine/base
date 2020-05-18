@@ -67,8 +67,6 @@ object Repos {
 }
 
 object Versions {
-    @Deprecated("Use Flogger over SLF4J.", replaceWith = ReplaceWith("flogger"))
-    val slf4j            = "1.7.29"
     val checkerFramework = "3.3.0"
     val errorProne       = "2.3.4"
     val errorProneJavac  = "9+181-r4173-1" // taken from here: https://github.com/tbroyer/gradle-errorprone-plugin/blob/v0.8/build.gradle.kts
@@ -99,6 +97,18 @@ object Versions {
     val jackson          = "2.9.10.4"
     val animalSniffer    = "1.18"
     val apiguardian      = "1.1.0"
+
+    /**
+     * Version of the SLF4J library.
+     *
+     * Spine used to log with SLF4J. Now we use Flogger. Whenever a coice comes up, we recommend to
+     * use the latter.
+     *
+     * Some third-party libraries may clash with different versions of the library. Thus, we specify
+     * this version and force it via [forceConfiguration(..)][DependencyResolution.forceConfiguration].
+     */
+    @Deprecated("Use Flogger over SLF4J.", replaceWith = ReplaceWith("flogger"))
+    val slf4j            = "1.7.29"
 }
 
 object GradlePlugins {
@@ -143,7 +153,7 @@ object Build {
     val ci = "true".equals(System.getenv("CI"))
     val gradlePlugins = GradlePlugins
     @Deprecated("Use Flogger over SLF4J.", replaceWith = ReplaceWith("flogger"))
-    @Suppress("DEPRECATION")
+    @Suppress("DEPRECATION") // Version of SLF4J.
     val slf4j                  = "org.slf4j:slf4j-api:${Versions.slf4j}"
 
     object AutoService {
@@ -218,7 +228,7 @@ object Test {
     )
     @Deprecated("Use Flogger over SLF4J.",
                 replaceWith = ReplaceWith("Deps.runtime.floggerSystemBackend"))
-    @Suppress("DEPRECATION")
+    @Suppress("DEPRECATION") // Version of SLF4J.
     val slf4j         = "org.slf4j:slf4j-jdk14:${Versions.slf4j}"
 }
 
@@ -272,7 +282,7 @@ object DependencyResolution {
             config.resolutionStrategy { strategy ->
                 strategy.failOnVersionConflict()
                 strategy.cacheChangingModulesFor(0, "seconds")
-                @Suppress("DEPRECATION")
+                @Suppress("DEPRECATION") // Force SLF4J version.
                 strategy.force(
                         Deps.build.slf4j,
                         Deps.build.errorProneAnnotations,
