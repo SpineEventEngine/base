@@ -18,9 +18,9 @@ jobs:
       - uses: actions/checkout@v1
 
       - name: Check root and `smoke-tests` copies are the same.
-        shell: cmd
+        shell: bash
         run: ./script/same.sh ./buildSrc ./tools/smoke-tests/buildSrc
 
       - name: Check root and `base-validating-builders` copies are the same.
-        shell: cmd
+        shell: bash
         run: ./script/same.sh ./buildSrc ./base-validating-builders/buildSrc
