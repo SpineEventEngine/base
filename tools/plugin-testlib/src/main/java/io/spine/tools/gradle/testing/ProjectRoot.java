@@ -56,7 +56,7 @@ enum ProjectRoot {
         Path workingFolderPath = Paths.get(".")
                                       .toAbsolutePath();
         Path extGradleDirPath = workingFolderPath;
-        while (extGradleDirPath != null && hasVersionGradle(extGradleDirPath)) {
+        while (extGradleDirPath != null && !hasVersionGradle(extGradleDirPath)) {
             extGradleDirPath = extGradleDirPath.getParent();
         }
         checkState(extGradleDirPath != null,
