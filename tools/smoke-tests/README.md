@@ -20,3 +20,9 @@ They also should be run separately from the `main` project build like this:
 
 To configure Intellij Idea for recognizing `smoke-tests` module as the actual source code, see 
 [this page](https://blog.jetbrains.com/idea/2016/10/intellij-idea-2016-3-eap-gradle-composite-builds-and-android-studio-2-2/).
+
+### Gradle build scripts
+
+Some Gradle build files in this project rely on `modelCompiler` heavily. We cannot get a type-safe
+accessor for the extension. In those build files we use Groovy instead of Kotlin. At alternative
+would be using Kotlin and `withGroovyBuilder(..)`.

@@ -18,6 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import io.spine.gradle.internal.Deps
+
 modelCompiler {
     generateAnnotations {
         internal = 'io.spine.test.annotation.Private'
@@ -44,7 +46,7 @@ modelCompiler {
 
 dependencies {
     testImplementation(
-            deps.grpc.grpcStub,
-            deps.grpc.grpcProtobuf
+            Deps.grpc.stub,
+            Deps.grpc.protobuf
     )
 }

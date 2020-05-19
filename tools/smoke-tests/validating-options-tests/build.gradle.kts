@@ -18,10 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* 
-    This Smoke Tests module holds a TestMethodFactory that is used in model-compiler-test module.
-*/
+import io.spine.gradle.internal.Deps
 
-dependencies{
-    implementation deps.gen.javaPoet
+plugins {
+    java
+}
+
+dependencies {
+    testAnnotationProcessor(Deps.build.autoService.processor)
+    testCompileOnly(Deps.build.autoService.annotations)
 }
