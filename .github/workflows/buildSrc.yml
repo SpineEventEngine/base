@@ -19,7 +19,7 @@ jobs:
 
       - name: Check root and `smoke-tests` copies are the same.
         shell: bash
-        run: ./script/same.sh ./buildSrc ./tools/smoke-tests/buildSrc/src
+        run: ./script/same.sh ./buildSrc ./tools/smoke-tests/buildSrc
 
       - name: Check root and `base-validating-builders` copies are the same.
         shell: bash
