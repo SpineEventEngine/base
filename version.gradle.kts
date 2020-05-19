@@ -25,7 +25,7 @@
  * as we want to manage the versions in a single source.
  */
 
-val SPINE_VERSION = "1.5.11"
+val SPINE_VERSION = "1.5.12"
 
 project.extra.apply {
     this["spineVersion"] = SPINE_VERSION
