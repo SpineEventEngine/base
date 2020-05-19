@@ -36,11 +36,11 @@ buildscript {
     val deps = io.spine.gradle.internal.Deps
 
     dependencies {
-        classpath(deps.build.protobuf)
+        deps.build.protobuf.forEach { classpath(it) }
         classpath(deps.build.guava)
         classpath(deps.build.flogger)
         classpath(deps.build.checkerAnnotations)
-        classpath(deps.build.errorProneAnnotations)
+        deps.build.errorProneAnnotations.forEach { classpath(it) }
         classpath(deps.build.jsr305Annotations)
         classpath(deps.build.gradlePlugins.protobuf)
 
@@ -95,18 +95,16 @@ repositories {
 val spineVersion: String by extra
 
 dependencies {
-    compileOnly(Deps.build.protobuf)
+    Deps.build.protobuf.forEach { compileOnly(it) }
     compileOnly(Deps.build.guava)
     compileOnly(Deps.build.flogger)
     compileOnly(Deps.build.checkerAnnotations)
-    compileOnly(Deps.build.errorProneAnnotations)
+    Deps.build.errorProneAnnotations.forEach { compileOnly(it) }
     compileOnly(Deps.build.jsr305Annotations)
-    compileOnly(Deps.build.errorProneAnnotations)
-
 
     // The below dependency refers to a local artifact.
     // See `repositories.flatDir` definition above.
-    compileOnly("base-${spineVersion}")
+    compileOnly(name = "base-${spineVersion}", group = "")
 }
 
 sourceSets {
