@@ -33,7 +33,7 @@ The repository also contains:
 
 ### Notes on Coverage
 
-Currently the coverage stats reflect the hits gathered from unit tests. However, Gradle plugins - 
+Currently, the coverage stats reflect the hits gathered from unit tests. However, Gradle plugins - 
 a significant part of this repository - are covered with integration tests. During each of those, a 
 standalone Gradle process is launched. The limitations of `jacoco` task API do not allow to include 
 the coverage of such tests into the repository coverage report easily. Therefore, current coverage 
