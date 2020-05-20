@@ -18,9 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'java'
-
-// NOTE: this file is copied from the root project in the test setup.
-apply from: "$rootDir/test-env.gradle"
-
-apply from: "$enclosingRootDir/version.gradle.kts"
+apply {
+    plugin("java")
+    // NOTE: this file is copied from the root project in the test setup.
+    from("$rootDir/test-env.gradle")
+    from("${extra["enclosingRootDir"]}/version.gradle.kts")
+}

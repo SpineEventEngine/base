@@ -21,10 +21,9 @@
 buildscript {
 
     // NOTE: this file is copied from the root project in the test setup.
-    apply from: "$rootDir/test-env.gradle"
-
-    apply from: "$enclosingRootDir/config/gradle/dependencies.gradle"
-    apply from: "$enclosingRootDir/version.gradle.kts"
+    apply(from = "$rootDir/test-env.gradle")
+    val enclosingRoot = project.extensions.extraProperties["enclosingRootDir"]
+    apply(from = "$enclosingRoot/version.gradle.kts")
 
     repositories {
         mavenLocal()
@@ -32,14 +31,16 @@ buildscript {
     }
 
     dependencies {
-        classpath "io.spine.tools:spine-javadoc-prettifier:$spineVersion"
-        classpath deps.build.gradlePlugins.protobuf
+        classpath("io.spine.tools:spine-javadoc-prettifier:$spineVersion")
+        classpath(io.spine.gradle.internal.Deps.build.gradlePlugins.protobuf)
     }
 }
 
-apply plugin: 'java'
-apply plugin: 'io.spine.tools.protobuf-javadoc-plugin'
-apply plugin: 'com.google.protobuf'
+plugins {
+    id("java")
+    id("io.spine.tools.protobuf-javadoc-plugin")
+    id("com.google.protobuf")
+}
 
 protoJavadoc {
     mainGenProtoDir = "generated/main/java"
