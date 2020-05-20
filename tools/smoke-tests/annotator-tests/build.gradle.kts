@@ -20,11 +20,36 @@
 
 import io.spine.gradle.internal.Deps
 
+plugins {
+    java
+    id("io.spine.tools.spine-model-compiler")
+}
+
 modelCompiler {
-    generateValidation = true
+    generateAnnotations {
+        internal = "io.spine.test.annotation.Private"
+        experimental = "io.spine.test.annotation.Attempt"
+        beta = "io.spine.test.annotation.Alpha"
+        spi = "io.spine.test.annotation.ServiceProviderInterface"
+    }
+    internalClassPatterns.addAll(listOf(
+            ".*OrBuilder", // Classes ending with `OrBuilder`.
+            ".*Proto",     // Classes ending with `Proto`.
+            ".*complex\\.Matter\\$.*[AaLl].*"
+                // Classes which have `complex.Matter$` in their FQN followed by an upper or lower 
+                // case letters ` A` or `L`.
+                // For the sake of testing. This is not a recommended usage.
+    ))
+    internalMethodNames.addAll(listOf(
+            "newBuilderForType",
+            "parseFrom",
+            "parseDelimitedFrom",
+            "getSerializedSize",
+            "internalGetValueMap"
+    ))
 }
 
 dependencies {
-    testAnnotationProcessor Deps.build.autoService.processor
-    testCompileOnly Deps.build.autoService.annotations
+    testImplementation(Deps.grpc.stub)
+    testImplementation(Deps.grpc.protobuf)
 }

@@ -18,8 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+plugins {
+    id("io.spine.tools.spine-model-compiler")
+}
+
 modelCompiler {
     fields {
-        generateFor "spine.tools.column.ProjectName", markAs("io.spine.tools.protoc.given.ProjectNameField")
+        generateFor("spine.tools.column.ProjectName", markAs("io.spine.tools.protoc.given.ProjectNameField"))
     }
 }

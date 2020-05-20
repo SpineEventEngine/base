@@ -18,6 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+plugins {
+    id("io.spine.tools.spine-model-compiler")
+}
+
 modelCompiler {
     generateValidation = true
 }
