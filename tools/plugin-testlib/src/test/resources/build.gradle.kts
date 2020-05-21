@@ -18,29 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-buildscript {
-
+apply {
+    plugin("java")
     // NOTE: this file is copied from the root project in the test setup.
-    apply from: "$rootDir/test-env.gradle"
-
-    apply from: "$enclosingRootDir/config/gradle/dependencies.gradle"
-    apply from: "$enclosingRootDir/version.gradle.kts"
-
-    repositories {
-        mavenLocal()
-        jcenter()
-    }
-
-    dependencies {
-        classpath "io.spine.tools:spine-javadoc-prettifier:$spineVersion"
-        classpath deps.build.gradlePlugins.protobuf
-    }
-}
-
-apply plugin: 'java'
-apply plugin: 'io.spine.tools.protobuf-javadoc-plugin'
-apply plugin: 'com.google.protobuf'
-
-protoJavadoc {
-    mainGenProtoDir = "generated/main/java"
+    from("$rootDir/test-env.gradle")
+    from("${extra["enclosingRootDir"]}/version.gradle.kts")
 }

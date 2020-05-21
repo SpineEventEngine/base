@@ -46,7 +46,7 @@ class MemoizingPluginRegistryTest {
     @Test
     @DisplayName("memoize the given plugin script")
     void memoizePluginScript() {
-        PluginScript script = PluginScript.declaredIn(Resource.file(BuildGradle.FILE_NAME));
+        PluginScript script = PluginScript.declaredIn(Resource.file(BuildGradle.BUILD_GRADLE));
         MemoizingPluginRegistry registry = new MemoizingPluginRegistry();
         registry.apply(script);
         assertThat(registry.pluginScripts()).containsExactly(script);
