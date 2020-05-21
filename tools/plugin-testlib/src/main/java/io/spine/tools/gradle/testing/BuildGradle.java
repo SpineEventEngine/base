@@ -21,7 +21,6 @@
 package io.spine.tools.gradle.testing;
 
 import com.google.common.annotations.VisibleForTesting;
-import io.spine.io.Resource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,8 +30,7 @@ import java.nio.file.Path;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Creates {@link #BUILD_GRADLE build.gradle} or {@link #BUILD_GRADLE_KTS build.gradle.kts} file in
- * the root of the test project, copying it from resources.
+ * Creates {@link #FILE_NAME} file in the root of the test project, copying it from resources.
  */
 final class BuildGradle {
 
@@ -40,8 +38,7 @@ final class BuildGradle {
      * The name of the build file.
      */
     @VisibleForTesting
-    static final String BUILD_GRADLE = "build.gradle";
-    private static final String BUILD_GRADLE_KTS = "build.gradle.kts";
+    static final String FILE_NAME = "build.gradle";
 
     private final Path testProjectRoot;
 
@@ -50,20 +47,10 @@ final class BuildGradle {
     }
 
     void createFile() throws IOException {
-        Path resultingPath = testProjectRoot.resolve(BUILD_GRADLE);
+        Path resultingPath = testProjectRoot.resolve(FILE_NAME);
 
-        Resource buildGradle = Resource.file(BUILD_GRADLE);
-        Resource buildGradleKts = Resource.file(BUILD_GRADLE_KTS);
-        Resource file;
-        if (buildGradle.exists()) {
-            file = buildGradle;
-        } else if (buildGradleKts.exists()) {
-            file = buildGradleKts;
-        } else {
-            throw new IllegalStateException("Build script is not found.");
-        }
-
-        try (InputStream fileContent = file.open()) {
+        try (InputStream fileContent = getClass().getClassLoader()
+                                                 .getResourceAsStream(FILE_NAME)) {
             Files.createDirectories(resultingPath.getParent());
             checkNotNull(fileContent);
             Files.copy(fileContent, resultingPath);

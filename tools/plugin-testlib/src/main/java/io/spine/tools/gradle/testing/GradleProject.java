@@ -51,7 +51,6 @@ public final class GradleProject {
     private static final String BASE_PROTO_LOCATION = "src/main/proto/";
     private static final String BASE_JAVA_LOCATION = "src/main/java/";
     private static final String JAVA_PLUGIN_NAME = "java";
-    private static final String BUILD_SRC = "buildSrc";
 
     private final String name;
     private final GradleRunner gradleRunner;
@@ -81,7 +80,6 @@ public final class GradleProject {
             gradleRunner.withPluginClasspath();
         }
         writeGradleScripts();
-        whiteBuildSrc();
         writeProtoFiles(builder.protoFileNames);
         writeJavaFiles(builder.javaFileNames);
     }
@@ -94,14 +92,6 @@ public final class GradleProject {
                                       .toPath();
         TestEnvGradle testEnvGradle = new TestEnvGradle(projectRoot, testProjectRoot());
         testEnvGradle.createFile();
-    }
-
-    private void whiteBuildSrc() throws IOException {
-        Path projectRoot = ProjectRoot.instance()
-                                      .toPath();
-        Path buildSrc = projectRoot.resolve(BUILD_SRC);
-        Path target = testProjectRoot().resolve(BUILD_SRC);
-        Files.copy(buildSrc, target);
     }
 
     private void writeProtoFiles(Iterable<String> fileNames) throws IOException {

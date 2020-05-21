@@ -30,6 +30,8 @@ buildscript {
 
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
     val resolution = io.spine.gradle.internal.DependencyResolution
+    @Suppress("RemoveRedundantQualifierName")
+    val deps = io.spine.gradle.internal.Deps
     resolution.defaultRepositories(repositories)
     resolution.forceConfiguration(configurations)
 }
