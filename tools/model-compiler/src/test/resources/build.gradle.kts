@@ -19,6 +19,7 @@
  */
 
 import io.spine.gradle.internal.Repos
+import org.gradle.api.file.SourceDirectorySet
 import java.net.URI
 
 // Common build file for the tests with same configuration
@@ -36,8 +37,9 @@ buildscript {
         maven { url = java.net.URI(io.spine.gradle.internal.Repos.spine) }
     }
 
+    val spineVersion: String by extra
     dependencies {
-        classpath(io.spine.gradle.internal.Deps.build.protobuf)
+        io.spine.gradle.internal.Deps.build.protobuf.forEach { classpath(it) }
 
         // Exclude `guava:18.0` as a transitive dependency by Protobuf Gradle plugin.
         classpath(io.spine.gradle.internal.Deps.build.gradlePlugins.protobuf) {
@@ -47,14 +49,14 @@ buildscript {
     }
 }
 
-plugin {
+plugins {
     java
-    id("com.google.protobuf")
-    id("io.spine.tools.spine-model-compiler")
 }
 
 // NOTE: this file is copied from the root project in the test setup.
 apply {
+    plugin("com.google.protobuf")
+    plugin("io.spine.tools.spine-model-compiler")
     from("$rootDir/test-env.gradle")
     from("${extra["enclosingRootDir"]}/config/gradle/model-compiler.gradle")
 }
@@ -69,14 +71,15 @@ repositories {
     maven { url = URI(Repos.spine) }
 }
 
+val spineVersion: String by extra
 dependencies {
     implementation("io.spine:spine-base:$spineVersion")
 }
 
 sourceSets {
     main {
-        proto.srcDir("$projectDir/src/main/proto")
         java.srcDirs("$projectDir/generated/main/java", "$projectDir/generated/main/spine")
         resources.srcDir("$projectDir/generated/main/resources")
+        (extensions.getByName("proto") as SourceDirectorySet).srcDir("$projectDir/src/main/proto")
     }
 }
