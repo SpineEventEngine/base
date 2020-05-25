@@ -82,7 +82,7 @@ public final class GradleProject {
             gradleRunner.withPluginClasspath();
         }
         writeGradleScripts();
-        whiteBuildSrc();
+        writeBuildSrc();
         writeProtoFiles(builder.protoFileNames);
         writeJavaFiles(builder.javaFileNames);
     }
@@ -97,7 +97,7 @@ public final class GradleProject {
         testEnvGradle.createFile();
     }
 
-    private void whiteBuildSrc() throws IOException {
+    private void writeBuildSrc() throws IOException {
         Path projectRoot = ProjectRoot.instance()
                                       .toPath();
         Path buildSrc = projectRoot.resolve(BUILD_SRC);
