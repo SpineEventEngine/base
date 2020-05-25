@@ -19,7 +19,7 @@
  */
 
 import com.google.common.io.Files
-import com.google.protobuf.gradle.generateProtoTasks
+import com.google.protobuf.gradle.*
 import groovy.lang.GString
 import io.spine.gradle.internal.Deps
 import java.util.*
@@ -37,7 +37,7 @@ dependencies {
 }
 
 protobuf {
-    protobuf.generateProtoTasks {
+    generateProtoTasks {
         for (task in all()) {
             task.generateDescriptorSet = true
             task.descriptorSetOptions.path = GString.EMPTY.plus("$buildDir/descriptors/${task.sourceSet.name}/known_types.desc")

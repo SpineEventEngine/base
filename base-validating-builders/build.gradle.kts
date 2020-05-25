@@ -19,8 +19,7 @@
  */
 
 import com.google.protobuf.gradle.ProtobufConfigurator.JavaGenerateProtoTaskCollection
-import com.google.protobuf.gradle.generateProtoTasks
-import com.google.protobuf.gradle.remove
+import com.google.protobuf.gradle.*
 import io.spine.gradle.internal.Deps
 import org.gradle.internal.os.OperatingSystem
 
@@ -116,7 +115,7 @@ sourceSets {
 }
 
 protobuf {
-    protobuf.generateProtoTasks {
+    generateProtoTasks {
         all().forEach { task ->
             task.plugins {
                 remove("grpc")

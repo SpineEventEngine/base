@@ -45,12 +45,11 @@ tasks.compileTestJava { enabled = false }
 val compileProtoToJs by tasks.registering
 
 protobuf {
-    protobuf.generatedFilesBaseDir = "$projectDir/generated"
-    protobuf.protoc {
+    generatedFilesBaseDir = "$projectDir/generated"
+    protoc {
         artifact = Deps.build.protoc
     }
-
-    protobuf.generateProtoTasks {
+    generateProtoTasks {
         // Copy the task collection to avoid `ConcurrentModificationException`.
         ArrayList(all()).forEach { task ->
             task.builtins {

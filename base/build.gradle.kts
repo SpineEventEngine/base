@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.generateProtoTasks
+import com.google.protobuf.gradle.*
 import groovy.lang.GString
 import io.spine.gradle.internal.DependencyResolution
 import io.spine.gradle.internal.Deps
@@ -107,8 +107,8 @@ val pruneTestGoogleProtos by tasks.registering(type = Delete::class) {
 }
 
 protobuf {
-    protobuf.generatedFilesBaseDir = compiledProtoRoot
-    protobuf.generateProtoTasks {
+    generatedFilesBaseDir = compiledProtoRoot
+    generateProtoTasks {
         for (task in all()) {
             val scope = task.sourceSet.name
             task.generateDescriptorSet = true

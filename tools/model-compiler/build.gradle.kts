@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.generateProtoTasks
+import com.google.protobuf.gradle.*
 import groovy.lang.GString
 import io.spine.gradle.internal.Deps
 import java.nio.file.Files
@@ -53,7 +53,7 @@ dependencies {
 }
 
 protobuf {
-    protobuf.generateProtoTasks {
+    generateProtoTasks {
         all().forEach { task ->
             val scope = task.sourceSet.name
             task.generateDescriptorSet = true

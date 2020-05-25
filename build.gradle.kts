@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.protoc
+import com.google.protobuf.gradle.*
 import io.spine.gradle.internal.DependencyResolution
 import io.spine.gradle.internal.Deps
 import io.spine.gradle.internal.PublishingRepos
@@ -149,9 +149,9 @@ subprojects {
     }
 
     protobuf {
-        protobuf.generatedFilesBaseDir = generatedRootDir
+        generatedFilesBaseDir = generatedRootDir
 
-        protobuf.protoc {
+        protoc {
             artifact = Deps.build.protoc
         }
     }
