@@ -33,6 +33,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Creates {@link #BUILD_GRADLE build.gradle} or {@link #BUILD_GRADLE_KTS build.gradle.kts} file in
  * the root of the test project, copying it from resources.
+ *
+ * <p>If a {@code build.gradle} file is found, it is used for the build. Otherwise, if
+ * a {@code build.gradle.kts} file is found, it is used for the build.
  */
 final class BuildGradle {
 
@@ -49,8 +52,13 @@ final class BuildGradle {
         testProjectRoot = root;
     }
 
+    /**
+     * Copies a Gradle build script from the classpath into the test project directory.
+     *
+     * @throws IOException
+     *         if the file cannot be written
+     */
     void createFile() throws IOException {
-
         Resource buildGradle = Resource.file(BUILD_GRADLE);
         Resource buildGradleKts = Resource.file(BUILD_GRADLE_KTS);
         Path resultingPath;
