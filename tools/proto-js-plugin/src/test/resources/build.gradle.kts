@@ -18,9 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.ExecutableLocator
-import com.google.protobuf.gradle.ProtobufConfigurator.JavaGenerateProtoTaskCollection
-import groovy.lang.Closure
+import com.google.protobuf.gradle.id
+import com.google.protobuf.gradle.remove
 import groovy.lang.GString
 import io.spine.gradle.internal.Deps
 
@@ -48,28 +47,27 @@ val compileProtoToJs by tasks.registering
 
 protobuf {
     protobuf.generatedFilesBaseDir = "$projectDir/generated"
-    protobuf.protoc(object : Closure<Any>(this) {
-        private fun doCall(protoc: ExecutableLocator) {
-            protoc.artifact = Deps.build.protoc
-        }
-    })
-    protobuf.generateProtoTasks(object : Closure<Any>(this) {
-        private fun doCall(tasks: JavaGenerateProtoTaskCollection) {
-            // Copy the task collection to avoid `ConcurrentModificationException`.
-            ArrayList(tasks.all()).forEach { task ->
-                task.builtins {
-                    removeIf { it.name == "java" }
-                    maybeCreate("js").option("import_style=commonjs")
-                }
-                task.generateDescriptorSet = true
-                task.descriptorSetOptions.path = GString.EMPTY.plus("${projectDir}/build/descriptors/${task.sourceSet.name}/known_types.desc")
-                task.descriptorSetOptions.includeImports = true
-                task.descriptorSetOptions.includeSourceInfo = true
+    protobuf.protoc {
+        artifact = Deps.build.protoc
+    }
 
-                compileProtoToJs.get().dependsOn(task)
+    protobuf.generateProtoTasks {
+        // Copy the task collection to avoid `ConcurrentModificationException`.
+        ArrayList(all()).forEach { task ->
+            task.builtins {
+                remove("java")
+                id("js") {
+                    option("import_style=commonjs")
+                }
             }
+            task.generateDescriptorSet = true
+            task.descriptorSetOptions.path = GString.EMPTY.plus("${projectDir}/build/descriptors/${task.sourceSet.name}/known_types.desc")
+            task.descriptorSetOptions.includeImports = true
+            task.descriptorSetOptions.includeSourceInfo = true
+
+            compileProtoToJs.get().dependsOn(task)
         }
-    })
+    }
 }
 
 tasks.build {

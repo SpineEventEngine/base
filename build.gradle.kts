@@ -18,8 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.ExecutableLocator
-import groovy.lang.Closure
+import com.google.protobuf.gradle.protoc
 import io.spine.gradle.internal.DependencyResolution
 import io.spine.gradle.internal.Deps
 import io.spine.gradle.internal.PublishingRepos
@@ -152,11 +151,9 @@ subprojects {
     protobuf {
         protobuf.generatedFilesBaseDir = generatedRootDir
 
-        protobuf.protoc(object : Closure<Any>(this) {
-            private fun doCall(locator: ExecutableLocator) {
-                locator.artifact = Deps.build.protoc
-            }
-        })
+        protobuf.protoc {
+            artifact = Deps.build.protoc
+        }
     }
 
     tasks.test.configure {

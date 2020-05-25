@@ -18,8 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.ProtobufConfigurator.JavaGenerateProtoTaskCollection
-import groovy.lang.Closure
+import com.google.protobuf.gradle.generateProtoTasks
 import groovy.lang.GString
 import io.spine.gradle.internal.DependencyResolution
 import io.spine.gradle.internal.Deps
@@ -109,23 +108,21 @@ val pruneTestGoogleProtos by tasks.registering(type = Delete::class) {
 
 protobuf {
     protobuf.generatedFilesBaseDir = compiledProtoRoot
-    protobuf.generateProtoTasks(object : Closure<Any>(this) {
-        private fun doCall(tasks: JavaGenerateProtoTaskCollection) {
-            for (task in tasks.all()) {
-                val scope = task.sourceSet.name
-                task.generateDescriptorSet = true
-                task.descriptorSetOptions.path = GString.EMPTY.plus("$buildDir/descriptors/$scope/known_types_${scope}.desc")
-                task.descriptorSetOptions.includeImports = true
-                task.descriptorSetOptions.includeSourceInfo = true
+    protobuf.generateProtoTasks {
+        for (task in all()) {
+            val scope = task.sourceSet.name
+            task.generateDescriptorSet = true
+            task.descriptorSetOptions.path = GString.EMPTY.plus("$buildDir/descriptors/$scope/known_types_${scope}.desc")
+            task.descriptorSetOptions.includeImports = true
+            task.descriptorSetOptions.includeSourceInfo = true
 
-                if (scope.contains("test")) {
-                    pruneTestGoogleProtos.configure { dependsOn(task) }
-                } else {
-                    pruneGoogleProtos.configure { dependsOn(task) }
-                }
+            if (scope.contains("test")) {
+                pruneTestGoogleProtos.configure { dependsOn(task) }
+            } else {
+                pruneGoogleProtos.configure { dependsOn(task) }
             }
         }
-    })
+    }
 }
 
 /**

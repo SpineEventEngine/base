@@ -19,8 +19,7 @@
  */
 
 import com.google.common.io.Files
-import com.google.protobuf.gradle.ProtobufConfigurator.JavaGenerateProtoTaskCollection
-import groovy.lang.Closure
+import com.google.protobuf.gradle.generateProtoTasks
 import groovy.lang.GString
 import io.spine.gradle.internal.Deps
 import java.util.*
@@ -38,14 +37,12 @@ dependencies {
 }
 
 protobuf {
-    protobuf.generateProtoTasks(object : Closure<Any>(this) {
-        private fun doCall(tasks: JavaGenerateProtoTaskCollection) {
-            for (task in tasks.all()) {
-                task.generateDescriptorSet = true
-                task.descriptorSetOptions.path = GString.EMPTY.plus("$buildDir/descriptors/${task.sourceSet.name}/known_types.desc")
-            }
+    protobuf.generateProtoTasks {
+        for (task in all()) {
+            task.generateDescriptorSet = true
+            task.descriptorSetOptions.path = GString.EMPTY.plus("$buildDir/descriptors/${task.sourceSet.name}/known_types.desc")
         }
-    })
+    }
 }
 
 val spineBaseVersion: String by extra

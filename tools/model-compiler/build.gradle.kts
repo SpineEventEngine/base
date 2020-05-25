@@ -18,8 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.ProtobufConfigurator.JavaGenerateProtoTaskCollection
-import groovy.lang.Closure
+import com.google.protobuf.gradle.generateProtoTasks
 import groovy.lang.GString
 import io.spine.gradle.internal.Deps
 import java.nio.file.Files
@@ -54,19 +53,15 @@ dependencies {
 }
 
 protobuf {
-    protobuf.generateProtoTasks(
-            object : Closure<Any>(this) {
-                private fun doCall(tasks: JavaGenerateProtoTaskCollection) {
-                    tasks.all().forEach { task ->
-                        val scope = task.sourceSet.name
-                        task.generateDescriptorSet = true
-                        task.descriptorSetOptions.path = GString.EMPTY.plus("$buildDir/descriptors/${scope}/io.spine.tools.spine-model-compiler-${scope}.desc")
-                        task.descriptorSetOptions.includeImports = true
-                        task.descriptorSetOptions.includeSourceInfo = true
-                    }
-                }
-            }
-    )
+    protobuf.generateProtoTasks {
+        all().forEach { task ->
+            val scope = task.sourceSet.name
+            task.generateDescriptorSet = true
+            task.descriptorSetOptions.path = GString.EMPTY.plus("$buildDir/descriptors/${scope}/io.spine.tools.spine-model-compiler-${scope}.desc")
+            task.descriptorSetOptions.includeImports = true
+            task.descriptorSetOptions.includeSourceInfo = true
+        }
+    }
 }
 
 sourceSets {

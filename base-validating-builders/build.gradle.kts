@@ -19,7 +19,8 @@
  */
 
 import com.google.protobuf.gradle.ProtobufConfigurator.JavaGenerateProtoTaskCollection
-import groovy.lang.Closure
+import com.google.protobuf.gradle.generateProtoTasks
+import com.google.protobuf.gradle.remove
 import io.spine.gradle.internal.Deps
 import org.gradle.internal.os.OperatingSystem
 
@@ -115,13 +116,13 @@ sourceSets {
 }
 
 protobuf {
-    protobuf.generateProtoTasks(object : Closure<Any>(this) {
-        private fun doCall(tasks: JavaGenerateProtoTaskCollection) {
-            tasks.all().forEach { task ->
-                task.plugins.removeIf { it.name == "grpc" }
+    protobuf.generateProtoTasks {
+        all().forEach { task ->
+            task.plugins {
+                remove("grpc")
             }
         }
-    })
+    }
 }
 
 val compiledProtoDir = "$projectDir/compiled-proto"
