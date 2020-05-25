@@ -19,6 +19,9 @@
  */
 
 import io.spine.gradle.internal.Deps
+import io.spine.tools.protoc.MessageSelectorFactory.prefix
+import io.spine.tools.protoc.MessageSelectorFactory.regex
+import io.spine.tools.protoc.MessageSelectorFactory.suffix
 
 plugins {
     java
@@ -33,22 +36,24 @@ dependencies {
 modelCompiler {
 
     interfaces {
-        mark(messages().inFiles(mapOf("suffix" to "documents.proto")), asType("io.spine.tools.protoc.DocumentMessage"))
-        mark(messages().inFiles(mapOf("prefix" to "spine/tools/protoc/prefix_generation")), asType("io.spine.tools.protoc.PrefixedMessage"))
-        mark(messages().inFiles(mapOf("suffix" to "suffix_generation_test.proto")), asType("io.spine.tools.protoc.SuffixedMessage"))
-        mark(messages().inFiles(mapOf("regex" to ".*regex.*test.*")), asType("io.spine.tools.protoc.RegexedMessage"))
+        mark(messages().inFiles(suffix("documents.proto")), asType("io.spine.tools.protoc.DocumentMessage"))
+        mark(messages().inFiles(prefix("spine/tools/protoc/prefix_generation")), asType("io.spine.tools.protoc.PrefixedMessage"))
+        mark(messages().inFiles(suffix("suffix_generation_test.proto")), asType("io.spine.tools.protoc.SuffixedMessage"))
+        mark(messages().inFiles(regex(".*regex.*test.*")), asType("io.spine.tools.protoc.RegexedMessage"))
     }
 
     methods {
-        applyFactory("io.spine.tools.protoc.TestMethodFactory", messages().inFiles(mapOf("suffix" to "suffix_generation_test.proto")))
-        applyFactory("io.spine.tools.protoc.TestMethodFactory", messages().inFiles(mapOf("prefix" to "spine/tools/protoc/prefix_generation")))
-        applyFactory("io.spine.tools.protoc.TestMethodFactory", messages().inFiles(mapOf("regex" to ".*regex.*test.*")))
-        applyFactory("io.spine.tools.protoc.TestMethodFactory", messages().inFiles(mapOf("regex" to ".*multi.*factory.*test.*")))
+        val factory = "io.spine.tools.protoc.TestMethodFactory"
+        applyFactory(factory, messages().inFiles(suffix("suffix_generation_test.proto")))
+        applyFactory(factory, messages().inFiles(prefix("spine/tools/protoc/prefix_generation")))
+        applyFactory(factory, messages().inFiles(regex(".*regex.*test.*")))
+        applyFactory(factory, messages().inFiles(regex(".*multi.*factory.*test.*")))
     }
 
     nestedClasses {
-        applyFactory("io.spine.tools.protoc.TestNestedClassFactory", messages().inFiles(mapOf("suffix" to "suffix_generation_test.proto")))
-        applyFactory("io.spine.tools.protoc.TestNestedClassFactory", messages().inFiles(mapOf("prefix" to "spine/tools/protoc/prefix_generation")))
-        applyFactory("io.spine.tools.protoc.TestNestedClassFactory", messages().inFiles(mapOf("regex" to ".*regex.*test.*")))
+        val factory = "io.spine.tools.protoc.TestNestedClassFactory"
+        applyFactory(factory, messages().inFiles(suffix("suffix_generation_test.proto")))
+        applyFactory(factory, messages().inFiles(prefix("spine/tools/protoc/prefix_generation")))
+        applyFactory(factory, messages().inFiles(regex(".*regex.*test.*")))
     }
 }
