@@ -158,6 +158,8 @@ public final class Environment {
     /**
      * Resets the instance and performs {@linkplain EnvironmentType#reset() the
      * environment-specific reset}.
+     *
+     * <p>Also the resets the {@linkplain #registerCustom(Class) user-defined environment types}.
      */
     @VisibleForTesting
     public void reset() {
