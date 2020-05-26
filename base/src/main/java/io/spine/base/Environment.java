@@ -37,8 +37,8 @@ import static io.spine.base.BaseEnvironmentType.TESTS;
  * of known environment types by providing their environment {@code enum} to
  * {@linkplain #registerCustom(Class)}.
  *
- * <p><b>When extending, please note</b> that this class does not handle the situations when the
- * two or more {@linkplain EnvironmentType environment types} return {@code true} on the
+ * <p><b>When extending, please note</b> that this class does not handle the situations when two
+ * or more {@linkplain EnvironmentType environment types} return {@code true} on the
  * {@link EnvironmentType#currentlyOn()}. As such, if two or more user-defined environment types
  * think that they are currently on, <b>the behaviour of {@link #envType()} is undefined.</b>
  */
@@ -64,7 +64,7 @@ public final class Environment {
     }
 
     /**
-     * Registers all of th constants from the provided {@code EnvironmentType}-implementing
+     * Registers all of the constants from the provided {@code EnvironmentType}-implementing
      * {@code enum}.
      *
      * <p>If the specified {@code enum} has already been registered, throws
@@ -111,7 +111,7 @@ public final class Environment {
      * Determines the current environment type.
      *
      * <p>If {@linkplain #registerCustom(Class) user has defined custom env types}, goes through
-     * them in an undefined order fist. Then, checks the {@linkplain BaseEnvironmentType base env
+     * them in an undefined order. Then, checks the {@linkplain BaseEnvironmentType base env
      * types}.
      *
      * <p> Note that if all of the {@link EnvironmentType#currentlyOn()} checks have returned
