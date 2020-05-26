@@ -59,9 +59,8 @@ enum BaseEnvironmentType implements EnvironmentType {
             if (testProp != null) {
                 testProp = TEST_PROP_PATTERN.matcher(testProp)
                                             .replaceAll("");
-                return (String.valueOf(true)
-                              .equalsIgnoreCase(testProp)
-                        || "1".equals(testProp));
+                return String.valueOf(true)
+                             .equalsIgnoreCase(testProp) || "1".equals(testProp);
             }
 
             // Check stacktrace for known frameworks.
