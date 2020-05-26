@@ -22,6 +22,7 @@ import com.google.protobuf.gradle.*
 import groovy.lang.GString
 import io.spine.gradle.internal.DependencyResolution
 import io.spine.gradle.internal.Deps
+import io.spine.gradle.internal.IncrementGuard
 import io.spine.gradle.internal.RunBuild
 import java.nio.file.Files.isSameFile
 
@@ -33,6 +34,7 @@ plugins {
 group = "io.spine"
 
 apply(from = Deps.scripts.testArtifacts(project))
+apply<IncrementGuard>()
 
 DependencyResolution.excludeProtobufLite(configurations)
 
