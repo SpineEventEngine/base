@@ -32,6 +32,15 @@ import static io.spine.base.BaseEnvironmentType.TESTS;
 
 /**
  * Provides information about the environment (current platform used, etc.).
+ *
+ * <p>By default, knows only about {@link BaseEnvironmentType}. Library users may extend the list
+ * of known environment types by providing their environment {@code enum} to
+ * {@linkplain #registerCustom(Class)}.
+ *
+ * <p><b>When extending, please note</b> that this class does not handle the situations when the
+ * two or more {@linkplain EnvironmentType environment types} return {@code true} on the
+ * {@link EnvironmentType#currentlyOn()}. As such, if two or more user-defined environment types
+ * think that they are currently on, <b>the behaviour of {@link #envType()} is undefined.</b>
  */
 @SPI
 public final class Environment {
@@ -54,6 +63,22 @@ public final class Environment {
         this.currentEnvType = copy.currentEnvType;
     }
 
+    /**
+     * Registers all of th constants from the provided {@code EnvironmentType}-implementing
+     * {@code enum}.
+     *
+     * <p>If the specified {@code enum} has already been registered, throws
+     * an {@code IllegalStateException}.
+     *
+     * <p>Note that the {@linkplain BaseEnvironmentType default types} are still present.
+     * When trying to {@linkplain #envType() determine which environment type} is currently on,
+     * the user defined types are checked first.
+     *
+     * @param enumClass
+     *         an enum class that specifies the environment types
+     * @param <E>
+     *         a type that defines possible environment types
+     */
     public static <E extends Enum & EnvironmentType> void registerCustom(Class<E> enumClass) {
         checkNotNull(enumClass);
         ImmutableList<E> newTypes = ImmutableList.copyOf(enumClass.getEnumConstants());
@@ -68,6 +93,7 @@ public final class Environment {
                 .build();
     }
 
+    /** Returns the singleton instance. */
     public static Environment instance() {
         return INSTANCE;
     }
@@ -81,6 +107,18 @@ public final class Environment {
         return new Environment(this);
     }
 
+    /**
+     * Determines the current environment type.
+     *
+     * <p>If {@linkplain #registerCustom(Class) user has defined custom env types}, goes through
+     * them in an undefined order fist. Then, checks the {@linkplain BaseEnvironmentType base env
+     * types}.
+     *
+     * <p> Note that if all of the {@link EnvironmentType#currentlyOn()} checks have returned
+     * {@code false}, this method falls back on {@link BaseEnvironmentType#PRODUCTION}.
+     *
+     * @return the current environment type.
+     */
     public EnvironmentType envType() {
         if (currentEnvType == null) {
             for (EnvironmentType type : knownEnvTypes) {
@@ -108,12 +146,19 @@ public final class Environment {
         }
     }
 
+    /**
+     * Forces the specified environment type to be the current one.
+     */
+    @VisibleForTesting
     public void setTo(EnvironmentType type) {
         this.currentEnvType = type;
         currentEnvType.setTo();
     }
 
-
+    /**
+     * Resets the instance and performs {@linkplain EnvironmentType#reset() the
+     * environment-specific reset}.
+     */
     @VisibleForTesting
     public void reset() {
         if (currentEnvType != null) {
