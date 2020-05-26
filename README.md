@@ -33,8 +33,18 @@ The repository also contains:
 
 ### Notes on Coverage
 
-Currently the coverage stats reflect the hits gathered from unit tests. However, Gradle plugins - 
+Currently, the coverage stats reflect the hits gathered from unit tests. However, Gradle plugins - 
 a significant part of this repository - are covered with integration tests. During each of those, a 
 standalone Gradle process is launched. The limitations of `jacoco` task API do not allow to include 
 the coverage of such tests into the repository coverage report easily. Therefore, current coverage 
 percentage shown is significantly lower than a real one.
+
+### `pull` scripts
+
+In most Spine repositories, we update the `config` submodule by running `./config/pull` (or its
+Batch equivalent). However, in `base` we also need to copy Gradle `buildSrc` directory into included
+builds: `smoke-tests` and `base-validating-builders`. Thus, here we have `./pull` and `.\pull.bat`
+scripts which do whatever their `config` counterparts do and also copy `buildSrc` into the two
+included build directories.
+
+It is always recommended to run `./pull` instead of `./config/pull`.

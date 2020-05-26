@@ -18,6 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import com.google.protobuf.gradle.*
 import io.spine.gradle.internal.DependencyResolution
 import io.spine.gradle.internal.Deps
 import io.spine.gradle.internal.PublishingRepos
@@ -28,8 +29,6 @@ buildscript {
 
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
     val resolution = io.spine.gradle.internal.DependencyResolution
-    @Suppress("RemoveRedundantQualifierName")
-    val deps = io.spine.gradle.internal.Deps
     resolution.defaultRepositories(repositories)
     resolution.forceConfiguration(configurations)
 }
@@ -150,13 +149,11 @@ subprojects {
     }
 
     protobuf {
-        protobuf.generatedFilesBaseDir = generatedRootDir
+        generatedFilesBaseDir = generatedRootDir
 
-        protobuf.protoc(object : groovy.lang.Closure<Any>(this) {
-            private fun doCall(locator: com.google.protobuf.gradle.ExecutableLocator) {
-                locator.artifact = Deps.build.protoc
-            }
-        })
+        protoc {
+            artifact = Deps.build.protoc
+        }
     }
 
     tasks.test.configure {

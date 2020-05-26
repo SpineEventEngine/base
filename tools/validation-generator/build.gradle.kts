@@ -18,17 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
- */
+import io.spine.gradle.internal.Deps
 
-val SPINE_VERSION = "1.5.12"
+group = "io.spine.tools"
 
-project.extra.apply {
-    this["spineVersion"] = SPINE_VERSION
-    this["spineBaseVersion"] = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
-    this["versionToPublish"] = SPINE_VERSION
+dependencies {
+    api(Deps.gen.javaPoet)
+    implementation(project(":tool-base"))
+    testImplementation(project(":base"))
+    testImplementation(project(":testlib"))
 }

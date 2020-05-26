@@ -18,7 +18,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+plugins {
+    // Use Kotlin for `buildSrc`.
+    // https://kotlinlang.org/docs/reference/using-gradle.html#targeting-the-jvm
+    kotlin("jvm").version("1.3.72")
+}
+
+repositories {
+    mavenLocal()
+    jcenter()
+}
+
+val jacksonVersion = "2.11.0"
+
 dependencies {
-    testAnnotationProcessor deps.build.autoService.processor
-    testCompileOnly deps.build.autoService.annotations
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
 }

@@ -18,8 +18,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import io.spine.gradle.internal.Deps
+
+plugins {
+    java
+    id("io.spine.tools.spine-model-compiler")
+}
+
 modelCompiler {
-    fields {
-        generateFor "spine.tools.column.ProjectName", markAs("io.spine.tools.protoc.given.ProjectNameField")
-    }
+    generateValidation = true
+}
+
+dependencies {
+    testAnnotationProcessor(Deps.build.autoService.processor)
+    testCompileOnly(Deps.build.autoService.annotations)
 }

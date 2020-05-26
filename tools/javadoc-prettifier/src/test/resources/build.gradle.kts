@@ -18,11 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+buildscript {
 
-dependencies {
-    api deps.gen.javaPoet
-    implementation project(':tool-base')
-    testImplementation project(':base')
-    testImplementation project(':testlib')
+    // NOTE: this file is copied from the root project in the test setup.
+    apply(from = "$rootDir/test-env.gradle")
+    apply(from = "${extra["enclosingRootDir"]}/version.gradle.kts")
+
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+
+    val spineVersion: String by extra
+    dependencies {
+        classpath("io.spine.tools:spine-javadoc-prettifier:$spineVersion")
+        classpath(io.spine.gradle.internal.Deps.build.gradlePlugins.protobuf)
+    }
+}
+
+apply(plugin = "java")
+apply(plugin = "com.google.protobuf")
+apply(plugin = "io.spine.tools.protobuf-javadoc-plugin")
+
+extensions["protoJavadoc"].withGroovyBuilder {
+    setProperty("mainGenProtoDir", "generated/main/java")
 }

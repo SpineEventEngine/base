@@ -70,14 +70,14 @@ class ProtoJavadocPluginTest {
 
     @Test
     @DisplayName("apply to project")
-    void apply_to_project() {
+    void applyToProject() {
         PluginContainer plugins = project.getPlugins();
         assertTrue(plugins.hasPlugin(PLUGIN_ID));
     }
 
     @Test
     @DisplayName("have extension")
-    void have_extension() {
+    void haveExtension() {
         Extension extension = project.getExtensions()
                                      .getByType(Extension.class);
         assertNotNull(extension);
@@ -85,7 +85,7 @@ class ProtoJavadocPluginTest {
 
     @Test
     @DisplayName("add formatProtoDoc task")
-    void add_task_formatProtoDoc() {
+    void addTaskFormatProtoDoc() {
         Task task = task(formatProtoDoc);
         assertNotNull(task);
         assertTrue(dependsOn(task, generateProto));
@@ -94,7 +94,7 @@ class ProtoJavadocPluginTest {
 
     @Test
     @DisplayName("add formatTestProtoDoc task")
-    void add_task_formatTestProtoDoc() {
+    void addTaskFormatTestProtoDoc() {
         Task task = task(formatTestProtoDoc);
         assertNotNull(task);
         assertTrue(dependsOn(task, generateTestProto));
@@ -103,7 +103,7 @@ class ProtoJavadocPluginTest {
 
     @Test
     @DisplayName("format generated java sources")
-    void format_generated_java_sources() throws IOException {
+    void formatGeneratedJavaSources() throws IOException {
         String text = "javadoc text";
         String generatedFieldDescription = " <code>field description</code>";
         String textInPreTags = new StringBuilder().append(OPENING_PRE)
@@ -118,7 +118,7 @@ class ProtoJavadocPluginTest {
 
     @Test
     @DisplayName("handle multiline code snippets")
-    void handle_multiline_code_snippets_properly() throws IOException {
+    void handleMultilineCodeSnippetsProperly() throws IOException {
         String protoDoc = multilineJavadoc(BACKTICK, BACKTICK);
         String javadoc = multilineJavadoc("{@code ", "}");
 

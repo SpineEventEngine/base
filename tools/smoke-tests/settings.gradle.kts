@@ -18,27 +18,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include 'annotator-tests'
-include 'column-tests'
-include 'generated-validation-tests'
-include 'known-types-tests'
-include 'model-compiler-tests'
-include 'rejection-tests'
-include 'test-factories'
-include 'validating-options-tests'
-include 'validation-tests'
+include("annotator-tests")
+include("column-tests")
+include("generated-validation-tests")
+include("known-types-tests")
+include("model-compiler-tests")
+include("rejection-tests")
+include("test-factories")
+include("validating-options-tests")
+include("validation-tests")
 
 /*
  * Dependency links established with the Gradle included build.
  *
  * See the `includeBuild(...)` block below for more info.
  */
-final def links = [
-        'io.spine:spine-base'                    : ':base',
-        'io.spine.tools:spine-tool-base'         : ':tool-base',
-        'io.spine.tools:spine-model-compiler'    : ':model-compiler',
-        'io.spine:spine-testlib'                 : ':testlib'
-]
+val links = mapOf(
+        "io.spine:spine-base"                 to ":base",
+        "io.spine.tools:spine-tool-base"      to ":tool-base",
+        "io.spine.tools:spine-model-compiler" to ":model-compiler",
+        "io.spine:spine-testlib"              to ":testlib"
+)
 
 /*
  * Include the `base` build into `smoke-test` project build.
@@ -51,8 +51,8 @@ final def links = [
  */
 includeBuild("$rootDir/../../") {
     dependencySubstitution {
-        links.each {
-            substitute module(it.key) with project(it.value)
+        links.forEach { id, projectPath ->
+            substitute(module(id)).with(project(projectPath))
         }
     }
 }

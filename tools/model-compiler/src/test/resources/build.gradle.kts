@@ -18,66 +18,68 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import io.spine.gradle.internal.Repos
+import org.gradle.api.file.SourceDirectorySet
+import java.net.URI
+
 // Common build file for the tests with same configuration
 
 buildscript {
 
     // NOTE: this file is copied from the root project in the test setup.
-    apply from: "$rootDir/test-env.gradle"
-
-    apply from: "$enclosingRootDir/config/gradle/dependencies.gradle"
-    apply from: "$enclosingRootDir/version.gradle.kts"
+    apply(from = "$rootDir/test-env.gradle")
+    apply(from = "${extra["enclosingRootDir"]}/version.gradle.kts")
 
     repositories {
         mavenLocal()
         jcenter()
 
-        maven { url = repos.spine }
-        maven { url = repos.spineSnapshots }
+        maven { url = java.net.URI(io.spine.gradle.internal.Repos.spine) }
     }
 
+    val spineVersion: String by extra
     dependencies {
-        classpath deps.build.protobuf
+        io.spine.gradle.internal.Deps.build.protobuf.forEach { classpath(it) }
 
         // Exclude `guava:18.0` as a transitive dependency by Protobuf Gradle plugin.
-        classpath (deps.build.gradlePlugins.protobuf) {
-            exclude group: 'com.google.guava'
+        classpath(io.spine.gradle.internal.Deps.build.gradlePlugins.protobuf) {
+            exclude(group = "com.google.guava")
         }
-        classpath "io.spine.tools:spine-model-compiler:${spineVersion}"
+        classpath("io.spine.tools:spine-model-compiler:${spineVersion}")
     }
+}
 
-    configurations.all({
-        resolutionStrategy.cacheChangingModulesFor(0, 'seconds')
-    })
+plugins {
+    java
 }
 
 // NOTE: this file is copied from the root project in the test setup.
-apply from: "$rootDir/test-env.gradle"
+apply {
+    plugin("com.google.protobuf")
+    plugin("io.spine.tools.spine-model-compiler")
+    from("$rootDir/test-env.gradle")
+    from("${extra["enclosingRootDir"]}/config/gradle/model-compiler.gradle")
+}
 
-apply plugin: 'java'
-apply plugin: 'com.google.protobuf'
-apply plugin: 'io.spine.tools.spine-model-compiler'
-apply from: "$enclosingRootDir/config/gradle/model-compiler.gradle"
-
-group = 'io.spine.test'
-version = '3.14'
+group = "io.spine.test"
+version = "3.14"
 
 repositories {
     mavenLocal()
     jcenter()
 
-    maven { url = repos.spine }
-    maven { url = repos.spineSnapshots }
+    maven { url = URI(Repos.spine) }
 }
 
+val spineVersion: String by extra
 dependencies {
-    implementation "io.spine:spine-base:$spineVersion"
+    implementation("io.spine:spine-base:$spineVersion")
 }
 
 sourceSets {
     main {
-        proto.srcDirs     "$projectDir/src/main/proto"
-        java.srcDirs      "$projectDir/generated/main/java", "$projectDir/generated/main/spine"
-        resources.srcDirs "$projectDir/generated/main/resources"
+        java.srcDirs("$projectDir/generated/main/java", "$projectDir/generated/main/spine")
+        resources.srcDir("$projectDir/generated/main/resources")
+        (extensions.getByName("proto") as SourceDirectorySet).srcDir("$projectDir/src/main/proto")
     }
 }

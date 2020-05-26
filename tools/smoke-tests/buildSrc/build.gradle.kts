@@ -18,12 +18,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* 
-    This Smoke Tests module verifies correctness of composition of {@code KnownTypes}. 
-    No additional config is required. 
-    See smoke-tests/build.gradle for all the config of the project.
-*/
+plugins {
+    // Use Kotlin for `buildSrc`.
+    // https://kotlinlang.org/docs/reference/using-gradle.html#targeting-the-jvm
+    kotlin("jvm").version("1.3.72")
+}
 
-modelCompiler {
-    generateValidation = true
+repositories {
+    mavenLocal()
+    jcenter()
+}
+
+val jacksonVersion = "2.11.0"
+
+dependencies {
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
 }

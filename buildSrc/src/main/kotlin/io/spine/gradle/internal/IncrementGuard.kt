@@ -18,17 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.gradle.internal
+
+import org.gradle.api.Plugin
+import org.gradle.api.Project
+
 /**
- * The versions of the libraries used.
+ * Gradle plugin which adds a [CheckVersionIncrement] task.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * The task is called `checkVersionIncrement` inserted before the `check` task.
  */
+class IncrementGuard : Plugin<Project> {
 
-val SPINE_VERSION = "1.5.12"
+    companion object {
+        const val taskName = "checkVersionIncrement"
+    }
 
-project.extra.apply {
-    this["spineVersion"] = SPINE_VERSION
-    this["spineBaseVersion"] = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
-    this["versionToPublish"] = SPINE_VERSION
+    override fun apply(target: Project) {
+        val tasks = target.tasks
+        tasks.register(taskName, CheckVersionIncrement::class.java) {
+            it.repository = PublishingRepos.cloudRepo
+            tasks.getByName("check").dependsOn(it)
+
+            it.shouldRunAfter("test")
+        }
+    }
 }
