@@ -21,40 +21,53 @@
 package io.spine.base;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableList;
 import io.spine.annotation.SPI;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+import static io.spine.base.BaseEnvironmentType.PRODUCTION;
+import static io.spine.base.BaseEnvironmentType.TESTS;
 
 /**
  * Provides information about the environment (current platform used, etc.).
  */
 @SPI
-@SuppressWarnings("AccessOfSystemProperties") // OK as we need system properties for this class.
 public final class Environment {
+
+    private static final ImmutableList<EnvironmentType> BASE_TYPES =
+            ImmutableList.of(TESTS, PRODUCTION);
 
     private static final Environment INSTANCE = new Environment();
 
-    /**
-     * The key name of the system property which tells if a code runs under a testing framework.
-     *
-     * <p>If your testing framework is not among the supported by {@link #isTests()},
-     * set this property to {@code true} before running tests.
-     */
-    public static final String ENV_KEY_TESTS = "io.spine.tests";
+    private ImmutableList<EnvironmentType> knownEnvTypes;
+    private @Nullable EnvironmentType currentEnvType;
 
-    /** If set, tells if the code runs from a testing framework. */
-    private @Nullable Boolean tests;
-
-    /** Prevents instantiation of this singleton class from outside. */
     private Environment() {
+        this.knownEnvTypes = BASE_TYPES;
     }
 
     /** Creates a new instance with the copy of the state of the passed environment. */
     private Environment(Environment copy) {
-        this.tests = copy.tests;
+        this.knownEnvTypes = copy.knownEnvTypes;
+        this.currentEnvType = copy.currentEnvType;
     }
 
-    /** Returns the singleton instance. */
+    public static <E extends Enum & EnvironmentType> void registerCustom(Class<E> enumClass) {
+        checkNotNull(enumClass);
+        ImmutableList<E> newTypes = ImmutableList.copyOf(enumClass.getEnumConstants());
+        checkState(!INSTANCE.knownEnvTypes.containsAll(newTypes),
+                   "Attempted to register the same custom env enum `%s` twice." +
+                           "Please make sure to call `Environment.registerCustom(...) only once" +
+                           "per enum.", enumClass.getSimpleName());
+        INSTANCE.knownEnvTypes = ImmutableList
+                .<EnvironmentType>builder()
+                .addAll(newTypes)
+                .addAll(BASE_TYPES)
+                .build();
+    }
+
     public static Environment instance() {
         return INSTANCE;
     }
@@ -68,6 +81,18 @@ public final class Environment {
         return new Environment(this);
     }
 
+    public EnvironmentType envType() {
+        if (currentEnvType == null) {
+            for (EnvironmentType type : knownEnvTypes) {
+                if (type.currentlyOn()) {
+                    this.currentEnvType = type;
+                    return this.currentEnvType;
+                }
+            }
+        }
+        return currentEnvType;
+    }
+
     /**
      * Restores the state from the instance created by {@link #createCopy()}.
      *
@@ -76,94 +101,25 @@ public final class Environment {
     @VisibleForTesting
     public void restoreFrom(Environment copy) {
         // Make sure this matches the set of fields copied in the copy constructor.
-        this.tests = copy.tests;
-    }
-
-    /**
-     * Verifies if the code currently runs under a unit testing framework.
-     *
-     * <p>The method returns {@code true} if the following packages are discovered
-     * in the stacktrace:
-     * <ul>
-     *     <li>{@code org.junit}
-     *     <li>{@code org.testng}
-     * </ul>
-     *
-     * @return {@code true} if the code runs under a testing framework, {@code false} otherwise
-     */
-    @SuppressWarnings({
-            "DynamicRegexReplaceableByCompiledPattern", // OK as we cache the result
-            "DuplicateStringLiteralInspection" // used in another context
-    })
-    public boolean isTests() {
-        // If we cached the value before, return it.
-        if (tests != null) {
-            return tests;
+        this.knownEnvTypes = copy.knownEnvTypes;
+        this.currentEnvType = copy.currentEnvType;
+        if (currentEnvType != null) {
+            currentEnvType.setTo();
         }
-
-        // Check the environment variable. We may run under unknown testing framework or
-        // tests may require production-like mode, which they simulate by setting
-        // the property to `false`.
-        String testProp = System.getProperty(ENV_KEY_TESTS);
-        if (testProp != null) {
-            testProp = testProp.replaceAll("\"' ", "");
-            this.tests = (String.valueOf(true)
-                                .equalsIgnoreCase(testProp)
-                    || "1".equals(testProp));
-            return this.tests;
-        }
-
-        // Check stacktrace for known frameworks.
-        String stacktrace = Throwables.getStackTraceAsString(new RuntimeException(""));
-        if (stacktrace.contains("org.junit")
-                || stacktrace.contains("org.testng")) {
-            this.tests = true;
-            return true;
-        }
-
-        this.tests = false;
-        return false;
     }
 
-    /**
-     * Verifies if the code runs in the production mode.
-     *
-     * <p>This method is opposite to {@link #isTests()}
-     *
-     * @return {@code true} if the code runs in the production mode, {@code false} otherwise
-     */
-    public boolean isProduction() {
-        return !isTests();
+    public void setTo(EnvironmentType type) {
+        this.currentEnvType = type;
+        currentEnvType.setTo();
     }
 
-    /**
-     * Turns the test mode on.
-     *
-     * <p>This method is opposite to {@link #setToProduction()}.
-     */
-    @VisibleForTesting
-    public void setToTests() {
-        this.tests = true;
-        System.setProperty(ENV_KEY_TESTS, String.valueOf(true));
-    }
 
-    /**
-     * Turns the production mode on.
-     *
-     * <p>This method is opposite to {@link #setToTests()}.
-     */
-    @VisibleForTesting
-    public void setToProduction() {
-        this.tests = false;
-        System.setProperty(ENV_KEY_TESTS, String.valueOf(false));
-    }
-
-    /**
-     * Resets the instance and clears the {@link #ENV_KEY_TESTS} variable.
-     */
     @VisibleForTesting
     public void reset() {
-        this.tests = null;
-        System.clearProperty(ENV_KEY_TESTS);
+        if (currentEnvType != null) {
+            currentEnvType.reset();
+        }
+        this.currentEnvType = null;
+        this.knownEnvTypes = BASE_TYPES;
     }
 }
