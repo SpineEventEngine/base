@@ -90,7 +90,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         Environment.instance()
                    .setTo(TESTS);
 
-        assertThat(environment.envType()).isSameInstanceAs(TESTS);
+        assertThat(environment.currentType()).isSameInstanceAs(TESTS);
     }
 
     @Test
@@ -98,14 +98,14 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     void environmentVar1() {
         System.setProperty(ENV_KEY_TESTS, "1");
 
-        assertThat(environment.envType()).isSameInstanceAs(TESTS);
+        assertThat(environment.currentType()).isSameInstanceAs(TESTS);
     }
 
     @Test
     @DisplayName("tell that we are under tests if run under known framework")
     void underTestFramework() {
         // As we run this from under JUnit...
-        EnvironmentType type = environment.envType();
+        EnvironmentType type = environment.currentType();
         BaseEnvironmentType expected = TESTS;
         assertThat(type).isSameInstanceAs(expected);
     }
@@ -115,7 +115,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     void environmentVarUnknownValue() {
         System.setProperty(ENV_KEY_TESTS, "neitherTrueNor1");
 
-        assertThat(environment.envType()).isSameInstanceAs(PRODUCTION);
+        assertThat(environment.currentType()).isSameInstanceAs(PRODUCTION);
     }
 
     @Test
@@ -123,7 +123,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     void turnTestsOn() {
         environment.setTo(TESTS);
 
-        assertThat(environment.envType()).isSameInstanceAs(TESTS);
+        assertThat(environment.currentType()).isSameInstanceAs(TESTS);
     }
 
     @Test
@@ -131,7 +131,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     void turnProductionOn() {
         environment.setTo(PRODUCTION);
 
-        assertThat(environment.envType()).isSameInstanceAs(PRODUCTION);
+        assertThat(environment.currentType()).isSameInstanceAs(PRODUCTION);
     }
 
     @Test
@@ -153,7 +153,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
 
             // Now that `Environment` knows about `LOCAL`, it should use it as fallback.
             assertThat(Environment.instance()
-                                  .envType()).isSameInstanceAs(LOCAL);
+                                  .currentType()).isSameInstanceAs(LOCAL);
         }
 
         @Test
@@ -169,7 +169,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         void fallBack() {
             Environment.registerCustom(TRAVIS);
             assertThat(Environment.instance()
-                                  .envType())
+                                  .currentType())
                     .isSameInstanceAs(TESTS);
         }
     }

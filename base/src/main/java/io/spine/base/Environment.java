@@ -36,7 +36,8 @@ import static io.spine.base.BaseEnvironmentType.TESTS;
  * <p><b>When extending, please note</b> that this class does not handle the situations when two
  * or more {@linkplain EnvironmentType environment types} return {@code true} on the
  * {@link EnvironmentType#enabled()}. As such, if two or more user-defined environment types
- * think that they are currently on, <b>the behaviour of {@link #envType()} is undefined.</b>
+ * think that they are currently enabled, <b>the behaviour of {@link #currentType()} is
+ * undefined.</b>
  */
 @SPI
 public final class Environment {
@@ -60,14 +61,14 @@ public final class Environment {
     }
 
     /**
-     * Remembers the specified environment type, allowing {@linkplain #envType()}
+     * Remembers the specified environment type, allowing {@linkplain #currentType()}
      * to determine whether it's enabled} later.
      *
      * <p>If the specified environment type has already been registered, throws an
      * {@code IllegalStateException}.
      *
      * <p>Note that the {@linkplain BaseEnvironmentType default types} are still present.
-     * When trying to {@linkplain #envType() determine which environment type} is currently on,
+     * When trying to {@linkplain #currentType() determine which environment type} is enabled,
      * the user defined types are checked first.
      *
      * @param environmentType
@@ -108,12 +109,12 @@ public final class Environment {
      * goes through them in an undefined order. Then, checks the {@linkplain BaseEnvironmentType
      * base env types}.
      *
-     * <p> Note that if all of the {@link EnvironmentType#enabled()} checks have returned
+     * <p>Note that if all of the {@link EnvironmentType#enabled()} checks have returned
      * {@code false}, this method falls back on {@link BaseEnvironmentType#PRODUCTION}.
      *
      * @return the current environment type.
      */
-    public EnvironmentType envType() {
+    public EnvironmentType currentType() {
         if (currentEnvType == null) {
             for (EnvironmentType type : knownEnvTypes) {
                 if (type.enabled()) {
