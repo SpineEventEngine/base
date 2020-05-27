@@ -40,7 +40,7 @@ import static io.spine.base.BaseEnvironmentType.TESTS;
  *
  * <p><b>When extending, please note</b> that this class does not handle the situations when two
  * or more {@linkplain EnvironmentType environment types} return {@code true} on the
- * {@link EnvironmentType#currentlyOn()}. As such, if two or more user-defined environment types
+ * {@link EnvironmentType#enabled()}. As such, if two or more user-defined environment types
  * think that they are currently on, <b>the behaviour of {@link #envType()} is undefined.</b>
  */
 @SPI
@@ -116,7 +116,7 @@ public final class Environment {
      * them in an undefined order. Then, checks the {@linkplain BaseEnvironmentType base env
      * types}.
      *
-     * <p> Note that if all of the {@link EnvironmentType#currentlyOn()} checks have returned
+     * <p> Note that if all of the {@link EnvironmentType#enabled()} checks have returned
      * {@code false}, this method falls back on {@link BaseEnvironmentType#PRODUCTION}.
      *
      * @return the current environment type.
@@ -124,7 +124,7 @@ public final class Environment {
     public EnvironmentType envType() {
         if (currentEnvType == null) {
             for (EnvironmentType type : knownEnvTypes) {
-                if (type.currentlyOn()) {
+                if (type.enabled()) {
                     this.currentEnvType = type;
                     return this.currentEnvType;
                 }
@@ -143,9 +143,6 @@ public final class Environment {
         // Make sure this matches the set of fields copied in the copy constructor.
         this.knownEnvTypes = copy.knownEnvTypes;
         this.currentEnvType = copy.currentEnvType;
-        if (currentEnvType != null) {
-            currentEnvType.setTo();
-        }
     }
 
     /**
@@ -154,7 +151,6 @@ public final class Environment {
     @VisibleForTesting
     public void setTo(EnvironmentType type) {
         this.currentEnvType = type;
-        currentEnvType.setTo();
     }
 
     /**
@@ -165,9 +161,6 @@ public final class Environment {
      */
     @VisibleForTesting
     public void reset() {
-        if (currentEnvType != null) {
-            currentEnvType.reset();
-        }
         this.currentEnvType = null;
         this.knownEnvTypes = BASE_TYPES;
     }

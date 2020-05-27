@@ -26,16 +26,18 @@ import com.google.common.collect.ImmutableList;
 import java.util.regex.Pattern;
 
 /**
- * Environment types provided by the base library.
- *
- * <p>Provides a {@code TESTS} option, that looks into the stack trace to find mentions of
- * known testing frameworks. It also looks at an environment variable.
- *
- * <p>Also provides a {@code PRODUCTION} option. System is considered to be in {@code PRODUCTION}
- * if its not in {@code TESTS}, i.e. they are mutually exclusive.
+ * Environment types provided by the {@code base} library.
  */
 enum BaseEnvironmentType implements EnvironmentType {
 
+    /**
+     * Testing environment.
+     *
+     * <p>Detected by checking stack trace for mentions of the known testing frameworks.
+     *
+     * <p>This option is mutually exclusive with {@link #PRODUCTION}, i.e. one of them is always
+     * enabled.
+     */
     @SuppressWarnings("AccessOfSystemProperties" /* OK as we need system properties for this class. */)
     TESTS {
         /**
@@ -49,12 +51,14 @@ enum BaseEnvironmentType implements EnvironmentType {
          * </ul>
          *
          * @return {@code true} if the code runs under a testing framework, {@code false} otherwise
+         * @implNote In addition to checking the stack trace, this method checks the environment
+         * variable value. If you wish to simulate not being in tests, the variable must be set
+         * to {@code false} explicitly. If your framework is not among the
+         * {@linkplain #KNOWN_TESTING_FRAMEWORKS known ones}, make sure to set the system property
+         * explicitly.
          */
         @Override
-        public boolean currentlyOn() {
-            // Check the environment variable. We may run under unknown testing framework or
-            // tests may require production-like mode, which they simulate by setting
-            // the property to `false`.
+        public boolean enabled() {
             String testProp = System.getProperty(ENV_KEY_TESTS);
             if (testProp != null) {
                 testProp = TEST_PROP_PATTERN.matcher(testProp)
@@ -63,35 +67,21 @@ enum BaseEnvironmentType implements EnvironmentType {
                              .equalsIgnoreCase(testProp) || "1".equals(testProp);
             }
 
-            // Check stacktrace for known frameworks.
             String stacktrace = Throwables.getStackTraceAsString(new RuntimeException(""));
             return KNOWN_TESTING_FRAMEWORKS.stream()
                                            .anyMatch(stacktrace::contains);
         }
-
+    },
+    /**
+     * A non-testing environment.
+     *
+     * <p>If the system is not in the {@link #TESTS} environment, it is in the production
+     * environment.
+     */
+    PRODUCTION {
         @Override
-        public void reset() {
-            System.clearProperty(ENV_KEY_TESTS);
-        }
-
-        @Override
-        public void setTo() {
-            System.setProperty(ENV_KEY_TESTS, String.valueOf(true));
-        }
-    }, PRODUCTION {
-        @Override
-        public boolean currentlyOn() {
-            return !TESTS.currentlyOn();
-        }
-
-        @Override
-        public void reset() {
-            // NOP.
-        }
-
-        @Override
-        public void setTo() {
-            // NOP.
+        public boolean enabled() {
+            return !TESTS.enabled();
         }
     };
 

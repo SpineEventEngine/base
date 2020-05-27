@@ -21,7 +21,7 @@
 package io.spine.base;
 
 /**
- * A type of an environment that knows whether it is enabled.
+ * A type of environment that knows whether it is enabled.
  *
  * <p>Useful examples may include distinguishable {@code STAGING} or {@code LOCAL} environments.
  * The base library provides {@linkplain BaseEnvironmentType default environment types}.
@@ -35,22 +35,5 @@ public interface EnvironmentType {
      * Let's say an environment variable is set for every virtual machine.
      * An application developer may use this type of knowledge to determine the current environment.
      */
-    boolean currentlyOn();
-
-    /**
-     * Makes it so the underlying system no longer has this environment type.
-     *
-     * <p>Be careful, since this method may mutate the state that is outside the scope of the
-     * Java application, such as clear an environment variable, remove a file, etc.
-     */
-    void reset();
-
-    /**
-     * Makes it so the underlying system has this environment type.
-     *
-     * <p>Be careful, since this method may mutate the state that is outside the scope of the
-     * Java application, such as set an environment variable, create or move a file, etc.
-     */
-    void setTo();
+    boolean enabled();
 }
-

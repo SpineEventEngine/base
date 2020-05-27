@@ -174,37 +174,17 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
 
         LOCAL {
             @Override
-            public boolean currentlyOn() {
+            public boolean enabled() {
                 // `LOCAL` is the default custom env type. It should be used as a fallback.
                 return true;
-            }
-
-            @Override
-            public void reset() {
-                // NOP.
-            }
-
-            @Override
-            public void setTo() {
-                // NOP.
             }
         },
         STAGING {
             @Override
-            public boolean currentlyOn() {
+            public boolean enabled() {
                 return System.getProperty(STAGING_ENV_TYPE_KEY)
                              .equalsIgnoreCase(String.valueOf(true));
 
-            }
-
-            @Override
-            public void reset() {
-                System.clearProperty(STAGING_ENV_TYPE_KEY);
-            }
-
-            @Override
-            public void setTo() {
-                System.setProperty(STAGING_ENV_TYPE_KEY, String.valueOf(true));
             }
         };
 
@@ -215,18 +195,8 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
 
         TRAVIS {
             @Override
-            public boolean currentlyOn() {
+            public boolean enabled() {
                 return false;
-            }
-
-            @Override
-            public void reset() {
-                // NOP.
-            }
-
-            @Override
-            public void setTo() {
-                // NOP.
             }
         }
     }
