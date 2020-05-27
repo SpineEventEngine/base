@@ -22,6 +22,7 @@ package io.spine.base;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -79,6 +80,7 @@ public final class Environment {
      * @param <E>
      *         a type that defines possible environment types
      */
+    @Internal
     public static <E extends Enum & EnvironmentType> void registerCustom(Class<E> enumClass) {
         checkNotNull(enumClass);
         ImmutableList<E> newTypes = ImmutableList.copyOf(enumClass.getEnumConstants());
