@@ -32,8 +32,8 @@ public interface EnvironmentType {
      * Returns {@code true} if the underlying system is currently in this environment type.
      *
      * <p>For example, if an application is deployed to a fleet of virtual machines, an environment
-     * variable may be set for every virtual machine.
-     * Application developer may use this type of knowledge to determine the current environment.
+     * variable may be set for every virtual machine. Application developer may use this type of
+     * knowledge to determine the current environment.
      */
     boolean enabled();
 }
