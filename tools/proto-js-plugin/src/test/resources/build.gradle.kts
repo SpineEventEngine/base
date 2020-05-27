@@ -18,64 +18,63 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-buildscript {
+import com.google.protobuf.gradle.*
+import groovy.lang.GString
+import io.spine.gradle.internal.Deps
 
-    // NOTE: this file is copied from the root project in the test setup.
-    apply from: "$rootDir/test-env.gradle"
-    
-    apply from: "$enclosingRootDir/config/gradle/dependencies.gradle"
-    apply from: "$enclosingRootDir/version.gradle.kts"
-
-    repositories {
-        mavenLocal()
-        jcenter()
-    }
-
-    dependencies {
-        classpath deps.build.gradlePlugins.protobuf
-    }
+plugins {
+    java
+    @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
+    id("com.google.protobuf").version(io.spine.gradle.internal.Deps.versions.protobufPlugin)
 }
+
+// NOTE: this file is copied from the root project in the test setup.
+apply(from = "$rootDir/test-env.gradle")
+
+val enclosingRootDir: String by extra
+apply(from = "$enclosingRootDir/version.gradle.kts")
 
 repositories {
     mavenLocal()
     jcenter()
 }
 
-apply plugin: 'java'
-apply plugin: 'com.google.protobuf'
+tasks.compileJava { enabled = false }
+tasks.compileTestJava { enabled = false }
 
-project.compileJava.enabled = false
-project.compileTestJava.enabled = false
-
-task compileProtoToJs
+val compileProtoToJs by tasks.registering
 
 protobuf {
     generatedFilesBaseDir = "$projectDir/generated"
     protoc {
-        artifact = deps.build.protoc
+        artifact = Deps.build.protoc
     }
     generateProtoTasks {
-        all().each { final task ->
+        // Copy the task collection to avoid `ConcurrentModificationException`.
+        ArrayList(all()).forEach { task ->
             task.builtins {
-                remove java
-
-                js {
-                    option "import_style=commonjs"
+                remove("java")
+                id("js") {
+                    option("import_style=commonjs")
                 }
             }
             task.generateDescriptorSet = true
-            task.descriptorSetOptions.path = "${projectDir}/build/descriptors/${task.sourceSet.name}/known_types.desc"
+            task.descriptorSetOptions.path = GString.EMPTY.plus("${projectDir}/build/descriptors/${task.sourceSet.name}/known_types.desc")
             task.descriptorSetOptions.includeImports = true
             task.descriptorSetOptions.includeSourceInfo = true
 
-            compileProtoToJs.dependsOn task
+            compileProtoToJs.get().dependsOn(task)
         }
     }
 }
 
-build.dependsOn compileProtoToJs
+tasks.build {
+    dependsOn(compileProtoToJs)
+}
+
+val spineVersion: String by extra
 
 dependencies {
-    protobuf files("${enclosingRootDir}/base/src/main/proto")
-    implementation "io.spine:spine-base:$spineVersion"
+    protobuf(files("$enclosingRootDir/base/src/main/proto"))
+    implementation("io.spine:spine-base:$spineVersion")
 }

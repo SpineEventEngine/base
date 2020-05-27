@@ -18,11 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-modelCompiler {
-    generateValidation = true
+plugins {
+    id("io.spine.tools.spine-model-compiler")
 }
 
-dependencies {
-    testAnnotationProcessor deps.build.autoService.processor
-    testCompileOnly deps.build.autoService.annotations
+modelCompiler {
+    generateValidation = true
 }

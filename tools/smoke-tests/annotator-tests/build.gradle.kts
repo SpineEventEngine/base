@@ -18,33 +18,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import io.spine.gradle.internal.Deps
+
+plugins {
+    java
+    id("io.spine.tools.spine-model-compiler")
+}
+
 modelCompiler {
     generateAnnotations {
-        internal = 'io.spine.test.annotation.Private'
-        experimental = 'io.spine.test.annotation.Attempt'
-        beta = 'io.spine.test.annotation.Alpha'
-        spi = 'io.spine.test.annotation.ServiceProviderInterface'
+        internal = "io.spine.test.annotation.Private"
+        experimental = "io.spine.test.annotation.Attempt"
+        beta = "io.spine.test.annotation.Alpha"
+        spi = "io.spine.test.annotation.ServiceProviderInterface"
     }
-    internalClassPatterns += [
-            '.*OrBuilder', // Classes ending with `OrBuilder`.
-            '.*Proto',     // Classes ending with `Proto`.
-            '.*complex\\.Matter\\$.*[AaLl].*'
+    internalClassPatterns.addAll(listOf(
+            ".*OrBuilder", // Classes ending with `OrBuilder`.
+            ".*Proto",     // Classes ending with `Proto`.
+            ".*complex\\.Matter\\$.*[AaLl].*"
                 // Classes which have `complex.Matter$` in their FQN followed by an upper or lower 
                 // case letters ` A` or `L`.
                 // For the sake of testing. This is not a recommended usage.
-    ]
-    internalMethodNames += [
-            'newBuilderForType',
-            'parseFrom',
-            'parseDelimitedFrom',
-            'getSerializedSize',
-            'internalGetValueMap'
-    ]
+    ))
+    internalMethodNames.addAll(listOf(
+            "newBuilderForType",
+            "parseFrom",
+            "parseDelimitedFrom",
+            "getSerializedSize",
+            "internalGetValueMap"
+    ))
 }
 
 dependencies {
-    testImplementation(
-            deps.grpc.grpcStub,
-            deps.grpc.grpcProtobuf
-    )
+    testImplementation(Deps.grpc.stub)
+    testImplementation(Deps.grpc.protobuf)
 }
