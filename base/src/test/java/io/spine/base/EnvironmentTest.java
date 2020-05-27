@@ -33,6 +33,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.base.BaseEnvironmentType.ENV_KEY_TESTS;
 import static io.spine.base.BaseEnvironmentType.PRODUCTION;
 import static io.spine.base.BaseEnvironmentType.TESTS;
+import static io.spine.base.EnvironmentTest.BuildServerEnvironment.TRAVIS;
 import static io.spine.base.EnvironmentTest.CustomEnvType.LOCAL;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -80,6 +81,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     void cleanUp() {
         Environment.instance()
                    .reset();
+        System.clearProperty(ENV_KEY_TESTS);
     }
 
     @Test
@@ -103,7 +105,9 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @DisplayName("tell that we are under tests if run under known framework")
     void underTestFramework() {
         // As we run this from under JUnit...
-        assertThat(environment.envType()).isSameInstanceAs(TESTS);
+        EnvironmentType type = environment.envType();
+        BaseEnvironmentType expected = TESTS;
+        assertThat(type).isSameInstanceAs(expected);
     }
 
     @Test
@@ -145,7 +149,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         @Test
         @DisplayName("allow to provide user defined environment types")
         void mutateKnownEnvTypesOnce() {
-            Environment.registerCustom(CustomEnvType.class);
+            registerEnum(CustomEnvType.class);
 
             // Now that `Environment` knows about `LOCAL`, it should use it as fallback.
             assertThat(Environment.instance()
@@ -155,18 +159,24 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         @Test
         @DisplayName("throw if a user attempts to create register the same environment twice")
         void throwOnDoubleCreation() {
-            Environment.registerCustom(CustomEnvType.class);
+            Environment.registerCustom(LOCAL);
             assertThrows(IllegalStateException.class,
-                         () -> Environment.registerCustom(CustomEnvType.class));
+                         () -> Environment.registerCustom(LOCAL));
         }
 
         @Test
         @DisplayName("fallback to the `TESTS` environment")
         void fallBack() {
-            Environment.registerCustom(BuildServerEnvironment.class);
+            Environment.registerCustom(TRAVIS);
             assertThat(Environment.instance()
                                   .envType())
                     .isSameInstanceAs(TESTS);
+        }
+    }
+
+    private static <E extends Enum & EnvironmentType> void registerEnum(Class<E> envTypeClass) {
+        for (E envType : envTypeClass.getEnumConstants()) {
+            Environment.registerCustom(envType);
         }
     }
 
@@ -182,15 +192,15 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         STAGING {
             @Override
             public boolean enabled() {
-                return System.getProperty(STAGING_ENV_TYPE_KEY)
-                             .equalsIgnoreCase(String.valueOf(true));
-
+                return String.valueOf(true)
+                             .equalsIgnoreCase(System.getProperty(STAGING_ENV_TYPE_KEY));
             }
         };
 
         static final String STAGING_ENV_TYPE_KEY = "io.spine.base.EnvironmentTest.is_staging";
     }
 
+    @SuppressWarnings("unused" /* The only variant is used. */)
     enum BuildServerEnvironment implements EnvironmentType {
 
         TRAVIS {

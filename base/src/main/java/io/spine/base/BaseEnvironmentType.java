@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 /**
  * Environment types provided by the {@code base} library.
  */
-enum BaseEnvironmentType implements EnvironmentType {
+public enum BaseEnvironmentType implements EnvironmentType {
 
     /**
      * Testing environment.

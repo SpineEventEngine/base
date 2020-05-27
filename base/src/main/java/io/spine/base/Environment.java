@@ -26,17 +26,12 @@ import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.base.BaseEnvironmentType.PRODUCTION;
 import static io.spine.base.BaseEnvironmentType.TESTS;
 
 /**
  * Provides information about the environment (current platform used, etc.).
- *
- * <p>By default, knows only about {@link BaseEnvironmentType}. Library users may extend the list
- * of known environment types by providing their environment {@code enum} to
- * {@linkplain #registerCustom(Class)}.
  *
  * <p><b>When extending, please note</b> that this class does not handle the situations when two
  * or more {@linkplain EnvironmentType environment types} return {@code true} on the
@@ -65,33 +60,30 @@ public final class Environment {
     }
 
     /**
-     * Registers all of the constants from the provided {@code EnvironmentType}-implementing
-     * {@code enum}.
+     * Remembers the specified environment type, allowing {@linkplain #envType()}
+     * to determine whether it's enabled} later.
      *
-     * <p>If the specified {@code enum} has already been registered, throws
-     * an {@code IllegalStateException}.
+     * <p>If the specified environment type has already been registered, throws an
+     * {@code IllegalStateException}.
      *
      * <p>Note that the {@linkplain BaseEnvironmentType default types} are still present.
      * When trying to {@linkplain #envType() determine which environment type} is currently on,
      * the user defined types are checked first.
      *
-     * @param enumClass
-     *         an enum class that specifies the environment types
-     * @param <E>
-     *         a type that defines possible environment types
+     * @param environmentType
+     *         a user-defined environment type
      */
     @Internal
-    public static <E extends Enum & EnvironmentType> void registerCustom(Class<E> enumClass) {
-        checkNotNull(enumClass);
-        ImmutableList<E> newTypes = ImmutableList.copyOf(enumClass.getEnumConstants());
-        checkState(!INSTANCE.knownEnvTypes.containsAll(newTypes),
-                   "Attempted to register the same custom env enum `%s` twice." +
+    public static void registerCustom(EnvironmentType environmentType) {
+        checkState(!INSTANCE.knownEnvTypes.contains(environmentType),
+                   "Attempted to register the same custom env type `%s` twice." +
                            "Please make sure to call `Environment.registerCustom(...) only once" +
-                           "per enum.", enumClass.getSimpleName());
+                           "per environment type.", environmentType.getClass()
+                                                                   .getSimpleName());
         INSTANCE.knownEnvTypes = ImmutableList
                 .<EnvironmentType>builder()
-                .addAll(newTypes)
-                .addAll(BASE_TYPES)
+                .add(environmentType)
+                .addAll(INSTANCE.knownEnvTypes)
                 .build();
     }
 
@@ -112,9 +104,9 @@ public final class Environment {
     /**
      * Determines the current environment type.
      *
-     * <p>If {@linkplain #registerCustom(Class) user has defined custom env types}, goes through
-     * them in an undefined order. Then, checks the {@linkplain BaseEnvironmentType base env
-     * types}.
+     * <p>If {@linkplain #registerCustom(EnvironmentType) custom env types have been defined},
+     * goes through them in an undefined order. Then, checks the {@linkplain BaseEnvironmentType
+     * base env types}.
      *
      * <p> Note that if all of the {@link EnvironmentType#enabled()} checks have returned
      * {@code false}, this method falls back on {@link BaseEnvironmentType#PRODUCTION}.
@@ -154,10 +146,7 @@ public final class Environment {
     }
 
     /**
-     * Resets the instance and performs {@linkplain EnvironmentType#reset() the
-     * environment-specific reset}.
-     *
-     * <p>Also the resets the {@linkplain #registerCustom(Class) user-defined environment types}.
+     * Resets the instance.
      */
     @VisibleForTesting
     public void reset() {
