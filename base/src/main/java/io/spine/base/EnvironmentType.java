@@ -21,10 +21,11 @@
 package io.spine.base;
 
 /**
- * A type of environment that knows whether it is enabled.
+ * A type of environment.
  *
- * <p>Useful examples may include distinguishable {@code STAGING} or {@code LOCAL} environments.
- * {@code base} library provides {@linkplain BaseEnvironmentType default environment types}.
+ * <p>Some examples may be {@code STAGING} or {@code LOCAL} environments.
+ *
+ * @see BaseEnvironmentType
  */
 public interface EnvironmentType {
 

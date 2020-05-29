@@ -159,15 +159,15 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         @Test
         @DisplayName("throw if a user attempts to create register the same environment twice")
         void throwOnDoubleCreation() {
-            Environment.registerCustom(LOCAL);
+            Environment.register(LOCAL);
             assertThrows(IllegalStateException.class,
-                         () -> Environment.registerCustom(LOCAL));
+                         () -> Environment.register(LOCAL));
         }
 
         @Test
         @DisplayName("fallback to the `TESTS` environment")
         void fallBack() {
-            Environment.registerCustom(TRAVIS);
+            Environment.register(TRAVIS);
             assertThat(Environment.instance()
                                   .currentType())
                     .isSameInstanceAs(TESTS);
@@ -176,7 +176,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
 
     private static <E extends Enum & EnvironmentType> void registerEnum(Class<E> envTypeClass) {
         for (E envType : envTypeClass.getEnumConstants()) {
-            Environment.registerCustom(envType);
+            Environment.register(envType);
         }
     }
 

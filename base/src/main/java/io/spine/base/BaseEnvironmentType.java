@@ -72,6 +72,7 @@ public enum BaseEnvironmentType implements EnvironmentType {
                                            .anyMatch(stacktrace::contains);
         }
     },
+
     /**
      * A non-testing environment.
      *

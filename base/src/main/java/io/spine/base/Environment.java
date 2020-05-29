@@ -26,24 +26,21 @@ import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static io.spine.base.BaseEnvironmentType.PRODUCTION;
-import static io.spine.base.BaseEnvironmentType.TESTS;
 
 /**
  * Provides information about the environment (current platform used, etc.).
  *
- * <p><b>When extending, please note</b> that this class does not handle the situations when two
- * or more {@linkplain EnvironmentType environment types} return {@code true} on the
- * {@link EnvironmentType#enabled()}. As such, if two or more user-defined environment types
- * think that they are currently enabled, <b>the behaviour of {@link #currentType()} is
- * undefined.</b>
+ * <p><b>When extending, please ensure</b> the mutual exclusivity on your {@code EnvironmentType}s.
+ * If two or more environment types {@linkplain EnvironmentType#enabled() consider themselves
+ * enabled} at the same time, the behaviour of {@link #currentType()} is undefined.
  */
 @SPI
 public final class Environment {
 
     private static final ImmutableList<EnvironmentType> BASE_TYPES =
-            ImmutableList.of(TESTS, PRODUCTION);
+            ImmutableList.copyOf(BaseEnvironmentType.values());
 
     private static final Environment INSTANCE = new Environment();
 
@@ -69,16 +66,16 @@ public final class Environment {
      *
      * <p>Note that the {@linkplain BaseEnvironmentType default types} are still present.
      * When trying to {@linkplain #currentType() determine which environment type} is enabled,
-     * the user defined types are checked first.
+     * the user-defined types are checked first.
      *
      * @param environmentType
      *         a user-defined environment type
      */
     @Internal
-    public static void registerCustom(EnvironmentType environmentType) {
+    public static void register(EnvironmentType environmentType) {
         checkState(!INSTANCE.knownEnvTypes.contains(environmentType),
                    "Attempted to register the same custom env type `%s` twice." +
-                           "Please make sure to call `Environment.registerCustom(...) only once" +
+                           "Please make sure to call `Environment.register(...) only once" +
                            "per environment type.", environmentType.getClass()
                                                                    .getSimpleName());
         INSTANCE.knownEnvTypes = ImmutableList
@@ -105,7 +102,7 @@ public final class Environment {
     /**
      * Determines the current environment type.
      *
-     * <p>If {@linkplain #registerCustom(EnvironmentType) custom env types have been defined},
+     * <p>If {@linkplain #register(EnvironmentType) custom env types have been defined},
      * goes through them in an undefined order. Then, checks the {@linkplain BaseEnvironmentType
      * base env types}.
      *
@@ -143,7 +140,7 @@ public final class Environment {
      */
     @VisibleForTesting
     public void setTo(EnvironmentType type) {
-        this.currentEnvType = type;
+        this.currentEnvType = checkNotNull(type);
     }
 
     /**
