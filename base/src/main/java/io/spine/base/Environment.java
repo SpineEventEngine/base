@@ -103,8 +103,8 @@ public final class Environment {
      * Determines the current environment type.
      *
      * <p>If {@linkplain #register(EnvironmentType) custom env types have been defined},
-     * goes through them in an undefined order. Then, checks the {@linkplain BaseEnvironmentType
-     * base env types}.
+     * goes through them in the latest-registered to earliest-registered order.
+     * Then, checks the {@linkplain BaseEnvironmentType base env types}.
      *
      * <p>Note that if all of the {@link EnvironmentType#enabled()} checks have returned
      * {@code false}, this method falls back on {@link BaseEnvironmentType#PRODUCTION}.
@@ -144,11 +144,16 @@ public final class Environment {
     }
 
     /**
-     * Resets the instance.
+     * Resets the instance and clears the {@link BaseEnvironmentType#ENV_KEY_TESTS} variable.
      */
     @VisibleForTesting
     public void reset() {
         this.currentEnvType = null;
         this.knownEnvTypes = BASE_TYPES;
+        clearTestingEnvVariable();
+    }
+
+    private static void clearTestingEnvVariable() {
+        System.clearProperty(BaseEnvironmentType.ENV_KEY_TESTS);
     }
 }
