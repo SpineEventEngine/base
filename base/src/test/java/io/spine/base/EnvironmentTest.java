@@ -105,9 +105,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @DisplayName("tell that we are under tests if run under known framework")
     void underTestFramework() {
         // As we run this from under JUnit...
-        EnvironmentType type = environment.currentType();
-        BaseEnvironmentType expected = TESTS;
-        assertThat(type).isSameInstanceAs(expected);
+        assertThat(environment.currentType()).isSameInstanceAs(TESTS);
     }
 
     @Test
@@ -148,7 +146,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
 
         @Test
         @DisplayName("allow to provide user defined environment types")
-        void mutateKnownEnvTypesOnce() {
+        void provideCustomTypes() {
             registerEnum(CustomEnvType.class);
 
             // Now that `Environment` knows about `LOCAL`, it should use it as fallback.
@@ -158,7 +156,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
 
         @Test
         @DisplayName("throw if a user attempts to register the same environment twice")
-        void throwOnDoubleCreation() {
+        void throwOnDoubleRegistration() {
             Environment.register(LOCAL);
             assertThrows(IllegalStateException.class,
                          () -> Environment.register(LOCAL));
@@ -183,7 +181,6 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     enum CustomEnvType implements EnvironmentType {
 
         LOCAL {
-
             @Override
             public boolean enabled() {
                 // `LOCAL` is the default custom env type. It should be used as a fallback.
@@ -191,7 +188,6 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
             }
         },
         STAGING {
-
             @Override
             public boolean enabled() {
                 return String.valueOf(true)
@@ -206,7 +202,6 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     enum BuildServerEnvironment implements EnvironmentType {
 
         TRAVIS {
-
             @Override
             public boolean enabled() {
                 return false;
