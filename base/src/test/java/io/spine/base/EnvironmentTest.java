@@ -150,8 +150,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
             registerEnum(CustomEnvType.class);
 
             // Now that `Environment` knows about `LOCAL`, it should use it as fallback.
-            assertThat(Environment.instance()
-                                  .currentType()).isSameInstanceAs(LOCAL);
+            assertThat(environment.currentType()).isSameInstanceAs(LOCAL);
         }
 
         @Test
@@ -166,8 +165,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         @DisplayName("fallback to the `TESTS` environment")
         void fallBack() {
             Environment.register(TRAVIS);
-            assertThat(Environment.instance()
-                                  .currentType())
+            assertThat(environment.currentType())
                     .isSameInstanceAs(TESTS);
         }
     }
