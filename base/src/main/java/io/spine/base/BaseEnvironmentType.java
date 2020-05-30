@@ -40,6 +40,7 @@ public enum BaseEnvironmentType implements EnvironmentType {
      */
     @SuppressWarnings("AccessOfSystemProperties" /* OK as we need system properties for this class. */)
     TESTS {
+
         /**
          * Verifies if the code currently runs under a unit testing framework.
          *

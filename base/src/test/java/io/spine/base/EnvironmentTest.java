@@ -157,7 +157,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         }
 
         @Test
-        @DisplayName("throw if a user attempts to create register the same environment twice")
+        @DisplayName("throw if a user attempts to register the same environment twice")
         void throwOnDoubleCreation() {
             Environment.register(LOCAL);
             assertThrows(IllegalStateException.class,
