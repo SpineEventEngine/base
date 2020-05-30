@@ -59,15 +59,15 @@ public final class Environment {
     }
 
     /**
-     * Remembers the specified environment type, allowing {@linkplain #currentType()}
+     * Remembers the specified environment type, allowing {@linkplain #currentType()
      * to determine whether it's enabled} later.
      *
      * <p>If the specified environment type has already been registered, throws an
      * {@code IllegalStateException}.
      *
      * <p>Note that the {@linkplain BaseEnvironmentType default types} are still present.
-     * When trying to {@linkplain #currentType() determine which environment type} is enabled,
-     * the user-defined types are checked first.
+     * When trying to determine which environment type is enabled, the user-defined types are
+     * checked first, in the first-registered to last-registered order.
      *
      * @param environmentType
      *         a user-defined environment type

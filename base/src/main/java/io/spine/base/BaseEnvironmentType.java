@@ -81,6 +81,7 @@ public enum BaseEnvironmentType implements EnvironmentType {
      * environment.
      */
     PRODUCTION {
+
         @Override
         public boolean enabled() {
             return !TESTS.enabled();
