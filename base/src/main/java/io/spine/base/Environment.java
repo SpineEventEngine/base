@@ -32,9 +32,10 @@ import static com.google.common.base.Preconditions.checkState;
 /**
  * Provides information about the environment (current platform used, etc.).
  *
- * <p><b>When extending, please ensure</b> the mutual exclusivity on your {@code EnvironmentType}s.
- * If two or more environment types {@linkplain EnvironmentType#enabled() consider themselves
- * enabled} at the same time, the behaviour of {@link #currentType()} is undefined.
+ * <p><b>When {@link #register(EnvironmentType) registering custom types}, please ensure</b>
+ * their mutual exclusivity. If two or more environment types {@linkplain EnvironmentType#enabled()
+ * consider themselves enabled} at the same time, the behaviour of {@link #currentType()} is
+ * undefined.
  */
 @SPI
 public final class Environment {
