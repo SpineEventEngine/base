@@ -32,10 +32,19 @@ import static com.google.common.base.Preconditions.checkState;
 /**
  * Provides information about the environment (current platform used, etc.).
  *
- * <p><b>When {@link #register(EnvironmentType) registering custom types}, please ensure</b>
- * their mutual exclusivity. If two or more environment types {@linkplain EnvironmentType#enabled()
- * consider themselves enabled} at the same time, the behaviour of {@link #currentType()} is
- * undefined.
+ * <p>Allows to determine the current environment type. {@linkplain BaseEnvironmentType
+ * 2 environment types} exist by default.
+ *
+ * <p>{@code Environment} is a singleton.
+ *
+ * <h1>Custom environment types</h1>
+ * {@code Environment} allows to {@link #register(EnvironmentType) reguster custom types}. If done,
+ * {@code Environment} can then check whether the specified type is currently enabled.
+ * <p><b>When registering custom types, please ensure</b> their mutual exclusivity.
+ * If two or more environment types {@linkplain EnvironmentType#enabled() consider themselves
+ * enabled} at the same time, the behaviour of {@link #currentType()} is undefined.
+ *
+ * @see EnvironmentType
  */
 @SPI
 public final class Environment {
