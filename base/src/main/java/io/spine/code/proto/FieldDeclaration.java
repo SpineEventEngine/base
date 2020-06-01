@@ -74,8 +74,6 @@ public final class FieldDeclaration {
         this.declaringMessage = new MessageType(field.getContainingType());
     }
 
-
-
     /**
      * Creates a new instance which potentially can have leading comments.
      */
