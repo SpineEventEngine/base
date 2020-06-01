@@ -90,7 +90,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         Environment.instance()
                    .setTo(TESTS);
 
-        assertThat(environment.currentType()).isSameInstanceAs(TESTS);
+        assertThat(environment.type()).isSameInstanceAs(TESTS);
     }
 
     @Test
@@ -98,14 +98,14 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     void environmentVar1() {
         System.setProperty(ENV_KEY_TESTS, "1");
 
-        assertThat(environment.currentType()).isSameInstanceAs(TESTS);
+        assertThat(environment.type()).isSameInstanceAs(TESTS);
     }
 
     @Test
     @DisplayName("tell that we are under tests if run under known framework")
     void underTestFramework() {
         // As we run this from under JUnit...
-        assertThat(environment.currentType()).isSameInstanceAs(TESTS);
+        assertThat(environment.type()).isSameInstanceAs(TESTS);
     }
 
     @Test
@@ -113,7 +113,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     void environmentVarUnknownValue() {
         System.setProperty(ENV_KEY_TESTS, "neitherTrueNor1");
 
-        assertThat(environment.currentType()).isSameInstanceAs(PRODUCTION);
+        assertThat(environment.type()).isSameInstanceAs(PRODUCTION);
     }
 
     @Test
@@ -121,7 +121,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     void turnTestsOn() {
         environment.setTo(TESTS);
 
-        assertThat(environment.currentType()).isSameInstanceAs(TESTS);
+        assertThat(environment.type()).isSameInstanceAs(TESTS);
     }
 
     @Test
@@ -129,7 +129,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     void turnProductionOn() {
         environment.setTo(PRODUCTION);
 
-        assertThat(environment.currentType()).isSameInstanceAs(PRODUCTION);
+        assertThat(environment.type()).isSameInstanceAs(PRODUCTION);
     }
 
     @Test
@@ -150,29 +150,29 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
             registerEnum(CustomEnvType.class);
 
             // Now that `Environment` knows about `LOCAL`, it should use it as fallback.
-            assertThat(environment.currentType()).isSameInstanceAs(LOCAL);
+            assertThat(environment.type()).isSameInstanceAs(LOCAL);
         }
 
         @Test
         @DisplayName("throw if a user attempts to register the same environment twice")
         void throwOnDoubleRegistration() {
-            Environment.register(LOCAL);
+            Environment.instance().register(LOCAL);
             assertThrows(IllegalStateException.class,
-                         () -> Environment.register(LOCAL));
+                         () -> Environment.instance().register(LOCAL));
         }
 
         @Test
         @DisplayName("fallback to the `TESTS` environment")
         void fallBack() {
-            Environment.register(TRAVIS);
-            assertThat(environment.currentType())
+            Environment.instance().register(TRAVIS);
+            assertThat(environment.type())
                     .isSameInstanceAs(TESTS);
         }
     }
 
-    private static <E extends Enum & EnvironmentType> void registerEnum(Class<E> envTypeClass) {
+    private static <E extends Enum<?> & EnvironmentType> void registerEnum(Class<E> envTypeClass) {
         for (E envType : envTypeClass.getEnumConstants()) {
-            Environment.register(envType);
+            Environment.instance().register(envType);
         }
     }
 

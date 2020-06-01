@@ -22,7 +22,7 @@ package io.spine.base;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
-import io.spine.annotation.Internal;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.annotation.SPI;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -32,17 +32,82 @@ import static com.google.common.base.Preconditions.checkState;
 /**
  * Provides information about the environment (current platform used, etc.).
  *
- * <p>Allows to determine the current environment type. {@linkplain BaseEnvironmentType
- * 2 environment types} exist by default.
+ * <h1>Environment Type Detection</h1>
  *
- * <p>{@code Environment} is a singleton.
+ * <p>Current implementation allows to detect the type of the current environment. The framework
+ * brings two environment types out-of-the-box:
+ *
+ * <ul>
+ *     <li><em>{@link BaseEnvironmentType#TESTS TESTS}</em> is detected
+ *     if the current call stack has a reference to the unit testing framework.
+ *
+ *     <li><em>{@link BaseEnvironmentType#PRODUCTION PRODUCTION}</em> is set in all other cases.
+ * </ul>
+ *
+ * <p>The framework users may define their custom settings depending on the {@linkplain}current
+ * environment type:
+ *
+ * <pre>
+ *
+ * public final class Application {
+ *
+ *     private final EmailSender sender;
+ *
+ *     private Application() {
+ *         EnvironmentType type = Environment.instance()
+ *                                           .type();
+ *         if(type == BaseEnvironmentType.TESTS) {
+ *             // Do not send out emails if in tests.
+ *             this.sender = new MockEmailSender();
+ *         } else {
+ *             this.sender = EmailSender.withConfig("email_gateway.yml");
+ *         }
+ *         //...
+ *     }
+ * }
+ * </pre>
  *
  * <h1>Custom environment types</h1>
- * {@code Environment} allows to {@link #register(EnvironmentType) reguster custom types}. If done,
- * {@code Environment} can then check whether the specified type is currently enabled.
+ *
+ * {@code Environment} allows to {@link #register(EnvironmentType) reguster custom types}.
+ * In this case the environment detection functionality iterates over all known types, starting
+ * with those registered by the framework user:
+ *
+ * <pre>
+ *
+ * public final class Application {
+ *
+ *     static {
+ *         Environment.instance()
+ *                    .register(StagingEnvironmentType.instance())
+ *                    .register(LoadTestingType.instance());
+ *     }
+ *
+ *     private final ConnectionPool pool;
+ *
+ *     private Application() {
+ *         EnvironmentType type = Environment.instance()
+ *                                           .type();
+ *         if (type == BaseEnvironmentType.TESTS) {
+ *              // Single connection is enough for tests.
+ *             this.pool = new ConnectionPoolImpl(PoolCapacity.of(1));
+ *         } else {
+ *             if(LoadTestingType.instance().enabled()) {
+ *                 this.pool =
+ *                         new ConnectionPoolImpl(PoolCapacity.fromConfig("load_tests.yml"));
+ *             } else {
+ *                 this.pool =
+ *                         new ConnectionPoolImpl(PoolCapacity.fromConfig("cloud_deployment.yml"));
+ *             }
+ *         }
+ *         //...
+ *     }
+ * }
+ * </pre>
+ *
  * <p><b>When registering custom types, please ensure</b> their mutual exclusivity.
  * If two or more environment types {@linkplain EnvironmentType#enabled() consider themselves
- * enabled} at the same time, the behaviour of {@link #currentType()} is undefined.
+ * enabled} at the same time, the behaviour of {@link #type() type()} is undefined.
  *
  * @see EnvironmentType
  */
@@ -68,8 +133,8 @@ public final class Environment {
     }
 
     /**
-     * Remembers the specified environment type, allowing {@linkplain #currentType()
-     * to determine whether it's enabled} later.
+     * Remembers the specified environment type, allowing {@linkplain #type() to determine
+     * whether it's enabled} later.
      *
      * <p>If the specified environment type has already been registered, throws an
      * {@code IllegalStateException}.
@@ -80,19 +145,21 @@ public final class Environment {
      *
      * @param environmentType
      *         a user-defined environment type
+     * @return this instance of {@code Environment}
      */
-    @Internal
-    public static void register(EnvironmentType environmentType) {
-        checkState(!INSTANCE.knownEnvTypes.contains(environmentType),
+    @CanIgnoreReturnValue
+    public Environment register(EnvironmentType environmentType) {
+        checkState(!knownEnvTypes.contains(environmentType),
                    "Attempted to register the same custom env type `%s` twice." +
                            "Please make sure to call `Environment.register(...) only once" +
                            "per environment type.", environmentType.getClass()
                                                                    .getSimpleName());
-        INSTANCE.knownEnvTypes = ImmutableList
+        knownEnvTypes = ImmutableList
                 .<EnvironmentType>builder()
                 .add(environmentType)
                 .addAll(INSTANCE.knownEnvTypes)
                 .build();
+        return this;
     }
 
     /** Returns the singleton instance. */
@@ -121,7 +188,7 @@ public final class Environment {
      *
      * @return the current environment type.
      */
-    public EnvironmentType currentType() {
+    public EnvironmentType type() {
         if (currentEnvType == null) {
             for (EnvironmentType type : knownEnvTypes) {
                 if (type.enabled()) {
