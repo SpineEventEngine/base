@@ -38,14 +38,14 @@ import static com.google.common.base.Preconditions.checkState;
  * brings two environment types out-of-the-box:
  *
  * <ul>
- *     <li><em>{@link BaseEnvironmentType#TESTS TESTS}</em> is detected
- *     if the current call stack has a reference to the unit testing framework.
+ * <li><em>{@link Tests}</em> is detected if the current call stack has a reference to the unit
+ * testing framework.
  *
- *     <li><em>{@link BaseEnvironmentType#PRODUCTION PRODUCTION}</em> is set in all other cases.
+ * <li><em>{@link Production}</em> is set in all other cases.
  * </ul>
  *
- * <p>The framework users may define their custom settings depending on the {@linkplain}current
- * environment type:
+ * <p>The framework users may define their custom settings depending on the current environment
+ * type:
  *
  * <pre>
  *
@@ -54,9 +54,8 @@ import static com.google.common.base.Preconditions.checkState;
  *     private final EmailSender sender;
  *
  *     private Application() {
- *         EnvironmentType type = Environment.instance()
- *                                           .type();
- *         if(type == BaseEnvironmentType.TESTS) {
+ *         Environment environment = Environment.instance();
+ *         if(environment.is(Tests.instance())) {
  *             // Do not send out emails if in tests.
  *             this.sender = new MockEmailSender();
  *         } else {
@@ -86,13 +85,12 @@ import static com.google.common.base.Preconditions.checkState;
  *     private final ConnectionPool pool;
  *
  *     private Application() {
- *         EnvironmentType type = Environment.instance()
- *                                           .type();
- *         if (type == BaseEnvironmentType.TESTS) {
+ *         Environment environment = Environment.instance();
+ *         if (environment.is(Tests.instance()) {
  *              // Single connection is enough for tests.
  *             this.pool = new ConnectionPoolImpl(PoolCapacity.of(1));
  *         } else {
- *             if(LoadTestingType.instance().enabled()) {
+ *             if(environment.is(LoadTesting.instance()) {
  *                 this.pool =
  *                         new ConnectionPoolImpl(PoolCapacity.fromConfig("load_tests.yml"));
  *             } else {
@@ -107,7 +105,7 @@ import static com.google.common.base.Preconditions.checkState;
  *
  * <p><b>When registering custom types, please ensure</b> their mutual exclusivity.
  * If two or more environment types {@linkplain EnvironmentType#enabled() consider themselves
- * enabled} at the same time, the behaviour of {@link #type() type()} is undefined.
+ * enabled} at the same time, the behaviour of {@link #is(EnvironmentType)}} is undefined.
  *
  * @see EnvironmentType
  */
@@ -115,7 +113,7 @@ import static com.google.common.base.Preconditions.checkState;
 public final class Environment {
 
     private static final ImmutableList<EnvironmentType> BASE_TYPES =
-            ImmutableList.copyOf(BaseEnvironmentType.values());
+            ImmutableList.of(Tests.instance(), Production.instance());
 
     private static final Environment INSTANCE = new Environment();
 
@@ -133,19 +131,21 @@ public final class Environment {
     }
 
     /**
-     * Remembers the specified environment type, allowing {@linkplain #type() to determine
-     * whether it's enabled} later.
+     * Remembers the specified environment type, allowing {@linkplain #is(EnvironmentType) to
+     * determine whether it's enabled} later.
      *
      * <p>If the specified environment type has already been registered, throws an
      * {@code IllegalStateException}.
      *
-     * <p>Note that the {@linkplain BaseEnvironmentType default types} are still present.
+     * <p>Note that the default types are still present.
      * When trying to determine which environment type is enabled, the user-defined types are
      * checked first, in the first-registered to last-registered order.
      *
      * @param environmentType
      *         a user-defined environment type
      * @return this instance of {@code Environment}
+     * @see Tests
+     * @see Production
      */
     @CanIgnoreReturnValue
     public Environment register(EnvironmentType environmentType) {
@@ -177,27 +177,28 @@ public final class Environment {
     }
 
     /**
-     * Determines the current environment type.
+     * Determines whether the current environment is the same as the specified one.
      *
      * <p>If {@linkplain #register(EnvironmentType) custom env types have been defined},
      * goes through them in the latest-registered to earliest-registered order.
-     * Then, checks the {@linkplain BaseEnvironmentType base env types}.
-     *
-     * <p>Note that if all of the {@link EnvironmentType#enabled()} checks have returned
-     * {@code false}, this method falls back on {@link BaseEnvironmentType#PRODUCTION}.
+     * Then, checks {@link Tests} and {@link Production}.
      *
      * @return the current environment type.
      */
-    public EnvironmentType type() {
+    public boolean is(EnvironmentType type) {
         if (currentEnvType == null) {
-            for (EnvironmentType type : knownEnvTypes) {
-                if (type.enabled()) {
-                    this.currentEnvType = type;
-                    return this.currentEnvType;
-                }
+            determineCurrentType();
+        }
+        return currentEnvType.equals(type);
+    }
+
+    private void determineCurrentType() {
+        for (EnvironmentType type : knownEnvTypes) {
+            if (type.enabled()) {
+                this.currentEnvType = type;
+                return;
             }
         }
-        return currentEnvType;
     }
 
     /**
@@ -221,16 +222,12 @@ public final class Environment {
     }
 
     /**
-     * Resets the instance and clears the {@link BaseEnvironmentType#ENV_KEY_TESTS} variable.
+     * Resets the instance and clears the {@link Tests#ENV_KEY_TESTS} variable.
      */
     @VisibleForTesting
     public void reset() {
         this.currentEnvType = null;
         this.knownEnvTypes = BASE_TYPES;
-        clearTestingEnvVariable();
-    }
-
-    private static void clearTestingEnvVariable() {
-        System.clearProperty(BaseEnvironmentType.ENV_KEY_TESTS);
+        Tests.clearTestingEnvVariable();
     }
 }

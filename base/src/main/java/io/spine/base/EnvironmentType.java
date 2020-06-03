@@ -20,14 +20,18 @@
 
 package io.spine.base;
 
+import com.google.common.base.Objects;
+
 /**
  * A type of environment.
  *
  * <p>Some examples may be {@code STAGING} or {@code LOCAL} environments.
  *
- * @see BaseEnvironmentType
+ * @implNote developers are encouraged to make their environment types singletons, such
+ *         that their API is consistent with the env types provided by the {@code base} library:
+ *         {@link Production}, {@link Tests}.
  */
-public interface EnvironmentType {
+public abstract class EnvironmentType {
 
     /**
      * Returns {@code true} if the underlying system is currently in this environment type.
@@ -36,5 +40,28 @@ public interface EnvironmentType {
      * variable may be set for every virtual machine. Application developer may use this type of
      * knowledge to determine the current environment.
      */
-    boolean enabled();
+    abstract boolean enabled();
+
+    /**
+     * @inheritDoc
+     *
+     * <p>By default, environments types are compared based on their classes.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        return this.getClass()
+                   .equals(obj.getClass());
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * <p>By default, adheres to the {@code equals} and {@code hashCode} contract, assuming that
+     * the implementation of the {@code equals} is the {@linkplain EnvironmentType#equals(Object)
+     * default one}.
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getClass());
+    }
 }

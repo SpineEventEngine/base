@@ -30,11 +30,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.base.BaseEnvironmentType.ENV_KEY_TESTS;
-import static io.spine.base.BaseEnvironmentType.PRODUCTION;
-import static io.spine.base.BaseEnvironmentType.TESTS;
-import static io.spine.base.EnvironmentTest.BuildServerEnvironment.TRAVIS;
-import static io.spine.base.EnvironmentTest.CustomEnvType.LOCAL;
+import static io.spine.base.Tests.ENV_KEY_TESTS;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -87,10 +83,11 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Test
     @DisplayName("tell that we are under tests if env. variable set to true")
     void environmentVarTrue() {
+        Tests tests = Tests.instance();
         Environment.instance()
-                   .setTo(TESTS);
+                   .setTo(tests);
 
-        assertThat(environment.type()).isSameInstanceAs(TESTS);
+        assertThat(environment.is(Tests.instance())).isTrue();
     }
 
     @Test
@@ -98,14 +95,14 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     void environmentVar1() {
         System.setProperty(ENV_KEY_TESTS, "1");
 
-        assertThat(environment.type()).isSameInstanceAs(TESTS);
+        assertThat(environment.is(Tests.instance())).isTrue();
     }
 
     @Test
     @DisplayName("tell that we are under tests if run under known framework")
     void underTestFramework() {
         // As we run this from under JUnit...
-        assertThat(environment.type()).isSameInstanceAs(TESTS);
+        assertThat(environment.is(Tests.instance())).isTrue();
     }
 
     @Test
@@ -113,23 +110,23 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     void environmentVarUnknownValue() {
         System.setProperty(ENV_KEY_TESTS, "neitherTrueNor1");
 
-        assertThat(environment.type()).isSameInstanceAs(PRODUCTION);
+        assertThat(environment.is(Production.instance())).isTrue();
     }
 
     @Test
     @DisplayName("turn tests mode on")
     void turnTestsOn() {
-        environment.setTo(TESTS);
+        environment.setTo(Tests.instance());
 
-        assertThat(environment.type()).isSameInstanceAs(TESTS);
+        assertThat(environment.is(Tests.instance())).isTrue();
     }
 
     @Test
     @DisplayName("turn production mode on")
     void turnProductionOn() {
-        environment.setTo(PRODUCTION);
+        environment.setTo(Production.instance());
 
-        assertThat(environment.type()).isSameInstanceAs(PRODUCTION);
+        assertThat(environment.is(Production.instance())).isTrue();
     }
 
     @Test
@@ -147,62 +144,121 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         @Test
         @DisplayName("allow to provide user defined environment types")
         void provideCustomTypes() {
-            registerEnum(CustomEnvType.class);
+            register(Staging.instance(), Local.instance());
 
             // Now that `Environment` knows about `LOCAL`, it should use it as fallback.
-            assertThat(environment.type()).isSameInstanceAs(LOCAL);
+            assertThat(environment.is(Local.instance())).isTrue();
         }
 
         @Test
         @DisplayName("throw if a user attempts to register the same environment twice")
         void throwOnDoubleRegistration() {
-            Environment.instance().register(LOCAL);
+            Environment.instance()
+                       .register(Local.instance());
             assertThrows(IllegalStateException.class,
-                         () -> Environment.instance().register(LOCAL));
+                         () -> Environment.instance()
+                                          .register(Local.instance()));
         }
 
         @Test
         @DisplayName("fallback to the `TESTS` environment")
         void fallBack() {
-            Environment.instance().register(TRAVIS);
-            assertThat(environment.type())
-                    .isSameInstanceAs(TESTS);
+            Environment.instance()
+                       .register(Travis.instance());
+            assertThat(environment.is(Travis.instance())).isFalse();
+            assertThat(environment.is(Tests.instance())).isTrue();
         }
     }
 
-    private static <E extends Enum<?> & EnvironmentType> void registerEnum(Class<E> envTypeClass) {
-        for (E envType : envTypeClass.getEnumConstants()) {
-            Environment.instance().register(envType);
+    private static void register(EnvironmentType... types) {
+        for (EnvironmentType type : types) {
+            Environment.instance()
+                       .register(type);
         }
     }
 
-    enum CustomEnvType implements EnvironmentType {
+    static final class Local extends EnvironmentType {
 
-        LOCAL {
-            @Override
-            public boolean enabled() {
-                // `LOCAL` is the default custom env type. It should be used as a fallback.
-                return true;
+        private Local() {
+        }
+
+        @Override
+        public boolean enabled() {
+            // `LOCAL` is the default custom env type. It should be used as a fallback.
+            return true;
+        }
+
+        public static Local instance() {
+            return Singleton.INSTANCE.local;
+        }
+
+        private enum Singleton {
+
+            INSTANCE;
+
+            @SuppressWarnings("NonSerializableFieldInSerializableClass")
+            private final Local local;
+
+            Singleton() {
+                this.local = new Local();
             }
-        },
-        STAGING {
-            @Override
-            public boolean enabled() {
-                return String.valueOf(true)
-                             .equalsIgnoreCase(System.getProperty(STAGING_ENV_TYPE_KEY));
-            }
-        };
+        }
+    }
+
+    static final class Staging extends EnvironmentType {
 
         static final String STAGING_ENV_TYPE_KEY = "io.spine.base.EnvironmentTest.is_staging";
+
+        private Staging() {
+        }
+
+        public static Staging instance() {
+            return Singleton.INSTANCE.staging;
+        }
+
+        @Override
+        public boolean enabled() {
+            return String.valueOf(true)
+                         .equalsIgnoreCase(System.getProperty(STAGING_ENV_TYPE_KEY));
+        }
+
+        private enum Singleton {
+
+            INSTANCE;
+
+            @SuppressWarnings("NonSerializableFieldInSerializableClass")
+            private final Staging staging;
+
+            Singleton() {
+                this.staging = new Staging();
+            }
+        }
     }
 
     @SuppressWarnings("unused" /* The only variant is used. */)
-    enum BuildServerEnvironment implements EnvironmentType {
+    static final class Travis extends EnvironmentType {
 
-        TRAVIS {
-            @Override
-            public boolean enabled() {
-                return false;
+        private Travis() {
+        }
+
+        @Override
+        public boolean enabled() {
+            return false;
+        }
+
+        public static Travis instance() {
+            return Singleton.INSTANCE.travis;
+        }
+
+        private enum Singleton {
+
+            INSTANCE;
+
+            @SuppressWarnings("NonSerializableFieldInSerializableClass")
+            private final Travis travis;
+
+            Singleton() {
+                this.travis = new Travis();
             }
         }
     }
