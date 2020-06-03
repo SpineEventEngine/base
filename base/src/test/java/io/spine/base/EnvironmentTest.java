@@ -83,11 +83,11 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Test
     @DisplayName("tell that we are under tests if env. variable set to true")
     void environmentVarTrue() {
-        Tests tests = Tests.instance();
+        Tests tests = Tests.type();
         Environment.instance()
                    .setTo(tests);
 
-        assertThat(environment.is(Tests.instance())).isTrue();
+        assertThat(environment.is(Tests.type())).isTrue();
     }
 
     @Test
@@ -95,14 +95,14 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     void environmentVar1() {
         System.setProperty(ENV_KEY_TESTS, "1");
 
-        assertThat(environment.is(Tests.instance())).isTrue();
+        assertThat(environment.is(Tests.type())).isTrue();
     }
 
     @Test
     @DisplayName("tell that we are under tests if run under known framework")
     void underTestFramework() {
         // As we run this from under JUnit...
-        assertThat(environment.is(Tests.instance())).isTrue();
+        assertThat(environment.is(Tests.type())).isTrue();
     }
 
     @Test
@@ -110,23 +110,23 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     void environmentVarUnknownValue() {
         System.setProperty(ENV_KEY_TESTS, "neitherTrueNor1");
 
-        assertThat(environment.is(Production.instance())).isTrue();
+        assertThat(environment.is(Production.type())).isTrue();
     }
 
     @Test
     @DisplayName("turn tests mode on")
     void turnTestsOn() {
-        environment.setTo(Tests.instance());
+        environment.setTo(Tests.type());
 
-        assertThat(environment.is(Tests.instance())).isTrue();
+        assertThat(environment.is(Tests.type())).isTrue();
     }
 
     @Test
     @DisplayName("turn production mode on")
     void turnProductionOn() {
-        environment.setTo(Production.instance());
+        environment.setTo(Production.type());
 
-        assertThat(environment.is(Production.instance())).isTrue();
+        assertThat(environment.is(Production.type())).isTrue();
     }
 
     @Test
@@ -144,29 +144,29 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         @Test
         @DisplayName("allow to provide user defined environment types")
         void provideCustomTypes() {
-            register(Staging.instance(), Local.instance());
+            register(Staging.type(), Local.type());
 
             // Now that `Environment` knows about `LOCAL`, it should use it as fallback.
-            assertThat(environment.is(Local.instance())).isTrue();
+            assertThat(environment.is(Local.type())).isTrue();
         }
 
         @Test
         @DisplayName("throw if a user attempts to register the same environment twice")
         void throwOnDoubleRegistration() {
             Environment.instance()
-                       .register(Local.instance());
+                       .register(Local.type());
             assertThrows(IllegalStateException.class,
                          () -> Environment.instance()
-                                          .register(Local.instance()));
+                                          .register(Local.type()));
         }
 
         @Test
         @DisplayName("fallback to the `TESTS` environment")
         void fallBack() {
             Environment.instance()
-                       .register(Travis.instance());
-            assertThat(environment.is(Travis.instance())).isFalse();
-            assertThat(environment.is(Tests.instance())).isTrue();
+                       .register(Travis.type());
+            assertThat(environment.is(Travis.type())).isFalse();
+            assertThat(environment.is(Tests.type())).isTrue();
         }
     }
 
@@ -188,7 +188,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
             return true;
         }
 
-        public static Local instance() {
+        public static Local type() {
             return Singleton.INSTANCE.local;
         }
 
@@ -212,7 +212,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         private Staging() {
         }
 
-        public static Staging instance() {
+        public static Staging type() {
             return Singleton.INSTANCE.staging;
         }
 
@@ -246,7 +246,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
             return false;
         }
 
-        public static Travis instance() {
+        public static Travis type() {
             return Singleton.INSTANCE.travis;
         }
 

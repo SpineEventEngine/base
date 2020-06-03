@@ -95,7 +95,7 @@ public final class Tests extends EnvironmentType {
     /**
      * Returns the singleton instance of this class.
      */
-    public static Tests instance() {
+    public static Tests type() {
         return Singleton.INSTANCE.tests;
     }
 

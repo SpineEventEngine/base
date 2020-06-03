@@ -54,7 +54,7 @@ import static com.google.common.base.Preconditions.checkState;
  *
  *     private Application() {
  *         Environment environment = Environment.instance();
- *         if(environment.is(Tests.instance())) {
+ *         if(environment.is(Tests.type())) {
  *             // Do not send out emails if in tests.
  *             this.sender = new MockEmailSender();
  *         } else {
@@ -77,19 +77,19 @@ import static com.google.common.base.Preconditions.checkState;
  *
  *     static {
  *         Environment.instance()
- *                    .register(StagingEnvironmentType.instance())
- *                    .register(LoadTestingType.instance());
+ *                    .register(StagingEnvironmentType.type())
+ *                    .register(LoadTestingType.type());
  *     }
  *
  *     private final ConnectionPool pool;
  *
  *     private Application() {
  *         Environment environment = Environment.instance();
- *         if (environment.is(Tests.instance()) {
+ *         if (environment.is(Tests.type()) {
  *              // Single connection is enough for tests.
  *             this.pool = new ConnectionPoolImpl(PoolCapacity.of(1));
  *         } else {
- *             if(environment.is(LoadTesting.instance()) {
+ *             if(environment.is(LoadTesting.type()) {
  *                 this.pool =
  *                         new ConnectionPoolImpl(PoolCapacity.fromConfig("load_tests.yml"));
  *             } else {
@@ -112,7 +112,7 @@ import static com.google.common.base.Preconditions.checkState;
 public final class Environment {
 
     private static final ImmutableList<EnvironmentType> BASE_TYPES =
-            ImmutableList.of(Tests.instance(), Production.instance());
+            ImmutableList.of(Tests.type(), Production.type());
 
     private static final Environment INSTANCE = new Environment();
 

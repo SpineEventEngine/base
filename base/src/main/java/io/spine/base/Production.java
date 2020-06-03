@@ -32,14 +32,14 @@ public final class Production extends EnvironmentType {
 
     @Override
     boolean enabled() {
-        return !Tests.instance()
+        return !Tests.type()
                      .enabled();
     }
 
     /**
      * Returns the singleton instance.
      */
-    public static Production instance() {
+    public static Production type() {
         return Singleton.INSTANCE.production;
     }
 
