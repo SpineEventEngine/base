@@ -34,7 +34,8 @@ import static com.google.common.base.Preconditions.checkState;
  *
  * <h1>Environment Type Detection</h1>
  *
- * <p>Current implementation allows to {@linkplain #is(EnvironmentType) check} whether a
+ * <p>Current implementation allows to {@linkplain #is(EnvironmentType) check} whether a given
+ * environment is currently the active one.
  *
  * <ul>
  * <li><em>{@link Tests}</em> is detected if the current call stack has a reference to the unit
@@ -203,6 +204,7 @@ public final class Environment {
     /**
      * Verifies if the code currently runs under a unit testing framework.
      *
+     * @see Tests
      * @deprecated use {@code Environment.instance().is(Tests.type)}
      */
     @Deprecated
@@ -216,6 +218,7 @@ public final class Environment {
      * <p>This method is opposite to {@link #isTests()}
      *
      * @return {@code true} if the code runs in the production mode, {@code false} otherwise
+     * @see Production
      * @deprecated use {@code Environment.instance().is(Production.type())}
      */
     @Deprecated

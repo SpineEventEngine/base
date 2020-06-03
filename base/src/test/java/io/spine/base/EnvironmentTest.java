@@ -114,6 +114,24 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     }
 
     @Test
+    @DisplayName("tell that we are under tests when a deprecated method is used")
+    void underTestFrameworkDeprecated() {
+        @SuppressWarnings("deprecation")
+        boolean isTests = environment.isTests();
+        assertThat(isTests).isTrue();
+    }
+
+    @Test
+    @DisplayName("tell that we are not under tests when a deprecated method is used")
+    void inProductionUsingDeprecatedMethod() {
+        System.setProperty(ENV_KEY_TESTS, "neitherTrueNor1");
+
+        @SuppressWarnings("deprecation")
+        boolean isProduction = environment.isProduction();
+        assertThat(isProduction).isTrue();
+    }
+
+    @Test
     @DisplayName("turn tests mode on")
     void turnTestsOn() {
         environment.setTo(Tests.type());
