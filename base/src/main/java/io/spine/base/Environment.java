@@ -34,8 +34,7 @@ import static com.google.common.base.Preconditions.checkState;
  *
  * <h1>Environment Type Detection</h1>
  *
- * <p>Current implementation allows to detect the type of the current environment. The framework
- * brings two environment types out-of-the-box:
+ * <p>Current implementation allows to {@linkplain #is(EnvironmentType) check} whether a
  *
  * <ul>
  * <li><em>{@link Tests}</em> is detected if the current call stack has a reference to the unit

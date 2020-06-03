@@ -36,6 +36,9 @@ public final class Production extends EnvironmentType {
                      .enabled();
     }
 
+    /**
+     * Returns the singleton instance.
+     */
     public static Production instance() {
         return Singleton.INSTANCE.production;
     }
