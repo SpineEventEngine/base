@@ -201,6 +201,29 @@ public final class Environment {
     }
 
     /**
+     * Verifies if the code currently runs under a unit testing framework.
+     *
+     * @deprecated use {@code Environment.instance().is(Tests.type)}
+     */
+    @Deprecated
+    public boolean isTests() {
+        return is(Tests.type());
+    }
+
+    /**
+     * Verifies if the code runs in the production mode.
+     *
+     * <p>This method is opposite to {@link #isTests()}
+     *
+     * @return {@code true} if the code runs in the production mode, {@code false} otherwise
+     * @deprecated use {@code Environment.instance().is(Production.type())}
+     */
+    @Deprecated
+    public boolean isProduction() {
+        return !isTests();
+    }
+
+    /**
      * Restores the state from the instance created by {@link #createCopy()}.
      *
      * <p>Call this method when cleaning up tests that modify {@code Environment}.
