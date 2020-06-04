@@ -185,11 +185,30 @@ public final class Environment {
      *
      * @return the current environment type.
      */
+    @SuppressWarnings("ConstantConditions"/* no NPE is ensured by the `ensureTypeIsSet` call. */)
     public boolean is(EnvironmentType type) {
+        ensureTypeIsSet();
+        return currentEnvType.equals(type);
+    }
+
+    /**
+     * Returns the current environment type.
+     *
+     * <p>If {@linkplain #register(EnvironmentType) custom env types have been defined},
+     * goes through them in the latest-registered to earliest-registered order.
+     * Then, checks {@link Tests} and {@link Production}.
+     *
+     * @return the current environment type
+     */
+    public EnvironmentType type() {
+        ensureTypeIsSet();
+        return currentEnvType;
+    }
+
+    private void ensureTypeIsSet() {
         if (currentEnvType == null) {
             determineCurrentType();
         }
-        return currentEnvType.equals(type);
     }
 
     private void determineCurrentType() {

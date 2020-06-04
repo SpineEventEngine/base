@@ -206,6 +206,20 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         }
     }
 
+    @Test
+    @DisplayName("detect the current environment correctly using the `type` method")
+    void determineUsingType() {
+        assertThat(environment.type()).isSameInstanceAs(Tests.type());
+    }
+
+    @Test
+    @DisplayName("detect the current custom environment in presence of custom types")
+    void determineUsingTypeInPresenceOfCustom() {
+        register(Local.type());
+
+        assertThat(environment.type()).isSameInstanceAs(Local.type());
+    }
+
     private static void register(EnvironmentType... types) {
         for (EnvironmentType type : types) {
             Environment.instance()
