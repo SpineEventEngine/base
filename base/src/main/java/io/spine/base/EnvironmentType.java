@@ -40,7 +40,7 @@ public abstract class EnvironmentType {
      * variable may be set for every virtual machine. Application developer may use this type of
      * knowledge to determine the current environment.
      */
-    abstract boolean enabled();
+    protected abstract boolean enabled();
 
     /**
      * @inheritDoc

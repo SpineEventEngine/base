@@ -93,6 +93,14 @@ public final class Tests extends EnvironmentType {
     }
 
     /**
+     * Sets the {@linkplain #ENV_KEY_TESTS environment variable} such that the system is brought to
+     * the testing environment type.
+     */
+    static void enable() {
+        System.setProperty(ENV_KEY_TESTS, String.valueOf(true));
+    }
+
+    /**
      * Returns the singleton instance of this class.
      */
     public static Tests type() {

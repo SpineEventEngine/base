@@ -122,6 +122,15 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     }
 
     @Test
+    @DisplayName("tell that we are under tests if explicitly set to tests using a deprecated method")
+    @SuppressWarnings("deprecation")
+    void explicitlySetTrue() {
+        environment.setToTests();
+
+        assertThat(environment.is(Tests.type())).isTrue();
+    }
+
+    @Test
     @DisplayName("tell that we are not under tests when a deprecated method is used")
     void inProductionUsingDeprecatedMethod() {
         System.setProperty(ENV_KEY_TESTS, "neitherTrueNor1");
@@ -143,6 +152,15 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @DisplayName("turn production mode on")
     void turnProductionOn() {
         environment.setTo(Production.type());
+
+        assertThat(environment.is(Production.type())).isTrue();
+    }
+
+    @Test
+    @DisplayName("turn production mode on using a deprecated method")
+    @SuppressWarnings("deprecation")
+    void turnProductionOnUsingDeprecatedMethod() {
+        environment.setToProduction();
 
         assertThat(environment.is(Production.type())).isTrue();
     }

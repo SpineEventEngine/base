@@ -38,10 +38,10 @@ import static com.google.common.base.Preconditions.checkState;
  * environment is currently the active one. Two environment types exist out of the box:
  *
  * <ul>
- * <li><em>{@link Tests}</em> is detected if the current call stack has a reference to the unit
- * testing framework.
+ *     <li><em>{@link Tests}</em> is detected if the current call stack has a reference to the unit
+ *         testing framework.
  *
- * <li><em>{@link Production}</em> is set in all other cases.
+ *     <li><em>{@link Production}</em> is set in all other cases.
  * </ul>
  *
  * <p>The framework users may define their custom settings depending on the current environment
@@ -244,6 +244,34 @@ public final class Environment {
     @VisibleForTesting
     public void setTo(EnvironmentType type) {
         this.currentEnvType = checkNotNull(type);
+    }
+
+    /**
+     * Turns the test mode on.
+     *
+     * <p>This method is opposite to {@link #setToProduction()}.
+     *
+     * @deprecated use {@link #setTo(EnvironmentType)}
+     */
+    @Deprecated
+    @VisibleForTesting
+    public void setToTests() {
+        this.currentEnvType = Tests.type();
+        Tests.enable();
+    }
+
+    /**
+     * Turns the production mode on.
+     *
+     * <p>This method is opposite to {@link #setToTests()}.
+     *
+     * @deprecated use {@link #setTo(EnvironmentType)}
+     */
+    @Deprecated
+    @VisibleForTesting
+    public void setToProduction() {
+        this.currentEnvType = Production.type();
+        Tests.clearTestingEnvVariable();
     }
 
     /**

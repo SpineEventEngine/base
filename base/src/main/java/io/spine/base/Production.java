@@ -31,7 +31,7 @@ import com.google.errorprone.annotations.Immutable;
 public final class Production extends EnvironmentType {
 
     @Override
-    boolean enabled() {
+    protected boolean enabled() {
         return !Tests.type()
                      .enabled();
     }
