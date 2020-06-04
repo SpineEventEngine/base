@@ -136,9 +136,6 @@ public final class Environment {
      * Remembers the specified environment type, allowing {@linkplain #is(EnvironmentType) to
      * determine whether it's enabled} later.
      *
-     * <p>If the specified environment type has already been registered, throws an
-     * {@code IllegalStateException}.
-     *
      * <p>Note that the default types are still present.
      * When trying to determine which environment type is enabled, the user-defined types are
      * checked first, in the first-registered to last-registered order.
