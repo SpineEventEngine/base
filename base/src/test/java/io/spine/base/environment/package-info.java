@@ -19,16 +19,14 @@
  */
 
 /**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * This package contains tests for {@link io.spine.base.Environment} with custom
+ * {@linkplain io.spine.base.EnvironmentType environment types} using them how they would be used
+ * from a client API, i.e. from a package different from {@code io.spine.base}.
  */
+@ParametersAreNonnullByDefault
+@CheckReturnValue
+package io.spine.base.environment;
 
-val SPINE_VERSION = "1.5.13"
+import com.google.errorprone.annotations.CheckReturnValue;
 
-project.extra.apply {
-    this["spineVersion"] = SPINE_VERSION
-    this["spineBaseVersion"] = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
-    this["versionToPublish"] = SPINE_VERSION
-}
+import javax.annotation.ParametersAreNonnullByDefault;

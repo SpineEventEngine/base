@@ -18,17 +18,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
- */
+package io.spine.base.environment;
 
-val SPINE_VERSION = "1.5.13"
+import io.spine.base.Environment;
+import io.spine.base.Tests;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-project.extra.apply {
-    this["spineVersion"] = SPINE_VERSION
-    this["spineBaseVersion"] = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
-    this["versionToPublish"] = SPINE_VERSION
+import static com.google.common.truth.Truth.assertThat;
+
+@DisplayName("Environment should")
+class EnvironmentTest {
+
+    @BeforeEach
+    void reset() {
+        Environment.instance()
+                   .reset();
+    }
+
+    @Test
+    @DisplayName("allow a custom user type")
+    void allowCustomType() {
+        Environment.instance()
+                   .register(Staging.type());
+
+        Staging.enable();
+        assertThat(Environment.instance()
+                              .is(Staging.type())).isTrue();
+    }
+
+    @Test
+    @DisplayName("fallback to the default type")
+    void fallbackToCustomType() {
+        Environment.instance().register(Staging.type());
+
+        Staging.disable();
+
+        assertThat(Environment.instance().is(Tests.type())).isTrue();
+    }
+
 }

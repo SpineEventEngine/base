@@ -18,17 +18,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.base;
+
+import com.google.errorprone.annotations.Immutable;
+
 /**
- * The versions of the libraries used.
+ * A non-testing environment.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * <p>If the system is not in the {@link Tests} environment, it is in the production environment.
  */
+@Immutable
+public final class Production extends EnvironmentType {
 
-val SPINE_VERSION = "1.5.13"
+    @Override
+    protected boolean enabled() {
+        return !Tests.type()
+                     .enabled();
+    }
 
-project.extra.apply {
-    this["spineVersion"] = SPINE_VERSION
-    this["spineBaseVersion"] = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
-    this["versionToPublish"] = SPINE_VERSION
+    /**
+     * Returns the singleton instance.
+     */
+    public static Production type() {
+        return Singleton.INSTANCE.production;
+    }
+
+    private enum Singleton {
+
+        INSTANCE;
+
+        @SuppressWarnings({
+                "NonSerializableFieldInSerializableClass",
+                "PMD.SingularField" /* this field cannot be local */})
+        private final Production production;
+
+        Singleton() {
+            this.production = new Production();
+        }
+    }
 }
