@@ -71,7 +71,7 @@ public final class Tests extends EnvironmentType {
      *         the system property explicitly.
      */
     @Override
-    public boolean enabled() {
+    protected boolean enabled() {
         String testProp = System.getProperty(ENV_KEY_TESTS);
         if (testProp != null) {
             testProp = TEST_PROP_PATTERN.matcher(testProp)
