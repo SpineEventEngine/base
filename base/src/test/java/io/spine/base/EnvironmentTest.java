@@ -187,16 +187,6 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         }
 
         @Test
-        @DisplayName("throw if a user attempts to register the same environment twice")
-        void throwOnDoubleRegistration() {
-            Environment.instance()
-                       .register(Local.type());
-            assertThrows(IllegalStateException.class,
-                         () -> Environment.instance()
-                                          .register(Local.type()));
-        }
-
-        @Test
         @DisplayName("fallback to the `TESTS` environment")
         void fallBack() {
             Environment.instance()

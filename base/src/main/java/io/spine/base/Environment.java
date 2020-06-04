@@ -27,7 +27,6 @@ import io.spine.annotation.SPI;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 
 /**
  * Provides information about the environment (current platform used, etc.).
@@ -152,16 +151,13 @@ public final class Environment {
      */
     @CanIgnoreReturnValue
     public Environment register(EnvironmentType environmentType) {
-        checkState(!knownEnvTypes.contains(environmentType),
-                   "Attempted to register the same custom env type `%s` twice." +
-                           "Please make sure to call `Environment.register(...) only once" +
-                           "per environment type.", environmentType.getClass()
-                                                                   .getSimpleName());
-        knownEnvTypes = ImmutableList
-                .<EnvironmentType>builder()
-                .add(environmentType)
-                .addAll(INSTANCE.knownEnvTypes)
-                .build();
+        if (!knownEnvTypes.contains(environmentType)) {
+            knownEnvTypes = ImmutableList
+                    .<EnvironmentType>builder()
+                    .add(environmentType)
+                    .addAll(INSTANCE.knownEnvTypes)
+                    .build();
+        }
         return this;
     }
 
