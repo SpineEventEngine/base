@@ -35,7 +35,8 @@ import static com.google.common.base.Preconditions.checkState;
  * <h1>Environment Type Detection</h1>
  *
  * <p>Current implementation allows to {@linkplain #is(EnvironmentType) check} whether a given
- * environment is currently the active one. Two environment types exist out of the box:
+ * environment is currently the active one and {@linkplain #type() get an instance of the current
+ * environment type}. Two environment types exist out of the box:
  *
  * <ul>
  *     <li><em>{@link Tests}</em> is detected if the current call stack has a reference to the unit
@@ -108,6 +109,8 @@ import static com.google.common.base.Preconditions.checkState;
  * enabled} at the same time, the behaviour of {@link #is(EnvironmentType)}} is undefined.
  *
  * @see EnvironmentType
+ * @see Tests
+ * @see Production
  */
 @SPI
 public final class Environment {
