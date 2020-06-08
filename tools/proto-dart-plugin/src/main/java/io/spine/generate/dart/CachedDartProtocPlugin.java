@@ -43,7 +43,7 @@ final class CachedDartProtocPlugin {
     private static final String SCRIPT_EXTENSION = WINDOWS ? ".bat" : "";
     private static final String SCRIPT_FILE_NAME = "protoc-gen-dart" + SCRIPT_EXTENSION;
     private static final String BIN = "bin";
-    private static final String APP_DATA_ENV = "APPDATA";
+    private static final String LOCAL_APP_DATA_ENV = "LOCALAPPDATA";
     private static final String PUB_CACHE_ENV = "PUB_CACHE";
 
     private static final String DOC_LINK =
@@ -116,7 +116,7 @@ final class CachedDartProtocPlugin {
      */
     private static Path defaultForWindows() {
         @SuppressWarnings("CallToSystemGetenv")
-        String appDataDir = System.getenv(APP_DATA_ENV);
+        String appDataDir = System.getenv(LOCAL_APP_DATA_ENV);
         return Paths.get(appDataDir, "Pub", "Cache", BIN, SCRIPT_FILE_NAME);
     }
 
