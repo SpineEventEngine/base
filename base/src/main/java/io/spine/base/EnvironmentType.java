@@ -20,7 +20,7 @@
 
 package io.spine.base;
 
-import com.google.common.base.Objects;
+import com.google.errorprone.annotations.Immutable;
 
 /**
  * A type of environment.
@@ -31,7 +31,8 @@ import com.google.common.base.Objects;
  *         that their API is consistent with the env types provided by the {@code base} library:
  *         {@link Production}, {@link Tests}.
  */
-public abstract class EnvironmentType {
+@Immutable
+public interface EnvironmentType {
 
     /**
      * Returns {@code true} if the underlying system is currently in this environment type.
@@ -40,28 +41,5 @@ public abstract class EnvironmentType {
      * variable may be set for every virtual machine. Application developer may use this type of
      * knowledge to determine the current environment.
      */
-    protected abstract boolean enabled();
-
-    /**
-     * @inheritDoc
-     *
-     * <p>By default, environments types are compared based on their classes.
-     */
-    @Override
-    public boolean equals(Object obj) {
-        return this.getClass()
-                   .equals(obj.getClass());
-    }
-
-    /**
-     * @inheritDoc
-     *
-     * <p>By default, adheres to the {@code equals} and {@code hashCode} contract, assuming that
-     * the implementation of the {@code equals} is the {@linkplain EnvironmentType#equals(Object)
-     * default one}.
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(getClass());
-    }
+    boolean enabled();
 }

@@ -36,7 +36,9 @@ import java.util.regex.Pattern;
  */
 @Immutable
 @SuppressWarnings("AccessOfSystemProperties" /* is necessary for this class to function */)
-public final class Tests extends EnvironmentType {
+public enum Tests implements EnvironmentType {
+
+    ENVIRONMENT;
 
     /**
      * The key name of the system property which tells if a code runs under a testing framework.
@@ -71,7 +73,7 @@ public final class Tests extends EnvironmentType {
      *         the system property explicitly.
      */
     @Override
-    protected boolean enabled() {
+    public boolean enabled() {
         String testProp = System.getProperty(ENV_KEY_TESTS);
         if (testProp != null) {
             testProp = TEST_PROP_PATTERN.matcher(testProp)
@@ -98,26 +100,5 @@ public final class Tests extends EnvironmentType {
      */
     static void enable() {
         System.setProperty(ENV_KEY_TESTS, String.valueOf(true));
-    }
-
-    /**
-     * Returns the singleton instance of this class.
-     */
-    public static Tests type() {
-        return Singleton.INSTANCE.tests;
-    }
-
-    private enum Singleton {
-
-        INSTANCE;
-
-        @SuppressWarnings({
-                "NonSerializableFieldInSerializableClass",
-                "PMD.SingularField" /* this field cannot be local */})
-        private final Tests tests;
-
-        Singleton() {
-            this.tests = new Tests();
-        }
     }
 }

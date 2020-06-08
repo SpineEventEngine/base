@@ -28,37 +28,29 @@ import io.spine.base.EnvironmentType;
  *
  * <p>This implementations relies on a static {@code boolean} flag for detection.
  */
-public final class Staging extends EnvironmentType {
+@SuppressWarnings({"Immutable", "ImmutableEnumChecker"})
+public enum Staging implements EnvironmentType {
+
+    ENVIRONMENT;
+
+    private boolean enabled;
 
     @Override
-    protected boolean enabled() {
-        return Singleton.INSTANCE.enabled;
-    }
-
-    public static Staging type() {
-        return Singleton.INSTANCE.staging;
+    public boolean enabled() {
+        return ENVIRONMENT.enabled;
     }
 
     /**
      * Brings the underlying system into the staging environment.
      */
     static void enable() {
-        Singleton.INSTANCE.enabled = true;
+        ENVIRONMENT.enabled = true;
     }
 
     /**
      * Brings the underlying system out of the staging environment.
      */
     static void disable() {
-        Singleton.INSTANCE.enabled = false;
-    }
-
-    public enum Singleton {
-
-        INSTANCE;
-
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Staging staging = new Staging();
-        private boolean enabled;
+        ENVIRONMENT.enabled = false;
     }
 }

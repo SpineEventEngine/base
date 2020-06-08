@@ -28,32 +28,12 @@ import com.google.errorprone.annotations.Immutable;
  * <p>If the system is not in the {@link Tests} environment, it is in the production environment.
  */
 @Immutable
-public final class Production extends EnvironmentType {
+public enum Production implements EnvironmentType {
+
+    ENVIRONMENT;
 
     @Override
-    protected boolean enabled() {
-        return !Tests.type()
-                     .enabled();
-    }
-
-    /**
-     * Returns the singleton instance.
-     */
-    public static Production type() {
-        return Singleton.INSTANCE.production;
-    }
-
-    private enum Singleton {
-
-        INSTANCE;
-
-        @SuppressWarnings({
-                "NonSerializableFieldInSerializableClass",
-                "PMD.SingularField" /* this field cannot be local */})
-        private final Production production;
-
-        Singleton() {
-            this.production = new Production();
-        }
+    public boolean enabled() {
+        return !Tests.ENVIRONMENT.enabled();
     }
 }
