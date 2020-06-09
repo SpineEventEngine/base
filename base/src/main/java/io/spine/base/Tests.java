@@ -54,6 +54,14 @@ public final class Tests extends EnvironmentType {
     private static final Pattern TEST_PROP_PATTERN = Pattern.compile("\"' ");
 
     /**
+     * Creates a new instance.
+     *
+     * <p>All {@code Tests} instances are immutable and equivalent.
+     */
+    public Tests() {
+    }
+
+    /**
      * Verifies if the code currently runs under a unit testing framework.
      *
      * <p>The method returns {@code true} if the following packages are discovered
@@ -98,26 +106,5 @@ public final class Tests extends EnvironmentType {
      */
     static void enable() {
         System.setProperty(ENV_KEY_TESTS, String.valueOf(true));
-    }
-
-    /**
-     * Returns the singleton instance of this class.
-     */
-    public static Tests type() {
-        return Singleton.INSTANCE.tests;
-    }
-
-    private enum Singleton {
-
-        INSTANCE;
-
-        @SuppressWarnings({
-                "NonSerializableFieldInSerializableClass",
-                "PMD.SingularField" /* this field cannot be local */})
-        private final Tests tests;
-
-        Singleton() {
-            this.tests = new Tests();
-        }
     }
 }

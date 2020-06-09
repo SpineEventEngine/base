@@ -115,7 +115,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class Environment {
 
     private static final ImmutableList<EnvironmentType> BASE_TYPES =
-            ImmutableList.of(Tests.type(), Production.type());
+            ImmutableList.of(new Tests(), new Production());
 
     private static final Environment INSTANCE = new Environment();
 
@@ -208,7 +208,7 @@ public final class Environment {
      */
     @Deprecated
     public boolean isTests() {
-        return is(Tests.type());
+        return is(new Tests());
     }
 
     /**
@@ -255,7 +255,7 @@ public final class Environment {
     @Deprecated
     @VisibleForTesting
     public void setToTests() {
-        this.currentEnvType = Tests.type();
+        this.currentEnvType = new Tests();
         Tests.enable();
     }
 
@@ -269,7 +269,7 @@ public final class Environment {
     @Deprecated
     @VisibleForTesting
     public void setToProduction() {
-        this.currentEnvType = Production.type();
+        this.currentEnvType = new Production();
         Tests.clearTestingEnvVariable();
     }
 
@@ -298,6 +298,6 @@ public final class Environment {
         }
 
         // `Production` is the default fallback.
-        return Production.type();
+        return new Production();
     }
 }

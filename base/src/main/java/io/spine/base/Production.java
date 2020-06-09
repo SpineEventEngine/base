@@ -30,30 +30,17 @@ import com.google.errorprone.annotations.Immutable;
 @Immutable
 public final class Production extends EnvironmentType {
 
+    /**
+     * Creates a new instance.
+     *
+     * <p>All {@code Production} instances are immutable and equivalent.
+     */
+    public Production() {
+    }
+
     @Override
     protected boolean enabled() {
-        return !Tests.type()
-                     .enabled();
-    }
-
-    /**
-     * Returns the singleton instance.
-     */
-    public static Production type() {
-        return Singleton.INSTANCE.production;
-    }
-
-    private enum Singleton {
-
-        INSTANCE;
-
-        @SuppressWarnings({
-                "NonSerializableFieldInSerializableClass",
-                "PMD.SingularField" /* this field cannot be local */})
-        private final Production production;
-
-        Singleton() {
-            this.production = new Production();
-        }
+        boolean tests = new Tests().enabled();
+        return !tests;
     }
 }
