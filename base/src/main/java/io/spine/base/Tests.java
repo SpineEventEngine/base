@@ -23,7 +23,6 @@ package io.spine.base;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
-import com.google.errorprone.annotations.Immutable;
 
 import java.util.regex.Pattern;
 
@@ -67,8 +66,8 @@ public final class Tests extends EnvironmentType {
      * <p>The method returns {@code true} if the following packages are discovered
      * in the stacktrace:
      * <ul>
-     *     <li>{@code org.junit}
-     *     <li>{@code org.testng}
+     * <li>{@code org.junit}
+     * <li>{@code org.testng}
      * </ul>
      *
      * @return {@code true} if the code runs under a testing framework, {@code false} otherwise
