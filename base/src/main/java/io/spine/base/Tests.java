@@ -47,7 +47,7 @@ public final class Tests extends EnvironmentType {
 
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in another context. */)
     private static final ImmutableList<String> KNOWN_TESTING_FRAMEWORKS =
-            ImmutableList.of("org.junit", "org.testng");
+            ImmutableList.of("org.junit", "org.testng", "io.spine.testing");
 
     private static final Pattern TEST_PROP_PATTERN = Pattern.compile("\"' ");
 
@@ -66,8 +66,9 @@ public final class Tests extends EnvironmentType {
      * <p>The method returns {@code true} if the following packages are discovered
      * in the stacktrace:
      * <ul>
-     * <li>{@code org.junit}
-     * <li>{@code org.testng}
+     *     <li>{@code org.junit}
+     *     <li>{@code org.testng}
+     *     <li>{@code io.spine.testing}
      * </ul>
      *
      * @return {@code true} if the code runs under a testing framework, {@code false} otherwise
