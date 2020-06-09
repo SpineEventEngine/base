@@ -145,7 +145,7 @@ public final class EntityWithColumnsSpec implements GeneratedTypeSpec {
      */
     private GeneratedJavadoc classJavadoc() {
         return GeneratedJavadoc.twoParagraph(
-                CodeBlock.of("Entity сolumns of proto type {@code $L}.", messageType.javaClassName()),
+                CodeBlock.of("Entity columns of proto type {@code $L}.", messageType.javaClassName()),
                 CodeBlock.of("Implement this type to manually override the entity column values.")
         );
     }

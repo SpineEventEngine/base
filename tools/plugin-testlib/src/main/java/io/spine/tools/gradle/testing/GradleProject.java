@@ -39,6 +39,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Throwables.getRootCause;
 import static com.google.common.collect.Lists.newLinkedList;
+import static io.spine.io.Files2.copyDir;
 import static java.util.Arrays.asList;
 
 /**
@@ -51,6 +52,7 @@ public final class GradleProject {
     private static final String BASE_PROTO_LOCATION = "src/main/proto/";
     private static final String BASE_JAVA_LOCATION = "src/main/java/";
     private static final String JAVA_PLUGIN_NAME = "java";
+    private static final String BUILD_SRC = "buildSrc";
 
     private final String name;
     private final GradleRunner gradleRunner;
@@ -80,6 +82,7 @@ public final class GradleProject {
             gradleRunner.withPluginClasspath();
         }
         writeGradleScripts();
+        writeBuildSrc();
         writeProtoFiles(builder.protoFileNames);
         writeJavaFiles(builder.javaFileNames);
     }
@@ -92,6 +95,14 @@ public final class GradleProject {
                                       .toPath();
         TestEnvGradle testEnvGradle = new TestEnvGradle(projectRoot, testProjectRoot());
         testEnvGradle.createFile();
+    }
+
+    private void writeBuildSrc() throws IOException {
+        Path projectRoot = ProjectRoot.instance()
+                                      .toPath();
+        Path buildSrc = projectRoot.resolve(BUILD_SRC);
+        Path target = testProjectRoot();
+        copyDir(buildSrc, target);
     }
 
     private void writeProtoFiles(Iterable<String> fileNames) throws IOException {

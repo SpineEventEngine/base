@@ -20,16 +20,25 @@
 
 package io.spine.io;
 
+import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.stream.Stream;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.io.Files.createParentDirs;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
+import static java.nio.file.Files.copy;
+import static java.nio.file.Files.createDirectory;
+import static java.nio.file.Files.isDirectory;
+import static java.nio.file.Files.isRegularFile;
 
 /**
  * Additional utilities for working with files.
@@ -141,12 +150,50 @@ public final class Files2 {
      * Ensures that the passed file exists.
      *
      * @return the passed file if it exists
-     * @throws IllegalStateException if the file is missing
+     * @throws IllegalStateException
+     *         if the file is missing
      */
     @CanIgnoreReturnValue
     public static File checkExists(File file) {
         checkNotNull(file);
         checkState(file.exists(), "The file `%s` does not exist.", file);
         return file;
+    }
+
+    /**
+     * Copies a whole directory and its contents into another directory.
+     *
+     * <p>Both paths must point to an existing directory.
+     *
+     * <p>The {@code dir} itself is copied as well. For example, if the {@code dir} path is
+     * {@code /my/path/to/folder/foo} and the {@code target} path is {@code /my/other/folder}, as
+     * a result of this operation, a {@code /my/other/folder/foo} directory will be created and all
+     * the contents of the original {@code dir}, including nested directories, will be copied there.
+     *
+     * @param dir
+     *         the dir to copy
+     * @param target
+     *         the new parent directory
+     */
+    public static void copyDir(Path dir, Path target) throws IOException {
+        checkNotNull(dir);
+        checkNotNull(target);
+        checkArgument(isDirectory(dir));
+        checkArgument(isDirectory(target));
+
+        Path oldParent = dir.getParent();
+        ImmutableList<Path> files;
+        try (Stream<Path> paths = Files.walk(dir)) {
+            files = paths.collect(toImmutableList());
+        }
+        for (Path file : files) {
+            Path relative = oldParent.relativize(file);
+            Path newPath = target.resolve(relative);
+            if (isDirectory(file)) {
+                createDirectory(newPath);
+            } else if (isRegularFile(file)) {
+                copy(file, newPath);
+            }
+        }
     }
 }
