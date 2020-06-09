@@ -77,8 +77,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  *     static {
  *         Environment.instance()
- *                    .register(new StagingEnvironmentType())
- *                    .register(new LoadTestingType());
+ *                    .register(new Staging())
+ *                    .register(new LoadTesting());
  *     }
  *
  *     private final ConnectionPool pool;
@@ -180,10 +180,10 @@ public final class Environment {
      *
      * @return the current environment type.
      */
-    public boolean is(Class<? extends EnvironmentType> typeClass) {
+    public boolean is(Class<? extends EnvironmentType> type) {
         EnvironmentType currentType = cachedOrCalculated();
         boolean result = currentType.getClass()
-                                    .equals(typeClass);
+                                    .equals(type);
         return result;
     }
 
