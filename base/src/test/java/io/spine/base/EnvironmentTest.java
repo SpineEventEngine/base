@@ -180,7 +180,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         @Test
         @DisplayName("allow to provide user defined environment types")
         void provideCustomTypes() {
-            register(Staging.type(), Local.type());
+            register(new Staging(), new Local());
 
             // Now that `Environment` knows about `LOCAL`, it should use it as fallback.
             assertThat(environment.is(Local.class)).isTrue();
@@ -190,7 +190,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         @DisplayName("fallback to the `TESTS` environment")
         void fallBack() {
             Environment.instance()
-                       .register(Travis.type());
+                       .register(new Travis());
             assertThat(environment.is(Travis.class)).isFalse();
             assertThat(environment.is(Tests.class)).isTrue();
         }
@@ -205,9 +205,9 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Test
     @DisplayName("detect the current custom environment in presence of custom types")
     void determineUsingTypeInPresenceOfCustom() {
-        register(Local.type());
+        register(new Local());
 
-        assertThat(environment.type()).isEqualTo(Local.type());
+        assertThat(environment.is(Local.class)).isTrue();
     }
 
     private static void register(EnvironmentType... types) {
@@ -217,65 +217,23 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         }
     }
 
-    @Immutable
-    @SuppressWarnings("ImmutableEnumChecker" /* This testing implementation is mutable for simplicity. */)
     static final class Local extends EnvironmentType {
-
-        private Local() {
-        }
 
         @Override
         public boolean enabled() {
             // `LOCAL` is the default custom env type. It should be used as a fallback.
             return true;
         }
-
-        public static Local type() {
-            return Local.Singleton.INSTANCE.local;
-        }
-
-        private enum Singleton {
-
-            INSTANCE;
-
-            @SuppressWarnings("NonSerializableFieldInSerializableClass")
-            private final Local local;
-
-            Singleton() {
-                this.local = new Local();
-            }
-        }
     }
 
-    @Immutable
-    @SuppressWarnings("ImmutableEnumChecker" /* This testing implementation is mutable for simplicity. */)
     static final class Staging extends EnvironmentType {
 
         static final String STAGING_ENV_TYPE_KEY = "io.spine.base.EnvironmentTest.is_staging";
-
-        private Staging() {
-        }
-
-        public static Staging type() {
-            return Staging.Singleton.INSTANCE.staging;
-        }
 
         @Override
         public boolean enabled() {
             return String.valueOf(true)
                          .equalsIgnoreCase(System.getProperty(STAGING_ENV_TYPE_KEY));
-        }
-
-        private enum Singleton {
-
-            INSTANCE;
-
-            @SuppressWarnings("NonSerializableFieldInSerializableClass")
-            private final Staging staging;
-
-            Singleton() {
-                this.staging = new Staging();
-            }
         }
     }
 
@@ -283,28 +241,9 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @SuppressWarnings("unused" /* The only variant is used. */)
     static final class Travis extends EnvironmentType {
 
-        private Travis() {
-        }
-
         @Override
         public boolean enabled() {
             return false;
-        }
-
-        public static Travis type() {
-            return Travis.Singleton.INSTANCE.travis;
-        }
-
-        private enum Singleton {
-
-            INSTANCE;
-
-            @SuppressWarnings("NonSerializableFieldInSerializableClass")
-            private final Travis travis;
-
-            Singleton() {
-                this.travis = new Travis();
-            }
         }
     }
 }

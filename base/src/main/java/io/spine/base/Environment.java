@@ -33,9 +33,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <h1>Environment Type Detection</h1>
  *
- * <p>Current implementation allows to {@linkplain #is(Class) check} whether the current environment
- * is of the specified class and {@linkplain #type() get an instance of the current environment
- * type}. Two environment types exist out of the box:
+ * <p>Current implementation allows to {@linkplain #is(Class) check} the type of the current
+ * environment. Two environment types exist out of the box:
  *
  * <ul>
  *     <li><em>{@link Tests}</em> is detected if the current call stack has a reference to the unit
@@ -78,8 +77,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  *     static {
  *         Environment.instance()
- *                    .register(StagingEnvironmentType.type())
- *                    .register(LoadTestingType.type());
+ *                    .register(new StagingEnvironmentType())
+ *                    .register(new LoadTestingType());
  *     }
  *
  *     private final ConnectionPool pool;
@@ -185,20 +184,6 @@ public final class Environment {
         EnvironmentType currentType = cachedOrCalculated();
         boolean result = currentType.getClass()
                                     .equals(typeClass);
-        return result;
-    }
-
-    /**
-     * Returns the current environment type.
-     *
-     * <p>If {@linkplain #register(EnvironmentType) custom env types have been defined},
-     * goes through them in the latest-registered to earliest-registered order.
-     * Then, checks {@link Tests} and {@link Production}.
-     *
-     * @return the current environment type
-     */
-    public EnvironmentType type() {
-        EnvironmentType result = cachedOrCalculated();
         return result;
     }
 
