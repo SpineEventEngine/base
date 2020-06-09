@@ -217,9 +217,23 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Test
     @DisplayName("detect the current custom environment in presence of custom types")
     void determineUsingTypeInPresenceOfCustom() {
-        register(new Local());
+        register(new Staging(), new Local());
 
         assertThat(environment.is(Local.class)).isTrue();
+    }
+
+    @Test
+    @DisplayName("return the instance of the default environment type")
+    void returnInstance() {
+        assertThat(environment.type()).isInstanceOf(Tests.class);
+    }
+
+    @Test
+    @DisplayName("return the instance of a custom environment type")
+    void returnCustomInstnace() {
+        register(new Local(), new Staging());
+
+        assertThat(environment.type()).isInstanceOf(Local.class);
     }
 
     private static void register(EnvironmentType... types) {

@@ -35,7 +35,8 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * <h1>Environment Type Detection</h1>
  *
  * <p>Current implementation allows to {@linkplain #is(Class) check} the type of the current
- * environment. Two environment types exist out of the box:
+ * environment, or {@linkplain #type() get the instance of the current environment}.
+ * Two environment types exist out of the box:
  *
  * <ul>
  *     <li><em>{@link Tests}</em> is detected if the current call stack has a reference to the unit
@@ -202,6 +203,12 @@ public final class Environment {
         EnvironmentType currentEnv = cachedOrCalculated();
         boolean result = type.isInstance(currentEnv);
         return result;
+    }
+
+    /** Returns the instance of the current environment. */
+    public EnvironmentType type() {
+        EnvironmentType currentEnv = cachedOrCalculated();
+        return currentEnv;
     }
 
     /**
