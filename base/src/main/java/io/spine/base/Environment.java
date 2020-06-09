@@ -27,15 +27,16 @@ import io.spine.annotation.SPI;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * Provides information about the environment (current platform used, etc.).
  *
  * <h1>Environment Type Detection</h1>
  *
- * <p>Current implementation allows to {@linkplain #is(EnvironmentType) check} whether a given
- * environment is currently the active one and {@linkplain #type() get an instance of the current
- * environment type}. Two environment types exist out of the box:
+ * <p>Current implementation allows to {@linkplain #is(Class) check} the type of the current
+ * environment, or {@linkplain #type() get the instance of the current environment}.
+ * Two environment types exist out of the box:
  *
  * <ul>
  *     <li><em>{@link Tests}</em> is detected if the current call stack has a reference to the unit
@@ -55,7 +56,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  *     private Application() {
  *         Environment environment = Environment.instance();
- *         if(environment.is(Tests.type())) {
+ *         if(environment.is(Tests.class)) {
  *             // Do not send out emails if in tests.
  *             this.sender = new MockEmailSender();
  *         } else {
@@ -78,19 +79,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  *     static {
  *         Environment.instance()
- *                    .register(StagingEnvironmentType.type())
- *                    .register(LoadTestingType.type());
+ *                    .register(new Staging())
+ *                    .register(new LoadTesting());
  *     }
  *
  *     private final ConnectionPool pool;
  *
  *     private Application() {
  *         Environment environment = Environment.instance();
- *         if (environment.is(Tests.type()) {
+ *         if (environment.is(Tests.class) {
  *              // Single connection is enough for tests.
  *             this.pool = new ConnectionPoolImpl(PoolCapacity.of(1));
  *         } else {
- *             if(environment.is(LoadTesting.type()) {
+ *             if(environment.is(LoadTesting.class) {
  *                 this.pool =
  *                         new ConnectionPoolImpl(PoolCapacity.fromConfig("load_tests.yml"));
  *             } else {
@@ -105,7 +106,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <p><b>When registering custom types, please ensure</b> their mutual exclusivity.
  * If two or more environment types {@linkplain EnvironmentType#enabled() consider themselves
- * enabled} at the same time, the behaviour of {@link #is(EnvironmentType)}} is undefined.
+ * enabled} at the same time, the behaviour of {@link #is(Class)}} is undefined.
  *
  * @see EnvironmentType
  * @see Tests
@@ -115,7 +116,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class Environment {
 
     private static final ImmutableList<EnvironmentType> BASE_TYPES =
-            ImmutableList.of(Tests.type(), Production.type());
+            ImmutableList.of(new Tests(), new Production());
 
     private static final Environment INSTANCE = new Environment();
 
@@ -133,7 +134,7 @@ public final class Environment {
     }
 
     /**
-     * Remembers the specified environment type, allowing {@linkplain #is(EnvironmentType) to
+     * Remembers the specified environment type, allowing {@linkplain #is(Class) to
      * determine whether it's enabled} later.
      *
      * <p>Note that the default types are still present.
@@ -179,52 +180,46 @@ public final class Environment {
      * goes through them in the latest-registered to earliest-registered order.
      * Then, checks {@link Tests} and {@link Production}.
      *
-     * @return the current environment type.
+     * <p>Please note that {@code is} follows assigment-compatibility:
+     * <pre>
+     *     abstract class AppEngine extends EnvironmentType {
+     *         ...
+     *     }
+     *
+     *     final class AppEngineStandard extends AppEngine {
+     *         ...
+     *     }
+     *
+     *     Environment environment = Environment.instance();
+     *
+     *     // Assuming we are under App Engine Standard
+     *     assertThat(environment.is(AppEngine.class)).isTrue();
+     *
+     * </pre>
+     *
+     * @return whether the current environment type matches the specified one
      */
-    @SuppressWarnings("ConstantConditions"/* no NPE is ensured by the `ensureTypeIsSet` call. */)
-    public boolean is(EnvironmentType type) {
-        ensureTypeIsSet();
-        return currentEnvType.equals(type);
+    public boolean is(Class<? extends EnvironmentType> type) {
+        EnvironmentType currentEnv = cachedOrCalculated();
+        boolean result = type.isInstance(currentEnv);
+        return result;
     }
 
-    /**
-     * Returns the current environment type.
-     *
-     * <p>If {@linkplain #register(EnvironmentType) custom env types have been defined},
-     * goes through them in the latest-registered to earliest-registered order.
-     * Then, checks {@link Tests} and {@link Production}.
-     *
-     * @return the current environment type
-     */
+    /** Returns the instance of the current environment. */
     public EnvironmentType type() {
-        ensureTypeIsSet();
-        return currentEnvType;
-    }
-
-    private void ensureTypeIsSet() {
-        if (currentEnvType == null) {
-            determineCurrentType();
-        }
-    }
-
-    private void determineCurrentType() {
-        for (EnvironmentType type : knownEnvTypes) {
-            if (type.enabled()) {
-                this.currentEnvType = type;
-                return;
-            }
-        }
+        EnvironmentType currentEnv = cachedOrCalculated();
+        return currentEnv;
     }
 
     /**
      * Verifies if the code currently runs under a unit testing framework.
      *
      * @see Tests
-     * @deprecated use {@code Environment.instance().is(Tests.type)}
+     * @deprecated use {@code Environment.instance().is(Tests.class)}
      */
     @Deprecated
     public boolean isTests() {
-        return is(Tests.type());
+        return is(Tests.class);
     }
 
     /**
@@ -234,7 +229,7 @@ public final class Environment {
      *
      * @return {@code true} if the code runs in the production mode, {@code false} otherwise
      * @see Production
-     * @deprecated use {@code Environment.instance().is(Production.type())}
+     * @deprecated use {@code Environment.instance().is(Production.class)}
      */
     @Deprecated
     public boolean isProduction() {
@@ -271,7 +266,7 @@ public final class Environment {
     @Deprecated
     @VisibleForTesting
     public void setToTests() {
-        this.currentEnvType = Tests.type();
+        this.currentEnvType = new Tests();
         Tests.enable();
     }
 
@@ -285,7 +280,7 @@ public final class Environment {
     @Deprecated
     @VisibleForTesting
     public void setToProduction() {
-        this.currentEnvType = Production.type();
+        this.currentEnvType = new Production();
         Tests.clearTestingEnvVariable();
     }
 
@@ -297,5 +292,22 @@ public final class Environment {
         this.currentEnvType = null;
         this.knownEnvTypes = BASE_TYPES;
         Tests.clearTestingEnvVariable();
+    }
+
+    private EnvironmentType cachedOrCalculated() {
+        EnvironmentType result = currentEnvType != null
+                                 ? currentEnvType
+                                 : currentType();
+        return result;
+    }
+
+    private EnvironmentType currentType() {
+        for (EnvironmentType type : knownEnvTypes) {
+            if (type.enabled()) {
+                return type;
+            }
+        }
+
+        throw newIllegalStateException("`Environment` could not find an active environment type.");
     }
 }

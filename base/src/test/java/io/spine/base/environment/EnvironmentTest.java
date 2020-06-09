@@ -41,21 +41,20 @@ class EnvironmentTest {
     @DisplayName("allow a custom user type")
     void allowCustomType() {
         Environment.instance()
-                   .register(Staging.type());
+                   .register(new Staging());
 
         Staging.enable();
         assertThat(Environment.instance()
-                              .is(Staging.type())).isTrue();
+                              .is(Staging.class)).isTrue();
     }
 
     @Test
     @DisplayName("fallback to the default type")
     void fallbackToCustomType() {
-        Environment.instance().register(Staging.type());
+        Environment.instance().register(new Staging());
 
         Staging.disable();
 
-        assertThat(Environment.instance().is(Tests.type())).isTrue();
+        assertThat(Environment.instance().is(Tests.class)).isTrue();
     }
-
 }

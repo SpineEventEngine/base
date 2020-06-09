@@ -18,23 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.base.given;
+
+import io.spine.base.EnvironmentType;
 
 /**
- * A type of environment.
+ * An environment that denotes that the system is running under Google App Engine.
  *
- * <p>Some examples may be {@code STAGING} or {@code LOCAL} environments.
- *
- * @implNote Not an {@code interface} to limit the access level of {@link #enabled()}
+ * <p>Leaves the implementation of {@link #enabled()} to subclasses.
  */
-public abstract class EnvironmentType {
-
-    /**
-     * Returns {@code true} if the underlying system is currently in this environment type.
-     *
-     * <p>For example, if an application is deployed to a fleet of virtual machines, an environment
-     * variable may be set for every virtual machine. Application developer may use this type of
-     * knowledge to determine the current environment.
-     */
-    protected abstract boolean enabled();
+public abstract class AppEngine extends EnvironmentType {
 }

@@ -23,7 +23,6 @@ package io.spine.base;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
-import com.google.errorprone.annotations.Immutable;
 
 import java.util.regex.Pattern;
 
@@ -34,7 +33,6 @@ import java.util.regex.Pattern;
  *
  * <p>This option is mutually exclusive with {@link Production}, i.e. one of them is always enabled.
  */
-@Immutable
 @SuppressWarnings("AccessOfSystemProperties" /* is necessary for this class to function */)
 public final class Tests extends EnvironmentType {
 
@@ -54,13 +52,22 @@ public final class Tests extends EnvironmentType {
     private static final Pattern TEST_PROP_PATTERN = Pattern.compile("\"' ");
 
     /**
+     * Creates a new instance.
+     *
+     * <p>All {@code Tests} instances are immutable and equivalent.
+     */
+    public Tests() {
+        super();
+    }
+
+    /**
      * Verifies if the code currently runs under a unit testing framework.
      *
      * <p>The method returns {@code true} if the following packages are discovered
      * in the stacktrace:
      * <ul>
-     *     <li>{@code org.junit}
-     *     <li>{@code org.testng}
+     * <li>{@code org.junit}
+     * <li>{@code org.testng}
      * </ul>
      *
      * @return {@code true} if the code runs under a testing framework, {@code false} otherwise
@@ -98,26 +105,5 @@ public final class Tests extends EnvironmentType {
      */
     static void enable() {
         System.setProperty(ENV_KEY_TESTS, String.valueOf(true));
-    }
-
-    /**
-     * Returns the singleton instance of this class.
-     */
-    public static Tests type() {
-        return Singleton.INSTANCE.tests;
-    }
-
-    private enum Singleton {
-
-        INSTANCE;
-
-        @SuppressWarnings({
-                "NonSerializableFieldInSerializableClass",
-                "PMD.SingularField" /* this field cannot be local */})
-        private final Tests tests;
-
-        Singleton() {
-            this.tests = new Tests();
-        }
     }
 }
