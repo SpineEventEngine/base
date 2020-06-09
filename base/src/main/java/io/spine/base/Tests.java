@@ -59,6 +59,7 @@ public final class Tests extends EnvironmentType {
      * <p>All {@code Tests} instances are immutable and equivalent.
      */
     public Tests() {
+        super();
     }
 
     /**

@@ -36,6 +36,7 @@ public final class Production extends EnvironmentType {
      * <p>All {@code Production} instances are immutable and equivalent.
      */
     public Production() {
+        super();
     }
 
     @Override
