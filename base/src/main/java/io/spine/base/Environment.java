@@ -196,7 +196,7 @@ public final class Environment {
      *
      * </pre>
      *
-     * @return the current environment type.
+     * @return whether the current environment type matches the specified one
      */
     public boolean is(Class<? extends EnvironmentType> type) {
         EnvironmentType currentEnv = cachedOrCalculated();
