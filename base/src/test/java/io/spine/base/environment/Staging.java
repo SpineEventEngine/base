@@ -28,10 +28,6 @@ import io.spine.base.EnvironmentType;
  *
  * <p>This implementations relies on a static {@code boolean} flag for detection.
  */
-@SuppressWarnings("ImmutableEnumChecker"
-        /*
-         * This testing implementation is mutable for simplicity.
-         */)
 public final class Staging extends EnvironmentType {
 
     private static boolean enabled = false;
