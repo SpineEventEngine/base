@@ -27,6 +27,7 @@ import io.spine.annotation.SPI;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * Provides information about the environment (current platform used, etc.).
@@ -300,7 +301,6 @@ public final class Environment {
             }
         }
 
-        // `Production` is the default fallback.
-        return new Production();
+        throw newIllegalStateException("`Environment` could not find an active environment type.");
     }
 }
