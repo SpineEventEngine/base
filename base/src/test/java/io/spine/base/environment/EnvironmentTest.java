@@ -45,7 +45,7 @@ class EnvironmentTest {
 
         Staging.enable();
         assertThat(Environment.instance()
-                              .is(Staging.type())).isTrue();
+                              .is(Staging.class)).isTrue();
     }
 
     @Test
@@ -55,6 +55,6 @@ class EnvironmentTest {
 
         Staging.disable();
 
-        assertThat(Environment.instance().is(new Tests())).isTrue();
+        assertThat(Environment.instance().is(Tests.class)).isTrue();
     }
 }

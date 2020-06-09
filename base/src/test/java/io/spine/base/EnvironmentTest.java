@@ -87,7 +87,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         Environment.instance()
                    .setTo(tests);
 
-        assertThat(environment.is(tests)).isTrue();
+        assertThat(environment.is(Tests.class)).isTrue();
     }
 
     @Test
@@ -95,14 +95,14 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     void environmentVar1() {
         System.setProperty(ENV_KEY_TESTS, "1");
 
-        assertThat(environment.is(new Tests())).isTrue();
+        assertThat(environment.is(Tests.class)).isTrue();
     }
 
     @Test
     @DisplayName("tell that we are under tests if run under known framework")
     void underTestFramework() {
         // As we run this from under JUnit...
-        assertThat(environment.is(new Tests())).isTrue();
+        assertThat(environment.is(Tests.class)).isTrue();
     }
 
     @Test
@@ -110,7 +110,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     void environmentVarUnknownValue() {
         System.setProperty(ENV_KEY_TESTS, "neitherTrueNor1");
 
-        assertThat(environment.is(new Production())).isTrue();
+        assertThat(environment.is(Production.class)).isTrue();
     }
 
     @Test
@@ -127,7 +127,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     void explicitlySetTrue() {
         environment.setToTests();
 
-        assertThat(environment.is(new Tests())).isTrue();
+        assertThat(environment.is(Tests.class)).isTrue();
     }
 
     @Test
@@ -145,7 +145,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     void turnTestsOn() {
         environment.setTo(new Tests());
 
-        assertThat(environment.is(new Tests())).isTrue();
+        assertThat(environment.is(Tests.class)).isTrue();
     }
 
     @Test
@@ -153,7 +153,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     void turnProductionOn() {
         environment.setTo(new Production());
 
-        assertThat(environment.is(new Production())).isTrue();
+        assertThat(environment.is(Production.class)).isTrue();
     }
 
     @Test
@@ -162,7 +162,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     void turnProductionOnUsingDeprecatedMethod() {
         environment.setToProduction();
 
-        assertThat(environment.is(new Production())).isTrue();
+        assertThat(environment.is(Production.class)).isTrue();
     }
 
     @Test
@@ -183,7 +183,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
             register(Staging.type(), Local.type());
 
             // Now that `Environment` knows about `LOCAL`, it should use it as fallback.
-            assertThat(environment.is(Local.type())).isTrue();
+            assertThat(environment.is(Local.class)).isTrue();
         }
 
         @Test
@@ -191,8 +191,8 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         void fallBack() {
             Environment.instance()
                        .register(Travis.type());
-            assertThat(environment.is(Travis.type())).isFalse();
-            assertThat(environment.is(new Tests())).isTrue();
+            assertThat(environment.is(Travis.class)).isFalse();
+            assertThat(environment.is(Tests.class)).isTrue();
         }
     }
 
