@@ -34,7 +34,6 @@ import java.util.regex.Pattern;
  *
  * <p>This option is mutually exclusive with {@link Production}, i.e. one of them is always enabled.
  */
-@Immutable
 @SuppressWarnings("AccessOfSystemProperties" /* is necessary for this class to function */)
 public final class Tests extends EnvironmentType {
 
