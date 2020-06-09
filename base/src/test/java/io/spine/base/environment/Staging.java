@@ -30,35 +30,28 @@ import io.spine.base.EnvironmentType;
  */
 public final class Staging extends EnvironmentType {
 
-    @Override
-    protected boolean enabled() {
-        return Singleton.INSTANCE.enabled;
+    private static boolean enabled = false;
+
+    Staging() {
+        super();
     }
 
-    public static Staging type() {
-        return Singleton.INSTANCE.staging;
+    @Override
+    protected boolean enabled() {
+        return enabled;
     }
 
     /**
      * Brings the underlying system into the staging environment.
      */
     static void enable() {
-        Singleton.INSTANCE.enabled = true;
+        enabled = true;
     }
 
     /**
      * Brings the underlying system out of the staging environment.
      */
     static void disable() {
-        Singleton.INSTANCE.enabled = false;
-    }
-
-    public enum Singleton {
-
-        INSTANCE;
-
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Staging staging = new Staging();
-        private boolean enabled;
+        enabled = false;
     }
 }

@@ -18,23 +18,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.base.given;
 
 /**
- * A type of environment.
- *
- * <p>Some examples may be {@code STAGING} or {@code LOCAL} environments.
- *
- * @implNote Not an {@code interface} to limit the access level of {@link #enabled()}
+ * Determines whether the system is running under Google App Engine Standard environment.
  */
-public abstract class EnvironmentType {
+@SuppressWarnings("AccessOfSystemProperties")
+public class AppEngineStandard extends AppEngine {
+
+    private static final String ENV_KEY = "io.spine.base.test.is_appengine";
+
+    @Override
+    protected boolean enabled() {
+        String propertyValue = System.getProperty(ENV_KEY);
+        return activeValue().equalsIgnoreCase(propertyValue);
+    }
 
     /**
-     * Returns {@code true} if the underlying system is currently in this environment type.
-     *
-     * <p>For example, if an application is deployed to a fleet of virtual machines, an environment
-     * variable may be set for every virtual machine. Application developer may use this type of
-     * knowledge to determine the current environment.
+     * Enables the App Engine Standard environment.
      */
-    protected abstract boolean enabled();
+    public static void enable() {
+        System.setProperty(ENV_KEY, activeValue());
+    }
+
+    /**
+     * Disables teh App Engine Standard environment.
+     */
+    public static void clear() {
+        System.clearProperty(ENV_KEY);
+    }
+
+    private static String activeValue() {
+        return String.valueOf(true);
+    }
 }
