@@ -33,9 +33,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <h1>Environment Type Detection</h1>
  *
- * <p>Current implementation allows to {@linkplain #is(EnvironmentType) check} whether a given
- * environment is currently the active one and {@linkplain #type() get an instance of the current
- * environment type}. Two environment types exist out of the box:
+ * <p>Current implementation allows to {@linkplain #is(Class) check} whether the current environment
+ * is of the specified class and {@linkplain #type() get an instance of the current environment
+ * type}. Two environment types exist out of the box:
  *
  * <ul>
  * <li><em>{@link Tests}</em> is detected if the current call stack has a reference to the unit
@@ -55,7 +55,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  *     private Application() {
  *         Environment environment = Environment.instance();
- *         if(environment.is(Tests.type())) {
+ *         if(environment.is(Tests.class)) {
  *             // Do not send out emails if in tests.
  *             this.sender = new MockEmailSender();
  *         } else {
@@ -86,11 +86,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  *     private Application() {
  *         Environment environment = Environment.instance();
- *         if (environment.is(Tests.type()) {
+ *         if (environment.is(Tests.class) {
  *              // Single connection is enough for tests.
  *             this.pool = new ConnectionPoolImpl(PoolCapacity.of(1));
  *         } else {
- *             if(environment.is(LoadTesting.type()) {
+ *             if(environment.is(LoadTesting.class) {
  *                 this.pool =
  *                         new ConnectionPoolImpl(PoolCapacity.fromConfig("load_tests.yml"));
  *             } else {
@@ -105,7 +105,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <p><b>When registering custom types, please ensure</b> their mutual exclusivity.
  * If two or more environment types {@linkplain EnvironmentType#enabled() consider themselves
- * enabled} at the same time, the behaviour of {@link #is(EnvironmentType)}} is undefined.
+ * enabled} at the same time, the behaviour of {@link #is(Class)}} is undefined.
  *
  * @see EnvironmentType
  * @see Tests
@@ -133,7 +133,7 @@ public final class Environment {
     }
 
     /**
-     * Remembers the specified environment type, allowing {@linkplain #is(EnvironmentType) to
+     * Remembers the specified environment type, allowing {@linkplain #is(Class) to
      * determine whether it's enabled} later.
      *
      * <p>Note that the default types are still present.
@@ -181,9 +181,11 @@ public final class Environment {
      *
      * @return the current environment type.
      */
-    public boolean is(EnvironmentType type) {
+    public boolean is(Class<? extends EnvironmentType> typeClass) {
         EnvironmentType currentType = cachedOrCalculated();
-        return currentType.equals(type);
+        boolean result = currentType.getClass()
+                                    .equals(typeClass);
+        return result;
     }
 
     /**
@@ -204,11 +206,11 @@ public final class Environment {
      * Verifies if the code currently runs under a unit testing framework.
      *
      * @see Tests
-     * @deprecated use {@code Environment.instance().is(Tests.type)}
+     * @deprecated use {@code Environment.instance().is(Tests.class)}
      */
     @Deprecated
     public boolean isTests() {
-        return is(new Tests());
+        return is(Tests.class);
     }
 
     /**
@@ -218,7 +220,7 @@ public final class Environment {
      *
      * @return {@code true} if the code runs in the production mode, {@code false} otherwise
      * @see Production
-     * @deprecated use {@code Environment.instance().is(Production.type())}
+     * @deprecated use {@code Environment.instance().is(Production.class)}
      */
     @Deprecated
     public boolean isProduction() {
