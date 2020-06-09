@@ -178,12 +178,28 @@ public final class Environment {
      * goes through them in the latest-registered to earliest-registered order.
      * Then, checks {@link Tests} and {@link Production}.
      *
+     * <p>Please note that {@code is} follows assigment-compatibility:
+     * <pre>
+     *     abstract class AppEngine extends EnvironmentType {
+     *         ...
+     *     }
+     *
+     *     final class AppEngineStandard extends AppEngine {
+     *         ...
+     *     }
+     *
+     *     Environment environment = Environment.instance();
+     *
+     *     // Assuming we are under App Engine Standard
+     *     assertThat(environment.is(AppEngine.class)).isTrue();
+     *
+     * </pre>
+     *
      * @return the current environment type.
      */
     public boolean is(Class<? extends EnvironmentType> type) {
-        EnvironmentType currentType = cachedOrCalculated();
-        boolean result = currentType.getClass()
-                                    .equals(type);
+        EnvironmentType currentEnv = cachedOrCalculated();
+        boolean result = type.isInstance(currentEnv);
         return result;
     }
 

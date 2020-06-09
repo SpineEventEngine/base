@@ -21,6 +21,8 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
+import io.spine.base.given.AppEngine;
+import io.spine.base.given.AppEngineStandard;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -194,6 +196,16 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
             assertThat(environment.is(Travis.class)).isFalse();
             assertThat(environment.is(Tests.class)).isTrue();
         }
+    }
+
+    @Test
+    @DisplayName("follow assignment-compatibility when determining the type")
+    void polymorphicEnv() {
+        register(new AppEngineStandard());
+
+        AppEngineStandard.enable();
+        assertThat(environment.is(AppEngine.class)).isTrue();
+        AppEngineStandard.clear();
     }
 
     @Test
