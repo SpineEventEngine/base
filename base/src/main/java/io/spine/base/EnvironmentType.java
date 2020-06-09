@@ -25,11 +25,7 @@ package io.spine.base;
  *
  * <p>Some examples may be {@code STAGING} or {@code LOCAL} environments.
  *
- * @implNote developers are encouraged to make their environment types singletons, such
- *         that their API is consistent with the env types provided by the {@code base} library:
- *         {@link Production}, {@link Tests}.
- *
- *         <p>This is not an {@code interface} to limit the access level of {@link #enabled()}
+ * @implNote Not an {@code interface} to limit the access level of {@link #enabled()}
  */
 public abstract class EnvironmentType {
 
