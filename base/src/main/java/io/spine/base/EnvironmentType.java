@@ -20,8 +20,6 @@
 
 package io.spine.base;
 
-import com.google.common.base.Objects;
-
 /**
  * A type of environment.
  *
@@ -30,6 +28,8 @@ import com.google.common.base.Objects;
  * @implNote developers are encouraged to make their environment types singletons, such
  *         that their API is consistent with the env types provided by the {@code base} library:
  *         {@link Production}, {@link Tests}.
+ *
+ *         <p>This is not an {@code interface} to limit the access level of {@link #enabled()}
  */
 public abstract class EnvironmentType {
 
@@ -41,30 +41,4 @@ public abstract class EnvironmentType {
      * knowledge to determine the current environment.
      */
     protected abstract boolean enabled();
-
-    /**
-     * @inheritDoc <p>By default, environments types are compared based on their classes.
-     * @implNote This class deliberately breaks the substitution principle for the {@code
-     *         equals} method. Extenders are not encouraged to have {@code EnvironmentType}
-     *         hierarchies. If they decide to have them anyway, they are free to
-     *         override {@code equals} and {@code hashCode} accordingly.
-     */
-    @Override
-    @SuppressWarnings("EqualsGetClass" /* see @implNote */)
-    public boolean equals(Object obj) {
-        return this.getClass()
-                   .equals(obj.getClass());
-    }
-
-    /**
-     * @inheritDoc
-     *
-     * <p>By default, adheres to the {@code equals} and {@code hashCode} contract, assuming that
-     * the implementation of the {@code equals} is the {@linkplain EnvironmentType#equals(Object)
-     * default one}.
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(getClass());
-    }
 }

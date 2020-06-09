@@ -41,7 +41,7 @@ class EnvironmentTest {
     @DisplayName("allow a custom user type")
     void allowCustomType() {
         Environment.instance()
-                   .register(Staging.type());
+                   .register(new Staging());
 
         Staging.enable();
         assertThat(Environment.instance()
@@ -51,7 +51,7 @@ class EnvironmentTest {
     @Test
     @DisplayName("fallback to the default type")
     void fallbackToCustomType() {
-        Environment.instance().register(Staging.type());
+        Environment.instance().register(new Staging());
 
         Staging.disable();
 

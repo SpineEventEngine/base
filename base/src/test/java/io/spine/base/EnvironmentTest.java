@@ -199,7 +199,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Test
     @DisplayName("detect the current environment correctly using the `type` method")
     void determineUsingType() {
-        assertThat(environment.type()).isEqualTo(new Tests());
+        assertThat(environment.is(Tests.class)).isTrue();
     }
 
     @Test
