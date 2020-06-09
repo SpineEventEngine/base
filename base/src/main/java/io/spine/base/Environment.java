@@ -38,10 +38,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * environment type}. Two environment types exist out of the box:
  *
  * <ul>
- *     <li><em>{@link Tests}</em> is detected if the current call stack has a reference to the unit
- *         testing framework.
+ * <li><em>{@link Tests}</em> is detected if the current call stack has a reference to the unit
+ * testing framework.
  *
- *     <li><em>{@link Production}</em> is set in all other cases.
+ * <li><em>{@link Production}</em> is set in all other cases.
  * </ul>
  *
  * <p>The framework users may define their custom settings depending on the current environment
@@ -181,10 +181,9 @@ public final class Environment {
      *
      * @return the current environment type.
      */
-    @SuppressWarnings("ConstantConditions"/* no NPE is ensured by the `ensureTypeIsSet` call. */)
     public boolean is(EnvironmentType type) {
-        ensureTypeIsSet();
-        return currentEnvType.equals(type);
+        EnvironmentType currentType = cachedOrCalculated();
+        return currentType.equals(type);
     }
 
     /**
@@ -197,23 +196,8 @@ public final class Environment {
      * @return the current environment type
      */
     public EnvironmentType type() {
-        ensureTypeIsSet();
-        return currentEnvType;
-    }
-
-    private void ensureTypeIsSet() {
-        if (currentEnvType == null) {
-            determineCurrentType();
-        }
-    }
-
-    private void determineCurrentType() {
-        for (EnvironmentType type : knownEnvTypes) {
-            if (type.enabled()) {
-                this.currentEnvType = type;
-                return;
-            }
-        }
+        EnvironmentType result = cachedOrCalculated();
+        return result;
     }
 
     /**
@@ -297,5 +281,23 @@ public final class Environment {
         this.currentEnvType = null;
         this.knownEnvTypes = BASE_TYPES;
         Tests.clearTestingEnvVariable();
+    }
+
+    private EnvironmentType cachedOrCalculated() {
+        EnvironmentType result = currentEnvType != null
+                                 ? currentEnvType
+                                 : currentType();
+        return result;
+    }
+
+    private EnvironmentType currentType() {
+        for (EnvironmentType type : knownEnvTypes) {
+            if (type.enabled()) {
+                return type;
+            }
+        }
+
+        // `Production` is the default fallback.
+        return Production.type();
     }
 }
