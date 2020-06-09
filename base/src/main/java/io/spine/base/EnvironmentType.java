@@ -43,11 +43,14 @@ public abstract class EnvironmentType {
     protected abstract boolean enabled();
 
     /**
-     * @inheritDoc
-     *
-     * <p>By default, environments types are compared based on their classes.
+     * @inheritDoc <p>By default, environments types are compared based on their classes.
+     * @implNote This class deliberately breaks the substitution principle for the {@code
+     *         equals} method. Extenders are not encouraged to have {@code EnvironmentType}
+     *         hierarchies. If they decide to have them anyway, they are free to
+     *         override {@code equals} and {@code hashCode} accordingly.
      */
     @Override
+    @SuppressWarnings("EqualsGetClass" /* see @implNote */)
     public boolean equals(Object obj) {
         return this.getClass()
                    .equals(obj.getClass());
