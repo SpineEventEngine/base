@@ -13,21 +13,17 @@ option java_outer_classname = "EntityProto";
 option java_multiple_files = true;
 
 // An entity type.
-//
-// By default, `id` is required.
-//
 message Project {
     option (entity).kind = ENTITY;
 
+    // The first field of entity states is assumed to be required.
     string id = 1;
 }
 
 // An entity type with a non-required ID.
-//
-// The `id` field is explicitly non-required.
-//
 message Task {
     option (entity).kind = ENTITY;
 
+    // Here the first field (which is assumed to be required) is explicitly set optional.
     string id = 1 [(required) = false];
 }

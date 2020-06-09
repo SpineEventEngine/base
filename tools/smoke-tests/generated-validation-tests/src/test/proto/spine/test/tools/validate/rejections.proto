@@ -5,10 +5,11 @@ package spine.test.tools.validate;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.test.tools.validate";
+option java_package = "io.spine.test.tools.validate.rejection";
 option java_outer_classname = "TestRejections";
 
 message CannotCreateProject {
 
+    // In rejections, the first field is not assumed to be required.
     string id = 1;
 }

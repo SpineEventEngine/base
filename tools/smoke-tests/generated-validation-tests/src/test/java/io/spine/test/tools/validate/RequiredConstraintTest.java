@@ -27,6 +27,7 @@ import io.spine.test.tools.validate.command.CreateProject;
 import io.spine.test.tools.validate.entity.Project;
 import io.spine.test.tools.validate.entity.Task;
 import io.spine.test.tools.validate.event.ProjectCreated;
+import io.spine.test.tools.validate.rejection.TestRejections;
 import io.spine.validate.ConstraintViolation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -231,7 +232,7 @@ class RequiredConstraintTest {
     }
 
     @Test
-    @DisplayName("an repeated field of enums is accepted")
+    @DisplayName("a repeated field of enums is accepted")
     void repeatedEnum() {
         Collections instance = Collections
                 .newBuilder()
@@ -242,71 +243,95 @@ class RequiredConstraintTest {
     }
 
     @Nested
-    @DisplayName("when checking an ID")
-    class IdCheck {
+    @DisplayName("when checking the first field in a message")
+    class FirstFieldCheck {
 
-        @Test
-        @DisplayName("in an event, no violations if ID is not set")
-        void event() {
-            ProjectCreated msg = ProjectCreated
-                    .newBuilder()
-                    .build();
-            assertThat(msg.validate()).isEmpty();
+        @Nested
+        @DisplayName("in a command")
+        class InCommand {
+
+            @Test
+            @DisplayName("no violations if present")
+            void set() {
+                CreateProject msg = CreateProject
+                        .newBuilder()
+                        .setId(newUuid())
+                        .build();
+                assertValid(msg);
+            }
+
+            @Test
+            @DisplayName("a violation must be produced if not set")
+            void notSet() {
+                CreateProject msg = CreateProject
+                        .newBuilder()
+                        .buildPartial();
+                checkViolation(msg, "id");
+            }
         }
 
-        @Test
-        @DisplayName("in a command, no violations if ID is present")
-        void command() {
-            CreateProject msg = CreateProject
-                    .newBuilder()
-                    .setId(newUuid())
-                    .build();
-            assertThat(msg.validate()).isEmpty();
+        @Nested
+        @DisplayName("in an event")
+        class InEvent {
+
+            @Test
+            @DisplayName("no violations if not set")
+            void notSet() {
+                ProjectCreated msg = ProjectCreated
+                        .newBuilder()
+                        .build();
+                assertValid(msg);
+            }
         }
 
-        @Test
-        @DisplayName("in a command, a violation must be produced if ID is not set")
-        void invalidCommand() {
-            CreateProject msg = CreateProject
-                    .newBuilder()
-                    .buildPartial();
-            checkViolation(msg, "id");
+        @Nested
+        @DisplayName("in a rejection")
+        class InRejection {
+
+            @Test
+            @DisplayName("no violation if not set")
+            void notSet() {
+                TestRejections.CannotCreateProject msg = TestRejections.CannotCreateProject
+                        .newBuilder()
+                        .build();
+                assertValid(msg);
+            }
         }
 
-        @Test
-        @DisplayName("in a rejection, no violations if ID is not set")
-        void rejection() {
-            TestRejections.CannotCreateProject msg = TestRejections.CannotCreateProject
-                    .newBuilder()
-                    .build();
-            assertThat(msg.validate()).isEmpty();
+        @Nested
+        @DisplayName("in an entity state")
+        class InEntityState {
+
+            @Test
+            @DisplayName("no violations if set")
+            void set() {
+                Project msg = Project
+                        .newBuilder()
+                        .setId(newUuid())
+                        .build();
+                assertValid(msg);
+            }
+
+            @Test
+            @DisplayName("a violation if not set")
+            void notSet() {
+                Project msg = Project
+                        .newBuilder()
+                        .buildPartial();
+                checkViolation(msg, "id");
+            }
+
+            @Test
+            @DisplayName("allowing to omit, if set as not required explicitly")
+            void notRequired() {
+                Task msg = Task
+                        .newBuilder()
+                        .build();
+                assertValid(msg);
+            }
         }
 
-        @Test
-        @DisplayName("in an entity state, no violations if ID is present")
-        void state() {
-            Project msg = Project
-                    .newBuilder()
-                    .setId(newUuid())
-                    .build();
-            assertThat(msg.validate()).isEmpty();
-        }
-
-        @Test
-        @DisplayName("in an entity state, a violation must be produced if ID is not set")
-        void invalidState() {
-            Project msg = Project
-                    .newBuilder()
-                    .buildPartial();
-            checkViolation(msg, "id");
-        }
-
-        @Test
-        @DisplayName("if stated explicitly, ID should not be required")
-        void notRequired() {
-            Task msg = Task
-                    .newBuilder()
-                    .build();
+        private void assertValid(MessageWithConstraints msg) {
             assertThat(msg.validate()).isEmpty();
         }
     }
