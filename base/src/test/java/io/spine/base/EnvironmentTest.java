@@ -20,6 +20,7 @@
 
 package io.spine.base;
 
+import com.google.errorprone.annotations.Immutable;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -32,7 +33,6 @@ import org.junit.jupiter.api.Test;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.base.Tests.ENV_KEY_TESTS;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Environment utility class should")
 @SuppressWarnings("AccessOfSystemProperties")
@@ -217,6 +217,8 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         }
     }
 
+    @Immutable
+    @SuppressWarnings("ImmutableEnumChecker" /* This testing implementation is mutable for simplicity. */)
     static final class Local extends EnvironmentType {
 
         private Local() {
@@ -229,7 +231,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         }
 
         public static Local type() {
-            return Singleton.INSTANCE.local;
+            return Local.Singleton.INSTANCE.local;
         }
 
         private enum Singleton {
@@ -245,6 +247,8 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         }
     }
 
+    @Immutable
+    @SuppressWarnings("ImmutableEnumChecker" /* This testing implementation is mutable for simplicity. */)
     static final class Staging extends EnvironmentType {
 
         static final String STAGING_ENV_TYPE_KEY = "io.spine.base.EnvironmentTest.is_staging";
@@ -253,7 +257,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         }
 
         public static Staging type() {
-            return Singleton.INSTANCE.staging;
+            return Staging.Singleton.INSTANCE.staging;
         }
 
         @Override
@@ -275,6 +279,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         }
     }
 
+    @Immutable
     @SuppressWarnings("unused" /* The only variant is used. */)
     static final class Travis extends EnvironmentType {
 
@@ -287,7 +292,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         }
 
         public static Travis type() {
-            return Singleton.INSTANCE.travis;
+            return Travis.Singleton.INSTANCE.travis;
         }
 
         private enum Singleton {
