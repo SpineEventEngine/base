@@ -35,6 +35,7 @@ import org.junit.jupiter.api.Test;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.base.Tests.ENV_KEY_TESTS;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Environment utility class should")
 @SuppressWarnings("AccessOfSystemProperties")
@@ -235,6 +236,56 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
 
         assertThat(environment.type()).isInstanceOf(Local.class);
     }
+
+    @Nested
+    @DisplayName("disallow to register types by class if")
+    class ProhibitRegistering {
+
+        @Test
+        @DisplayName("they have a public ctor")
+        void registerCustomPublicCtor() {
+            assertThrows(IllegalArgumentException.class, () -> environment.register(Local.class));
+        }
+
+        @Test
+        @DisplayName("they have a private ctor")
+        void registerCustomPrivateCtor() {
+            assertThrows(IllegalArgumentException.class,
+                         () -> environment.register(HiddenEnvironment.class));
+        }
+
+        @Test
+        @DisplayName("they have a protected ctor")
+        void registerCustomPackagePrivateCtor() {
+            assertThrows(IllegalArgumentException.class,
+                         () -> environment.register(ProtectedEnvironment.class));
+        }
+
+        private class HiddenEnvironment extends EnvironmentType {
+
+            private HiddenEnvironment() {
+            }
+
+            @Override
+            protected boolean enabled() {
+                return false;
+            }
+        }
+
+        private class ProtectedEnvironment extends EnvironmentType {
+
+            protected ProtectedEnvironment() {
+            }
+
+            @Override
+            protected boolean enabled() {
+                return false;
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("disallow to ")
 
     private static void register(EnvironmentType... types) {
         for (EnvironmentType type : types) {

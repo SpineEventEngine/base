@@ -190,7 +190,7 @@ public final class Environment {
                 InstantiationException | InvocationTargetException e) {
             String message = "Could not register environment type `%s` by class. You may try " +
                     "creating an `EnvironmentType` instance.";
-            throw newIllegalStateException(e, message, type);
+            throw newIllegalArgumentException(e, message, type);
         }
     }
 
