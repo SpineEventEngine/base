@@ -357,11 +357,11 @@ public final class Environment {
             StringBuilder message = new StringBuilder();
             message.append(format(
                     "`%s` constructor must be package-private to be registered in `Environment`.",
-                    constructor.getDeclaringClass()));
+                    envType.getSimpleName()));
             if (ctor.isPublic()) {
                 message.append(format(
                         " As `%s` has a public constructor, you may use `Environment.register(envInstance)`.",
-                        envType));
+                        envType.getSimpleName()));
             }
             throw newIllegalArgumentException(message.toString());
         }
