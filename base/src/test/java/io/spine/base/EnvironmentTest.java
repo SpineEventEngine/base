@@ -183,7 +183,8 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         @Test
         @DisplayName("allow to provide user defined environment types")
         void provideCustomTypes() {
-            register(new Staging(), new Local());
+            environment.register(new Staging())
+                       .register(new Local());
 
             // Now that `Environment` knows about `LOCAL`, it should use it as fallback.
             assertThat(environment.is(Local.class)).isTrue();
@@ -202,7 +203,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Test
     @DisplayName("follow assignment-compatibility when determining the type")
     void polymorphicEnv() {
-        register(new AppEngineStandard());
+        environment.register(new AppEngineStandard());
 
         AppEngineStandard.enable();
         assertThat(environment.is(AppEngine.class)).isTrue();
@@ -218,7 +219,8 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Test
     @DisplayName("detect the current custom environment in presence of custom types")
     void determineUsingTypeInPresenceOfCustom() {
-        register(new Staging(), new Local());
+        environment.register(new Staging())
+                   .register(new Local());
 
         assertThat(environment.is(Local.class)).isTrue();
     }
@@ -231,8 +233,9 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
 
     @Test
     @DisplayName("return the instance of a custom environment type")
-    void returnCustomInstnace() {
-        register(new Local(), new Staging());
+    void returnCustomInstance() {
+        environment.register(Local.class)
+                   .register(Staging.class);
 
         assertThat(environment.type()).isInstanceOf(Local.class);
     }
@@ -268,7 +271,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
                          () -> environment.register(ValueDependantEnvironment.class));
         }
 
-        private class ValueDependantEnvironment extends EnvironmentType{
+        private class ValueDependantEnvironment extends EnvironmentType {
 
             private final boolean enabled;
 
@@ -305,17 +308,13 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         }
     }
 
-    @Test
-    @DisplayName("disallow to ")
-
-    private static void register(EnvironmentType... types) {
-        for (EnvironmentType type : types) {
-            Environment.instance()
-                       .register(type);
-        }
-    }
-
     static final class Local extends EnvironmentType {
+
+        /**
+         * A package-private parameterless ctor allows to register this type by class.
+         */
+        Local() {
+        }
 
         @Override
         public boolean enabled() {
@@ -327,6 +326,12 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     static final class Staging extends EnvironmentType {
 
         static final String STAGING_ENV_TYPE_KEY = "io.spine.base.EnvironmentTest.is_staging";
+
+        /**
+         * A package-private parameterless ctor allows to register this type by class.
+         */
+        Staging() {
+        }
 
         @Override
         public boolean enabled() {

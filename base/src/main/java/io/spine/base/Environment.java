@@ -183,7 +183,7 @@ public final class Environment {
     Environment register(Class<? extends EnvironmentType> type) {
         try {
             checkHasParameterlessCtor(type);
-            Constructor<? extends EnvironmentType> noArgsCtor = type.getConstructor();
+            Constructor<? extends EnvironmentType> noArgsCtor = type.getDeclaredConstructor();
             checkCtorAccessLevel(noArgsCtor);
             EnvironmentType envTypeInstance = noArgsCtor.newInstance();
             return register(envTypeInstance);
