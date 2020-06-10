@@ -182,6 +182,7 @@ public final class Environment {
     @CanIgnoreReturnValue
     Environment register(Class<? extends EnvironmentType> type) {
         try {
+            checkHasParameterlessCtor(type);
             Constructor<? extends EnvironmentType> noArgsCtor = type.getConstructor();
             checkCtorAccessLevel(noArgsCtor);
             EnvironmentType envTypeInstance = noArgsCtor.newInstance();
@@ -363,5 +364,17 @@ public final class Environment {
             }
             throw newIllegalArgumentException(message);
         }
+    }
+
+    private static void checkHasParameterlessCtor(Class<? extends EnvironmentType> type) {
+        for (Constructor<?> constructor : type.getDeclaredConstructors()) {
+            if (constructor.getParameterCount() == 0) {
+                return;
+            }
+        }
+
+        throw newIllegalArgumentException("To register `%` by class, it must " +
+                                                  "have a parameterless package-private constructor.",
+                                          type.getSimpleName());
     }
 }

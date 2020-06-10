@@ -261,6 +261,27 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
                          () -> environment.register(ProtectedEnvironment.class));
         }
 
+        @Test
+        @DisplayName("they do not have a parameterless ctor")
+        void registerCustomCtorWithParameters() {
+            assertThrows(IllegalArgumentException.class,
+                         () -> environment.register(ValueDependantEnvironment.class));
+        }
+
+        private class ValueDependantEnvironment extends EnvironmentType{
+
+            private final boolean enabled;
+
+            ValueDependantEnvironment(boolean enabled) {
+                this.enabled = enabled;
+            }
+
+            @Override
+            protected boolean enabled() {
+                return enabled;
+            }
+        }
+
         private class HiddenEnvironment extends EnvironmentType {
 
             private HiddenEnvironment() {
