@@ -22,12 +22,19 @@ package io.spine.base;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.google.common.reflect.Invokable;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
+import static java.lang.String.format;
 
 /**
  * Provides information about the environment (current platform used, etc.).
@@ -157,6 +164,34 @@ public final class Environment {
                     .build();
         }
         return this;
+    }
+
+    /**
+     * Remembers the specified environment type, allowing {@linkplain #is(Class) to
+     * determine whether it's enabled} later.
+     *
+     * <p>The specified {@code type} must have a package-private constructor.
+     *
+     * <p>Otherwise, behaves like {@link #register(EnvironmentType)}.
+     *
+     * @param type
+     *         environment type to register
+     * @return this instance of {@code Environment}
+     */
+    @Internal
+    @CanIgnoreReturnValue
+    Environment register(Class<? extends EnvironmentType> type) {
+        try {
+            Constructor<? extends EnvironmentType> noArgsCtor = type.getConstructor();
+            checkCtorAccessLevel(noArgsCtor);
+            EnvironmentType envTypeInstance = noArgsCtor.newInstance();
+            return register(envTypeInstance);
+        } catch (NoSuchMethodException | IllegalAccessException |
+                InstantiationException | InvocationTargetException e) {
+            String message = "Could not register environment type `%s` by class. You may try " +
+                    "creating an `EnvironmentType` instance.";
+            throw newIllegalStateException(e, message, type);
+        }
     }
 
     /** Returns the singleton instance. */
@@ -309,5 +344,24 @@ public final class Environment {
         }
 
         throw newIllegalStateException("`Environment` could not find an active environment type.");
+    }
+
+    private static void
+    checkCtorAccessLevel(Constructor<? extends EnvironmentType> constructor) {
+        Invokable<? extends EnvironmentType, ? extends EnvironmentType> ctor =
+                Invokable.from(constructor);
+
+        if (!ctor.isPackagePrivate()) {
+            Class<? extends EnvironmentType> envType = constructor.getDeclaringClass();
+            String message = format(
+                    "`%s` constructor must be package-private to be registered in `Environment`.",
+                    constructor.getDeclaringClass());
+            if (ctor.isPublic()) {
+                message += format(
+                        " As `%s` has a public constructor, you may use `Environment.register(envInstance)`.",
+                        envType);
+            }
+            throw newIllegalArgumentException(message);
+        }
     }
 }
