@@ -344,7 +344,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @SuppressWarnings("unused" /* The only variant is used. */)
     static final class Travis extends EnvironmentType {
 
-        @SuppressWarnings("WeakerAccess" /* Classes with public ctors shouldn't be registrable by their classes, this class tests for it. */)
+        @SuppressWarnings("WeakerAccess" /* Environment types with public ctors shouldn't be registrable by their classes, this one tests for it. */)
         public Travis() {
         }
 
