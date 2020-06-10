@@ -354,15 +354,16 @@ public final class Environment {
 
         if (!ctor.isPackagePrivate()) {
             Class<? extends EnvironmentType> envType = constructor.getDeclaringClass();
-            String message = format(
+            StringBuilder message = new StringBuilder();
+            message.append(format(
                     "`%s` constructor must be package-private to be registered in `Environment`.",
-                    constructor.getDeclaringClass());
+                    constructor.getDeclaringClass()));
             if (ctor.isPublic()) {
-                message += format(
+                message.append(format(
                         " As `%s` has a public constructor, you may use `Environment.register(envInstance)`.",
-                        envType);
+                        envType));
             }
-            throw newIllegalArgumentException(message);
+            throw newIllegalArgumentException(message.toString());
         }
     }
 
