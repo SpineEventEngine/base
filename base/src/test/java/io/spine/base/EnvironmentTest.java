@@ -247,7 +247,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         @Test
         @DisplayName("they have a public ctor")
         void registerCustomPublicCtor() {
-            assertThrows(IllegalArgumentException.class, () -> environment.register(Local.class));
+            assertThrows(IllegalArgumentException.class, () -> environment.register(Travis.class));
         }
 
         @Test
@@ -343,6 +343,10 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Immutable
     @SuppressWarnings("unused" /* The only variant is used. */)
     static final class Travis extends EnvironmentType {
+
+        @SuppressWarnings("WeakerAccess" /* Classes with public ctors shouldn't be registrable by their classes, this class tests for it. */)
+        public Travis() {
+        }
 
         @Override
         public boolean enabled() {
