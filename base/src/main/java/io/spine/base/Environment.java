@@ -187,8 +187,8 @@ public final class Environment {
         } catch (NoSuchMethodException | IllegalAccessException |
                 InstantiationException | InvocationTargetException e) {
             String message = "Could not register environment type `%s` by class. You may try " +
-                    "creating an `EnvironmentType` instance. To register an instance by class, " +
-                    "its constructor must be parameterless and package-private.";
+                    "creating an `EnvironmentType` instance. To register an environment type by" +
+                    " class, its constructor must be parameterless and package-private.";
             throw newIllegalArgumentException(e, message, type);
         }
     }

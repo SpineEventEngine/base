@@ -35,7 +35,6 @@ import org.junit.jupiter.api.Test;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.base.Tests.ENV_KEY_TESTS;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Environment utility class should")
 @SuppressWarnings("AccessOfSystemProperties")
@@ -219,8 +218,8 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Test
     @DisplayName("detect the current custom environment in presence of custom types")
     void determineUsingTypeInPresenceOfCustom() {
-        environment.register(new Staging())
-                   .register(new Local());
+        environment.register(Local.class)
+                   .register(Staging.class);
 
         assertThat(environment.is(Local.class)).isTrue();
     }
@@ -240,11 +239,9 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         assertThat(environment.type()).isInstanceOf(Local.class);
     }
 
+    @Immutable
     static final class Local extends EnvironmentType {
 
-        /**
-         * A package-private parameterless ctor allows to register this type by class.
-         */
         Local() {
         }
 
@@ -255,6 +252,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         }
     }
 
+    @Immutable
     static final class Staging extends EnvironmentType {
 
         static final String STAGING_ENV_TYPE_KEY = "io.spine.base.EnvironmentTest.is_staging";
@@ -273,11 +271,9 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     }
 
     @Immutable
-    @SuppressWarnings("unused" /* The only variant is used. */)
     static final class Travis extends EnvironmentType {
 
-        @SuppressWarnings("WeakerAccess" /* Environment types with public ctors shouldn't be registrable by their classes, this one tests for it. */)
-        public Travis() {
+        Travis() {
         }
 
         @Override
