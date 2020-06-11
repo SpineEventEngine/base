@@ -352,6 +352,9 @@ public final class Environment {
 
     /**
      * Resets the instance and clears the {@link Tests#ENV_KEY_TESTS} variable.
+     *
+     * <p>Erases all registered environment types, leaving only {@code Tests} and {@code
+     * Production}.
      */
     @VisibleForTesting
     public void reset() {
