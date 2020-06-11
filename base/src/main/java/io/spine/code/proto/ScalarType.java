@@ -112,7 +112,7 @@ public enum ScalarType {
      *
      * <p>Returns {@code Optional.empty()} if no such type exists.
      *
-     * @see #isScalarType(FieldDescriptorProto)
+     * @see #isScalarType(com.google.protobuf.DescriptorProtos.FieldDescriptorProto)
      */
     public static Optional<ScalarType> of(FieldDescriptorProto field) {
         Type type = field.getType();
