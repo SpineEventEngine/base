@@ -22,7 +22,6 @@ package io.spine.base;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
-import com.google.common.reflect.Invokable;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
@@ -34,7 +33,6 @@ import java.lang.reflect.InvocationTargetException;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
-import static java.lang.String.format;
 
 /**
  * Provides information about the environment (current platform used, etc.).
@@ -182,15 +180,15 @@ public final class Environment {
     @CanIgnoreReturnValue
     Environment register(Class<? extends EnvironmentType> type) {
         try {
-            checkHasParameterlessCtor(type);
-            Constructor<? extends EnvironmentType> noArgsCtor = type.getDeclaredConstructor();
-            checkCtorAccessLevel(noArgsCtor);
-            EnvironmentType envTypeInstance = noArgsCtor.newInstance();
+            EnvironmentTypes.checkCanRegisterByClass(type);
+            Constructor<? extends EnvironmentType> ctor = type.getDeclaredConstructor();
+            EnvironmentType envTypeInstance = ctor.newInstance();
             return register(envTypeInstance);
         } catch (NoSuchMethodException | IllegalAccessException |
                 InstantiationException | InvocationTargetException e) {
             String message = "Could not register environment type `%s` by class. You may try " +
-                    "creating an `EnvironmentType` instance.";
+                    "creating an `EnvironmentType` instance. To register an instance by class, " +
+                    "its constructor must be parameterless and package-private.";
             throw newIllegalArgumentException(e, message, type);
         }
     }
@@ -334,6 +332,7 @@ public final class Environment {
         EnvironmentType result = currentEnvType != null
                                  ? currentEnvType
                                  : currentType();
+        this.currentEnvType = result;
         return result;
     }
 
@@ -345,37 +344,5 @@ public final class Environment {
         }
 
         throw newIllegalStateException("`Environment` could not find an active environment type.");
-    }
-
-    private static void
-    checkCtorAccessLevel(Constructor<? extends EnvironmentType> constructor) {
-        Invokable<? extends EnvironmentType, ? extends EnvironmentType> ctor =
-                Invokable.from(constructor);
-
-        if (!ctor.isPackagePrivate()) {
-            Class<? extends EnvironmentType> envType = constructor.getDeclaringClass();
-            StringBuilder message = new StringBuilder();
-            message.append(format(
-                    "`%s` constructor must be package-private to be registered in `Environment`.",
-                    envType.getSimpleName()));
-            if (ctor.isPublic()) {
-                message.append(format(
-                        " As `%s` has a public constructor, you may use `Environment.register(envInstance)`.",
-                        envType.getSimpleName()));
-            }
-            throw newIllegalArgumentException(message.toString());
-        }
-    }
-
-    private static void checkHasParameterlessCtor(Class<? extends EnvironmentType> type) {
-        for (Constructor<?> constructor : type.getDeclaredConstructors()) {
-            if (constructor.getParameterCount() == 0) {
-                return;
-            }
-        }
-
-        throw newIllegalArgumentException("To register `%` by class, it must " +
-                                                  "have a parameterless package-private constructor.",
-                                          type.getSimpleName());
     }
 }
