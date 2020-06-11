@@ -96,8 +96,9 @@ final class EnvironmentTypes {
                     envType.getSimpleName()));
             if (ctor.isPublic()) {
                 message.append(format(
-                        " As `%s` has a public constructor, you may use `Environment.register(envInstance)`." +
-                                "And `environment.setTo(envInstance)`.",
+                        " As `%s` has a public constructor, you may use " +
+                                "`Environment.register(envInstance)` and " +
+                                "`environment.setTo(envInstance)`.",
                         envType.getSimpleName()));
             }
             throw newIllegalArgumentException(message.toString());

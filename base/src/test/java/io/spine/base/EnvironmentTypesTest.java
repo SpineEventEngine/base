@@ -56,8 +56,8 @@ class EnvironmentTypesTest extends UtilityClassTest<EnvironmentTypes> {
         assertThat(localEnv.enabled()).isTrue();
     }
 
-    @DisplayName("Disallow to register env types by classes if they do not have" +
-            "package-private parameterless constructors")
+    @DisplayName("Disallow to register env types by classes if they do not have a" +
+            "package-private parameterless constructor")
     @ParameterizedTest
     @MethodSource("envTypesAndMethods")
     void checkCanRegister(Class<? extends EnvironmentType> environmentType) {
@@ -65,8 +65,8 @@ class EnvironmentTypesTest extends UtilityClassTest<EnvironmentTypes> {
                      () -> EnvironmentTypes.checkCanRegisterByClass(environmentType));
     }
 
-    @DisplayName("Disallow to instantaite env types by classes if they do not have" +
-            "package-private parameterless constructors")
+    @DisplayName("Disallow to instantaite env types by classes if they do not have a" +
+            "package-private parameterless constructor")
     @ParameterizedTest
     @MethodSource("envTypesAndMethods")
     void checkCanInstantiate(Class<? extends EnvironmentType> environmentType) {

@@ -40,10 +40,10 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * Two environment types exist out of the box:
  *
  * <ul>
- * <li><em>{@link Tests}</em> is detected if the current call stack has a reference to the unit
- * testing framework.
+ *     <li><em>{@link Tests}</em> is detected if the current call stack has a reference to the unit
+ *         testing framework.
  *
- * <li><em>{@link Production}</em> is set in all other cases.
+ *     <li><em>{@link Production}</em> is set in all other cases.
  * </ul>
  *
  * <p>The framework users may define their custom settings depending on the current environment
@@ -107,11 +107,13 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  * <h1>Caching</h1>
  * <p>Be aware that {@code Environment} caches the {@code EnvironmentType} once its calculated.
- * This means that if one environment type has been found to be active, it gets cached. If later it
- * becomes logically inactive, e.g. the environment variable that's used to check the env type
- * changes, {@code Environment} is still going to return the cached value. For example:
+ * This means that if one environment type has been found to be active, its instance is saved.
+ * If later it becomes logically inactive, e.g. the environment variable that's used to check the
+ * environment type changes, {@code Environment} is still going to return the cached value.
+ * For example:
  * <pre>
  *     EnvironmentType awsLambda = new AwsLambda();
+ *     Environment.instance().register(awsLambda);
  *     assertThat(Environment.instance().is(AwsLambda.class)).isTrue();
  *
  *     System.clearProperty(AwsLambda.AWS_ENV_VARIABLE);
@@ -198,7 +200,6 @@ public final class Environment {
         EnvironmentTypes.checkCanRegisterByClass(type);
         EnvironmentType envTypeInstance = EnvironmentTypes.instantiate(type);
         return register(envTypeInstance);
-
     }
 
     /** Returns the singleton instance. */
