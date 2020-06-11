@@ -24,8 +24,10 @@ import com.google.common.reflect.Invokable;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 import static io.spine.util.Exceptions.newIllegalArgumentException;
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 
 /**
@@ -52,6 +54,31 @@ final class EnvironmentTypes {
         return type;
     }
 
+    /**
+     * Tries to instantiate the specified environment type.
+     *
+     * <p>It can only be instantiated if it has a package-private parameterless constructor.
+     *
+     * <p>If the constructor is not package-private or has at least 1 parameter or a
+     * reflection-related error occurs, an {@code IllegalStateException} is thrown.
+     *
+     * @param type env type to instantiate
+     * @return a new {@code EnvironmentType} instance
+     */
+    static EnvironmentType instantiate(Class<? extends EnvironmentType> type) {
+        Constructor<? extends EnvironmentType> ctor = checkHasParameterlessCtor(type);
+        checkCtorAccessLevel(ctor);
+        try {
+            EnvironmentType result = ctor.newInstance();
+            return result;
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            String message = "To `register` or `setTo` an environment type `%s` by class, " +
+                    "the class must have a package-private parameterless ctor. You may also " +
+                    "`register` and `setTo` using an env type instance.";
+            throw newIllegalStateException(e, message, type.getSimpleName());
+        }
+    }
+
     private static void
     checkCtorAccessLevel(Constructor<? extends EnvironmentType> constructor) {
         Invokable<? extends EnvironmentType, ? extends EnvironmentType> ctor =
@@ -61,11 +88,13 @@ final class EnvironmentTypes {
             Class<? extends EnvironmentType> envType = constructor.getDeclaringClass();
             StringBuilder message = new StringBuilder();
             message.append(format(
-                    "`%s` constructor must be package-private to be registered in `Environment`.",
+                    "`%s` constructor must be package-private to be registered and used in " +
+                            "`setTo` in `Environment`.",
                     envType.getSimpleName()));
             if (ctor.isPublic()) {
                 message.append(format(
-                        " As `%s` has a public constructor, you may use `Environment.register(envInstance)`.",
+                        " As `%s` has a public constructor, you may use `Environment.register(envInstance)`." +
+                                "And `environment.setTo(envInstance)`.",
                         envType.getSimpleName()));
             }
             throw newIllegalArgumentException(message.toString());
@@ -86,8 +115,9 @@ final class EnvironmentTypes {
             }
         }
 
-        throw newIllegalArgumentException("To register `%s` by class, it must " +
-                                                  "have a parameterless package-private constructor.",
+        throw newIllegalArgumentException("To `register` `%s` or use it in `setTo` by class, " +
+                                                  "it must have a parameterless package-private " +
+                                                  "constructor.",
                                           type.getSimpleName());
     }
 }

@@ -27,11 +27,7 @@ import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -44,10 +40,10 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * Two environment types exist out of the box:
  *
  * <ul>
- *     <li><em>{@link Tests}</em> is detected if the current call stack has a reference to the unit
- *         testing framework.
+ * <li><em>{@link Tests}</em> is detected if the current call stack has a reference to the unit
+ * testing framework.
  *
- *     <li><em>{@link Production}</em> is set in all other cases.
+ * <li><em>{@link Production}</em> is set in all other cases.
  * </ul>
  *
  * <p>The framework users may define their custom settings depending on the current environment
@@ -126,6 +122,9 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  * </pre>
  *
+ * <p>{@linkplain #setTo(EnvironmentType) explicitly setting} the environment type overrides
+ * the cached value.
+ *
  * <p><b>When registering custom types, please ensure</b> their mutual exclusivity.
  * If two or more environment types {@linkplain EnvironmentType#enabled() consider themselves
  * enabled} at the same time, the behaviour of {@link #is(Class)}} is undefined.
@@ -196,18 +195,10 @@ public final class Environment {
     @Internal
     @CanIgnoreReturnValue
     Environment register(Class<? extends EnvironmentType> type) {
-        try {
-            EnvironmentTypes.checkCanRegisterByClass(type);
-            Constructor<? extends EnvironmentType> ctor = type.getDeclaredConstructor();
-            EnvironmentType envTypeInstance = ctor.newInstance();
-            return register(envTypeInstance);
-        } catch (NoSuchMethodException | IllegalAccessException |
-                InstantiationException | InvocationTargetException e) {
-            String message = "Could not register environment type `%s` by class. You may try " +
-                    "creating an `EnvironmentType` instance. To register an environment type by" +
-                    " class, its constructor must be parameterless and package-private.";
-            throw newIllegalArgumentException(e, message, type);
-        }
+        EnvironmentTypes.checkCanRegisterByClass(type);
+        EnvironmentType envTypeInstance = EnvironmentTypes.instantiate(type);
+        return register(envTypeInstance);
+
     }
 
     /** Returns the singleton instance. */
@@ -305,6 +296,11 @@ public final class Environment {
     @VisibleForTesting
     public void setTo(EnvironmentType type) {
         this.currentEnvType = checkNotNull(type);
+    }
+
+    @VisibleForTesting
+    public void setTo(Class<? extends EnvironmentType> type) {
+
     }
 
     /**
