@@ -291,9 +291,6 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Immutable
     static final class Local extends EnvironmentType {
 
-        Local() {
-        }
-
         @Override
         public boolean enabled() {
             // `LOCAL` is the default custom env type. It should be used as a fallback.
@@ -305,12 +302,6 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     static final class Staging extends EnvironmentType {
 
         static final String STAGING_ENV_TYPE_KEY = "io.spine.base.EnvironmentTest.is_staging";
-
-        /**
-         * A package-private parameterless ctor allows to register this type by class.
-         */
-        Staging() {
-        }
 
         @Override
         public boolean enabled() {
@@ -329,9 +320,6 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
 
     @Immutable
     static final class Travis extends EnvironmentType {
-
-        Travis() {
-        }
 
         @Override
         public boolean enabled() {

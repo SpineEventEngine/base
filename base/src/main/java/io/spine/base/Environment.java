@@ -119,8 +119,8 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  *     System.clearProperty(AwsLambda.AWS_ENV_VARIABLE);
  *
- *     // Even though `AwsLambda` is technically not active, we have cached the value,
- *     // and `is(AwsLambda)` is `true`.
+ *     // Even though `AwsLambda` is not active, we have cached the value, and `is(AwsLambda.class)`
+ *     // is `true`.
  *     assertThat(Environment.instance().is(AwsLambda.class)).isTrue();
  *
  * </pre>
@@ -188,6 +188,8 @@ public final class Environment {
      * determine whether it's enabled} later.
      *
      * <p>The specified {@code type} must have a parameterless constructor.
+     * {@linkplain EnvironmentType#enabled() activity} of the specified environment type is going
+     * to be checked against an instance created by invoking the parameterless constructor.
      *
      * <p>Otherwise, behaves like {@link #register(EnvironmentType)}.
      *

@@ -66,7 +66,7 @@ final class EnvironmentTypes {
     }
 
     /**
-     * If the specified type has a constructor with 0 arguments, returns it.
+     * If the specified type has a constructor with 0 arguments, returns the type.
      *
      * <p>Otherwise, throws an {@code IllegalArgumentException}.
      *
