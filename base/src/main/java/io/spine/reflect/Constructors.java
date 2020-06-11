@@ -28,7 +28,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
- * A utility for working with Java {@linkplain java.lang.reflect.Constructor constructors}.
+ * A utility for working with {@linkplain java.lang.reflect.Constructor constructors}.
  */
 public final class Constructors {
 

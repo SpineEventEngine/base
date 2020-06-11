@@ -46,7 +46,7 @@ public final class Objects {
      *         class to instantiate
      * @return the object created using a parameterless constructor
      * @throws IllegalStateException
-     *         if the class is abstract, or an exception happens in the
+     *         if the class is abstract, or an exception is thrown in the
      *         parameterless constructor
      * @throws IllegalArgumentException
      *         if the specified class does not have a parameterless
