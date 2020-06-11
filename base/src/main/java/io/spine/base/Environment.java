@@ -35,7 +35,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  * <h1>Environment Type Detection</h1>
  *
- * <p>Current implementation allows t {@linkplain #type() obtain the type} of the current
+ * <p>Current implementation allows to {@linkplain #type() obtain the type} of the current
  * environment, or to check whether current environment type {@linkplain #is(Class) matches
  * another type}.
  * Two environment types exist out of the box:
@@ -107,7 +107,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * </pre>
  *
  * <h1>Caching</h1>
- * <p>Be aware that {@code Environment} caches the {@code EnvironmentType} once its calculated.
+ * <p>{@code Environment} caches the {@code EnvironmentType} once its calculated.
  * This means that if one environment type has been found to be active, its instance is saved.
  * If later it becomes logically inactive, e.g. the environment variable that's used to check the
  * environment type changes, {@code Environment} is still going to return the cached value.
