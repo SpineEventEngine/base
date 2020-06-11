@@ -298,9 +298,17 @@ public final class Environment {
         this.currentEnvType = checkNotNull(type);
     }
 
+    /**
+     * Forces the specified environment type to be the current one.
+     *
+     * <p>The specified type must have a package-private parameterless constructor, otherwise
+     * an {@code IllegalStateException} is thrown.
+     */
     @VisibleForTesting
     public void setTo(Class<? extends EnvironmentType> type) {
-
+        checkNotNull(type);
+        EnvironmentType result = EnvironmentTypes.instantiate(type);
+        setTo(result);
     }
 
     /**

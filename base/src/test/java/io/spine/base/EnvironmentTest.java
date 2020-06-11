@@ -162,6 +162,18 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     }
 
     @Test
+    @DisplayName("turn a custom mode on")
+    void turnCustomTypeOn() {
+        environment.register(Staging.class);
+
+        Staging.reset();
+        assertThat(environment.is(Staging.class)).isFalse();
+
+        environment.setTo(Staging.class);
+        assertThat(environment.is(Staging.class)).isTrue();
+    }
+
+    @Test
     @DisplayName("turn production mode on using a deprecated method")
     @SuppressWarnings("deprecation")
     void turnProductionOnUsingDeprecatedMethod() {
@@ -179,7 +191,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     }
 
     @Nested
-    @DisplayName("when assigning custom environment types")
+    @DisplayName("when registering custom environment types")
     class CustomEnvTypes {
 
         @Test

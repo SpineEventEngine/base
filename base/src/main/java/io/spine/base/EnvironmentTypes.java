@@ -26,6 +26,7 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
@@ -49,6 +50,7 @@ final class EnvironmentTypes {
      */
     @CanIgnoreReturnValue
     static <C extends Class<? extends EnvironmentType>> C checkCanRegisterByClass(C type) {
+        checkNotNull(type);
         Constructor<? extends EnvironmentType> parameterlessCtor = checkHasParameterlessCtor(type);
         checkCtorAccessLevel(parameterlessCtor);
         return type;
@@ -66,6 +68,7 @@ final class EnvironmentTypes {
      * @return a new {@code EnvironmentType} instance
      */
     static EnvironmentType instantiate(Class<? extends EnvironmentType> type) {
+        checkNotNull(type);
         Constructor<? extends EnvironmentType> ctor = checkHasParameterlessCtor(type);
         checkCtorAccessLevel(ctor);
         try {
