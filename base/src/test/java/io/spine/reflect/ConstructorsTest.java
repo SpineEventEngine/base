@@ -24,7 +24,6 @@ import io.spine.reflect.given.ConstructorsTestEnv.Animal;
 import io.spine.reflect.given.ConstructorsTestEnv.Cat;
 import io.spine.reflect.given.ConstructorsTestEnv.Chicken;
 import io.spine.reflect.given.ConstructorsTestEnv.ClassWithDefaultCtor;
-import io.spine.reflect.given.ConstructorsTestEnv.Dog;
 import io.spine.reflect.given.ConstructorsTestEnv.NoParameterlessConstructors;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
@@ -65,16 +64,6 @@ class ConstructorsTest extends UtilityClassTest<Constructors> {
         void findParameterlessInAbstract() {
             Constructor<Animal> constructor = ensureParameterlessCtor(Animal.class);
             assertThrows(InstantiationException.class, constructor::newInstance);
-        }
-
-        @Test
-        @DisplayName("find one if it's declared in a parent")
-        void findParameterlessConstructorsInTheParent() throws IllegalAccessException,
-                                                               InvocationTargetException,
-                                                               InstantiationException {
-            Constructor<Dog> constructor = ensureParameterlessCtor(Dog.class);
-            Dog dog = constructor.newInstance();
-            assertThat(dog.greet()).contains(MISSING);
         }
 
         @Test

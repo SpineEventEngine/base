@@ -82,14 +82,6 @@ public final class ConstructorsTestEnv {
         }
     }
 
-    public static final class Dog extends Animal {
-
-        @Override
-        public String makeSound() {
-            return "Bark";
-        }
-    }
-
     public final class Chicken extends Animal {
 
         @Override

@@ -43,10 +43,10 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * Two environment types exist out of the box:
  *
  * <ul>
- * <li><em>{@link Tests}</em> is detected if the current call stack has a reference to the unit
- * testing framework.
+ *     <li><em>{@link Tests}</em> is detected if the current call stack has a reference to the unit
+ *         testing framework.
  *
- * <li><em>{@link Production}</em> is set in all other cases.
+ *     <li><em>{@link Production}</em> is set in all other cases.
  * </ul>
  *
  * <p>The framework users may define their custom settings depending on the current environment
