@@ -36,6 +36,24 @@ class EnvironmentTypesTest extends UtilityClassTest<EnvironmentTypes> {
         super(EnvironmentTypes.class);
     }
 
+    @Test
+    @DisplayName("allow to register an env with a package-private parameterless ctor")
+    void allow() {
+        Class<Local> local = Local.class;
+        assertThat(checkCanRegisterByClass(Local.class)).isSameInstanceAs(local);
+    }
+
+    private static class Local extends EnvironmentType {
+
+        Local() {
+        }
+
+        @Override
+        protected boolean enabled() {
+            return true;
+        }
+    }
+
     @Nested
     @DisplayName("disallow to register types by class if")
     class ProhibitRegistering {
@@ -114,24 +132,6 @@ class EnvironmentTypesTest extends UtilityClassTest<EnvironmentTypes> {
             protected boolean enabled() {
                 return true;
             }
-        }
-    }
-
-    @Test
-    @DisplayName("allow to register an env with a package-private parameterless ctor")
-    void allow() {
-        Class<Local> local = Local.class;
-        assertThat(checkCanRegisterByClass(Local.class)).isSameInstanceAs(local);
-    }
-
-    private static class Local extends EnvironmentType {
-
-        Local() {
-        }
-
-        @Override
-        protected boolean enabled() {
-            return true;
         }
     }
 }

@@ -37,7 +37,7 @@ final class EnvironmentTypes {
     }
 
     /**
-     * Checks whether the specified environment type may be registered using it's class.
+     * Checks whether the specified environment type can be registered using it's class.
      *
      * <p>To register the type by its class it must have a package-private parameterless
      * constructor.
@@ -72,7 +72,12 @@ final class EnvironmentTypes {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked" /*
+                                   * Casting from `Constructor<?>` to
+                                   * `Constructor<? extends EnvironmentType)` is safe here, as
+                                   * we extract this constructor from a
+                                   * `Class<? extends EnvironmentType`.
+                                   */)
     private static Constructor<? extends EnvironmentType>
     checkHasParameterlessCtor(Class<? extends EnvironmentType> type) {
         for (Constructor<?> constructor : type.getDeclaredConstructors()) {

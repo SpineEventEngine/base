@@ -126,7 +126,6 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  * </pre>
  *
- *
  * <p><b>When registering custom types, please ensure</b> their mutual exclusivity.
  * If two or more environment types {@linkplain EnvironmentType#enabled() consider themselves
  * enabled} at the same time, the behaviour of {@link #is(Class)}} is undefined.
