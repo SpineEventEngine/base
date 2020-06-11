@@ -269,7 +269,7 @@ public final class Environment {
     /**
      * Verifies if the code runs in the production mode.
      *
-     * <p>This method is opposite to {@link #isTests()}
+     * <p>This method is opposite to {@link #isTests()}.
      *
      * @return {@code true} if the code runs in the production mode, {@code false} otherwise
      * @see Production
@@ -293,7 +293,7 @@ public final class Environment {
     }
 
     /**
-     * Forces the specified environment type to be the current one.
+     * Sets the current environment type to {@code type.getClass()}. Overrides the current value.
      */
     @VisibleForTesting
     public void setTo(EnvironmentType type) {
@@ -301,10 +301,7 @@ public final class Environment {
     }
 
     /**
-     * Forces the specified environment type to be the current one.
-     *
-     * <p>The specified type must have a package-private parameterless constructor, otherwise
-     * an {@code IllegalStateException} is thrown.
+     * Sets the current environment type to the specified one. Overrides the current value.
      */
     @Internal
     @VisibleForTesting
@@ -318,7 +315,7 @@ public final class Environment {
      *
      * <p>This method is opposite to {@link #setToProduction()}.
      *
-     * @deprecated use {@link #setTo(EnvironmentType)}
+     * @deprecated use {@link #setTo(Class)}
      */
     @Deprecated
     @VisibleForTesting
@@ -332,7 +329,7 @@ public final class Environment {
      *
      * <p>This method is opposite to {@link #setToTests()}.
      *
-     * @deprecated use {@link #setTo(EnvironmentType)}
+     * @deprecated use {@link #setTo(Class)}
      */
     @Deprecated
     @VisibleForTesting
