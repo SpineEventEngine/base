@@ -110,19 +110,27 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * <p>{@code Environment} caches the {@code EnvironmentType} once its calculated.
  * This means that if one environment type has been found to be active, its instance is saved.
  * If later it becomes logically inactive, e.g. the environment variable that's used to check the
- * environment type changes, {@code Environment} is still going to return the cached value.
+ * environment type changes, {@code Environment} is still going to return the cached value, unless
+ * it is {@linkplain #setTo(EnvironmentType) set manually} or {@linkplain #reset() reset
+ * explicitly}.
+ *
  * For example:
  * <pre>
+ *     Environment environment = Environment.instance();
  *     EnvironmentType awsLambda = new AwsLambda();
- *     Environment.instance().register(awsLambda);
- *     assertThat(Environment.instance().is(AwsLambda.class)).isTrue();
+ *     environment.register(awsLambda);
+ *     assertThat(environment.is(AwsLambda.class)).isTrue();
  *
  *     System.clearProperty(AwsLambda.AWS_ENV_VARIABLE);
  *
  *     // Even though `AwsLambda` is not active, we have cached the value, and `is(AwsLambda.class)`
  *     // is `true`.
- *     assertThat(Environment.instance().is(AwsLambda.class)).isTrue();
+ *     assertThat(environment.is(AwsLambda.class)).isTrue();
  *
+ *     environment.reset();
+ *
+ *     // When `reset` explicitly, cached value is erased.
+ *     assertThat(environment.is(AwsLambda.class)).isFalse();
  * </pre>
  *
  * <p>{@linkplain #setTo(EnvironmentType) explicitly setting} the environment type overrides
