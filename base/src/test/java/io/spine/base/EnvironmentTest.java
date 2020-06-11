@@ -243,14 +243,29 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     }
 
     @Test
-    @DisplayName("cache the environment type")
-    void cacheEnvType() throws InterruptedException {
+    @DisplayName("cache a custom environment type")
+    void cacheCustom() {
+        environment.register(Staging.class);
+
+        Staging.set();
+        assertThat(environment.is(Staging.class)).isTrue();
+
+        Staging.reset();
+        assertThat(new Staging().enabled()).isFalse();
+        assertThat(environment.is(Staging.class)).isTrue();
+    }
+
+    @Test
+    @DisplayName("cache the `Tests` environment type")
+    void cacheTests() throws InterruptedException {
         AtomicBoolean envCached = new AtomicBoolean(false);
         assertThat(environment.is(Tests.class));
         Thread thread = new Thread(() -> {
             /*
-             * Here, the stack trace does not contain mentions of testing frameworks, because
-             * we check from a different thread. We also explicitly clear the variable.
+             * Here the stack trace does not contain mentions of testing frameworks, because
+             * we check from a new thread.
+             *
+             * We also explicitly clear the variable.
              */
             Tests.clearTestingEnvVariable();
             assertThat(environment.is(Tests.class)).isTrue();
@@ -290,6 +305,14 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         public boolean enabled() {
             return String.valueOf(true)
                          .equalsIgnoreCase(System.getProperty(STAGING_ENV_TYPE_KEY));
+        }
+
+        static void set(){
+            System.setProperty(STAGING_ENV_TYPE_KEY, String.valueOf(true));
+        }
+
+        static void reset() {
+            System.clearProperty(STAGING_ENV_TYPE_KEY);
         }
     }
 
