@@ -20,17 +20,14 @@
 
 package io.spine.base;
 
+import io.spine.base.given.AwsLambda;
+import io.spine.base.given.VariableControlledEnvironment;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.stream.Stream;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.base.EnvironmentTypes.checkCanRegisterByClass;
 import static io.spine.base.EnvironmentTypes.instantiate;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -41,41 +38,100 @@ class EnvironmentTypesTest extends UtilityClassTest<EnvironmentTypes> {
         super(EnvironmentTypes.class);
     }
 
-    @Test
-    @DisplayName("allow to register an env type with a package-private parameterless ctor")
-    void allowToRegister() {
-        Class<Local> local = Local.class;
-        assertThat(checkCanRegisterByClass(Local.class)).isSameInstanceAs(local);
+    @Nested
+    @DisplayName("not instantiate an env type")
+    class NotInstantiate {
+
+        @Test
+        @DisplayName("if it doesn't have a parameterless constructor")
+        void noMatchingCtor() {
+            assertThrows(IllegalArgumentException.class,
+                         () -> EnvironmentTypes.instantiate(ValueDependantEnvironment.class));
+        }
+
+        @Test
+        @DisplayName("if it is a nested class")
+        void nestedClass() {
+            assertThrows(IllegalArgumentException.class,
+                         () -> EnvironmentTypes.instantiate(NestedEnvironment.class));
+        }
+
+        @Test
+        @DisplayName("if it is an abstract class")
+        void abstractClass() {
+            assertThrows(IllegalArgumentException.class,
+                         () -> EnvironmentTypes.instantiate(VariableControlledEnvironment.class));
+        }
+
+        private final class NestedEnvironment extends EnvironmentType {
+
+            @Override
+            protected boolean enabled() {
+                return false;
+            }
+        }
     }
 
-    @Test
-    @DisplayName("allow to instantiate an env type with a package-private parameterless ctor")
-    void allowToInstantiate() {
-        Class<Local> local = Local.class;
-        EnvironmentType localEnv = instantiate(local);
-        assertThat(localEnv.enabled()).isTrue();
+    @Nested
+    @DisplayName("instantiate an env type")
+    class Instantiate {
+
+        @Test
+        @DisplayName("instantiate an env type with a parameterless ctor")
+        void allowToInstantiate() {
+            Class<Local> local = Local.class;
+            EnvironmentType localEnv = instantiate(local);
+            assertThat(localEnv.enabled()).isTrue();
+        }
+
+        @Test
+        @DisplayName("instantiate an env type that has a parameterless ctor among declared ctors")
+        void allowToInstantiateMoreThan1Ctor() {
+            Class<ConfigurableEnvironment> env = ConfigurableEnvironment.class;
+            EnvironmentType envType = instantiate(env);
+            assertThat(envType.enabled()).isFalse();
+        }
+
+        @Test
+        @DisplayName("instantiate an env type that extends a class that has no parameterless ctor")
+        void allowToInstantiateExtends() {
+            Class<? extends VariableControlledEnvironment> awsLambda = AwsLambda.class;
+            EnvironmentType environment = instantiate(awsLambda);
+            assertThat(environment).isInstanceOf(AwsLambda.class);
+        }
     }
 
-    @DisplayName("Disallow to register env types by classes if they do not have a" +
-            "package-private parameterless constructor")
-    @ParameterizedTest
-    @MethodSource("envTypesAndMethods")
-    void checkCanRegister(Class<? extends EnvironmentType> environmentType) {
-        assertThrows(IllegalArgumentException.class,
-                     () -> EnvironmentTypes.checkCanRegisterByClass(environmentType));
+    private static final class Local extends EnvironmentType {
+
+        Local() {
+        }
+
+        @Override
+        protected boolean enabled() {
+            return true;
+        }
     }
 
-    private static Stream<Arguments> envTypesAndMethods() {
-        Stream<Class<? extends EnvironmentType>> envTypes = Stream.of(
-                ValueDependantEnvironment.class,
-                HiddenEnvironment.class,
-                ProtectedEnvironment.class,
-                VisibleEnvironment.class
-        );
-        return envTypes.map(Arguments::arguments);
+    @SuppressWarnings("unused" /* need ctors to tests reflection-using functionality. */)
+    private static final class ConfigurableEnvironment extends EnvironmentType {
+
+        private final boolean enabled;
+
+        ConfigurableEnvironment(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        ConfigurableEnvironment() {
+            this.enabled = false;
+        }
+
+        @Override
+        protected boolean enabled() {
+            return enabled;
+        }
     }
 
-    private class ValueDependantEnvironment extends EnvironmentType {
+    private static final class ValueDependantEnvironment extends EnvironmentType {
 
         private final boolean enabled;
 
@@ -86,51 +142,6 @@ class EnvironmentTypesTest extends UtilityClassTest<EnvironmentTypes> {
         @Override
         protected boolean enabled() {
             return enabled;
-        }
-    }
-
-    private class HiddenEnvironment extends EnvironmentType {
-
-        private HiddenEnvironment() {
-        }
-
-        @Override
-        protected boolean enabled() {
-            return false;
-        }
-    }
-
-    private class ProtectedEnvironment extends EnvironmentType {
-
-        protected ProtectedEnvironment() {
-        }
-
-        @Override
-        protected boolean enabled() {
-            return false;
-        }
-    }
-
-    private class VisibleEnvironment extends EnvironmentType {
-
-        @SuppressWarnings("PublicConstructorInNonPublicClass")
-        public VisibleEnvironment() {
-        }
-
-        @Override
-        protected boolean enabled() {
-            return true;
-        }
-    }
-
-    private static class Local extends EnvironmentType {
-
-        Local() {
-        }
-
-        @Override
-        protected boolean enabled() {
-            return true;
         }
     }
 }

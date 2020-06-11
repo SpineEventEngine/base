@@ -187,7 +187,7 @@ public final class Environment {
      * Remembers the specified environment type, allowing {@linkplain #is(Class) to
      * determine whether it's enabled} later.
      *
-     * <p>The specified {@code type} must have a parameterless package-private constructor.
+     * <p>The specified {@code type} must have a parameterless constructor.
      *
      * <p>Otherwise, behaves like {@link #register(EnvironmentType)}.
      *
@@ -198,7 +198,7 @@ public final class Environment {
     @Internal
     @CanIgnoreReturnValue
     Environment register(Class<? extends EnvironmentType> type) {
-        EnvironmentTypes.checkCanRegisterByClass(type);
+        EnvironmentTypes.ensureParameterlessCtor(type);
         EnvironmentType envTypeInstance = EnvironmentTypes.instantiate(type);
         return register(envTypeInstance);
     }

@@ -28,8 +28,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
-import static io.spine.util.Exceptions.newIllegalStateException;
-import static java.lang.String.format;
 
 /**
  * A utility class for working with and verifying {@link EnvironmentType} extenders.
@@ -40,88 +38,68 @@ final class EnvironmentTypes {
     }
 
     /**
-     * Checks whether the specified environment type can be registered using it's class.
-     *
-     * <p>To register the type by its class it must have a package-private parameterless
-     * constructor.
-     *
-     * @param type
-     *         environment to register
-     */
-    @CanIgnoreReturnValue
-    static <C extends Class<? extends EnvironmentType>> C checkCanRegisterByClass(C type) {
-        checkNotNull(type);
-        Constructor<? extends EnvironmentType> parameterlessCtor = checkHasParameterlessCtor(type);
-        checkCtorAccessLevel(parameterlessCtor);
-        return type;
-    }
-
-    /**
      * Tries to instantiate the specified environment type.
      *
-     * <p>It can only be instantiated if it has a package-private parameterless constructor.
+     * <p>It can only be instantiated if it has a parameterless constructor, an {@code
+     * IllegalArgumentException} is thrown otherwise.
      *
-     * <p>If the constructor is not package-private or has at least 1 parameter or a
-     * reflection-related error occurs, an {@code IllegalStateException} is thrown.
-     *
-     * @param type env type to instantiate
+     * @param type
+     *         env type to instantiate
      * @return a new {@code EnvironmentType} instance
      */
     static EnvironmentType instantiate(Class<? extends EnvironmentType> type) {
         checkNotNull(type);
-        Constructor<? extends EnvironmentType> ctor = checkHasParameterlessCtor(type);
-        checkCtorAccessLevel(ctor);
+        Constructor<? extends EnvironmentType> ctor = ensureParameterlessCtor(type);
+        Invokable<? extends EnvironmentType, ? extends EnvironmentType> invokable =
+                Invokable.from(ctor);
+        boolean isAccessible = invokable.isAccessible();
         try {
-            EnvironmentType result = ctor.newInstance();
+            EnvironmentType result = isAccessible
+                                     ? ctor.newInstance()
+                                     : instantiatePreservingAccessibility(ctor);
             return result;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            String message = "To `register` or `setTo` an environment type `%s` by class, " +
-                    "the class must have a package-private parameterless ctor. You may also " +
-                    "`register` and `setTo` using an env type instance.";
-            throw newIllegalStateException(e, message, type.getSimpleName());
+            invokable.setAccessible(isAccessible);
+            String message = "Could not instantiate `%s`.";
+            throw newIllegalArgumentException(e, message, type.getSimpleName());
         }
     }
 
-    private static void
-    checkCtorAccessLevel(Constructor<? extends EnvironmentType> constructor) {
-        Invokable<? extends EnvironmentType, ? extends EnvironmentType> ctor =
-                Invokable.from(constructor);
-
-        if (!ctor.isPackagePrivate()) {
-            Class<? extends EnvironmentType> envType = constructor.getDeclaringClass();
-            StringBuilder message = new StringBuilder();
-            message.append(format(
-                    "`%s` constructor must be package-private to be registered and used in " +
-                            "`setTo` in `Environment`.",
-                    envType.getSimpleName()));
-            if (ctor.isPublic()) {
-                message.append(format(
-                        " As `%s` has a public constructor, you may use " +
-                                "`Environment.register(envInstance)` and " +
-                                "`environment.setTo(envInstance)`.",
-                        envType.getSimpleName()));
-            }
-            throw newIllegalArgumentException(message.toString());
-        }
-    }
-
+    /**
+     * If the specified type has a constructor with 0 arguments, returns it.
+     *
+     * <p>Otherwise, throws an {@code IllegalArgumentException}.
+     *
+     * @param type
+     *         type to check
+     * @return the specified instance, if it has a parameterless constructor
+     */
+    @CanIgnoreReturnValue
     @SuppressWarnings("unchecked" /*
                                    * Casting from `Constructor<?>` to
                                    * `Constructor<? extends EnvironmentType)` is safe here, as
                                    * we extract this constructor from a
                                    * `Class<? extends EnvironmentType`.
                                    */)
-    private static Constructor<? extends EnvironmentType>
-    checkHasParameterlessCtor(Class<? extends EnvironmentType> type) {
+    static Constructor<? extends EnvironmentType>
+    ensureParameterlessCtor(Class<? extends EnvironmentType> type) {
         for (Constructor<?> constructor : type.getDeclaredConstructors()) {
             if (constructor.getParameterCount() == 0) {
                 return (Constructor<? extends EnvironmentType>) constructor;
             }
         }
 
-        throw newIllegalArgumentException("To `register` `%s` or use it in `setTo` by class, " +
-                                                  "it must have a parameterless package-private " +
-                                                  "constructor.",
+        throw newIllegalArgumentException("No parameterless ctor found in class `%s`.",
                                           type.getSimpleName());
+    }
+
+    private static EnvironmentType
+    instantiatePreservingAccessibility(Constructor<? extends EnvironmentType> ctor)
+            throws IllegalAccessException, InvocationTargetException, InstantiationException {
+        boolean accessible = ctor.isAccessible();
+        ctor.setAccessible(true);
+        EnvironmentType result = ctor.newInstance();
+        ctor.setAccessible(accessible);
+        return result;
     }
 }
