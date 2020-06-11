@@ -109,6 +109,24 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * }
  * </pre>
  *
+ * <h1>Caching</h1>
+ * <p>Be aware that {@code Environment} caches the {@code EnvironmentType} once its calculated.
+ * This means that if one environment type has been found to be active, it gets cached. If later it
+ * becomes logically inactive, e.g. the environment variable that's used to check the env type
+ * changes, {@code Environment} is still going to return the cached value. For example:
+ * <pre>
+ *     EnvironmentType awsLambda = new AwsLambda();
+ *     assertThat(Environment.instance().is(AwsLambda.class)).isTrue();
+ *
+ *     System.clearProperty(AwsLambda.AWS_ENV_VARIABLE);
+ *
+ *     // Even though `AwsLambda` is technically not active, we have cached the value,
+ *     // and `is(AwsLambda)` is `true`.
+ *     assertThat(Environment.instance().is(AwsLambda.class)).isTrue();
+ *
+ * </pre>
+ *
+ *
  * <p><b>When registering custom types, please ensure</b> their mutual exclusivity.
  * If two or more environment types {@linkplain EnvironmentType#enabled() consider themselves
  * enabled} at the same time, the behaviour of {@link #is(Class)}} is undefined.

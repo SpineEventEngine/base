@@ -20,6 +20,7 @@
 
 package io.spine.base;
 
+import com.google.common.base.Throwables;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.base.given.AppEngine;
 import io.spine.base.given.AppEngineStandard;
@@ -31,6 +32,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.base.Tests.ENV_KEY_TESTS;
@@ -237,6 +240,26 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
                    .register(Staging.class);
 
         assertThat(environment.type()).isInstanceOf(Local.class);
+    }
+
+    @Test
+    @DisplayName("cache the environment type")
+    void cacheEnvType() throws InterruptedException {
+        AtomicBoolean envCached = new AtomicBoolean(false);
+        assertThat(environment.is(Tests.class));
+        Thread thread = new Thread(() -> {
+            /*
+             * Here, the stack trace does not contain mentions of testing frameworks, because
+             * we check from a different thread. We also explicitly clear the variable.
+             */
+            Tests.clearTestingEnvVariable();
+            assertThat(environment.is(Tests.class)).isTrue();
+            assertThat(new Tests().enabled()).isFalse();
+            envCached.set(true);
+        });
+        thread.start();
+        thread.join();
+        assertThat(envCached.get()).isTrue();
     }
 
     @Immutable
