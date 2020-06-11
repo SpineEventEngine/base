@@ -25,9 +25,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
+import io.spine.reflect.Objects;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.reflect.Constructors.ensureParameterlessCtor;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -41,10 +43,10 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * Two environment types exist out of the box:
  *
  * <ul>
- *     <li><em>{@link Tests}</em> is detected if the current call stack has a reference to the unit
- *         testing framework.
+ * <li><em>{@link Tests}</em> is detected if the current call stack has a reference to the unit
+ * testing framework.
  *
- *     <li><em>{@link Production}</em> is set in all other cases.
+ * <li><em>{@link Production}</em> is set in all other cases.
  * </ul>
  *
  * <p>The framework users may define their custom settings depending on the current environment
@@ -208,8 +210,8 @@ public final class Environment {
     @Internal
     @CanIgnoreReturnValue
     Environment register(Class<? extends EnvironmentType> type) {
-        EnvironmentTypes.ensureParameterlessCtor(type);
-        EnvironmentType envTypeInstance = EnvironmentTypes.instantiate(type);
+        ensureParameterlessCtor(type);
+        EnvironmentType envTypeInstance = Objects.instantiateWithoutParameters(type);
         return register(envTypeInstance);
     }
 
