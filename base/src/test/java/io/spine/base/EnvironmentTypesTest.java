@@ -65,15 +65,6 @@ class EnvironmentTypesTest extends UtilityClassTest<EnvironmentTypes> {
                      () -> EnvironmentTypes.checkCanRegisterByClass(environmentType));
     }
 
-    @DisplayName("Disallow to instantaite env types by classes if they do not have a" +
-            "package-private parameterless constructor")
-    @ParameterizedTest
-    @MethodSource("envTypesAndMethods")
-    void checkCanInstantiate(Class<? extends EnvironmentType> environmentType) {
-        assertThrows(IllegalArgumentException.class,
-                     () -> EnvironmentTypes.instantiate(environmentType));
-    }
-
     private static Stream<Arguments> envTypesAndMethods() {
         Stream<Class<? extends EnvironmentType>> envTypes = Stream.of(
                 ValueDependantEnvironment.class,

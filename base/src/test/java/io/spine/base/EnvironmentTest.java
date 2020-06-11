@@ -20,7 +20,6 @@
 
 package io.spine.base;
 
-import com.google.common.base.Throwables;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.base.given.AppEngine;
 import io.spine.base.given.AppEngineStandard;
@@ -242,7 +241,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Test
     @DisplayName("return the instance of the default environment type")
     void returnInstance() {
-        assertThat(environment.type()).isInstanceOf(Tests.class);
+        assertThat(environment.type()).isSameInstanceAs(Tests.class);
     }
 
     @Test
@@ -251,7 +250,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         environment.register(Local.class)
                    .register(Staging.class);
 
-        assertThat(environment.type()).isInstanceOf(Local.class);
+        assertThat(environment.type()).isSameInstanceAs(Local.class);
     }
 
     @Test
@@ -319,7 +318,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
                          .equalsIgnoreCase(System.getProperty(STAGING_ENV_TYPE_KEY));
         }
 
-        static void set(){
+        static void set() {
             System.setProperty(STAGING_ENV_TYPE_KEY, String.valueOf(true));
         }
 

@@ -35,8 +35,9 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  * <h1>Environment Type Detection</h1>
  *
- * <p>Current implementation allows to {@linkplain #is(Class) check} the type of the current
- * environment, or {@linkplain #type() get the instance of the current environment}.
+ * <p>Current implementation allows t {@linkplain #type() obtain the type} of the current
+ * environment, or to check whether current environment type {@linkplain #is(Class) matches
+ * another type}.
  * Two environment types exist out of the box:
  *
  * <ul>
@@ -144,7 +145,7 @@ public final class Environment {
     private static final Environment INSTANCE = new Environment();
 
     private ImmutableList<EnvironmentType> knownEnvTypes;
-    private @Nullable EnvironmentType currentEnvType;
+    private @Nullable Class<? extends EnvironmentType> currentEnvType;
 
     private Environment() {
         this.knownEnvTypes = BASE_TYPES;
@@ -243,14 +244,14 @@ public final class Environment {
      * @return whether the current environment type matches the specified one
      */
     public boolean is(Class<? extends EnvironmentType> type) {
-        EnvironmentType currentEnv = cachedOrCalculated();
-        boolean result = type.isInstance(currentEnv);
+        Class<? extends EnvironmentType> currentEnv = cachedOrCalculated();
+        boolean result = type.isAssignableFrom(currentEnv);
         return result;
     }
 
-    /** Returns the instance of the current environment. */
-    public EnvironmentType type() {
-        EnvironmentType currentEnv = cachedOrCalculated();
+    /** Returns the type of the current environment. */
+    public Class<? extends EnvironmentType> type() {
+        Class<? extends EnvironmentType> currentEnv = cachedOrCalculated();
         return currentEnv;
     }
 
@@ -296,7 +297,7 @@ public final class Environment {
      */
     @VisibleForTesting
     public void setTo(EnvironmentType type) {
-        this.currentEnvType = checkNotNull(type);
+        this.currentEnvType = checkNotNull(type).getClass();
     }
 
     /**
@@ -309,8 +310,7 @@ public final class Environment {
     @VisibleForTesting
     public void setTo(Class<? extends EnvironmentType> type) {
         checkNotNull(type);
-        EnvironmentType result = EnvironmentTypes.instantiate(type);
-        setTo(result);
+        this.currentEnvType = type;
     }
 
     /**
@@ -323,7 +323,7 @@ public final class Environment {
     @Deprecated
     @VisibleForTesting
     public void setToTests() {
-        this.currentEnvType = new Tests();
+        this.currentEnvType = Tests.class;
         Tests.enable();
     }
 
@@ -337,7 +337,7 @@ public final class Environment {
     @Deprecated
     @VisibleForTesting
     public void setToProduction() {
-        this.currentEnvType = new Production();
+        this.currentEnvType = Production.class;
         Tests.clearTestingEnvVariable();
     }
 
@@ -351,18 +351,18 @@ public final class Environment {
         Tests.clearTestingEnvVariable();
     }
 
-    private EnvironmentType cachedOrCalculated() {
-        EnvironmentType result = currentEnvType != null
-                                 ? currentEnvType
-                                 : currentType();
+    private Class<? extends EnvironmentType> cachedOrCalculated() {
+        Class<? extends EnvironmentType> result = currentEnvType != null
+                                                  ? currentEnvType
+                                                  : currentType();
         this.currentEnvType = result;
         return result;
     }
 
-    private EnvironmentType currentType() {
+    private Class<? extends EnvironmentType> currentType() {
         for (EnvironmentType type : knownEnvTypes) {
             if (type.enabled()) {
-                return type;
+                return type.getClass();
             }
         }
 
