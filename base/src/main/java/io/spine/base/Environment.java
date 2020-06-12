@@ -194,7 +194,8 @@ public final class Environment {
      * Remembers the specified environment type, allowing {@linkplain #is(Class) to
      * determine whether it's enabled} later.
      *
-     * <p>The specified {@code type} must have a parameterless constructor.
+     * <p>The specified {@code type} must have a parameterless constructor. The
+     * {@code EnvironmentType} is going to be instantiated using the parameterless constructor.
      *
      * @param type
      *         environment type to register
