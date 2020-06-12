@@ -25,11 +25,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
-import io.spine.reflect.Objects;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.reflect.Constructors.ensureParameterlessCtor;
+import static io.spine.reflect.Invokables.ensureParameterlessCtor;
+import static io.spine.reflect.Invokables.instantiateWithoutParameters;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -211,7 +211,7 @@ public final class Environment {
     @CanIgnoreReturnValue
     Environment register(Class<? extends EnvironmentType> type) {
         ensureParameterlessCtor(type);
-        EnvironmentType envTypeInstance = Objects.instantiateWithoutParameters(type);
+        EnvironmentType envTypeInstance = instantiateWithoutParameters(type);
         return register(envTypeInstance);
     }
 
