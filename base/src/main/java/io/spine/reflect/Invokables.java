@@ -113,7 +113,7 @@ public final class Invokables {
      *         constructors. Note that nested classes fall under this case
      */
 
-    public static <C> C invokeParameterlessCtor(Class<C> type) {
+    public static <C> C callParameterlessCtor(Class<C> type) {
         checkNotNull(type);
         Constructor<C> ctor = ensureParameterlessCtor(type);
         C result = invokePreservingAccessibility(

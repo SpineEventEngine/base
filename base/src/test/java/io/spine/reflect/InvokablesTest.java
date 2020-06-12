@@ -36,7 +36,7 @@ import java.lang.reflect.Method;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.reflect.Invokables.asHandle;
-import static io.spine.reflect.Invokables.invokeParameterlessCtor;
+import static io.spine.reflect.Invokables.callParameterlessCtor;
 import static io.spine.reflect.Invokables.setAccessibleAndInvoke;
 import static io.spine.reflect.given.ConstructorsTestEnv.Animal;
 import static io.spine.reflect.given.ConstructorsTestEnv.Animal.MISSING;
@@ -153,21 +153,21 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         @Test
         @DisplayName("instantiate a class using a parameterless constructor")
         void instantiate() {
-            Cat cat = invokeParameterlessCtor(Cat.class);
+            Cat cat = callParameterlessCtor(Cat.class);
             assertThat(cat.greet()).contains(MISSING);
         }
 
         @Test
         @DisplayName("fail to instantiate an abstract class")
         void notInstantiateAbstractClass() {
-            assertThrows(IllegalStateException.class, () -> invokeParameterlessCtor(
+            assertThrows(IllegalStateException.class, () -> callParameterlessCtor(
                     Animal.class));
         }
 
         @Test
         @DisplayName("instantiate using a default ctor")
         void defaultCtor() {
-            ClassWithDefaultCtor instance = invokeParameterlessCtor(ClassWithDefaultCtor.class);
+            ClassWithDefaultCtor instance = callParameterlessCtor(ClassWithDefaultCtor.class);
             assertThat(instance.instantiated()).isTrue();
         }
 
@@ -175,20 +175,20 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         @DisplayName("throw if there was an exception during class instantiation")
         void throwIfThrows() {
             assertThrows(IllegalStateException.class,
-                         () -> invokeParameterlessCtor(ThrowingConstructor.class));
+                         () -> callParameterlessCtor(ThrowingConstructor.class));
         }
 
         @Test
         @DisplayName("fail to instantiate a nested class")
         void notInstantiateNested() {
             assertThrows(IllegalArgumentException.class,
-                         () -> invokeParameterlessCtor(ConstructorsTestEnv.Chicken.class));
+                         () -> callParameterlessCtor(ConstructorsTestEnv.Chicken.class));
         }
 
         @Test
         @DisplayName("instantiate a private class")
         void instantiatePrivate() {
-            ClassWithPrivateCtor instance = invokeParameterlessCtor(
+            ClassWithPrivateCtor instance = callParameterlessCtor(
                     ClassWithPrivateCtor.class);
             assertThat(instance.instantiated()).isTrue();
         }
@@ -197,7 +197,7 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         @DisplayName("fail to instantiate a class without a parameterless ctor")
         void noParameterlessCtor() {
             assertThrows(IllegalArgumentException.class,
-                         () -> invokeParameterlessCtor(
+                         () -> callParameterlessCtor(
                                  NoParameterlessConstructors.class));
         }
 
@@ -213,7 +213,7 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
                 Constructor<ClassWithPrivateCtor> ctor =
                         ClassWithPrivateCtor.class.getDeclaredConstructor();
                 ClassWithPrivateCtor instance =
-                        invokeParameterlessCtor(privateCtorClass);
+                        callParameterlessCtor(privateCtorClass);
                 assertThat(instance.instantiated()).isTrue();
 
                 assertThat(ctor.isAccessible()).isFalse();
@@ -228,7 +228,7 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
                         ThrowingConstructor.class.getDeclaredConstructor();
 
                 assertThrows(IllegalStateException.class,
-                             () -> invokeParameterlessCtor(throwingCtorClass));
+                             () -> callParameterlessCtor(throwingCtorClass));
 
                 assertThat(ctor.isAccessible()).isFalse();
             }
