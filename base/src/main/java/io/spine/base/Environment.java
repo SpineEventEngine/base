@@ -225,7 +225,7 @@ public final class Environment {
     /**
      * Determines whether the current environment is the same as the specified one.
      *
-     * <p>If {@linkplain #register(EnvironmentType) custom env types have been defined},
+     * <p>If {@linkplain #register(EnvironmentType) custom env types have been registered},
      * goes through them in the latest-registered to earliest-registered order.
      * Then, checks {@link Tests} and {@link Production}.
      *

@@ -49,32 +49,6 @@ public final class Invokables {
     }
 
     /**
-     * Tries to find a constructor with no arguments in the specified class or its parents.
-     *
-     * <p>If no such constructor has been found, throws an {@code IllegalArgumentException}.
-     *
-     * @param type
-     *         class to look for constructors in
-     * @return a constructor with no parameters, if it exists
-     * @throws IllegalArgumentException
-     *         if the specified class does not declare a parameterless constructor
-     */
-    @CanIgnoreReturnValue
-    private static <C> Constructor<C> ensureParameterlessCtor(Class<C> type) {
-        checkNotNull(type);
-        @SuppressWarnings("unchecked" /* safe, as `Class<C>` only declares `Constructor<C>`. */)
-        Constructor<C>[] ctors = (Constructor<C>[]) type.getDeclaredConstructors();
-        for (Constructor<C> ctor : ctors) {
-            if (ctor.getParameterCount() == 0) {
-                return ctor;
-            }
-        }
-
-        throw newIllegalArgumentException("No parameterless ctor found in class `%s`.",
-                                          type.getSimpleName());
-    }
-
-    /**
      * Converts the given {@link Method} into a {@link MethodHandle}.
      *
      * <p>The accessibility parameter of the input method, i.e. {@code method.isAccessible()}, is
@@ -151,6 +125,32 @@ public final class Invokables {
                         target.getClass()
                               .getCanonicalName()));
         return result;
+    }
+
+    /**
+     * Tries to find a constructor with no arguments in the specified class or its parents.
+     *
+     * <p>If no such constructor has been found, throws an {@code IllegalArgumentException}.
+     *
+     * @param type
+     *         class to look for constructors in
+     * @return a constructor with no parameters, if it exists
+     * @throws IllegalArgumentException
+     *         if the specified class does not declare a parameterless constructor
+     */
+    @CanIgnoreReturnValue
+    private static <C> Constructor<C> ensureParameterlessCtor(Class<C> type) {
+        checkNotNull(type);
+        @SuppressWarnings("unchecked" /* safe, as `Class<C>` only declares `Constructor<C>`. */)
+        Constructor<C>[] ctors = (Constructor<C>[]) type.getDeclaredConstructors();
+        for (Constructor<C> ctor : ctors) {
+            if (ctor.getParameterCount() == 0) {
+                return ctor;
+            }
+        }
+
+        throw newIllegalArgumentException("No parameterless ctor found in class `%s`.",
+                                          type.getSimpleName());
     }
 
     /**
