@@ -56,6 +56,8 @@ public final class Invokables {
      * @param type
      *         class to look for constructors in
      * @return a constructor with no parameters, if it exists
+     * @throws IllegalArgumentException
+     *         if the specified class does not declare a parameterless constructor
      */
     @CanIgnoreReturnValue
     public static <C> Constructor<C> ensureParameterlessCtor(Class<C> type) {
@@ -129,11 +131,10 @@ public final class Invokables {
      * Invokes the given argumentless method on the target ignoring the accessibility restrictions.
      *
      * <p>The target must be of the type that declares the given method, otherwise an
-     * {@link IllegalArgumentException} is thrown.
+     * {@link IllegalStateException} is thrown.
      *
-     * @throws IllegalArgumentException
-     *         if the target is not of the type that declares the given method
      * @throws IllegalStateException
+     *         if the target is not of the type that declares the given method or
      *         if an exception is thrown during the method invocation
      */
     public static Object setAccessibleAndInvoke(Method method, Object target) {
@@ -173,6 +174,9 @@ public final class Invokables {
      * @param <R>
      *         a type of result of the reflective function
      * @return a result of the reflective function
+     * @throws IllegalStateException
+     *         if a {@code ReflectiveOperationException} is thrown
+     *         by {@code fn}, or other error occurs during the reflective operation execution
      */
     @SuppressWarnings("OverlyBroadCatchBlock" /* catching any runtimes does not hurt here. */)
     private static <T, R> R invokePreservingAccessibility(T reflectiveObject,
