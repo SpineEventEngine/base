@@ -22,6 +22,10 @@ package io.spine.reflect.given;
 
 import static java.lang.String.format;
 
+/**
+ * This is an environment for {@linkplain io.spine.reflect.InvokablesTest testing
+ * constructor-related} utilities.
+ */
 @SuppressWarnings("unused" /* need unused members for reflection lookup. */)
 public final class ConstructorsTestEnv {
 

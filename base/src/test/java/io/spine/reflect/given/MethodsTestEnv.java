@@ -20,6 +20,10 @@
 
 package io.spine.reflect.given;
 
+/**
+ * This is an environment for {@linkplain io.spine.reflect.InvokablesTest testing methods-related}
+ * utilities.
+ */
 public final class MethodsTestEnv {
 
     /** Prevents instantiation of this test env class. */

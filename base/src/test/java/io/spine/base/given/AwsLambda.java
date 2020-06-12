@@ -23,7 +23,7 @@ package io.spine.base.given;
 /**
  * AWS Lambda environment is enabled if a specific env variable is set.
  */
-public class AwsLambda extends VariableControlledEnvironment {
+public final class AwsLambda extends VariableControlledEnvironment {
 
     public AwsLambda() {
         super("AWS_LAMBDA_FUNCTION_NAME");

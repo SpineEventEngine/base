@@ -28,8 +28,7 @@ import io.spine.annotation.SPI;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.reflect.Invokables.ensureParameterlessCtor;
-import static io.spine.reflect.Invokables.instantiateWithoutParameters;
+import static io.spine.reflect.Invokables.invokeParameterlessCtor;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -210,8 +209,7 @@ public final class Environment {
     @Internal
     @CanIgnoreReturnValue
     Environment register(Class<? extends EnvironmentType> type) {
-        ensureParameterlessCtor(type);
-        EnvironmentType envTypeInstance = instantiateWithoutParameters(type);
+        EnvironmentType envTypeInstance = invokeParameterlessCtor(type);
         return register(envTypeInstance);
     }
 

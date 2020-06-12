@@ -38,7 +38,7 @@ import static java.lang.invoke.MethodHandles.publicLookup;
 
 /**
  * A utility class for working with Java {@linkplain java.lang.reflect.Method methods} and
- * {@linkplain java.lang.reflect.Constructor constructors}.
+ * instantiating objects using reflectively-obtained {@linkplain Constructor constructors}.
  */
 public final class Invokables {
 
@@ -60,7 +60,7 @@ public final class Invokables {
      *         if the specified class does not declare a parameterless constructor
      */
     @CanIgnoreReturnValue
-    public static <C> Constructor<C> ensureParameterlessCtor(Class<C> type) {
+    private static <C> Constructor<C> ensureParameterlessCtor(Class<C> type) {
         checkNotNull(type);
         @SuppressWarnings("unchecked" /* safe, as `Class<C>` only declares `Constructor<C>`. */)
         Constructor<C>[] ctors = (Constructor<C>[]) type.getDeclaredConstructors();
@@ -113,7 +113,7 @@ public final class Invokables {
      *         constructors. Note that nested classes fall under this case
      */
 
-    public static <C> C instantiateWithoutParameters(Class<C> type) {
+    public static <C> C invokeParameterlessCtor(Class<C> type) {
         checkNotNull(type);
         Constructor<C> ctor = ensureParameterlessCtor(type);
         C result = invokePreservingAccessibility(

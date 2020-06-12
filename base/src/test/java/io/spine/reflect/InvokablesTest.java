@@ -32,13 +32,11 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.reflect.Invokables.asHandle;
-import static io.spine.reflect.Invokables.ensureParameterlessCtor;
-import static io.spine.reflect.Invokables.instantiateWithoutParameters;
+import static io.spine.reflect.Invokables.invokeParameterlessCtor;
 import static io.spine.reflect.Invokables.setAccessibleAndInvoke;
 import static io.spine.reflect.given.ConstructorsTestEnv.Animal;
 import static io.spine.reflect.given.ConstructorsTestEnv.Animal.MISSING;
@@ -149,90 +147,48 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
     }
 
     @Nested
-    @DisplayName("when looking for parameterless constructors")
-    class ParamaterlessCtors {
-
-        @Test
-        @DisplayName("find one in a concrete class")
-        void findParameterless() throws IllegalAccessException,
-                                        InvocationTargetException,
-                                        InstantiationException {
-            Constructor<Cat> constructor = ensureParameterlessCtor(
-                    Cat.class);
-            Cat cat = constructor.newInstance();
-            assertThat(cat.greet()).contains(MISSING);
-        }
-
-        @Test
-        @DisplayName("find one in an abstract class")
-        void findParameterlessInAbstract() {
-            Constructor<Animal> constructor = ensureParameterlessCtor(
-                    Animal.class);
-            assertThrows(InstantiationException.class, constructor::newInstance);
-        }
-
-        @Test
-        @DisplayName("not find one in a nested class")
-        void notFindInNested() {
-            assertThrows(IllegalArgumentException.class,
-                         () -> ensureParameterlessCtor(ConstructorsTestEnv.Chicken.class));
-        }
-
-        @Test
-        @DisplayName("find a default one")
-        void defaultCtor() throws IllegalAccessException,
-                                  InvocationTargetException,
-                                  InstantiationException {
-            Constructor<ClassWithDefaultCtor> ctor =
-                    ensureParameterlessCtor(ClassWithDefaultCtor.class);
-            ClassWithDefaultCtor instance = ctor.newInstance();
-            assertThat(instance.instantiated()).isTrue();
-        }
-
-        @Test
-        @DisplayName("not find one if it's not declared in a concrete class")
-        void noParameterlessCtorInConcrete() {
-            assertThrows(IllegalArgumentException.class, () ->
-                    ensureParameterlessCtor(NoParameterlessConstructors.class));
-        }
-    }
-
-    @Nested
     @DisplayName("when instantiating objects")
     class Objects {
 
         @Test
         @DisplayName("instantiate a class using a parameterless constructor")
         void instantiate() {
-            Cat cat = instantiateWithoutParameters(Cat.class);
+            Cat cat = invokeParameterlessCtor(Cat.class);
             assertThat(cat.greet()).contains(MISSING);
         }
 
         @Test
         @DisplayName("fail to instantiate an abstract class")
         void notInstantiateAbstractClass() {
-            assertThrows(IllegalStateException.class, () -> instantiateWithoutParameters(
+            assertThrows(IllegalStateException.class, () -> invokeParameterlessCtor(
                     Animal.class));
+        }
+
+        @Test
+        @DisplayName("instantiate using a default ctor")
+        void defaultCtor() {
+            ClassWithDefaultCtor instance = invokeParameterlessCtor(ClassWithDefaultCtor.class);
+            assertThat(instance.instantiated()).isTrue();
         }
 
         @Test
         @DisplayName("throw if there was an exception during class instantiation")
         void throwIfThrows() {
             assertThrows(IllegalStateException.class,
-                         () -> instantiateWithoutParameters(ThrowingConstructor.class));
+                         () -> invokeParameterlessCtor(ThrowingConstructor.class));
         }
 
         @Test
         @DisplayName("fail to instantiate a nested class")
         void notInstantiateNested() {
             assertThrows(IllegalArgumentException.class,
-                         () -> instantiateWithoutParameters(ConstructorsTestEnv.Chicken.class));
+                         () -> invokeParameterlessCtor(ConstructorsTestEnv.Chicken.class));
         }
 
         @Test
         @DisplayName("instantiate a private class")
         void instantiatePrivate() {
-            ClassWithPrivateCtor instance = instantiateWithoutParameters(
+            ClassWithPrivateCtor instance = invokeParameterlessCtor(
                     ClassWithPrivateCtor.class);
             assertThat(instance.instantiated()).isTrue();
         }
@@ -241,7 +197,7 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         @DisplayName("fail to instantiate a class without a parameterless ctor")
         void noParameterlessCtor() {
             assertThrows(IllegalArgumentException.class,
-                         () -> instantiateWithoutParameters(
+                         () -> invokeParameterlessCtor(
                                  NoParameterlessConstructors.class));
         }
 
@@ -251,14 +207,13 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
 
             @Test
             @DisplayName("if the instantiation succeeded")
-            void success() {
+            void success() throws NoSuchMethodException {
                 Class<ClassWithPrivateCtor> privateCtorClass = ClassWithPrivateCtor.class;
-                Constructor<ClassWithPrivateCtor> ctor =
-                        ensureParameterlessCtor(privateCtorClass);
-                assertThat(ctor.isAccessible()).isFalse();
 
+                Constructor<ClassWithPrivateCtor> ctor =
+                        ClassWithPrivateCtor.class.getDeclaredConstructor();
                 ClassWithPrivateCtor instance =
-                        instantiateWithoutParameters(privateCtorClass);
+                        invokeParameterlessCtor(privateCtorClass);
                 assertThat(instance.instantiated()).isTrue();
 
                 assertThat(ctor.isAccessible()).isFalse();
@@ -266,14 +221,14 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
 
             @Test
             @DisplayName("if the instantiation failed")
-            void failure() {
+            void failure() throws NoSuchMethodException {
                 Class<ThrowingConstructor> throwingCtorClass = ThrowingConstructor.class;
+
                 Constructor<ThrowingConstructor> ctor =
-                        ensureParameterlessCtor(throwingCtorClass);
-                assertThat(ctor.isAccessible()).isFalse();
+                        ThrowingConstructor.class.getDeclaredConstructor();
 
                 assertThrows(IllegalStateException.class,
-                             () -> instantiateWithoutParameters(throwingCtorClass));
+                             () -> invokeParameterlessCtor(throwingCtorClass));
 
                 assertThat(ctor.isAccessible()).isFalse();
             }
