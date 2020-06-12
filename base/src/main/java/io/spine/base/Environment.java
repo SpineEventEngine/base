@@ -108,12 +108,13 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * </pre>
  *
  * <h1>Caching</h1>
+ *
  * <p>{@code Environment} caches the {@code EnvironmentType} once its calculated.
  * This means that if one environment type has been found to be active, its instance is saved.
  * If later it becomes logically inactive, e.g. the environment variable that's used to check the
- * environment type changes, {@code Environment} is still going to return the cached value, unless
- * it is {@linkplain #setTo(EnvironmentType) set manually} or {@linkplain #reset() reset
- * explicitly}.
+ * environment type changes, {@code Environment} is still going to return the cached value. To
+ * overwrite the value use {@link #setTo(EnvironmentType)}. Also, the value may be
+ * {@linkplain ... reset}.
  *
  * For example:
  * <pre>
@@ -133,9 +134,6 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *     // When `reset` explicitly, cached value is erased.
  *     assertThat(environment.is(AwsLambda.class)).isFalse();
  * </pre>
- *
- * <p>{@linkplain #setTo(EnvironmentType) explicitly setting} the environment type overrides
- * the cached value.
  *
  * <p><b>When registering custom types, please ensure</b> their mutual exclusivity.
  * If two or more environment types {@linkplain EnvironmentType#enabled() consider themselves
@@ -197,10 +195,6 @@ public final class Environment {
      * determine whether it's enabled} later.
      *
      * <p>The specified {@code type} must have a parameterless constructor.
-     * {@linkplain EnvironmentType#enabled() activity} of the specified environment type is going
-     * to be checked against an instance created by invoking the parameterless constructor.
-     *
-     * <p>Otherwise, behaves like {@link #register(EnvironmentType)}.
      *
      * @param type
      *         environment type to register
