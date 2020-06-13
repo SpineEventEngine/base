@@ -18,40 +18,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.environment;
+package io.spine.base.given;
 
 import io.spine.base.EnvironmentType;
 
 /**
- * An environment type that mimics production but receives less traffic and is suitable for testing
- * out new features.
- *
- * <p>This implementations relies on a static {@code boolean} flag for detection.
+ * An environment {@linkplain #enabled() that is enabled} based on the value of an env variable
+ * specified to the constructor.
  */
-final class Staging extends EnvironmentType {
+@SuppressWarnings("AbstractClassWithoutAbstractMethods")
+public abstract class VariableControlledEnvironment extends EnvironmentType {
 
-    private static boolean enabled = false;
+    private final String envVariable;
 
-    Staging() {
-        super();
+    VariableControlledEnvironment(String variable) {
+        this.envVariable = variable;
     }
 
+    @SuppressWarnings("unused" /* invoked via reflection. */)
+    VariableControlledEnvironment() {
+        this.envVariable = "";
+    }
+
+    @SuppressWarnings("AccessOfSystemProperties")
     @Override
-    protected boolean enabled() {
-        return enabled;
-    }
-
-    /**
-     * Brings the underlying system into the staging environment.
-     */
-    static void enable() {
-        enabled = true;
-    }
-
-    /**
-     * Brings the underlying system out of the staging environment.
-     */
-    static void disable() {
-        enabled = false;
+    public final boolean enabled() {
+        return System.getProperty(envVariable) != null;
     }
 }

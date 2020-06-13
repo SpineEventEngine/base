@@ -23,6 +23,7 @@ package io.spine.base;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 
 import java.util.regex.Pattern;
 
@@ -33,6 +34,7 @@ import java.util.regex.Pattern;
  *
  * <p>This option is mutually exclusive with {@link Production}, i.e. one of them is always enabled.
  */
+@Immutable
 @SuppressWarnings("AccessOfSystemProperties" /* is necessary for this class to function */)
 public final class Tests extends EnvironmentType {
 
@@ -56,7 +58,7 @@ public final class Tests extends EnvironmentType {
      *
      * <p>All {@code Tests} instances are immutable and equivalent.
      */
-    public Tests() {
+    Tests() {
         super();
     }
 

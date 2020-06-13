@@ -20,11 +20,14 @@
 
 package io.spine.base;
 
+import com.google.errorprone.annotations.Immutable;
+
 /**
  * A non-testing environment.
  *
  * <p>If the system is not in the {@link Tests} environment, it is in the production environment.
  */
+@Immutable
 public final class Production extends EnvironmentType {
 
     /**
@@ -32,7 +35,7 @@ public final class Production extends EnvironmentType {
      *
      * <p>All {@code Production} instances are immutable and equivalent.
      */
-    public Production() {
+    Production() {
         super();
     }
 

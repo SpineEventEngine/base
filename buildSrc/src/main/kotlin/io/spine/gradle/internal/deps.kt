@@ -71,7 +71,7 @@ object Versions {
     val errorProne       = "2.3.4"
     val errorProneJavac  = "9+181-r4173-1" // taken from here: https://github.com/tbroyer/gradle-errorprone-plugin/blob/v0.8/build.gradle.kts
     val errorPronePlugin = "1.1.1"
-    val pmd              = "6.20.0"
+    val pmd              = "6.24.0"
     val checkstyle       = "8.29"
     val protobufPlugin   = "0.8.12"
     val appengineApi     = "1.9.79"
