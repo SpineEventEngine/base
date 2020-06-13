@@ -87,9 +87,8 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Test
     @DisplayName("tell that we are under tests if env. variable set to true")
     void environmentVarTrue() {
-        Tests tests = new Tests();
         Environment.instance()
-                   .setTo(tests);
+                   .setTo(Tests.class);
 
         assertThat(environment.is(Tests.class)).isTrue();
     }
@@ -147,7 +146,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Test
     @DisplayName("turn tests mode on")
     void turnTestsOn() {
-        environment.setTo(new Tests());
+        environment.setTo(Tests.class);
 
         assertThat(environment.is(Tests.class)).isTrue();
     }
@@ -155,7 +154,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Test
     @DisplayName("turn production mode on")
     void turnProductionOn() {
-        environment.setTo(new Production());
+        environment.setTo(Production.class);
 
         assertThat(environment.is(Production.class)).isTrue();
     }
@@ -196,8 +195,8 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         @Test
         @DisplayName("allow to provide user defined environment types")
         void provideCustomTypes() {
-            environment.register(new Staging())
-                       .register(new Local());
+            environment.register(Staging.class)
+                       .register(Local.class);
 
             // Now that `Environment` knows about `LOCAL`, it should use it as fallback.
             assertThat(environment.is(Local.class)).isTrue();
@@ -207,7 +206,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         @DisplayName("fallback to the `TESTS` environment")
         void fallBack() {
             Environment.instance()
-                       .register(new Travis());
+                       .register(Travis.class);
             assertThat(environment.is(Travis.class)).isFalse();
             assertThat(environment.is(Tests.class)).isTrue();
         }
@@ -216,7 +215,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Test
     @DisplayName("follow assignment-compatibility when determining the type")
     void polymorphicEnv() {
-        environment.register(new AppEngineStandard());
+        environment.register(AppEngineStandard.class);
 
         AppEngineStandard.enable();
         assertThat(environment.is(AppEngine.class)).isTrue();
