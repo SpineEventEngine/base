@@ -137,7 +137,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  * <p><b>When registering custom types, please ensure</b> their mutual exclusivity.
  * If two or more environment types {@linkplain EnvironmentType#enabled() consider themselves
- * enabled} at the same time, the behaviour of {@link #is(Class)}} is undefined.
+ * enabled} at the same time, the behaviour of {@link #is(Class)} is undefined.
  *
  * @see EnvironmentType
  * @see Tests
@@ -300,7 +300,8 @@ public final class Environment {
     /**
      * Sets the current environment type to {@code type.getClass()}. Overrides the current value.
      *
-     * <p>Calls {@link #register(EnvironmentType)} internally.
+     * If the supplied type was not {@linkplain #register(EnvironmentType) registered} previously,
+     * it is registered.
      */
     @VisibleForTesting
     public void setTo(EnvironmentType type) {
@@ -312,7 +313,8 @@ public final class Environment {
     /**
      * Sets the current environment type to the specified one. Overrides the current value.
      *
-     * <p>Calls {@link #register(Class)} internally.
+     * If the supplied type was not {@linkplain #register(EnvironmentType) registered} previously,
+     * it is registered.
      */
     @Internal
     @VisibleForTesting
