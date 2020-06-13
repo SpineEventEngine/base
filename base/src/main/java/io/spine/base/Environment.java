@@ -299,6 +299,8 @@ public final class Environment {
 
     /**
      * Sets the current environment type to {@code type.getClass()}. Overrides the current value.
+     *
+     * <p>Calls {@link #register(EnvironmentType)} internally.
      */
     @VisibleForTesting
     public void setTo(EnvironmentType type) {
@@ -309,6 +311,8 @@ public final class Environment {
 
     /**
      * Sets the current environment type to the specified one. Overrides the current value.
+     *
+     * <p>Calls {@link #register(Class)} internally.
      */
     @Internal
     @VisibleForTesting
