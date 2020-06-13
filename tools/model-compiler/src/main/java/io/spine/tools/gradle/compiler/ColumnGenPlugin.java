@@ -19,6 +19,7 @@
  */
 package io.spine.tools.gradle.compiler;
 
+import io.spine.base.entity.EntityWithColumns;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.ProtoPlugin;
 import org.gradle.api.Action;
@@ -44,7 +45,7 @@ import static io.spine.tools.gradle.compiler.Extension.getTestProtoSrcDir;
 /**
  * A plugin that generates helper interfaces for declaring entity columns.
  *
- * @see io.spine.base.EntityWithColumns
+ * @see EntityWithColumns
  */
 public class ColumnGenPlugin extends ProtoPlugin {
 

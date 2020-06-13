@@ -18,20 +18,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    id("io.spine.tools.spine-model-compiler")
-}
+/**
+ * This package contains the routines performing the assembly of {@code Query}
+ * and {@code QueryBuilder} code generated for entity state types.
+ */
 
-modelCompiler {
-    fields {
-        generateFor("spine.tools.column.ProjectName", markAs("io.spine.tools.protoc.given.ProjectNameField"))
-    }
+@Internal
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.code.gen.java.query;
 
-    columns {
-        generate(true)
-    }
+import io.spine.annotation.Internal;
 
-    entityQueries {
-        generate(false)
-    }
-}
+import javax.annotation.CheckReturnValue;
+import javax.annotation.ParametersAreNonnullByDefault;

@@ -18,7 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.base.entity;
+
+import io.spine.base.Field;
+import io.spine.base.SubscribableField;
 
 /**
  * A subscribable field of an {@link EntityState entity state}.

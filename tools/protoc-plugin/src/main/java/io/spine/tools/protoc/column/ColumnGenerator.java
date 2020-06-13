@@ -75,5 +75,4 @@ public final class ColumnGenerator extends CodeGenerator {
         MessageType messageType = (MessageType) type;
         return messageType.isEntityState() && hasColumns(messageType);
     }
-
 }

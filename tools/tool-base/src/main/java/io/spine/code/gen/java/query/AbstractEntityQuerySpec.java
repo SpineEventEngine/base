@@ -18,20 +18,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    id("io.spine.tools.spine-model-compiler")
-}
+package io.spine.code.gen.java.query;
 
-modelCompiler {
-    fields {
-        generateFor("spine.tools.column.ProjectName", markAs("io.spine.tools.protoc.given.ProjectNameField"))
+import com.squareup.javapoet.ClassName;
+import io.spine.code.gen.java.GeneratedTypeSpec;
+import io.spine.code.java.PackageName;
+import io.spine.type.MessageType;
+
+/**
+ * Abstract base for code specifications related to generation of entity queries.
+ */
+abstract class AbstractEntityQuerySpec implements GeneratedTypeSpec {
+
+    private final MessageType messageType;
+
+    AbstractEntityQuerySpec(MessageType type) {
+        messageType = type;
     }
 
-    columns {
-        generate(true)
+    @Override
+    public PackageName packageName() {
+        return messageType.javaPackage();
     }
 
-    entityQueries {
-        generate(false)
+    final ClassName stateClassName() {
+        String javaPackage = messageType.javaPackage()
+                                        .toString();
+        String simpleClassName = messageType.javaClassName()
+                                            .toSimple()
+                                            .toString();
+        ClassName stateClassName = ClassName.get(javaPackage, simpleClassName);
+        return stateClassName;
     }
 }

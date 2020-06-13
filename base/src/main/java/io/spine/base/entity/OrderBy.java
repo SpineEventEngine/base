@@ -18,20 +18,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    id("io.spine.tools.spine-model-compiler")
-}
+package io.spine.base.entity;
 
-modelCompiler {
-    fields {
-        generateFor("spine.tools.column.ProjectName", markAs("io.spine.tools.protoc.given.ProjectNameField"))
+/**
+ * @author Alex Tymchenko
+ */
+public final class OrderBy<C extends EntityColumn<S, V>, S extends EntityState, V> {
+
+    private final C column;
+
+    private final Direction direction;
+
+    OrderBy(C column, Direction direction) {
+        this.column = column;
+        this.direction = direction;
     }
 
-    columns {
-        generate(true)
+    public C column() {
+        return column;
     }
 
-    entityQueries {
-        generate(false)
+    public Direction direction() {
+        return direction;
     }
 }

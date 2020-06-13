@@ -18,20 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    id("io.spine.tools.spine-model-compiler")
-}
+package io.spine.base.entity;
 
-modelCompiler {
-    fields {
-        generateFor("spine.tools.column.ProjectName", markAs("io.spine.tools.protoc.given.ProjectNameField"))
-    }
-
-    columns {
-        generate(true)
-    }
-
-    entityQueries {
-        generate(false)
-    }
+/**
+ * @author Alex Tymchenko
+ */
+public enum Direction {
+    ASC, DESC
 }

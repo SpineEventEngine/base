@@ -18,19 +18,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
-
-import com.google.errorprone.annotations.Immutable;
+package io.spine.base.entity;
 
 /**
- * A common interface for entity state messages.
+ * An expression which sets the values of entity identifies to be used in {@link EntityQuery}.
  *
- * <p>Any message that defines an {@code (entity)} option with a valid {@code kind} is marked with
- * this interface by the Model Compiler.
- *
- * @see io.spine.code.proto.EntityStateOption
+ * <p>Exists in a context of a corresponding {@link EntityQueryBuilder} instance.
  */
-@SuppressWarnings("InterfaceNeverImplemented") // Implemented in the dependent repos.
-@Immutable
-public interface EntityState extends KnownMessage {
+public final class IdCriterion<I,
+                               S extends EntityState<I>,
+                               B extends EntityQueryBuilder<I, S, B, ?>> {
+
+    private final B builder;
+
+    IdCriterion(B builder) {
+        this.builder = builder;
+    }
+
+    public B is(I value) {
+        IdParameter<I, S> parameter = IdParameter.is(value);
+        return builder.setIdParameter(parameter);
+    }
+
+    @SafeVarargs
+    public final B in(I... values) {
+        return builder.setIdParameter(IdParameter.in(values));
+    }
 }

@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.base.entity;
 
 import io.spine.annotation.Internal;
 import io.spine.code.proto.FieldName;
@@ -57,9 +57,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *         }
  *
  *          //TODO:2020-04-30:alex.tymchenko: add the docs
- *         public static io.spine.base.EntityColumn name() {...}
+ *         public static io.spine.base.entity.EntityColumn name() {...}
  *
- *         public static io.spine.base.EntityColumn taskCount() {...}
+ *         public static io.spine.base.entity.EntityColumn taskCount() {...}
  *     }
  * }
  * </pre>

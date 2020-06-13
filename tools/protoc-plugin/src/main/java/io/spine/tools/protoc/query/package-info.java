@@ -18,20 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    id("io.spine.tools.spine-model-compiler")
-}
+/**
+ * This package defines the code generator of the {@code Query} for {@code Entity} state classes.
+ */
 
-modelCompiler {
-    fields {
-        generateFor("spine.tools.column.ProjectName", markAs("io.spine.tools.protoc.given.ProjectNameField"))
-    }
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.protoc.query;
 
-    columns {
-        generate(true)
-    }
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    entityQueries {
-        generate(false)
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

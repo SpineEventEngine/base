@@ -22,7 +22,7 @@ package io.spine.tools.protoc.iface;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
-import io.spine.base.EntityState;
+import io.spine.base.entity.EntityState;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.EntityStateConfig;

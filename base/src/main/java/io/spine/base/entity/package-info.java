@@ -18,20 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    id("io.spine.tools.spine-model-compiler")
-}
+/**
+ * This package defines the interfaces and classes used for working with Protobuf types defining
+ * entity states.
+ */
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.base.entity;
 
-modelCompiler {
-    fields {
-        generateFor("spine.tools.column.ProjectName", markAs("io.spine.tools.protoc.given.ProjectNameField"))
-    }
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    columns {
-        generate(true)
-    }
-
-    entityQueries {
-        generate(false)
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

@@ -18,32 +18,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.iface;
+package io.spine.base.entity;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.base.entity.EntityState;
-import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.EntityStateConfig;
-import io.spine.type.MessageType;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.google.protobuf.FieldMask;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Marks the provided message type with the {@link EntityState EntityState} interface
- * if the type is recognized as entity state.
+ * A common contract for the classes being generated for each entity state type, which define
+ * how the entities of this type may be queried.
+ *
+ * @param <S>
+ *         the type of an entity state
  */
-final class GenerateEntityStateInterfaces extends InterfaceGenerationTask {
+public abstract class EntityQuery<I,
+                                  S extends EntityState<I>,
+                                  B extends EntityQueryBuilder<I, S, B, ?>> {
 
-    GenerateEntityStateInterfaces(EntityStateConfig entityStateConfig) {
-        super(entityStateConfig.getValue());
-    }
+    private final ImmutableList<QueryParameter<S, ?>> parameters;
 
-    @Override
-    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
-        checkNotNull(type);
-        if (!type.isEntityState()) {
-            return ImmutableList.of();
-        }
-        return generateInterfacesFor(type);
+    private final ImmutableList<OrderBy<?, S, ?>> ordering;
+
+    private final @Nullable Integer limit;
+
+    @MonotonicNonNull
+    private final @Nullable FieldMask mask;
+
+    protected EntityQuery(EntityQueryBuilder<I, S, B, ?> builder) {
+        this.parameters = builder.parameters();
+        this.ordering = builder.ordering();
+        this.limit = builder.limit();
+        this.mask = builder.mask();
     }
 }

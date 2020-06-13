@@ -20,8 +20,8 @@
 
 package io.spine.tools.protoc;
 
-import io.spine.base.EntityStateField;
 import io.spine.base.SubscribableField;
+import io.spine.base.entity.EntityStateField;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

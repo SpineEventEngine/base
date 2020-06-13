@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import io.spine.base.entity.EntityColumn;
 import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.java.PackageName;
@@ -68,9 +69,9 @@ import static javax.lang.model.element.Modifier.STATIC;
  *         // Prevent instantiation.
  *     }
  *
- *     public static io.spine.base.EntityColumn name() {...}
+ *     public static io.spine.base.entity.EntityColumn name() {...}
  *
- *     public static io.spine.base.EntityColumn taskCount() {...}
+ *     public static io.spine.base.entity.EntityColumn taskCount() {...}
  * }
  * </pre>
  *
@@ -116,7 +117,7 @@ public final class ColumnContainerSpec implements GeneratedTypeSpec {
     }
 
     /**
-     * Generates the methods which return entity columns as {@link io.spine.base.EntityColumn}
+     * Generates the methods which return entity columns as {@link EntityColumn}
      * instances.
      */
     private ImmutableList<MethodSpec> columns() {

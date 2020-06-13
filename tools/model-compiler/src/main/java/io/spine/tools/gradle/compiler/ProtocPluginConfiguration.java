@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import io.spine.io.Files2;
 import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.GeneratedColumns;
+import io.spine.tools.protoc.GeneratedEntityQueries;
 import io.spine.tools.protoc.GeneratedFields;
 import io.spine.tools.protoc.GeneratedInterfaces;
 import io.spine.tools.protoc.GeneratedMethods;
@@ -42,6 +43,7 @@ import java.util.Collection;
 import java.util.Set;
 
 import static io.spine.tools.gradle.compiler.Extension.getColumns;
+import static io.spine.tools.gradle.compiler.Extension.getEntityQueries;
 import static io.spine.tools.gradle.compiler.Extension.getFields;
 import static io.spine.tools.gradle.compiler.Extension.getInterfaces;
 import static io.spine.tools.gradle.compiler.Extension.getMethods;
@@ -74,6 +76,8 @@ final class ProtocPluginConfiguration {
      */
     void writeTo(Path configPath) {
         Files2.ensureFile(configPath);
+        System.err.println("Writing the `SpineProtocConfig` to the file " + configPath);
+        System.err.println(config);
         try (FileOutputStream fos = new FileOutputStream(configPath.toFile())) {
             config.writeTo(fos);
         } catch (FileNotFoundException e) {
@@ -95,6 +99,7 @@ final class ProtocPluginConfiguration {
         GeneratedNestedClasses nestedClasses = getNestedClasses(project);
         GeneratedColumns columns = getColumns(project);
         GeneratedFields fields = getFields(project);
+        GeneratedEntityQueries entityQueries = getEntityQueries(project);
         boolean shouldGenerateVBuilders = shouldGenerateValidatingBuilders(project);
         boolean shouldGenerateValidation = shouldGenerateValidation(project);
         Classpath projectClasspath = projectClasspath(project);
@@ -106,6 +111,7 @@ final class ProtocPluginConfiguration {
                 .setAddNestedClasses(nestedClasses.asProtocConfig())
                 .setAddColumns(columns.asProtocConfig())
                 .setAddFields(fields.asProtocConfig())
+                .setAddEntityQueries(entityQueries.asProtocConfig())
                 .setSkipValidatingBuilders(!shouldGenerateVBuilders)
                 .setGenerateValidation(shouldGenerateValidation)
                 .setClasspath(projectClasspath)

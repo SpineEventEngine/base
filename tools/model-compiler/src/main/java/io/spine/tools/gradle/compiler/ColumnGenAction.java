@@ -21,6 +21,7 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.base.entity.EntityWithColumns;
 import io.spine.code.gen.Indent;
 import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.gen.java.TypeSpecWriter;
@@ -43,7 +44,7 @@ import static io.spine.code.proto.ColumnOption.hasColumns;
  *
  * <p>For all top-level message types that declare columns and conform to the entity with columns
  * requirements (see the {@code (column)} option), a helper {@code XWithColumns} interface is
- * generated, where {@code X} is the message type name. See {@link io.spine.base.EntityWithColumns}
+ * generated, where {@code X} is the message type name. See {@link EntityWithColumns}
  * for details.
  *
  * <p>The {@link Extension#targetGenColumnsRootDir} and

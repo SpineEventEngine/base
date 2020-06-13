@@ -18,20 +18,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    id("io.spine.tools.spine-model-compiler")
-}
+package io.spine.tools.protoc;
 
-modelCompiler {
-    fields {
-        generateFor("spine.tools.column.ProjectName", markAs("io.spine.tools.protoc.given.ProjectNameField"))
+import io.spine.annotation.Internal;
+
+/**
+ * Configuration of the entity query generation applied to the Protobuf messages, which define
+ * states of entities.
+ */
+public final class GeneratedEntityQueries extends GeneratedConfigurations<AddEntityQueries>{
+
+    private boolean generate = false;
+
+    /**
+     * Enables or disables the generation of entity queries for entity state {@code Message}s.
+     *
+     * <p>A usage example:
+     * <pre>
+     * modelCompiler {
+     *     entityQueries {
+     *         generate = true
+     *     }
+     * }
+     * </pre>
+     */
+    public final void generate(boolean generate) {
+        this.generate = generate;
     }
 
-    columns {
-        generate(true)
-    }
-
-    entityQueries {
-        generate(false)
+    @Internal
+    @Override
+    public AddEntityQueries asProtocConfig() {
+        AddEntityQueries result = AddEntityQueries
+                .newBuilder()
+                .setGenerate(generate)
+                .build();
+        return result;
     }
 }

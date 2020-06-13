@@ -28,6 +28,7 @@ import io.spine.code.fs.java.DefaultJavaProject;
 import io.spine.code.gen.Indent;
 import io.spine.tools.gradle.GradleExtension;
 import io.spine.tools.protoc.GeneratedColumns;
+import io.spine.tools.protoc.GeneratedEntityQueries;
 import io.spine.tools.protoc.GeneratedFields;
 import io.spine.tools.protoc.GeneratedInterfaces;
 import io.spine.tools.protoc.GeneratedMethods;
@@ -176,6 +177,8 @@ public class Extension extends GradleExtension {
     public final GeneratedColumns columns = new GeneratedColumns();
 
     public final GeneratedFields fields = new GeneratedFields();
+
+    public final GeneratedEntityQueries entityQueries = new GeneratedEntityQueries();
 
     public boolean generateValidatingBuilders = true;
 
@@ -395,6 +398,16 @@ public class Extension extends GradleExtension {
         action.execute(fields);
     }
 
+    @SuppressWarnings("unused") // Configures `entityQueries` closure.
+    public void entityQueries(Closure<?> closure) {
+        ConfigureUtil.configure(closure, entityQueries);
+    }
+
+    @SuppressWarnings("unused") // Configures `entityQueries` closure.
+    public void entityQueries(Action<? super GeneratedEntityQueries> action) {
+        action.execute(entityQueries);
+    }
+
     public static CodeGenAnnotations getCodeGenAnnotations(Project project) {
         CodeGenAnnotations annotations = extension(project).generateAnnotations;
         return annotations;
@@ -423,6 +436,11 @@ public class Extension extends GradleExtension {
     public static GeneratedFields getFields(Project project) {
         GeneratedFields fields = extension(project).fields;
         return fields;
+    }
+
+    public static GeneratedEntityQueries getEntityQueries(Project project) {
+        GeneratedEntityQueries columns = extension(project).entityQueries;
+        return columns;
     }
 
     public static boolean shouldGenerateValidatingBuilders(Project project) {

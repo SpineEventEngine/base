@@ -18,20 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    id("io.spine.tools.spine-model-compiler")
-}
+package io.spine.base.entity;
 
-modelCompiler {
-    fields {
-        generateFor("spine.tools.column.ProjectName", markAs("io.spine.tools.protoc.given.ProjectNameField"))
-    }
-
-    columns {
-        generate(true)
-    }
-
-    entityQueries {
-        generate(false)
-    }
+/**
+ * @author Alex Tymchenko
+ */
+public enum ComparisonOperator {
+    EQUALS,
+    NOT_EQUALS,
+    LESS_THAN,
+    LESS_OR_EQUALS,
+    GREATER_THAN,
+    GREATER_OR_EQUALS
 }

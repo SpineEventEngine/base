@@ -25,6 +25,7 @@ import com.google.errorprone.annotations.concurrent.LazyInit;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import io.spine.base.entity.EntityStateField;
 import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.java.ClassName;
@@ -122,7 +123,7 @@ public final class FieldContainerSpec implements GeneratedTypeSpec {
     /**
      * A type to mark the generated fields with.
      *
-     * <p>An example of such type could be the {@link io.spine.base.EntityStateField} or
+     * <p>An example of such type could be the {@link EntityStateField} or
      * {@link io.spine.base.EventMessageField} along with custom user-defined field types.
      */
     private final ClassName fieldSupertype;

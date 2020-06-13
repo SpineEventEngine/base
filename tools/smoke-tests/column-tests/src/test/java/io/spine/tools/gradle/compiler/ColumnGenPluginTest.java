@@ -20,7 +20,7 @@
 
 package io.spine.tools.gradle.compiler;
 
-import io.spine.base.EntityWithColumns;
+import io.spine.base.entity.EntityWithColumns;
 import io.spine.tools.column.Project;
 import io.spine.tools.column.ProjectName;
 import io.spine.tools.column.ProjectViewWithColumns;

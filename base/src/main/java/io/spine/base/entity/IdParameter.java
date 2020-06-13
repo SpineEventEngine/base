@@ -18,32 +18,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.iface;
+package io.spine.base.entity;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.base.entity.EntityState;
-import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.EntityStateConfig;
-import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Marks the provided message type with the {@link EntityState EntityState} interface
- * if the type is recognized as entity state.
+ * A parameter defining how to query entities by the value of their identifiers.
  */
-final class GenerateEntityStateInterfaces extends InterfaceGenerationTask {
+public final class IdParameter<I, S extends EntityState<I>> {
 
-    GenerateEntityStateInterfaces(EntityStateConfig entityStateConfig) {
-        super(entityStateConfig.getValue());
+    private final ImmutableList<I> values;
+
+    private IdParameter(ImmutableList<I> values) {
+        this.values = values;
     }
 
-    @Override
-    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
-        checkNotNull(type);
-        if (!type.isEntityState()) {
-            return ImmutableList.of();
+    public ImmutableList<I> values() {
+        return values;
+    }
+
+    public static <I, S extends EntityState<I>> IdParameter<I, S> empty() {
+        return new IdParameter<>(ImmutableList.of());
+    }
+
+    public static <I, S extends EntityState<I>> IdParameter<I, S> is(I value) {
+        checkNotNull(value);
+        return new IdParameter<>(ImmutableList.of(value));
+    }
+
+    @SafeVarargs
+    public static <I, S extends EntityState<I>> IdParameter<I, S> in(I ...values) {
+        checkNotNull(values);
+        for (I value : values) {
+            checkNotNull(value);
         }
-        return generateInterfacesFor(type);
+        return new IdParameter<>(ImmutableList.copyOf(values));
     }
 }

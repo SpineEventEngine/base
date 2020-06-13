@@ -48,8 +48,11 @@ message SpineProtocConfig {
     // Field generation tasks.
     AddFields add_fields = 7;
 
+    // Field generation tasks.
+    AddEntityQueries add_entity_queries = 8;
+
     // The classpath used to lookup types by their fully-qualified names.
-    Classpath classpath = 8;
+    Classpath classpath = 9;
 }
 
 // Interfaces generation configuration.
@@ -104,6 +107,13 @@ message AddFields {
 
     // Enables strongly-typed field generation for specific types.
     repeated ConfigByType config_by_type = 3;
+}
+
+// DSL for building `Entity`-specific queries.
+message AddEntityQueries {
+
+    // The flag which allows to enable and disable the entity query generation.
+    bool generate = 1;
 }
 
 // UUID value code generation configuration.

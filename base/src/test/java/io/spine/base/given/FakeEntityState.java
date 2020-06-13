@@ -25,7 +25,7 @@ import com.google.protobuf.Descriptors;
 import com.google.protobuf.Message;
 import com.google.protobuf.Parser;
 import com.google.protobuf.UnknownFieldSet;
-import io.spine.base.EntityState;
+import io.spine.base.entity.EntityState;
 
 import java.util.Map;
 

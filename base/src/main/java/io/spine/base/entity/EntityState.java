@@ -18,20 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    id("io.spine.tools.spine-model-compiler")
-}
+package io.spine.base.entity;
 
-modelCompiler {
-    fields {
-        generateFor("spine.tools.column.ProjectName", markAs("io.spine.tools.protoc.given.ProjectNameField"))
-    }
+import com.google.errorprone.annotations.Immutable;
+import io.spine.base.KnownMessage;
 
-    columns {
-        generate(true)
-    }
+/**
+ * A common interface for entity state messages.
+ *
+ * <p>Any message that defines an {@code (entity)} option with a valid {@code kind} is marked with
+ * this interface by the Model Compiler.
+ *
+ * @param <I>
+ *         the type of entity identifiers
+ * @see io.spine.code.proto.EntityStateOption
+ */
+//TODO:2020-06-10:alex.tymchenko: kill this one?
+//@SuppressWarnings("InterfaceNeverImplemented") // Implemented in the dependent repos.
+@Immutable
+public interface EntityState<I> extends KnownMessage {
 
-    entityQueries {
-        generate(false)
-    }
 }
