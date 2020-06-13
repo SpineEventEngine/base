@@ -114,7 +114,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * If later it becomes logically inactive, e.g. the environment variable that's used to check the
  * environment type changes, {@code Environment} is still going to return the cached value. To
  * overwrite the value use {@link #setTo(EnvironmentType)}. Also, the value may be
- * {@link #reset}.
+ * {@linkplain #reset}.
  *
  * For example:
  * <pre>
@@ -302,7 +302,9 @@ public final class Environment {
      */
     @VisibleForTesting
     public void setTo(EnvironmentType type) {
-        this.currentEnvType = checkNotNull(type).getClass();
+        checkNotNull(type);
+        register(type);
+        this.currentEnvType = type.getClass();
     }
 
     /**
@@ -312,6 +314,7 @@ public final class Environment {
     @VisibleForTesting
     public void setTo(Class<? extends EnvironmentType> type) {
         checkNotNull(type);
+        register(type);
         this.currentEnvType = type;
     }
 
