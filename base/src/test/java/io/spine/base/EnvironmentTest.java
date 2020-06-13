@@ -266,18 +266,17 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         assertThat(environment.is(Staging.class)).isTrue();
     }
 
+    /**
+     * This test checks whether {@code Tests} type is preserved and is visible from a different
+     * thread. This is a common case for tests that involve a multithreading environment or
+     * test client-server communication.
+     */
     @Test
     @DisplayName("cache the `Tests` environment type")
     void cacheTests() throws InterruptedException {
         AtomicBoolean envCached = new AtomicBoolean(false);
         assertThat(environment.is(Tests.class));
         Thread thread = new Thread(() -> {
-            /*
-             * Here the stack trace does not contain mentions of testing frameworks, because
-             * we check from a new thread.
-             *
-             * We also explicitly clear the variable.
-             */
             Tests.clearTestingEnvVariable();
             assertThat(environment.is(Tests.class)).isTrue();
             assertThat(new Tests().enabled()).isFalse();
