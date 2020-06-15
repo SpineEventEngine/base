@@ -36,13 +36,13 @@ import io.spine.base.KnownMessage;
  *
  * <ol>
  *     <li>The definition of an entity state always starts with its ID with no extra Protobuf
- *     options. This way it's feels easy and natural to read the code.
+ *     options. This way it's feels easy and more natural to read the code.
 
  *     <li>Developers don't forget to specify which of the fields declared in Protobuf corresponds
  *     to the entity ID.
  * </ol>
  *
- * <p>At codegen-time the Model Compiler substitutes the generic parameter {@code <I>} with
+ * <p>At codegen-time, the Model Compiler substitutes the generic parameter {@code <I>} with
  * an actual type of the first field of the entity state message.
  *
  * @param <I>
