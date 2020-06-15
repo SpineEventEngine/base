@@ -113,7 +113,7 @@ final class ProtocPluginTest {
     @DisplayName("skip non specified message types")
     void skipNonSpecifiedMessageTypes() {
         Class<?> cls = CustomerName.class;
-        Class[] interfaces = cls.getInterfaces();
+        Class<?>[] interfaces = cls.getInterfaces();
         assertEquals(1, interfaces.length);
         assertSame(CustomerNameOrBuilder.class, interfaces[0]);
     }
