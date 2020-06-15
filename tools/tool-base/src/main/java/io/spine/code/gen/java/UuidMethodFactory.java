@@ -57,7 +57,7 @@ public final class UuidMethodFactory implements MethodFactory {
     private static final String INVALID_STRING_MESSAGE = "Invalid UUID string: %s";
 
     @Override
-    public List<GeneratedMethod> createFor(MessageType messageType) {
+    public List<GeneratedMethod> generateMethodsFor(MessageType messageType) {
         checkNotNull(messageType);
         if (!messageType.isUuidValue()) {
             return ImmutableList.of();

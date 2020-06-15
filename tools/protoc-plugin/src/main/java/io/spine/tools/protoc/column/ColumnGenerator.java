@@ -60,7 +60,7 @@ public final class ColumnGenerator extends CodeGenerator {
     }
 
     private ImmutableList<CompilerOutput> generateFor(MessageType type) {
-        List<GeneratedNestedClass> generatedClasses = factory.createFor(type);
+        List<GeneratedNestedClass> generatedClasses = factory.generateClassesFor(type);
         ImmutableList<CompilerOutput> result =
                 generatedClasses.stream()
                                 .map(cls -> ClassMember.nestedClass(cls, type))

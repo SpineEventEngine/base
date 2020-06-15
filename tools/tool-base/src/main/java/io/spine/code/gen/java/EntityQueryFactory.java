@@ -24,6 +24,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.code.gen.java.query.EntityQueryBuilderSpec;
 import io.spine.code.gen.java.query.EntityQuerySpec;
+import io.spine.tools.protoc.method.GeneratedMethod;
+import io.spine.tools.protoc.method.MethodFactory;
 import io.spine.tools.protoc.nested.GeneratedNestedClass;
 import io.spine.tools.protoc.nested.NestedClassFactory;
 import io.spine.type.MessageType;
@@ -32,12 +34,15 @@ import java.util.List;
 
 /**
  * Generates an entity-specific {@code Query} and {@code QueryBuilder} classes.
+ *
+ * <p>Additionally, generates {@code newQuery()} method to instantiate the
+ * {@code QueryBuilder}.
  */
 @Immutable
-public final class EntityQueryFactory implements NestedClassFactory {
+public final class EntityQueryFactory implements NestedClassFactory, MethodFactory {
 
     @Override
-    public List<GeneratedNestedClass> createFor(MessageType messageType) {
+    public List<GeneratedNestedClass> generateClassesFor(MessageType messageType) {
         GeneratedNestedClass generatedQueryType =
                 asGeneratedClass(new EntityQuerySpec(messageType));
         GeneratedNestedClass generatedQueryBuilderType =
@@ -51,5 +56,13 @@ public final class EntityQueryFactory implements NestedClassFactory {
                                .toString();
         GeneratedNestedClass generatedQueryType = new GeneratedNestedClass(rawOutput);
         return generatedQueryType;
+    }
+
+    @Override
+    public List<GeneratedMethod> generateMethodsFor(MessageType messageType) {
+        EntityQuerySpec spec = new EntityQuerySpec(messageType);
+        GeneratedMethod method = new GeneratedMethod(spec.methodSpec()
+                                                         .toString());
+        return ImmutableList.of(method);
     }
 }

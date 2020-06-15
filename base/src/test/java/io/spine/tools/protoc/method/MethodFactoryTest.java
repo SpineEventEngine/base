@@ -39,7 +39,7 @@ final class MethodFactoryTest {
     @DisplayName("have specific contract")
     @Test
     void shouldGenerateNewMethod() {
-        assertThat(new TestMethodFactory().createFor(null)).isEmpty();
+        assertThat(new TestMethodFactory().generateMethodsFor(null)).isEmpty();
     }
 
     @Immutable
@@ -49,7 +49,7 @@ final class MethodFactoryTest {
         }
 
         @Override
-        public List<GeneratedMethod> createFor(MessageType messageType) {
+        public List<GeneratedMethod> generateMethodsFor(MessageType messageType) {
             return ImmutableList.of();
         }
     }

@@ -40,7 +40,7 @@ import java.util.List;
 public final class FieldFactory implements NestedClassFactory {
 
     @Override
-    public List<GeneratedNestedClass> createFor(MessageType messageType) {
+    public List<GeneratedNestedClass> generateClassesFor(MessageType messageType) {
         return createFor(messageType, ClassName.of(SubscribableField.class));
     }
 

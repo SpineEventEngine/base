@@ -21,10 +21,14 @@
 package io.spine.code.gen.java.query;
 
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.entity.EntityQuery;
+import io.spine.code.gen.java.GeneratedJavadoc;
+import io.spine.code.gen.java.GeneratedMethodSpec;
 import io.spine.type.MessageType;
 
 import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
@@ -35,8 +39,11 @@ import static javax.lang.model.element.Modifier.STATIC;
 
 /**
  * Assembles the specification for the {@code Query} class generated for entities state types.
+ *
+ * <p>Additionally, generates the {@code newQuery()} method, which would be a static member
+ * of the Java class of the entity state.
  */
-public final class EntityQuerySpec extends AbstractEntityQuerySpec {
+public final class EntityQuerySpec extends AbstractEntityQuerySpec implements GeneratedMethodSpec {
 
     public EntityQuerySpec(MessageType type) {
         super(type);
@@ -69,6 +76,32 @@ public final class EntityQuerySpec extends AbstractEntityQuerySpec {
         return ParameterizedTypeName.get(
                 ClassName.get(EntityQuery.class),
                 idFieldType(), stateType(), queryBuilderType().value()
+        );
+    }
+
+    /**
+     * Generates {@code newQuery()} method.
+     */
+    @Override
+    public MethodSpec methodSpec() {
+        TypeName typeOfBuilder = queryBuilderType().value();
+        return MethodSpec
+                .methodBuilder("newQuery")
+                .addJavadoc(newQueryJavadoc().spec())
+                .addModifiers(PUBLIC, STATIC)
+                .addStatement("return new $T()", typeOfBuilder)
+                .returns(typeOfBuilder)
+                .build();
+    }
+
+    /**
+     * Returns the Javadoc for {@code newQuery()} method.
+     */
+    private static GeneratedJavadoc newQueryJavadoc() {
+        return GeneratedJavadoc.singleParagraph(
+                CodeBlock.of("Creates a new instance of {@link $L}.",
+                             queryBuilderType().className()
+                                               .simpleName())
         );
     }
 }

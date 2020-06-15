@@ -26,6 +26,7 @@ import io.spine.tools.protoc.ClassMember;
 import io.spine.tools.protoc.CodeGenerator;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.SpineProtocConfig;
+import io.spine.tools.protoc.method.GeneratedMethod;
 import io.spine.tools.protoc.nested.GeneratedNestedClass;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
@@ -34,7 +35,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableList.toImmutableList;
 
 /**
  * Generates the {@code Query} and a {@code QueryBuilder} to allow creating typed queries for
@@ -105,12 +105,24 @@ public class EntityQueryGenerator extends CodeGenerator {
     }
 
     private ImmutableList<CompilerOutput> generateFor(MessageType type) {
-        List<GeneratedNestedClass> generatedClasses = factory.createFor(type);
-        ImmutableList<CompilerOutput> result =
-                generatedClasses.stream()
-                                .map(cls -> ClassMember.nestedClass(cls, type))
-                                .collect(toImmutableList());
-        return result;
+        ImmutableList.Builder<CompilerOutput> builder = ImmutableList.builder();
+        addClasses(type, builder);
+        addMethods(type, builder);
+        return builder.build();
+    }
+
+    private void addClasses(MessageType type, ImmutableList.Builder<CompilerOutput> builder) {
+        List<GeneratedNestedClass> classes = factory.generateClassesFor(type);
+        for (GeneratedNestedClass cls : classes) {
+            builder.add(ClassMember.nestedClass(cls, type));
+        }
+    }
+
+    private void addMethods(MessageType type, ImmutableList.Builder<CompilerOutput> builder) {
+        List<GeneratedMethod> methods = factory.generateMethodsFor(type);
+        for (GeneratedMethod method : methods) {
+            builder.add(ClassMember.method(method, type));
+        }
     }
 
     private static boolean isEntityState(Type<?, ?> type) {
