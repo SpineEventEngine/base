@@ -21,7 +21,9 @@
 package io.spine.base.entity;
 
 /**
- * @author Alex Tymchenko
+ * The direction of ordering.
+ *
+ * @see OrderBy
  */
 public enum Direction {
     ASC, DESC
