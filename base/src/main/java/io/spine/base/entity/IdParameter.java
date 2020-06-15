@@ -27,7 +27,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A parameter defining how to query entities by the value of their identifiers.
  */
-public final class IdParameter<I, S extends EntityState<I>> {
+public final class IdParameter<I> {
 
     private final ImmutableList<I> values;
 
@@ -39,17 +39,17 @@ public final class IdParameter<I, S extends EntityState<I>> {
         return values;
     }
 
-    public static <I, S extends EntityState<I>> IdParameter<I, S> empty() {
+    public static <I> IdParameter<I> empty() {
         return new IdParameter<>(ImmutableList.of());
     }
 
-    public static <I, S extends EntityState<I>> IdParameter<I, S> is(I value) {
+    public static <I> IdParameter<I> is(I value) {
         checkNotNull(value);
         return new IdParameter<>(ImmutableList.of(value));
     }
 
     @SafeVarargs
-    public static <I, S extends EntityState<I>> IdParameter<I, S> in(I ...values) {
+    public static <I> IdParameter<I> in(I ...values) {
         checkNotNull(values);
         for (I value : values) {
             checkNotNull(value);

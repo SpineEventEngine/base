@@ -50,7 +50,7 @@ public abstract class EntityQueryBuilder<I,
                                          B extends EntityQueryBuilder<I, S, B, Q>,
                                          Q extends EntityQuery<I, S, B>> {
 
-    private IdParameter<I, S> id = IdParameter.empty();
+    private IdParameter<I> id = IdParameter.empty();
 
     private final List<QueryParameter<S, ?>> parameters = new ArrayList<>();
 
@@ -91,7 +91,7 @@ public abstract class EntityQueryBuilder<I,
     @CanIgnoreReturnValue
     public final B limit(int numberOfRecords) {
         checkPositive(numberOfRecords,
-                      "Query `limit` expected to be positive, but got `%s`.", numberOfRecords);
+                      "Query limit expected to be positive, but got `%s`.", numberOfRecords);
         this.limit = numberOfRecords;
         return thisRef();
     }
@@ -115,12 +115,8 @@ public abstract class EntityQueryBuilder<I,
         return thisRef();
     }
 
-    B setIdParameter(IdParameter<I, S> value) {
+    B setIdParameter(IdParameter<I> value) {
         id = value;
         return thisRef();
-    }
-
-    public IdCriterion<I, S, B> id() {
-        return new IdCriterion<>(thisRef());
     }
 }

@@ -24,19 +24,22 @@ package io.spine.base.entity;
  * An expression which sets the values of entity identifies to be used in {@link EntityQuery}.
  *
  * <p>Exists in a context of a corresponding {@link EntityQueryBuilder} instance.
+ *
+ * @param <I>
+ *         the type of identifiers
+ * @param <B>
+ *         the type of the {@link EntityQueryBuilder} implementation
  */
-public final class IdCriterion<I,
-                               S extends EntityState<I>,
-                               B extends EntityQueryBuilder<I, S, B, ?>> {
+public final class IdCriterion<I, B extends EntityQueryBuilder<I, ?, B, ?>> {
 
     private final B builder;
 
-    IdCriterion(B builder) {
+    public IdCriterion(B builder) {
         this.builder = builder;
     }
 
     public B is(I value) {
-        IdParameter<I, S> parameter = IdParameter.is(value);
+        IdParameter<I> parameter = IdParameter.is(value);
         return builder.setIdParameter(parameter);
     }
 
