@@ -55,7 +55,7 @@ class ColumnsTest {
         assertDoesNotContainMethod(ProjectView.Column.class, "name");
     }
 
-    private static void checkColumnName(EntityColumn column, String expectedName) {
+    private static void checkColumnName(EntityColumn<?, ?> column, String expectedName) {
         assertThat(column.name().value()).isEqualTo(expectedName);
     }
 

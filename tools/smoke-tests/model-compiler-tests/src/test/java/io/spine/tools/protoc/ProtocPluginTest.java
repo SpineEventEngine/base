@@ -49,6 +49,7 @@ import java.lang.reflect.Method;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -315,7 +316,7 @@ final class ProtocPluginTest {
     @Test
     @DisplayName("generate columns for a queryable entity type")
     void generateColumns() {
-        EntityColumn column = Movie.Column.title();
+        EntityColumn<?, ?> column = Movie.Column.title();
         String expectedName = "title";
         assertEquals(expectedName, column.name().value());
     }
