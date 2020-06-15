@@ -21,9 +21,9 @@
 package io.spine.base.entity;
 
 /**
- * @author Alex Tymchenko
+ * Defines the ordering by the values of a particular {@linkplain EntityColumn entity column}.
  */
-public final class OrderBy<C extends EntityColumn<S, V>, S extends EntityState, V> {
+public final class OrderBy<C extends EntityColumn<S, V>, S extends EntityState<?>, V> {
 
     private final C column;
 
