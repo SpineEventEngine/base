@@ -20,13 +20,18 @@
 
 package io.spine.code.gen.java;
 
+import com.google.gson.internal.Primitives;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.code.proto.ScalarType;
+import io.spine.type.MessageType;
 
 import java.lang.reflect.Type;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -71,6 +76,48 @@ public final class JavaPoetName {
                                                .toArray(String[]::new);
         TypeName value = ClassName.get(packageName.value(), topLevel.value(), nestingChain);
         return new JavaPoetName(value);
+    }
+
+    /**
+     * Creates the {@code PoetClassName} for the given {@link MessageType}.
+     */
+    public static JavaPoetName of(MessageType type) {
+        checkNotNull(type);
+        PackageName packageName = type.javaPackage();
+        SimpleClassName simpleClassName = type.simpleJavaClassName();
+        ClassName result = ClassName.get(packageName.value(), simpleClassName.value());
+        return new JavaPoetName(result);
+    }
+
+    /**
+     * Creates the {@code PoetClassName} for the type of the field value in a form suitable
+     * for the code generation.
+     *
+     * <p>If the type of the field value is a primitive type, its wrapper is used instead.
+     */
+    public static JavaPoetName of(FieldDeclaration field) {
+        checkNotNull(field);
+        String rawTypeName = field.javaTypeName();
+        Optional<ScalarType> maybeScalar = ScalarType.of(field.descriptor()
+                                                              .toProto());
+        io.spine.code.java.ClassName className;
+        if (maybeScalar.isPresent()) {
+            ScalarType scalar = maybeScalar.get();
+            Class<?> javaType = scalar.javaClass();
+            if (javaType.isPrimitive()) {
+                Class<?> wrapper = Primitives.wrap(javaType);
+                className = io.spine.code.java.ClassName.of(wrapper);
+            } else {
+                className = io.spine.code.java.ClassName.of(javaType);
+            }
+        } else {
+            className = io.spine.code.java.ClassName.of(rawTypeName);
+        }
+        String packageName = className.packageName()
+                                      .value();
+        ClassName result = ClassName.get(packageName, className.withoutPackage());
+
+        return new JavaPoetName(result);
     }
 
     public TypeName value() {

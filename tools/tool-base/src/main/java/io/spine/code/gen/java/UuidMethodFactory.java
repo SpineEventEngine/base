@@ -22,11 +22,9 @@ package io.spine.code.gen.java;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
-import io.spine.code.java.PackageName;
-import io.spine.code.java.SimpleClassName;
+import com.squareup.javapoet.TypeName;
 import io.spine.tools.protoc.method.GeneratedMethod;
 import io.spine.tools.protoc.method.MethodFactory;
 import io.spine.type.MessageType;
@@ -64,9 +62,8 @@ public final class UuidMethodFactory implements MethodFactory {
         if (!messageType.isUuidValue()) {
             return ImmutableList.of();
         }
-        PackageName packageName = messageType.javaPackage();
-        SimpleClassName simpleClassName = messageType.simpleJavaClassName();
-        ClassName self = ClassName.get(packageName.value(), simpleClassName.value());
+        TypeName self = JavaPoetName.of(messageType)
+                                    .value();
         return ImmutableList.of(newGenerateMethodSpec(self), newOfMethodSpec(self));
     }
 
@@ -87,7 +84,7 @@ public final class UuidMethodFactory implements MethodFactory {
      *     }
      * </pre>
      */
-    private static GeneratedMethod newOfMethodSpec(ClassName self) {
+    private static GeneratedMethod newOfMethodSpec(TypeName self) {
         ParameterSpec uuidParameter = ParameterSpec
                 .builder(String.class, "uuid")
                 .build();
@@ -121,8 +118,9 @@ public final class UuidMethodFactory implements MethodFactory {
      *      }
      * </pre>
      */
-    private static GeneratedMethod newGenerateMethodSpec(ClassName self) {
-        @SuppressWarnings("DuplicateStringLiteralInspection") // local semantic: method name
+    private static GeneratedMethod newGenerateMethodSpec(TypeName self) {
+        //TODO:2020-06-15:alex.tymchenko: remove this warning suppression?
+//        @SuppressWarnings("DuplicateStringLiteralInspection") // local semantic: method name
         MethodSpec spec = MethodSpec
                 .methodBuilder("generate")
                 .returns(self)

@@ -20,7 +20,7 @@
 
 package io.spine.annotation;
 
-import io.spine.protobuf.FieldTypeDetector;
+import io.spine.protobuf.ReadFieldType;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -33,12 +33,12 @@ import java.lang.annotation.Target;
  * Instructs the model compiler how to treat the first generic parameter of the marked type.
  *
  */
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Inherited
 @Internal
 @Documented
 public @interface FirstGenericParameter {
 
-    Class<? extends FieldTypeDetector> is();
+    Class<? extends ReadFieldType> is();
 }

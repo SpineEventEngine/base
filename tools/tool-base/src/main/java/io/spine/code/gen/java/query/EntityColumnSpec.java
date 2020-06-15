@@ -20,8 +20,6 @@
 
 package io.spine.code.gen.java.query;
 
-import com.google.gson.internal.Primitives;
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -32,37 +30,33 @@ import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.gen.java.GeneratedMethodSpec;
 import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.code.proto.FieldName;
-import io.spine.code.proto.ScalarType;
-
-import java.util.Optional;
 
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**
- * Generates setters for {@link io.spine.base.entity.EntityQueryBuilder EntityQueryBuilder}
- * of the Protobuf message representing the {@linkplain io.spine.base.entity.EntityState
- * entity state}.
+ * Generates the column criterion method for {@link io.spine.base.entity.EntityQueryBuilder
+ * EntityQueryBuilder} to restrict the value of the column to some value.
  */
 final class EntityColumnSpec implements GeneratedMethodSpec {
 
     private final FieldDeclaration column;
     private final TypeName queryBuilderName;
-    private final ClassName entityStateName;
-    private final ClassName returningValueName;
+    private final TypeName entityStateName;
+    private final TypeName returningValueName;
 
     EntityColumnSpec(FieldDeclaration column, TypeName queryBuilderName) {
         this.column = column;
         this.queryBuilderName = queryBuilderName;
-        this.entityStateName = JavaPoetName.of(column.declaringType().javaClassName()).className();
-        this.returningValueName = returningValue(column);
+        this.entityStateName = JavaPoetName.of(column.declaringType())
+                                           .value();
+        this.returningValueName = JavaPoetName.of(column)
+                                              .value();
     }
 
     @Override
     public MethodSpec methodSpec() {
-        FieldName name = columnName();
         MethodSpec result = MethodSpec
-                .methodBuilder(name.javaCase())
+                .methodBuilder(columnName())
                 .addJavadoc(javadoc().spec())
                 .addModifiers(PUBLIC)
                 .returns(queryCriterion())
@@ -72,10 +66,11 @@ final class EntityColumnSpec implements GeneratedMethodSpec {
     }
 
     /**
-     * Returns the column name as defined in Protobuf.
+     * Returns the column name as it looks in the generated Java code.
      */
-    private FieldName columnName() {
-        return column.name();
+    private String columnName() {
+        return column.name()
+                     .javaCase();
     }
 
     /**
@@ -94,38 +89,10 @@ final class EntityColumnSpec implements GeneratedMethodSpec {
      */
     private CodeBlock methodBody() {
         return CodeBlock.of(
-                "return new $T<>(Column.$S(), this)",
+                "return new $T<>(Column.$L(), this)",
                 QueryCriterion.class,
                 columnName()
         );
-    }
-
-    /**
-     * Returns the type of the column value in a form suitable for the code generation.
-     *
-     * <p>If the type of the column value is a primitive type, its wrapper is used instead.
-     */
-    private static ClassName returningValue(FieldDeclaration column) {
-        String rawTypeName = column.javaTypeName();
-        Optional<ScalarType> maybeScalar = ScalarType.of(column.descriptor()
-                                                               .toProto());
-        io.spine.code.java.ClassName className;
-        if (maybeScalar.isPresent()) {
-            ScalarType scalar = maybeScalar.get();
-            Class<?> javaType = scalar.javaClass();
-            if (javaType.isPrimitive()) {
-                Class<?> wrapper = Primitives.wrap(javaType);
-                className = io.spine.code.java.ClassName.of(wrapper);
-            } else {
-                className = io.spine.code.java.ClassName.of(javaType);
-            }
-        } else {
-            className = io.spine.code.java.ClassName.of(rawTypeName);
-        }
-        String packageName = className.packageName()
-                                      .value();
-        ClassName result = ClassName.get(packageName, className.withoutPackage());
-        return result;
     }
 
     /**
@@ -133,8 +100,8 @@ final class EntityColumnSpec implements GeneratedMethodSpec {
      */
     private GeneratedJavadoc javadoc() {
         return GeneratedJavadoc.singleParagraph(
-                CodeBlock.of("Creates a criterion for the {@link Column#$S() Column.$S()} column.",
-                             column.name())
+                CodeBlock.of("Creates a criterion for the {@link Column#$L() Column.$L()} column.",
+                             column.name(), column.name())
         );
     }
 }

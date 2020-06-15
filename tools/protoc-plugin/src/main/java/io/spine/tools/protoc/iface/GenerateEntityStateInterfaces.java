@@ -24,13 +24,21 @@ import com.google.common.collect.ImmutableList;
 import io.spine.base.entity.EntityState;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.EntityStateConfig;
+import io.spine.tools.protoc.TypeParameter;
+import io.spine.tools.protoc.TypeParameters;
 import io.spine.type.MessageType;
 
+import java.util.Optional;
+
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * Marks the provided message type with the {@link EntityState EntityState} interface
  * if the type is recognized as entity state.
+ *
+ * <p>Requires the {@link EntityState} to be properly configured with
+ * {@link io.spine.annotation.FirstGenericParameter FirstGenericParameter annotation}.
  */
 final class GenerateEntityStateInterfaces extends InterfaceGenerationTask {
 
@@ -45,5 +53,20 @@ final class GenerateEntityStateInterfaces extends InterfaceGenerationTask {
             return ImmutableList.of();
         }
         return generateInterfacesFor(type);
+    }
+
+    @Override
+    TypeParameters interfaceParameters(MessageType type) {
+        if (!type.isEntityState()) {
+            return TypeParameters.of();
+        }
+        Optional<TypeParameter> firstParameter = readFirstGenericParameter(type);
+        if (!firstParameter.isPresent()) {
+            throw newIllegalStateException(
+                    "The first generic parameter must be defined for the `EntityState` interface. " +
+                            "Use `@FirstGenericParameter` with `EntityState` for this purpose.");
+        }
+        TypeParameter parameter = firstParameter.get();
+        return TypeParameters.of(parameter);
     }
 }

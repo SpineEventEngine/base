@@ -20,20 +20,16 @@
 
 package io.spine.code.gen.java.column;
 
-import com.google.gson.internal.Primitives;
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import io.spine.base.entity.EntityColumn;
 import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.gen.java.GeneratedMethodSpec;
 import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
-import io.spine.code.proto.ScalarType;
-
-import java.util.Optional;
 
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
@@ -46,13 +42,13 @@ import static javax.lang.model.element.Modifier.STATIC;
 final class ColumnAccessor implements GeneratedMethodSpec {
 
     private final FieldDeclaration column;
-    private final ClassName entityStateName;
-    private final ClassName returningValueName;
+    private final TypeName entityStateName;
+    private final TypeName returningValueName;
 
     ColumnAccessor(FieldDeclaration column) {
         this.column = column;
-        this.entityStateName = JavaPoetName.of(column.declaringType().javaClassName()).className();
-        this.returningValueName = columnType(column);
+        this.entityStateName = JavaPoetName.of(column.declaringType()).value();
+        this.returningValueName = JavaPoetName.of(column).value();
     }
 
     @Override
@@ -96,34 +92,6 @@ final class ColumnAccessor implements GeneratedMethodSpec {
                 entityStateName,
                 returningValueName
         );
-    }
-
-    /**
-     * Returns the type of the column value in a form suitable for the code generation.
-     *
-     * <p>If the type of the column value is a primitive type, its wrapper is used instead.
-     */
-    private static ClassName columnType(FieldDeclaration column) {
-        String rawTypeName = column.javaTypeName();
-        Optional<ScalarType> maybeScalar = ScalarType.of(column.descriptor()
-                                                               .toProto());
-        io.spine.code.java.ClassName className;
-        if (maybeScalar.isPresent()) {
-            ScalarType scalar = maybeScalar.get();
-            Class<?> javaType = scalar.javaClass();
-            if (javaType.isPrimitive()) {
-                Class<?> wrapper = Primitives.wrap(javaType);
-                className = io.spine.code.java.ClassName.of(wrapper);
-            } else {
-                className = io.spine.code.java.ClassName.of(javaType);
-            }
-        } else {
-            className = io.spine.code.java.ClassName.of(rawTypeName);
-        }
-        String packageName = className.packageName()
-                                      .value();
-        ClassName result = ClassName.get(packageName, className.withoutPackage());
-        return result;
     }
 
     /**

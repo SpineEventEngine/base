@@ -26,9 +26,8 @@ import io.spine.type.MessageType;
 import java.util.function.Function;
 
 /**
- * Detects the Java class name of the Protobuf field
- * for a certain {@linkplain MessageType message type}.
+ * Reads the type of one of the fields declared by some {@link MessageType}.
  */
 @FunctionalInterface
-public interface FieldTypeDetector extends Function<MessageType, ClassName> {
+public interface ReadFieldType extends Function<MessageType, ClassName> {
 }

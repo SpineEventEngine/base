@@ -18,31 +18,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.entity;
+package io.spine.tools.protoc;
 
-import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
-import io.spine.code.proto.FieldDeclaration;
-import io.spine.protobuf.ReadFieldType;
-import io.spine.type.MessageType;
-
-import static com.google.common.base.Preconditions.checkState;
+import io.spine.type.Type;
 
 /**
- * Reads the type of the first field for a given Protobuf message type.
+ * The message interface parameter with a fixed predefined value which does not depend
+ * on the type of an actual descendant.
  */
-@Internal
 @Immutable
-public final class FirstMessageField implements ReadFieldType {
+public class PredefinedTypeParameter implements TypeParameter {
+
+    private final ClassName value;
+
+    public PredefinedTypeParameter(ClassName value) {
+        this.value = value;
+    }
 
     @Override
-    public ClassName apply(MessageType type) {
-        ImmutableList<FieldDeclaration> fields = type.fields();
-        checkState(fields.size() > 0,
-                   "At least one field is required for `FirstMessageField`.");
-        FieldDeclaration declaration = fields.get(0);
-        return ClassName.of(declaration.javaTypeName());
+    public String valueFor(Type<?, ?> descendant) {
+        return value.toString();
     }
 }

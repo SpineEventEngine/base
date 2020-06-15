@@ -21,6 +21,7 @@
 package io.spine.code.gen.java.query;
 
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.entity.EntityQuery;
@@ -28,6 +29,7 @@ import io.spine.type.MessageType;
 
 import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
 import static javax.lang.model.element.Modifier.FINAL;
+import static javax.lang.model.element.Modifier.PROTECTED;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
@@ -36,9 +38,6 @@ import static javax.lang.model.element.Modifier.STATIC;
  */
 public final class EntityQuerySpec extends AbstractEntityQuerySpec {
 
-    @SuppressWarnings("DuplicateStringLiteralInspection")   // different context.
-    private static final String CLASS_NAME = "Query";
-
     public EntityQuerySpec(MessageType type) {
         super(type);
     }
@@ -46,12 +45,30 @@ public final class EntityQuerySpec extends AbstractEntityQuerySpec {
     @Override
     public TypeSpec typeSpec() {
         TypeSpec result = TypeSpec
-                .classBuilder(CLASS_NAME)
-                .superclass(ParameterizedTypeName.get(ClassName.get(EntityQuery.class),
-                                                      stateClassName()))
+                .classBuilder(queryType().className())
+                .superclass(entityQuery())
+                .addMethod(constructor())
                 .addAnnotation(generatedBySpineModelCompiler())
                 .addModifiers(PUBLIC, STATIC, FINAL)
                 .build();
         return result;
+    }
+
+    @SuppressWarnings("DuplicateStringLiteralInspection")
+    private static MethodSpec constructor() {
+        String paramName = "builder";
+        return MethodSpec
+                .constructorBuilder()
+                .addModifiers(PROTECTED)
+                .addParameter(queryBuilderType().value(), paramName)
+                .addStatement("super($L)", paramName)
+                .build();
+    }
+
+    private ParameterizedTypeName entityQuery() {
+        return ParameterizedTypeName.get(
+                ClassName.get(EntityQuery.class),
+                idFieldType(), stateType(), queryBuilderType().value()
+        );
     }
 }

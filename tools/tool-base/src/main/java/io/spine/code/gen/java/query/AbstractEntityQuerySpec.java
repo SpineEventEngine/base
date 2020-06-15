@@ -20,9 +20,12 @@
 
 package io.spine.code.gen.java.query;
 
-import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.TypeName;
 import io.spine.code.gen.java.GeneratedTypeSpec;
+import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.java.PackageName;
+import io.spine.code.java.SimpleClassName;
+import io.spine.code.proto.EntityIdField;
 import io.spine.type.MessageType;
 
 /**
@@ -30,10 +33,19 @@ import io.spine.type.MessageType;
  */
 abstract class AbstractEntityQuerySpec implements GeneratedTypeSpec {
 
+    private static final JavaPoetName queryBuilderType =
+            JavaPoetName.of(SimpleClassName.create("QueryBuilder"));
+
+    private static final JavaPoetName queryType =
+            JavaPoetName.of(SimpleClassName.create("Query"));
+
+
     private final MessageType messageType;
+    private final EntityIdField idField;
 
     AbstractEntityQuerySpec(MessageType type) {
-        messageType = type;
+        this.messageType = type;
+        this.idField = EntityIdField.of(type);
     }
 
     @Override
@@ -41,13 +53,23 @@ abstract class AbstractEntityQuerySpec implements GeneratedTypeSpec {
         return messageType.javaPackage();
     }
 
-    final ClassName stateClassName() {
-        String javaPackage = messageType.javaPackage()
-                                        .toString();
-        String simpleClassName = messageType.javaClassName()
-                                            .toSimple()
-                                            .toString();
-        ClassName stateClassName = ClassName.get(javaPackage, simpleClassName);
-        return stateClassName;
+    final EntityIdField idField() {
+        return idField;
+    }
+
+    final TypeName idFieldType() {
+        return JavaPoetName.of(idField.declaration()).value();
+    }
+
+    final TypeName stateType() {
+        return JavaPoetName.of(messageType).value();
+    }
+
+    static JavaPoetName queryBuilderType() {
+        return queryBuilderType;
+    }
+
+    static JavaPoetName queryType() {
+        return queryType;
     }
 }
