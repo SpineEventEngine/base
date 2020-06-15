@@ -76,8 +76,6 @@ final class ProtocPluginConfiguration {
      */
     void writeTo(Path configPath) {
         Files2.ensureFile(configPath);
-        System.err.println("Writing the `SpineProtocConfig` to the file " + configPath);
-        System.err.println(config);
         try (FileOutputStream fos = new FileOutputStream(configPath.toFile())) {
             config.writeTo(fos);
         } catch (FileNotFoundException e) {
