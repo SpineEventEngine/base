@@ -38,6 +38,10 @@ message ProjectView {
     Project.Status status = 3 [(.column) = true];
 
     UserView assignee = 4;
+
+    int32 days_since_started = 5 [(.column) = true];
+
+    bool was_reassigned = 6 [(.column) = true];
 }
 
 message Project {
