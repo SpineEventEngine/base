@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * {@link CodeGenerationTask}s container.
@@ -42,9 +43,16 @@ public final class CodeGenerationTasks {
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
         ImmutableList.Builder<CompilerOutput> result = ImmutableList.builder();
-        for (CodeGenerationTask task : tasks) {
-            result.addAll(task.generateFor(type));
+        try {
+            for (CodeGenerationTask task : tasks) {
+                ImmutableList<CompilerOutput> output = task.generateFor(type);
+                result.addAll(output);
+            }
+            return result.build();
+        } catch (@SuppressWarnings("OverlyBroadCatchBlock")   /* We supply each exception      */
+                Exception e) {                                /*  with better diagnostic data. */
+            throw newIllegalStateException(e, "Error generating the code for `%s`.",
+                                                      type.name());
         }
-        return result.build();
     }
 }

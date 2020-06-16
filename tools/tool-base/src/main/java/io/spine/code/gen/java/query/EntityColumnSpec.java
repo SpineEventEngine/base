@@ -50,7 +50,7 @@ final class EntityColumnSpec implements GeneratedMethodSpec {
         this.entityStateName = JavaPoetName.of(column.declaringType())
                                            .value();
         this.returningValueName = JavaPoetName.of(column)
-                                              .value();
+                                              .value().box();
     }
 
     @Override

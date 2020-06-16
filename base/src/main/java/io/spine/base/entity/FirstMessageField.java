@@ -21,17 +21,23 @@
 package io.spine.base.entity;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.primitives.Primitives;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.code.proto.ScalarType;
 import io.spine.protobuf.ReadFieldType;
 import io.spine.type.MessageType;
+
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkState;
 
 /**
  * Reads the type of the first field for a given Protobuf message type.
+ *
+ * <p>If the type is a primitive type, the corresponding Java wrapper type is returned.
  */
 @Internal
 @Immutable
@@ -43,6 +49,22 @@ public final class FirstMessageField implements ReadFieldType {
         checkState(fields.size() > 0,
                    "At least one field is required for `FirstMessageField`.");
         FieldDeclaration declaration = fields.get(0);
-        return ClassName.of(declaration.javaTypeName());
+        ClassName result = toClassName(declaration);
+        return result;
+    }
+
+    private static ClassName toClassName(FieldDeclaration declaration) {
+        ClassName result;
+        Optional<ScalarType> maybeScalar = ScalarType.of(declaration.descriptor()
+                                                                    .toProto());
+        if (maybeScalar.isPresent()) {
+            Class<?> scalarType = maybeScalar.get()
+                                             .javaClass();
+            Class<?> wrapped = Primitives.wrap(scalarType);
+            result = ClassName.of(wrapped);
+        } else {
+            result = ClassName.of(declaration.javaTypeName());
+        }
+        return result;
     }
 }

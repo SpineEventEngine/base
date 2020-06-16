@@ -20,7 +20,6 @@
 
 package io.spine.code.gen.java;
 
-import com.google.gson.internal.Primitives;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import io.spine.code.java.PackageName;
@@ -97,27 +96,22 @@ public final class JavaPoetName {
      */
     public static JavaPoetName of(FieldDeclaration field) {
         checkNotNull(field);
-        String rawTypeName = field.javaTypeName();
+
         Optional<ScalarType> maybeScalar = ScalarType.of(field.descriptor()
                                                               .toProto());
-        io.spine.code.java.ClassName className;
+        TypeName typeName;
         if (maybeScalar.isPresent()) {
             ScalarType scalar = maybeScalar.get();
             Class<?> javaType = scalar.javaClass();
-            if (javaType.isPrimitive()) {
-                Class<?> wrapper = Primitives.wrap(javaType);
-                className = io.spine.code.java.ClassName.of(wrapper);
-            } else {
-                className = io.spine.code.java.ClassName.of(javaType);
-            }
+            typeName = TypeName.get(javaType);
         } else {
-            className = io.spine.code.java.ClassName.of(rawTypeName);
+            String rawTypeName = field.javaTypeName();
+            io.spine.code.java.ClassName className = io.spine.code.java.ClassName.of(rawTypeName);
+            String packageName = className.packageName()
+                                          .value();
+            typeName = ClassName.get(packageName, className.withoutPackage());
         }
-        String packageName = className.packageName()
-                                      .value();
-        ClassName result = ClassName.get(packageName, className.withoutPackage());
-
-        return new JavaPoetName(result);
+        return new JavaPoetName(typeName);
     }
 
     public TypeName value() {

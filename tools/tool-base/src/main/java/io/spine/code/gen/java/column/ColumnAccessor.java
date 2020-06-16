@@ -48,7 +48,7 @@ final class ColumnAccessor implements GeneratedMethodSpec {
     ColumnAccessor(FieldDeclaration column) {
         this.column = column;
         this.entityStateName = JavaPoetName.of(column.declaringType()).value();
-        this.returningValueName = JavaPoetName.of(column).value();
+        this.returningValueName = JavaPoetName.of(column).value().box();
     }
 
     @Override

@@ -20,7 +20,6 @@
 
 package io.spine.code.gen.java.query;
 
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -30,7 +29,6 @@ import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.gen.java.GeneratedMethodSpec;
 import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.proto.EntityIdField;
-import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -42,12 +40,14 @@ public class IdColumnSpec implements GeneratedMethodSpec {
 
     private final EntityIdField idField;
     private final TypeName queryBuilderName;
-    private final ClassName idType;
+    private final TypeName idType;
 
     IdColumnSpec(EntityIdField field, TypeName queryBuilderName) {
         this.idField = field;
         this.queryBuilderName = queryBuilderName;
-        this.idType = className(idField.declaration()).className();
+        this.idType = JavaPoetName.of(idField.declaration())
+                                  .value()
+                                  .box();
     }
 
     @Override
@@ -71,14 +71,6 @@ public class IdColumnSpec implements GeneratedMethodSpec {
                 "return new $T<>(this)",
                 IdCriterion.class
         );
-    }
-
-    //TODO:2020-06-15:alex.tymchenko: code duplication!
-    private static JavaPoetName className(FieldDeclaration declaration) {
-        String javaTypeName = declaration.javaTypeName();
-        io.spine.code.java.ClassName className = io.spine.code.java.ClassName.of(javaTypeName);
-        JavaPoetName result = JavaPoetName.of(className);
-        return result;
     }
 
     /**

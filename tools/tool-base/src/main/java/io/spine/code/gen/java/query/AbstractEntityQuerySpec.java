@@ -57,8 +57,13 @@ abstract class AbstractEntityQuerySpec implements GeneratedTypeSpec {
         return idField;
     }
 
+    /**
+     * Returns the {@code TypeName} of the identifier type.
+     *
+     * <p>If the type is a primitive, it is boxed.
+     */
     final TypeName idFieldType() {
-        return JavaPoetName.of(idField.declaration()).value();
+        return JavaPoetName.of(idField.declaration()).value().box();
     }
 
     final TypeName stateType() {

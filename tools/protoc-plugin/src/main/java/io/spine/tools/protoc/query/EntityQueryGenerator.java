@@ -35,6 +35,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * Generates the {@code Query} and a {@code QueryBuilder} to allow creating typed queries for
@@ -105,10 +106,16 @@ public class EntityQueryGenerator extends CodeGenerator {
     }
 
     private ImmutableList<CompilerOutput> generateFor(MessageType type) {
-        ImmutableList.Builder<CompilerOutput> builder = ImmutableList.builder();
-        addClasses(type, builder);
-        addMethods(type, builder);
-        return builder.build();
+        try {
+            ImmutableList.Builder<CompilerOutput> builder = ImmutableList.builder();
+            addClasses(type, builder);
+            addMethods(type, builder);
+            return builder.build();
+        } catch (@SuppressWarnings("OverlyBroadCatchBlock")   /* Every exception is rethrown */
+                Exception e) {                                /*  with more diagnostic data. */
+            throw newIllegalStateException(e, "Error generating `EntityQuery`" +
+                    " for the type `%s`.", type.name());
+        }
     }
 
     private void addClasses(MessageType type, ImmutableList.Builder<CompilerOutput> builder) {
