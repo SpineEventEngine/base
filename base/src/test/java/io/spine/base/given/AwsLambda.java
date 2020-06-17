@@ -18,40 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.environment;
-
-import io.spine.base.EnvironmentType;
+package io.spine.base.given;
 
 /**
- * An environment type that mimics production but receives less traffic and is suitable for testing
- * out new features.
- *
- * <p>This implementations relies on a static {@code boolean} flag for detection.
+ * AWS Lambda environment is enabled if a specific env variable is set.
  */
-final class Staging extends EnvironmentType {
+public final class AwsLambda extends VariableControlledEnvironment {
 
-    private static boolean enabled = false;
-
-    Staging() {
-        super();
-    }
-
-    @Override
-    protected boolean enabled() {
-        return enabled;
-    }
-
-    /**
-     * Brings the underlying system into the staging environment.
-     */
-    static void enable() {
-        enabled = true;
-    }
-
-    /**
-     * Brings the underlying system out of the staging environment.
-     */
-    static void disable() {
-        enabled = false;
+    public AwsLambda() {
+        super("AWS_LAMBDA_FUNCTION_NAME");
     }
 }

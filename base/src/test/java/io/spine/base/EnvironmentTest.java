@@ -32,6 +32,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.base.Tests.ENV_KEY_TESTS;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -85,9 +87,8 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Test
     @DisplayName("tell that we are under tests if env. variable set to true")
     void environmentVarTrue() {
-        Tests tests = new Tests();
         Environment.instance()
-                   .setTo(tests);
+                   .setTo(Tests.class);
 
         assertThat(environment.is(Tests.class)).isTrue();
     }
@@ -145,7 +146,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Test
     @DisplayName("turn tests mode on")
     void turnTestsOn() {
-        environment.setTo(new Tests());
+        environment.setTo(Tests.class);
 
         assertThat(environment.is(Tests.class)).isTrue();
     }
@@ -153,9 +154,21 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Test
     @DisplayName("turn production mode on")
     void turnProductionOn() {
-        environment.setTo(new Production());
+        environment.setTo(Production.class);
 
         assertThat(environment.is(Production.class)).isTrue();
+    }
+
+    @Test
+    @DisplayName("turn a custom mode on")
+    void turnCustomTypeOn() {
+        environment.register(Staging.class);
+
+        Staging.reset();
+        assertThat(environment.is(Staging.class)).isFalse();
+
+        environment.setTo(Staging.class);
+        assertThat(environment.is(Staging.class)).isTrue();
     }
 
     @Test
@@ -176,13 +189,14 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     }
 
     @Nested
-    @DisplayName("when assigning custom environment types")
+    @DisplayName("when registering custom environment types")
     class CustomEnvTypes {
 
         @Test
         @DisplayName("allow to provide user defined environment types")
         void provideCustomTypes() {
-            register(new Staging(), new Local());
+            environment.register(Staging.class)
+                       .register(Local.class);
 
             // Now that `Environment` knows about `LOCAL`, it should use it as fallback.
             assertThat(environment.is(Local.class)).isTrue();
@@ -192,7 +206,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         @DisplayName("fallback to the `TESTS` environment")
         void fallBack() {
             Environment.instance()
-                       .register(new Travis());
+                       .register(Travis.class);
             assertThat(environment.is(Travis.class)).isFalse();
             assertThat(environment.is(Tests.class)).isTrue();
         }
@@ -201,7 +215,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Test
     @DisplayName("follow assignment-compatibility when determining the type")
     void polymorphicEnv() {
-        register(new AppEngineStandard());
+        environment.register(AppEngineStandard.class);
 
         AppEngineStandard.enable();
         assertThat(environment.is(AppEngine.class)).isTrue();
@@ -217,7 +231,8 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Test
     @DisplayName("detect the current custom environment in presence of custom types")
     void determineUsingTypeInPresenceOfCustom() {
-        register(new Staging(), new Local());
+        environment.register(Local.class)
+                   .register(Staging.class);
 
         assertThat(environment.is(Local.class)).isTrue();
     }
@@ -225,24 +240,53 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Test
     @DisplayName("return the instance of the default environment type")
     void returnInstance() {
-        assertThat(environment.type()).isInstanceOf(Tests.class);
+        assertThat(environment.type()).isSameInstanceAs(Tests.class);
     }
 
     @Test
     @DisplayName("return the instance of a custom environment type")
-    void returnCustomInstnace() {
-        register(new Local(), new Staging());
+    void returnCustomInstance() {
+        environment.register(Local.class)
+                   .register(Staging.class);
 
-        assertThat(environment.type()).isInstanceOf(Local.class);
+        assertThat(environment.type()).isSameInstanceAs(Local.class);
     }
 
-    private static void register(EnvironmentType... types) {
-        for (EnvironmentType type : types) {
-            Environment.instance()
-                       .register(type);
-        }
+    @Test
+    @DisplayName("cache a custom environment type")
+    void cacheCustom() {
+        environment.register(Staging.class);
+
+        Staging.set();
+        assertThat(environment.is(Staging.class)).isTrue();
+
+        Staging.reset();
+        assertThat(new Staging().enabled()).isFalse();
+        assertThat(environment.is(Staging.class)).isTrue();
     }
 
+    /**
+     * This test checks whether {@code Tests} type is preserved and is visible from a different
+     * thread. This is a common case for tests that involve a multithreading environment or
+     * test client-server communication.
+     */
+    @Test
+    @DisplayName("cache the `Tests` environment type")
+    void cacheTests() throws InterruptedException {
+        AtomicBoolean envCached = new AtomicBoolean(false);
+        assertThat(environment.is(Tests.class));
+        Thread thread = new Thread(() -> {
+            Tests.clearTestingEnvVariable();
+            assertThat(environment.is(Tests.class)).isTrue();
+            assertThat(new Tests().enabled()).isFalse();
+            envCached.set(true);
+        });
+        thread.start();
+        thread.join();
+        assertThat(envCached.get()).isTrue();
+    }
+
+    @Immutable
     static final class Local extends EnvironmentType {
 
         @Override
@@ -252,6 +296,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         }
     }
 
+    @Immutable
     static final class Staging extends EnvironmentType {
 
         static final String STAGING_ENV_TYPE_KEY = "io.spine.base.EnvironmentTest.is_staging";
@@ -261,10 +306,17 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
             return String.valueOf(true)
                          .equalsIgnoreCase(System.getProperty(STAGING_ENV_TYPE_KEY));
         }
+
+        static void set() {
+            System.setProperty(STAGING_ENV_TYPE_KEY, String.valueOf(true));
+        }
+
+        static void reset() {
+            System.clearProperty(STAGING_ENV_TYPE_KEY);
+        }
     }
 
     @Immutable
-    @SuppressWarnings("unused" /* The only variant is used. */)
     static final class Travis extends EnvironmentType {
 
         @Override
