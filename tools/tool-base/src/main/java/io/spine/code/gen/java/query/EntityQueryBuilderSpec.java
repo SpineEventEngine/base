@@ -135,8 +135,8 @@ public final class EntityQueryBuilderSpec extends AbstractEntityQuerySpec {
     private ImmutableList<MethodSpec> columns() {
         ImmutableList<MethodSpec> result =
                 columns.stream()
-                       .map((c) -> new EntityColumnSpec(c, typeOfSelf()))
-                       .map(EntityColumnSpec::methodSpec)
+                       .map((c) -> new QueryColumnSpec(c, typeOfSelf()))
+                       .map(QueryColumnSpec::methodSpec)
                        .collect(toImmutableList());
         return result;
     }

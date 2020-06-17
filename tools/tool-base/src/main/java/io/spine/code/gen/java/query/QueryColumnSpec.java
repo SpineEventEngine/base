@@ -37,14 +37,14 @@ import static javax.lang.model.element.Modifier.PUBLIC;
  * Generates the column criterion method for {@link io.spine.base.entity.EntityQueryBuilder
  * EntityQueryBuilder} to restrict the value of the column to some value.
  */
-final class EntityColumnSpec implements GeneratedMethodSpec {
+final class QueryColumnSpec implements GeneratedMethodSpec {
 
     private final FieldDeclaration column;
     private final TypeName queryBuilderName;
     private final TypeName entityStateName;
     private final TypeName returningValueName;
 
-    EntityColumnSpec(FieldDeclaration column, TypeName queryBuilderName) {
+    QueryColumnSpec(FieldDeclaration column, TypeName queryBuilderName) {
         this.column = column;
         this.queryBuilderName = queryBuilderName;
         this.entityStateName = JavaPoetName.of(column.declaringType())
@@ -99,9 +99,11 @@ final class EntityColumnSpec implements GeneratedMethodSpec {
      * Returns the method Javadoc.
      */
     private GeneratedJavadoc javadoc() {
+        String columnName = column.name()
+                                  .javaCase();
         return GeneratedJavadoc.singleParagraph(
                 CodeBlock.of("Creates a criterion for the {@link Column#$L() Column.$L()} column.",
-                             column.name(), column.name())
+                             columnName, columnName)
         );
     }
 }
