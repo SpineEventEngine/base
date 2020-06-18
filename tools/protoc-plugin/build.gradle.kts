@@ -28,6 +28,7 @@ dependencies {
     implementation(project(":protoc-api"))
     implementation(project(":validation-generator"))
     implementation(Deps.gen.javaPoet)
+    implementation(Deps.gen.javaxAnnotation)
 
     testImplementation(project(":base"))
     testImplementation(project(":testlib"))
