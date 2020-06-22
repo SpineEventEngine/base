@@ -18,33 +18,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.entity;
+package io.spine.base.query;
+
+import com.google.common.collect.ImmutableList;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * An expression which sets the values of entity identifies to be used in {@link EntityQuery}.
- *
- * <p>Exists in a context of a corresponding {@link EntityQueryBuilder} instance.
- *
- * @param <I>
- *         the type of identifiers
- * @param <B>
- *         the type of the {@link EntityQueryBuilder} implementation
+ * A parameter defining how to query records by the value of their identifiers.
  */
-public final class IdCriterion<I, B extends EntityQueryBuilder<I, ?, B, ?>> {
+public final class IdParameter<I> {
 
-    private final B builder;
+    private final ImmutableList<I> values;
 
-    public IdCriterion(B builder) {
-        this.builder = builder;
+    private IdParameter(ImmutableList<I> values) {
+        this.values = values;
     }
 
-    public B is(I value) {
-        IdParameter<I> parameter = IdParameter.is(value);
-        return builder.setIdParameter(parameter);
+    public ImmutableList<I> values() {
+        return values;
+    }
+
+    public static <I> IdParameter<I> empty() {
+        return new IdParameter<>(ImmutableList.of());
+    }
+
+    public static <I> IdParameter<I> is(I value) {
+        checkNotNull(value);
+        return new IdParameter<>(ImmutableList.of(value));
     }
 
     @SafeVarargs
-    public final B in(I... values) {
-        return builder.setIdParameter(IdParameter.in(values));
+    public static <I> IdParameter<I> in(I ...values) {
+        checkNotNull(values);
+        for (I value : values) {
+            checkNotNull(value);
+        }
+        return new IdParameter<>(ImmutableList.copyOf(values));
     }
 }

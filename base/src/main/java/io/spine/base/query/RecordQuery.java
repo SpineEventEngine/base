@@ -18,17 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.base.query;
+
+import com.google.protobuf.Message;
+import io.spine.annotation.SPI;
+
 /**
- * The versions of the libraries used.
+ * A query for the records each represented by a particular Protobuf message.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * @param <I>
+ *         the type of the record identifiers
+ * @param <R>
+ *         the type of the stored records
  */
+@SPI
+public final class RecordQuery<I, R extends Message>
+        extends AbstractQuery<I, R, RecordQueryParameter<?>> {
 
-val SPINE_VERSION = "1.5.101"
-
-project.extra.apply {
-    this["spineVersion"] = SPINE_VERSION
-    this["spineBaseVersion"] = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
-    this["versionToPublish"] = SPINE_VERSION
+    public RecordQuery(RecordQueryBuilder<I, R> builder) {
+        super(builder);
+    }
 }

@@ -25,7 +25,8 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import io.spine.base.entity.EntityColumn;
-import io.spine.base.entity.QueryCriterion;
+import io.spine.base.query.EntityQueryBuilder;
+import io.spine.base.query.QueryCriterion;
 import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.gen.java.GeneratedMethodSpec;
 import io.spine.code.gen.java.JavaPoetName;
@@ -34,7 +35,7 @@ import io.spine.code.proto.FieldDeclaration;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**
- * Generates the column criterion method for {@link io.spine.base.entity.EntityQueryBuilder
+ * Generates the column criterion method for {@link EntityQueryBuilder
  * EntityQueryBuilder} to restrict the value of the column to some value.
  */
 final class QueryColumnSpec implements GeneratedMethodSpec {

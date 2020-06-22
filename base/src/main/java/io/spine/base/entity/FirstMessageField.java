@@ -38,6 +38,10 @@ import static com.google.common.base.Preconditions.checkState;
  * Reads the type of the first field for a given Protobuf message type.
  *
  * <p>If the type is a primitive type, the corresponding Java wrapper type is returned.
+ *
+ * @apiNote This class is designed to be {@code public}, as it is being accessed via
+ *         reflection upon the processing of {@link io.spine.annotation.FirstGenericParameter
+ *         FirstGenericParameter} annotation.
  */
 @Internal
 @Immutable

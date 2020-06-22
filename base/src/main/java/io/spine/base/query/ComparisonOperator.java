@@ -18,13 +18,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.entity;
+package io.spine.base.query;
 
 /**
- * The direction of ordering.
+ * Defines how the queried records are compared against the desired parameter values.
  *
- * @see OrderBy
+ * @see AbstractQuery
+ * @see QueryParameter
  */
-public enum Direction {
-    ASC, DESC
+public enum ComparisonOperator {
+
+    /**
+     * The actual value must be equal to the value of the query parameter.
+     */
+    EQUALS,
+
+    /**
+     * The actual value must be different from the value of the query parameter.
+     */
+    NOT_EQUALS,
+
+    /**
+     * The actual value must be less than the value of the query parameter.
+     */
+    LESS_THAN,
+
+    /**
+     * The actual value must be less or equal to the value of the query parameter.
+     */
+    LESS_OR_EQUALS,
+
+    /**
+     * The actual value must be greater than the value of the query parameter.
+     */
+    GREATER_THAN,
+
+    /**
+     * The actual value must be greater or equal to the value of the query parameter.
+     */
+    GREATER_OR_EQUALS
 }

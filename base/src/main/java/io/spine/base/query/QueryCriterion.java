@@ -18,19 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.entity;
+package io.spine.base.query;
+
+import io.spine.base.entity.EntityColumn;
+import io.spine.base.entity.EntityState;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.base.entity.ComparisonOperator.EQUALS;
-import static io.spine.base.entity.ComparisonOperator.GREATER_OR_EQUALS;
-import static io.spine.base.entity.ComparisonOperator.GREATER_THAN;
-import static io.spine.base.entity.ComparisonOperator.LESS_OR_EQUALS;
-import static io.spine.base.entity.ComparisonOperator.LESS_THAN;
-import static io.spine.base.entity.ComparisonOperator.NOT_EQUALS;
+import static io.spine.base.query.ComparisonOperator.EQUALS;
+import static io.spine.base.query.ComparisonOperator.GREATER_OR_EQUALS;
+import static io.spine.base.query.ComparisonOperator.GREATER_THAN;
+import static io.spine.base.query.ComparisonOperator.LESS_OR_EQUALS;
+import static io.spine.base.query.ComparisonOperator.LESS_THAN;
+import static io.spine.base.query.ComparisonOperator.NOT_EQUALS;
 
 /**
  * An expression which sets the value to compare for the {@link EntityColumn} in scope of
  * a {@link EntityQueryBuilder} when building an {@link EntityQuery}.
+ *
+ * @param <S>
+ *         the type of entity state
+ * @param <V>
+ *         the type of the column values for this criterion
+ * @param <B>
+ *         the type of the builder in scope of which this criterion exists
  */
 public class QueryCriterion<S extends EntityState<?>,
                             V,
@@ -62,7 +72,7 @@ public class QueryCriterion<S extends EntityState<?>,
      */
     public B is(V value) {
         checkNotNull(value);
-        QueryParameter<S, V> parameter = new QueryParameter<>(column, value, EQUALS);
+        EntityQueryParameter<S, V> parameter = new EntityQueryParameter<>(column, value, EQUALS);
         return builder.addParameter(parameter);
     }
 
@@ -77,7 +87,8 @@ public class QueryCriterion<S extends EntityState<?>,
      */
     public B isNot(V value) {
         checkNotNull(value);
-        QueryParameter<S, V> parameter = new QueryParameter<>(column, value, NOT_EQUALS);
+        EntityQueryParameter<S, V> parameter = new EntityQueryParameter<>(column, value,
+                                                                          NOT_EQUALS);
         return builder.addParameter(parameter);
     }
 
@@ -91,7 +102,7 @@ public class QueryCriterion<S extends EntityState<?>,
      */
     public B isLessThan(V value) {
         checkNotNull(value);
-        QueryParameter<S, V> parameter = new QueryParameter<>(column, value, LESS_THAN);
+        EntityQueryParameter<S, V> parameter = new EntityQueryParameter<>(column, value, LESS_THAN);
         return builder.addParameter(parameter);
     }
 
@@ -106,7 +117,8 @@ public class QueryCriterion<S extends EntityState<?>,
      */
     public B isLessOrEqualTo(V value) {
         checkNotNull(value);
-        QueryParameter<S, V> parameter = new QueryParameter<>(column, value, LESS_OR_EQUALS);
+        EntityQueryParameter<S, V> parameter = new EntityQueryParameter<>(column, value,
+                                                                          LESS_OR_EQUALS);
         return builder.addParameter(parameter);
     }
 
@@ -121,7 +133,8 @@ public class QueryCriterion<S extends EntityState<?>,
      */
     public B isGreaterThan(V value) {
         checkNotNull(value);
-        QueryParameter<S, V> parameter = new QueryParameter<>(column, value, GREATER_THAN);
+        EntityQueryParameter<S, V> parameter = new EntityQueryParameter<>(column, value,
+                                                                          GREATER_THAN);
         return builder.addParameter(parameter);
     }
 
@@ -136,7 +149,8 @@ public class QueryCriterion<S extends EntityState<?>,
      */
     public B isGreaterOrEqualTo(V value) {
         checkNotNull(value);
-        QueryParameter<S, V> parameter = new QueryParameter<>(column, value, GREATER_OR_EQUALS);
+        EntityQueryParameter<S, V> parameter = new EntityQueryParameter<>(column, value,
+                                                                          GREATER_OR_EQUALS);
         return builder.addParameter(parameter);
     }
 }

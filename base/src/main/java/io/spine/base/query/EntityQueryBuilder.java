@@ -18,17 +18,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.base.query;
+
+import io.spine.base.entity.EntityState;
+
 /**
- * The versions of the libraries used.
+ * An abstract base for builders of an {@code EntityQuery} for a particular entity state type.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * @param <I>
+ *         the type of entity identifiers
+ * @param <S>
+ *         the type of an entity state
+ * @param <B>
+ *         the type of a particular {@code EntityQueryBuilder} implementation
+ * @param <Q>
+ *         the type of a particular {@link EntityQuery} implementation which this builder
+ *         is aimed to build
  */
-
-val SPINE_VERSION = "1.5.101"
-
-project.extra.apply {
-    this["spineVersion"] = SPINE_VERSION
-    this["spineBaseVersion"] = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
-    this["versionToPublish"] = SPINE_VERSION
+public abstract class EntityQueryBuilder<I,
+                                         S extends EntityState<I>,
+                                         B extends EntityQueryBuilder<I, S, B, Q>,
+                                         Q extends EntityQuery<I, S, B>>
+        extends AbstractQueryBuilder<I, S, EntityQueryParameter<S, ?>, B, Q> {
 }

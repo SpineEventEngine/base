@@ -18,7 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.entity;
+package io.spine.base.query;
+
+import io.spine.base.entity.EntityColumn;
+import io.spine.base.entity.EntityState;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -30,11 +33,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @param <V>
  *         the type of the entity column values
  */
-public class QueryParameter<S extends EntityState<?>, V> {
+public final class EntityQueryParameter<S extends EntityState<?>, V> extends QueryParameter<V> {
 
     private final EntityColumn<S, V> column;
-    private final V value;
-    private final ComparisonOperator operator;
 
     /**
      * Creates an instance of {@code QueryParameter} targeting entities whose column value
@@ -47,13 +48,9 @@ public class QueryParameter<S extends EntityState<?>, V> {
      * @param operator
      *         the operator to use when comparing the actual column value to the provided one
      */
-    QueryParameter(EntityColumn<S, V> column, V value, ComparisonOperator operator) {
-        checkNotNull(column);
-        checkNotNull(value);
-        checkNotNull(operator);
-        this.column = column;
-        this.value = value;
-        this.operator = operator;
+    EntityQueryParameter(EntityColumn<S, V> column, V value, ComparisonOperator operator) {
+        super(value, operator);
+        this.column = checkNotNull(column);
     }
 
     /**
@@ -61,20 +58,5 @@ public class QueryParameter<S extends EntityState<?>, V> {
      */
     public EntityColumn<S, V> column() {
         return column;
-    }
-
-    /**
-     * Returns the value against which the column should be queried.
-     */
-    public V value() {
-        return value;
-    }
-
-    /**
-     * Returns the operator to compare the actual column value with the one
-     * set in this {@code QueryParameter}.
-     */
-    public ComparisonOperator operator() {
-        return operator;
     }
 }

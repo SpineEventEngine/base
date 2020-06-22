@@ -18,17 +18,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.base.query;
+
+import com.google.protobuf.Message;
+import io.spine.base.entity.EntityColumn;
+
 /**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * Defines the ordering by the values of a particular {@linkplain EntityColumn entity column}.
  */
+public final class OrderBy<C extends MessageColumn<S, ?>, S extends Message> {
 
-val SPINE_VERSION = "1.5.101"
+    private final C column;
 
-project.extra.apply {
-    this["spineVersion"] = SPINE_VERSION
-    this["spineBaseVersion"] = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
-    this["versionToPublish"] = SPINE_VERSION
+    private final Direction direction;
+
+    OrderBy(C column, Direction direction) {
+        this.column = column;
+        this.direction = direction;
+    }
+
+    public C column() {
+        return column;
+    }
+
+    public Direction direction() {
+        return direction;
+    }
 }

@@ -18,37 +18,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.entity;
+package io.spine.base.query;
 
-import com.google.common.collect.ImmutableList;
-import com.google.protobuf.FieldMask;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import io.spine.base.entity.EntityState;
 
 /**
  * A common contract for the classes being generated for each entity state type, which define
  * how the entities of this type may be queried.
  *
+ * @param <I>
+ *         the type of entity identifiers
  * @param <S>
- *         the type of an entity state
+ *         the type of the entity state
+ * @param <B>
+ *         the type of a particular {@linkplain EntityQueryBuilder query builder} implementation
+ *         to create the query instances
  */
 public abstract class EntityQuery<I,
                                   S extends EntityState<I>,
-                                  B extends EntityQueryBuilder<I, S, B, ?>> {
+                                  B extends EntityQueryBuilder<I, S, B, ?>>
+        extends AbstractQuery<I, S, EntityQueryParameter<S, ?>> {
 
-    private final ImmutableList<QueryParameter<S, ?>> parameters;
-
-    private final ImmutableList<OrderBy<?, S, ?>> ordering;
-
-    private final @Nullable Integer limit;
-
-    @MonotonicNonNull
-    private final @Nullable FieldMask mask;
-
+    /**
+     * A common constructor contract for all {@code EntityQuery} implementations.
+     */
     protected EntityQuery(EntityQueryBuilder<I, S, B, ?> builder) {
-        this.parameters = builder.parameters();
-        this.ordering = builder.ordering();
-        this.limit = builder.limit();
-        this.mask = builder.mask();
+        super(builder);
     }
 }

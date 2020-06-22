@@ -27,7 +27,9 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
-import io.spine.base.entity.EntityQueryBuilder;
+import io.spine.base.query.EntityQuery;
+import io.spine.base.query.EntityQueryBuilder;
+import io.spine.base.query.IdCriterion;
 import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;
@@ -130,7 +132,7 @@ public final class EntityQueryBuilderSpec extends AbstractEntityQuerySpec {
 
     /**
      * Generates the methods which allow to specify restrictions put on the entity columns
-     * to use in the {@link io.spine.base.entity.EntityQuery EntityQuery}.
+     * to use in the {@link EntityQuery EntityQuery}.
      */
     private ImmutableList<MethodSpec> columns() {
         ImmutableList<MethodSpec> result =
@@ -142,7 +144,7 @@ public final class EntityQueryBuilderSpec extends AbstractEntityQuerySpec {
     }
 
     /**
-     * Generates the method returning the {@link io.spine.base.entity.IdCriterion IdCriterion}
+     * Generates the method returning the {@link IdCriterion IdCriterion}
      * for this query builder.
      */
     private MethodSpec id() {

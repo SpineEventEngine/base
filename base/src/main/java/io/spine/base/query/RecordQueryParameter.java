@@ -18,16 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.entity;
+package io.spine.base.query;
+
+import io.spine.annotation.SPI;
 
 /**
- * @author Alex Tymchenko
+ * A parameter of a {@link RecordQuery}.
+ *
+ * @param <V>
+ *         the type of the record field value to use in querying
  */
-public enum ComparisonOperator {
-    EQUALS,
-    NOT_EQUALS,
-    LESS_THAN,
-    LESS_OR_EQUALS,
-    GREATER_THAN,
-    GREATER_OR_EQUALS
+@SPI
+public final class RecordQueryParameter<V> extends QueryParameter<V> {
+
+    public RecordQueryParameter(V value, ComparisonOperator operator) {
+        super(value, operator);
+    }
 }

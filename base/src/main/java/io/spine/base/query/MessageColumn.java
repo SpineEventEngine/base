@@ -18,42 +18,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.entity;
+package io.spine.base.query;
 
-import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Message;
+import io.spine.annotation.Internal;
+import io.spine.code.proto.FieldName;
+import io.spine.value.ValueHolder;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A parameter defining how to query entities by the value of their identifiers.
+ * @author Alex Tymchenko
  */
-public final class IdParameter<I> {
+public abstract class MessageColumn<M extends Message, V> extends ValueHolder<FieldName> {
 
-    private final ImmutableList<I> values;
+    private static final long serialVersionUID = 0L;
 
-    private IdParameter(ImmutableList<I> values) {
-        this.values = values;
+    private final Class<M> messageType;
+    private final Class<V> valueType;
+
+    protected MessageColumn(String fieldName, Class<M> messageType, Class<V> valueType) {
+        super(FieldName.of(fieldName));
+        this.messageType = checkNotNull(messageType, "The type of the message must be set.");
+        this.valueType = checkNotNull(valueType, "The type of the returning value must be set.");
     }
 
-    public ImmutableList<I> values() {
-        return values;
+    @Internal
+    public FieldName name() {
+        return value();
+    };
+
+    @Internal
+    public Class<M> entityStateType() {
+        return messageType;
     }
 
-    public static <I> IdParameter<I> empty() {
-        return new IdParameter<>(ImmutableList.of());
-    }
-
-    public static <I> IdParameter<I> is(I value) {
-        checkNotNull(value);
-        return new IdParameter<>(ImmutableList.of(value));
-    }
-
-    @SafeVarargs
-    public static <I> IdParameter<I> in(I ...values) {
-        checkNotNull(values);
-        for (I value : values) {
-            checkNotNull(value);
-        }
-        return new IdParameter<>(ImmutableList.copyOf(values));
+    @Internal
+    public Class<V> valueType() {
+        return valueType;
     }
 }

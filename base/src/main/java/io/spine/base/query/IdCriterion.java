@@ -18,17 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.base.query;
+
 /**
- * The versions of the libraries used.
+ * An expression which sets the values of entity identifies to be used in {@link EntityQuery}.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * <p>Exists in a context of a corresponding {@link EntityQueryBuilder} instance.
+ *
+ * @param <I>
+ *         the type of identifiers
+ * @param <B>
+ *         the type of the {@link EntityQueryBuilder} implementation
  */
+public final class IdCriterion<I, B extends EntityQueryBuilder<I, ?, B, ?>> {
 
-val SPINE_VERSION = "1.5.101"
+    private final B builder;
 
-project.extra.apply {
-    this["spineVersion"] = SPINE_VERSION
-    this["spineBaseVersion"] = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
-    this["versionToPublish"] = SPINE_VERSION
+    public IdCriterion(B builder) {
+        this.builder = builder;
+    }
+
+    public B is(I value) {
+        IdParameter<I> parameter = IdParameter.is(value);
+        return builder.setIdParameter(parameter);
+    }
+
+    @SafeVarargs
+    public final B in(I... values) {
+        return builder.setIdParameter(IdParameter.in(values));
+    }
 }

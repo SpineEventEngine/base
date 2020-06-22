@@ -18,17 +18,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.base.query;
+
+import com.google.protobuf.Message;
+import io.spine.annotation.SPI;
+
 /**
- * The versions of the libraries used.
+ * A builder for {@link RecordQuery}.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * @param <I>
+ *         the type of identifiers of the queried records
+ * @param <S>
+ *         the type of the queried records
  */
+@SPI
+public class RecordQueryBuilder<I, S extends Message>
+        extends AbstractQueryBuilder<I,
+                                     S,
+                                     RecordQueryParameter<?>,
+                                     RecordQueryBuilder<I, S>,
+                                     RecordQuery<I, S>> {
 
-val SPINE_VERSION = "1.5.101"
+    @Override
+    protected RecordQueryBuilder<I, S> thisRef() {
+        return this;
+    }
 
-project.extra.apply {
-    this["spineVersion"] = SPINE_VERSION
-    this["spineBaseVersion"] = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
-    this["versionToPublish"] = SPINE_VERSION
+    /**
+     * Creates a new instance of {@link RecordQuery} basing on the data of this builder.
+     */
+    @Override
+    public RecordQuery<I, S> build() {
+        return new RecordQuery<>(this);
+    }
 }

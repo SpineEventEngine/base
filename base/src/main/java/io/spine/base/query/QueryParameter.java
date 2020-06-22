@@ -18,27 +18,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.entity;
+package io.spine.base.query;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Defines the ordering by the values of a particular {@linkplain EntityColumn entity column}.
+ * A parameter which defines one of the expected conditions
+ * for the {@linkplain AbstractQuery query} results.
+ *
+ * @param <V>
+ *         type of message field values to which this parameter refers
  */
-public final class OrderBy<C extends EntityColumn<S, V>, S extends EntityState<?>, V> {
+public abstract class QueryParameter<V> {
 
-    private final C column;
+    private final V value;
+    private final ComparisonOperator operator;
 
-    private final Direction direction;
-
-    OrderBy(C column, Direction direction) {
-        this.column = column;
-        this.direction = direction;
+    protected QueryParameter(V value, ComparisonOperator operator) {
+        this.value = checkNotNull(value);
+        this.operator = checkNotNull(operator);
     }
 
-    public C column() {
-        return column;
+    /**
+     * Returns the value against which the column should be queried.
+     */
+    public final V value() {
+        return value;
     }
 
-    public Direction direction() {
-        return direction;
+    /**
+     * Returns the operator to compare the actual column value with the one
+     * set in this {@code QueryParameter}.
+     */
+    public final ComparisonOperator operator() {
+        return operator;
     }
 }
