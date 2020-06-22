@@ -26,7 +26,7 @@ import io.spine.base.entity.EntityColumn;
 /**
  * Defines the ordering by the values of a particular {@linkplain EntityColumn entity column}.
  */
-public final class OrderBy<C extends MessageColumn<S, ?>, S extends Message> {
+public final class OrderBy<C extends RecordColumn<S, ?>, S extends Message> {
 
     private final C column;
 

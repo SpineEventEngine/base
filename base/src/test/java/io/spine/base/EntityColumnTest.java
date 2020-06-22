@@ -50,7 +50,7 @@ class EntityColumnTest {
         EntityColumn<FakeEntityState, Timestamp> column =
                 new EntityColumn<>(columnName, stateType, returningValueType);
         assertThat(column.name().value()).isEqualTo(columnName);
-        assertThat(column.entityStateType()).isEqualTo(stateType);
+        assertThat(column.enclosingMessageType()).isEqualTo(stateType);
         assertThat(column.valueType()).isEqualTo(returningValueType);
     }
 }

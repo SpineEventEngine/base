@@ -38,7 +38,7 @@ import static io.spine.util.Preconditions2.checkPositive;
  *
  * @param <I>
  *         the type of identifiers of the records which are queried
- * @param <S>
+ * @param <R>
  *         the type of queried records
  * @param <P>
  *         the type of query parameters to use when composing the query
@@ -48,16 +48,16 @@ import static io.spine.util.Preconditions2.checkPositive;
  *         the type of {@code AbstractQuery} implementation
  */
 abstract class AbstractQueryBuilder<I,
-        S extends Message,
-        P extends QueryParameter<?>,
-        B extends AbstractQueryBuilder<I, S, P, B, Q>,
-        Q extends AbstractQuery<I, S, ?>> {
+                                    R extends Message,
+                                    P extends QueryParameter<?, ?>,
+                                    B extends AbstractQueryBuilder<I, R, P, B, Q>,
+                                    Q extends AbstractQuery<I, R, ?>> {
 
     private IdParameter<I> id = IdParameter.empty();
 
     private final List<P> parameters = new ArrayList<>();
 
-    private final List<OrderBy<?, S>> ordering = new ArrayList<>();
+    private final List<OrderBy<?, R>> ordering = new ArrayList<>();
 
     @MonotonicNonNull
     private Integer limit;
@@ -92,7 +92,7 @@ abstract class AbstractQueryBuilder<I,
     /**
      * Returns the ordering directives to be applied to the resulting dataset.
      */
-    ImmutableList<OrderBy<?, S>> ordering() {
+    ImmutableList<OrderBy<?, R>> ordering() {
         return ImmutableList.copyOf(ordering);
     }
 
@@ -151,7 +151,7 @@ abstract class AbstractQueryBuilder<I,
      *         the direction of ordering
      */
     @CanIgnoreReturnValue
-    public final B orderBy(MessageColumn<S, ?> column, Direction direction) {
+    public final B orderBy(RecordColumn<R, ?> column, Direction direction) {
         checkNotNull(column);
         checkNotNull(direction);
         ordering.add(new OrderBy<>(column, direction));

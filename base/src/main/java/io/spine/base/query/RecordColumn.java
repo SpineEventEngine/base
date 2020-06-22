@@ -28,31 +28,49 @@ import io.spine.value.ValueHolder;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * @author Alex Tymchenko
+ * A queryable column of a stored record.
+ *
+ * <p>Defined for the records which are declared as Protobuf messages.
+ *
+ * @param <R>
+ *         the type of the stored record
+ * @param <V>
+ *         the type of the column values
  */
-public abstract class MessageColumn<M extends Message, V> extends ValueHolder<FieldName> {
+public class RecordColumn<R extends Message, V> extends ValueHolder<FieldName> {
 
     private static final long serialVersionUID = 0L;
 
-    private final Class<M> messageType;
+    private final Class<R> messageType;
     private final Class<V> valueType;
 
-    protected MessageColumn(String fieldName, Class<M> messageType, Class<V> valueType) {
+    protected RecordColumn(String fieldName, Class<R> messageType, Class<V> valueType) {
         super(FieldName.of(fieldName));
-        this.messageType = checkNotNull(messageType, "The type of the message must be set.");
+        this.messageType = checkNotNull(messageType, "The type of the record must be set.");
         this.valueType = checkNotNull(valueType, "The type of the returning value must be set.");
     }
 
+    /**
+     * Returns the name of the corresponding Protobuf message field.
+     */
     @Internal
     public FieldName name() {
         return value();
-    };
+    }
 
+    ;
+
+    /**
+     * Returns the type of enclosing Protobuf message.
+     */
     @Internal
-    public Class<M> entityStateType() {
+    public Class<R> enclosingMessageType() {
         return messageType;
     }
 
+    /**
+     * Returns the type of the column value.
+     */
     @Internal
     public Class<V> valueType() {
         return valueType;

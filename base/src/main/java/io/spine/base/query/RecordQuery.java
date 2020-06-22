@@ -33,7 +33,7 @@ import io.spine.annotation.SPI;
  */
 @SPI
 public final class RecordQuery<I, R extends Message>
-        extends AbstractQuery<I, R, RecordQueryParameter<?>> {
+        extends AbstractQuery<I, R, RecordQueryParameter<R, ?>> {
 
     public RecordQuery(RecordQueryBuilder<I, R> builder) {
         super(builder);

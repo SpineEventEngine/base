@@ -20,7 +20,7 @@
 
 package io.spine.base.entity;
 
-import io.spine.base.query.MessageColumn;
+import io.spine.base.query.RecordColumn;
 
 /**
  * A queryable column of an entity which can be passed to the query filters.
@@ -69,7 +69,7 @@ import io.spine.base.query.MessageColumn;
  * @param <S> the type of the state of the {@code Entity}
  * @param <V> the type of the column type
  */
-public final class EntityColumn<S extends EntityState<?>, V> extends MessageColumn<S, V> {
+public final class EntityColumn<S extends EntityState<?>, V> extends RecordColumn<S, V> {
 
     private static final long serialVersionUID = 0L;
 

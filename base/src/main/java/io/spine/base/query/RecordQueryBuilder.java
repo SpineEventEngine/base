@@ -28,19 +28,19 @@ import io.spine.annotation.SPI;
  *
  * @param <I>
  *         the type of identifiers of the queried records
- * @param <S>
+ * @param <R>
  *         the type of the queried records
  */
 @SPI
-public class RecordQueryBuilder<I, S extends Message>
+public class RecordQueryBuilder<I, R extends Message>
         extends AbstractQueryBuilder<I,
-                                     S,
-                                     RecordQueryParameter<?>,
-                                     RecordQueryBuilder<I, S>,
-                                     RecordQuery<I, S>> {
+                                     R,
+                                     RecordQueryParameter<R, ?>,
+                                     RecordQueryBuilder<I, R>,
+                                     RecordQuery<I, R>> {
 
     @Override
-    protected RecordQueryBuilder<I, S> thisRef() {
+    protected RecordQueryBuilder<I, R> thisRef() {
         return this;
     }
 
@@ -48,7 +48,7 @@ public class RecordQueryBuilder<I, S extends Message>
      * Creates a new instance of {@link RecordQuery} basing on the data of this builder.
      */
     @Override
-    public RecordQuery<I, S> build() {
+    public RecordQuery<I, R> build() {
         return new RecordQuery<>(this);
     }
 }

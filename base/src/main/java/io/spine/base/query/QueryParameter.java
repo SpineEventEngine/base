@@ -23,20 +23,31 @@ package io.spine.base.query;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A parameter which defines one of the expected conditions
- * for the {@linkplain AbstractQuery query} results.
+ * A parameter which defines the expected value for the {@link RecordColumn}
+ * for a particular {@linkplain AbstractQuery query}.
  *
+ * @param <C>
+ *         the type of the message column
  * @param <V>
- *         type of message field values to which this parameter refers
+ *         type of message column values to which this parameter refers
  */
-public abstract class QueryParameter<V> {
+public abstract class QueryParameter<C extends RecordColumn<?, V>, V> {
 
+    private final C column;
     private final V value;
     private final ComparisonOperator operator;
 
-    protected QueryParameter(V value, ComparisonOperator operator) {
+    protected QueryParameter(C column, V value, ComparisonOperator operator) {
+        this.column = checkNotNull(column);
         this.value = checkNotNull(value);
         this.operator = checkNotNull(operator);
+    }
+
+    /**
+     * Returns the message column which is going to be queried with this parameter.
+     */
+    public final C column() {
+        return column;
     }
 
     /**

@@ -23,8 +23,6 @@ package io.spine.base.query;
 import io.spine.base.entity.EntityColumn;
 import io.spine.base.entity.EntityState;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
  * A parameter defining how to query an entity by the value of its {@link EntityColumn}.
  *
@@ -33,9 +31,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @param <V>
  *         the type of the entity column values
  */
-public final class EntityQueryParameter<S extends EntityState<?>, V> extends QueryParameter<V> {
-
-    private final EntityColumn<S, V> column;
+public final class EntityQueryParameter<S extends EntityState<?>, V>
+        extends QueryParameter<EntityColumn<S, V>, V> {
 
     /**
      * Creates an instance of {@code QueryParameter} targeting entities whose column value
@@ -49,14 +46,6 @@ public final class EntityQueryParameter<S extends EntityState<?>, V> extends Que
      *         the operator to use when comparing the actual column value to the provided one
      */
     EntityQueryParameter(EntityColumn<S, V> column, V value, ComparisonOperator operator) {
-        super(value, operator);
-        this.column = checkNotNull(column);
-    }
-
-    /**
-     * Returns the column to be queried.
-     */
-    public EntityColumn<S, V> column() {
-        return column;
+        super(column, value, operator);
     }
 }

@@ -20,6 +20,7 @@
 
 package io.spine.base.query;
 
+import com.google.protobuf.Message;
 import io.spine.annotation.SPI;
 
 /**
@@ -29,9 +30,10 @@ import io.spine.annotation.SPI;
  *         the type of the record field value to use in querying
  */
 @SPI
-public final class RecordQueryParameter<V> extends QueryParameter<V> {
+public final class RecordQueryParameter<R extends Message, V>
+        extends QueryParameter<RecordColumn<R, V>, V> {
 
-    public RecordQueryParameter(V value, ComparisonOperator operator) {
-        super(value, operator);
+    public RecordQueryParameter(RecordColumn<R, V> column, V value, ComparisonOperator operator) {
+        super(column, value, operator);
     }
 }

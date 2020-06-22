@@ -35,8 +35,10 @@ import static com.google.common.base.Preconditions.checkArgument;
  *         the type of record identifiers
  * @param <R>
  *         the type of records
+ * @param <P>
+ *         the type of query parameters used in a particular implementation
  */
-public abstract class AbstractQuery<I, R extends Message, P extends QueryParameter<?>> {
+public abstract class AbstractQuery<I, R extends Message, P extends QueryParameter<?, ?>> {
 
     private final IdParameter<I> id;
 
