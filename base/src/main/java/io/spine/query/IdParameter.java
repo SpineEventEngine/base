@@ -18,24 +18,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.query;
+package io.spine.query;
 
-import com.google.protobuf.Message;
-import io.spine.annotation.SPI;
+import com.google.common.collect.ImmutableList;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A query for the records each represented by a particular Protobuf message.
- *
- * @param <I>
- *         the type of the record identifiers
- * @param <R>
- *         the type of the stored records
+ * A parameter defining how to query records by the value of their identifiers.
  */
-@SPI
-public final class RecordQuery<I, R extends Message>
-        extends AbstractQuery<I, R, RecordQueryParameter<R, ?>> {
+public final class IdParameter<I> {
 
-    public RecordQuery(RecordQueryBuilder<I, R> builder) {
-        super(builder);
+    private final ImmutableList<I> values;
+
+    private IdParameter(ImmutableList<I> values) {
+        this.values = values;
+    }
+
+    public ImmutableList<I> values() {
+        return values;
+    }
+
+    public static <I> IdParameter<I> empty() {
+        return new IdParameter<>(ImmutableList.of());
+    }
+
+    public static <I> IdParameter<I> is(I value) {
+        checkNotNull(value);
+        return new IdParameter<>(ImmutableList.of(value));
+    }
+
+    @SafeVarargs
+    public static <I> IdParameter<I> in(I ...values) {
+        checkNotNull(values);
+        for (I value : values) {
+            checkNotNull(value);
+        }
+        return new IdParameter<>(ImmutableList.copyOf(values));
     }
 }

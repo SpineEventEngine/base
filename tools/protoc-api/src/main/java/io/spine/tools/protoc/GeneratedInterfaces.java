@@ -124,7 +124,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      * </pre>
      *
      * <p>Note that it is required for the provided interface to extend the
-     * {@link io.spine.base.entity.EntityState} interface, otherwise the inner Spine routines will work
+     * {@link io.spine.base.EntityState} interface, otherwise the inner Spine routines will work
      * incorrectly.
      */
     public final void mark(EntityState entityState, ClassName interfaceName) {

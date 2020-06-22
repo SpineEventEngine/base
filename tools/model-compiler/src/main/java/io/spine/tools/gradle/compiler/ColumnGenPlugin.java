@@ -19,7 +19,7 @@
  */
 package io.spine.tools.gradle.compiler;
 
-import io.spine.base.entity.EntityWithColumns;
+import io.spine.query.EntityWithColumns;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.ProtoPlugin;
 import org.gradle.api.Action;

@@ -22,8 +22,8 @@ package io.spine.base;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Timestamp;
-import io.spine.base.entity.EntityColumn;
 import io.spine.base.given.FakeEntityState;
+import io.spine.query.EntityColumn;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

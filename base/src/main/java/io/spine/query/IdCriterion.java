@@ -18,26 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.query;
-
-import io.spine.base.entity.EntityState;
+package io.spine.query;
 
 /**
- * An abstract base for builders of an {@code EntityQuery} for a particular entity state type.
+ * An expression which sets the values of entity identifies to be used in {@link EntityQuery}.
+ *
+ * <p>Exists in a context of a corresponding {@link EntityQueryBuilder} instance.
  *
  * @param <I>
- *         the type of entity identifiers
- * @param <S>
- *         the type of an entity state
+ *         the type of identifiers
  * @param <B>
- *         the type of a particular {@code EntityQueryBuilder} implementation
- * @param <Q>
- *         the type of a particular {@link EntityQuery} implementation which this builder
- *         is aimed to build
+ *         the type of the {@link EntityQueryBuilder} implementation
  */
-public abstract class EntityQueryBuilder<I,
-                                         S extends EntityState<I>,
-                                         B extends EntityQueryBuilder<I, S, B, Q>,
-                                         Q extends EntityQuery<I, S, B>>
-        extends AbstractQueryBuilder<I, S, EntityQueryParameter<S, ?>, B, Q> {
+public final class IdCriterion<I, B extends EntityQueryBuilder<I, ?, B, ?>> {
+
+    private final B builder;
+
+    public IdCriterion(B builder) {
+        this.builder = builder;
+    }
+
+    public B is(I value) {
+        IdParameter<I> parameter = IdParameter.is(value);
+        return builder.setIdParameter(parameter);
+    }
+
+    @SafeVarargs
+    public final B in(I... values) {
+        return builder.setIdParameter(IdParameter.in(values));
+    }
 }

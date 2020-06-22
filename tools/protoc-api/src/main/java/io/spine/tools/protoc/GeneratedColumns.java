@@ -1,7 +1,7 @@
 package io.spine.tools.protoc;
 
 import io.spine.annotation.Internal;
-import io.spine.base.entity.EntityColumn;
+import io.spine.query.EntityColumn;
 
 /**
  * A configuration of strongly-typed entity columns to be generated for certain message types.

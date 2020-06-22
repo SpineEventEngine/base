@@ -18,12 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.entity;
+package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
 import io.spine.annotation.FirstGenericParameter;
 import io.spine.annotation.GeneratedMixin;
-import io.spine.base.KnownMessage;
 
 /**
  * A common interface for entity state messages.

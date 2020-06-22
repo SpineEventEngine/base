@@ -18,22 +18,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.query;
+package io.spine.query;
 
-import com.google.protobuf.Message;
-import io.spine.annotation.SPI;
+import io.spine.base.EntityState;
 
 /**
- * A parameter of a {@link RecordQuery}.
+ * An abstract base for builders of an {@code EntityQuery} for a particular entity state type.
  *
- * @param <V>
- *         the type of the record field value to use in querying
+ * @param <I>
+ *         the type of entity identifiers
+ * @param <S>
+ *         the type of an entity state
+ * @param <B>
+ *         the type of a particular {@code EntityQueryBuilder} implementation
+ * @param <Q>
+ *         the type of a particular {@link EntityQuery} implementation which this builder
+ *         is aimed to build
  */
-@SPI
-public final class RecordQueryParameter<R extends Message, V>
-        extends QueryParameter<RecordColumn<R, V>, V> {
-
-    public RecordQueryParameter(RecordColumn<R, V> column, V value, ComparisonOperator operator) {
-        super(column, value, operator);
-    }
+public abstract class EntityQueryBuilder<I,
+                                         S extends EntityState<I>,
+                                         B extends EntityQueryBuilder<I, S, B, Q>,
+                                         Q extends EntityQuery<I, S, B>>
+        extends AbstractQueryBuilder<I, S, EntityQueryParameter<S, ?>, B, Q> {
 }

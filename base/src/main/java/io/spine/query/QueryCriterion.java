@@ -18,18 +18,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.query;
+package io.spine.query;
 
-import io.spine.base.entity.EntityColumn;
-import io.spine.base.entity.EntityState;
+import io.spine.base.EntityState;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.base.query.ComparisonOperator.EQUALS;
-import static io.spine.base.query.ComparisonOperator.GREATER_OR_EQUALS;
-import static io.spine.base.query.ComparisonOperator.GREATER_THAN;
-import static io.spine.base.query.ComparisonOperator.LESS_OR_EQUALS;
-import static io.spine.base.query.ComparisonOperator.LESS_THAN;
-import static io.spine.base.query.ComparisonOperator.NOT_EQUALS;
+import static io.spine.query.ComparisonOperator.EQUALS;
+import static io.spine.query.ComparisonOperator.GREATER_OR_EQUALS;
+import static io.spine.query.ComparisonOperator.GREATER_THAN;
+import static io.spine.query.ComparisonOperator.LESS_OR_EQUALS;
+import static io.spine.query.ComparisonOperator.LESS_THAN;
+import static io.spine.query.ComparisonOperator.NOT_EQUALS;
 
 /**
  * An expression which sets the value to compare for the {@link EntityColumn} in scope of

@@ -24,12 +24,12 @@ import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
-import io.spine.base.entity.EntityColumn;
 import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.java.PackageName;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.query.EntityColumn;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -69,9 +69,9 @@ import static javax.lang.model.element.Modifier.STATIC;
  *         // Prevent instantiation.
  *     }
  *
- *     public static io.spine.base.entity.EntityColumn name() {...}
+ *     public static io.spine.query.EntityColumn name() {...}
  *
- *     public static io.spine.base.entity.EntityColumn taskCount() {...}
+ *     public static io.spine.query.EntityColumn taskCount() {...}
  * }
  * </pre>
  *

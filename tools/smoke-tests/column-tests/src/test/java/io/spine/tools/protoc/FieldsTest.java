@@ -22,7 +22,7 @@ package io.spine.tools.protoc;
 
 import io.spine.base.EventMessageField;
 import io.spine.base.SubscribableField;
-import io.spine.base.entity.EntityStateField;
+import io.spine.query.EntityStateField;
 import io.spine.tools.column.Project;
 import io.spine.tools.column.ProjectCreated;
 import io.spine.tools.column.ProjectName;

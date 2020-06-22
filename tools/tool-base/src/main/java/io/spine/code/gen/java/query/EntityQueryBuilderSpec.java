@@ -27,11 +27,11 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
-import io.spine.base.query.EntityQuery;
-import io.spine.base.query.EntityQueryBuilder;
-import io.spine.base.query.IdCriterion;
 import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.query.EntityQuery;
+import io.spine.query.EntityQueryBuilder;
+import io.spine.query.IdCriterion;
 import io.spine.type.MessageType;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;

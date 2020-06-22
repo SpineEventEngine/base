@@ -24,12 +24,12 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
-import io.spine.base.query.IdCriterion;
 import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.gen.java.GeneratedMethodSpec;
 import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.proto.EntityIdField;
 import io.spine.code.proto.FieldName;
+import io.spine.query.IdCriterion;
 
 import static javax.lang.model.element.Modifier.PUBLIC;
 

@@ -18,30 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.query;
+package io.spine.query;
 
 import com.google.protobuf.Message;
-import io.spine.base.entity.EntityColumn;
+import io.spine.annotation.SPI;
 
 /**
- * Defines the ordering by the values of a particular {@linkplain EntityColumn entity column}.
+ * A parameter of a {@link RecordQuery}.
+ *
+ * @param <V>
+ *         the type of the record field value to use in querying
  */
-public final class OrderBy<C extends RecordColumn<S, ?>, S extends Message> {
+@SPI
+public final class RecordQueryParameter<R extends Message, V>
+        extends QueryParameter<RecordColumn<R, V>, V> {
 
-    private final C column;
-
-    private final Direction direction;
-
-    OrderBy(C column, Direction direction) {
-        this.column = column;
-        this.direction = direction;
-    }
-
-    public C column() {
-        return column;
-    }
-
-    public Direction direction() {
-        return direction;
+    public RecordQueryParameter(RecordColumn<R, V> column, V value, ComparisonOperator operator) {
+        super(column, value, operator);
     }
 }

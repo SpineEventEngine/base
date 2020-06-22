@@ -31,7 +31,6 @@ import java.lang.annotation.Target;
 
 /**
  * Instructs the model compiler how to treat the first generic parameter of the marked type.
- *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
@@ -40,5 +39,8 @@ import java.lang.annotation.Target;
 @Documented
 public @interface FirstGenericParameter {
 
+    /**
+     * Returns the class of the function, which would read the type of the field.
+     */
     Class<? extends ReadFieldType> is();
 }

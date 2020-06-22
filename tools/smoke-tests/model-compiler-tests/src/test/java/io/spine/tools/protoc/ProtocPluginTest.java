@@ -28,7 +28,7 @@ import io.spine.base.Identifier;
 import io.spine.base.RejectionMessage;
 import io.spine.base.SubscribableField;
 import io.spine.base.UuidValue;
-import io.spine.base.entity.EntityColumn;
+import io.spine.query.EntityColumn;
 import io.spine.test.protoc.EducationalInstitution;
 import io.spine.test.protoc.Kindergarten;
 import io.spine.test.protoc.Outer;

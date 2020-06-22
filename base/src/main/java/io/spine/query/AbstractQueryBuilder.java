@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.query;
+package io.spine.query;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
@@ -66,12 +66,12 @@ abstract class AbstractQueryBuilder<I,
     private FieldMask mask;
 
     /**
-     * Returns this instance of {@code EntityQueryBuilder}.
+     * Returns this instance of builder.
      */
     protected abstract B thisRef();
 
     /**
-     * Creates a new instance of {@link EntityQuery} on top of this {@code EntityQueryBuilder}.
+     * Creates a new instance of the query on top of this builder.
      */
     public abstract Q build();
 

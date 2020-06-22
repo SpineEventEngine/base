@@ -18,42 +18,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.query;
+package io.spine.query;
 
-import com.google.common.collect.ImmutableList;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import io.spine.base.EntityState;
 
 /**
- * A parameter defining how to query records by the value of their identifiers.
+ * A common contract for the classes being generated for each entity state type, which define
+ * how the entities of this type may be queried.
+ *
+ * @param <I>
+ *         the type of entity identifiers
+ * @param <S>
+ *         the type of the entity state
+ * @param <B>
+ *         the type of a particular {@linkplain EntityQueryBuilder query builder} implementation
+ *         to create the query instances
  */
-public final class IdParameter<I> {
+public abstract class EntityQuery<I,
+                                  S extends EntityState<I>,
+                                  B extends EntityQueryBuilder<I, S, B, ?>>
+        extends AbstractQuery<I, S, EntityQueryParameter<S, ?>> {
 
-    private final ImmutableList<I> values;
-
-    private IdParameter(ImmutableList<I> values) {
-        this.values = values;
-    }
-
-    public ImmutableList<I> values() {
-        return values;
-    }
-
-    public static <I> IdParameter<I> empty() {
-        return new IdParameter<>(ImmutableList.of());
-    }
-
-    public static <I> IdParameter<I> is(I value) {
-        checkNotNull(value);
-        return new IdParameter<>(ImmutableList.of(value));
-    }
-
-    @SafeVarargs
-    public static <I> IdParameter<I> in(I ...values) {
-        checkNotNull(values);
-        for (I value : values) {
-            checkNotNull(value);
-        }
-        return new IdParameter<>(ImmutableList.copyOf(values));
+    /**
+     * A common constructor contract for all {@code EntityQuery} implementations.
+     */
+    protected EntityQuery(EntityQueryBuilder<I, S, B, ?> builder) {
+        super(builder);
     }
 }

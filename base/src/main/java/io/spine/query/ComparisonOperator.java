@@ -18,13 +18,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.query;
+
 /**
- * This package defines how the objects defined in Protobuf may be queried.
+ * Defines how the queried records are compared against the desired parameter values.
+ *
+ * @see AbstractQuery
+ * @see QueryParameter
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.base.query;
+public enum ComparisonOperator {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    /**
+     * The actual value must be equal to the value of the query parameter.
+     */
+    EQUALS,
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    /**
+     * The actual value must be different from the value of the query parameter.
+     */
+    NOT_EQUALS,
+
+    /**
+     * The actual value must be less than the value of the query parameter.
+     */
+    LESS_THAN,
+
+    /**
+     * The actual value must be less or equal to the value of the query parameter.
+     */
+    LESS_OR_EQUALS,
+
+    /**
+     * The actual value must be greater than the value of the query parameter.
+     */
+    GREATER_THAN,
+
+    /**
+     * The actual value must be greater or equal to the value of the query parameter.
+     */
+    GREATER_OR_EQUALS
+}

@@ -18,14 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.query;
+
 /**
- * This package defines the interfaces and classes used for working with Protobuf types defining
- * entity states.
+ * The direction of ordering for the set of records by some field value.
+ *
+ * @see OrderBy
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.base.entity;
+public enum Direction {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    /**
+     * The resulting set is sorted from smaller to bigger values.
+     */
+    ASC,
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    /**
+     * The resulting set is sorted from bigger to smaller values.
+     */
+    DESC
+}

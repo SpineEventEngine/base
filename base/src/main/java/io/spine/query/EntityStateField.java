@@ -18,33 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.query;
+package io.spine.query;
+
+import io.spine.base.EntityState;
+import io.spine.base.Field;
+import io.spine.base.SubscribableField;
 
 /**
- * An expression which sets the values of entity identifies to be used in {@link EntityQuery}.
+ * A subscribable field of an {@link EntityState entity state}.
  *
- * <p>Exists in a context of a corresponding {@link EntityQueryBuilder} instance.
- *
- * @param <I>
- *         the type of identifiers
- * @param <B>
- *         the type of the {@link EntityQueryBuilder} implementation
+ * @see SubscribableField
  */
-public final class IdCriterion<I, B extends EntityQueryBuilder<I, ?, B, ?>> {
+public class EntityStateField extends SubscribableField {
 
-    private final B builder;
-
-    public IdCriterion(B builder) {
-        this.builder = builder;
-    }
-
-    public B is(I value) {
-        IdParameter<I> parameter = IdParameter.is(value);
-        return builder.setIdParameter(parameter);
-    }
-
-    @SafeVarargs
-    public final B in(I... values) {
-        return builder.setIdParameter(IdParameter.in(values));
+    public EntityStateField(Field field) {
+        super(field);
     }
 }

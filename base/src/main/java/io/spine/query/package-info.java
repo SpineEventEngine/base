@@ -18,37 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.query;
-
-import com.google.protobuf.Message;
-import io.spine.annotation.SPI;
-
 /**
- * A builder for {@link RecordQuery}.
- *
- * @param <I>
- *         the type of identifiers of the queried records
- * @param <R>
- *         the type of the queried records
+ * This package defines how the objects defined in Protobuf may be queried.
  */
-@SPI
-public class RecordQueryBuilder<I, R extends Message>
-        extends AbstractQueryBuilder<I,
-                                     R,
-                                     RecordQueryParameter<R, ?>,
-                                     RecordQueryBuilder<I, R>,
-                                     RecordQuery<I, R>> {
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.query;
 
-    @Override
-    protected RecordQueryBuilder<I, R> thisRef() {
-        return this;
-    }
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    /**
-     * Creates a new instance of {@link RecordQuery} basing on the data of this builder.
-     */
-    @Override
-    public RecordQuery<I, R> build() {
-        return new RecordQuery<>(this);
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

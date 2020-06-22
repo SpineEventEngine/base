@@ -18,9 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.entity;
+package io.spine.query;
 
-import io.spine.base.query.RecordColumn;
+import io.spine.base.EntityState;
 
 /**
  * A queryable column of an entity which can be passed to the query filters.
@@ -53,9 +53,9 @@ import io.spine.base.query.RecordColumn;
  *         }
  *
  *          //TODO:2020-04-30:alex.tymchenko: add the docs
- *         public static io.spine.base.entity.EntityColumn name() {...}
+ *         public static io.spine.query.EntityColumn name() {...}
  *
- *         public static io.spine.base.entity.EntityColumn taskCount() {...}
+ *         public static io.spine.query.EntityColumn taskCount() {...}
  *     }
  * }
  * </pre>

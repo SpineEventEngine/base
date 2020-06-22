@@ -18,34 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.query;
+package io.spine.query;
 
-import io.spine.base.entity.EntityColumn;
-import io.spine.base.entity.EntityState;
+import com.google.protobuf.Message;
+import io.spine.annotation.SPI;
 
 /**
- * A parameter defining how to query an entity by the value of its {@link EntityColumn}.
+ * A query for the records each represented by a particular Protobuf message.
  *
- * @param <S>
- *         the type of entity state
- * @param <V>
- *         the type of the entity column values
+ * @param <I>
+ *         the type of the record identifiers
+ * @param <R>
+ *         the type of the stored records
  */
-public final class EntityQueryParameter<S extends EntityState<?>, V>
-        extends QueryParameter<EntityColumn<S, V>, V> {
+@SPI
+public final class RecordQuery<I, R extends Message>
+        extends AbstractQuery<I, R, RecordQueryParameter<R, ?>> {
 
-    /**
-     * Creates an instance of {@code QueryParameter} targeting entities whose column value
-     * is compared to the one provided in a specified way.
-     *
-     * @param column
-     *         the column to query
-     * @param value
-     *         the column value to use when querying
-     * @param operator
-     *         the operator to use when comparing the actual column value to the provided one
-     */
-    EntityQueryParameter(EntityColumn<S, V> column, V value, ComparisonOperator operator) {
-        super(column, value, operator);
+    public RecordQuery(RecordQueryBuilder<I, R> builder) {
+        super(builder);
     }
 }

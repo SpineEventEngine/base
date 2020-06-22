@@ -18,19 +18,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.entity;
+package io.spine.query;
 
-import io.spine.base.Field;
-import io.spine.base.SubscribableField;
+import com.google.protobuf.Message;
+import io.spine.annotation.SPI;
 
 /**
- * A subscribable field of an {@link EntityState entity state}.
+ * A builder for {@link RecordQuery}.
  *
- * @see SubscribableField
+ * @param <I>
+ *         the type of identifiers of the queried records
+ * @param <R>
+ *         the type of the queried records
  */
-public class EntityStateField extends SubscribableField {
+@SPI
+public class RecordQueryBuilder<I, R extends Message>
+        extends AbstractQueryBuilder<I,
+                                     R,
+                                     RecordQueryParameter<R, ?>,
+                                     RecordQueryBuilder<I, R>,
+                                     RecordQuery<I, R>> {
 
-    public EntityStateField(Field field) {
-        super(field);
+    @Override
+    protected RecordQueryBuilder<I, R> thisRef() {
+        return this;
+    }
+
+    /**
+     * Creates a new instance of {@link RecordQuery} basing on the data of this builder.
+     */
+    @Override
+    public RecordQuery<I, R> build() {
+        return new RecordQuery<>(this);
     }
 }

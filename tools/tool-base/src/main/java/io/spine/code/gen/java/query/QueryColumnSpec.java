@@ -24,13 +24,13 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
-import io.spine.base.entity.EntityColumn;
-import io.spine.base.query.EntityQueryBuilder;
-import io.spine.base.query.QueryCriterion;
 import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.gen.java.GeneratedMethodSpec;
 import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.query.EntityColumn;
+import io.spine.query.EntityQueryBuilder;
+import io.spine.query.QueryCriterion;
 
 import static javax.lang.model.element.Modifier.PUBLIC;
 

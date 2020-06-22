@@ -2,8 +2,8 @@ package io.spine.tools.protoc;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.annotation.Internal;
-import io.spine.base.entity.EntityStateField;
 import io.spine.code.java.ClassName;
+import io.spine.query.EntityStateField;
 
 import java.util.Map;
 

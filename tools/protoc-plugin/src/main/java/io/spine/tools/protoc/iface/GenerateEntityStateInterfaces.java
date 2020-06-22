@@ -21,7 +21,6 @@
 package io.spine.tools.protoc.iface;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.base.entity.EntityState;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.EntityStateConfig;
 import io.spine.tools.protoc.TypeParameter;
@@ -34,10 +33,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
- * Marks the provided message type with the {@link EntityState EntityState} interface
+ * Marks the provided message type with the {@link io.spine.base.EntityState EntityState} interface
  * if the type is recognized as entity state.
  *
- * <p>Requires the {@link EntityState} to be properly configured with
+ * <p>Requires the {@code EntityState} to be properly configured with
  * {@link io.spine.annotation.FirstGenericParameter FirstGenericParameter annotation}.
  */
 final class GenerateEntityStateInterfaces extends InterfaceGenerationTask {

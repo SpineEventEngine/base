@@ -21,12 +21,12 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.base.entity.EntityWithColumns;
 import io.spine.code.gen.Indent;
 import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.gen.java.TypeSpecWriter;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.SourceProtoBelongsToModule;
+import io.spine.query.EntityWithColumns;
 import io.spine.tools.compiler.gen.column.EntityWithColumnsSpec;
 import io.spine.tools.gradle.CodeGenerationAction;
 import io.spine.type.MessageType;

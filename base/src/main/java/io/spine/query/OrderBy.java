@@ -18,43 +18,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.query;
+package io.spine.query;
+
+import com.google.protobuf.Message;
 
 /**
- * Defines how the queried records are compared against the desired parameter values.
- *
- * @see AbstractQuery
- * @see QueryParameter
+ * Defines the ordering by the values of
+ * a particular {@linkplain io.spine.query.EntityColumn entity column}.
  */
-public enum ComparisonOperator {
+public final class OrderBy<C extends RecordColumn<S, ?>, S extends Message> {
 
-    /**
-     * The actual value must be equal to the value of the query parameter.
-     */
-    EQUALS,
+    private final C column;
 
-    /**
-     * The actual value must be different from the value of the query parameter.
-     */
-    NOT_EQUALS,
+    private final Direction direction;
 
-    /**
-     * The actual value must be less than the value of the query parameter.
-     */
-    LESS_THAN,
+    OrderBy(C column, Direction direction) {
+        this.column = column;
+        this.direction = direction;
+    }
 
-    /**
-     * The actual value must be less or equal to the value of the query parameter.
-     */
-    LESS_OR_EQUALS,
+    public C column() {
+        return column;
+    }
 
-    /**
-     * The actual value must be greater than the value of the query parameter.
-     */
-    GREATER_THAN,
-
-    /**
-     * The actual value must be greater or equal to the value of the query parameter.
-     */
-    GREATER_OR_EQUALS
+    public Direction direction() {
+        return direction;
+    }
 }

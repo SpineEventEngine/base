@@ -21,7 +21,7 @@
 package io.spine.tools.protoc;
 
 import com.google.common.truth.Correspondence;
-import io.spine.base.entity.EntityColumn;
+import io.spine.query.EntityColumn;
 import io.spine.tools.column.ProjectView;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

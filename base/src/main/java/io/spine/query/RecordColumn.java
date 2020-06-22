@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.query;
+package io.spine.query;
 
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
@@ -57,8 +57,6 @@ public class RecordColumn<R extends Message, V> extends ValueHolder<FieldName> {
     public FieldName name() {
         return value();
     }
-
-    ;
 
     /**
      * Returns the type of enclosing Protobuf message.

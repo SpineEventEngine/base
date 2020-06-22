@@ -18,31 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.query;
+package io.spine.query;
 
-import io.spine.base.entity.EntityState;
+import io.spine.base.EntityState;
 
 /**
- * A common contract for the classes being generated for each entity state type, which define
- * how the entities of this type may be queried.
+ * A parameter defining how to query an entity by the value of its {@link EntityColumn}.
  *
- * @param <I>
- *         the type of entity identifiers
  * @param <S>
- *         the type of the entity state
- * @param <B>
- *         the type of a particular {@linkplain EntityQueryBuilder query builder} implementation
- *         to create the query instances
+ *         the type of entity state
+ * @param <V>
+ *         the type of the entity column values
  */
-public abstract class EntityQuery<I,
-                                  S extends EntityState<I>,
-                                  B extends EntityQueryBuilder<I, S, B, ?>>
-        extends AbstractQuery<I, S, EntityQueryParameter<S, ?>> {
+public final class EntityQueryParameter<S extends EntityState<?>, V>
+        extends QueryParameter<EntityColumn<S, V>, V> {
 
     /**
-     * A common constructor contract for all {@code EntityQuery} implementations.
+     * Creates an instance of {@code QueryParameter} targeting entities whose column value
+     * is compared to the one provided in a specified way.
+     *
+     * @param column
+     *         the column to query
+     * @param value
+     *         the column value to use when querying
+     * @param operator
+     *         the operator to use when comparing the actual column value to the provided one
      */
-    protected EntityQuery(EntityQueryBuilder<I, S, B, ?> builder) {
-        super(builder);
+    EntityQueryParameter(EntityColumn<S, V> column, V value, ComparisonOperator operator) {
+        super(column, value, operator);
     }
 }

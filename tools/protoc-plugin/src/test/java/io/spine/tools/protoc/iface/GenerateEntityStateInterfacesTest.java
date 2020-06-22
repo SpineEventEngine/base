@@ -22,7 +22,7 @@ package io.spine.tools.protoc.iface;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
-import io.spine.base.entity.EntityState;
+import io.spine.base.EntityState;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.EntityStateConfig;
@@ -112,6 +112,7 @@ class GenerateEntityStateInterfacesTest {
         return markEntityStatesAs(ClassName.of(className));
     }
 
+    @SuppressWarnings("rawtypes")   // due to the nature of {@code Some.class} in Java.
     private static GenerateEntityStateInterfaces
     markEntityStatesAs(Class<? extends EntityState> clazz) {
         return markEntityStatesAs(ClassName.of(clazz));

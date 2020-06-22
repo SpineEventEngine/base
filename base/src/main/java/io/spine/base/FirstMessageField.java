@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.entity;
+package io.spine.base;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.Primitives;
