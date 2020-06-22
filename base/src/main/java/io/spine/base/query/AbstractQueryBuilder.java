@@ -34,7 +34,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkPositive;
 
 /**
- * An astract base for the builders of {@link AbstractQuery} implementations.
+ * An abstract base for the builders of {@link AbstractQuery} implementations.
  *
  * @param <I>
  *         the type of identifiers of the records which are queried
