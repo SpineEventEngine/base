@@ -38,4 +38,17 @@ public final class RecordQuery<I, R extends Message>
     public RecordQuery(RecordQueryBuilder<I, R> builder) {
         super(builder);
     }
+
+    /**
+     * Creates a builder for this query.
+     *
+     * @param <I>
+     *         the type of record identifiers
+     * @param <R>
+     *         the type of the queried records
+     * @return a new instance of {@code RecordQueryBuilder}
+     */
+    public static <I, R extends Message> RecordQueryBuilder<I, R> newBuilder() {
+        return new RecordQueryBuilder<>();
+    }
 }
