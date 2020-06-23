@@ -78,21 +78,21 @@ abstract class AbstractQueryBuilder<I,
     /**
      * Returns the criterion for the record identifiers.
      */
-    IdParameter<I> id() {
+    public IdParameter<I> id() {
         return id;
     }
 
     /**
      * Returns the criteria for the record fields.
      */
-    ImmutableList<P> parameters() {
+    public ImmutableList<P> parameters() {
         return ImmutableList.copyOf(parameters);
     }
 
     /**
      * Returns the ordering directives to be applied to the resulting dataset.
      */
-    ImmutableList<OrderBy<?, R>> ordering() {
+    public ImmutableList<OrderBy<?, R>> ordering() {
         return ImmutableList.copyOf(ordering);
     }
 
@@ -101,14 +101,14 @@ abstract class AbstractQueryBuilder<I,
      *
      * <p>Returns {@code null} if the limit is not set.
      */
-    @Nullable Integer limit() {
+    public @Nullable Integer limit() {
         return limit;
     }
 
     /**
      * Returns the field mask to be applied to each of the resulting records.
      */
-    @Nullable FieldMask mask() {
+    public @Nullable FieldMask mask() {
         return mask;
     }
 
@@ -162,7 +162,7 @@ abstract class AbstractQueryBuilder<I,
      * Adds a parameter by which the records are to be queried.
      */
     @CanIgnoreReturnValue
-    B addParameter(P parameter) {
+    public B addParameter(P parameter) {
         checkNotNull(parameter);
         parameters.add(parameter);
         return thisRef();
@@ -171,7 +171,7 @@ abstract class AbstractQueryBuilder<I,
     /**
      * Specifies the criterion for the record identifers.
      */
-    B setIdParameter(IdParameter<I> value) {
+    public B setIdParameter(IdParameter<I> value) {
         id = checkNotNull(value);
         return thisRef();
     }
