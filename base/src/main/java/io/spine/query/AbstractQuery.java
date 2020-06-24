@@ -55,7 +55,7 @@ public abstract class AbstractQuery<I, R extends Message, P extends QueryParamet
      * A common contract for the constructors of {@code AbstractQuery} implementations.
      */
     AbstractQuery(AbstractQueryBuilder<I, R, P, ?, ?> builder) {
-        this.id = builder.id();
+        this.id = builder.whichIds();
         this.parameters = builder.parameters();
         this.ordering = builder.ordering();
         this.mask = builder.mask();

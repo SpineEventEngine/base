@@ -78,7 +78,7 @@ abstract class AbstractQueryBuilder<I,
     /**
      * Returns the criterion for the record identifiers.
      */
-    public IdParameter<I> id() {
+    public IdParameter<I> whichIds() {
         return id;
     }
 
@@ -151,7 +151,7 @@ abstract class AbstractQueryBuilder<I,
      *         the direction of ordering
      */
     @CanIgnoreReturnValue
-    public final B orderBy(RecordColumn<R, ?> column, Direction direction) {
+    final B orderBy(RecordColumn<R, ?> column, Direction direction) {
         checkNotNull(column);
         checkNotNull(direction);
         ordering.add(new OrderBy<>(column, direction));
@@ -162,7 +162,7 @@ abstract class AbstractQueryBuilder<I,
      * Adds a parameter by which the records are to be queried.
      */
     @CanIgnoreReturnValue
-    public B addParameter(P parameter) {
+    B addParameter(P parameter) {
         checkNotNull(parameter);
         parameters.add(parameter);
         return thisRef();
@@ -171,7 +171,7 @@ abstract class AbstractQueryBuilder<I,
     /**
      * Specifies the criterion for the record identifers.
      */
-    public B setIdParameter(IdParameter<I> value) {
+    B setIdParameter(IdParameter<I> value) {
         id = checkNotNull(value);
         return thisRef();
     }

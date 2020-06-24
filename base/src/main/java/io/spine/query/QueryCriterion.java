@@ -20,7 +20,7 @@
 
 package io.spine.query;
 
-import io.spine.base.EntityState;
+import com.google.protobuf.Message;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.query.ComparisonOperator.EQUALS;
@@ -31,21 +31,14 @@ import static io.spine.query.ComparisonOperator.LESS_THAN;
 import static io.spine.query.ComparisonOperator.NOT_EQUALS;
 
 /**
- * An expression which sets the value to compare for the {@link EntityColumn} in scope of
- * a {@link EntityQueryBuilder} when building an {@link EntityQuery}.
- *
- * @param <S>
- *         the type of entity state
- * @param <V>
- *         the type of the column values for this criterion
- * @param <B>
- *         the type of the builder in scope of which this criterion exists
+ * Expression which sets some restriction to the value of a record column when querying the records.
  */
-public class QueryCriterion<S extends EntityState<?>,
-                            V,
-                            B extends EntityQueryBuilder<?, S, B, ?>> {
+abstract class QueryCriterion<R extends Message,
+                              V,
+                              C extends RecordColumn<R, V>,
+                              B extends AbstractQueryBuilder<?, ?, ?, B, ?>> {
 
-    private final EntityColumn<S, V> column;
+    private final C column;
     private final B builder;
 
     /**
@@ -54,102 +47,103 @@ public class QueryCriterion<S extends EntityState<?>,
      * @param column
      *         the column which actual value to use later in querying
      * @param builder
-     *         the builder of an {@link EntityQuery} in scope of which the criterion is created
+     *         the builder of an query in scope of which the criterion is created
      */
-    public QueryCriterion(EntityColumn<S, V> column, B builder) {
+    protected QueryCriterion(C column, B builder) {
         this.column = column;
         this.builder = builder;
     }
 
     /**
-     * Appends an associated {@link EntityQueryBuilder} with a criterion
-     * checking that the value of the associated {@link EntityColumn} equals to the one provided.
+     * Creates a new query parameter of the type specific for the query type being built.
+     *
+     * @param col
+     *         the record column queried
+     * @param value
+     *         the value to which actual column values will be compared
+     * @param operator
+     *         the comparison operator
+     * @return a new instance of the query parameter
+     */
+    protected abstract B addParameter(B builder, C col, V value, ComparisonOperator operator);
+
+    /**
+     * Appends an associated query builder with a criterion checking that the value
+     * of the associated column equals to the one provided.
      *
      * @param value
      *         the column value to use when querying
-     * @return the instance of {@code EntityQueryBuilder} associated with this criterion
+     * @return the instance of query builder associated with this criterion
      */
     public B is(V value) {
         checkNotNull(value);
-        EntityQueryParameter<S, V> parameter = new EntityQueryParameter<>(column, value, EQUALS);
-        return builder.addParameter(parameter);
+        return addParameter(builder, column, value, EQUALS);
     }
 
+
+
     /**
-     * Appends an associated {@link EntityQueryBuilder} with a criterion
-     * checking that the value of the associated {@link EntityColumn} does not equal
-     * to the one provided.
+     * Appends an associated query builder with a criterion checking that the value
+     * of the associated column does not equal to the one provided.
      *
      * @param value
      *         the column value to use when querying
-     * @return the instance of {@code EntityQueryBuilder} associated with this criterion
+     * @return the instance of query builder associated with this criterion
      */
     public B isNot(V value) {
         checkNotNull(value);
-        EntityQueryParameter<S, V> parameter = new EntityQueryParameter<>(column, value,
-                                                                          NOT_EQUALS);
-        return builder.addParameter(parameter);
+        return addParameter(builder, column, value, NOT_EQUALS);
     }
 
     /**
-     * Appends an associated {@link EntityQueryBuilder} with a criterion
-     * checking that the value of the associated {@link EntityColumn} is less than the one provided.
+     * Appends an associated query builder with a criterion checking that the value
+     * of the associated column is less than the one provided.
      *
      * @param value
      *         the column value to use when querying
-     * @return the instance of {@code EntityQueryBuilder} associated with this criterion
+     * @return the instance of query builder associated with this criterion
      */
     public B isLessThan(V value) {
         checkNotNull(value);
-        EntityQueryParameter<S, V> parameter = new EntityQueryParameter<>(column, value, LESS_THAN);
-        return builder.addParameter(parameter);
+        return addParameter(builder, column, value, LESS_THAN);
     }
 
     /**
-     * Appends an associated {@link EntityQueryBuilder} with a criterion
-     * checking that the value of the associated {@link EntityColumn} is less or equal
-     * to the one provided.
+     * Appends an associated query builder with a criterion checking that the value
+     * of the associated column is less or equal to the one provided.
      *
      * @param value
      *         the column value to use when querying
-     * @return the instance of {@code EntityQueryBuilder} associated with this criterion
+     * @return the instance of query builder associated with this criterion
      */
     public B isLessOrEqualTo(V value) {
         checkNotNull(value);
-        EntityQueryParameter<S, V> parameter = new EntityQueryParameter<>(column, value,
-                                                                          LESS_OR_EQUALS);
-        return builder.addParameter(parameter);
+        return addParameter(builder, column, value, LESS_OR_EQUALS);
     }
 
     /**
-     * Appends an associated {@link EntityQueryBuilder} with a criterion
-     * checking that the value of the associated {@link EntityColumn} is greater than
-     * the one provided.
+     * Appends an associated query builder with a criterion checking that the value
+     * of the associated column is greater than the one provided.
      *
      * @param value
      *         the column value to use when querying
-     * @return the instance of {@code EntityQueryBuilder} associated with this criterion
+     * @return the instance of query builder associated with this criterion
      */
     public B isGreaterThan(V value) {
         checkNotNull(value);
-        EntityQueryParameter<S, V> parameter = new EntityQueryParameter<>(column, value,
-                                                                          GREATER_THAN);
-        return builder.addParameter(parameter);
+        return addParameter(builder, column, value, GREATER_THAN);
     }
 
     /**
-     * Appends an associated {@link EntityQueryBuilder} with a criterion
-     * checking that the value of the associated {@link EntityColumn} is greater or equal
-     * to the one provided.
+     * Appends an associated query builder with a criterion checking that the value
+     * of the associated column is greater or equal to the one provided.
      *
      * @param value
      *         the column value to use when querying
-     * @return the instance of {@code EntityQueryBuilder} associated with this criterion
+     * @return the instance of query builder associated with this criterion
      */
     public B isGreaterOrEqualTo(V value) {
         checkNotNull(value);
-        EntityQueryParameter<S, V> parameter = new EntityQueryParameter<>(column, value,
-                                                                          GREATER_OR_EQUALS);
-        return builder.addParameter(parameter);
+        return addParameter(builder, column, value, GREATER_OR_EQUALS);
     }
 }

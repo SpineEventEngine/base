@@ -86,11 +86,13 @@ final class ColumnAccessor implements GeneratedMethodSpec {
      */
     private CodeBlock methodBody() {
         return CodeBlock.of(
-                "return new $T<>($S, $T.class, $T.class)",
+                "return new $T<>($S, $T.class, $T.class, $T::$L)",
                 EntityColumn.class,
                 columnName(),
                 entityStateName,
-                returningValueName
+                returningValueName,
+                entityStateName,
+                "get" + columnName().toCamelCase()
         );
     }
 

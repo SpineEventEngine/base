@@ -29,8 +29,8 @@ import io.spine.code.gen.java.GeneratedMethodSpec;
 import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.query.EntityColumn;
+import io.spine.query.EntityCriterion;
 import io.spine.query.EntityQueryBuilder;
-import io.spine.query.QueryCriterion;
 
 import static javax.lang.model.element.Modifier.PUBLIC;
 
@@ -78,7 +78,7 @@ final class QueryColumnSpec implements GeneratedMethodSpec {
      * Returns the name of the Java type of a column.
      */
     private ParameterizedTypeName queryCriterion() {
-        JavaPoetName result = JavaPoetName.of(QueryCriterion.class);
+        JavaPoetName result = JavaPoetName.of(EntityCriterion.class);
         ParameterizedTypeName parameterizedResult =
                 ParameterizedTypeName.get(result.className(),
                                           entityStateName, returningValueName, queryBuilderName);
@@ -91,7 +91,7 @@ final class QueryColumnSpec implements GeneratedMethodSpec {
     private CodeBlock methodBody() {
         return CodeBlock.of(
                 "return new $T<>(Column.$L(), this)",
-                QueryCriterion.class,
+                EntityCriterion.class,
                 columnName()
         );
     }

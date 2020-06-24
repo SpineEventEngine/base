@@ -20,40 +20,39 @@
 
 package io.spine.query;
 
-import com.google.protobuf.Message;
-import io.spine.annotation.SPI;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.value.StringTypeValue;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * A query for the records each represented by a particular Protobuf message.
- *
- * @param <I>
- *         the type of the record identifiers
- * @param <R>
- *         the type of the stored records
+ * The name of the column of the record.
  */
-@SPI
-public final class RecordQuery<I, R extends Message>
-        extends AbstractQuery<I, R, RecordQueryParameter<R, ?>> {
+public final class ColumnName extends StringTypeValue {
 
-    public RecordQuery(RecordQueryBuilder<I, R> builder) {
-        super(builder);
+    private static final long serialVersionUID = 0L;
+
+    private ColumnName(String value) {
+        super(value);
     }
 
     /**
-     * Creates a builder for this query.
+     * Creates new instance of {@code ColumnName}.
      *
-     * @param recordType
-     *         the type of records for which the query is built
-     * @param <I>
-     *         the type of record identifiers
-     * @param <R>
-     *         the type of the queried records
-     * @return a new instance of {@code RecordQueryBuilder}
+     * <p>Value passed must not be empty or blank.
      */
-    public static <I, R extends Message> RecordQueryBuilder<I, R> newBuilder(Class<R> recordType) {
-        checkNotNull(recordType);
-        return new RecordQueryBuilder<>(recordType);
+    public static ColumnName of(String value) {
+        checkNotEmptyOrBlank(value);
+        return new ColumnName(value);
+    }
+
+    /**
+     * Creates a new instance of {@code ColumnName} for the field, which declaration is passed.
+     */
+    public static ColumnName of(FieldDeclaration field) {
+        checkNotNull(field);
+        return of(field.name()
+                       .value());
     }
 }

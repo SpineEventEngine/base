@@ -21,39 +21,29 @@
 package io.spine.query;
 
 import com.google.protobuf.Message;
-import io.spine.annotation.SPI;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A query for the records each represented by a particular Protobuf message.
- *
- * @param <I>
- *         the type of the record identifiers
- * @param <R>
- *         the type of the stored records
+ * //TODO:2020-06-23:alex.tymchenko: get rid of `I`.
  */
-@SPI
-public final class RecordQuery<I, R extends Message>
-        extends AbstractQuery<I, R, RecordQueryParameter<R, ?>> {
-
-    public RecordQuery(RecordQueryBuilder<I, R> builder) {
-        super(builder);
-    }
+public final class RecordCriterion<I, R extends Message, V>
+        extends QueryCriterion<R, V, RecordColumn<R, V>, RecordQueryBuilder<I, R>>{
 
     /**
-     * Creates a builder for this query.
+     * Creates a new instance of {@code RecordCriterion}.
      *
-     * @param recordType
-     *         the type of records for which the query is built
-     * @param <I>
-     *         the type of record identifiers
-     * @param <R>
-     *         the type of the queried records
-     * @return a new instance of {@code RecordQueryBuilder}
+     * @param column
+     *         the column which actual value to use later in querying
+     * @param builder
      */
-    public static <I, R extends Message> RecordQueryBuilder<I, R> newBuilder(Class<R> recordType) {
-        checkNotNull(recordType);
-        return new RecordQueryBuilder<>(recordType);
+    public RecordCriterion(RecordColumn<R, V> column, RecordQueryBuilder<I, R> builder) {
+        super(column, builder);
+    }
+
+    @Override
+    protected RecordQueryBuilder<I, R> addParameter(RecordQueryBuilder<I, R> builder,
+                                                    RecordColumn<R, V> col, V value,
+                                                    ComparisonOperator operator) {
+        RecordQueryParameter<R, V> parameter = new RecordQueryParameter<>(col, value, operator);
+        return builder.addParameter(parameter);
     }
 }

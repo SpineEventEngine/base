@@ -39,9 +39,22 @@ public class RecordQueryBuilder<I, R extends Message>
                                      RecordQueryBuilder<I, R>,
                                      RecordQuery<I, R>> {
 
+    private final Class<R> recordType;
+
+    RecordQueryBuilder(Class<R> type) {
+        recordType = type;
+    }
+
     @Override
     protected RecordQueryBuilder<I, R> thisRef() {
         return this;
+    }
+
+    /**
+     * Returns the type of record for which the query is being built.
+     */
+    public Class<R> recordType() {
+        return recordType;
     }
 
     /**
@@ -50,5 +63,9 @@ public class RecordQueryBuilder<I, R extends Message>
     @Override
     public RecordQuery<I, R> build() {
         return new RecordQuery<>(this);
+    }
+
+    public <V> RecordCriterion<I, R, V> where(RecordColumn<R, V> column) {
+        return new RecordCriterion<>(column, this);
     }
 }

@@ -20,10 +20,13 @@
 
 package io.spine.query;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
-import io.spine.code.proto.FieldName;
 import io.spine.value.ValueHolder;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -37,24 +40,29 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @param <V>
  *         the type of the column values
  */
-public class RecordColumn<R extends Message, V> extends ValueHolder<FieldName> {
+public class RecordColumn<R extends Message, V> extends ValueHolder<ColumnName> {
 
     private static final long serialVersionUID = 0L;
 
     private final Class<R> messageType;
     private final Class<V> valueType;
+    private final Getter<R, V> getter;
 
-    protected RecordColumn(String fieldName, Class<R> messageType, Class<V> valueType) {
-        super(FieldName.of(fieldName));
-        this.messageType = checkNotNull(messageType, "The type of the record must be set.");
+    protected RecordColumn(String name,
+                           Class<R> recordType,
+                           Class<V> valueType,
+                           Getter<R, V> getter) {
+        super(ColumnName.of(name));
+        this.messageType = checkNotNull(recordType, "The type of the record must be set.");
         this.valueType = checkNotNull(valueType, "The type of the returning value must be set.");
+        this.getter = checkNotNull(getter);
     }
 
     /**
      * Returns the name of the corresponding Protobuf message field.
      */
     @Internal
-    public FieldName name() {
+    public ColumnName name() {
         return value();
     }
 
@@ -72,5 +80,28 @@ public class RecordColumn<R extends Message, V> extends ValueHolder<FieldName> {
     @Internal
     public Class<V> valueType() {
         return valueType;
+    }
+
+    /**
+     * Obtains the value of this column for the passed message record.
+     *
+     * @see Getter
+     */
+    public @Nullable V valueIn(R record) {
+        return getter.apply(record);
+    }
+
+    /**
+     * A method object serving to obtain the value of the column for some particular record of the
+     * matching type.
+     *
+     * @param <M>
+     *         the type of the message record
+     * @param <V>
+     *         the type of the column value
+     */
+    @Immutable
+    @FunctionalInterface
+    public interface Getter<R extends Message, V> extends Function<R, V> {
     }
 }

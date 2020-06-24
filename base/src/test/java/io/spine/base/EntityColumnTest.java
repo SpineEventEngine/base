@@ -46,11 +46,11 @@ class EntityColumnTest {
     void exposeColumnName() {
         String columnName = "some-column";
         Class<FakeEntityState> stateType = FakeEntityState.class;
-        Class<Timestamp> returningValueType = Timestamp.class;
+        Class<Timestamp> returningType = Timestamp.class;
         EntityColumn<FakeEntityState, Timestamp> column =
-                new EntityColumn<>(columnName, stateType, returningValueType);
+                new EntityColumn<>(columnName, stateType, returningType, (r) -> Time.currentTime());
         assertThat(column.name().value()).isEqualTo(columnName);
         assertThat(column.enclosingMessageType()).isEqualTo(stateType);
-        assertThat(column.valueType()).isEqualTo(returningValueType);
+        assertThat(column.valueType()).isEqualTo(returningType);
     }
 }
