@@ -20,30 +20,31 @@
 
 package io.spine.query;
 
+import io.spine.people.PersonName;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 @DisplayName("`RecordQueryBuilder` should")
 public class RecordQueryBuilderTest {
 
-//    public abstract static class RecordColumnDescriptor<R extends Message> {
-//
-//        protected <V> RecordColumn<R, V> column(String name, )
-//    }
-//
-//    public static class PersonNameColumns {
-//
-//        RecordColumn<PersonName, String> honorificPrefix() {
-//            return new RecordColumn<>("honorific_prefix", PersonName.class, String.class, getter);
-//        }
-//    }
-//
-//    @Test
-//    @DisplayName("create complex queries for Protobuf messages")
-//    void createComplexQueries() {
-//        RecordQuery<Object, PersonName> query =
-//                RecordQuery.newBuilder(PersonName.class)
-//                           .where(PersonName::getFamilyName)
-//                           .is("Mr.")
-//                           .build();
-//    }
+    static class PersonNameColumns {
+
+        private PersonNameColumns() {
+        }
+
+        static RecordColumn<PersonName, String> honorificPrefix() {
+            return new RecordColumn<>("honorific_prefix", String.class,
+                                      PersonName::getFamilyName);
+        }
+    }
+
+    @Test
+    @DisplayName("create complex queries for Protobuf messages")
+    void createComplexQueries() {
+        RecordQuery<Object, PersonName> query =
+                RecordQuery.newBuilder(PersonName.class)
+                           .where(PersonNameColumns.honorificPrefix())
+                           .is("Mr.")
+                           .build();
+    }
 }

@@ -73,10 +73,7 @@ public final class EntityColumn<S extends EntityState<?>, V> extends RecordColum
 
     private static final long serialVersionUID = 0L;
 
-    public EntityColumn(String columnName,
-                        Class<S> entityStateType,
-                        Class<V> valueType,
-                        Getter<S, V> getter) {
-        super(columnName, entityStateType, valueType, getter);
+    public EntityColumn(String columnName, Class<V> valueType, Getter<S, V> getter) {
+        super(columnName, valueType, getter);
     }
 }
