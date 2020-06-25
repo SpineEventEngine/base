@@ -31,7 +31,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @param <V>
  *         type of message column values to which this parameter refers
  */
-public abstract class QueryParameter<C extends RecordColumn<?, V>, V> {
+public abstract class QueryParameter<C extends Column<?, V>, V> {
 
     private final C column;
     private final V value;

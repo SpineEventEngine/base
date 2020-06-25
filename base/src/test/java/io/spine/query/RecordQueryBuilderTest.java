@@ -47,4 +47,14 @@ public class RecordQueryBuilderTest {
                            .is("Mr.")
                            .build();
     }
+
+    @Test
+    @DisplayName("create `EntityQuery` instances")
+    void createEntityQueries() {
+        RecordQuery<Object, PersonName> query =
+                RecordQuery.newBuilder(PersonName.class)
+                           .where(PersonNameColumns.honorificPrefix())
+                           .is("Mr.")
+                           .build();
+    }
 }

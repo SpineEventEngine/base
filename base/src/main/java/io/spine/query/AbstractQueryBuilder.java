@@ -57,6 +57,8 @@ abstract class AbstractQueryBuilder<I,
 
     private final List<P> parameters = new ArrayList<>();
 
+    private final List<CustomQueryParameter<?, ?>> customParameters = new ArrayList<>();
+
     private final List<OrderBy<?, R>> ordering = new ArrayList<>();
 
     @MonotonicNonNull
@@ -151,7 +153,7 @@ abstract class AbstractQueryBuilder<I,
      *         the direction of ordering
      */
     @CanIgnoreReturnValue
-    final B orderBy(RecordColumn<R, ?> column, Direction direction) {
+    public final B orderBy(RecordColumn<R, ?> column, Direction direction) {
         checkNotNull(column);
         checkNotNull(direction);
         ordering.add(new OrderBy<>(column, direction));
@@ -173,6 +175,12 @@ abstract class AbstractQueryBuilder<I,
      */
     B setIdParameter(IdParameter<I> value) {
         id = checkNotNull(value);
+        return thisRef();
+    }
+
+    public B addCustomParameter(CustomQueryParameter<?, ?> parameter) {
+        checkNotNull(parameter);
+        customParameters.add(parameter);
         return thisRef();
     }
 }

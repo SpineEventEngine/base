@@ -18,37 +18,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.query;
 
-import com.google.common.testing.NullPointerTester;
-import com.google.protobuf.Timestamp;
-import io.spine.base.given.FakeEntityState;
-import io.spine.query.EntityColumn;
+import io.spine.query.given.Lifecycle;
+import io.spine.tools.query.Project;
+import io.spine.tools.query.ProjectView;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 
-@DisplayName("`EntityColumn` should")
-class EntityColumnTest {
+@DisplayName("`EntityQueryBuilder` should")
+class EntityQueryBuilderTest {
 
+    @DisplayName("create `EntityQuery` instances")
     @Test
-    @DisplayName(NOT_ACCEPT_NULLS)
-    void passNullToleranceCheck() {
-        new NullPointerTester()
-                .setDefault(String.class, "non-empty-column-name")
-                .testAllPublicConstructors(EntityColumn.class);
-    }
-
-    @Test
-    @DisplayName("expose the its attributes")
-    void exposeColumnName() {
-        String columnName = "some-column";
-        Class<Timestamp> returningType = Timestamp.class;
-        EntityColumn<FakeEntityState, Timestamp> column =
-                new EntityColumn<>(columnName, returningType, (r) -> Time.currentTime());
-        assertThat(column.name().value()).isEqualTo(columnName);
-        assertThat(column.type()).isEqualTo(returningType);
+    void createEntityQueries() {
+        ProjectView.Query query =
+                ProjectView.newQuery()
+                           .lifecycle((b) -> Lifecycle.ARCHIVED.column()
+                                                               .with(b)
+                                                               .is(true))
+                           .status()
+                           .is(Project.Status.STARTED)
+                           .build();
+        assertThat(query).isNotNull();
     }
 }
