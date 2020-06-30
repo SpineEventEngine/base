@@ -180,7 +180,7 @@ abstract class AbstractQueryBuilder<I,
         return thisRef();
     }
 
-    public final  B addCustomParameter(CustomQueryParameter<?, ?> parameter) {
+    public final B addCustomParameter(CustomQueryParameter<?, ?> parameter) {
         checkNotNull(parameter);
         currentPredicate.addCustom(parameter);
         return thisRef();
@@ -188,8 +188,8 @@ abstract class AbstractQueryBuilder<I,
 
     @SafeVarargs
     @SuppressWarnings("ReturnValueIgnored")     // `Either` values are applied independently.
-    public final B either(Either<B> ...parameters) {
-        if(!currentPredicate.isEmpty()) {
+    public final B either(Either<B>... parameters) {
+        if (currentPredicate.hasParams()) {
             predicates.add(currentPredicate.build());
         }
 

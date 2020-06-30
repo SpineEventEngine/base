@@ -136,15 +136,15 @@ public final class Predicate<P extends QueryParameter<?, ?>> {
         /**
          * Tells if there is at least one parameter added.
          */
-        boolean isEmpty() {
-            return parameters.isEmpty() && customParameters.isEmpty();
+        boolean hasParams() {
+            return !parameters.isEmpty() || !customParameters.isEmpty();
         }
 
         /**
          * Builds a new instance of a {@code Predicate} based on the data in this {@code Builder}.
          */
         Predicate<P> build() {
-            checkState(!isEmpty(),
+            checkState(hasParams(),
                        "Query predicate must have at least one query parameter.");
             return new Predicate<>(this);
         }
