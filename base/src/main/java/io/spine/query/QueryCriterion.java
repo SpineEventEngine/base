@@ -49,7 +49,7 @@ abstract class QueryCriterion<R extends Message,
      * @param builder
      *         the builder of an query in scope of which the criterion is created
      */
-    protected QueryCriterion(C column, B builder) {
+    QueryCriterion(C column, B builder) {
         this.column = column;
         this.builder = builder;
     }
