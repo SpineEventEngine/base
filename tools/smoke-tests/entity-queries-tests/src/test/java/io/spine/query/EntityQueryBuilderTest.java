@@ -37,10 +37,9 @@ class EntityQueryBuilderTest {
         ProjectView.Query query =
                 ProjectView.newQuery()
                            .lifecycle((b) -> Lifecycle.ARCHIVED.column()
-                                                               .with(b)
+                                                               .in(b)
                                                                .is(true))
-                           .status()
-                           .is(Project.Status.STARTED)
+                           .status().is(Project.Status.STARTED)
                            .build();
         assertThat(query).isNotNull();
     }

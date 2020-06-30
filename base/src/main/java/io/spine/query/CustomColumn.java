@@ -50,7 +50,7 @@ public abstract class CustomColumn<R, V> implements Column<R, V> {
      * @return a new criterion allowing to specify the desired value of this column when querying
      */
     public <B extends AbstractQueryBuilder<?, ?, ?, B, ?>> CustomCriterion<R, V, B>
-    with(B builder) {
+    in(B builder) {
         return new CustomCriterion<>(this, builder);
     }
 }
