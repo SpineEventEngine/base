@@ -20,26 +20,26 @@
 
 package io.spine.query.given;
 
+import io.spine.query.ColumnName;
 import io.spine.query.CustomColumn;
 
 /**
- * Custom columns which define entity lifecycle.
- *
- * <p>Used in the smoke testing of entity query builders.
+ * A column defined as a custom column for querying and storage.
  */
-public enum Lifecycle {
+public class DeletedColumn extends CustomColumn<EntityWithLifecycle, Boolean> {
 
-    ARCHIVED(new ArchivedColumn()),
-
-    DELETED(new ArchivedColumn());
-
-    private final CustomColumn<?, Boolean> column;
-
-    Lifecycle(CustomColumn<?, Boolean> column) {
-        this.column = column;
+    @Override
+    public ColumnName name() {
+        return ColumnName.of("deleted");
     }
 
-    public CustomColumn<?, Boolean> column() {
-        return column;
+    @Override
+    public Class<Boolean> type() {
+        return Boolean.class;
+    }
+
+    @Override
+    public Boolean valueIn(EntityWithLifecycle source) {
+        return source.isDeleted();
     }
 }

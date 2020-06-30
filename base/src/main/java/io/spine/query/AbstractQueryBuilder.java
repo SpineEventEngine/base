@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.query.LogicalOperator.AND;
+import static io.spine.query.LogicalOperator.OR;
 import static io.spine.util.Preconditions2.checkPositive;
 
 /**
@@ -55,9 +57,9 @@ abstract class AbstractQueryBuilder<I,
 
     private IdParameter<I> id = IdParameter.empty();
 
-    private final List<P> parameters = new ArrayList<>();
+    private final List<Predicate<P>> predicates = new ArrayList<>();
 
-    private final List<CustomQueryParameter<?, ?>> customParameters = new ArrayList<>();
+    private Predicate.Builder<P> currentPredicate = Predicate.newBuilder(AND);
 
     private final List<OrderBy<?, R>> ordering = new ArrayList<>();
 
@@ -85,10 +87,10 @@ abstract class AbstractQueryBuilder<I,
     }
 
     /**
-     * Returns the criteria for the record fields.
+     * Returns the predicates for the record fields.
      */
-    public ImmutableList<P> parameters() {
-        return ImmutableList.copyOf(parameters);
+    public ImmutableList<Predicate<P>> predicates() {
+        return ImmutableList.copyOf(predicates);
     }
 
     /**
@@ -164,23 +166,36 @@ abstract class AbstractQueryBuilder<I,
      * Adds a parameter by which the records are to be queried.
      */
     @CanIgnoreReturnValue
-    B addParameter(P parameter) {
+    final B addParameter(P parameter) {
         checkNotNull(parameter);
-        parameters.add(parameter);
+        currentPredicate.add(parameter);
         return thisRef();
     }
 
     /**
      * Specifies the criterion for the record identifers.
      */
-    B setIdParameter(IdParameter<I> value) {
+    final B setIdParameter(IdParameter<I> value) {
         id = checkNotNull(value);
         return thisRef();
     }
 
-    public B addCustomParameter(CustomQueryParameter<?, ?> parameter) {
+    public final  B addCustomParameter(CustomQueryParameter<?, ?> parameter) {
         checkNotNull(parameter);
-        customParameters.add(parameter);
+        currentPredicate.addCustom(parameter);
+        return thisRef();
+    }
+
+    @SafeVarargs
+    public final B either(Either<B>... parameters) {
+        predicates.add(currentPredicate.build());
+
+        currentPredicate = Predicate.newBuilder(OR);
+        for (Either<B> parameter : parameters) {
+            parameter.apply(thisRef());
+        }
+        predicates.add(currentPredicate.build());
+        currentPredicate = Predicate.newBuilder(AND);
         return thisRef();
     }
 }

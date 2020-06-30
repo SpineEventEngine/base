@@ -18,28 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.query.given;
-
-import io.spine.query.CustomColumn;
+package io.spine.query;
 
 /**
- * Custom columns which define entity lifecycle.
- *
- * <p>Used in the smoke testing of entity query builders.
+ * Logical operators used in {@linkplain AbstractQuery querying}.
  */
-public enum Lifecycle {
-
-    ARCHIVED(new ArchivedColumn()),
-
-    DELETED(new ArchivedColumn());
-
-    private final CustomColumn<?, Boolean> column;
-
-    Lifecycle(CustomColumn<?, Boolean> column) {
-        this.column = column;
-    }
-
-    public CustomColumn<?, Boolean> column() {
-        return column;
-    }
+public enum LogicalOperator {
+    AND,
+    OR
 }

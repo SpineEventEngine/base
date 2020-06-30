@@ -20,13 +20,15 @@
 
 package io.spine.query;
 
-import io.spine.query.given.Lifecycle;
 import io.spine.tools.query.Project;
+import io.spine.tools.query.ProjectName;
 import io.spine.tools.query.ProjectView;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.query.given.Lifecycle.ARCHIVED;
+import static io.spine.query.given.Lifecycle.DELETED;
 
 @DisplayName("`EntityQueryBuilder` should")
 class EntityQueryBuilderTest {
@@ -34,12 +36,25 @@ class EntityQueryBuilderTest {
     @DisplayName("create `EntityQuery` instances")
     @Test
     void createEntityQueries() {
+        ProjectName empty = ProjectName.getDefaultInstance();
+        Either<ProjectView.QueryBuilder> startedMoreThanMonthAgo =
+                b -> b.daysSinceStarted()
+                      .isGreaterThan(30);
+        Either<ProjectView.QueryBuilder> isDone =
+                b -> b.status()
+                      .is(Project.Status.DONE);
+        Either<ProjectView.QueryBuilder> isDeleted =
+                b -> b.lifecycle((builder) -> DELETED.column()
+                                                     .in(builder)
+                                                     .is(true));
         ProjectView.Query query =
                 ProjectView.newQuery()
-                           .lifecycle((b) -> Lifecycle.ARCHIVED.column()
-                                                               .in(b)
-                                                               .is(true))
-                           .status().is(Project.Status.STARTED)
+                           .lifecycle((b) -> ARCHIVED.column()
+                                                     .in(b)
+                                                     .is(false))
+                           .either(startedMoreThanMonthAgo, isDone, isDeleted)
+                           .projectName()
+                           .isNot(empty)
                            .build();
         assertThat(query).isNotNull();
     }

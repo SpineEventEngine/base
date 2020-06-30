@@ -18,14 +18,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.query.given;
+package io.spine.query;
+
+import com.google.errorprone.annotations.Immutable;
+
+import java.util.function.Function;
 
 /**
- * A marker interface for entities which may be archived.
- *
- * <p>For tests only.
+ * Lambda serving to fill the current predicate {@linkplain AbstractQueryBuilder query builders}
+ * with the parameters joined in {@linkplain LogicalOperator#OR disjunction}.
  */
-public interface ArchivableEntity {
-
-    boolean isArchived();
+@FunctionalInterface
+@Immutable
+public interface Either<B extends AbstractQueryBuilder<?, ?, ?, ?, ?>>
+        extends Function<B, B> {
 }

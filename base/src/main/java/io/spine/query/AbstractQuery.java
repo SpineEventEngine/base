@@ -46,13 +46,13 @@ public abstract class AbstractQuery<I, R extends Message, P extends QueryParamet
     private final IdParameter<I> id;
 
     /**
-     * Values of the record parameters, against which the actual record values are compared
-     * when querying.
+     * Predicates, being the group of the record parameters, against which the actual record values
+     * are compared when querying.
      *
-     * <p>The record matches the query if and only if each query parameter matches.
-     * I.e. each parameter is evaluated in conjunction with the evaluation of other params.
+     * <p>The evaluation is done in a conjunction mode. I.e. the record matches the query
+     * if and only if it matches each predicate.
      */
-    private final ImmutableList<P> parameters;
+    private final ImmutableList<Predicate<P>> predicates;
 
     /**
      * List of ordering directives which define the order of records in the query results.
@@ -85,7 +85,7 @@ public abstract class AbstractQuery<I, R extends Message, P extends QueryParamet
      */
     AbstractQuery(AbstractQueryBuilder<I, R, P, ?, ?> builder) {
         this.id = builder.whichIds();
-        this.parameters = builder.parameters();
+        this.predicates = builder.predicates();
         this.ordering = builder.ordering();
         this.mask = builder.mask();
         limit = ensureLimit(builder.limit());
@@ -110,10 +110,10 @@ public abstract class AbstractQuery<I, R extends Message, P extends QueryParamet
     }
 
     /**
-     * Returns the parameters defining the criteria for the record fields.
+     * Returns the predicates defining the criteria for the record fields.
      */
-    public final ImmutableList<P> parameters() {
-        return parameters;
+    public final ImmutableList<Predicate<P>> predicates() {
+        return predicates;
     }
 
     /**

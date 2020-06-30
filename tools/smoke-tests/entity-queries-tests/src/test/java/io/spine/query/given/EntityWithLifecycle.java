@@ -20,26 +20,15 @@
 
 package io.spine.query.given;
 
-import io.spine.query.CustomColumn;
-
 /**
- * Custom columns which define entity lifecycle.
+ * A marker interface for entities which may be archived or deleted.
  *
- * <p>Used in the smoke testing of entity query builders.
+ * <p>For tests only.
  */
-public enum Lifecycle {
+@SuppressWarnings("InterfaceNeverImplemented")  // Used in the record column declaration.
+public interface EntityWithLifecycle {
 
-    ARCHIVED(new ArchivedColumn()),
+    boolean isArchived();
 
-    DELETED(new ArchivedColumn());
-
-    private final CustomColumn<?, Boolean> column;
-
-    Lifecycle(CustomColumn<?, Boolean> column) {
-        this.column = column;
-    }
-
-    public CustomColumn<?, Boolean> column() {
-        return column;
-    }
+    boolean isDeleted();
 }
