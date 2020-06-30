@@ -187,8 +187,11 @@ abstract class AbstractQueryBuilder<I,
     }
 
     @SafeVarargs
-    public final B either(Either<B>... parameters) {
-        predicates.add(currentPredicate.build());
+    @SuppressWarnings("ReturnValueIgnored")     // `Either` values are applied independently.
+    public final B either(Either<B> ...parameters) {
+        if(!currentPredicate.isEmpty()) {
+            predicates.add(currentPredicate.build());
+        }
 
         currentPredicate = Predicate.newBuilder(OR);
         for (Either<B> parameter : parameters) {
