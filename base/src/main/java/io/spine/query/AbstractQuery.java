@@ -40,14 +40,43 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public abstract class AbstractQuery<I, R extends Message, P extends QueryParameter<?, ?>> {
 
+    /**
+     * The criteria put on the identifiers of the queried records.
+     */
     private final IdParameter<I> id;
 
+    /**
+     * Values of the record parameters, against which the actual record values are compared
+     * when querying.
+     *
+     * <p>The record matches the query if and only if each query parameter matches.
+     * I.e. each parameter is evaluated in conjunction with the evaluation of other params.
+     */
     private final ImmutableList<P> parameters;
 
+    /**
+     * List of ordering directives which define the order of records in the query results.
+     *
+     * <p>Directives are applied one by one, starting with the first one. The second one
+     * and all consecutive directives specify the order of records, which are considered
+     * equal by the previous {@code OrderBy} directives.
+     */
     private final ImmutableList<OrderBy<?, R>> ordering;
 
+    /**
+     * The maximum number of records in the query results.
+     *
+     * <p>If not set, all matching records are returned.
+     *
+     * <p>This field may only be used if at least one {@link OrderBy ordering directive} is set.
+     */
     private final @Nullable Integer limit;
 
+    /**
+     * Defines which fields are returned for the matching records.
+     *
+     * <p>If not set, the records are returned as-is.
+     */
     @MonotonicNonNull
     private final @Nullable FieldMask mask;
 
