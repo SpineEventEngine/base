@@ -31,13 +31,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @param <V>
  *         type of message column values to which this parameter refers
  */
-public abstract class QueryParameter<C extends Column<?, V>, V> {
+public abstract class SubjectParameter<C extends Column<?, V>, V> {
 
     private final C column;
     private final V value;
     private final ComparisonOperator operator;
 
-    protected QueryParameter(C column, V value, ComparisonOperator operator) {
+    protected SubjectParameter(C column, V value, ComparisonOperator operator) {
         this.column = checkNotNull(column);
         this.value = checkNotNull(value);
         this.operator = checkNotNull(operator);

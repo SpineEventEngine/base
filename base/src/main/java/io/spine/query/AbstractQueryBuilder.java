@@ -43,7 +43,7 @@ import static io.spine.util.Preconditions2.checkPositive;
  * @param <R>
  *         the type of queried records
  * @param <P>
- *         the type of query parameters to use when composing the query
+ *         the type of subject parameters to use when composing the query
  * @param <B>
  *         the type of the {@code AbstractQueryBuilder} implementation
  * @param <Q>
@@ -51,7 +51,7 @@ import static io.spine.util.Preconditions2.checkPositive;
  */
 abstract class AbstractQueryBuilder<I,
                                     R extends Message,
-                                    P extends QueryParameter<?, ?>,
+                                    P extends SubjectParameter<?, ?>,
                                     B extends AbstractQueryBuilder<I, R, P, B, Q>,
                                     Q extends AbstractQuery<I, R, ?>> {
 
@@ -180,7 +180,7 @@ abstract class AbstractQueryBuilder<I,
         return thisRef();
     }
 
-    public final B addCustomParameter(CustomQueryParameter<?, ?> parameter) {
+    public final B addCustomParameter(CustomSubjectParameter<?, ?> parameter) {
         checkNotNull(parameter);
         currentPredicate.addCustom(parameter);
         return thisRef();

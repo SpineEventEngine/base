@@ -35,7 +35,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @SPI
 public final class RecordQuery<I, R extends Message>
-        extends AbstractQuery<I, R, RecordQueryParameter<R, ?>> {
+        extends AbstractQuery<I, R, RecordSubjectParameter<R, ?>> {
 
     public RecordQuery(RecordQueryBuilder<I, R> builder) {
         super(builder);

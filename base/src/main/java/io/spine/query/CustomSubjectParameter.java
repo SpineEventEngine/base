@@ -20,20 +20,29 @@
 
 package io.spine.query;
 
-import com.google.protobuf.Message;
-import io.spine.annotation.SPI;
-
 /**
- * A parameter of a {@link RecordQuery}.
+ * A subject parameter, which defines the condition for something different than a declared field
+ * of a record or an {@link io.spine.base.EntityState EntityState}.
  *
- * @param <V>
- *         the type of the record field value to use in querying
+ * <p>In some cases, stored records or entities include {@linkplain CustomColumn custom columns},
+ * which hold the properties not directly belonging to the record declaration. In order to include
+ * such a column into a {@link Subject} definition, a {@code CustomQueryParameter} is used.
+ *
+ * @see CustomColumn
  */
-@SPI
-public final class RecordQueryParameter<R extends Message, V>
-        extends QueryParameter<RecordColumn<R, V>, V> {
+final class CustomSubjectParameter<S, V> extends SubjectParameter<Column<S, V>, V> {
 
-    public RecordQueryParameter(RecordColumn<R, V> column, V value, ComparisonOperator operator) {
+    /**
+     * Creates a new instance of the parameter.
+     *
+     * @param column
+     *         column to use in the query
+     * @param value
+     *         the value against which the actual column values will be compared when querying
+     * @param operator
+     *         the comparison operator
+     */
+    CustomSubjectParameter(CustomColumn<S, V> column, V value, ComparisonOperator operator) {
         super(column, value, operator);
     }
 }

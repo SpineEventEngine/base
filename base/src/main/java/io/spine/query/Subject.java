@@ -20,41 +20,45 @@
 
 package io.spine.query;
 
+import com.google.common.collect.ImmutableList;
+
 /**
- * Defines how the queried records are compared against the desired parameter values.
+ * Set of criteria for the objects obtained via querying or subscription.
  *
- * @see AbstractQuery
- * @see SubjectParameter
+ * <p>Subjects are typically stored records or entities.
  */
-public enum ComparisonOperator {
+public final class Subject<I, P extends SubjectParameter<?, ?>> {
 
     /**
-     * The actual value must be equal to the value of the subject parameter.
+     * The criteria put on the identifiers of the object of interest.
      */
-    EQUALS,
+    private final IdParameter<I> id;
 
     /**
-     * The actual value must be different from the value of the subject parameter.
+     * Predicates, being the group of the parameters, against which the actual values
+     * of target object fields are compared when querying.
+     *
+     * <p>The evaluation is done in a conjunction mode. I.e. the object matches the subject
+     * if it matches each predicate.
      */
-    NOT_EQUALS,
+    private final ImmutableList<Predicate<P>> predicates;
+
+    public Subject(IdParameter<I> id, ImmutableList<Predicate<P>> predicates) {
+        this.id = id;
+        this.predicates = predicates;
+    }
 
     /**
-     * The actual value must be less than the value of the subject parameter.
+     * Returns the criteria put on the identifiers of matched objects.
      */
-    LESS_THAN,
+    public IdParameter<I> id() {
+        return id;
+    }
 
     /**
-     * The actual value must be less or equal to the value of the subject parameter.
+     * Returns the predicates for the fields of matched objects.
      */
-    LESS_OR_EQUALS,
-
-    /**
-     * The actual value must be greater than the value of the subject parameter.
-     */
-    GREATER_THAN,
-
-    /**
-     * The actual value must be greater or equal to the value of the subject parameter.
-     */
-    GREATER_OR_EQUALS
+    public ImmutableList<Predicate<P>> predicates() {
+        return predicates;
+    }
 }

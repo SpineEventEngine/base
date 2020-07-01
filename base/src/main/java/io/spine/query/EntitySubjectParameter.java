@@ -30,8 +30,8 @@ import io.spine.base.EntityState;
  * @param <V>
  *         the type of the entity column values
  */
-public final class EntityQueryParameter<S extends EntityState<?>, V>
-        extends QueryParameter<EntityColumn<S, V>, V> {
+public final class EntitySubjectParameter<S extends EntityState<?>, V>
+        extends SubjectParameter<EntityColumn<S, V>, V> {
 
     /**
      * Creates an instance of {@code QueryParameter} targeting entities whose column value
@@ -44,7 +44,7 @@ public final class EntityQueryParameter<S extends EntityState<?>, V>
      * @param operator
      *         the operator to use when comparing the actual column value to the provided one
      */
-    EntityQueryParameter(EntityColumn<S, V> column, V value, ComparisonOperator operator) {
+    EntitySubjectParameter(EntityColumn<S, V> column, V value, ComparisonOperator operator) {
         super(column, value, operator);
     }
 }

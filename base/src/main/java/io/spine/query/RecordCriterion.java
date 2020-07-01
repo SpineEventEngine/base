@@ -43,7 +43,7 @@ public final class RecordCriterion<I, R extends Message, V>
     protected RecordQueryBuilder<I, R> addParameter(RecordQueryBuilder<I, R> builder,
                                                     RecordColumn<R, V> col, V value,
                                                     ComparisonOperator operator) {
-        RecordQueryParameter<R, V> parameter = new RecordQueryParameter<>(col, value, operator);
+        RecordSubjectParameter<R, V> parameter = new RecordSubjectParameter<>(col, value, operator);
         return builder.addParameter(parameter);
     }
 }

@@ -29,13 +29,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * Joins the {@linkplain QueryParameter query parameters} with
+ * Joins the {@linkplain SubjectParameter subject parameters} with
  * {@linkplain LogicalOperator logical operators}.
  *
  * @param <P>
  *         the type of query parameters used in the predicate
  */
-public final class Predicate<P extends QueryParameter<?, ?>> {
+public final class Predicate<P extends SubjectParameter<?, ?>> {
 
     /**
      * Defines whether the parameters are evaluated in conjunction or disjunction with each other.
@@ -52,7 +52,7 @@ public final class Predicate<P extends QueryParameter<?, ?>> {
      * The list of parameters, each joined with the rest of parameters
      * with the same logical operator.
      */
-    private final ImmutableList<CustomQueryParameter<?, ?>> customParameters;
+    private final ImmutableList<CustomSubjectParameter<?, ?>> customParameters;
 
     /**
      * Creates a new {@code Predicate}.
@@ -69,7 +69,7 @@ public final class Predicate<P extends QueryParameter<?, ?>> {
      * @param <P>
      *         the type of query parameters used in the predicate
      */
-    static <P extends QueryParameter<?, ?>> Builder<P> newBuilder(LogicalOperator operator) {
+    static <P extends SubjectParameter<?, ?>> Builder<P> newBuilder(LogicalOperator operator) {
         return new Builder<>(operator);
     }
 
@@ -90,18 +90,18 @@ public final class Predicate<P extends QueryParameter<?, ?>> {
     /**
      * Returns the list of custom parameters of this {@code Predicate}.
      */
-    public ImmutableList<CustomQueryParameter<?, ?>> customParameters() {
+    public ImmutableList<CustomSubjectParameter<?, ?>> customParameters() {
         return customParameters;
     }
 
     /**
      * Builds {@link Predicate} instances.
      */
-    static final class Builder<P extends QueryParameter<?, ?>> {
+    static final class Builder<P extends SubjectParameter<?, ?>> {
 
         private final LogicalOperator operator;
         private final List<P> parameters = new ArrayList<>();
-        private final List<CustomQueryParameter<?, ?>> customParameters = new ArrayList<>();
+        private final List<CustomSubjectParameter<?, ?>> customParameters = new ArrayList<>();
 
         /**
          * Does not allow to instantiate this class directly.
@@ -127,7 +127,7 @@ public final class Predicate<P extends QueryParameter<?, ?>> {
         /**
          * Adds a parameter, which targets some custom or computed property of the record.
          */
-        Builder<P> addCustom(CustomQueryParameter<?, ?> parameter) {
+        Builder<P> addCustom(CustomSubjectParameter<?, ?> parameter) {
             checkNotNull(parameter);
             customParameters.add(parameter);
             return this;
@@ -145,7 +145,7 @@ public final class Predicate<P extends QueryParameter<?, ?>> {
          */
         Predicate<P> build() {
             checkState(hasParams(),
-                       "Query predicate must have at least one query parameter.");
+                       "Query predicate must have at least one subject parameter.");
             return new Predicate<>(this);
         }
     }

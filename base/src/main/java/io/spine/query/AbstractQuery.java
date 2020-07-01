@@ -36,23 +36,14 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @param <R>
  *         the type of records
  * @param <P>
- *         the type of query parameters used in a particular implementation
+ *         the type of subject parameters used in a particular implementation
  */
-public abstract class AbstractQuery<I, R extends Message, P extends QueryParameter<?, ?>> {
+public abstract class AbstractQuery<I, R extends Message, P extends SubjectParameter<?, ?>> {
 
     /**
-     * The criteria put on the identifiers of the queried records.
+     * Set of criteria defining the subject of querying.
      */
-    private final IdParameter<I> id;
-
-    /**
-     * Predicates, being the group of the record parameters, against which the actual record values
-     * are compared when querying.
-     *
-     * <p>The evaluation is done in a conjunction mode. I.e. the record matches the query
-     * if and only if it matches each predicate.
-     */
-    private final ImmutableList<Predicate<P>> predicates;
+    private final Subject<I, P> subject;
 
     /**
      * List of ordering directives which define the order of records in the query results.
@@ -84,8 +75,7 @@ public abstract class AbstractQuery<I, R extends Message, P extends QueryParamet
      * A common contract for the constructors of {@code AbstractQuery} implementations.
      */
     AbstractQuery(AbstractQueryBuilder<I, R, P, ?, ?> builder) {
-        this.id = builder.whichIds();
-        this.predicates = builder.predicates();
+        this.subject = new Subject<>(builder.whichIds(), builder.predicates());
         this.ordering = builder.ordering();
         this.mask = builder.mask();
         limit = ensureLimit(builder.limit());
@@ -103,17 +93,10 @@ public abstract class AbstractQuery<I, R extends Message, P extends QueryParamet
     }
 
     /**
-     * Returns the criterion set for the record identifier.
+     * Returns the subject of querying.
      */
-    public final IdParameter<I> id() {
-        return id;
-    }
-
-    /**
-     * Returns the predicates defining the criteria for the record fields.
-     */
-    public final ImmutableList<Predicate<P>> predicates() {
-        return predicates;
+    public final Subject<I, P> subject() {
+        return subject;
     }
 
     /**

@@ -55,7 +55,7 @@ abstract class QueryCriterion<R extends Message,
     }
 
     /**
-     * Creates a new query parameter of the type specific for the query type being built.
+     * Creates a new subject parameter of the type specific for the query type being built.
      *
      * @param col
      *         the record column queried
@@ -63,7 +63,7 @@ abstract class QueryCriterion<R extends Message,
      *         the value to which actual column values will be compared
      * @param operator
      *         the comparison operator
-     * @return a new instance of the query parameter
+     * @return a new instance of the subject parameter
      */
     protected abstract B addParameter(B builder, C col, V value, ComparisonOperator operator);
 
@@ -79,8 +79,6 @@ abstract class QueryCriterion<R extends Message,
         checkNotNull(value);
         return addParameter(builder, column, value, EQUALS);
     }
-
-
 
     /**
      * Appends an associated query builder with a criterion checking that the value

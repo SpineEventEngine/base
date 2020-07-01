@@ -21,12 +21,14 @@
 package io.spine.query;
 
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A parameter defining how to query records by the value of their identifiers.
  */
+@Immutable
 public final class IdParameter<I> {
 
     private final ImmutableList<I> values;

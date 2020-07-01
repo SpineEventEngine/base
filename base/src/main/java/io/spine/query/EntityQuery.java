@@ -37,7 +37,7 @@ import io.spine.base.EntityState;
 public abstract class EntityQuery<I,
                                   S extends EntityState<I>,
                                   B extends EntityQueryBuilder<I, S, B, ?>>
-        extends AbstractQuery<I, S, EntityQueryParameter<S, ?>> {
+        extends AbstractQuery<I, S, EntitySubjectParameter<S, ?>> {
 
     /**
      * A common constructor contract for all {@code EntityQuery} implementations.

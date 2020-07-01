@@ -30,14 +30,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.query.ComparisonOperator.EQUALS;
 
 /**
- * Allows to specify the values for the {@linkplain CustomQueryParameter}s.
+ * Allows to specify the values for the {@linkplain CustomSubjectParameter}s.
  */
 @SPI
 public final class CustomCriterion<S, V, B extends AbstractQueryBuilder<?, ?, ?, B, ?>>
         implements Supplier<B> {
 
     private final B builder;
-    private final Column<S, V> column;
+    private final CustomColumn<S, V> column;
 
     private @MonotonicNonNull V value = null;
     private @MonotonicNonNull ComparisonOperator operator = null;
@@ -46,18 +46,18 @@ public final class CustomCriterion<S, V, B extends AbstractQueryBuilder<?, ?, ?,
      * Creates a new instance of {@code CustomCriterion}.
      *
      * @param column
-     *         the column for which the {@link CustomQueryParameter} should be set
+     *         the column for which the {@link CustomSubjectParameter} should be set
      * @param builder
      *         the builder in scope of which this criterion should exist
      */
-    public CustomCriterion(Column<S, V> column, B builder) {
+    CustomCriterion(CustomColumn<S, V> column, B builder) {
         this.column = column;
         this.builder = builder;
     }
 
     /**
      * Appends the {@code QueryBuilder} associated with this criterion with
-     * the {@linkplain CustomQueryParameter custom query parameter} based on the specified
+     * the {@linkplain CustomSubjectParameter custom subject parameter} based on the specified
      * column and value set by the user.
      *
      * @return the instance of associated query builder, for chaining
@@ -67,7 +67,7 @@ public final class CustomCriterion<S, V, B extends AbstractQueryBuilder<?, ?, ?,
     public B get() {
         checkNotNull(value);
         checkNotNull(operator);
-        CustomQueryParameter<S, V> param = new CustomQueryParameter<>(column, value, operator);
+        CustomSubjectParameter<S, V> param = new CustomSubjectParameter<>(column, value, operator);
         return builder.addCustomParameter(param);
     }
 

@@ -33,9 +33,8 @@ import io.spine.annotation.SPI;
  * <p>To store the data like this, end-users would need to provide their own {@link Column}
  * implementation.
  *
- * @see CustomCriterion which allows to specify the parameter values for the custom columns
- * @see AbstractQueryBuilder#addCustomParameter(CustomQueryParameter) on how to add the custom
- *         parameters to the query
+ * @see CustomCriterion
+ * @see AbstractQueryBuilder#addCustomParameter(CustomSubjectParameter)
  */
 @SPI
 public abstract class CustomColumn<R, V> implements Column<R, V> {

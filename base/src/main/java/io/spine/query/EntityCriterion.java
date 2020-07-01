@@ -56,7 +56,7 @@ public final class EntityCriterion<S extends EntityState<?>,
                              EntityColumn<S, V> col,
                              V value,
                              ComparisonOperator operator) {
-        EntityQueryParameter<S, V> parameter = new EntityQueryParameter<>(col, value, operator);
+        EntitySubjectParameter<S, V> parameter = new EntitySubjectParameter<>(col, value, operator);
         return builder.addParameter(parameter);
     }
 }

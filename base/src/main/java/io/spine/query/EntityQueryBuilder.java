@@ -42,7 +42,7 @@ public abstract class EntityQueryBuilder<I,
                                          S extends EntityState<I>,
                                          B extends EntityQueryBuilder<I, S, B, Q>,
                                          Q extends EntityQuery<I, S, B>>
-        extends AbstractQueryBuilder<I, S, EntityQueryParameter<S, ?>, B, Q> {
+        extends AbstractQueryBuilder<I, S, EntitySubjectParameter<S, ?>, B, Q> {
 
     //TODO:2020-06-25:alex.tymchenko: document.
     public B lifecycle(LifecycleLambda<I, S, B, Q> value) {
