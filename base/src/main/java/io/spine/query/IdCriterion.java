@@ -20,8 +20,10 @@
 
 package io.spine.query;
 
+import com.google.common.collect.ImmutableSet;
+
 /**
- * An expression which sets the values of record identifies to be used in {@link AbstractQuery}.
+ * An expression which sets the values of record identifiers to be used in {@link AbstractQuery}.
  *
  * <p>Exists in a context of a corresponding
  * {@linkplain AbstractQueryBuilder query builder} instance.
@@ -44,8 +46,22 @@ public final class IdCriterion<I, B extends AbstractQueryBuilder<I, ?, ?, B, ?>>
         return builder.setIdParameter(parameter);
     }
 
+    /**
+     * Creates an instance of this criterion with the passed identifier values.
+     */
     @SafeVarargs
     public final B in(I... values) {
-        return builder.setIdParameter(IdParameter.in(values));
+        ImmutableSet<I> asSet = ImmutableSet.copyOf(values);
+        IdParameter<I> parameter = IdParameter.in(asSet);
+        return builder.setIdParameter(parameter);
+    }
+
+    /**
+     * Creates an instance of this criterion with the passed identifier values.
+     */
+    public final B with(Iterable<I> values) {
+        ImmutableSet<I> asList = ImmutableSet.copyOf(values);
+        IdParameter<I> parameter = IdParameter.in(asList);
+        return builder.setIdParameter(parameter);
     }
 }

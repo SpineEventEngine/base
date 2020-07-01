@@ -20,42 +20,51 @@
 
 package io.spine.query;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A parameter defining how to query records by the value of their identifiers.
+ * Defines the values of {@link Subject} subject identifiers.
+ *
+ * @param <I>
+ *         the type of the identifers
  */
 @Immutable(containerOf = "I")
 public final class IdParameter<I> {
 
-    private final ImmutableList<I> values;
+    private final ImmutableSet<I> values;
 
-    private IdParameter(ImmutableList<I> values) {
+    private IdParameter(ImmutableSet<I> values) {
         this.values = values;
     }
 
-    public ImmutableList<I> values() {
+    public ImmutableSet<I> values() {
         return values;
     }
 
     public static <I> IdParameter<I> empty() {
-        return new IdParameter<>(ImmutableList.of());
+        return new IdParameter<>(ImmutableSet.of());
     }
 
     public static <I> IdParameter<I> is(I value) {
         checkNotNull(value);
-        return new IdParameter<>(ImmutableList.of(value));
+        return new IdParameter<>(ImmutableSet.of(value));
     }
 
-    @SafeVarargs
-    public static <I> IdParameter<I> in(I ...values) {
+    /**
+     * Creates an instance of {@code IdParameter} with the identifier values restricted
+     * to the passed one.
+     *
+     * @param values
+     *         the identifier values to use
+     * @param <I>
+     *         the type of the identifier values
+     * @return a new instance of this type
+     */
+    public static <I> IdParameter<I> in(ImmutableSet<I> values) {
         checkNotNull(values);
-        for (I value : values) {
-            checkNotNull(value);
-        }
-        return new IdParameter<>(ImmutableList.copyOf(values));
+        return new IdParameter<>(values);
     }
 }
