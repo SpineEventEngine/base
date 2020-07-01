@@ -46,7 +46,7 @@ public class RecordColumn<R extends Message, V>
     private final Class<V> valueType;
     private final Getter<R, V> getter;
 
-    protected RecordColumn(String name, Class<V> valueType, Getter<R, V> getter) {
+    public RecordColumn(String name, Class<V> valueType, Getter<R, V> getter) {
         super(ColumnName.of(name));
         this.valueType = checkNotNull(valueType, "The type of the returning value must be set.");
         this.getter = checkNotNull(getter);
