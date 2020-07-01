@@ -28,7 +28,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A parameter defining how to query records by the value of their identifiers.
  */
-@Immutable
+@Immutable(containerOf = "I")
 public final class IdParameter<I> {
 
     private final ImmutableList<I> values;
