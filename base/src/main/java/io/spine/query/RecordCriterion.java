@@ -26,7 +26,7 @@ import com.google.protobuf.Message;
  * //TODO:2020-06-23:alex.tymchenko: get rid of `I`.
  */
 public final class RecordCriterion<I, R extends Message, V>
-        extends QueryCriterion<R, V, RecordColumn<R, V>, RecordQueryBuilder<I, R>>{
+        extends QueryCriterion<R, V, RecordColumn<R, V>, RecordQueryBuilder<I, R>> {
 
     /**
      * Creates a new instance of {@code RecordCriterion}.
@@ -34,6 +34,7 @@ public final class RecordCriterion<I, R extends Message, V>
      * @param column
      *         the column which actual value to use later in querying
      * @param builder
+     *         the builder in scope of which this criterion exists
      */
     public RecordCriterion(RecordColumn<R, V> column, RecordQueryBuilder<I, R> builder) {
         super(column, builder);

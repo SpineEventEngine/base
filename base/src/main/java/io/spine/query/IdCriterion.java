@@ -21,16 +21,17 @@
 package io.spine.query;
 
 /**
- * An expression which sets the values of entity identifies to be used in {@link EntityQuery}.
+ * An expression which sets the values of record identifies to be used in {@link AbstractQuery}.
  *
- * <p>Exists in a context of a corresponding {@link EntityQueryBuilder} instance.
+ * <p>Exists in a context of a corresponding
+ * {@linkplain AbstractQueryBuilder query builder} instance.
  *
  * @param <I>
  *         the type of identifiers
  * @param <B>
- *         the type of the {@link EntityQueryBuilder} implementation
+ *         the type of the {@link AbstractQueryBuilder} implementation
  */
-public final class IdCriterion<I, B extends EntityQueryBuilder<I, ?, B, ?>> {
+public final class IdCriterion<I, B extends AbstractQueryBuilder<I, ?, ?, B, ?>> {
 
     private final B builder;
 

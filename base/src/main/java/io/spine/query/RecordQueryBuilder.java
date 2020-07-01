@@ -65,7 +65,25 @@ public class RecordQueryBuilder<I, R extends Message>
         return new RecordQuery<>(this);
     }
 
+    /**
+     * Creates a criterion for a particular record column.
+     *
+     * @param column
+     *         the record column which will be queried
+     * @param <V>
+     *         the type of the record column values
+     * @return a new criterion for the given column
+     */
     public <V> RecordCriterion<I, R, V> where(RecordColumn<R, V> column) {
         return new RecordCriterion<>(column, this);
+    }
+
+    /**
+     * Creates a criterion for the identifier values of the queried records.
+     *
+     * @return a new instance of a criterion
+     */
+    public IdCriterion<I, RecordQueryBuilder<I, R>> id() {
+        return new IdCriterion<>(thisRef());
     }
 }

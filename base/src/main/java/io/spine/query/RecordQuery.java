@@ -28,16 +28,20 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A query for the records each represented by a particular Protobuf message.
  *
+ * <p>If the Protobuf message defines the state of an entity, {@link EntityQuery} serves querying
+ * better than this type.
+ *
  * @param <I>
  *         the type of the record identifiers
  * @param <R>
  *         the type of the stored records
+ * @see EntityQuery
  */
 @SPI
 public final class RecordQuery<I, R extends Message>
         extends AbstractQuery<I, R, RecordSubjectParameter<R, ?>> {
 
-    public RecordQuery(RecordQueryBuilder<I, R> builder) {
+    RecordQuery(RecordQueryBuilder<I, R> builder) {
         super(builder);
     }
 
