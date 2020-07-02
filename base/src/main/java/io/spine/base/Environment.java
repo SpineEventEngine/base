@@ -42,9 +42,9 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * Two environment types exist out of the box:
  *
  * <ul>
- *     <li><em>{@link Tests}</em> is detected if the current call stack has a reference to the unit
- *         testing framework.
- *
+ *     <li><em>{@link Tests}</em> is detected if the current call stack has a reference to
+ *     a {@linkplain Tests#KNOWN_TESTING_FRAMEWORKS unit testing framework}.
+
  *     <li><em>{@link Production}</em> is set in all other cases.
  * </ul>
  *
@@ -147,7 +147,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 public final class Environment {
 
     private static final ImmutableList<EnvironmentType> BASE_TYPES =
-            ImmutableList.of(new Tests(), new Production());
+            ImmutableList.of(Tests.type(), Production.type());
 
     private static final Environment INSTANCE = new Environment();
 
@@ -172,18 +172,18 @@ public final class Environment {
      * When trying to determine which environment type is enabled, the user-defined types are
      * checked first, in the first-registered to last-registered order.
      *
-     * @param environmentType
+     * @param type
      *         a user-defined environment type
      * @return this instance of {@code Environment}
      * @see Tests
      * @see Production
      */
     @CanIgnoreReturnValue
-    public Environment register(EnvironmentType environmentType) {
-        if (!knownEnvTypes.contains(environmentType)) {
+    public Environment register(EnvironmentType type) {
+        if (!knownEnvTypes.contains(type)) {
             knownEnvTypes = ImmutableList
                     .<EnvironmentType>builder()
-                    .add(environmentType)
+                    .add(type)
                     .addAll(INSTANCE.knownEnvTypes)
                     .build();
         }
@@ -282,7 +282,7 @@ public final class Environment {
      */
     @Deprecated
     public boolean isProduction() {
-        return !isTests();
+        return !is(Tests.class);
     }
 
     /**
@@ -335,7 +335,7 @@ public final class Environment {
     @VisibleForTesting
     public void setToTests() {
         this.currentEnvType = Tests.class;
-        Tests.enable();
+        TestsProperty.setTrue();
     }
 
     /**
@@ -349,20 +349,20 @@ public final class Environment {
     @VisibleForTesting
     public void setToProduction() {
         this.currentEnvType = Production.class;
-        Tests.clearTestingEnvVariable();
+        TestsProperty.clear();
     }
 
     /**
-     * Resets the instance and clears the {@link Tests#ENV_KEY_TESTS} variable.
+     * Resets the instance and clears the {@link TestsProperty}.
      *
-     * <p>Erases all registered environment types, leaving only {@code Tests} and {@code
-     * Production}.
+     * <p>Erases all registered environment types, leaving only {@code Tests} and
+     * {@code Production}.
      */
     @VisibleForTesting
     public void reset() {
         this.currentEnvType = null;
         this.knownEnvTypes = BASE_TYPES;
-        Tests.clearTestingEnvVariable();
+        TestsProperty.clear();
     }
 
     private Class<? extends EnvironmentType> cachedOrCalculated() {
