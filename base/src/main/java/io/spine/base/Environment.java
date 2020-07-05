@@ -37,7 +37,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 /**
  * Provides information about the environment (current platform used, etc.).
  *
- * <h1>Environment Type Detection</h1>
+ * <h1>Detecting the type of the environment</h1>
  *
  * <p>Current implementation allows to {@linkplain #type() obtain the type} of the current
  * environment, or to check whether current environment type {@linkplain #is(Class) matches
@@ -117,10 +117,9 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * If later it becomes logically inactive, e.g. the environment variable that's used to check the
  * environment type changes, {@code Environment} is still going to return the cached value. To
  * overwrite the value use {@link #setTo(EnvironmentType)}. Also, the value may be
- * {@linkplain #reset}.
- *
- * For example:
+ * {@linkplain #reset}. For example:
  * <pre>
+ *
  *     Environment environment = Environment.instance();
  *     EnvironmentType awsLambda = new AwsLambda();
  *     environment.register(awsLambda);
@@ -154,9 +153,25 @@ public final class Environment implements Logging {
 
     private static final Environment INSTANCE = new Environment();
 
+    /**
+     * The types the environment can be in.
+     */
     private ImmutableList<EnvironmentType> knownTypes;
-    private @Nullable Class<? extends EnvironmentType> currentType;
 
+    /**
+     * The type the environment is in.
+     *
+     * <p>If {@code null} the type will be {@linkplain #cachedOrCalculated() determined} among
+     * {@linkplain #knownTypes already known} types.
+     *
+     * @implNote This field is explicitly initialized to avoid the "non-initialized" warning
+     *         when queried for the first time.
+     */
+    private @Nullable Class<? extends EnvironmentType> currentType = null;
+
+    /**
+     * Creates a new instance with only {@linkplain #BASE_TYPES base known types}.
+     */
     private Environment() {
         this.knownTypes = BASE_TYPES;
     }
@@ -189,8 +204,8 @@ public final class Environment implements Logging {
                     .add(type)
                     .addAll(INSTANCE.knownTypes)
                     .build();
-            // Give the new type a chance to become the current when queried from
-            // cachedOrCalculated().
+            // Give the new type a chance to become the current when queried
+            // from `cachedOrCalculated()`.
             setCurrentType(null);
         }
         return this;
@@ -231,12 +246,13 @@ public final class Environment implements Logging {
     /**
      * Determines whether the current environment is the same as the specified one.
      *
-     * <p>If {@linkplain #register(EnvironmentType) custom env types have been registered},
-     * goes through them in the latest-registered to earliest-registered order.
+     * <p>If custom environment types have been {@linkplain #register(EnvironmentType) registered},
+     * the method goes through them in the latest-registered to earliest-registered order.
      * Then, checks {@link Tests} and {@link Production}.
      *
-     * <p>Please note that {@code is} follows assigment-compatibility:
+     * <p>Please note that this method follows assigment compatibility:
      * <pre>
+     *
      *     abstract class AppEngine extends EnvironmentType {
      *         ...
      *     }
@@ -255,15 +271,15 @@ public final class Environment implements Logging {
      * @return whether the current environment type matches the specified one
      */
     public boolean is(Class<? extends EnvironmentType> type) {
-        Class<? extends EnvironmentType> currentEnv = cachedOrCalculated();
-        boolean result = type.isAssignableFrom(currentEnv);
+        Class<? extends EnvironmentType> current = cachedOrCalculated();
+        boolean result = type.isAssignableFrom(current);
         return result;
     }
 
     /** Returns the type of the current environment. */
     public Class<? extends EnvironmentType> type() {
-        Class<? extends EnvironmentType> currentEnv = cachedOrCalculated();
-        return currentEnv;
+        Class<? extends EnvironmentType> current = cachedOrCalculated();
+        return current;
     }
 
     /**
@@ -358,20 +374,20 @@ public final class Environment implements Logging {
         TestsProperty.clear();
     }
 
-    private void setCurrentType(@Nullable Class<? extends EnvironmentType> currentType) {
+    private void setCurrentType(@Nullable Class<? extends EnvironmentType> newCurrent) {
         @Nullable Class<? extends EnvironmentType> previous = this.currentType;
-        this.currentType = currentType;
+        this.currentType = newCurrent;
         FluentLogger.Api info = _info();
         if (previous == null) {
-            if (currentType != null) {
-                info.log("`Environment` set to `%s`.", currentType.getName());
+            if (newCurrent != null) {
+                info.log("`Environment` set to `%s`.", newCurrent.getName());
             }
         } else {
-            if (previous.equals(currentType)) {
-                info.log("`Environment` stays `%s`.", currentType.getName());
+            if (previous.equals(newCurrent)) {
+                info.log("`Environment` stays `%s`.", newCurrent.getName());
             } else {
-                String newType = currentType != null
-                                 ? backtick(currentType.getName())
+                String newType = newCurrent != null
+                                 ? backtick(newCurrent.getName())
                                  : "undefined";
                 info.log("`Environment` turned from `%s` to %s.", previous.getName(), newType);
             }
