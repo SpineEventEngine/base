@@ -161,7 +161,7 @@ public final class Environment implements Logging {
     /**
      * The type the environment is in.
      *
-     * <p>If {@code null} the type will be {@linkplain #cachedOrCalculated() determined} among
+     * <p>If {@code null} the type will be {@linkplain #type() determined} among
      * {@linkplain #knownTypes already known} types.
      *
      * @implNote This field is explicitly initialized to avoid the "non-initialized" warning
@@ -271,15 +271,32 @@ public final class Environment implements Logging {
      * @return whether the current environment type matches the specified one
      */
     public boolean is(Class<? extends EnvironmentType> type) {
-        Class<? extends EnvironmentType> current = cachedOrCalculated();
+        Class<? extends EnvironmentType> current = type();
         boolean result = type.isAssignableFrom(current);
         return result;
     }
 
     /** Returns the type of the current environment. */
     public Class<? extends EnvironmentType> type() {
-        Class<? extends EnvironmentType> current = cachedOrCalculated();
-        return current;
+        Class<? extends EnvironmentType> result;
+        if (currentType == null) {
+            result = firstEnabled();
+            setCurrentType(result);
+        } else {
+            result = currentType;
+        }
+        return result;
+    }
+
+    private Class<? extends EnvironmentType> firstEnabled() {
+        EnvironmentType result =
+                knownTypes.stream()
+                          .filter(EnvironmentType::enabled)
+                          .findFirst()
+                          .orElseThrow(() -> newIllegalStateException(
+                                  "`Environment` could not find an active environment type."
+                          ));
+        return result.getClass();
     }
 
     /**
@@ -405,23 +422,5 @@ public final class Environment implements Logging {
         setCurrentType(null);
         this.knownTypes = BASE_TYPES;
         TestsProperty.clear();
-    }
-
-    private Class<? extends EnvironmentType> cachedOrCalculated() {
-        Class<? extends EnvironmentType> result = currentType != null
-                                                  ? currentType
-                                                  : firstEnabled();
-        setCurrentType(result);
-        return result;
-    }
-
-    private Class<? extends EnvironmentType> firstEnabled() {
-        for (EnvironmentType type : knownTypes) {
-            if (type.enabled()) {
-                return type.getClass();
-            }
-        }
-
-        throw newIllegalStateException("`Environment` could not find an active environment type.");
     }
 }
