@@ -47,7 +47,7 @@ public abstract class EnvironmentType {
     }
 
     /**
-     * Returns {@code true} of this and passed objects are of the same class,
+     * Returns {@code true} if this and passed objects are of the same class,
      * otherwise {@code false}.
      *
      * @implNote The derived classes are meant to emulate enums in the sense that all instances
