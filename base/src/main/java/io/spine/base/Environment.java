@@ -364,16 +364,16 @@ public final class Environment implements Logging {
         FluentLogger.Api info = _info();
         if (previous == null) {
             if (currentType != null) {
-                info.log("Environment set to `%s`.", currentType.getName());
+                info.log("`Environment` set to `%s`.", currentType.getName());
             }
         } else {
             if (previous.equals(currentType)) {
-                info.log("Environment stays `%s`.", currentType.getName());
+                info.log("`Environment` stays `%s`.", currentType.getName());
             } else {
                 String newType = currentType != null
                                  ? backtick(currentType.getName())
                                  : "undefined";
-                info.log("Environment turned from `%s` to %s.", previous.getName(), newType);
+                info.log("`Environment` turned from `%s` to %s.", previous.getName(), newType);
             }
         }
     }
