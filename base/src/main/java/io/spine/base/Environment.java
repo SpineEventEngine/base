@@ -151,17 +151,17 @@ public final class Environment {
 
     private static final Environment INSTANCE = new Environment();
 
-    private ImmutableList<EnvironmentType> knownEnvTypes;
-    private @Nullable Class<? extends EnvironmentType> currentEnvType;
+    private ImmutableList<EnvironmentType> knownTypes;
+    private @Nullable Class<? extends EnvironmentType> currentType;
 
     private Environment() {
-        this.knownEnvTypes = BASE_TYPES;
+        this.knownTypes = BASE_TYPES;
     }
 
     /** Creates a new instance with the copy of the state of the passed environment. */
     private Environment(Environment copy) {
-        this.knownEnvTypes = copy.knownEnvTypes;
-        this.currentEnvType = copy.currentEnvType;
+        this.knownTypes = copy.knownTypes;
+        this.currentType = copy.currentType;
     }
 
     /**
@@ -180,11 +180,11 @@ public final class Environment {
      */
     @CanIgnoreReturnValue
     public Environment register(EnvironmentType type) {
-        if (!knownEnvTypes.contains(type)) {
-            knownEnvTypes = ImmutableList
+        if (!knownTypes.contains(type)) {
+            knownTypes = ImmutableList
                     .<EnvironmentType>builder()
                     .add(type)
-                    .addAll(INSTANCE.knownEnvTypes)
+                    .addAll(INSTANCE.knownTypes)
                     .build();
         }
         return this;
@@ -293,8 +293,8 @@ public final class Environment {
     @VisibleForTesting
     public void restoreFrom(Environment copy) {
         // Make sure this matches the set of fields copied in the copy constructor.
-        this.knownEnvTypes = copy.knownEnvTypes;
-        this.currentEnvType = copy.currentEnvType;
+        this.knownTypes = copy.knownTypes;
+        this.currentType = copy.currentType;
     }
 
     /**
@@ -307,7 +307,7 @@ public final class Environment {
     public void setTo(EnvironmentType type) {
         checkNotNull(type);
         register(type);
-        this.currentEnvType = type.getClass();
+        this.currentType = type.getClass();
     }
 
     /**
@@ -321,7 +321,7 @@ public final class Environment {
     public void setTo(Class<? extends EnvironmentType> type) {
         checkNotNull(type);
         register(type);
-        this.currentEnvType = type;
+        this.currentType = type;
     }
 
     /**
@@ -334,7 +334,7 @@ public final class Environment {
     @Deprecated
     @VisibleForTesting
     public void setToTests() {
-        this.currentEnvType = Tests.class;
+        this.currentType = Tests.class;
         TestsProperty.setTrue();
     }
 
@@ -348,7 +348,7 @@ public final class Environment {
     @Deprecated
     @VisibleForTesting
     public void setToProduction() {
-        this.currentEnvType = Production.class;
+        this.currentType = Production.class;
         TestsProperty.clear();
     }
 
@@ -360,21 +360,21 @@ public final class Environment {
      */
     @VisibleForTesting
     public void reset() {
-        this.currentEnvType = null;
-        this.knownEnvTypes = BASE_TYPES;
+        this.currentType = null;
+        this.knownTypes = BASE_TYPES;
         TestsProperty.clear();
     }
 
     private Class<? extends EnvironmentType> cachedOrCalculated() {
-        Class<? extends EnvironmentType> result = currentEnvType != null
-                                                  ? currentEnvType
+        Class<? extends EnvironmentType> result = currentType != null
+                                                  ? currentType
                                                   : currentType();
-        this.currentEnvType = result;
+        this.currentType = result;
         return result;
     }
 
     private Class<? extends EnvironmentType> currentType() {
-        for (EnvironmentType type : knownEnvTypes) {
+        for (EnvironmentType type : knownTypes) {
             if (type.enabled()) {
                 return type.getClass();
             }
