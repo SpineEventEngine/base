@@ -22,13 +22,16 @@ package io.spine.base;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
+import io.spine.logging.Logging;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.reflect.Invokables.callParameterlessCtor;
+import static io.spine.string.Diags.backtick;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -144,7 +147,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * @see Production
  */
 @SPI
-public final class Environment {
+public final class Environment implements Logging {
 
     private static final ImmutableList<EnvironmentType> BASE_TYPES =
             ImmutableList.of(Tests.type(), Production.type());
@@ -161,7 +164,7 @@ public final class Environment {
     /** Creates a new instance with the copy of the state of the passed environment. */
     private Environment(Environment copy) {
         this.knownTypes = copy.knownTypes;
-        this.currentType = copy.currentType;
+        setCurrentType(copy.currentType);
     }
 
     /**
@@ -294,7 +297,7 @@ public final class Environment {
     public void restoreFrom(Environment copy) {
         // Make sure this matches the set of fields copied in the copy constructor.
         this.knownTypes = copy.knownTypes;
-        this.currentType = copy.currentType;
+        setCurrentType(copy.currentType);
     }
 
     /**
@@ -307,7 +310,7 @@ public final class Environment {
     public void setTo(EnvironmentType type) {
         checkNotNull(type);
         register(type);
-        this.currentType = type.getClass();
+        setCurrentType(type.getClass());
     }
 
     /**
@@ -321,7 +324,7 @@ public final class Environment {
     public void setTo(Class<? extends EnvironmentType> type) {
         checkNotNull(type);
         register(type);
-        this.currentType = type;
+        setCurrentType(type);
     }
 
     /**
@@ -334,7 +337,7 @@ public final class Environment {
     @Deprecated
     @VisibleForTesting
     public void setToTests() {
-        this.currentType = Tests.class;
+        setCurrentType(Tests.class);
         TestsProperty.setTrue();
     }
 
@@ -348,8 +351,24 @@ public final class Environment {
     @Deprecated
     @VisibleForTesting
     public void setToProduction() {
-        this.currentType = Production.class;
+        setCurrentType(Production.class);
         TestsProperty.clear();
+    }
+
+    private void setCurrentType(@Nullable Class<? extends EnvironmentType> currentType) {
+        @Nullable Class<? extends EnvironmentType> previous = this.currentType;
+        this.currentType = currentType;
+        FluentLogger.Api info = _info();
+        if (previous == null) {
+            if (currentType != null) {
+                info.log("Environment set to `%s`.", currentType.getName());
+            }
+        } else {
+            String newType = currentType != null
+                    ? backtick(currentType.getName())
+                    : "undefined";
+            info.log("Environment turned from `%s` to %s.", previous.getName(), newType);
+        }
     }
 
     /**
@@ -360,7 +379,7 @@ public final class Environment {
      */
     @VisibleForTesting
     public void reset() {
-        this.currentType = null;
+        setCurrentType(null);
         this.knownTypes = BASE_TYPES;
         TestsProperty.clear();
     }
@@ -368,12 +387,12 @@ public final class Environment {
     private Class<? extends EnvironmentType> cachedOrCalculated() {
         Class<? extends EnvironmentType> result = currentType != null
                                                   ? currentType
-                                                  : currentType();
-        this.currentType = result;
+                                                  : firstEnabled();
+        setCurrentType(result);
         return result;
     }
 
-    private Class<? extends EnvironmentType> currentType() {
+    private Class<? extends EnvironmentType> firstEnabled() {
         for (EnvironmentType type : knownTypes) {
             if (type.enabled()) {
                 return type.getClass();
