@@ -189,6 +189,9 @@ public final class Environment implements Logging {
                     .add(type)
                     .addAll(INSTANCE.knownTypes)
                     .build();
+            // Give the new type a chance to become the current when queried from
+            // cachedOrCalculated().
+            setCurrentType(null);
         }
         return this;
     }
