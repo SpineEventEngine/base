@@ -128,7 +128,7 @@ class EnvironmentTest {
         void environmentVarUnknownValue() {
             System.setProperty(TestsProperty.KEY, "neitherTrueNor1");
 
-            assertThat(environment.is(Tests.class)).isFalse();
+            assertThat(environment.is(Production.class)).isTrue();
         }
 
         @Test
