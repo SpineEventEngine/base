@@ -37,4 +37,30 @@ public abstract class EnvironmentType {
      * knowledge to determine the current environment.
      */
     protected abstract boolean enabled();
+
+    /**
+     * Returns the {@code hashCode()} of the class.
+     */
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    /**
+     * Returns {@code true} of this and passed objects are of the same class,
+     * otherwise {@code false}.
+     *
+     * @implNote The derived classes are meant to emulate enums in the sense that all instances
+     * of them are interchangeable. Therefore, we are interested only in the class information
+     * for the comparison.
+     */
+    @Override
+    @SuppressWarnings("EqualsGetClass") // see @implNote
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        boolean result = getClass().equals(obj.getClass());
+        return result;
+    }
 }
