@@ -62,7 +62,7 @@ public final class Tests extends EnvironmentType {
      * Verifies if the code currently runs under a unit testing framework.
      *
      * <p>The method returns {@code true} if {@linkplain #KNOWN_TESTING_FRAMEWORKS
-     * known testing framework packages}packages are discovered in the stacktrace.
+     * known testing framework packages} are discovered in the stacktrace.
      *
      * @return {@code true} if the code runs under a testing framework, {@code false} otherwise
      * @implNote In addition to checking the stack trace, this method checks the
