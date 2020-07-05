@@ -367,10 +367,14 @@ public final class Environment implements Logging {
                 info.log("Environment set to `%s`.", currentType.getName());
             }
         } else {
-            String newType = currentType != null
-                    ? backtick(currentType.getName())
-                    : "undefined";
-            info.log("Environment turned from `%s` to %s.", previous.getName(), newType);
+            if (previous.equals(currentType)) {
+                info.log("Environment stays `%s`.", currentType.getName());
+            } else {
+                String newType = currentType != null
+                                 ? backtick(currentType.getName())
+                                 : "undefined";
+                info.log("Environment turned from `%s` to %s.", previous.getName(), newType);
+            }
         }
     }
 
