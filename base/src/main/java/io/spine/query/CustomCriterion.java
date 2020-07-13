@@ -33,7 +33,7 @@ import static io.spine.query.ComparisonOperator.EQUALS;
  * Allows to specify the values for the {@linkplain CustomSubjectParameter}s.
  */
 @SPI
-public final class CustomCriterion<S, V, B extends AbstractQueryBuilder<?, ?, ?, B, ?>>
+public final class CustomCriterion<S, V, B extends QueryBuilder<?, ?, ?, B, ?>>
         implements Supplier<B> {
 
     private final B builder;

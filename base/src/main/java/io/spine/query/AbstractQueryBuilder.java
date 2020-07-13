@@ -147,8 +147,9 @@ abstract class AbstractQueryBuilder<I,
      *
      * @return this instance of query builder, for chaining
      */
+    @Override
     @CanIgnoreReturnValue
-    final B addParameter(P parameter) {
+    public final B addParameter(P parameter) {
         checkNotNull(parameter);
         currentPredicate.add(parameter);
         return thisRef();
@@ -159,7 +160,9 @@ abstract class AbstractQueryBuilder<I,
      *
      * @return this instance of query builder, for chaining
      */
-    final B addCustomParameter(CustomSubjectParameter<?, ?> parameter) {
+    @CanIgnoreReturnValue
+    @Override
+    public final B addCustomParameter(CustomSubjectParameter<?, ?> parameter) {
         checkNotNull(parameter);
         currentPredicate.addCustom(parameter);
         return thisRef();

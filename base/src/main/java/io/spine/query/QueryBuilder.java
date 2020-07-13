@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Message;
+import io.spine.annotation.Internal;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -123,4 +124,22 @@ public interface QueryBuilder<I,
      */
     @CanIgnoreReturnValue
     B orderBy(RecordColumn<R, ?> column, Direction direction);
+
+    /**
+     * Adds a parameter by which the records are to be queried.
+     *
+     * @return this instance of query builder, for chaining
+     */
+    @CanIgnoreReturnValue
+    @Internal
+    B addParameter(P parameter);
+
+    /**
+     * Adds a parameter for the {@link CustomColumn}.
+     *
+     * @return this instance of query builder, for chaining
+     */
+    @CanIgnoreReturnValue
+    @Internal
+    B addCustomParameter(CustomSubjectParameter<?, ?> parameter);
 }

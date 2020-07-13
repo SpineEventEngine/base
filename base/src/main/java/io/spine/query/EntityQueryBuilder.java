@@ -21,9 +21,6 @@
 package io.spine.query;
 
 import io.spine.base.EntityState;
-import jdk.nashorn.internal.ir.annotations.Immutable;
-
-import java.util.function.Function;
 
 /**
  * An abstract base for builders of an {@code EntityQuery} for a particular entity state type.
@@ -44,16 +41,19 @@ public abstract class EntityQueryBuilder<I,
                                          Q extends EntityQuery<I, S, B>>
         extends AbstractQueryBuilder<I, S, EntitySubjectParameter<S, ?>, B, Q> {
 
-    //TODO:2020-06-25:alex.tymchenko: document.
-    public B lifecycle(LifecycleLambda<I, S, B, Q> value) {
-        return value.apply(thisRef());
-    }
-
-    @FunctionalInterface
-    @Immutable
-    public interface LifecycleLambda<I,
-                                     S extends EntityState<I>,
-                                     B extends EntityQueryBuilder<I, S, B, Q>,
-                                     Q extends EntityQuery<I, S, B>> extends Function<B, B> {
+    /**
+     * Sets the value for the custom column.
+     *
+     * @param column
+     *         the custom column
+     * @param value
+     *         the value to use in querying
+     * @param <V>
+     *         the type of the column values
+     * @return this instance of builder for chaining
+     */
+    public final <V> B where(CustomColumn<?, V> column, V value) {
+        return column.in(thisRef())
+                     .is(value);
     }
 }

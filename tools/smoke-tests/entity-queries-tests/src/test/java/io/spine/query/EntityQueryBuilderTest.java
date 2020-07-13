@@ -44,16 +44,11 @@ class EntityQueryBuilderTest {
         Either<ProjectView.QueryBuilder> isDone =
                 b -> b.status()
                       .is(Project.Status.DONE);
-        Either<ProjectView.QueryBuilder> isDeleted =
-                b -> b.lifecycle((builder) -> DELETED.column()
-                                                     .in(builder)
-                                                     .is(true));
+        Either<ProjectView.QueryBuilder> isDeleted = b -> b.where(DELETED.column(), true);
         ProjectView.Query query =
                 ProjectView.newQuery()
                            .projectId().in(ProjectId.generate(), ProjectId.generate())
-                           .lifecycle((b) -> ARCHIVED.column()
-                                                     .in(b)
-                                                     .is(false))
+                           .where(ARCHIVED.column(), false)
                            .either(startedMoreThanMonthAgo, isDone, isDeleted)
                            .projectName()
                            .isNot(empty)
