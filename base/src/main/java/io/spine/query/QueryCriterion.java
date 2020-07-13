@@ -59,13 +59,13 @@ abstract class QueryCriterion<R extends Message,
      *
      * @param col
      *         the record column queried
-     * @param value
-     *         the value to which actual column values will be compared
      * @param operator
      *         the comparison operator
+     * @param value
+     *         the value to which actual column values will be compared
      * @return a new instance of the subject parameter
      */
-    protected abstract B addParameter(B builder, C col, V value, ComparisonOperator operator);
+    protected abstract B addParameter(B builder, C col, ComparisonOperator operator, V value);
 
     /**
      * Appends an associated query builder with a criterion checking that the value
@@ -77,7 +77,7 @@ abstract class QueryCriterion<R extends Message,
      */
     public B is(V value) {
         checkNotNull(value);
-        return addParameter(builder, column, value, EQUALS);
+        return addParameter(builder, column, EQUALS, value);
     }
 
     /**
@@ -90,7 +90,7 @@ abstract class QueryCriterion<R extends Message,
      */
     public B isNot(V value) {
         checkNotNull(value);
-        return addParameter(builder, column, value, NOT_EQUALS);
+        return addParameter(builder, column, NOT_EQUALS, value);
     }
 
     /**
@@ -103,7 +103,7 @@ abstract class QueryCriterion<R extends Message,
      */
     public B isLessThan(V value) {
         checkNotNull(value);
-        return addParameter(builder, column, value, LESS_THAN);
+        return addParameter(builder, column, LESS_THAN, value);
     }
 
     /**
@@ -116,7 +116,7 @@ abstract class QueryCriterion<R extends Message,
      */
     public B isLessOrEqualTo(V value) {
         checkNotNull(value);
-        return addParameter(builder, column, value, LESS_OR_EQUALS);
+        return addParameter(builder, column, LESS_OR_EQUALS, value);
     }
 
     /**
@@ -129,7 +129,7 @@ abstract class QueryCriterion<R extends Message,
      */
     public B isGreaterThan(V value) {
         checkNotNull(value);
-        return addParameter(builder, column, value, GREATER_THAN);
+        return addParameter(builder, column, GREATER_THAN, value);
     }
 
     /**
@@ -142,6 +142,6 @@ abstract class QueryCriterion<R extends Message,
      */
     public B isGreaterOrEqualTo(V value) {
         checkNotNull(value);
-        return addParameter(builder, column, value, GREATER_OR_EQUALS);
+        return addParameter(builder, column, GREATER_OR_EQUALS, value);
     }
 }

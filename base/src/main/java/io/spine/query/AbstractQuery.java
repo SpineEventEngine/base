@@ -38,7 +38,8 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @param <P>
  *         the type of subject parameters used in a particular implementation
  */
-public abstract class AbstractQuery<I, R extends Message, P extends SubjectParameter<?, ?>> {
+abstract class AbstractQuery<I, R extends Message, P extends SubjectParameter<?, ?>>
+        implements Query<I, R, P> {
 
     /**
      * Set of criteria defining the subject of querying.
@@ -77,8 +78,8 @@ public abstract class AbstractQuery<I, R extends Message, P extends SubjectParam
     AbstractQuery(AbstractQueryBuilder<I, R, P, ?, ?> builder) {
         this.subject = new Subject<>(builder.whichIds(), builder.predicates());
         this.ordering = builder.ordering();
-        this.mask = builder.mask();
-        limit = ensureLimit(builder.limit());
+        this.mask = builder.whichMask();
+        limit = ensureLimit(builder.whichLimit());
     }
 
     /**
@@ -92,38 +93,22 @@ public abstract class AbstractQuery<I, R extends Message, P extends SubjectParam
         return limit;
     }
 
-    /**
-     * Returns the subject of querying.
-     */
+    @Override
     public final Subject<I, P> subject() {
         return subject;
     }
 
-    /**
-     * Returns the ordering to be applied to the query results.
-     *
-     * <p>In case there are several fields to order by, the ordering directives are applied one
-     * by one starting from the first.
-     */
+    @Override
     public final ImmutableList<OrderBy<?, R>> ordering() {
         return ordering;
     }
 
-    /**
-     * Tells the maximum number of records to be returned as a query result.
-     *
-     * <p>If the limit is set, there must be at least one {@linkplain #ordering() ordering
-     * directive} specified.
-     *
-     * <p>If the limit is not set, returns {@code null}.
-     */
+    @Override
     public final @Nullable Integer limit() {
         return limit;
     }
 
-    /**
-     * Returns the field mask to be applied to each of the resulting records.
-     */
+    @Override
     public FieldMask mask() {
         return mask;
     }

@@ -33,7 +33,7 @@ import io.spine.annotation.SPI;
 public final class RecordSubjectParameter<R extends Message, V>
         extends SubjectParameter<RecordColumn<R, V>, V> {
 
-    public RecordSubjectParameter(RecordColumn<R, V> column, V value, ComparisonOperator operator) {
-        super(column, value, operator);
+    public RecordSubjectParameter(RecordColumn<R, V> column, ComparisonOperator operator, V value) {
+        super(column, operator, value);
     }
 }

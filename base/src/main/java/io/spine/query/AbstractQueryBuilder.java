@@ -45,15 +45,16 @@ import static io.spine.util.Preconditions2.checkPositive;
  * @param <P>
  *         the type of subject parameters to use when composing the query
  * @param <B>
- *         the type of the {@code AbstractQueryBuilder} implementation
+ *         the type of the {@code QueryBuilder} implementation
  * @param <Q>
- *         the type of {@code AbstractQuery} implementation
+ *         the type of {@code Query} implementation
  */
 abstract class AbstractQueryBuilder<I,
                                     R extends Message,
                                     P extends SubjectParameter<?, ?>,
-                                    B extends AbstractQueryBuilder<I, R, P, B, Q>,
-                                    Q extends AbstractQuery<I, R, ?>> {
+                                    B extends QueryBuilder<I, R, P, B, Q>,
+                                    Q extends Query<I, R, ?>>
+        implements QueryBuilder<I, R, P, B, Q> {
 
     private IdParameter<I> id = IdParameter.empty();
 
@@ -74,55 +75,32 @@ abstract class AbstractQueryBuilder<I,
      */
     protected abstract B thisRef();
 
-    /**
-     * Creates a new instance of the query on top of this builder.
-     */
-    public abstract Q build();
-
-    /**
-     * Returns the criterion for the record identifiers.
-     */
+    @Override
     public IdParameter<I> whichIds() {
         return id;
     }
 
-    /**
-     * Returns the predicates for the record fields.
-     */
+    @Override
     public ImmutableList<Predicate<P>> predicates() {
         return ImmutableList.copyOf(predicates);
     }
 
-    /**
-     * Returns the ordering directives to be applied to the resulting dataset.
-     */
+    @Override
     public ImmutableList<OrderBy<?, R>> ordering() {
         return ImmutableList.copyOf(ordering);
     }
 
-    /**
-     * Returns the maximum number of records in the resulting dataset.
-     *
-     * <p>Returns {@code null} if the limit is not set.
-     */
-    public @Nullable Integer limit() {
+    @Override
+    public @Nullable Integer whichLimit() {
         return limit;
     }
 
-    /**
-     * Returns the field mask to be applied to each of the resulting records.
-     */
-    public @Nullable FieldMask mask() {
+    @Override
+    public @Nullable FieldMask whichMask() {
         return mask;
     }
 
-    /**
-     * Sets the maximum number of records in the resulting dataset.
-     *
-     * <p>The expected value must be positive.
-     *
-     * <p>If this method is not called, the limit value remains unset.
-     */
+    @Override
     @CanIgnoreReturnValue
     public final B limit(int numberOfRecords) {
         checkPositive(numberOfRecords,
@@ -131,29 +109,14 @@ abstract class AbstractQueryBuilder<I,
         return thisRef();
     }
 
-    /**
-     * Sets the field mask to be applied to each of the resulting records.
-     *
-     * <p>If the mask is not set, the query results contain the records as-is.
-     */
+    @Override
     @CanIgnoreReturnValue
     public final B withMask(FieldMask mask) {
         this.mask = checkNotNull(mask);
         return thisRef();
     }
 
-    /**
-     * Adds an ordering directive.
-     *
-     * <p>Each call to this method adds another ordering directive. Directives are applied one
-     * after another, each following determining the order of records remained "equal" after
-     * the previous ordering.
-     *
-     * @param column
-     *         the field of the message by which the resulting set should be ordered
-     * @param direction
-     *         the direction of ordering
-     */
+    @Override
     @CanIgnoreReturnValue
     public final B orderBy(RecordColumn<R, ?> column, Direction direction) {
         checkNotNull(column);
@@ -162,30 +125,7 @@ abstract class AbstractQueryBuilder<I,
         return thisRef();
     }
 
-    /**
-     * Adds a parameter by which the records are to be queried.
-     */
-    @CanIgnoreReturnValue
-    final B addParameter(P parameter) {
-        checkNotNull(parameter);
-        currentPredicate.add(parameter);
-        return thisRef();
-    }
-
-    /**
-     * Specifies the criterion for the record identifers.
-     */
-    final B setIdParameter(IdParameter<I> value) {
-        id = checkNotNull(value);
-        return thisRef();
-    }
-
-    public final B addCustomParameter(CustomSubjectParameter<?, ?> parameter) {
-        checkNotNull(parameter);
-        currentPredicate.addCustom(parameter);
-        return thisRef();
-    }
-
+    @Override
     @SafeVarargs
     @SuppressWarnings("ReturnValueIgnored")     // `Either` values are applied independently.
     public final B either(Either<B>... parameters) {
@@ -199,6 +139,39 @@ abstract class AbstractQueryBuilder<I,
         }
         predicates.add(currentPredicate.build());
         currentPredicate = Predicate.newBuilder(AND);
+        return thisRef();
+    }
+
+    /**
+     * Adds a parameter by which the records are to be queried.
+     *
+     * @return this instance of query builder, for chaining
+     */
+    @CanIgnoreReturnValue
+    final B addParameter(P parameter) {
+        checkNotNull(parameter);
+        currentPredicate.add(parameter);
+        return thisRef();
+    }
+
+    /**
+     * Adds a parameter for the {@link CustomColumn}.
+     *
+     * @return this instance of query builder, for chaining
+     */
+    final B addCustomParameter(CustomSubjectParameter<?, ?> parameter) {
+        checkNotNull(parameter);
+        currentPredicate.addCustom(parameter);
+        return thisRef();
+    }
+
+    /**
+     * Sets the value of the identifier parameter.
+     *
+     * @return this instance of query builder, for chaining
+     */
+    final B setIdParameter(IdParameter<I> value) {
+        id = checkNotNull(value);
         return thisRef();
     }
 }

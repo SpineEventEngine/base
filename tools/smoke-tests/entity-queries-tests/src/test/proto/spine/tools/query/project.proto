@@ -31,7 +31,12 @@ option java_multiple_files = true;
 message ProjectView {
     option (entity).kind = PROJECTION;
 
-    ProjectId id = 1;
+    // The identifier of the project.
+    //
+    // This field is not named `id` to ensure that the code generation
+    // picks up the non-standard field name.
+    //
+    ProjectId project_id = 1;
 
     ProjectName project_name = 2 [(.column) = true];
 

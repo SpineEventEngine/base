@@ -21,6 +21,7 @@
 package io.spine.query;
 
 import io.spine.tools.query.Project;
+import io.spine.tools.query.ProjectId;
 import io.spine.tools.query.ProjectName;
 import io.spine.tools.query.ProjectView;
 import org.junit.jupiter.api.DisplayName;
@@ -49,6 +50,7 @@ class EntityQueryBuilderTest {
                                                      .is(true));
         ProjectView.Query query =
                 ProjectView.newQuery()
+                           .projectId().in(ProjectId.generate(), ProjectId.generate())
                            .lifecycle((b) -> ARCHIVED.column()
                                                      .in(b)
                                                      .is(false))

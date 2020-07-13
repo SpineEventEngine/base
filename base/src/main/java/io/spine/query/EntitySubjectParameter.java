@@ -45,6 +45,6 @@ public final class EntitySubjectParameter<S extends EntityState<?>, V>
      *         the operator to use when comparing the actual column value to the provided one
      */
     EntitySubjectParameter(EntityColumn<S, V> column, V value, ComparisonOperator operator) {
-        super(column, value, operator);
+        super(column, operator, value);
     }
 }

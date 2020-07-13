@@ -30,7 +30,7 @@ package io.spine.query;
  *
  * @see CustomColumn
  */
-final class CustomSubjectParameter<S, V> extends SubjectParameter<Column<S, V>, V> {
+public final class CustomSubjectParameter<S, V> extends SubjectParameter<Column<S, V>, V> {
 
     /**
      * Creates a new instance of the parameter.
@@ -43,6 +43,6 @@ final class CustomSubjectParameter<S, V> extends SubjectParameter<Column<S, V>, 
      *         the comparison operator
      */
     CustomSubjectParameter(CustomColumn<S, V> column, V value, ComparisonOperator operator) {
-        super(column, value, operator);
+        super(column, operator, value);
     }
 }

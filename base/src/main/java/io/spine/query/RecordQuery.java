@@ -41,8 +41,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class RecordQuery<I, R extends Message>
         extends AbstractQuery<I, R, RecordSubjectParameter<R, ?>> {
 
+    private final RecordQueryBuilder<I, R> builder;
+
+    /**
+     * Creates a new instance of {@code RecordQuery} on top of the passed builder.
+     */
     RecordQuery(RecordQueryBuilder<I, R> builder) {
         super(builder);
+        this.builder = builder;
     }
 
     /**
@@ -59,5 +65,12 @@ public final class RecordQuery<I, R extends Message>
     public static <I, R extends Message> RecordQueryBuilder<I, R> newBuilder(Class<R> recordType) {
         checkNotNull(recordType);
         return new RecordQueryBuilder<>(recordType);
+    }
+
+    /**
+     * Returns the builder on top of which this query has been created.
+     */
+    public final RecordQueryBuilder<I, R> toBuilder() {
+        return builder;
     }
 }

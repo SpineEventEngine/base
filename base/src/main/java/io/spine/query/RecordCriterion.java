@@ -41,10 +41,12 @@ public final class RecordCriterion<I, R extends Message, V>
     }
 
     @Override
-    protected RecordQueryBuilder<I, R> addParameter(RecordQueryBuilder<I, R> builder,
-                                                    RecordColumn<R, V> col, V value,
-                                                    ComparisonOperator operator) {
-        RecordSubjectParameter<R, V> parameter = new RecordSubjectParameter<>(col, value, operator);
+    protected RecordQueryBuilder<I, R>
+    addParameter(RecordQueryBuilder<I, R> builder,
+                 RecordColumn<R, V> col,
+                 ComparisonOperator operator,
+                 V value) {
+        RecordSubjectParameter<R, V> parameter = new RecordSubjectParameter<>(col, operator, value);
         return builder.addParameter(parameter);
     }
 }

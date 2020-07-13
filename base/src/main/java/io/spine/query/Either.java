@@ -25,11 +25,10 @@ import com.google.errorprone.annotations.Immutable;
 import java.util.function.Function;
 
 /**
- * Lambda serving to fill the current predicate {@linkplain AbstractQueryBuilder query builders}
+ * Lambda serving to fill the current predicate {@linkplain QueryBuilder query builders}
  * with the parameters joined in {@linkplain LogicalOperator#OR disjunction}.
  */
 @FunctionalInterface
 @Immutable
-public interface Either<B extends AbstractQueryBuilder<?, ?, ?, ?, ?>>
-        extends Function<B, B> {
+public interface Either<B extends QueryBuilder<?, ?, ?, ?, ?>> extends Function<B, B> {
 }

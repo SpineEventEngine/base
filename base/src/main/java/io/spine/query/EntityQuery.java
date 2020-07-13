@@ -23,7 +23,7 @@ package io.spine.query;
 import io.spine.base.EntityState;
 
 /**
- * A common contract for the classes being generated for each entity state type, which define
+ * A common contract for the classes generated for each entity state type, which defines
  * how the entities of this type may be queried.
  *
  * @param <I>
@@ -39,10 +39,20 @@ public abstract class EntityQuery<I,
                                   B extends EntityQueryBuilder<I, S, B, ?>>
         extends AbstractQuery<I, S, EntitySubjectParameter<S, ?>> {
 
+    private final B builder;
+
     /**
      * A common constructor contract for all {@code EntityQuery} implementations.
      */
-    protected EntityQuery(EntityQueryBuilder<I, S, B, ?> builder) {
+    protected EntityQuery(B builder) {
         super(builder);
+        this.builder = builder;
+    }
+
+    /**
+     * Returns the builder instance on top of which this query has been created.
+     */
+    public final B toBuilder() {
+        return builder;
     }
 }

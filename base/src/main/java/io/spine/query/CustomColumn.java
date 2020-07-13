@@ -34,7 +34,7 @@ import io.spine.annotation.SPI;
  * implementation.
  *
  * @see CustomCriterion
- * @see AbstractQueryBuilder#addCustomParameter(CustomSubjectParameter)
+ * @see QueryBuilder#addCustomParameter(CustomSubjectParameter)
  */
 @SPI
 public abstract class CustomColumn<R, V> implements Column<R, V> {

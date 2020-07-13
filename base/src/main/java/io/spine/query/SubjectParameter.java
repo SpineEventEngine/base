@@ -24,7 +24,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A parameter which defines the expected value for the {@link RecordColumn}
- * for a particular {@linkplain AbstractQuery query}.
+ * for a particular {@linkplain Query query}.
  *
  * @param <C>
  *         the type of the message column
@@ -37,7 +37,7 @@ public abstract class SubjectParameter<C extends Column<?, V>, V> {
     private final V value;
     private final ComparisonOperator operator;
 
-    protected SubjectParameter(C column, V value, ComparisonOperator operator) {
+    protected SubjectParameter(C column, ComparisonOperator operator, V value) {
         this.column = checkNotNull(column);
         this.value = checkNotNull(value);
         this.operator = checkNotNull(operator);
@@ -59,7 +59,7 @@ public abstract class SubjectParameter<C extends Column<?, V>, V> {
 
     /**
      * Returns the operator to compare the actual column value with the one
-     * set in this {@code QueryParameter}.
+     * set in this {@code SubjectParameter}.
      */
     public final ComparisonOperator operator() {
         return operator;

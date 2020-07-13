@@ -54,8 +54,7 @@ public final class EntityCriterion<S extends EntityState<?>,
     @Override
     protected B addParameter(B builder,
                              EntityColumn<S, V> col,
-                             V value,
-                             ComparisonOperator operator) {
+                             ComparisonOperator operator, V value) {
         EntitySubjectParameter<S, V> parameter = new EntitySubjectParameter<>(col, value, operator);
         return builder.addParameter(parameter);
     }
