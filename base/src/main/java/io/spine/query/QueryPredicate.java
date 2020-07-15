@@ -35,7 +35,7 @@ import static com.google.common.base.Preconditions.checkState;
  * @param <P>
  *         the type of query parameters used in the predicate
  */
-public final class Predicate<P extends SubjectParameter<?, ?>> {
+public final class QueryPredicate<P extends SubjectParameter<?, ?>> {
 
     /**
      * Defines whether the parameters are evaluated in conjunction or disjunction with each other.
@@ -57,7 +57,7 @@ public final class Predicate<P extends SubjectParameter<?, ?>> {
     /**
      * Creates a new {@code Predicate}.
      */
-    private Predicate(Builder<P> builder) {
+    private QueryPredicate(Builder<P> builder) {
         this.operator = builder.operator;
         this.parameters = ImmutableList.copyOf(builder.parameters);
         this.customParameters = ImmutableList.copyOf(builder.customParameters);
@@ -95,7 +95,7 @@ public final class Predicate<P extends SubjectParameter<?, ?>> {
     }
 
     /**
-     * Builds {@link Predicate} instances.
+     * Builds {@link QueryPredicate} instances.
      */
     static final class Builder<P extends SubjectParameter<?, ?>> {
 
@@ -109,7 +109,7 @@ public final class Predicate<P extends SubjectParameter<?, ?>> {
          * @param operator
          *         the operator which defines whether the parameters are evaluated
          *         in conjunction or disjunction with each other
-         * @see Predicate#newBuilder(LogicalOperator)
+         * @see QueryPredicate#newBuilder(LogicalOperator)
          */
         private Builder(LogicalOperator operator) {
             this.operator = operator;
@@ -143,10 +143,10 @@ public final class Predicate<P extends SubjectParameter<?, ?>> {
         /**
          * Builds a new instance of a {@code Predicate} based on the data in this {@code Builder}.
          */
-        Predicate<P> build() {
+        QueryPredicate<P> build() {
             checkState(hasParams(),
                        "Query predicate must have at least one subject parameter.");
-            return new Predicate<>(this);
+            return new QueryPredicate<>(this);
         }
     }
 }

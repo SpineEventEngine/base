@@ -65,7 +65,7 @@ public interface QueryBuilder<I,
     /**
      * Returns the predicates for the record fields.
      */
-    ImmutableList<Predicate<P>> predicates();
+    ImmutableList<QueryPredicate<P>> predicates();
 
     /**
      * Returns the ordering directives to be applied to the resulting dataset.

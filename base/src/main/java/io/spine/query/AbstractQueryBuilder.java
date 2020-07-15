@@ -61,9 +61,9 @@ abstract class AbstractQueryBuilder<I,
 
     private IdParameter<I> id = IdParameter.empty();
 
-    private final List<Predicate<P>> predicates = new ArrayList<>();
+    private final List<QueryPredicate<P>> predicates = new ArrayList<>();
 
-    private Predicate.Builder<P> currentPredicate = Predicate.newBuilder(AND);
+    private QueryPredicate.Builder<P> currentPredicate = QueryPredicate.newBuilder(AND);
 
     private final List<OrderBy<?, R>> ordering = new ArrayList<>();
 
@@ -93,7 +93,7 @@ abstract class AbstractQueryBuilder<I,
     }
 
     @Override
-    public ImmutableList<Predicate<P>> predicates() {
+    public ImmutableList<QueryPredicate<P>> predicates() {
         return ImmutableList.copyOf(predicates);
     }
 
@@ -145,12 +145,12 @@ abstract class AbstractQueryBuilder<I,
             predicates.add(currentPredicate.build());
         }
 
-        currentPredicate = Predicate.newBuilder(OR);
+        currentPredicate = QueryPredicate.newBuilder(OR);
         for (Either<B> parameter : parameters) {
             parameter.apply(thisRef());
         }
         predicates.add(currentPredicate.build());
-        currentPredicate = Predicate.newBuilder(AND);
+        currentPredicate = QueryPredicate.newBuilder(AND);
         return thisRef();
     }
 
@@ -197,7 +197,7 @@ abstract class AbstractQueryBuilder<I,
      * @return this instance of query builder, for chaining
      */
     @Internal
-    protected final B addPredicate(Predicate<P> value) {
+    protected final B addPredicate(QueryPredicate<P> value) {
         checkNotNull(value);
         predicates.add(value);
         return thisRef();

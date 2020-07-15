@@ -53,9 +53,11 @@ public final class Subject<I, R, P extends SubjectParameter<?, ?>> {
      * <p>The evaluation is done in a conjunction mode. I.e. a record matches the subject
      * if it matches each predicate.
      */
-    private final ImmutableList<Predicate<P>> predicates;
+    private final ImmutableList<QueryPredicate<P>> predicates;
 
-    public Subject(IdParameter<I> id, Class<R> recordType, ImmutableList<Predicate<P>> predicates) {
+    public Subject(IdParameter<I> id,
+                   Class<R> recordType,
+                   ImmutableList<QueryPredicate<P>> predicates) {
         this.recordType = recordType;
         this.id = id;
         this.predicates = predicates;
@@ -78,7 +80,7 @@ public final class Subject<I, R, P extends SubjectParameter<?, ?>> {
     /**
      * Returns the predicates for the fields of matched record.
      */
-    public ImmutableList<Predicate<P>> predicates() {
+    public ImmutableList<QueryPredicate<P>> predicates() {
         return predicates;
     }
 }
