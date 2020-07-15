@@ -39,22 +39,13 @@ public class RecordQueryBuilder<I, R extends Message>
                                      RecordQueryBuilder<I, R>,
                                      RecordQuery<I, R>> {
 
-    private final Class<R> recordType;
-
     RecordQueryBuilder(Class<R> type) {
-        recordType = type;
+        super(type);
     }
 
     @Override
     protected RecordQueryBuilder<I, R> thisRef() {
         return this;
-    }
-
-    /**
-     * Returns the type of record for which the query is being built.
-     */
-    public Class<R> recordType() {
-        return recordType;
     }
 
     /**

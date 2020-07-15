@@ -53,6 +53,11 @@ public interface QueryBuilder<I,
     Q build();
 
     /**
+     * Returns the type of the queried records.
+     */
+    Class<R> whichRecordType();
+
+    /**
      * Returns the criterion for the record identifiers.
      */
     IdParameter<I> whichIds();

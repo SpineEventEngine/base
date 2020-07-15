@@ -41,6 +41,10 @@ public abstract class EntityQueryBuilder<I,
                                          Q extends EntityQuery<I, S, B>>
         extends AbstractQueryBuilder<I, S, EntitySubjectParameter<S, ?>, B, Q> {
 
+    public EntityQueryBuilder(Class<S> stateType) {
+        super(stateType);
+    }
+
     /**
      * Sets the value for the custom column.
      *

@@ -36,6 +36,7 @@ abstract class AbstractEntityQuerySpec implements GeneratedTypeSpec {
     private static final JavaPoetName queryBuilderType =
             JavaPoetName.of(SimpleClassName.create("QueryBuilder"));
 
+    @SuppressWarnings("DuplicateStringLiteralInspection")   // irrelevant coincidence.
     private static final JavaPoetName queryType =
             JavaPoetName.of(SimpleClassName.create("Query"));
 

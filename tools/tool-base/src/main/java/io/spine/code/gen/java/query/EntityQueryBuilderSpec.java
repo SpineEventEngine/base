@@ -38,6 +38,7 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
 import static io.spine.code.proto.ColumnOption.columnsOf;
 import static javax.lang.model.element.Modifier.FINAL;
+import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PROTECTED;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
@@ -61,6 +62,7 @@ public final class EntityQueryBuilderSpec extends AbstractEntityQuerySpec {
                 .superclass(entityQueryBuilder())
                 .addAnnotation(generatedBySpineModelCompiler())
                 .addModifiers(PUBLIC, STATIC, FINAL)
+                .addMethod(ctor())
                 .addMethod(id())
                 .addMethods(columns())
                 .addMethod(thisRef())
@@ -110,6 +112,39 @@ public final class EntityQueryBuilderSpec extends AbstractEntityQuerySpec {
     }
 
     /**
+     * Generates the constructor for this query builder.
+     */
+    private MethodSpec ctor() {
+        return MethodSpec
+                .constructorBuilder()
+                .addJavadoc("Creates an instance of the builder.")
+                .addModifiers(PRIVATE)
+                .addStatement("super($L.class)", stateType())
+                .build();
+    }
+
+    /**
+     * Generates the method returning the {@link IdCriterion IdCriterion}
+     * for this query builder.
+     */
+    private MethodSpec id() {
+        return new IdColumnSpec(idField(), typeOfSelf()).methodSpec();
+    }
+
+    /**
+     * Generates the methods which allow to specify restrictions put on the entity columns
+     * to use in the {@link EntityQuery EntityQuery}.
+     */
+    private ImmutableList<MethodSpec> columns() {
+        ImmutableList<MethodSpec> result =
+                columns.stream()
+                       .map((c) -> new QueryColumnSpec(c, typeOfSelf()))
+                       .map(QueryColumnSpec::methodSpec)
+                       .collect(toImmutableList());
+        return result;
+    }
+
+    /**
      * Generates {@code thisRef()} method.
      */
     @SuppressWarnings("DuplicateStringLiteralInspection")
@@ -128,26 +163,5 @@ public final class EntityQueryBuilderSpec extends AbstractEntityQuerySpec {
      */
     private static TypeName typeOfSelf() {
         return queryBuilderType().value();
-    }
-
-    /**
-     * Generates the methods which allow to specify restrictions put on the entity columns
-     * to use in the {@link EntityQuery EntityQuery}.
-     */
-    private ImmutableList<MethodSpec> columns() {
-        ImmutableList<MethodSpec> result =
-                columns.stream()
-                       .map((c) -> new QueryColumnSpec(c, typeOfSelf()))
-                       .map(QueryColumnSpec::methodSpec)
-                       .collect(toImmutableList());
-        return result;
-    }
-
-    /**
-     * Generates the method returning the {@link IdCriterion IdCriterion}
-     * for this query builder.
-     */
-    private MethodSpec id() {
-        return new IdColumnSpec(idField(), typeOfSelf()).methodSpec();
     }
 }

@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Message;
+import io.spine.annotation.Internal;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -56,6 +57,8 @@ abstract class AbstractQueryBuilder<I,
                                     Q extends Query<I, R, ?>>
         implements QueryBuilder<I, R, P, B, Q> {
 
+    private final Class<R> recordType;
+
     private IdParameter<I> id = IdParameter.empty();
 
     private final List<Predicate<P>> predicates = new ArrayList<>();
@@ -70,10 +73,19 @@ abstract class AbstractQueryBuilder<I,
     @MonotonicNonNull
     private FieldMask mask;
 
+    AbstractQueryBuilder(Class<R> recordType) {
+        this.recordType = recordType;
+    }
+
     /**
      * Returns this instance of builder.
      */
     protected abstract B thisRef();
+
+    @Override
+    public Class<R> whichRecordType() {
+        return recordType;
+    }
 
     @Override
     public IdParameter<I> whichIds() {
@@ -173,8 +185,32 @@ abstract class AbstractQueryBuilder<I,
      *
      * @return this instance of query builder, for chaining
      */
-    final B setIdParameter(IdParameter<I> value) {
+    @Internal
+    protected final B setIdParameter(IdParameter<I> value) {
         id = checkNotNull(value);
+        return thisRef();
+    }
+
+    /**
+     * Adds the predicate.
+     *
+     * @return this instance of query builder, for chaining
+     */
+    @Internal
+    protected final B addPredicate(Predicate<P> value) {
+        checkNotNull(value);
+        predicates.add(value);
+        return thisRef();
+    }
+
+    /**
+     * Adds the ordering directive.
+     *
+     * @return this instance of query builder, for chaining
+     */
+    protected final B addOrdering(OrderBy<?, R> value) {
+        checkNotNull(value);
+        ordering.add(value);
         return thisRef();
     }
 }

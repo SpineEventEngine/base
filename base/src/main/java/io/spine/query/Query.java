@@ -40,7 +40,7 @@ public interface Query<I, R extends Message, P extends SubjectParameter<?, ?>> {
     /**
      * Returns the subject of querying.
      */
-    Subject<I, P> subject();
+    Subject<I, R, P> subject();
 
     /**
      * Returns the ordering to be applied to the query results.

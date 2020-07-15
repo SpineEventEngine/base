@@ -23,40 +23,60 @@ package io.spine.query;
 import com.google.common.collect.ImmutableList;
 
 /**
- * Set of criteria for the objects obtained via querying or subscription.
+ * Set of criteria for the records obtained via querying or subscription.
  *
- * <p>Subjects are typically stored records or entities.
+ * <p>Subjects are typically stored Protobuf messages or entity states.
+ *
+ * @param <I>
+ *         the type of the identifiers of the queried records
+ * @param <R>
+ *         the type of the queried records
+ * @param <P>
+ *         the type of the parameters applied to the records when queried
  */
-public final class Subject<I, P extends SubjectParameter<?, ?>> {
+public final class Subject<I, R, P extends SubjectParameter<?, ?>> {
 
     /**
-     * The criteria put on the identifiers of the object of interest.
+     * The criteria put on the identifiers of the records of interest.
      */
     private final IdParameter<I> id;
 
     /**
+     * The type of the queried records.
+     */
+    private final Class<R> recordType;
+
+    /**
      * Predicates, being the group of the parameters, against which the actual values
-     * of target object fields are compared when querying.
+     * of target record fields are compared when querying.
      *
-     * <p>The evaluation is done in a conjunction mode. I.e. the object matches the subject
+     * <p>The evaluation is done in a conjunction mode. I.e. a record matches the subject
      * if it matches each predicate.
      */
     private final ImmutableList<Predicate<P>> predicates;
 
-    public Subject(IdParameter<I> id, ImmutableList<Predicate<P>> predicates) {
+    public Subject(IdParameter<I> id, Class<R> recordType, ImmutableList<Predicate<P>> predicates) {
+        this.recordType = recordType;
         this.id = id;
         this.predicates = predicates;
     }
 
     /**
-     * Returns the criteria put on the identifiers of matched objects.
+     * Returns the type of the queried record.
+     */
+    public Class<R> recordType() {
+        return recordType;
+    }
+
+    /**
+     * Returns the criteria put on the identifiers of matched record.
      */
     public IdParameter<I> id() {
         return id;
     }
 
     /**
-     * Returns the predicates for the fields of matched objects.
+     * Returns the predicates for the fields of matched record.
      */
     public ImmutableList<Predicate<P>> predicates() {
         return predicates;
