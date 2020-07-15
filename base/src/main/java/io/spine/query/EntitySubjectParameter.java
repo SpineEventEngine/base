@@ -38,7 +38,7 @@ import static io.spine.query.ComparisonOperator.LESS_THAN;
  *         the type of the entity column values
  */
 public final class EntitySubjectParameter<S extends EntityState<?>, V>
-        extends SubjectParameter<EntityColumn<S, V>, V> {
+        extends SubjectParameter<S, EntityColumn<S, V>, V> {
 
     /**
      * Creates an instance of {@code QueryParameter} targeting entities whose column value

@@ -31,10 +31,8 @@ import com.google.common.collect.ImmutableList;
  *         the type of the identifiers of the queried records
  * @param <R>
  *         the type of the queried records
- * @param <P>
- *         the type of the parameters applied to the records when queried
  */
-public final class Subject<I, R, P extends SubjectParameter<?, ?>> {
+public final class Subject<I, R> {
 
     /**
      * The criteria put on the identifiers of the records of interest.
@@ -53,11 +51,11 @@ public final class Subject<I, R, P extends SubjectParameter<?, ?>> {
      * <p>The evaluation is done in a conjunction mode. I.e. a record matches the subject
      * if it matches each predicate.
      */
-    private final ImmutableList<QueryPredicate<P>> predicates;
+    private final ImmutableList<QueryPredicate<R>> predicates;
 
     public Subject(IdParameter<I> id,
                    Class<R> recordType,
-                   ImmutableList<QueryPredicate<P>> predicates) {
+                   ImmutableList<QueryPredicate<R>> predicates) {
         this.recordType = recordType;
         this.id = id;
         this.predicates = predicates;
@@ -80,7 +78,7 @@ public final class Subject<I, R, P extends SubjectParameter<?, ?>> {
     /**
      * Returns the predicates for the fields of matched record.
      */
-    public ImmutableList<QueryPredicate<P>> predicates() {
+    public ImmutableList<QueryPredicate<R>> predicates() {
         return predicates;
     }
 }

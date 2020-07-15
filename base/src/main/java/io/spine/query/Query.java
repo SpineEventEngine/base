@@ -32,15 +32,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *         the type of record identifiers
  * @param <R>
  *         the type of records
- * @param <P>
- *         the type of subject parameters used in a particular implementation
  */
-public interface Query<I, R extends Message, P extends SubjectParameter<?, ?>> {
+public interface Query<I, R extends Message> {
 
     /**
      * Returns the subject of querying.
      */
-    Subject<I, R, P> subject();
+    Subject<I, R> subject();
 
     /**
      * Returns the ordering to be applied to the query results.

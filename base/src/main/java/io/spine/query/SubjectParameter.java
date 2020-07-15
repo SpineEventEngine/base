@@ -26,12 +26,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * A parameter which defines the expected value for the {@link RecordColumn}
  * for a particular {@linkplain Query query}.
  *
+ * @param <R>
+ *         the type of the queried record
  * @param <C>
- *         the type of the message column
+ *         the type of the record column
  * @param <V>
- *         type of message column values to which this parameter refers
+ *         type of record column values to which this parameter refers
  */
-public abstract class SubjectParameter<C extends Column<?, V>, V> {
+public abstract class SubjectParameter<R, C extends Column<R, V>, V> {
 
     private final C column;
     private final V value;
@@ -44,7 +46,7 @@ public abstract class SubjectParameter<C extends Column<?, V>, V> {
     }
 
     /**
-     * Returns the message column which is going to be queried with this parameter.
+     * Returns the record column which is going to be queried with this parameter.
      */
     public final C column() {
         return column;

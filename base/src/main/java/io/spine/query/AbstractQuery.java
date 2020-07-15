@@ -38,13 +38,13 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @param <P>
  *         the type of subject parameters used in a particular implementation
  */
-abstract class AbstractQuery<I, R extends Message, P extends SubjectParameter<?, ?>>
-        implements Query<I, R, P> {
+abstract class AbstractQuery<I, R extends Message, P extends SubjectParameter<R, ?, ?>>
+        implements Query<I, R> {
 
     /**
      * Set of criteria defining the subject of querying.
      */
-    private final Subject<I, R, P> subject;
+    private final Subject<I, R> subject;
 
     /**
      * List of ordering directives which define the order of records in the query results.
@@ -76,7 +76,8 @@ abstract class AbstractQuery<I, R extends Message, P extends SubjectParameter<?,
      * A common contract for the constructors of {@code AbstractQuery} implementations.
      */
     AbstractQuery(AbstractQueryBuilder<I, R, P, ?, ?> builder) {
-        this.subject = new Subject<>(builder.whichIds(), builder.whichRecordType(),
+        this.subject = new Subject<>(builder.whichIds(),
+                                     builder.whichRecordType(),
                                      builder.predicates());
         this.ordering = builder.ordering();
         this.mask = builder.whichMask();
@@ -95,7 +96,7 @@ abstract class AbstractQuery<I, R extends Message, P extends SubjectParameter<?,
     }
 
     @Override
-    public final Subject<I, R, P> subject() {
+    public final Subject<I, R> subject() {
         return subject;
     }
 

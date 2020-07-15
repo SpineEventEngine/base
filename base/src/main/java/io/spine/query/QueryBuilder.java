@@ -43,9 +43,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public interface QueryBuilder<I,
                               R extends Message,
-                              P extends SubjectParameter<?, ?>,
+                              P extends SubjectParameter<R, ?, ?>,
                               B extends QueryBuilder<I, R, P, B, Q>,
-                              Q extends Query<I, R, ?>> {
+                              Q extends Query<I, R>> {
 
     /**
      * Creates a new instance of the query on top of this builder.
@@ -65,7 +65,7 @@ public interface QueryBuilder<I,
     /**
      * Returns the predicates for the record fields.
      */
-    ImmutableList<QueryPredicate<P>> predicates();
+    ImmutableList<QueryPredicate<R>> predicates();
 
     /**
      * Returns the ordering directives to be applied to the resulting dataset.

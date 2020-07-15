@@ -32,10 +32,9 @@ import static com.google.common.base.Preconditions.checkState;
  * Joins the {@linkplain SubjectParameter subject parameters} with
  * {@linkplain LogicalOperator logical operators}.
  *
- * @param <P>
- *         the type of query parameters used in the predicate
+ * @param <R> the type of the record which is stored for subject
  */
-public final class QueryPredicate<P extends SubjectParameter<?, ?>> {
+public final class QueryPredicate<R> {
 
     /**
      * Defines whether the parameters are evaluated in conjunction or disjunction with each other.
@@ -46,7 +45,7 @@ public final class QueryPredicate<P extends SubjectParameter<?, ?>> {
      * The list of parameters, each joined with the rest of parameters (including the custom params)
      * with the same logical operator.
      */
-    private final ImmutableList<P> parameters;
+    private final ImmutableList<SubjectParameter<R, ?, ?>> parameters;
 
     /**
      * The list of parameters, each joined with the rest of parameters
@@ -57,7 +56,7 @@ public final class QueryPredicate<P extends SubjectParameter<?, ?>> {
     /**
      * Creates a new {@code Predicate}.
      */
-    private QueryPredicate(Builder<P> builder) {
+    private QueryPredicate(Builder<R> builder) {
         this.operator = builder.operator;
         this.parameters = ImmutableList.copyOf(builder.parameters);
         this.customParameters = ImmutableList.copyOf(builder.customParameters);
@@ -66,10 +65,9 @@ public final class QueryPredicate<P extends SubjectParameter<?, ?>> {
     /**
      * Creates a new instance of {@code Predicate.Builder} for a specified logical operator.
      *
-     * @param <P>
-     *         the type of query parameters used in the predicate
+     * @param <R> the type of the record which is stored for subject
      */
-    static <P extends SubjectParameter<?, ?>> Builder<P> newBuilder(LogicalOperator operator) {
+    static <R> Builder<R> newBuilder(LogicalOperator operator) {
         return new Builder<>(operator);
     }
 
@@ -83,7 +81,7 @@ public final class QueryPredicate<P extends SubjectParameter<?, ?>> {
     /**
      * Returns the list of parameters of this {@code Predicate}.
      */
-    public ImmutableList<P> parameters() {
+    public ImmutableList<SubjectParameter<R, ?, ?>> parameters() {
         return parameters;
     }
 
@@ -96,11 +94,13 @@ public final class QueryPredicate<P extends SubjectParameter<?, ?>> {
 
     /**
      * Builds {@link QueryPredicate} instances.
+     *
+     * @param <R> the type of the record which is stored for subject
      */
-    static final class Builder<P extends SubjectParameter<?, ?>> {
+    static final class Builder<R> {
 
         private final LogicalOperator operator;
-        private final List<P> parameters = new ArrayList<>();
+        private final List<SubjectParameter<R, ?, ?>> parameters = new ArrayList<>();
         private final List<CustomSubjectParameter<?, ?>> customParameters = new ArrayList<>();
 
         /**
@@ -118,7 +118,7 @@ public final class QueryPredicate<P extends SubjectParameter<?, ?>> {
         /**
          * Adds a parameter to the predicate.
          */
-        Builder<P> add(P parameter) {
+        Builder<R> add(SubjectParameter<R, ?, ?> parameter) {
             checkNotNull(parameter);
             this.parameters.add(parameter);
             return this;
@@ -127,7 +127,7 @@ public final class QueryPredicate<P extends SubjectParameter<?, ?>> {
         /**
          * Adds a parameter, which targets some custom or computed property of the record.
          */
-        Builder<P> addCustom(CustomSubjectParameter<?, ?> parameter) {
+        Builder<R> addCustom(CustomSubjectParameter<?, ?> parameter) {
             checkNotNull(parameter);
             customParameters.add(parameter);
             return this;
@@ -143,7 +143,7 @@ public final class QueryPredicate<P extends SubjectParameter<?, ?>> {
         /**
          * Builds a new instance of a {@code Predicate} based on the data in this {@code Builder}.
          */
-        QueryPredicate<P> build() {
+        QueryPredicate<R> build() {
             checkState(hasParams(),
                        "Query predicate must have at least one subject parameter.");
             return new QueryPredicate<>(this);

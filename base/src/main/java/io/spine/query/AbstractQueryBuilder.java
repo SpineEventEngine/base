@@ -52,18 +52,18 @@ import static io.spine.util.Preconditions2.checkPositive;
  */
 abstract class AbstractQueryBuilder<I,
                                     R extends Message,
-                                    P extends SubjectParameter<?, ?>,
+                                    P extends SubjectParameter<R, ?, ?>,
                                     B extends QueryBuilder<I, R, P, B, Q>,
-                                    Q extends Query<I, R, ?>>
+                                    Q extends Query<I, R>>
         implements QueryBuilder<I, R, P, B, Q> {
 
     private final Class<R> recordType;
 
     private IdParameter<I> id = IdParameter.empty();
 
-    private final List<QueryPredicate<P>> predicates = new ArrayList<>();
+    private final List<QueryPredicate<R>> predicates = new ArrayList<>();
 
-    private QueryPredicate.Builder<P> currentPredicate = QueryPredicate.newBuilder(AND);
+    private QueryPredicate.Builder<R> currentPredicate = QueryPredicate.newBuilder(AND);
 
     private final List<OrderBy<?, R>> ordering = new ArrayList<>();
 
@@ -93,7 +93,7 @@ abstract class AbstractQueryBuilder<I,
     }
 
     @Override
-    public ImmutableList<QueryPredicate<P>> predicates() {
+    public ImmutableList<QueryPredicate<R>> predicates() {
         return ImmutableList.copyOf(predicates);
     }
 
@@ -197,7 +197,7 @@ abstract class AbstractQueryBuilder<I,
      * @return this instance of query builder, for chaining
      */
     @Internal
-    protected final B addPredicate(QueryPredicate<P> value) {
+    protected final B addPredicate(QueryPredicate<R> value) {
         checkNotNull(value);
         predicates.add(value);
         return thisRef();
