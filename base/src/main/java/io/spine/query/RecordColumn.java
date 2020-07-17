@@ -46,8 +46,32 @@ public class RecordColumn<R extends Message, V>
     private final Class<V> valueType;
     private final Getter<R, V> getter;
 
+    /**
+     * Creates a new instance of the {@code RecordColumn}.
+     *
+     * @param name
+     *         the name of the column; must be non-empty
+     * @param valueType
+     *         the type of the column values
+     * @param getter
+     *         the getter returning the value of the column basing on the stored record
+     */
     public RecordColumn(String name, Class<V> valueType, Getter<R, V> getter) {
-        super(ColumnName.of(name));
+        this(ColumnName.of(name), valueType, getter);
+    }
+
+    /**
+     * Creates a new instance of the {@code RecordColumn}.
+     *
+     * @param name
+     *         the name of the column
+     * @param valueType
+     *         the type of the column values
+     * @param getter
+     *         the getter returning the value of the column basing on the stored record
+     */
+    public RecordColumn(ColumnName name, Class<V> valueType, Getter<R, V> getter) {
+        super(name);
         this.valueType = checkNotNull(valueType, "The type of the returning value must be set.");
         this.getter = checkNotNull(getter);
     }
