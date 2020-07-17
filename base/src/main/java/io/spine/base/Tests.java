@@ -20,12 +20,9 @@
 
 package io.spine.base;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-
-import java.util.regex.Pattern;
 
 /**
  * Testing environment.
@@ -35,43 +32,37 @@ import java.util.regex.Pattern;
  * <p>This option is mutually exclusive with {@link Production}, i.e. one of them is always enabled.
  */
 @Immutable
-@SuppressWarnings("AccessOfSystemProperties" /* is necessary for this class to function */)
 public final class Tests extends EnvironmentType {
 
-    /**
-     * The key name of the system property which tells if a code runs under a testing framework.
-     *
-     * <p>If your testing framework is not among the {@link #KNOWN_TESTING_FRAMEWORKS}, set this
-     * property to {@code true} before running tests.
-     */
-    @VisibleForTesting
-    static final String ENV_KEY_TESTS = "io.spine.tests";
+    private static final Tests INSTANCE = new Tests();
 
+    /**
+     * The names of the packages that when discovered in a stacktrace would tell that
+     * we are running tests.
+     *
+     * @see #enabled()
+     */
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in another context. */)
-    private static final ImmutableList<String> KNOWN_TESTING_FRAMEWORKS =
+    public static final ImmutableList<String> KNOWN_TESTING_FRAMEWORKS =
             ImmutableList.of("org.junit", "org.testng", "io.spine.testing");
 
-    private static final Pattern TEST_PROP_PATTERN = Pattern.compile("\"' ");
-
     /**
-     * Creates a new instance.
-     *
-     * <p>All {@code Tests} instances are immutable and equivalent.
+     * Obtains the singleton instance.
      */
-    Tests() {
+    static Tests type() {
+        return INSTANCE;
+    }
+
+    /** Prevents direct instantiation. */
+    private Tests() {
         super();
     }
 
     /**
      * Verifies if the code currently runs under a unit testing framework.
      *
-     * <p>The method returns {@code true} if the following packages are discovered
-     * in the stacktrace:
-     * <ul>
-     *     <li>{@code org.junit}
-     *     <li>{@code org.testng}
-     *     <li>{@code io.spine.testing}
-     * </ul>
+     * <p>The method returns {@code true} if {@linkplain #KNOWN_TESTING_FRAMEWORKS
+     * known testing framework packages} are discovered in the stacktrace.
      *
      * @return {@code true} if the code runs under a testing framework, {@code false} otherwise
      * @implNote In addition to checking the stack trace, this method checks the
@@ -82,31 +73,15 @@ public final class Tests extends EnvironmentType {
      */
     @Override
     protected boolean enabled() {
-        String testProp = System.getProperty(ENV_KEY_TESTS);
-        if (testProp != null) {
-            testProp = TEST_PROP_PATTERN.matcher(testProp)
-                                        .replaceAll("");
-            return String.valueOf(true)
-                         .equalsIgnoreCase(testProp) || "1".equals(testProp);
+        TestsProperty property = new TestsProperty();
+        if (property.isSet()) {
+            return property.value();
         }
 
         String stacktrace = Throwables.getStackTraceAsString(new RuntimeException(""));
-        return KNOWN_TESTING_FRAMEWORKS.stream()
-                                       .anyMatch(stacktrace::contains);
-    }
-
-    /**
-     * Clears the {@linkplain #ENV_KEY_TESTS environment variable used for test detection}.
-     */
-    static void clearTestingEnvVariable() {
-        System.clearProperty(ENV_KEY_TESTS);
-    }
-
-    /**
-     * Sets the {@linkplain #ENV_KEY_TESTS environment variable} such that the system is brought to
-     * the testing environment type.
-     */
-    static void enable() {
-        System.setProperty(ENV_KEY_TESTS, String.valueOf(true));
+        boolean result =
+                KNOWN_TESTING_FRAMEWORKS.stream()
+                                        .anyMatch(stacktrace::contains);
+        return result;
     }
 }

@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("Environment should")
-class EnvironmentTest {
+class CustomEnvironmentTest {
 
     @BeforeEach
     void reset() {
