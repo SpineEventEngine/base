@@ -25,10 +25,10 @@
  * as we want to manage the versions in a single source.
  */
 
-val SPINE_VERSION = "1.5.21"
+val versionToPublish = "1.5.22"
 
 project.extra.apply {
-    this["spineVersion"] = SPINE_VERSION
-    this["spineBaseVersion"] = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
-    this["versionToPublish"] = SPINE_VERSION
+    this["spineVersion"] = versionToPublish
+    this["spineBaseVersion"] = versionToPublish // Used by `filter-internal-javadoc.gradle`.
+    this["versionToPublish"] = versionToPublish
 }
