@@ -20,6 +20,7 @@
 
 package io.spine.query;
 
+import com.google.errorprone.annotations.Immutable;
 import io.spine.base.EntityState;
 
 /**
@@ -69,6 +70,7 @@ import io.spine.base.EntityState;
  * @param <S> the type of the state of the {@code Entity}
  * @param <V> the type of the column type
  */
+@Immutable
 public final class EntityColumn<S extends EntityState<?>, V> extends RecordColumn<S, V> {
 
     private static final long serialVersionUID = 0L;

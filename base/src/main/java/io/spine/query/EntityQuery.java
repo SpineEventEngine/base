@@ -20,6 +20,8 @@
 
 package io.spine.query;
 
+import com.google.common.collect.ImmutableList;
+import com.google.protobuf.FieldMask;
 import io.spine.base.EntityState;
 
 /**
@@ -54,5 +56,79 @@ public abstract class EntityQuery<I,
      */
     public final B toBuilder() {
         return builder;
+    }
+
+    /**
+     * Creates a {@link RecordQuery} instance with the same properties as this entity query.
+     */
+    public final RecordQuery<I, S> toRecordQuery() {
+        RecordQueryBuilder<I, S> destination = RecordQuery.newBuilder(subject().recordType());
+        doCopyTo(destination);
+        RecordQuery<I, S> result = destination.build();
+        return result;
+    }
+
+    /**
+     * Copies the properties of this query to the builder of a similar {@code EntityQuery}.
+     */
+    public final void copyTo(EntityQueryBuilder<I, S, ?, ?> destination) {
+        doCopyTo(destination);
+    }
+
+    /**
+     * Performs the copying of the properties.
+     */
+    private void doCopyTo(AbstractQueryBuilder<I, S, ?, ?, ?> destination) {
+        copyIdParameter(destination);
+        copyPredicates(destination);
+        copyOrdering(destination);
+        copyLimit(destination);
+        copyMask(destination);
+    }
+
+    /**
+     * Copies the ID parameter value from the current instance to the destination builder.
+     */
+    private void copyIdParameter(AbstractQueryBuilder<I, S, ?, ?, ?> destination) {
+        destination.setIdParameter(subject().id());
+    }
+
+    /**
+     * Copies the record field predicates from the current instance to the destination builder.
+     */
+    private void copyPredicates(AbstractQueryBuilder<I, S, ?, ?, ?> destination) {
+        ImmutableList<QueryPredicate<S>> predicates = subject().predicates();
+        for (QueryPredicate<S> sourcePredicate : predicates) {
+            destination.addPredicate(sourcePredicate);
+        }
+    }
+
+    /**
+     * Copies the field mask value from the current instance to the destination builder.
+     */
+    private void copyMask(AbstractQueryBuilder<I, S, ?, ?, ?> destination) {
+        FieldMask sourceMask = mask();
+        if (sourceMask != null) {
+            destination.withMask(sourceMask);
+        }
+    }
+
+    /**
+     * Copies the limit value from the current instance to the destination builder.
+     */
+    private void copyLimit(AbstractQueryBuilder<I, S, ?, ?, ?> destination) {
+        Integer sourceLimit = limit();
+        if (sourceLimit != null) {
+            destination.limit(sourceLimit);
+        }
+    }
+
+    /**
+     * Copies the ordering directives from the current instance to the destination builder.
+     */
+    private void copyOrdering(AbstractQueryBuilder<I, S, ?, ?, ?> destination) {
+        for (OrderBy<?, S> sourceOrderBy : ordering()) {
+            destination.addOrdering(sourceOrderBy);
+        }
     }
 }

@@ -20,6 +20,7 @@
 
 package io.spine.query;
 
+import com.google.errorprone.annotations.Immutable;
 import io.spine.annotation.SPI;
 
 /**
@@ -37,6 +38,7 @@ import io.spine.annotation.SPI;
  * @see QueryBuilder#addCustomParameter(CustomSubjectParameter)
  */
 @SPI
+@Immutable
 public abstract class CustomColumn<R, V> implements Column<R, V> {
 
     /**

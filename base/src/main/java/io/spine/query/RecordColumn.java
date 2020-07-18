@@ -20,6 +20,7 @@
 
 package io.spine.query;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 import io.spine.value.ValueHolder;
@@ -37,6 +38,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @param <V>
  *         the type of the column values
  */
+@Immutable
 public class RecordColumn<R extends Message, V>
         extends ValueHolder<ColumnName>
         implements Column<R, V> {
