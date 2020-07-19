@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 
 /**
  * Joins the {@linkplain SubjectParameter subject parameters} with
@@ -144,8 +143,6 @@ public final class QueryPredicate<R> {
          * Builds a new instance of a {@code Predicate} based on the data in this {@code Builder}.
          */
         QueryPredicate<R> build() {
-            checkState(hasParams(),
-                       "Query predicate must have at least one subject parameter.");
             return new QueryPredicate<>(this);
         }
     }
