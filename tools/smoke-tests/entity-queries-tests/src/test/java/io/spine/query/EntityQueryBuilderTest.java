@@ -50,6 +50,7 @@ class EntityQueryBuilderTest {
                            .projectId().in(ProjectId.generate(), ProjectId.generate())
                            .where(ARCHIVED.column(), false)
                            .either(startedMoreThanMonthAgo, isDone, isDeleted)
+                           .orderBy(ProjectView.Column.projectName(), Direction.ASC)
                            .projectName()
                            .isNot(empty)
                            .build();

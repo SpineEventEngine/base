@@ -30,6 +30,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.query.LogicalOperator.AND;
@@ -108,8 +109,8 @@ abstract class AbstractQueryBuilder<I,
     }
 
     @Override
-    public @Nullable FieldMask whichMask() {
-        return mask;
+    public Optional<FieldMask> whichMask() {
+        return Optional.ofNullable(mask);
     }
 
     @Override

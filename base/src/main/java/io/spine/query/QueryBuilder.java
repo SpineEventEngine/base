@@ -27,6 +27,8 @@ import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.Optional;
+
 /**
  * A builder for instance of {@link Query}.
  *
@@ -81,8 +83,10 @@ public interface QueryBuilder<I,
 
     /**
      * Returns the field mask to be applied to each of the resulting records.
+     *
+     * <p>If the mask is not set, returns {@code Optional.empty()}.
      */
-    @Nullable FieldMask whichMask();
+    Optional<FieldMask> whichMask();
 
     /**
      * Adds a predicate to be treated in disjunction with the existing predicates.

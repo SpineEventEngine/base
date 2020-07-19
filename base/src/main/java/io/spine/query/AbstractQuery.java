@@ -23,7 +23,6 @@ package io.spine.query;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Message;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -69,8 +68,7 @@ abstract class AbstractQuery<I, R extends Message, P extends SubjectParameter<R,
      *
      * <p>If not set, the records are returned as-is.
      */
-    @MonotonicNonNull
-    private final @Nullable FieldMask mask;
+    private final FieldMask mask;
 
     /**
      * A common contract for the constructors of {@code AbstractQuery} implementations.
@@ -80,7 +78,7 @@ abstract class AbstractQuery<I, R extends Message, P extends SubjectParameter<R,
                                      builder.whichRecordType(),
                                      builder.predicates());
         this.ordering = builder.ordering();
-        this.mask = builder.whichMask();
+        this.mask = builder.whichMask().orElse(FieldMask.getDefaultInstance());
         limit = ensureLimit(builder.whichLimit());
     }
 

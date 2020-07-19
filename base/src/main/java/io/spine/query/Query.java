@@ -60,6 +60,9 @@ public interface Query<I, R extends Message> {
 
     /**
      * Returns the field mask to be applied to each of the resulting records.
+     *
+     * <p>If the mask is not set, returns a {@link FieldMask#getDefaultInstance() default instance}
+     * of the {@code FieldMask}.
      */
     FieldMask mask();
 }
