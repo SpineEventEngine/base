@@ -21,10 +21,7 @@
 package io.spine.query;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import io.spine.annotation.SPI;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
-
-import java.util.function.Supplier;
+import io.spine.annotation.Internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.query.ComparisonOperator.EQUALS;
@@ -32,15 +29,11 @@ import static io.spine.query.ComparisonOperator.EQUALS;
 /**
  * Allows to specify the values for the {@linkplain CustomSubjectParameter}s.
  */
-@SPI
-public final class CustomCriterion<S, V, B extends QueryBuilder<?, ?, ?, B, ?>>
-        implements Supplier<B> {
+@Internal
+public final class CustomCriterion<S, V, B extends QueryBuilder<?, ?, ?, B, ?>> {
 
     private final B builder;
     private final CustomColumn<S, V> column;
-
-    private @MonotonicNonNull V value = null;
-    private @MonotonicNonNull ComparisonOperator operator = null;
 
     /**
      * Creates a new instance of {@code CustomCriterion}.
@@ -56,30 +49,18 @@ public final class CustomCriterion<S, V, B extends QueryBuilder<?, ?, ?, B, ?>>
     }
 
     /**
-     * Appends the {@code QueryBuilder} associated with this criterion with
+     * Sets the value which should be equal to the actual column value when querying.
+     *
+     * <p>Appends the {@code QueryBuilder} associated with this criterion with
      * the {@linkplain CustomSubjectParameter custom subject parameter} based on the specified
      * column and value set by the user.
-     *
-     * @return the instance of associated query builder, for chaining
-     */
-    @Override
-    @CanIgnoreReturnValue
-    public B get() {
-        checkNotNull(value);
-        checkNotNull(operator);
-        CustomSubjectParameter<S, V> param = new CustomSubjectParameter<>(column, value, operator);
-        return builder.addCustomParameter(param);
-    }
-
-    /**
-     * Sets the value which should be equal to the actual column value when querying.
      *
      * @return the instance of associated query builder
      */
     @CanIgnoreReturnValue
     public B is(V value) {
-        this.value = checkNotNull(value);
-        this.operator = EQUALS;
-        return builder;
+        checkNotNull(value);
+        CustomSubjectParameter<S, V> param = new CustomSubjectParameter<>(column, value, EQUALS);
+        return builder.addCustomParameter(param);
     }
 }

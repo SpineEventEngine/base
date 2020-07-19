@@ -95,7 +95,11 @@ abstract class AbstractQueryBuilder<I,
 
     @Override
     public ImmutableList<QueryPredicate<R>> predicates() {
-        return ImmutableList.copyOf(predicates);
+        QueryPredicate<R> currentOne = currentPredicate.build();
+        return ImmutableList.<QueryPredicate<R>>builder()
+                .addAll(predicates)
+                .add(currentOne)
+                .build();
     }
 
     @Override
