@@ -95,11 +95,13 @@ abstract class AbstractQueryBuilder<I,
 
     @Override
     public ImmutableList<QueryPredicate<R>> predicates() {
-        QueryPredicate<R> currentOne = currentPredicate.build();
-        return ImmutableList.<QueryPredicate<R>>builder()
-                .addAll(predicates)
-                .add(currentOne)
-                .build();
+        ImmutableList.Builder<QueryPredicate<R>> result =
+                ImmutableList.<QueryPredicate<R>>builder().addAll(predicates);
+        if (currentPredicate.hasParams()) {
+            QueryPredicate<R> currentOne = currentPredicate.build();
+            result.add(currentOne);
+        }
+        return result.build();
     }
 
     @Override
@@ -154,7 +156,9 @@ abstract class AbstractQueryBuilder<I,
         for (Either<B> parameter : parameters) {
             parameter.apply(thisRef());
         }
-        predicates.add(currentPredicate.build());
+        if (currentPredicate.hasParams()) {
+            predicates.add(currentPredicate.build());
+        }
         currentPredicate = QueryPredicate.newBuilder(AND);
         return thisRef();
     }
