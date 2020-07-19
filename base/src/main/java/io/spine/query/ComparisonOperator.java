@@ -111,7 +111,7 @@ public enum ComparisonOperator {
             if (left instanceof Timestamp) {
                 Timestamp firstT = (Timestamp) left;
                 Timestamp secondT = (Timestamp) right;
-                return Timestamps.compare(firstT, secondT) > 1;
+                return Timestamps.compare(firstT, secondT) > 0;
             }
             if (left instanceof Comparable<?>) {
                 Comparable cmpLeft = (Comparable<?>) left;
