@@ -27,10 +27,6 @@ modelCompiler {
         generateFor("spine.tools.column.ProjectName", markAs("io.spine.tools.protoc.given.ProjectNameField"))
     }
 
-    columns {
-        generate(true)
-    }
-
     entityQueries {
         generate(false)
     }

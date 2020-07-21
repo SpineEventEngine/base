@@ -24,8 +24,9 @@ plugins {
 
 modelCompiler {
 
-    columns {
-        generate(true)
+    fields {
+        generateFor("spine.tools.column.ProjectName",
+                markAs("io.spine.tools.protoc.given.ProjectNameField"))
     }
 
     entityQueries {

@@ -82,7 +82,7 @@ public class EntityQueryGenerator extends CodeGenerator {
     private final EntityQueryFactory factory = new EntityQueryFactory();
     private final boolean enabled;
 
-    EntityQueryGenerator(boolean enabled) {
+    private EntityQueryGenerator(boolean enabled) {
         this.enabled = enabled;
     }
 

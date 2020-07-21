@@ -45,7 +45,7 @@ public final class ColumnGenerator extends CodeGenerator {
      */
     public static ColumnGenerator instance(SpineProtocConfig config) {
         checkNotNull(config);
-        boolean generate = config.getAddColumns()
+        boolean generate = config.getAddEntityQueries()
                                  .getGenerate();
         return new ColumnGenerator(generate);
     }

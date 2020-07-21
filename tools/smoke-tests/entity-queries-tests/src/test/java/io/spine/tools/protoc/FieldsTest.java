@@ -20,6 +20,7 @@
 
 package io.spine.tools.protoc;
 
+import com.google.common.truth.Truth;
 import io.spine.base.EventMessageField;
 import io.spine.base.SubscribableField;
 import io.spine.query.EntityStateField;
@@ -65,22 +66,22 @@ class FieldsTest {
         Project.Field.ProjectField parentProjectField = Project.Field.parentProject();
 
         checkFieldPath(parentProjectField.parentProject(), "parent_project.parent_project");
-        assertThat(parentProjectField.getClass())
-                .isEqualTo(parentProjectField.parentProject().getClass());
+        Truth.assertThat(parentProjectField.getClass())
+             .isEqualTo(parentProjectField.parentProject().getClass());
     }
 
     @Test
     @DisplayName("mark event message fields as `EventMessageField`")
     void markEventMessageFields() {
         ProjectCreated.Field.ProjectIdField field = ProjectCreated.Field.id();
-        assertThat(field.getClass()).isAssignableTo(EventMessageField.class);
+        Truth.assertThat(field.getClass()).isAssignableTo(EventMessageField.class);
     }
 
     @Test
     @DisplayName("mark entity state fields as `EntityStateField`")
     void markEntityStateFields() {
         ProjectView.Field.ProjectIdField field = ProjectView.Field.id();
-        assertThat(field.getClass()).isAssignableTo(EntityStateField.class);
+        Truth.assertThat(field.getClass()).isAssignableTo(EntityStateField.class);
     }
 
     @Test

@@ -25,15 +25,15 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("`GeneratedColumns` should")
-class GeneratedColumnsTest {
+@DisplayName("`GeneratedEntityQueries` should")
+class GeneratedEntityQueriesTest {
 
     @Test
-    @DisplayName("convert to proper Protoc configuration")
+    @DisplayName("convert to the corresponding Protoc configuration")
     void convertToProperProtocConfiguration() {
-        GeneratedColumns config = new GeneratedColumns();
-        config.generate(true);
-        AddColumns protocConfig = config.asProtocConfig();
+        GeneratedEntityQueries value = new GeneratedEntityQueries();
+        value.generate(true);
+        AddEntityQueries protocConfig = value.asProtocConfig();
 
         assertThat(protocConfig.getGenerate()).isTrue();
     }
