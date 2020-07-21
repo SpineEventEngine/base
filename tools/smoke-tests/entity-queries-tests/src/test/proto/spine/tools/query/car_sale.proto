@@ -1,0 +1,82 @@
+/*
+ * Copyright 2020, TeamDev. All rights reserved.
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+syntax = "proto3";
+
+package spine.tools.query;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.tools.query";
+option java_outer_classname = "CarSaleProto";
+option java_multiple_files = true;
+
+import "google/protobuf/timestamp.proto";
+
+// An identifier of the car manufacturer.
+message ManufacturerId {
+    string uuid = 1 [(required) = true];
+}
+
+// A type of a legal entity a car manufacturer is.
+enum LegalEntityType {
+
+    LET_UNKNOWN = 0;
+
+    PRIVATELY_OWNED = 1;
+
+    PUBLIC_JOINT_STOCK = 2;
+
+    LIMITED_PARTNERSHIP = 3;
+}
+
+// An international securities identification number.
+//
+// See https://en.wikipedia.org/wiki/International_Securities_Identification_Number
+//
+message Isin {
+    string value = 1 [(required) = true];
+}
+
+// A symbol used to identify a company on a stock market.
+message TradeStockSymbol {
+    string value = 1 [(required) = true];
+}
+
+// Describes a car manufacturer as a company.
+message Manufacturer {
+
+    ManufacturerId id = 1 [(required) = true, (validate) = true];
+
+    // ISIN value.
+    Isin isin = 2 [(required) = true, (validate) = true];
+
+    // When the company was founded.
+    google.protobuf.Timestamp when_founded = 3 [(required) = true];
+
+    // How many employees works in the company.
+    int32 number_of_employees = 4 [(min).value = "1"];
+
+    // The type of the company as a legal entity.
+    LegalEntityType type = 5;
+
+    // If traded, which stock symbols the company uses.
+    repeated TradeStockSymbol stock_symbol = 6;
+}
