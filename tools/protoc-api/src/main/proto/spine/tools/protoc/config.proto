@@ -80,7 +80,6 @@ message AddMethods {
 
     // Factories for the messages declared in files according to a certain pattern.
     repeated ConfigByPattern factory_by_pattern = 2;
-
     // Field number and name reservation due to a deleted field.
     reserved 3;
     reserved "factory_classpath";
@@ -109,7 +108,7 @@ message AddFields {
 // DSL for building `Entity`-specific queries.
 message AddEntityQueries {
 
-    // The flag which allows to enable and disable the entity query generation.
+    // The flag which allows to enable and disable the generation of entity columns and queries.
     bool generate = 1;
 }
 
