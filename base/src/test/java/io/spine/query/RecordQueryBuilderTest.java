@@ -51,6 +51,7 @@ import static io.spine.query.given.RecordQueryBuilderTestEnv.fieldMaskWith;
 import static io.spine.query.given.RecordQueryBuilderTestEnv.manufacturerBuilder;
 import static io.spine.query.given.RecordQueryBuilderTestEnv.manufacturerId;
 import static io.spine.query.given.RecordQueryBuilderTestEnv.subjectWithNoPredicates;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`RecordQueryBuilder` should")
 class RecordQueryBuilderTest {
@@ -228,6 +229,19 @@ class RecordQueryBuilderTest {
             RecordQuery<ManufacturerId, Manufacturer> query = builder.build();
             RecordQueryBuilder<ManufacturerId, Manufacturer> actualBuilder = query.toBuilder();
             assertThat(actualBuilder).isSameInstanceAs(builder);
+        }
+    }
+
+    @DisplayName("prevent")
+    @Nested
+    final class Prevent {
+
+        @Test
+        @DisplayName("building queries with the record limit set without the ordering specified")
+        void fromUsingLimitWithoutOrdering() {
+            assertThrows(IllegalStateException.class,
+                         () -> manufacturerBuilder().limit(100).build());
+
         }
     }
 }

@@ -25,7 +25,7 @@ import com.google.protobuf.FieldMask;
 import com.google.protobuf.Message;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * An abstract base for queries which may be used to fetch the records defined as Protobuf messages.
@@ -72,6 +72,8 @@ abstract class AbstractQuery<I, R extends Message, P extends SubjectParameter<R,
 
     /**
      * A common contract for the constructors of {@code AbstractQuery} implementations.
+     *
+     * <p>Checks that if the limit is set, at least one ordering directive is present as well.
      */
     AbstractQuery(AbstractQueryBuilder<I, R, P, ?, ?> builder) {
         this.subject = new Subject<>(builder.whichIds(),
@@ -88,7 +90,7 @@ abstract class AbstractQuery<I, R extends Message, P extends SubjectParameter<R,
      * @return the value of query limit, {@code null}-able, as the limit may not be set
      */
     private @Nullable Integer ensureLimit(@Nullable Integer limit) {
-        checkArgument(limit == null || !ordering.isEmpty(),
+        checkState(limit == null || !ordering.isEmpty(),
                       "Query limit must be used with at least one ordering directive set.");
         return limit;
     }
