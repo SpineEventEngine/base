@@ -20,48 +20,139 @@
 
 package io.spine.query;
 
-import io.spine.people.PersonName;
+import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.Timestamp;
+import com.google.protobuf.util.Timestamps;
+import io.spine.query.given.RecordQueryBuilderTestEnv;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.stream.IntStream;
+
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.query.given.RecordQueryBuilderTestEnv.PersonNameColumns.honorificPrefix;
+import static io.spine.query.given.RecordQueryBuilderTestEnv.ManufacturerColumns.isTraded;
+import static io.spine.query.given.RecordQueryBuilderTestEnv.ManufacturerColumns.isin;
+import static io.spine.query.given.RecordQueryBuilderTestEnv.ManufacturerColumns.whenFounded;
+import static io.spine.query.given.RecordQueryBuilderTestEnv.manufacturerBuilder;
 import static io.spine.query.given.RecordQueryBuilderTestEnv.manufacturerId;
+import static io.spine.query.given.RecordQueryBuilderTestEnv.subjectWithNoPredicates;
 
 @DisplayName("`RecordQueryBuilder` should")
 class RecordQueryBuilderTest {
+
+    private static final Timestamp THURSDAY = Timestamps.fromSeconds(0);
 
     @Nested
     @DisplayName("create `RecordQuery` instances")
     final class CreateQuery {
 
-        @DisplayName("by a single identifier value")
         @Test
+        @DisplayName("with no parameters")
+        void empty() {
+            RecordQuery<ManufacturerId, Manufacturer> actual = manufacturerBuilder().build();
+            Subject<ManufacturerId, Manufacturer> subject = subjectWithNoPredicates(actual);
+            assertThat(subject.id()
+                              .values()).isEmpty();
+            RecordQueryBuilderTestEnv.assertNoOrderingMaskLimit(actual);
+        }
+
+        @Test
+        @DisplayName("which hold the type of the queried record")
+        void withRecordType() {
+            RecordQuery<ManufacturerId, Manufacturer> query = manufacturerBuilder().build();
+            Subject<ManufacturerId, Manufacturer> subject = query.subject();
+            assertThat(subject.recordType()).isEqualTo(Manufacturer.class);
+        }
+
+        @Test
+        @DisplayName("by a single identifier value")
         void byId() {
             ManufacturerId expectedId = manufacturerId();
             RecordQuery<ManufacturerId, Manufacturer> query =
-                    RecordQuery.<ManufacturerId, Manufacturer>newBuilder(Manufacturer.class)
+                    manufacturerBuilder()
                             .id()
                             .is(expectedId)
                             .build();
-            assertThat(query).isNotNull();
-
-            Subject<ManufacturerId, Manufacturer> subject = query.subject();
-            assertThat(subject.predicates()).isEmpty();
+            Subject<ManufacturerId, Manufacturer> subject = subjectWithNoPredicates(query);
 
             IdParameter<ManufacturerId> actualIdParam = subject.id();
             assertThat(actualIdParam.values()).containsExactly(expectedId);
         }
-    }
 
-    @Test
-    @DisplayName("create `EntityQuery` instances")
-    void createEntityQueries() {
-        RecordQuery<Object, PersonName> query =
-                RecordQuery.newBuilder(PersonName.class)
-                           .where(honorificPrefix)
-                           .is("Mr.")
-                           .build();
+        @Test
+        @DisplayName("by several identifier values")
+        void bySeveralIds() {
+            ImmutableSet<ManufacturerId> expectedValues =
+                    IntStream.range(0, 24)
+                             .mapToObj((i) -> manufacturerId())
+                             .collect(toImmutableSet());
+            RecordQuery<ManufacturerId, Manufacturer> query =
+                    manufacturerBuilder()
+                            .id()
+                            .with(expectedValues)
+                            .build();
+            Subject<ManufacturerId, Manufacturer> subject = subjectWithNoPredicates(query);
+
+            IdParameter<ManufacturerId> actualIdParam = subject.id();
+            assertThat(actualIdParam.values()).isEqualTo(expectedValues);
+        }
+
+        @Test
+        @DisplayName("by the values of several columns")
+        void byColumnValues() {
+            RecordQueryBuilder<ManufacturerId, Manufacturer> query =
+                    manufacturerBuilder().where(isin)
+                                         .isNot("JP 3633400001")
+                                         .where(whenFounded)
+                                         .isLessOrEqualTo(THURSDAY)
+                                         .where(isTraded)
+                                         .is(true);
+        }
+
+        @Test
+        @DisplayName("by the value of either of the columns")
+        void byEitherColumn() {
+            RecordQuery<ManufacturerId, Manufacturer> builder =
+                    manufacturerBuilder()
+                            .either((r) -> r.where(isin)
+                                            .is("JP 3899800001"),
+                                    (r) -> r.where(isTraded)
+                                            .is(true))
+                            .where(whenFounded)
+                            .isLessThan(THURSDAY)
+                            .build();
+        }
+
+        @Test
+        @DisplayName("with the field mask")
+        void withFieldMask() {
+        }
+
+        @Test
+        @DisplayName("ordered by several fields")
+        void withOrdering() {
+        }
+
+        @Test
+        @DisplayName("ordered by several fields with the record limit")
+        void withLimitAndOrdering() {
+        }
+
+        @Test
+        @DisplayName("which return the same `Builder` instance if asked")
+        void returnSameBuilder() {
+            RecordQueryBuilder<ManufacturerId, Manufacturer> builder =
+                    manufacturerBuilder().where(whenFounded)
+                                         .isGreaterThan(THURSDAY)
+                                         .where(isin)
+                                         .isNot("JP 49869009911")
+                                         .orderBy(whenFounded,Direction.ASC)
+                                         .limit(150);
+            RecordQuery<ManufacturerId, Manufacturer> query = builder.build();
+            RecordQueryBuilder<ManufacturerId, Manufacturer> actualBuilder = query.toBuilder();
+            assertThat(actualBuilder).isSameInstanceAs(builder);
+        }
     }
 }

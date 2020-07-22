@@ -20,13 +20,18 @@
 
 package io.spine.query.given;
 
+import com.google.protobuf.FieldMask;
 import com.google.protobuf.Timestamp;
-import io.spine.people.PersonName;
 import io.spine.query.Manufacturer;
 import io.spine.query.ManufacturerId;
 import io.spine.query.RecordColumn;
+import io.spine.query.RecordQuery;
+import io.spine.query.RecordQueryBuilder;
+import io.spine.query.Subject;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.TestValues.randomString;
+import static io.spine.testing.Tests.nullRef;
 
 /**
  * Test environment data for {@link io.spine.query.RecordQueryBuilderTest RecordQueryBuilderTest}.
@@ -34,6 +39,14 @@ import static io.spine.testing.TestValues.randomString;
 public final class RecordQueryBuilderTestEnv {
 
     private RecordQueryBuilderTestEnv() {
+    }
+
+    /**
+     * Creates a new instance of the {@link RecordQueryBuilder}
+     * for the {@link Manufacturer} record message.
+     */
+    public static RecordQueryBuilder<ManufacturerId, Manufacturer> manufacturerBuilder() {
+        return RecordQuery.newBuilder(Manufacturer.class);
     }
 
     /**
@@ -46,16 +59,23 @@ public final class RecordQueryBuilderTestEnv {
     }
 
     /**
-     * Defines the columns for {@link PersonName} message record.
+     * Asserts that the given query has no ordering, field mask and limit parameters set.
      */
-    public static final class PersonNameColumns {
+    public static void assertNoOrderingMaskLimit(RecordQuery<ManufacturerId, Manufacturer> query) {
+        assertThat(query.ordering()).isEmpty();
+        assertThat(query.mask()).isEqualTo(FieldMask.getDefaultInstance());
+        assertThat(query.limit()).isEqualTo(nullRef());
+    }
 
-        public static final RecordColumn<PersonName, String> honorificPrefix =
-                new RecordColumn<>("honorific_prefix", String.class,
-                                   PersonName::getFamilyName);
-
-        private PersonNameColumns() {
-        }
+    /**
+     * Checks that the query is not {@code null} as well as has no predicates and returns it.
+     */
+    public static Subject<ManufacturerId, Manufacturer>
+    subjectWithNoPredicates(RecordQuery<ManufacturerId, Manufacturer> query) {
+        assertThat(query).isNotNull();
+        Subject<ManufacturerId, Manufacturer> subject = query.subject();
+        assertThat(subject.predicates()).isEmpty();
+        return subject;
     }
 
     /**
