@@ -56,7 +56,7 @@ import static io.spine.query.given.RecordQueryBuilderTestEnv.subjectWithNoPredic
 class RecordQueryBuilderTest {
 
     /**
-     * The Thursday.
+     * The Epoch Thursday.
      */
     private static final Timestamp THURSDAY = Timestamps.fromSeconds(0);
 
