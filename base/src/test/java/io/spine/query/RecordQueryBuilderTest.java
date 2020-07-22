@@ -22,30 +22,37 @@ package io.spine.query;
 
 import io.spine.people.PersonName;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.query.given.RecordQueryBuilderTestEnv.PersonNameColumns.honorificPrefix;
+import static io.spine.query.given.RecordQueryBuilderTestEnv.manufacturerId;
+
 @DisplayName("`RecordQueryBuilder` should")
-public class RecordQueryBuilderTest {
+class RecordQueryBuilderTest {
 
-    static class PersonNameColumns {
+    @Nested
+    @DisplayName("create `RecordQuery` instances")
+    final class CreateQuery {
 
-        private PersonNameColumns() {
+        @DisplayName("by a single identifier value")
+        @Test
+        void byId() {
+            ManufacturerId expectedId = manufacturerId();
+            RecordQuery<ManufacturerId, Manufacturer> query =
+                    RecordQuery.<ManufacturerId, Manufacturer>newBuilder(Manufacturer.class)
+                            .id()
+                            .is(expectedId)
+                            .build();
+            assertThat(query).isNotNull();
+
+            Subject<ManufacturerId, Manufacturer> subject = query.subject();
+            assertThat(subject.predicates()).isEmpty();
+
+            IdParameter<ManufacturerId> actualIdParam = subject.id();
+            assertThat(actualIdParam.values()).containsExactly(expectedId);
         }
-
-        static RecordColumn<PersonName, String> honorificPrefix() {
-            return new RecordColumn<>("honorific_prefix", String.class,
-                                      PersonName::getFamilyName);
-        }
-    }
-
-    @Test
-    @DisplayName("create complex queries for Protobuf messages")
-    void createComplexQueries() {
-        RecordQuery<Object, PersonName> query =
-                RecordQuery.newBuilder(PersonName.class)
-                           .where(PersonNameColumns.honorificPrefix())
-                           .is("Mr.")
-                           .build();
     }
 
     @Test
@@ -53,7 +60,7 @@ public class RecordQueryBuilderTest {
     void createEntityQueries() {
         RecordQuery<Object, PersonName> query =
                 RecordQuery.newBuilder(PersonName.class)
-                           .where(PersonNameColumns.honorificPrefix())
+                           .where(honorificPrefix)
                            .is("Mr.")
                            .build();
     }

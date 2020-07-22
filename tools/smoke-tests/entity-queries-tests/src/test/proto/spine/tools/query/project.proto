@@ -47,6 +47,8 @@ message ProjectView {
     int32 days_since_started = 5 [(.column) = true];
 
     bool was_reassigned = 6 [(.column) = true];
+
+    repeated string tag = 7;
 }
 
 message Project {

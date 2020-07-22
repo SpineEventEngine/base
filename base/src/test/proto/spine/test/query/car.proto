@@ -19,13 +19,13 @@
  */
 syntax = "proto3";
 
-package spine.tools.query;
+package spine.test.query;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.tools.query";
-option java_outer_classname = "CarSaleProto";
+option java_package = "io.spine.query";
+option java_outer_classname = "CarProto";
 option java_multiple_files = true;
 
 import "google/protobuf/timestamp.proto";
@@ -79,4 +79,86 @@ message Manufacturer {
 
     // If traded, which stock symbols the company uses.
     repeated TradeStockSymbol stock_symbol = 6;
+}
+
+
+// A vehicle identification number.
+message Vin {
+
+    string value = 1 [(required) = true];
+}
+
+// A type of fuel used in car engines.
+enum FuelType {
+
+    FT_UNKNOWN = 0;
+
+    DIESEL = 1;
+
+    UNLEADED_STANDARD = 2;
+
+    UNLEADED_PREMIUM = 3;
+
+    ELECTRICITY = 4;
+
+    ETHANOL = 5;
+
+    LPG = 6;
+
+    OTHER = 7;
+}
+
+// An identifier of a car model.
+//
+// For simplicity it is chosen to be an auto-generated UUID value.
+//
+message ModelId {
+    string uuid = 1 [(required) = true];
+}
+
+// A model of a car.
+message CarModel {
+
+    ModelId id = 1;
+
+    Manufacturer manufacturer = 2;
+
+    string name = 3;
+
+    FuelType fuel = 4 [(required) = true];
+
+    int32 number_of_seats = 5 [(min).value = "1"];
+
+    int32 horsepower = 6 [(min).value = "0"];
+}
+
+// Additional options that may be installed into a particular car.
+enum ModelOptions {
+
+    MO_UNKNOWN = 0;
+
+    GLASS_ROOFTOP = 1;
+
+    SPORTS_PACKAGE = 2;
+
+    REAR_SPOILER_WING = 3;
+}
+
+// A particular car of some model.
+message Car {
+    option (entity).kind = AGGREGATE;
+
+    Vin vin = 1;
+
+    CarModel model = 2 [(required) = true];
+
+    google.protobuf.Timestamp when_produced = 3 [(required) = true];
+
+    int32 mileage = 4 [(min).value = "0"];
+
+    repeated ModelOptions opt = 5;
+
+    string plate_number = 6;
+
+    bool warranty_expired = 7;
 }
