@@ -22,12 +22,16 @@ package io.spine.query.given;
 
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Timestamp;
+import io.spine.query.ComparisonOperator;
 import io.spine.query.Manufacturer;
 import io.spine.query.ManufacturerId;
 import io.spine.query.RecordColumn;
 import io.spine.query.RecordQuery;
 import io.spine.query.RecordQueryBuilder;
 import io.spine.query.Subject;
+import io.spine.query.SubjectParameter;
+
+import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.TestValues.randomString;
@@ -76,6 +80,40 @@ public final class RecordQueryBuilderTestEnv {
         Subject<ManufacturerId, Manufacturer> subject = query.subject();
         assertThat(subject.predicates()).isEmpty();
         return subject;
+    }
+
+    /**
+     * Asserts the given list of the subject parameters has the parameter with the given properties.
+     *
+     * <p>In case there are several parameters for the same column, this method checks them all.
+     *
+     * @param list the list of all parameters
+     * @param column the column for which the parameter value is asserted
+     * @param operator the operator of the asserted parameter
+     * @param value value of the paramater
+     */
+    public static void assertHasParamValue(List<SubjectParameter<Manufacturer, ?, ?>> list,
+                                           RecordColumn<Manufacturer, ?> column,
+                                           ComparisonOperator operator,
+                                           Object value) {
+        boolean parameterFound = false;
+        for (SubjectParameter<Manufacturer, ?, ?> parameter : list) {
+            if(parameter.column().equals(column)) {
+                ComparisonOperator actualOperator = parameter.operator();
+                Object actualValue = parameter.value();
+                if(actualOperator == operator && value.equals(actualValue)) {
+                    parameterFound = true;
+                }
+            }
+        }
+        assertThat(parameterFound).isTrue();
+    }
+
+    public static FieldMask fieldMaskWith(RecordColumn<Manufacturer, ?> column) {
+        return FieldMask.newBuilder()
+                        .addPaths(column.name()
+                                        .value())
+                        .build();
     }
 
     /**

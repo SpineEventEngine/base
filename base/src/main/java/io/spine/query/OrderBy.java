@@ -22,6 +22,8 @@ package io.spine.query;
 
 import com.google.protobuf.Message;
 
+import java.util.Objects;
+
 /**
  * Defines the ordering by the values of
  * a particular {@linkplain io.spine.query.EntityColumn entity column}.
@@ -32,16 +34,43 @@ public final class OrderBy<C extends RecordColumn<S, ?>, S extends Message> {
 
     private final Direction direction;
 
+    /**
+     * Creates an ordering directive for the given column in a given direction.
+     */
     OrderBy(C column, Direction direction) {
         this.column = column;
         this.direction = direction;
     }
 
+    /**
+     * Returns the column by which values the query should be ordered.
+     */
     public C column() {
         return column;
     }
 
+    /**
+     * Returns the direction in which the column values should be ordered.
+     */
     public Direction direction() {
         return direction;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof OrderBy)) {
+            return false;
+        }
+        OrderBy<?, ?> by = (OrderBy<?, ?>) o;
+        return column.equals(by.column) &&
+                direction == by.direction;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(column, direction);
     }
 }
