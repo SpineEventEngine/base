@@ -20,6 +20,7 @@
 
 package io.spine.query.given;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Timestamp;
 import io.spine.query.ComparisonOperator;
@@ -32,7 +33,9 @@ import io.spine.query.Subject;
 import io.spine.query.SubjectParameter;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.TestValues.randomString;
 import static io.spine.testing.Tests.nullRef;
@@ -63,6 +66,15 @@ public final class RecordQueryBuilderTestEnv {
     }
 
     /**
+     * Generates the given number of {@link ManufacturerId} instances.
+     */
+    public static ImmutableSet<ManufacturerId> generateIds(int howMany) {
+        return IntStream.range(0, howMany)
+                        .mapToObj((i) -> manufacturerId())
+                        .collect(toImmutableSet());
+    }
+
+    /**
      * Asserts that the given query has no ordering, field mask and limit parameters set.
      */
     public static void assertNoOrderingMaskLimit(RecordQuery<ManufacturerId, Manufacturer> query) {
@@ -87,10 +99,14 @@ public final class RecordQueryBuilderTestEnv {
      *
      * <p>In case there are several parameters for the same column, this method checks them all.
      *
-     * @param list the list of all parameters
-     * @param column the column for which the parameter value is asserted
-     * @param operator the operator of the asserted parameter
-     * @param value value of the paramater
+     * @param list
+     *         the list of all parameters
+     * @param column
+     *         the column for which the parameter value is asserted
+     * @param operator
+     *         the operator of the asserted parameter
+     * @param value
+     *         value of the paramater
      */
     public static void assertHasParamValue(List<SubjectParameter<Manufacturer, ?, ?>> list,
                                            RecordColumn<Manufacturer, ?> column,
@@ -98,10 +114,11 @@ public final class RecordQueryBuilderTestEnv {
                                            Object value) {
         boolean parameterFound = false;
         for (SubjectParameter<Manufacturer, ?, ?> parameter : list) {
-            if(parameter.column().equals(column)) {
+            if (parameter.column()
+                         .equals(column)) {
                 ComparisonOperator actualOperator = parameter.operator();
                 Object actualValue = parameter.value();
-                if(actualOperator == operator && value.equals(actualValue)) {
+                if (actualOperator == operator && value.equals(actualValue)) {
                     parameterFound = true;
                 }
             }
@@ -109,6 +126,9 @@ public final class RecordQueryBuilderTestEnv {
         assertThat(parameterFound).isTrue();
     }
 
+    /**
+     * Creates a new {@code FieldMask} with the name of the given column as a path.
+     */
     public static FieldMask fieldMaskWith(RecordColumn<Manufacturer, ?> column) {
         return FieldMask.newBuilder()
                         .addPaths(column.name()
