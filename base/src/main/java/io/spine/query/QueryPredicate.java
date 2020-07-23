@@ -21,9 +21,11 @@
 package io.spine.query;
 
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -56,8 +58,10 @@ public final class QueryPredicate<R> {
      * Creates a new {@code Predicate}.
      */
     private QueryPredicate(Builder<R> builder) {
-        this.operator = builder.operator;
+        this.operator = checkNotNull(builder.operator);
+        checkNotNull(builder.parameters);
         this.parameters = ImmutableList.copyOf(builder.parameters);
+        checkNotNull(builder.customParameters);
         this.customParameters = ImmutableList.copyOf(builder.customParameters);
     }
 
@@ -91,6 +95,25 @@ public final class QueryPredicate<R> {
         return customParameters;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof QueryPredicate)) {
+            return false;
+        }
+        QueryPredicate<?> predicate = (QueryPredicate<?>) o;
+        return operator == predicate.operator &&
+                parameters.equals(predicate.parameters) &&
+                customParameters.equals(predicate.customParameters);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(operator, parameters, customParameters);
+    }
+
     /**
      * Builds {@link QueryPredicate} instances.
      *
@@ -117,6 +140,7 @@ public final class QueryPredicate<R> {
         /**
          * Adds a parameter to the predicate.
          */
+        @CanIgnoreReturnValue
         Builder<R> add(SubjectParameter<R, ?, ?> parameter) {
             checkNotNull(parameter);
             this.parameters.add(parameter);
@@ -126,6 +150,7 @@ public final class QueryPredicate<R> {
         /**
          * Adds a parameter, which targets some custom or computed property of the record.
          */
+        @CanIgnoreReturnValue
         Builder<R> addCustom(CustomSubjectParameter<?, ?> parameter) {
             checkNotNull(parameter);
             customParameters.add(parameter);

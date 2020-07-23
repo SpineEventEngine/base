@@ -22,6 +22,10 @@ package io.spine.query;
 
 import com.google.common.collect.ImmutableList;
 
+import java.util.Objects;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Set of criteria for the records obtained via querying or subscription.
  *
@@ -56,9 +60,9 @@ public final class Subject<I, R> {
     public Subject(IdParameter<I> id,
                    Class<R> recordType,
                    ImmutableList<QueryPredicate<R>> predicates) {
-        this.recordType = recordType;
-        this.id = id;
-        this.predicates = predicates;
+        this.id = checkNotNull(id);
+        this.recordType = checkNotNull(recordType);
+        this.predicates = checkNotNull(predicates);
     }
 
     /**
@@ -80,5 +84,24 @@ public final class Subject<I, R> {
      */
     public ImmutableList<QueryPredicate<R>> predicates() {
         return predicates;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Subject)) {
+            return false;
+        }
+        Subject<?, ?> subject = (Subject<?, ?>) o;
+        return id.equals(subject.id) &&
+                recordType.equals(subject.recordType) &&
+                predicates.equals(subject.predicates);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, recordType, predicates);
     }
 }

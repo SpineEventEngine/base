@@ -26,6 +26,8 @@ import io.spine.annotation.Internal;
 import io.spine.value.ValueHolder;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.Objects;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -104,5 +106,26 @@ public class RecordColumn<R extends Message, V>
     @Override
     public @Nullable V valueIn(R record) {
         return getter.apply(record);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof RecordColumn)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        RecordColumn<?, ?> column = (RecordColumn<?, ?>) o;
+        return valueType.equals(column.valueType) &&
+                getter.equals(column.getter);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), valueType, getter);
     }
 }

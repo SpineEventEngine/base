@@ -20,6 +20,8 @@
 
 package io.spine.query;
 
+import java.util.Objects;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -65,5 +67,24 @@ public abstract class SubjectParameter<R, C extends Column<R, V>, V> {
      */
     public final ComparisonOperator operator() {
         return operator;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof SubjectParameter)) {
+            return false;
+        }
+        SubjectParameter<?, ?, ?> parameter = (SubjectParameter<?, ?, ?>) o;
+        return column.equals(parameter.column) &&
+                value.equals(parameter.value) &&
+                operator == parameter.operator;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(column, value, operator);
     }
 }

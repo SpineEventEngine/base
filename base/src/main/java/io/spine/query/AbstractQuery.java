@@ -25,6 +25,9 @@ import com.google.protobuf.FieldMask;
 import com.google.protobuf.Message;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.Objects;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
@@ -79,7 +82,7 @@ abstract class AbstractQuery<I, R extends Message, P extends SubjectParameter<R,
         this.subject = new Subject<>(builder.whichIds(),
                                      builder.whichRecordType(),
                                      builder.predicates());
-        this.ordering = builder.ordering();
+        this.ordering = checkNotNull(builder.ordering());
         this.mask = builder.whichMask().orElse(FieldMask.getDefaultInstance());
         limit = ensureLimit(builder.whichLimit());
     }
@@ -113,5 +116,25 @@ abstract class AbstractQuery<I, R extends Message, P extends SubjectParameter<R,
     @Override
     public FieldMask mask() {
         return mask;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof AbstractQuery)) {
+            return false;
+        }
+        AbstractQuery<?, ?, ?> query = (AbstractQuery<?, ?, ?>) o;
+        return subject.equals(query.subject) &&
+                ordering.equals(query.ordering) &&
+                Objects.equals(limit, query.limit) &&
+                mask.equals(query.mask);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(subject, ordering, limit, mask);
     }
 }
