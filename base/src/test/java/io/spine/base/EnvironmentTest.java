@@ -23,7 +23,6 @@ package io.spine.base;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.base.given.AppEngine;
 import io.spine.base.given.AppEngineStandard;
-import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -35,12 +34,12 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.base.Tests.ENV_KEY_TESTS;
+import static io.spine.base.TestsProperty.TESTS_VALUES;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@DisplayName("Environment utility class should")
+@DisplayName("Environment should")
 @SuppressWarnings("AccessOfSystemProperties")
-class EnvironmentTest extends UtilityClassTest<Environment> {
+class EnvironmentTest {
 
     /*
      * Environment protection START
@@ -52,10 +51,6 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     private static Environment storedEnvironment;
 
     private Environment environment;
-
-    EnvironmentTest() {
-        super(Environment.class);
-    }
 
     @BeforeAll
     static void storeEnvironment() {
@@ -81,66 +76,70 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     void cleanUp() {
         Environment.instance()
                    .reset();
-        System.clearProperty(ENV_KEY_TESTS);
+        System.clearProperty(TestsProperty.KEY);
     }
 
-    @Test
-    @DisplayName("tell that we are under tests if env. variable set to true")
-    void environmentVarTrue() {
-        Environment.instance()
-                   .setTo(Tests.class);
+    @Nested
+    @DisplayName("tell that we are under tests if")
+    class UnderTests {
 
-        assertThat(environment.is(Tests.class)).isTrue();
-    }
+        @Test
+        @DisplayName("the env. variable `ENV_TESTS_KEY` set directly")
+        void environmentVar() {
+            TESTS_VALUES.forEach(
+                    value -> {
+                        System.setProperty(TestsProperty.KEY, value);
+                        assertThat(environment.is(Tests.class)).isTrue();
+                    }
+            );
+        }
 
-    @Test
-    @DisplayName("tell that we are under tests if env. variable set to 1")
-    void environmentVar1() {
-        System.setProperty(ENV_KEY_TESTS, "1");
+        @Test
+        @DisplayName("run under known testing framework")
+        void underTestFramework() {
+            // As we run this from under JUnit...
+            assertThat(environment.is(Tests.class)).isTrue();
+        }
 
-        assertThat(environment.is(Tests.class)).isTrue();
-    }
+        @Test
+        @DisplayName("when a deprecated `isTests()` method is used")
+        void underTestFrameworkDeprecated() {
+            @SuppressWarnings("deprecation")
+            boolean isTests = environment.isTests();
+            assertThat(isTests).isTrue();
+        }
 
-    @Test
-    @DisplayName("tell that we are under tests if run under known framework")
-    void underTestFramework() {
-        // As we run this from under JUnit...
-        assertThat(environment.is(Tests.class)).isTrue();
-    }
-
-    @Test
-    @DisplayName("tell that we are not under tests if env set to something else")
-    void environmentVarUnknownValue() {
-        System.setProperty(ENV_KEY_TESTS, "neitherTrueNor1");
-
-        assertThat(environment.is(Production.class)).isTrue();
-    }
-
-    @Test
-    @DisplayName("tell that we are under tests when a deprecated method is used")
-    void underTestFrameworkDeprecated() {
+        @Test
+        @DisplayName("if explicitly set to tests using the deprecated `setToTests()` method")
         @SuppressWarnings("deprecation")
-        boolean isTests = environment.isTests();
-        assertThat(isTests).isTrue();
+        void explicitlySetTrue() {
+            environment.setToTests();
+
+            assertThat(environment.is(Tests.class)).isTrue();
+        }
     }
 
-    @Test
-    @DisplayName("tell that we are under tests if explicitly set to tests using a deprecated method")
-    @SuppressWarnings("deprecation")
-    void explicitlySetTrue() {
-        environment.setToTests();
+    @Nested
+    @DisplayName("tell that we are not under tests if")
+    class NotUnderTests {
 
-        assertThat(environment.is(Tests.class)).isTrue();
-    }
+        @Test
+        @DisplayName("the property value is set to an unsupported value")
+        void environmentVarUnknownValue() {
+            System.setProperty(TestsProperty.KEY, "neitherTrueNor1");
 
-    @Test
-    @DisplayName("tell that we are not under tests when a deprecated method is used")
-    void inProductionUsingDeprecatedMethod() {
-        System.setProperty(ENV_KEY_TESTS, "neitherTrueNor1");
+            assertThat(environment.is(Production.class)).isTrue();
+        }
 
-        @SuppressWarnings("deprecation")
-        boolean isProduction = environment.isProduction();
-        assertThat(isProduction).isTrue();
+        @Test
+        @DisplayName("the deprecated method `isProduction()` is used")
+        void inProductionUsingDeprecatedMethod() {
+            System.setProperty(TestsProperty.KEY, "neitherTrueNor1");
+
+            @SuppressWarnings("deprecation")
+            boolean isProduction = environment.isProduction();
+            assertThat(isProduction).isTrue();
+        }
     }
 
     @Test
@@ -181,11 +180,11 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     }
 
     @Test
-    @DisplayName("clear environment var on rest")
+    @DisplayName("clear the " + TestsProperty.KEY+ " system property on `reset()`")
     void clearOnReset() {
         environment.reset();
 
-        assertNull(System.getProperty(ENV_KEY_TESTS));
+        assertNull(System.getProperty(TestsProperty.KEY));
     }
 
     @Nested
@@ -276,9 +275,9 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         AtomicBoolean envCached = new AtomicBoolean(false);
         assertThat(environment.is(Tests.class));
         Thread thread = new Thread(() -> {
-            Tests.clearTestingEnvVariable();
+            TestsProperty.clear();
             assertThat(environment.is(Tests.class)).isTrue();
-            assertThat(new Tests().enabled()).isFalse();
+            assertThat(Tests.type().enabled()).isFalse();
             envCached.set(true);
         });
         thread.start();

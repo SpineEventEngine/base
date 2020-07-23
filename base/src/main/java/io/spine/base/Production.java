@@ -30,18 +30,24 @@ import com.google.errorprone.annotations.Immutable;
 @Immutable
 public final class Production extends EnvironmentType {
 
+    private static final Production INSTANCE = new Production();
+
     /**
-     * Creates a new instance.
-     *
-     * <p>All {@code Production} instances are immutable and equivalent.
+     * Obtains the singleton instance.
      */
-    Production() {
+    static Production type() {
+        return INSTANCE;
+    }
+
+    /** Prevents direct instantiation. */
+    private Production() {
         super();
     }
 
     @Override
     protected boolean enabled() {
-        boolean tests = new Tests().enabled();
+        boolean tests = Tests.type()
+                             .enabled();
         return !tests;
     }
 }
