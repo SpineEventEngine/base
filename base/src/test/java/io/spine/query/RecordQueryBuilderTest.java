@@ -206,11 +206,12 @@ class RecordQueryBuilderTest {
             int tenRecords = 10;
             RecordQuery<ManufacturerId, Manufacturer> query =
                     manufacturerBuilder().orderBy(isin, DESC)
+                                         .orderBy(whenFounded, ASC)
                                          .limit(tenRecords)
                                          .build();
-            OrderBy<?, Manufacturer> orderBy = query.ordering()
-                                                    .get(0);
-            assertThat(orderBy).isEqualTo(new OrderBy<>(isin, DESC));
+            ImmutableList<OrderBy<?, Manufacturer>> ordering = query.ordering();
+            assertThat(ordering.get(0)).isEqualTo(new OrderBy<>(isin, DESC));
+            assertThat(ordering.get(1)).isEqualTo(new OrderBy<>(whenFounded, ASC));
             assertThat(query.limit()).isEqualTo(tenRecords);
         }
 
@@ -311,10 +312,9 @@ class RecordQueryBuilderTest {
         void ofOrdering() {
             assertThat(manufacturerBuilder().orderBy(isin, DESC)
                                             .orderBy(whenFounded, ASC)
-                                            .ordering()
-            ).isEqualTo(ImmutableList.of(
-                    new OrderBy<>(isin, DESC),
-                    new OrderBy<>(whenFounded, ASC))
+                                            .ordering())
+                    .isEqualTo(ImmutableList.of(new OrderBy<>(isin, DESC),
+                                                new OrderBy<>(whenFounded, ASC))
             );
         }
     }
