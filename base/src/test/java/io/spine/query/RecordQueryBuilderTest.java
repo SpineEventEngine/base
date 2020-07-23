@@ -149,30 +149,29 @@ class RecordQueryBuilderTest {
             boolean stocksAreTraded = true;
             RecordQuery<ManufacturerId, Manufacturer> query =
                     manufacturerBuilder()
+                            .where(whenFounded)
+                            .isLessThan(THURSDAY)
                             .either((r) -> r.where(isin)
                                             .is(isinValue),
                                     (r) -> r.where(isTraded)
                                             .is(stocksAreTraded))
-                            .where(whenFounded)
-                            .isLessThan(THURSDAY)
                             .build();
             ImmutableList<QueryPredicate<Manufacturer>> predicates = query.subject()
                                                                           .predicates();
             assertThat(predicates).hasSize(2);
 
-            QueryPredicate<Manufacturer> actualEither = predicates.get(0);
-            assertThat(actualEither.operator()).isEqualTo(OR);
-            List<SubjectParameter<Manufacturer, ?, ?>> orParams = actualEither.parameters();
-            assertThat(orParams).hasSize(2);
-            assertHasParamValue(orParams, isin, EQUALS, isinValue);
-            assertHasParamValue(orParams, isTraded, EQUALS, stocksAreTraded);
-
-            QueryPredicate<Manufacturer> actualAnd = predicates.get(1);
+            QueryPredicate<Manufacturer> actualAnd = predicates.get(0);
             assertThat(actualAnd.operator()).isEqualTo(AND);
             List<SubjectParameter<Manufacturer, ?, ?>> andParams = actualAnd.parameters();
             assertThat(andParams).hasSize(1);
             assertHasParamValue(andParams, whenFounded, LESS_THAN, THURSDAY);
 
+            QueryPredicate<Manufacturer> actualEither = predicates.get(1);
+            assertThat(actualEither.operator()).isEqualTo(OR);
+            List<SubjectParameter<Manufacturer, ?, ?>> orParams = actualEither.parameters();
+            assertThat(orParams).hasSize(2);
+            assertHasParamValue(orParams, isin, EQUALS, isinValue);
+            assertHasParamValue(orParams, isTraded, EQUALS, stocksAreTraded);
         }
 
         @Test
