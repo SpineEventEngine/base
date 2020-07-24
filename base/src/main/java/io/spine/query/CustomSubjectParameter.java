@@ -28,6 +28,8 @@ package io.spine.query;
  * which hold the properties not directly belonging to the record declaration. In order to include
  * such a column into a {@link Subject} definition, a {@code CustomQueryParameter} is used.
  *
+ * @param <S> the type of objects serving as an origin for the parameter values
+ * @param <V> the type of parameter values
  * @see CustomColumn
  */
 public final class CustomSubjectParameter<S, V> extends SubjectParameter<S, Column<S, V>, V> {

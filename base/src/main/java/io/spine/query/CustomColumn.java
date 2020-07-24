@@ -31,15 +31,20 @@ import io.spine.annotation.SPI;
  * E.g. the time of entity creation or the role of the user created the record etc, that is,
  * something not included into the definition of record {@code Message}.
  *
- * <p>To store the data like this, end-users would need to provide their own {@link Column}
- * implementation.
+ * <p>End-users would need to provide their own {@link CustomColumn} implementation.
+ * When storing objects with custom columns, the values are fetched according
+ * to the {@link #valueIn(Object) valueIn(S)} implementation. In it, the {@code S} value represents
+ * an arbitrary object serving as a source for the value.
  *
- * @see CustomCriterion
- * @see QueryBuilder#addCustomParameter(CustomSubjectParameter)
+ * @see CustomSubjectParameter
+ * @see QueryPredicate#customParameters()
+ *
+ * @param <S> the type of objects serving as a source for the column values
+ * @param <V> the type of column values
  */
 @SPI
 @Immutable
-public abstract class CustomColumn<R, V> implements Column<R, V> {
+public abstract class CustomColumn<S, V> implements Column<S, V> {
 
     /**
      * When building a query, creates a criterion for this column.
@@ -50,7 +55,7 @@ public abstract class CustomColumn<R, V> implements Column<R, V> {
      *         the type of the query builder, in scope of which the created criterion will exist
      * @return a new criterion allowing to specify the desired value of this column when querying
      */
-    <B extends QueryBuilder<?, ?, ?, B, ?>> CustomCriterion<R, V, B>
+    <B extends QueryBuilder<?, ?, ?, B, ?>> CustomCriterion<S, V, B>
     in(B builder) {
         return new CustomCriterion<>(this, builder);
     }

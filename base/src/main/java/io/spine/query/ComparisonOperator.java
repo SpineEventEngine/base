@@ -42,9 +42,6 @@ import static java.lang.String.format;
  *
  * <p>It is required that the runtime Java class of the two compared values is the same. Otherwise,
  * an {@code IllegalArgumentException} is thrown.
- *
- * @see AbstractQuery
- * @see SubjectParameter
  */
 public enum ComparisonOperator {
 
