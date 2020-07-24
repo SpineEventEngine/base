@@ -194,4 +194,10 @@ class ComparisonOperatorTest {
             assertThat(operator.eval(anotherOperand, nullOperand)).isFalse();
         }
     }
+
+    @Test
+    @DisplayName("return `true` for (`null` = `null`)")
+    void nullEqualsNull() {
+        assertThat(EQUALS.eval(nullRef(), nullRef())).isTrue();
+    }
 }
