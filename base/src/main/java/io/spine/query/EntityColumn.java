@@ -32,6 +32,7 @@ import io.spine.base.EntityState;
  * <p>For each message which represents an entity state and has columns, the Spine routines will
  * generate a nested {@code Column} class which exposes all columns of the entity as
  * {@code EntityColumn} instances. Example:
+ *
  * <pre>
  * // Given a message declaration.
  * message ProjectDetails {
@@ -43,7 +44,7 @@ import io.spine.base.EntityState;
  * }
  *
  * // The following Java class will be generated.
- * public final class ProjectDetails // implements Message, etc. {
+ * public final class ProjectDetails ... {
  *
  *     // ...
  *
@@ -53,10 +54,19 @@ import io.spine.base.EntityState;
  *             // Prevent instantiation.
  *         }
  *
- *          //TODO:2020-04-30:alex.tymchenko: add the docs
- *         public static io.spine.query.EntityColumn name() {...}
+ *         // Returns the "name" column.
+ *        {@literal public static EntityColumn<ProjectId, ProjectDetails> name() {...}}
  *
- *         public static io.spine.query.EntityColumn taskCount() {...}
+ *         // Returns the "task_count" column.
+ *        {@literal public static EntityColumn<ProjectId, ProjectDetails> taskCount() {...}}
+ *
+ *         // Returns all the column definitions for this type.
+ *        {@literal public static Set<EntityColumn<ProjectDetails, ?>> definitions()} {
+ *            {@literal Set<EntityColumn<ProjectDetails, ?>> result = new HashSet<>();}
+ *             result.add(name());
+ *             result.add(taskCount());
+ *             return result;
+ *        }
  *     }
  * }
  * </pre>
