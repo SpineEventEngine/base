@@ -41,7 +41,7 @@ public abstract class EntityQueryBuilder<I,
                                          Q extends EntityQuery<I, S, B>>
         extends AbstractQueryBuilder<I, S, EntitySubjectParameter<S, ?>, B, Q> {
 
-    public EntityQueryBuilder(Class<S> stateType) {
+    protected EntityQueryBuilder(Class<S> stateType) {
         super(stateType);
     }
 
