@@ -20,57 +20,78 @@
 
 package io.spine.tools.protoc;
 
-import com.google.common.truth.Correspondence;
-import io.spine.query.EntityColumn;
+import io.spine.tools.column.Project;
+import io.spine.tools.column.ProjectCreation;
 import io.spine.tools.column.ProjectView;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Method;
-
-import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.tools.protoc.given.ColumnsTestEnv.assertDoesNotContainMethod;
+import static io.spine.tools.protoc.given.ColumnsTestEnv.checkColumnName;
 
 @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
 @DisplayName("`ProtocPlugin`, when generating entity columns, should")
 class ColumnsTest {
 
-    @Test
-    @DisplayName("generate a nested `Column` class with a private c-tor")
-    void havePrivateCtor() {
-        assertHasPrivateParameterlessCtor(ProjectView.Column.class);
+    @Nested
+    @DisplayName("handle messages declared as `AGGREGATE` state and")
+    class Aggregate {
+
+        @Test
+        @DisplayName("generate a nested `Column` class with a private c-tor")
+        void havePrivateCtor() {
+            assertHasPrivateParameterlessCtor(Project.Column.class);
+        }
+
+        @Test
+        @DisplayName("generate a method which returns an `EntityColumn` for each message column")
+        void generateColumnMethods() {
+            checkColumnName(Project.Column.projectName(), "project_name");
+            checkColumnName(Project.Column.status(), "status");
+        }
     }
 
-    @Test
-    @DisplayName("generate a method which returns an `EntityColumn` for each message column")
-    void generateColumnMethods() {
-        checkColumnName(ProjectView.Column.projectName(), "project_name");
-        checkColumnName(ProjectView.Column.status(), "status");
+    @Nested
+    @DisplayName("handle messages declared as `PROJECTION` state and")
+    class Projection {
+
+        @Test
+        @DisplayName("generate a nested `Column` class with a private c-tor")
+        void havePrivateCtor() {
+            assertHasPrivateParameterlessCtor(ProjectView.Column.class);
+        }
+
+        @Test
+        @DisplayName("generate a method which returns an `EntityColumn` for each message column")
+        void generateColumnMethods() {
+            checkColumnName(ProjectView.Column.projectName(), "project_name");
+            checkColumnName(ProjectView.Column.status(), "status");
+        }
+
+        @Test
+        @DisplayName("ignore nested columns")
+        void ignoreNestedColumns() {
+            assertDoesNotContainMethod(ProjectView.Column.class, "assignee");
+            assertDoesNotContainMethod(ProjectView.Column.class, "name");
+        }
     }
 
-    @Test
-    @DisplayName("ignore nested columns")
-    void ignoreNestedColumns() {
-        assertDoesNotContainMethod(ProjectView.Column.class, "assignee");
-        assertDoesNotContainMethod(ProjectView.Column.class, "name");
-    }
+    @Nested
+    @DisplayName("handle messages declared as `PROCESS_MANAGER` state and")
+    class ProcessManager {
 
-    private static void checkColumnName(EntityColumn<?, ?> column, String expectedName) {
-        assertThat(column.name().value()).isEqualTo(expectedName);
-    }
+        @Test
+        @DisplayName("generate a nested `Column` class with a private c-tor")
+        void havePrivateCtor() {
+            assertHasPrivateParameterlessCtor(ProjectCreation.Column.class);
+        }
 
-    private static void assertDoesNotContainMethod(Class<?> type, String methodNames) {
-        Method[] methods = type.getDeclaredMethods();
-        assertThat(methods).asList()
-                           .comparingElementsUsing(nameCorrespondence())
-                           .doesNotContain(methodNames);
-    }
-
-    private static Correspondence<Method, String> nameCorrespondence() {
-        return Correspondence.from(ColumnsTest::hasName, "has name");
-    }
-
-    private static boolean hasName(Method method, String name) {
-        return name.equals(method.getName());
+        @Test
+        @DisplayName("generate a method which returns an `EntityColumn` for each message column")
+        void generateColumnMethods() {
+            checkColumnName(ProjectCreation.Column.projectName(), "project_name");
+        }
     }
 }
