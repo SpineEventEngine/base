@@ -54,6 +54,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Immutable
 public final class UuidMethodFactory implements MethodFactory {
 
+    @SuppressWarnings("DuplicateStringLiteralInspection")   // Duplicates in the generated code.
     private static final String INVALID_STRING_MESSAGE = "Invalid UUID string: %s";
 
     @Override
@@ -119,8 +120,6 @@ public final class UuidMethodFactory implements MethodFactory {
      * </pre>
      */
     private static GeneratedMethod newGenerateMethodSpec(TypeName self) {
-        //TODO:2020-06-15:alex.tymchenko: remove this warning suppression?
-//        @SuppressWarnings("DuplicateStringLiteralInspection") // local semantic: method name
         MethodSpec spec = MethodSpec
                 .methodBuilder("generate")
                 .returns(self)

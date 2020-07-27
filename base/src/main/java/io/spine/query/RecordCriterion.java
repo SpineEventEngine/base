@@ -23,7 +23,14 @@ package io.spine.query;
 import com.google.protobuf.Message;
 
 /**
- * //TODO:2020-06-23:alex.tymchenko: get rid of `I`.
+ * Sets a condition for a record column to be compared to some value.
+ *
+ * @param <I>
+ *         the type of the record identifiers
+ * @param <R>
+ *         the type of records
+ * @param <V>
+ *         the type of the values which the compared record column has
  */
 public final class RecordCriterion<I, R extends Message, V>
         extends QueryCriterion<R, V, RecordColumn<R, V>, RecordQueryBuilder<I, R>> {
