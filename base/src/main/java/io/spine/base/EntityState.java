@@ -48,7 +48,7 @@ import io.spine.annotation.GeneratedMixin;
  *         the type of entity identifiers
  * @see io.spine.code.proto.EntityStateOption
  */
-@SuppressWarnings({"unused", "InterfaceNeverImplemented"}) /* Used in the generated code. */
+@SuppressWarnings("unused") /* Used in the generated code. */
 @Immutable
 @GeneratedMixin
 @FirstGenericParameter(is = FirstMessageField.class)
