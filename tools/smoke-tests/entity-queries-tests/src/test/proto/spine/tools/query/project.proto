@@ -38,15 +38,15 @@ message ProjectView {
     //
     ProjectId project_id = 1;
 
-    ProjectName project_name = 2 [(.column) = true];
+    ProjectName project_name = 2 [(column) = true];
 
-    Project.Status status = 3 [(.column) = true];
+    Project.Status status = 3 [(column) = true];
 
     UserView assignee = 4;
 
-    int32 days_since_started = 5 [(.column) = true];
+    int32 days_since_started = 5 [(column) = true];
 
-    bool was_reassigned = 6 [(.column) = true];
+    bool was_reassigned = 6 [(column) = true];
 
     repeated string tag = 7;
 }
@@ -84,7 +84,7 @@ message UserView {
     option (entity).kind = PROJECTION;
 
     UserId id = 1;
-    UserName name = 2 [(.column) = true];
+    UserName name = 2 [(column) = true];
 }
 
 message UserId {
