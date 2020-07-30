@@ -55,10 +55,10 @@ import io.spine.base.EntityState;
  *         }
  *
  *         // Returns the "name" column.
- *        {@literal public static EntityColumn<ProjectId, ProjectDetails> name() {...}}
+ *        {@literal public static EntityColumn<ProjectDetails, ProjectName> name() {...}}
  *
  *         // Returns the "task_count" column.
- *        {@literal public static EntityColumn<ProjectId, ProjectDetails> taskCount() {...}}
+ *        {@literal public static EntityColumn<ProjectDetails, Integer> taskCount() {...}}
  *
  *         // Returns all the column definitions for this type.
  *        {@literal public static Set<EntityColumn<ProjectDetails, ?>> definitions()} {
