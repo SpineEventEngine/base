@@ -23,7 +23,7 @@ package io.spine.query.given;
 import io.spine.query.CustomColumn;
 
 /**
- * Custom columns which define entity lifecycle.
+ * Custom columns that define entity lifecycle.
  *
  * <p>Used in the smoke testing of entity query builders.
  */
@@ -39,6 +39,7 @@ public enum Lifecycle {
         this.column = column;
     }
 
+    /** Returns the column declaration. */
     public CustomColumn<?, Boolean> column() {
         return column;
     }
