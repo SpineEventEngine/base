@@ -71,7 +71,7 @@ message Manufacturer {
     // When the company was founded.
     google.protobuf.Timestamp when_founded = 3 [(required) = true];
 
-    // How many employees works in the company.
+    // How many employees work in the company.
     int32 number_of_employees = 4 [(min).value = "1"];
 
     // The type of the company as a legal entity.
