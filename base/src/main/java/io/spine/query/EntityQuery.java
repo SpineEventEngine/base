@@ -62,7 +62,10 @@ public abstract class EntityQuery<I,
      * Creates a {@link RecordQuery} instance with the same properties as this entity query.
      */
     public final RecordQuery<I, S> toRecordQuery() {
-        RecordQueryBuilder<I, S> destination = RecordQuery.newBuilder(subject().recordType());
+        Subject<I, S> subject = subject();
+        Class<I> idType = subject.idType();
+        Class<S> recordType = subject.recordType();
+        RecordQueryBuilder<I, S> destination = RecordQuery.newBuilder(idType, recordType);
         doCopyTo(destination);
         RecordQuery<I, S> result = destination.build();
         return result;

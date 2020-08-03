@@ -119,7 +119,7 @@ public final class EntityQueryBuilderSpec extends AbstractEntityQuerySpec {
                 .constructorBuilder()
                 .addJavadoc("Creates an instance of the builder.")
                 .addModifiers(PRIVATE)
-                .addStatement("super($L.class)", stateType())
+                .addStatement("super($L.class, $L.class)", idFieldType(), stateType())
                 .build();
     }
 

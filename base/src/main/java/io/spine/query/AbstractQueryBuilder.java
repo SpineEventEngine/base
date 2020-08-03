@@ -58,6 +58,8 @@ abstract class AbstractQueryBuilder<I,
                                     Q extends Query<I, R>>
         implements QueryBuilder<I, R, P, B, Q> {
 
+    private final Class<I> idType;
+
     private final Class<R> recordType;
 
     private IdParameter<I> id = IdParameter.empty();
@@ -74,7 +76,8 @@ abstract class AbstractQueryBuilder<I,
     @MonotonicNonNull
     private FieldMask mask;
 
-    AbstractQueryBuilder(Class<R> recordType) {
+    AbstractQueryBuilder(Class<I> idType, Class<R> recordType) {
+        this.idType = idType;
         this.recordType = recordType;
     }
 
@@ -86,6 +89,11 @@ abstract class AbstractQueryBuilder<I,
     @Override
     public Class<R> whichRecordType() {
         return recordType;
+    }
+
+    @Override
+    public final Class<I> whichIdType() {
+        return idType;
     }
 
     @Override

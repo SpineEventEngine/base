@@ -78,11 +78,12 @@ class RecordQueryBuilderTest {
         }
 
         @Test
-        @DisplayName("which hold the type of the queried record")
+        @DisplayName("which hold the type of the queried record and the type of its ID")
         void withRecordType() {
             RecordQuery<ManufacturerId, Manufacturer> query = manufacturerBuilder().build();
             Subject<ManufacturerId, Manufacturer> subject = query.subject();
             assertThat(subject.recordType()).isEqualTo(Manufacturer.class);
+            assertThat(subject.idType()).isEqualTo(ManufacturerId.class);
         }
 
         @Test

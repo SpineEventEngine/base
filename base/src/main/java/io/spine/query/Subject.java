@@ -49,6 +49,11 @@ public final class Subject<I, R> {
     private final Class<R> recordType;
 
     /**
+     * The type of the identifiers of the queried records.
+     */
+    private final Class<I> idType;
+
+    /**
      * Predicates, being the group of the parameters, against which the actual values
      * of target record fields are compared when querying.
      *
@@ -58,9 +63,11 @@ public final class Subject<I, R> {
     private final ImmutableList<QueryPredicate<R>> predicates;
 
     public Subject(IdParameter<I> id,
+                   Class<I> idType,
                    Class<R> recordType,
                    ImmutableList<QueryPredicate<R>> predicates) {
         this.id = checkNotNull(id);
+        this.idType = checkNotNull(idType);
         this.recordType = checkNotNull(recordType);
         this.predicates = checkNotNull(predicates);
     }
@@ -70,6 +77,13 @@ public final class Subject<I, R> {
      */
     public Class<R> recordType() {
         return recordType;
+    }
+
+    /**
+     * Returns the type of the identifiers of the queried records.
+     */
+    public Class<I> idType() {
+        return idType;
     }
 
     /**

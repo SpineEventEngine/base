@@ -54,6 +54,8 @@ public final class RecordQuery<I, R extends Message>
     /**
      * Creates a builder for this query.
      *
+     * @param idType
+     *         the type of the identifiers of the records for which the query is built
      * @param recordType
      *         the type of records for which the query is built
      * @param <I>
@@ -62,9 +64,11 @@ public final class RecordQuery<I, R extends Message>
      *         the type of the queried records
      * @return a new instance of {@code RecordQueryBuilder}
      */
-    public static <I, R extends Message> RecordQueryBuilder<I, R> newBuilder(Class<R> recordType) {
+    public static <I, R extends Message> RecordQueryBuilder<I, R>
+    newBuilder(Class<I> idType, Class<R> recordType) {
+        checkNotNull(idType);
         checkNotNull(recordType);
-        return new RecordQueryBuilder<>(recordType);
+        return new RecordQueryBuilder<>(idType, recordType);
     }
 
     /**

@@ -77,12 +77,13 @@ class EntityQueryBuilderTest {
         }
 
         @Test
-        @DisplayName("which hold the type of the queried entity state type")
+        @DisplayName("which hold the types of the queried entity state and entity ID")
         void withRecordType() {
             Subject<ProjectId, ProjectView> subject = ProjectView.newQuery()
                                                                  .build()
                                                                  .subject();
             assertThat(subject.recordType()).isEqualTo(ProjectView.class);
+            assertThat(subject.idType()).isEqualTo(ProjectId.class);
         }
 
         @Test

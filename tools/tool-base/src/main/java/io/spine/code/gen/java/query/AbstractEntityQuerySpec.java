@@ -54,6 +54,9 @@ abstract class AbstractEntityQuerySpec implements GeneratedTypeSpec {
         return messageType.javaPackage();
     }
 
+    /**
+     * Returns the declaration of the entity identifier field.
+     */
     final EntityIdField idField() {
         return idField;
     }
@@ -67,14 +70,23 @@ abstract class AbstractEntityQuerySpec implements GeneratedTypeSpec {
         return JavaPoetName.of(idField.declaration()).value().box();
     }
 
+    /**
+     * Returns the type name of the entity state.
+     */
     final TypeName stateType() {
         return JavaPoetName.of(messageType).value();
     }
 
+    /**
+     * Returns the type name of the currently generated {@code QueryBuilder}.
+     */
     static JavaPoetName queryBuilderType() {
         return queryBuilderType;
     }
 
+    /**
+     * Returns the name of the currently generated {@code Query} type.
+     */
     static JavaPoetName queryType() {
         return queryType;
     }

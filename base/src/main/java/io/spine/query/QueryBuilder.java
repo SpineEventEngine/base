@@ -60,6 +60,11 @@ public interface QueryBuilder<I,
     Class<R> whichRecordType();
 
     /**
+     * Returns the type of the identifiers for the queried records.
+     */
+    Class<I> whichIdType();
+
+    /**
      * Returns the criterion for the record identifiers.
      */
     IdParameter<I> whichIds();

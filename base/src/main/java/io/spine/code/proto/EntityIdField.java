@@ -61,10 +61,16 @@ public final class EntityIdField {
         return new EntityIdField(declaration);
     }
 
+    /**
+     * Returns the declaration of the field in scope of the Protobuf message.
+     */
     public FieldDeclaration declaration() {
         return declaration;
     }
 
+    /**
+     * Returns the name of the ID field.
+     */
     public FieldName name() {
         return declaration.name();
     }

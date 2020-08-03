@@ -29,7 +29,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Defines the values of {@link Subject} subject identifiers.
  *
  * @param <I>
- *         the type of the identifers
+ *         the type of the identifiers
  */
 @Immutable(containerOf = "I")
 public final class IdParameter<I> {

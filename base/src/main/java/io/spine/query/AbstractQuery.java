@@ -80,6 +80,7 @@ abstract class AbstractQuery<I, R extends Message, P extends SubjectParameter<R,
      */
     AbstractQuery(AbstractQueryBuilder<I, R, P, ?, ?> builder) {
         this.subject = new Subject<>(builder.whichIds(),
+                                     builder.whichIdType(),
                                      builder.whichRecordType(),
                                      builder.predicates());
         this.ordering = checkNotNull(builder.ordering());

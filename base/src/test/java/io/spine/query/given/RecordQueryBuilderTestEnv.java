@@ -53,7 +53,7 @@ public final class RecordQueryBuilderTestEnv {
      * for the {@link Manufacturer} record message.
      */
     public static RecordQueryBuilder<ManufacturerId, Manufacturer> manufacturerBuilder() {
-        return RecordQuery.newBuilder(Manufacturer.class);
+        return RecordQuery.newBuilder(ManufacturerId.class, Manufacturer.class);
     }
 
     /**

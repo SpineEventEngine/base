@@ -39,8 +39,8 @@ public class RecordQueryBuilder<I, R extends Message>
                                      RecordQueryBuilder<I, R>,
                                      RecordQuery<I, R>> {
 
-    protected RecordQueryBuilder(Class<R> type) {
-        super(type);
+    protected RecordQueryBuilder(Class<I> idType, Class<R> recordType) {
+        super(idType, recordType);
     }
 
     @Override
