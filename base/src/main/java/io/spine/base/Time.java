@@ -27,6 +27,7 @@ import io.spine.annotation.Internal;
 import javax.annotation.concurrent.ThreadSafe;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.concurrent.TimeUnit.MICROSECONDS;
@@ -149,12 +150,14 @@ public final class Time {
 
         @Override
         public Timestamp currentTime() {
-            Instant now = Instant.now();
+            Instant now = Instant.now()
+                                 .truncatedTo(ChronoUnit.MILLIS);
             int nanosOnly = IncrementalNanos.valueForTime(now);
-            Timestamp result = Timestamp.newBuilder()
-                                        .setSeconds(now.getEpochSecond())
-                                        .setNanos(now.getNano() + nanosOnly)
-                                        .build();
+            Timestamp result = Timestamp
+                    .newBuilder()
+                    .setSeconds(now.getEpochSecond())
+                    .setNanos(now.getNano() + nanosOnly)
+                    .build();
             return result;
         }
     }
