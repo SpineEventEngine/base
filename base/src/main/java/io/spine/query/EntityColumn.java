@@ -78,7 +78,7 @@ import io.spine.base.EntityState;
  * types are generated.
  *
  * @param <S> the type of the state of the {@code Entity}
- * @param <V> the type of the column type
+ * @param <V> the type of the column value
  */
 @Immutable
 public final class EntityColumn<S extends EntityState<?>, V> extends RecordColumn<S, V> {
