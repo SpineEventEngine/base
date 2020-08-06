@@ -20,7 +20,7 @@
 
 package io.spine.annotation;
 
-import io.spine.protobuf.ReadFieldType;
+import io.spine.protobuf.DetermineType;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -31,6 +31,8 @@ import java.lang.annotation.Target;
 
 /**
  * Instructs the model compiler how to treat the first generic parameter of the marked type.
+ *
+ * <p>Designed to be used along with the marker interfaces for Protobuf types.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
@@ -40,7 +42,8 @@ import java.lang.annotation.Target;
 public @interface FirstGenericParameter {
 
     /**
-     * Returns the class of the function, which would read the type of the field.
+     * Returns the class of the function, which would determine the type of the parameter based on
+     * the type of the Protobuf message marked with the annotated interface.
      */
-    Class<? extends ReadFieldType> is();
+    Class<? extends DetermineType> is();
 }

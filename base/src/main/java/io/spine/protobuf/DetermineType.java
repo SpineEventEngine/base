@@ -20,14 +20,21 @@
 
 package io.spine.protobuf;
 
+import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.type.MessageType;
 
 import java.util.function.Function;
 
 /**
- * Reads the type of one of the fields declared by some {@link MessageType}.
+ * A function returning a class name based on a given {@link MessageType}.
+ *
+ * <p>Used to determine the value of the generic parameters of the Spine interfaces appended
+ * to the Proto-generated Java code.
+ *
+ * @see io.spine.annotation.FirstGenericParameter
  */
+@Internal
 @FunctionalInterface
-public interface ReadFieldType extends Function<MessageType, ClassName> {
+public interface DetermineType extends Function<MessageType, ClassName> {
 }

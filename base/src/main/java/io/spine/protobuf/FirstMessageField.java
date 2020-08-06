@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.protobuf;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.Primitives;
@@ -27,7 +27,6 @@ import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.ScalarType;
-import io.spine.protobuf.ReadFieldType;
 import io.spine.type.MessageType;
 
 import java.util.Optional;
@@ -38,14 +37,10 @@ import static com.google.common.base.Preconditions.checkState;
  * Reads the type of the first field for a given Protobuf message type.
  *
  * <p>If the type is a primitive type, the corresponding Java wrapper type is returned.
- *
- * @apiNote This class is designed to be {@code public}, as it is being accessed via
- *         reflection upon the processing of {@link io.spine.annotation.FirstGenericParameter
- *         FirstGenericParameter} annotation.
  */
 @Internal
 @Immutable
-public final class FirstMessageField implements ReadFieldType {
+public final class FirstMessageField implements DetermineType {
 
     @Override
     public ClassName apply(MessageType type) {

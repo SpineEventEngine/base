@@ -23,7 +23,7 @@ package io.spine.tools.protoc.iface;
 import com.google.common.collect.ImmutableList;
 import io.spine.annotation.FirstGenericParameter;
 import io.spine.code.java.ClassName;
-import io.spine.protobuf.ReadFieldType;
+import io.spine.protobuf.DetermineType;
 import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.PredefinedTypeParameter;
@@ -94,9 +94,9 @@ abstract class InterfaceGenerationTask implements CodeGenerationTask {
     detectParameter(MessageType type, FirstGenericParameter annotation) {
         Optional<TypeParameter> firstParameter;
         try {
-            Class<? extends ReadFieldType> fieldTypeDetector = annotation.is();
-            Constructor<? extends ReadFieldType> ctor = fieldTypeDetector.getConstructor();
-            ReadFieldType detector = ctor.newInstance();
+            Class<? extends DetermineType> fieldTypeDetector = annotation.is();
+            Constructor<? extends DetermineType> ctor = fieldTypeDetector.getConstructor();
+            DetermineType detector = ctor.newInstance();
             ClassName value = detector.apply(type);
             firstParameter = Optional.of(new PredefinedTypeParameter(value));
 
