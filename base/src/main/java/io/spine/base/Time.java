@@ -27,7 +27,6 @@ import io.spine.annotation.Internal;
 import javax.annotation.concurrent.ThreadSafe;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.concurrent.TimeUnit.MICROSECONDS;
@@ -141,6 +140,8 @@ public final class Time {
     @VisibleForTesting
     static class SystemTimeProvider implements Provider {
 
+        public static final int NANOSECONDS_IN_MILLISECOND = 1_000_000;
+
         @VisibleForTesting
         static final Provider INSTANCE = new SystemTimeProvider();
 
@@ -150,13 +151,14 @@ public final class Time {
 
         @Override
         public Timestamp currentTime() {
-            Instant now = Instant.now()
-                                 .truncatedTo(ChronoUnit.MILLIS);
-            int nanosOnly = IncrementalNanos.valueForTime(now);
+            long millis = System.currentTimeMillis();
+            long seconds = (millis / 1000);
+            int nanos = (int) (millis % 1000) * NANOSECONDS_IN_MILLISECOND;
+            int nanosOnly = IncrementalNanos.valueForTime(seconds, nanos);
             Timestamp result = Timestamp
                     .newBuilder()
-                    .setSeconds(now.getEpochSecond())
-                    .setNanos(now.getNano() + nanosOnly)
+                    .setSeconds(seconds)
+                    .setNanos(nanos + nanosOnly)
                     .build();
             return result;
         }
@@ -199,25 +201,27 @@ public final class Time {
         private static final IncrementalNanos instance = new IncrementalNanos();
 
         private int counter;
-        private Instant previousValue;
 
-        private synchronized int getNextValue(Instant forTime) {
-            if (forTime.equals(previousValue)) {
-                previousValue = forTime;
+        private long previousSeconds;
+        private int previousNanos;
+
+        private synchronized int getNextValue(long seconds, int nanos) {
+            if (previousSeconds == seconds && previousNanos == nanos) {
                 counter += NANOS_PER_MICROSECOND;
                 counter = counter % MAX_VALUE;
             } else {
-                previousValue = forTime;
                 counter = 0;
             }
+            previousSeconds = seconds;
+            previousNanos = nanos;
             return counter;
         }
 
         /**
          * Obtains the next nanosecond value.
          */
-        static int valueForTime(Instant forTime) {
-            return instance.getNextValue(forTime);
+        static int valueForTime(long seconds, int nanos) {
+            return instance.getNextValue(seconds, nanos);
         }
     }
 }
