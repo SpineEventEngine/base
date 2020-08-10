@@ -319,4 +319,17 @@ class RecordQueryBuilderTest {
             );
         }
     }
+
+    @Test
+    @DisplayName("allow transforming the built `RecordQuery` instance" +
+            " into an object of choice in the same call chain")
+    void transform() {
+        int predicateSize = manufacturerBuilder()
+                .where(isTraded)
+                .is(false)
+                .build((q) -> q.subject()
+                               .predicates()
+                               .size());
+        assertThat(predicateSize).isEqualTo(1);
+    }
 }

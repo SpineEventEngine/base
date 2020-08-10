@@ -23,6 +23,10 @@ package io.spine.query;
 import com.google.protobuf.Message;
 import io.spine.annotation.SPI;
 
+import java.util.function.Function;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * A builder for {@link RecordQuery}.
  *
@@ -32,14 +36,14 @@ import io.spine.annotation.SPI;
  *         the type of the queried records
  */
 @SPI
-public class RecordQueryBuilder<I, R extends Message>
+public final class RecordQueryBuilder<I, R extends Message>
         extends AbstractQueryBuilder<I,
                                      R,
                                      RecordSubjectParameter<R, ?>,
                                      RecordQueryBuilder<I, R>,
                                      RecordQuery<I, R>> {
 
-    protected RecordQueryBuilder(Class<I> idType, Class<R> recordType) {
+    RecordQueryBuilder(Class<I> idType, Class<R> recordType) {
         super(idType, recordType);
     }
 
@@ -58,6 +62,26 @@ public class RecordQueryBuilder<I, R extends Message>
     @Override
     public RecordQuery<I, R> build() {
         return new RecordQuery<>(this);
+    }
+
+    /**
+     * Builds a query on top of this record query builder and transforms it according
+     * to the logic of the passed transformer.
+     *
+     * <p>This method is a syntax sugar for a convenient method chaining for those who wishes to use
+     * the produced query in their own transformation flow.
+     *
+     * @param transformer
+     *         function transforming the query
+     * @param <T>
+     *         the type of the resulting object
+     * @return a transformed query instance
+     */
+    public <T> T build(Function<RecordQuery<?, ?>, T> transformer) {
+        checkNotNull(transformer);
+        RecordQuery<I, R> query = build();
+        T result = transformer.apply(query);
+        return result;
     }
 
     /**

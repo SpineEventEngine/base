@@ -22,6 +22,10 @@ package io.spine.query;
 
 import io.spine.base.EntityState;
 
+import java.util.function.Function;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * An abstract base for builders of an {@code EntityQuery} for a particular entity state type.
  *
@@ -67,5 +71,25 @@ public abstract class EntityQueryBuilder<I,
     public final <V> B where(CustomColumn<?, V> column, V value) {
         return column.in(thisRef())
                      .is(value);
+    }
+
+    /**
+     * Builds a query on top of this entity query builder and transforms it according
+     * to the logic of the passed transformer.
+     *
+     * <p>This method is a syntax sugar for a convenient method chaining for those who wishes to use
+     * the produced query in their own transformation flow.
+     *
+     * @param transformer
+     *         function transforming the query
+     * @param <T>
+     *         the type of the resulting object
+     * @return a transformed query instance
+     */
+    public final <T> T build(Function<EntityQuery<?, ?, ?>, T> transformer) {
+        checkNotNull(transformer);
+        Q query = build();
+        T result = transformer.apply(query);
+        return result;
     }
 }

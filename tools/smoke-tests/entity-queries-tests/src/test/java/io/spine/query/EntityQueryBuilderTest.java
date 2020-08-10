@@ -330,4 +330,18 @@ class EntityQueryBuilderTest {
                     );
         }
     }
+
+    @Test
+    @DisplayName("allow transforming the built `EntityQuery` instance into an object of choice" +
+            " in the same call chain")
+    void transform() {
+        int predicateSize = ProjectView
+                .newQuery()
+                .status()
+                .isNot(CREATED)
+                .build((q) -> q.subject()
+                               .predicates()
+                               .size());
+        assertThat(predicateSize).isEqualTo(1);
+    }
 }
