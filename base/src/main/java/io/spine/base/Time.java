@@ -195,8 +195,8 @@ public final class Time {
      * <p>The returned nanosecond value starts at {@code 0} and never exceeds {@code 999 999}.
      * It is designed to keep the millisecond value provided by a typical-JVM system clock intact.
      *
-     * <p>The nanosecond value is reset for each new passed {@code seconds} and {@code nanos} values.
-     * That allows to receive {@code 1 000} distinct time values per millisecond.
+     * <p>The nanosecond value is reset for each new passed {@code seconds} and {@code nanos}
+     * values. That allows to receive {@code 1 000} distinct time values per millisecond.
      *
      * <p>In case the upper bound of the nanos is reached, meaning that there were more than
      * {@code 1 000} calls to this class within a millisecond, the nanosecond value is reset
