@@ -30,6 +30,7 @@ import java.time.ZoneId;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.concurrent.TimeUnit.MICROSECONDS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * Utilities for working with time information.
@@ -140,8 +141,6 @@ public final class Time {
     @VisibleForTesting
     static class SystemTimeProvider implements Provider {
 
-        public static final int NANOSECONDS_IN_MILLISECOND = 1_000_000;
-
         @VisibleForTesting
         static final Provider INSTANCE = new SystemTimeProvider();
 
@@ -165,7 +164,8 @@ public final class Time {
         public Timestamp currentTime() {
             long millis = System.currentTimeMillis();
             long seconds = (millis / 1000);
-            int nanos = (int) (millis % 1000) * NANOSECONDS_IN_MILLISECOND;
+            @SuppressWarnings("NumericCastThatLosesPrecision")
+            int nanos = (int) (millis % 1000) * (int) MILLISECONDS.toNanos(1);
             int nanosOnly = IncrementalNanos.valueForTime(seconds, nanos);
             Timestamp result = Timestamp
                     .newBuilder()
