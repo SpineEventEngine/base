@@ -153,12 +153,13 @@ public final class Time {
          * {@inheritDoc}
          *
          * <p>Starting from Java 9 the precision of time may differ from platform to platform and
-         * depends on the underlying clock used by the JVM, the
-         * <a href='https://bugs.openjdk.java.net/browse/JDK-8068730'>issue</a> on this in the
-         * JDK bug system. To be consistent on different platforms and use {@link IncrementalNanos}
-         * without risk of overflowing the {@code nano} values this method intentionally calculates
-         * time in millisecond precision even if the underlying clock may offer more precise
-         * values.
+         * depends on the underlying clock used by the JVM. See the corresponding
+         * <a href='https://bugs.openjdk.java.net/browse/JDK-8068730'>issue</a> on this matter.
+         *
+         * <p>In order to provide consistent behavior on different platforms and avoid the overflow
+         * of the emulated nanosecond value, this method intentionally uses the system time
+         * in millisecond precision. Therefore even if the system clock may offer more precise
+         * values, the {@code System.currentTimeMillis()} is used as a base for the returned values.
          */
         @Override
         public Timestamp currentTime() {
@@ -194,8 +195,7 @@ public final class Time {
      * <p>The returned nanosecond value starts at {@code 0} and never exceeds {@code 999 999}.
      * It is designed to keep the millisecond value provided by a typical-JVM system clock intact.
      *
-     * <p>The nanosecond value is reset for each new passed {@code seconds} and {@code nanos}
-     * values.
+     * <p>The nanosecond value is reset for each new passed {@code seconds} and {@code nanos} values.
      * That allows to receive {@code 1 000} distinct time values per millisecond.
      *
      * <p>In case the upper bound of the nanos is reached, meaning that there were more than
