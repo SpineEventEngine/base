@@ -27,6 +27,7 @@ import com.google.protobuf.FieldMask;
 import io.spine.tools.query.Project;
 import io.spine.tools.query.ProjectId;
 import io.spine.tools.query.ProjectView;
+import io.spine.tools.query.ProjectView.Field;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -183,6 +184,41 @@ class EntityQueryBuilderTest {
                                                  .withMask(mask)
                                                  .build();
             assertThat(query.mask()).isEqualTo(mask);
+        }
+
+        @Test
+        @DisplayName("with the field mask defined by the paths")
+        @SuppressWarnings("DuplicateStringLiteralInspection")   /* Field names just for tests. */
+        void withMaskPaths() {
+            String status = "status";
+            String assignee = "assignee";
+            ProjectView.Query query = ProjectView
+                    .newQuery()
+                    .withMask(status, assignee)
+                    .build();
+            FieldMask expected = FieldMask.newBuilder()
+                                          .addPaths(status)
+                                          .addPaths(assignee)
+                                          .build();
+            assertThat(query.mask()).isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("with the field mask defined by the generated `Field`s")
+        @SuppressWarnings("DuplicateStringLiteralInspection")   /* Field names just for tests. */
+        void withMaskDefinedByFields() {
+            ProjectView.Query query = ProjectView
+                    .newQuery()
+                    .withMask(Field.status()
+                                   .getField(),
+                              Field.assignee()
+                                   .getField())
+                    .build();
+            FieldMask expected = FieldMask.newBuilder()
+                                          .addPaths("status")
+                                          .addPaths("assignee")
+                                          .build();
+            assertThat(query.mask()).isEqualTo(expected);
         }
 
         @Test

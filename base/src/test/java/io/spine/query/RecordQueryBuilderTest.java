@@ -179,10 +179,27 @@ class RecordQueryBuilderTest {
         @DisplayName("with the field mask")
         void withFieldMask() {
             FieldMask mask = fieldMaskWith(isTraded);
-            RecordQuery<ManufacturerId, Manufacturer> query = manufacturerBuilder().withMask(mask)
-                                                                                   .build();
+            RecordQuery<ManufacturerId, Manufacturer> query =
+                    manufacturerBuilder().withMask(mask)
+                                         .build();
 
             assertThat(query.mask()).isEqualTo(mask);
+        }
+
+        @Test
+        @DisplayName("with the field mask defined by the paths")
+        @SuppressWarnings("DuplicateStringLiteralInspection")   /* Field names just for tests. */
+        void withMaskPaths() {
+            String isin = "isin";
+            String whenFounded = "when_founded";
+            RecordQuery<ManufacturerId, Manufacturer> query =
+                    manufacturerBuilder().withMask(isin, whenFounded)
+                                         .build();
+            FieldMask expected = FieldMask.newBuilder()
+                                          .addPaths(isin)
+                                          .addPaths(whenFounded)
+                                          .build();
+            assertThat(query.mask()).isEqualTo(expected);
         }
 
         @Test
@@ -316,7 +333,7 @@ class RecordQueryBuilderTest {
                                             .ordering())
                     .isEqualTo(ImmutableList.of(new OrderBy<>(isin, DESC),
                                                 new OrderBy<>(whenFounded, ASC))
-            );
+                    );
         }
     }
 

@@ -25,6 +25,7 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
+import io.spine.base.Field;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Optional;
@@ -118,10 +119,34 @@ public interface QueryBuilder<I,
      *
      * <p>If the mask is not set, the query results contain the records as-is.
      *
+     * <p>Any previously set mask values are overridden by this method call.
+     *
      * @return this instance of query builder, for chaining
      */
     @CanIgnoreReturnValue
     B withMask(FieldMask mask);
+
+    /**
+     * Sets the paths for the field mask to apply to each of the resulting records.
+     *
+     * <p>If the mask is not set, the query results contain the records as-is.
+     *
+     * <p>Any previously set mask values are overridden by this method call.
+     *
+     * @return this instance of query builder, for chaining
+     */
+    B withMask(String ...maskPaths);
+
+    /**
+     * Sets the fields to apply as a field mask to each of the resulting records.
+     *
+     * <p>If the mask is not set, the query results contain the records as-is.
+     *
+     * <p>Any previously set mask values are overridden by this method call.
+     *
+     * @return this instance of query builder, for chaining
+     */
+    B withMask(Field...fields);
 
     /**
      * Adds an ordering directive.

@@ -25,14 +25,18 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
+import io.spine.base.Field;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static com.google.protobuf.util.FieldMaskUtil.fromStringList;
 import static io.spine.query.LogicalOperator.AND;
 import static io.spine.query.LogicalOperator.OR;
 import static io.spine.util.Preconditions2.checkPositive;
@@ -141,6 +145,25 @@ abstract class AbstractQueryBuilder<I,
     public final B withMask(FieldMask mask) {
         this.mask = checkNotNull(mask);
         return thisRef();
+    }
+
+    @Override
+    @CanIgnoreReturnValue
+    public final B withMask(String ...maskPaths) {
+        Class<R> recordType = whichRecordType();
+        FieldMask fieldMask = fromStringList(recordType, ImmutableList.copyOf(maskPaths));
+        return withMask(fieldMask);
+    }
+
+    @Override
+    @CanIgnoreReturnValue
+    public final B withMask(Field...fields) {
+        ImmutableList<String> paths = Arrays.stream(fields)
+                                              .map(Field::toString)
+                                              .collect(toImmutableList());
+        Class<R> recordType = whichRecordType();
+        FieldMask fieldMask = fromStringList(recordType, paths);
+        return withMask(fieldMask);
     }
 
     @Override
