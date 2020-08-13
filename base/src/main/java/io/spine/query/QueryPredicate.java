@@ -31,7 +31,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Joins the {@linkplain SubjectParameter subject parameters} with
- * {@linkplain LogicalOperator logical operators}.
+ * a {@linkplain LogicalOperator logical operator}.
  *
  * @param <R> the type of the record which is stored for subject
  */
@@ -43,14 +43,12 @@ public final class QueryPredicate<R> {
     private final LogicalOperator operator;
 
     /**
-     * The list of parameters, each joined with the rest of parameters (including the custom params)
-     * with the same logical operator.
+     * The list of parameters which target the columns of the stored record subject.
      */
     private final ImmutableList<SubjectParameter<R, ?, ?>> parameters;
 
     /**
-     * The list of parameters, each joined with the rest of parameters
-     * with the same logical operator.
+     * The list of custom parameters targeting the custom columns of the stored subject.
      */
     private final ImmutableList<CustomSubjectParameter<?, ?>> customParameters;
 
@@ -82,17 +80,28 @@ public final class QueryPredicate<R> {
     }
 
     /**
-     * Returns the list of parameters of this {@code Predicate}.
+     * Returns the parameters of this {@code Predicate} which target the record columns.
      */
     public ImmutableList<SubjectParameter<R, ?, ?>> parameters() {
         return parameters;
     }
 
     /**
-     * Returns the list of custom parameters of this {@code Predicate}.
+     * Returns the parameters of this {@code Predicate} which target the custom columns.
      */
     public ImmutableList<CustomSubjectParameter<?, ?>> customParameters() {
         return customParameters;
+    }
+
+    /**
+     * Returns the list of all parameters of this predicate, including both
+     * {@linkplain #parameters() targeting the own record columns}
+     * and those {@linkplain #customParameters() defined for the custom columns} of the subject.
+     */
+    public ImmutableList<SubjectParameter<?, ?, ?>> allParams() {
+        return ImmutableList.<SubjectParameter<?, ?, ?>>builder()
+                .addAll(parameters())
+                .addAll(customParameters()).build();
     }
 
     @Override
