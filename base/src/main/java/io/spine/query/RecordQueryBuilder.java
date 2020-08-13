@@ -36,14 +36,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *         the type of the queried records
  */
 @SPI
-public final class RecordQueryBuilder<I, R extends Message>
+public class RecordQueryBuilder<I, R extends Message>
         extends AbstractQueryBuilder<I,
                                      R,
                                      RecordSubjectParameter<R, ?>,
                                      RecordQueryBuilder<I, R>,
                                      RecordQuery<I, R>> {
 
-    RecordQueryBuilder(Class<I> idType, Class<R> recordType) {
+    protected RecordQueryBuilder(Class<I> idType, Class<R> recordType) {
         super(idType, recordType);
     }
 
