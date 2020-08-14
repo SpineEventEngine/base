@@ -35,7 +35,6 @@ import static io.spine.query.ComparisonOperator.GREATER_OR_EQUALS;
 import static io.spine.query.ComparisonOperator.GREATER_THAN;
 import static io.spine.query.ComparisonOperator.LESS_OR_EQUALS;
 import static io.spine.query.ComparisonOperator.LESS_THAN;
-import static io.spine.query.ComparisonOperator.NOT_EQUALS;
 import static io.spine.testing.Tests.nullRef;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -64,22 +63,6 @@ class ComparisonOperatorTest {
         void equalToFalse(Object left, Object right) {
             assertThat(EQUALS.eval(left, right)).isFalse();
             assertThat(EQUALS.eval(right, left)).isFalse();
-        }
-
-        @ParameterizedTest
-        @MethodSource("io.spine.query.given.ComparisonOperatorTestEnv#notEqualValues")
-        @DisplayName("(A != B) is `true`")
-        void notEqualTrue(Object left, Object right) {
-            assertThat(NOT_EQUALS.eval(left, right)).isTrue();
-            assertThat(NOT_EQUALS.eval(right, left)).isTrue();
-        }
-
-        @ParameterizedTest
-        @MethodSource("io.spine.query.given.ComparisonOperatorTestEnv#equalValues")
-        @DisplayName("(A != A) is `false`")
-        void notEqualFalse(Object left, Object right) {
-            assertThat(NOT_EQUALS.eval(left, right)).isFalse();
-            assertThat(NOT_EQUALS.eval(right, left)).isFalse();
         }
 
         @ParameterizedTest

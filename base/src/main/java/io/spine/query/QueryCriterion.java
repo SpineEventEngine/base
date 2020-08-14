@@ -28,7 +28,6 @@ import static io.spine.query.ComparisonOperator.GREATER_OR_EQUALS;
 import static io.spine.query.ComparisonOperator.GREATER_THAN;
 import static io.spine.query.ComparisonOperator.LESS_OR_EQUALS;
 import static io.spine.query.ComparisonOperator.LESS_THAN;
-import static io.spine.query.ComparisonOperator.NOT_EQUALS;
 
 /**
  * Expression which sets some restriction to the value of a record column when querying the records.
@@ -78,19 +77,6 @@ abstract class QueryCriterion<R extends Message,
     public B is(V value) {
         checkNotNull(value);
         return addParameter(builder, column, EQUALS, value);
-    }
-
-    /**
-     * Appends an associated query builder with a criterion checking that the value
-     * of the associated column does not equal to the one provided.
-     *
-     * @param value
-     *         the column value to use when querying
-     * @return the instance of query builder associated with this criterion
-     */
-    public B isNot(V value) {
-        checkNotNull(value);
-        return addParameter(builder, column, NOT_EQUALS, value);
     }
 
     /**

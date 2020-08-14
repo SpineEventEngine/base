@@ -38,7 +38,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.query.ComparisonOperator.EQUALS;
 import static io.spine.query.ComparisonOperator.GREATER_THAN;
 import static io.spine.query.ComparisonOperator.LESS_THAN;
-import static io.spine.query.ComparisonOperator.NOT_EQUALS;
 import static io.spine.query.Direction.ASC;
 import static io.spine.query.Direction.DESC;
 import static io.spine.query.LogicalOperator.AND;
@@ -317,7 +316,7 @@ class EntityQueryBuilderTest {
             ProjectView.Query query = ProjectView
                     .newQuery()
                     .status()
-                    .isNot(statusValue)
+                    .is(statusValue)
                     .daysSinceStarted()
                     .isGreaterThan(daysSinceStarted)
                     .build();
@@ -328,7 +327,7 @@ class EntityQueryBuilderTest {
             assertThat(predicate.operator()).isEqualTo(AND);
 
             ImmutableList<SubjectParameter<ProjectView, ?, ?>> parameters = predicate.parameters();
-            assertHasParamValue(parameters, status(), NOT_EQUALS, statusValue);
+            assertHasParamValue(parameters, status(), EQUALS, statusValue);
             assertHasParamValue(parameters, daysSinceStarted(), GREATER_THAN, daysSinceStarted);
         }
 
@@ -374,7 +373,7 @@ class EntityQueryBuilderTest {
         int predicateSize = ProjectView
                 .newQuery()
                 .status()
-                .isNot(CREATED)
+                .is(CREATED)
                 .build((q) -> q.subject()
                                .predicates()
                                .size());

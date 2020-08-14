@@ -56,16 +56,6 @@ public enum ComparisonOperator {
     },
 
     /**
-     * The actual value must be different from the value of the subject parameter.
-     */
-    NOT_EQUALS {
-        @Override
-        public boolean eval(@Nullable Object left, @Nullable Object right) {
-            return !EQUALS.eval(right, left);
-        }
-    },
-
-    /**
      * The actual value must be less than the value of the subject parameter.
      */
     LESS_THAN {

@@ -39,7 +39,6 @@ import static io.spine.query.ComparisonOperator.EQUALS;
 import static io.spine.query.ComparisonOperator.GREATER_OR_EQUALS;
 import static io.spine.query.ComparisonOperator.LESS_OR_EQUALS;
 import static io.spine.query.ComparisonOperator.LESS_THAN;
-import static io.spine.query.ComparisonOperator.NOT_EQUALS;
 import static io.spine.query.Direction.ASC;
 import static io.spine.query.Direction.DESC;
 import static io.spine.query.LogicalOperator.AND;
@@ -123,7 +122,7 @@ class RecordQueryBuilderTest {
             String isinValue = "JP 3633400001";
             RecordQuery<ManufacturerId, Manufacturer> query =
                     manufacturerBuilder().where(isin)
-                                         .isNot(isinValue)
+                                         .is(isinValue)
                                          .where(whenFounded)
                                          .isLessOrEqualTo(THURSDAY)
                                          .where(isTraded)
@@ -138,7 +137,7 @@ class RecordQueryBuilderTest {
 
             ImmutableList<SubjectParameter<Manufacturer, ?, ?>> params = predicate.parameters();
             assertThat(params).hasSize(3);
-            assertHasParamValue(params, isin, NOT_EQUALS, isinValue);
+            assertHasParamValue(params, isin, EQUALS, isinValue);
             assertHasParamValue(params, whenFounded, LESS_OR_EQUALS, THURSDAY);
             assertHasParamValue(params, isTraded, EQUALS, stocksAreTraded);
         }
@@ -240,7 +239,7 @@ class RecordQueryBuilderTest {
                     manufacturerBuilder().where(whenFounded)
                                          .isGreaterThan(THURSDAY)
                                          .where(isin)
-                                         .isNot("JP 49869009911")
+                                         .is("JP 49869009911")
                                          .orderBy(whenFounded, ASC)
                                          .limit(150);
             RecordQuery<ManufacturerId, Manufacturer> query = builder.build();
@@ -293,7 +292,7 @@ class RecordQueryBuilderTest {
             String isinValue = "JP 3496600002";
             List<QueryPredicate<Manufacturer>> predicates =
                     manufacturerBuilder().where(isin)
-                                         .isNot(isinValue)
+                                         .is(isinValue)
                                          .where(whenFounded)
                                          .isGreaterOrEqualTo(THURSDAY)
                                          .predicates();
@@ -302,7 +301,7 @@ class RecordQueryBuilderTest {
             assertThat(predicate.operator()).isEqualTo(AND);
 
             ImmutableList<SubjectParameter<Manufacturer, ?, ?>> parameters = predicate.parameters();
-            assertHasParamValue(parameters, isin, NOT_EQUALS, isinValue);
+            assertHasParamValue(parameters, isin, EQUALS, isinValue);
             assertHasParamValue(parameters, whenFounded, GREATER_OR_EQUALS, THURSDAY);
         }
 

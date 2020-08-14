@@ -23,7 +23,6 @@ package io.spine.query.given;
 import com.google.protobuf.FieldMask;
 import io.spine.query.Either;
 import io.spine.tools.query.ProjectId;
-import io.spine.tools.query.ProjectName;
 import io.spine.tools.query.ProjectView;
 
 import static io.spine.query.Direction.ASC;
@@ -47,7 +46,6 @@ public final class EntityQueryTestEnv {
      * Produces an entity query which has all its fields set.
      */
     public static ProjectView.Query givenQuery() {
-        ProjectName empty = ProjectName.getDefaultInstance();
         Either<ProjectView.QueryBuilder> startedMoreThanMonthAgo = b -> b.daysSinceStarted()
                                                                          .isGreaterThan(30);
         Either<ProjectView.QueryBuilder> isDone = b -> b.status()
@@ -60,8 +58,6 @@ public final class EntityQueryTestEnv {
                            .in(ProjectId.generate(), ProjectId.generate())
                            .where(ARCHIVED.column(), false)
                            .either(startedMoreThanMonthAgo, isDone, isDeleted)
-                           .projectName()
-                           .isNot(empty)
                            .orderBy(projectName(), ASC)
                            .orderBy(daysSinceStarted(), DESC)
                            .limit(10)
