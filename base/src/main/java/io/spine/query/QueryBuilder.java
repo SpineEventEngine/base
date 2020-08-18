@@ -135,6 +135,7 @@ public interface QueryBuilder<I,
      *
      * @return this instance of query builder, for chaining
      */
+    @SuppressWarnings("OverloadedVarargsMethod")    // Each overload has a different parameter type.
     B withMask(String ...maskPaths);
 
     /**
@@ -146,6 +147,7 @@ public interface QueryBuilder<I,
      *
      * @return this instance of query builder, for chaining
      */
+    @SuppressWarnings("OverloadedVarargsMethod")    // Each overload has a different parameter type.
     B withMask(Field...fields);
 
     /**
