@@ -103,12 +103,12 @@ public interface QueryBuilder<I,
      * <p>Example.
      *
      * <pre>
-     *    ProjectView.newQuery()
-     *               .either(view -> view.daysSinceStarted()
-     *                                   .isGreaterThan(30),
-     *                       view -> view.status()
-     *                                   .is(DONE))
-     *               .build();
+     *     ProjectView.newQuery()
+     *                .either(builder -> builder.daysSinceStarted()
+     *                                          .isGreaterThan(30),
+     *                        builder -> builder.status()
+     *                                          .is(DONE))
+     *                .build();
      * </pre>
      *
      * <p>The {@code ProjectView} query above targets the instances which are either started
@@ -116,6 +116,55 @@ public interface QueryBuilder<I,
      *
      * <p>Each {@code Either} is a lambda serving to preserve the current {@code QueryBuilder} with
      * its API and syntax sugar for creating the new predicates, but in a disjunction context.
+     *
+     * <p>Another example.
+     *
+     * <pre>
+     *    {@literal ImmutableList<Project.Status>} statuses = //...
+     *     ProjectView.newQuery()
+     *                .either((builder) -> {
+     *                    for (Project.Status status : statuses) {
+     *                        builder.status().is(status);
+     *                    }
+     *                    return builder;
+     *                }).build();
+     * </pre>
+     *
+     * <p>This example creates a query for the {@code ProjectView} instances which have one
+     * of the expected {@code statuses}. Note that {@code either(..)} is passed with a single
+     * argument lambda. Each predicate appended to the builder inside of the passed lambda
+     * is treated as a disjunction predicate. Basically, that is just a short form of
+     * the expression as follows:
+     *
+     * <pre>
+     *    {@literal ImmutableList<Project.Status>} statuses = //...
+     *     ProjectView.newQuery()
+     *                // Performs the same as in the previous example. Much less elegant though.
+     *                .either(builder -> builder.status().is(statuses.get(0)),
+     *                        builder -> builder.status().is(statuses.get(1)),
+     *                        builder -> builder.status().is(statuses.get(2)),
+     *                        //...
+     *                        builder -> builder.status().is(statuses.get(lastOne)))
+     *                .build();
+     * </pre>
+     *
+     * <p>If several {@code Either} lambdas are passed to the {@code either(..)}, all
+     * predicates appended to the builder in them are treated together in an {@code OR} fashion.
+     *
+     * <p>You may extract lambdas into variables to simplify the code even further:
+     *
+     * <pre>
+     *    {@literal Either<ProjectView.QueryBuilder>} startedMoreThanMonthAgo =
+     *                     project -> project.daysSinceStarted()
+     *                                       .isGreaterThan(daysSinceStarted);
+     *    {@literal Either<ProjectView.QueryBuilder>} isDone =
+     *                     project -> project.status()
+     *                                       .is(statusValue);
+     *     ProjectView.Query query =
+     *             ProjectView.newQuery()
+     *                        .either(startedMoreThanMonthAgo, isDone)
+     *                        .build();
+     * </pre>
      *
      * @return this instance of query builder, for chaining
      */
