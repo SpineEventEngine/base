@@ -97,6 +97,26 @@ public interface QueryBuilder<I,
     /**
      * Adds a predicate to be treated in disjunction with the existing predicates.
      *
+     * <p>All expressions passed with every {@code Either} parameter are treated with {@code OR}
+     * behavior.
+     *
+     * <p>Example.
+     *
+     * <pre>
+     *    ProjectView.newQuery()
+     *               .either(view -> view.daysSinceStarted()
+     *                                   .isGreaterThan(30),
+     *                       view -> view.status()
+     *                                   .is(DONE))
+     *               .build();
+     * </pre>
+     *
+     * <p>The {@code ProjectView} query above targets the instances which are either started
+     * more than thirty days ago, or those which are in {@code DONE} status.
+     *
+     * <p>Each {@code Either} is a lambda serving to preserve the current {@code QueryBuilder} with
+     * its API and syntax sugar for creating the new predicates, but in a disjunction context.
+     *
      * @return this instance of query builder, for chaining
      */
     @SuppressWarnings("unchecked") // See the implementations on the varargs issue.
