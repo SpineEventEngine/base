@@ -202,7 +202,11 @@ subprojects {
         dependsOn(cleanGenerated)
     }
 
-    apply(from = Deps.scripts.pmd(project))
+    apply {
+        from(Deps.scripts.pmd(project))
+        from(Deps.scripts.updateGitHubPages(project))
+    }
+    project.tasks["publish"].dependsOn("${project.path}:updateGitHubPages")
 }
 
 apply {
