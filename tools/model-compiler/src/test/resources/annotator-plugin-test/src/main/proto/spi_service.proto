@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-package spine.test.annotator;
-
-import "spine/options.proto";
-
-service SpiService {
-    option (SPI_service) = true;
-}

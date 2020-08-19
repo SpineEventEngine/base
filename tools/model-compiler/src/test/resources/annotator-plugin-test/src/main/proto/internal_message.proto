@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-package spine.test.annotator;
-
-import "spine/options.proto";
-
-message Experimental {
-    option (internal_type) = true;
-}
