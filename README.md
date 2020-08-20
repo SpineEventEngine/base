@@ -2,6 +2,19 @@
 [![codecov](https://codecov.io/gh/SpineEventEngine/base/branch/master/graph/badge.svg)](https://codecov.io/gh/SpineEventEngine/base) &nbsp;
 [![license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0)
 
+# (!) This is 2.x `master` branch!
+
+This branch contains the changes which aren't meant to be merged to `master` 
+at least until the Spine 2.0.0 version release.
+
+The API modifications are significant and for some features the API isn't backward-compatible
+with the 1.x functionality.
+
+The codebase built on top of the `base` modules in this branch is designed for **JDK 8 runtime**.
+
+This branch must be treated as `master` for 2.x features, so the changes to it must go
+ through the PR review process.
+
 # Spine Event Engine Base
 
 This repository contains the code of foundation of the Spine Event Engine framework which includes:
