@@ -19,9 +19,9 @@ install:
   - chmod +x gradlew
 
 script:
-  - ./gradlew build check --stacktrace
+  - ./gradlew build --stacktrace
   - cd ./tools/smoke-tests
-  - ./gradlew check --stacktrace
+  - ./gradlew build --stacktrace
   - cd ../..
 
   # Decrypt and unarchive Maven and Google Cloud Storage credentials.
