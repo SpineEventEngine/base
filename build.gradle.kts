@@ -202,6 +202,7 @@ subprojects {
         dependsOn(cleanGenerated)
     }
 
+    ext["allowInternalJavadoc"] = true
     apply {
         from(Deps.scripts.pmd(project))
         from(Deps.scripts.updateGitHubPages(project))
