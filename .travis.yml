@@ -15,7 +15,7 @@ env:
     - JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"
     - PATH="$JAVA_HOME/bin:$PATH"
 
-before_install:
+install:
   - chmod +x gradlew
 
 script:
