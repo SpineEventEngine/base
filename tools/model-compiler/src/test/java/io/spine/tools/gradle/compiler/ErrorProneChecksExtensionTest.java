@@ -25,7 +25,6 @@ import org.gradle.api.plugins.ExtensionContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.TempDirectory;
 
 import java.io.File;
@@ -36,7 +35,6 @@ import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProje
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@ExtendWith(TempDirectory.class)
 @DisplayName("ErrorProneChecksExtension should")
 class ErrorProneChecksExtensionTest {
 

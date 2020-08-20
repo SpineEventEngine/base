@@ -28,9 +28,7 @@ import io.spine.code.proto.FileSet;
 import io.spine.js.generate.given.TestGenerationTask;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
-import org.junitpioneer.jupiter.TempDirectory.TempDir;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -43,7 +41,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@ExtendWith(TempDirectory.class)
 @DisplayName("GenerationTask should")
 class GenerationTaskTest {
 

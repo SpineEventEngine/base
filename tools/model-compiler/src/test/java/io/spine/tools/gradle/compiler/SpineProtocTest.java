@@ -26,9 +26,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
-import org.junitpioneer.jupiter.TempDirectory.TempDir;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -39,7 +37,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Tests the {@code spine-protoc.gradle} plugin.
  */
-@ExtendWith(TempDirectory.class)
 @DisplayName("SpineProtoc should")
 class SpineProtocTest {
 

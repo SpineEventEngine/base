@@ -27,9 +27,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
-import org.junitpioneer.jupiter.TempDirectory.TempDir;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -49,7 +47,6 @@ import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static java.nio.file.Files.createFile;
 import static java.util.stream.Collectors.toList;
 
-@ExtendWith(TempDirectory.class)
 @DisplayName("FileDescriptorSuperset should")
 class FileDescriptorSupersetTest {
 

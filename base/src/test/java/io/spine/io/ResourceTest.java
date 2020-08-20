@@ -23,8 +23,6 @@ package io.spine.io;
 import com.google.common.io.CharStreams;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,9 +33,8 @@ import java.util.UUID;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junitpioneer.jupiter.TempDirectory.TempDir;
+import static org.junit.jupiter.api.io.TempDir;
 
-@ExtendWith(TempDirectory.class)
 @DisplayName("Resource should")
 class ResourceTest {
 

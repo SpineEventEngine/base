@@ -26,9 +26,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
-import org.junitpioneer.jupiter.TempDirectory.TempDir;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -41,7 +39,6 @@ import static io.spine.tools.gradle.GeneratedSourceSet.JAVA;
 import static io.spine.tools.gradle.GeneratedSourceSet.RESOURCES;
 import static io.spine.tools.gradle.GeneratedSourceSet.SPINE;
 
-@ExtendWith(TempDirectory.class)
 @DisplayName("GeneratedSourceRoot should")
 class GeneratedSourceRootTest {
 

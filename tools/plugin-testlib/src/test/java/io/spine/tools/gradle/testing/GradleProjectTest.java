@@ -27,8 +27,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -39,10 +37,9 @@ import static org.gradle.testkit.runner.TaskOutcome.FAILED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junitpioneer.jupiter.TempDirectory.TempDir;
+import static org.junit.jupiter.api.io.TempDir;
 
 @DisplayName("GradleProject should")
-@ExtendWith(TempDirectory.class)
 class GradleProjectTest {
 
     private static final String PROJECT_NAME = "gradle_project_test";

@@ -24,9 +24,7 @@ import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
-import org.junitpioneer.jupiter.TempDirectory.TempDir;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -37,7 +35,6 @@ import java.util.List;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.js.generate.imports.given.Given.importWithPath;
 
-@ExtendWith(TempDirectory.class)
 @DisplayName("JavaScript file should")
 class JsFileTest {
 
