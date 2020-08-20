@@ -25,7 +25,10 @@
  * as we want to manage the versions in a single source.
  */
 
-val SPINE_VERSION = "1.5.15"
+/**
+ * The version of the library.
+ */
+val SPINE_VERSION = "2.0.0-jdk8.SNAPSHOT.1"
 
 project.extra.apply {
     this["spineVersion"] = SPINE_VERSION

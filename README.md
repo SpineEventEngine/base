@@ -2,10 +2,13 @@
 [![codecov](https://codecov.io/gh/SpineEventEngine/base/branch/master/graph/badge.svg)](https://codecov.io/gh/SpineEventEngine/base) &nbsp;
 [![license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0)
 
-# (!) This is 2.x `master` branch!
+# This is 2.x `master` branch!
 
 This branch contains the changes which aren't meant to be merged to `master` 
 at least until the Spine 2.0.0 version release.
+
+The code in this branch is **not production-ready**. Please use the released versions of 
+Spine 1.x instead.
 
 The API modifications are significant and for some features the API isn't backward-compatible
 with the 1.x functionality.
@@ -13,7 +16,18 @@ with the 1.x functionality.
 The codebase built on top of the `base` modules in this branch is designed for **JDK 8 runtime**.
 
 This branch must be treated as `master` for 2.x features, so the changes to it must go
- through the PR review process.
+through the PR review process.
+ 
+## Versioning in 2.x branch
+
+While preparing the release of the version 2.0.0 of the framework, the libraries are versioned 
+as follows:
+
+* `2.0.0-jdk8.SNAPSHOT.N` — a version of the libraires in-development; `N` is a positive integer 
+which is incremented upon each changeset/PR;
+* `2.0.0-jdk8.rc1`, `2.0.0-jdk8.rc2` etc  — the versions of the preliminary releases; 
+each of these may be followed up by more `SNAPSHOT`s;
+* `2.0.0-jdk8` — the first release of the Spine v2 for JDK 8 runtime.    
 
 # Spine Event Engine Base
 
