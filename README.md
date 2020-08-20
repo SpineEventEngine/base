@@ -8,9 +8,7 @@ This branch contains the changes which aren't meant to be merged to `master`
 at least until the Spine 2.0.0 version release.
 
 The code in this branch is **not production-ready**. Please use the released versions of 
-Spine 1.x instead.
-
-The API modifications are significant and for some features the API isn't backward-compatible
+Spine 1.x instead. The API modifications are significant. Some features aren't backward-compatible
 with the 1.x functionality.
 
 The codebase built on top of the `base` modules in this branch is designed for **JDK 8 runtime**.
