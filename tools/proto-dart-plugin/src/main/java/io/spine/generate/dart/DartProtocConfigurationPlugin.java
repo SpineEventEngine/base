@@ -20,7 +20,6 @@
 
 package io.spine.generate.dart;
 
-import com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper;
 import com.google.protobuf.gradle.ExecutableLocator;
 import io.spine.tools.gradle.ProtocConfigurationPlugin;
 import org.gradle.api.NamedDomainObjectContainer;
@@ -52,10 +51,8 @@ public final class DartProtocConfigurationPlugin extends ProtocConfigurationPlug
         return Extension.findIn(project).testDescriptorSetFile();
     }
 
-    @OverridingMethodsMustInvokeSuper
     @Override
     protected void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
-        super.configureProtocPlugins(plugins);
         Path executable = CachedDartProtocPlugin.locate();
         plugins.create(dart.name(), locator -> locator.setPath(executable.toString()));
     }

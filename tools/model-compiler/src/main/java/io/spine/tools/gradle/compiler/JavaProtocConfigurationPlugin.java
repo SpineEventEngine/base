@@ -20,7 +20,6 @@
 
 package io.spine.tools.gradle.compiler;
 
-import com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper;
 import com.google.protobuf.gradle.ExecutableLocator;
 import com.google.protobuf.gradle.GenerateProtoTask;
 import io.spine.code.fs.java.DefaultJavaProject;
@@ -56,6 +55,7 @@ import static io.spine.tools.gradle.ModelCompilerTaskName.writeTestDescriptorRef
 import static io.spine.tools.gradle.ModelCompilerTaskName.writeTestPluginConfiguration;
 import static io.spine.tools.gradle.ProtocPluginName.grpc;
 import static io.spine.tools.gradle.ProtocPluginName.spineProtoc;
+import static org.gradle.internal.os.OperatingSystem.current;
 
 /**
  * A Gradle plugin that performs additional {@code protoc} configurations relevant for Java
@@ -68,6 +68,34 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
 
     private static final String GRPC_GROUP = "io.grpc";
     private static final String GRPC_PLUGIN_NAME = "protoc-gen-grpc-java";
+    private static final String SH_EXTENSION = "sh";
+    private static final String BAT_EXTENSION = "bat";
+    private static final String SCRIPT_CLASSIFIER = "script";
+    private static final String SPINE_PLUGIN_NAME = "spine-protoc-plugin";
+
+    @Override
+    protected void
+    configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
+        plugins.create(grpc.name(),
+                       locator -> locator.setArtifact(Artifact.newBuilder()
+                                                              .setGroup(GRPC_GROUP)
+                                                              .setName(GRPC_PLUGIN_NAME)
+                                                              .setVersion(VERSIONS.grpc())
+                                                              .build()
+                                                              .notation()));
+        plugins.create(spineProtoc.name(), locator -> {
+            boolean windows = current().isWindows();
+            String scriptExt = windows ? BAT_EXTENSION : SH_EXTENSION;
+            locator.setArtifact(Artifact.newBuilder()
+                                        .useSpineToolsGroup()
+                                        .setName(SPINE_PLUGIN_NAME)
+                                        .setVersion(VERSIONS.spineBase())
+                                        .setClassifier(SCRIPT_CLASSIFIER)
+                                        .setExtension(scriptExt)
+                                        .build()
+                                        .notation());
+        });
+    }
 
     @Override
     protected void customizeTask(GenerateProtoTask protocTask) {
@@ -147,20 +175,6 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
 
     static File rootSpineDirectory(Project project) {
         return at(project.getRootDir()).tempArtifacts();
-    }
-
-    @OverridingMethodsMustInvokeSuper
-    @Override
-    protected void
-    configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
-        super.configureProtocPlugins(plugins);
-        plugins.create(grpc.name(),
-                       locator -> locator.setArtifact(Artifact.newBuilder()
-                                                              .setGroup(GRPC_GROUP)
-                                                              .setName(GRPC_PLUGIN_NAME)
-                                                              .setVersion(VERSIONS.grpc())
-                                                              .build()
-                                                              .notation()));
     }
 
     @Override
