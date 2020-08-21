@@ -30,6 +30,7 @@ import java.time.ZoneId;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.concurrent.TimeUnit.MICROSECONDS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * Utilities for working with time information.
@@ -147,14 +148,30 @@ public final class Time {
         private SystemTimeProvider() {
         }
 
+        /**
+         * {@inheritDoc}
+         *
+         * <p>Starting from Java 9 the precision of time may differ from platform to platform and
+         * depends on the underlying clock used by the JVM. See the corresponding
+         * <a href='https://bugs.openjdk.java.net/browse/JDK-8068730'>issue</a> on this matter.
+         *
+         * <p>In order to provide consistent behavior on different platforms and avoid the overflow
+         * of the emulated nanosecond value, this method intentionally uses the system time
+         * in millisecond precision. Therefore even if the system clock may offer more precise
+         * values, the {@code System.currentTimeMillis()} is used as a base for the returned values.
+         */
         @Override
         public Timestamp currentTime() {
-            Instant now = Instant.now();
-            int nanosOnly = IncrementalNanos.valueForTime(now);
-            Timestamp result = Timestamp.newBuilder()
-                                        .setSeconds(now.getEpochSecond())
-                                        .setNanos(now.getNano() + nanosOnly)
-                                        .build();
+            long millis = System.currentTimeMillis();
+            long seconds = (millis / 1000);
+            @SuppressWarnings("NumericCastThatLosesPrecision")
+            int nanos = (int) (millis % 1000) * (int) MILLISECONDS.toNanos(1);
+            int nanosOnly = IncrementalNanos.valueForTime(seconds, nanos);
+            Timestamp result = Timestamp
+                    .newBuilder()
+                    .setSeconds(seconds)
+                    .setNanos(nanos + nanosOnly)
+                    .build();
             return result;
         }
     }
@@ -178,8 +195,8 @@ public final class Time {
      * <p>The returned nanosecond value starts at {@code 0} and never exceeds {@code 999 999}.
      * It is designed to keep the millisecond value provided by a typical-JVM system clock intact.
      *
-     * <p>The nanosecond value is reset for each new passed {@link Instant} value.
-     * That allows to receive {@code 1 000} distinct time values per millisecond.
+     * <p>The nanosecond value is reset for each new passed {@code seconds} and {@code nanos}
+     * values. That allows to receive {@code 1 000} distinct time values per millisecond.
      *
      * <p>In case the upper bound of the nanos is reached, meaning that there were more than
      * {@code 1 000} calls to this class within a millisecond, the nanosecond value is reset
@@ -196,25 +213,27 @@ public final class Time {
         private static final IncrementalNanos instance = new IncrementalNanos();
 
         private int counter;
-        private Instant previousValue;
 
-        private synchronized int getNextValue(Instant forTime) {
-            if (forTime.equals(previousValue)) {
-                previousValue = forTime;
+        private long previousSeconds;
+        private int previousNanos;
+
+        private synchronized int getNextValue(long seconds, int nanos) {
+            if (previousSeconds == seconds && previousNanos == nanos) {
                 counter += NANOS_PER_MICROSECOND;
                 counter = counter % MAX_VALUE;
             } else {
-                previousValue = forTime;
                 counter = 0;
             }
+            previousSeconds = seconds;
+            previousNanos = nanos;
             return counter;
         }
 
         /**
          * Obtains the next nanosecond value.
          */
-        static int valueForTime(Instant forTime) {
-            return instance.getNextValue(forTime);
+        static int valueForTime(long seconds, int nanos) {
+            return instance.getNextValue(seconds, nanos);
         }
     }
 }
