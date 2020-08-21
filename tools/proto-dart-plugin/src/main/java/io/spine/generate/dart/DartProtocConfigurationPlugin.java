@@ -52,7 +52,8 @@ public final class DartProtocConfigurationPlugin extends ProtocConfigurationPlug
     }
 
     @Override
-    protected void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
+    protected void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins,
+                                          Project project) {
         Path executable = CachedDartProtocPlugin.locate();
         plugins.create(dart.name(), locator -> locator.setPath(executable.toString()));
     }

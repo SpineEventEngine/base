@@ -20,11 +20,14 @@
 
 package io.spine.tools.gradle.compiler;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.CharSink;
 import com.google.protobuf.gradle.ExecutableLocator;
 import com.google.protobuf.gradle.GenerateProtoTask;
 import io.spine.code.fs.java.DefaultJavaProject;
 import io.spine.code.fs.java.DefaultJavaProject.GeneratedRoot;
 import io.spine.code.proto.DescriptorReference;
+import io.spine.io.Resource;
 import io.spine.tools.gradle.Artifact;
 import io.spine.tools.gradle.ConfigurationName;
 import io.spine.tools.gradle.GradleTask;
@@ -40,14 +43,18 @@ import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.plugins.JavaPluginConvention;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.io.Files.asCharSink;
 import static io.spine.code.fs.java.DefaultJavaProject.at;
 import static io.spine.tools.gradle.BaseTaskName.clean;
+import static io.spine.tools.gradle.ConfigurationName.fetch;
 import static io.spine.tools.gradle.ModelCompilerTaskName.copyPluginJar;
 import static io.spine.tools.gradle.ModelCompilerTaskName.writeDescriptorReference;
 import static io.spine.tools.gradle.ModelCompilerTaskName.writePluginConfiguration;
@@ -55,6 +62,9 @@ import static io.spine.tools.gradle.ModelCompilerTaskName.writeTestDescriptorRef
 import static io.spine.tools.gradle.ModelCompilerTaskName.writeTestPluginConfiguration;
 import static io.spine.tools.gradle.ProtocPluginName.grpc;
 import static io.spine.tools.gradle.ProtocPluginName.spineProtoc;
+import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.Files.createTempFile;
 import static org.gradle.internal.os.OperatingSystem.current;
 
 /**
@@ -65,17 +75,16 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
 
     private static final String PLUGIN_ARTIFACT_PROPERTY = "Protoc plugin artifact";
     private static final String JAR_EXTENSION = "jar";
-
     private static final String GRPC_GROUP = "io.grpc";
     private static final String GRPC_PLUGIN_NAME = "protoc-gen-grpc-java";
-    private static final String SH_EXTENSION = "sh";
-    private static final String BAT_EXTENSION = "bat";
-    private static final String SCRIPT_CLASSIFIER = "script";
+    private static final String DOT_SH = ".sh";
+    private static final String DOT_BAT = ".bat";
     private static final String SPINE_PLUGIN_NAME = "spine-protoc-plugin";
+    private static final Pattern JAR_FILE_INSERTION_POINT = Pattern.compile("\\{jar-file}");
 
     @Override
     protected void
-    configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
+    configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins, Project project) {
         plugins.create(grpc.name(),
                        locator -> locator.setArtifact(Artifact.newBuilder()
                                                               .setGroup(GRPC_GROUP)
@@ -83,18 +92,36 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
                                                               .setVersion(VERSIONS.grpc())
                                                               .build()
                                                               .notation()));
-        plugins.create(spineProtoc.name(), locator -> {
-            boolean windows = current().isWindows();
-            String scriptExt = windows ? BAT_EXTENSION : SH_EXTENSION;
-            locator.setArtifact(Artifact.newBuilder()
-                                        .useSpineToolsGroup()
-                                        .setName(SPINE_PLUGIN_NAME)
-                                        .setVersion(VERSIONS.spineBase())
-                                        .setClassifier(SCRIPT_CLASSIFIER)
-                                        .setExtension(scriptExt)
-                                        .build()
-                                        .notation());
-        });
+        Dependency dependency = pluginJarDependency(project);
+        Path jarFile = project.getConfigurations()
+                              .getByName(fetch.name())
+                              .fileCollection(dependency)
+                              .getSingleFile()
+                              .toPath()
+                              .toAbsolutePath();
+        plugins.create(spineProtoc.name(),
+                       locator -> locator.setPath(tryWriteLaunchScript(jarFile).toString()));
+    }
+
+    private static Path tryWriteLaunchScript(Path jarFile) {
+        try {
+            return writeLaunchScript(jarFile);
+        } catch (IOException e) {
+            throw illegalStateWithCauseOf(e);
+        }
+    }
+
+    private static Path writeLaunchScript(Path jarFile) throws IOException {
+        boolean windows = current().isWindows();
+        String scriptExt = windows ? DOT_BAT : DOT_SH;
+        Resource launcherTemplate = Resource.file("plugin_runner" + scriptExt);
+        String template = launcherTemplate.read();
+        Matcher matcher = JAR_FILE_INSERTION_POINT.matcher(template);
+        String script = matcher.replaceAll(jarFile.toString());
+        Path file = createTempFile(JavaProtocConfigurationPlugin.class.getSimpleName(), scriptExt);
+        CharSink sink = asCharSink(file.toFile(), UTF_8);
+        sink.write(script);
+        return file;
     }
 
     @Override
@@ -125,7 +152,8 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
                                                      .getPlugin(JavaPluginConvention.class);
         SourceScope sourceScope = tests ? SourceScope.test : SourceScope.main;
         File descriptorFile = new File(protocTask.getDescriptorPath());
-        Path resourceDirectory = descriptorFile.toPath().getParent();
+        Path resourceDirectory = descriptorFile.toPath()
+                                               .getParent();
         javaConvention.getSourceSets()
                       .getByName(sourceScope.name())
                       .getResources()
@@ -167,6 +195,22 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
             copyPluginJarTask = copyPluginJarBuilder.getTask();
         }
         return copyPluginJarTask;
+    }
+
+    private Dependency pluginJarDependency(Project project) {
+        Configuration fetch = project.getConfigurations()
+                                     .maybeCreate(ConfigurationName.fetch.name());
+        Artifact protocPluginArtifact = Artifact
+                .newBuilder()
+                .useSpineToolsGroup()
+                .setName(SPINE_PLUGIN_NAME)
+                .setVersion(VERSIONS.spineBase())
+                .setExtension(JAR_EXTENSION)
+                .build();
+        Dependency protocPluginDependency = project
+                .getDependencies()
+                .add(fetch.getName(), protocPluginArtifact.notation());
+        return protocPluginDependency;
     }
 
     static File spineDirectory(Project project) {
@@ -211,7 +255,7 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
 
     private static String base64Encoded(String value) {
         Base64.Encoder encoder = Base64.getEncoder();
-        byte[] valueBytes = value.getBytes(UTF_8);
+        byte[] valueBytes = value.getBytes(Charsets.UTF_8);
         String result = encoder.encodeToString(valueBytes);
         return result;
     }

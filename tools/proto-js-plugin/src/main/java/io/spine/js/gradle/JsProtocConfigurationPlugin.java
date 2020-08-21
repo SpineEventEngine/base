@@ -53,7 +53,8 @@ public final class JsProtocConfigurationPlugin extends ProtocConfigurationPlugin
     }
 
     @Override
-    protected void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
+    protected void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins,
+                                          Project project) {
         // Do nothing.
     }
 }

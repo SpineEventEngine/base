@@ -26,6 +26,7 @@ import com.google.protobuf.gradle.GenerateProtoTask;
 import com.google.protobuf.gradle.ProtobufConfigurator;
 import com.google.protobuf.gradle.ProtobufConfigurator.GenerateProtoTaskCollection;
 import com.google.protobuf.gradle.ProtobufConvention;
+import io.spine.tools.groovy.ConsumerClosure;
 import io.spine.tools.groovy.GStrings;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
@@ -70,7 +71,10 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
                                         protocLocator.setArtifact(protobufCompiler()
                                                                           .ofVersion(version)
                                                                           .notation())));
-        protobuf.plugins(closure(this::configureProtocPlugins));
+        ConsumerClosure<NamedDomainObjectContainer<ExecutableLocator>> pluginConfig = closure(
+                plugins -> configureProtocPlugins(plugins, project)
+        );
+        protobuf.plugins(pluginConfig);
         protobuf.generateProtoTasks(closure(this::configureProtocTasks));
     }
 
@@ -95,12 +99,13 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
      *
      * @param plugins
      *         container of all plugins
+     * @param project
      * @apiNote overriding methods must invoke super to add the {@code spineProtoc} plugin,
      *         which
      *         is a required plugin
      */
     protected abstract void
-    configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins);
+    configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins, Project project);
 
     private void configureProtocTask(GenerateProtoTask protocTask) {
         configureDescriptorSetGeneration(protocTask);
