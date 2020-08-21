@@ -23,12 +23,21 @@
  *
  * This file is used in both module `build.gradle` scripts and in the integration tests,
  * as we want to manage the versions in a single source.
+ *
+ * This version file adheres to the contract of the
+ * [publishing application](https://github.com/SpineEventEngine/publishing).
+ *
+ * When changing the version declarations or adding new ones, make sure to change
+ * the publishing application accordingly.
  */
 
-val versionToPublish = "1.5.22"
+/**
+ * The version of this library.
+ */
+val base = "1.5.22"
 
 project.extra.apply {
-    this["spineVersion"] = versionToPublish
-    this["spineBaseVersion"] = versionToPublish // Used by `filter-internal-javadoc.gradle`.
-    this["versionToPublish"] = versionToPublish
+    this["spineVersion"] = base
+    this["spineBaseVersion"] = base // Used by `filter-internal-javadoc.gradle`.
+    this["versionToPublish"] = base
 }
