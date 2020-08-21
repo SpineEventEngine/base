@@ -14,6 +14,7 @@ env:
     # TODO:2020-05-18:dmytro.dashenkov: Remove these 2 lines when Travis stops failing when installing JDK 8.
     - JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"
     - PATH="$JAVA_HOME/bin:$PATH"
+    - FORMAL_GIT_HUB_PAGES_AUTHOR="spine-developers@teamdev.com"
 
 install:
   - chmod +x gradlew
