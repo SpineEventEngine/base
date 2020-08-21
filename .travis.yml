@@ -37,6 +37,11 @@ script:
 after_success:
   # See: https://github.com/codecov/example-java/blob/master/.travis.yml
   - bash <(curl -s https://codecov.io/bash)
+  - |
+    if [[ $TRAVIS_BRANCH == master ]] && [[ $TRAVIS_PULL_REQUEST == false ]]; then
+      chmod +x ./config/scripts/trigger-publishing.sh
+      sh ./config/scripts/trigger-publishing.sh
+    fi
 
 after_script:
   - chmod +x ./config/scripts/upload-artifacts.sh
