@@ -51,6 +51,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.io.Files.asCharSink;
 import static io.spine.code.fs.java.DefaultJavaProject.at;
 import static io.spine.tools.gradle.BaseTaskName.clean;
@@ -92,15 +93,17 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
                                                               .setVersion(VERSIONS.grpc())
                                                               .build()
                                                               .notation()));
-        Dependency dependency = pluginJarDependency(project);
-        Path jarFile = project.getConfigurations()
-                              .getByName(fetch.name())
-                              .fileCollection(dependency)
-                              .getSingleFile()
-                              .toPath()
-                              .toAbsolutePath();
-        plugins.create(spineProtoc.name(),
-                       locator -> locator.setPath(tryWriteLaunchScript(jarFile).toString()));
+        project.afterEvaluate(p -> {
+            Dependency dependency = pluginJarDependency(project);
+            Path jarFile = project.getConfigurations()
+                                  .getByName(fetch.name())
+                                  .fileCollection(dependency)
+                                  .getSingleFile()
+                                  .toPath()
+                                  .toAbsolutePath();
+            plugins.create(spineProtoc.name(),
+                           locator -> locator.setPath(tryWriteLaunchScript(jarFile).toString()));
+        });
     }
 
     private static Path tryWriteLaunchScript(Path jarFile) {
@@ -118,10 +121,13 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
         String template = launcherTemplate.read();
         Matcher matcher = JAR_FILE_INSERTION_POINT.matcher(template);
         String script = matcher.replaceAll(jarFile.toString());
-        Path file = createTempFile(JavaProtocConfigurationPlugin.class.getSimpleName(), scriptExt);
-        CharSink sink = asCharSink(file.toFile(), UTF_8);
+        Path path = createTempFile(JavaProtocConfigurationPlugin.class.getSimpleName(), scriptExt);
+        File file = path.toFile();
+        CharSink sink = asCharSink(file, UTF_8);
         sink.write(script);
-        return file;
+        boolean canBeExecuted = file.setExecutable(true, false);
+        checkState(canBeExecuted, "Failed to make file `%s` executable.", file);
+        return path;
     }
 
     @Override
@@ -197,7 +203,7 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
         return copyPluginJarTask;
     }
 
-    private Dependency pluginJarDependency(Project project) {
+    private static Dependency pluginJarDependency(Project project) {
         Configuration fetch = project.getConfigurations()
                                      .maybeCreate(ConfigurationName.fetch.name());
         Artifact protocPluginArtifact = Artifact
