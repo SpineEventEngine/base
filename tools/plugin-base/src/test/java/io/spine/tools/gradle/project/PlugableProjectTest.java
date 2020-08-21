@@ -35,9 +35,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
-import org.junitpioneer.jupiter.TempDirectory.TempDir;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
 
@@ -46,7 +44,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@ExtendWith(TempDirectory.class)
 @DisplayName("PlugableProject should")
 class PlugableProjectTest {
 

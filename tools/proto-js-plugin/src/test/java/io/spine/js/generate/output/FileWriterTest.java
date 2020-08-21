@@ -26,9 +26,7 @@ import io.spine.js.generate.TaskProto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
-import org.junitpioneer.jupiter.TempDirectory.TempDir;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,7 +36,6 @@ import static io.spine.js.generate.given.FileWriters.assertFileContains;
 import static io.spine.js.generate.given.FileWriters.assertFileNotContains;
 import static io.spine.js.generate.output.FileWriter.createFor;
 
-@ExtendWith(TempDirectory.class)
 @DisplayName("FileWriter should")
 class FileWriterTest {
 

@@ -32,9 +32,7 @@ import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
-import org.junitpioneer.jupiter.TempDirectory.TempDir;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,7 +46,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@ExtendWith(TempDirectory.class)
 @DisplayName("MoreKnownTypes should")
 class MoreKnownTypesTest extends UtilityClassTest<MoreKnownTypes> {
 
