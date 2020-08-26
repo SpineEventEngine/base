@@ -67,9 +67,7 @@ final class ColumnGenAction extends CodeGenerationAction {
 
     @Override
     public void execute(Task task) {
-        System.out.println(String.format("Is tests? %s", isTests));
         FileSet initialFileSet = protoFiles().get();
-        System.out.println(String.format("File set: %s", initialFileSet));
         Predicate<FileDescriptor> belongsToModule =
                 new SourceProtoBelongsToModule(protoSrcDir()).forDescriptor();
         FileSet fileSet = initialFileSet.filter(belongsToModule);
