@@ -100,6 +100,7 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
      * @param plugins
      *         container of all plugins
      * @param project
+     *         the target project in which the codegen occurs
      * @apiNote overriding methods must invoke super to add the {@code spineProtoc} plugin,
      *         which
      *         is a required plugin
