@@ -21,12 +21,12 @@
 package io.spine.tools.gradle;
 
 import com.google.common.collect.ImmutableList;
-import com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper;
 import com.google.protobuf.gradle.ExecutableLocator;
 import com.google.protobuf.gradle.GenerateProtoTask;
 import com.google.protobuf.gradle.ProtobufConfigurator;
 import com.google.protobuf.gradle.ProtobufConfigurator.GenerateProtoTaskCollection;
 import com.google.protobuf.gradle.ProtobufConvention;
+import io.spine.tools.groovy.ConsumerClosure;
 import io.spine.tools.groovy.GStrings;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
@@ -37,9 +37,7 @@ import java.util.Collection;
 
 import static io.spine.tools.gradle.ProtobufDependencies.gradlePlugin;
 import static io.spine.tools.gradle.ProtobufDependencies.protobufCompiler;
-import static io.spine.tools.gradle.ProtocPluginName.spineProtoc;
 import static io.spine.tools.groovy.ConsumerClosure.closure;
-import static org.gradle.internal.os.OperatingSystem.current;
 
 /**
  * An abstract base for Gradle plugins that configure Protobuf compilation.
@@ -48,11 +46,6 @@ import static org.gradle.internal.os.OperatingSystem.current;
  * no action is performed.
  */
 public abstract class ProtocConfigurationPlugin extends SpinePlugin {
-
-    protected static final String SPINE_PLUGIN_NAME = "spine-protoc-plugin";
-    private static final String SH_EXTENSION = "sh";
-    private static final String BAT_EXTENSION = "bat";
-    private static final String SCRIPT_CLASSIFIER = "script";
 
     protected static final DependencyVersions VERSIONS = DependencyVersions.get();
 
@@ -78,7 +71,10 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
                                         protocLocator.setArtifact(protobufCompiler()
                                                                           .ofVersion(version)
                                                                           .notation())));
-        protobuf.plugins(closure(this::configureProtocPlugins));
+        ConsumerClosure<NamedDomainObjectContainer<ExecutableLocator>> pluginConfig = closure(
+                plugins -> configureProtocPlugins(plugins, project)
+        );
+        protobuf.plugins(pluginConfig);
         protobuf.generateProtoTasks(closure(this::configureProtocTasks));
     }
 
@@ -103,32 +99,14 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
      *
      * @param plugins
      *         container of all plugins
+     * @param project
+     *         the target project in which the codegen occurs
      * @apiNote overriding methods must invoke super to add the {@code spineProtoc} plugin,
      *         which
      *         is a required plugin
      */
-    @OverridingMethodsMustInvokeSuper
-    protected void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins) {
-        if (!spineProtocIsPresent(plugins)) {
-            plugins.create(spineProtoc.name(), locator -> {
-                boolean windows = current().isWindows();
-                String scriptExt = windows ? BAT_EXTENSION : SH_EXTENSION;
-                locator.setArtifact(Artifact.newBuilder()
-                                            .useSpineToolsGroup()
-                                            .setName(SPINE_PLUGIN_NAME)
-                                            .setVersion(VERSIONS.spineBase())
-                                            .setClassifier(SCRIPT_CLASSIFIER)
-                                            .setExtension(scriptExt)
-                                            .build()
-                                            .notation());
-            });
-        }
-    }
-
-    private static boolean
-    spineProtocIsPresent(NamedDomainObjectContainer<ExecutableLocator> plugins) {
-        return plugins.findByName(spineProtoc.name()) != null;
-    }
+    protected abstract void
+    configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins, Project project);
 
     private void configureProtocTask(GenerateProtoTask protocTask) {
         configureDescriptorSetGeneration(protocTask);

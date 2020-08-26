@@ -20,8 +20,10 @@
 
 package io.spine.js.gradle;
 
+import com.google.protobuf.gradle.ExecutableLocator;
 import io.spine.code.fs.js.DefaultJsProject;
 import io.spine.tools.gradle.ProtocConfigurationPlugin;
+import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
 
 import java.io.File;
@@ -48,5 +50,11 @@ public final class JsProtocConfigurationPlugin extends ProtocConfigurationPlugin
     @Override
     protected File getMainDescriptorSet(Project project) {
         return Extension.getMainDescriptorSet(project);
+    }
+
+    @Override
+    protected void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins,
+                                          Project project) {
+        // Do nothing.
     }
 }

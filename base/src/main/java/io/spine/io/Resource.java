@@ -25,8 +25,10 @@ import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.UnmodifiableIterator;
+import com.google.common.io.CharStreams;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -201,6 +203,21 @@ public final class Resource {
      */
     public Reader openAsText() {
         return openAsText(UTF_8);
+    }
+
+    /**
+     * Loads the whole resource file as a UTF-8 text file.
+     *
+     * @return the content of the resource file
+     * @throws IllegalStateException
+     *         on a failure of opening the file, e.g. if the file does not exist
+     * @throws IOException
+     *         on a failure of reading or closing the file
+     */
+    public String read() throws IOException {
+        try (Reader reader = new BufferedReader(openAsText())) {
+            return CharStreams.toString(reader);
+        }
     }
 
     @Override
