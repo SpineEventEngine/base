@@ -23,6 +23,8 @@ package io.spine.validate;
 import com.google.common.base.Objects;
 import com.google.errorprone.annotations.Immutable;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * A number that can be compared to another number.
  *
@@ -41,7 +43,7 @@ public final class ComparableNumber extends Number implements Comparable<Number>
     /** Creates a new instance from the specified number. */
     public ComparableNumber(Number value) {
         super();
-        this.value = value;
+        this.value = checkNotNull(value);
     }
 
     /** Converts this number to its textual representation. */
