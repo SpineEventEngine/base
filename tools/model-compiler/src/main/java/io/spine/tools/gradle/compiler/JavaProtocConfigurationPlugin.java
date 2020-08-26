@@ -63,6 +63,7 @@ import static io.spine.tools.gradle.ProtocPluginName.spineProtoc;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.createTempFile;
+import static java.util.regex.Matcher.quoteReplacement;
 import static org.gradle.internal.os.OperatingSystem.current;
 
 /**
@@ -132,7 +133,7 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
         Resource launcherTemplate = Resource.file("plugin_runner" + scriptExt);
         String template = launcherTemplate.read();
         Matcher matcher = JAR_FILE_INSERTION_POINT.matcher(template);
-        String script = matcher.replaceAll(jarFile.toString());
+        String script = matcher.replaceAll(quoteReplacement(jarFile.toString()));
         Path path = createTempFile(JavaProtocConfigurationPlugin.class.getSimpleName(), scriptExt);
         File file = path.toFile();
         CharSink sink = asCharSink(file, UTF_8);
