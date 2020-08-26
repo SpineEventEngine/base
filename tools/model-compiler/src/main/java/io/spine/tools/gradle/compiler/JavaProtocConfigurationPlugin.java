@@ -34,7 +34,6 @@ import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.ProtocConfigurationPlugin;
 import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.TaskName;
-import org.gradle.api.Action;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -50,13 +49,11 @@ import java.util.Base64;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.io.Files.asCharSink;
 import static io.spine.code.fs.java.DefaultJavaProject.at;
 import static io.spine.tools.gradle.BaseTaskName.clean;
 import static io.spine.tools.gradle.ConfigurationName.fetch;
-import static io.spine.tools.gradle.ModelCompilerTaskName.copyPluginJar;
 import static io.spine.tools.gradle.ModelCompilerTaskName.writeDescriptorReference;
 import static io.spine.tools.gradle.ModelCompilerTaskName.writePluginConfiguration;
 import static io.spine.tools.gradle.ModelCompilerTaskName.writeTestDescriptorReference;
@@ -74,7 +71,6 @@ import static org.gradle.internal.os.OperatingSystem.current;
  */
 public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlugin {
 
-    private static final String PLUGIN_ARTIFACT_PROPERTY = "Protoc plugin artifact";
     private static final String JAR_EXTENSION = "jar";
     private static final String GRPC_GROUP = "io.grpc";
     private static final String GRPC_PLUGIN_NAME = "protoc-gen-grpc-java";
@@ -106,6 +102,22 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
         });
     }
 
+    private static Dependency pluginJarDependency(Project project) {
+        Configuration fetch = project.getConfigurations()
+                                     .maybeCreate(ConfigurationName.fetch.name());
+        Artifact protocPluginArtifact = Artifact
+                .newBuilder()
+                .useSpineToolsGroup()
+                .setName(SPINE_PLUGIN_NAME)
+                .setVersion(VERSIONS.spineBase())
+                .setExtension(JAR_EXTENSION)
+                .build();
+        Dependency protocPluginDependency = project
+                .getDependencies()
+                .add(fetch.getName(), protocPluginArtifact.notation());
+        return protocPluginDependency;
+    }
+
     private static Path tryWriteLaunchScript(Path jarFile) {
         try {
             return writeLaunchScript(jarFile);
@@ -135,7 +147,7 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
         customizeDescriptorSetGeneration(protocTask);
         Path spineProtocConfigPath = spineProtocConfigPath(protocTask);
         Task writeConfig = newWriteSpineProtocConfigTask(protocTask, spineProtocConfigPath);
-        protocTask.dependsOn(createCopyPluginJarTask(protocTask.getProject()), writeConfig);
+        protocTask.dependsOn(writeConfig);
         protocTask.getPlugins()
                   .create(grpc.name());
         protocTask.getPlugins()
@@ -170,61 +182,6 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
         }).allowNoDependencies()
           .applyNowTo(project);
         protocTask.finalizedBy(writeRef.getTask());
-    }
-
-    private Task createCopyPluginJarTask(Project project) {
-        Configuration fetch = project.getConfigurations()
-                                     .maybeCreate(ConfigurationName.fetch.name());
-        Artifact protocPluginArtifact = Artifact
-                .newBuilder()
-                .useSpineToolsGroup()
-                .setName(SPINE_PLUGIN_NAME)
-                .setVersion(VERSIONS.spineBase())
-                .setExtension(JAR_EXTENSION)
-                .build();
-        Dependency protocPluginDependency = project
-                .getDependencies()
-                .add(fetch.getName(), protocPluginArtifact.notation());
-        checkNotNull(protocPluginDependency,
-                     "Could not create dependency %s %s", fetch.getName(), protocPluginArtifact);
-        Action<Task> action = new CopyPluginJar(project, protocPluginDependency, fetch);
-
-        Task copyPluginJarTask = project.getTasks()
-                                        .findByPath(copyPluginJar.name());
-        if (copyPluginJarTask == null) {
-            GradleTask copyPluginJarBuilder = newTask(copyPluginJar, action)
-                    .allowNoDependencies()
-                    .withInputProperty(PLUGIN_ARTIFACT_PROPERTY, protocPluginArtifact.notation())
-                    .withOutputFiles(project.fileTree(spineDirectory(project)))
-                    .withOutputFiles(project.fileTree(rootSpineDirectory(project)))
-                    .applyNowTo(project);
-            copyPluginJarTask = copyPluginJarBuilder.getTask();
-        }
-        return copyPluginJarTask;
-    }
-
-    private static Dependency pluginJarDependency(Project project) {
-        Configuration fetch = project.getConfigurations()
-                                     .maybeCreate(ConfigurationName.fetch.name());
-        Artifact protocPluginArtifact = Artifact
-                .newBuilder()
-                .useSpineToolsGroup()
-                .setName(SPINE_PLUGIN_NAME)
-                .setVersion(VERSIONS.spineBase())
-                .setExtension(JAR_EXTENSION)
-                .build();
-        Dependency protocPluginDependency = project
-                .getDependencies()
-                .add(fetch.getName(), protocPluginArtifact.notation());
-        return protocPluginDependency;
-    }
-
-    static File spineDirectory(Project project) {
-        return at(project.getProjectDir()).tempArtifacts();
-    }
-
-    static File rootSpineDirectory(Project project) {
-        return at(project.getRootDir()).tempArtifacts();
     }
 
     @Override
