@@ -54,15 +54,11 @@ import static io.spine.code.proto.ColumnOption.hasColumns;
  */
 final class ColumnGenAction extends CodeGenerationAction {
 
-    private final boolean isTests;
-
     ColumnGenAction(Project project,
                     Supplier<FileSet> files,
                     Supplier<String> targetDirPath,
-                    Supplier<String> protoSrcDirPath,
-                    boolean isTests) {
+                    Supplier<String> protoSrcDirPath) {
         super(project, files, targetDirPath, protoSrcDirPath);
-        this.isTests = isTests;
     }
 
     @Override
