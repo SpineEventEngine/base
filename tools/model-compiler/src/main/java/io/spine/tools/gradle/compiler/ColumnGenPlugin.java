@@ -58,8 +58,8 @@ public class ColumnGenPlugin extends ProtoPlugin {
                 new ColumnGenAction(project,
                                     mainProtoFiles(project),
                                     () -> getTargetGenColumnsRootDir(project),
-                                    () -> getMainProtoSrcDir(project),
-                                    true);
+                                    () -> getMainProtoSrcDir(project)
+                );
         ProtoModule module = new ProtoModule(project);
         GradleTask mainTask =
                 newTask(generateColumnInterfaces, mainScopeAction)
@@ -72,9 +72,8 @@ public class ColumnGenPlugin extends ProtoPlugin {
                 new ColumnGenAction(project,
                                     testProtoFiles(project),
                                     () -> getTargetTestGenColumnsRootDir(project),
-                                    () -> getTestProtoSrcDir(project),
-                                    false);
-
+                                    () -> getTestProtoSrcDir(project)
+                );
         GradleTask testTask =
                 newTask(generateTestColumnInterfaces, testScopeAction)
                         .insertAfterTask(mergeTestDescriptorSet)

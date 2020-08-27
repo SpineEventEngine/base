@@ -54,22 +54,16 @@ import static io.spine.code.proto.ColumnOption.hasColumns;
  */
 final class ColumnGenAction extends CodeGenerationAction {
 
-    private final boolean isTests;
-
     ColumnGenAction(Project project,
                     Supplier<FileSet> files,
                     Supplier<String> targetDirPath,
-                    Supplier<String> protoSrcDirPath,
-                    boolean isTests) {
+                    Supplier<String> protoSrcDirPath) {
         super(project, files, targetDirPath, protoSrcDirPath);
-        this.isTests = isTests;
     }
 
     @Override
     public void execute(Task task) {
-        System.out.println(String.format("Is tests? %s", isTests));
         FileSet initialFileSet = protoFiles().get();
-        System.out.println(String.format("File set: %s", initialFileSet));
         Predicate<FileDescriptor> belongsToModule =
                 new SourceProtoBelongsToModule(protoSrcDir()).forDescriptor();
         FileSet fileSet = initialFileSet.filter(belongsToModule);

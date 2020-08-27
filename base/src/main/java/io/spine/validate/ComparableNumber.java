@@ -23,6 +23,8 @@ package io.spine.validate;
 import com.google.common.base.Objects;
 import com.google.errorprone.annotations.Immutable;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * A number that can be compared to another number.
  *
@@ -41,7 +43,7 @@ public final class ComparableNumber extends Number implements Comparable<Number>
     /** Creates a new instance from the specified number. */
     public ComparableNumber(Number value) {
         super();
-        this.value = value;
+        this.value = checkNotNull(value);
     }
 
     /** Converts this number to its textual representation. */
@@ -56,6 +58,8 @@ public final class ComparableNumber extends Number implements Comparable<Number>
 
     @Override
     public int compareTo(Number anotherNumber) {
+        checkNotNull(anotherNumber);
+
         long thisLong = longValue();
         long thatLong = anotherNumber.longValue();
         if (thisLong == thatLong) {
@@ -82,6 +86,13 @@ public final class ComparableNumber extends Number implements Comparable<Number>
     @Override
     public double doubleValue() {
         return value.doubleValue();
+    }
+
+    /**
+     * Checks if this number is a whole number, i.e. an {@code int} or a {@code long}.
+     */
+    public boolean isInteger() {
+        return value instanceof Integer || value instanceof Long;
     }
 
     @Override
