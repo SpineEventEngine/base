@@ -28,7 +28,7 @@
 /**
  * The version of the library.
  */
-val SPINE_VERSION = "2.0.0-jdk8.SNAPSHOT.1"
+val SPINE_VERSION = "2.0.0-jdk8.SNAPSHOT.2"
 
 project.extra.apply {
     this["spineVersion"] = SPINE_VERSION
