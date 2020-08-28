@@ -21,7 +21,7 @@
 package io.spine.tools.protoc.column;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.tools.protoc.AddColumns;
+import io.spine.tools.protoc.AddEntityQueries;
 import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.SpineProtocConfig;
@@ -72,13 +72,13 @@ class ColumnGeneratorTest {
     }
 
     private static SpineProtocConfig newConfig() {
-        AddColumns addColumns = AddColumns
+        AddEntityQueries addQueries = AddEntityQueries
                 .newBuilder()
                 .setGenerate(true)
                 .build();
         SpineProtocConfig result = SpineProtocConfig
                 .newBuilder()
-                .setAddColumns(addColumns)
+                .setAddEntityQueries(addQueries)
                 .setClasspath(Classpath.getDefaultInstance())
                 .build();
         return result;

@@ -25,6 +25,7 @@ group = "io.spine.tools"
 dependencies {
     api(Deps.gen.javaPoet)
     implementation(project(":tool-base"))
+    implementation(Deps.gen.javaxAnnotation)
     testImplementation(project(":base"))
     testImplementation(project(":testlib"))
 }

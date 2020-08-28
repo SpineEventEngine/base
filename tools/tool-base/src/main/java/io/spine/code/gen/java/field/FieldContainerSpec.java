@@ -31,6 +31,7 @@ import io.spine.code.java.ClassName;
 import io.spine.code.java.PackageName;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.query.EntityStateField;
 import io.spine.type.MessageType;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
@@ -122,7 +123,7 @@ public final class FieldContainerSpec implements GeneratedTypeSpec {
     /**
      * A type to mark the generated fields with.
      *
-     * <p>An example of such type could be the {@link io.spine.base.EntityStateField} or
+     * <p>An example of such type could be the {@link EntityStateField} or
      * {@link io.spine.base.EventMessageField} along with custom user-defined field types.
      */
     private final ClassName fieldSupertype;

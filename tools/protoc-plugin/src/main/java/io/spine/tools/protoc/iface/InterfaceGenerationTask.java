@@ -21,13 +21,21 @@
 package io.spine.tools.protoc.iface;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.annotation.FirstGenericParameter;
 import io.spine.code.java.ClassName;
+import io.spine.protobuf.DetermineType;
 import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.PredefinedTypeParameter;
+import io.spine.tools.protoc.TypeParameter;
 import io.spine.tools.protoc.TypeParameters;
 import io.spine.type.MessageType;
 
+import java.lang.reflect.Constructor;
+import java.util.Optional;
+
 import static io.spine.tools.protoc.iface.MessageImplements.implementInterface;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -44,7 +52,7 @@ abstract class InterfaceGenerationTask implements CodeGenerationTask {
     /**
      * Creates {@link MessageInterface} parameters.
      */
-    TypeParameters interfaceParameters() {
+    TypeParameters interfaceParameters(MessageType type) {
         return TypeParameters.empty();
     }
 
@@ -54,8 +62,49 @@ abstract class InterfaceGenerationTask implements CodeGenerationTask {
     ImmutableList<CompilerOutput> generateInterfacesFor(MessageType type) {
         ClassName interfaceName = ClassName.of(this.interfaceName);
         MessageInterface messageInterface =
-                new PredefinedInterface(interfaceName, interfaceParameters());
+                new PredefinedInterface(interfaceName, interfaceParameters(type));
         MessageImplements result = implementInterface(type, messageInterface);
         return ImmutableList.of(result);
+    }
+
+    /**
+     * Reads the generic type value value declared by {@link FirstGenericParameter} annotation,
+     * if it is set for the given {@link MessageType}.
+     *
+     * @return the type of the generic parameter,
+     *         or {@code Optional.empty()} if no annotation is defined for the message type
+     */
+    Optional<TypeParameter> readFirstGenericParameter(MessageType type) {
+        Class<?> iface;
+        try {
+            iface = Class.forName(interfaceName);
+        } catch (ClassNotFoundException e) {
+            return Optional.empty();
+        }
+        Optional<TypeParameter> firstParameter = Optional.empty();
+
+        if (iface.isAnnotationPresent(FirstGenericParameter.class)) {
+            FirstGenericParameter annotation = iface.getAnnotation(FirstGenericParameter.class);
+            firstParameter = detectParameter(type, annotation);
+        }
+        return firstParameter;
+    }
+
+    private static Optional<TypeParameter>
+    detectParameter(MessageType type, FirstGenericParameter annotation) {
+        Optional<TypeParameter> firstParameter;
+        try {
+            Class<? extends DetermineType> fieldTypeDetector = annotation.is();
+            Constructor<? extends DetermineType> ctor = fieldTypeDetector.getConstructor();
+            DetermineType detector = ctor.newInstance();
+            ClassName value = detector.apply(type);
+            firstParameter = Optional.of(new PredefinedTypeParameter(value));
+
+        } catch (@SuppressWarnings("OverlyBroadCatchBlock")  // all exceptions handled similarly.
+                Exception e) {
+            throw newIllegalArgumentException(
+                    e, "Error using the value from the `@FirstGenericParameter`");
+        }
+        return firstParameter;
     }
 }

@@ -45,7 +45,7 @@ public final class ColumnGenerator extends CodeGenerator {
      */
     public static ColumnGenerator instance(SpineProtocConfig config) {
         checkNotNull(config);
-        boolean generate = config.getAddColumns()
+        boolean generate = config.getAddEntityQueries()
                                  .getGenerate();
         return new ColumnGenerator(generate);
     }
@@ -60,7 +60,7 @@ public final class ColumnGenerator extends CodeGenerator {
     }
 
     private ImmutableList<CompilerOutput> generateFor(MessageType type) {
-        List<GeneratedNestedClass> generatedClasses = factory.createFor(type);
+        List<GeneratedNestedClass> generatedClasses = factory.generateClassesFor(type);
         ImmutableList<CompilerOutput> result =
                 generatedClasses.stream()
                                 .map(cls -> ClassMember.nestedClass(cls, type))
@@ -75,5 +75,4 @@ public final class ColumnGenerator extends CodeGenerator {
         MessageType messageType = (MessageType) type;
         return messageType.isEntityState() && hasColumns(messageType);
     }
-
 }

@@ -22,12 +22,14 @@ package io.spine.code.gen.java.column;
 
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
-import io.spine.base.EntityColumn;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.gen.java.GeneratedMethodSpec;
 import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
+import io.spine.query.EntityColumn;
 
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
@@ -40,9 +42,13 @@ import static javax.lang.model.element.Modifier.STATIC;
 final class ColumnAccessor implements GeneratedMethodSpec {
 
     private final FieldDeclaration column;
+    private final TypeName entityStateName;
+    private final TypeName returningValueName;
 
     ColumnAccessor(FieldDeclaration column) {
         this.column = column;
+        this.entityStateName = JavaPoetName.of(column.declaringType()).value();
+        this.returningValueName = JavaPoetName.of(column).value().box();
     }
 
     @Override
@@ -52,7 +58,7 @@ final class ColumnAccessor implements GeneratedMethodSpec {
                 .methodBuilder(name.javaCase())
                 .addJavadoc(javadoc().spec())
                 .addModifiers(PUBLIC, STATIC)
-                .returns(columnType().value())
+                .returns(columnType())
                 .addStatement(methodBody())
                 .build();
         return result;
@@ -68,9 +74,11 @@ final class ColumnAccessor implements GeneratedMethodSpec {
     /**
      * Returns the name of the Java type of a column.
      */
-    private static JavaPoetName columnType() {
+    private ParameterizedTypeName columnType() {
         JavaPoetName result = JavaPoetName.of(EntityColumn.class);
-        return result;
+        ParameterizedTypeName parameterizedResult =
+                ParameterizedTypeName.get(result.className(), entityStateName, returningValueName);
+        return parameterizedResult;
     }
 
     /**
@@ -78,7 +86,12 @@ final class ColumnAccessor implements GeneratedMethodSpec {
      */
     private CodeBlock methodBody() {
         return CodeBlock.of(
-                "return new $T($S)", EntityColumn.class, columnName()
+                "return new $T<>($S, $T.class, $T::$L)",
+                EntityColumn.class,
+                columnName(),
+                returningValueName,
+                entityStateName,
+                "get" + columnName().toCamelCase()
         );
     }
 

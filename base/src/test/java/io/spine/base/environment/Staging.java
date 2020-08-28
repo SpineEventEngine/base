@@ -28,7 +28,7 @@ import io.spine.base.EnvironmentType;
  *
  * <p>This implementations relies on a static {@code boolean} flag for detection.
  */
-public final class Staging extends EnvironmentType {
+final class Staging extends EnvironmentType {
 
     private static boolean enabled = false;
 

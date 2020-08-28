@@ -23,6 +23,11 @@ package io.spine.test.tools.validate;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import io.spine.protobuf.MessageWithConstraints;
+import io.spine.test.tools.validate.command.CreateProject;
+import io.spine.test.tools.validate.entity.Project;
+import io.spine.test.tools.validate.entity.Task;
+import io.spine.test.tools.validate.event.ProjectCreated;
+import io.spine.test.tools.validate.rejection.TestRejections;
 import io.spine.validate.ConstraintViolation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -39,7 +44,7 @@ import static java.util.stream.Collectors.toList;
 class RequiredConstraintTest {
 
     @Test
-    @DisplayName("numbers can have any value")
+    @DisplayName("a number field can have any value")
     void ignoreNumbers() {
         Singulars singulars = Singulars
                 .newBuilder()
@@ -47,96 +52,134 @@ class RequiredConstraintTest {
         checkNoViolation(singulars, "required_numbers_are_not_validated");
     }
 
-    @Test
-    @DisplayName("empty strings are violations")
-    void checkString() {
-        Singulars singulars = Singulars
-                .newBuilder()
-                .buildPartial();
-        checkViolation(singulars, "not_empty_string");
+    @Nested
+    @DisplayName("a `string` field")
+    class StringField {
+
+        private static final String FIELD = "not_empty_string";
+
+        @Test
+        @DisplayName("cannot be empty")
+        void empty() {
+            Singulars singulars = Singulars
+                    .newBuilder()
+                    .buildPartial();
+            checkViolation(singulars, FIELD);
+        }
+
+        @Test
+        @DisplayName("must have a non-empty value")
+        void acceptNonEmptyString() {
+            Singulars singulars = Singulars
+                    .newBuilder()
+                    .setNotEmptyString(" ")
+                    .buildPartial();
+            checkNoViolation(singulars, FIELD);
+        }
     }
 
-    @Test
-    @DisplayName("non-empty strings are accepted")
-    void acceptNonEmptyString() {
-        Singulars singulars = Singulars
-                .newBuilder()
-                .setNotEmptyString(" ")
-                .buildPartial();
-        checkNoViolation(singulars, "not_empty_string");
+    @Nested
+    @DisplayName("a `bytes` field")
+    class BytesField {
+
+        private static final String FIELD = "one_or_more_bytes";
+
+        @Test
+        @DisplayName("cannot be empty")
+        void empty() {
+            Singulars singulars = Singulars
+                    .newBuilder()
+                    .buildPartial();
+            checkViolation(singulars, FIELD);
+        }
+
+        @Test
+        @DisplayName("must have bytes, allowing all zeros")
+        void nonEmpty() {
+            Singulars nonZeros = Singulars
+                    .newBuilder()
+                    .setOneOrMoreBytes(ByteString.copyFrom("non-empty", UTF_8))
+                    .buildPartial();
+            checkNoViolation(nonZeros, FIELD);
+
+            byte[] zeros = {0};
+            Singulars withZeroes = Singulars
+                    .newBuilder()
+                    .setOneOrMoreBytes(ByteString.copyFrom(zeros))
+                    .buildPartial();
+            checkNoViolation(withZeroes, FIELD);
+        }
     }
 
-    @Test
-    @DisplayName("empty byte strings are violations")
-    void checkBytes() {
-        Singulars singulars = Singulars
-                .newBuilder()
-                .buildPartial();
-        checkViolation(singulars, "one_or_more_bytes");
+    @Nested
+    @DisplayName("an enum field")
+    class EnumField {
+
+        private static final String FIELD = "not_vegetable";
+
+        @Test
+        @DisplayName("cannot have a zero-index enum item value")
+        void zeroValue() {
+            Singulars singulars = Singulars
+                    .newBuilder()
+                    .setNotVegetable(UltimateChoice.VEGETABLE)
+                    .buildPartial();
+            checkViolation(singulars, FIELD);
+        }
+
+        @Test
+        @DisplayName("must have a non-zero index item value")
+        void acceptNonDefaultEnum() {
+            Singulars singulars = Singulars
+                    .newBuilder()
+                    .setNotVegetable(UltimateChoice.CHICKEN)
+                    .buildPartial();
+            checkNoViolation(singulars, FIELD);
+        }
     }
 
-    @Test
-    @DisplayName("non-empty byte strings are accepted")
-    void acceptNonEmptyByteString() {
-        Singulars singulars = Singulars
-                .newBuilder()
-                .setOneOrMoreBytes(ByteString.copyFrom("non-empty", UTF_8))
-                .buildPartial();
-        checkNoViolation(singulars, "one_or_more_bytes");
-    }
+    @Nested
+    @DisplayName("a message field")
+    class MessageField {
 
-    @Test
-    @DisplayName("zero-value enums are violations")
-    void checkEnum() {
-        Singulars singulars = Singulars
-                .newBuilder()
-                .setNotVegetable(UltimateChoice.VEGETABLE)
-                .buildPartial();
-        checkViolation(singulars, "not_vegetable");
-    }
+        protected static final String FIELD = "not_default";
 
-    @Test
-    @DisplayName("not-default enums are accepted")
-    void acceptNonDefaultEnum() {
-        Singulars singulars = Singulars
-                .newBuilder()
-                .setNotVegetable(UltimateChoice.CHICKEN)
-                .buildPartial();
-        checkNoViolation(singulars, "not_vegetable");
-    }
+        @Test
+        @DisplayName("cannot have a default message value")
+        void defaultValue() {
+            Singulars singulars = Singulars
+                    .newBuilder()
+                    .buildPartial();
+            checkViolation(singulars, FIELD);
+        }
 
-    @Test
-    @DisplayName("default message instances are violations")
-    void checkMessage() {
-        Singulars singulars = Singulars
-                .newBuilder()
-                .buildPartial();
-        checkViolation(singulars, "not_default");
-    }
+        @Test
+        @DisplayName("must have a not-default message value")
+        void nonDefaultMessage() {
+            Singulars singulars = Singulars
+                    .newBuilder()
+                    .setNotDefault(Enclosed.newBuilder()
+                                           .setValue(newUuid()))
+                    .buildPartial();
+            checkNoViolation(singulars, FIELD);
+        }
 
-    @Test
-    @DisplayName("not-default messages are accepted")
-    void acceptNonDefaultMessage() {
-        Singulars singulars = Singulars
-                .newBuilder()
-                .setNotDefault(Enclosed.newBuilder()
-                                       .setValue(newUuid()))
-                .buildPartial();
-        checkNoViolation(singulars, "not_default");
-    }
+        @Test
+        @DisplayName("cannot be of type `google.protobuf.Empty`")
+        void notAllowEmptyRequired() {
+            final String fieldName = "impossible";
 
-    @Test
-    @DisplayName("google.protobuf.Empty cannot be a required field")
-    void notAllowEmptyRequired() {
-        AlwaysInvalid unset = AlwaysInvalid
-                .newBuilder()
-                .build();
-        checkViolation(unset, "impossible");
-        AlwaysInvalid set = AlwaysInvalid
-                .newBuilder()
-                .setImpossible(Empty.getDefaultInstance())
-                .build();
-        checkViolation(set, "impossible");
+            AlwaysInvalid unset = AlwaysInvalid
+                    .newBuilder()
+                    .build();
+            checkViolation(unset, fieldName);
+
+            AlwaysInvalid set = AlwaysInvalid
+                    .newBuilder()
+                    .setImpossible(Empty.getDefaultInstance())
+                    .build();
+            checkViolation(set, fieldName);
+        }
     }
 
     @Test
@@ -147,162 +190,221 @@ class RequiredConstraintTest {
         assertThat(violations).hasSize(4);
     }
 
-    @Test
-    @DisplayName("repeated number fields must have at least one value")
-    void emptyRepeatedInt() {
-        Collections instance = Collections.getDefaultInstance();
-        checkViolation(instance, "not_empty_list_of_longs");
-    }
+    @Nested
+    @DisplayName("a repeated number field")
+    class RepeatedNumberField {
 
-    @Test
-    @DisplayName("elements of repeated number fields do not matter")
-    void repeatedInt() {
-        Collections instance = Collections
-                .newBuilder()
-                .addNotEmptyListOfLongs(0L)
-                .buildPartial();
-        checkNoViolation(instance,"not_empty_list_of_longs");
-    }
+        protected static final String FIELD = "not_empty_list_of_longs";
 
-    @Test
-    @DisplayName("map number fields must have at least one value")
-    void emptyMapOfInts() {
-        Collections instance = Collections.getDefaultInstance();
-        checkViolation(instance, "not_empty_map_of_ints");
-    }
+        @Test
+        @DisplayName("cannot be empty")
+        void emptyRepeatedInt() {
+            Collections instance = Collections.getDefaultInstance();
+            checkViolation(instance, FIELD);
+        }
 
-    @Test
-    @DisplayName("elements of map number fields do not matter")
-    void mapOfInts() {
-        Collections instance = Collections
-                .newBuilder()
-                .putNotEmptyMapOfInts(0, 0)
-                .buildPartial();
-        checkNoViolation(instance,"not_empty_map_of_ints");
-    }
-
-    @Test
-    @DisplayName("map string fields must have at least one value")
-    void emptyMapOfStrings() {
-        Collections instance = Collections.getDefaultInstance();
-        checkViolation(instance, "contains_a_non_empty_string_value");
-    }
-
-    @Test
-    @DisplayName("map string fields must have at least one non-empty value")
-    void mapOfEmptyStrings() {
-        Collections instance = Collections
-                .newBuilder()
-                .putContainsANonEmptyStringValue("", "")
-                .buildPartial();
-        checkViolation(instance,"contains_a_non_empty_string_value");
-    }
-
-    @Test
-    @DisplayName("a non-empty map of non-empty strings is accepted")
-    void mapOfStrings() {
-        Collections instance = Collections
-                .newBuilder()
-                .putContainsANonEmptyStringValue("", " ")
-                .buildPartial();
-        checkNoViolation(instance,"contains_a_non_empty_string_value");
-    }
-
-    @Test
-    @DisplayName("an empty repeated field of enums is a violation")
-    void emptyRepeatedEnum() {
-        Collections instance = Collections.getDefaultInstance();
-        checkViolation(instance, "at_least_one_piece_of_meat");
-    }
-
-    @Test
-    @DisplayName("an repeated field of default enums is a violation")
-    void repeatedDefaultEnum() {
-        Collections instance = Collections
-                .newBuilder()
-                .addAtLeastOnePieceOfMeat(UltimateChoice.VEGETABLE)
-                .addAtLeastOnePieceOfMeat(UltimateChoice.VEGETABLE)
-                .buildPartial();
-        checkViolation(instance, "at_least_one_piece_of_meat");
-    }
-
-    @Test
-    @DisplayName("an repeated field of enums is accepted")
-    void repeatedEnum() {
-        Collections instance = Collections
-                .newBuilder()
-                .addAtLeastOnePieceOfMeat(UltimateChoice.FISH)
-                .addAtLeastOnePieceOfMeat(UltimateChoice.VEGETABLE)
-                .buildPartial();
-        checkNoViolation(instance, "at_least_one_piece_of_meat");
+        @Test
+        @DisplayName("can have any items, including zero")
+        void repeatedInt() {
+            Collections instance = Collections
+                    .newBuilder()
+                    .addNotEmptyListOfLongs(0L)
+                    .buildPartial();
+            checkNoViolation(instance, FIELD);
+        }
     }
 
     @Nested
-    @DisplayName("when checking an ID")
-    class IdCheck {
+    @DisplayName("a map field with number values")
+    class MapNumberField {
+
+        private static final String FIELD = "not_empty_map_of_ints";
 
         @Test
-        @DisplayName("in an event, no violations if ID is not set")
-        void event() {
-            ProjectCreated msg = ProjectCreated
-                    .newBuilder()
-                    .build();
-            assertThat(msg.validate()).isEmpty();
+        @DisplayName("cannot be empty")
+        void empty() {
+            Collections instance = Collections.getDefaultInstance();
+            checkViolation(instance, FIELD);
         }
 
         @Test
-        @DisplayName("in a command, no violations if ID is present")
-        void command() {
-            CreateProject msg = CreateProject
+        @DisplayName("can have entries with any values, including zero")
+        void mapOfInts() {
+            Collections instance = Collections
                     .newBuilder()
-                    .setId(newUuid())
-                    .build();
-            assertThat(msg.validate()).isEmpty();
-        }
-
-        @Test
-        @DisplayName("in a command, a violation must be produced if ID is not set")
-        void invalidCommand() {
-            CreateProject msg = CreateProject
-                    .newBuilder()
+                    .putNotEmptyMapOfInts(0, 0)
                     .buildPartial();
-            checkViolation(msg, "id");
+            checkNoViolation(instance, FIELD);
+        }
+    }
+
+    @Nested
+    @DisplayName("a map field with string values")
+    class MapStringField {
+
+        private static final String FIELD = "contains_a_non_empty_string_value";
+
+        @Test
+        @DisplayName("cannot be empty")
+        void empty() {
+            Collections instance = Collections.getDefaultInstance();
+            checkViolation(instance, FIELD);
         }
 
         @Test
-        @DisplayName("in a rejection, no violations if ID is not set")
-        void rejection() {
-            TestRejections.CannotCreateProject msg = TestRejections.CannotCreateProject
+        @DisplayName("cannot have a single empty value entry")
+        void nonEmptyValue() {
+            Collections empty = Collections
                     .newBuilder()
-                    .build();
-            assertThat(msg.validate()).isEmpty();
-        }
-
-        @Test
-        @DisplayName("in an entity state, no violations if ID is present")
-        void state() {
-            Project msg = Project
-                    .newBuilder()
-                    .setId(newUuid())
-                    .build();
-            assertThat(msg.validate()).isEmpty();
-        }
-
-        @Test
-        @DisplayName("in an entity state, a violation must be produced if ID is not set")
-        void invalidState() {
-            Project msg = Project
-                    .newBuilder()
+                    .putContainsANonEmptyStringValue("", "")
                     .buildPartial();
-            checkViolation(msg, "id");
+            checkViolation(empty, FIELD);
+
+            Collections nonEmpty = Collections
+                    .newBuilder()
+                    .putContainsANonEmptyStringValue("", "")
+                    .putContainsANonEmptyStringValue("foo", "bar")
+                    .buildPartial();
+            checkNoViolation(nonEmpty, FIELD);
         }
 
         @Test
-        @DisplayName("if stated explicitly, ID should not be required")
-        void notRequired() {
-            Task msg = Task
+        @DisplayName("must have at least one non-empty entry")
+        void mapOfStrings() {
+            Collections instance = Collections
                     .newBuilder()
-                    .build();
+                    .putContainsANonEmptyStringValue("", " ")
+                    .buildPartial();
+            checkNoViolation(instance, FIELD);
+        }
+    }
+
+    @Nested
+    @DisplayName("a repeated enum field")
+    class RepeatedEnumField {
+
+        private static final String FIELD = "at_least_one_piece_of_meat";
+
+        @Test
+        @DisplayName("cannot be empty")
+        void emptyRepeatedEnum() {
+            Collections instance = Collections.getDefaultInstance();
+            checkViolation(instance, FIELD);
+        }
+
+        @Test
+        @DisplayName("cannot have all items with zero-index enum item value")
+        void repeatedDefaultEnum() {
+            Collections allZero = Collections
+                    .newBuilder()
+                    .addAtLeastOnePieceOfMeat(UltimateChoice.VEGETABLE)
+                    .addAtLeastOnePieceOfMeat(UltimateChoice.VEGETABLE)
+                    .buildPartial();
+            checkViolation(allZero, FIELD);
+        }
+
+        @Test
+        @DisplayName("must have at least one value with non-zero emum item value")
+        void repeatedEnum() {
+            Collections instance = Collections
+                    .newBuilder()
+                    .addAtLeastOnePieceOfMeat(UltimateChoice.FISH)
+                    .addAtLeastOnePieceOfMeat(UltimateChoice.VEGETABLE)
+                    .buildPartial();
+            checkNoViolation(instance, FIELD);
+        }
+    }
+
+    @Nested
+    @DisplayName("the first field in a message which is")
+    class FirstFieldCheck {
+
+        @Nested
+        @DisplayName("a command")
+        class InCommand {
+
+            @Test
+            @DisplayName("cannot be empty")
+            void notSet() {
+                CreateProject msg = CreateProject
+                        .newBuilder()
+                        .buildPartial();
+                checkViolation(msg, "id");
+            }
+
+            @Test
+            @DisplayName("must have a non-empty value")
+            void set() {
+                CreateProject msg = CreateProject
+                        .newBuilder()
+                        .setId(newUuid())
+                        .build();
+                assertValid(msg);
+            }
+        }
+
+        @Nested
+        @DisplayName("an event")
+        class InEvent {
+
+            @Test
+            @DisplayName("can be empty")
+            void notSet() {
+                ProjectCreated msg = ProjectCreated
+                        .newBuilder()
+                        .build();
+                assertValid(msg);
+            }
+        }
+
+        @Nested
+        @DisplayName("a rejection")
+        class InRejection {
+
+            @Test
+            @DisplayName("can be empty")
+            void notSet() {
+                TestRejections.CannotCreateProject msg = TestRejections.CannotCreateProject
+                        .newBuilder()
+                        .build();
+                assertValid(msg);
+            }
+        }
+
+        @Nested
+        @DisplayName("an entity state")
+        class InEntityState {
+
+            @Test
+            @DisplayName("cannot be empty")
+            void notSet() {
+                Project msg = Project
+                        .newBuilder()
+                        .buildPartial();
+                checkViolation(msg, "id");
+            }
+
+            @Test
+            @DisplayName("must have a non-empty value")
+            void set() {
+                Project msg = Project
+                        .newBuilder()
+                        .setId(newUuid())
+                        .build();
+                assertValid(msg);
+            }
+
+            @Test
+            @DisplayName("allowing to omit, if set as not `required` explicitly")
+            void notRequired() {
+                Task msg = Task
+                        .newBuilder()
+                        .build();
+                assertValid(msg);
+            }
+        }
+
+        private void assertValid(MessageWithConstraints msg) {
             assertThat(msg.validate()).isEmpty();
         }
     }
