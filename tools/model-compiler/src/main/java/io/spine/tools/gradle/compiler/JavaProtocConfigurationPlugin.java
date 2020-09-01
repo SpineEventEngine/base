@@ -43,6 +43,7 @@ import org.gradle.api.plugins.JavaPluginConvention;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
@@ -54,14 +55,16 @@ import static com.google.common.io.Files.asCharSink;
 import static io.spine.code.fs.java.DefaultJavaProject.at;
 import static io.spine.tools.gradle.BaseTaskName.clean;
 import static io.spine.tools.gradle.ConfigurationName.fetch;
+import static io.spine.tools.gradle.JavaTaskName.processResources;
+import static io.spine.tools.gradle.JavaTaskName.processTestResources;
 import static io.spine.tools.gradle.ModelCompilerTaskName.writeDescriptorReference;
 import static io.spine.tools.gradle.ModelCompilerTaskName.writePluginConfiguration;
 import static io.spine.tools.gradle.ModelCompilerTaskName.writeTestDescriptorReference;
 import static io.spine.tools.gradle.ModelCompilerTaskName.writeTestPluginConfiguration;
 import static io.spine.tools.gradle.ProtocPluginName.grpc;
 import static io.spine.tools.gradle.ProtocPluginName.spineProtoc;
+import static io.spine.tools.gradle.compiler.ProtocPluginConfiguration.forProject;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.createTempFile;
 import static java.util.regex.Matcher.quoteReplacement;
 import static org.gradle.internal.os.OperatingSystem.current;
@@ -136,7 +139,7 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
         String script = matcher.replaceAll(quoteReplacement(jarFile.toString()));
         Path path = createTempFile(JavaProtocConfigurationPlugin.class.getSimpleName(), scriptExt);
         File file = path.toFile();
-        CharSink sink = asCharSink(file, UTF_8);
+        CharSink sink = asCharSink(file, StandardCharsets.UTF_8);
         sink.write(script);
         boolean canBeExecuted = file.setExecutable(true, false);
         checkState(canBeExecuted, "Failed to make file `%s` executable.", file);
@@ -164,9 +167,7 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
     private void customizeDescriptorSetGeneration(GenerateProtoTask protocTask) {
         boolean tests = isTestsTask(protocTask);
         Project project = protocTask.getProject();
-        TaskName writeRefName = tests
-                                ? writeTestDescriptorReference
-                                : writeDescriptorReference;
+        TaskName writeRefName = writeRefNameTask(tests);
         JavaPluginConvention javaConvention = project.getConvention()
                                                      .getPlugin(JavaPluginConvention.class);
         SourceScope sourceScope = tests ? SourceScope.test : SourceScope.main;
@@ -177,12 +178,24 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
                       .getByName(sourceScope.name())
                       .getResources()
                       .srcDir(resourceDirectory);
-        GradleTask writeRef = newTask(writeRefName, task -> {
-            DescriptorReference reference = DescriptorReference.toOneFile(descriptorFile);
-            reference.writeTo(resourceDirectory);
-        }).allowNoDependencies()
-          .applyNowTo(project);
+        GradleTask writeRef = newTask(writeRefName,
+                                      task -> writeRefFile(descriptorFile, resourceDirectory))
+                .insertBeforeTask(processResourceTaskName(tests))
+                .applyNowTo(project);
         protocTask.finalizedBy(writeRef.getTask());
+    }
+
+    private static void writeRefFile(File descriptorFile, Path resourceDirectory) {
+        DescriptorReference reference = DescriptorReference.toOneFile(descriptorFile);
+        reference.writeTo(resourceDirectory);
+    }
+
+    private static TaskName writeRefNameTask(boolean tests) {
+        return tests ? writeTestDescriptorReference : writeDescriptorReference;
+    }
+
+    private static TaskName processResourceTaskName(boolean tests) {
+        return tests ? processTestResources : processResources;
     }
 
     @Override
@@ -207,14 +220,17 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
      * {@code clean} task.
      */
     private Task newWriteSpineProtocConfigTask(GenerateProtoTask protocTask, Path configPath) {
-        return newTask(spineProtocConfigWriteTaskName(protocTask), task -> {
-            ProtocPluginConfiguration configuration = ProtocPluginConfiguration
-                    .forProject(protocTask.getProject());
-            configuration.writeTo(configPath);
-        }).allowNoDependencies()
-          .applyNowTo(protocTask.getProject())
-          .getTask()
-          .mustRunAfter(clean.name());
+        return newTask(spineProtocConfigWriteTaskName(protocTask),
+                       task -> writePluginConfig(protocTask, configPath))
+                .allowNoDependencies()
+                .applyNowTo(protocTask.getProject())
+                .getTask()
+                .mustRunAfter(clean.name());
+    }
+
+    private static void writePluginConfig(Task protocTask, Path configPath) {
+        ProtocPluginConfiguration configuration = forProject(protocTask.getProject());
+        configuration.writeTo(configPath);
     }
 
     private static String base64Encoded(String value) {
