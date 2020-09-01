@@ -43,6 +43,7 @@ import org.gradle.api.plugins.JavaPluginConvention;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
@@ -60,8 +61,8 @@ import static io.spine.tools.gradle.ModelCompilerTaskName.writeTestDescriptorRef
 import static io.spine.tools.gradle.ModelCompilerTaskName.writeTestPluginConfiguration;
 import static io.spine.tools.gradle.ProtocPluginName.grpc;
 import static io.spine.tools.gradle.ProtocPluginName.spineProtoc;
+import static io.spine.tools.gradle.compiler.ProtocPluginConfiguration.forProject;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.createTempFile;
 import static java.util.regex.Matcher.quoteReplacement;
 import static org.gradle.internal.os.OperatingSystem.current;
@@ -136,7 +137,7 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
         String script = matcher.replaceAll(quoteReplacement(jarFile.toString()));
         Path path = createTempFile(JavaProtocConfigurationPlugin.class.getSimpleName(), scriptExt);
         File file = path.toFile();
-        CharSink sink = asCharSink(file, UTF_8);
+        CharSink sink = asCharSink(file, StandardCharsets.UTF_8);
         sink.write(script);
         boolean canBeExecuted = file.setExecutable(true, false);
         checkState(canBeExecuted, "Failed to make file `%s` executable.", file);
@@ -207,14 +208,17 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
      * {@code clean} task.
      */
     private Task newWriteSpineProtocConfigTask(GenerateProtoTask protocTask, Path configPath) {
-        return newTask(spineProtocConfigWriteTaskName(protocTask), task -> {
-            ProtocPluginConfiguration configuration = ProtocPluginConfiguration
-                    .forProject(protocTask.getProject());
-            configuration.writeTo(configPath);
-        }).allowNoDependencies()
-          .applyNowTo(protocTask.getProject())
-          .getTask()
-          .mustRunAfter(clean.name());
+        return newTask(spineProtocConfigWriteTaskName(protocTask),
+                       task -> writePluginConfig(protocTask, configPath))
+                .allowNoDependencies()
+                .applyNowTo(protocTask.getProject())
+                .getTask()
+                .mustRunAfter(clean.name());
+    }
+
+    private static void writePluginConfig(Task protocTask, Path configPath) {
+        ProtocPluginConfiguration configuration = forProject(protocTask.getProject());
+        configuration.writeTo(configPath);
     }
 
     private static String base64Encoded(String value) {
