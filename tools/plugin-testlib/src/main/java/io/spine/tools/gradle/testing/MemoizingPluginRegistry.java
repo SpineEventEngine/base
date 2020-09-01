@@ -24,8 +24,11 @@ import com.google.common.collect.ImmutableSet;
 import io.spine.tools.gradle.GradlePlugin;
 import io.spine.tools.gradle.PluginScript;
 import io.spine.tools.gradle.project.PluginTarget;
+import org.gradle.api.Plugin;
+import org.gradle.api.Project;
 
 import java.util.Set;
+import java.util.function.Consumer;
 
 import static com.google.common.collect.Sets.newHashSet;
 
@@ -36,11 +39,11 @@ import static com.google.common.collect.Sets.newHashSet;
  */
 public final class MemoizingPluginRegistry implements PluginTarget {
 
-    private final Set<GradlePlugin> plugins = newHashSet();
+    private final Set<GradlePlugin<?>> plugins = newHashSet();
     private final Set<PluginScript> pluginScripts = newHashSet();
 
     @Override
-    public void apply(GradlePlugin plugin) {
+    public void apply(GradlePlugin<?> plugin) {
         plugins.add(plugin);
     }
 
@@ -50,11 +53,11 @@ public final class MemoizingPluginRegistry implements PluginTarget {
     }
 
     @Override
-    public boolean isApplied(GradlePlugin plugin) {
+    public boolean isApplied(GradlePlugin<?> plugin) {
         return plugins.contains(plugin);
     }
 
-    public ImmutableSet<GradlePlugin> plugins() {
+    public ImmutableSet<GradlePlugin<?>> plugins() {
         return ImmutableSet.copyOf(plugins);
     }
 
@@ -63,7 +66,7 @@ public final class MemoizingPluginRegistry implements PluginTarget {
     }
 
     @Override
-    public void with(GradlePlugin plugin, Runnable action) {
+    public <P extends Plugin<Project>> void with(GradlePlugin<P> plugin, Consumer<P> action) {
         // Do nothing.
     }
 }

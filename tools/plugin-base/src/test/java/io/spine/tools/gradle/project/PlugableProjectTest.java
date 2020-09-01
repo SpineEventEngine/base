@@ -75,7 +75,7 @@ class PlugableProjectTest {
     @Test
     @DisplayName("apply a requested plugin")
     void applyPlugin() {
-        GradlePlugin plugin = implementedIn(JavaPlugin.class);
+        GradlePlugin<?> plugin = implementedIn(JavaPlugin.class);
 
         assertTrue(plugableProject.isNotApplied(plugin));
         assertFalse(plugableProject.isApplied(plugin));
@@ -89,7 +89,7 @@ class PlugableProjectTest {
     @Nested
     class LogOnDuplicate extends LoggingTest {
 
-        private GradlePlugin plugin;
+        private GradlePlugin<?> plugin;
 
         LogOnDuplicate() {
             super(PlugableProject.class, Logging.debugLevel());
@@ -140,10 +140,14 @@ class PlugableProjectTest {
     @Test
     @DisplayName("execute a given action if a plugin is present")
     void runIfPresent() {
-        GradlePlugin plugin = implementedIn(IdeaPlugin.class);
+        GradlePlugin<IdeaPlugin> plugin = implementedIn(IdeaPlugin.class);
         plugableProject.apply(plugin);
         AtomicBoolean run = new AtomicBoolean(false);
-        plugableProject.with(plugin, () -> run.set(true));
+        plugableProject.with(plugin, idea -> {
+            assertThat(idea)
+                    .isNotNull();
+            run.set(true);
+        });
         assertThat(run.get())
                 .isTrue();
     }
@@ -151,9 +155,13 @@ class PlugableProjectTest {
     @Test
     @DisplayName("execute a given action after a plugin is applied")
     void runWhenPresent() {
-        GradlePlugin plugin = implementedIn(IdeaPlugin.class);
+        GradlePlugin<IdeaPlugin> plugin = implementedIn(IdeaPlugin.class);
         AtomicBoolean run = new AtomicBoolean(false);
-        plugableProject.with(plugin, () -> run.set(true));
+        plugableProject.with(plugin, idea -> {
+            assertThat(idea)
+                    .isNotNull();
+            run.set(true);
+        });
         assertThat(run.get())
                 .isFalse();
         plugableProject.apply(plugin);
