@@ -61,4 +61,9 @@ public final class MemoizingPluginRegistry implements PluginTarget {
     public ImmutableSet<PluginScript> pluginScripts() {
         return ImmutableSet.copyOf(pluginScripts);
     }
+
+    @Override
+    public void with(GradlePlugin plugin, Runnable action) {
+        // Do nothing.
+    }
 }

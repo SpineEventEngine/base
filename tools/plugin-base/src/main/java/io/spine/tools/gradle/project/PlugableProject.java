@@ -41,6 +41,19 @@ public final class PlugableProject implements PluginTarget, Logging {
     }
 
     @Override
+    public void with(GradlePlugin plugin, Runnable action) {
+        checkNotNull(plugin);
+        checkNotNull(action);
+
+        if (isApplied(plugin)) {
+            action.run();
+        } else {
+            project.getPlugins()
+                   .withType(plugin.implementationClass(), project -> action.run());
+        }
+    }
+
+    @Override
     public void apply(GradlePlugin plugin) {
         checkNotNull(plugin);
 

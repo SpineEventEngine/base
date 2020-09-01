@@ -31,6 +31,19 @@ import io.spine.tools.gradle.PluginScript;
 public interface PluginTarget {
 
     /**
+     * Executes the given {@code action} if the given plugin is applied.
+     *
+     * <p>If the plugin is already applied, the action is executed at once. If the plugin is NOT
+     * applied, the action is only executed when and it the plugin will be applied.
+     *
+     * @param plugin
+     *         the trigger plugin
+     * @param action
+     *         the action to execute
+     */
+    void with(GradlePlugin plugin, Runnable action);
+
+    /**
      * Applies the given plugin.
      */
     void apply(GradlePlugin plugin);
