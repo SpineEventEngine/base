@@ -55,6 +55,8 @@ import static com.google.common.io.Files.asCharSink;
 import static io.spine.code.fs.java.DefaultJavaProject.at;
 import static io.spine.tools.gradle.BaseTaskName.clean;
 import static io.spine.tools.gradle.ConfigurationName.fetch;
+import static io.spine.tools.gradle.JavaTaskName.processResources;
+import static io.spine.tools.gradle.JavaTaskName.processTestResources;
 import static io.spine.tools.gradle.ModelCompilerTaskName.writeDescriptorReference;
 import static io.spine.tools.gradle.ModelCompilerTaskName.writePluginConfiguration;
 import static io.spine.tools.gradle.ModelCompilerTaskName.writeTestDescriptorReference;
@@ -165,9 +167,7 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
     private void customizeDescriptorSetGeneration(GenerateProtoTask protocTask) {
         boolean tests = isTestsTask(protocTask);
         Project project = protocTask.getProject();
-        TaskName writeRefName = tests
-                                ? writeTestDescriptorReference
-                                : writeDescriptorReference;
+        TaskName writeRefName = writeRefNameTask(tests);
         JavaPluginConvention javaConvention = project.getConvention()
                                                      .getPlugin(JavaPluginConvention.class);
         SourceScope sourceScope = tests ? SourceScope.test : SourceScope.main;
@@ -178,12 +178,24 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
                       .getByName(sourceScope.name())
                       .getResources()
                       .srcDir(resourceDirectory);
-        GradleTask writeRef = newTask(writeRefName, task -> {
-            DescriptorReference reference = DescriptorReference.toOneFile(descriptorFile);
-            reference.writeTo(resourceDirectory);
-        }).allowNoDependencies()
-          .applyNowTo(project);
+        GradleTask writeRef = newTask(writeRefName,
+                                      task -> writeRefFile(descriptorFile, resourceDirectory))
+                .insertBeforeTask(processResourceTaskName(tests))
+                .applyNowTo(project);
         protocTask.finalizedBy(writeRef.getTask());
+    }
+
+    private static void writeRefFile(File descriptorFile, Path resourceDirectory) {
+        DescriptorReference reference = DescriptorReference.toOneFile(descriptorFile);
+        reference.writeTo(resourceDirectory);
+    }
+
+    private static TaskName writeRefNameTask(boolean tests) {
+        return tests ? writeTestDescriptorReference : writeDescriptorReference;
+    }
+
+    private static TaskName processResourceTaskName(boolean tests) {
+        return tests ? processTestResources : processResources;
     }
 
     @Override
