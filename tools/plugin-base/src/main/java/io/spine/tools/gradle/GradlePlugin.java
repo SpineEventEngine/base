@@ -34,11 +34,11 @@ import static java.lang.String.format;
  * <p>A plugin is represented by the Java class which implements it. The class must implement
  * the {@link Plugin org.gradle.api.Plugin} interface.
  */
-public final class GradlePlugin {
+public final class GradlePlugin<P extends Plugin<? extends Project>> {
 
-    private final Class<? extends Plugin<? extends Project>> implementationClass;
+    private final Class<P> implementationClass;
 
-    private GradlePlugin(Class<? extends Plugin<? extends Project>> pluginClass) {
+    private GradlePlugin(Class<P> pluginClass) {
         this.implementationClass = checkNotNull(pluginClass);
     }
 
@@ -49,15 +49,15 @@ public final class GradlePlugin {
      *         the plugin implementation class
      * @return new instance
      */
-    public static GradlePlugin
-    implementedIn(Class<? extends Plugin<? extends Project>> pluginClass) {
-        return new GradlePlugin(pluginClass);
+    public static <P extends Plugin<? extends Project>> GradlePlugin<P>
+    implementedIn(Class<P> pluginClass) {
+        return new GradlePlugin<>(pluginClass);
     }
 
     /**
      * Obtains the implementation class of this plugin.
      */
-    public Class<? extends Plugin<? extends Project>> implementationClass() {
+    public Class<P> implementationClass() {
         return implementationClass;
     }
 
@@ -76,7 +76,7 @@ public final class GradlePlugin {
         if (!(o instanceof GradlePlugin)) {
             return false;
         }
-        GradlePlugin plugin = (GradlePlugin) o;
+        GradlePlugin<?> plugin = (GradlePlugin<?>) o;
         return Objects.equal(implementationClass, plugin.implementationClass);
     }
 
