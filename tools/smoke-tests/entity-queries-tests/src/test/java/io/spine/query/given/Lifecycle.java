@@ -31,7 +31,7 @@ public enum Lifecycle {
 
     ARCHIVED(new ArchivedColumn()),
 
-    DELETED(new ArchivedColumn());
+    DELETED(new DeletedColumn());
 
     private final CustomColumn<?, Boolean> column;
 
