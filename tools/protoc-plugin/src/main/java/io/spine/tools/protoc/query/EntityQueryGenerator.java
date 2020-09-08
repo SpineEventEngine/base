@@ -83,6 +83,7 @@ public class EntityQueryGenerator extends CodeGenerator {
     private final boolean enabled;
 
     private EntityQueryGenerator(boolean enabled) {
+        super();
         this.enabled = enabled;
     }
 
