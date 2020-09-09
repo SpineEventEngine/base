@@ -30,9 +30,12 @@ import static io.spine.query.ComparisonOperator.EQUALS;
  *
  * <p>The custom parameters are set as desired values for the {@link CustomColumn}s.
  *
- * @param <S> the type of objects which serve as a source for the column values
- * @param <V> the type of column values
- * @param <B> the type of query builder in scope of which this criterion exists
+ * @param <S>
+ *         the type of objects which serve as a source for the column values
+ * @param <V>
+ *         the type of column values
+ * @param <B>
+ *         the type of query builder in scope of which this criterion exists
  */
 final class CustomCriterion<S, V, B extends QueryBuilder<?, ?, ?, B, ?>> {
 
