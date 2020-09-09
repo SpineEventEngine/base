@@ -27,10 +27,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.function.Function;
 
 /**
- * A column of the some record residing in a storage.
+ * A column of a record residing in a storage.
  *
- * <p>Columns are the values of record fields which are stored along with the record itself and
- * can be used for querying.
+ * <p>Columns are the values of record fields stored along with the record itself. They are used
+ * for filtering the results when querying the storage.
  *
  * @param <R>
  *         the type of records
