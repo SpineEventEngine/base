@@ -21,6 +21,7 @@
 package io.spine.query;
 
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Message;
 
 import java.util.Objects;
 
@@ -36,7 +37,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @param <R>
  *         the type of the queried records
  */
-public final class Subject<I, R> {
+public final class Subject<I, R extends Message> {
 
     /**
      * The criteria put on the identifiers of the records of interest.
@@ -62,14 +63,12 @@ public final class Subject<I, R> {
      */
     private final ImmutableList<QueryPredicate<R>> predicates;
 
-    public Subject(IdParameter<I> id,
-                   Class<I> idType,
-                   Class<R> recordType,
-                   ImmutableList<QueryPredicate<R>> predicates) {
-        this.id = checkNotNull(id);
-        this.idType = checkNotNull(idType);
-        this.recordType = checkNotNull(recordType);
-        this.predicates = checkNotNull(predicates);
+    Subject(QueryBuilder<I, R, ?, ?, ?> builder) {
+        checkNotNull(builder);
+        this.id = checkNotNull(builder.whichIds());
+        this.idType = checkNotNull(builder.whichIdType());
+        this.recordType = checkNotNull(builder.whichRecordType());
+        this.predicates = checkNotNull(builder.predicates());
     }
 
     /**

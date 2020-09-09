@@ -79,10 +79,7 @@ abstract class AbstractQuery<I, R extends Message, P extends SubjectParameter<R,
      * <p>Checks that if the limit is set, at least one ordering directive is present as well.
      */
     AbstractQuery(AbstractQueryBuilder<I, R, P, ?, ?> builder) {
-        this.subject = new Subject<>(builder.whichIds(),
-                                     builder.whichIdType(),
-                                     builder.whichRecordType(),
-                                     builder.predicates());
+        this.subject = new Subject<>(builder);
         this.ordering = checkNotNull(builder.ordering());
         this.mask = builder.whichMask().orElse(FieldMask.getDefaultInstance());
         limit = ensureLimit(builder.whichLimit());
