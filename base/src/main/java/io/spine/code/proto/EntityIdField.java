@@ -57,7 +57,7 @@ public final class EntityIdField {
 
         FieldDeclaration declaration = fields.get(0);
         checkState(!isColumn(declaration), "`EntityIdField` must not be marked as `(column)`." +
-                "Check the declaration of `%s` type.", messageType.toProto().getName());
+                " Please check the declaration of `%s` type.", messageType.toProto().getName());
         return new EntityIdField(declaration);
     }
 
