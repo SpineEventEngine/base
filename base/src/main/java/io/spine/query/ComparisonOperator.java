@@ -31,7 +31,7 @@ import static java.lang.String.format;
 /**
  * Defines how the queried records are compared against the desired parameter values.
  *
- * <h1><a name="supported_types"><strong>Supported field types</strong></a></h1>
+ * <h3><a name="supported_types"><strong>Supported field types</strong></a></h3>
  *
  * <p>The equality comparisons support the fields of all types. The operation is performed
  * via the {@link Objects#equals} method. A {@code null} reference is considered equal
