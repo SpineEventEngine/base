@@ -40,7 +40,7 @@ public final class EntityCriterion<S extends EntityState<?>,
 
 
     /**
-     * Creates a new instance of {@code EntityCriterion}.
+     * Creates a new instance.
      *
      * @param column
      *         the column which actual value to use later in querying

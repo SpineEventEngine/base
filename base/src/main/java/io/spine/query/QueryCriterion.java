@@ -41,7 +41,7 @@ abstract class QueryCriterion<R extends Message,
     private final B builder;
 
     /**
-     * Creates a new instance of {@code QueryCriterion}.
+     * Creates a new instance.
      *
      * @param column
      *         the column which actual value to use later in querying

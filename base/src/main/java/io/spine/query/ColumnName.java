@@ -48,7 +48,7 @@ public final class ColumnName extends StringTypeValue {
     }
 
     /**
-     * Creates a new instance of {@code ColumnName} for the field, which declaration is passed.
+     * Creates a new instance for the field, which declaration is passed.
      */
     public static ColumnName of(FieldDeclaration field) {
         checkNotNull(field);

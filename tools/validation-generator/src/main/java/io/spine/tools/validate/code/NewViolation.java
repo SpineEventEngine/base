@@ -108,11 +108,11 @@ public final class NewViolation implements Expression<ConstraintViolation> {
     }
 
     /**
-     * Creates a new instance of {@code Builder} for {@code NewViolation} instances.
+     * Creates a new builder for the instances of this type.
      *
      * <p>The builder is preset with the declaring type and name of the given field.
      *
-     * @return new instance of {@code Builder}
+     * @return new builder instance
      */
     public static Builder forField(FieldContext field) {
         checkNotNull(field);
@@ -179,9 +179,7 @@ public final class NewViolation implements Expression<ConstraintViolation> {
         }
 
         /**
-         * Creates a new instance of {@code ViolationTemplate}.
-         *
-         * @return new instance of {@code ViolationTemplate}
+         * Creates a new instance of {@link NewViolation}.
          */
         public NewViolation build() {
             checkNotNull(message);

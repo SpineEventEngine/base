@@ -42,7 +42,7 @@ public final class CustomCriterion<S, V, B extends QueryBuilder<?, ?, ?, B, ?>> 
     private final CustomColumn<S, V> column;
 
     /**
-     * Creates a new instance of {@code CustomCriterion}.
+     * Creates a new instance.
      *
      * @param column
      *         the column for which the {@link CustomSubjectParameter} should be set

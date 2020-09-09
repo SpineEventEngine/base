@@ -51,7 +51,7 @@ public class RecordColumn<R extends Message, V>
     private final Getter<R, V> getter;
 
     /**
-     * Creates a new instance of the {@code RecordColumn}.
+     * Creates a new instance.
      *
      * @param name
      *         the name of the column; must be non-empty
@@ -65,7 +65,7 @@ public class RecordColumn<R extends Message, V>
     }
 
     /**
-     * Creates a new instance of the {@code RecordColumn}.
+     * Creates a new instance.
      *
      * @param name
      *         the name of the column

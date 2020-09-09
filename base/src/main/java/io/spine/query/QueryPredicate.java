@@ -64,7 +64,7 @@ public final class QueryPredicate<R> {
     }
 
     /**
-     * Creates a new instance of {@code Predicate.Builder} for a specified logical operator.
+     * Creates a new instance the predicate builder for a specified logical operator.
      *
      * @param <R> the type of the record which is stored for subject
      */

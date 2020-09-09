@@ -36,7 +36,7 @@ public final class RecordCriterion<I, R extends Message, V>
         extends QueryCriterion<R, V, RecordColumn<R, V>, RecordQueryBuilder<I, R>> {
 
     /**
-     * Creates a new instance of {@code RecordCriterion}.
+     * Creates a new instance.
      *
      * @param column
      *         the column which actual value to use later in querying

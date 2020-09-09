@@ -44,7 +44,7 @@ public final class RecordQuery<I, R extends Message>
     private final RecordQueryBuilder<I, R> builder;
 
     /**
-     * Creates a new instance of {@code RecordQuery} on top of the passed builder.
+     * Creates a new instance on top of the passed builder.
      */
     RecordQuery(RecordQueryBuilder<I, R> builder) {
         super(builder);
