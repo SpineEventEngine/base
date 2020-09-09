@@ -109,7 +109,8 @@ public enum ComparisonOperator {
             }
             throw new UnsupportedOperationException(format(
                     "Comparison operations are not supported for type %s.",
-                    left.getClass().getCanonicalName())
+                    left.getClass()
+                        .getCanonicalName())
             );
         }
     },
