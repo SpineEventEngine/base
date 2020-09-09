@@ -59,7 +59,7 @@ public final class IdCriterion<I, B extends AbstractQueryBuilder<I, ?, ?, B, ?>>
     /**
      * Creates an instance of this criterion with the passed identifier values.
      */
-    public final B with(Iterable<I> values) {
+    public final B in(Iterable<I> values) {
         ImmutableSet<I> asList = ImmutableSet.copyOf(values);
         IdParameter<I> parameter = IdParameter.in(asList);
         return builder.setIdParameter(parameter);

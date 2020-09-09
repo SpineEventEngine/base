@@ -107,7 +107,7 @@ class RecordQueryBuilderTest {
             RecordQuery<ManufacturerId, Manufacturer> query =
                     manufacturerBuilder()
                             .id()
-                            .with(expectedValues)
+                            .in(expectedValues)
                             .build();
             Subject<ManufacturerId, Manufacturer> subject = subjectWithNoPredicates(query);
 
@@ -281,7 +281,7 @@ class RecordQueryBuilderTest {
         void ofSeveralIds() {
             ImmutableSet<ManufacturerId> ids = generateIds(3);
             assertThat(manufacturerBuilder().id()
-                                            .with(ids)
+                                            .in(ids)
                                             .whichIds()
                                             .values()).isEqualTo(ids);
         }

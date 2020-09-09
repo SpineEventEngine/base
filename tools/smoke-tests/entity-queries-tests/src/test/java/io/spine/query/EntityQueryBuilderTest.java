@@ -105,7 +105,7 @@ class EntityQueryBuilderTest {
             ImmutableSet<ProjectId> expectedValues = generateIds(24);
             ProjectView.Query query = ProjectView.newQuery()
                                                  .projectId()
-                                                 .with(expectedValues)
+                                                 .in(expectedValues)
                                                  .build();
             Subject<ProjectId, ProjectView> subject = subjectWithNoPredicates(query);
             IdParameter<ProjectId> actualIdParam = subject.id();
@@ -302,7 +302,7 @@ class EntityQueryBuilderTest {
             ImmutableSet<ProjectId> ids = generateIds(3);
             assertThat(ProjectView.newQuery()
                                   .projectId()
-                                  .with(ids)
+                                  .in(ids)
                                   .whichIds()
                                   .values()).isEqualTo(ids);
         }
