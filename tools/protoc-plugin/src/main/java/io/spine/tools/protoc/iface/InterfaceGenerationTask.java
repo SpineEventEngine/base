@@ -99,7 +99,6 @@ abstract class InterfaceGenerationTask implements CodeGenerationTask {
             DetermineType detector = ctor.newInstance();
             ClassName value = detector.apply(type);
             firstParameter = Optional.of(new PredefinedTypeParameter(value));
-
         } catch (@SuppressWarnings("OverlyBroadCatchBlock")  // all exceptions handled similarly.
                 Exception e) {
             throw newIllegalArgumentException(
