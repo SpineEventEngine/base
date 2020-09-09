@@ -50,10 +50,10 @@ public final class EntityIdField {
         checkNotNull(messageType);
         checkArgument(messageType.isEntityState(),
                       "`EntityIdField` expected an `EntityState` descendant, " +
-                              "but got `%s`", messageType.javaClassName());
+                              "but got `%s`.", messageType.javaClassName());
         ImmutableList<FieldDeclaration> fields = messageType.fields();
         checkState(fields.size() > 0, "At least one field is expected to be declared " +
-                "in the `EntityState` message of type `%s`", messageType.javaClassName());
+                "in the `EntityState` message of type `%s`.", messageType.javaClassName());
 
         FieldDeclaration declaration = fields.get(0);
         checkState(!isColumn(declaration), "`EntityIdField` must not be marked as `(column)`." +
