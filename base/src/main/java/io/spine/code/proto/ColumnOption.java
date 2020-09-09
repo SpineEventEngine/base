@@ -55,7 +55,7 @@ public final class ColumnOption extends FieldOption<Boolean> {
      * of how fields are declared.
      */
     public static boolean hasColumns(MessageType messageType) {
-        if (!declaresAsEntity(messageType)) {
+        if (!declaresEntity(messageType)) {
             return false;
         }
         boolean result = messageType.fields()
@@ -71,7 +71,7 @@ public final class ColumnOption extends FieldOption<Boolean> {
      * how fields are declared.
      */
     public static ImmutableList<FieldDeclaration> columnsOf(MessageType messageType) {
-        if (!declaresAsEntity(messageType)) {
+        if (!declaresEntity(messageType)) {
             return ImmutableList.of();
         }
         ImmutableList<FieldDeclaration> result = messageType.fields()
@@ -90,7 +90,7 @@ public final class ColumnOption extends FieldOption<Boolean> {
      * <p>The {@code repeated} and {@code map} fields cannot be columns.
      */
     public static boolean isColumn(FieldDeclaration field) {
-        if (!declaresAsEntity(field.declaringType())) {
+        if (!declaresEntity(field.declaringType())) {
             return false;
         }
         if (field.isCollection()) {
@@ -106,7 +106,7 @@ public final class ColumnOption extends FieldOption<Boolean> {
      * Returns {@code true} if the given message type is declared as an entity and may have columns.
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted") // For readability.
-    private static boolean declaresAsEntity(MessageType messageType) {
+    private static boolean declaresEntity(MessageType messageType) {
         Optional<EntityOption> entityOption = EntityStateOption.valueOf(messageType.descriptor());
         return entityOption.isPresent();
     }
