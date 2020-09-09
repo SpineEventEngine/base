@@ -21,6 +21,7 @@
 package io.spine.code.gen.java.column;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
@@ -39,7 +40,6 @@ import io.spine.query.EntityColumn;
 import io.spine.type.MessageType;
 
 import java.util.HashSet;
-import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
@@ -77,9 +77,11 @@ import static javax.lang.model.element.Modifier.STATIC;
  *         // Prevent instantiation.
  *     }
  *
- *     public static io.spine.query.EntityColumn name() {...}
+ *    {@literal public static EntityColumn<ProjectDetails, ProjectName>} name() {...}
  *
- *     public static io.spine.query.EntityColumn taskCount() {...}
+ *    {@literal public static EntityColumn<ProjectDetails, Integer>} taskCount() {...}
+ *
+ *    {@literal public static ImmutableSet<EntityColumn<ProjectDetails, ?>>} definitions() {...}
  * }
  * </pre>
  *
@@ -100,7 +102,7 @@ public final class ColumnContainerSpec implements GeneratedTypeSpec {
     private ColumnContainerSpec(MessageType messageType) {
         this.messageType = messageType;
         this.columns = columnsOf(messageType);
-        this.definitionsReturnType = setOfEntityColumnsFor(messageType);
+        this.definitionsReturnType = immutableColumnSetOfType(messageType);
     }
 
     public static ColumnContainerSpec of(MessageType messageType) {
@@ -151,18 +153,19 @@ public final class ColumnContainerSpec implements GeneratedTypeSpec {
                 .addJavadoc("Returns all the column definitions for this type.")
                 .addModifiers(PUBLIC, STATIC)
                 .returns(definitionsReturnType);
+        ClassName setName = ClassName.get(HashSet.class);
         builder.addStatement("$T result = new $T<>()",
-                              definitionsReturnType, ClassName.get(HashSet.class));
+                             setName, setName);
         for (MethodSpec methodSpec : columns) {
             builder.addStatement("result.add($N())", methodSpec);
         }
-        builder.addStatement("return result");
+        builder.addStatement("return $T.copyOf(result)", ClassName.get(ImmutableSet.class));
 
         MethodSpec result = builder.build();
         return result;
     }
 
-    private static TypeName setOfEntityColumnsFor(MessageType type) {
+    private static TypeName immutableColumnSetOfType(MessageType type) {
         JavaPoetName entityColumnType = JavaPoetName.of(EntityColumn.class);
         JavaPoetName messageTypeName = JavaPoetName.of(type);
         ParameterizedTypeName parameterizedColumn =
@@ -170,7 +173,7 @@ public final class ColumnContainerSpec implements GeneratedTypeSpec {
                                           messageTypeName.className(),
                                           WildcardTypeName.subtypeOf(Object.class));
 
-        ParameterizedTypeName result = ParameterizedTypeName.get(ClassName.get(Set.class),
+        ParameterizedTypeName result = ParameterizedTypeName.get(ClassName.get(ImmutableSet.class),
                                                                  parameterizedColumn);
         return result;
     }
