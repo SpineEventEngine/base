@@ -87,6 +87,19 @@ message UserView {
     UserName name = 2 [(column) = true];
 }
 
+message NoColumnsView {
+    option (entity).kind = PROJECTION;
+
+    UserId id = 1;
+    UserName name = 2;
+}
+
+message IdOnlyView {
+    option (entity).kind = PROJECTION;
+
+    UserId id = 3;
+}
+
 message UserId {
     string uuid = 1;
 }
