@@ -21,16 +21,19 @@
 package io.spine.query;
 
 /**
- * A subject parameter, which defines the condition for something different than a declared field
- * of a record or an {@link io.spine.base.EntityState EntityState}.
+ * A subject parameter for a query, which defines a condition for something different than
+ * a value of a field declared in a {@code Message} type of the record.
  *
  * <p>In some cases, stored records or entities include {@linkplain CustomColumn custom columns},
  * which hold the properties not directly belonging to the record declaration. In order to include
  * such a column into a {@link Subject} definition, a {@code CustomQueryParameter} is used.
  *
- * @param <S> the type of objects serving as an origin for the parameter values
- * @param <V> the type of parameter values
+ * @param <S>
+ *         the type of objects serving as an origin for the parameter values
+ * @param <V>
+ *         the type of parameter values
  * @see CustomColumn
+ * @see Subject
  */
 public final class CustomSubjectParameter<S, V> extends SubjectParameter<S, Column<S, V>, V> {
 
