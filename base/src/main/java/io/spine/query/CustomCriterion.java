@@ -21,7 +21,6 @@
 package io.spine.query;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import io.spine.annotation.Internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.query.ComparisonOperator.EQUALS;
@@ -35,8 +34,7 @@ import static io.spine.query.ComparisonOperator.EQUALS;
  * @param <V> the type of column values
  * @param <B> the type of query builder in scope of which this criterion exists
  */
-@Internal
-public final class CustomCriterion<S, V, B extends QueryBuilder<?, ?, ?, B, ?>> {
+final class CustomCriterion<S, V, B extends QueryBuilder<?, ?, ?, B, ?>> {
 
     private final B builder;
     private final CustomColumn<S, V> column;
