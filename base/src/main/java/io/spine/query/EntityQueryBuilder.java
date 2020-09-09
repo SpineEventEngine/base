@@ -27,7 +27,7 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * An abstract base for builders of an {@code EntityQuery} for a particular entity state type.
+ * An abstract base for builders of queries which are aimed to fetch the records of entity states.
  *
  * @param <I>
  *         the type of entity identifiers
