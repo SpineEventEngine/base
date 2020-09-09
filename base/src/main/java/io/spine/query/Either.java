@@ -22,13 +22,14 @@ package io.spine.query;
 
 import com.google.errorprone.annotations.Immutable;
 
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 /**
- * Lambda serving to fill the current predicate {@linkplain QueryBuilder query builders}
+ * A lambda serving to fill the current predicate {@linkplain QueryBuilder query builders}
  * with the parameters joined in {@linkplain LogicalOperator#OR disjunction}.
  */
 @FunctionalInterface
 @Immutable
-public interface Either<B extends QueryBuilder<?, ?, ?, ?, ?>> extends Function<B, B> {
+public interface Either<B extends QueryBuilder<?, ?, ?, ?, ?>> extends UnaryOperator<B> {
+
 }
