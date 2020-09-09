@@ -33,11 +33,12 @@ import static java.lang.String.format;
  *
  * <h1><a name="supported_types"><strong>Supported field types</strong></a></h1>
  *
- * <p>All types of the fields are supported. The check is performed via the {@link Object#equals}
- * method. A {@code null} reference is equal to another {@code null} reference.
+ * <p>The equality comparisons support the fields of all types. The operation is performed
+ * via the {@link Objects#equals} method. A {@code null} reference is considered equal
+ * to another {@code null} reference.
  *
- * <p>Order-based comparison supports only {@code Comparable} types and
- * {@link com.google.protobuf.Timestamp}. When trying to compare unsupported types,
+ * <p>Order-based comparison supports only the values of {@code Comparable} types and
+ * {@link com.google.protobuf.Timestamp}s. When trying to compare unsupported types,
  * an {@code UnsupportedOperationException} is thrown.
  *
  * <p>It is required that the runtime Java class of the two compared values is the same. Otherwise,
