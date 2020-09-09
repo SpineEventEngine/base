@@ -30,7 +30,8 @@ import static io.spine.query.ComparisonOperator.LESS_OR_EQUALS;
 import static io.spine.query.ComparisonOperator.LESS_THAN;
 
 /**
- * A parameter defining how to query an entity by the value of its {@link EntityColumn}.
+ * A parameter defining how to query a record of an entity state by the value
+ * of its {@link EntityColumn column}.
  *
  * @param <S>
  *         the type of entity state
