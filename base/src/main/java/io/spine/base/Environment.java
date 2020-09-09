@@ -110,7 +110,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * }
  * </pre>
  *
- * <h1>Caching</h1>
+ * <h3>Caching</h3>
  *
  * <p>{@code Environment} caches the {@code EnvironmentType} once its calculated.
  * This means that if one environment type has been found to be active, its instance is saved.
