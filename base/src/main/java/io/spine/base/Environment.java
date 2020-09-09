@@ -22,32 +22,26 @@ package io.spine.base;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
-import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
-import io.spine.logging.Logging;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.reflect.Invokables.callParameterlessCtor;
-import static io.spine.string.Diags.backtick;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * Provides information about the environment (current platform used, etc.).
  *
- * <h1>Detecting the type of the environment</h1>
+ * <h3>Environment Type Detection</h3>
  *
- * <p>Current implementation allows to {@linkplain #type() obtain the type} of the current
- * environment, or to check whether current environment type {@linkplain #is(Class) matches
- * another type}.
+ * <p>Current implementation allows to {@linkplain #is(Class) check} the type of the current
+ * environment, or {@linkplain #type() get the instance of the current environment}.
  * Two environment types exist out of the box:
  *
  * <ul>
- *     <li><em>{@link Tests}</em> is detected if the current call stack has a reference to
- *     a {@linkplain Tests#KNOWN_TESTING_FRAMEWORKS unit testing framework}.
-
+ *     <li><em>{@link Tests}</em> is detected if the current call stack has a reference to the unit
+ *         testing framework.
+ *
  *     <li><em>{@link Production}</em> is set in all other cases.
  * </ul>
  *
@@ -73,7 +67,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * }
  * </pre>
  *
- * <h1>Custom environment types</h1>
+ * <h3>Custom environment types</h3>
  *
  * {@code Environment} allows to {@link #register(EnvironmentType) reguster custom types}.
  * In this case the environment detection functionality iterates over all known types, starting
@@ -110,76 +104,33 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * }
  * </pre>
  *
- * <h1>Caching</h1>
- *
- * <p>{@code Environment} caches the {@code EnvironmentType} once its calculated.
- * This means that if one environment type has been found to be active, its instance is saved.
- * If later it becomes logically inactive, e.g. the environment variable that's used to check the
- * environment type changes, {@code Environment} is still going to return the cached value. To
- * overwrite the value use {@link #setTo(EnvironmentType)}. Also, the value may be
- * {@linkplain #reset}. For example:
- * <pre>
- *
- *     Environment environment = Environment.instance();
- *     EnvironmentType awsLambda = new AwsLambda();
- *     environment.register(awsLambda);
- *     assertThat(environment.is(AwsLambda.class)).isTrue();
- *
- *     System.clearProperty(AwsLambda.AWS_ENV_VARIABLE);
- *
- *     // Even though `AwsLambda` is not active, we have cached the value, and `is(AwsLambda.class)`
- *     // is `true`.
- *     assertThat(environment.is(AwsLambda.class)).isTrue();
- *
- *     environment.reset();
- *
- *     // When `reset` explicitly, cached value is erased.
- *     assertThat(environment.is(AwsLambda.class)).isFalse();
- * </pre>
- *
  * <p><b>When registering custom types, please ensure</b> their mutual exclusivity.
  * If two or more environment types {@linkplain EnvironmentType#enabled() consider themselves
- * enabled} at the same time, the behaviour of {@link #is(Class)} is undefined.
+ * enabled} at the same time, the behaviour of {@link #is(Class)}} is undefined.
  *
  * @see EnvironmentType
  * @see Tests
  * @see Production
  */
 @SPI
-public final class Environment implements Logging {
+public final class Environment {
 
     private static final ImmutableList<EnvironmentType> BASE_TYPES =
-            ImmutableList.of(Tests.type(), Production.type());
+            ImmutableList.of(new Tests(), new Production());
 
     private static final Environment INSTANCE = new Environment();
 
-    /**
-     * The types the environment can be in.
-     */
-    private ImmutableList<EnvironmentType> knownTypes;
+    private ImmutableList<EnvironmentType> knownEnvTypes;
+    private @Nullable EnvironmentType currentEnvType;
 
-    /**
-     * The type the environment is in.
-     *
-     * <p>If {@code null} the type will be {@linkplain #type() determined} among
-     * {@linkplain #knownTypes already known} types.
-     *
-     * @implNote This field is explicitly initialized to avoid the "non-initialized" warning
-     *         when queried for the first time.
-     */
-    private @Nullable Class<? extends EnvironmentType> currentType = null;
-
-    /**
-     * Creates a new instance with only {@linkplain #BASE_TYPES base known types}.
-     */
     private Environment() {
-        this.knownTypes = BASE_TYPES;
+        this.knownEnvTypes = BASE_TYPES;
     }
 
     /** Creates a new instance with the copy of the state of the passed environment. */
     private Environment(Environment copy) {
-        this.knownTypes = copy.knownTypes;
-        setCurrentType(copy.currentType);
+        this.knownEnvTypes = copy.knownEnvTypes;
+        this.currentEnvType = copy.currentEnvType;
     }
 
     /**
@@ -190,43 +141,22 @@ public final class Environment implements Logging {
      * When trying to determine which environment type is enabled, the user-defined types are
      * checked first, in the first-registered to last-registered order.
      *
-     * @param type
+     * @param environmentType
      *         a user-defined environment type
      * @return this instance of {@code Environment}
      * @see Tests
      * @see Production
      */
     @CanIgnoreReturnValue
-    public Environment register(EnvironmentType type) {
-        if (!knownTypes.contains(type)) {
-            knownTypes = ImmutableList
+    public Environment register(EnvironmentType environmentType) {
+        if (!knownEnvTypes.contains(environmentType)) {
+            knownEnvTypes = ImmutableList
                     .<EnvironmentType>builder()
-                    .add(type)
-                    .addAll(INSTANCE.knownTypes)
+                    .add(environmentType)
+                    .addAll(INSTANCE.knownEnvTypes)
                     .build();
-            // Give the new type a chance to become the current when queried
-            // from `firstEnabled()`.
-            setCurrentType(null);
         }
         return this;
-    }
-
-    /**
-     * Remembers the specified environment type, allowing {@linkplain #is(Class) to
-     * determine whether it's enabled} later.
-     *
-     * <p>The specified {@code type} must have a parameterless constructor. The
-     * {@code EnvironmentType} is going to be instantiated using the parameterless constructor.
-     *
-     * @param type
-     *         environment type to register
-     * @return this instance of {@code Environment}
-     */
-    @Internal
-    @CanIgnoreReturnValue
-    Environment register(Class<? extends EnvironmentType> type) {
-        EnvironmentType envTypeInstance = callParameterlessCtor(type);
-        return register(envTypeInstance);
     }
 
     /** Returns the singleton instance. */
@@ -246,13 +176,12 @@ public final class Environment implements Logging {
     /**
      * Determines whether the current environment is the same as the specified one.
      *
-     * <p>If custom environment types have been {@linkplain #register(EnvironmentType) registered},
-     * the method goes through them in the latest-registered to earliest-registered order.
+     * <p>If {@linkplain #register(EnvironmentType) custom env types have been defined},
+     * goes through them in the latest-registered to earliest-registered order.
      * Then, checks {@link Tests} and {@link Production}.
      *
-     * <p>Please note that this method follows assigment compatibility:
+     * <p>Please note that {@code is} follows assigment-compatibility:
      * <pre>
-     *
      *     abstract class AppEngine extends EnvironmentType {
      *         ...
      *     }
@@ -271,32 +200,15 @@ public final class Environment implements Logging {
      * @return whether the current environment type matches the specified one
      */
     public boolean is(Class<? extends EnvironmentType> type) {
-        Class<? extends EnvironmentType> current = type();
-        boolean result = type.isAssignableFrom(current);
+        EnvironmentType currentEnv = cachedOrCalculated();
+        boolean result = type.isInstance(currentEnv);
         return result;
     }
 
-    /** Returns the type of the current environment. */
-    public Class<? extends EnvironmentType> type() {
-        Class<? extends EnvironmentType> result;
-        if (currentType == null) {
-            result = firstEnabled();
-            setCurrentType(result);
-        } else {
-            result = currentType;
-        }
-        return result;
-    }
-
-    private Class<? extends EnvironmentType> firstEnabled() {
-        EnvironmentType result =
-                knownTypes.stream()
-                          .filter(EnvironmentType::enabled)
-                          .findFirst()
-                          .orElseThrow(() -> newIllegalStateException(
-                                  "`Environment` could not find an active environment type."
-                          ));
-        return result.getClass();
+    /** Returns the instance of the current environment. */
+    public EnvironmentType type() {
+        EnvironmentType currentEnv = cachedOrCalculated();
+        return currentEnv;
     }
 
     /**
@@ -313,7 +225,7 @@ public final class Environment implements Logging {
     /**
      * Verifies if the code runs in the production mode.
      *
-     * <p>This method is opposite to {@link #isTests()}.
+     * <p>This method is opposite to {@link #isTests()}
      *
      * @return {@code true} if the code runs in the production mode, {@code false} otherwise
      * @see Production
@@ -321,7 +233,7 @@ public final class Environment implements Logging {
      */
     @Deprecated
     public boolean isProduction() {
-        return !is(Tests.class);
+        return !isTests();
     }
 
     /**
@@ -332,35 +244,16 @@ public final class Environment implements Logging {
     @VisibleForTesting
     public void restoreFrom(Environment copy) {
         // Make sure this matches the set of fields copied in the copy constructor.
-        this.knownTypes = copy.knownTypes;
-        setCurrentType(copy.currentType);
+        this.knownEnvTypes = copy.knownEnvTypes;
+        this.currentEnvType = copy.currentEnvType;
     }
 
     /**
-     * Sets the current environment type to {@code type.getClass()}. Overrides the current value.
-     *
-     * If the supplied type was not {@linkplain #register(EnvironmentType) registered} previously,
-     * it is registered.
+     * Forces the specified environment type to be the current one.
      */
     @VisibleForTesting
     public void setTo(EnvironmentType type) {
-        checkNotNull(type);
-        register(type);
-        setCurrentType(type.getClass());
-    }
-
-    /**
-     * Sets the current environment type to the specified one. Overrides the current value.
-     *
-     * If the supplied type was not {@linkplain #register(EnvironmentType) registered} previously,
-     * it is registered.
-     */
-    @Internal
-    @VisibleForTesting
-    public void setTo(Class<? extends EnvironmentType> type) {
-        checkNotNull(type);
-        register(type);
-        setCurrentType(type);
+        this.currentEnvType = checkNotNull(type);
     }
 
     /**
@@ -368,13 +261,13 @@ public final class Environment implements Logging {
      *
      * <p>This method is opposite to {@link #setToProduction()}.
      *
-     * @deprecated use {@link #setTo(Class)}
+     * @deprecated use {@link #setTo(EnvironmentType)}
      */
     @Deprecated
     @VisibleForTesting
     public void setToTests() {
-        setCurrentType(Tests.class);
-        TestsProperty.setTrue();
+        this.currentEnvType = new Tests();
+        Tests.enable();
     }
 
     /**
@@ -382,45 +275,39 @@ public final class Environment implements Logging {
      *
      * <p>This method is opposite to {@link #setToTests()}.
      *
-     * @deprecated use {@link #setTo(Class)}
+     * @deprecated use {@link #setTo(EnvironmentType)}
      */
     @Deprecated
     @VisibleForTesting
     public void setToProduction() {
-        setCurrentType(Production.class);
-        TestsProperty.clear();
-    }
-
-    private void setCurrentType(@Nullable Class<? extends EnvironmentType> newCurrent) {
-        @Nullable Class<? extends EnvironmentType> previous = this.currentType;
-        this.currentType = newCurrent;
-        FluentLogger.Api info = _info();
-        if (previous == null) {
-            if (newCurrent != null) {
-                info.log("`Environment` set to `%s`.", newCurrent.getName());
-            }
-        } else {
-            if (previous.equals(newCurrent)) {
-                info.log("`Environment` stays `%s`.", newCurrent.getName());
-            } else {
-                String newType = newCurrent != null
-                                 ? backtick(newCurrent.getName())
-                                 : "undefined";
-                info.log("`Environment` turned from `%s` to %s.", previous.getName(), newType);
-            }
-        }
+        this.currentEnvType = new Production();
+        Tests.clearTestingEnvVariable();
     }
 
     /**
-     * Resets the instance and clears the {@link TestsProperty}.
-     *
-     * <p>Erases all registered environment types, leaving only {@code Tests} and
-     * {@code Production}.
+     * Resets the instance and clears the {@link Tests#ENV_KEY_TESTS} variable.
      */
     @VisibleForTesting
     public void reset() {
-        setCurrentType(null);
-        this.knownTypes = BASE_TYPES;
-        TestsProperty.clear();
+        this.currentEnvType = null;
+        this.knownEnvTypes = BASE_TYPES;
+        Tests.clearTestingEnvVariable();
+    }
+
+    private EnvironmentType cachedOrCalculated() {
+        EnvironmentType result = currentEnvType != null
+                                 ? currentEnvType
+                                 : currentType();
+        return result;
+    }
+
+    private EnvironmentType currentType() {
+        for (EnvironmentType type : knownEnvTypes) {
+            if (type.enabled()) {
+                return type;
+            }
+        }
+
+        throw newIllegalStateException("`Environment` could not find an active environment type.");
     }
 }
