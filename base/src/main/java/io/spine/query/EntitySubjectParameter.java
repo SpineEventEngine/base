@@ -41,8 +41,8 @@ public final class EntitySubjectParameter<S extends EntityState<?>, V>
         extends SubjectParameter<S, EntityColumn<S, V>, V> {
 
     /**
-     * Creates an instance of {@code QueryParameter} targeting entities whose column value
-     * is compared to the one provided in a specified way.
+     * Creates an instance of the parameter targeting entities which column value is compared
+     * to the one provided in a specified way.
      *
      * @param column
      *         the column to query
