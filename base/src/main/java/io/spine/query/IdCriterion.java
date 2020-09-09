@@ -23,7 +23,8 @@ package io.spine.query;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * An expression which sets the values of record identifiers to be used in {@link Query}.
+ * An expression which sets the values of record identifiers to be used
+ * in a {@linkplain Query query}.
  *
  * <p>Exists in a context of a corresponding
  * {@linkplain AbstractQueryBuilder query builder} instance.
