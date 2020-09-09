@@ -59,7 +59,7 @@ public abstract class EntityQuery<I,
     }
 
     /**
-     * Creates a {@link RecordQuery} instance with the same properties as this entity query.
+     * Creates a {@link RecordQuery} instance with the same attributes as this entity query.
      */
     public final RecordQuery<I, S> toRecordQuery() {
         Subject<I, S> subject = subject();
