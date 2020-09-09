@@ -29,7 +29,7 @@ import io.spine.annotation.SPI;
  *
  * <p>End-users may choose to store some arbitrary data along with the record.
  * E.g. the time of entity creation or the role of the user created the record etc, that is,
- * something not included into the definition of record {@code Message}.
+ * something not included into the definition of the {@code Message} type of the record.
  *
  * <p>End-users would need to provide their own {@link CustomColumn} implementation.
  * When storing objects with custom columns, the values are fetched according
