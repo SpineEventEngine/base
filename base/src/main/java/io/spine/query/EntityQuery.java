@@ -44,7 +44,7 @@ public abstract class EntityQuery<I,
     private final B builder;
 
     /**
-     * A common constructor contract for all {@code EntityQuery} implementations.
+     * Creates a new query according to the passed query builder.
      */
     protected EntityQuery(B builder) {
         super(builder);
