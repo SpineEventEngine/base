@@ -103,7 +103,7 @@ public final class ColumnOption extends FieldOption<Boolean> {
     }
 
     /**
-     * Returns {@code true} if the given message type is declared as entity and may have columns.
+     * Returns {@code true} if the given message type is declared as an entity and may have columns.
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted") // For readability.
     private static boolean declaresAsEntity(MessageType messageType) {
