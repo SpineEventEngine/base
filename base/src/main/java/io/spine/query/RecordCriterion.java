@@ -43,7 +43,7 @@ public final class RecordCriterion<I, R extends Message, V>
      * @param builder
      *         the builder in scope of which this criterion exists
      */
-    public RecordCriterion(RecordColumn<R, V> column, RecordQueryBuilder<I, R> builder) {
+    RecordCriterion(RecordColumn<R, V> column, RecordQueryBuilder<I, R> builder) {
         super(column, builder);
     }
 
