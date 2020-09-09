@@ -36,11 +36,12 @@ import io.spine.annotation.SPI;
  * to the {@link #valueIn(Object) valueIn(S)} implementation. In it, the {@code S} value represents
  * an arbitrary object serving as a source for the value.
  *
+ * @param <S>
+ *         the type of objects serving as a source for the column values
+ * @param <V>
+ *         the type of column values
  * @see CustomSubjectParameter
  * @see QueryPredicate#customParameters()
- *
- * @param <S> the type of objects serving as a source for the column values
- * @param <V> the type of column values
  */
 @SPI
 @Immutable
