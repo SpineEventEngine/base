@@ -240,8 +240,8 @@ public interface QueryBuilder<I,
      *
      * @return this instance of query builder, for chaining
      */
-    @CanIgnoreReturnValue
     @Internal
+    @CanIgnoreReturnValue
     B addParameter(P parameter);
 
     /**
@@ -249,7 +249,7 @@ public interface QueryBuilder<I,
      *
      * @return this instance of query builder, for chaining
      */
-    @CanIgnoreReturnValue
     @Internal
+    @CanIgnoreReturnValue
     B addCustomParameter(CustomSubjectParameter<?, ?> parameter);
 }
