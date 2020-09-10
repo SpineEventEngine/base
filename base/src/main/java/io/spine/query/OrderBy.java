@@ -48,14 +48,14 @@ public final class OrderBy<C extends RecordColumn<R, ?>, R extends Message> {
     }
 
     /**
-     * Returns the column by which values the query should be ordered.
+     * Returns the column, by which values the query results should be ordered.
      */
     public C column() {
         return column;
     }
 
     /**
-     * Returns the direction in which the column values should be ordered.
+     * Returns the direction, in which the column values should be ordered.
      */
     public Direction direction() {
         return direction;
