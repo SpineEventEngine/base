@@ -23,10 +23,11 @@ package io.spine.query;
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Defines the values of {@link Subject} subject identifiers.
+ * Sets the identifiers of objects which a {@link Query} targets.
  *
  * @param <I>
  *         the type of the identifiers
@@ -40,31 +41,50 @@ public final class IdParameter<I> {
         this.values = values;
     }
 
+    /**
+     * Returns the values of identifiers in this parameter.
+     */
     public ImmutableSet<I> values() {
         return values;
     }
 
+    /**
+     * Creates an new instance of this parameter without restricting it to any identifier values.
+     *
+     * @param <I>
+     *         the type of the values, to satisfy the contract of a calling party
+     * @return a new instance of this type
+     */
     public static <I> IdParameter<I> empty() {
         return new IdParameter<>(ImmutableSet.of());
     }
 
+    /**
+     * Creates a new instance restricting the parameter to a single identifier value.
+     *
+     * @param value
+     *         the identifier value to use
+     * @param <I>
+     *         the type of the identifier value
+     * @return a new instance of this type
+     */
     public static <I> IdParameter<I> is(I value) {
         checkNotNull(value);
         return new IdParameter<>(ImmutableSet.of(value));
     }
 
     /**
-     * Creates an instance of {@code IdParameter} with the identifier values restricted
-     * to the passed one.
+     * Creates a new instance with the identifier values restricted to the passed.
      *
      * @param values
-     *         the identifier values to use
+     *         the identifier values to use; must not be empty
      * @param <I>
      *         the type of the identifier values
      * @return a new instance of this type
      */
     public static <I> IdParameter<I> in(ImmutableSet<I> values) {
         checkNotNull(values);
+        checkArgument(!values.isEmpty(), "Identifier values must not be empty.");
         return new IdParameter<>(values);
     }
 }
