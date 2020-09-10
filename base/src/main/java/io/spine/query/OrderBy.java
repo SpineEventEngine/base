@@ -25,10 +25,15 @@ import com.google.protobuf.Message;
 import java.util.Objects;
 
 /**
- * Defines the ordering by the values of
- * a particular {@linkplain io.spine.query.EntityColumn entity column}.
+ * Defines the ordering of the {@linkplain Query query} results via the ordering of values in
+ * a particular {@linkplain io.spine.query.RecordColumn column}.
+ *
+ * @param <C>
+ *         type of the column which values are used for ordering
+ * @param <R>
+ *         the type of the ordered records
  */
-public final class OrderBy<C extends RecordColumn<S, ?>, S extends Message> {
+public final class OrderBy<C extends RecordColumn<R, ?>, R extends Message> {
 
     private final C column;
 
