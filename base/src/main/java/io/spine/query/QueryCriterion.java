@@ -30,7 +30,7 @@ import static io.spine.query.ComparisonOperator.LESS_OR_EQUALS;
 import static io.spine.query.ComparisonOperator.LESS_THAN;
 
 /**
- * Expression which sets some restriction to the value of a record column when querying the records.
+ * A restriction to a value of a record column applied when querying the records.
  */
 abstract class QueryCriterion<R extends Message,
                               V,
@@ -54,7 +54,8 @@ abstract class QueryCriterion<R extends Message,
     }
 
     /**
-     * Creates a new subject parameter of the type specific for the query type being built.
+     * Adds a parameter for comparing the values of the column with the passed value
+     * using the passed operator.
      *
      * @param col
      *         the record column queried
