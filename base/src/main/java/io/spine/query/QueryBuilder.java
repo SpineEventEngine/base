@@ -205,7 +205,7 @@ public interface QueryBuilder<I,
      * @return this instance of query builder, for chaining
      */
     @SuppressWarnings("OverloadedVarargsMethod")    // Each overload has a different parameter type.
-    B withMask(String ...maskPaths);
+    B withMask(String... maskPaths);
 
     /**
      * Sets the fields to apply as a field mask to each of the resulting records.
@@ -217,7 +217,7 @@ public interface QueryBuilder<I,
      * @return this instance of query builder, for chaining
      */
     @SuppressWarnings("OverloadedVarargsMethod")    // Each overload has a different parameter type.
-    B withMask(Field...fields);
+    B withMask(Field... fields);
 
     /**
      * Adds an ordering directive.
