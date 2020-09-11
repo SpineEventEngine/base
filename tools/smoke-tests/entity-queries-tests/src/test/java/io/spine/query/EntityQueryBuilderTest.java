@@ -197,16 +197,30 @@ class EntityQueryBuilderTest {
         }
 
         @Test
-        @DisplayName("with the field mask defined by the generated `Field`s")
+        @DisplayName("with the field mask defined by the generated `SubscribableField`s")
+        @SuppressWarnings("DuplicateStringLiteralInspection")   /* Field names just for tests. */
+        void withMaskDefinedBySubscribableFields() {
+            ProjectView.Query query = ProjectView
+                    .newQuery()
+                    .withMask(Field.status(), Field.assignee())
+                    .build();
+            FieldMask expected = FieldMask.newBuilder()
+                                          .addPaths("status")
+                                          .addPaths("assignee")
+                                          .build();
+            assertThat(query.mask()).isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("with the field mask defined by the `Field`s declared in Proto message")
         @SuppressWarnings("DuplicateStringLiteralInspection")   /* Field names just for tests. */
         void withMaskDefinedByFields() {
             ProjectView.Query query = ProjectView
                     .newQuery()
-                    .withMask(Field.status().getField(),
-                              Field.assignee().getField())
+                    .withMask(Field.projectName().getField(), Field.assignee().getField())
                     .build();
             FieldMask expected = FieldMask.newBuilder()
-                                          .addPaths("status")
+                                          .addPaths("project_name")
                                           .addPaths("assignee")
                                           .build();
             assertThat(query.mask()).isEqualTo(expected);

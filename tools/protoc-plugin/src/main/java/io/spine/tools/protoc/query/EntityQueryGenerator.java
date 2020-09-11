@@ -69,10 +69,10 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * <pre>
  *     Customer.newQuery()
  *             .id().in(westCustomerIds())
- *             .type().equalTo("permanent")    // `type()` is a `...Criterion`.
+ *             .type().is("permanent")    // `type()` is a `...Criterion`.
  *             .discountPercent().isGreaterThan(10)
- *             .orderBy(Column.name()).ascending()
- *             .withMask(Column.name(), Column.address(), Column.email())
+ *             .orderBy(Column.name(), OrderBy.ASC)
+ *             .withMask(Field.name(), Field.address())  // `Customer.Field` type is generated.
  *             .limit(1)
  *             .build()     // `Customer.Query`
  * </pre>

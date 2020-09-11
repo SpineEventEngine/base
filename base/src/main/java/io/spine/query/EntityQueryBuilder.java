@@ -20,11 +20,16 @@
 
 package io.spine.query;
 
+import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.base.EntityState;
+import io.spine.base.SubscribableField;
 
+import java.util.Arrays;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 
 /**
  * Base type for builders of queries which are aimed to fetch the records of entity states.
@@ -71,6 +76,24 @@ public abstract class EntityQueryBuilder<I,
     public final <V> B where(CustomColumn<?, V> column, V value) {
         return column.in(thisRef())
                      .is(value);
+    }
+
+    /**
+     * Applies the paths of the passed fields as a field mask to each of the resulting records.
+     *
+     * <p>If the mask is not set, the query results contain the records as-is.
+     *
+     * <p>Any previously set mask values are overridden by this method call.
+     *
+     * @return this instance of query builder, for chaining
+     */
+    @CanIgnoreReturnValue
+    public final B withMask(SubscribableField... fields) {
+        ImmutableList<String> paths = Arrays.stream(fields)
+                                              .map(f -> f.getField()
+                                                         .toString())
+                                              .collect(toImmutableList());
+        return withMask(paths);
     }
 
     /**

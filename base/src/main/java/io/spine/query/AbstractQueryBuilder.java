@@ -31,6 +31,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -150,9 +151,8 @@ abstract class AbstractQueryBuilder<I,
     @Override
     @CanIgnoreReturnValue
     public final B withMask(String ...maskPaths) {
-        Class<R> recordType = whichRecordType();
-        FieldMask fieldMask = fromStringList(recordType, ImmutableList.copyOf(maskPaths));
-        return withMask(fieldMask);
+        ImmutableList<String> pathList = ImmutableList.copyOf(maskPaths);
+        return withMask(pathList);
     }
 
     @Override
@@ -161,6 +161,19 @@ abstract class AbstractQueryBuilder<I,
         ImmutableList<String> paths = Arrays.stream(fields)
                                               .map(Field::toString)
                                               .collect(toImmutableList());
+        return withMask(paths);
+    }
+
+    /**
+     * Sets the paths from the passed collection to apply as a field mask
+     * to each of the resulting records.
+     *
+     * <p>This method acts similar to {@link #withMask(String...)}.
+     *
+     * @return this instance of builder
+     * @see #withMask(String...)
+     */
+    final B withMask(Collection<String> paths) {
         Class<R> recordType = whichRecordType();
         FieldMask fieldMask = fromStringList(recordType, paths);
         return withMask(fieldMask);
