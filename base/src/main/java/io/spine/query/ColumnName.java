@@ -38,9 +38,9 @@ public final class ColumnName extends StringTypeValue {
     }
 
     /**
-     * Creates new instance of {@code ColumnName}.
+     * Creates a new instance of a column name with the passed value.
      *
-     * <p>Value passed must not be empty or blank.
+     * <p>The passed value must not be empty or blank.
      */
     public static ColumnName of(String value) {
         checkNotEmptyOrBlank(value);
@@ -48,7 +48,7 @@ public final class ColumnName extends StringTypeValue {
     }
 
     /**
-     * Creates a new instance for the field, which declaration is passed.
+     * Creates a new instance for the field according to the passed declaration.
      */
     public static ColumnName of(FieldDeclaration field) {
         checkNotNull(field);
