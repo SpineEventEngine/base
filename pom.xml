@@ -213,6 +213,11 @@ all modules and does not describe the project structure per-subproject.
     <version>3.11.4</version>
   </dependency>
   <dependency>
+    <groupId>com.puppycrawl.tools</groupId>
+    <artifactId>checkstyle</artifactId>
+    <version>8.29</version>
+  </dependency>
+  <dependency>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd-java</artifactId>
     <version>6.24.0</version>

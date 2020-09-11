@@ -34,6 +34,8 @@ import static com.google.errorprone.matchers.Matchers.isSubtypeOf;
  *
  * <p>If the matching element resides in a {@code Message} class or in {@code Builder} class, it is
  * never matched.
+ *
+ * @param <T> the expression {@code Tree}
  */
 interface ContextualMatcher<T extends Tree> extends BugPatternMatcher<T> {
 

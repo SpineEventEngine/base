@@ -18,24 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.util;
-
-import com.google.common.base.Converter;
-
-import java.io.Serializable;
-
 /**
- * Abstract base for serializable converters.
- *
- * @param <A>
- *         source type
- * @param <B>
- *         target type
- * @see SerializableFunction
+ * Contains classes making the generated Java classes implement custom interfaces.
  */
-public abstract class SerializableConverter<A, B>
-        extends Converter<A, B>
-        implements Serializable {
 
-    private static final long serialVersionUID = 0L;
-}
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.protoc.iface;
+
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import javax.annotation.ParametersAreNonnullByDefault;

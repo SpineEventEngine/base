@@ -84,21 +84,6 @@ public final class AccessorTemplate implements Serializable {
         return prefix + "%s" + postfix;
     }
 
-    /**
-     * Obtains the same template but with the {@code Raw} infix right after the prefix.
-     *
-     * <p>The original template is not changed.
-     *
-     * <p>This operation is NOT idempotent, i.e. when calling {@code toRaw()} on a result of
-     * {@code toRaw()}, the infix is added once more.
-     *
-     * @return template with the {@code Raw} infix
-     */
-    public AccessorTemplate toRaw() {
-        String prefix = this.prefix + RAW_INFIX;
-        return new AccessorTemplate(prefix, postfix);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
