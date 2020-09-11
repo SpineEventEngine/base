@@ -26,7 +26,7 @@ import io.spine.query.CustomColumn;
 /**
  * A column defined as a custom column for querying and storage.
  */
-public class DeletedColumn extends CustomColumn<EntityWithLifecycle, Boolean> {
+final class DeletedColumn extends CustomColumn<EntityWithLifecycle, Boolean> {
 
     @Override
     public ColumnName name() {

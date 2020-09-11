@@ -26,7 +26,7 @@ import io.spine.query.CustomColumn;
 /**
  * The column presumably defined as a custom column for querying and storage.
  */
-class ArchivedColumn extends CustomColumn<EntityWithLifecycle, Boolean> {
+final class ArchivedColumn extends CustomColumn<EntityWithLifecycle, Boolean> {
 
     @Override
     public ColumnName name() {
