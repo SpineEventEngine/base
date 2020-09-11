@@ -38,11 +38,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class Subject<I, R extends Message> {
 
     /**
-     * The criteria put on the identifiers of the records of interest.
-     */
-    private final IdParameter<I> id;
-
-    /**
      * The type of the queried records.
      */
     private final Class<R> recordType;
@@ -51,6 +46,11 @@ public final class Subject<I, R extends Message> {
      * The type of the identifiers of the queried records.
      */
     private final Class<I> idType;
+
+    /**
+     * The criteria put on the identifiers of the records of interest.
+     */
+    private final IdParameter<I> id;
 
     /**
      * Predicates, being the group of the parameters, against which the actual values
