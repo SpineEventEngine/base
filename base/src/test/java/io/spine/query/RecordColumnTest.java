@@ -37,9 +37,9 @@ class RecordColumnTest {
     void allowCreation() {
         String name = "description";
         String description = "some description";
-        RecordColumn<Manufacturer, String> column = new RecordColumn<>(name,
-                                                                       String.class,
-                                                                       (r) -> description);
+        RecordColumn<Manufacturer, String> column =
+                new RecordColumn<>(name, String.class, (r) -> description);
+
         assertThat(column).isNotNull();
         assertThat(column.name().value()).isEqualTo(name);
         assertThat(column.type()).isEqualTo(String.class);
