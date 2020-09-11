@@ -179,7 +179,7 @@ public final class NewViolation implements Expression<ConstraintViolation> {
         }
 
         /**
-         * Creates a new instance of {@link NewViolation}.
+         * Creates a new instance.
          */
         public NewViolation build() {
             checkNotNull(message);
