@@ -91,8 +91,7 @@ class EntityQueryBuilderTest {
         void byId() {
             ProjectId expectedId = projectId();
             ProjectView.Query query = ProjectView.newQuery()
-                                                 .projectId()
-                                                 .is(expectedId)
+                                                 .projectId().is(expectedId)
                                                  .build();
             Subject<ProjectId, ProjectView> subject = subjectWithNoPredicates(query);
             IdParameter<ProjectId> actualIdParam = subject.id();
@@ -104,8 +103,7 @@ class EntityQueryBuilderTest {
         void bySeveralIds() {
             ImmutableSet<ProjectId> expectedValues = generateIds(24);
             ProjectView.Query query = ProjectView.newQuery()
-                                                 .projectId()
-                                                 .in(expectedValues)
+                                                 .projectId().in(expectedValues)
                                                  .build();
             Subject<ProjectId, ProjectView> subject = subjectWithNoPredicates(query);
             IdParameter<ProjectId> actualIdParam = subject.id();
@@ -119,10 +117,8 @@ class EntityQueryBuilderTest {
             int daysSinceStarted = 15;
             ProjectView.Query query = ProjectView
                     .newQuery()
-                    .status()
-                    .is(statusValue)
-                    .daysSinceStarted()
-                    .isLessThan(daysSinceStarted)
+                    .status().is(statusValue)
+                    .daysSinceStarted().isLessThan(daysSinceStarted)
                     .build();
             ImmutableList<QueryPredicate<ProjectView>> predicates = query.subject()
                                                                          .predicates();
@@ -144,11 +140,9 @@ class EntityQueryBuilderTest {
             boolean deletedValue = true;
 
             Either<ProjectView.QueryBuilder> startedMoreThanMonthAgo =
-                    project -> project.daysSinceStarted()
-                                      .isGreaterThan(daysSinceStarted);
+                    project -> project.daysSinceStarted().isGreaterThan(daysSinceStarted);
             Either<ProjectView.QueryBuilder> isDone =
-                    project -> project.status()
-                                      .is(statusValue);
+                    project -> project.status().is(statusValue);
             Either<ProjectView.QueryBuilder> isDeleted =
                     project -> project.where(DELETED.column(), deletedValue);
             ProjectView.Query query =
@@ -208,10 +202,8 @@ class EntityQueryBuilderTest {
         void withMaskDefinedByFields() {
             ProjectView.Query query = ProjectView
                     .newQuery()
-                    .withMask(Field.status()
-                                   .getField(),
-                              Field.assignee()
-                                   .getField())
+                    .withMask(Field.status().getField(),
+                              Field.assignee().getField())
                     .build();
             FieldMask expected = FieldMask.newBuilder()
                                           .addPaths("status")
@@ -256,10 +248,8 @@ class EntityQueryBuilderTest {
         void returnSameBuilder() {
             ProjectView.QueryBuilder builder = ProjectView
                     .newQuery()
-                    .status()
-                    .is(STARTED)
-                    .daysSinceStarted()
-                    .isGreaterOrEqualTo(5);
+                    .status().is(STARTED)
+                    .daysSinceStarted().isGreaterOrEqualTo(5);
             ProjectView.Query query = builder.build();
             ProjectView.QueryBuilder actualBuilder = query.toBuilder();
             assertThat(actualBuilder).isSameInstanceAs(builder);
@@ -290,10 +280,8 @@ class EntityQueryBuilderTest {
         void ofId() {
             ProjectId value = projectId();
             assertThat(ProjectView.newQuery()
-                                  .projectId()
-                                  .is(value)
-                                  .whichIds()
-                                  .values()).containsExactly(value);
+                                  .projectId().is(value)
+                                  .whichIds().values()).containsExactly(value);
         }
 
         @Test
@@ -301,10 +289,8 @@ class EntityQueryBuilderTest {
         void ofSeveralIds() {
             ImmutableSet<ProjectId> ids = generateIds(3);
             assertThat(ProjectView.newQuery()
-                                  .projectId()
-                                  .in(ids)
-                                  .whichIds()
-                                  .values()).isEqualTo(ids);
+                                  .projectId().in(ids)
+                                  .whichIds().values()).isEqualTo(ids);
         }
 
         @Test
@@ -315,10 +301,8 @@ class EntityQueryBuilderTest {
             int daysSinceStarted = 1;
             ProjectView.Query query = ProjectView
                     .newQuery()
-                    .status()
-                    .is(statusValue)
-                    .daysSinceStarted()
-                    .isGreaterThan(daysSinceStarted)
+                    .status().is(statusValue)
+                    .daysSinceStarted().isGreaterThan(daysSinceStarted)
                     .build();
             ImmutableList<QueryPredicate<ProjectView>> predicates = query.subject()
                                                                          .predicates();
@@ -372,8 +356,7 @@ class EntityQueryBuilderTest {
     void transform() {
         int predicateSize = ProjectView
                 .newQuery()
-                .status()
-                .is(CREATED)
+                .status().is(CREATED)
                 .build((q) -> q.subject()
                                .predicates()
                                .size());
