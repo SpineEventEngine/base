@@ -39,6 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class ResourceTest {
 
     private static final String EXISTING_RESOURCE = "test_resource.txt";
+    private static final ClassLoader CLASS_LOADER = ResourceTest.class.getClassLoader();
 
     @Test
     @DisplayName("throw ISE if queried for a non-existing file")
@@ -47,7 +48,7 @@ class ResourceTest {
                                                     .toString());
         File nonExistingFile = nonExistentFilePath.toFile();
         String name = nonExistingFile.getName();
-        Resource file = Resource.file(name);
+        Resource file = Resource.file(name, CLASS_LOADER);
         assertThat(file.exists()).isFalse();
         assertThrows(IllegalStateException.class, file::locate);
     }
@@ -55,7 +56,7 @@ class ResourceTest {
     @Test
     @DisplayName("correctly identify a file that is contained under the resources directory")
     void correctlyPickUrlsUp() throws IOException {
-        Resource resource = Resource.file(EXISTING_RESOURCE);
+        Resource resource = Resource.file(EXISTING_RESOURCE, CLASS_LOADER);
         assertThat(resource).isNotNull();
         assertThat(resource.exists()).isTrue();
         assertThat(resource.locate()).isNotNull();
@@ -68,7 +69,7 @@ class ResourceTest {
     @Test
     @DisplayName("open as a byte stream")
     void openAsBytes() throws IOException {
-        Resource resource = Resource.file(EXISTING_RESOURCE);
+        Resource resource = Resource.file(EXISTING_RESOURCE, CLASS_LOADER);
         try (InputStream stream = resource.open()) {
             assertThat(stream.available()).isGreaterThan(0);
         }
@@ -77,7 +78,7 @@ class ResourceTest {
     @Test
     @DisplayName("open as a char stream")
     void openAsChars() throws IOException {
-        Resource resource = Resource.file(EXISTING_RESOURCE);
+        Resource resource = Resource.file(EXISTING_RESOURCE, CLASS_LOADER);
         try (Reader reader = resource.openAsText()) {
             String content = CharStreams.toString(reader);
             assertThat(content).isNotEmpty();

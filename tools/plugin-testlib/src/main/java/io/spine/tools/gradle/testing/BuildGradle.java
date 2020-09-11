@@ -59,8 +59,9 @@ final class BuildGradle {
      *         if the file cannot be written
      */
     void createFile() throws IOException {
-        Resource buildGradle = Resource.file(BUILD_GRADLE);
-        Resource buildGradleKts = Resource.file(BUILD_GRADLE_KTS);
+        ClassLoader classLoader = getClass().getClassLoader();
+        Resource buildGradle = Resource.file(BUILD_GRADLE, classLoader);
+        Resource buildGradleKts = Resource.file(BUILD_GRADLE_KTS, classLoader);
         Path resultingPath;
         Resource file;
         if (buildGradle.exists()) {

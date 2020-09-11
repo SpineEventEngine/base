@@ -130,7 +130,8 @@ class PlugableProjectTest {
     @Test
     @DisplayName("apply Gradle scripts from classpath")
     void applyPluginScript() {
-        plugableProject.apply(PluginScript.declaredIn(Resource.file("test-script.gradle")));
+        Resource resource = Resource.file("test-script.gradle", getClass().getClassLoader());
+        plugableProject.apply(PluginScript.declaredIn(resource));
         Object success = project.getExtensions()
                                 .getExtraProperties()
                                 .get("success");
