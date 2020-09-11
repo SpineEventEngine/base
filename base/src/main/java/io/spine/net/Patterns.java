@@ -31,8 +31,8 @@ import java.util.regex.Pattern;
  */
 @SuppressWarnings({
         "MultipleStringLiterals" /* OK as they are parts of patterns. */,
-        "SingleCharacterStringConcatenation" /* ... will be concatenated during compilation*/,
-        "unused"
+        "SingleCharacterStringConcatenation" /* ... will be concatenated during compilation. */,
+        "unused" /* For future use of other value object classes in this package. */
 })
 final class Patterns {
 
