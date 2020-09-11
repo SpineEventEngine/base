@@ -27,11 +27,12 @@ import io.spine.annotation.SPI;
  * A column storing the data which is not directly declared as a field in the {@code Message}
  * of an {@link io.spine.base.EntityState EntityState} or a plain record.
  *
- * <p>End-users may choose to store some arbitrary data along with the record.
- * E.g. the time of entity creation or the role of the user created the record etc, that is,
- * something not included into the definition of the {@code Message} type of the record.
+ * <p>End-users may choose to store some arbitrary or computed on-the-fly data
+ * along with the record. E.g. the time of entity creation or the role of the user created
+ * the record etc. That is, something which isn't included into the definition
+ * of the {@code Message} type of the record.
  *
- * <p>End-users would need to provide their own {@link CustomColumn} implementation.
+ * <p>The framework users would need to provide their own {@link CustomColumn} implementation.
  * When storing objects with custom columns, the values are fetched according
  * to the {@link #valueIn(Object) valueIn(S)} implementation. In it, the {@code S} value represents
  * an arbitrary object serving as a source for the value.

@@ -25,8 +25,8 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A parameter which defines the expected value for the {@link RecordColumn}
- * for a particular {@linkplain Query query}.
+ * A parameter which defines the expected value for the {@linkplain RecordColumn record column}
+ * in scope of a particular {@linkplain Query query}.
  *
  * @param <R>
  *         the type of the queried record

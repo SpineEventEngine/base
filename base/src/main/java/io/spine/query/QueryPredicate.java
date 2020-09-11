@@ -30,10 +30,11 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Joins the {@linkplain SubjectParameter subject parameters} with
- * a {@linkplain LogicalOperator logical operator}.
+ * Joins the {@linkplain SubjectParameter query parameters} with
+ * a {@linkplain LogicalOperator logical operator} when querying the records.
  *
- * @param <R> the type of the record which is stored for subject
+ * @param <R>
+ *         the type of the queried records
  */
 public final class QueryPredicate<R> {
 
@@ -43,12 +44,12 @@ public final class QueryPredicate<R> {
     private final LogicalOperator operator;
 
     /**
-     * The list of parameters which target the columns of the stored record subject.
+     * The list of query parameters for the own columns declared by the queried record.
      */
     private final ImmutableList<SubjectParameter<R, ?, ?>> parameters;
 
     /**
-     * The list of custom parameters targeting the custom columns of the stored subject.
+     * The list of query parameters which address the custom columns of the queried record.
      */
     private final ImmutableList<CustomSubjectParameter<?, ?>> customParameters;
 
@@ -66,7 +67,8 @@ public final class QueryPredicate<R> {
     /**
      * Creates a new instance the predicate builder for a specified logical operator.
      *
-     * @param <R> the type of the record which is stored for subject
+     * @param <R>
+     *         the type of the record which is stored for subject
      */
     static <R> Builder<R> newBuilder(LogicalOperator operator) {
         return new Builder<>(operator);
@@ -80,14 +82,16 @@ public final class QueryPredicate<R> {
     }
 
     /**
-     * Returns the parameters of this {@code Predicate} which target the record columns.
+     * Returns the parameters of this predicate which query the values of own columns declared
+     * in the queried record.
      */
     public ImmutableList<SubjectParameter<R, ?, ?>> parameters() {
         return parameters;
     }
 
     /**
-     * Returns the parameters of this {@code Predicate} which target the custom columns.
+     * Returns the parameters of this predicate which relate to the custom columns
+     * of the queried record.
      */
     public ImmutableList<CustomSubjectParameter<?, ?>> customParameters() {
         return customParameters;
@@ -95,13 +99,15 @@ public final class QueryPredicate<R> {
 
     /**
      * Returns the list of all parameters of this predicate, including both
-     * {@linkplain #parameters() targeting the own record columns}
-     * and those {@linkplain #customParameters() defined for the custom columns} of the subject.
+     * {@linkplain #parameters() parameters for the own record columns}
+     * and those {@linkplain #customParameters() defined for the custom columns}
+     * of the queried record.
      */
     public ImmutableList<SubjectParameter<?, ?, ?>> allParams() {
         return ImmutableList.<SubjectParameter<?, ?, ?>>builder()
                 .addAll(parameters())
-                .addAll(customParameters()).build();
+                .addAll(customParameters())
+                .build();
     }
 
     @Override
@@ -126,7 +132,8 @@ public final class QueryPredicate<R> {
     /**
      * Builds {@link QueryPredicate} instances.
      *
-     * @param <R> the type of the record which is stored for subject
+     * @param <R>
+     *         the type of the queried record
      */
     static final class Builder<R> {
 
@@ -147,7 +154,7 @@ public final class QueryPredicate<R> {
         }
 
         /**
-         * Adds a parameter to the predicate.
+         * Adds a parameter for the own column declared by the queried records.
          */
         @CanIgnoreReturnValue
         Builder<R> add(SubjectParameter<R, ?, ?> parameter) {
@@ -157,7 +164,8 @@ public final class QueryPredicate<R> {
         }
 
         /**
-         * Adds a parameter, which targets some custom or computed property of the record.
+         * Adds a parameter, which addresses the {@linkplain CustomColumn custom column}
+         * of the queried records.
          */
         @CanIgnoreReturnValue
         Builder<R> addCustom(CustomSubjectParameter<?, ?> parameter) {
@@ -174,7 +182,7 @@ public final class QueryPredicate<R> {
         }
 
         /**
-         * Builds a new instance of a {@code Predicate} based on the data in this {@code Builder}.
+         * Builds a new instance of a predicate based on the data in this builder.
          */
         QueryPredicate<R> build() {
             return new QueryPredicate<>(this);
