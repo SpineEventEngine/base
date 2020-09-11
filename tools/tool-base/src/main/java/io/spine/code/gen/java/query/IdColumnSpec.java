@@ -68,13 +68,11 @@ public class IdColumnSpec implements GeneratedMethodSpec {
     }
 
     /**
-     * Returns the method body which instantiates the {@link IdCriterion}.
+     * Returns the Javadoc for the generated method which would produce the {@link IdCriterion}.
      */
-    private static CodeBlock methodBody() {
-        return CodeBlock.of(
-                "return new $T<>(this)",
-                IdCriterion.class
-        );
+    private static GeneratedJavadoc javadoc() {
+        return GeneratedJavadoc.singleParagraph(
+                CodeBlock.of("Creates a criterion for the identifier of this entity."));
     }
 
     /**
@@ -88,14 +86,19 @@ public class IdColumnSpec implements GeneratedMethodSpec {
     }
 
     /**
+     * Returns the method body which instantiates the {@link IdCriterion}.
+     */
+    private static CodeBlock methodBody() {
+        return CodeBlock.of(
+                "return new $T<>(this)",
+                IdCriterion.class
+        );
+    }
+
+    /**
      * Returns the name of the ID field.
      */
     private FieldName idName() {
         return idField.name();
-    }
-
-    private static GeneratedJavadoc javadoc() {
-        return GeneratedJavadoc.singleParagraph(
-                CodeBlock.of("Creates a criterion for the identifier of this entity."));
     }
 }
