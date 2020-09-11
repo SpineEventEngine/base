@@ -32,6 +32,7 @@ public abstract class VariableControlledEnvironment extends EnvironmentType {
     private final String envVariable;
 
     VariableControlledEnvironment(String variable) {
+        super();
         this.envVariable = variable;
     }
 
