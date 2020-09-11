@@ -37,8 +37,8 @@ import static java.lang.String.format;
 import static java.lang.invoke.MethodHandles.publicLookup;
 
 /**
- * A utility class for working with Java {@linkplain java.lang.reflect.Method methods} and
- * instantiating objects using reflectively-obtained {@linkplain Constructor constructors}.
+ * Utilities which streamline the usage of Java {@linkplain java.lang.reflect.Method methods} and
+ * an instantiation of objects via reflectively-obtained {@linkplain Constructor constructors}.
  */
 public final class Invokables {
 
