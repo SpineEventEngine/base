@@ -107,7 +107,6 @@ subprojects {
     apply {
         plugin("java-library")
         plugin("pmd")
-        plugin("checkstyle")
         plugin("com.google.protobuf")
         plugin("net.ltgt.errorprone")
         plugin("maven-publish")
