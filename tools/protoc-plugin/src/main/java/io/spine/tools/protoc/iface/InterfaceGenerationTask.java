@@ -26,7 +26,6 @@ import io.spine.code.java.ClassName;
 import io.spine.protobuf.DetermineType;
 import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.PredefinedTypeParameter;
 import io.spine.tools.protoc.TypeParameter;
 import io.spine.tools.protoc.TypeParameters;
 import io.spine.type.MessageType;

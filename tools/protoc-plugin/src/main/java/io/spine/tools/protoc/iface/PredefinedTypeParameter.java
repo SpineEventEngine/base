@@ -18,10 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.iface;
 
 import com.google.errorprone.annotations.Immutable;
 import io.spine.code.java.ClassName;
+import io.spine.tools.protoc.TypeParameter;
 import io.spine.type.Type;
 
 /**
@@ -29,11 +30,11 @@ import io.spine.type.Type;
  * on the type of an actual descendant.
  */
 @Immutable
-public class PredefinedTypeParameter implements TypeParameter {
+final class PredefinedTypeParameter implements TypeParameter {
 
     private final ClassName value;
 
-    public PredefinedTypeParameter(ClassName value) {
+    PredefinedTypeParameter(ClassName value) {
         this.value = value;
     }
 
