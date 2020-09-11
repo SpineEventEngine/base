@@ -183,10 +183,6 @@ public final class Invokables {
                                                           Function<T, Invokable<?, ?>> makeInvokable,
                                                           ReflectiveFunction<T, R> fn,
                                                           Supplier<String> onError) {
-        checkNotNull(reflectiveObject);
-        checkNotNull(makeInvokable);
-        checkNotNull(fn);
-        checkNotNull(onError);
         Invokable<?, ?> invokable = makeInvokable.apply(reflectiveObject);
         boolean accessible = invokable.isAccessible();
         try {
