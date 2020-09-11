@@ -42,6 +42,10 @@ public class IdColumnSpec implements GeneratedMethodSpec {
     private final TypeName queryBuilderName;
     private final TypeName idType;
 
+    /**
+     * Creates the specification for the passed declaration of entity ID field and the type name
+     * of the query builder, in scope of which the created method spec exists.
+     */
     IdColumnSpec(EntityIdField field, TypeName queryBuilderName) {
         this.idField = field;
         this.queryBuilderName = queryBuilderName;
