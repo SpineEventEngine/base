@@ -28,9 +28,7 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Set of criteria for the records obtained via querying or subscription.
- *
- * <p>Subjects are typically stored Protobuf messages or entity states.
+ * Set of criteria for the records obtained via querying.
  *
  * @param <I>
  *         the type of the identifiers of the queried records
