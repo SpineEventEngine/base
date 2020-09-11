@@ -67,7 +67,11 @@ public final class Resource {
      * @param path
      *         the path to the resource file, relative to the classpath
      * @deprecated Using the {@code ClassLoader} of this class may lead to unexpected behaviour.
-     * Please specify a {@code ClassLoader} explicitly via {@link #file(String, ClassLoader)}.
+     * As this overload uses the {@code ClassLoader} of the {@code Resource} class, it might be
+     * unable to find some resources. For example, some environments use an isolated class loader
+     * for each dependency JAR, and so the {@code Resource} class loader would not be able to find
+     * resource files in neighbouring JARs. Please specify a {@code ClassLoader} explicitly
+     * via {@link #file(String, ClassLoader)}. This overload will be deleted in a future release.
      */
     @Deprecated
     public static Resource file(String path) {
