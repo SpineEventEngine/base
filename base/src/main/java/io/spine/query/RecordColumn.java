@@ -31,9 +31,10 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A queryable column of a stored record.
+ * A piece of data stored as a column along with some stored record.
  *
- * <p>Defined for the records which are declared as Protobuf messages.
+ * <p>Storing the parts of the record in a separate column enabled querying the records
+ * by the column values.
  *
  * @param <R>
  *         the type of the stored record
@@ -51,14 +52,22 @@ public class RecordColumn<R extends Message, V>
     private final Getter<R, V> getter;
 
     /**
-     * Creates a new instance.
+     * Creates a new column.
+     *
+     * <p>End-users are responsible for providing the appropriate naming for their columns according
+     * to the specification of an underlying storage.
+     *
+     * <p>The type of the column values is Java-centric. I.e. a responsibility of mapping
+     * the column types to the storage-specific data types belongs to a particular
+     * storage implementation.
      *
      * @param name
      *         the name of the column; must be non-empty
      * @param valueType
      *         the type of the column values
      * @param getter
-     *         the getter returning the value of the column basing on the stored record
+     *         the getter returning the value of the column basing on the stored record;
+     *         used to compute the value when storing the record
      */
     public RecordColumn(String name, Class<V> valueType, Getter<R, V> getter) {
         this(ColumnName.of(name), valueType, getter);
@@ -68,16 +77,17 @@ public class RecordColumn<R extends Message, V>
      * Creates a new instance.
      *
      * @param name
-     *         the name of the column
+     *         the name of the column; must be non-empty
      * @param valueType
      *         the type of the column values
      * @param getter
-     *         the getter returning the value of the column basing on the stored record
+     *         the getter returning the value of the column basing on the stored record;
+     *         used to compute the value when storing the record
      */
     public RecordColumn(ColumnName name, Class<V> valueType, Getter<R, V> getter) {
         super(name);
         this.valueType = checkNotNull(valueType, "The type of the returning value must be set.");
-        this.getter = checkNotNull(getter);
+        this.getter = checkNotNull(getter, "A getter for the column values must be set.");
     }
 
     /**
