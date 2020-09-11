@@ -35,8 +35,8 @@ import io.spine.query.EntityQueryBuilder;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**
- * Generates the column criterion method for {@link EntityQueryBuilder
- * EntityQueryBuilder} to restrict the value of the column to some value.
+ * Generates the method which produces a column criterion for {@link EntityQueryBuilder
+ * EntityQueryBuilder} to restrict the value of the column to some parameter.
  */
 final class QueryColumnSpec implements GeneratedMethodSpec {
 
@@ -45,13 +45,23 @@ final class QueryColumnSpec implements GeneratedMethodSpec {
     private final TypeName entityStateName;
     private final TypeName returningValueName;
 
+    /**
+     * Creates a new method specification which serves to generated a criterion method
+     * for the passed column in scope of a query builder with the passed type name.
+     *
+     * @param column
+     *         the name of the column, for which the criterion generation is needed
+     * @param queryBuilderName
+     *         the type name of the query builder in scope of which the generation is performed
+     */
     QueryColumnSpec(FieldDeclaration column, TypeName queryBuilderName) {
         this.column = column;
         this.queryBuilderName = queryBuilderName;
         this.entityStateName = JavaPoetName.of(column.declaringType())
                                            .value();
         this.returningValueName = JavaPoetName.of(column)
-                                              .value().box();
+                                              .value()
+                                              .box();
     }
 
     @Override
@@ -75,6 +85,18 @@ final class QueryColumnSpec implements GeneratedMethodSpec {
     }
 
     /**
+     * Returns the method Javadoc.
+     */
+    private GeneratedJavadoc javadoc() {
+        String columnName = column.name()
+                                  .javaCase();
+        return GeneratedJavadoc.singleParagraph(
+                CodeBlock.of("Creates a criterion for the {@link Column#$L() Column.$L()} column.",
+                             columnName, columnName)
+        );
+    }
+
+    /**
      * Returns the name of the Java type of a column.
      */
     private ParameterizedTypeName queryCriterion() {
@@ -93,18 +115,6 @@ final class QueryColumnSpec implements GeneratedMethodSpec {
                 "return new $T<>(Column.$L(), this)",
                 EntityCriterion.class,
                 columnName()
-        );
-    }
-
-    /**
-     * Returns the method Javadoc.
-     */
-    private GeneratedJavadoc javadoc() {
-        String columnName = column.name()
-                                  .javaCase();
-        return GeneratedJavadoc.singleParagraph(
-                CodeBlock.of("Creates a criterion for the {@link Column#$L() Column.$L()} column.",
-                             columnName, columnName)
         );
     }
 }
