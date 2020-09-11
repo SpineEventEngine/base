@@ -38,13 +38,16 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
 /**
- * Assembles the specification for the {@code Query} class generated for entities state types.
+ * Assembles the specification for the {@code Query} class generated for entity state types.
  *
  * <p>Additionally, generates the {@code newQuery()} method, which would be a static member
  * of the Java class of the entity state.
  */
 public final class EntityQuerySpec extends AbstractEntityQuerySpec implements GeneratedMethodSpec {
 
+    /**
+     * Creates the specification for the passed entity state type.
+     */
     public EntityQuerySpec(MessageType type) {
         super(type);
     }
