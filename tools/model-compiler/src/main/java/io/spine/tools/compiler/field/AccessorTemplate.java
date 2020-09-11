@@ -41,8 +41,6 @@ public final class AccessorTemplate implements Serializable {
 
     private static final long serialVersionUID = 0L;
 
-    private static final String RAW_INFIX = "Raw";
-
     private final String prefix;
     private final String postfix;
 
