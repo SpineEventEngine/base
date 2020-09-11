@@ -91,8 +91,7 @@ class RecordQueryBuilderTest {
             ManufacturerId expectedId = manufacturerId();
             RecordQuery<ManufacturerId, Manufacturer> query =
                     manufacturerBuilder()
-                            .id()
-                            .is(expectedId)
+                            .id().is(expectedId)
                             .build();
             Subject<ManufacturerId, Manufacturer> subject = subjectWithNoPredicates(query);
 
@@ -106,8 +105,7 @@ class RecordQueryBuilderTest {
             ImmutableSet<ManufacturerId> expectedValues = generateIds(24);
             RecordQuery<ManufacturerId, Manufacturer> query =
                     manufacturerBuilder()
-                            .id()
-                            .in(expectedValues)
+                            .id().in(expectedValues)
                             .build();
             Subject<ManufacturerId, Manufacturer> subject = subjectWithNoPredicates(query);
 
@@ -121,12 +119,9 @@ class RecordQueryBuilderTest {
             boolean stocksAreTraded = true;
             String isinValue = "JP 3633400001";
             RecordQuery<ManufacturerId, Manufacturer> query =
-                    manufacturerBuilder().where(isin)
-                                         .is(isinValue)
-                                         .where(whenFounded)
-                                         .isLessOrEqualTo(THURSDAY)
-                                         .where(isTraded)
-                                         .is(stocksAreTraded)
+                    manufacturerBuilder().where(isin).is(isinValue)
+                                         .where(whenFounded).isLessOrEqualTo(THURSDAY)
+                                         .where(isTraded).is(stocksAreTraded)
                                          .build();
 
             ImmutableList<QueryPredicate<Manufacturer>> predicates = query.subject()
@@ -149,12 +144,9 @@ class RecordQueryBuilderTest {
             boolean stocksAreTraded = true;
             RecordQuery<ManufacturerId, Manufacturer> query =
                     manufacturerBuilder()
-                            .where(whenFounded)
-                            .isLessThan(THURSDAY)
-                            .either((r) -> r.where(isin)
-                                            .is(isinValue),
-                                    (r) -> r.where(isTraded)
-                                            .is(stocksAreTraded))
+                            .where(whenFounded).isLessThan(THURSDAY)
+                            .either((r) -> r.where(isin).is(isinValue),
+                                    (r) -> r.where(isTraded).is(stocksAreTraded))
                             .build();
             ImmutableList<QueryPredicate<Manufacturer>> predicates = query.subject()
                                                                           .predicates();
@@ -236,10 +228,8 @@ class RecordQueryBuilderTest {
         @DisplayName("which return the same `Builder` instance if asked")
         void returnSameBuilder() {
             RecordQueryBuilder<ManufacturerId, Manufacturer> builder =
-                    manufacturerBuilder().where(whenFounded)
-                                         .isGreaterThan(THURSDAY)
-                                         .where(isin)
-                                         .is("JP 49869009911")
+                    manufacturerBuilder().where(whenFounded).isGreaterThan(THURSDAY)
+                                         .where(isin).is("JP 49869009911")
                                          .orderBy(whenFounded, ASC)
                                          .limit(150);
             RecordQuery<ManufacturerId, Manufacturer> query = builder.build();
@@ -270,8 +260,7 @@ class RecordQueryBuilderTest {
         @DisplayName("of a single ID parameter")
         void ofId() {
             ManufacturerId value = manufacturerId();
-            assertThat(manufacturerBuilder().id()
-                                            .is(value)
+            assertThat(manufacturerBuilder().id().is(value)
                                             .whichIds()
                                             .values()).containsExactly(value);
         }
@@ -280,8 +269,7 @@ class RecordQueryBuilderTest {
         @DisplayName("of several IDs")
         void ofSeveralIds() {
             ImmutableSet<ManufacturerId> ids = generateIds(3);
-            assertThat(manufacturerBuilder().id()
-                                            .in(ids)
+            assertThat(manufacturerBuilder().id().in(ids)
                                             .whichIds()
                                             .values()).isEqualTo(ids);
         }
@@ -291,10 +279,8 @@ class RecordQueryBuilderTest {
         void ofParameterValues() {
             String isinValue = "JP 3496600002";
             List<QueryPredicate<Manufacturer>> predicates =
-                    manufacturerBuilder().where(isin)
-                                         .is(isinValue)
-                                         .where(whenFounded)
-                                         .isGreaterOrEqualTo(THURSDAY)
+                    manufacturerBuilder().where(isin).is(isinValue)
+                                         .where(whenFounded).isGreaterOrEqualTo(THURSDAY)
                                          .predicates();
             assertThat(predicates).hasSize(1);
             QueryPredicate<Manufacturer> predicate = predicates.get(0);
@@ -341,8 +327,7 @@ class RecordQueryBuilderTest {
             " into an object of choice in the same call chain")
     void transform() {
         int predicateSize = manufacturerBuilder()
-                .where(isTraded)
-                .is(false)
+                .where(isTraded).is(false)
                 .build((q) -> q.subject()
                                .predicates()
                                .size());
