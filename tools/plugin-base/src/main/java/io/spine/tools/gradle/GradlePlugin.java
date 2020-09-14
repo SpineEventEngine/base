@@ -33,6 +33,9 @@ import static java.lang.String.format;
  *
  * <p>A plugin is represented by the Java class which implements it. The class must implement
  * the {@link Plugin org.gradle.api.Plugin} interface.
+ *
+ * @param <P>
+ *         the plugin implementation class
  */
 public final class GradlePlugin<P extends Plugin<? extends Project>> {
 

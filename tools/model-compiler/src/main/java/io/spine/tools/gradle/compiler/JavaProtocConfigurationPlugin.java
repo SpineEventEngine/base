@@ -53,6 +53,7 @@ import java.util.regex.Pattern;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.io.Files.asCharSink;
 import static io.spine.code.fs.java.DefaultJavaProject.at;
+import static io.spine.io.Resource.file;
 import static io.spine.tools.gradle.BaseTaskName.clean;
 import static io.spine.tools.gradle.ConfigurationName.fetch;
 import static io.spine.tools.gradle.JavaTaskName.processResources;
@@ -133,7 +134,8 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
     private static Path writeLaunchScript(Path jarFile) throws IOException {
         boolean windows = current().isWindows();
         String scriptExt = windows ? DOT_BAT : DOT_SH;
-        Resource launcherTemplate = Resource.file("plugin_runner" + scriptExt);
+        Resource launcherTemplate = file("plugin_runner" + scriptExt,
+                                         JavaProtocConfigurationPlugin.class.getClassLoader());
         String template = launcherTemplate.read();
         Matcher matcher = JAR_FILE_INSERTION_POINT.matcher(template);
         String script = matcher.replaceAll(quoteReplacement(jarFile.toString()));

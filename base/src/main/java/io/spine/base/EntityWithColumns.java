@@ -51,7 +51,7 @@ package io.spine.base;
  * The interface may then be implemented by the entity to manually specify the column value:
  * <pre>
  * class UserProfileProjection
- *         extends Projection<UserId, UserProfile, UserProfile.Builder>
+ *        {@literal extends Projection<UserId, UserProfile, UserProfile.Builder>}
  *         implements UserProfileWithColumns {
  *
  *    {@literal @Override}

@@ -136,7 +136,7 @@ final class FieldAnnotator extends OptionAnnotator<FieldDescriptor> {
                                               Descriptor messageType) {
             for (FieldDescriptor field : messageType.getFields()) {
                 if (shouldAnnotate(field)) {
-                    JavaSource message = findNestedType(input, messageType.getName());
+                    JavaSource<?> message = findNestedType(input, messageType.getName());
                     annotateMessageField(castToClass(message), new FieldDeclaration(field));
                 }
             }
@@ -192,8 +192,8 @@ final class FieldAnnotator extends OptionAnnotator<FieldDescriptor> {
     }
 
     private static JavaClassSource builderOf(JavaClassSource messageSource) {
-        JavaSource builderSource = messageSource.getNestedType(SimpleClassName.ofBuilder()
-                                                                              .value());
+        JavaSource<?> builderSource = messageSource.getNestedType(SimpleClassName.ofBuilder()
+                                                                                 .value());
         return castToClass(builderSource);
     }
 

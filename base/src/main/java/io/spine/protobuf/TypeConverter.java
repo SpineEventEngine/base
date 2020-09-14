@@ -158,6 +158,11 @@ public final class TypeConverter {
 
     /**
      * The {@link Function} performing the described type conversion.
+     *
+     * @param <M>
+     *         type of message to convert
+     * @param <T>
+     *         target conversion type
      */
     private abstract static class MessageCaster<M extends Message, T> extends Converter<M, T> {
 

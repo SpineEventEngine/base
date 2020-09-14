@@ -18,7 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.*
+import com.google.protobuf.gradle.protobuf
+import com.google.protobuf.gradle.protoc
 import io.spine.gradle.internal.DependencyResolution
 import io.spine.gradle.internal.Deps
 import io.spine.gradle.internal.PublishingRepos
@@ -110,6 +111,7 @@ subprojects {
         plugin("net.ltgt.errorprone")
         plugin("maven-publish")
         from(Deps.scripts.projectLicenseReport(project))
+        from(Deps.scripts.checkstyle(project))
     }
 
     the<JavaPluginExtension>().apply {

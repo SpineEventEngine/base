@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.code.proto.DescriptorReference.loadFromResources;
 import static io.spine.code.proto.given.DescriptorReferenceTestEnv.knownTypesRef;
 import static io.spine.code.proto.given.DescriptorReferenceTestEnv.randomRef;
@@ -96,10 +97,9 @@ class DescriptorReferenceTest {
                            .toFile();
         List<String> linesWritten = Files.readLines(descRef, UTF_8);
         assertEquals(1, linesWritten.size());
-        String actual = linesWritten.get(0);
-        String expected = knownTypes.asResource()
-                                    .toString();
-        assertEquals(expected, actual);
+        String fileName = linesWritten.get(0);
+        assertThat(knownTypes.asResource().toString())
+                .contains(fileName);
     }
 
     private static void assertDescriptorRefsWrittenCorrectly(@TempDir Path path,

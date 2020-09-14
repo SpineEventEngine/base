@@ -26,6 +26,9 @@ import io.spine.util.SerializableFunction;
 
 /**
  * Abstract base for stringifiers of network-related types.
+ *
+ * @param <T>
+ *         type of stringified objects
  */
 abstract class NetStringifier<T extends Message> extends FnStringifier<T> {
 

@@ -45,8 +45,11 @@ import static java.lang.System.lineSeparator;
  * <p>The writable representation of the output may be obtained through the {@link #toString()}
  * method.
  */
-@SuppressWarnings("DuplicateStringLiteralInspection" /* The generated code duplicates the code
-                                                        used in test that checks it. */)
+@SuppressWarnings({
+        // The generated code duplicates the code used in test that checks it.
+        "DuplicateStringLiteralInspection",
+        "ClassWithTooManyMethods"
+})
 public final class CodeLines {
 
     @VisibleForTesting
@@ -237,7 +240,7 @@ public final class CodeLines {
      */
     public void ifNotNull(String value) {
         checkNotNull(value);
-        enterIfBlock(value + " !== null");
+        enterIfBlock(notNull(value));
     }
 
     /**
@@ -248,7 +251,7 @@ public final class CodeLines {
      */
     public void ifNotUndefined(String value) {
         checkNotNull(value);
-        enterIfBlock(value + " !== undefined");
+        enterIfBlock(notUndefined(value));
     }
 
     /**
@@ -260,7 +263,15 @@ public final class CodeLines {
      */
     public void ifNotNullOrUndefined(String value) {
         checkNotNull(value);
-        enterIfBlock(value + " !== undefined && " + value + " !== null");
+        enterIfBlock(notUndefined(value) + " && " + notNull(value));
+    }
+
+    private static String notNull(String value) {
+        return value + " !== null";
+    }
+
+    private static String notUndefined(String value) {
+        return value + " !== undefined";
     }
 
     /**

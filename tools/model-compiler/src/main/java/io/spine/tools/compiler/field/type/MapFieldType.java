@@ -48,13 +48,15 @@ import static io.spine.tools.compiler.field.AccessorTemplates.remover;
  */
 public final class MapFieldType implements FieldType {
 
+    private static final String GET = "get";
+
     private static final ImmutableSet<AccessorTemplate> GENERATED_ACCESSORS =
             ImmutableSet.of(
                     getter(),
                     countGetter(),
                     mapGetter(),
-                    prefixAndPostfix("get", "OrDefault"),
-                    prefixAndPostfix("get", "OrThrow"),
+                    prefixAndPostfix(GET, "OrDefault"),
+                    prefixAndPostfix(GET, "OrThrow"),
                     prefix("contains"),
                     clearer(),
                     putter(),
@@ -63,17 +65,14 @@ public final class MapFieldType implements FieldType {
             );
 
     private final TypeName typeName;
-    private final TypeName keyTypeName;
-    private final TypeName valueTypeName;
-
     /**
      * Constructs the new instance based on the key and the value type names.
      */
     MapFieldType(FieldDeclaration field) {
         Map.Entry<TypeName, TypeName> entryTypeNames = getEntryTypeNames(field);
 
-        this.keyTypeName = boxIfPrimitive(entryTypeNames.getKey());
-        this.valueTypeName = boxIfPrimitive(entryTypeNames.getValue());
+        TypeName keyTypeName = boxIfPrimitive(entryTypeNames.getKey());
+        TypeName valueTypeName = boxIfPrimitive(entryTypeNames.getValue());
         this.typeName = ParameterizedTypeName.get(ClassName.get(Map.class),
                                                   keyTypeName,
                                                   valueTypeName);
@@ -82,14 +81,6 @@ public final class MapFieldType implements FieldType {
     @Override
     public TypeName getTypeName() {
         return typeName;
-    }
-
-    public TypeName getKeyTypeName() {
-        return keyTypeName;
-    }
-
-    public TypeName getValueTypeName() {
-        return valueTypeName;
     }
 
     /**

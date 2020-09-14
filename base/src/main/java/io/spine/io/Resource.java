@@ -20,7 +20,6 @@
 
 package io.spine.io;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
@@ -39,7 +38,6 @@ import java.util.Enumeration;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
@@ -51,16 +49,16 @@ import static java.lang.String.format;
  * <p>By default the resource will be loaded using the class loader of this class.
  * In order to use another loader, please use {@link #file(String, ClassLoader)}.
  * 
- * @see #file(String)
+ * @see #file(String, ClassLoader)
  */
 public final class Resource {
 
     private final String path;
-    private final @Nullable ClassLoader customLoader;
+    private final ClassLoader classLoader;
 
-    private Resource(String path, @Nullable ClassLoader customLoader) {
+    private Resource(String path, ClassLoader classLoader) {
         this.path = path;
-        this.customLoader = customLoader;
+        this.classLoader = classLoader;
     }
 
     /**
@@ -68,10 +66,17 @@ public final class Resource {
      *
      * @param path
      *         the path to the resource file, relative to the classpath
+     * @deprecated Using the {@code ClassLoader} of this class may lead to unexpected behaviour.
+     * As this overload uses the {@code ClassLoader} of the {@code Resource} class, it might be
+     * unable to find some resources. For example, some environments use an isolated class loader
+     * for each dependency JAR, and so the {@code Resource} class loader would not be able to find
+     * resource files in neighbouring JARs. Please specify a {@code ClassLoader} explicitly
+     * via {@link #file(String, ClassLoader)}. This overload will be deleted in a future release.
      */
+    @Deprecated
     public static Resource file(String path) {
         checkNotEmptyOrBlank(path);
-        return new Resource(path, null);
+        return new Resource(path, Resource.class.getClassLoader());
     }
 
     /**
@@ -88,25 +93,9 @@ public final class Resource {
         return new Resource(path, customLoader);
     }
 
-    private boolean loaderCustomized() {
-        return customLoader != null;
-    }
-
     private @Nullable URL findUrl() {
-        URL url = classLoader().getResource(path);
+        URL url = classLoader.getResource(path);
         return url;
-    }
-
-    private ClassLoader classLoader() {
-        return MoreObjects.firstNonNull(customLoader, Resource.class.getClassLoader());
-    }
-
-    private String classLoaderDiag() {
-        ClassLoader loader = classLoader();
-        String fmt = loaderCustomized()
-                     ? "the assigned class loader `%s`."
-                     : "the class loader `%s`.";
-        return format(fmt, loader);
     }
 
     /**
@@ -130,10 +119,7 @@ public final class Resource {
     public URL locate() {
         URL url = findUrl();
         if (url == null) {
-            throw newIllegalStateException(
-                    "Unable to find the resource `%s` using `%s`.",
-                    path, classLoaderDiag()
-            );
+            throw cannotFind();
         }
         return url;
     }
@@ -151,14 +137,19 @@ public final class Resource {
         Enumeration<URL> resources = resourceEnumeration();
         UnmodifiableIterator<URL> iterator = Iterators.forEnumeration(resources);
         ImmutableList<URL> result = ImmutableList.copyOf(iterator);
-        checkState(!result.isEmpty(), "Could not find any resources `%s` using `%s`.",
-                   path, classLoaderDiag());
+        if (result.isEmpty()) {
+            throw cannotFind();
+        }
         return result;
+    }
+
+    private IllegalStateException cannotFind() {
+        return newIllegalStateException("Unable to find %s.", this);
     }
 
     private Enumeration<URL> resourceEnumeration() {
         try {
-            Enumeration<URL> resources = classLoader().getResources(path);
+            Enumeration<URL> resources = classLoader.getResources(path);
             return resources;
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
@@ -222,7 +213,7 @@ public final class Resource {
 
     @Override
     public String toString() {
-        return loaderCustomized() ? path + " via " + classLoader() : path;
+        return format("`%s` via ClassLoader `%s`", path, classLoader);
     }
 
     @Override
