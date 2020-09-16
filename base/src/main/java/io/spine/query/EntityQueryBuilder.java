@@ -90,9 +90,9 @@ public abstract class EntityQueryBuilder<I,
     @CanIgnoreReturnValue
     public final B withMask(SubscribableField... fields) {
         ImmutableList<String> paths = Arrays.stream(fields)
-                                              .map(f -> f.getField()
-                                                         .toString())
-                                              .collect(toImmutableList());
+                                            .map(f -> f.getField()
+                                                       .toString())
+                                            .collect(toImmutableList());
         return withMask(paths);
     }
 
