@@ -255,8 +255,7 @@
  * <p>Here is an example:
  *
  * <pre>
- *     ProjectView.Query query = ProjectView
- *        .newQuery()
+ *     ProjectView.Query query = ProjectView.newQuery()
  *        .status().isNot(Status.CREATED)
  *        .daysSinceStarted().isGreaterThan(5)
  *        .build();
@@ -363,8 +362,7 @@
  * when querying the Entity state records:
  *
  * <pre>
- *     ProjectView.Query query = ProjectView
- *        .newQuery()
+ *     ProjectView.Query query = ProjectView.newQuery()
  *        .orderBy(daysSinceStarted(), ASC)
  *        .orderBy(projectName(), ASC)
  *        .orderBy(wasReassigned(), DESC)
