@@ -189,7 +189,7 @@
  *
  * <h4>Field masks</h4>
  *
- * <p>Sometimes end-users would want to fetch only the particular fields of the stored messages.
+ * <p>Sometimes end-users are interested in obtaining only a part of the fields of stored messages.
  * In this case, they may specify a {@link com.google.protobuf.FieldMask FieldMask} to be applied
  * to each of the resulting records. The functionality of the field masks is supported fully,
  * as per the <a href="https://developers.google.com/protocol-buffers/docs/reference/java/com/google/protobuf/FieldMask">original contract</a>.
