@@ -157,10 +157,10 @@ abstract class AbstractQueryBuilder<I,
 
     @Override
     @CanIgnoreReturnValue
-    public final B withMask(Field...fields) {
+    public final B withMask(Field... fields) {
         ImmutableList<String> paths = Arrays.stream(fields)
-                                              .map(Field::toString)
-                                              .collect(toImmutableList());
+                                            .map(Field::toString)
+                                            .collect(toImmutableList());
         return withMask(paths);
     }
 
