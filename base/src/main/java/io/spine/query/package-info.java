@@ -48,8 +48,8 @@
  * of a particular storage port.
  *
  * <p>This package provides an API on building the queries for the stored records, rather than
- * configuring the storage port. Other libraries of the framework, such as `spine-server` and
- * `spine-datastore` concentrate on setting up the underlying database and interacting with it.
+ * configuring the storage port. Other libraries of the framework, such as {@code spine-server} and
+ * {@code spine-datastore} concentrate on setting up the underlying database and interacting with it.
  *
  * <h3>Record Queries</h3>
  *
