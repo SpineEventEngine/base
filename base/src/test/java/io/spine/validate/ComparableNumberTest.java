@@ -21,12 +21,23 @@
 package io.spine.validate;
 
 import com.google.common.testing.EqualsTester;
+import com.google.common.testing.NullPointerTester;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+
 @DisplayName("Comparable number should")
 class ComparableNumberTest {
+
+    @Test
+    @DisplayName(NOT_ACCEPT_NULLS)
+    void notAcceptNulls() {
+        NullPointerTester tester = new NullPointerTester();
+        tester.testAllPublicConstructors(ComparableNumber.class);
+        tester.testAllPublicInstanceMethods(new ComparableNumber(42));
+    }
 
     @Nested
     @DisplayName("have a consistent equality relationship")

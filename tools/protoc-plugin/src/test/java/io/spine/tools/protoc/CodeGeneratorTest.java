@@ -36,8 +36,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
 import java.util.Collection;
@@ -47,7 +46,6 @@ import static io.spine.tools.protoc.given.CodeGeneratorRequestGiven.requestBuild
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
-@ExtendWith(TempDirectory.class)
 @DisplayName("`SpineProtoGenerator` should")
 final class CodeGeneratorTest {
 
@@ -56,7 +54,7 @@ final class CodeGeneratorTest {
     private Path testPluginConfig;
 
     @BeforeEach
-    void setUp(@TempDirectory.TempDir Path tempDirPath) {
+    void setUp(@TempDir Path tempDirPath) {
         testPluginConfig = tempDirPath.resolve("test-spine-protoc-plugin.pb");
     }
 

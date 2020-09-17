@@ -96,7 +96,7 @@ public abstract class FieldValidatingOption<@ImmutableTypeParameter T>
      * @apiNote Use this in favour of {@link
      *         FieldOption#optionsFrom(com.google.protobuf.Descriptors.FieldDescriptor)
      *         optionsFrom(FieldDescriptor)} when {@code FieldContext} matters, e.g. when handling
-     *         {@code (validation_for)} options.
+     *         {@code (constraint_for)} options.
      */
     public Optional<T> valueFrom(FieldContext context) {
         Optional<T> externalConstraint =

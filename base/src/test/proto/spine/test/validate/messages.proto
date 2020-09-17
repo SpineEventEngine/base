@@ -128,6 +128,10 @@ message MaxExclusiveNumberFieldValue {
     double value = 1 [(max).value = "64.5", (max).exclusive = true];
 }
 
+message InvalidBound {
+    int64 value = 1 [(min).value = "2.71"];
+}
+
 // Messages for "valid" option tests.
 
 message EnclosedMessageFieldValue {

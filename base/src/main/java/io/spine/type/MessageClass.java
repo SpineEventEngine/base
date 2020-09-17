@@ -32,6 +32,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A base class for value objects storing references to message classes.
+ *
+ * @param <M>
+ *         type of message
  */
 public abstract class MessageClass<M extends Message> extends ClassTypeValue<M> {
 

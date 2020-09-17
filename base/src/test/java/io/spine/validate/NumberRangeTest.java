@@ -20,15 +20,19 @@
 
 package io.spine.validate;
 
+import com.google.common.truth.StringSubject;
 import com.google.protobuf.DoubleValue;
 import com.google.protobuf.Message;
+import io.spine.test.validate.InvalidBound;
 import io.spine.test.validate.MaxExclusiveNumberFieldValue;
 import io.spine.test.validate.MaxInclusiveNumberFieldValue;
 import io.spine.test.validate.MinExclusiveNumberFieldValue;
 import io.spine.test.validate.MinInclusiveNumberFieldValue;
+import io.spine.type.TypeName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
 import static io.spine.validate.given.MessageValidatorTestEnv.EQUAL_MAX;
 import static io.spine.validate.given.MessageValidatorTestEnv.EQUAL_MIN;
@@ -39,6 +43,7 @@ import static io.spine.validate.given.MessageValidatorTestEnv.LESS_MIN_MSG;
 import static io.spine.validate.given.MessageValidatorTestEnv.LESS_THAN_MAX;
 import static io.spine.validate.given.MessageValidatorTestEnv.LESS_THAN_MIN;
 import static io.spine.validate.given.MessageValidatorTestEnv.VALUE;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName(VALIDATION_SHOULD + "analyze (min) and (max) options and")
 class NumberRangeTest extends ValidationOfConstraintTest {
@@ -136,6 +141,19 @@ class NumberRangeTest extends ValidationOfConstraintTest {
     void provideOneValidViolationIfNumberIsGreaterThanDecimalMax() {
         maxNumberTest(GREATER_THAN_MAX, true, false);
         assertSingleViolation(GREATER_MAX_MSG, VALUE);
+    }
+
+    @Test
+    @DisplayName("not allow fraction boundaries for integer fields")
+    void fractionsBounds() {
+        IllegalStateException exception =
+                assertThrows(IllegalStateException.class,
+                             () -> validate(InvalidBound.getDefaultInstance()));
+        StringSubject assertMessage = assertThat(exception).hasMessageThat();
+        assertMessage
+                .contains("2.71");
+        assertMessage
+                .contains(TypeName.of(InvalidBound.class).value());
     }
 
     private void minNumberTest(double value, boolean inclusive, boolean valid) {

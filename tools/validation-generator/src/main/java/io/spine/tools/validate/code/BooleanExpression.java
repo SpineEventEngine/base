@@ -88,15 +88,6 @@ public final class BooleanExpression extends CodeExpression<Boolean> {
     }
 
     /**
-     * Obtains a {@code BooleanExpression} which checks if the result of the given expression
-     * is {@code null}.
-     */
-    public static BooleanExpression isNull(Expression<?> value) {
-        checkNotNull(value);
-        return fromCode("$L == null",value);
-    }
-
-    /**
      * Creates an {@code if} statement this expression as a condition and the given code as
      * the conditional code.
      *

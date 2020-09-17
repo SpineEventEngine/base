@@ -74,11 +74,6 @@ public enum ModelCompilerTaskName implements TaskName {
     mergeTestDescriptorSet,
 
     /**
-     * Downloads the Protobuf compiler plugin executable JAR into the required paths in the project.
-     */
-    copyPluginJar,
-
-    /**
      * Creates the Protobuf compiler plugin configuration.
      *
      * <p>Works only with the {@code main} scope.

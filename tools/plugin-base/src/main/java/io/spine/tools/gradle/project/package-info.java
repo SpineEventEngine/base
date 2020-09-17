@@ -18,7 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// TODO:2019-04-13:dmytro.dashenkov: Document.
+/**
+ * Contains classes working with the Gradle {@code Project}.
+ *
+ * <p>These classes wrap a {@code Project} and provide a high-level API for working with a certain
+ * aspect of the {@code Project}.
+ */
 
 @CheckReturnValue
 @ParametersAreNonnullByDefault

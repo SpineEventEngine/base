@@ -32,8 +32,7 @@ import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
 
@@ -41,14 +40,13 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.gradle.api.tasks.SourceSet.MAIN_SOURCE_SET_NAME;
 import static org.gradle.api.tasks.SourceSet.TEST_SOURCE_SET_NAME;
 
-@ExtendWith(TempDirectory.class)
 @DisplayName("ProjectSourceSuperset should")
 class ProjectSourceSupersetTest {
 
     private Project project;
 
     @BeforeEach
-    void setUp(@TempDirectory.TempDir Path projectPath) {
+    void setUp(@TempDir Path projectPath) {
         project = ProjectBuilder
                 .builder()
                 .withProjectDir(projectPath.toFile())

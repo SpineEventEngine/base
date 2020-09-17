@@ -24,11 +24,14 @@ import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 import com.google.errorprone.annotations.Immutable;
 import com.google.errorprone.annotations.ImmutableTypeParameter;
+import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.validate.ComparableNumber;
 
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.BoundType.CLOSED;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * A constraint that puts a numeric field value into a range.
@@ -47,7 +50,35 @@ public abstract class RangedConstraint<@ImmutableTypeParameter T> extends FieldC
 
     RangedConstraint(T optionValue, Range<ComparableNumber> range, FieldDeclaration field) {
         super(optionValue, field);
+        verifyType(field, range);
         this.range = range;
+    }
+
+    @SuppressWarnings("EnumSwitchStatementWhichMissesCases")
+    private static void verifyType(FieldDeclaration field, Range<ComparableNumber> range) {
+        JavaType fieldType = field.javaType();
+        switch (fieldType) {
+            case INT:  // Fallthrough intended.
+            case LONG: {
+                if (range.hasLowerBound()) {
+                    checkInteger(range.lowerEndpoint(), field);
+                }
+                if (range.hasUpperBound()) {
+                    checkInteger(range.upperEndpoint(), field);
+                }
+                return;
+            }
+            case FLOAT: // Fallthrough intended.
+            case DOUBLE:
+                return;
+            default:
+                throw newIllegalArgumentException("Field `%s` cannot have a number bound.", field);
+        }
+    }
+
+    private static void checkInteger(ComparableNumber number, FieldDeclaration field) {
+        checkState(number.isInteger(),
+                   "An integer bound expected for field `%s`, but got `%s`.", field, number);
     }
 
     public final Range<ComparableNumber> range() {

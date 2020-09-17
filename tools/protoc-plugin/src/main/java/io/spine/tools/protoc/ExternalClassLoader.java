@@ -36,6 +36,9 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * A utility for instantiating a particular class from its {@linkplain FullyQualifiedName FQN}
  * using the specified classpath.
+ *
+ * @param <T>
+ *         the loaded class
  */
 public final class ExternalClassLoader<T> implements Logging {
 

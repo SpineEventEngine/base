@@ -59,7 +59,8 @@ public final class DescriptorReference {
      */
     @VisibleForTesting
     static final String FILE_NAME = "desc.ref";
-    private static final Resource FILE_IN_CLASSPATH = Resource.file(FILE_NAME);
+    private static final Resource FILE_IN_CLASSPATH =
+            Resource.file(FILE_NAME, DescriptorReference.class.getClassLoader());
 
     @SuppressWarnings("HardcodedLineSeparator")     /* Use pre-defined separator to eliminate
                                                        platform-dependent issues in `desc.ref`.*/
@@ -104,13 +105,13 @@ public final class DescriptorReference {
      */
     @VisibleForTesting
     static Iterator<Resource> loadFromResources(Collection<URL> resources) {
+        ClassLoader classLoader = DescriptorReference.class.getClassLoader();
         return resources
                 .stream()
                 .map(DescriptorReference::readCatalog)
-                .flatMap(catalog -> LINE_SPLITTER.splitToList(catalog)
-                                                 .stream())
+                .flatMap(catalog -> LINE_SPLITTER.splitToList(catalog).stream())
                 .distinct()
-                .map(Resource::file)
+                .map(name -> Resource.file(name, classLoader))
                 .iterator();
     }
 
@@ -183,6 +184,6 @@ public final class DescriptorReference {
     /** Obtains a {@code ResourceReference} that is described by this descriptor reference. */
     @VisibleForTesting
     Resource asResource() {
-        return Resource.file(reference);
+        return Resource.file(reference, getClass().getClassLoader());
     }
 }

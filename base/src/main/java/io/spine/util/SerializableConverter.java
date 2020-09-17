@@ -27,6 +27,10 @@ import java.io.Serializable;
 /**
  * Abstract base for serializable converters.
  *
+ * @param <A>
+ *         source type
+ * @param <B>
+ *         target type
  * @see SerializableFunction
  */
 public abstract class SerializableConverter<A, B>
