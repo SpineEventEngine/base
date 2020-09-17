@@ -25,8 +25,10 @@ import com.google.protobuf.FieldMask;
 import io.spine.base.EntityState;
 
 /**
- * A common contract for the classes generated for each entity state type, which defines
- * how the entities of this type may be queried.
+ * A query for the records being the stored Protobuf messages, each declared
+ * as a state of an Entity.
+ *
+ * <p>See the {@code package-info.java} of this package for more details on usage.
  *
  * @param <I>
  *         the type of entity identifiers
