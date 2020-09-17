@@ -195,7 +195,7 @@ class RecordQueryBuilderTest {
 
         @Test
         @DisplayName("sorted by the values of several columns")
-        void withOrdering() {
+        void withSorting() {
             RecordQuery<ManufacturerId, Manufacturer> query =
                     manufacturerBuilder().sortAscendingBy(whenFounded)
                                          .sortAscendingBy(isin)
@@ -211,7 +211,7 @@ class RecordQueryBuilderTest {
 
         @Test
         @DisplayName("sorted by the values of several columns with the record limit")
-        void withLimitAndOrdering() {
+        void withLimitAndSorting() {
             int tenRecords = 10;
             RecordQuery<ManufacturerId, Manufacturer> query =
                     manufacturerBuilder().sortDescendingBy(isin)
@@ -244,7 +244,7 @@ class RecordQueryBuilderTest {
 
         @Test
         @DisplayName("building queries with the record limit set without the sorting specified")
-        void fromUsingLimitWithoutOrdering() {
+        void fromUsingLimitWithoutSorting() {
             assertThrows(IllegalStateException.class,
                          () -> manufacturerBuilder().limit(100)
                                                     .build());
@@ -312,7 +312,7 @@ class RecordQueryBuilderTest {
 
         @Test
         @DisplayName("of the sorting directives")
-        void ofOrdering() {
+        void ofSorting() {
             assertThat(manufacturerBuilder().sortDescendingBy(isin)
                                             .sortAscendingBy(whenFounded)
                                             .sorting())

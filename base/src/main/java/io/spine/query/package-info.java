@@ -166,7 +166,7 @@
  * {@link io.spine.query.IdCriterion#in(java.lang.Iterable) in(Iterable values)}
  * overloads. They select the records by several ID values.
  *
- * <h4>Ordering and limit</h4>
+ * <h4>Sorting and limit</h4>
  *
  * <p>The query builder API also allows specifying the sorting order and the record limit
  * for the queries:
@@ -357,9 +357,9 @@
  *                   .build();
  * </pre>
  *
- * <h4>Ordering and limit</h4>
+ * <h4>Sorting and limit</h4>
  *
- * <p>Similar to the plain record query API, it is possible to set the same query parameters
+ * <p>Similar to the plain record query API, it is possible to set the same sorting parameters
  * when querying the Entity state records:
  *
  * <pre>

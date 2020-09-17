@@ -244,7 +244,7 @@ class EntityQueryBuilderTest {
 
         @Test
         @DisplayName("sorted by an entity column values with the record limit")
-        void withLimitAndOrdering() {
+        void withLimitAndSorting() {
             int dozenOfRecords = 10;
             ProjectView.Query query = ProjectView
                     .newQuery()
@@ -353,7 +353,7 @@ class EntityQueryBuilderTest {
 
         @Test
         @DisplayName("of the column sorting directives")
-        void ofOrdering() {
+        void ofSorting() {
             assertThat(ProjectView.newQuery()
                                   .sortDescendingBy(daysSinceStarted())
                                   .sortAscendingBy(projectName())
