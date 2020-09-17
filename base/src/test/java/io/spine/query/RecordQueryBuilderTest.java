@@ -49,8 +49,8 @@ import static io.spine.query.given.RecordQueryBuilderTestEnv.ManufacturerColumns
 import static io.spine.query.given.RecordQueryBuilderTestEnv.assertHasParamValue;
 import static io.spine.query.given.RecordQueryBuilderTestEnv.fieldMaskWith;
 import static io.spine.query.given.RecordQueryBuilderTestEnv.generateIds;
-import static io.spine.query.given.RecordQueryBuilderTestEnv.manufacturerBuilder;
 import static io.spine.query.given.RecordQueryBuilderTestEnv.manufacturerId;
+import static io.spine.query.given.RecordQueryBuilderTestEnv.queryManufacturer;
 import static io.spine.query.given.RecordQueryBuilderTestEnv.subjectWithNoPredicates;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -69,7 +69,7 @@ class RecordQueryBuilderTest {
         @Test
         @DisplayName("with no parameters")
         void empty() {
-            RecordQuery<ManufacturerId, Manufacturer> actual = manufacturerBuilder().build();
+            RecordQuery<ManufacturerId, Manufacturer> actual = queryManufacturer().build();
             Subject<ManufacturerId, Manufacturer> subject = subjectWithNoPredicates(actual);
             assertThat(subject.id()
                               .values()).isEmpty();
@@ -79,7 +79,7 @@ class RecordQueryBuilderTest {
         @Test
         @DisplayName("which hold the type of the queried record and the type of its ID")
         void withRecordType() {
-            RecordQuery<ManufacturerId, Manufacturer> query = manufacturerBuilder().build();
+            RecordQuery<ManufacturerId, Manufacturer> query = queryManufacturer().build();
             Subject<ManufacturerId, Manufacturer> subject = query.subject();
             assertThat(subject.recordType()).isEqualTo(Manufacturer.class);
             assertThat(subject.idType()).isEqualTo(ManufacturerId.class);
@@ -90,7 +90,7 @@ class RecordQueryBuilderTest {
         void byId() {
             ManufacturerId expectedId = manufacturerId();
             RecordQuery<ManufacturerId, Manufacturer> query =
-                    manufacturerBuilder()
+                    queryManufacturer()
                             .id().is(expectedId)
                             .build();
             Subject<ManufacturerId, Manufacturer> subject = subjectWithNoPredicates(query);
@@ -104,7 +104,7 @@ class RecordQueryBuilderTest {
         void bySeveralIds() {
             ImmutableSet<ManufacturerId> expectedValues = generateIds(24);
             RecordQuery<ManufacturerId, Manufacturer> query =
-                    manufacturerBuilder()
+                    queryManufacturer()
                             .id().in(expectedValues)
                             .build();
             Subject<ManufacturerId, Manufacturer> subject = subjectWithNoPredicates(query);
@@ -119,10 +119,10 @@ class RecordQueryBuilderTest {
             boolean stocksAreTraded = true;
             String isinValue = "JP 3633400001";
             RecordQuery<ManufacturerId, Manufacturer> query =
-                    manufacturerBuilder().where(isin).is(isinValue)
-                                         .where(whenFounded).isLessOrEqualTo(THURSDAY)
-                                         .where(isTraded).is(stocksAreTraded)
-                                         .build();
+                    queryManufacturer().where(isin).is(isinValue)
+                                       .where(whenFounded).isLessOrEqualTo(THURSDAY)
+                                       .where(isTraded).is(stocksAreTraded)
+                                       .build();
 
             ImmutableList<QueryPredicate<Manufacturer>> predicates = query.subject()
                                                                           .predicates();
@@ -143,7 +143,7 @@ class RecordQueryBuilderTest {
             String isinValue = "JP 3899800001";
             boolean stocksAreTraded = true;
             RecordQuery<ManufacturerId, Manufacturer> query =
-                    manufacturerBuilder()
+                    queryManufacturer()
                             .where(whenFounded).isLessThan(THURSDAY)
                             .either((r) -> r.where(isin).is(isinValue),
                                     (r) -> r.where(isTraded).is(stocksAreTraded))
@@ -171,8 +171,8 @@ class RecordQueryBuilderTest {
         void withFieldMask() {
             FieldMask mask = fieldMaskWith(isTraded);
             RecordQuery<ManufacturerId, Manufacturer> query =
-                    manufacturerBuilder().withMask(mask)
-                                         .build();
+                    queryManufacturer().withMask(mask)
+                                       .build();
 
             assertThat(query.mask()).isEqualTo(mask);
         }
@@ -184,8 +184,8 @@ class RecordQueryBuilderTest {
             String isin = "isin";
             String whenFounded = "when_founded";
             RecordQuery<ManufacturerId, Manufacturer> query =
-                    manufacturerBuilder().withMask(isin, whenFounded)
-                                         .build();
+                    queryManufacturer().withMask(isin, whenFounded)
+                                       .build();
             FieldMask expected = FieldMask.newBuilder()
                                           .addPaths(isin)
                                           .addPaths(whenFounded)
@@ -197,10 +197,10 @@ class RecordQueryBuilderTest {
         @DisplayName("sorted by the values of several columns")
         void withSorting() {
             RecordQuery<ManufacturerId, Manufacturer> query =
-                    manufacturerBuilder().sortAscendingBy(whenFounded)
-                                         .sortAscendingBy(isin)
-                                         .sortDescendingBy(isTraded)
-                                         .build();
+                    queryManufacturer().sortAscendingBy(whenFounded)
+                                       .sortAscendingBy(isin)
+                                       .sortDescendingBy(isTraded)
+                                       .build();
 
             ImmutableList<SortBy<?, Manufacturer>> sorting = query.sorting();
             assertThat(sorting).hasSize(3);
@@ -214,10 +214,10 @@ class RecordQueryBuilderTest {
         void withLimitAndSorting() {
             int tenRecords = 10;
             RecordQuery<ManufacturerId, Manufacturer> query =
-                    manufacturerBuilder().sortDescendingBy(isin)
-                                         .sortAscendingBy(whenFounded)
-                                         .limit(tenRecords)
-                                         .build();
+                    queryManufacturer().sortDescendingBy(isin)
+                                       .sortAscendingBy(whenFounded)
+                                       .limit(tenRecords)
+                                       .build();
             ImmutableList<SortBy<?, Manufacturer>> sorting = query.sorting();
             assertThat(sorting.get(0)).isEqualTo(new SortBy<>(isin, DESC));
             assertThat(sorting.get(1)).isEqualTo(new SortBy<>(whenFounded, ASC));
@@ -228,10 +228,10 @@ class RecordQueryBuilderTest {
         @DisplayName("which return the same `Builder` instance if asked")
         void returnSameBuilder() {
             RecordQueryBuilder<ManufacturerId, Manufacturer> builder =
-                    manufacturerBuilder().where(whenFounded).isGreaterThan(THURSDAY)
-                                         .where(isin).is("JP 49869009911")
-                                         .sortAscendingBy(whenFounded)
-                                         .limit(150);
+                    queryManufacturer().where(whenFounded).isGreaterThan(THURSDAY)
+                                       .where(isin).is("JP 49869009911")
+                                       .sortAscendingBy(whenFounded)
+                                       .limit(150);
             RecordQuery<ManufacturerId, Manufacturer> query = builder.build();
             RecordQueryBuilder<ManufacturerId, Manufacturer> actualBuilder = query.toBuilder();
             assertThat(actualBuilder).isSameInstanceAs(builder);
@@ -246,8 +246,8 @@ class RecordQueryBuilderTest {
         @DisplayName("building queries with the record limit set without the sorting specified")
         void fromUsingLimitWithoutSorting() {
             assertThrows(IllegalStateException.class,
-                         () -> manufacturerBuilder().limit(100)
-                                                    .build());
+                         () -> queryManufacturer().limit(100)
+                                                  .build());
 
         }
     }
@@ -260,18 +260,18 @@ class RecordQueryBuilderTest {
         @DisplayName("of a single ID parameter")
         void ofId() {
             ManufacturerId value = manufacturerId();
-            assertThat(manufacturerBuilder().id().is(value)
-                                            .whichIds()
-                                            .values()).containsExactly(value);
+            assertThat(queryManufacturer().id().is(value)
+                                          .whichIds()
+                                          .values()).containsExactly(value);
         }
 
         @Test
         @DisplayName("of several IDs")
         void ofSeveralIds() {
             ImmutableSet<ManufacturerId> ids = generateIds(3);
-            assertThat(manufacturerBuilder().id().in(ids)
-                                            .whichIds()
-                                            .values()).isEqualTo(ids);
+            assertThat(queryManufacturer().id().in(ids)
+                                          .whichIds()
+                                          .values()).isEqualTo(ids);
         }
 
         @Test
@@ -279,9 +279,9 @@ class RecordQueryBuilderTest {
         void ofParameterValues() {
             String isinValue = "JP 3496600002";
             List<QueryPredicate<Manufacturer>> predicates =
-                    manufacturerBuilder().where(isin).is(isinValue)
-                                         .where(whenFounded).isGreaterOrEqualTo(THURSDAY)
-                                         .predicates();
+                    queryManufacturer().where(isin).is(isinValue)
+                                       .where(whenFounded).isGreaterOrEqualTo(THURSDAY)
+                                       .predicates();
             assertThat(predicates).hasSize(1);
             QueryPredicate<Manufacturer> predicate = predicates.get(0);
             assertThat(predicate.operator()).isEqualTo(AND);
@@ -295,8 +295,8 @@ class RecordQueryBuilderTest {
         @DisplayName("of a field mask")
         void ofFieldMask() {
             FieldMask mask = fieldMaskWith(isin);
-            Optional<FieldMask> maybeMask = manufacturerBuilder().withMask(mask)
-                                                                 .whichMask();
+            Optional<FieldMask> maybeMask = queryManufacturer().withMask(mask)
+                                                               .whichMask();
             assertThat(maybeMask).isPresent();
             assertThat(maybeMask.get()).isEqualTo(mask);
         }
@@ -305,17 +305,17 @@ class RecordQueryBuilderTest {
         @DisplayName("of a record limit")
         void ofLimit() {
             int limit = 55;
-            assertThat(manufacturerBuilder().limit(limit)
-                                            .whichLimit()).isEqualTo(limit);
+            assertThat(queryManufacturer().limit(limit)
+                                          .whichLimit()).isEqualTo(limit);
 
         }
 
         @Test
         @DisplayName("of the sorting directives")
         void ofSorting() {
-            assertThat(manufacturerBuilder().sortDescendingBy(isin)
-                                            .sortAscendingBy(whenFounded)
-                                            .sorting())
+            assertThat(queryManufacturer().sortDescendingBy(isin)
+                                          .sortAscendingBy(whenFounded)
+                                          .sorting())
                     .isEqualTo(ImmutableList.of(new SortBy<>(isin, DESC),
                                                 new SortBy<>(whenFounded, ASC))
                     );
@@ -326,7 +326,7 @@ class RecordQueryBuilderTest {
     @DisplayName("allow transforming the built `RecordQuery` instance" +
             " into an object of choice in the same call chain")
     void transform() {
-        int predicateSize = manufacturerBuilder()
+        int predicateSize = queryManufacturer()
                 .where(isTraded).is(false)
                 .build((q) -> q.subject()
                                .predicates()

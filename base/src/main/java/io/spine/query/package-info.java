@@ -256,7 +256,7 @@
  * <p>Here is an example:
  *
  * <pre>
- *     ProjectView.Query query = ProjectView.newQuery()
+ *     ProjectView.Query query = ProjectView.query()
  *        .status().isNot(Status.CREATED)
  *        .daysSinceStarted().isGreaterThan(5)
  *        .build();
@@ -274,7 +274,7 @@
  *        project -> project.status().is(Status.DONE);
  *
  * ProjectView.Query query =
- *        ProjectView.newQuery()
+ *        ProjectView.query()
  *                   .either(startedMoreThanMonthAgo, isDone)
  *                   .build();
  * </pre>
@@ -289,7 +289,7 @@
  * <p>The name of the ID field is preserved and is exposed for querying:
  *
  * <pre>
- *     ProjectView.Query query = ProjectView.newQuery()
+ *     ProjectView.Query query = ProjectView.query()
  *                                          .project().is(expectedId)
  *                                          .build();
  * </pre>
@@ -352,7 +352,7 @@
  *
  * <pre>
  *     ProjectView.Query queryForDeleted =
- *        ProjectView.newQuery()
+ *        ProjectView.query()
  *                   .where(DELETED.column(), true)
  *                   .build();
  * </pre>
@@ -363,7 +363,7 @@
  * when querying the Entity state records:
  *
  * <pre>
- *     ProjectView.Query query = ProjectView.newQuery()
+ *     ProjectView.Query query = ProjectView.query()
  *        .sortAscendingBy(daysSinceStarted())
  *        .sortAscendingBy(projectName())
  *        .sortDescendingBy(wasReassigned())
@@ -382,7 +382,7 @@
  *
  * <pre>
  *     FieldMask mask = fieldMaskWith(status());
- *     ProjectView.Query query = ProjectView.newQuery()
+ *     ProjectView.Query query = ProjectView.query()
  *                                          .withMask(mask)
  *                                          .build();
  * </pre>

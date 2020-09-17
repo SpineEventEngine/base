@@ -51,7 +51,7 @@ public final class RecordQueryBuilderTestEnv {
     /**
      * Creates a new instance of the query builder for the {@link Manufacturer} record message.
      */
-    public static RecordQueryBuilder<ManufacturerId, Manufacturer> manufacturerBuilder() {
+    public static RecordQueryBuilder<ManufacturerId, Manufacturer> queryManufacturer() {
         return RecordQuery.newBuilder(ManufacturerId.class, Manufacturer.class);
     }
 

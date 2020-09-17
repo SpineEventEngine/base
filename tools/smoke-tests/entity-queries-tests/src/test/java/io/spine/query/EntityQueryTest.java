@@ -35,7 +35,7 @@ final class EntityQueryTest {
     @DisplayName("allow to copy itself")
     void copyToEntityQuery() {
         ProjectView.Query original = EntityQueryTestEnv.givenQuery();
-        ProjectView.QueryBuilder destinationBuilder = ProjectView.newQuery();
+        ProjectView.QueryBuilder destinationBuilder = ProjectView.query();
         original.copyTo(destinationBuilder);
 
         ProjectView.Query copy = destinationBuilder.build();

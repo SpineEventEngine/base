@@ -68,7 +68,7 @@ class EntityQueryBuilderTest {
         @Test
         @DisplayName("without parameters")
         void empty() {
-            ProjectView.Query query = ProjectView.newQuery()
+            ProjectView.Query query = ProjectView.query()
                                                  .build();
             Subject<ProjectId, ProjectView> subject = subjectWithNoPredicates(query);
             assertThat(subject.id()
@@ -79,7 +79,7 @@ class EntityQueryBuilderTest {
         @Test
         @DisplayName("which hold the types of the queried entity state and entity ID")
         void withRecordType() {
-            Subject<ProjectId, ProjectView> subject = ProjectView.newQuery()
+            Subject<ProjectId, ProjectView> subject = ProjectView.query()
                                                                  .build()
                                                                  .subject();
             assertThat(subject.recordType()).isEqualTo(ProjectView.class);
@@ -90,7 +90,7 @@ class EntityQueryBuilderTest {
         @DisplayName("by a single ID value")
         void byId() {
             ProjectId expectedId = projectId();
-            ProjectView.Query query = ProjectView.newQuery()
+            ProjectView.Query query = ProjectView.query()
                                                  .projectId().is(expectedId)
                                                  .build();
             Subject<ProjectId, ProjectView> subject = subjectWithNoPredicates(query);
@@ -102,7 +102,7 @@ class EntityQueryBuilderTest {
         @DisplayName("by several ID values")
         void bySeveralIds() {
             ImmutableSet<ProjectId> expectedValues = generateIds(24);
-            ProjectView.Query query = ProjectView.newQuery()
+            ProjectView.Query query = ProjectView.query()
                                                  .projectId().in(expectedValues)
                                                  .build();
             Subject<ProjectId, ProjectView> subject = subjectWithNoPredicates(query);
@@ -115,8 +115,7 @@ class EntityQueryBuilderTest {
         void byColumnValues() {
             Project.Status statusValue = DONE;
             int daysSinceStarted = 15;
-            ProjectView.Query query = ProjectView
-                    .newQuery()
+            ProjectView.Query query = ProjectView.query()
                     .status().is(statusValue)
                     .daysSinceStarted().isLessThan(daysSinceStarted)
                     .build();
@@ -146,7 +145,7 @@ class EntityQueryBuilderTest {
             Either<ProjectView.QueryBuilder> isDeleted =
                     project -> project.where(DELETED.column(), deletedValue);
             ProjectView.Query query =
-                    ProjectView.newQuery()
+                    ProjectView.query()
                                .either(startedMoreThanMonthAgo, isDone, isDeleted)
                                .build();
 
@@ -173,7 +172,7 @@ class EntityQueryBuilderTest {
         @DisplayName("with the specified field mask")
         void withFieldMask() {
             FieldMask mask = fieldMaskWith(status());
-            ProjectView.Query query = ProjectView.newQuery()
+            ProjectView.Query query = ProjectView.query()
                                                  .withMask(mask)
                                                  .build();
             assertThat(query.mask()).isEqualTo(mask);
@@ -185,8 +184,7 @@ class EntityQueryBuilderTest {
         void withMaskPaths() {
             String status = "status";
             String assignee = "assignee";
-            ProjectView.Query query = ProjectView
-                    .newQuery()
+            ProjectView.Query query = ProjectView.query()
                     .withMask(status, assignee)
                     .build();
             FieldMask expected = FieldMask.newBuilder()
@@ -200,8 +198,7 @@ class EntityQueryBuilderTest {
         @DisplayName("with the field mask defined by the generated `SubscribableField`s")
         @SuppressWarnings("DuplicateStringLiteralInspection")   /* Field names just for tests. */
         void withMaskDefinedBySubscribableFields() {
-            ProjectView.Query query = ProjectView
-                    .newQuery()
+            ProjectView.Query query = ProjectView.query()
                     .withMask(Field.status(), Field.assignee())
                     .build();
             FieldMask expected = FieldMask.newBuilder()
@@ -215,8 +212,7 @@ class EntityQueryBuilderTest {
         @DisplayName("with the field mask defined by the `Field`s declared in Proto message")
         @SuppressWarnings("DuplicateStringLiteralInspection")   /* Field names just for tests. */
         void withMaskDefinedByFields() {
-            ProjectView.Query query = ProjectView
-                    .newQuery()
+            ProjectView.Query query = ProjectView.query()
                     .withMask(Field.projectName().getField(), Field.assignee().getField())
                     .build();
             FieldMask expected = FieldMask.newBuilder()
@@ -229,8 +225,7 @@ class EntityQueryBuilderTest {
         @Test
         @DisplayName("sorted by several entity columns")
         void withSorting() {
-            ProjectView.Query query = ProjectView
-                    .newQuery()
+            ProjectView.Query query = ProjectView.query()
                     .sortAscendingBy(daysSinceStarted())
                     .sortAscendingBy(projectName())
                     .sortDescendingBy(wasReassigned())
@@ -246,8 +241,7 @@ class EntityQueryBuilderTest {
         @DisplayName("sorted by an entity column values with the record limit")
         void withLimitAndSorting() {
             int dozenOfRecords = 10;
-            ProjectView.Query query = ProjectView
-                    .newQuery()
+            ProjectView.Query query = ProjectView.query()
                     .sortDescendingBy(daysSinceStarted())
                     .limit(dozenOfRecords)
                     .build();
@@ -260,8 +254,7 @@ class EntityQueryBuilderTest {
         @Test
         @DisplayName("which return the same query builder instance if asked")
         void returnSameBuilder() {
-            ProjectView.QueryBuilder builder = ProjectView
-                    .newQuery()
+            ProjectView.QueryBuilder builder = ProjectView.query()
                     .status().is(STARTED)
                     .daysSinceStarted().isGreaterOrEqualTo(5);
             ProjectView.Query query = builder.build();
@@ -278,7 +271,7 @@ class EntityQueryBuilderTest {
         @DisplayName("building entity queries with the record limit set with no sorting specified")
         void fromUsingLimitWithoutSorting() {
             assertThrows(IllegalStateException.class,
-                         () -> ProjectView.newQuery()
+                         () -> ProjectView.query()
                                           .limit(100)
                                           .build());
 
@@ -293,7 +286,7 @@ class EntityQueryBuilderTest {
         @DisplayName("of a single identifier parameter")
         void ofId() {
             ProjectId value = projectId();
-            assertThat(ProjectView.newQuery()
+            assertThat(ProjectView.query()
                                   .projectId().is(value)
                                   .whichIds().values()).containsExactly(value);
         }
@@ -302,7 +295,7 @@ class EntityQueryBuilderTest {
         @DisplayName("of several IDs")
         void ofSeveralIds() {
             ImmutableSet<ProjectId> ids = generateIds(3);
-            assertThat(ProjectView.newQuery()
+            assertThat(ProjectView.query()
                                   .projectId().in(ids)
                                   .whichIds().values()).isEqualTo(ids);
         }
@@ -313,8 +306,7 @@ class EntityQueryBuilderTest {
 
             Project.Status statusValue = CREATED;
             int daysSinceStarted = 1;
-            ProjectView.Query query = ProjectView
-                    .newQuery()
+            ProjectView.Query query = ProjectView.query()
                     .status().is(statusValue)
                     .daysSinceStarted().isGreaterThan(daysSinceStarted)
                     .build();
@@ -333,7 +325,7 @@ class EntityQueryBuilderTest {
         @DisplayName("of the field mask")
         void ofFieldMask() {
             FieldMask mask = fieldMaskWith(daysSinceStarted());
-            Optional<FieldMask> maybeMask = ProjectView.newQuery()
+            Optional<FieldMask> maybeMask = ProjectView.query()
                                                        .withMask(mask)
                                                        .whichMask();
             Truth8.assertThat(maybeMask)
@@ -345,7 +337,7 @@ class EntityQueryBuilderTest {
         @DisplayName("of the record limit")
         void ofLimit() {
             int limit = 92;
-            assertThat(ProjectView.newQuery()
+            assertThat(ProjectView.query()
                                   .limit(limit)
                                   .whichLimit()).isEqualTo(limit);
 
@@ -354,7 +346,7 @@ class EntityQueryBuilderTest {
         @Test
         @DisplayName("of the column sorting directives")
         void ofSorting() {
-            assertThat(ProjectView.newQuery()
+            assertThat(ProjectView.query()
                                   .sortDescendingBy(daysSinceStarted())
                                   .sortAscendingBy(projectName())
                                   .sorting())
@@ -368,8 +360,7 @@ class EntityQueryBuilderTest {
     @DisplayName("allow transforming the built `EntityQuery` instance into an object of choice" +
             " in the same call chain")
     void transform() {
-        int predicateSize = ProjectView
-                .newQuery()
+        int predicateSize = ProjectView.query()
                 .status().is(CREATED)
                 .build((q) -> q.subject()
                                .predicates()

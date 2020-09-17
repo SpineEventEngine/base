@@ -40,7 +40,7 @@ import static javax.lang.model.element.Modifier.STATIC;
 /**
  * Assembles the specification for the {@code Query} class generated for entity state types.
  *
- * <p>Additionally, generates the {@code newQuery()} method, which would be a static member
+ * <p>Additionally, generates the {@code query()} method, which would be a static member
  * of the Java class of the entity state.
  */
 public final class EntityQuerySpec extends AbstractEntityQuerySpec implements GeneratedMethodSpec {
@@ -83,14 +83,15 @@ public final class EntityQuerySpec extends AbstractEntityQuerySpec implements Ge
     }
 
     /**
-     * Generates {@code newQuery()} method.
+     * Generates {@code query()} method.
      */
     @Override
+    @SuppressWarnings("DuplicateStringLiteralInspection")   // `query` is a common term.
     public MethodSpec methodSpec() {
         TypeName typeOfBuilder = queryBuilderType().value();
         return MethodSpec
-                .methodBuilder("newQuery")
-                .addJavadoc(newQueryJavadoc().spec())
+                .methodBuilder("query")
+                .addJavadoc(queryJavadoc().spec())
                 .addModifiers(PUBLIC, STATIC)
                 .addStatement("return new $T()", typeOfBuilder)
                 .returns(typeOfBuilder)
@@ -98,9 +99,9 @@ public final class EntityQuerySpec extends AbstractEntityQuerySpec implements Ge
     }
 
     /**
-     * Returns the Javadoc for {@code newQuery()} method.
+     * Returns the Javadoc for {@code query()} method.
      */
-    private static GeneratedJavadoc newQueryJavadoc() {
+    private static GeneratedJavadoc queryJavadoc() {
         return GeneratedJavadoc.singleParagraph(
                 CodeBlock.of("Creates a new instance of {@link $L}.",
                              queryBuilderType().className()

@@ -67,7 +67,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  * <p>This generator produces a specific builder for {@code Query}:
  * <pre>
- *     Customer.newQuery()
+ *     Customer.query()
  *             .id().in(westCustomerIds())
  *             .type().is("permanent")    // `type()` is a `...Criterion`.
  *             .discountPercent().isGreaterThan(10)

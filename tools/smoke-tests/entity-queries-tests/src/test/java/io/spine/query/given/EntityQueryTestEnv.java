@@ -51,7 +51,7 @@ public final class EntityQueryTestEnv {
         Either<ProjectView.QueryBuilder> isDeleted = b -> b.where(DELETED.column(), true);
         FieldMask nameAndStatus = maskNameAndStatus();
         ProjectView.Query query =
-                ProjectView.newQuery()
+                ProjectView.query()
                            .projectId()
                            .in(ProjectId.generate(), ProjectId.generate())
                            .where(ARCHIVED.column(), false)

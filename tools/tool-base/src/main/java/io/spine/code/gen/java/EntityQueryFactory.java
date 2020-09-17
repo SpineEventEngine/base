@@ -35,8 +35,7 @@ import java.util.List;
 /**
  * Generates an entity-specific {@code Query} and {@code QueryBuilder} classes.
  *
- * <p>Additionally, generates {@code newQuery()} method to instantiate the
- * {@code QueryBuilder}.
+ * <p>Additionally, generates {@code query()} method to instantiate the {@code QueryBuilder}.
  */
 @Immutable
 public final class EntityQueryFactory implements NestedClassFactory, MethodFactory {
