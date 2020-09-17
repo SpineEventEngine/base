@@ -25,8 +25,6 @@ import io.spine.query.Either;
 import io.spine.tools.query.ProjectId;
 import io.spine.tools.query.ProjectView;
 
-import static io.spine.query.Direction.ASC;
-import static io.spine.query.Direction.DESC;
 import static io.spine.query.given.Lifecycle.ARCHIVED;
 import static io.spine.query.given.Lifecycle.DELETED;
 import static io.spine.tools.query.Project.Status.DONE;
@@ -58,8 +56,8 @@ public final class EntityQueryTestEnv {
                            .in(ProjectId.generate(), ProjectId.generate())
                            .where(ARCHIVED.column(), false)
                            .either(startedMoreThanMonthAgo, isDone, isDeleted)
-                           .orderBy(projectName(), ASC)
-                           .orderBy(daysSinceStarted(), DESC)
+                           .sortAscendingBy(projectName())
+                           .sortDescendingBy(daysSinceStarted())
                            .limit(10)
                            .withMask(nameAndStatus)
                            .build();

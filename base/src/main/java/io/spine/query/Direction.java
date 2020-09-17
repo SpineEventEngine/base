@@ -21,9 +21,9 @@
 package io.spine.query;
 
 /**
- * The direction of ordering for the set of records by some field value.
+ * The direction of sorting for the set of records by some field value.
  *
- * @see OrderBy
+ * @see SortBy
  */
 public enum Direction {
 

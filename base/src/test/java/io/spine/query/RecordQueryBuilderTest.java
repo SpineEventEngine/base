@@ -73,7 +73,7 @@ class RecordQueryBuilderTest {
             Subject<ManufacturerId, Manufacturer> subject = subjectWithNoPredicates(actual);
             assertThat(subject.id()
                               .values()).isEmpty();
-            RecordQueryBuilderTestEnv.assertNoOrderingMaskLimit(actual);
+            RecordQueryBuilderTestEnv.assertNoSortingMaskLimit(actual);
         }
 
         @Test
@@ -194,33 +194,33 @@ class RecordQueryBuilderTest {
         }
 
         @Test
-        @DisplayName("ordered by several fields")
+        @DisplayName("sorted by the values of several columns")
         void withOrdering() {
             RecordQuery<ManufacturerId, Manufacturer> query =
-                    manufacturerBuilder().orderBy(whenFounded, ASC)
-                                         .orderBy(isin, ASC)
-                                         .orderBy(isTraded, DESC)
+                    manufacturerBuilder().sortAscendingBy(whenFounded)
+                                         .sortAscendingBy(isin)
+                                         .sortDescendingBy(isTraded)
                                          .build();
 
-            ImmutableList<OrderBy<?, Manufacturer>> ordering = query.ordering();
-            assertThat(ordering).hasSize(3);
-            assertThat(ordering.get(0)).isEqualTo(new OrderBy<>(whenFounded, ASC));
-            assertThat(ordering.get(1)).isEqualTo(new OrderBy<>(isin, ASC));
-            assertThat(ordering.get(2)).isEqualTo(new OrderBy<>(isTraded, DESC));
+            ImmutableList<SortBy<?, Manufacturer>> sorting = query.sorting();
+            assertThat(sorting).hasSize(3);
+            assertThat(sorting.get(0)).isEqualTo(new SortBy<>(whenFounded, ASC));
+            assertThat(sorting.get(1)).isEqualTo(new SortBy<>(isin, ASC));
+            assertThat(sorting.get(2)).isEqualTo(new SortBy<>(isTraded, DESC));
         }
 
         @Test
-        @DisplayName("ordered by several fields with the record limit")
+        @DisplayName("sorted by the values of several columns with the record limit")
         void withLimitAndOrdering() {
             int tenRecords = 10;
             RecordQuery<ManufacturerId, Manufacturer> query =
-                    manufacturerBuilder().orderBy(isin, DESC)
-                                         .orderBy(whenFounded, ASC)
+                    manufacturerBuilder().sortDescendingBy(isin)
+                                         .sortAscendingBy(whenFounded)
                                          .limit(tenRecords)
                                          .build();
-            ImmutableList<OrderBy<?, Manufacturer>> ordering = query.ordering();
-            assertThat(ordering.get(0)).isEqualTo(new OrderBy<>(isin, DESC));
-            assertThat(ordering.get(1)).isEqualTo(new OrderBy<>(whenFounded, ASC));
+            ImmutableList<SortBy<?, Manufacturer>> sorting = query.sorting();
+            assertThat(sorting.get(0)).isEqualTo(new SortBy<>(isin, DESC));
+            assertThat(sorting.get(1)).isEqualTo(new SortBy<>(whenFounded, ASC));
             assertThat(query.limit()).isEqualTo(tenRecords);
         }
 
@@ -230,7 +230,7 @@ class RecordQueryBuilderTest {
             RecordQueryBuilder<ManufacturerId, Manufacturer> builder =
                     manufacturerBuilder().where(whenFounded).isGreaterThan(THURSDAY)
                                          .where(isin).is("JP 49869009911")
-                                         .orderBy(whenFounded, ASC)
+                                         .sortAscendingBy(whenFounded)
                                          .limit(150);
             RecordQuery<ManufacturerId, Manufacturer> query = builder.build();
             RecordQueryBuilder<ManufacturerId, Manufacturer> actualBuilder = query.toBuilder();
@@ -243,7 +243,7 @@ class RecordQueryBuilderTest {
     final class Prevent {
 
         @Test
-        @DisplayName("building queries with the record limit set without the ordering specified")
+        @DisplayName("building queries with the record limit set without the sorting specified")
         void fromUsingLimitWithoutOrdering() {
             assertThrows(IllegalStateException.class,
                          () -> manufacturerBuilder().limit(100)
@@ -311,13 +311,13 @@ class RecordQueryBuilderTest {
         }
 
         @Test
-        @DisplayName("of the ordering directives")
+        @DisplayName("of the sorting directives")
         void ofOrdering() {
-            assertThat(manufacturerBuilder().orderBy(isin, DESC)
-                                            .orderBy(whenFounded, ASC)
-                                            .ordering())
-                    .isEqualTo(ImmutableList.of(new OrderBy<>(isin, DESC),
-                                                new OrderBy<>(whenFounded, ASC))
+            assertThat(manufacturerBuilder().sortDescendingBy(isin)
+                                            .sortAscendingBy(whenFounded)
+                                            .sorting())
+                    .isEqualTo(ImmutableList.of(new SortBy<>(isin, DESC),
+                                                new SortBy<>(whenFounded, ASC))
                     );
         }
     }

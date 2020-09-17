@@ -56,8 +56,7 @@ public class RecordQueryBuilder<I, R extends Message>
      * Creates a new instance of a corresponding query using the data of this builder.
      *
      * <p>If the {@linkplain #limit(int) record limit} is set, checks that at least
-     * one {@linkplain #addOrdering(OrderBy) ordering directive} is present.
-     * Otherwise throws an {@linkplain IllegalStateException}.
+     * one sorting directive is present. Otherwise throws an {@linkplain IllegalStateException}.
      */
     @Override
     public RecordQuery<I, R> build() {

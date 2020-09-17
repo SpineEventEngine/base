@@ -38,6 +38,8 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.protobuf.util.FieldMaskUtil.fromStringList;
+import static io.spine.query.Direction.ASC;
+import static io.spine.query.Direction.DESC;
 import static io.spine.query.LogicalOperator.AND;
 import static io.spine.query.LogicalOperator.OR;
 import static io.spine.util.Preconditions2.checkPositive;
@@ -73,7 +75,7 @@ abstract class AbstractQueryBuilder<I,
 
     private QueryPredicate.Builder<R> currentPredicate = QueryPredicate.newBuilder(AND);
 
-    private final List<OrderBy<?, R>> ordering = new ArrayList<>();
+    private final List<SortBy<?, R>> sorting = new ArrayList<>();
 
     @MonotonicNonNull
     private Integer limit;
@@ -118,8 +120,8 @@ abstract class AbstractQueryBuilder<I,
     }
 
     @Override
-    public ImmutableList<OrderBy<?, R>> ordering() {
-        return ImmutableList.copyOf(ordering);
+    public ImmutableList<SortBy<?, R>> sorting() {
+        return ImmutableList.copyOf(sorting);
     }
 
     @Override
@@ -181,10 +183,17 @@ abstract class AbstractQueryBuilder<I,
 
     @Override
     @CanIgnoreReturnValue
-    public final B orderBy(RecordColumn<R, ?> column, Direction direction) {
+    public final B sortAscendingBy(RecordColumn<R, ?> column) {
         checkNotNull(column);
-        checkNotNull(direction);
-        ordering.add(new OrderBy<>(column, direction));
+        sorting.add(new SortBy<>(column, ASC));
+        return thisRef();
+    }
+
+    @Override
+    @CanIgnoreReturnValue
+    public final B sortDescendingBy(RecordColumn<R, ?> column) {
+        checkNotNull(column);
+        sorting.add(new SortBy<>(column, DESC));
         return thisRef();
     }
 
@@ -257,13 +266,13 @@ abstract class AbstractQueryBuilder<I,
     }
 
     /**
-     * Adds the ordering directive.
+     * Adds the sorting directive.
      *
      * @return this instance of query builder, for chaining
      */
-    protected final B addOrdering(OrderBy<?, R> value) {
+    protected final B addSorting(SortBy<?, R> value) {
         checkNotNull(value);
-        ordering.add(value);
+        sorting.add(value);
         return thisRef();
     }
 }

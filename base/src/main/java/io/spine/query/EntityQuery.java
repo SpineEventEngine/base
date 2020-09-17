@@ -84,7 +84,7 @@ public abstract class EntityQuery<I,
     private void doCopyTo(AbstractQueryBuilder<I, S, ?, ?, ?> destination) {
         copyIdParameter(destination);
         copyPredicates(destination);
-        copyOrdering(destination);
+        copySorting(destination);
         copyLimit(destination);
         copyMask(destination);
     }
@@ -127,11 +127,11 @@ public abstract class EntityQuery<I,
     }
 
     /**
-     * Copies the ordering directives from the current instance to the destination builder.
+     * Copies the sorting directives from the current instance to the destination builder.
      */
-    private void copyOrdering(AbstractQueryBuilder<I, S, ?, ?, ?> destination) {
-        for (OrderBy<?, S> sourceOrderBy : ordering()) {
-            destination.addOrdering(sourceOrderBy);
+    private void copySorting(AbstractQueryBuilder<I, S, ?, ?, ?> destination) {
+        for (SortBy<?, S> sourceSortBy : sorting()) {
+            destination.addSorting(sourceSortBy);
         }
     }
 }

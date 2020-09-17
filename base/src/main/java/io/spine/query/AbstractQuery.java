@@ -49,20 +49,20 @@ abstract class AbstractQuery<I, R extends Message, P extends SubjectParameter<R,
     private final Subject<I, R> subject;
 
     /**
-     * List of ordering directives which define the order of records in the query results.
+     * List of sorting directives which define the order of records in the query results.
      *
      * <p>Directives are applied one by one, starting with the first one. The second one
-     * and all consecutive directives specify the order of records, which are considered
-     * equal by the previous {@code OrderBy} directives.
+     * and all consecutive directives specify the sorting order of records, which are considered
+     * equal by the previous {@code SortBy} directives.
      */
-    private final ImmutableList<OrderBy<?, R>> ordering;
+    private final ImmutableList<SortBy<?, R>> sorting;
 
     /**
      * The maximum number of records in the query results.
      *
      * <p>If not set, all matching records are returned.
      *
-     * <p>This field may only be used if at least one {@link OrderBy ordering directive} is set.
+     * <p>This field may only be used if at least one {@link SortBy sorting directive} is set.
      */
     private final @Nullable Integer limit;
 
@@ -76,23 +76,23 @@ abstract class AbstractQuery<I, R extends Message, P extends SubjectParameter<R,
     /**
      * A common contract for the constructors of {@code AbstractQuery} implementations.
      *
-     * <p>Checks that if the limit is set, at least one ordering directive is present as well.
+     * <p>Checks that if the limit is set, at least one sorting directive is present as well.
      */
     AbstractQuery(AbstractQueryBuilder<I, R, P, ?, ?> builder) {
         this.subject = new Subject<>(builder);
-        this.ordering = checkNotNull(builder.ordering());
+        this.sorting = checkNotNull(builder.sorting());
         this.mask = builder.whichMask().orElse(FieldMask.getDefaultInstance());
         limit = ensureLimit(builder.whichLimit());
     }
 
     /**
-     * Checks that if the limit is set, at least one ordering directive is specified as well.
+     * Checks that if the limit is set, at least one sorting directive is specified as well.
      *
      * @return the value of query limit, {@code null}-able, as the limit may not be set
      */
     private @Nullable Integer ensureLimit(@Nullable Integer limit) {
-        checkState(limit == null || !ordering.isEmpty(),
-                      "Query limit must be used with at least one ordering directive set.");
+        checkState(limit == null || !sorting.isEmpty(),
+                      "Query limit must be used with at least one sorting directive set.");
         return limit;
     }
 
@@ -102,8 +102,8 @@ abstract class AbstractQuery<I, R extends Message, P extends SubjectParameter<R,
     }
 
     @Override
-    public final ImmutableList<OrderBy<?, R>> ordering() {
-        return ordering;
+    public final ImmutableList<SortBy<?, R>> sorting() {
+        return sorting;
     }
 
     @Override
@@ -126,13 +126,13 @@ abstract class AbstractQuery<I, R extends Message, P extends SubjectParameter<R,
         }
         AbstractQuery<?, ?, ?> query = (AbstractQuery<?, ?, ?>) o;
         return subject.equals(query.subject) &&
-                ordering.equals(query.ordering) &&
+                sorting.equals(query.sorting) &&
                 Objects.equals(limit, query.limit) &&
                 mask.equals(query.mask);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(subject, ordering, limit, mask);
+        return Objects.hash(subject, sorting, limit, mask);
     }
 }

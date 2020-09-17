@@ -168,23 +168,24 @@
  *
  * <h4>Ordering and limit</h4>
  *
- * <p>The query builder API also allows specifying the ordering and record limit for the queries:
+ * <p>The query builder API also allows specifying the sorting order and the record limit
+ * for the queries:
  *
  * <pre>
  *     {@literal RecordQuery<ManufacturerId, Manufacturer> query = }
  *     {@literal    RecordQuery.newBuilder(ManufacturerId.class, Manufacturer.class) }
- *                    .orderBy(whenFounded, ASC)
- *                    .orderBy(isTraded, DESC)
+ *                    .sortAscendingBy(whenFounded)
+ *                    .sortDescendingBy(isTraded)
  *                    .limit(10)
  *                    .build();
  * </pre>
  *
- * <p>This query selects all records of {@code Manufacturer} type, but tells to order them
+ * <p>This query selects all records of {@code Manufacturer} type, but tells to sort them
  * by the values of {@code whenFounded} column ascending, then by {@code isTraded} column values
  * descending. Finally, the query result is limited to the top ten records.
  *
  * <p>Please note, that {@linkplain io.spine.query.RecordQueryBuilder#limit(int) limit(..)}
- * method may only be used in queries which order their results. Otherwise, a runtime exception
+ * method may only be used in queries which sort their results. Otherwise, a runtime exception
  * is thrown upon building the query.
  *
  * <h4>Field masks</h4>
@@ -363,9 +364,9 @@
  *
  * <pre>
  *     ProjectView.Query query = ProjectView.newQuery()
- *        .orderBy(daysSinceStarted(), ASC)
- *        .orderBy(projectName(), ASC)
- *        .orderBy(wasReassigned(), DESC)
+ *        .sortAscendingBy(daysSinceStarted())
+ *        .sortAscendingBy(projectName())
+ *        .sortDescendingBy(wasReassigned())
  *        .limit(10)
  *        .build();
  * </pre>

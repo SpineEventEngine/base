@@ -73,10 +73,10 @@ public final class EntityQueryBuilderTestEnv {
     }
 
     /**
-     * Asserts that the given query has no ordering, field mask and limit parameters set.
+     * Asserts that the given query has no sorting, field mask and limit parameters set.
      */
-    public static void assertNoOrderingMaskLimit(ProjectView.Query query) {
-        assertThat(query.ordering()).isEmpty();
+    public static void assertNoSortingMaskLimit(ProjectView.Query query) {
+        assertThat(query.sorting()).isEmpty();
         assertThat(query.mask()).isEqualTo(FieldMask.getDefaultInstance());
         assertThat(query.limit()).isEqualTo(nullRef());
     }

@@ -74,10 +74,10 @@ public final class RecordQueryBuilderTestEnv {
     }
 
     /**
-     * Asserts that the given query has no ordering, field mask and limit parameters set.
+     * Asserts that the given query has no sorting, field mask and limit parameters set.
      */
-    public static void assertNoOrderingMaskLimit(RecordQuery<ManufacturerId, Manufacturer> query) {
-        assertThat(query.ordering()).isEmpty();
+    public static void assertNoSortingMaskLimit(RecordQuery<ManufacturerId, Manufacturer> query) {
+        assertThat(query.sorting()).isEmpty();
         assertThat(query.mask()).isEqualTo(FieldMask.getDefaultInstance());
         assertThat(query.limit()).isEqualTo(nullRef());
     }

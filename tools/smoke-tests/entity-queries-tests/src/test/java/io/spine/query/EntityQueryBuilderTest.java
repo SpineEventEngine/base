@@ -43,7 +43,7 @@ import static io.spine.query.Direction.DESC;
 import static io.spine.query.LogicalOperator.AND;
 import static io.spine.query.LogicalOperator.OR;
 import static io.spine.query.given.EntityQueryBuilderTestEnv.assertHasParamValue;
-import static io.spine.query.given.EntityQueryBuilderTestEnv.assertNoOrderingMaskLimit;
+import static io.spine.query.given.EntityQueryBuilderTestEnv.assertNoSortingMaskLimit;
 import static io.spine.query.given.EntityQueryBuilderTestEnv.fieldMaskWith;
 import static io.spine.query.given.EntityQueryBuilderTestEnv.generateIds;
 import static io.spine.query.given.EntityQueryBuilderTestEnv.projectId;
@@ -73,7 +73,7 @@ class EntityQueryBuilderTest {
             Subject<ProjectId, ProjectView> subject = subjectWithNoPredicates(query);
             assertThat(subject.id()
                               .values()).isEmpty();
-            assertNoOrderingMaskLimit(query);
+            assertNoSortingMaskLimit(query);
         }
 
         @Test
@@ -227,33 +227,33 @@ class EntityQueryBuilderTest {
         }
 
         @Test
-        @DisplayName("ordered by several entity columns")
-        void withOrdering() {
+        @DisplayName("sorted by several entity columns")
+        void withSorting() {
             ProjectView.Query query = ProjectView
                     .newQuery()
-                    .orderBy(daysSinceStarted(), ASC)
-                    .orderBy(projectName(), ASC)
-                    .orderBy(wasReassigned(), DESC)
+                    .sortAscendingBy(daysSinceStarted())
+                    .sortAscendingBy(projectName())
+                    .sortDescendingBy(wasReassigned())
                     .build();
-            ImmutableList<OrderBy<?, ProjectView>> ordering = query.ordering();
-            assertThat(ordering).hasSize(3);
-            assertThat(ordering.get(0)).isEqualTo(new OrderBy<>(daysSinceStarted(), ASC));
-            assertThat(ordering.get(1)).isEqualTo(new OrderBy<>(projectName(), ASC));
-            assertThat(ordering.get(2)).isEqualTo(new OrderBy<>(wasReassigned(), DESC));
+            ImmutableList<SortBy<?, ProjectView>> sorting = query.sorting();
+            assertThat(sorting).hasSize(3);
+            assertThat(sorting.get(0)).isEqualTo(new SortBy<>(daysSinceStarted(), ASC));
+            assertThat(sorting.get(1)).isEqualTo(new SortBy<>(projectName(), ASC));
+            assertThat(sorting.get(2)).isEqualTo(new SortBy<>(wasReassigned(), DESC));
         }
 
         @Test
-        @DisplayName("ordered an entity column with the record limit")
+        @DisplayName("sorted by an entity column values with the record limit")
         void withLimitAndOrdering() {
             int dozenOfRecords = 10;
             ProjectView.Query query = ProjectView
                     .newQuery()
-                    .orderBy(daysSinceStarted(), DESC)
+                    .sortDescendingBy(daysSinceStarted())
                     .limit(dozenOfRecords)
                     .build();
-            OrderBy<?, ProjectView> orderBy = query.ordering()
-                                                   .get(0);
-            assertThat(orderBy).isEqualTo(new OrderBy<>(daysSinceStarted(), DESC));
+            SortBy<?, ProjectView> sortBy = query.sorting()
+                                                 .get(0);
+            assertThat(sortBy).isEqualTo(new SortBy<>(daysSinceStarted(), DESC));
             assertThat(query.limit()).isEqualTo(dozenOfRecords);
         }
 
@@ -275,8 +275,8 @@ class EntityQueryBuilderTest {
     final class Prevent {
 
         @Test
-        @DisplayName("building entity queries with the record limit set with no ordering specified")
-        void fromUsingLimitWithoutOrdering() {
+        @DisplayName("building entity queries with the record limit set with no sorting specified")
+        void fromUsingLimitWithoutSorting() {
             assertThrows(IllegalStateException.class,
                          () -> ProjectView.newQuery()
                                           .limit(100)
@@ -352,14 +352,14 @@ class EntityQueryBuilderTest {
         }
 
         @Test
-        @DisplayName("of the column ordering directives")
+        @DisplayName("of the column sorting directives")
         void ofOrdering() {
             assertThat(ProjectView.newQuery()
-                                  .orderBy(daysSinceStarted(), DESC)
-                                  .orderBy(projectName(), ASC)
-                                  .ordering())
-                    .isEqualTo(ImmutableList.of(new OrderBy<>(daysSinceStarted(), DESC),
-                                                new OrderBy<>(projectName(), ASC))
+                                  .sortDescendingBy(daysSinceStarted())
+                                  .sortAscendingBy(projectName())
+                                  .sorting())
+                    .isEqualTo(ImmutableList.of(new SortBy<>(daysSinceStarted(), DESC),
+                                                new SortBy<>(projectName(), ASC))
                     );
         }
     }

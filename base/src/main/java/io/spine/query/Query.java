@@ -41,17 +41,17 @@ public interface Query<I, R extends Message> {
     Subject<I, R> subject();
 
     /**
-     * Returns the ordering to be applied to the query results.
+     * Returns the sorting directives to be applied to the query results.
      *
-     * <p>In case there are several fields to order by, the ordering directives are applied one
+     * <p>In case there are several fields to sort by, the directives are applied one
      * by one starting from the first.
      */
-    ImmutableList<OrderBy<?, R>> ordering();
+    ImmutableList<SortBy<?, R>> sorting();
 
     /**
      * Tells the maximum number of records to be returned as a query result.
      *
-     * <p>If the limit is set, there must be at least one {@linkplain #ordering() ordering
+     * <p>If the limit is set, there must be at least one {@linkplain #sorting() sorting
      * directive} specified.
      *
      * <p>If the limit is not set, returns {@code null}.

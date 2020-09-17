@@ -25,37 +25,37 @@ import com.google.protobuf.Message;
 import java.util.Objects;
 
 /**
- * Defines the ordering of the {@linkplain Query query} results via the ordering of values in
- * a particular {@linkplain io.spine.query.RecordColumn column}.
+ * Defines the sorting order of the {@linkplain Query query} results by the sorting order
+ * of values in a particular {@linkplain io.spine.query.RecordColumn column}.
  *
  * @param <C>
- *         type of the column which values are used for ordering
+ *         type of the column which values are used for sorting
  * @param <R>
- *         the type of the ordered records
+ *         the type of the sorted records
  */
-public final class OrderBy<C extends RecordColumn<R, ?>, R extends Message> {
+public final class SortBy<C extends RecordColumn<R, ?>, R extends Message> {
 
     private final C column;
 
     private final Direction direction;
 
     /**
-     * Creates an ordering directive for the given column in a given direction.
+     * Creates an sorting directive for the given column in a given direction.
      */
-    OrderBy(C column, Direction direction) {
+    SortBy(C column, Direction direction) {
         this.column = column;
         this.direction = direction;
     }
 
     /**
-     * Returns the column, by which values the query results should be ordered.
+     * Returns the column, by which values the query results should be sorted.
      */
     public C column() {
         return column;
     }
 
     /**
-     * Returns the direction, in which the column values should be ordered.
+     * Returns the direction, in which the column values should be sorted.
      */
     public Direction direction() {
         return direction;
@@ -66,10 +66,10 @@ public final class OrderBy<C extends RecordColumn<R, ?>, R extends Message> {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof OrderBy)) {
+        if (!(o instanceof SortBy)) {
             return false;
         }
-        OrderBy<?, ?> by = (OrderBy<?, ?>) o;
+        SortBy<?, ?> by = (SortBy<?, ?>) o;
         return column.equals(by.column) &&
                 direction == by.direction;
     }

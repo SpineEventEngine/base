@@ -76,9 +76,9 @@ public interface QueryBuilder<I,
     ImmutableList<QueryPredicate<R>> predicates();
 
     /**
-     * Returns the ordering directives to be applied to the resulting dataset.
+     * Returns the sorting directives to be applied to the resulting dataset.
      */
-    ImmutableList<OrderBy<?, R>> ordering();
+    ImmutableList<SortBy<?, R>> sorting();
 
     /**
      * Returns the maximum number of records in the resulting dataset.
@@ -220,20 +220,33 @@ public interface QueryBuilder<I,
     B withMask(Field... fields);
 
     /**
-     * Adds an ordering directive.
+     * Tells to sort the query results in the ascending order of the values in the specified column.
      *
-     * <p>Each call to this method adds another ordering directive. Directives are applied one
+     * <p>Each call to this method adds another sorting directive. Directives are applied one
      * after another, each following determining the order of records remained "equal" after
-     * the previous ordering.
+     * the previous sorting.
      *
      * @param column
-     *         the field of the message by which the resulting set should be ordered
-     * @param direction
-     *         the direction of ordering
+     *         the field of the message by which the resulting set should be sorted
      * @return this instance of query builder, for chaining
      */
     @CanIgnoreReturnValue
-    B orderBy(RecordColumn<R, ?> column, Direction direction);
+    B sortAscendingBy(RecordColumn<R, ?> column);
+
+    /**
+     * Tells to sort the query results in the descending order of the values
+     * in the specified column.
+     *
+     * <p>Each call to this method adds another sorting directive. Directives are applied one
+     * after another, each following determining the order of records remained "equal" after
+     * the previous sorting.
+     *
+     * @param column
+     *         the field of the message by which the resulting set should be sorted
+     * @return this instance of query builder, for chaining
+     */
+    @CanIgnoreReturnValue
+    B sortDescendingBy(RecordColumn<R, ?> column);
 
     /**
      * Adds a parameter by which the records are to be queried.

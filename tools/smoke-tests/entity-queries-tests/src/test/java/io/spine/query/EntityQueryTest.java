@@ -50,6 +50,6 @@ final class EntityQueryTest {
         assertThat(copy.subject()).isEqualTo(original.subject());
         assertThat(copy.mask()).isEqualTo(original.mask());
         assertThat(copy.limit()).isEqualTo(original.limit());
-        assertThat(copy.ordering()).isEqualTo(original.ordering());
+        assertThat(copy.sorting()).isEqualTo(original.sorting());
     }
 }
