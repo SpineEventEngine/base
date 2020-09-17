@@ -26,10 +26,11 @@ import io.spine.annotation.SPI;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A query for the records each represented by a particular Protobuf message.
+ * A query for the records each being a stored Protobuf message.
  *
- * <p>If the Protobuf message defines the state of an entity, {@link EntityQuery} serves querying
- * better than this type.
+ * <p>If the queried Protobuf message defines the state of an entity, {@link EntityQuery} serves
+ * querying better than this type. See the {@code package-info.java} of this package
+ * for more details.
  *
  * @param <I>
  *         the type of the record identifiers
