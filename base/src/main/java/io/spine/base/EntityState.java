@@ -21,6 +21,9 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
+import io.spine.annotation.FirstGenericParameter;
+import io.spine.annotation.GeneratedMixin;
+import io.spine.protobuf.FirstMessageField;
 
 /**
  * A common interface for entity state messages.
@@ -28,9 +31,28 @@ import com.google.errorprone.annotations.Immutable;
  * <p>Any message that defines an {@code (entity)} option with a valid {@code kind} is marked with
  * this interface by the Model Compiler.
  *
+ * <p>The first field of the entity state message is treated as its identifier. It is a convention
+ * that has two goals:
+ *
+ * <ol>
+ *     <li>The definition of an entity state always starts with its ID with no extra Protobuf
+ *     options. This way it's feels easy and more natural to read the code.
+
+ *     <li>Developers don't forget to specify which of the fields declared in Protobuf corresponds
+ *     to the entity ID.
+ * </ol>
+ *
+ * <p>At codegen-time, the Model Compiler substitutes the generic parameter {@code <I>} with
+ * an actual type of the first field of the entity state message.
+ *
+ * @param <I>
+ *         the type of entity identifiers
  * @see io.spine.code.proto.EntityStateOption
  */
-@SuppressWarnings("InterfaceNeverImplemented") // Implemented in the dependent repos.
+@SuppressWarnings("unused") /* Used in the generated code. */
 @Immutable
-public interface EntityState extends KnownMessage {
+@GeneratedMixin
+@FirstGenericParameter(is = FirstMessageField.class)
+public interface EntityState<I> extends KnownMessage {
+
 }

@@ -23,12 +23,12 @@ package io.spine.tools.protoc;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Message;
 import io.spine.base.CommandMessage;
-import io.spine.base.EntityColumn;
 import io.spine.base.EventMessage;
 import io.spine.base.Identifier;
 import io.spine.base.RejectionMessage;
 import io.spine.base.SubscribableField;
 import io.spine.base.UuidValue;
+import io.spine.query.EntityColumn;
 import io.spine.test.protoc.EducationalInstitution;
 import io.spine.test.protoc.Kindergarten;
 import io.spine.test.protoc.Outer;
@@ -113,7 +113,7 @@ final class ProtocPluginTest {
     @DisplayName("skip non specified message types")
     void skipNonSpecifiedMessageTypes() {
         Class<?> cls = CustomerName.class;
-        Class[] interfaces = cls.getInterfaces();
+        Class<?>[] interfaces = cls.getInterfaces();
         assertEquals(1, interfaces.length);
         assertSame(CustomerNameOrBuilder.class, interfaces[0]);
     }
@@ -316,7 +316,7 @@ final class ProtocPluginTest {
     @Test
     @DisplayName("generate columns for a queryable entity type")
     void generateColumns() {
-        EntityColumn column = Movie.Column.title();
+        EntityColumn<?, ?> column = Movie.Column.title();
         String expectedName = "title";
         assertEquals(expectedName, column.name().value());
     }

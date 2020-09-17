@@ -5,26 +5,25 @@ package spine.test.tools.validate;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.test.tools.validate";
+// Although we do not recommend separating entity states into a separate package (similarly to
+// commands and events), we do this here so that the generated code is put into a separate
+// directory for easier location.
+option java_package = "io.spine.test.tools.validate.entity";
 option java_outer_classname = "EntityProto";
 option java_multiple_files = true;
 
 // An entity type.
-//
-// By default, `id` is required.
-//
 message Project {
     option (entity).kind = ENTITY;
 
+    // The first field of entity states is assumed to be required.
     string id = 1;
 }
 
 // An entity type with a non-required ID.
-//
-// The `id` field is explicitly non-required.
-//
 message Task {
     option (entity).kind = ENTITY;
 
+    // Here the first field (which is assumed to be required) is explicitly set optional.
     string id = 1 [(required) = false];
 }

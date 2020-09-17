@@ -23,7 +23,6 @@ package io.spine.base;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.base.given.AppEngine;
 import io.spine.base.given.AppEngineStandard;
-import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -32,13 +31,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.base.Tests.ENV_KEY_TESTS;
+import static io.spine.base.TestsProperty.TESTS_VALUES;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@DisplayName("Environment utility class should")
+@DisplayName("Environment should")
 @SuppressWarnings("AccessOfSystemProperties")
-class EnvironmentTest extends UtilityClassTest<Environment> {
+class EnvironmentTest {
 
     /*
      * Environment protection START
@@ -50,10 +51,6 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     private static Environment storedEnvironment;
 
     private Environment environment;
-
-    EnvironmentTest() {
-        super(Environment.class);
-    }
 
     @BeforeAll
     static void storeEnvironment() {
@@ -79,73 +76,76 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     void cleanUp() {
         Environment.instance()
                    .reset();
-        System.clearProperty(ENV_KEY_TESTS);
+        System.clearProperty(TestsProperty.KEY);
     }
 
-    @Test
-    @DisplayName("tell that we are under tests if env. variable set to true")
-    void environmentVarTrue() {
-        Tests tests = new Tests();
-        Environment.instance()
-                   .setTo(tests);
+    @Nested
+    @DisplayName("tell that we are under tests if")
+    class UnderTests {
 
-        assertThat(environment.is(Tests.class)).isTrue();
-    }
+        @Test
+        @DisplayName("the env. variable `ENV_TESTS_KEY` set directly")
+        void environmentVar() {
+            TESTS_VALUES.forEach(
+                    value -> {
+                        System.setProperty(TestsProperty.KEY, value);
+                        assertThat(environment.is(Tests.class)).isTrue();
+                    }
+            );
+        }
 
-    @Test
-    @DisplayName("tell that we are under tests if env. variable set to 1")
-    void environmentVar1() {
-        System.setProperty(ENV_KEY_TESTS, "1");
+        @Test
+        @DisplayName("run under known testing framework")
+        void underTestFramework() {
+            // As we run this from under JUnit...
+            assertThat(environment.is(Tests.class)).isTrue();
+        }
 
-        assertThat(environment.is(Tests.class)).isTrue();
-    }
+        @Test
+        @DisplayName("when a deprecated `isTests()` method is used")
+        void underTestFrameworkDeprecated() {
+            @SuppressWarnings("deprecation")
+            boolean isTests = environment.isTests();
+            assertThat(isTests).isTrue();
+        }
 
-    @Test
-    @DisplayName("tell that we are under tests if run under known framework")
-    void underTestFramework() {
-        // As we run this from under JUnit...
-        assertThat(environment.is(Tests.class)).isTrue();
-    }
-
-    @Test
-    @DisplayName("tell that we are not under tests if env set to something else")
-    void environmentVarUnknownValue() {
-        System.setProperty(ENV_KEY_TESTS, "neitherTrueNor1");
-
-        assertThat(environment.is(Production.class)).isTrue();
-    }
-
-    @Test
-    @DisplayName("tell that we are under tests when a deprecated method is used")
-    void underTestFrameworkDeprecated() {
+        @Test
+        @DisplayName("if explicitly set to tests using the deprecated `setToTests()` method")
         @SuppressWarnings("deprecation")
-        boolean isTests = environment.isTests();
-        assertThat(isTests).isTrue();
+        void explicitlySetTrue() {
+            environment.setToTests();
+
+            assertThat(environment.is(Tests.class)).isTrue();
+        }
     }
 
-    @Test
-    @DisplayName("tell that we are under tests if explicitly set to tests using a deprecated method")
-    @SuppressWarnings("deprecation")
-    void explicitlySetTrue() {
-        environment.setToTests();
+    @Nested
+    @DisplayName("tell that we are not under tests if")
+    class NotUnderTests {
 
-        assertThat(environment.is(Tests.class)).isTrue();
-    }
+        @Test
+        @DisplayName("the property value is set to an unsupported value")
+        void environmentVarUnknownValue() {
+            System.setProperty(TestsProperty.KEY, "neitherTrueNor1");
 
-    @Test
-    @DisplayName("tell that we are not under tests when a deprecated method is used")
-    void inProductionUsingDeprecatedMethod() {
-        System.setProperty(ENV_KEY_TESTS, "neitherTrueNor1");
+            assertThat(environment.is(Production.class)).isTrue();
+        }
 
-        @SuppressWarnings("deprecation")
-        boolean isProduction = environment.isProduction();
-        assertThat(isProduction).isTrue();
+        @Test
+        @DisplayName("the deprecated method `isProduction()` is used")
+        void inProductionUsingDeprecatedMethod() {
+            System.setProperty(TestsProperty.KEY, "neitherTrueNor1");
+
+            @SuppressWarnings("deprecation")
+            boolean isProduction = environment.isProduction();
+            assertThat(isProduction).isTrue();
+        }
     }
 
     @Test
     @DisplayName("turn tests mode on")
     void turnTestsOn() {
-        environment.setTo(new Tests());
+        environment.setTo(Tests.class);
 
         assertThat(environment.is(Tests.class)).isTrue();
     }
@@ -153,9 +153,21 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Test
     @DisplayName("turn production mode on")
     void turnProductionOn() {
-        environment.setTo(new Production());
+        environment.setTo(Production.class);
 
         assertThat(environment.is(Production.class)).isTrue();
+    }
+
+    @Test
+    @DisplayName("turn a custom mode on")
+    void turnCustomTypeOn() {
+        environment.register(Staging.class);
+
+        Staging.reset();
+        assertThat(environment.is(Staging.class)).isFalse();
+
+        environment.setTo(Staging.class);
+        assertThat(environment.is(Staging.class)).isTrue();
     }
 
     @Test
@@ -168,21 +180,22 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     }
 
     @Test
-    @DisplayName("clear environment var on rest")
+    @DisplayName("clear the " + TestsProperty.KEY+ " system property on `reset()`")
     void clearOnReset() {
         environment.reset();
 
-        assertNull(System.getProperty(ENV_KEY_TESTS));
+        assertNull(System.getProperty(TestsProperty.KEY));
     }
 
     @Nested
-    @DisplayName("when assigning custom environment types")
+    @DisplayName("when registering custom environment types")
     class CustomEnvTypes {
 
         @Test
         @DisplayName("allow to provide user defined environment types")
         void provideCustomTypes() {
-            register(new Staging(), new Local());
+            environment.register(Staging.class)
+                       .register(Local.class);
 
             // Now that `Environment` knows about `LOCAL`, it should use it as fallback.
             assertThat(environment.is(Local.class)).isTrue();
@@ -192,7 +205,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         @DisplayName("fallback to the `TESTS` environment")
         void fallBack() {
             Environment.instance()
-                       .register(new Travis());
+                       .register(Travis.class);
             assertThat(environment.is(Travis.class)).isFalse();
             assertThat(environment.is(Tests.class)).isTrue();
         }
@@ -201,7 +214,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Test
     @DisplayName("follow assignment-compatibility when determining the type")
     void polymorphicEnv() {
-        register(new AppEngineStandard());
+        environment.register(AppEngineStandard.class);
 
         AppEngineStandard.enable();
         assertThat(environment.is(AppEngine.class)).isTrue();
@@ -217,7 +230,8 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Test
     @DisplayName("detect the current custom environment in presence of custom types")
     void determineUsingTypeInPresenceOfCustom() {
-        register(new Staging(), new Local());
+        environment.register(Local.class)
+                   .register(Staging.class);
 
         assertThat(environment.is(Local.class)).isTrue();
     }
@@ -225,24 +239,53 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
     @Test
     @DisplayName("return the instance of the default environment type")
     void returnInstance() {
-        assertThat(environment.type()).isInstanceOf(Tests.class);
+        assertThat(environment.type()).isSameInstanceAs(Tests.class);
     }
 
     @Test
     @DisplayName("return the instance of a custom environment type")
-    void returnCustomInstnace() {
-        register(new Local(), new Staging());
+    void returnCustomInstance() {
+        environment.register(Local.class)
+                   .register(Staging.class);
 
-        assertThat(environment.type()).isInstanceOf(Local.class);
+        assertThat(environment.type()).isSameInstanceAs(Local.class);
     }
 
-    private static void register(EnvironmentType... types) {
-        for (EnvironmentType type : types) {
-            Environment.instance()
-                       .register(type);
-        }
+    @Test
+    @DisplayName("cache a custom environment type")
+    void cacheCustom() {
+        environment.register(Staging.class);
+
+        Staging.set();
+        assertThat(environment.is(Staging.class)).isTrue();
+
+        Staging.reset();
+        assertThat(new Staging().enabled()).isFalse();
+        assertThat(environment.is(Staging.class)).isTrue();
     }
 
+    /**
+     * This test checks whether {@code Tests} type is preserved and is visible from a different
+     * thread. This is a common case for tests that involve a multithreading environment or
+     * test client-server communication.
+     */
+    @Test
+    @DisplayName("cache the `Tests` environment type")
+    void cacheTests() throws InterruptedException {
+        AtomicBoolean envCached = new AtomicBoolean(false);
+        assertThat(environment.is(Tests.class));
+        Thread thread = new Thread(() -> {
+            TestsProperty.clear();
+            assertThat(environment.is(Tests.class)).isTrue();
+            assertThat(Tests.type().enabled()).isFalse();
+            envCached.set(true);
+        });
+        thread.start();
+        thread.join();
+        assertThat(envCached.get()).isTrue();
+    }
+
+    @Immutable
     static final class Local extends EnvironmentType {
 
         @Override
@@ -252,6 +295,7 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
         }
     }
 
+    @Immutable
     static final class Staging extends EnvironmentType {
 
         static final String STAGING_ENV_TYPE_KEY = "io.spine.base.EnvironmentTest.is_staging";
@@ -261,10 +305,17 @@ class EnvironmentTest extends UtilityClassTest<Environment> {
             return String.valueOf(true)
                          .equalsIgnoreCase(System.getProperty(STAGING_ENV_TYPE_KEY));
         }
+
+        static void set() {
+            System.setProperty(STAGING_ENV_TYPE_KEY, String.valueOf(true));
+        }
+
+        static void reset() {
+            System.clearProperty(STAGING_ENV_TYPE_KEY);
+        }
     }
 
     @Immutable
-    @SuppressWarnings("unused" /* The only variant is used. */)
     static final class Travis extends EnvironmentType {
 
         @Override

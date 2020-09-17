@@ -50,9 +50,7 @@ public final class CompositeGenerator extends CodeGenerator {
     }
 
     /**
-     * Creates a new instance of {@code Builder} for {@code CompositeGenerator} instances.
-     *
-     * @return new instance of {@code Builder}
+     * Creates a new builder for the instances of this type.
      */
     public static Builder builder() {
         return new Builder();
@@ -78,9 +76,7 @@ public final class CompositeGenerator extends CodeGenerator {
         }
 
         /**
-         * Creates a new instance of {@code CompositeGenerator}.
-         *
-         * @return new instance of {@code CompositeGenerator}
+         * Creates a new instance of {@link CompositeGenerator}.
          */
         public CompositeGenerator build() {
             return new CompositeGenerator(this);
