@@ -26,6 +26,8 @@ import io.spine.annotation.SPI;
 /**
  * A parameter of a {@link RecordQuery}.
  *
+ * @param <R>
+ *         the type of the queried record
  * @param <V>
  *         the type of the record field value to use in querying
  */
