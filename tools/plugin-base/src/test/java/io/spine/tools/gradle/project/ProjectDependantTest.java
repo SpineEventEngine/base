@@ -39,9 +39,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
-import org.junitpioneer.jupiter.TempDirectory.TempDir;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
 import java.util.Set;
@@ -55,7 +53,6 @@ import static io.spine.tools.gradle.ConfigurationName.testRuntimeClasspath;
 import static java.lang.String.format;
 
 @SuppressWarnings("DuplicateStringLiteralInspection") // Test display names duplication.
-@ExtendWith(TempDirectory.class)
 @DisplayName("DependantProject should")
 class ProjectDependantTest {
 

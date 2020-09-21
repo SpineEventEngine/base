@@ -44,9 +44,7 @@ import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
-import org.junitpioneer.jupiter.TempDirectory.TempDir;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,7 +72,6 @@ import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.gradle.ModelCompilerTaskName.annotateProto;
 
 @DisplayName("ProtoAnnotatorPlugin should")
-@ExtendWith(TempDirectory.class)
 class ProtoAnnotatorPluginTest {
 
     private static final String PROJECT_NAME = "annotator-plugin-test";

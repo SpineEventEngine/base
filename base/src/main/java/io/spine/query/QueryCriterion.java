@@ -31,6 +31,15 @@ import static io.spine.query.ComparisonOperator.LESS_THAN;
 
 /**
  * A restriction to a value of a record column applied when querying the records.
+ *
+ * @param <R>
+ *         the type of the record
+ * @param <V>
+ *         the type of the values of the record column
+ * @param <C>
+ *         the type of the column to which this restriction is put
+ * @param <B>
+ *         the type of the query builder, in scope of which this restiction is set
  */
 abstract class QueryCriterion<R extends Message,
                               V,

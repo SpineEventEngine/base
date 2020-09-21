@@ -201,30 +201,12 @@ public final class Extension extends GradleExtension {
     }
 
     /**
-     * Resolves the directory which contains production Dart code.
-     */
-    Path libDir() {
-        return getLibDir().get()
-                          .getAsFile()
-                          .toPath();
-    }
-
-    /**
      * The directory which contains test Dart code.
      *
      * <p>Defaults to {@code $projectDir/test}.
      */
     public DirectoryProperty getTestDir() {
         return testDir;
-    }
-
-    /**
-     * Resolves the directory which contains test Dart code.
-     */
-    Path testDir() {
-        return getTestDir().get()
-                           .getAsFile()
-                           .toPath();
     }
 
     /**
@@ -239,32 +221,15 @@ public final class Extension extends GradleExtension {
     }
 
     /**
-     * Resolves the directory which contains the generated production Dart files.
-     */
-    Path mainGeneratedDir() {
-        return getMainGeneratedDir().get()
-                                    .getAsFile()
-                                    .toPath();
-    }
-
-    /**
      * The directory which contains the generated test Dart files.
      *
      * <p>Must be a subdirectory of {@link #getTestDir() testDir}.
      *
      * <p>Defaults to the {@code testDir}.
      */
+    @SuppressWarnings("unused") // For possible future use.
     public DirectoryProperty getTestGeneratedDir() {
         return testGeneratedDir;
-    }
-
-    /**
-     * Resolves the directory which contains the generated test Dart files.
-     */
-    Path testGeneratedDir() {
-        return getTestGeneratedDir().get()
-                                    .getAsFile()
-                                    .toPath();
     }
 
     ImmutableList<ExternalModule> modules() {
@@ -275,22 +240,6 @@ public final class Extension extends GradleExtension {
             modules.add(module);
         }
         return modules.build();
-    }
-
-    /**
-     * Finalizes all configurable values.
-     *
-     * <p>If a user tries to configure the extension after this method is called, the Gradle build
-     * will fail with an error.
-     */
-    void finalizeAll() {
-        this.libDir.finalizeValue();
-        this.testDir.finalizeValue();
-        this.mainGeneratedDir.finalizeValue();
-        this.testGeneratedDir.finalizeValue();
-        this.mainDescriptorSet.finalizeValue();
-        this.testDescriptorSet.finalizeValue();
-        this.generatedDir.finalizeValue();
     }
 
     private File file(Property<Object> property) {

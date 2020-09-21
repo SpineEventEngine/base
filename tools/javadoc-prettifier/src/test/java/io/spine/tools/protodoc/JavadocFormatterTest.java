@@ -25,8 +25,7 @@ import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,9 +38,7 @@ import static io.spine.tools.protodoc.BacktickFormatting.wrapWithCodeTag;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junitpioneer.jupiter.TempDirectory.TempDir;
 
-@ExtendWith(TempDirectory.class)
 @DisplayName("JavadocFormatter should")
 class JavadocFormatterTest {
 

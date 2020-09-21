@@ -199,6 +199,11 @@ public final class Invokables {
 
     /**
      * A function that may throw a reflection-related error on invocation.
+     *
+     * @param <T>
+     *         function input type
+     * @param <R>
+     *         function output type
      */
     private interface ReflectiveFunction<T, R> {
 

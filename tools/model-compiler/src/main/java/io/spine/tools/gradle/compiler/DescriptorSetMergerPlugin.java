@@ -35,6 +35,8 @@ import java.io.File;
 
 import static io.spine.tools.gradle.ConfigurationName.runtimeClasspath;
 import static io.spine.tools.gradle.ConfigurationName.testRuntimeClasspath;
+import static io.spine.tools.gradle.JavaTaskName.processResources;
+import static io.spine.tools.gradle.JavaTaskName.processTestResources;
 import static io.spine.tools.gradle.ModelCompilerTaskName.mergeDescriptorSet;
 import static io.spine.tools.gradle.ModelCompilerTaskName.mergeTestDescriptorSet;
 import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
@@ -62,6 +64,7 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
         Buildable dependencies = configuration.getAllDependencies();
         GradleTask task = newTask(taskName(tests), createMergingAction(tests))
                 .insertAfterTask(generateProtoTaskName(tests))
+                .insertBeforeTask(processResourcesTaskName(tests))
                 .applyNowTo(project);
         task.getTask().dependsOn(dependencies);
     }
@@ -102,6 +105,12 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
         return tests
                ? generateTestProto
                : generateProto;
+    }
+
+    private static TaskName processResourcesTaskName(boolean tests) {
+        return tests
+               ? processTestResources
+               : processResources;
     }
 
     private static File descriptorSet(Project project, boolean tests) {

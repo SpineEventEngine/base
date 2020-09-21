@@ -106,8 +106,10 @@ class TimeTest {
                 " within a single point of wall-clock time")
         void differentValuesForTheSameTime() {
             Instant now = Instant.now();
-            assertThat(IncrementalNanos.valueForTime(now))
-                    .isLessThan(IncrementalNanos.valueForTime(now));
+            long seconds = now.getEpochSecond();
+            int nanos = now.getNano();
+            assertThat(IncrementalNanos.valueForTime(seconds, nanos))
+                    .isLessThan(IncrementalNanos.valueForTime(seconds, nanos));
         }
 
         @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -116,8 +118,11 @@ class TimeTest {
         void resetsNanosForNewInstant() {
             Instant now = Instant.now();
             Instant oneMsLater = now.plus(1, ChronoUnit.MILLIS);
-            IncrementalNanos.valueForTime(now); // Ignore this value.
-            int value = IncrementalNanos.valueForTime(oneMsLater);
+            IncrementalNanos
+                    .valueForTime(now.getEpochSecond(), now.getNano()); // Ignore this value.
+            long oneMsLaterSeconds = oneMsLater.getEpochSecond();
+            int oneMsLaterNanos = oneMsLater.getNano();
+            int value = IncrementalNanos.valueForTime(oneMsLaterSeconds, oneMsLaterNanos);
             assertThat(value).isEqualTo(0);
         }
     }

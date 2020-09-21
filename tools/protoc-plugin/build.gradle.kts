@@ -19,7 +19,6 @@
  */
 
 import io.spine.gradle.internal.Deps
-import java.nio.file.Files
 
 group = "io.spine.tools"
 
@@ -51,42 +50,4 @@ tasks.jar {
             else -> zipTree(it)
         }
     })
-}
-
-val shellRunner = injectVersion(file("plugin_runner.sh"))
-val batchRunner = injectVersion(file("plugin_runner.bat"))
-
-artifacts {
-    archives(shellRunner) {
-        classifier = "script"
-    }
-    archives(batchRunner) {
-        classifier = "script"
-    }
-}
-
-/**
- * Inserts the current Spine version into the given file replacing the {@code {@literal {version}}}
- * string.
- *
- * <p>This insertion point is conventional for the runner scripts for the Spine protoc plugin.
- *
- * <p>Before the runner script is published, the version must be injected into it.
- *
- * <p>The standard Grade filtering mechanism (involving the Copy task) cannot be used in this case
- * since the injection should be performed on the configuration stage.
- *
- * @param scriptFile the script file to modify
- * @return the new script file to publish
- */
-fun injectVersion(scriptFile: File): File {
-    var text = scriptFile.readText()
-    text = text.replace("{version}", project.version as String)
-    val extension = when {
-        scriptFile.name.endsWith(".sh") -> ".sh"
-        else -> ".bat"
-    }
-    val tempFile = Files.createTempFile("build", extension)
-    tempFile.toFile().writeText(text)
-    return project.file(tempFile.toAbsolutePath())
 }

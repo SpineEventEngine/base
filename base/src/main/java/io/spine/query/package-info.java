@@ -304,7 +304,7 @@
  *
  * <pre>
  * // The column presumably defined as a custom column for querying.
- * class ArchivedColumn extends CustomColumn<EntityWithLifecycle, Boolean> {
+ * class ArchivedColumn extends{@literal CustomColumn<EntityWithLifecycle, Boolean>} {
  *
  *   {@literal @Override }
  *    public ColumnName name() {

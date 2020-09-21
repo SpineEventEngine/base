@@ -19,14 +19,12 @@
  */
 
 /**
- * This package provides classes and interfaces for generating validation code.
- *
- * <p><a href = "https://github.com/square/javapoet">JavaPoet</a> library is used for
- * Java code generation.
+ * Contains classes making the generated Java classes implement custom interfaces.
  */
+
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.compiler.validation;
+package io.spine.tools.protoc.iface;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

@@ -45,6 +45,9 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * Wrapper of an identifier value.
+ *
+ * @param <I>
+ *         type of the ID
  */
 @SuppressWarnings("ClassWithTooManyMethods")
 @Internal
