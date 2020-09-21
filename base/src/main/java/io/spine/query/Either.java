@@ -27,6 +27,8 @@ import java.util.function.UnaryOperator;
 /**
  * A lambda serving to fill the current predicate {@linkplain QueryBuilder query builders}
  * with the parameters joined in {@linkplain LogicalOperator#OR disjunction}.
+ *
+ * @param <B> the type of the query builder
  */
 @Immutable
 @FunctionalInterface
