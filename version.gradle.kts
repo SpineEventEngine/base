@@ -34,7 +34,7 @@
 /**
  * The version of this library.
  */
-val base = "2.0.0-jdk8.SNAPSHOT.4"
+val base = "2.0.0-jdk8.SNAPSHOT.5"
 
 
 project.extra.apply {
