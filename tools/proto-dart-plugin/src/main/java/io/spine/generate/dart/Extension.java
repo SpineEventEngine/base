@@ -36,6 +36,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Maps.newHashMap;
 import static java.util.stream.Collectors.toList;
 
@@ -90,7 +91,7 @@ public final class Extension extends GradleExtension {
      * }</pre>
      */
     @SuppressWarnings("PublicField" /* Expose fields as a Gradle extension */)
-    public Map<String, List<String>> modules = newHashMap();
+    public final Map<String, List<String>> modules = newHashMap();
 
     private final Project project;
 
@@ -233,13 +234,11 @@ public final class Extension extends GradleExtension {
     }
 
     ImmutableList<ExternalModule> modules() {
-        ImmutableList.Builder<ExternalModule> modules = ImmutableList.builder();
-        for (String moduleName : this.modules.keySet()) {
-            List<DirectoryPattern> patterns = patterns(this.modules.get(moduleName));
-            ExternalModule module = new ExternalModule(moduleName, patterns);
-            modules.add(module);
-        }
-        return modules.build();
+        return modules
+                .entrySet()
+                .stream()
+                .map(kv -> new ExternalModule(kv.getKey(), patterns(kv.getValue())))
+                .collect(toImmutableList());
     }
 
     private File file(Property<Object> property) {
@@ -254,6 +253,7 @@ public final class Extension extends GradleExtension {
 
     @Override
     protected DefaultDartProject defaultProject(Project project) {
-        return DefaultDartProject.at(project.getProjectDir().toPath());
+        return DefaultDartProject.at(project.getProjectDir()
+                                            .toPath());
     }
 }
