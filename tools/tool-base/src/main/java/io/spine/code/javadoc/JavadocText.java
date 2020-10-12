@@ -33,12 +33,7 @@ public class JavadocText extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
 
-    /*
-      TODO:2017-03-24:dmytro.grankin: Replace hardcoded line separator by system-independent
-      after https://github.com/square/javapoet/issues/552 is fixed.
-    */
-    @SuppressWarnings("HardcodedLineSeparator")
-    private static final String LINE_SEPARATOR = "\n";
+    private static final String LINE_SEPARATOR = System.lineSeparator();
 
     private JavadocText(String escapedText) {
         super(escapedText);
