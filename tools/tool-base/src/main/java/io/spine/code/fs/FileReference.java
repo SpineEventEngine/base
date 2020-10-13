@@ -72,8 +72,12 @@ public final class FileReference extends StringTypeValue {
     public DirectoryReference directory() {
         String nonRelativePath = withoutRelative();
         int fileNameSeparator = nonRelativePath.lastIndexOf(IMPORT_PATH_SEPARATOR);
-        String directory = nonRelativePath.substring(0, fileNameSeparator);
-        return DirectoryReference.of(directory);
+        if (fileNameSeparator < 0) {
+            return DirectoryReference.currentDir();
+        } else {
+            String directory = nonRelativePath.substring(0, fileNameSeparator);
+            return DirectoryReference.of(directory);
+        }
     }
 
     /**

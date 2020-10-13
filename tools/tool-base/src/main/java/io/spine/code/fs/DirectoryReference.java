@@ -24,8 +24,6 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import io.spine.value.StringTypeValue;
 
-import java.util.List;
-
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -37,6 +35,8 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 public final class DirectoryReference extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
+
+    private static final DirectoryReference CURRENT = new DirectoryReference("");
 
     private DirectoryReference(String value) {
         super(value);
@@ -55,9 +55,16 @@ public final class DirectoryReference extends StringTypeValue {
     }
 
     /**
+     * Obtains the reference to the current directory.
+     */
+    public static DirectoryReference currentDir() {
+        return CURRENT;
+    }
+
+    /**
      * Obtains all directory names composing this reference.
      */
-    public List<String> elements() {
+    public ImmutableList<String> elements() {
         Iterable<String> elements = Splitter.on(FileReference.separator())
                                             .split(value());
         return ImmutableList.copyOf(elements);

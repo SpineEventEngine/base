@@ -21,6 +21,7 @@
 package io.spine.code.fs.js;
 
 import com.google.common.testing.NullPointerTester;
+import io.spine.code.fs.DirectoryReference;
 import io.spine.code.fs.FileReference;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -62,5 +63,14 @@ class FileReferenceTest {
         FileReference fileReference = FileReference.of("./../../foo/bar/f.js");
         assertEquals("foo/bar", fileReference.directory()
                                              .value());
+    }
+
+    @Test
+    @DisplayName("obtain the empty directory path")
+    void emptyDirectory() {
+        FileReference file = FileReference.of("./neighbour.txt");
+        DirectoryReference directory = file.directory();
+        assertThat(directory.elements())
+                .containsExactly("");
     }
 }
