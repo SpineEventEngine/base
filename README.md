@@ -47,7 +47,7 @@ builds: `smoke-tests` and `base-validating-builders`. Thus, here we have `./pull
 scripts which do whatever their `config` counterparts do and also copy `buildSrc` into the two
 included build directories.
 
-It is always recommended to run `./pull` instead of `./config/pull`.
+It is always recommended running `./pull` instead of `./config/pull`.
 
 
 [travis]: https://travis-ci.com/SpineEventEngine/base
