@@ -37,9 +37,12 @@ dependencies {
 }
 
 tasks.jar {
-    dependsOn(":protoc-api:jar",
-              ":tool-base:jar",
-              ":validation-generator:jar")
+    dependsOn(
+            ":protoc-api:jar",
+            ":tools-api:jar",
+            ":tool-base:jar",
+            ":validation-generator:jar"
+    )
 
     manifest {
         attributes(mapOf("Main-Class" to "io.spine.tools.protoc.Plugin"))
@@ -47,7 +50,7 @@ tasks.jar {
     // Assemble "Fat-JAR" artifact containing all the dependencies.
     from(configurations.runtimeClasspath.get().map {
         when {
-            it.isDirectory() -> it
+            it.isDirectory -> it
             else -> zipTree(it)
         }
     })
