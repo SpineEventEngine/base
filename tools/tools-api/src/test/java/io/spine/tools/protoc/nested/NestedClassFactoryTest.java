@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.method;
+package io.spine.tools.protoc.nested;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
@@ -32,25 +32,25 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Tests.nullRef;
 
 /**
- * With this unit test we are fixating the {@link MethodFactory} contract.
+ * With this unit test we are fixating the {@link NestedClassFactory} contract.
  */
-@DisplayName("`MethodFactory` should")
-final class MethodFactoryTest {
+@DisplayName("`NestedClassFactory` should")
+final class NestedClassFactoryTest {
 
     @DisplayName("obey the defined contract")
     @Test
     void obeyTheContract() {
-        assertThat(new TestMethodFactory().createFor(nullRef())).isEmpty();
+        assertThat(new TestNestedClassFactory().createFor(nullRef())).isEmpty();
     }
 
     @Immutable
-    public static class TestMethodFactory implements MethodFactory {
+    public static final class TestNestedClassFactory implements NestedClassFactory {
 
-        public TestMethodFactory() {
+        public TestNestedClassFactory() {
         }
 
         @Override
-        public List<GeneratedMethod> createFor(MessageType messageType) {
+        public List<GeneratedNestedClass> createFor(MessageType messageType) {
             return ImmutableList.of();
         }
     }
