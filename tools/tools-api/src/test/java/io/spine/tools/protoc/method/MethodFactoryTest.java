@@ -18,14 +18,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.protoc.method;
+
+import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.type.MessageType;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.Tests.nullRef;
+
 /**
- * Contains classes making the generated Java classes implement custom interfaces.
+ * With this unit test we are fixating {@link MethodFactory} contract.
  */
+@DisplayName("`MethodFactory` should")
+final class MethodFactoryTest {
 
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.protoc.iface;
+    @DisplayName("have specific contract")
+    @Test
+    void shouldGenerateNewMethod() {
+        assertThat(new TestMethodFactory().createFor(nullRef())).isEmpty();
+    }
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    @Immutable
+    public static class TestMethodFactory implements MethodFactory {
 
-import javax.annotation.ParametersAreNonnullByDefault;
+        public TestMethodFactory() {
+        }
+
+        @Override
+        public List<GeneratedMethod> createFor(MessageType messageType) {
+            return ImmutableList.of();
+        }
+    }
+}

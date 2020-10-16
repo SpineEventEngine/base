@@ -22,6 +22,7 @@ group = "io.spine.tools"
 
 dependencies {
     implementation(project(":base"))
+    implementation(project(":tools-api"))
     testImplementation(project(":testlib"))
 }
 

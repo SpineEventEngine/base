@@ -24,6 +24,7 @@ group = "io.spine.tools"
 
 dependencies {
     implementation(project(":tool-base"))
+    implementation(project(":tools-api"))
     implementation(project(":protoc-api"))
     implementation(project(":validation-generator"))
     implementation(Deps.gen.javaPoet)
