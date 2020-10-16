@@ -18,34 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "spine-base"
+group = "io.spine.tools"
 
-include("base")
-
-include("testlib")
-
-/**
- * Includes a module and sets custom project directory to it.
- */
-fun module(name: String) {
-    include(name)
-    project(":$name").projectDir = File("$rootDir/tools/$name")
+dependencies {
+    implementation(project(":base"))
+    testImplementation(project(":testlib"))
 }
-
-module("tool-base")
-module("tools-api")
-module("plugin-base")
-module("plugin-testlib")
-
-module("mute-logging")
-module("errorprone-checks")
-module("javadoc-filter")
-module("javadoc-prettifier")
-module("model-compiler")
-
-module("proto-dart-plugin")
-module("proto-js-plugin")
-
-module("protoc-api")
-module("validation-generator")
-module("protoc-plugin")
