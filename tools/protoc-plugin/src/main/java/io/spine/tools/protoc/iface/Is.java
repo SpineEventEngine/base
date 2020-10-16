@@ -36,7 +36,7 @@ import java.util.Optional;
 @SuppressWarnings("NewClassNamingConvention")
 final class Is extends MessageOption<IsOption> {
 
-    Is() {
+    private Is() {
         super(OptionsProto.is);
     }
 
