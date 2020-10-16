@@ -22,7 +22,6 @@ package io.spine.tools.protoc;
 
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
-import io.spine.tools.protoc.method.MethodFactory;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -50,7 +49,7 @@ public final class GeneratedMethods extends GeneratedConfigurations<AddMethods> 
      * <p>The statement in the example above configures all message types declared in a file which
      * name ends with {@code events.proto} to use {@code io.spine.code.CustomMethodFactory} as
      * a custom method factory. It is expected that {@code io.spine.code.CustomMethodFactory} is
-     * an implementation of the {@link MethodFactory} interface.
+     * an implementation of the {@code io.spine.tools.protoc.method.MethodFactory} interface.
      *
      * Example of a possible implementation:
      * <pre>
