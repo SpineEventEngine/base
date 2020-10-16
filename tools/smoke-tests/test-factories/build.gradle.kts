@@ -32,5 +32,5 @@ val spineVersion: String by extra
 
 dependencies {
     implementation(Deps.gen.javaPoet)
-    implementation("io.spine.tools:tools-api:$spineVersion")
+    implementation("io.spine.tools:spine-tools-api:$spineVersion")
 }
