@@ -49,8 +49,8 @@ import static com.google.errorprone.matchers.Description.NO_MATCH;
  * is what the user wants in most cases. If, however, for some reason, the validation is unwanted,
  * the user in encouraged to use {@code buildPartial()} in order to make the intent explicit.
  *
- * @see <a href="https://spine.io/docs/guides/validation.html#java-validation-api">Validation Guide
- *        </a> for more info on model validation in Java.
+ * @see <a href="https://spine.io/docs/guides/validation.html">Validation Guide</a>
+ *      for more info on model validation in Java.
  */
 @AutoService(BugChecker.class)
 @BugPattern(
