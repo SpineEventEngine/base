@@ -18,40 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.gradle.internal.Deps
+package io.spine.tools.protoc.iface;
 
-group = "io.spine.tools"
+import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.code.proto.MessageOption;
+import io.spine.option.IsOption;
+import io.spine.option.OptionsProto;
 
-dependencies {
-    implementation(project(":tool-base"))
-    implementation(project(":tools-api"))
-    implementation(project(":protoc-api"))
-    implementation(project(":validation-generator"))
-    implementation(Deps.gen.javaPoet)
-    implementation(Deps.gen.javaxAnnotation)
+import java.util.Optional;
 
-    testImplementation(project(":base"))
-    testImplementation(project(":testlib"))
-    testImplementation(project(":mute-logging"))
-    Deps.test.truth.forEach { testImplementation(it) }
-}
+/**
+ * For a given message, declares if the message is of the specified Java type and
+ * the generation of marker interfaces is enabled.
+ */
+@Immutable
+@SuppressWarnings("NewClassNamingConvention")
+final class Is extends MessageOption<IsOption> {
 
-tasks.jar {
-    dependsOn(
-            ":protoc-api:jar",
-            ":tools-api:jar",
-            ":tool-base:jar",
-            ":validation-generator:jar"
-    )
-
-    manifest {
-        attributes(mapOf("Main-Class" to "io.spine.tools.protoc.Plugin"))
+    private Is() {
+        super(OptionsProto.is);
     }
-    // Assemble "Fat-JAR" artifact containing all the dependencies.
-    from(configurations.runtimeClasspath.get().map {
-        when {
-            it.isDirectory -> it
-            else -> zipTree(it)
-        }
-    })
+
+    static Optional<IsOption> from(Descriptor message) {
+        return new Is().valueFrom(message);
+    }
 }

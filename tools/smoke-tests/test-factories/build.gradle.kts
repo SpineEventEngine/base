@@ -28,6 +28,9 @@ plugins {
     java
 }
 
+val spineVersion: String by extra
+
 dependencies {
     implementation(Deps.gen.javaPoet)
+    implementation("io.spine.tools:spine-tools-api:$spineVersion")
 }
