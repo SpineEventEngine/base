@@ -40,7 +40,7 @@ final class NestedClassFactoryTest {
     @DisplayName("obey the defined contract")
     @Test
     void obeyTheContract() {
-        assertThat(new TestNestedClassFactory().createFor(nullRef())).isEmpty();
+        assertThat(new TestNestedClassFactory().generateClassesFor(nullRef())).isEmpty();
     }
 
     @Immutable
@@ -50,7 +50,7 @@ final class NestedClassFactoryTest {
         }
 
         @Override
-        public List<GeneratedNestedClass> createFor(MessageType messageType) {
+        public List<GeneratedNestedClass> generateClassesFor(MessageType messageType) {
             return ImmutableList.of();
         }
     }
