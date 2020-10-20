@@ -18,39 +18,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.method;
-
-import com.google.common.collect.ImmutableList;
-import com.google.errorprone.annotations.Immutable;
-import io.spine.type.MessageType;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
 /**
- * With this unit test we are fixating {@link MethodFactory} contract.
+ * This package provides extension point for the Protoc plugins and derived custom code generation
+ * utilities.
+ *
+ * <p>One who's willing to extend the generated Protobuf classes should implement provided
+ * interfaces.
  */
-@DisplayName("MethodFactory should")
-final class MethodFactoryTest {
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.protoc;
 
-    @DisplayName("have specific contract")
-    @Test
-    void shouldGenerateNewMethod() {
-        assertThat(new TestMethodFactory().generateMethodsFor(null)).isEmpty();
-    }
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    @Immutable
-    public static class TestMethodFactory implements MethodFactory {
-
-        public TestMethodFactory() {
-        }
-
-        @Override
-        public List<GeneratedMethod> generateMethodsFor(MessageType messageType) {
-            return ImmutableList.of();
-        }
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

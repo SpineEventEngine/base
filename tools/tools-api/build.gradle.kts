@@ -18,13 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * This package provides extension point for the Protoc plugins.
- */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.protoc;
+group = "io.spine.tools"
 
-import com.google.errorprone.annotations.CheckReturnValue;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+dependencies {
+    implementation(project(":base"))
+    testImplementation(project(":testlib"))
+}

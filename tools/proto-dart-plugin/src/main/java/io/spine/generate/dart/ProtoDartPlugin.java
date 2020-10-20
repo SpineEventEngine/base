@@ -34,7 +34,6 @@ import org.gradle.api.tasks.Copy;
 import java.io.File;
 import java.nio.file.Path;
 
-import static io.spine.generate.dart.SourceFile.isGeneratedDart;
 import static io.spine.tools.gradle.BaseTaskName.assemble;
 import static io.spine.tools.gradle.ProtoDartTaskName.copyGeneratedDart;
 import static io.spine.tools.gradle.ProtoDartTaskName.copyTestGeneratedDart;
@@ -112,10 +111,6 @@ public final class ProtoDartPlugin extends SpinePlugin {
     }
 
     private void resolveImports(File sourceFile, Extension extension) {
-        Path asPath = sourceFile.toPath();
-        if (!isGeneratedDart(asPath)) {
-            return;
-        }
         _debug().log("Resolving imports in file %s", sourceFile);
         SourceFile file = SourceFile.read(sourceFile.toPath());
         Path libPath = extension.getLibDir()
