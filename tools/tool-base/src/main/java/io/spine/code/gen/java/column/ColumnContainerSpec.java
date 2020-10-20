@@ -154,8 +154,9 @@ public final class ColumnContainerSpec implements GeneratedTypeSpec {
                 .addModifiers(PUBLIC, STATIC)
                 .returns(definitionsReturnType);
         ClassName setName = ClassName.get(HashSet.class);
+        TypeName parameterizedSetName = columnHashSetOfType(messageType);
         builder.addStatement("$T result = new $T<>()",
-                             setName, setName);
+                             parameterizedSetName, setName);
         for (MethodSpec methodSpec : columns) {
             builder.addStatement("result.add($N())", methodSpec);
         }
@@ -166,15 +167,21 @@ public final class ColumnContainerSpec implements GeneratedTypeSpec {
     }
 
     private static TypeName immutableColumnSetOfType(MessageType type) {
+        return paramdColSetOf(type, ClassName.get(ImmutableSet.class));
+    }
+
+    private static TypeName columnHashSetOfType(MessageType type) {
+        return paramdColSetOf(type, ClassName.get(HashSet.class));
+    }
+
+    private static TypeName paramdColSetOf(MessageType type, ClassName setType) {
         JavaPoetName entityColumnType = JavaPoetName.of(EntityColumn.class);
         JavaPoetName messageTypeName = JavaPoetName.of(type);
         ParameterizedTypeName parameterizedColumn =
                 ParameterizedTypeName.get(entityColumnType.className(),
                                           messageTypeName.className(),
                                           WildcardTypeName.subtypeOf(Object.class));
-
-        ParameterizedTypeName result = ParameterizedTypeName.get(ClassName.get(ImmutableSet.class),
-                                                                 parameterizedColumn);
+        ParameterizedTypeName result = ParameterizedTypeName.get(setType, parameterizedColumn);
         return result;
     }
 
