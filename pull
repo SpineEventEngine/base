@@ -20,6 +20,11 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
+cd ./config || exit
+echo "Switching the pointer of the 'config' submodule to its '2.x-jdk8-master'."
+git checkout 2.x-jdk8-master
+
+cd ..
 ./config/pull
 
 echo "Copying buildSrc to base-validating-builders"
