@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.com/SpineEventEngine/base.svg?branch=master)](https://travis-ci.com/SpineEventEngine/base) &nbsp;
-[![codecov](https://codecov.io/gh/SpineEventEngine/base/branch/master/graph/badge.svg)](https://codecov.io/gh/SpineEventEngine/base) &nbsp;
-[![license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0)
+[![Build Status][travis-badge]][travis] &nbsp; 
+[![codecov][codecov-badge]][codecov] &nbsp;
+[![license][license-badge]][license]
 
 # This is 2.x `master` branch!
 
@@ -72,4 +72,12 @@ builds: `smoke-tests` and `base-validating-builders`. Thus, here we have `./pull
 scripts which do whatever their `config` counterparts do and also copy `buildSrc` into the two
 included build directories.
 
-It is always recommended to run `./pull` instead of `./config/pull`.
+It is always recommended running `./pull` instead of `./config/pull`.
+
+
+[travis]: https://travis-ci.com/SpineEventEngine/base
+[travis-badge]: https://travis-ci.com/SpineEventEngine/base.svg?branch=master
+[codecov]: https://codecov.io/gh/SpineEventEngine/base
+[codecov-badge]: https://codecov.io/gh/SpineEventEngine/base/branch/master/graph/badge.svg
+[license-badge]: https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat
+[license]: http://www.apache.org/licenses/LICENSE-2.0

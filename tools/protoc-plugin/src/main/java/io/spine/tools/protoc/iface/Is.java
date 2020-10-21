@@ -18,27 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
- *
- * This version file adheres to the contract of the
- * [publishing application](https://github.com/SpineEventEngine/publishing).
- *
- * When changing the version declarations or adding new ones, make sure to change
- * the publishing application accordingly.
- */
+package io.spine.tools.protoc.iface;
+
+import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.code.proto.MessageOption;
+import io.spine.option.IsOption;
+import io.spine.option.OptionsProto;
+
+import java.util.Optional;
 
 /**
- * The version of this library.
+ * For a given message, declares if the message is of the specified Java type and
+ * the generation of marker interfaces is enabled.
  */
-val base = "2.0.0-jdk8.SNAPSHOT.7"
+@Immutable
+@SuppressWarnings("NewClassNamingConvention")
+final class Is extends MessageOption<IsOption> {
 
+    private Is() {
+        super(OptionsProto.is);
+    }
 
-project.extra.apply {
-    this["spineVersion"] = base
-    this["spineBaseVersion"] = base // Used by `filter-internal-javadoc.gradle`.
-    this["versionToPublish"] = base
+    static Optional<IsOption> from(Descriptor message) {
+        return new Is().valueFrom(message);
+    }
 }

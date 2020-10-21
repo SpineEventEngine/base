@@ -33,6 +33,7 @@ fun module(name: String) {
 }
 
 module("tool-base")
+module("tools-api")
 module("plugin-base")
 module("plugin-testlib")
 

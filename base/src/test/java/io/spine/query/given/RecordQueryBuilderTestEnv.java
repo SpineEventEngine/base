@@ -27,6 +27,7 @@ import io.spine.query.ComparisonOperator;
 import io.spine.query.Manufacturer;
 import io.spine.query.ManufacturerId;
 import io.spine.query.RecordColumn;
+import io.spine.query.RecordColumns;
 import io.spine.query.RecordQuery;
 import io.spine.query.RecordQueryBuilder;
 import io.spine.query.Subject;
@@ -37,6 +38,7 @@ import java.util.stream.IntStream;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.query.RecordColumn.create;
 import static io.spine.testing.TestValues.randomString;
 import static io.spine.testing.Tests.nullRef;
 
@@ -138,20 +140,19 @@ public final class RecordQueryBuilderTestEnv {
     /**
      * Defines the columns for {@link Manufacturer} message record.
      */
+    @RecordColumns(ofType = Manufacturer.class)
     public static final class ManufacturerColumns {
 
         public static final RecordColumn<Manufacturer, String> isin =
-                new RecordColumn<>("isin", String.class, (r) -> r.getIsin()
-                                                                 .getValue());
+                create("isin", String.class, (r) -> r.getIsin()
+                                                     .getValue());
 
-        public static final RecordColumn<Manufacturer, Timestamp> whenFounded =
-                new RecordColumn<>("when_founded", Timestamp.class, Manufacturer::getWhenFounded);
+        public static final RecordColumn<Manufacturer, Timestamp> when_founded =
+                create("when_founded", Timestamp.class, Manufacturer::getWhenFounded);
 
-        public static final RecordColumn<Manufacturer, Boolean> isTraded =
-                new RecordColumn<>("is_traded",
-                                   Boolean.class,
-                                   (r) -> !r.getStockSymbolList()
-                                            .isEmpty());
+        public static final RecordColumn<Manufacturer, Boolean> is_traded =
+                create("is_traded", Boolean.class, (r) -> !r.getStockSymbolList()
+                                                            .isEmpty());
 
         private ManufacturerColumns() {
         }

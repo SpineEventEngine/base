@@ -18,29 +18,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.iface;
-
-import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.Descriptors.Descriptor;
-import io.spine.code.proto.MessageOption;
-import io.spine.option.IsOption;
-import io.spine.option.OptionsProto;
-
-import java.util.Optional;
-
 /**
- * For a given message, declares if the message is of the specified Java type and
- * the generation of marker interfaces is enabled.
+ * This package provides extension point for the Protoc plugins and derived custom code generation
+ * utilities.
+ *
+ * <p>One who's willing to extend the generated Protobuf classes should implement provided
+ * interfaces.
  */
-@Immutable
-@SuppressWarnings("NewClassNamingConvention")
-final class Is extends MessageOption<IsOption> {
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.protoc;
 
-    Is() {
-        super(OptionsProto.is);
-    }
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    static Optional<IsOption> from(Descriptor message) {
-        return new Is().valueFrom(message);
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;
