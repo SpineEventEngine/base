@@ -42,7 +42,7 @@ import java.lang.annotation.Target;
  *
  *     // ...
  *
- * {@literal    @RecordColumns(ofType = ProjectView.class)                                           }
+ * {@literal    @RecordColumns(ofType = ProjectView.class)                                     }
  *     public static class ProjectViewColumns {
  *
  * {@literal       public static final RecordColumn<ProjectView, ProjectName> project_name =   }
