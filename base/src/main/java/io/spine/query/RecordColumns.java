@@ -37,7 +37,6 @@ import java.lang.annotation.Target;
  * <p>Let's review an example:
  *
  * <pre>
- *
  *     import static io.spine.query.RecordColumn.create;
  *
  *     // ...
@@ -67,7 +66,6 @@ import java.lang.annotation.Target;
  * <p>Here is how it plays together with a {@code RecordQuery}:
  *
  * <pre>
- *
  *     import static com.acme.ProjectViewColumns.project_name;
  *
  *     // ...
