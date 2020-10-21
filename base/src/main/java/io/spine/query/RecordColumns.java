@@ -42,7 +42,7 @@ import java.lang.annotation.Target;
  *
  *     // ...
  *
- * {@literal    @ColumnsOf(type = ProjectView.class)                                           }
+ * {@literal    @RecordColumns(ofType = ProjectView.class)                                           }
  *     public static class ProjectViewColumns {
  *
  * {@literal       public static final RecordColumn<ProjectView, ProjectName> project_name =   }
@@ -57,11 +57,11 @@ import java.lang.annotation.Target;
  * for that.
  *
  * <ol>
- *     <li>it allows to refer to columns via a {@code static import}, as it's nice to shorten
- *     the expression in which a column declaration is used;
+ *     <li>It allows to refer to columns via a {@code static import}, as it's nice to shorten
+ *     the expression in which a column declaration is used.
  *
- *     <li>we want to preserve the type of the column value (which is determined by the second
- *     generic parameter) in order to bind the column values in scope of a query.
+ *     <li>We want to preserve the type of the column value (which is determined by the second
+ *     generic parameter) in order to put bounds to the compared values in scope of a query.
  * </ol>
  *
  * <p>Here is how it plays together with a {@code RecordQuery}:
@@ -81,10 +81,10 @@ import java.lang.annotation.Target;
  *                        .build();
  * </pre>
  *
- * <p>Here {@code myProjectName} is checked to be of {@code ProjectName} type, at the time
+ * <p>Note that {@code myProjectName} is checked to be of {@code ProjectName} type, at the time
  * of code compilation.
  *
- * <p>Also, notice the snake_case notation used in the declaration of {@code project_name} field.
+ * <p>Also, the snake_case notation used in the declaration of {@code project_name} field.
  * As many field names contain at least two words, such an approach allows to easily distinguish
  * a field from a Java variable holding a value to which the field values are compared
  * ({@code myProjectName} in the example above).
@@ -95,11 +95,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.TYPE)
 @Documented
-public @interface ColumnsOf {
+public @interface RecordColumns {
 
     /**
      * Returns the type of the message record, which columns are being described
      * by the annotated type.
      */
-    Class<? extends Message> type();
+    Class<? extends Message> ofType();
 }

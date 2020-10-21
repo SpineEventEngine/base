@@ -23,11 +23,11 @@ package io.spine.query.given;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Timestamp;
-import io.spine.query.ColumnsOf;
 import io.spine.query.ComparisonOperator;
 import io.spine.query.Manufacturer;
 import io.spine.query.ManufacturerId;
 import io.spine.query.RecordColumn;
+import io.spine.query.RecordColumns;
 import io.spine.query.RecordQuery;
 import io.spine.query.RecordQueryBuilder;
 import io.spine.query.Subject;
@@ -140,7 +140,7 @@ public final class RecordQueryBuilderTestEnv {
     /**
      * Defines the columns for {@link Manufacturer} message record.
      */
-    @ColumnsOf(type = Manufacturer.class)
+    @RecordColumns(ofType = Manufacturer.class)
     public static final class ManufacturerColumns {
 
         public static final RecordColumn<Manufacturer, String> isin =
