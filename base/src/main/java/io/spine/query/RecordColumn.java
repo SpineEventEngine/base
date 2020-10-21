@@ -74,6 +74,33 @@ public class RecordColumn<R extends Message, V>
     }
 
     /**
+     * Creates a new instance of a {@code RecordColumn}.
+     *
+     * <p>This method is a shortcut for invoking the constructor in those cases, in which
+     * the amount of code used is crucial (e.g. in a repetitive declarations of columns).
+     *
+     * @param name
+     *         the name of the column; must be non-empty
+     * @param valueType
+     *         the type of the column values
+     * @param getter
+     *         the getter returning the value of the column basing on the stored record;
+     *         used to compute the value when storing the record
+     * @param <R>
+     *         the type of the stored record
+     * @param <V>
+     *         the type of the column values
+     * @return a new instance
+     */
+    public static <R extends Message, V> RecordColumn<R, V>
+    create(String name, Class<V> valueType, Getter<R, V> getter) {
+        checkNotNull(name);
+        checkNotNull(valueType);
+        checkNotNull(getter);
+        return new RecordColumn<>(name, valueType, getter);
+    }
+
+    /**
      * Creates a new instance.
      *
      * @param name
