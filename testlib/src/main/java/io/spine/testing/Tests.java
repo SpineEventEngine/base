@@ -104,7 +104,7 @@ public final class Tests {
      */
     @VisibleForTesting
     static boolean hasPrivateParameterlessCtor(Class<?> targetClass) {
-        Constructor constructor;
+        Constructor<?> constructor;
         try {
             constructor = targetClass.getDeclaredConstructor();
         } catch (NoSuchMethodException ignored) {
@@ -127,7 +127,7 @@ public final class Tests {
      * This method catches all the exceptions which may be thrown by the constructor.
      */
     @SuppressWarnings("OverlyBroadCatchBlock") // see Javadoc
-    private static void callConstructor(Constructor constructor) {
+    private static void callConstructor(Constructor<?> constructor) {
         boolean accessible = constructor.isAccessible();
         if (!accessible) {
             constructor.setAccessible(true);
