@@ -20,64 +20,45 @@
 
 package io.spine.testing;
 
-import com.google.common.testing.NullPointerTester;
+import com.google.common.testing.NullPointerTester.Visibility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Modifier;
-
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
-import static io.spine.testing.Tests.assertTrue;
-
 /**
- * Abstract base for utility classes tests.
+ * Abstract base for test suites testing utility classes.
  *
- * @param <T> the type of the utility class under the test
+ * @param <C>
+ *         the class under the tests
  */
-public abstract class UtilityClassTest<T> {
+public abstract class UtilityClassTest<C> extends ClassTest<C> {
 
-    private final Class<T> utilityClass;
+    protected UtilityClassTest(Class<C> subject, Visibility minimalStaticMethodVisibility) {
+        super(subject, minimalStaticMethodVisibility);
+    }
 
-    protected UtilityClassTest(Class<T> cls) {
-        this.utilityClass = cls;
+    protected UtilityClassTest(Class<C> cls) {
+        super(cls);
     }
 
     /**
      * Obtains the class under the test.
+     *
+     * @deprecated please use {@link #subject()}
      */
-    protected final Class<T> getUtilityClass() {
-        return utilityClass;
+    @Deprecated
+    protected final Class<C> getUtilityClass() {
+        return subject();
     }
 
     @Test
     @DisplayName("have utility constructor")
     void hasUtilityConstructor() {
-        assertHasPrivateParameterlessCtor(getUtilityClass());
-    }
-
-    @Test
-    @DisplayName("not accept nulls in public static methods if the arg is non-Nullable")
-    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-        /* This test does assert via `NullPointerTester. */
-    void nullCheckPublicStaticMethods() {
-        NullPointerTester tester = new NullPointerTester();
-        configure(tester);
-        tester.testAllPublicStaticMethods(getUtilityClass());
+        assertHasPrivateParameterlessCtor();
     }
 
     @Test
     @DisplayName("be final")
     void checkFinal() {
-        assertTrue(Modifier.isFinal(utilityClass.getModifiers()));
-    }
-
-    /**
-     * A callback to configure a passed {@linkplain NullPointerTester}.
-     *
-     * <p>Does nothing. Override to specify default values in a derived test.
-     */
-    @SuppressWarnings("NoopMethodInAbstractClass") // We do not force overriding without a need.
-    protected void configure(@SuppressWarnings("unused") NullPointerTester tester) {
-        // Do nothing.
+        assertFinal();
     }
 }
