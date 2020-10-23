@@ -32,12 +32,30 @@ import org.junit.jupiter.api.Test;
  */
 public abstract class UtilityClassTest<C> extends ClassTest<C> {
 
+    /**
+     * Creates new test suite.
+     *
+     * @param subject
+     *          the class under the tests
+     * @param minimalStaticMethodVisibility
+     *          the minimal level of visibility of static methods for testing null parameters
+     */
     protected UtilityClassTest(Class<C> subject, Visibility minimalStaticMethodVisibility) {
         super(subject, minimalStaticMethodVisibility);
     }
 
-    protected UtilityClassTest(Class<C> cls) {
-        super(cls);
+    /**
+     * Creates a new test suite for the passed class.
+     *
+     * <p>This test suite will
+     * {@link com.google.common.testing.NullPointerTester.Visibility#PUBLIC PUBLIC}
+     * visibility of static methods for null-pointer testing.
+     *
+     * @param subject
+     *          the class to be tested
+     */
+    protected UtilityClassTest(Class<C> subject) {
+        super(subject);
     }
 
     /**
