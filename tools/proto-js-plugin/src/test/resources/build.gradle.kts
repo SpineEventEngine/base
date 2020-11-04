@@ -18,8 +18,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.*
-import groovy.lang.GString
 import io.spine.gradle.internal.Deps
 
 plugins {
@@ -59,7 +57,7 @@ protobuf {
                 }
             }
             task.generateDescriptorSet = true
-            task.descriptorSetOptions.path = GString.EMPTY.plus("${projectDir}/build/descriptors/${task.sourceSet.name}/known_types.desc")
+            task.descriptorSetOptions.path = "${projectDir}/build/descriptors/${task.sourceSet.name}/known_types.desc"
             task.descriptorSetOptions.includeImports = true
             task.descriptorSetOptions.includeSourceInfo = true
 

@@ -31,7 +31,6 @@ buildscript {
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
     val resolution = io.spine.gradle.internal.DependencyResolution
     resolution.defaultRepositories(repositories)
-    resolution.forceConfiguration(configurations)
 }
 
 // Apply some plugins to make type-safe extension accessors available in this script file.
@@ -93,7 +92,6 @@ subprojects {
             classpath(Deps.build.gradlePlugins.protobuf)
             classpath(Deps.build.gradlePlugins.errorProne)
         }
-        DependencyResolution.forceConfiguration(configurations)
     }
 
     apply(from = "$rootDir/version.gradle.kts")
@@ -137,7 +135,6 @@ subprojects {
         runtimeOnly(Deps.runtime.flogger.systemBackend)
     }
 
-    DependencyResolution.forceConfiguration(configurations)
     DependencyResolution.excludeProtobufLite(configurations)
 
     sourceSets {

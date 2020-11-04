@@ -54,7 +54,8 @@ public final class PrimitiveParsers {
      * The global map which maps the field {@linkplain FieldDescriptor#getType() type} to the
      * {@link PrimitiveParser} builder instance.
      */
-    private static final Map<Type, PrimitiveParser.Builder> parsers = parsers();
+    @SuppressWarnings("BadImport")
+    private static final Map<Type, PrimitiveParser.Builder<?>> parsers = parsers();
 
     /** Prevents the instantiation of this utility class. */
     private PrimitiveParsers() {
@@ -71,10 +72,11 @@ public final class PrimitiveParsers {
      * @throws IllegalStateException
      *         if the parser for the specified type cannot be found
      */
-    public static PrimitiveParser createFor(Type fieldType, CodeLines jsOutput) {
+    public static PrimitiveParser createFor(@SuppressWarnings("BadImport") Type fieldType,
+                                            CodeLines jsOutput) {
         checkNotNull(fieldType);
         checkNotNull(jsOutput);
-        PrimitiveParser.Builder parserBuilder = parsers.get(fieldType);
+        PrimitiveParser.Builder<?> parserBuilder = parsers.get(fieldType);
         checkState(parsers.containsKey(fieldType),
                    "An attempt to get a parser for the unknown Primitive type: %s", fieldType);
         PrimitiveParser parser = parserBuilder
@@ -83,9 +85,10 @@ public final class PrimitiveParsers {
         return parser;
     }
 
-    private static Map<Type, PrimitiveParser.Builder> parsers() {
-        Map<Type, PrimitiveParser.Builder> parsers = ImmutableMap
-                .<Type, PrimitiveParser.Builder>builder()
+    @SuppressWarnings("BadImport") // For `FieldDescriptor.Type`.
+    private static Map<Type, PrimitiveParser.Builder<?>> parsers() {
+        Map<Type, PrimitiveParser.Builder<?>> parsers = ImmutableMap
+                .<Type, PrimitiveParser.Builder<?>>builder()
                 .put(DOUBLE, FloatParser.newBuilder())
                 .put(FLOAT, FloatParser.newBuilder())
                 .put(INT32, IdentityParser.newBuilder())

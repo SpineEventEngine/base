@@ -20,7 +20,6 @@
 
 package io.spine.js.gradle;
 
-import com.google.common.io.Files;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.TaskContainer;
@@ -29,6 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.testing.TempFiles.createTempDir;
 import static io.spine.tools.gradle.BaseTaskName.build;
 import static io.spine.tools.gradle.ProtoJsTaskName.generateJsonParsers;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -41,7 +41,7 @@ class ProtoJsPluginTest {
     @BeforeEach
     void setUp() {
         project = ProjectBuilder.builder()
-                                .withProjectDir(Files.createTempDir())
+                                .withProjectDir(createTempDir())
                                 .build();
         project.task(build.name());
     }

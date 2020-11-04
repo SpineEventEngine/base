@@ -18,8 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.*
-import groovy.lang.GString
+import com.google.protobuf.gradle.generateProtoTasks
+import com.google.protobuf.gradle.protobuf
 import io.spine.gradle.internal.Deps
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
@@ -57,7 +57,7 @@ protobuf {
         all().forEach { task ->
             val scope = task.sourceSet.name
             task.generateDescriptorSet = true
-            task.descriptorSetOptions.path = GString.EMPTY.plus("$buildDir/descriptors/${scope}/io.spine.tools.spine-model-compiler-${scope}.desc")
+            task.descriptorSetOptions.path = "$buildDir/descriptors/${scope}/io.spine.tools.spine-model-compiler-${scope}.desc"
             task.descriptorSetOptions.includeImports = true
             task.descriptorSetOptions.includeSourceInfo = true
         }

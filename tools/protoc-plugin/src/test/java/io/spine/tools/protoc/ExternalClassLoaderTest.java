@@ -146,25 +146,24 @@ final class ExternalClassLoaderTest {
     }
 
     @Immutable
-    public static final class WithExceptionDuringInstantiation extends EmptyMethodFactory {
+    static final class WithExceptionDuringInstantiation extends EmptyMethodFactory {
 
-        public WithExceptionDuringInstantiation() {
+        WithExceptionDuringInstantiation() {
             throw new RuntimeException("Test exception during instantiation");
         }
     }
 
     @Immutable
-    // for test reasons
-    @SuppressWarnings({"AbstractClassNeverImplemented", "ConstructorNotProtectedInAbstractClass"})
-    public abstract static class WithAbstractImplementation extends EmptyMethodFactory {
+    @SuppressWarnings("AbstractClassNeverImplemented") // For test reasons.
+    abstract static class WithAbstractImplementation extends EmptyMethodFactory {
 
-        public WithAbstractImplementation() {
+        WithAbstractImplementation() {
         }
     }
 
-    public static final class NotMethodFactory {
+    static final class NotMethodFactory {
 
-        public NotMethodFactory() {
+        NotMethodFactory() {
         }
     }
 }

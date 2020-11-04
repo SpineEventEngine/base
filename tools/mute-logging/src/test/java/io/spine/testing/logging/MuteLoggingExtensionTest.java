@@ -39,6 +39,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 import static com.google.common.truth.Truth.assertThat;
 import static java.lang.reflect.Modifier.isPublic;
@@ -184,6 +185,12 @@ class MuteLoggingExtensionTest extends SystemOutputTest {
 
         @Override
         public Optional<String> getConfigurationParameter(String key) {
+            return Optional.empty();
+        }
+
+        @Override
+        public <T> Optional<T> getConfigurationParameter(String key,
+                                                         Function<String, T> transformer) {
             return Optional.empty();
         }
 

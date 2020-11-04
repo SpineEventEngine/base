@@ -35,7 +35,7 @@ import java.util.function.Function;
  * <p>For example:
  * <pre>
  * AccumulateViolation accumulator =
- *     (violationExpression) -> formatted("errorBuilder.addViolation(%s);", violationExpression);
+ *    {@literal (violationExpression) -> formatted("errorBuilder.addViolation(%s);", violationExpression);}
  * </pre>
  *
  * <p>In the example above a function takes a {@link ConstraintViolation} expression and uses it

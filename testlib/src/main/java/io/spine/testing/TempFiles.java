@@ -18,42 +18,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.string;
+package io.spine.testing;
 
-import com.google.common.annotations.VisibleForTesting;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-import static java.lang.String.format;
+import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 
-/**
- * A stringifier for {@code enum} values.
- *
- * @param <E>
- *         the type of the {@code enum}
- */
-final class EnumStringifier<E extends Enum<E>> extends SerializableStringifier<E> {
+public final class TempFiles {
 
-    private static final long serialVersionUID = 0L;
-
-    private final Class<E> enumClass;
-
-    EnumStringifier(Class<E> enumClass) {
-        super(identity(enumClass));
-        this.enumClass = enumClass;
+    /**
+     * Prevents the utility class instantiation.
+     */
+    private TempFiles() {
     }
 
-    @Override
-    protected final String toString(E e) {
-        return e.toString();
+    public static File createTempFile() {
+        Path file;
+        try {
+            file = Files.createTempFile(TempFiles.class.getName(), "");
+        } catch (IOException e) {
+            throw illegalStateWithCauseOf(e);
+        }
+        return file.toFile();
     }
 
-    @Override
-    protected final E fromString(String s) {
-        E result = Enum.valueOf(enumClass, s);
-        return result;
-    }
-
-    @VisibleForTesting
-    static <E extends Enum<E>> String identity(Class<E> enumClass) {
-        return format("Stringifiers.newForEnum(%s.class)", enumClass.getSimpleName());
+    public static File createTempDir() {
+        Path file;
+        try {
+            file = Files.createTempDirectory(TempFiles.class.getName());
+        } catch (IOException e) {
+            throw illegalStateWithCauseOf(e);
+        }
+        return file.toFile();
     }
 }

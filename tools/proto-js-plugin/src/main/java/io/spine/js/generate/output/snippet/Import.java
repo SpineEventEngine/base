@@ -42,11 +42,6 @@ public class Import extends CodeLine {
     private static final String IMPORT_FORMAT = "require('%s');";
     private static final String DEFAULT_IMPORT_ENDING = ".default;";
 
-    /**
-     * The named import format.
-     */
-    private static final String NAMED_IMPORT_FORMAT = "let %s = %s";
-
     private final String content;
 
     private Import(String content) {
@@ -121,7 +116,7 @@ public class Import extends CodeLine {
      *         the name for the import
      */
     public String namedAs(String importName) {
-        String result = format(NAMED_IMPORT_FORMAT, importName, content());
+        String result = format("let %s = %s", importName, content());
         return result;
     }
 }

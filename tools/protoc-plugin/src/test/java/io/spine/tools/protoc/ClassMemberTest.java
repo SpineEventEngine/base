@@ -32,8 +32,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DisplayName("`ClassMember` should")
 final class ClassMemberTest {
 
-    private static final String INSERTION_POINT_FORMAT = "class_scope:%s";
-
     @DisplayName("create valid compiler output")
     @Test
     void createValidCompilerOutput() {
@@ -55,6 +53,6 @@ final class ClassMemberTest {
     }
 
     private static String insertionPoint(MessageType type) {
-        return String.format(INSERTION_POINT_FORMAT, type.name());
+        return String.format("class_scope:%s", type.name());
     }
 }

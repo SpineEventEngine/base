@@ -27,7 +27,6 @@ import com.google.protobuf.gradle.ProtobufConfigurator;
 import com.google.protobuf.gradle.ProtobufConfigurator.GenerateProtoTaskCollection;
 import com.google.protobuf.gradle.ProtobufConvention;
 import io.spine.tools.groovy.ConsumerClosure;
-import io.spine.tools.groovy.GStrings;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
 
@@ -122,7 +121,7 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
                      ? getTestDescriptorSet(project)
                      : getMainDescriptorSet(project);
         GenerateProtoTask.DescriptorSetOptions options = protocTask.getDescriptorSetOptions();
-        options.setPath(GStrings.fromPlain(descriptor.getPath()));
+        options.setPath(descriptor.getPath());
         options.setIncludeImports(true);
         options.setIncludeSourceInfo(true);
     }

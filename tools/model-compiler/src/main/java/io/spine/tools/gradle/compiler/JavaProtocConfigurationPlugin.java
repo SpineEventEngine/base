@@ -140,6 +140,7 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
         Matcher matcher = JAR_FILE_INSERTION_POINT.matcher(template);
         String script = matcher.replaceAll(quoteReplacement(jarFile.toString()));
         Path path = createTempFile(JavaProtocConfigurationPlugin.class.getSimpleName(), scriptExt);
+        // TODO:2020-11-04:dmytro.dashenkov: Kill launch scripts.
         File file = path.toFile();
         CharSink sink = asCharSink(file, StandardCharsets.UTF_8);
         sink.write(script);

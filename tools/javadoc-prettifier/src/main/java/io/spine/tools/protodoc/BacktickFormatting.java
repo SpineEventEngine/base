@@ -42,7 +42,6 @@ class BacktickFormatting extends LineFormatting {
 
     @VisibleForTesting
     static final String BACKTICK = "`";
-    private static final String CODE_TAG_FORMAT = "{@code %s}";
     private static final Pattern PATTERN_BACKTICK = Pattern.compile(BACKTICK);
 
     /**
@@ -64,11 +63,13 @@ class BacktickFormatting extends LineFormatting {
             matcher.appendReplacement(buffer, quoteReplacement(replacement));
         }
         matcher.appendTail(buffer);
-        return buffer.toString();
+        @SuppressWarnings("JdkObsolete") // `StringBuffer` use dictated by regex API.
+        String result = buffer.toString();
+        return result;
     }
 
     @VisibleForTesting
     static String wrapWithCodeTag(String value) {
-        return format(CODE_TAG_FORMAT, value);
+        return format("{@code %s}", value);
     }
 }

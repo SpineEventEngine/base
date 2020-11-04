@@ -57,8 +57,6 @@ import static javax.lang.model.element.Modifier.PUBLIC;
  */
 public final class EntityWithColumnsSpec implements GeneratedTypeSpec {
 
-    private static final String NAME_FORMAT = "%sWithColumns";
-
     private final MessageType messageType;
     private final ImmutableList<FieldDeclaration> columns;
 
@@ -151,7 +149,7 @@ public final class EntityWithColumnsSpec implements GeneratedTypeSpec {
     }
 
     private String className() {
-        String result = format(NAME_FORMAT, messageType.simpleJavaClassName());
+        String result = format("%sWithColumns", messageType.simpleJavaClassName());
         return result;
     }
 }

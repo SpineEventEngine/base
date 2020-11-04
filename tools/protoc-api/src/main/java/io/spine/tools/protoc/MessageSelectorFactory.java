@@ -25,7 +25,6 @@ import com.google.common.collect.Maps;
 import io.spine.code.proto.FileName;
 
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -127,7 +126,8 @@ public final class MessageSelectorFactory {
             checkArgument(conf.size() == 1,
                           "File selector should have a single value, but had: '%s'",
                           conf);
-            for (Entry<String, Function<String, PatternSelector>> configEntry : configurations.entrySet()) {
+            for (Map.Entry<String, Function<String, PatternSelector>> configEntry :
+                    configurations.entrySet()) {
                 String filePattern = conf.get(configEntry.getKey());
                 if (!isNullOrEmpty(filePattern)) {
                     return configEntry.getValue()
