@@ -1,6 +1,9 @@
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
     <option name="RIGHT_MARGIN" value="100" />
+    <H2CodeStyleSettings version="5">
+      <option name="USE_GENERAL_STYLE" value="false" />
+    </H2CodeStyleSettings>
     <DartCodeStyleSettings>
       <option name="DELEGATE_TO_DARTFMT" value="false" />
     </DartCodeStyleSettings>
@@ -25,16 +28,12 @@
         <ANNO name="org.junit.jupiter.api.Test" />
       </REPEAT_ANNOTATIONS>
     </JavaCodeStyleSettings>
+    <JetCodeStyleSettings>
+      <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
+    </JetCodeStyleSettings>
     <XML>
       <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
     </XML>
-    <codeStyleSettings language="Dart">
-      <option name="RIGHT_MARGIN" value="100" />
-      <indentOptions>
-        <option name="INDENT_SIZE" value="4" />
-        <option name="TAB_SIZE" value="4" />
-      </indentOptions>
-    </codeStyleSettings>
     <codeStyleSettings language="JAVA">
       <option name="KEEP_BLANK_LINES_IN_DECLARATIONS" value="1" />
       <option name="KEEP_BLANK_LINES_IN_CODE" value="1" />
@@ -70,6 +69,9 @@
           </group>
         </groups>
       </arrangement>
+    </codeStyleSettings>
+    <codeStyleSettings language="kotlin">
+      <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
     </codeStyleSettings>
   </code_scheme>
 </component>
