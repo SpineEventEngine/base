@@ -26,7 +26,7 @@ import io.spine.js.generate.output.CodeLine;
 import io.spine.js.generate.output.CodeLines;
 
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayList;
@@ -92,8 +92,8 @@ public class MapExportSnippet implements Snippet {
          * Adds several {@linkplain #withEntry(String, Object) entries}.
          */
         @CanIgnoreReturnValue
-        public <T> Builder withEntries(List<Entry<String, T>> entriesToAdd) {
-            for (Entry<String, ?> entry : entriesToAdd) {
+        public <T> Builder withEntries(List<Map.Entry<String, T>> entriesToAdd) {
+            for (Map.Entry<String, ?> entry : entriesToAdd) {
                 withEntry(entry.getKey(), entry.getValue());
             }
             return this;
