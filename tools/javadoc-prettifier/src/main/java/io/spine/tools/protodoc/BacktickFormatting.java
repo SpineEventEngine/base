@@ -38,11 +38,10 @@ import static java.util.regex.Matcher.quoteReplacement;
  * lined text`
  * }</pre>
  */
-class BacktickFormatting extends LineFormatting {
+final class BacktickFormatting extends LineFormatting {
 
     @VisibleForTesting
     static final String BACKTICK = "`";
-    private static final String CODE_TAG_FORMAT = "{@code %s}";
     private static final Pattern PATTERN_BACKTICK = Pattern.compile(BACKTICK);
 
     /**
@@ -51,6 +50,7 @@ class BacktickFormatting extends LineFormatting {
     private static final Pattern PATTERN_TEXT_IN_BACKTICKS = Pattern.compile("(`[^`]*?`)");
 
     @Override
+    @SuppressWarnings("JdkObsolete") // to address later.
     String formatLine(String line) {
         // Double the line size to avoid possible memory reallocation.
         StringBuffer buffer = new StringBuffer(line.length() * 2);
@@ -69,6 +69,6 @@ class BacktickFormatting extends LineFormatting {
 
     @VisibleForTesting
     static String wrapWithCodeTag(String value) {
-        return format(CODE_TAG_FORMAT, value);
+        return format("{@code %s}", value);
     }
 }

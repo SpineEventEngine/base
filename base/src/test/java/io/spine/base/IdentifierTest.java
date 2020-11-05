@@ -116,6 +116,7 @@ class IdentifierTest {
 
     @Nested
     @DisplayName("recognize type by supported Message type")
+    @SuppressWarnings("BadImport") // OK to static-import `Identifier.Type` for brevity.
     class RecognizeType {
 
         @Test
@@ -391,6 +392,7 @@ class IdentifierTest {
 
     @Nested
     @DisplayName("create values depend on the wrapper message type for")
+    @SuppressWarnings("BadImport") // OK to static-import `Identifier.Type` for brevity.
     class CreateValues {
 
         @Test
@@ -509,6 +511,7 @@ class IdentifierTest {
 
     @Nested
     @DisplayName("recognize field descriptor")
+    @SuppressWarnings("BadImport") // OK to static-import `Identifier.Type` for brefity.
     class FieldDescr {
 
         @Test

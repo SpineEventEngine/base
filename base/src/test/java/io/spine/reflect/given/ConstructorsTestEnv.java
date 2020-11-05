@@ -59,7 +59,7 @@ public final class ConstructorsTestEnv {
             this.name = name;
         }
 
-        public Animal() {
+        protected Animal() {
             this.name = MISSING;
         }
 

@@ -34,18 +34,7 @@ import static java.lang.String.format;
  */
 public class Import extends CodeLine {
 
-    /**
-     * The import format.
-     *
-     * <p>The placeholder represents the file to be imported.
-     */
-    private static final String IMPORT_FORMAT = "require('%s');";
     private static final String DEFAULT_IMPORT_ENDING = ".default;";
-
-    /**
-     * The named import format.
-     */
-    private static final String NAMED_IMPORT_FORMAT = "let %s = %s";
 
     private final String content;
 
@@ -59,8 +48,17 @@ public class Import extends CodeLine {
      */
     public static Import fileRelativeToRoot(FileName file) {
         checkNotNull(file);
-        String content = format(IMPORT_FORMAT, file.pathFromRoot());
+        String content = require(file.pathFromRoot());
         return new Import(content);
+    }
+
+    /**
+     * Creates import statement.
+     *
+     * @param param the file to be imported
+     */
+    private static String require(String param) {
+        return format("require('%s');", param);
     }
 
     /**
@@ -86,13 +84,13 @@ public class Import extends CodeLine {
      */
     public static Import library(String libraryName) {
         checkNotNull(libraryName);
-        String content = format(IMPORT_FORMAT, libraryName);
+        String content = require(libraryName);
         return new Import(content);
     }
 
     private static Import withPrefix(String prefix, FileName fileToImport) {
         String path = prefix + fileToImport;
-        String content = format(IMPORT_FORMAT, path);
+        String content = require(path);
         return new Import(content);
     }
 
@@ -121,7 +119,7 @@ public class Import extends CodeLine {
      *         the name for the import
      */
     public String namedAs(String importName) {
-        String result = format(NAMED_IMPORT_FORMAT, importName, content());
+        String result = format("let %s = %s", importName, content());
         return result;
     }
 }
