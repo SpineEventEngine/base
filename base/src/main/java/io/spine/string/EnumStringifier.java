@@ -34,8 +34,6 @@ final class EnumStringifier<E extends Enum<E>> extends SerializableStringifier<E
 
     private static final long serialVersionUID = 0L;
 
-    private static final String IDENTITY_FORMAT = "Stringifiers.newForEnum(%s.class)";
-
     private final Class<E> enumClass;
 
     EnumStringifier(Class<E> enumClass) {
@@ -56,6 +54,6 @@ final class EnumStringifier<E extends Enum<E>> extends SerializableStringifier<E
 
     @VisibleForTesting
     static <E extends Enum<E>> String identity(Class<E> enumClass) {
-        return format(IDENTITY_FORMAT, enumClass.getSimpleName());
+        return format("Stringifiers.newForEnum(%s.class)", enumClass.getSimpleName());
     }
 }
