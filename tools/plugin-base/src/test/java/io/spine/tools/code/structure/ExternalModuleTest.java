@@ -27,12 +27,13 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static io.spine.testing.Assertions.assertIllegalArgument;
+import static io.spine.testing.Assertions.assertIllegalState;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("ExternalModule should")
+@DisplayName("`ExternalModule` should")
 class ExternalModuleTest {
 
     private static final String moduleName = "module";
@@ -40,10 +41,7 @@ class ExternalModuleTest {
     @Test
     @DisplayName("not have an empty name")
     void notHaveEmptyModuleName() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> newModule("", "some/directory")
-        );
+        assertIllegalArgument(() -> newModule("", "some/directory"));
     }
 
     @Test
@@ -101,10 +99,7 @@ class ExternalModuleTest {
     void acceptOnlyProvidedProto() {
         ExternalModule module = newModule(moduleName, "should_not_match_it");
         FileReference reference = FileReference.of("d/index_pb.js");
-        assertThrows(
-                IllegalStateException.class,
-                () -> module.fileInModule(reference)
-        );
+        assertIllegalState(() -> module.fileInModule(reference));
     }
 
     private static ExternalModule newModule(String moduleName, String directoryPattern) {

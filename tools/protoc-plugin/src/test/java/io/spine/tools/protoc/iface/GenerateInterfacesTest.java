@@ -33,7 +33,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static io.spine.testing.Assertions.assertIllegalArgument;
+import static io.spine.testing.Assertions.assertNpe;
+import static io.spine.tools.protoc.FilePatterns.filePrefix;
+import static io.spine.tools.protoc.FilePatterns.fileSuffix;
 
 @DisplayName("GenerateInterfaces should")
 final class GenerateInterfacesTest {
@@ -45,34 +48,33 @@ final class GenerateInterfacesTest {
         @DisplayName("is created with `null` arguments")
         @Test
         void isCreatedWithNullArguments() {
-            assertThrows(NullPointerException.class, () ->
-                    new GenerateInterfaces(null));
+            assertNpe(() ->
+                              new GenerateInterfaces(null));
         }
 
         @DisplayName("`null` MessageType is supplied")
         @Test
         void nullMessageTypeIsSupplied() {
             ConfigByPattern config = newTaskConfig("test")
-                    .setPattern(FilePatterns.filePrefix("non-default"))
+                    .setPattern(filePrefix("non-default"))
                     .build();
             GenerateInterfaces generateMethods = new GenerateInterfaces(config);
-            assertThrows(NullPointerException.class, () -> generateMethods.generateFor(null));
+            assertNpe(() -> generateMethods.generateFor(null));
         }
     }
 
     @DisplayName("reject empty `FilePattern`")
     @Test
     void rejectingEmptyFilePattern() {
-        assertThrows(IllegalArgumentException.class, () ->
-                newTask(newTaskConfig("not-empty-name").build()));
+        assertIllegalArgument(() -> newTask(newTaskConfig("not-empty-name").build()));
     }
 
     @DisplayName("throw `IllegalArgumentException` if interface name is")
     @ParameterizedTest(name = "\"{0}\"")
     @ValueSource(strings = {"", "  "})
     void throwIllegalArgumentException(String interfaceName) {
-        assertThrows(IllegalArgumentException.class, () ->
-                newTask(newTaskConfig(interfaceName).build()));
+        assertIllegalArgument(() ->
+                                      newTask(newTaskConfig(interfaceName).build()));
     }
 
     @DisplayName("generate empty result if")
@@ -89,7 +91,7 @@ final class GenerateInterfacesTest {
         @Test
         void messageIsNotTopLevel() {
             assertEmptyResult(TestInterface.class.getName(),
-                              FilePatterns.fileSuffix("inner_messages.proto"),
+                              fileSuffix("inner_messages.proto"),
                               new MessageType(OuterMessage.InnerMessage.getDescriptor()));
         }
 
@@ -112,7 +114,7 @@ final class GenerateInterfacesTest {
     @Test
     void implementInterface() {
         ConfigByPattern config = newTaskConfig(TestInterface.class.getName())
-                .setPattern(FilePatterns.fileSuffix("test_events.proto"))
+                .setPattern(fileSuffix("test_events.proto"))
                 .build();
         assertThat(newTask(config).generateFor(new MessageType(ProjectCreated.getDescriptor())))
                 .isNotEmpty();

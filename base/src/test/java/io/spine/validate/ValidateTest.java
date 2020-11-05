@@ -42,6 +42,7 @@ import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.protobuf.TextFormat.shortDebugString;
+import static io.spine.testing.Assertions.assertIllegalState;
 import static io.spine.testing.TestValues.newUuidValue;
 import static io.spine.validate.Validate.checkDefault;
 import static io.spine.validate.Validate.checkValidChange;
@@ -50,7 +51,7 @@ import static io.spine.validate.Validate.violationsOfCustomConstraints;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("Validate utility class should")
+@DisplayName("`Validate` utility class should")
 class ValidateTest extends UtilityClassTest<Validate> {
 
     ValidateTest() {
@@ -70,9 +71,7 @@ class ValidateTest extends UtilityClassTest<Validate> {
     @DisplayName("check that message is in default state")
     void checkIfMessageIsInDefault() {
         StringValue nonDefault = newUuidValue();
-        IllegalStateException exception =
-                assertThrows(IllegalStateException.class,
-                             () -> checkDefault(nonDefault));
+        IllegalStateException exception = assertIllegalState(() -> checkDefault(nonDefault));
         assertThat(exception)
                 .hasMessageThat()
                 .contains(shortDebugString(nonDefault));
@@ -83,11 +82,10 @@ class ValidateTest extends UtilityClassTest<Validate> {
     @DisplayName("check that message is in default state with a parametrized error message")
     void checkAMessageIsDefaultWithParametrizedErrorMessage() {
         StringValue nonDefault = newUuidValue();
-        assertThrows(IllegalStateException.class,
-                     () -> checkDefault(nonDefault,
-                                        "Message value: %s, Type name: %s",
-                                        nonDefault,
-                                        TypeName.of(nonDefault)));
+        assertIllegalState(() -> checkDefault(nonDefault,
+                                              "Message value: %s, Type name: %s",
+                                              nonDefault,
+                                              TypeName.of(nonDefault)));
     }
 
     @SuppressWarnings("deprecation") // Test until the end of the deprecation cycle.

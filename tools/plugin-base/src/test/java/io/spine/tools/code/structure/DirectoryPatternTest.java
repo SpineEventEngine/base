@@ -26,10 +26,11 @@ import io.spine.code.fs.DirectoryReference;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.testing.Assertions.assertIllegalArgument;
+import static io.spine.testing.Assertions.assertIllegalState;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("FolderPattern should")
@@ -44,10 +45,7 @@ class DirectoryPatternTest {
     @Test
     @DisplayName("not be empty")
     void notEmpty() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> DirectoryPattern.of("")
-        );
+        assertIllegalArgument(() -> DirectoryPattern.of(""));
     }
 
     @Test
@@ -148,10 +146,7 @@ class DirectoryPatternTest {
     void notTransformNonMatching() {
         DirectoryPattern pattern = DirectoryPattern.of("a");
         DirectoryReference directory = DirectoryReference.of("b");
-        assertThrows(
-                IllegalStateException.class,
-                () -> pattern.transform(directory)
-        );
+        assertIllegalState(() -> pattern.transform(directory));
     }
 
     private static boolean matches(DirectoryPattern pattern, String directoryToMatch) {

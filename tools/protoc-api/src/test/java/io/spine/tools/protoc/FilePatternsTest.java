@@ -21,11 +21,12 @@
 package io.spine.tools.protoc;
 
 import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.testing.Assertions.assertNpe;
+import static io.spine.tools.protoc.FilePatterns.fileRegex;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("FilePatterns should")
@@ -42,7 +43,7 @@ final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
         @DisplayName("fileSuffix pattern")
         @Test
         void fileSuffix() {
-            Assertions.assertThrows(NullPointerException.class, () -> {
+            assertNpe(() -> {
                 //noinspection ConstantConditions,ResultOfMethodCallIgnored
                 FilePatterns.fileSuffix(null);
             });
@@ -52,47 +53,45 @@ final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
         @DisplayName("filePrefix pattern")
         @Test
         void filePrefix() {
-            Assertions.assertThrows(NullPointerException.class, () -> {
+            assertNpe(() -> {
                 FilePatterns.filePrefix(null);
             });
         }
 
-        @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
-        @DisplayName("regex pattern")
         @Test
+        @DisplayName("regex pattern")
+        @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
         void regex() {
-            Assertions.assertThrows(NullPointerException.class, () -> {
-                FilePatterns.fileRegex(null);
-            });
+            assertNpe(() -> fileRegex(null));
         }
     }
 
-    @DisplayName("create a valid")
     @Nested
+    @DisplayName("create a valid")
     final class CreateValid {
 
-        @DisplayName("suffix pattern")
         @Nested
+        @DisplayName("suffix pattern")
         class Suffix {
 
-            @DisplayName("with file name")
             @Test
+            @DisplayName("with file name")
             void withFileName() {
                 String suffix = "documents.proto";
                 FilePattern filter = FilePatterns.fileSuffix(suffix);
                 assertEquals(suffix, filter.getSuffix());
             }
 
-            @DisplayName("with path parts")
             @Test
+            @DisplayName("with path parts")
             void withPathParts() {
                 String suffix = "tools/protoc/documents.proto";
                 FilePattern filter = FilePatterns.fileSuffix(suffix);
                 assertEquals(suffix, filter.getSuffix());
             }
 
-            @DisplayName("with absolute file path")
             @Test
+            @DisplayName("with absolute file path")
             void withAbsolutePath() {
                 String suffix = "/home/user/development/petproject/src/main/proto/documents.proto";
                 FilePattern filter = FilePatterns.fileSuffix(suffix);

@@ -34,52 +34,49 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static io.spine.testing.Assertions.assertIllegalArgument;
+import static io.spine.testing.Assertions.assertNpe;
+import static io.spine.tools.protoc.FilePatterns.filePrefix;
 
-@DisplayName("GenerateMethods should")
+@DisplayName("`GenerateMethods` should")
 final class GenerateMethodsTest {
 
     @Nested
-    @DisplayName("throw NullPointerException if")
+    @DisplayName("throw `NullPointerException` if")
     class ThrowNpe {
 
         @Test
         @DisplayName("is created with `null` arguments")
         void isCreatedWithNullArguments() {
-            assertThrows(NullPointerException.class, () ->
-                    new GenerateMethods(null, ConfigByPattern.getDefaultInstance()));
-            assertThrows(NullPointerException.class, () ->
-                    new GenerateMethods(testClassLoader(), null)
-            );
+            assertNpe(() -> new GenerateMethods(null, ConfigByPattern.getDefaultInstance()));
+            assertNpe(() -> new GenerateMethods(testClassLoader(), null));
         }
 
         @Test
-        @DisplayName("`null` MessageType is supplied")
+        @DisplayName("`null` `MessageType` is supplied")
         void nullMessageTypeIsSupplied() {
             ConfigByPattern config = newTaskConfig("test")
-                    .setPattern(FilePatterns.filePrefix("non-default"))
+                    .setPattern(filePrefix("non-default"))
                     .build();
             GenerateMethods generateMethods = new GenerateMethods(testClassLoader(), config);
-            assertThrows(NullPointerException.class, () -> generateMethods.generateFor(null));
+            assertNpe(() -> generateMethods.generateFor(null));
         }
     }
 
     @Test
     @DisplayName("reject empty `FilePattern`")
     void rejectEmptyFilePattern() {
-        assertThrows(IllegalArgumentException.class, () ->
-                newTask(newTaskConfig("not-empty-name").build()));
+        assertIllegalArgument(() -> newTask(newTaskConfig("not-empty-name").build()));
     }
 
-    @DisplayName("throw IllegalArgumentException if factory name is ")
+    @DisplayName("throw `IllegalArgumentException` if factory name is ")
     @ParameterizedTest(name = "\"{0}\"")
     @ValueSource(strings = {"", "  "})
     void throwIllegalArgumentException(String factoryName) {
         ConfigByPattern config = newTaskConfig(factoryName)
-                .setPattern(FilePatterns.filePrefix("non-default"))
+                .setPattern(filePrefix("non-default"))
                 .build();
-        assertThrows(IllegalArgumentException.class, () ->
-                new GenerateMethods(testClassLoader(), config));
+        assertIllegalArgument(() -> new GenerateMethods(testClassLoader(), config));
     }
 
     @Nested

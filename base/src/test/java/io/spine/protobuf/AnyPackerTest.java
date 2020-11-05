@@ -46,7 +46,9 @@ import static io.spine.base.Identifier.newUuid;
 import static io.spine.protobuf.AnyPacker.pack;
 import static io.spine.protobuf.AnyPacker.unpack;
 import static io.spine.protobuf.AnyPacker.unpackFunc;
+import static io.spine.testing.Assertions.assertNpe;
 import static io.spine.testing.TestValues.newUuidValue;
+import static io.spine.testing.Tests.nullRef;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -127,15 +129,13 @@ class AnyPackerTest extends UtilityClassTest<AnyPacker> {
     @Test
     @DisplayName("fail on attempt to pack null")
     void failOnAttemptToPackNull() {
-        assertThrows(NullPointerException.class,
-                     () -> pack(Tests.<Message>nullRef()));
+        assertNpe(() -> pack(Tests.<Message>nullRef()));
     }
 
     @Test
     @DisplayName("fail on attempt to unpack null")
     void failOnAttemptToUnpackNull() {
-        assertThrows(NullPointerException.class,
-                     () -> unpack(Tests.nullRef()));
+        assertNpe(() -> unpack(nullRef()));
     }
 
     @Test

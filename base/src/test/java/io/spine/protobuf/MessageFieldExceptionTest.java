@@ -24,21 +24,21 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
-import io.spine.testing.Tests;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.testing.Assertions.assertNpe;
 import static io.spine.testing.TestValues.newUuidValue;
+import static io.spine.testing.Tests.nullRef;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("MessageFieldException should")
+@DisplayName("`MessageFieldException` should")
 class MessageFieldExceptionTest {
 
     @Test
     @DisplayName("construct an instance with a formatted message")
-    void construct_instance_with_formatted_message() {
+    void instanceWithFormattedMessage() {
         String param1 = "Букварь";
         String param2 = "blue";
         String param3 = String.valueOf(3);
@@ -57,7 +57,7 @@ class MessageFieldExceptionTest {
 
     @Test
     @DisplayName("contain an instance without text")
-    void contains_instance_without_text() {
+    void instanceWithoutText() {
         Timestamp protobufMessage = Time.currentTime();
         MessageFieldException exception = new MessageFieldException(protobufMessage);
 
@@ -67,9 +67,8 @@ class MessageFieldExceptionTest {
     }
 
     @Test
-    @DisplayName("allow null parameters")
-    void allow_null_params() {
-        assertThrows(NullPointerException.class,
-                     () -> new MessageFieldException(Empty.getDefaultInstance(), Tests.nullRef()));
+    @DisplayName("not allow null parameters")
+    void prohibitNullParams() {
+        assertNpe(() -> new MessageFieldException(Empty.getDefaultInstance(), nullRef()));
     }
 }

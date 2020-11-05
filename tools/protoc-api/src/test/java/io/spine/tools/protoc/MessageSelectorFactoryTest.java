@@ -22,19 +22,25 @@ package io.spine.tools.protoc;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.testing.NullPointerTester;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.code.proto.FileName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`MessageSelectorFactory` should")
 final class MessageSelectorFactoryTest {
 
     private final MessageSelectorFactory factory = MessageSelectorFactory.INSTANCE;
+
+    @CanIgnoreReturnValue
+    private PatternSelector inFiles(ImmutableMap<String, String> conf) {
+        return factory.inFiles(conf);
+    }
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
@@ -69,46 +75,44 @@ final class MessageSelectorFactoryTest {
     final class CreatePatternSelector {
 
         @Test
-        @DisplayName("suffix")
+        @DisplayName(MessageSelectorFactory.SUFFIX)
         void suffix() {
             String suffix = "_documents.proto";
-            assertThat(factory.inFiles(MessageSelectorFactory.suffix(suffix)))
+            assertThat(inFiles(MessageSelectorFactory.suffix(suffix)))
                     .isInstanceOf(SuffixSelector.class);
         }
 
         @Test
-        @DisplayName("prefix")
+        @DisplayName(MessageSelectorFactory.PREFIX)
         void prefix() {
             String prefix = "io/spine/test/orders_";
-            assertThat(factory.inFiles(MessageSelectorFactory.prefix(prefix)))
+            assertThat(inFiles(MessageSelectorFactory.prefix(prefix)))
                     .isInstanceOf(PrefixSelector.class);
         }
 
         @Test
-        @DisplayName("regex")
+        @DisplayName(MessageSelectorFactory.REGEX)
         void regex() {
             String regex = ".*test.*";
-            assertThat(factory.inFiles(MessageSelectorFactory.regex(regex)))
+            assertThat(inFiles(MessageSelectorFactory.regex(regex)))
                     .isInstanceOf(RegexSelector.class);
         }
     }
 
     @Nested
-    @DisplayName("throw `IllegalArgumentException` if inFiles configuration has")
-    final class ThrowIEA {
+    @DisplayName("throw `IllegalArgumentException` if `inFiles` configuration has")
+    final class Prohibit {
 
         @Test
         @DisplayName("more than one element")
         void moreThanOneElement() {
-            assertThrows(IllegalArgumentException.class, () ->
-                    factory.inFiles(ImmutableMap.of("first", "v1", "second", "v2")));
+            assertIllegalArgument(() -> inFiles(ImmutableMap.of("first", "v1", "second", "v2")));
         }
 
         @Test
         @DisplayName("non supported parameter")
         void nonSupportParameter() {
-            assertThrows(IllegalArgumentException.class, () ->
-                    factory.inFiles(ImmutableMap.of("NON_SUPPORTED", "v1")));
+            assertIllegalArgument(() -> inFiles(ImmutableMap.of("NON_SUPPORTED", "v1")));
         }
     }
 }

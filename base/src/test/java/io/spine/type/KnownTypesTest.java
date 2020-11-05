@@ -43,10 +43,10 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.Assertions.assertUnknownType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -153,10 +153,7 @@ class KnownTypesTest {
     @DisplayName("throw UnknownTypeException for requesting info on an unknown type")
     void throwOnUnknownType() {
         TypeUrl unexpectedUrl = TypeUrl.parse("prefix/unexpected.type");
-        assertThrows(
-                UnknownTypeException.class,
-                () -> knownTypes.classNameOf(unexpectedUrl)
-        );
+        assertUnknownType(() -> knownTypes.classNameOf(unexpectedUrl));
     }
 
     @Test

@@ -39,8 +39,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.net.Uri.Authorization.getDescriptor;
+import static io.spine.testing.Assertions.assertIllegalState;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("FieldDeclaration should")
@@ -192,10 +193,10 @@ class FieldDeclarationTest {
     @Test
     @DisplayName("throw an `ISE` if the field is of non-message type")
     void throwOnWrongType() {
-        FieldDescriptor field = Uri.Authorization.getDescriptor()
+        FieldDescriptor field = getDescriptor()
                                                  .findFieldByName("user_name");
         FieldDeclaration declaration = new FieldDeclaration(field);
-        assertThrows(IllegalStateException.class, declaration::messageType);
+        assertIllegalState(declaration::messageType);
     }
 
     @Test

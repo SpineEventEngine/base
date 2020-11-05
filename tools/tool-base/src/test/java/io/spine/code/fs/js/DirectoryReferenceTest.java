@@ -25,18 +25,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static io.spine.testing.Assertions.assertIllegalArgument;
 
-@DisplayName("DirectoryReference should")
+@DisplayName("`DirectoryReference` should")
 class DirectoryReferenceTest {
 
     @Test
     @DisplayName("not be empty")
     void notEmpty() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> DirectoryReference.of("")
-        );
+        assertIllegalArgument(() -> DirectoryReference.of(""));
     }
 
     @Test

@@ -42,12 +42,14 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.base.Identifier.newUuid;
+import static io.spine.protobuf.AnyPacker.pack;
 import static io.spine.protobuf.TypeConverter.toMessage;
+import static io.spine.protobuf.TypeConverter.toObject;
 import static io.spine.test.protobuf.TaskStatus.EXECUTING;
 import static io.spine.test.protobuf.TaskStatus.FAILED;
 import static io.spine.test.protobuf.TaskStatus.SUCCESS;
+import static io.spine.testing.Assertions.assertIllegalArgument;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`TypeConverter` utility class should")
 class TypeConverterTest extends UtilityClassTest<TypeConverter> {
@@ -206,12 +208,12 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
     @DisplayName("throw an `IAE` when the `EnumValue` with an unknown name is passed")
     void throwOnUnknownName() {
         String unknownName = "some_name";
-        EnumValue value = EnumValue.newBuilder()
-                                   .setName(unknownName)
-                                   .build();
-        Any wrapped = AnyPacker.pack(value);
-        assertThrows(IllegalArgumentException.class,
-                     () -> TypeConverter.toObject(wrapped, TaskStatus.class));
+        EnumValue value = EnumValue
+                .newBuilder()
+                .setName(unknownName)
+                .build();
+        Any wrapped = pack(value);
+        assertIllegalArgument(() -> toObject(wrapped, TaskStatus.class));
     }
 
     @SuppressWarnings("CheckReturnValue") // The method is called to throw exception.
@@ -220,11 +222,10 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
     void throwOnUnknownNumber() {
         int unknownValue = 156;
         EnumValue value = EnumValue.newBuilder()
-                                   .setNumber(unknownValue)
-                                   .build();
-        Any wrapped = AnyPacker.pack(value);
-        assertThrows(IllegalArgumentException.class,
-                     () -> TypeConverter.toObject(wrapped, TaskStatus.class));
+                .setNumber(unknownValue)
+                .build();
+        Any wrapped = pack(value);
+        assertIllegalArgument(() -> toObject(wrapped, TaskStatus.class));
     }
 
     @SuppressWarnings("CheckReturnValue") // The method is called to throw exception.
@@ -235,9 +236,8 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
                 .newBuilder()
                 .setValue(SUCCESS.getNumber())
                 .build();
-        Any packed = AnyPacker.pack(enumNumber);
-        assertThrows(IllegalArgumentException.class,
-                     () -> TypeConverter.toObject(packed, TaskStatus.class));
+        Any packed = pack(enumNumber);
+        assertIllegalArgument(() -> toObject(packed, TaskStatus.class));
     }
 
     @Test

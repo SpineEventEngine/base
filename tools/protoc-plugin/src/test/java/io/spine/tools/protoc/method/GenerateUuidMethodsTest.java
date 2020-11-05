@@ -34,49 +34,46 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static io.spine.testing.Assertions.assertIllegalArgument;
+import static io.spine.testing.Assertions.assertNpe;
 
-@DisplayName("GenerateUuidMethods should")
+@DisplayName("`GenerateUuidMethods` should")
 final class GenerateUuidMethodsTest {
 
-    @DisplayName("throw NullPointerException if")
     @Nested
+    @DisplayName("throw `NullPointerException` if")
     class ThrowNpe {
 
-        @DisplayName("is created with `null` arguments")
         @Test
+        @DisplayName("is created with `null` arguments")
         void isCreatedWithNullArguments() {
-            assertThrows(NullPointerException.class, () ->
-                    new GenerateUuidMethods(null, UuidConfig.getDefaultInstance()));
-            assertThrows(NullPointerException.class, () ->
-                    new GenerateUuidMethods(testClassLoader(), null)
-            );
+            assertNpe(() -> new GenerateUuidMethods(null, UuidConfig.getDefaultInstance()));
+            assertNpe(() -> new GenerateUuidMethods(testClassLoader(), null));
         }
 
-        @DisplayName("`null` MessageType is supplied")
         @Test
+        @DisplayName("`null` `MessageType` is supplied")
         void nullMessageTypeIsSupplied() {
             UuidConfig config = newTaskConfig("test");
             GenerateUuidMethods task = new GenerateUuidMethods(testClassLoader(), config);
-            assertThrows(NullPointerException.class, () -> task.generateFor(null));
+            assertNpe(() -> task.generateFor(null));
         }
     }
 
-    @DisplayName("throw IllegalArgumentException if factory name is ")
     @ParameterizedTest(name = "\"{0}\"")
     @ValueSource(strings = {"", "  "})
+    @DisplayName("throw `IllegalArgumentException` if factory name is ")
     void throwIllegalArgumentException(String factoryName) {
         UuidConfig config = newTaskConfig(factoryName);
-        assertThrows(IllegalArgumentException.class, () ->
-                new GenerateUuidMethods(testClassLoader(), config));
+        assertIllegalArgument(() -> new GenerateUuidMethods(testClassLoader(), config));
     }
 
-    @DisplayName("generate empty result if")
     @Nested
+    @DisplayName("generate empty result if")
     class GenerateEmptyResult {
 
-        @DisplayName("message is not UUID value")
         @Test
+        @DisplayName("message is not UUID value")
         void notUuid() {
             assertEmptyResult(TestMethodFactory.class.getName());
         }
@@ -89,8 +86,8 @@ final class GenerateUuidMethodsTest {
         }
     }
 
-    @DisplayName("generate new methods")
     @Test
+    @DisplayName("generate new methods")
     void generateNewMethods() {
         UuidConfig config = newTaskConfig(TestMethodFactory.class.getName());
         assertThat(newTask(config).generateFor(testType()))
