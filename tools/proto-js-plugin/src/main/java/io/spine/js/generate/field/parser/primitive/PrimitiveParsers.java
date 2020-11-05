@@ -54,7 +54,7 @@ public final class PrimitiveParsers {
      * The global map which maps the field {@linkplain FieldDescriptor#getType() type} to the
      * {@link PrimitiveParser} builder instance.
      */
-    private static final Map<Type, PrimitiveParser.Builder> parsers = parsers();
+    private static final Map<FieldDescriptor.Type, PrimitiveParser.Builder<?>> parsers = parsers();
 
     /** Prevents the instantiation of this utility class. */
     private PrimitiveParsers() {
@@ -74,7 +74,7 @@ public final class PrimitiveParsers {
     public static PrimitiveParser createFor(Type fieldType, CodeLines jsOutput) {
         checkNotNull(fieldType);
         checkNotNull(jsOutput);
-        PrimitiveParser.Builder parserBuilder = parsers.get(fieldType);
+        PrimitiveParser.Builder<?> parserBuilder = parsers.get(fieldType);
         checkState(parsers.containsKey(fieldType),
                    "An attempt to get a parser for the unknown Primitive type: %s", fieldType);
         PrimitiveParser parser = parserBuilder
@@ -83,9 +83,9 @@ public final class PrimitiveParsers {
         return parser;
     }
 
-    private static Map<Type, PrimitiveParser.Builder> parsers() {
-        Map<Type, PrimitiveParser.Builder> parsers = ImmutableMap
-                .<Type, PrimitiveParser.Builder>builder()
+    private static Map<Type, PrimitiveParser.Builder<?>> parsers() {
+        Map<Type, PrimitiveParser.Builder<?>> parsers = ImmutableMap
+                .<Type, PrimitiveParser.Builder<?>>builder()
                 .put(DOUBLE, FloatParser.newBuilder())
                 .put(FLOAT, FloatParser.newBuilder())
                 .put(INT32, IdentityParser.newBuilder())
