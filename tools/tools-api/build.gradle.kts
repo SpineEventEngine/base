@@ -18,14 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Contains classes making the generated Java classes implement custom interfaces.
- */
+group = "io.spine.tools"
 
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.protoc.iface;
-
-import com.google.errorprone.annotations.CheckReturnValue;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+dependencies {
+    implementation(project(":base"))
+    testImplementation(project(":testlib"))
+}

@@ -18,40 +18,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.gradle.internal.Deps
+package io.spine.tools.protoc.method;
 
-group = "io.spine.tools"
+import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.type.MessageType;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-dependencies {
-    implementation(project(":tool-base"))
-    implementation(project(":tools-api"))
-    implementation(project(":protoc-api"))
-    implementation(project(":validation-generator"))
-    implementation(Deps.gen.javaPoet)
-    implementation(Deps.gen.javaxAnnotation)
+import java.util.List;
 
-    testImplementation(project(":base"))
-    testImplementation(project(":testlib"))
-    testImplementation(project(":mute-logging"))
-    Deps.test.truth.forEach { testImplementation(it) }
-}
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.Tests.nullRef;
 
-tasks.jar {
-    dependsOn(
-            ":protoc-api:jar",
-            ":tools-api:jar",
-            ":tool-base:jar",
-            ":validation-generator:jar"
-    )
+/**
+ * With this unit test we are fixating the {@link MethodFactory} contract.
+ */
+@DisplayName("`MethodFactory` should")
+final class MethodFactoryTest {
 
-    manifest {
-        attributes(mapOf("Main-Class" to "io.spine.tools.protoc.Plugin"))
+    @DisplayName("obey the defined contract")
+    @Test
+    void obeyTheContract() {
+        assertThat(new TestMethodFactory().createFor(nullRef())).isEmpty();
     }
-    // Assemble "Fat-JAR" artifact containing all the dependencies.
-    from(configurations.runtimeClasspath.get().map {
-        when {
-            it.isDirectory -> it
-            else -> zipTree(it)
+
+    @Immutable
+    public static class TestMethodFactory implements MethodFactory {
+
+        public TestMethodFactory() {
         }
-    })
+
+        @Override
+        public List<GeneratedMethod> createFor(MessageType messageType) {
+            return ImmutableList.of();
+        }
+    }
 }

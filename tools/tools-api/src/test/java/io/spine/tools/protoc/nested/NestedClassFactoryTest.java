@@ -18,29 +18,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.iface;
+package io.spine.tools.protoc.nested;
 
+import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.Descriptors.Descriptor;
-import io.spine.code.proto.MessageOption;
-import io.spine.option.IsOption;
-import io.spine.option.OptionsProto;
+import io.spine.type.MessageType;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
+import java.util.List;
+
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.Tests.nullRef;
 
 /**
- * For a given message, declares if the message is of the specified Java type and
- * the generation of marker interfaces is enabled.
+ * With this unit test we are fixating the {@link NestedClassFactory} contract.
  */
-@Immutable
-@SuppressWarnings("NewClassNamingConvention")
-final class Is extends MessageOption<IsOption> {
+@DisplayName("`NestedClassFactory` should")
+final class NestedClassFactoryTest {
 
-    Is() {
-        super(OptionsProto.is);
+    @DisplayName("obey the defined contract")
+    @Test
+    void obeyTheContract() {
+        assertThat(new TestNestedClassFactory().createFor(nullRef())).isEmpty();
     }
 
-    static Optional<IsOption> from(Descriptor message) {
-        return new Is().valueFrom(message);
+    @Immutable
+    public static final class TestNestedClassFactory implements NestedClassFactory {
+
+        public TestNestedClassFactory() {
+        }
+
+        @Override
+        public List<GeneratedNestedClass> createFor(MessageType messageType) {
+            return ImmutableList.of();
+        }
     }
 }
