@@ -170,6 +170,7 @@ final class ExternalClassLoaderTest {
     @SuppressWarnings({"AbstractClassNeverImplemented", "ConstructorNotProtectedInAbstractClass"})
     public abstract static class WithAbstractImplementation extends EmptyMethodFactory {
 
+        @SuppressWarnings("PublicConstructorForAbstractClass")
         public WithAbstractImplementation() {
         }
     }
