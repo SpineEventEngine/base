@@ -396,7 +396,7 @@ class IdentifierTest {
     class CreateValues {
 
         @Test
-        @DisplayName("`integer`")
+        @DisplayName("`int`")
         void intValue() {
             assertEquals(10, Type.INTEGER.fromMessage(toMessage(10)));
         }
@@ -408,7 +408,7 @@ class IdentifierTest {
         }
 
         @Test
-        @DisplayName("`string`")
+        @DisplayName("`String`")
         void stringValue() {
             String value = getClass().getSimpleName();
             assertEquals(value, Type.STRING.fromMessage(toMessage(value)));
