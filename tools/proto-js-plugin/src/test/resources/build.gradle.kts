@@ -18,6 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import com.google.protobuf.gradle.*
 import io.spine.gradle.internal.Deps
 
 plugins {
