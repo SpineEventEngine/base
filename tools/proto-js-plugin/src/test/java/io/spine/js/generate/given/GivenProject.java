@@ -29,8 +29,8 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 
-import static com.google.common.io.Files.createTempDir;
 import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
+import static io.spine.js.TempDir.createTempDir;
 import static io.spine.tools.gradle.BaseTaskName.build;
 import static java.util.Collections.singletonList;
 
@@ -58,13 +58,12 @@ public final class GivenProject {
     }
 
     public static DefaultJsProject project() {
-        File projectDir = createTempDir();
+        File projectDir = createTempDir("given-project");
         compileProject(projectDir);
         DefaultJsProject project = DefaultJsProject.at(projectDir);
         return project;
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored") // Method annotated with `@CanIgnoreReturnValue`.
     private static void compileProject(File projectDir) {
         GradleProject gradleProject = GradleProject
                 .newBuilder()
