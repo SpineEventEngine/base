@@ -50,7 +50,7 @@ public class TempDir {
              directory = Files.createTempDirectory(baseDir.toPath(), prefix);
              return directory.toFile();
         } catch (IOException e) {
-            throw newIllegalStateException(e, "Unable to create temp dir under %s", baseDir);
+            throw newIllegalStateException(e, "Unable to create temp dir under `%s`.", baseDir);
         }
     }
 }
