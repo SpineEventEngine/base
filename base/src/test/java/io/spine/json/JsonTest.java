@@ -26,7 +26,6 @@ import com.google.protobuf.StringValue;
 import com.google.protobuf.TypeRegistry;
 import io.spine.json.given.Node;
 import io.spine.json.given.WrappedString;
-import io.spine.testing.Tests;
 import io.spine.testing.UtilityClassTest;
 import io.spine.type.KnownTypes;
 import io.spine.type.TypeUrl;
@@ -39,11 +38,12 @@ import static io.spine.base.Identifier.newUuid;
 import static io.spine.json.Json.fromJson;
 import static io.spine.json.Json.toCompactJson;
 import static io.spine.json.Json.toJson;
+import static io.spine.testing.Assertions.assertNpe;
+import static io.spine.testing.Tests.nullRef;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Json utility class should")
 class JsonTest extends UtilityClassTest<Json> {
@@ -73,8 +73,7 @@ class JsonTest extends UtilityClassTest<Json> {
     @Test
     @DisplayName("not allow null message")
     void rejectNulls() {
-        assertThrows(NullPointerException.class,
-                     () -> toJson(Tests.nullRef()));
+        assertNpe(() -> toJson(nullRef()));
     }
 
     @Test

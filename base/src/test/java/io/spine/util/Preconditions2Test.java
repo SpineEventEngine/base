@@ -31,6 +31,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.Assertions.assertIllegalArgument;
+import static io.spine.testing.Assertions.assertIllegalState;
+import static io.spine.testing.Assertions.assertNpe;
 import static io.spine.testing.TestValues.newUuidValue;
 import static io.spine.testing.TestValues.randomString;
 import static io.spine.util.Preconditions2.checkBounds;
@@ -53,15 +56,12 @@ class Preconditions2Test extends UtilityClassTest<Preconditions2> {
     class StringArg {
 
         private void assertThrowsOn(String arg) {
-            assertThrows(IllegalArgumentException.class,
-                         () -> checkNotEmptyOrBlank(arg));
+            assertIllegalArgument(() -> checkNotEmptyOrBlank(arg));
         }
 
         private void assertThrowsWithMessage(String arg, String errorMessage) {
             IllegalArgumentException exception =
-                    assertThrows(IllegalArgumentException.class,
-                                 () -> checkNotEmptyOrBlank(arg, errorMessage)
-            );
+                    assertIllegalArgument(() -> checkNotEmptyOrBlank(arg, errorMessage));
             assertThat(exception).hasMessageThat()
                                  .contains(errorMessage);
         }
@@ -69,7 +69,7 @@ class Preconditions2Test extends UtilityClassTest<Preconditions2> {
         @Test
         @DisplayName("null")
         void nullStr() {
-            assertThrows(NullPointerException.class, () -> checkNotEmptyOrBlank(null));
+            assertNpe(() -> checkNotEmptyOrBlank(null));
 
             String errorTemplateBase = randomString();
             String[] errorArg = { randomString(), randomString() };
@@ -154,8 +154,7 @@ class Preconditions2Test extends UtilityClassTest<Preconditions2> {
     @Test
     @DisplayName("throw if checked value out of bounds")
     void throwExceptionIfCheckedValueOutOfBounds() {
-        assertThrows(IllegalArgumentException.class,
-                     () -> checkBounds(10, "checked value", -5, 9));
+        assertIllegalArgument(() -> checkBounds(10, "checked value", -5, 9));
     }
 
     @Nested
@@ -173,8 +172,7 @@ class Preconditions2Test extends UtilityClassTest<Preconditions2> {
         @Test
         @DisplayName("throwing `IllegalStateException` for state transition checks")
         void stateChecking() {
-            assertThrows(IllegalStateException.class,
-                         () -> checkNotDefaultState(defaultValue));
+            assertIllegalState(() -> checkNotDefaultState(defaultValue));
 
             IllegalStateException exception =
                     assertThrows(IllegalStateException.class,
@@ -186,7 +184,7 @@ class Preconditions2Test extends UtilityClassTest<Preconditions2> {
         @Test
         @DisplayName("throwing `IllegalArgumentException` for argument checks")
         void argumentChecking() {
-            assertThrows(IllegalArgumentException.class, () -> checkNotDefaultArg(defaultValue));
+            assertIllegalArgument(() -> checkNotDefaultArg(defaultValue));
             IllegalArgumentException exception =
                     assertThrows(IllegalArgumentException.class,
                                  () -> checkNotDefaultArg(defaultValue, customErrorMessage));

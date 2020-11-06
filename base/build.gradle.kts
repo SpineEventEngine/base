@@ -114,7 +114,8 @@ protobuf {
         for (task in all()) {
             val scope = task.sourceSet.name
             task.generateDescriptorSet = true
-            task.descriptorSetOptions.path = GString.EMPTY.plus("$buildDir/descriptors/$scope/known_types_${scope}.desc")
+            task.descriptorSetOptions.path =
+                    "$buildDir/descriptors/$scope/known_types_${scope}.desc"
             task.descriptorSetOptions.includeImports = true
             task.descriptorSetOptions.includeSourceInfo = true
 

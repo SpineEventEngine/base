@@ -37,8 +37,13 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.base.Field.nameOf;
+import static io.spine.base.Field.named;
+import static io.spine.base.Field.parse;
 import static io.spine.protobuf.AnyPacker.pack;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static io.spine.testing.Assertions.assertIllegalArgument;
+import static io.spine.testing.Assertions.assertIllegalState;
+import static io.spine.testing.Assertions.assertNpe;
 
 /**
  * Tests for {@link Field}.
@@ -82,7 +87,7 @@ class FieldTest {
         @Test
         @DisplayName("rejecting empty path")
         void rejectingEmpty() {
-            assertThrows(IllegalArgumentException.class, () -> Field.parse(""));
+            assertIllegalArgument(() -> parse(""));
         }
     }
 
@@ -118,11 +123,11 @@ class FieldTest {
             assertRejects("");
             assertRejects(" ");
             assertRejects("  ");
-            assertThrows(NullPointerException.class, () -> Field.named(null));
+            assertNpe(() -> named(null));
         }
 
         void assertRejects(String illegalValue) {
-            assertThrows(IllegalArgumentException.class, () -> Field.named(illegalValue));
+            assertIllegalArgument(() -> named(illegalValue));
         }
     }
 
@@ -224,7 +229,7 @@ class FieldTest {
         @Test
         @DisplayName("throwing `ISE` if missed and getting directly")
         void directFailure() {
-            assertThrows(IllegalStateException.class, () -> missingField.valueIn(message));
+            assertIllegalState(() -> missingField.valueIn(message));
         }
 
         @Test
@@ -235,8 +240,8 @@ class FieldTest {
                     .newBuilder()
                     .setVal(value)
                     .build();
-            Field wrongPath = Field.parse("val.this_field_is_absent");
-            assertThrows(IllegalStateException.class, () -> wrongPath.valueIn(holder));
+            Field wrongPath = parse("val.this_field_is_absent");
+            assertIllegalState(() -> wrongPath.valueIn(holder));
         }
     }
 
@@ -341,17 +346,14 @@ class FieldTest {
             @Test
             @DisplayName("`IllegalArgumentException` for non-positive number")
             void zeroOrNegative() {
-                assertThrows(IllegalArgumentException.class,
-                             () -> Field.nameOf(-1, message));
-                assertThrows(IllegalArgumentException.class,
-                             () -> Field.nameOf(0, message));
+                assertIllegalArgument(() -> nameOf(-1, message));
+                assertIllegalArgument(() -> nameOf(0, message));
             }
 
             @Test
             @DisplayName("`IllegalStateException` if there is no field with such number")
             void noField() {
-                assertThrows(IllegalStateException.class,
-                             () -> Field.nameOf(100, message));
+                assertIllegalState(() -> nameOf(100, message));
             }
         }
     }

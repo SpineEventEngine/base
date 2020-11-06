@@ -18,42 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.string;
-
-import com.google.common.annotations.VisibleForTesting;
-
-import static java.lang.String.format;
-
 /**
- * A stringifier for {@code enum} values.
- *
- * @param <E>
- *         the type of the {@code enum}
+ * Test utilities for JS code generation.
  */
-final class EnumStringifier<E extends Enum<E>> extends SerializableStringifier<E> {
 
-    private static final long serialVersionUID = 0L;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.js;
 
-    private final Class<E> enumClass;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    EnumStringifier(Class<E> enumClass) {
-        super(identity(enumClass));
-        this.enumClass = enumClass;
-    }
-
-    @Override
-    protected final String toString(E e) {
-        return e.toString();
-    }
-
-    @Override
-    protected final E fromString(String s) {
-        E result = Enum.valueOf(enumClass, s);
-        return result;
-    }
-
-    @VisibleForTesting
-    static <E extends Enum<E>> String identity(Class<E> enumClass) {
-        return format("Stringifiers.newForEnum(%s.class)", enumClass.getSimpleName());
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

@@ -46,18 +46,19 @@ import org.junit.jupiter.api.Test;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.base.Identifier.EMPTY_ID;
 import static io.spine.base.Identifier.NULL_ID;
+import static io.spine.base.Identifier.checkSupported;
 import static io.spine.base.Identifier.findField;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.protobuf.TypeConverter.toMessage;
+import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("Identifier should")
+@DisplayName("`Identifier` should")
 class IdentifierTest {
 
     private static final String TEST_ID = "someTestId 1234567890 !@#$%^&()[]{}-+=_";
@@ -85,28 +86,28 @@ class IdentifierTest {
     class CreateByType {
 
         @Test
-        @DisplayName("String")
+        @DisplayName("`String`")
         void ofString() {
             assertTrue(Identifier.from("")
                                  .isString());
         }
 
         @Test
-        @DisplayName("Integer")
+        @DisplayName("`Integer`")
         void ofInteger() {
             assertTrue(Identifier.from(0)
                                  .isInteger());
         }
 
         @Test
-        @DisplayName("Long")
+        @DisplayName("`Long`")
         void ofLong() {
             assertTrue(Identifier.from(0L)
                                  .isLong());
         }
 
         @Test
-        @DisplayName("Message")
+        @DisplayName("`Message`")
         void ofMessage() {
             assertTrue(Identifier.from(toMessage(300))
                                  .isMessage());
@@ -115,6 +116,7 @@ class IdentifierTest {
 
     @Nested
     @DisplayName("recognize type by supported Message type")
+    @SuppressWarnings("BadImport") // OK to static-import `Identifier.Type` for brevity.
     class RecognizeType {
 
         @Test
@@ -152,28 +154,28 @@ class IdentifierTest {
     class DefaultValue {
 
         @Test
-        @DisplayName("Integer")
+        @DisplayName("`Integer`")
         void ofInteger() {
             assertThat(Identifier.defaultValue(Integer.class))
                     .isEqualTo(0);
         }
 
         @Test
-        @DisplayName("Long")
+        @DisplayName("`Long`")
         void ofLong() {
             assertThat(Identifier.defaultValue(Long.class))
                     .isEqualTo(0L);
         }
 
         @Test
-        @DisplayName("String")
+        @DisplayName("`String`")
         void ofString() {
             assertThat(Identifier.defaultValue(String.class))
                     .isEmpty();
         }
 
         @Test
-        @DisplayName("Message")
+        @DisplayName("`Message`")
         void ofMessage() {
             assertThat(Identifier.defaultValue(Timestamp.class))
                     .isEqualTo(Timestamp.getDefaultInstance());
@@ -181,7 +183,7 @@ class IdentifierTest {
     }
 
     @Nested
-    @DisplayName("return EMPTY_ID when converting")
+    @DisplayName("return `EMPTY_ID` when converting")
     class EmptyId {
 
         @Test
@@ -191,7 +193,7 @@ class IdentifierTest {
         }
 
         @Test
-        @DisplayName("a Message with the default value")
+        @DisplayName("a `Message` with the default value")
         void defaultInstance() {
             assertEmpty(StringValue.getDefaultInstance());
         }
@@ -217,14 +219,14 @@ class IdentifierTest {
         class AlwaysNonEmpty {
 
             @Test
-            @DisplayName("Integer")
+            @DisplayName("`Integer`")
             void intValue() {
                 assertNotEmpty(0);
                 assertNotEmpty(TestValues.random(Integer.MIN_VALUE, Integer.MAX_VALUE));
             }
 
             @Test
-            @DisplayName("Long")
+            @DisplayName("`Long`")
             void longValue() {
                 assertNotEmpty(0L);
                 assertNotEmpty(TestValues.longRandom(Long.MIN_VALUE, Long.MAX_VALUE));
@@ -259,11 +261,11 @@ class IdentifierTest {
     }
 
     @Nested
-    @DisplayName("convert to String an ID of type")
+    @DisplayName("convert to `String` an ID of type")
     class ConvertToString {
 
         @Test
-        @DisplayName("Integer")
+        @DisplayName("`Integer`")
         @SuppressWarnings("UnnecessaryBoxing")
             // OK as we want to show types explicitly.
         void ofInteger() {
@@ -271,7 +273,7 @@ class IdentifierTest {
         }
 
         @Test
-        @DisplayName("Long")
+        @DisplayName("`Long`")
         @SuppressWarnings("UnnecessaryBoxing")
             // OK as we want to show types explicitly.
         void ofLong() {
@@ -279,11 +281,11 @@ class IdentifierTest {
         }
 
         @Test
-        @DisplayName("wrapped Integer")
+        @DisplayName("wrapped `Integer`")
         void ofWrappedInteger() {
-            Integer value = 1024;
+            int value = 1024;
             Int32Value id = Int32Value.of(value);
-            String expected = value.toString();
+            String expected = Integer.toString(value);
 
             String actual = Identifier.toString(id);
 
@@ -291,11 +293,11 @@ class IdentifierTest {
         }
 
         @Test
-        @DisplayName("wrapped Long")
+        @DisplayName("wrapped `Long`")
         void ofWrappedLong() {
-            Long value = 100500L;
+            long value = 100500L;
             Int64Value id = Int64Value.of(value);
-            String expected = value.toString();
+            String expected = Long.toString(value);
 
             String actual = Identifier.toString(id);
 
@@ -303,13 +305,13 @@ class IdentifierTest {
         }
 
         @Test
-        @DisplayName("String")
+        @DisplayName("`String`")
         void ofString() {
             assertEquals(TEST_ID, Identifier.toString(TEST_ID));
         }
 
         @Test
-        @DisplayName("wrapped String")
+        @DisplayName("wrapped `String`")
         void ofWrappedString() {
             StringValue id = StringValue.of(TEST_ID);
 
@@ -319,7 +321,7 @@ class IdentifierTest {
         }
 
         @Test
-        @DisplayName("Message with string field")
+        @DisplayName("`Message` with string field")
         void ofMessage() {
             StringValue id = StringValue.of(TEST_ID);
 
@@ -329,7 +331,7 @@ class IdentifierTest {
         }
 
         @Test
-        @DisplayName("Message with nested Message")
+        @DisplayName("`Message` with nested `Message`")
         void ofNestedMessage() {
             StringValue value = StringValue.of(TEST_ID);
             NestedMessageId idToConvert = NestedMessageId
@@ -359,14 +361,15 @@ class IdentifierTest {
     void toStringSeveralFields() {
         String nestedString = "nested_string";
         String outerString = "outer_string";
-        Integer number = 256;
+        int number = 256;
 
         StringValue nestedMessageString = StringValue.of(nestedString);
-        SeveralFieldsId idToConvert = SeveralFieldsId.newBuilder()
-                                                     .setString(outerString)
-                                                     .setNumber(number)
-                                                     .setMessage(nestedMessageString)
-                                                     .build();
+        SeveralFieldsId idToConvert = SeveralFieldsId
+                .newBuilder()
+                .setString(outerString)
+                .setNumber(number)
+                .setMessage(nestedMessageString)
+                .build();
 
         String expected =
                 "string=\"" + outerString + '\"' +
@@ -388,23 +391,24 @@ class IdentifierTest {
     }
 
     @Nested
-    @DisplayName("create values depend on the wrapper message type")
+    @DisplayName("create values depend on the wrapper message type for")
+    @SuppressWarnings("BadImport") // OK to static-import `Identifier.Type` for brevity.
     class CreateValues {
 
         @Test
-        @DisplayName("for integer")
+        @DisplayName("`int`")
         void intValue() {
             assertEquals(10, Type.INTEGER.fromMessage(toMessage(10)));
         }
 
         @Test
-        @DisplayName("for long")
+        @DisplayName("`long`")
         void longValue() {
             assertEquals(1024L, Type.LONG.fromMessage(toMessage(1024L)));
         }
 
         @Test
-        @DisplayName("for string")
+        @DisplayName("`String`")
         void stringValue() {
             String value = getClass().getSimpleName();
             assertEquals(value, Type.STRING.fromMessage(toMessage(value)));
@@ -416,37 +420,34 @@ class IdentifierTest {
     class CheckSupported {
 
         @Test
-        @DisplayName("String")
+        @DisplayName("`String`")
         void stringValue() {
             assertDoesNotThrow(() -> Identifier.checkSupported(String.class));
         }
 
         @Test
-        @DisplayName("Integer")
+        @DisplayName("`Integer`")
         void integerValue() {
             assertDoesNotThrow(() -> Identifier.checkSupported(Integer.class));
         }
 
         @Test
-        @DisplayName("Long")
+        @DisplayName("`Long`")
         void longValue() {
             assertDoesNotThrow(() -> Identifier.checkSupported(Long.class));
         }
 
         @Test
-        @DisplayName("a Message class")
+        @DisplayName("a `Message` class")
         void messageValue() {
             assertDoesNotThrow(() -> Identifier.checkSupported(StringValue.class));
         }
     }
 
     @Test
-    @DisplayName("throw IllegalArgumentException for unsupported class")
+    @DisplayName("throw `IllegalArgumentException` for unsupported class")
     void checkNotSupported() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> Identifier.checkSupported(Boolean.class)
-        );
+        assertIllegalArgument(() -> checkSupported(Boolean.class));
     }
 
     @Nested
@@ -458,19 +459,13 @@ class IdentifierTest {
         @SuppressWarnings("UnnecessaryBoxing")
             // We want to make the unsupported type obvious.
         void value() {
-            assertThrows(
-                    IllegalArgumentException.class,
-                    () -> Identifier.toString(Boolean.valueOf(true))
-            );
+            assertIllegalArgument(() -> Identifier.toString(Boolean.valueOf(true)));
         }
 
         @Test
         @DisplayName("class")
         void clazz() {
-            assertThrows(
-                    IllegalArgumentException.class,
-                    () -> Identifier.toType(Float.class)
-            );
+            assertIllegalArgument(() -> Identifier.toType(Float.class));
         }
     }
 
@@ -488,12 +483,9 @@ class IdentifierTest {
         }
 
         @Test
-        @DisplayName("and throw if Any is empty")
+        @DisplayName("and throw if `Any` is empty")
         void rejectEmptyAny() {
-            assertThrows(
-                    IllegalArgumentException.class,
-                    () -> Identifier.unpack(Any.getDefaultInstance())
-            );
+            assertIllegalArgument(() -> Identifier.unpack(Any.getDefaultInstance()));
         }
     }
 
@@ -502,48 +494,46 @@ class IdentifierTest {
     @SuppressWarnings("UnnecessaryBoxing")
         // We want to make the unsupported type obvious.
     void noPackingForUnsupported() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> Identifier.pack(Boolean.valueOf(false))
-        );
+        assertIllegalArgument(() -> Identifier.pack(Boolean.valueOf(false)));
     }
 
     @Test
-    @DisplayName("return NULL_ID when converting null")
+    @DisplayName("return `NULL_ID` when converting null")
     void nullId() {
         assertEquals(NULL_ID, Identifier.toString(null));
     }
 
     @Test
-    @DisplayName("declare ID_PROPERTY_SUFFIX")
+    @DisplayName("declare `ID_PROPERTY_SUFFIX`")
     void idPropSuffix() {
         assertThat(Identifier.ID_PROPERTY_SUFFIX).isEqualTo("id");
     }
 
     @Nested
     @DisplayName("recognize field descriptor")
+    @SuppressWarnings("BadImport") // OK to static-import `Identifier.Type` for brefity.
     class FieldDescr {
 
         @Test
-        @DisplayName("Integer")
+        @DisplayName("`Integer`")
         void intField() {
             assertTrue(Type.INTEGER.matchField(field(1)));
         }
 
         @Test
-        @DisplayName("Long")
+        @DisplayName("`Long`")
         void longField() {
             assertTrue(Type.LONG.matchField(field(3)));
         }
 
         @Test
-        @DisplayName("String")
+        @DisplayName("`String`")
         void stringField() {
             assertTrue(Type.STRING.matchField(field(0)));
         }
 
         @Test
-        @DisplayName("Message")
+        @DisplayName("`Message`")
         void messgeField() {
             assertTrue(Type.MESSAGE.matchField(field(2)));
         }
@@ -562,28 +552,28 @@ class IdentifierTest {
     class FindingField {
 
         @Test
-        @DisplayName("Integer")
+        @DisplayName("`Integer`")
         void intType() {
             assertFound(Integer.class, SeveralFieldsId.getDescriptor());
             assertNotFound(Integer.class, TimestampFieldId.getDescriptor());
         }
 
         @Test
-        @DisplayName("Long")
+        @DisplayName("`Long`")
         void longType() {
             assertFound(Long.class, SeveralFieldsId.getDescriptor());
             assertNotFound(Long.class, TimestampFieldId.getDescriptor());
         }
 
         @Test
-        @DisplayName("String")
+        @DisplayName("`String`")
         void stringType() {
             assertFound(String.class, SeveralFieldsId.getDescriptor());
             assertNotFound(String.class, NestedMessageId.getDescriptor());
         }
 
         @Test
-        @DisplayName("Message")
+        @DisplayName("`Message`")
         void messageType() {
             assertFound(StringValue.class, SeveralFieldsId.getDescriptor());
             assertNotFound(StringValue.class, IdWithPrimitiveFields.getDescriptor());

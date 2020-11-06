@@ -28,7 +28,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static io.spine.testing.Assertions.assertIllegalArgument;
+import static io.spine.validate.given.FieldAwareMessageTestEnv.msg;
 
 @DisplayName("`FieldAwareMessage` should")
 class FieldAwareMessageTest {
@@ -44,8 +45,8 @@ class FieldAwareMessageTest {
     @Test
     @DisplayName("fail to read values when `readValues` has implementation issues")
     void failToReadValues() {
-        AggregateState msg = FieldAwareMessageTestEnv.msg();
+        AggregateState msg = msg();
         BrokenFieldAware state = new BrokenFieldAware(msg);
-        assertThrows(IllegalArgumentException.class, state::checkFieldsReachable);
+        assertIllegalArgument(state::checkFieldsReachable);
     }
 }

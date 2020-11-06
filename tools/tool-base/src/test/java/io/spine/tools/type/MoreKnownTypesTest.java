@@ -40,13 +40,14 @@ import java.io.OutputStream;
 import java.nio.file.Path;
 
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING;
+import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.TestValues.randomString;
+import static io.spine.tools.type.MoreKnownTypes.extendWith;
 import static java.nio.file.Files.newOutputStream;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("MoreKnownTypes should")
+@DisplayName("`MoreKnownTypes` should")
 class MoreKnownTypesTest extends UtilityClassTest<MoreKnownTypes> {
 
     private File descriptorFile;
@@ -96,8 +97,7 @@ class MoreKnownTypesTest extends UtilityClassTest<MoreKnownTypes> {
     @DisplayName("not allow non-existing files")
     void notAllowRandomFiles() {
         File nonExistingFile = new File(randomString());
-        assertThrows(IllegalArgumentException.class,
-                     () -> MoreKnownTypes.extendWith(nonExistingFile));
+        assertIllegalArgument(() -> extendWith(nonExistingFile));
     }
 
     @Test

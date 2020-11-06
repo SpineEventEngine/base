@@ -28,10 +28,10 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("FileName should")
@@ -50,8 +50,7 @@ class FileNameTest {
     @Test
     @DisplayName("require standard extension")
     void requireStandardExtension() {
-        assertThrows(IllegalArgumentException.class,
-                     () -> FileName.of("some_thing"));
+        assertIllegalArgument(() -> FileName.of("some_thing"));
     }
 
     @Test

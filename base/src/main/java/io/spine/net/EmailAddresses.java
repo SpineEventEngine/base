@@ -21,6 +21,7 @@
 package io.spine.net;
 
 import io.spine.net.string.NetStringifiers;
+import io.spine.string.Stringifier;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -59,8 +60,7 @@ public final class EmailAddresses {
      */
     public static String toString(EmailAddress address) {
         checkNotNull(address);
-        String result = NetStringifiers.forEmailAddress()
-                                       .convert(address);
+        String result = stringifier().convert(address);
         return result;
     }
 
@@ -74,9 +74,11 @@ public final class EmailAddresses {
     public static EmailAddress valueOf(String value) {
         checkNotNull(value);
         checkArgument(isValid(value));
-        EmailAddress result = NetStringifiers.forEmailAddress()
-                                             .reverse()
-                                             .convert(value);
+        EmailAddress result = stringifier().reverse().convert(value);
         return result;
+    }
+
+    private static Stringifier<EmailAddress> stringifier() {
+        return NetStringifiers.forEmailAddress();
     }
 }

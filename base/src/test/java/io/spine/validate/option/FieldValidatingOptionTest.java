@@ -45,13 +45,14 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.truth.Truth8.assertThat;
+import static io.spine.testing.Assertions.assertIllegalState;
 import static io.spine.testing.TestValues.randomString;
+import static io.spine.validate.MessageValue.atTopLevel;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("FieldValidatingOption should")
+@DisplayName("`FieldValidatingOption` should")
 final class FieldValidatingOptionTest {
 
     @BeforeAll
@@ -91,15 +92,14 @@ final class FieldValidatingOptionTest {
         assertThat(maxLength.valueFrom(fieldValue.context())).isPresent();
     }
 
-    @DisplayName("throw IllegalStateException if a specified option is not as field option")
+    @DisplayName("throw `IllegalStateException` if a specified option is not a field option")
     @Test
     void throwISEIfOptionIsNotPresentInFieldOption() {
         ATestMessageWithConstraint msg = ATestMessageWithConstraint.getDefaultInstance();
-        MessageValue value = MessageValue.atTopLevel(msg);
+        MessageValue value = atTopLevel(msg);
         FieldValue fieldValue = valueField(value);
         MaxLength maxLength = new MaxLength();
-        assertThrows(IllegalStateException.class,
-                     () -> maxLength.optionValue(fieldValue.context()));
+        assertIllegalState(() -> maxLength.optionValue(fieldValue.context()));
     }
 
     @DisplayName("not validate field if option is not present in external or field constraints")

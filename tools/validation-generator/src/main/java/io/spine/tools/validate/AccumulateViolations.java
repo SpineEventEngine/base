@@ -33,10 +33,10 @@ import java.util.function.Function;
  * <p>Typically, one accumulator is used many times for different violations.
  *
  * <p>For example:
- * <pre>
+ * <pre>{@code
  * AccumulateViolation accumulator =
  *     (violationExpression) -> formatted("errorBuilder.addViolation(%s);", violationExpression);
- * </pre>
+ * }</pre>
  *
  * <p>In the example above a function takes a {@link ConstraintViolation} expression and uses it
  * to add the violation to a {@code ValidationError} builder.

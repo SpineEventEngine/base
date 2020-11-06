@@ -36,6 +36,8 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static io.spine.testing.Assertions.assertIllegalArgument;
+import static io.spine.validate.option.RangeConstraint.rangeFromOption;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
@@ -90,8 +92,7 @@ class RangeConstraintTest {
     @MethodSource("emptyRanges")
     @DisplayName("throw on empty ranges")
     void throwOnEmptyRanges(String emptyRange) {
-        assertThrows(IllegalArgumentException.class,
-                     () -> RangeConstraint.rangeFromOption(emptyRange, aDeclaration()));
+        assertIllegalArgument(() -> rangeFromOption(emptyRange, aDeclaration()));
     }
 
     private static Set<Arguments> emptyRanges() {

@@ -23,19 +23,18 @@ package io.spine.code.gen;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.testing.Assertions.assertIllegalArgument;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("Indent should")
+@DisplayName("`Indent` should")
 class IndentTest {
 
     @Test
     @DisplayName("prohibit negative values")
     void prohibitNegativeValue() {
-        assertThrows(IllegalArgumentException.class,
-                     () -> Indent.of(-1));
+        assertIllegalArgument(() -> Indent.of(-1));
     }
 
     @Test

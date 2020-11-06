@@ -28,6 +28,7 @@ import io.spine.test.messages.MessageWithStringValue;
 import io.spine.testing.TestValues;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.option.EntityOption.Kind.ENTITY;
@@ -39,15 +40,15 @@ import static io.spine.protobuf.Messages.isDefault;
 import static io.spine.protobuf.Messages.isNotDefault;
 import static io.spine.protobuf.TypeConverter.toAny;
 import static io.spine.protobuf.TypeConverter.toMessage;
+import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.TestValues.newUuidValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("Messages utility class should")
+@DisplayName("`Messages` utility class should")
 class MessagesTest extends UtilityClassTest<Messages> {
 
     MessagesTest() {
@@ -62,7 +63,7 @@ class MessagesTest extends UtilityClassTest<Messages> {
     }
 
     @Test
-    @DisplayName("pack to Any")
+    @DisplayName("pack to `Any`")
     void packToAny() {
         Timestamp timestamp = Time.currentTime();
         assertEquals(timestamp, unpack(AnyPacker.pack(timestamp)));
@@ -81,47 +82,49 @@ class MessagesTest extends UtilityClassTest<Messages> {
     @Test
     @DisplayName("throw when try to get builder for a not generated message")
     void failGettingNonGeneratedBuilder() {
-        assertThrows(IllegalArgumentException.class,
-                     () -> builderFor(Message.class));
+        assertIllegalArgument(() -> builderFor(Message.class));
     }
 
     @Test
-    @DisplayName("ensure Message")
+    @DisplayName("ensure `Message`")
     void ensureMessageInstance() {
         StringValue value = TestValues.newUuidValue();
         assertEquals(value, ensureMessage(AnyPacker.pack(value)));
         assertSame(value, ensureMessage(value));
     }
 
-    @Test
-    @DisplayName("verify that message is not in default state")
-    void verifyThatMessageIsNotInDefaultState() {
-        Message msg = toMessage("check_if_message_is_not_in_default_state");
+    @Nested
+    @DisplayName("verify that")
+    class VerifyThat {
 
-        assertTrue(isNotDefault(msg));
-        assertFalse(isNotDefault(StringValue.getDefaultInstance()));
-    }
+        @Test
+        @DisplayName("a message is not in the default state")
+        void messageIsNotInDefaultState() {
+            Message msg = toMessage("check_if_message_is_not_in_default_state");
 
+            assertTrue(isNotDefault(msg));
+            assertFalse(isNotDefault(StringValue.getDefaultInstance()));
+        }
 
-    @Test
-    @DisplayName("verify that message is in default state")
-    void verifyThatMessageIsInDefaultState() {
-        Message nonDefault = newUuidValue();
+        @Test
+        @DisplayName("a message is in the default state")
+        void messageIsInDefaultState() {
+            Message nonDefault = newUuidValue();
 
-        assertTrue(isDefault(StringValue.getDefaultInstance()));
-        assertFalse(isDefault(nonDefault));
-    }
+            assertTrue(isDefault(StringValue.getDefaultInstance()));
+            assertFalse(isDefault(nonDefault));
+        }
 
-    @Test
-    @DisplayName("verify that an enum is not the default instance")
-    void verifyNotDefaultEnum() {
-        assertTrue(isNotDefault(ENTITY));
-    }
+        @Test
+        @DisplayName("an enum is not the default instance")
+        void notDefaultEnum() {
+            assertTrue(isNotDefault(ENTITY));
+        }
 
-
-    @Test
-    @DisplayName("verify that an enum is the default instance")
-    void verifyDefaultEnum() {
-        assertTrue(isDefault(KIND_UNKNOWN));
+        @Test
+        @DisplayName("an enum is the default instance")
+        void defaultEnum() {
+            assertTrue(isDefault(KIND_UNKNOWN));
+        }
     }
 }
