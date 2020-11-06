@@ -48,8 +48,7 @@ final class GenerateInterfacesTest {
         @DisplayName("is created with `null` arguments")
         @Test
         void isCreatedWithNullArguments() {
-            assertNpe(() ->
-                              new GenerateInterfaces(null));
+            assertNpe(() -> new GenerateInterfaces(null));
         }
 
         @DisplayName("`null` `MessageType` is supplied")
