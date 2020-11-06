@@ -247,7 +247,7 @@ class ExtensionTest {
     }
 
     @Nested
-    @DisplayName("for spine checker return")
+    @DisplayName("for Spine checker return")
     class SpineChecker {
 
         @Test

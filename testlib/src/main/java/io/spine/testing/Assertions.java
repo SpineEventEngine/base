@@ -30,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * Convenience assertions accompanying {@link org.junit.jupiter.api.Assertions},
  * {@link com.google.common.truth.Truth}, and {@link com.google.common.truth.Truth8}.
- *
  */
 public final class Assertions {
 

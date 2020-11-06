@@ -87,7 +87,7 @@ class TypeNameTest {
     class ObtainInstance {
 
         @Test
-        @DisplayName("for message")
+        @DisplayName("for `Message`")
         void forMessage() {
             TypeName typeName = TypeName.of(StringValue.getDefaultInstance());
             assertNotNull(typeName);

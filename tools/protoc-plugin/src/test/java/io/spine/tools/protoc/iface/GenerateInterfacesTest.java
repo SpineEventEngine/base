@@ -38,10 +38,10 @@ import static io.spine.testing.Assertions.assertNpe;
 import static io.spine.tools.protoc.FilePatterns.filePrefix;
 import static io.spine.tools.protoc.FilePatterns.fileSuffix;
 
-@DisplayName("GenerateInterfaces should")
+@DisplayName("`GenerateInterfaces` should")
 final class GenerateInterfacesTest {
 
-    @DisplayName("throw NullPointerException if")
+    @DisplayName("throw `NullPointerException` if")
     @Nested
     class ThrowNpe {
 
@@ -52,7 +52,7 @@ final class GenerateInterfacesTest {
                               new GenerateInterfaces(null));
         }
 
-        @DisplayName("`null` MessageType is supplied")
+        @DisplayName("`null` `MessageType` is supplied")
         @Test
         void nullMessageTypeIsSupplied() {
             ConfigByPattern config = newTaskConfig("test")
@@ -73,8 +73,7 @@ final class GenerateInterfacesTest {
     @ParameterizedTest(name = "\"{0}\"")
     @ValueSource(strings = {"", "  "})
     void throwIllegalArgumentException(String interfaceName) {
-        assertIllegalArgument(() ->
-                                      newTask(newTaskConfig(interfaceName).build()));
+        assertIllegalArgument(() -> newTask(newTaskConfig(interfaceName).build()));
     }
 
     @DisplayName("generate empty result if")

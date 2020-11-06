@@ -67,7 +67,7 @@ class MessageFieldExceptionTest {
     }
 
     @Test
-    @DisplayName("not allow null parameters")
+    @DisplayName("not allow `null` parameters")
     void prohibitNullParams() {
         assertNpe(() -> new MessageFieldException(Empty.getDefaultInstance(), nullRef()));
     }

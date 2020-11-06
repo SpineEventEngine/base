@@ -35,7 +35,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  *
  * @apiNote Replaces deprecated {@code com.google.common.io.Files#createTempDir()}.
  */
-public class TempDir {
+public final class TempDir {
 
     /** Prevents direct instantiation. */
     private TempDir() {
@@ -94,6 +94,7 @@ public class TempDir {
      * @see java.nio.file.Files#createTempDirectory(Path, String, FileAttribute...)
      */
     public static File forClass(Class<?> testSuite, FileAttribute<?>... attrs) {
+        checkNotNull(testSuite);
         String prefix = testSuite.getSimpleName();
         return withPrefix(prefix, attrs);
     }

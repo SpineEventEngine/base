@@ -165,7 +165,7 @@ final class InterfaceGeneratorTest {
         }
 
         @Test
-        @DisplayName("`EveryIs` in singe file")
+        @DisplayName("`EveryIs` in single file")
         void generateInsertionPointContentsForEveryIsInSingleFile() {
             String filePath = "spine/tools/protoc/iface/every_is_in_one_file.proto";
 

@@ -189,14 +189,12 @@ class MuteLoggingExtensionTest extends SystemOutputTest {
         }
 
         @Override
-        public <T> Optional<T> getConfigurationParameter(String key,
-                                                         Function<String, T> transformer) {
+        public <T> Optional<T> getConfigurationParameter(String key, Function<String, T> fn) {
             return Optional.empty();
         }
 
         @Override
         public void publishReportEntry(Map<String, String> map) {
-
         }
 
         @Override

@@ -117,7 +117,7 @@ final class ExternalClassLoaderTest {
     }
 
     @Test
-    @DisplayName("return a class instance by it's fully-qualified name")
+    @DisplayName("return a class instance by its fully-qualified name")
     void returnClassInstanceByFqn() {
         assertThat(newInstanceFor(StubMethodFactory.class))
                 .isInstanceOf(StubMethodFactory.class);

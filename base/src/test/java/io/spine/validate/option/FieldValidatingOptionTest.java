@@ -92,7 +92,7 @@ final class FieldValidatingOptionTest {
         assertThat(maxLength.valueFrom(fieldValue.context())).isPresent();
     }
 
-    @DisplayName("throw `IllegalStateException` if a specified option is not as field option")
+    @DisplayName("throw `IllegalStateException` if a specified option is not a field option")
     @Test
     void throwISEIfOptionIsNotPresentInFieldOption() {
         ATestMessageWithConstraint msg = ATestMessageWithConstraint.getDefaultInstance();

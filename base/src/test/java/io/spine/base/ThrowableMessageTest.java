@@ -63,7 +63,7 @@ class ThrowableMessageTest {
 
     @Test
     @DisplayName("have timestamp")
-    void hasTimestamp() {
+    void haveTimestamp() {
         assertTrue(Timestamps.isValid(throwableMessage.timestamp()));
     }
 
