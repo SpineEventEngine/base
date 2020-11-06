@@ -57,7 +57,7 @@ public final class GivenProject {
                         .mainJs();
     }
 
-    public static DefaultJsProject project() {
+    private static DefaultJsProject project() {
         File projectDir = withPrefix("given-project");
         compileProject(projectDir);
         DefaultJsProject project = DefaultJsProject.at(projectDir);

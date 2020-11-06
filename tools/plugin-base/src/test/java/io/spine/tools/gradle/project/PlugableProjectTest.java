@@ -23,6 +23,7 @@ package io.spine.tools.gradle.project;
 import com.google.common.testing.NullPointerTester;
 import io.spine.io.Resource;
 import io.spine.logging.Logging;
+import io.spine.testing.TempDir;
 import io.spine.testing.logging.LogRecordSubject;
 import io.spine.testing.logging.LoggingTest;
 import io.spine.tools.gradle.GradlePlugin;
@@ -54,7 +55,7 @@ class PlugableProjectTest {
 
     @BeforeEach
     void setUp() {
-        File tempDir = io.spine.testing.TempDir.withPrefix("pluggable-project-test");
+        File tempDir = TempDir.forClass(getClass());
         project = ProjectBuilder
                 .builder()
                 .withName(PlugableProjectTest.class.getSimpleName())

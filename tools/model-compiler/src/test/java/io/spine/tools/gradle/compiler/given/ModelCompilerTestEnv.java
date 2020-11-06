@@ -44,7 +44,7 @@ public class ModelCompilerTestEnv {
 
     /** Creates a project with all required tasks. */
     public static Project newProject() {
-        return newProject(TempDir.withPrefix("model-compiler-tests"));
+        return newProject(TempDir.forClass(ModelCompilerTestEnv.class));
     }
 
     /**

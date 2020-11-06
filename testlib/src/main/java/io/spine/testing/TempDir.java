@@ -24,11 +24,16 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileAttribute;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * Utilities for creating temporary directories.
+ *
+ * @apiNote Replaces deprecated {@code com.google.common.io.Files#createTempDir()}.
  */
 public class TempDir {
 
@@ -37,20 +42,59 @@ public class TempDir {
     }
 
     /**
-     * Creates a temporary directory at the location obtained from the system property
-     * {@code java.io.tmpdir} with the passed prefix.
+     * Creates a temporary directory.
      *
-     * <p>Replaces deprecated {@code com.google.common.io.Files#createTempDir()}.
+     * <p>The parent directory for the created is obtained from the system property
+     * {@code java.io.tmpdir}.
+     *
+     * <p>The prefix is used by the underlying JDK implementation and is <em>NOT</em> guaranteed
+     * in the name of the created directory name.
+     *
+     * @param prefix
+     *         this value would be used for generating the name of the created directory,
+     *         cannot be empty, or blank
+     * @param attrs
+     *         an optional list of file attributes to set atomically when
+     *         creating the directory
+     * @throws IllegalStateException
+     *         if the directory could not be created
+     * @see java.nio.file.Files#createTempDirectory(Path, String, FileAttribute...)
      */
-    public static File withPrefix(String prefix) {
+    public static File withPrefix(String prefix, FileAttribute<?>... attrs) {
+        checkNotNull(prefix);
+        checkNotEmptyOrBlank(prefix);
         @SuppressWarnings("AccessOfSystemProperties")
         File baseDir = new File(System.getProperty("java.io.tmpdir"));
         Path directory;
         try {
-             directory = Files.createTempDirectory(baseDir.toPath(), prefix);
+             directory = Files.createTempDirectory(baseDir.toPath(), prefix, attrs);
              return directory.toFile();
         } catch (IOException e) {
             throw newIllegalStateException(e, "Unable to create temp dir under `%s`.", baseDir);
         }
+    }
+
+    /**
+     * Creates a temporary directory for the passed test suite class.
+     *
+     * <p>The parent directory for the created is obtained from the system property
+     * {@code java.io.tmpdir}.
+     *
+     * <p>Implementation <em>may</em> use a simple name of the passed class as the prefix
+     * for the name of the generated directory, but this is <em>NOT</em> guaranteed.
+     *
+     * @param testSuite
+     *         the test suite class which needs the temporary directory
+     * @param attrs
+     *         an optional list of file attributes to set atomically when
+     *         creating the directory
+     * @throws IllegalStateException
+     *         if the directory could not be created
+     * @see #withPrefix(String, FileAttribute...)
+     * @see java.nio.file.Files#createTempDirectory(Path, String, FileAttribute...)
+     */
+    public static File forClass(Class<?> testSuite, FileAttribute<?>... attrs) {
+        String prefix = testSuite.getSimpleName();
+        return withPrefix(prefix, attrs);
     }
 }
