@@ -312,6 +312,9 @@ object DependencyResolution {
                         Deps.test.junit4,
 
                         // Transitive dependencies of 3rd party components that we don't use directly.
+                        "org.junit.platform:junit-platform-commons:${Versions.junitPlatform}",
+                        "com.google.auto.value:auto-value-annotations:1.7.4",
+                        "com.google.auto.service:auto-service-annotations:1.0-rc7",
                         "com.google.code.gson:gson:2.8.6",
                         "com.google.j2objc:j2objc-annotations:1.3",
                         "org.codehaus.plexus:plexus-utils:3.3.0",
