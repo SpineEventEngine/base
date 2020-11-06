@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.FileAttribute;
 
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 
@@ -45,7 +44,7 @@ public final class TempDirs {
      * @return new temp directory
      * @throws IllegalStateException
      *         if an I/O error occurs
-     * @see Files#createTempDirectory(String, FileAttribute[])
+     * @see Files#createTempDirectory
      */
     public static File createTempDir() {
         Path file;
