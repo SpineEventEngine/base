@@ -20,6 +20,7 @@
 
 package io.spine.tools.protodoc;
 
+import io.spine.testing.TempDir;
 import io.spine.tools.gradle.TaskName;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -28,11 +29,9 @@ import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.gradle.JavaTaskName.compileTestJava;
@@ -58,8 +57,8 @@ class ProtoJavadocPluginTest {
     private Project project;
 
     @BeforeEach
-    void setUp(@TempDir Path tempDirPath) {
-        testProjectDir = tempDirPath.toFile();
+    void setUp() {
+        testProjectDir = TempDir.forClass(getClass());
         project = newProject();
         project.getPluginManager()
                .apply(PLUGIN_ID);

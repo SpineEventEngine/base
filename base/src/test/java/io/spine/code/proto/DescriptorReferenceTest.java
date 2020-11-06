@@ -47,9 +47,9 @@ import static io.spine.testing.Assertions.assertIllegalState;
 import static io.spine.testing.Assertions.assertNpe;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.emptyList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Descriptor reference should")
 class DescriptorReferenceTest {
