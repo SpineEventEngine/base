@@ -223,18 +223,17 @@ object Runtime {
 }
 
 object Test {
-    val junit4               = "junit:junit:${Versions.junit4}"
+    val junit4        = "junit:junit:${Versions.junit4}"
     val junit5Api = listOf(
             "org.junit.jupiter:junit-jupiter-api:${Versions.junit5}",
             "org.junit.jupiter:junit-jupiter-params:${Versions.junit5}",
             "org.apiguardian:apiguardian-api:${Versions.apiguardian}"
     )
-    val junit5Runner         = "org.junit.jupiter:junit-jupiter-engine:${Versions.junit5}"
-    val junitPioneer         = "org.junit-pioneer:junit-pioneer:${Versions.junitPioneer}"
-    val junitPlatformCommons = "org.junit.platform:junit-platform-commons:${Versions.junitPlatform}"
-    val guavaTestlib         = "com.google.guava:guava-testlib:${Versions.guava}"
-    val mockito              = "org.mockito:mockito-core:2.12.0"
-    val hamcrest             = "org.hamcrest:hamcrest-all:1.3"
+    val junit5Runner  = "org.junit.jupiter:junit-jupiter-engine:${Versions.junit5}"
+    val junitPioneer  = "org.junit-pioneer:junit-pioneer:${Versions.junitPioneer}"
+    val guavaTestlib  = "com.google.guava:guava-testlib:${Versions.guava}"
+    val mockito       = "org.mockito:mockito-core:2.12.0"
+    val hamcrest      = "org.hamcrest:hamcrest-all:1.3"
     val truth = listOf(
             "com.google.truth:truth:${Versions.truth}",
             "com.google.truth.extensions:truth-java8-extension:${Versions.truth}",
