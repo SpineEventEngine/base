@@ -75,17 +75,17 @@ final class GenerateInterfacesTest {
         assertIllegalArgument(() -> newTask(newTaskConfig(interfaceName).build()));
     }
 
-    @DisplayName("generate empty result if")
+    @DisplayName("generate empty result if a `Message`")
     @Nested
     class GenerateEmptyResult {
 
-        @DisplayName("message does not match pattern")
+        @DisplayName("does not match pattern")
         @Test
         void messageDoesNotMatchPattern() {
             assertEmptyResult(TestInterface.class.getName(), FilePatterns.fileRegex("wrong"));
         }
 
-        @DisplayName("message is not top level")
+        @DisplayName("is not top level")
         @Test
         void messageIsNotTopLevel() {
             assertEmptyResult(TestInterface.class.getName(),
