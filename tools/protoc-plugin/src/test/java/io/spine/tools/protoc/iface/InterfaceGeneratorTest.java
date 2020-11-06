@@ -287,7 +287,7 @@ final class InterfaceGeneratorTest {
     }
 
     @Test
-    @DisplayName("not generate `UuidValue` insertion points for non-eligible messages")
+    @DisplayName("not generate `UuidValue` insertion points for ineligible messages")
     void notGenerateUuidValueForNonEligible() {
         String filePath = "spine/tools/protoc/iface/non_uuid_values.proto";
 
