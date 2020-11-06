@@ -63,28 +63,28 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
     private static final String GRPC_GROUP = "io.grpc";
     private static final String GRPC_PLUGIN_NAME = "protoc-gen-grpc-java";
     private static final String SPINE_PLUGIN_NAME = "spine-protoc-plugin";
+    private static final String EXECUTABLE_CLASSIFIER = "exe";
 
     @Override
     protected void
     configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins, Project project) {
-        plugins.create(grpc.name(),
-                       locator -> locator.setArtifact(Artifact.newBuilder()
-                                                              .setGroup(GRPC_GROUP)
-                                                              .setName(GRPC_PLUGIN_NAME)
-                                                              .setVersion(VERSIONS.grpc())
-                                                              .build()
-                                                              .notation()));
-        Artifact protocPluginArtifact = Artifact
+        Artifact gRpcPlugin = Artifact
+                .newBuilder()
+                .setGroup(GRPC_GROUP)
+                .setName(GRPC_PLUGIN_NAME)
+                .setVersion(VERSIONS.grpc())
+                .build();
+        Artifact spinePlugin = Artifact
                 .newBuilder()
                 .useSpineToolsGroup()
                 .setName(SPINE_PLUGIN_NAME)
                 .setVersion(VERSIONS.spineBase())
+                .setClassifier(EXECUTABLE_CLASSIFIER)
                 .setExtension(JAR_EXTENSION)
                 .build();
-        project.afterEvaluate(p -> plugins.create(
-                spineProtoc.name(),
-                locator -> locator.setArtifact(protocPluginArtifact.notation()))
-        );
+        plugins.create(grpc.name(), locator -> locator.setArtifact(gRpcPlugin.notation()));
+        plugins.create(spineProtoc.name(), locator -> locator.setArtifact(spinePlugin.notation()));
+
     }
 
     @Override
