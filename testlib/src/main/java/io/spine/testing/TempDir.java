@@ -40,9 +40,8 @@ public class TempDir {
      * Creates a temporary directory at the location obtained from the system property
      * {@code java.io.tmpdir} with the passed prefix.
      *
-     * <p>Replaces deprecated {@link com.google.common.io.Files#createTempDir()}.
+     * <p>Replaces deprecated {@code com.google.common.io.Files#createTempDir()}.
      */
-    @SuppressWarnings("deprecation") // to reference the deprecated method in Javadoc
     public static File withPrefix(String prefix) {
         @SuppressWarnings("AccessOfSystemProperties")
         File baseDir = new File(System.getProperty("java.io.tmpdir"));
