@@ -420,7 +420,7 @@ class IdentifierTest {
     class CheckSupported {
 
         @Test
-        @DisplayName("String")
+        @DisplayName("`String`")
         void stringValue() {
             assertDoesNotThrow(() -> Identifier.checkSupported(String.class));
         }
@@ -483,7 +483,7 @@ class IdentifierTest {
         }
 
         @Test
-        @DisplayName("and throw if Any is empty")
+        @DisplayName("and throw if `Any` is empty")
         void rejectEmptyAny() {
             assertIllegalArgument(() -> Identifier.unpack(Any.getDefaultInstance()));
         }
