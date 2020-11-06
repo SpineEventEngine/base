@@ -36,9 +36,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
-import java.nio.file.Path;
+import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.google.common.testing.NullPointerTester.Visibility.PACKAGE;
@@ -54,11 +53,12 @@ class PlugableProjectTest {
     private Project project;
 
     @BeforeEach
-    void setUp(@TempDir Path dir) {
+    void setUp() {
+        File tempDir = io.spine.testing.TempDir.withPrefix("pluggable-project-test");
         project = ProjectBuilder
                 .builder()
                 .withName(PlugableProjectTest.class.getSimpleName())
-                .withProjectDir(dir.toFile())
+                .withProjectDir(tempDir)
                 .build();
         plugableProject = new PlugableProject(project);
     }
