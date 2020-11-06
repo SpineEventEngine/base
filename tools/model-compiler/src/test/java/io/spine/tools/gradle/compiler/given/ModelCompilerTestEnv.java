@@ -26,7 +26,7 @@ import org.gradle.testfixtures.ProjectBuilder;
 import java.io.File;
 import java.util.UUID;
 
-import static io.spine.testing.TempFiles.createTempDir;
+import static io.spine.testing.TempDirs.createTempDir;
 import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
 import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 

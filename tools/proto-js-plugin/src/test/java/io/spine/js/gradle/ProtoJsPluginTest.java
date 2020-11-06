@@ -28,7 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.testing.TempFiles.createTempDir;
+import static io.spine.testing.TempDirs.createTempDir;
 import static io.spine.tools.gradle.BaseTaskName.build;
 import static io.spine.tools.gradle.ProtoJsTaskName.generateJsonParsers;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

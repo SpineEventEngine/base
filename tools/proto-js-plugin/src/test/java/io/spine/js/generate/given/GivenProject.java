@@ -30,7 +30,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
-import static io.spine.testing.TempFiles.createTempDir;
+import static io.spine.testing.TempDirs.createTempDir;
 import static io.spine.tools.gradle.BaseTaskName.build;
 import static java.util.Collections.singletonList;
 

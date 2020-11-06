@@ -24,31 +24,33 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileAttribute;
 
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 
-public final class TempFiles {
+/**
+ * Utilities for creating temporary directories for test purposes.
+ */
+public final class TempDirs {
 
     /**
      * Prevents the utility class instantiation.
      */
-    private TempFiles() {
+    private TempDirs() {
     }
 
-    public static File createTempFile() {
-        Path file;
-        try {
-            file = Files.createTempFile(TempFiles.class.getName(), "");
-        } catch (IOException e) {
-            throw illegalStateWithCauseOf(e);
-        }
-        return file.toFile();
-    }
-
+    /**
+     * Creates a new temp directory.
+     *
+     * @return new temp directory
+     * @throws IllegalStateException
+     *         if an I/O error occurs
+     * @see Files#createTempDirectory(String, FileAttribute[])
+     */
     public static File createTempDir() {
         Path file;
         try {
-            file = Files.createTempDirectory(TempFiles.class.getName());
+            file = Files.createTempDirectory(TempDirs.class.getName());
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
