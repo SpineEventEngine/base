@@ -20,7 +20,7 @@
 
 package io.spine.js.gradle;
 
-import io.spine.js.TempDir;
+import io.spine.testing.TempDir;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.TaskContainer;
@@ -41,7 +41,7 @@ class ProtoJsPluginTest {
     @BeforeEach
     void setUp() {
         project = ProjectBuilder.builder()
-                                .withProjectDir(TempDir.createTempDir("js-plugin-test"))
+                                .withProjectDir(TempDir.withPrefix("js-plugin-test"))
                                 .build();
         project.task(build.name());
     }

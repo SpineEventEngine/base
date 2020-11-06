@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js;
+package io.spine.testing;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,8 +27,12 @@ import java.nio.file.Path;
 
 import static io.spine.util.Exceptions.newIllegalStateException;
 
+/**
+ * Utilities for creating temporary directories.
+ */
 public class TempDir {
 
+    /** Prevents direct instantiation. */
     private TempDir() {
     }
 
@@ -36,9 +40,10 @@ public class TempDir {
      * Creates a temporary directory at the location obtained from the system property
      * {@code java.io.tmpdir} with the passed prefix.
      *
-     * @apiNote replaces deprecated {@link com.google.common.io.Files.createTempDir()}.
+     * <p>Replaces deprecated {@link com.google.common.io.Files#createTempDir()}.
      */
-    public static File createTempDir(String prefix) {
+    @SuppressWarnings("deprecation") // to reference the deprecated method in Javadoc
+    public static File withPrefix(String prefix) {
         @SuppressWarnings("AccessOfSystemProperties")
         File baseDir = new File(System.getProperty("java.io.tmpdir"));
         Path directory;

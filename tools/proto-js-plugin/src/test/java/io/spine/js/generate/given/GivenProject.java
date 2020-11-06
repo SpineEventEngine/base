@@ -30,7 +30,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
-import static io.spine.js.TempDir.createTempDir;
+import static io.spine.testing.TempDir.withPrefix;
 import static io.spine.tools.gradle.BaseTaskName.build;
 import static java.util.Collections.singletonList;
 
@@ -58,7 +58,7 @@ public final class GivenProject {
     }
 
     public static DefaultJsProject project() {
-        File projectDir = createTempDir("given-project");
+        File projectDir = withPrefix("given-project");
         compileProject(projectDir);
         DefaultJsProject project = DefaultJsProject.at(projectDir);
         return project;

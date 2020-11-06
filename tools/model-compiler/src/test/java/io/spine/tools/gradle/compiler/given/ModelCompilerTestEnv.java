@@ -20,7 +20,7 @@
 
 package io.spine.tools.gradle.compiler.given;
 
-import com.google.common.io.Files;
+import io.spine.testing.TempDir;
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
 
@@ -44,7 +44,7 @@ public class ModelCompilerTestEnv {
 
     /** Creates a project with all required tasks. */
     public static Project newProject() {
-        return newProject(Files.createTempDir());
+        return newProject(TempDir.withPrefix("model-compiler-tests"));
     }
 
     /**
