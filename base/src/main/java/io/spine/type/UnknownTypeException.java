@@ -39,7 +39,7 @@ public class UnknownTypeException extends RuntimeException {
     }
 
     private static String makeMsg(String typeName) {
-        return format("No Java class found for the Protobuf message of type: %s", typeName);
+        return format("No Java class found for the Protobuf message of type: `%s`.", typeName);
     }
 
     /**
