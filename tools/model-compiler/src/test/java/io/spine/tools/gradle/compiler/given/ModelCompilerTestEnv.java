@@ -20,13 +20,13 @@
 
 package io.spine.tools.gradle.compiler.given;
 
+import io.spine.testing.TempDir;
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
 
 import java.io.File;
 import java.util.UUID;
 
-import static io.spine.testing.TempDirs.createTempDir;
 import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
 import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 
@@ -44,7 +44,7 @@ public class ModelCompilerTestEnv {
 
     /** Creates a project with all required tasks. */
     public static Project newProject() {
-        return newProject(createTempDir());
+        return newProject(TempDir.forClass(ModelCompilerTestEnv.class));
     }
 
     /**

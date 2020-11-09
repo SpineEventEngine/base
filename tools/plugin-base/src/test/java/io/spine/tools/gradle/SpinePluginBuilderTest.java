@@ -34,7 +34,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
+import static io.spine.testing.Assertions.assertIllegalState;
 import static io.spine.tools.gradle.BaseTaskName.clean;
+import static io.spine.tools.gradle.GradleTask.Builder;
 import static io.spine.tools.gradle.JavaTaskName.classes;
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.gradle.ModelCompilerTaskName.annotateProto;
@@ -43,10 +45,10 @@ import static io.spine.tools.gradle.ModelVerifierTaskName.verifyModel;
 import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
 import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 import static io.spine.tools.gradle.testing.GradleProject.javaPlugin;
+import static io.spine.tools.gradle.testing.NoOp.action;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("SpinePluginBuilder should")
@@ -131,10 +133,8 @@ class SpinePluginBuilderTest {
     @Test
     @DisplayName("not allow tasks without any connection to task graph")
     void notAllowTasksWithoutAnyConnectionToTaskGraph() {
-        GradleTask.Builder builder = TestPlugin.INSTANCE.newTask(verifyModel,
-                                                                 NoOp.action());
-        assertThrows(IllegalStateException.class,
-                     () -> builder.applyNowTo(project));
+        Builder builder = TestPlugin.INSTANCE.newTask(verifyModel, action());
+        assertIllegalState(() -> builder.applyNowTo(project));
     }
 
     @Test

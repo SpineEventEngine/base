@@ -26,6 +26,7 @@ dependencies {
     implementation(Deps.build.guava)
     implementation(project(":base"))
     implementation(project(":plugin-base"))
+    testImplementation(project(":testlib"))
     testImplementation(project(":plugin-testlib"))
     testImplementation(gradleTestKit())
 }

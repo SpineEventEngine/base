@@ -27,6 +27,7 @@ import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("`ClassMember` should")
@@ -53,6 +54,6 @@ final class ClassMemberTest {
     }
 
     private static String insertionPoint(MessageType type) {
-        return String.format("class_scope:%s", type.name());
+        return format("class_scope:%s", type.name());
     }
 }

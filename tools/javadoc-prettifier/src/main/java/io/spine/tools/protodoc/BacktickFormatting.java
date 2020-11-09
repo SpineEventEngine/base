@@ -38,7 +38,7 @@ import static java.util.regex.Matcher.quoteReplacement;
  * lined text`
  * }</pre>
  */
-class BacktickFormatting extends LineFormatting {
+final class BacktickFormatting extends LineFormatting {
 
     @VisibleForTesting
     static final String BACKTICK = "`";
@@ -50,6 +50,7 @@ class BacktickFormatting extends LineFormatting {
     private static final Pattern PATTERN_TEXT_IN_BACKTICKS = Pattern.compile("(`[^`]*?`)");
 
     @Override
+    @SuppressWarnings("JdkObsolete") // to address later.
     String formatLine(String line) {
         // Double the line size to avoid possible memory reallocation.
         StringBuffer buffer = new StringBuffer(line.length() * 2);

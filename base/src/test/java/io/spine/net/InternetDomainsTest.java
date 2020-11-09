@@ -27,8 +27,8 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.net.InternetDomains.isValid;
+import static io.spine.testing.Assertions.assertIllegalArgument;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("InternetDomains utility class should")
 class InternetDomainsTest extends UtilityClassTest<InternetDomains> {
@@ -74,9 +74,6 @@ class InternetDomainsTest extends UtilityClassTest<InternetDomains> {
     @Test
     @SuppressWarnings("CheckReturnValue")
     void rejectInvalidName() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> InternetDomains.valueOf("1.0")
-        );
+        assertIllegalArgument(() -> InternetDomains.valueOf("1.0"));
     }
 }

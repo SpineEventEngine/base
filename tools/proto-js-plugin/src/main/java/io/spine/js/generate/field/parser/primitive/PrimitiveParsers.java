@@ -78,7 +78,7 @@ public final class PrimitiveParsers {
         checkNotNull(jsOutput);
         PrimitiveParser.Builder<?> parserBuilder = parsers.get(fieldType);
         checkState(parsers.containsKey(fieldType),
-                   "An attempt to get a parser for the unknown Primitive type: %s", fieldType);
+                   "An attempt to get a parser for the unknown primitive type: `%s`.", fieldType);
         PrimitiveParser parser = parserBuilder
                 .setJsOutput(jsOutput)
                 .build();

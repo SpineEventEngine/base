@@ -23,6 +23,7 @@ import io.spine.code.fs.java.DefaultJavaProject;
 import org.gradle.api.Project;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -42,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("Extension should")
+@DisplayName("`Extension` should")
 class ExtensionTest {
 
     private Project project;
@@ -56,169 +57,213 @@ class ExtensionTest {
                .apply(SPINE_PROTOBUF_PLUGIN_ID);
     }
 
-    @Test
-    @DisplayName("return default mainTargetGenResourcesDir if not set")
-    void return_default_mainTargetGenResourcesDir_if_not_set() {
-        String dir = Extension.getMainTargetGenResourcesDir(project);
+    @Nested
+    @DisplayName("for `mainTargetGenResourcesDir` return")
+    class MainTargetGenResourceDir {
 
-        assertNotEmptyAndIsInProjectDir(dir);
+        @Test
+        @DisplayName("default value, if not set")
+        void defaultValue() {
+            String dir = Extension.getMainTargetGenResourcesDir(project);
+
+            assertNotEmptyAndIsInProjectDir(dir);
+        }
+
+        @Test
+        @DisplayName("specified value, if set")
+        void setValue() {
+            spineProtobuf().mainTargetGenResourcesDir = newUuid();
+
+            String dir = Extension.getMainTargetGenResourcesDir(project);
+
+            assertEquals(spineProtobuf().mainTargetGenResourcesDir, dir);
+        }
     }
 
-    @Test
-    @DisplayName("return mainTargetGenResourcesDir if set")
-    void return_mainTargetGenResourcesDir_if_set() {
+    @Nested
+    @DisplayName("for `testTargetGenResourcesDir` return")
+    class TestTargetGenResourcesDir {
 
-        spineProtobuf().mainTargetGenResourcesDir = newUuid();
+        @Test
+        @DisplayName("default value, if not set")
+        void defaultValue() {
+            String dir = Extension.getTestTargetGenResourcesDir(project);
 
-        String dir = Extension.getMainTargetGenResourcesDir(project);
+            assertNotEmptyAndIsInProjectDir(dir);
+        }
 
-        assertEquals(spineProtobuf().mainTargetGenResourcesDir, dir);
+        @Test
+        @DisplayName("specified value, if set")
+        void specifiedValue() {
+            spineProtobuf().testTargetGenResourcesDir = newUuid();
+
+            String dir = Extension.getTestTargetGenResourcesDir(project);
+
+            assertEquals(spineProtobuf().testTargetGenResourcesDir, dir);
+        }
     }
 
-    @Test
-    @DisplayName("return default testTargetGenResourcesDir if not set")
-    void return_default_testTargetGenResourcesDir_if_not_set() {
-        String dir = Extension.getTestTargetGenResourcesDir(project);
+    @Nested
+    @DisplayName("for `mainDescriptorSetPath` return")
+    class MainDescriptorSetPath {
 
-        assertNotEmptyAndIsInProjectDir(dir);
+        @Test
+        @DisplayName("default value, if not set")
+        void defaultValue() {
+            File file = Extension.getMainDescriptorSet(project);
+
+            assertNotEmptyAndIsInProjectDir(file.toString());
+        }
+
+        @Test
+        @DisplayName("specified value, if set")
+        void specifiedValue() {
+            spineProtobuf().mainDescriptorSetPath = newUuid();
+
+            File file = Extension.getMainDescriptorSet(project);
+
+            assertEquals(spineProtobuf().mainDescriptorSetPath, file.toString());
+        }
     }
 
-    @Test
-    @DisplayName("return testTargetGenResourcesDir if set")
-    void return_testTargetGenResourcesDir_if_set() {
-        spineProtobuf().testTargetGenResourcesDir = newUuid();
+    @Nested
+    @DisplayName("for `testDescriptorSetPath` return")
+    class TestDescriptorSetPath {
 
-        String dir = Extension.getTestTargetGenResourcesDir(project);
+        @Test
+        @DisplayName("default value, if not set")
+        void defaultValue() {
+            File file = Extension.getTestDescriptorSet(project);
 
-        assertEquals(spineProtobuf().testTargetGenResourcesDir, dir);
+            assertNotEmptyAndIsInProjectDir(file.toString());
+        }
+
+        @Test
+        @DisplayName("specified value, if set")
+        void specifiedValue() {
+            spineProtobuf().testDescriptorSetPath = newUuid();
+
+            File file = Extension.getTestDescriptorSet(project);
+
+            assertEquals(spineProtobuf().testDescriptorSetPath, file.toString());
+        }
     }
 
-    @Test
-    @DisplayName("return default mainDescriptorSetPath if not set")
-    void return_default_mainDescriptorSetPath_if_not_set() {
-        File file = Extension.getMainDescriptorSet(project);
+    @Nested
+    @DisplayName("for `targetGenRejectionsRootDir` return")
+    class TargetGenRejectionsRootDir {
 
-        assertNotEmptyAndIsInProjectDir(file.toString());
+        @Test
+        @DisplayName("default value, if not set")
+        void defaultValue() {
+            String dir = Extension.getTargetGenRejectionsRootDir(project);
+
+            assertNotEmptyAndIsInProjectDir(dir);
+        }
+
+        @Test
+        @DisplayName("specified value, if set")
+        void specifiedValue() {
+            spineProtobuf().targetGenRejectionsRootDir = newUuid();
+
+            String dir = Extension.getTargetGenRejectionsRootDir(project);
+
+            assertEquals(spineProtobuf().targetGenRejectionsRootDir, dir);
+        }
     }
 
-    @Test
-    @DisplayName("return mainDescriptorSetPath if set")
-    void return_mainDescriptorSetPath_if_set() {
-        spineProtobuf().mainDescriptorSetPath = newUuid();
+    @Nested
+    @DisplayName("for `dirsToClean`")
+    class DirsToClean {
 
-        File file = Extension.getMainDescriptorSet(project);
+        @Nested
+        @DisplayName("return")
+        class Return {
+            
+            @Test
+            @DisplayName("default value, if not set")
+            void defaultValue() {
+                List<String> actualDirs = actualDirs();
 
-        assertEquals(spineProtobuf().mainDescriptorSetPath, file.toString());
+                assertEquals(1, actualDirs.size());
+                assertNotEmptyAndIsInProjectDir(actualDirs.get(0));
+            }
+
+            @Test
+            @DisplayName("single value, if set")
+            void singleValue() {
+                spineProtobuf().dirToClean = newUuid();
+
+                List<String> actualDirs = actualDirs();
+
+                assertEquals(1, actualDirs.size());
+                assertEquals(spineProtobuf().dirToClean, actualDirs.get(0));
+            }
+
+            @Test
+            @DisplayName("list, if array is set")
+            void list() {
+                spineProtobuf().dirsToClean = newArrayList(newUuid(), newUuid());
+
+                List<String> actualDirs = actualDirs();
+
+                assertEquals(spineProtobuf().dirsToClean, actualDirs);
+            }
+
+            @Test
+            @DisplayName("list, if array and single are set")
+            void listIfArrayAndSingle() {
+                spineProtobuf().dirsToClean = newArrayList(newUuid(), newUuid());
+                spineProtobuf().dirToClean = newUuid();
+
+                List<String> actualDirs = actualDirs();
+
+                assertEquals(spineProtobuf().dirsToClean, actualDirs);
+            }
+        }
+
+        @Test
+        @DisplayName("include `.spine` dir, if exists")
+        void includeSpineDir() throws IOException {
+            DefaultJavaProject defaultProject = DefaultJavaProject.at(projectDir);
+            File spineDir = defaultProject.tempArtifacts();
+            assertTrue(spineDir.mkdir());
+            String generatedDir =
+                    defaultProject.generated()
+                                  .path()
+                                  .toFile()
+                                  .getCanonicalPath();
+
+            List<String> dirsToClean = actualDirs();
+
+            assertThat(dirsToClean,
+                       containsInAnyOrder(spineDir.getCanonicalPath(), generatedDir)
+            );
+        }
+
+        private List<String> actualDirs() {
+            return Extension.getDirsToClean(project);
+        }
     }
 
-    @Test
-    @DisplayName("return default testDescriptorSetPath if not set")
-    void return_default_testDescriptorSetPath_if_not_set() {
-        File file = Extension.getTestDescriptorSet(project);
+    @Nested
+    @DisplayName("for Spine checker return")
+    class SpineChecker {
 
-        assertNotEmptyAndIsInProjectDir(file.toString());
-    }
+        @Test
+        @DisplayName("severity, if set")
+        void specifiedValue() {
+            spineProtobuf().spineCheckSeverity = Severity.ERROR;
+            Severity actualSeverity = Extension.getSpineCheckSeverity(project);
+            assertEquals(spineProtobuf().spineCheckSeverity, actualSeverity);
+        }
 
-    @Test
-    @DisplayName("return testDescriptorSetPath if set")
-    void return_testDescriptorSetPath_if_set() {
-        spineProtobuf().testDescriptorSetPath = newUuid();
-
-        File file = Extension.getTestDescriptorSet(project);
-
-        assertEquals(spineProtobuf().testDescriptorSetPath, file.toString());
-    }
-
-    @Test
-    @DisplayName("return default targetGenRejectionsRootDir if not set")
-    void return_default_targetGenRejectionsRootDir_if_not_set() {
-        String dir = Extension.getTargetGenRejectionsRootDir(project);
-
-        assertNotEmptyAndIsInProjectDir(dir);
-    }
-
-    @Test
-    @DisplayName("return targetGenRejectionsRootDir if set")
-    void return_targetGenRejectionsRootDir_if_set() {
-        spineProtobuf().targetGenRejectionsRootDir = newUuid();
-
-        String dir = Extension.getTargetGenRejectionsRootDir(project);
-
-        assertEquals(spineProtobuf().targetGenRejectionsRootDir, dir);
-    }
-
-    @Test
-    @DisplayName("return default dirsToClean if not set")
-    void return_default_dirsToClean_if_not_set() {
-        List<String> actualDirs = Extension.getDirsToClean(project);
-
-        assertEquals(1, actualDirs.size());
-        assertNotEmptyAndIsInProjectDir(actualDirs.get(0));
-    }
-
-    @Test
-    @DisplayName("return single dirsToClean if set")
-    void return_single_dirToClean_if_set() {
-        spineProtobuf().dirToClean = newUuid();
-
-        List<String> actualDirs = Extension.getDirsToClean(project);
-
-        assertEquals(1, actualDirs.size());
-        assertEquals(spineProtobuf().dirToClean, actualDirs.get(0));
-    }
-
-    @Test
-    @DisplayName("return dirsToClean list if array is set")
-    void return_dirsToClean_list_if_array_is_set() {
-        spineProtobuf().dirsToClean = newArrayList(newUuid(), newUuid());
-
-        List<String> actualDirs = Extension.getDirsToClean(project);
-
-        assertEquals(spineProtobuf().dirsToClean, actualDirs);
-    }
-
-    @Test
-    @DisplayName("return dirsToClean list if array and single are set")
-    void return_dirsToClean_list_if_array_and_single_are_set() {
-        spineProtobuf().dirsToClean = newArrayList(newUuid(), newUuid());
-        spineProtobuf().dirToClean = newUuid();
-
-        List<String> actualDirs = Extension.getDirsToClean(project);
-
-        assertEquals(spineProtobuf().dirsToClean, actualDirs);
-    }
-
-    @Test
-    @DisplayName("include spine dir in dirsToClean if exists")
-    void include_spine_dir_in_dirsToClean_if_exists() throws IOException {
-        DefaultJavaProject defaultProject = DefaultJavaProject.at(projectDir);
-        File spineDir = defaultProject.tempArtifacts();
-        assertTrue(spineDir.mkdir());
-        String generatedDir = defaultProject.generated()
-                                            .path()
-                                            .toFile()
-                                            .getCanonicalPath();
-
-        List<String> dirsToClean = Extension.getDirsToClean(project);
-
-        assertThat(dirsToClean,
-                   containsInAnyOrder(spineDir.getCanonicalPath(), generatedDir)
-        );
-    }
-
-    @Test
-    @DisplayName("return spine checker severity")
-    void return_spine_checker_severity() {
-        spineProtobuf().spineCheckSeverity = Severity.ERROR;
-        Severity actualSeverity = Extension.getSpineCheckSeverity(project);
-        assertEquals(spineProtobuf().spineCheckSeverity, actualSeverity);
-    }
-
-    @Test
-    @DisplayName("return null spine checker severity if not set")
-    void return_null_spine_checker_severity_if_not_set() {
-        Severity actualSeverity = Extension.getSpineCheckSeverity(project);
-        assertNull(actualSeverity);
+        @Test
+        @DisplayName("`null`, if not set")
+        void nullValue() {
+            Severity actualSeverity = Extension.getSpineCheckSeverity(project);
+            assertNull(actualSeverity);
+        }
     }
 
     private void assertNotEmptyAndIsInProjectDir(String path) {

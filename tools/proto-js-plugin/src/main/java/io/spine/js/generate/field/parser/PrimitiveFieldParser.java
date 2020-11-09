@@ -34,6 +34,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>All the fields that are not of the {@code message} or {@code enum} type are handled by this
  * parser.
  */
+@SuppressWarnings("BadImport") // refer to `FieldDescriptor.Type` as `Type` in this class.
 final class PrimitiveFieldParser implements FieldParser {
 
     @SuppressWarnings("BadImport")

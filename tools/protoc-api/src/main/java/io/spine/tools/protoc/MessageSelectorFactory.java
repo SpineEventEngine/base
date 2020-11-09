@@ -20,6 +20,7 @@
 
 package io.spine.tools.protoc;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import io.spine.code.proto.FileName;
@@ -37,9 +38,9 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  */
 public final class MessageSelectorFactory {
 
-    private static final String PREFIX = "prefix";
-    private static final String SUFFIX = "suffix";
-    private static final String REGEX = "regex";
+    @VisibleForTesting static final String PREFIX = "prefix";
+    @VisibleForTesting static final String SUFFIX = "suffix";
+    @VisibleForTesting static final String REGEX = "regex";
 
     static final MessageSelectorFactory INSTANCE = new MessageSelectorFactory();
 

@@ -33,9 +33,11 @@ import java.util.Set;
 
 import static com.google.common.collect.Sets.newHashSet;
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static io.spine.testing.Assertions.assertIllegalArgument;
+import static io.spine.tools.gradle.ProjectHierarchy.applyToAll;
+import static io.spine.tools.gradle.testing.NoOp.action;
 
-@DisplayName("ProjectHierarchy should")
+@DisplayName("`ProjectHierarchy` should")
 class ProjectHierarchyTest extends UtilityClassTest<ProjectHierarchy> {
 
     ProjectHierarchyTest() {
@@ -78,8 +80,7 @@ class ProjectHierarchyTest extends UtilityClassTest<ProjectHierarchy> {
     void notAcceptNonRootProjects() {
         Project project = newProject("root");
         Project sub = withParent(project, "sub");
-        assertThrows(IllegalArgumentException.class,
-                     () -> ProjectHierarchy.applyToAll(sub, NoOp.action()));
+        assertIllegalArgument(() -> applyToAll(sub, action()));
     }
 
     private static Project newProject(String name) {

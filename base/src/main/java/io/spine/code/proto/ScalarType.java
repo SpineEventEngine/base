@@ -35,7 +35,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#scalar">
  * Protobuf scalar types</a>
  */
-@SuppressWarnings("BadImport") // Short `FieldDescriptorProto.Type` to `Type`.
+@SuppressWarnings("BadImport") // We static-import `Type` for brevity.
 public enum ScalarType {
     DOUBLE(Type.TYPE_DOUBLE, double.class),
     FLOAT(Type.TYPE_FLOAT, float.class),

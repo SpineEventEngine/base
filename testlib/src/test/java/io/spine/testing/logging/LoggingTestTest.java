@@ -28,9 +28,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static io.spine.testing.Assertions.assertIllegalState;
 
-@DisplayName("LoggerTest should")
+@DisplayName("`LoggerTest` should")
 class LoggingTestTest {
 
     private LoggingTest test;
@@ -61,7 +61,7 @@ class LoggingTestTest {
     @Test
     @DisplayName("do not intercept by default")
     void noHandler() {
-        assertThrows(IllegalStateException.class, test::assertLog);
+        assertIllegalState(test::assertLog);
     }
 
     @Test
@@ -105,7 +105,7 @@ class LoggingTestTest {
     @DisplayName("do not provide assertions API after restored")
     void clearingHandler() {
         test.restoreLogging();
-        assertThrows(IllegalStateException.class, test::assertLog);
+        assertIllegalState(test::assertLog);
     }
 
     @Test

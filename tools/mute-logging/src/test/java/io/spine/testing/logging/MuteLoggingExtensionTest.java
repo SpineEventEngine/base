@@ -196,7 +196,6 @@ class MuteLoggingExtensionTest extends SystemOutputTest {
 
         @Override
         public void publishReportEntry(Map<String, String> map) {
-
         }
 
         @Override

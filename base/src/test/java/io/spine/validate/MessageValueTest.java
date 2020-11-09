@@ -30,10 +30,11 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static io.spine.testing.Assertions.assertIllegalArgument;
+import static io.spine.validate.MessageValue.atTopLevel;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("MessageValue should")
+@DisplayName("`MessageValue` should")
 class MessageValueTest {
 
     private static final OneofDescriptor VALUE_ONEOF = Value.getDescriptor()
@@ -60,11 +61,8 @@ class MessageValueTest {
         @Test
         void throwOnMissingOneof() {
             StringValue message = StringValue.getDefaultInstance();
-            MessageValue value = MessageValue.atTopLevel(message);
-            assertThrows(
-                    IllegalArgumentException.class,
-                    () -> value.valueOf(VALUE_ONEOF)
-            );
+            MessageValue value = atTopLevel(message);
+            assertIllegalArgument(() -> value.valueOf(VALUE_ONEOF));
         }
 
         private void assertOneofValue(MessageValue message, Object expectedValue) {

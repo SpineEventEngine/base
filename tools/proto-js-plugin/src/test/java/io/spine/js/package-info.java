@@ -18,28 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.fs.js;
+/**
+ * Test utilities for JS code generation.
+ */
 
-import io.spine.code.fs.DirectoryReference;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.js;
 
-import static com.google.common.truth.Truth.assertThat;
-import static io.spine.testing.Assertions.assertIllegalArgument;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-@DisplayName("`DirectoryReference` should")
-class DirectoryReferenceTest {
-
-    @Test
-    @DisplayName("not be empty")
-    void notEmpty() {
-        assertIllegalArgument(() -> DirectoryReference.of(""));
-    }
-
-    @Test
-    @DisplayName("provide names it consists from")
-    void provideDirectoryNames() {
-        DirectoryReference reference = DirectoryReference.of("a/b/c");
-        assertThat(reference.elements()).containsAtLeast("a", "b", "c");
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;
