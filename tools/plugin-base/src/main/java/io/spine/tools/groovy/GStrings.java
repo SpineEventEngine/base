@@ -25,8 +25,8 @@ import groovy.lang.GString;
 /**
  * A factory of Groovy strings.
  *
- * @deprecated Since the latest changes in the Protobuf Gradle plugin, usage Groovy strings in Java
- * or Kotlin becomes obsolete. This factory will be removed in a future release.
+ * @deprecated Since the latest changes in the Protobuf Gradle plugin, usage of Groovy strings
+ * in Java or Kotlin becomes obsolete. This factory will be removed in a future release.
  */
 @Deprecated
 public final class GStrings {
