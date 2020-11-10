@@ -33,9 +33,9 @@ import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
 @DisplayName(VALIDATION_SHOULD + "analyze (distinct) option and")
 final class DistinctTest extends ValidationOfConstraintTest {
 
-    @DisplayName("find out that empty message does not violate the contract")
     @Test
-    void findOutThatEmptyMessageDoesNotViolateContract() {
+    @DisplayName("find out that empty message does not violate the contract")
+    void emptyMessageNotViolatesContract() {
         assertValid(DistinctValues.getDefaultInstance());
     }
 
