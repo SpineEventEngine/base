@@ -70,13 +70,13 @@ abstract class MessageCaster<M extends Message, T> extends Converter<M, T> {
     }
 
     @Override
-    protected T doForward(M input) {
+    protected final T doForward(M input) {
         checkNotNull(input);
         return toObject(input);
     }
 
     @Override
-    protected M doBackward(T t) {
+    protected final M doBackward(T t) {
         checkNotNull(t);
         return toMessage(t);
     }

@@ -42,12 +42,12 @@ import com.google.protobuf.Message;
 abstract class PrimitiveHandler<M extends Message, T> extends Converter<M, T> {
 
     @Override
-    protected T doForward(M input) {
+    protected final T doForward(M input) {
         return unpack(input);
     }
 
     @Override
-    protected M doBackward(T input) {
+    protected final M doBackward(T input) {
         return pack(input);
     }
 
