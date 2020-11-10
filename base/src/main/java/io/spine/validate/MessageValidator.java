@@ -23,6 +23,8 @@ package io.spine.validate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
+import com.google.protobuf.Any;
+import com.google.protobuf.Descriptors;
 import com.google.protobuf.Message;
 import io.spine.base.Field;
 import io.spine.base.FieldPath;
@@ -151,14 +153,18 @@ final class MessageValidator implements ConstraintTranslator<Optional<Validation
         Optional<FieldDeclaration> declaration = withField(message, constraint);
         checkState(declaration.isPresent(),
                    "Field `%s` noted in `(goes).with` option is not found.",
-                   constraint.optionValue().getWith());
+                   constraint.optionValue()
+                             .getWith());
         FieldDeclaration withField = declaration.get();
         if (!value.isDefault() && fieldValueNotSet(withField)) {
             ConstraintViolation withFieldNotSet =
                     violation(constraint, value)
                             .toBuilder()
-                            .addParam(constraint.field().name().value())
-                            .addParam(constraint.optionValue().getWith())
+                            .addParam(constraint.field()
+                                                .name()
+                                                .value())
+                            .addParam(constraint.optionValue()
+                                                .getWith())
                             .build();
             violations.add(withFieldNotSet);
         }
@@ -201,8 +207,11 @@ final class MessageValidator implements ConstraintTranslator<Optional<Validation
             ConstraintViolation violation = ConstraintViolation
                     .newBuilder()
                     .setMsgFormat(constraint.errorMessage(message.context()))
-                    .setFieldPath(Field.named(constraint.oneofName().value()).path())
-                    .setTypeName(targetType.name().value())
+                    .setFieldPath(Field.named(constraint.oneofName()
+                                                        .value())
+                                       .path())
+                    .setTypeName(targetType.name()
+                                           .value())
                     .build();
             violations.add(violation);
         }
@@ -282,13 +291,14 @@ final class MessageValidator implements ConstraintTranslator<Optional<Validation
     private static Set<?> findDuplicates(FieldValue fieldValue) {
         Set<? super Object> uniques = new HashSet<>();
         ImmutableSet.Builder<? super Object> duplicates = ImmutableSet.builder();
-        fieldValue.values().forEach(potentialDuplicate -> {
-            if (uniques.contains(potentialDuplicate)) {
-                duplicates.add(potentialDuplicate);
-            } else {
-                uniques.add(potentialDuplicate);
-            }
-        });
+        fieldValue.values()
+                  .forEach(potentialDuplicate -> {
+                      if (uniques.contains(potentialDuplicate)) {
+                          duplicates.add(potentialDuplicate);
+                      } else {
+                          uniques.add(potentialDuplicate);
+                      }
+                  });
         return duplicates.build();
     }
 
@@ -329,8 +339,21 @@ final class MessageValidator implements ConstraintTranslator<Optional<Validation
                 .setFieldPath(fieldPath)
                 .setTypeName(typeName.value());
         if (violatingValue != null) {
-            violation.setFieldValue(toAny(violatingValue));
+            violation.setFieldValue(toFieldValue(violatingValue));
         }
         return violation.build();
+    }
+
+    /**
+     * Converts the {@code violatingValue} to a wrapped {@link Any}.
+     *
+     * <p>If the violation is caused by an enum, unwraps the enum value from the descriptor before
+     * doing the conversion.
+     */
+    private static Any toFieldValue(Object violatingValue) {
+        if (violatingValue instanceof Descriptors.EnumValueDescriptor) {
+            return toAny(((Descriptors.EnumValueDescriptor) violatingValue).toProto());
+        }
+        return toAny(violatingValue);
     }
 }
