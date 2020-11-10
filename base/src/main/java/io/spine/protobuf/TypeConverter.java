@@ -75,9 +75,12 @@ public final class TypeConverter {
     /**
      * Converts the given {@link Any} value to a Java {@link Object}.
      *
-     * @param message the {@link Any} value to convert
-     * @param target  the conversion target class
-     * @param <T>     the conversion target type
+     * @param message
+     *         the {@link Any} value to convert
+     * @param target
+     *         the conversion target class
+     * @param <T>
+     *         the conversion target type
      * @return the converted value
      */
     public static <T> T toObject(Any message, Class<T> target) {
@@ -93,8 +96,10 @@ public final class TypeConverter {
     /**
      * Converts the given value to Protobuf {@link Any}.
      *
-     * @param value the {@link Object} value to convert
-     * @param <T>   the converted object type
+     * @param value
+     *         the {@link Object} value to convert
+     * @param <T>
+     *         the converted object type
      * @return the packed value
      * @see #toMessage(Object)
      */
@@ -108,8 +113,10 @@ public final class TypeConverter {
     /**
      * Converts the given value to a corresponding Protobuf {@link Message} type.
      *
-     * @param value the {@link Object} value to convert
-     * @param <T>   the converted object type
+     * @param value
+     *         the {@link Object} value to convert
+     * @param <T>
+     *         the converted object type
      * @return the wrapped value
      */
     public static <T> Message toMessage(T value) {
@@ -126,9 +133,12 @@ public final class TypeConverter {
      *
      * <p>Unlike {@link #toMessage(Object)}, casts the message to the specified class.
      *
-     * @param value the {@link Object} value to convert
-     * @param <T>   the converted object type
-     * @param <M>   the resulting message type
+     * @param value
+     *         the {@link Object} value to convert
+     * @param <T>
+     *         the converted object type
+     * @param <M>
+     *         the resulting message type
      * @return the wrapped value
      */
     public static <T, M extends Message> M toMessage(T value, Class<M> messageClass) {
@@ -153,7 +163,8 @@ public final class TypeConverter {
                 enumValueTypeUrl.equals(typeUrl),
                 "Currently the conversion of enum types packed as `%s` is not supported. " +
                         "Please make sure the enum value is wrapped with `%s` on the calling site.",
-                typeUrl, enumValueTypeUrl);
+                typeUrl, enumValueTypeUrl
+        );
     }
 
     /**
@@ -291,14 +302,15 @@ public final class TypeConverter {
     /**
      * Casts the primitive and built-in types to the corresponding {@link Message}s and back.
      *
-     * @param <M> the type of the message
-     * @param <T> the type to cast to and from the message
-     *
+     * @param <M>
+     *         the type of the message
+     * @param <T>
+     *         the type to cast to and from the message
      * @implNote The arguments are checked during the conversion and an
-     * {@link IllegalArgumentException} is thrown in case of mismatch. The type name used in the
-     * error message is a simple {@link Class#getName() Class.getName()} call result. It's the
-     * best-performant solution among options, such as {@link Class#getCanonicalName()
-     * Class.getCanonicalName()}.
+     *         {@link IllegalArgumentException} is thrown in case of mismatch. The type name used in
+     *         the error message is a simple {@link Class#getName() Class.getName()} call result.
+     *         It's the best-performant solution among options, such as
+     *         {@link Class#getCanonicalName() Class.getCanonicalName()}.
      */
     private static final class PrimitiveTypeCaster<M extends Message, T>
             extends MessageCaster<M, T> {
@@ -365,8 +377,10 @@ public final class TypeConverter {
      * value type is not specified explicitly, the closest type is selected as a target for
      * the conversion. The closeness of two types is determined by the lexicographic closeness.
      *
-     * @param <M> the type of the Protobuf primitive wrapper
-     * @param <T> the type of the Java primitive wrapper
+     * @param <M>
+     *         the type of the Protobuf primitive wrapper
+     * @param <T>
+     *         the type of the Java primitive wrapper
      */
     private abstract static class PrimitiveHandler<M extends Message, T> extends Converter<M, T> {
 
@@ -383,7 +397,8 @@ public final class TypeConverter {
         /**
          * Unpacks a primitive value of type {@code T} from the given wrapper value.
          *
-         * @param message packed value
+         * @param message
+         *         packed value
          * @return unpacked value
          */
         protected abstract T unpack(M message);
@@ -391,7 +406,8 @@ public final class TypeConverter {
         /**
          * Packs the given primitive value into a Protobuf wrapper of type {@code M}.
          *
-         * @param value primitive value
+         * @param value
+         *         primitive value
          * @return packed value
          */
         protected abstract M pack(T value);
@@ -407,9 +423,10 @@ public final class TypeConverter {
 
         @Override
         protected Int32Value pack(Integer value) {
-            return Int32Value.newBuilder()
-                             .setValue(value)
-                             .build();
+            return Int32Value
+                    .newBuilder()
+                    .setValue(value)
+                    .build();
         }
     }
 
@@ -423,9 +440,10 @@ public final class TypeConverter {
 
         @Override
         protected Int64Value pack(Long value) {
-            return Int64Value.newBuilder()
-                             .setValue(value)
-                             .build();
+            return Int64Value
+                    .newBuilder()
+                    .setValue(value)
+                    .build();
         }
     }
 
@@ -440,9 +458,10 @@ public final class TypeConverter {
         @Override
         protected UInt32Value pack(Integer value) {
             // Hidden by Int32Handler
-            return UInt32Value.newBuilder()
-                              .setValue(value)
-                              .build();
+            return UInt32Value
+                    .newBuilder()
+                    .setValue(value)
+                    .build();
         }
     }
 
@@ -457,9 +476,10 @@ public final class TypeConverter {
         @Override
         protected UInt64Value pack(Long value) {
             // Hidden by Int64Handler
-            return UInt64Value.newBuilder()
-                              .setValue(value)
-                              .build();
+            return UInt64Value
+                    .newBuilder()
+                    .setValue(value)
+                    .build();
         }
     }
 
@@ -473,9 +493,10 @@ public final class TypeConverter {
 
         @Override
         protected FloatValue pack(Float value) {
-            return FloatValue.newBuilder()
-                             .setValue(value)
-                             .build();
+            return FloatValue
+                    .newBuilder()
+                    .setValue(value)
+                    .build();
         }
     }
 
@@ -489,9 +510,10 @@ public final class TypeConverter {
 
         @Override
         protected DoubleValue pack(Double value) {
-            return DoubleValue.newBuilder()
-                              .setValue(value)
-                              .build();
+            return DoubleValue
+                    .newBuilder()
+                    .setValue(value)
+                    .build();
         }
     }
 
@@ -505,9 +527,10 @@ public final class TypeConverter {
 
         @Override
         protected BoolValue pack(Boolean value) {
-            return BoolValue.newBuilder()
-                            .setValue(value)
-                            .build();
+            return BoolValue
+                    .newBuilder()
+                    .setValue(value)
+                    .build();
         }
     }
 
@@ -521,9 +544,10 @@ public final class TypeConverter {
 
         @Override
         protected StringValue pack(String value) {
-            return StringValue.newBuilder()
-                              .setValue(value)
-                              .build();
+            return StringValue
+                    .newBuilder()
+                    .setValue(value)
+                    .build();
         }
     }
 }
