@@ -29,21 +29,20 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
 /**
  * Converts {@link EnumValue} to {@link Enum} and back.
  */
-final class EnumCaster extends MessageCaster<EnumValue, Enum<?>> {
+final class EnumCaster extends MessageCaster<EnumValue, Enum<? extends ProtocolMessageEnum>> {
 
-    @SuppressWarnings("rawtypes") // Needed to be able to pass the value to `Enum.valueOf(...)`.
-    private final Class<? extends Enum> type;
+    private final Class<? extends Enum<? extends ProtocolMessageEnum>> type;
 
     /**
      * Creates a new caster for the specified {@code type}.
      */
-    EnumCaster(Class<? extends Enum<?>> type) {
+    EnumCaster(Class<? extends Enum<? extends ProtocolMessageEnum>> type) {
         super();
         this.type = checkNotNull(type);
     }
 
     @Override
-    protected Enum<?> toObject(EnumValue input) {
+    protected Enum<? extends ProtocolMessageEnum> toObject(EnumValue input) {
         String name = input.getName();
         if (name.isEmpty()) {
             int number = input.getNumber();
@@ -53,9 +52,9 @@ final class EnumCaster extends MessageCaster<EnumValue, Enum<?>> {
         }
     }
 
-    private Enum<?> convertByNumber(int number) {
-        Enum<?>[] constants = type.getEnumConstants();
-        for (Enum<?> constant : constants) {
+    private Enum<? extends ProtocolMessageEnum> convertByNumber(int number) {
+        Enum<? extends ProtocolMessageEnum>[] constants = type.getEnumConstants();
+        for (Enum<? extends ProtocolMessageEnum> constant : constants) {
             ProtocolMessageEnum asProtoEnum = (ProtocolMessageEnum) constant;
             int valueNumber = asProtoEnum.getNumber();
             if (number == valueNumber) {
@@ -65,13 +64,14 @@ final class EnumCaster extends MessageCaster<EnumValue, Enum<?>> {
         throw unknownNumber(number);
     }
 
-    @SuppressWarnings("unchecked") // Checked at runtime.
-    private Enum<?> convertByName(String name) {
-        return Enum.valueOf(type, name);
+    @SuppressWarnings({"unchecked", "rawtypes"}) // Checked at runtime.
+    private Enum<? extends ProtocolMessageEnum> convertByName(String name) {
+        Enum result = Enum.valueOf((Class<? extends Enum>) type, name);
+        return (Enum<? extends ProtocolMessageEnum>) result;
     }
 
     @Override
-    protected EnumValue toMessage(Enum<?> input) {
+    protected EnumValue toMessage(Enum<? extends ProtocolMessageEnum> input) {
         String name = input.name();
         ProtocolMessageEnum asProtoEnum = (ProtocolMessageEnum) input;
         EnumValue value = EnumValue

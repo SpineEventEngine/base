@@ -24,6 +24,7 @@ import com.google.common.base.Converter;
 import com.google.common.base.Function;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
+import com.google.protobuf.ProtocolMessageEnum;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -47,16 +48,25 @@ abstract class MessageCaster<M extends Message, T> extends Converter<M, T> {
             caster = new MessageTypeCaster();
         } else if (ByteString.class.isAssignableFrom(type)) {
             caster = new BytesCaster();
-        } else if (Enum.class.isAssignableFrom(type)) {
-            @SuppressWarnings("unchecked") // Checked at runtime.
-            Class<? extends Enum<?>> enumCls = (Class<? extends Enum<?>>) type;
-            caster = new EnumCaster(enumCls);
+        } else if (isProtoEnum(type)) {
+            caster = new EnumCaster(asProtoEnum(type));
         } else {
             caster = new PrimitiveTypeCaster<>();
         }
         @SuppressWarnings("unchecked") // Logically checked.
         MessageCaster<M, T> result = (MessageCaster<M, T>) caster;
         return result;
+    }
+
+    private static <T> boolean isProtoEnum(Class<T> type) {
+        return Enum.class.isAssignableFrom(type)
+                && ProtocolMessageEnum.class.isAssignableFrom(type);
+    }
+
+    @SuppressWarnings("unchecked") // Checked at runtime.
+    private static <T> Class<? extends Enum<? extends ProtocolMessageEnum>>
+    asProtoEnum(Class<T> type) {
+        return (Class<? extends Enum<? extends ProtocolMessageEnum>>) type;
     }
 
     @Override
