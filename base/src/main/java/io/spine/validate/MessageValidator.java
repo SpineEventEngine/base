@@ -31,6 +31,7 @@ import io.spine.base.FieldPath;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
+import io.spine.option.GoesOption;
 import io.spine.type.MessageType;
 import io.spine.type.TypeName;
 import io.spine.validate.option.DistinctConstraint;
@@ -149,22 +150,22 @@ final class MessageValidator implements ConstraintTranslator<Optional<Validation
 
     @Override
     public void visitGoesWith(GoesConstraint constraint) {
-        FieldValue value = message.valueOf(constraint.field());
+        FieldDeclaration field = constraint.field();
+        FieldValue value = message.valueOf(field);
         Optional<FieldDeclaration> declaration = withField(message, constraint);
-        checkState(declaration.isPresent(),
-                   "Field `%s` noted in `(goes).with` option is not found.",
-                   constraint.optionValue()
-                             .getWith());
+        GoesOption option = constraint.optionValue();
+        checkState(
+                declaration.isPresent(),
+                "Field `%s` noted in `(goes).with` option is not found.",
+                option.getWith()
+        );
         FieldDeclaration withField = declaration.get();
         if (!value.isDefault() && fieldValueNotSet(withField)) {
             ConstraintViolation withFieldNotSet =
                     violation(constraint, value)
                             .toBuilder()
-                            .addParam(constraint.field()
-                                                .name()
-                                                .value())
-                            .addParam(constraint.optionValue()
-                                                .getWith())
+                            .addParam(field.name().value())
+                            .addParam(option.getWith())
                             .build();
             violations.add(withFieldNotSet);
         }
@@ -207,11 +208,8 @@ final class MessageValidator implements ConstraintTranslator<Optional<Validation
             ConstraintViolation violation = ConstraintViolation
                     .newBuilder()
                     .setMsgFormat(constraint.errorMessage(message.context()))
-                    .setFieldPath(Field.named(constraint.oneofName()
-                                                        .value())
-                                       .path())
-                    .setTypeName(targetType.name()
-                                           .value())
+                    .setFieldPath(Field.named(constraint.oneofName().value()).path())
+                    .setTypeName(targetType.name().value())
                     .build();
             violations.add(violation);
         }
@@ -233,13 +231,12 @@ final class MessageValidator implements ConstraintTranslator<Optional<Validation
     public Optional<ValidationError> translate() {
         if (violations.isEmpty()) {
             return Optional.empty();
-        } else {
-            ValidationError error = ValidationError
-                    .newBuilder()
-                    .addAllConstraintViolation(violations)
-                    .build();
-            return Optional.of(error);
         }
+        ValidationError error = ValidationError
+                .newBuilder()
+                .addAllConstraintViolation(violations)
+                .build();
+        return Optional.of(error);
     }
 
     private static List<ConstraintViolation> childViolations(FieldContext field, Message message) {
@@ -254,10 +251,8 @@ final class MessageValidator implements ConstraintTranslator<Optional<Validation
 
     private static void checkTypeConsistency(Range<ComparableNumber> range, FieldValue value) {
         if (range.hasLowerBound() && range.hasUpperBound()) {
-            NumberText upper = range.upperEndpoint()
-                                    .toText();
-            NumberText lower = range.lowerEndpoint()
-                                    .toText();
+            NumberText upper = range.upperEndpoint().toText();
+            NumberText lower = range.lowerEndpoint().toText();
             if (!upper.isOfSameType(lower)) {
                 String errorMessage = "Boundaries have inconsistent types: lower %s, upper %s";
                 throw newIllegalStateException(errorMessage, upper, lower);
@@ -270,10 +265,8 @@ final class MessageValidator implements ConstraintTranslator<Optional<Validation
 
     private static void checkSingleBoundary(Range<ComparableNumber> range, FieldValue value) {
         NumberText singleBoundary = range.hasLowerBound()
-                                    ? range.lowerEndpoint()
-                                           .toText()
-                                    : range.upperEndpoint()
-                                           .toText();
+                                    ? range.lowerEndpoint().toText()
+                                    : range.upperEndpoint().toText();
         checkBoundaryAndValue(singleBoundary, value);
     }
 
@@ -291,14 +284,13 @@ final class MessageValidator implements ConstraintTranslator<Optional<Validation
     private static Set<?> findDuplicates(FieldValue fieldValue) {
         Set<? super Object> uniques = new HashSet<>();
         ImmutableSet.Builder<? super Object> duplicates = ImmutableSet.builder();
-        fieldValue.values()
-                  .forEach(potentialDuplicate -> {
-                      if (uniques.contains(potentialDuplicate)) {
-                          duplicates.add(potentialDuplicate);
-                      } else {
-                          uniques.add(potentialDuplicate);
-                      }
-                  });
+        fieldValue.values().forEach(potentialDuplicate -> {
+            if (uniques.contains(potentialDuplicate)) {
+                duplicates.add(potentialDuplicate);
+            } else {
+                uniques.add(potentialDuplicate);
+            }
+        });
         return duplicates.build();
     }
 
