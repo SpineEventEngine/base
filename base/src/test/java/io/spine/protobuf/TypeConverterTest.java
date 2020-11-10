@@ -151,8 +151,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
             assertEquals(value, mapped);
         }
 
-        private void checkMapping(Object javaObject,
-                                  Message protoObject) {
+        private void checkMapping(Object javaObject, Message protoObject) {
             Any wrapped = AnyPacker.pack(protoObject);
             Object mappedJavaObject = TypeConverter.toObject(wrapped, javaObject.getClass());
             assertEquals(javaObject, mappedJavaObject);
@@ -169,18 +168,20 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         @Test
         @DisplayName("if the `EnumValue` has a constant name specified")
         void ifHasName() {
-            EnumValue value = EnumValue.newBuilder()
-                                       .setName(SUCCESS.name())
-                                       .build();
+            EnumValue value = EnumValue
+                    .newBuilder()
+                    .setName(SUCCESS.name())
+                    .build();
             checkConverts(value, SUCCESS);
         }
 
         @Test
         @DisplayName("if the `EnumValue` has a constant number specified")
         void ifHasNumber() {
-            EnumValue value = EnumValue.newBuilder()
-                                       .setNumber(EXECUTING.getNumber())
-                                       .build();
+            EnumValue value = EnumValue
+                    .newBuilder()
+                    .setNumber(EXECUTING.getNumber())
+                    .build();
             checkConverts(value, EXECUTING);
         }
 
@@ -188,10 +189,11 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         @DisplayName("using the constant name if both the name and the number are specified")
         void preferringConversionWithName() {
             // Set the different name and number just for the sake of test.
-            EnumValue value = EnumValue.newBuilder()
-                                       .setName(SUCCESS.name())
-                                       .setNumber(FAILED.getNumber())
-                                       .build();
+            EnumValue value = EnumValue
+                    .newBuilder()
+                    .setName(SUCCESS.name())
+                    .setNumber(FAILED.getNumber())
+                    .build();
             checkConverts(value, SUCCESS);
         }
 
@@ -203,41 +205,45 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         }
     }
 
+    @Nested
+    @DisplayName("throw an `IAE` when")
     @SuppressWarnings("CheckReturnValue") // The method is called to throw exception.
-    @Test
-    @DisplayName("throw an `IAE` when the `EnumValue` with an unknown name is passed")
-    void throwOnUnknownName() {
-        String unknownName = "some_name";
-        EnumValue value = EnumValue
-                .newBuilder()
-                .setName(unknownName)
-                .build();
-        Any wrapped = pack(value);
-        assertIllegalArgument(() -> toObject(wrapped, TaskStatus.class));
-    }
+    class ThrowIAEOnEnumConversion {
 
-    @SuppressWarnings("CheckReturnValue") // The method is called to throw exception.
-    @Test
-    @DisplayName("throw an `IAE` when the `EnumValue` with an unknown number is passed")
-    void throwOnUnknownNumber() {
-        int unknownValue = 156;
-        EnumValue value = EnumValue.newBuilder()
-                .setNumber(unknownValue)
-                .build();
-        Any wrapped = pack(value);
-        assertIllegalArgument(() -> toObject(wrapped, TaskStatus.class));
-    }
+        @Test
+        @DisplayName("the `EnumValue` with an unknown name is passed")
+        void unknownName() {
+            String unknownName = "some_name";
+            EnumValue value = EnumValue
+                    .newBuilder()
+                    .setName(unknownName)
+                    .build();
+            Any wrapped = pack(value);
+            assertIllegalArgument(() -> toObject(wrapped, TaskStatus.class));
+        }
 
-    @SuppressWarnings("CheckReturnValue") // The method is called to throw exception.
-    @Test
-    @DisplayName("throw an `IAE` when converting a non-`EnumValue` object to a `Enum`")
-    void throwOnRawValuesForEnum() {
-        Int32Value enumNumber = Int32Value
-                .newBuilder()
-                .setValue(SUCCESS.getNumber())
-                .build();
-        Any packed = pack(enumNumber);
-        assertIllegalArgument(() -> toObject(packed, TaskStatus.class));
+        @Test
+        @DisplayName("the `EnumValue` with an unknown number is passed")
+        void unknownNumber() {
+            int unknownValue = 156;
+            EnumValue value = EnumValue
+                    .newBuilder()
+                    .setNumber(unknownValue)
+                    .build();
+            Any wrapped = pack(value);
+            assertIllegalArgument(() -> toObject(wrapped, TaskStatus.class));
+        }
+
+        @Test
+        @DisplayName("converting a non-`EnumValue` object to a `Enum`")
+        void rawValuesForEnum() {
+            Int32Value enumNumber = Int32Value
+                    .newBuilder()
+                    .setValue(SUCCESS.getNumber())
+                    .build();
+            Any packed = pack(enumNumber);
+            assertIllegalArgument(() -> toObject(packed, TaskStatus.class));
+        }
     }
 
     @Test
