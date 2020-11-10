@@ -33,11 +33,10 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.SPINE_PROTOBUF_PLUGIN_ID;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newUuid;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -236,9 +235,8 @@ class ExtensionTest {
 
             List<String> dirsToClean = actualDirs();
 
-            assertThat(dirsToClean,
-                       containsInAnyOrder(spineDir.getCanonicalPath(), generatedDir)
-            );
+            assertThat(dirsToClean)
+                 .containsAtLeast(spineDir.getCanonicalPath(), generatedDir);
         }
 
         private List<String> actualDirs() {
