@@ -32,7 +32,7 @@ import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.UInt32Value;
 import io.spine.option.EntityOption;
-import org.junit.jupiter.api.Disabled;
+import io.spine.test.type.TypeWithoutPrefix;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -174,6 +174,46 @@ class TypeUrlTest {
         }
     }
 
+    /**
+     * This class tests cases when a type URL is defined without a prefix.
+     *
+     * <p>At the time of writing Protobuf does not specify how a type URL prefix is supposed to
+     * be used. The only place it is used when {@linkplain Any#pack(Message, String)
+     * packing a message} into {@code Any}.
+     *
+     * <p>Even though Spine provides convenience features (i.e. in the form of custom Protobuf
+     * file option {@code (type_url_prefix)} for working with type URLs, the framework does not
+     * provide features for exposing type information via a site.
+     *
+     * <p>Therefore, it is unreasonable to require using type URL prefixes until such a support
+     * is provided by Protobuf, or by the Spine framework.
+     */
+    @Nested
+    @DisplayName("Allow empty prefix when")
+    class EmptyPrefix {
+
+        private TypeUrl noPrefixType;
+
+        @Test
+        @DisplayName("parcing type name")
+        void inTypeName() {
+            noPrefixType = parse("/package.Type");
+            assertEmptyPrefix();
+        }
+
+        @Test
+        @DisplayName("created for a type declared in a file with empty `(type_url_prefix)`")
+        void inFile() {
+            noPrefixType = TypeUrl.from(TypeWithoutPrefix.getDescriptor());
+            assertEmptyPrefix();
+        }
+
+        private void assertEmptyPrefix() {
+            assertThat(noPrefixType.prefix())
+                    .isEmpty();
+        }
+    }
+
     @Nested
     @DisplayName("Reject")
     class Reject {
@@ -206,13 +246,6 @@ class TypeUrlTest {
         @DisplayName("value without prefix separator")
         void noPrefixSeparator() {
             assertIllegalArgument(() -> TypeUrl.parse("prefix:Type"));
-        }
-
-        @Test
-        @Disabled("Until we decide if there may be URLs without type prefix")
-        @DisplayName("empty prefix")
-        void emptyPrefix() {
-            assertIllegalArgument(() -> TypeUrl.parse("/package.Type"));
         }
 
         @Test
