@@ -31,7 +31,6 @@ import io.spine.base.FieldPath;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
-import io.spine.option.GoesOption;
 import io.spine.type.MessageType;
 import io.spine.type.TypeName;
 import io.spine.validate.option.DistinctConstraint;
@@ -160,11 +159,11 @@ final class MessageValidator implements ConstraintTranslator<Optional<Validation
         FieldDeclaration field = constraint.field();
         FieldValue value = message.valueOf(field);
         Optional<FieldDeclaration> declaration = withField(message, constraint);
-        GoesOption option = constraint.optionValue();
+        String withFieldName = constraint.optionValue().getWith();
         checkState(
                 declaration.isPresent(),
                 "Field `%s` noted in `(goes).with` option is not found.",
-                option.getWith()
+                withFieldName
         );
         FieldDeclaration withField = declaration.get();
         if (!value.isDefault() && fieldValueNotSet(withField)) {
@@ -172,7 +171,7 @@ final class MessageValidator implements ConstraintTranslator<Optional<Validation
                     violation(constraint, value)
                             .toBuilder()
                             .addParam(field.name().value())
-                            .addParam(option.getWith())
+                            .addParam(withFieldName)
                             .build();
             violations.add(withFieldNotSet);
         }

@@ -33,7 +33,6 @@ import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Casts the primitive and built-in types to the corresponding {@link Message}s and back.
@@ -77,11 +76,12 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
     protected T toObject(M input) {
         Class<?> boxedType = input.getClass();
         @SuppressWarnings("unchecked")
-        Converter<M, T> typeUnpacker =
-                (Converter<M, T>) PROTO_WRAPPER_TO_HANDLER.get(boxedType);
-        checkArgument(typeUnpacker != null,
-                      "Could not find a primitive type for %s.",
-                      boxedType.getName());
+        Converter<M, T> typeUnpacker = (Converter<M, T>) PROTO_WRAPPER_TO_HANDLER.get(boxedType);
+        checkArgument(
+                typeUnpacker != null,
+                "Could not find a primitive type for `%s`.",
+                boxedType.getName()
+        );
         T result = typeUnpacker.convert(input);
         return result;
     }
@@ -90,11 +90,12 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
     protected M toMessage(T input) {
         Class<?> cls = input.getClass();
         @SuppressWarnings("unchecked")
-        Converter<M, T> converter =
-                (Converter<M, T>) PRIMITIVE_TO_HANDLER.get(cls);
-        checkArgument(converter != null,
-                      "Could not find a wrapper type for %s.",
-                      cls.getName());
+        Converter<M, T> converter = (Converter<M, T>) PRIMITIVE_TO_HANDLER.get(cls);
+        checkArgument(
+                converter != null,
+                "Could not find a wrapper type for `%s`.",
+                cls.getName()
+        );
         M result = converter.reverse()
                             .convert(input);
         return result;
@@ -104,7 +105,6 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
 
         @Override
         protected Integer unwrap(Int32Value message) {
-            checkNotNull(message);
             return message.getValue();
         }
 
@@ -121,7 +121,6 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
 
         @Override
         protected Long unwrap(Int64Value message) {
-            checkNotNull(message);
             return message.getValue();
         }
 
@@ -138,7 +137,6 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
 
         @Override
         protected Integer unwrap(UInt32Value message) {
-            checkNotNull(message);
             return message.getValue();
         }
 
@@ -156,7 +154,6 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
 
         @Override
         protected Long unwrap(UInt64Value message) {
-            checkNotNull(message);
             return message.getValue();
         }
 
@@ -174,7 +171,6 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
 
         @Override
         protected Float unwrap(FloatValue message) {
-            checkNotNull(message);
             return message.getValue();
         }
 
@@ -191,7 +187,6 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
 
         @Override
         protected Double unwrap(DoubleValue message) {
-            checkNotNull(message);
             return message.getValue();
         }
 
@@ -208,7 +203,6 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
 
         @Override
         protected Boolean unwrap(BoolValue message) {
-            checkNotNull(message);
             return message.getValue();
         }
 
@@ -225,7 +219,6 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
 
         @Override
         protected String unwrap(StringValue message) {
-            checkNotNull(message);
             return message.getValue();
         }
 
