@@ -50,7 +50,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T> {
 
     private static final ImmutableMap<Class<?>, Converter<? extends Message, ?>>
-            PROTO_WRAPPER_TO_HANDLER =
+            PROTO_WRAPPER_TO_CONVERTER =
             ImmutableMap.<Class<?>, Converter<? extends Message, ?>>builder()
                     .put(Int32Value.class, new Int32Converter())
                     .put(Int64Value.class, new Int64Converter())
@@ -62,7 +62,7 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
                     .put(StringValue.class, new StringConverter())
                     .build();
     private static final ImmutableMap<Class<?>, Converter<? extends Message, ?>>
-            PRIMITIVE_TO_HANDLER =
+            PRIMITIVE_TO_CONVERTER =
             ImmutableMap.<Class<?>, Converter<? extends Message, ?>>builder()
                     .put(Integer.class, new Int32Converter())
                     .put(Long.class, new Int64Converter())
@@ -75,29 +75,39 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
     @Override
     protected T toObject(M input) {
         Class<?> boxedType = input.getClass();
-        @SuppressWarnings("unchecked")
-        Converter<M, T> typeUnpacker = (Converter<M, T>) PROTO_WRAPPER_TO_HANDLER.get(boxedType);
-        checkArgument(
-                typeUnpacker != null,
-                "Could not find a primitive type for `%s`.",
-                boxedType.getName()
-        );
-        T result = typeUnpacker.convert(input);
+        Converter<M, T> converter = wrapperConverter(boxedType);
+        T result = converter.convert(input);
         return result;
     }
 
     @Override
     protected M toMessage(T input) {
         Class<?> cls = input.getClass();
+        Converter<T, M> converter = primitiveConverter(cls);
+        M result = converter.convert(input);
+        return result;
+    }
+
+    private Converter<M, T> wrapperConverter(Class<?> boxedType) {
         @SuppressWarnings("unchecked")
-        Converter<M, T> converter = (Converter<M, T>) PRIMITIVE_TO_HANDLER.get(cls);
+        Converter<M, T> converter = (Converter<M, T>) PROTO_WRAPPER_TO_CONVERTER.get(boxedType);
+        checkArgument(
+                converter != null,
+                "Could not find a primitive type for `%s`.",
+                boxedType.getName()
+        );
+        return converter;
+    }
+
+    private Converter<T, M> primitiveConverter(Class<?> cls) {
+        @SuppressWarnings("unchecked")
+        Converter<M, T> converter = (Converter<M, T>) PRIMITIVE_TO_CONVERTER.get(cls);
         checkArgument(
                 converter != null,
                 "Could not find a wrapper type for `%s`.",
                 cls.getName()
         );
-        M result = converter.reverse().convert(input);
-        return result;
+        return converter.reverse();
     }
 
     private static final class Int32Converter extends WrappingConverter<Int32Value, Integer> {
