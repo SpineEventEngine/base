@@ -20,20 +20,26 @@
 
 package io.spine.protobuf;
 
-import com.google.protobuf.Message;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.BytesValue;
 
 /**
- * Returns the supplied {@code input} {@link Message} as is.
+ * Converts {@link BytesValue} to {@link ByteString} and back.
  */
-final class MessageTypeCaster extends ProtoConverter<Message, Message> {
+final class BytesConverter extends ProtoConverter<BytesValue, ByteString> {
 
     @Override
-    protected Message toObject(Message input) {
-        return input;
+    protected ByteString toObject(BytesValue input) {
+        ByteString result = input.getValue();
+        return result;
     }
 
     @Override
-    protected Message toMessage(Message input) {
-        return input;
+    protected BytesValue toMessage(ByteString input) {
+        BytesValue bytes = BytesValue
+                .newBuilder()
+                .setValue(input)
+                .build();
+        return bytes;
     }
 }

@@ -48,29 +48,29 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *         It's the best-performant solution among options, such as
  *         {@link Class#getCanonicalName() Class.getCanonicalName()}.
  */
-final class PrimitiveTypeCaster<M extends Message, T> extends ProtoConverter<M, T> {
+final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T> {
 
     private static final ImmutableMap<Class<?>, Converter<? extends Message, ?>>
             PROTO_WRAPPER_TO_HANDLER =
             ImmutableMap.<Class<?>, Converter<? extends Message, ?>>builder()
-                    .put(Int32Value.class, new Int32Handler())
-                    .put(Int64Value.class, new Int64Handler())
-                    .put(UInt32Value.class, new UInt32Handler())
-                    .put(UInt64Value.class, new UInt64Handler())
-                    .put(FloatValue.class, new FloatHandler())
-                    .put(DoubleValue.class, new DoubleHandler())
-                    .put(BoolValue.class, new BoolHandler())
-                    .put(StringValue.class, new StringHandler())
+                    .put(Int32Value.class, new Int32Converter())
+                    .put(Int64Value.class, new Int64Converter())
+                    .put(UInt32Value.class, new UInt32Converter())
+                    .put(UInt64Value.class, new UInt64Converter())
+                    .put(FloatValue.class, new FloatConverter())
+                    .put(DoubleValue.class, new DoubleConverter())
+                    .put(BoolValue.class, new BoolConverter())
+                    .put(StringValue.class, new StringConverter())
                     .build();
     private static final ImmutableMap<Class<?>, Converter<? extends Message, ?>>
             PRIMITIVE_TO_HANDLER =
             ImmutableMap.<Class<?>, Converter<? extends Message, ?>>builder()
-                    .put(Integer.class, new Int32Handler())
-                    .put(Long.class, new Int64Handler())
-                    .put(Float.class, new FloatHandler())
-                    .put(Double.class, new DoubleHandler())
-                    .put(Boolean.class, new BoolHandler())
-                    .put(String.class, new StringHandler())
+                    .put(Integer.class, new Int32Converter())
+                    .put(Long.class, new Int64Converter())
+                    .put(Float.class, new FloatConverter())
+                    .put(Double.class, new DoubleConverter())
+                    .put(Boolean.class, new BoolConverter())
+                    .put(String.class, new StringConverter())
                     .build();
 
     @Override
@@ -100,16 +100,16 @@ final class PrimitiveTypeCaster<M extends Message, T> extends ProtoConverter<M, 
         return result;
     }
 
-    private static final class Int32Handler extends PrimitiveHandler<Int32Value, Integer> {
+    private static final class Int32Converter extends WrappingConverter<Int32Value, Integer> {
 
         @Override
-        protected Integer unpack(Int32Value message) {
+        protected Integer unwrap(Int32Value message) {
             checkNotNull(message);
             return message.getValue();
         }
 
         @Override
-        protected Int32Value pack(Integer value) {
+        protected Int32Value wrap(Integer value) {
             return Int32Value
                     .newBuilder()
                     .setValue(value)
@@ -117,16 +117,16 @@ final class PrimitiveTypeCaster<M extends Message, T> extends ProtoConverter<M, 
         }
     }
 
-    private static final class Int64Handler extends PrimitiveHandler<Int64Value, Long> {
+    private static final class Int64Converter extends WrappingConverter<Int64Value, Long> {
 
         @Override
-        protected Long unpack(Int64Value message) {
+        protected Long unwrap(Int64Value message) {
             checkNotNull(message);
             return message.getValue();
         }
 
         @Override
-        protected Int64Value pack(Long value) {
+        protected Int64Value wrap(Long value) {
             return Int64Value
                     .newBuilder()
                     .setValue(value)
@@ -134,16 +134,16 @@ final class PrimitiveTypeCaster<M extends Message, T> extends ProtoConverter<M, 
         }
     }
 
-    private static final class UInt32Handler extends PrimitiveHandler<UInt32Value, Integer> {
+    private static final class UInt32Converter extends WrappingConverter<UInt32Value, Integer> {
 
         @Override
-        protected Integer unpack(UInt32Value message) {
+        protected Integer unwrap(UInt32Value message) {
             checkNotNull(message);
             return message.getValue();
         }
 
         @Override
-        protected UInt32Value pack(Integer value) {
+        protected UInt32Value wrap(Integer value) {
             // Hidden by Int32Handler
             return UInt32Value
                     .newBuilder()
@@ -152,16 +152,16 @@ final class PrimitiveTypeCaster<M extends Message, T> extends ProtoConverter<M, 
         }
     }
 
-    private static final class UInt64Handler extends PrimitiveHandler<UInt64Value, Long> {
+    private static final class UInt64Converter extends WrappingConverter<UInt64Value, Long> {
 
         @Override
-        protected Long unpack(UInt64Value message) {
+        protected Long unwrap(UInt64Value message) {
             checkNotNull(message);
             return message.getValue();
         }
 
         @Override
-        protected UInt64Value pack(Long value) {
+        protected UInt64Value wrap(Long value) {
             // Hidden by Int64Handler
             return UInt64Value
                     .newBuilder()
@@ -170,16 +170,16 @@ final class PrimitiveTypeCaster<M extends Message, T> extends ProtoConverter<M, 
         }
     }
 
-    private static final class FloatHandler extends PrimitiveHandler<FloatValue, Float> {
+    private static final class FloatConverter extends WrappingConverter<FloatValue, Float> {
 
         @Override
-        protected Float unpack(FloatValue message) {
+        protected Float unwrap(FloatValue message) {
             checkNotNull(message);
             return message.getValue();
         }
 
         @Override
-        protected FloatValue pack(Float value) {
+        protected FloatValue wrap(Float value) {
             return FloatValue
                     .newBuilder()
                     .setValue(value)
@@ -187,16 +187,16 @@ final class PrimitiveTypeCaster<M extends Message, T> extends ProtoConverter<M, 
         }
     }
 
-    private static final class DoubleHandler extends PrimitiveHandler<DoubleValue, Double> {
+    private static final class DoubleConverter extends WrappingConverter<DoubleValue, Double> {
 
         @Override
-        protected Double unpack(DoubleValue message) {
+        protected Double unwrap(DoubleValue message) {
             checkNotNull(message);
             return message.getValue();
         }
 
         @Override
-        protected DoubleValue pack(Double value) {
+        protected DoubleValue wrap(Double value) {
             return DoubleValue
                     .newBuilder()
                     .setValue(value)
@@ -204,16 +204,16 @@ final class PrimitiveTypeCaster<M extends Message, T> extends ProtoConverter<M, 
         }
     }
 
-    private static final class BoolHandler extends PrimitiveHandler<BoolValue, Boolean> {
+    private static final class BoolConverter extends WrappingConverter<BoolValue, Boolean> {
 
         @Override
-        protected Boolean unpack(BoolValue message) {
+        protected Boolean unwrap(BoolValue message) {
             checkNotNull(message);
             return message.getValue();
         }
 
         @Override
-        protected BoolValue pack(Boolean value) {
+        protected BoolValue wrap(Boolean value) {
             return BoolValue
                     .newBuilder()
                     .setValue(value)
@@ -221,16 +221,16 @@ final class PrimitiveTypeCaster<M extends Message, T> extends ProtoConverter<M, 
         }
     }
 
-    private static final class StringHandler extends PrimitiveHandler<StringValue, String> {
+    private static final class StringConverter extends WrappingConverter<StringValue, String> {
 
         @Override
-        protected String unpack(StringValue message) {
+        protected String unwrap(StringValue message) {
             checkNotNull(message);
             return message.getValue();
         }
 
         @Override
-        protected StringValue pack(String value) {
+        protected StringValue wrap(String value) {
             return StringValue
                     .newBuilder()
                     .setValue(value)

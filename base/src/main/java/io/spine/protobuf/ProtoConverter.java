@@ -43,19 +43,19 @@ abstract class ProtoConverter<M extends Message, T> extends Converter<M, T> {
     /**
      * Returns a converter for the specified {@code type}.
      *
-     * <p>If a dedicated converter is not available returns {@link PrimitiveTypeCaster}.
+     * <p>If a dedicated converter is not available returns {@link PrimitiveConverter}.
      */
     static <M extends Message, T> ProtoConverter<M, T> forType(Class<T> type) {
         checkNotNull(type);
         ProtoConverter<?, ?> caster;
         if (Message.class.isAssignableFrom(type)) {
-            caster = new MessageTypeCaster();
+            caster = new MessageConverter();
         } else if (ByteString.class.isAssignableFrom(type)) {
-            caster = new BytesCaster();
+            caster = new BytesConverter();
         } else if (isProtoEnum(type)) {
             caster = new EnumConverter(asProtoEnum(type));
         } else {
-            caster = new PrimitiveTypeCaster<>();
+            caster = new PrimitiveConverter<>();
         }
         @SuppressWarnings("unchecked") // Logically checked.
         ProtoConverter<M, T> result = (ProtoConverter<M, T>) caster;

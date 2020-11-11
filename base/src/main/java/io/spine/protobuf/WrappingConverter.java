@@ -23,14 +23,16 @@ package io.spine.protobuf;
 import com.google.common.base.Converter;
 import com.google.protobuf.Message;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * A converter handling the primitive types transformations.
  *
- * <p>It's sufficient to override methods {@link #pack(Object) pack(T)} and
- * {@link #unpack(Message) unpack(M)} when extending this class.
+ * <p>It's sufficient to override methods {@link #wrap(Object) wrap(T)} and
+ * {@link #unwrap(Message) unwrap(M)} when extending this class.
  *
  * <p>Since the Protobuf and Java primitives differ, there may be more then one
- * {@code PrimitiveHandler} for a Java primitive type. In this case, if the resulting Protobuf
+ * {@code WrappingConverter} for a Java primitive type. In this case, if the resulting Protobuf
  * value type is not specified explicitly, the closest type is selected as a target for
  * the conversion. The closeness of two types is determined by the lexicographic closeness.
  *
@@ -39,16 +41,18 @@ import com.google.protobuf.Message;
  * @param <T>
  *         the type of the Java primitive wrapper
  */
-abstract class PrimitiveHandler<M extends Message, T> extends Converter<M, T> {
+abstract class WrappingConverter<M extends Message, T> extends Converter<M, T> {
 
     @Override
     protected final T doForward(M input) {
-        return unpack(input);
+        checkNotNull(input);
+        return unwrap(input);
     }
 
     @Override
     protected final M doBackward(T input) {
-        return pack(input);
+        checkNotNull(input);
+        return wrap(input);
     }
 
     /**
@@ -58,7 +62,7 @@ abstract class PrimitiveHandler<M extends Message, T> extends Converter<M, T> {
      *         packed value
      * @return unpacked value
      */
-    protected abstract T unpack(M message);
+    protected abstract T unwrap(M message);
 
     /**
      * Packs the given primitive value into a Protobuf wrapper of type {@code M}.
@@ -67,5 +71,5 @@ abstract class PrimitiveHandler<M extends Message, T> extends Converter<M, T> {
      *         primitive value
      * @return packed value
      */
-    protected abstract M pack(T value);
+    protected abstract M wrap(T value);
 }
