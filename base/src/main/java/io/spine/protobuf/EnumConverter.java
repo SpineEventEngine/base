@@ -70,7 +70,11 @@ final class EnumConverter extends ProtoConverter<EnumValue, Enum<? extends Proto
     private Enum<? extends ProtocolMessageEnum> findByNumber(int number) {
         Enum<? extends ProtocolMessageEnum>[] constants = type.getEnumConstants();
         for (Enum<? extends ProtocolMessageEnum> constant : constants) {
-            if (UNRECOGNIZED_PROTO_ENUM.equalsIgnoreCase(constant.name())){
+            boolean isUnrecognized = isUnrecognized(constant);
+            if (isUnrecognized && number == -1) {
+                return constant;
+            }
+            if (isUnrecognized) {
                 continue;
             }
             ProtocolMessageEnum asProtoEnum = (ProtocolMessageEnum) constant;
@@ -80,6 +84,10 @@ final class EnumConverter extends ProtoConverter<EnumValue, Enum<? extends Proto
             }
         }
         throw unknownNumber(number);
+    }
+
+    private static boolean isUnrecognized(Enum<? extends ProtocolMessageEnum> constant) {
+        return UNRECOGNIZED_PROTO_ENUM.equalsIgnoreCase(constant.name());
     }
 
     /**

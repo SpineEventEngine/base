@@ -48,6 +48,7 @@ import static io.spine.protobuf.TypeConverter.toObject;
 import static io.spine.test.protobuf.TaskStatus.EXECUTING;
 import static io.spine.test.protobuf.TaskStatus.FAILED;
 import static io.spine.test.protobuf.TaskStatus.SUCCESS;
+import static io.spine.test.protobuf.TaskStatus.UNRECOGNIZED;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -183,6 +184,26 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
                     .setNumber(EXECUTING.getNumber())
                     .build();
             checkConverts(value, EXECUTING);
+        }
+
+        @Test
+        @DisplayName("with `UNRECOGNIZED` value by name")
+        void unrecognizedByName() {
+            EnumValue value = EnumValue
+                    .newBuilder()
+                    .setName(UNRECOGNIZED.name())
+                    .build();
+            checkConverts(value, UNRECOGNIZED);
+        }
+
+        @Test
+        @DisplayName("with `UNRECOGNIZED` value by number `-1`")
+        void unrecognizedByNumber() {
+            EnumValue value = EnumValue
+                    .newBuilder()
+                    .setNumber(-1)
+                    .build();
+            checkConverts(value, UNRECOGNIZED);
         }
 
         @Test
