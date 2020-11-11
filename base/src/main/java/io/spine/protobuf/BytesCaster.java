@@ -26,7 +26,7 @@ import com.google.protobuf.BytesValue;
 /**
  * Converts {@link BytesValue} to {@link ByteString} and back.
  */
-final class BytesCaster extends MessageCaster<BytesValue, ByteString> {
+final class BytesCaster extends ProtoConverter<BytesValue, ByteString> {
 
     @Override
     protected ByteString toObject(BytesValue input) {

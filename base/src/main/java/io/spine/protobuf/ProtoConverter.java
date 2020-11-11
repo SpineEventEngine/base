@@ -21,7 +21,6 @@
 package io.spine.protobuf;
 
 import com.google.common.base.Converter;
-import com.google.common.base.Function;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolMessageEnum;
@@ -29,21 +28,26 @@ import com.google.protobuf.ProtocolMessageEnum;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The {@link Function} performing the described type conversion.
+ * Performs two-way conversion of a specific Java target type to its
+ * {@linkplain Message Protobuf Message} counterpart and back.
+ *
+ * <p>The inheritors implement the actual conversion to a specific Message and Object.
  *
  * @param <M>
- *         type of message to convert
+ *         Protobuf Message to convert
  * @param <T>
  *         target conversion type
  */
-abstract class MessageCaster<M extends Message, T> extends Converter<M, T> {
+abstract class ProtoConverter<M extends Message, T> extends Converter<M, T> {
 
     /**
-     * Returns a caster for the specified {@code type}.
+     * Returns a converter for the specified {@code type}.
+     *
+     * <p>If a dedicated converter is not available returns {@link PrimitiveTypeCaster}.
      */
-    static <M extends Message, T> MessageCaster<M, T> forType(Class<T> type) {
+    static <M extends Message, T> ProtoConverter<M, T> forType(Class<T> type) {
         checkNotNull(type);
-        MessageCaster<?, ?> caster;
+        ProtoConverter<?, ?> caster;
         if (Message.class.isAssignableFrom(type)) {
             caster = new MessageTypeCaster();
         } else if (ByteString.class.isAssignableFrom(type)) {
@@ -54,7 +58,7 @@ abstract class MessageCaster<M extends Message, T> extends Converter<M, T> {
             caster = new PrimitiveTypeCaster<>();
         }
         @SuppressWarnings("unchecked") // Logically checked.
-        MessageCaster<M, T> result = (MessageCaster<M, T>) caster;
+        ProtoConverter<M, T> result = (ProtoConverter<M, T>) caster;
         return result;
     }
 

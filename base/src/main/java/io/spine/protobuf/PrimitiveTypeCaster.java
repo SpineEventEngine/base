@@ -48,7 +48,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *         It's the best-performant solution among options, such as
  *         {@link Class#getCanonicalName() Class.getCanonicalName()}.
  */
-final class PrimitiveTypeCaster<M extends Message, T> extends MessageCaster<M, T> {
+final class PrimitiveTypeCaster<M extends Message, T> extends ProtoConverter<M, T> {
 
     private static final ImmutableMap<Class<?>, Converter<? extends Message, ?>>
             PROTO_WRAPPER_TO_HANDLER =

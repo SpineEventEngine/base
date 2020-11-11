@@ -25,7 +25,7 @@ import com.google.protobuf.Message;
 /**
  * Returns the supplied {@code input} {@link Message} as is.
  */
-final class MessageTypeCaster extends MessageCaster<Message, Message> {
+final class MessageTypeCaster extends ProtoConverter<Message, Message> {
 
     @Override
     protected Message toObject(Message input) {

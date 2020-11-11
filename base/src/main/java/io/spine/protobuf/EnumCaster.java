@@ -29,7 +29,7 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
 /**
  * Converts {@link EnumValue} to {@link Enum} and back.
  */
-final class EnumCaster extends MessageCaster<EnumValue, Enum<? extends ProtocolMessageEnum>> {
+final class EnumCaster extends ProtoConverter<EnumValue, Enum<? extends ProtocolMessageEnum>> {
 
     private final Class<? extends Enum<? extends ProtocolMessageEnum>> type;
 

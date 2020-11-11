@@ -75,7 +75,7 @@ public final class TypeConverter {
         checkNotNull(message);
         checkNotNull(target);
         checkNotRawEnum(message, target);
-        MessageCaster<? super Message, T> caster = MessageCaster.forType(target);
+        ProtoConverter<? super Message, T> caster = ProtoConverter.forType(target);
         Message genericMessage = unpack(message);
         T result = caster.convert(genericMessage);
         return result;
@@ -110,7 +110,7 @@ public final class TypeConverter {
     public static <T> Message toMessage(T value) {
         @SuppressWarnings("unchecked" /* Must be checked at runtime. */)
         Class<T> srcClass = (Class<T>) value.getClass();
-        MessageCaster<Message, T> caster = MessageCaster.forType(srcClass);
+        ProtoConverter<Message, T> caster = ProtoConverter.forType(srcClass);
         Message message = caster.toMessage(value);
         checkNotNull(message);
         return message;
