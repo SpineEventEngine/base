@@ -28,8 +28,8 @@ import com.google.protobuf.ProtocolMessageEnum;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Performs two-way conversion of a specific Java target type to its
- * {@linkplain Message Protobuf Message} counterpart and back.
+ * Performs two-way conversion of a {@linkplain Message Protobuf Message} to its
+ * Java counterpart and back.
  *
  * <p>The inheritors implement the actual conversion to a specific Message and Object.
  *
