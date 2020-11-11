@@ -34,7 +34,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>The inheritors implement the actual conversion to a specific Message and Object.
  *
  * @param <M>
- *         Protobuf Message to convert
+ *         the type of a message to convert
  * @param <T>
  *         target conversion type
  */
