@@ -49,7 +49,7 @@ abstract class ProtoConverter<M extends Message, T> extends Converter<M, T> {
         checkNotNull(type);
         ProtoConverter<?, ?> converter;
         if (Message.class.isAssignableFrom(type)) {
-            converter = new MessageConverter();
+            converter = new AsIs();
         } else if (ByteString.class.isAssignableFrom(type)) {
             converter = new BytesConverter();
         } else if (isProtoEnum(type)) {
@@ -94,4 +94,20 @@ abstract class ProtoConverter<M extends Message, T> extends Converter<M, T> {
      * Converts supplied {@code input} object into a Protobuf message.
      */
     protected abstract M toMessage(T input);
+
+    /**
+     * Returns the supplied {@code input} {@link Message} as is.
+     */
+    private static final class AsIs extends ProtoConverter<Message, Message> {
+
+        @Override
+        protected Message toObject(Message input) {
+            return input;
+        }
+
+        @Override
+        protected Message toMessage(Message input) {
+            return input;
+        }
+    }
 }
