@@ -43,7 +43,16 @@ abstract class ProtoConverter<M extends Message, T> extends Converter<M, T> {
     /**
      * Returns a converter for the specified {@code type}.
      *
-     * <p>If a dedicated converter is not available returns {@link PrimitiveConverter}.
+     * <p>Protobuf {@linkplain Message messages} are returned {@linkplain AsIs as is}.
+     *
+     * <p>{@link ByteString} instances are {@linkplain BytesConverter converted} to
+     * {@link com.google.protobuf.BytesValue BytesValue}.
+     *
+     * <p>{@linkplain ProtocolMessageEnum Protobuf enums} are converted using a dedicated
+     * {@link EnumConverter} which handles conversions by name or by number.
+     *
+     * <p>All other types are considered primitives and are {@linkplain PrimitiveConverter handled}
+     * respectively.
      */
     static <M extends Message, T> Converter<M, T> forType(Class<T> type) {
         checkNotNull(type);
