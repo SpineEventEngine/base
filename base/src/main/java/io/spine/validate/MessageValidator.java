@@ -78,7 +78,7 @@ final class MessageValidator implements ConstraintTranslator<Optional<Validation
     }
 
     /**
-     * Creates a new validator for a {@linkplain MessageValue#atTopLevel(Message)
+     * Creates a new validator for the {@linkplain MessageValue#atTopLevel(Message)
      * top-level} {@code message}.
      */
     MessageValidator(Message message) {
@@ -86,7 +86,7 @@ final class MessageValidator implements ConstraintTranslator<Optional<Validation
     }
 
     /**
-     * Creates a new validator for a {@code message} with {@code context}.
+     * Creates a new validator for the {@code message} with the specific field {@code context}.
      */
     MessageValidator(Message message, FieldContext context) {
         this(nestedIn(checkNotNull(context), checkNotNull(message)));
