@@ -142,11 +142,10 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
 
         @Override
         protected UInt32Value wrap(Integer value) {
-            // Hidden by Int32Handler
-            return UInt32Value
-                    .newBuilder()
-                    .setValue(value)
-                    .build();
+            throw new UnsupportedOperationException(
+                    "Java's `Integer` value should be always mapped to a signed `Int32Value`. " +
+                            "Conversion to `UInt32Value` is not supported."
+            );
         }
     }
 
@@ -159,11 +158,10 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
 
         @Override
         protected UInt64Value wrap(Long value) {
-            // Hidden by Int64Handler
-            return UInt64Value
-                    .newBuilder()
-                    .setValue(value)
-                    .build();
+            throw new UnsupportedOperationException(
+                    "Java's `Long` value should be always mapped to a signed `Int64Value`. " +
+                            "Conversion to `UInt64Value` is not supported."
+            );
         }
     }
 
