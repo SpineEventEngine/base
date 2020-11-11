@@ -27,7 +27,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
- * Handles conversion from Java {@link Enum} objects to respective {@link EnumValue} Protobuf
+ * Handles conversion of Java {@link Enum} objects to respective {@link EnumValue} Protobuf
  * counterpart.
  *
  * <p>Enums are converted by their {@linkplain EnumValue#getName() name} first or by the

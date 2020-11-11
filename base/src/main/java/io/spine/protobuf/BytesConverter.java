@@ -24,7 +24,7 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.BytesValue;
 
 /**
- * Converts {@link BytesValue} to {@link ByteString} and back.
+ * Handles conversion of {@link BytesValue} into {@link ByteString} and back.
  */
 final class BytesConverter extends ProtoConverter<BytesValue, ByteString> {
 
