@@ -53,7 +53,7 @@ abstract class ProtoConverter<M extends Message, T> extends Converter<M, T> {
         } else if (ByteString.class.isAssignableFrom(type)) {
             caster = new BytesCaster();
         } else if (isProtoEnum(type)) {
-            caster = new EnumCaster(asProtoEnum(type));
+            caster = new EnumConverter(asProtoEnum(type));
         } else {
             caster = new PrimitiveTypeCaster<>();
         }

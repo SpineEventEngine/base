@@ -27,16 +27,20 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
- * Converts {@link EnumValue} to {@link Enum} and back.
+ * Handles conversion from Java {@link Enum} objects to respective {@link EnumValue} Protobuf
+ * counterpart.
+ *
+ * <p>Enums are converted by their {@linkplain EnumValue#getName() name} first or by the
+ * {@linkplain EnumValue#getNumber() number} if the name is not present.
  */
-final class EnumCaster extends ProtoConverter<EnumValue, Enum<? extends ProtocolMessageEnum>> {
+final class EnumConverter extends ProtoConverter<EnumValue, Enum<? extends ProtocolMessageEnum>> {
 
     private final Class<? extends Enum<? extends ProtocolMessageEnum>> type;
 
     /**
      * Creates a new caster for the specified {@code type}.
      */
-    EnumCaster(Class<? extends Enum<? extends ProtocolMessageEnum>> type) {
+    EnumConverter(Class<? extends Enum<? extends ProtocolMessageEnum>> type) {
         super();
         this.type = checkNotNull(type);
     }
@@ -46,13 +50,19 @@ final class EnumCaster extends ProtoConverter<EnumValue, Enum<? extends Protocol
         String name = input.getName();
         if (name.isEmpty()) {
             int number = input.getNumber();
-            return convertByNumber(number);
+            return findByNumber(number);
         } else {
-            return convertByName(name);
+            return findByName(name);
         }
     }
 
-    private Enum<? extends ProtocolMessageEnum> convertByNumber(int number) {
+    /**
+     * Retrieves the enum constant with the specified {@code number}.
+     *
+     * @throws IllegalArgumentException
+     *         if enum constant with such a number is not present
+     */
+    private Enum<? extends ProtocolMessageEnum> findByNumber(int number) {
         Enum<? extends ProtocolMessageEnum>[] constants = type.getEnumConstants();
         for (Enum<? extends ProtocolMessageEnum> constant : constants) {
             ProtocolMessageEnum asProtoEnum = (ProtocolMessageEnum) constant;
@@ -64,8 +74,15 @@ final class EnumCaster extends ProtoConverter<EnumValue, Enum<? extends Protocol
         throw unknownNumber(number);
     }
 
+    /**
+     * {@linkplain Enum#valueOf(Class, String) Retrieves} the enum constant with
+     * the specified {@code name}.
+     *
+     * @throws IllegalArgumentException
+     *         if enum constant with such a name is not present
+     */
     @SuppressWarnings({"unchecked", "rawtypes"}) // Checked at runtime.
-    private Enum<? extends ProtocolMessageEnum> convertByName(String name) {
+    private Enum<? extends ProtocolMessageEnum> findByName(String name) {
         Enum result = Enum.valueOf((Class<? extends Enum>) type, name);
         return (Enum<? extends ProtocolMessageEnum>) result;
     }
