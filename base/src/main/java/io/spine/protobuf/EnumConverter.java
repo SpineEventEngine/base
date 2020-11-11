@@ -35,6 +35,11 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  */
 final class EnumConverter extends ProtoConverter<EnumValue, Enum<? extends ProtocolMessageEnum>> {
 
+    /**
+     * A special name of a Protobuf enum entry that denotes an unrecognized value.
+     */
+    private static final String UNRECOGNIZED_PROTO_ENUM = "UNRECOGNIZED";
+
     private final Class<? extends Enum<? extends ProtocolMessageEnum>> type;
 
     /**
@@ -65,6 +70,9 @@ final class EnumConverter extends ProtoConverter<EnumValue, Enum<? extends Proto
     private Enum<? extends ProtocolMessageEnum> findByNumber(int number) {
         Enum<? extends ProtocolMessageEnum>[] constants = type.getEnumConstants();
         for (Enum<? extends ProtocolMessageEnum> constant : constants) {
+            if (UNRECOGNIZED_PROTO_ENUM.equalsIgnoreCase(constant.name())){
+                continue;
+            }
             ProtocolMessageEnum asProtoEnum = (ProtocolMessageEnum) constant;
             int valueNumber = asProtoEnum.getNumber();
             if (number == valueNumber) {
