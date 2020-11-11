@@ -96,8 +96,7 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
                 "Could not find a wrapper type for `%s`.",
                 cls.getName()
         );
-        M result = converter.reverse()
-                            .convert(input);
+        M result = converter.reverse().convert(input);
         return result;
     }
 
