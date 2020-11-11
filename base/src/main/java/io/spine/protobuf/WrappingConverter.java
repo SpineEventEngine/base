@@ -28,9 +28,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A converter handling the primitive types transformations.
  *
- * <p>It's sufficient to override methods {@link #wrap(Object) wrap(T)} and
- * {@link #unwrap(Message) unwrap(M)} when extending this class.
- *
  * <p>Since the Protobuf and Java primitives differ, there may be more then one
  * {@code WrappingConverter} for a Java primitive type. In this case, if the resulting Protobuf
  * value type is not specified explicitly, the closest type is selected as a target for
@@ -40,6 +37,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *         the type of the Protobuf primitive wrapper
  * @param <T>
  *         the type of the Java primitive wrapper
+ * @implSpec It's sufficient to override methods {@link #wrap(Object) wrap(T)} and
+ *         {@link #unwrap(Message) unwrap(M)} when extending this class.
  */
 abstract class WrappingConverter<M extends Message, T> extends Converter<M, T> {
 
@@ -56,20 +55,20 @@ abstract class WrappingConverter<M extends Message, T> extends Converter<M, T> {
     }
 
     /**
-     * Unpacks a primitive value of type {@code T} from the given wrapper value.
+     * Unwraps a primitive value of type {@code T} from the given wrapper value.
      *
      * @param message
-     *         packed value
-     * @return unpacked value
+     *         wrapped value
+     * @return unwrapped value
      */
     protected abstract T unwrap(M message);
 
     /**
-     * Packs the given primitive value into a Protobuf wrapper of type {@code M}.
+     * Wraps the given primitive value into a Protobuf wrapper of type {@code M}.
      *
      * @param value
      *         primitive value
-     * @return packed value
+     * @return wrapped value
      */
     protected abstract M wrap(T value);
 }
