@@ -72,9 +72,9 @@ public final class MessageValue {
     private final FieldContext context;
 
     private MessageValue(Message message, FieldContext context) {
-        this.message = checkNotNull(message);
+        this.message = message;
         this.descriptor = message.getDescriptorForType();
-        this.context = checkNotNull(context);
+        this.context = context;
         if (message instanceof FieldAwareMessage) {
             asFieldAware = (FieldAwareMessage) message;
         } else {
@@ -92,6 +92,8 @@ public final class MessageValue {
      * @return a new instance
      */
     public static MessageValue nestedIn(FieldContext messageContext, Message message) {
+        checkNotNull(message);
+        checkNotNull(messageContext);
         return new MessageValue(message, messageContext);
     }
 
@@ -103,6 +105,7 @@ public final class MessageValue {
      * @return a new instance
      */
     public static MessageValue atTopLevel(Message message) {
+        checkNotNull(message);
         return new MessageValue(message, FieldContext.empty());
     }
 
