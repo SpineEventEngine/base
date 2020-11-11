@@ -45,7 +45,7 @@ abstract class ProtoConverter<M extends Message, T> extends Converter<M, T> {
      *
      * <p>If a dedicated converter is not available returns {@link PrimitiveConverter}.
      */
-    static <M extends Message, T> ProtoConverter<M, T> forType(Class<T> type) {
+    static <M extends Message, T> Converter<M, T> forType(Class<T> type) {
         checkNotNull(type);
         ProtoConverter<?, ?> converter;
         if (Message.class.isAssignableFrom(type)) {
@@ -58,7 +58,7 @@ abstract class ProtoConverter<M extends Message, T> extends Converter<M, T> {
             converter = new PrimitiveConverter<>();
         }
         @SuppressWarnings("unchecked") // Logically checked.
-        ProtoConverter<M, T> result = (ProtoConverter<M, T>) converter;
+        Converter<M, T> result = (Converter<M, T>) converter;
         return result;
     }
 

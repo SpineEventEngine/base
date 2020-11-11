@@ -20,6 +20,7 @@
 
 package io.spine.protobuf;
 
+import com.google.common.base.Converter;
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.EnumValue;
@@ -75,7 +76,7 @@ public final class TypeConverter {
         checkNotNull(message);
         checkNotNull(target);
         checkNotRawEnum(message, target);
-        ProtoConverter<? super Message, T> converter = ProtoConverter.forType(target);
+        Converter<? super Message, T> converter = ProtoConverter.forType(target);
         Message genericMessage = unpack(message);
         T result = converter.convert(genericMessage);
         return result;
@@ -110,8 +111,8 @@ public final class TypeConverter {
     public static <T> Message toMessage(T value) {
         @SuppressWarnings("unchecked" /* Must be checked at runtime. */)
         Class<T> srcClass = (Class<T>) value.getClass();
-        ProtoConverter<Message, T> converter = ProtoConverter.forType(srcClass);
-        Message message = converter.toMessage(value);
+        Converter<Message, T> converter = ProtoConverter.forType(srcClass);
+        Message message = converter.reverse().convert(value);
         checkNotNull(message);
         return message;
     }
