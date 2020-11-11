@@ -38,7 +38,7 @@ final class EnumConverter extends ProtoConverter<EnumValue, Enum<? extends Proto
     private final Class<? extends Enum<? extends ProtocolMessageEnum>> type;
 
     /**
-     * Creates a new caster for the specified {@code type}.
+     * Creates a new converter for the specified {@code type}.
      */
     EnumConverter(Class<? extends Enum<? extends ProtocolMessageEnum>> type) {
         super();

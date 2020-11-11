@@ -35,12 +35,12 @@ import com.google.protobuf.UInt64Value;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * Casts the primitive and built-in types to the corresponding {@link Message}s and back.
+ * Converts the primitive and built-in types to the corresponding {@link Message}s and back.
  *
  * @param <M>
  *         the type of the message
  * @param <T>
- *         the type to cast to and from the message
+ *         the type to converter to and from the message
  * @implNote The arguments are checked during the conversion and an
  *         {@link IllegalArgumentException} is thrown in case of mismatch. The type name used in
  *         the error message is a simple {@link Class#getName() Class.getName()} call result.

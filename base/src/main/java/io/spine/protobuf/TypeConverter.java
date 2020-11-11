@@ -75,9 +75,9 @@ public final class TypeConverter {
         checkNotNull(message);
         checkNotNull(target);
         checkNotRawEnum(message, target);
-        ProtoConverter<? super Message, T> caster = ProtoConverter.forType(target);
+        ProtoConverter<? super Message, T> converter = ProtoConverter.forType(target);
         Message genericMessage = unpack(message);
-        T result = caster.convert(genericMessage);
+        T result = converter.convert(genericMessage);
         return result;
     }
 
@@ -110,8 +110,8 @@ public final class TypeConverter {
     public static <T> Message toMessage(T value) {
         @SuppressWarnings("unchecked" /* Must be checked at runtime. */)
         Class<T> srcClass = (Class<T>) value.getClass();
-        ProtoConverter<Message, T> caster = ProtoConverter.forType(srcClass);
-        Message message = caster.toMessage(value);
+        ProtoConverter<Message, T> converter = ProtoConverter.forType(srcClass);
+        Message message = converter.toMessage(value);
         checkNotNull(message);
         return message;
     }
@@ -136,7 +136,7 @@ public final class TypeConverter {
     }
 
     /**
-     * Makes sure no incorrectly packed enum values are passed to the message caster.
+     * Makes sure no incorrectly packed enum values are passed to the message converter.
      *
      * <p>Currently, the enum values can only be converted from the {@link EnumValue} proto type.
      * All other enum representations, including plain strings and numbers, are not supported.
