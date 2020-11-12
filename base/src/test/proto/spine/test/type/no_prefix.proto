@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package spine.test.type;
+
+import "spine/options.proto";
+
+// See `TypeUrlTest.EmptyPrefix` for why this value is empty.
+option (type_url_prefix) = "";
+option java_package = "io.spine.test.type";
+option java_outer_classname = "NoPrefixProto";
+option java_multiple_files = true;
+
+message TypeWithoutPrefix {
+  string value = 1;
+}
