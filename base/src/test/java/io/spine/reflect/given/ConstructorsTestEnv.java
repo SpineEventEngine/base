@@ -55,11 +55,11 @@ public final class ConstructorsTestEnv {
         public static final String MISSING = "missing";
         private final String name;
 
-        protected Animal(String name) {
+        Animal(String name) {
             this.name = name;
         }
 
-        protected Animal() {
+        Animal() {
             this.name = MISSING;
         }
 

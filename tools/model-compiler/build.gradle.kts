@@ -18,11 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.*
-import groovy.lang.GString
+import com.google.protobuf.gradle.generateProtoTasks
+import com.google.protobuf.gradle.protobuf
 import io.spine.gradle.internal.Deps
-import java.nio.file.Files
-import java.nio.file.StandardCopyOption
 
 group = "io.spine.tools"
 
@@ -48,8 +46,6 @@ dependencies {
     testImplementation(Deps.test.junitPioneer)
     testImplementation(gradleTestKit())
     testImplementation(project(":plugin-testlib"))
-    // The freshest version of the plugin required for tests
-    protocPluginDependency = testCompileOnly("io.spine.tools:spine-protoc-plugin:$spineVersion@jar")
 }
 
 protobuf {
@@ -57,8 +53,7 @@ protobuf {
         all().forEach { task ->
             val scope = task.sourceSet.name
             task.generateDescriptorSet = true
-            task.descriptorSetOptions.path =
-                    "$buildDir/descriptors/${scope}/io.spine.tools.spine-model-compiler-${scope}.desc"
+            task.descriptorSetOptions.path = "$buildDir/descriptors/${scope}/io.spine.tools.spine-model-compiler-${scope}.desc"
             task.descriptorSetOptions.includeImports = true
             task.descriptorSetOptions.includeSourceInfo = true
         }
@@ -77,25 +72,5 @@ sourceSets {
     }
 }
 
-val spineFolder = file(".spine")
-
-// We cannot use standard Copy task here as it resolves the `from` property not lazily.
-// Since we use use a dependency in the `from`, it may cause some issues with the Maven plugin
-// See https://discuss.gradle.org/t/right-way-to-copy-contents-from-dependency-archives/7449
-val copyProtocPluginTestArtifact by tasks.registering {
-    description = "Spawns the Spine Protoc plugin artifact in the project directory for tests"
-    dependsOn(":protoc-plugin:publishToMavenLocal")
-
-    doLast {
-        val from = configurations.testCompileClasspath.get().fileCollection(protocPluginDependency).singleFile
-        val srcPath = from.toPath()
-        val dest = spineFolder.toPath().resolve(from.name)
-        dest.toFile().mkdirs()
-        Files.copy(srcPath, dest, StandardCopyOption.REPLACE_EXISTING)
-    }
-
-}
-
 // Tests use the Protobuf plugin.
-tasks.compileTestJava.configure { dependsOn(copyProtocPluginTestArtifact) }
 tasks.test.configure { dependsOn(":errorprone-checks:publishToMavenLocal") }

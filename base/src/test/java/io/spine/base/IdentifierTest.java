@@ -32,7 +32,6 @@ import com.google.protobuf.Int64Value;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.Struct;
 import com.google.protobuf.Timestamp;
-import io.spine.base.Identifier.Type;
 import io.spine.protobuf.AnyPacker;
 import io.spine.test.identifiers.IdWithPrimitiveFields;
 import io.spine.test.identifiers.NestedMessageId;
@@ -46,6 +45,10 @@ import org.junit.jupiter.api.Test;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.base.Identifier.EMPTY_ID;
 import static io.spine.base.Identifier.NULL_ID;
+import static io.spine.base.Identifier.Type.INTEGER;
+import static io.spine.base.Identifier.Type.LONG;
+import static io.spine.base.Identifier.Type.MESSAGE;
+import static io.spine.base.Identifier.Type.STRING;
 import static io.spine.base.Identifier.checkSupported;
 import static io.spine.base.Identifier.findField;
 import static io.spine.base.Identifier.newUuid;
@@ -116,36 +119,35 @@ class IdentifierTest {
 
     @Nested
     @DisplayName("recognize type by supported Message type")
-    @SuppressWarnings("BadImport") // OK to static-import `Identifier.Type` for brevity.
     class RecognizeType {
 
         @Test
         @DisplayName("INTEGER")
         void ofInteger() {
-            assertTrue(Type.INTEGER.matchMessage(toMessage(10)));
+            assertTrue(INTEGER.matchMessage(toMessage(10)));
         }
 
         @Test
         @DisplayName("LONG")
         void ofLong() {
-            assertTrue(Type.LONG.matchMessage(toMessage(1020L)));
+            assertTrue(LONG.matchMessage(toMessage(1020L)));
         }
 
         @Test
         @DisplayName("STRING")
         void ofString() {
-            assertTrue(Type.STRING.matchMessage(toMessage("")));
+            assertTrue(STRING.matchMessage(toMessage("")));
         }
 
         @Test
         @DisplayName("MESSAGE")
         void ofMessage() {
-            assertTrue(Type.MESSAGE.matchMessage(Timestamp.getDefaultInstance()));
+            assertTrue(MESSAGE.matchMessage(Timestamp.getDefaultInstance()));
 
             // Do not consider primitive type wrappers as message types.
-            assertFalse(Type.MESSAGE.matchMessage(StringValue.getDefaultInstance()));
-            assertFalse(Type.MESSAGE.matchMessage(Int32Value.getDefaultInstance()));
-            assertFalse(Type.MESSAGE.matchMessage(Int64Value.getDefaultInstance()));
+            assertFalse(MESSAGE.matchMessage(StringValue.getDefaultInstance()));
+            assertFalse(MESSAGE.matchMessage(Int32Value.getDefaultInstance()));
+            assertFalse(MESSAGE.matchMessage(Int64Value.getDefaultInstance()));
         }
     }
 
@@ -398,20 +400,20 @@ class IdentifierTest {
         @Test
         @DisplayName("`int`")
         void intValue() {
-            assertEquals(10, Type.INTEGER.fromMessage(toMessage(10)));
+            assertEquals(10, INTEGER.fromMessage(toMessage(10)));
         }
 
         @Test
         @DisplayName("`long`")
         void longValue() {
-            assertEquals(1024L, Type.LONG.fromMessage(toMessage(1024L)));
+            assertEquals(1024L, LONG.fromMessage(toMessage(1024L)));
         }
 
         @Test
         @DisplayName("`String`")
         void stringValue() {
             String value = getClass().getSimpleName();
-            assertEquals(value, Type.STRING.fromMessage(toMessage(value)));
+            assertEquals(value, STRING.fromMessage(toMessage(value)));
         }
     }
 
@@ -517,25 +519,25 @@ class IdentifierTest {
         @Test
         @DisplayName("`Integer`")
         void intField() {
-            assertTrue(Type.INTEGER.matchField(field(1)));
+            assertTrue(INTEGER.matchField(field(1)));
         }
 
         @Test
         @DisplayName("`Long`")
         void longField() {
-            assertTrue(Type.LONG.matchField(field(3)));
+            assertTrue(LONG.matchField(field(3)));
         }
 
         @Test
         @DisplayName("`String`")
         void stringField() {
-            assertTrue(Type.STRING.matchField(field(0)));
+            assertTrue(STRING.matchField(field(0)));
         }
 
         @Test
         @DisplayName("`Message`")
         void messgeField() {
-            assertTrue(Type.MESSAGE.matchField(field(2)));
+            assertTrue(MESSAGE.matchField(field(2)));
         }
 
         FieldDescriptor field(int index) {

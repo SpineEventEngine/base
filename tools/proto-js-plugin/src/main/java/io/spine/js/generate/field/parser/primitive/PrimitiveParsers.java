@@ -48,13 +48,13 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.UINT64;
 /**
  * The helper class which creates a {@link PrimitiveParser} based on the passed field type.
  */
-@SuppressWarnings("BadImport") // refer to `FieldDescriptor.Type` as `Type` in this class.
 public final class PrimitiveParsers {
 
     /**
      * The global map which maps the field {@linkplain FieldDescriptor#getType() type} to the
      * {@link PrimitiveParser} builder instance.
      */
+    @SuppressWarnings("BadImport")
     private static final Map<Type, PrimitiveParser.Builder<?>> parsers = parsers();
 
     /** Prevents the instantiation of this utility class. */
@@ -72,7 +72,8 @@ public final class PrimitiveParsers {
      * @throws IllegalStateException
      *         if the parser for the specified type cannot be found
      */
-    public static PrimitiveParser createFor(Type fieldType, CodeLines jsOutput) {
+    public static PrimitiveParser createFor(@SuppressWarnings("BadImport") Type fieldType,
+                                            CodeLines jsOutput) {
         checkNotNull(fieldType);
         checkNotNull(jsOutput);
         PrimitiveParser.Builder<?> parserBuilder = parsers.get(fieldType);
@@ -84,6 +85,7 @@ public final class PrimitiveParsers {
         return parser;
     }
 
+    @SuppressWarnings("BadImport") // For `FieldDescriptor.Type`.
     private static Map<Type, PrimitiveParser.Builder<?>> parsers() {
         Map<Type, PrimitiveParser.Builder<?>> parsers = ImmutableMap
                 .<Type, PrimitiveParser.Builder<?>>builder()

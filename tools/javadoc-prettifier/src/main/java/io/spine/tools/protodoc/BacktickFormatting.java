@@ -64,7 +64,9 @@ final class BacktickFormatting extends LineFormatting {
             matcher.appendReplacement(buffer, quoteReplacement(replacement));
         }
         matcher.appendTail(buffer);
-        return buffer.toString();
+        @SuppressWarnings("JdkObsolete") // `StringBuffer` use dictated by regex API.
+        String result = buffer.toString();
+        return result;
     }
 
     @VisibleForTesting

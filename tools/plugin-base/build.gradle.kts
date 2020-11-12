@@ -40,8 +40,7 @@ protobuf {
     generateProtoTasks {
         for (task in all()) {
             task.generateDescriptorSet = true
-            task.descriptorSetOptions.path =
-                    "$buildDir/descriptors/${task.sourceSet.name}/known_types.desc"
+            task.descriptorSetOptions.path = "$buildDir/descriptors/${task.sourceSet.name}/known_types.desc"
         }
     }
 }
