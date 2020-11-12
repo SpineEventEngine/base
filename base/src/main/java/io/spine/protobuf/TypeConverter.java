@@ -21,29 +21,16 @@
 package io.spine.protobuf;
 
 import com.google.common.base.Converter;
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Any;
-import com.google.protobuf.BoolValue;
 import com.google.protobuf.ByteString;
-import com.google.protobuf.BytesValue;
-import com.google.protobuf.DoubleValue;
 import com.google.protobuf.EnumValue;
-import com.google.protobuf.FloatValue;
-import com.google.protobuf.Int32Value;
-import com.google.protobuf.Int64Value;
 import com.google.protobuf.Message;
-import com.google.protobuf.ProtocolMessageEnum;
-import com.google.protobuf.StringValue;
-import com.google.protobuf.UInt32Value;
-import com.google.protobuf.UInt64Value;
 import io.spine.annotation.Internal;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.protobuf.AnyPacker.unpack;
-import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * A utility for converting the {@linkplain Message Protobuf Messages} (in form of {@link Any}) into
@@ -68,33 +55,40 @@ public final class TypeConverter {
 
     private static final TypeUrl ENUM_VALUE_TYPE_URL = TypeUrl.of(EnumValue.class);
 
-    /** Prevents instantiation of this utility class. */
+    /**
+     * Prevents instantiation of this utility class.
+     */
     private TypeConverter() {
     }
 
     /**
      * Converts the given {@link Any} value to a Java {@link Object}.
      *
-     * @param message the {@link Any} value to convert
-     * @param target  the conversion target class
-     * @param <T>     the conversion target type
+     * @param message
+     *         the {@link Any} value to convert
+     * @param target
+     *         the conversion target class
+     * @param <T>
+     *         the conversion target type
      * @return the converted value
      */
     public static <T> T toObject(Any message, Class<T> target) {
         checkNotNull(message);
         checkNotNull(target);
         checkNotRawEnum(message, target);
-        MessageCaster<? super Message, T> caster = MessageCaster.forType(target);
+        Converter<? super Message, T> converter = ProtoConverter.forType(target);
         Message genericMessage = unpack(message);
-        T result = caster.convert(genericMessage);
+        T result = converter.convert(genericMessage);
         return result;
     }
 
     /**
      * Converts the given value to Protobuf {@link Any}.
      *
-     * @param value the {@link Object} value to convert
-     * @param <T>   the converted object type
+     * @param value
+     *         the {@link Object} value to convert
+     * @param <T>
+     *         the converted object type
      * @return the packed value
      * @see #toMessage(Object)
      */
@@ -108,15 +102,17 @@ public final class TypeConverter {
     /**
      * Converts the given value to a corresponding Protobuf {@link Message} type.
      *
-     * @param value the {@link Object} value to convert
-     * @param <T>   the converted object type
+     * @param value
+     *         the {@link Object} value to convert
+     * @param <T>
+     *         the converted object type
      * @return the wrapped value
      */
     public static <T> Message toMessage(T value) {
         @SuppressWarnings("unchecked" /* Must be checked at runtime. */)
         Class<T> srcClass = (Class<T>) value.getClass();
-        MessageCaster<Message, T> caster = MessageCaster.forType(srcClass);
-        Message message = caster.toMessage(value);
+        Converter<Message, T> converter = ProtoConverter.forType(srcClass);
+        Message message = converter.reverse().convert(value);
         checkNotNull(message);
         return message;
     }
@@ -126,9 +122,12 @@ public final class TypeConverter {
      *
      * <p>Unlike {@link #toMessage(Object)}, casts the message to the specified class.
      *
-     * @param value the {@link Object} value to convert
-     * @param <T>   the converted object type
-     * @param <M>   the resulting message type
+     * @param value
+     *         the {@link Object} value to convert
+     * @param <T>
+     *         the converted object type
+     * @param <M>
+     *         the resulting message type
      * @return the wrapped value
      */
     public static <T, M extends Message> M toMessage(T value, Class<M> messageClass) {
@@ -138,7 +137,7 @@ public final class TypeConverter {
     }
 
     /**
-     * Makes sure no incorrectly packed enum values are passed to the message caster.
+     * Makes sure no incorrectly packed enum values are passed to the message converter.
      *
      * <p>Currently, the enum values can only be converted from the {@link EnumValue} proto type.
      * All other enum representations, including plain strings and numbers, are not supported.
@@ -153,377 +152,7 @@ public final class TypeConverter {
                 enumValueTypeUrl.equals(typeUrl),
                 "Currently the conversion of enum types packed as `%s` is not supported. " +
                         "Please make sure the enum value is wrapped with `%s` on the calling site.",
-                typeUrl, enumValueTypeUrl);
-    }
-
-    /**
-     * The {@link Function} performing the described type conversion.
-     *
-     * @param <M>
-     *         type of message to convert
-     * @param <T>
-     *         target conversion type
-     */
-    private abstract static class MessageCaster<M extends Message, T> extends Converter<M, T> {
-
-        private static <M extends Message, T> MessageCaster<M, T> forType(Class<T> cls) {
-            checkNotNull(cls);
-            MessageCaster<?, ?> caster;
-            if (Message.class.isAssignableFrom(cls)) {
-                caster = new MessageTypeCaster();
-            } else if (ByteString.class.isAssignableFrom(cls)) {
-                caster = new BytesCaster();
-            } else if (Enum.class.isAssignableFrom(cls)) {
-                @SuppressWarnings("unchecked") // Checked at runtime.
-                Class<? extends Enum<?>> enumCls = (Class<? extends Enum<?>>) cls;
-                caster = new EnumCaster(enumCls);
-            } else {
-                caster = new PrimitiveTypeCaster<>();
-            }
-            @SuppressWarnings("unchecked") // Logically checked.
-            MessageCaster<M, T> result = (MessageCaster<M, T>) caster;
-            return result;
-        }
-
-        @Override
-        protected T doForward(M input) {
-            return toObject(input);
-        }
-
-        @Override
-        protected M doBackward(T t) {
-            return toMessage(t);
-        }
-
-        protected abstract T toObject(M input);
-
-        protected abstract M toMessage(T input);
-    }
-
-    private static final class BytesCaster extends MessageCaster<BytesValue, ByteString> {
-
-        @Override
-        protected ByteString toObject(BytesValue input) {
-            ByteString result = input.getValue();
-            return result;
-        }
-
-        @Override
-        protected BytesValue toMessage(ByteString input) {
-            BytesValue bytes = BytesValue
-                    .newBuilder()
-                    .setValue(input)
-                    .build();
-            return bytes;
-        }
-    }
-
-    private static final class EnumCaster extends MessageCaster<EnumValue, Enum<?>> {
-
-        @SuppressWarnings("rawtypes") // Needed to be able to pass the value to `Enum.valueOf(...)`.
-        private final Class<? extends Enum> type;
-
-        EnumCaster(Class<? extends Enum<?>> type) {
-            super();
-            this.type = type;
-        }
-
-        @Override
-        protected Enum<?> toObject(EnumValue input) {
-            String name = input.getName();
-            if (name.isEmpty()) {
-                int number = input.getNumber();
-                return convertByNumber(number);
-            } else {
-                return convertByName(name);
-            }
-        }
-
-        private Enum<?> convertByNumber(int number) {
-            Enum<?>[] constants = type.getEnumConstants();
-            for (Enum<?> constant : constants) {
-                ProtocolMessageEnum asProtoEnum = (ProtocolMessageEnum) constant;
-                int valueNumber = asProtoEnum.getNumber();
-                if (number == valueNumber) {
-                    return constant;
-                }
-            }
-            throw unknownNumber(number);
-        }
-
-        @SuppressWarnings("unchecked") // Checked at runtime.
-        private Enum<?> convertByName(String name) {
-            return Enum.valueOf(type, name);
-        }
-
-        @Override
-        protected EnumValue toMessage(Enum<?> input) {
-            String name = input.name();
-            ProtocolMessageEnum asProtoEnum = (ProtocolMessageEnum) input;
-            EnumValue value = EnumValue
-                    .newBuilder()
-                    .setName(name)
-                    .setNumber(asProtoEnum.getNumber())
-                    .build();
-            return value;
-        }
-
-        private IllegalArgumentException unknownNumber(int number) {
-            throw newIllegalArgumentException(
-                    "Could not find a enum value of type `%s` for number `%d`.",
-                    type.getCanonicalName(), number);
-        }
-    }
-
-    private static final class MessageTypeCaster extends MessageCaster<Message, Message> {
-
-        @Override
-        protected Message toObject(Message input) {
-            return input;
-        }
-
-        @Override
-        protected Message toMessage(Message input) {
-            return input;
-        }
-    }
-
-    /**
-     * Casts the primitive and built-in types to the corresponding {@link Message}s and back.
-     *
-     * @param <M> the type of the message
-     * @param <T> the type to cast to and from the message
-     *
-     * @implNote The arguments are checked during the conversion and an
-     * {@link IllegalArgumentException} is thrown in case of mismatch. The type name used in the
-     * error message is a simple {@link Class#getName() Class.getName()} call result. It's the
-     * best-performant solution among options, such as {@link Class#getCanonicalName()
-     * Class.getCanonicalName()}.
-     */
-    private static final class PrimitiveTypeCaster<M extends Message, T>
-            extends MessageCaster<M, T> {
-
-        private static final ImmutableMap<Class<?>, Converter<? extends Message, ?>>
-                PROTO_WRAPPER_TO_HANDLER =
-                ImmutableMap.<Class<?>, Converter<? extends Message, ?>>builder()
-                        .put(Int32Value.class, new Int32Handler())
-                        .put(Int64Value.class, new Int64Handler())
-                        .put(UInt32Value.class, new UInt32Handler())
-                        .put(UInt64Value.class, new UInt64Handler())
-                        .put(FloatValue.class, new FloatHandler())
-                        .put(DoubleValue.class, new DoubleHandler())
-                        .put(BoolValue.class, new BoolHandler())
-                        .put(StringValue.class, new StringHandler())
-                        .build();
-        private static final ImmutableMap<Class<?>, Converter<? extends Message, ?>>
-                PRIMITIVE_TO_HANDLER =
-                ImmutableMap.<Class<?>, Converter<? extends Message, ?>>builder()
-                        .put(Integer.class, new Int32Handler())
-                        .put(Long.class, new Int64Handler())
-                        .put(Float.class, new FloatHandler())
-                        .put(Double.class, new DoubleHandler())
-                        .put(Boolean.class, new BoolHandler())
-                        .put(String.class, new StringHandler())
-                        .build();
-
-        @Override
-        protected T toObject(M input) {
-            Class<?> boxedType = input.getClass();
-            @SuppressWarnings("unchecked")
-            Converter<M, T> typeUnpacker =
-                    (Converter<M, T>) PROTO_WRAPPER_TO_HANDLER.get(boxedType);
-            checkArgument(typeUnpacker != null,
-                          "Could not find a primitive type for %s.",
-                          boxedType.getName());
-            T result = typeUnpacker.convert(input);
-            return result;
-        }
-
-        @Override
-        protected M toMessage(T input) {
-            Class<?> cls = input.getClass();
-            @SuppressWarnings("unchecked")
-            Converter<M, T> converter =
-                    (Converter<M, T>) PRIMITIVE_TO_HANDLER.get(cls);
-            checkArgument(converter != null,
-                          "Could not find a wrapper type for %s.",
-                          cls.getName());
-            M result = converter.reverse()
-                                .convert(input);
-            return result;
-        }
-    }
-
-    /**
-     * A converter handling the primitive types transformations.
-     *
-     * <p>It's sufficient to override methods {@link #pack(Object) pack(T)} and
-     * {@link #unpack(Message) unpack(M)} when extending this class.
-     *
-     * <p>Since the Protobuf and Java primitives differ, there may be more then one
-     * {@code PrimitiveHandler} for a Java primitive type. In this case, if the resulting Protobuf
-     * value type is not specified explicitly, the closest type is selected as a target for
-     * the conversion. The closeness of two types is determined by the lexicographic closeness.
-     *
-     * @param <M> the type of the Protobuf primitive wrapper
-     * @param <T> the type of the Java primitive wrapper
-     */
-    private abstract static class PrimitiveHandler<M extends Message, T> extends Converter<M, T> {
-
-        @Override
-        protected T doForward(M input) {
-            return unpack(input);
-        }
-
-        @Override
-        protected M doBackward(T input) {
-            return pack(input);
-        }
-
-        /**
-         * Unpacks a primitive value of type {@code T} from the given wrapper value.
-         *
-         * @param message packed value
-         * @return unpacked value
-         */
-        protected abstract T unpack(M message);
-
-        /**
-         * Packs the given primitive value into a Protobuf wrapper of type {@code M}.
-         *
-         * @param value primitive value
-         * @return packed value
-         */
-        protected abstract M pack(T value);
-    }
-
-    private static final class Int32Handler extends PrimitiveHandler<Int32Value, Integer> {
-
-        @Override
-        protected Integer unpack(Int32Value message) {
-            checkNotNull(message);
-            return message.getValue();
-        }
-
-        @Override
-        protected Int32Value pack(Integer value) {
-            return Int32Value.newBuilder()
-                             .setValue(value)
-                             .build();
-        }
-    }
-
-    private static final class Int64Handler extends PrimitiveHandler<Int64Value, Long> {
-
-        @Override
-        protected Long unpack(Int64Value message) {
-            checkNotNull(message);
-            return message.getValue();
-        }
-
-        @Override
-        protected Int64Value pack(Long value) {
-            return Int64Value.newBuilder()
-                             .setValue(value)
-                             .build();
-        }
-    }
-
-    private static final class UInt32Handler extends PrimitiveHandler<UInt32Value, Integer> {
-
-        @Override
-        protected Integer unpack(UInt32Value message) {
-            checkNotNull(message);
-            return message.getValue();
-        }
-
-        @Override
-        protected UInt32Value pack(Integer value) {
-            // Hidden by Int32Handler
-            return UInt32Value.newBuilder()
-                              .setValue(value)
-                              .build();
-        }
-    }
-
-    private static final class UInt64Handler extends PrimitiveHandler<UInt64Value, Long> {
-
-        @Override
-        protected Long unpack(UInt64Value message) {
-            checkNotNull(message);
-            return message.getValue();
-        }
-
-        @Override
-        protected UInt64Value pack(Long value) {
-            // Hidden by Int64Handler
-            return UInt64Value.newBuilder()
-                              .setValue(value)
-                              .build();
-        }
-    }
-
-    private static final class FloatHandler extends PrimitiveHandler<FloatValue, Float> {
-
-        @Override
-        protected Float unpack(FloatValue message) {
-            checkNotNull(message);
-            return message.getValue();
-        }
-
-        @Override
-        protected FloatValue pack(Float value) {
-            return FloatValue.newBuilder()
-                             .setValue(value)
-                             .build();
-        }
-    }
-
-    private static final class DoubleHandler extends PrimitiveHandler<DoubleValue, Double> {
-
-        @Override
-        protected Double unpack(DoubleValue message) {
-            checkNotNull(message);
-            return message.getValue();
-        }
-
-        @Override
-        protected DoubleValue pack(Double value) {
-            return DoubleValue.newBuilder()
-                              .setValue(value)
-                              .build();
-        }
-    }
-
-    private static final class BoolHandler extends PrimitiveHandler<BoolValue, Boolean> {
-
-        @Override
-        protected Boolean unpack(BoolValue message) {
-            checkNotNull(message);
-            return message.getValue();
-        }
-
-        @Override
-        protected BoolValue pack(Boolean value) {
-            return BoolValue.newBuilder()
-                            .setValue(value)
-                            .build();
-        }
-    }
-
-    private static final class StringHandler extends PrimitiveHandler<StringValue, String> {
-
-        @Override
-        protected String unpack(StringValue message) {
-            checkNotNull(message);
-            return message.getValue();
-        }
-
-        @Override
-        protected StringValue pack(String value) {
-            return StringValue.newBuilder()
-                              .setValue(value)
-                              .build();
-        }
+                typeUrl, enumValueTypeUrl
+        );
     }
 }
