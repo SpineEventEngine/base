@@ -12,7 +12,7 @@ all modules and does not describe the project structure per-subproject.
 
 <groupId>io.spine</groupId>
 <artifactId>spine-base</artifactId>
-<version>1.6.8</version>
+<version>1.6.9</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -143,12 +143,6 @@ all modules and does not describe the project structure per-subproject.
     <groupId>com.google.truth.extensions</groupId>
     <artifactId>truth-proto-extension</artifactId>
     <version>1.1</version>
-    <scope>test</scope>
-  </dependency>
-  <dependency>
-    <groupId>io.spine.tools</groupId>
-    <artifactId>spine-protoc-plugin</artifactId>
-    <version>1.6.8</version>
     <scope>test</scope>
   </dependency>
   <dependency>
