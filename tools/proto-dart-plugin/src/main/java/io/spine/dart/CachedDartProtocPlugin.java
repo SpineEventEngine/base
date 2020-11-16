@@ -18,9 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart.gradle;
+package io.spine.dart;
 
-import io.spine.dart.PubCache;
 import org.apache.tools.ant.taskdefs.condition.Os;
 
 import java.nio.file.Path;
@@ -35,7 +34,7 @@ import static org.apache.tools.ant.taskdefs.condition.Os.FAMILY_WINDOWS;
  * <p>See <a href="https://dart.dev/tools/pub/cmd/pub-global#running-a-script-from-your-path">Pub
  * documentation</a>.
  */
-final class CachedDartProtocPlugin {
+public final class CachedDartProtocPlugin {
 
     private static final boolean WINDOWS = Os.isFamily(FAMILY_WINDOWS);
     private static final String SCRIPT_EXTENSION = WINDOWS ? ".bat" : "";
@@ -52,7 +51,7 @@ final class CachedDartProtocPlugin {
     private CachedDartProtocPlugin() {
     }
 
-    static synchronized Path locate() {
+    public static synchronized Path locate() {
         if (resolved == null) {
             Path pathToExecutable = PubCache.bin().resolve(SCRIPT_FILE_NAME);
             checkState(exists(pathToExecutable),

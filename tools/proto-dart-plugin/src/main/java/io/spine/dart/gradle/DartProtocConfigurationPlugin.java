@@ -21,6 +21,7 @@
 package io.spine.dart.gradle;
 
 import com.google.protobuf.gradle.ExecutableLocator;
+import io.spine.dart.CachedDartProtocPlugin;
 import io.spine.tools.gradle.ProtocConfigurationPlugin;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
