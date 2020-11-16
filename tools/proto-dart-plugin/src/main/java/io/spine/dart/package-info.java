@@ -18,9 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * Types working with Dart environment and code.
+ */
+
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.generate.dart;
+package io.spine.dart;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

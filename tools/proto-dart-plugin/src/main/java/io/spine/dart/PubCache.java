@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.generate.dart;
+package io.spine.dart;
 
 import com.google.common.base.Strings;
 import org.apache.tools.ant.taskdefs.condition.Os;

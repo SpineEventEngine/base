@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.generate.dart;
+package io.spine.dart;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.AbstractSourceFile;
@@ -45,7 +45,7 @@ import static java.util.regex.Pattern.compile;
 /**
  * A Dart source file.
  */
-final class SourceFile extends AbstractSourceFile implements Logging {
+public final class SourceFile extends AbstractSourceFile implements Logging {
 
     @Regex(2)
     private static final Pattern IMPORT_PATTERN = compile("import [\"']([^:]+)[\"'] as (.+);");
@@ -60,7 +60,7 @@ final class SourceFile extends AbstractSourceFile implements Logging {
     /**
      * Reads the file from the local file system.
      */
-    static SourceFile read(Path path) {
+    public static SourceFile read(Path path) {
         checkNotNull(path);
         try {
             List<String> lines = readAllLines(path);
@@ -70,7 +70,7 @@ final class SourceFile extends AbstractSourceFile implements Logging {
         }
     }
 
-    static boolean isGeneratedDart(Path file) {
+    public static boolean isGeneratedDart(Path file) {
         if (!isRegularFile(file)) {
             return false;
         }
@@ -83,7 +83,7 @@ final class SourceFile extends AbstractSourceFile implements Logging {
     /**
      * Resolves the relative imports in the file into absolute ones with the given modules.
      */
-    void resolveImports(ImmutableList<ExternalModule> modules, Path libPath) {
+    public void resolveImports(ImmutableList<ExternalModule> modules, Path libPath) {
         List<String> processedLines = new ArrayList<>();
         for (String line : lines) {
             String processedLine = resolveImportInLine(line, modules, libPath);
@@ -123,7 +123,7 @@ final class SourceFile extends AbstractSourceFile implements Logging {
     /**
      * Rewrites this file.
      */
-    void store() {
+    public void store() {
         Path path = path();
         try {
             write(path, lines);

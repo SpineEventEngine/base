@@ -18,8 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.generate.dart;
+package io.spine.dart.gradle;
 
+import io.spine.dart.PubCache;
 import org.apache.tools.ant.taskdefs.condition.Os;
 
 import java.nio.file.Path;
