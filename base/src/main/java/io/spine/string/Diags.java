@@ -74,7 +74,7 @@ public final class Diags {
      * representation with a comma followed by a space character.
      */
     public static Collector<Object, ?, String> toEnumeration() {
-        return Collectors.mapping(Object::toString, Collectors.joining(COMMA_AND_SPACE));
+        return Collectors.mapping(String::valueOf, Collectors.joining(COMMA_AND_SPACE));
     }
 
     /**
