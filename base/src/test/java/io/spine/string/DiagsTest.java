@@ -21,6 +21,7 @@
 package io.spine.string;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.truth.StringSubject;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -29,8 +30,9 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.string.Diags.COMMA_AND_SPACE;
 
-@DisplayName("Diags utility should")
+@DisplayName("`Diags` utility should")
 class DiagsTest extends UtilityClassTest<Diags> {
 
     DiagsTest() {
@@ -38,12 +40,15 @@ class DiagsTest extends UtilityClassTest<Diags> {
     }
 
     @Test
-    @DisplayName("backtick string representation of objects")
+    @DisplayName("backtick string representation of a object")
     void backticks() {
-        String backticked = Diags.backtick(getClass());
+        Object anObject = getClass();
+        String backticked = Diags.backtick(anObject);
 
-        assertThat(backticked.startsWith("`")).isTrue();
-        assertThat(backticked.endsWith("`")).isTrue();
+        StringSubject assertOutput = assertThat(backticked);
+        assertOutput.startsWith("`");
+        assertOutput.endsWith("`");
+        assertOutput.contains(anObject.toString());
     }
 
     @Nested
@@ -51,12 +56,14 @@ class DiagsTest extends UtilityClassTest<Diags> {
     class Joining {
 
         @Test
-        @DisplayName("Iterable")
+        @DisplayName("`Iterable`")
         void iterable() {
             List<String> items = ImmutableList.of("one", "two", "tree");
             String joined = Diags.join(items);
 
-            items.forEach(i -> assertThat(joined.contains(i)).isTrue());
+            StringSubject assertOutput = assertThat(joined);
+            assertOutput.contains(COMMA_AND_SPACE);
+            items.forEach(assertOutput::contains);
         }
 
         @Test
@@ -64,15 +71,32 @@ class DiagsTest extends UtilityClassTest<Diags> {
         void varArg() {
             String joined = Diags.join("uno", "dos", "tres");
 
+            StringSubject assertOutput = assertThat(joined);
             ImmutableList.of("uno", "dos", "tres")
-                         .forEach(i -> assertThat(joined.contains(i)).isTrue());
+                         .forEach(assertOutput::contains);
         }
 
         @Test
         @DisplayName("separating with comma followed by space char")
         void commaThenSpace() {
-            String joined = Diags.join("1", "2", "3");
-            assertThat(joined.contains(", ")).isTrue();
+            String joined = Diags.join(100, 200, 300);
+
+            StringSubject assertOutput = assertThat(joined);
+            assertOutput.contains(COMMA_AND_SPACE);
+            ImmutableList.of(100, 200, 300)
+                         .forEach(item -> assertOutput.contains(item.toString()));
         }
+    }
+
+    @Test
+    @DisplayName("provide collector to comma-separated string")
+    void stringEnum() {
+        ImmutableList<String> list = ImmutableList.of("foo", "bar", "baz");
+        String output = list.stream()
+                            .collect(Diags.toEnumeration());
+        StringSubject assertOutput = assertThat(output);
+        list.forEach(assertOutput::contains);
+
+        assertOutput.contains(COMMA_AND_SPACE);
     }
 }

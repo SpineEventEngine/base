@@ -20,8 +20,12 @@
 
 package io.spine.string;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import io.spine.annotation.Internal;
+
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * Utilities for debug and error diagnostics.
@@ -29,8 +33,10 @@ import io.spine.annotation.Internal;
 @Internal
 public final class Diags {
 
+    @VisibleForTesting
+    static final String COMMA_AND_SPACE = ", ";
+    private static final Joiner JOINER = Joiner.on(COMMA_AND_SPACE);
     private static final char BACKTICK = '`';
-    private static final Joiner COMMA_JOINER = Joiner.on(", ");
 
     /** Prevents instantiation of this utility class. */
     private Diags() {
@@ -47,7 +53,7 @@ public final class Diags {
      * Lists the passed items separating with comma followed by a space character.
      */
     public static String join(Iterable<?> items) {
-        return COMMA_JOINER.join(items);
+        return JOINER.join(items);
     }
 
     /**
@@ -55,6 +61,14 @@ public final class Diags {
      */
     @SafeVarargs
     public static <E> String join(E... elements) {
-        return COMMA_JOINER.join(elements);
+        return JOINER.join(elements);
+    }
+
+    /**
+     * Obtains the collector which enumerates items separating them comma followed
+     * by a space character.
+     */
+    public static Collector<CharSequence, ?, String> toEnumeration() {
+        return Collectors.joining(COMMA_AND_SPACE);
     }
 }
