@@ -43,7 +43,7 @@ class DiagsTest extends UtilityClassTest<Diags> {
     }
 
     @Test
-    @DisplayName("backtick string representation of a object")
+    @DisplayName("backtick string representation of an object")
     void backticks() {
         Object anObject = getClass();
         String backticked = backtick(anObject);
