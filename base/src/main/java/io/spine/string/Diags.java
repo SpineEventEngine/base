@@ -78,8 +78,8 @@ public final class Diags {
     }
 
     /**
-     * Returns a {@code Collector} which wraps a string representation of an item
-     * into backticks and joins them into a string separating with a comma followed
+     * Returns a {@code Collector} which backticks string representations of the passed
+     * items and joins items into a string, separating with a comma followed
      * by a space character.
      */
     public static Collector<Object, ?, String> toEnumerationBackticked() {
