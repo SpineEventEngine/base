@@ -68,15 +68,15 @@ public final class Diags {
      * Returns a {@code Collector} which enumerates items separating them a comma followed
      * by a space character.
      */
-    public static Collector<CharSequence, ?, String> toEnumeration() {
-        return Collectors.joining(COMMA_AND_SPACE);
+    public static Collector<Object, ?, String> toEnumeration() {
+        return Collectors.mapping(Object::toString, Collectors.joining(COMMA_AND_SPACE));
     }
 
     /**
      * Returns a {@code Collector} which wraps items into backticks and joins them
      * into a string separating with a comma followed by a space character.
      */
-    public static Collector<CharSequence, ?, String> toEnumerationBackticked() {
+    public static Collector<Object, ?, String> toEnumerationBackticked() {
         return Collectors.mapping(Diags::backtick, toEnumeration());
     }
 }
