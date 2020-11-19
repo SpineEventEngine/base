@@ -57,7 +57,7 @@ public final class Diags {
     }
 
     /**
-     * Lists the passed elements separating with comma followed by a space character.
+     * Lists the passed elements separating with a comma followed by a space character.
      */
     @SafeVarargs
     public static <E> String join(E... elements) {
