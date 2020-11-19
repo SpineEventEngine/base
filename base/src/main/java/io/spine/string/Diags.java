@@ -27,6 +27,8 @@ import io.spine.annotation.Internal;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Utilities for debug and error diagnostics.
  */
@@ -46,6 +48,7 @@ public final class Diags {
      * Wraps the string representation of the passed object into backticks.
      */
     public static String backtick(Object object) {
+        checkNotNull(object);
         return BACKTICK + object.toString() + BACKTICK;
     }
 
@@ -53,6 +56,7 @@ public final class Diags {
      * Lists the passed items separating with a comma followed by a space character.
      */
     public static String join(Iterable<?> items) {
+        checkNotNull(items);
         return JOINER.join(items);
     }
 
@@ -61,6 +65,7 @@ public final class Diags {
      */
     @SafeVarargs
     public static <E> String join(E... elements) {
+        checkNotNull(elements);
         return JOINER.join(elements);
     }
 
