@@ -50,7 +50,7 @@ public final class Diags {
     }
 
     /**
-     * Lists the passed items separating with comma followed by a space character.
+     * Lists the passed items separating with a comma followed by a space character.
      */
     public static String join(Iterable<?> items) {
         return JOINER.join(items);
@@ -65,10 +65,18 @@ public final class Diags {
     }
 
     /**
-     * Obtains the collector which enumerates items separating them comma followed
+     * Returns a {@code Collector} which enumerates items separating them a comma followed
      * by a space character.
      */
     public static Collector<CharSequence, ?, String> toEnumeration() {
         return Collectors.joining(COMMA_AND_SPACE);
+    }
+
+    /**
+     * Returns a {@code Collector} which wraps items into backticks and joins them
+     * into a string separating with a comma followed by a space character.
+     */
+    public static Collector<CharSequence, ?, String> toEnumerationBackticked() {
+        return Collectors.mapping(Diags::backtick, toEnumeration());
     }
 }

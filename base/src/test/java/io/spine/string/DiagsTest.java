@@ -31,6 +31,9 @@ import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.string.Diags.COMMA_AND_SPACE;
+import static io.spine.string.Diags.backtick;
+import static io.spine.string.Diags.toEnumeration;
+import static io.spine.string.Diags.toEnumerationBackticked;
 
 @DisplayName("`Diags` utility should")
 class DiagsTest extends UtilityClassTest<Diags> {
@@ -43,7 +46,7 @@ class DiagsTest extends UtilityClassTest<Diags> {
     @DisplayName("backtick string representation of a object")
     void backticks() {
         Object anObject = getClass();
-        String backticked = Diags.backtick(anObject);
+        String backticked = backtick(anObject);
 
         StringSubject assertOutput = assertThat(backticked);
         assertOutput.startsWith("`");
@@ -88,15 +91,35 @@ class DiagsTest extends UtilityClassTest<Diags> {
         }
     }
 
-    @Test
+    @Nested
     @DisplayName("provide collector to comma-separated string")
-    void stringEnum() {
-        ImmutableList<String> list = ImmutableList.of("foo", "bar", "baz");
-        String output = list.stream()
-                            .collect(Diags.toEnumeration());
-        StringSubject assertOutput = assertThat(output);
-        list.forEach(assertOutput::contains);
+    class Collectors {
 
-        assertOutput.contains(COMMA_AND_SPACE);
+        private final ImmutableList<String> list = ImmutableList.of("foo", "bar", "baz");
+        private StringSubject assertOutput;
+
+        @Test
+        @DisplayName("with items")
+        void stringEnumeration() {
+            String output = list.stream()
+                                .collect(toEnumeration());
+
+            assertOutput = assertThat(output);
+
+            assertOutput.contains(COMMA_AND_SPACE);
+            list.forEach(assertOutput::contains);
+        }
+
+        @Test
+        @DisplayName("with backticked items")
+        void backtickedEnumeration() {
+            String output = list.stream()
+                                .collect(toEnumerationBackticked());
+
+            assertOutput = assertThat(output);
+
+            assertOutput.contains(COMMA_AND_SPACE);
+            list.forEach(item -> assertOutput.contains(backtick(item)));
+        }
     }
 }
