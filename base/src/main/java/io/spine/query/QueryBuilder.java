@@ -104,9 +104,9 @@ public interface QueryBuilder<I,
      *
      * <pre>
      *     ProjectView.query()
-     *                .either(builder -> builder.daysSinceStarted()
+     *                .either(builder{@literal ->} builder.daysSinceStarted()
      *                                          .isGreaterThan(30),
-     *                        builder -> builder.status()
+     *                        builder{@literal ->} builder.status()
      *                                          .is(DONE))
      *                .build();
      * </pre>
@@ -122,7 +122,7 @@ public interface QueryBuilder<I,
      * <pre>
      *    {@literal ImmutableList<Project.Status>} statuses = //...
      *     ProjectView.query()
-     *                .either((builder) -> {
+     *                .either((builder){@literal ->} {
      *                    for (Project.Status status : statuses) {
      *                        builder.status().is(status);
      *                    }
@@ -140,11 +140,11 @@ public interface QueryBuilder<I,
      *    {@literal ImmutableList<Project.Status>} statuses = //...
      *     ProjectView.query()
      *                // Performs the same as in the previous example. Much less elegant though.
-     *                .either(builder -> builder.status().is(statuses.get(0)),
-     *                        builder -> builder.status().is(statuses.get(1)),
-     *                        builder -> builder.status().is(statuses.get(2)),
+     *                .either(builder{@literal ->} builder.status().is(statuses.get(0)),
+     *                        builder{@literal ->} builder.status().is(statuses.get(1)),
+     *                        builder{@literal ->} builder.status().is(statuses.get(2)),
      *                        //...
-     *                        builder -> builder.status().is(statuses.get(lastOne)))
+     *                        builder{@literal ->} builder.status().is(statuses.get(lastOne)))
      *                .build();
      * </pre>
      *
@@ -155,10 +155,10 @@ public interface QueryBuilder<I,
      *
      * <pre>
      *    {@literal Either<ProjectView.QueryBuilder>} startedMoreThanMonthAgo =
-     *                     project -> project.daysSinceStarted()
+     *                     project{@literal ->} project.daysSinceStarted()
      *                                       .isGreaterThan(daysSinceStarted);
      *    {@literal Either<ProjectView.QueryBuilder>} isDone =
-     *                     project -> project.status()
+     *                     project{@literal ->} project.status()
      *                                       .is(statusValue);
      *     ProjectView.Query query =
      *             ProjectView.query()
