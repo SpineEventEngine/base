@@ -30,9 +30,9 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static io.spine.testing.Assertions.assertNpe;
 
-@DisplayName("UuidMethodFactory should")
+@DisplayName("`UuidMethodFactory` should")
 final class UuidMethodFactoryTest {
 
     private final UuidMethodFactory factory = new UuidMethodFactory();
@@ -40,9 +40,10 @@ final class UuidMethodFactoryTest {
     @DisplayName("not allow null values")
     @Test
     void notAllowNulls() {
-        assertThrows(NullPointerException.class, () -> factory.generateMethodsFor(null));
+        assertNpe(() -> factory.generateMethodsFor(null));
     }
 
+    @SuppressWarnings("HardcodedLineSeparator")
     @DisplayName("create new")
     @Nested
     final class CreateNew {

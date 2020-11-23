@@ -35,8 +35,9 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static io.spine.tools.protoc.FilePatterns.filePrefix;
 
 @DisplayName("`GenerateNestedClasses` should")
 class GenerateNestedClassesTest {
@@ -48,12 +49,12 @@ class GenerateNestedClassesTest {
                 .testAllPublicInstanceMethods(newTask());
     }
 
-    @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
-    // Method called to throw exception.
     @Test
     @DisplayName("throw `IAE` if `FilePattern` is not set")
+    @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
+        // Method called to throw exception.
     void rejectEmptyFilePattern() {
-        assertThrows(IllegalArgumentException.class, () -> newTask(newTaskConfig().build()));
+        assertIllegalArgument(() -> newTask(newTaskConfig().build()));
     }
 
     @Test
@@ -61,10 +62,9 @@ class GenerateNestedClassesTest {
     void rejectEmptyFactoryName() {
         String emptyName = "";
         ConfigByPattern config = newTaskConfig(emptyName)
-                .setPattern(FilePatterns.filePrefix("non-default"))
+                .setPattern(filePrefix("non-default"))
                 .build();
-        assertThrows(IllegalArgumentException.class, () ->
-                new GenerateNestedClasses(testClassLoader(), config));
+        assertIllegalArgument(() -> new GenerateNestedClasses(testClassLoader(), config));
     }
 
     @Test
@@ -72,10 +72,9 @@ class GenerateNestedClassesTest {
     void rejectEffectivelyEmptyFactoryName() {
         String effectivelyEmptyName = "   ";
         ConfigByPattern config = newTaskConfig(effectivelyEmptyName)
-                .setPattern(FilePatterns.filePrefix("non-default"))
+                .setPattern(filePrefix("non-default"))
                 .build();
-        assertThrows(IllegalArgumentException.class, () ->
-                new GenerateNestedClasses(testClassLoader(), config));
+        assertIllegalArgument(() -> new GenerateNestedClasses(testClassLoader(), config));
     }
 
     @Nested

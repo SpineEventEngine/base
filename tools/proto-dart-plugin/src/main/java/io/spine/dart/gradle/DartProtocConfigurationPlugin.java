@@ -18,9 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.generate.dart;
+package io.spine.dart.gradle;
 
 import com.google.protobuf.gradle.ExecutableLocator;
+import io.spine.dart.CachedDartProtocPlugin;
 import io.spine.tools.gradle.ProtocConfigurationPlugin;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;

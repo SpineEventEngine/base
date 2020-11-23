@@ -35,17 +35,19 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static io.spine.code.gen.Indent.of2;
+import static io.spine.code.gen.Indent.of4;
 import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.given.GivenLines.linesWithDepth;
 import static io.spine.js.generate.given.GivenLines.newCodeLines;
 import static io.spine.js.generate.output.CodeLines.LINE_SEPARATOR;
+import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@DisplayName("`CodeLines` should")
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Generated code duplication needed to check main class.
-@DisplayName("CodeLines should")
 class CodeLinesTest {
 
     private static final String LINE = "line";
@@ -171,12 +173,9 @@ class CodeLinesTest {
         @Test
         @DisplayName("only of the same indent")
         void notAllowDifferentIndents() {
-            CodeLines first = newCodeLines(FIRST_PART, Indent.of2());
-            CodeLines second = newCodeLines(FIRST_PART, Indent.of4());
-            assertThrows(
-                    IllegalArgumentException.class,
-                    () -> first.append(second)
-            );
+            CodeLines first = newCodeLines(FIRST_PART, of2());
+            CodeLines second = newCodeLines(FIRST_PART, of4());
+            assertIllegalArgument(() -> first.append(second));
         }
 
         @Test

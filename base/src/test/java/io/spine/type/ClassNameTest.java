@@ -33,18 +33,18 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.Assertions.assertIllegalArgument;
+import static io.spine.testing.Assertions.assertIllegalState;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("ClassName should")
+@DisplayName("`ClassName` should")
 class ClassNameTest {
 
     @DisplayName("reject value")
     @ParameterizedTest(name = "\"{0}\"")
     @ValueSource(strings = {"", "    "})
     void rejectEmptyAndBlankValues(String value) {
-        assertThrows(IllegalArgumentException.class,
-                     () -> ClassName.of(value));
+        assertIllegalArgument(() -> ClassName.of(value));
     }
 
     @Test
@@ -71,6 +71,6 @@ class ClassNameTest {
     @DisplayName("throw ISE when parsing an invalid name")
     void throwOnInvalid() {
         ClassName className = ClassName.of("NotQualifiedName");
-        assertThrows(IllegalStateException.class, className::packageName);
+        assertIllegalState(className::packageName);
     }
 }

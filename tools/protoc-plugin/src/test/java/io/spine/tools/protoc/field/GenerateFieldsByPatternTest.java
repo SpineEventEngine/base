@@ -35,8 +35,9 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static io.spine.tools.protoc.FilePatterns.filePrefix;
 
 @DisplayName("`GenerateFieldsByPattern` task should")
 final class GenerateFieldsByPatternTest {
@@ -50,33 +51,33 @@ final class GenerateFieldsByPatternTest {
                 .testAllPublicInstanceMethods(newTask());
     }
 
-    @SuppressWarnings("CheckReturnValue") // The method called to throw an exception.
     @Test
     @DisplayName("throw `IAE` if `FilePattern` is not set")
+    @SuppressWarnings("CheckReturnValue") // The method called to throw an exception.
     void rejectEmptyFilePattern() {
-        assertThrows(IllegalArgumentException.class, () -> newTask(newTaskConfig().build()));
+        assertIllegalArgument(() -> newTask(newTaskConfig().build()));
     }
 
-    @SuppressWarnings("CheckReturnValue") // The method called to throw an exception.
     @Test
     @DisplayName("reject empty field type name")
+    @SuppressWarnings("CheckReturnValue") // The method called to throw an exception.
     void rejectEmptyFieldTypeName() {
         String emptyName = "";
         ConfigByPattern config = newTaskConfig(emptyName)
-                .setPattern(FilePatterns.filePrefix("non-default"))
+                .setPattern(filePrefix("non-default"))
                 .build();
-        assertThrows(IllegalArgumentException.class, () -> newTask(config));
+        assertIllegalArgument(() -> newTask(config));
     }
 
-    @SuppressWarnings("CheckReturnValue") // The method called to throw an exception.
     @Test
     @DisplayName("reject effectively empty field type name")
+    @SuppressWarnings("CheckReturnValue") // The method called to throw an exception.
     void rejectEffectivelyEmptyFactoryName() {
         String effectivelyEmptyName = "   ";
         ConfigByPattern config = newTaskConfig(effectivelyEmptyName)
-                .setPattern(FilePatterns.filePrefix("non-default"))
+                .setPattern(filePrefix("non-default"))
                 .build();
-        assertThrows(IllegalArgumentException.class, () -> newTask(config));
+        assertIllegalArgument(() -> newTask(config));
     }
 
     @Nested

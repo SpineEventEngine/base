@@ -29,9 +29,10 @@ import static java.lang.String.format;
 /**
  * Signals an error working with a Protobuf message field.
  */
-public class MessageFieldException extends RuntimeException {
+public final class MessageFieldException extends RuntimeException {
 
     private static final long serialVersionUID = 0L;
+
     private final GeneratedMessageV3 protobufMessage;
 
     /**

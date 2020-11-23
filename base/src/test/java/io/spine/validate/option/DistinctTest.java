@@ -23,7 +23,6 @@ package io.spine.validate.option;
 import io.spine.test.validate.DistinctValues;
 import io.spine.test.validate.DistinctValuesWithExternalConstraint;
 import io.spine.validate.ValidationOfConstraintTest;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -33,9 +32,9 @@ import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
 @DisplayName(VALIDATION_SHOULD + "analyze (distinct) option and")
 final class DistinctTest extends ValidationOfConstraintTest {
 
-    @DisplayName("find out that empty message does not violate the contract")
     @Test
-    void findOutThatEmptyMessageDoesNotViolateContract() {
+    @DisplayName("find out that empty message does not violate the contract")
+    void emptyMessageNotViolatesContract() {
         assertValid(DistinctValues.getDefaultInstance());
     }
 
@@ -92,7 +91,6 @@ final class DistinctTest extends ValidationOfConstraintTest {
     @DisplayName("find out that duplicate value violates contract")
     final class DuplicateViolates {
 
-        @Disabled("See https://github.com/SpineEventEngine/base/issues/437")
         @Test
         void enums() {
             DistinctValues msg = DistinctValues

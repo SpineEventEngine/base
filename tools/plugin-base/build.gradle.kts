@@ -19,8 +19,8 @@
  */
 
 import com.google.common.io.Files
-import com.google.protobuf.gradle.*
-import groovy.lang.GString
+import com.google.protobuf.gradle.generateProtoTasks
+import com.google.protobuf.gradle.protobuf
 import io.spine.gradle.internal.Deps
 import java.util.*
 import kotlin.collections.HashMap
@@ -40,7 +40,7 @@ protobuf {
     generateProtoTasks {
         for (task in all()) {
             task.generateDescriptorSet = true
-            task.descriptorSetOptions.path = GString.EMPTY.plus("$buildDir/descriptors/${task.sourceSet.name}/known_types.desc")
+            task.descriptorSetOptions.path = "$buildDir/descriptors/${task.sourceSet.name}/known_types.desc"
         }
     }
 }

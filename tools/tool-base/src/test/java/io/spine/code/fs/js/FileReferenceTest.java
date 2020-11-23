@@ -27,11 +27,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("FileReference should")
+@DisplayName("`FileReference` should")
 class FileReferenceTest {
 
     @Test
@@ -43,10 +43,7 @@ class FileReferenceTest {
     @Test
     @DisplayName("not be an empty string")
     void notAcceptEmptyString() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> FileReference.of("")
-        );
+        assertIllegalArgument(() -> FileReference.of(""));
     }
 
     @Test

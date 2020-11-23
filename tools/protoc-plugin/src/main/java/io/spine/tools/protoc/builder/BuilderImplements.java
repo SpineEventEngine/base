@@ -37,8 +37,6 @@ import static java.lang.String.format;
  */
 final class BuilderImplements extends AbstractCompilerOutput {
 
-    private static final String INTERFACE_NAME_TEMPLATE = "%s%s,";
-
     private BuilderImplements(File file) {
         super(file);
     }
@@ -56,6 +54,6 @@ final class BuilderImplements extends AbstractCompilerOutput {
     private static String mixinFor(MessageType type) {
         String generic = TypeParameters.of(new IdentityParameter())
                                        .asStringFor(type);
-        return format(INTERFACE_NAME_TEMPLATE, ValidatingBuilder.class.getName(), generic);
+        return format("%s%s,", ValidatingBuilder.class.getName(), generic);
     }
 }

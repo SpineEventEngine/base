@@ -43,12 +43,13 @@ import static io.spine.code.proto.DescriptorReference.loadFromResources;
 import static io.spine.code.proto.given.DescriptorReferenceTestEnv.knownTypesRef;
 import static io.spine.code.proto.given.DescriptorReferenceTestEnv.randomRef;
 import static io.spine.code.proto.given.DescriptorReferenceTestEnv.smokeTestModelCompilerRef;
+import static io.spine.testing.Assertions.assertIllegalState;
+import static io.spine.testing.Assertions.assertNpe;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.emptyList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Descriptor reference should")
 class DescriptorReferenceTest {
@@ -117,14 +118,14 @@ class DescriptorReferenceTest {
     void throwsOnDirectory(@TempDir Path path) {
         DescriptorReference knownTypes = knownTypesRef();
         File newFile = createFileUnderPath(path);
-        assertThrows(IllegalStateException.class, () -> knownTypes.writeTo(newFile.toPath()));
+        assertIllegalState(() -> knownTypes.writeTo(newFile.toPath()));
     }
 
     @Test
     @DisplayName("throw if the referenced path is null")
     void throwsOnNull() {
         DescriptorReference knownTypes = knownTypesRef();
-        assertThrows(NullPointerException.class, () -> knownTypes.writeTo(null));
+        assertNpe(() -> knownTypes.writeTo(null));
     }
 
     @Test

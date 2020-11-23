@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.net.EmailAddresses.isValid;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static io.spine.testing.Assertions.assertIllegalArgument;
 
 @DisplayName("EmailAddresses utility class should")
 class EmailAddressesTest extends UtilityClassTest<EmailAddresses> {
@@ -71,12 +71,9 @@ class EmailAddressesTest extends UtilityClassTest<EmailAddresses> {
                 .isEqualTo(email);
     }
 
-    @SuppressWarnings("CheckReturnValue")
     @Test
-    void reject_invalid_email() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> EmailAddresses.valueOf("fiz baz")
-        );
+    @SuppressWarnings("CheckReturnValue")
+    void invalidEmail() {
+        assertIllegalArgument(() -> EmailAddresses.valueOf("fiz baz"));
     }
 }

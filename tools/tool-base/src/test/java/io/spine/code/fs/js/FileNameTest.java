@@ -29,11 +29,11 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("FileName should")
+@DisplayName("`FileName` should")
 class FileNameTest {
 
     private final FileDescriptor file = Any.getDescriptor()
@@ -48,10 +48,7 @@ class FileNameTest {
     @Test
     @DisplayName("not accept names without extension")
     void notAcceptNameWithoutExtension() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> FileName.of("no-extension")
-        );
+        assertIllegalArgument(() -> FileName.of("no-extension"));
     }
 
     @Test

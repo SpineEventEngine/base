@@ -20,12 +20,12 @@
 
 package io.spine.tools.protoc;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import io.spine.code.proto.FileName;
 
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -38,9 +38,9 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  */
 public final class MessageSelectorFactory {
 
-    private static final String PREFIX = "prefix";
-    private static final String SUFFIX = "suffix";
-    private static final String REGEX = "regex";
+    @VisibleForTesting static final String PREFIX = "prefix";
+    @VisibleForTesting static final String SUFFIX = "suffix";
+    @VisibleForTesting static final String REGEX = "regex";
 
     static final MessageSelectorFactory INSTANCE = new MessageSelectorFactory();
 
@@ -127,7 +127,8 @@ public final class MessageSelectorFactory {
             checkArgument(conf.size() == 1,
                           "File selector should have a single value, but had: '%s'",
                           conf);
-            for (Entry<String, Function<String, PatternSelector>> configEntry : configurations.entrySet()) {
+            for (Map.Entry<String, Function<String, PatternSelector>> configEntry :
+                    configurations.entrySet()) {
                 String filePattern = conf.get(configEntry.getKey());
                 if (!isNullOrEmpty(filePattern)) {
                     return configEntry.getValue()

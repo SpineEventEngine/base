@@ -30,10 +30,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.nio.file.Path;
-import java.util.UUID;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static io.spine.io.Resource.file;
+import static io.spine.testing.Assertions.assertIllegalState;
+import static java.util.UUID.randomUUID;
 
 @DisplayName("Resource should")
 class ResourceTest {
@@ -44,13 +45,13 @@ class ResourceTest {
     @Test
     @DisplayName("throw ISE if queried for a non-existing file")
     void throwOnNonExisting(@TempDir Path path) {
-        Path nonExistentFilePath = path.resolve(UUID.randomUUID()
+        Path nonExistentFilePath = path.resolve(randomUUID()
                                                     .toString());
         File nonExistingFile = nonExistentFilePath.toFile();
         String name = nonExistingFile.getName();
-        Resource file = Resource.file(name, CLASS_LOADER);
+        Resource file = file(name, CLASS_LOADER);
         assertThat(file.exists()).isFalse();
-        assertThrows(IllegalStateException.class, file::locate);
+        assertIllegalState(file::locate);
     }
 
     @Test

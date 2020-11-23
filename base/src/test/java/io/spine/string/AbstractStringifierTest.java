@@ -26,10 +26,10 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.Modifier;
 
 import static com.google.common.testing.SerializableTester.reserializeAndAssert;
+import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -74,11 +74,7 @@ abstract class AbstractStringifierTest<T> {
     @Test
     @DisplayName("prohibit empty string input")
     void prohibitEmptyString() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> stringifier.reverse()
-                                 .convert("")
-        );
+        assertIllegalArgument(() -> stringifier.reverse().convert(""));
     }
 
     @Test

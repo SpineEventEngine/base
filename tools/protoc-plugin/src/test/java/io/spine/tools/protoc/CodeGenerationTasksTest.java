@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static io.spine.testing.Assertions.assertNpe;
 
 @DisplayName("CodeGenerationTasks should")
 final class CodeGenerationTasksTest {
@@ -39,15 +39,13 @@ final class CodeGenerationTasksTest {
         @DisplayName("is create with `null` tasks list")
         @Test
         void isCreatedWithNullList() {
-            assertThrows(NullPointerException.class, () -> new CodeGenerationTasks(null));
+            assertNpe(() -> new CodeGenerationTasks(null));
         }
 
         @DisplayName("`null` MessageType is supplied")
         @Test
         void nullMessageTypeIsSupplied() {
-            assertThrows(NullPointerException.class, () ->
-                    new CodeGenerationTasks(ImmutableList.of()).generateFor(null)
-            );
+            assertNpe(() -> new CodeGenerationTasks(ImmutableList.of()).generateFor(null));
         }
     }
 
@@ -65,6 +63,7 @@ final class CodeGenerationTasksTest {
     private static class SingleResultTask implements CodeGenerationTask {
 
         @Override
+        @SuppressWarnings("ReturnOfNull")
         public ImmutableList<CompilerOutput> generateFor(MessageType type) {
             return ImmutableList.of(() -> null);
         }

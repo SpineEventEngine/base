@@ -36,13 +36,12 @@ import static io.spine.code.proto.given.Given.messageField;
 import static io.spine.code.proto.given.Given.primitiveField;
 import static io.spine.code.proto.given.Given.repeatedField;
 import static io.spine.code.proto.given.Given.singularField;
+import static io.spine.testing.Assertions.assertIllegalArgument;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SuppressWarnings("InnerClassMayBeStatic") // JUnit nested classes cannot be static.
-@DisplayName("FieldTypes utility should")
+@DisplayName("`FieldTypes` utility should")
 class FieldTypesTest extends UtilityClassTest<FieldTypes> {
 
     FieldTypesTest() {
@@ -50,11 +49,11 @@ class FieldTypesTest extends UtilityClassTest<FieldTypes> {
     }
 
     @Nested
-    @DisplayName("check if field")
+    @DisplayName("check if a field is")
     class CheckIfField {
 
         @Test
-        @DisplayName("is message")
+        @DisplayName("a `Message`")
         void isMessage() {
             assertTrue(FieldTypes.isMessage(messageField()));
             assertFalse(FieldTypes.isMessage(primitiveField()));
@@ -62,14 +61,14 @@ class FieldTypesTest extends UtilityClassTest<FieldTypes> {
         }
 
         @Test
-        @DisplayName("is repeated")
+        @DisplayName("`repeated`")
         void isRepeated() {
             assertTrue(FieldTypes.isRepeated(repeatedField()));
             assertFalse(FieldTypes.isRepeated(singularField()));
         }
 
         @Test
-        @DisplayName("is map")
+        @DisplayName("a `Map`")
         void isMap() {
             assertTrue(FieldTypes.isMap(mapField()));
             assertFalse(FieldTypes.isMap(singularField()));
@@ -77,41 +76,41 @@ class FieldTypesTest extends UtilityClassTest<FieldTypes> {
     }
 
     @Test
-    @DisplayName("not mark map field as repeated")
+    @DisplayName("not mark map field as `repeated`")
     void notMarkMapAsRepeated() {
         assertFalse(FieldTypes.isRepeated(mapField()));
     }
 
     @Test
-    @DisplayName("get key descriptor for map field")
+    @DisplayName("get key descriptor for a `Map` field")
     void getKeyDescriptor() {
         FieldDescriptor key = keyDescriptor(mapField());
         assertEquals(INT64, key.getType());
     }
 
     @Test
-    @DisplayName("get value descriptor for map field")
+    @DisplayName("get value descriptor for a `Map` field")
     void getValueDescriptor() {
         FieldDescriptor value = valueDescriptor(mapField());
         assertEquals(STRING, value.getType());
     }
 
-    @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
-    // Calling methods to throw exception.
     @Nested
-    @DisplayName("throw IAE if")
-    class ThrowIaeIf {
+    @DisplayName("throw `IllegalArgumentException` if")
+    @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
+            // Calling methods to throw exception.
+    class Prohibit {
 
         @Test
         @DisplayName("getting key descriptor from non-map field")
         void getKeyForNonMap() {
-            assertThrows(IllegalArgumentException.class, () -> keyDescriptor(repeatedField()));
+            assertIllegalArgument(() -> keyDescriptor(repeatedField()));
         }
 
         @Test
         @DisplayName("getting value descriptor from non-map field")
         void getValueForNonMap() {
-            assertThrows(IllegalArgumentException.class, () -> valueDescriptor(repeatedField()));
+            assertIllegalArgument(() -> valueDescriptor(repeatedField()));
         }
     }
 }

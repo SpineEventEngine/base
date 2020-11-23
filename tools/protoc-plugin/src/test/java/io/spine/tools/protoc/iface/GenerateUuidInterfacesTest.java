@@ -31,45 +31,44 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static io.spine.testing.Assertions.assertIllegalArgument;
+import static io.spine.testing.Assertions.assertNpe;
 
-@DisplayName("GenerateInterfaces should")
+@DisplayName("`GenerateInterfaces` should")
 final class GenerateUuidInterfacesTest {
 
-    @DisplayName("throw NullPointerException if")
     @Nested
+    @DisplayName("throw `NullPointerException` if")
     class ThrowNpe {
 
-        @DisplayName("is created with `null` arguments")
         @Test
+        @DisplayName("is created with `null` arguments")
         void isCreatedWithNullArguments() {
-            assertThrows(NullPointerException.class, () ->
-                    new GenerateUuidInterfaces(null));
+            assertNpe(() -> new GenerateUuidInterfaces(null));
         }
 
-        @DisplayName("`null` MessageType is supplied")
         @Test
+        @DisplayName("`null` `MessageType` is supplied")
         void nullMessageTypeIsSupplied() {
             UuidConfig config = newTaskConfig("test");
             GenerateUuidInterfaces generateMethods = new GenerateUuidInterfaces(config);
-            assertThrows(NullPointerException.class, () -> generateMethods.generateFor(null));
+            assertNpe(() -> generateMethods.generateFor(null));
         }
     }
 
-    @DisplayName("throw IllegalArgumentException if interface name is")
     @ParameterizedTest(name = "\"{0}\"")
     @ValueSource(strings = {"", "  "})
+    @DisplayName("throw `IllegalArgumentException` if interface name is")
     void throwIllegalArgumentException(String interfaceName) {
-        assertThrows(IllegalArgumentException.class, () ->
-                newTask(newTaskConfig(interfaceName)));
+        assertIllegalArgument(() -> newTask(newTaskConfig(interfaceName)));
     }
 
-    @DisplayName("generate empty result if")
     @Nested
+    @DisplayName("generate empty result if")
     class GenerateEmptyResult {
 
-        @DisplayName("message is not UUID")
         @Test
+        @DisplayName("message is not UUID")
         void notUuid() {
             assertEmptyResult(TestInterface.class.getName(), IdWrongFieldName.getDescriptor());
         }
@@ -81,8 +80,8 @@ final class GenerateUuidInterfacesTest {
         }
     }
 
-    @DisplayName("implement interface")
     @Test
+    @DisplayName("implement interface")
     void implementInterface() {
         UuidConfig config = newTaskConfig(TestInterface.class.getName());
         assertThat(newTask(config).generateFor(new MessageType(ProjectId.getDescriptor())))

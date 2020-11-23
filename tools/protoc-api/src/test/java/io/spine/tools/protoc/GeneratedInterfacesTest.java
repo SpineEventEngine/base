@@ -32,7 +32,7 @@ import static io.spine.tools.protoc.MessageSelectorFactory.regex;
 import static io.spine.tools.protoc.MessageSelectorFactory.suffix;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("GeneratedInterfaces should")
+@DisplayName("`GeneratedInterfaces` should")
 final class GeneratedInterfacesTest {
 
     @DisplayName("add multiple file patterns")

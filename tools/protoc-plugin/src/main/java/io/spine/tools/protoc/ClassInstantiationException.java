@@ -30,9 +30,6 @@ public final class ClassInstantiationException extends RuntimeException {
 
     private static final long serialVersionUID = 0L;
 
-    private static final String ERR_MSG_UNABLE_TO_INSTANTIATE =
-            "Unable to instantiate class `%s`.";
-
     /**
      * Creates a new instance with the class name.
      *
@@ -44,7 +41,7 @@ public final class ClassInstantiationException extends RuntimeException {
     }
 
     private static String makeMsg(String className) {
-        return format(ERR_MSG_UNABLE_TO_INSTANTIATE, className);
+        return format("Unable to instantiate class `%s`.", className);
     }
 
     /**

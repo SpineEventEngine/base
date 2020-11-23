@@ -26,9 +26,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.testing.Assertions.assertIllegalArgument;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@DisplayName("`UrlQueryParameters` utility class should")
 class UrlQueryParametersTest extends UtilityClassTest<UrlQueryParameters> {
 
     UrlQueryParametersTest() {
@@ -42,28 +43,19 @@ class UrlQueryParametersTest extends UtilityClassTest<UrlQueryParameters> {
         @Test
         @DisplayName("parsing wrong query")
         void wrongQuery() {
-            assertThrows(
-                    IllegalArgumentException.class,
-                    () ->  UrlQueryParameters.parse("123")
-            );
+            assertIllegalArgument(() -> UrlQueryParameters.parse("123"));
         }
 
         @Test
         @DisplayName("missing key")
         void missingKey() {
-            assertThrows(
-                    IllegalArgumentException.class,
-                    () ->  UrlQueryParameters.from("", "123")
-            );
+            assertIllegalArgument(() -> UrlQueryParameters.from("", "123"));
         }
 
         @Test
         @DisplayName("missing value")
-        void fail_on_missing_value() {
-            assertThrows(
-                    IllegalArgumentException.class,
-                    () ->  UrlQueryParameters.from("123", "")
-            );
+        void missingValue() {
+            assertIllegalArgument(() -> UrlQueryParameters.from("123", ""));
         }
     }
 

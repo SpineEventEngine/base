@@ -29,12 +29,13 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
+import static io.spine.testing.Assertions.assertIllegalState;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("NumberText numbers should")
+@DisplayName("`NumberText` numbers should")
 class NumberTextTest {
 
     @Test
@@ -67,7 +68,7 @@ class NumberTextTest {
     }
 
     @Test
-    @DisplayName("correctly compare values")
+    @DisplayName("compare values")
     void comparisonTest() {
         String smallerValue = "0.1";
         String largerValue = "15";
@@ -79,7 +80,7 @@ class NumberTextTest {
     }
 
     @Test
-    @DisplayName("correctly store numbers that do not fit into int")
+    @DisplayName("store numbers that do not fit into int")
     void testDoesNotFitIntoInt() {
         String longMaxValue = String.valueOf(Long.MAX_VALUE);
         String lessThanLongMaxValue = String.valueOf(Long.MAX_VALUE - 1);
@@ -91,7 +92,7 @@ class NumberTextTest {
 
     @ParameterizedTest
     @MethodSource("textNumbers")
-    @DisplayName("correctly stringify values")
+    @DisplayName("stringify values")
     void toStringTest(Number input, String expected) {
         NumberText text = new NumberText(input);
         assertEquals(expected, text.toString());
@@ -120,7 +121,7 @@ class NumberTextTest {
     @DisplayName("throw on a number with too many decimal separators")
     @Test
     void throwOnTooManySeparators() {
-        assertThrows(IllegalStateException.class, () -> new NumberText("1.0.0"));
+        assertIllegalState(() -> new NumberText("1.0.0"));
     }
 
     @SuppressWarnings("unused") // invoked via `@MethodSource`.

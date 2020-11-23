@@ -36,9 +36,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.protoc.InsertionPoint.class_scope;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`GenerateEntityStateFields` task should")
 final class GenerateEntityStateFieldsTest {
@@ -66,13 +66,13 @@ final class GenerateEntityStateFieldsTest {
         @Test
         @DisplayName("blank")
         void blank() {
-            assertThrows(IllegalArgumentException.class, () -> newTask(config("")));
+            assertIllegalArgument(() -> newTask(config("")));
         }
 
         @Test
         @DisplayName("effectively blank")
         void effectivelyBlank() {
-            assertThrows(IllegalArgumentException.class, () -> newTask(config("   ")));
+            assertIllegalArgument(() -> newTask(config("   ")));
         }
     }
 
