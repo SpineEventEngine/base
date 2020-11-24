@@ -127,8 +127,8 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  *     System.clearProperty(AwsLambda.AWS_ENV_VARIABLE);
  *
- *     // Even though `AwsLambda` is not active, we have cached the value, and `is(AwsLambda.class)`
- *     // is `true`.
+ *     // Even though `AwsLambda` is not active, we have cached the value, and
+ *     // `is(AwsLambda.class)` is `true`.
  *     assertThat(environment.is(AwsLambda.class)).isTrue();
  *
  *     environment.reset();

@@ -26,6 +26,7 @@ package io.spine.base;
  * <p>Some examples may be {@code STAGING} or {@code LOCAL} environments.
  *
  * @implNote Not an {@code interface} to limit the access level of {@link #enabled()}
+ * @see Environment
  */
 public abstract class EnvironmentType {
 

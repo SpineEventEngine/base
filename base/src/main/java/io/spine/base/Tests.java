@@ -42,7 +42,14 @@ public final class Tests extends EnvironmentType {
 
     /**
      * The names of the packages that when discovered in a stacktrace would tell that
-     * we are running tests.
+     * the code is executed under tests.
+     *
+     * <p>The returned package names are:
+     * <ol>
+     *     <li>"org.junit"
+     *     <li>"org.testng"
+     *     <li>"io.spine.testing"
+     * </ol>
      *
      * @see #enabled()
      */
@@ -74,6 +81,7 @@ public final class Tests extends EnvironmentType {
      *         variable must be set to {@code false} explicitly. If your framework is not
      *         among the {@linkplain #knownTestingFrameworks() known ones}, make sure to set
      *         the system property explicitly.
+     * @see #knownTestingFrameworks()
      */
     @Override
     protected boolean enabled() {
