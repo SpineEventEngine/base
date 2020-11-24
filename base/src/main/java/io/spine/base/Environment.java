@@ -24,7 +24,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
 import io.spine.logging.Logging;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -116,7 +115,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * This means that if one environment type has been found to be active, its instance is saved.
  * If later it becomes logically inactive, e.g. the environment variable that's used to check the
  * environment type changes, {@code Environment} is still going to return the cached value. To
- * overwrite the value use {@link #setTo(EnvironmentType)}. Also, the value may be
+ * overwrite the value use {@link #setTo(Class)}. Also, the value may be
  * {@linkplain #reset}. For example:
  * <pre>
  *
@@ -155,6 +154,9 @@ public final class Environment implements Logging {
 
     /**
      * The types the environment can be in.
+     *
+     * <p>Always contains {@link #BASE_TYPES} as last two elements.
+     * @see #register(EnvironmentType)
      */
     private ImmutableList<EnvironmentType> knownTypes;
 
@@ -197,7 +199,7 @@ public final class Environment implements Logging {
      * @see Production
      */
     @CanIgnoreReturnValue
-    public Environment register(EnvironmentType type) {
+    private Environment register(EnvironmentType type) {
         if (!knownTypes.contains(type)) {
             knownTypes = ImmutableList
                     .<EnvironmentType>builder()
@@ -222,9 +224,8 @@ public final class Environment implements Logging {
      *         environment type to register
      * @return this instance of {@code Environment}
      */
-    @Internal
     @CanIgnoreReturnValue
-    Environment register(Class<? extends EnvironmentType> type) {
+    public Environment register(Class<? extends EnvironmentType> type) {
         EnvironmentType envTypeInstance = callParameterlessCtor(type);
         return register(envTypeInstance);
     }
@@ -246,7 +247,7 @@ public final class Environment implements Logging {
     /**
      * Determines whether the current environment is the same as the specified one.
      *
-     * <p>If custom environment types have been {@linkplain #register(EnvironmentType) registered},
+     * <p>If custom environment types have been {@linkplain #register(Class) registered},
      * the method goes through them in the latest-registered to earliest-registered order.
      * Then, checks {@link Tests} and {@link Production}.
      *
@@ -300,31 +301,6 @@ public final class Environment implements Logging {
     }
 
     /**
-     * Verifies if the code currently runs under a unit testing framework.
-     *
-     * @see Tests
-     * @deprecated use {@code Environment.instance().is(Tests.class)}
-     */
-    @Deprecated
-    public boolean isTests() {
-        return is(Tests.class);
-    }
-
-    /**
-     * Verifies if the code runs in the production mode.
-     *
-     * <p>This method is opposite to {@link #isTests()}.
-     *
-     * @return {@code true} if the code runs in the production mode, {@code false} otherwise
-     * @see Production
-     * @deprecated use {@code Environment.instance().is(Production.class)}
-     */
-    @Deprecated
-    public boolean isProduction() {
-        return !is(Tests.class);
-    }
-
-    /**
      * Restores the state from the instance created by {@link #createCopy()}.
      *
      * <p>Call this method when cleaning up tests that modify {@code Environment}.
@@ -337,58 +313,15 @@ public final class Environment implements Logging {
     }
 
     /**
-     * Sets the current environment type to {@code type.getClass()}. Overrides the current value.
-     *
-     * If the supplied type was not {@linkplain #register(EnvironmentType) registered} previously,
-     * it is registered.
-     */
-    @VisibleForTesting
-    public void setTo(EnvironmentType type) {
-        checkNotNull(type);
-        register(type);
-        setCurrentType(type.getClass());
-    }
-
-    /**
      * Sets the current environment type to the specified one. Overrides the current value.
      *
-     * If the supplied type was not {@linkplain #register(EnvironmentType) registered} previously,
+     * If the supplied type was not {@linkplain #register(Class) registered} previously,
      * it is registered.
      */
-    @Internal
-    @VisibleForTesting
     public void setTo(Class<? extends EnvironmentType> type) {
         checkNotNull(type);
         register(type);
         setCurrentType(type);
-    }
-
-    /**
-     * Turns the test mode on.
-     *
-     * <p>This method is opposite to {@link #setToProduction()}.
-     *
-     * @deprecated use {@link #setTo(Class)}
-     */
-    @Deprecated
-    @VisibleForTesting
-    public void setToTests() {
-        setCurrentType(Tests.class);
-        TestsProperty.setTrue();
-    }
-
-    /**
-     * Turns the production mode on.
-     *
-     * <p>This method is opposite to {@link #setToTests()}.
-     *
-     * @deprecated use {@link #setTo(Class)}
-     */
-    @Deprecated
-    @VisibleForTesting
-    public void setToProduction() {
-        setCurrentType(Production.class);
-        TestsProperty.clear();
     }
 
     private void setCurrentType(@Nullable Class<? extends EnvironmentType> newCurrent) {
