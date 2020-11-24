@@ -36,15 +36,19 @@ public final class Tests extends EnvironmentType {
 
     private static final Tests INSTANCE = new Tests();
 
+    @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in another context. */)
+    private static final ImmutableList<String> KNOWN_TESTING_FRAMEWORKS =
+            ImmutableList.of("org.junit", "org.testng", "io.spine.testing");
+
     /**
      * The names of the packages that when discovered in a stacktrace would tell that
      * we are running tests.
      *
      * @see #enabled()
      */
-    @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in another context. */)
-    public static final ImmutableList<String> KNOWN_TESTING_FRAMEWORKS =
-            ImmutableList.of("org.junit", "org.testng", "io.spine.testing");
+    public static ImmutableList<String> knownTestingFrameworks() {
+        return KNOWN_TESTING_FRAMEWORKS;
+    }
 
     /**
      * Obtains the singleton instance.
@@ -61,14 +65,14 @@ public final class Tests extends EnvironmentType {
     /**
      * Verifies if the code currently runs under a unit testing framework.
      *
-     * <p>The method returns {@code true} if {@linkplain #KNOWN_TESTING_FRAMEWORKS
+     * <p>The method returns {@code true} if {@linkplain #knownTestingFrameworks()
      * known testing framework packages} are discovered in the stacktrace.
      *
      * @return {@code true} if the code runs under a testing framework, {@code false} otherwise
      * @implNote In addition to checking the stack trace, this method checks the
      *         environment variable value. If you wish to simulate not being in tests, the
      *         variable must be set to {@code false} explicitly. If your framework is not
-     *         among the {@linkplain #KNOWN_TESTING_FRAMEWORKS known ones}, make sure to set
+     *         among the {@linkplain #knownTestingFrameworks() known ones}, make sure to set
      *         the system property explicitly.
      */
     @Override
@@ -80,7 +84,7 @@ public final class Tests extends EnvironmentType {
 
         String stacktrace = Throwables.getStackTraceAsString(new RuntimeException(""));
         boolean result =
-                KNOWN_TESTING_FRAMEWORKS.stream()
+                knownTestingFrameworks().stream()
                                         .anyMatch(stacktrace::contains);
         return result;
     }

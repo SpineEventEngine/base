@@ -46,7 +46,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  * <ul>
  *     <li><em>{@link Tests}</em> is detected if the current call stack has a reference to
- *     a {@linkplain Tests#KNOWN_TESTING_FRAMEWORKS unit testing framework}.
+ *     a {@linkplain Tests#knownTestingFrameworks() unit testing framework}.
 
  *     <li><em>{@link Production}</em> is set in all other cases.
  * </ul>

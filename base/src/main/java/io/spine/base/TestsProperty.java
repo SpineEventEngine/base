@@ -40,7 +40,7 @@ final class TestsProperty {
     /**
      * The key name of the system property which tells if a code runs under a testing framework.
      *
-     * <p>If your testing framework is not among the {@link Tests#KNOWN_TESTING_FRAMEWORKS},
+     * <p>If your testing framework is not among the {@link Tests#knownTestingFrameworks()},
      * set this property to {@code true} before running tests.
      */
     @VisibleForTesting
