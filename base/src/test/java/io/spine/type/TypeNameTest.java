@@ -27,12 +27,14 @@ import com.google.protobuf.UInt64Value;
 import io.spine.option.EntityOption;
 import io.spine.option.IfMissingOption;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.testing.Assertions.assertIllegalArgument;
+import static io.spine.testing.Assertions.assertUnknownType;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Provides only class-level tests.
@@ -40,12 +42,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * <p>Other methods of {@link TypeName} are just over {@link TypeUrl} which are tested by
  * its own set of tests.
  */
-@DisplayName("TypeName should")
+@DisplayName("`TypeName` should")
 class TypeNameTest {
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
-    void pass_the_null_tolerance_check() {
+    void npeCheck() {
         new NullPointerTester()
                 .setDefault(Descriptor.class, EntityOption.getDefaultInstance()
                                                           .getDescriptorForType())
@@ -54,21 +56,21 @@ class TypeNameTest {
 
     @Test
     @DisplayName("reject empty name")
-    void reject_empty_name() {
-        assertThrows(IllegalArgumentException.class,
-                     () -> TypeName.of(""));
+    void rejectEmptyName() {
+        assertIllegalArgument(() -> TypeName.of(""));
     }
 
     @Test
     @DisplayName("return simple type name")
-    void return_simple_type_name() {
-        assertEquals(StringValue.class.getSimpleName(), TypeName.of(StringValue.class)
-                                                                .simpleName());
+    void simpleTypeName() {
+        assertEquals(StringValue.class.getSimpleName(),
+                     TypeName.of(StringValue.class)
+                             .simpleName());
     }
 
     @Test
     @DisplayName("return simple name if no package")
-    void return_simple_name_if_no_package() {
+    void simpleNameIfNoPackage() {
         // A msg type without Protobuf package
         String name = IfMissingOption.class.getSimpleName();
         TypeUrl typeUrl = TypeName.of(name)
@@ -80,33 +82,38 @@ class TypeNameTest {
         assertEquals(name, actual);
     }
 
-    @Test
-    @DisplayName("obtain instance for message")
-    void obtain_instance_for_message() {
-        TypeName typeName = TypeName.of(StringValue.getDefaultInstance());
-        assertNotNull(typeName);
-        assertEquals(StringValue.class.getSimpleName(), typeName.simpleName());
-    }
+    @Nested
+    @DisplayName("obtain instance")
+    class ObtainInstance {
 
-    @Test
-    @DisplayName("obtain instance for Java class")
-    void obtain_instance_for_Java_class() {
-        TypeName typeName = TypeName.of(StringValue.class);
-        assertNotNull(typeName);
-        assertEquals(StringValue.class.getSimpleName(), typeName.simpleName());
-    }
+        @Test
+        @DisplayName("for `Message`")
+        void forMessage() {
+            TypeName typeName = TypeName.of(StringValue.getDefaultInstance());
+            assertNotNull(typeName);
+            assertEquals(StringValue.class.getSimpleName(), typeName.simpleName());
+        }
 
-    @Test
-    @DisplayName("obtain instance by descriptor")
-    void obtain_instance_by_descriptor() {
-        TypeName typeName = TypeName.from(UInt64Value.getDescriptor());
-        assertNotNull(typeName);
-        assertEquals(UInt64Value.class.getSimpleName(), typeName.simpleName());
+        @Test
+        @DisplayName("for Java class")
+        void forJavaClass() {
+            TypeName typeName = TypeName.of(StringValue.class);
+            assertNotNull(typeName);
+            assertEquals(StringValue.class.getSimpleName(), typeName.simpleName());
+        }
+
+        @Test
+        @DisplayName("by descriptor")
+        void byDescriptor() {
+            TypeName typeName = TypeName.from(UInt64Value.getDescriptor());
+            assertNotNull(typeName);
+            assertEquals(UInt64Value.class.getSimpleName(), typeName.simpleName());
+        }
     }
 
     @Test
     @DisplayName("provide proto descriptor")
-    void provide_proto_descriptor_by_type_name() {
+    void descriptorByTypeName() {
         TypeName typeName = TypeName.of("spine.test.types.KnownTask");
         Descriptor typeDescriptor = typeName.messageDescriptor();
         assertNotNull(typeDescriptor);
@@ -115,9 +122,8 @@ class TypeNameTest {
 
     @Test
     @DisplayName("fail to find invalid type descriptor")
-    void fail_to_find_invalid_type_descriptor() {
+    void invalidTypeDescriptor() {
         TypeName invalidTypeName = TypeName.of("no.such.package.InvalidType");
-        assertThrows(UnknownTypeException.class,
-                     invalidTypeName::genericDescriptor);
+        assertUnknownType(invalidTypeName::genericDescriptor);
     }
 }

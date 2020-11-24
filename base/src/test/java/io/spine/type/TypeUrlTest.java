@@ -32,68 +32,84 @@ import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.UInt32Value;
 import io.spine.option.EntityOption;
-import io.spine.testing.Tests;
-import org.junit.jupiter.api.Disabled;
+import io.spine.test.type.TypeWithoutPrefix;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.testing.SerializableTester.reserializeAndAssert;
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.protobuf.TypeConverter.toMessage;
+import static io.spine.testing.Assertions.assertIllegalArgument;
+import static io.spine.testing.Assertions.assertNpe;
+import static io.spine.testing.Assertions.assertUnknownType;
+import static io.spine.testing.Tests.nullRef;
 import static io.spine.type.TypeUrl.composeTypeUrl;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static io.spine.type.TypeUrl.parse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("TypeUrl should")
 class TypeUrlTest {
 
-    private static final String STRING_VALUE_TYPE_NAME = StringValue.getDescriptor()
-                                                                    .getFullName();
-    private static final String STRING_VALUE_TYPE_URL_STR =
-            composeTypeUrl(TypeUrl.Prefix.GOOGLE_APIS.value(), STRING_VALUE_TYPE_NAME);
+    /** The descriptor of the type used for the tests. */
+    private static final Descriptors.Descriptor TYPE_DESCRIPTOR = StringValue.getDescriptor();
 
-    private final TypeUrl stringValueTypeUrl = TypeUrl.from(StringValue.getDescriptor());
+    /** Full proto type name for the type used under the tests. */
+    private static final String TYPE_NAME = TYPE_DESCRIPTOR.getFullName();
+
+    /** The value of the Type URL. */
+    private static final String TYPE_URL_VALUE =
+            composeTypeUrl(TypeUrl.Prefix.GOOGLE_APIS.value(), TYPE_NAME);
+
+    private final TypeUrl stringValueTypeUrl = TypeUrl.from(TYPE_DESCRIPTOR);
+
+    private static void assertValue(String expected, TypeUrl typeUrl) {
+        assertThat(typeUrl.value())
+                .isEqualTo(expected);
+    }
+
+    private static void assertValue(String expected, TypeName typeName) {
+        assertThat(typeName.value())
+                .isEqualTo(expected);
+    }
 
     @Nested
-    @DisplayName("Create instance by")
+    @DisplayName("Create an instance by")
     class CreateBy {
 
         @Test
-        @DisplayName("Message")
+        @DisplayName("`Message`")
         void message() {
             Message msg = toMessage(newUuid());
             TypeUrl typeUrl = TypeUrl.of(msg);
 
-            assertIsStringValueUrl(typeUrl);
+            assertTypeUrl(typeUrl);
         }
 
         @Test
         @DisplayName("fully-qualified type name")
         void typeName() {
-            TypeUrl typeUrl = TypeName.of(STRING_VALUE_TYPE_NAME)
+            TypeUrl typeUrl = TypeName.of(TYPE_NAME)
                                       .toUrl();
 
-            assertIsStringValueUrl(typeUrl);
+            assertTypeUrl(typeUrl);
         }
 
         @Test
         @DisplayName("type URL")
         void typeUrl() {
-            TypeUrl typeUrl = TypeUrl.parse(STRING_VALUE_TYPE_URL_STR);
+            TypeUrl typeUrl = TypeUrl.parse(TYPE_URL_VALUE);
 
-            assertIsStringValueUrl(typeUrl);
+            assertTypeUrl(typeUrl);
         }
 
         @Test
         @DisplayName("a descriptor of standard Protobuf type")
         void standardDescriptor() {
-            TypeUrl typeUrl = TypeUrl.from(StringValue.getDescriptor());
+            TypeUrl typeUrl = TypeUrl.from(TYPE_DESCRIPTOR);
 
-            assertIsStringValueUrl(typeUrl);
+            assertTypeUrl(typeUrl);
         }
 
         @Test
@@ -105,28 +121,96 @@ class TypeUrlTest {
 
             TypeUrl typeUrl = TypeUrl.from(descriptor);
 
-            assertEquals(expectedUrl, typeUrl.value());
+            assertValue(expectedUrl, typeUrl);
         }
 
         @Test
         @DisplayName("enum descriptor of Protobuf type")
         void standardEnumDescriptor() {
-            assertCreatesTypeUrlFromEnum(TypeUrl.Prefix.GOOGLE_APIS.value(),
-                                         Field.Kind.getDescriptor());
+            assertCreatedTypeUrl(TypeUrl.Prefix.GOOGLE_APIS.value(),
+                                 Field.Kind.getDescriptor());
         }
 
         @Test
         @DisplayName("enum descriptor of Spine type")
         void spineEnumDescriptor() {
-            assertCreatesTypeUrlFromEnum(TypeUrl.Prefix.SPINE.value(),
-                                         EntityOption.Kind.getDescriptor());
+            assertCreatedTypeUrl(TypeUrl.Prefix.SPINE.value(),
+                                 EntityOption.Kind.getDescriptor());
         }
 
         @Test
-        public void create_instance_by_class() {
+        @DisplayName("by a class")
+        void byClass() {
             TypeUrl typeUrl = TypeUrl.of(StringValue.class);
 
-            assertIsStringValueUrl(typeUrl);
+            assertTypeUrl(typeUrl);
+        }
+
+        private void assertCreatedTypeUrl(String expectedPrefix, EnumDescriptor descriptor) {
+            String expected = composeTypeUrl(expectedPrefix, descriptor.getFullName());
+
+            TypeUrl typeUrl = TypeUrl.from(descriptor);
+            assertValue(expected, typeUrl);
+        }
+
+        /**
+         * Asserts properties that the passed type URL.
+         *
+         * <p>Assertions are based on the assumption that the passed instance was created by
+         * one of the inputs specified as test environment constants declared in this test suite.
+         *
+         * @see #TYPE_URL_VALUE
+         * @see #TYPE_NAME
+         * @see #TYPE_URL_VALUE
+         */
+        private void assertTypeUrl(TypeUrl typeUrl) {
+            assertValue(TYPE_URL_VALUE, typeUrl);
+            assertThat(typeUrl.prefix())
+                    .isEqualTo(TypeUrl.Prefix.GOOGLE_APIS.value());
+            assertValue(TYPE_NAME, typeUrl.toTypeName());
+            assertThat(TypeName.from(typeUrl)
+                               .simpleName())
+                    .isEqualTo(StringValue.class.getSimpleName());
+        }
+    }
+
+    /**
+     * This class tests cases when a type URL is defined without a prefix.
+     *
+     * <p>At the time of writing Protobuf does not specify how a type URL prefix is supposed to
+     * be used. The only place it is used when {@linkplain Any#pack(Message, String)
+     * packing a message} into {@code Any}.
+     *
+     * <p>Even though Spine provides convenience features (i.e. in the form of custom Protobuf
+     * file option {@code (type_url_prefix)} for working with type URLs, the framework does not
+     * provide features for exposing type information via a site.
+     *
+     * <p>Therefore, it is unreasonable to require using type URL prefixes until such a support
+     * is provided by Protobuf, or by the Spine framework.
+     */
+    @Nested
+    @DisplayName("Allow empty prefix when")
+    class EmptyPrefix {
+
+        private TypeUrl noPrefixType;
+
+        @Test
+        @DisplayName("parcing type name")
+        void inTypeName() {
+            noPrefixType = parse("/package.Type");
+            assertEmptyPrefix();
+        }
+
+        @Test
+        @DisplayName("created for a type declared in a file with empty `(type_url_prefix)`")
+        void inFile() {
+            noPrefixType = TypeUrl.from(TypeWithoutPrefix.getDescriptor());
+            assertEmptyPrefix();
+        }
+
+        private void assertEmptyPrefix() {
+            assertThat(noPrefixType.prefix())
+                    .isEmpty();
         }
     }
 
@@ -135,21 +219,15 @@ class TypeUrlTest {
     class Reject {
 
         @Test
-        @DisplayName("null URL")
+        @DisplayName("`null` URL")
         void nullUrl() {
-            assertThrows(
-                    NullPointerException.class,
-                    () -> TypeUrl.parse(Tests.nullRef())
-            );
+            assertNpe(() -> parse(nullRef()));
         }
 
         @Test
         @DisplayName("empty URL")
         void emptyUrl() {
-            assertThrows(
-                    IllegalArgumentException.class,
-                    () -> TypeUrl.parse("")
-            );
+            assertIllegalArgument(() -> parse(""));
         }
 
         @Test
@@ -158,94 +236,56 @@ class TypeUrlTest {
             Any any = Any.newBuilder()
                          .setTypeUrl("invalid_type_url")
                          .build();
-            RuntimeException exception = assertThrows(RuntimeException.class,
-                                                      () -> TypeUrl.ofEnclosed(any));
-            assertThat(exception.getCause(), instanceOf(InvalidProtocolBufferException.class));
+            RuntimeException exception =
+                    assertThrows(RuntimeException.class, () -> TypeUrl.ofEnclosed(any));
+            assertThat(exception.getCause())
+                 .isInstanceOf(InvalidProtocolBufferException.class);
         }
 
         @Test
         @DisplayName("value without prefix separator")
         void noPrefixSeparator() {
-            assertThrows(
-                    IllegalArgumentException.class,
-                    () -> TypeUrl.parse("prefix:Type")
-            );
-        }
-
-        @Test
-        @Disabled("Until we decide if there may be URLs without type prefix")
-        @DisplayName("empty prefix")
-        void emptyPrefix() {
-            assertThrows(
-                    IllegalArgumentException.class,
-                    () -> TypeUrl.parse("/package.Type")
-            );
+            assertIllegalArgument(() -> TypeUrl.parse("prefix:Type"));
         }
 
         @Test
         @DisplayName("empty type name")
         void emptyTypeName() {
-            assertThrows(
-                    IllegalArgumentException.class,
-                    () -> TypeUrl.parse("type.prefix/")
-            );
+            assertIllegalArgument(() -> TypeUrl.parse("type.prefix/"));
         }
 
         @Test
         @DisplayName("malformed type URL")
         void malformedTypeUrl() {
-            assertThrows(
-                    IllegalArgumentException.class,
-                    () -> TypeUrl.parse("prefix/prefix/type.Name")
-            );
+            assertIllegalArgument(() -> TypeUrl.parse("prefix/prefix/type.Name"));
         }
     }
 
     @Test
     @DisplayName("obtain prefix")
-    void getPrefix() {
-        assertEquals(TypeUrl.Prefix.GOOGLE_APIS.value(), stringValueTypeUrl.prefix());
+    void prefix() {
+        assertThat(stringValueTypeUrl.prefix())
+                .isEqualTo(TypeUrl.Prefix.GOOGLE_APIS.value());
     }
 
     @Test
     @DisplayName("obtain type name")
-    void getTypeName() {
-        assertEquals(STRING_VALUE_TYPE_NAME, stringValueTypeUrl.toTypeName()
-                                                               .value());
+    void typeName() {
+        assertValue(TYPE_NAME, stringValueTypeUrl.toTypeName());
     }
 
     @Test
-    @DisplayName("convert to TypeName")
+    @DisplayName("convert to `TypeName`")
     void toTypeName() {
-        assertEquals(TypeName.of(STRING_VALUE_TYPE_NAME), stringValueTypeUrl.toTypeName());
-    }
-
-    private static void assertCreatesTypeUrlFromEnum(String typeUrlPrefix,
-                                                     EnumDescriptor enumDescriptor) {
-        String expected = composeTypeUrl(typeUrlPrefix, enumDescriptor.getFullName());
-
-        TypeUrl typeUrl = TypeUrl.from(enumDescriptor);
-
-        assertEquals(expected, typeUrl.value());
-    }
-
-    private static void assertIsStringValueUrl(TypeUrl typeUrl) {
-        assertEquals(STRING_VALUE_TYPE_URL_STR, typeUrl.value());
-        assertEquals(TypeUrl.Prefix.GOOGLE_APIS.value(), typeUrl.prefix());
-        assertEquals(STRING_VALUE_TYPE_NAME, typeUrl.toTypeName()
-                                                    .value());
-        assertEquals(StringValue.class.getSimpleName(), TypeName.from(typeUrl)
-                                                                .simpleName());
+        assertThat(stringValueTypeUrl.toTypeName())
+                .isEqualTo(TypeName.of(TYPE_NAME));
     }
 
     @Test
-    @DisplayName("throw UnknownTypeException when trying to obtain unknown Java class")
+    @DisplayName("throw `UnknownTypeException` when trying to obtain unknown Java class")
     void unknownJavaClass() {
         TypeUrl url = TypeUrl.parse("unknown/JavaClass");
-        assertThrows(
-                UnknownTypeException.class,
-                url::toJavaClass
-        );
+        assertUnknownType(url::toJavaClass);
     }
 
     @Test
@@ -259,20 +299,25 @@ class TypeUrlTest {
     }
 
     @Test
-    @DisplayName("provide string representation")
+    @DisplayName("have string representation")
     void stringForm() {
-        assertTrue(TypeUrl.of(BoolValue.class)
-                          .toString()
-                          .contains(BoolValue.class.getSimpleName()));
+        assertThat(TypeUrl.of(BoolValue.class)
+                          .toString())
+                .contains(BoolValue.class.getSimpleName());
     }
 
+    /**
+     * This method tests only {@link TypeUrl.Prefix.SPINE} because the other prefix
+     * {@link TypeUrl.Prefix.GOOGLE_APIS} is automatically tested by tests that invoke
+     * {@link CreateBy#assertTypeUrl(TypeUrl)}.
+     */
     @Test
-    @DisplayName("provide popular type prefixes")
+    @DisplayName("have popular type prefixes")
     void prefixEnumeration() {
         TypeUrl.Prefix spinePrefix = TypeUrl.Prefix.SPINE;
-        assertTrue(spinePrefix.toString()
-                              .contains(spinePrefix.name()
-                                                   .toLowerCase()));
+        assertThat(spinePrefix.toString())
+             .ignoringCase()
+             .contains(spinePrefix.name());
     }
 
     @Test

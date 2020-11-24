@@ -25,52 +25,56 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.testing.Assertions.assertNpe;
+import static io.spine.tools.protoc.FilePatterns.filePrefix;
+import static io.spine.tools.protoc.FilePatterns.fileRegex;
+import static io.spine.tools.protoc.FilePatterns.fileSuffix;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("FilePatternMatcher should")
+@DisplayName("`FilePatternMatcher` should")
 class FilePatternMatcherTest {
 
-    @DisplayName("throw NullPointerException if")
+    @DisplayName("throw `NullPointerException` if")
     @Nested
     class ThrowNpe {
 
-        @DisplayName("is create with `null` FilePattern")
         @Test
+        @DisplayName("is create with `null` `FilePattern`")
         void isCreatedWithNullPattern() {
-            assertThrows(NullPointerException.class, () -> new FilePatternMatcher(null));
+            assertNpe(() -> new FilePatternMatcher(null));
         }
 
-        @DisplayName("`null` MessageType is supplied")
         @Test
+        @DisplayName("`null` `MessageType` is supplied")
         void nullMessageTypeIsSupplied() {
-            assertThrows(NullPointerException.class, () ->
-                    new FilePatternMatcher(FilePattern.getDefaultInstance()).test(null)
-            );
+            assertNpe(() -> {
+                FilePattern pattern = FilePattern.getDefaultInstance();
+                new FilePatternMatcher(pattern).test(null);
+            });
         }
     }
 
-    @DisplayName("match")
     @Nested
+    @DisplayName("match")
     class Match {
 
+        @Test
         @DisplayName("suffix pattern")
-        @Test
         void suffix() {
-            assertMatches(FilePatterns.fileSuffix("file_patterns.proto"));
+            assertMatches(fileSuffix("file_patterns.proto"));
         }
 
+        @Test
         @DisplayName("prefix pattern")
-        @Test
         void prefix() {
-            assertMatches(FilePatterns.filePrefix("spine/tools/protoc/test_file"));
+            assertMatches(filePrefix("spine/tools/protoc/test_file"));
         }
 
-        @DisplayName("regex pattern")
         @Test
+        @DisplayName("regex pattern")
         void regex() {
-            assertMatches(FilePatterns.fileRegex(".*tools\\/protoc\\/.*file_patterns.*"));
+            assertMatches(fileRegex(".*tools\\/protoc\\/.*file_patterns.*"));
         }
 
         private void assertMatches(FilePattern pattern) {
@@ -80,26 +84,26 @@ class FilePatternMatcherTest {
         }
     }
 
-    @DisplayName("not match")
     @Nested
+    @DisplayName("not match")
     class NotMatch {
 
+        @Test
         @DisplayName("suffix pattern")
-        @Test
         void suffix() {
-            assertNotMatches(FilePatterns.fileSuffix("test_file.proto"));
+            assertNotMatches(fileSuffix("test_file.proto"));
         }
 
+        @Test
         @DisplayName("prefix pattern")
-        @Test
         void prefix() {
-            assertNotMatches(FilePatterns.filePrefix("spine/tools/protoc/test_patterns"));
+            assertNotMatches(filePrefix("spine/tools/protoc/test_patterns"));
         }
 
-        @DisplayName("regex pattern")
         @Test
+        @DisplayName("regex pattern")
         void regex() {
-            assertNotMatches(FilePatterns.fileRegex(".*tools\\/protoc\\/.*test_patterns.*"));
+            assertNotMatches(fileRegex(".*tools\\/protoc\\/.*test_patterns.*"));
         }
 
         private void assertNotMatches(FilePattern pattern) {

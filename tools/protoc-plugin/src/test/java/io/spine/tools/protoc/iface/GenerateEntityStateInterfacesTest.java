@@ -33,10 +33,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.protoc.InsertionPoint.message_implements;
 import static io.spine.tools.protoc.ProtocTaskConfigs.entityStateConfig;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`GenerateEntityStateInterfaces` task should")
 class GenerateEntityStateInterfacesTest {
@@ -55,22 +55,22 @@ class GenerateEntityStateInterfacesTest {
                 .testAllPublicInstanceMethods(task);
     }
 
-    @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
-    // Method called to throw exception.
     @Nested
     @DisplayName("throw `IllegalArgumentException` when the specified class name is")
+    @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
+            // Method called to throw exception.
     class ThrowOnClassName {
 
         @Test
         @DisplayName("blank")
         void blank() {
-            assertThrows(IllegalArgumentException.class, () -> markEntityStatesAs(""));
+            assertIllegalArgument(() -> markEntityStatesAs(""));
         }
 
         @Test
         @DisplayName("effectively blank")
         void effectivelyBlank() {
-            assertThrows(IllegalArgumentException.class, () -> markEntityStatesAs("   "));
+            assertIllegalArgument(() -> markEntityStatesAs("   "));
         }
     }
 

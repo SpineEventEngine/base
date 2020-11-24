@@ -54,4 +54,7 @@ tasks.jar {
             else -> zipTree(it)
         }
     })
+    // We should provide a classifier or else Protobuf Gradle plugin will substitute it with
+    // an OS-specific one.
+    archiveClassifier.set("exe")
 }

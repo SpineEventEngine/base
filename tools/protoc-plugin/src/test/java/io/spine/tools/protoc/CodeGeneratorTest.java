@@ -32,15 +32,17 @@ import io.spine.tools.protoc.given.TestNestedClassFactory;
 import io.spine.tools.protoc.given.UuidMethodFactory;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
 import java.util.Collection;
 
+import static io.spine.testing.Assertions.assertIllegalArgument;
+import static io.spine.testing.Assertions.assertNpe;
 import static io.spine.tools.protoc.given.CodeGeneratorRequestGiven.protocConfig;
 import static io.spine.tools.protoc.given.CodeGeneratorRequestGiven.requestBuilder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -166,15 +168,31 @@ final class CodeGeneratorTest {
         fileContent.isEqualTo(method);
     }
 
-    @DisplayName("not process invalid CodeGeneratorRequest")
-    @Test
-    void notProcessInvalidRequests() {
-        Assertions.assertThrows(NullPointerException.class,
-                                () -> new TestGenerator().process(null));
-        Assertions.assertThrows(IllegalArgumentException.class,
-                                () -> new TestGenerator().process(requestWithUnsupportedVersion()));
-        Assertions.assertThrows(IllegalArgumentException.class,
-                                () -> new TestGenerator().process(requestBuilder().build()));
+    @Nested
+    @DisplayName("not process invalid `CodeGeneratorRequest` if passed")
+    class Arguments {
+
+        @Test
+        @DisplayName("`null`")
+        void nullArg() {
+            assertNpe(() -> process(null));
+        }
+
+        @Test
+        @DisplayName("unsupported version")
+        void notProcessInvalidRequests() {
+            assertIllegalArgument(() -> process(requestWithUnsupportedVersion()));
+        }
+
+        @Test
+        @DisplayName("empty request")
+        void emptyRequest() {
+            assertIllegalArgument(() -> process(requestBuilder().build()));
+        }
+
+        private void process(CodeGeneratorRequest request) {
+            new TestGenerator().process(request);
+        }
     }
 
     private static CodeGeneratorRequest requestWithUnsupportedVersion() {
@@ -209,7 +227,7 @@ final class CodeGeneratorTest {
 
     private static class TestCompilerOutput extends AbstractCompilerOutput {
 
-        protected TestCompilerOutput(File file) {
+        private TestCompilerOutput(File file) {
             super(file);
         }
     }

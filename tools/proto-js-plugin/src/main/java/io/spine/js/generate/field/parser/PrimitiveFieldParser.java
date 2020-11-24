@@ -36,10 +36,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 final class PrimitiveFieldParser implements FieldParser {
 
+    @SuppressWarnings("BadImport")
     private final Type fieldType;
     private final CodeLines jsOutput;
 
-    private PrimitiveFieldParser(Type fieldType, CodeLines jsOutput) {
+    private PrimitiveFieldParser(@SuppressWarnings("BadImport") Type fieldType,
+                                 CodeLines jsOutput) {
         this.fieldType = fieldType;
         this.jsOutput = jsOutput;
     }
@@ -55,8 +57,7 @@ final class PrimitiveFieldParser implements FieldParser {
     static PrimitiveFieldParser createFor(FieldDescriptor field, CodeLines jsOutput) {
         checkNotNull(field);
         checkNotNull(jsOutput);
-        Type fieldType = field.getType();
-        return new PrimitiveFieldParser(fieldType, jsOutput);
+        return new PrimitiveFieldParser(field.getType(), jsOutput);
     }
 
     /**

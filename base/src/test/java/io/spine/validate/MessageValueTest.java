@@ -20,9 +20,12 @@
 
 package io.spine.validate;
 
+import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.OneofDescriptor;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.Value;
+import io.spine.code.proto.FieldContext;
+import io.spine.testing.ClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -30,22 +33,32 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static io.spine.testing.Assertions.assertIllegalArgument;
+import static io.spine.validate.MessageValue.atTopLevel;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("MessageValue should")
-class MessageValueTest {
+@DisplayName("`MessageValue` should")
+final class MessageValueTest extends ClassTest<MessageValue> {
 
     private static final OneofDescriptor VALUE_ONEOF = Value.getDescriptor()
                                                             .getOneofs()
                                                             .get(0);
 
-    @DisplayName("Obtain oneof value")
+    MessageValueTest() {
+        super(MessageValue.class);
+    }
+
+    @Override
+    protected void configure(NullPointerTester tester) {
+        tester.setDefault(FieldContext.class, FieldContext.empty());
+    }
+
     @Nested
+    @DisplayName("Obtain oneof value")
     class OneofValue {
 
-        @DisplayName("using the valid descriptor")
         @Test
+        @DisplayName("using the valid descriptor")
         void withValidDescriptor() {
             boolean boolValue = false;
             Value message = Value
@@ -56,15 +69,12 @@ class MessageValueTest {
             assertOneofValue(value, boolValue);
         }
 
-        @DisplayName("and throw IAE if a oneof is not declared in a message")
         @Test
+        @DisplayName("and throw IAE if a oneof is not declared in a message")
         void throwOnMissingOneof() {
             StringValue message = StringValue.getDefaultInstance();
-            MessageValue value = MessageValue.atTopLevel(message);
-            assertThrows(
-                    IllegalArgumentException.class,
-                    () -> value.valueOf(VALUE_ONEOF)
-            );
+            MessageValue value = atTopLevel(message);
+            assertIllegalArgument(() -> value.valueOf(VALUE_ONEOF));
         }
 
         private void assertOneofValue(MessageValue message, Object expectedValue) {

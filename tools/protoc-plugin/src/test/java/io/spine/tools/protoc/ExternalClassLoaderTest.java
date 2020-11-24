@@ -31,10 +31,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.Assertions.assertIllegalArgument;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`ExternalClassLoader` should")
@@ -44,69 +46,78 @@ final class ExternalClassLoaderTest {
 
     @BeforeEach
     void setUp() {
-        classLoader =
-                new ExternalClassLoader<>(Classpath.getDefaultInstance(), MethodFactory.class);
+        Classpath instance = Classpath.getDefaultInstance();
+        classLoader = new ExternalClassLoader<>(instance, MethodFactory.class);
     }
 
     @DisplayName("throw `IllegalArgumentException` if the class name is")
     @ParameterizedTest(name = "\"{0}\"")
     @ValueSource(strings = {"", "  "})
     void throwIllegalArgumentException(String factoryName) {
-        assertThrows(IllegalArgumentException.class, () -> classLoader.newInstance(factoryName));
+        assertIllegalArgument(() -> classLoader.newInstance(factoryName));
     }
 
-    @MuteLogging
-    @SuppressWarnings("NonExceptionNameEndsWithException")
-    @DisplayName("throw `ClassInstantiationException`")
     @Nested
-    final class ThrowInstantiationException {
+    @MuteLogging
+    @DisplayName("throw `ClassInstantiationException`")
+    @SuppressWarnings("NonExceptionNameEndsWithException")
+    class ThrowInstantiationException {
 
-        @DisplayName("if implementation does not have a public constructor")
-        @Test
-        void withoutPublicConstructor() {
-            assertThrows(ClassInstantiationException.class,
-                         () -> newInstanceFor(WithoutPublicConstructor.class));
+        @Nested
+        @DisplayName("if implementation")
+        class IfImplementation {
+
+            @Test
+            @DisplayName("does not have a public constructor")
+            void withoutPublicConstructor() {
+                assertCannotCreateInstance(WithoutPublicConstructor.class);
+            }
+
+            @Test
+            @DisplayName("has private constructor")
+            void withPrivateConstructor() {
+                assertCannotCreateInstance(WithPrivateConstructor.class);
+            }
+
+            @Test
+            @DisplayName("is abstract")
+            void implementationIsAbstract() {
+                assertCannotCreateInstance(WithAbstractImplementation.class);
+            }
+
+            @Test
+            @DisplayName("is not found or not available")
+            @SuppressWarnings("CheckReturnValue") // The method called to throw an exception.
+            void classIsNotFound() {
+                assertCannotInstantiate(
+                        () -> classLoader.newInstance("com.example.NonExistingClass")
+                );
+            }
         }
 
-        @DisplayName("if implementation has private constructor")
         @Test
-        void withPrivateConstructor() {
-            assertThrows(ClassInstantiationException.class,
-                         () -> newInstanceFor(WithPrivateConstructor.class));
-        }
-
         @DisplayName("if exception is thrown during instantiation")
-        @Test
         void exceptionThrownDuringInstantiation() {
-            assertThrows(ClassInstantiationException.class,
-                         () -> newInstanceFor(WithExceptionDuringInstantiation.class));
+            assertCannotCreateInstance(WithExceptionDuringInstantiation.class);
         }
 
-        @DisplayName("if implementation is abstract")
         @Test
-        void implementationIsAbstract() {
-            assertThrows(ClassInstantiationException.class,
-                         () -> newInstanceFor(WithAbstractImplementation.class));
-        }
-
-        @SuppressWarnings("CheckReturnValue") // The method called to throw an exception.
-        @DisplayName("if implementation is not found or not available")
-        @Test
-        void classIsNotFound() {
-            assertThrows(ClassInstantiationException.class,
-                         () -> classLoader.newInstance("com.example.NonExistingClass"));
-        }
-
         @DisplayName("if supplied class does not implement the loaded class")
-        @Test
         void doesNotImplementLoadedClass() {
-            assertThrows(ClassInstantiationException.class,
-                         () -> newInstanceFor(NotMethodFactory.class));
+            assertCannotCreateInstance(NotMethodFactory.class);
+        }
+
+        void assertCannotCreateInstance(Class<?> cls) {
+            assertCannotInstantiate(() -> newInstanceFor(cls));
+        }
+
+        void assertCannotInstantiate(Executable e) {
+            assertThrows(ClassInstantiationException.class, e);
         }
     }
 
-    @DisplayName("return a class instance by it's fully-qualified name")
     @Test
+    @DisplayName("return a class instance by its fully-qualified name")
     void returnClassInstanceByFqn() {
         assertThat(newInstanceFor(StubMethodFactory.class))
                 .isInstanceOf(StubMethodFactory.class);
@@ -138,6 +149,7 @@ final class ExternalClassLoaderTest {
     private static final class WithoutPublicConstructor extends EmptyMethodFactory {
     }
 
+    @SuppressWarnings("WeakerAccess")
     @Immutable
     public static final class WithPrivateConstructor extends EmptyMethodFactory {
 
@@ -146,25 +158,24 @@ final class ExternalClassLoaderTest {
     }
 
     @Immutable
-    public static final class WithExceptionDuringInstantiation extends EmptyMethodFactory {
+    static final class WithExceptionDuringInstantiation extends EmptyMethodFactory {
 
-        public WithExceptionDuringInstantiation() {
+        WithExceptionDuringInstantiation() {
             throw new RuntimeException("Test exception during instantiation");
         }
     }
 
     @Immutable
-    // for test reasons
-    @SuppressWarnings({"AbstractClassNeverImplemented", "ConstructorNotProtectedInAbstractClass"})
-    public abstract static class WithAbstractImplementation extends EmptyMethodFactory {
+    @SuppressWarnings("AbstractClassNeverImplemented") // For test reasons.
+    abstract static class WithAbstractImplementation extends EmptyMethodFactory {
 
-        public WithAbstractImplementation() {
+        WithAbstractImplementation() {
         }
     }
 
-    public static final class NotMethodFactory {
+    static final class NotMethodFactory {
 
-        public NotMethodFactory() {
+        NotMethodFactory() {
         }
     }
 }

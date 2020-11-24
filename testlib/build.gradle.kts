@@ -31,6 +31,5 @@ dependencies {
     Deps.test.junit5Api.forEach { api(it) }
     Deps.test.truth.forEach { api(it) }
     api(Deps.test.guavaTestlib)
-    api(Deps.test.hamcrest)
     implementation(project(":base"))
 }

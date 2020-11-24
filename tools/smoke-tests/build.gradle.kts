@@ -18,7 +18,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.gradle.internal.DependencyResolution
 import io.spine.gradle.internal.Deps
 
 buildscript {
@@ -91,8 +90,6 @@ subprojects {
         testImplementation("io.spine:spine-testlib:$spineVersion")
         testRuntimeOnly(Deps.test.junit5Runner)
     }
-
-    DependencyResolution.forceConfiguration(configurations)
 
     idea.module {
         generatedSourceDirs.addAll(files(

@@ -35,8 +35,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`GenerateFieldsByType` task should")
 final class GenerateFieldsByTypeTest {
@@ -50,27 +50,27 @@ final class GenerateFieldsByTypeTest {
                 .testAllPublicInstanceMethods(newTask());
     }
 
-    @SuppressWarnings("CheckReturnValue") // The method called to throw an exception.
     @Test
     @DisplayName("throw `IAE` if `TypePattern` is not set")
+    @SuppressWarnings("CheckReturnValue") // The method called to throw an exception.
     void rejectEmptyFilePattern() {
-        assertThrows(IllegalArgumentException.class, () -> newTask(emptyConfig()));
+        assertIllegalArgument(() -> newTask(emptyConfig()));
     }
 
-    @SuppressWarnings("CheckReturnValue") // The method called to throw an exception.
     @Test
     @DisplayName("reject empty field type name")
+    @SuppressWarnings("CheckReturnValue") // The method called to throw an exception.
     void rejectEmptyFieldTypeName() {
         String emptyName = "";
-        assertThrows(IllegalArgumentException.class, () -> newTask(emptyName));
+        assertIllegalArgument(() -> newTask(emptyName));
     }
 
-    @SuppressWarnings("CheckReturnValue") // The method called to throw an exception.
     @Test
     @DisplayName("reject effectively empty field type name")
+    @SuppressWarnings("CheckReturnValue") // The method called to throw an exception.
     void rejectEffectivelyEmptyFactoryName() {
         String effectivelyEmptyName = "   ";
-        assertThrows(IllegalArgumentException.class, () -> newTask(effectivelyEmptyName));
+        assertIllegalArgument(() -> newTask(effectivelyEmptyName));
     }
 
     @Nested

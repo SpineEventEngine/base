@@ -18,8 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.*
-import groovy.lang.GString
+import com.google.protobuf.gradle.generateProtoTasks
+import com.google.protobuf.gradle.protobuf
 import io.spine.gradle.internal.DependencyResolution
 import io.spine.gradle.internal.Deps
 import io.spine.gradle.internal.IncrementGuard
@@ -114,7 +114,7 @@ protobuf {
         for (task in all()) {
             val scope = task.sourceSet.name
             task.generateDescriptorSet = true
-            task.descriptorSetOptions.path = GString.EMPTY.plus("$buildDir/descriptors/$scope/known_types_${scope}.desc")
+            task.descriptorSetOptions.path = "$buildDir/descriptors/$scope/known_types_${scope}.desc"
             task.descriptorSetOptions.includeImports = true
             task.descriptorSetOptions.includeSourceInfo = true
 

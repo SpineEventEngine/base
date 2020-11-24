@@ -141,6 +141,7 @@ public final class RecordQueryBuilderTestEnv {
      * Defines the columns for {@link Manufacturer} message record.
      */
     @RecordColumns(ofType = Manufacturer.class)
+    @SuppressWarnings("BadImport")  // for brevity.
     public static final class ManufacturerColumns {
 
         public static final RecordColumn<Manufacturer, String> isin =

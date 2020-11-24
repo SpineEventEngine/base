@@ -29,9 +29,6 @@ public class UnknownTypeException extends RuntimeException {
 
     private static final long serialVersionUID = 0L;
 
-    private static final String ERR_MSG_NO_JAVA_CLASS_FOUND =
-            "No Java class found for the Protobuf message of type: %s";
-
     /**
      * Creates a new instance with the type name.
      *
@@ -42,7 +39,7 @@ public class UnknownTypeException extends RuntimeException {
     }
 
     private static String makeMsg(String typeName) {
-        return format(ERR_MSG_NO_JAVA_CLASS_FOUND, typeName);
+        return format("No Java class found for the Protobuf message of type: `%s`.", typeName);
     }
 
     /**

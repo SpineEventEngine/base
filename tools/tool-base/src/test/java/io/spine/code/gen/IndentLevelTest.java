@@ -23,19 +23,17 @@ package io.spine.code.gen;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.code.gen.IndentLevel.zero;
+import static io.spine.testing.Assertions.assertIllegalArgument;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("IndentationLevel should")
+@DisplayName("`IndentationLevel` should")
 class IndentLevelTest {
 
     @Test
     @DisplayName("not be negative")
     void notNegative() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> IndentLevel.of(-1)
-        );
+        assertIllegalArgument(() -> IndentLevel.of(-1));
     }
 
     @Test
@@ -59,11 +57,7 @@ class IndentLevelTest {
     @Test
     @DisplayName("not be decremented to a negative value")
     void notAllowDecrementOfZero() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> IndentLevel.zero()
-                                 .decremented()
-        );
+        assertIllegalArgument(() -> zero().decremented());
     }
 
     @Test

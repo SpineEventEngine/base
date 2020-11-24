@@ -46,7 +46,8 @@ import static io.spine.reflect.given.ConstructorsTestEnv.ClassWithPrivateCtor;
 import static io.spine.reflect.given.ConstructorsTestEnv.NoParameterlessConstructors;
 import static io.spine.reflect.given.ConstructorsTestEnv.ThrowingConstructor;
 import static io.spine.reflect.given.MethodsTestEnv.ClassWithPrivateMethod.METHOD_RESULT;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static io.spine.testing.Assertions.assertIllegalArgument;
+import static io.spine.testing.Assertions.assertIllegalState;
 
 @DisplayName("`Invokables` should")
 class InvokablesTest extends UtilityClassTest<Invokables> {
@@ -92,8 +93,7 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         void throwOnInvalidTarget() {
             Object wrongTarget = new Object();
 
-            assertThrows(IllegalStateException.class,
-                         () -> setAccessibleAndInvoke(privateMethod, wrongTarget));
+            assertIllegalState(() -> setAccessibleAndInvoke(privateMethod, wrongTarget));
         }
 
         @SuppressWarnings("CheckReturnValue") // Called to throw exception.
@@ -103,8 +103,7 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
             Method method = ClassWithPrivateMethod.class.getDeclaredMethod("throwingMethod");
             ClassWithPrivateMethod target = new ClassWithPrivateMethod();
 
-            assertThrows(IllegalStateException.class,
-                         () -> setAccessibleAndInvoke(method, target));
+            assertIllegalState(() -> setAccessibleAndInvoke(method, target));
         }
 
         @Test
@@ -160,7 +159,7 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         @Test
         @DisplayName("fail to instantiate an abstract class")
         void notInstantiateAbstractClass() {
-            assertThrows(IllegalStateException.class, () -> callParameterlessCtor(
+            assertIllegalState(() -> callParameterlessCtor(
                     Animal.class));
         }
 
@@ -174,15 +173,13 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         @Test
         @DisplayName("throw if there was an exception during class instantiation")
         void throwIfThrows() {
-            assertThrows(IllegalStateException.class,
-                         () -> callParameterlessCtor(ThrowingConstructor.class));
+            assertIllegalState(() -> callParameterlessCtor(ThrowingConstructor.class));
         }
 
         @Test
         @DisplayName("fail to instantiate a nested class")
         void notInstantiateNested() {
-            assertThrows(IllegalArgumentException.class,
-                         () -> callParameterlessCtor(ConstructorsTestEnv.Chicken.class));
+            assertIllegalArgument(() -> callParameterlessCtor(ConstructorsTestEnv.Chicken.class));
         }
 
         @Test
@@ -196,9 +193,7 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         @Test
         @DisplayName("fail to instantiate a class without a parameterless ctor")
         void noParameterlessCtor() {
-            assertThrows(IllegalArgumentException.class,
-                         () -> callParameterlessCtor(
-                                 NoParameterlessConstructors.class));
+            assertIllegalArgument(() -> callParameterlessCtor(NoParameterlessConstructors.class));
         }
 
         @Nested
@@ -227,8 +222,7 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
                 Constructor<ThrowingConstructor> ctor =
                         ThrowingConstructor.class.getDeclaredConstructor();
 
-                assertThrows(IllegalStateException.class,
-                             () -> callParameterlessCtor(throwingCtorClass));
+                assertIllegalState(() -> callParameterlessCtor(throwingCtorClass));
 
                 assertThat(ctor.isAccessible()).isFalse();
             }

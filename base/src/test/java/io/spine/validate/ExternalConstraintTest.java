@@ -21,7 +21,7 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Descriptors;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.test.validation.AMessage;
 import io.spine.test.validation.AnExternalConstraint;
 import org.junit.jupiter.api.DisplayName;
@@ -31,13 +31,20 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static com.google.protobuf.Descriptors.Descriptor;
+import static io.spine.testing.Assertions.assertIllegalState;
+import static io.spine.testing.Assertions.assertNpe;
 
 @DisplayName("ExternalMessageConstraint should")
 final class ExternalConstraintTest {
 
     private static final String PACKAGE = "spine.test.validation";
     private static final String VALIDATED_FIELD = PACKAGE + ".AMessage.field";
+    private static final Descriptor DESCRIPTOR = AnExternalConstraint.getDescriptor();
+
+    private static ExternalMessageConstraint constraint(String path) {
+        return new ExternalMessageConstraint(DESCRIPTOR, ImmutableList.of(path));
+    }
 
     @DisplayName("not allow null")
     @Nested
@@ -46,79 +53,70 @@ final class ExternalConstraintTest {
         @DisplayName("descriptor")
         @Test
         void descriptor() {
-            assertThrows(NullPointerException.class, () ->
-                    new ExternalMessageConstraint(null, ImmutableList.of()));
+            assertNpe(() -> new ExternalMessageConstraint(null, ImmutableList.of()));
         }
 
         @DisplayName("target paths")
         @Test
         void paths() {
-            assertThrows(NullPointerException.class, () ->
-                    new ExternalMessageConstraint(AnExternalConstraint.getDescriptor(), null));
+            assertNpe(() -> constraint(null));
         }
     }
 
     @Test
     @DisplayName("build field descriptors")
     void buildFieldDescriptors() {
-        Descriptors.Descriptor descriptor = AnExternalConstraint.getDescriptor();
-        ExternalMessageConstraint rule =
-                new ExternalMessageConstraint(descriptor, ImmutableList.of(VALIDATED_FIELD));
-        assertThat(descriptor).isEqualTo(rule.getDescriptor());
-        ImmutableList<Descriptors.FieldDescriptor> targets = rule.getTargets()
-                                                                 .asList();
+        ExternalMessageConstraint rule = constraint(VALIDATED_FIELD);
+        assertThat(DESCRIPTOR).isEqualTo(rule.getDescriptor());
+        ImmutableList<FieldDescriptor> targets =
+                rule.getTargets()
+                    .asList();
         assertThat(targets).isNotEmpty();
-        Descriptors.FieldDescriptor fieldDescriptor = targets.get(0);
+        FieldDescriptor fieldDescriptor = targets.get(0);
         assertThat(fieldDescriptor.getFullName()).isEqualTo(VALIDATED_FIELD);
     }
 
     @Test
     @DisplayName("build same validation rules")
     void buildSameRules() {
-        Descriptors.Descriptor descriptor = AnExternalConstraint.getDescriptor();
-        ExternalMessageConstraint rule =
-                new ExternalMessageConstraint(descriptor, ImmutableList.of(VALIDATED_FIELD));
-        assertThat(rule).isEqualTo(
-                new ExternalMessageConstraint(descriptor, ImmutableList.of(VALIDATED_FIELD)));
+        ExternalMessageConstraint rule = constraint(VALIDATED_FIELD);
+        assertThat(rule).isEqualTo(constraint(VALIDATED_FIELD));
     }
 
-    @DisplayName("throw IllegalStateException")
+    @DisplayName("throw `IllegalStateException` for")
     @Nested
     final class ThrowISE {
 
-        @DisplayName("for an invalid path")
+        @DisplayName("an invalid path")
         @ParameterizedTest(name = "\"{0}\"")
         @ValueSource(strings = {"", "  ", "package-without-class"})
         void forInvalidPath(String invalidPath) {
-            assertThrows(IllegalStateException.class, () ->
-                    new ExternalMessageConstraint(AnExternalConstraint.getDescriptor(),
-                                                  ImmutableList.of(invalidPath)));
+            assertIllegalState(() -> constraint(invalidPath));
         }
 
-        @DisplayName("for a non-existing field path")
+        @DisplayName("a non-existing field path")
         @Test
         void forNonExistingField() {
             String fieldName = PACKAGE + ".AMessage.non_existing";
-            Descriptors.Descriptor descriptor = AnExternalConstraint.getDescriptor();
-            assertThrows(IllegalStateException.class, () ->
-                    new ExternalMessageConstraint(descriptor, ImmutableList.of(fieldName)));
+            assertIllegalState(() -> constraint(fieldName));
         }
 
-        @DisplayName("for a non-message field path")
+        @DisplayName("a non-message field path")
         @Test
         void forNonMessageField() {
             String fieldName = PACKAGE + ".AMessage.non_message_field";
-            Descriptors.Descriptor descriptor = AnExternalConstraint.getDescriptor();
-            assertThrows(IllegalStateException.class, () ->
-                    new ExternalMessageConstraint(descriptor, ImmutableList.of(fieldName)));
+            assertIllegalState(() ->  constraint(fieldName));
         }
 
-        @DisplayName("for a fields that are present in the validation rule but do not present in the target")
+        @DisplayName("for fields that are present in the validation rule" +
+                " but do not present in the target")
         @Test
         void forFieldsThatDoNotExistInRule() {
-            Descriptors.Descriptor descriptor = AMessage.getDescriptor();
-            assertThrows(IllegalStateException.class, () ->
-                    new ExternalMessageConstraint(descriptor, ImmutableList.of(VALIDATED_FIELD)));
+            assertIllegalState(
+                    () -> new ExternalMessageConstraint(
+                            AMessage.getDescriptor(),
+                            ImmutableList.of(VALIDATED_FIELD))
+            );
         }
     }
 }

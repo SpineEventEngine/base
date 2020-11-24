@@ -27,6 +27,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.testing.Assertions.assertIllegalArgument;
+import static io.spine.testing.Assertions.assertIllegalState;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.util.Exceptions.unsupported;
@@ -83,49 +85,42 @@ class ExceptionsTest extends UtilityClassTest<Exceptions> {
     }
 
     @Nested
-    @DisplayName("throw IllegalArgumentException with")
+    @DisplayName("throw `IllegalArgumentException` with")
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "ThrowableNotThrown"})
     class ThrowIAE {
 
         @Test
         @DisplayName("formatted message")
         void formattedMessage() {
-            assertThrows(
-                    IllegalArgumentException.class,
-                    () -> newIllegalArgumentException("%d, %d, %s kaboom", 1, 2, "three")
-            );
+            assertIllegalArgument(
+                    () -> newIllegalArgumentException("%d, %d, %s kaboom", 1, 2, "three"));
         }
 
         @Test
         @DisplayName("formatted message with cause")
         void messageAndCause() {
-            assertThrows(
-                    IllegalArgumentException.class,
-                    () -> newIllegalArgumentException(new RuntimeException("checking"),
-                                                      "%s", "stuff")
+            assertIllegalArgument(() -> newIllegalArgumentException(
+                    new RuntimeException("checking"), "%s", "stuff")
             );
         }
     }
 
     @Nested
     @DisplayName("throw IllegalStateException with")
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "ThrowableNotThrown"})
     class ThrowISE {
 
         @Test
         @DisplayName("formatted message")
         void formattedMessage() {
-            assertThrows(
-                    IllegalStateException.class,
-                    () -> newIllegalStateException("%s check %s", "state", "failed")
-            );
+            assertIllegalState(() -> newIllegalStateException("%s check %s", "state", "failed"));
         }
 
         @Test
         @DisplayName("formatted message with cause")
         void messageWithCause() {
-            assertThrows(
-                    IllegalStateException.class,
-                    () -> newIllegalStateException(new RuntimeException(getClass().getSimpleName()),
-                                                   "%s %s", "taram", "param")
+            assertIllegalState(() -> newIllegalStateException(
+                    new RuntimeException(getClass().getSimpleName()), "%s %s", "taram", "param")
             );
         }
     }

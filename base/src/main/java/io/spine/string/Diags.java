@@ -20,8 +20,14 @@
 
 package io.spine.string;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import io.spine.annotation.Internal;
+
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Utilities for debug and error diagnostics.
@@ -29,8 +35,10 @@ import io.spine.annotation.Internal;
 @Internal
 public final class Diags {
 
+    @VisibleForTesting
+    static final String COMMA_AND_SPACE = ", ";
+    private static final Joiner JOINER = Joiner.on(COMMA_AND_SPACE);
     private static final char BACKTICK = '`';
-    private static final Joiner COMMA_JOINER = Joiner.on(", ");
 
     /** Prevents instantiation of this utility class. */
     private Diags() {
@@ -40,21 +48,41 @@ public final class Diags {
      * Wraps the string representation of the passed object into backticks.
      */
     public static String backtick(Object object) {
+        checkNotNull(object);
         return BACKTICK + object.toString() + BACKTICK;
     }
 
     /**
-     * Lists the passed items separating with comma followed by a space character.
+     * Lists the passed items separating with a comma followed by a space character.
      */
     public static String join(Iterable<?> items) {
-        return COMMA_JOINER.join(items);
+        checkNotNull(items);
+        return JOINER.join(items);
     }
 
     /**
-     * Lists the passed elements separating with comma followed by a space character.
+     * Lists the passed elements separating with a comma followed by a space character.
      */
     @SafeVarargs
     public static <E> String join(E... elements) {
-        return COMMA_JOINER.join(elements);
+        checkNotNull(elements);
+        return JOINER.join(elements);
+    }
+
+    /**
+     * Returns a {@code Collector} which enumerates items separating their string
+     * representation with a comma followed by a space character.
+     */
+    public static Collector<Object, ?, String> toEnumeration() {
+        return Collectors.mapping(String::valueOf, Collectors.joining(COMMA_AND_SPACE));
+    }
+
+    /**
+     * Returns a {@code Collector} which backticks string representations of the passed
+     * items and joins items into a string, separating with a comma followed
+     * by a space character.
+     */
+    public static Collector<Object, ?, String> toEnumerationBackticked() {
+        return Collectors.mapping(Diags::backtick, toEnumeration());
     }
 }
