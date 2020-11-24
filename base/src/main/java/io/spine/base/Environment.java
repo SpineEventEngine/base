@@ -37,7 +37,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 /**
  * Provides information about the environment (current platform used, etc.).
  *
- * <h1>Detecting the type of the environment</h1>
+ * <h3>Detecting the type of the environment</h3>
  *
  * <p>Current implementation allows to {@linkplain #type() obtain the type} of the current
  * environment, or to check whether current environment type {@linkplain #is(Class) matches
@@ -62,7 +62,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  *     private Application() {
  *         Environment environment = Environment.instance();
- *         if(environment.is(Tests.class)) {
+ *         if (environment.is(Tests.class)) {
  *             // Do not send out emails if in tests.
  *             this.sender = new MockEmailSender();
  *         } else {
@@ -73,7 +73,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * }
  * </pre>
  *
- * <h1>Custom environment types</h1>
+ * <h3>Custom environment types</h3>
  *
  * {@code Environment} allows to {@link #register(EnvironmentType) reguster custom types}.
  * In this case the environment detection functionality iterates over all known types, starting
@@ -110,7 +110,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * }
  * </pre>
  *
- * <h1>Caching</h1>
+ * <h3>Caching</h3>
  *
  * <p>{@code Environment} caches the {@code EnvironmentType} once its calculated.
  * This means that if one environment type has been found to be active, its instance is saved.
