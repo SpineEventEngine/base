@@ -72,19 +72,23 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * <p>The framework users may define their custom settings depending on the current environment
  * type. Please see {@link CustomEnvironmentType} for details.
  *
- * <h3>Caching</h3>
+ * <h3>When environment changes</h3>
  *
- * <p>{@code Environment} caches the {@code EnvironmentType} once its calculated.
- * This means that if one environment type has been found to be active, its instance is saved.
- * If later it becomes logically inactive, e.g. the environment variable that's used to check the
- * environment type changes, {@code Environment} is still going to return the cached value. To
- * overwrite the value use {@link #setTo(Class)}. Also, the value may be
- * {@linkplain #reset}. For example:
+ * <p>When calculating the {@linkplain Environment#type() current type} {@code Environment}
+ * finds the first {@linkplain EnvironmentType#enabled() enabled} {@code EnvironmentType}, and
+ * then remembers it as the currently active. Subsequent calls will not cause re-evaluation of
+ * the {@link EnvironmentType#enabled()}.
+ *
+ * <p>If later the current type becomes logically inactive, {@code Environment} needs to be
+ * updated by one of the following approaches:
+ * <ul>
+ *     <li>Setting a new environment type, directly by calling {@link #setTo(Class)}.
+ *     <li>Calling the {@link #reset()} method. This would drop the currently selected type.
+ * </ul>
  * <pre>
  *
  *     Environment environment = Environment.instance();
- *     EnvironmentType awsLambda = new AwsLambda();
- *     environment.register(awsLambda);
+ *     environment.register(AwsLambda.class);
  *     assertThat(environment.is(AwsLambda.class)).isTrue();
  *
  *     System.clearProperty(AwsLambda.AWS_ENV_VARIABLE);
