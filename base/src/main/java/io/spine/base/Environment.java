@@ -147,7 +147,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 @SPI
 public final class Environment implements Logging {
 
-    private static final ImmutableList<EnvironmentType> BASE_TYPES =
+    private static final ImmutableList<EnvironmentType> STANDARD_TYPES =
             ImmutableList.of(Tests.type(), Production.type());
 
     private static final Environment INSTANCE = new Environment();
@@ -155,7 +155,7 @@ public final class Environment implements Logging {
     /**
      * The types the environment can be in.
      *
-     * <p>Always contains {@link #BASE_TYPES} as last two elements.
+     * <p>Always contains {@link #STANDARD_TYPES} as last two elements.
      *
      * @see #register(EnvironmentType)
      */
@@ -173,10 +173,10 @@ public final class Environment implements Logging {
     private @Nullable Class<? extends EnvironmentType> currentType = null;
 
     /**
-     * Creates a new instance with only {@linkplain #BASE_TYPES base known types}.
+     * Creates a new instance with only {@linkplain #STANDARD_TYPES base known types}.
      */
     private Environment() {
-        this.registeredTypes = BASE_TYPES;
+        this.registeredTypes = STANDARD_TYPES;
     }
 
     /** Creates a new instance with the copy of the state of the passed environment. */
@@ -227,8 +227,8 @@ public final class Environment implements Logging {
      */
     @CanIgnoreReturnValue
     public Environment register(Class<? extends EnvironmentType> type) {
-        EnvironmentType envTypeInstance = callParameterlessCtor(type);
-        return register(envTypeInstance);
+        EnvironmentType newType = callParameterlessCtor(type);
+        return register(newType);
     }
 
     /** Returns the singleton instance. */
@@ -278,7 +278,15 @@ public final class Environment implements Logging {
         return result;
     }
 
-    /** Returns the type of the current environment. */
+    /**
+     * Returns the type of the current environment.
+     *
+     * <p>If the type was not {@linkplain #setTo(Class) selected explicitly} before,
+     * returns the first one which is {@linkplain EnvironmentType#enabled() enabled},
+     * starting from the most recently registered type.
+     *
+     * @see #register(Class)
+     */
     public Class<? extends EnvironmentType> type() {
         Class<? extends EnvironmentType> result;
         if (currentType == null) {
@@ -354,7 +362,7 @@ public final class Environment implements Logging {
     @VisibleForTesting
     public void reset() {
         setCurrentType(null);
-        this.registeredTypes = BASE_TYPES;
+        this.registeredTypes = STANDARD_TYPES;
         TestsProperty.clear();
     }
 }
