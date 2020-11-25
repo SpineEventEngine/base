@@ -58,7 +58,6 @@ package io.spine.base;
  * }
  * </pre>
  *
- *
  * <p><b>When registering custom types, please ensure</b> their mutual exclusivity.
  * If two or more environment types {@linkplain EnvironmentType#enabled() consider themselves
  * enabled} at the same time, the behaviour of {@link Environment#is(Class)} is undefined.
