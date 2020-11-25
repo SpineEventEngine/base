@@ -26,5 +26,5 @@ package io.spine.base;
  * @see Tests
  * @see Production
  */
-public abstract class StandardEnvironmentType extends EnvironmentType {
+abstract class StandardEnvironmentType extends EnvironmentType {
 }
