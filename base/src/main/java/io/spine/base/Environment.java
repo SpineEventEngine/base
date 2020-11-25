@@ -38,21 +38,9 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  * <h3>Detecting the type of the environment</h3>
  *
- * <p>Current implementation allows to {@linkplain #type() obtain the type} of the current
+ * <p>It is possible to {@linkplain #type() obtain the type} of the current
  * environment, or to check whether current environment type {@linkplain #is(Class) matches
  * another type}.
- * Two environment types exist out of the box:
- *
- * <ul>
- *     <li><em>{@link Tests}</em> is detected if the current call stack has a reference to
- *     a {@linkplain Tests#knownTestingFrameworks() unit testing framework}.
-
- *     <li><em>{@link Production}</em> is set in all other cases.
- * </ul>
- *
- * <p>The framework users may define their custom settings depending on the current environment
- * type:
- *
  * <pre>
  *
  * public final class Application {
@@ -72,42 +60,17 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * }
  * </pre>
  *
- * <h3>Custom environment types</h3>
+ * <p>The following standard types are always available for checking with the current environment:
  *
- * {@code Environment} allows to {@link #register(Class) reguster custom types}.
- * In this case the environment detection functionality iterates over all known types, starting
- * with those registered by the framework user:
+ * <ul>
+ *     <li><em>{@link Tests}</em> is detected if the current call stack has a reference to
+ *     a {@linkplain Tests#knownTestingFrameworks() unit testing framework}.
+
+ *     <li><em>{@link Production}</em> is set in all other cases.
+ * </ul>
  *
- * <pre>
- *
- * public final class Application {
- *
- *     static {
- *         Environment.instance()
- *                    .register(new Staging())
- *                    .register(new LoadTesting());
- *     }
- *
- *     private final ConnectionPool pool;
- *
- *     private Application() {
- *         Environment environment = Environment.instance();
- *         if (environment.is(Tests.class) {
- *              // Single connection is enough for tests.
- *             this.pool = new ConnectionPoolImpl(PoolCapacity.of(1));
- *         } else {
- *             if(environment.is(LoadTesting.class) {
- *                 this.pool =
- *                         new ConnectionPoolImpl(PoolCapacity.fromConfig("load_tests.yml"));
- *             } else {
- *                 this.pool =
- *                         new ConnectionPoolImpl(PoolCapacity.fromConfig("cloud_deployment.yml"));
- *             }
- *         }
- *         //...
- *     }
- * }
- * </pre>
+ * <p>The framework users may define their custom settings depending on the current environment
+ * type. Please see {@link CustomEnvironmentType} for details.
  *
  * <h3>Caching</h3>
  *
@@ -136,11 +99,8 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *     assertThat(environment.is(AwsLambda.class)).isFalse();
  * </pre>
  *
- * <p><b>When registering custom types, please ensure</b> their mutual exclusivity.
- * If two or more environment types {@linkplain EnvironmentType#enabled() consider themselves
- * enabled} at the same time, the behaviour of {@link #is(Class)} is undefined.
- *
  * @see EnvironmentType
+ * @see CustomEnvironmentType
  * @see Tests
  * @see Production
  */
@@ -159,13 +119,13 @@ public final class Environment implements Logging {
      *
      * @see #register(EnvironmentType)
      */
-    private ImmutableList<EnvironmentType> registeredTypes;
+    private ImmutableList<EnvironmentType> knownTypes;
 
     /**
      * The type the environment is in.
      *
      * <p>If {@code null} the type will be {@linkplain #type() determined} among
-     * {@linkplain #registeredTypes already known} types.
+     * {@linkplain #knownTypes already known} types.
      *
      * @implNote This field is explicitly initialized to avoid the "non-initialized" warning
      *         when queried for the first time.
@@ -176,12 +136,12 @@ public final class Environment implements Logging {
      * Creates a new instance with only {@linkplain #STANDARD_TYPES base known types}.
      */
     private Environment() {
-        this.registeredTypes = STANDARD_TYPES;
+        this.knownTypes = STANDARD_TYPES;
     }
 
     /** Creates a new instance with the copy of the state of the passed environment. */
     private Environment(Environment copy) {
-        this.registeredTypes = copy.registeredTypes;
+        this.knownTypes = copy.knownTypes;
         setCurrentType(copy.currentType);
     }
 
@@ -201,11 +161,11 @@ public final class Environment implements Logging {
      */
     @CanIgnoreReturnValue
     private Environment register(EnvironmentType type) {
-        if (!registeredTypes.contains(type)) {
-            registeredTypes = ImmutableList
+        if (!knownTypes.contains(type)) {
+            knownTypes = ImmutableList
                     .<EnvironmentType>builder()
                     .add(type)
-                    .addAll(INSTANCE.registeredTypes)
+                    .addAll(INSTANCE.knownTypes)
                     .build();
             // Give the new type a chance to become the current when queried
             // from `firstEnabled()`.
@@ -226,7 +186,7 @@ public final class Environment implements Logging {
      * @return this instance of {@code Environment}
      */
     @CanIgnoreReturnValue
-    public Environment register(Class<? extends EnvironmentType> type) {
+    public Environment register(Class<? extends CustomEnvironmentType> type) {
         EnvironmentType newType = callParameterlessCtor(type);
         return register(newType);
     }
@@ -300,10 +260,10 @@ public final class Environment implements Logging {
 
     private Class<? extends EnvironmentType> firstEnabled() {
         EnvironmentType result =
-                registeredTypes.stream()
-                               .filter(EnvironmentType::enabled)
-                               .findFirst()
-                               .orElseThrow(() -> newIllegalStateException(
+                knownTypes.stream()
+                          .filter(EnvironmentType::enabled)
+                          .findFirst()
+                          .orElseThrow(() -> newIllegalStateException(
                                   "`Environment` could not find an active environment type."
                           ));
         return result.getClass();
@@ -317,7 +277,7 @@ public final class Environment implements Logging {
     @VisibleForTesting
     public void restoreFrom(Environment copy) {
         // Make sure this matches the set of fields copied in the copy constructor.
-        this.registeredTypes = copy.registeredTypes;
+        this.knownTypes = copy.knownTypes;
         setCurrentType(copy.currentType);
     }
 
@@ -329,7 +289,12 @@ public final class Environment implements Logging {
      */
     public void setTo(Class<? extends EnvironmentType> type) {
         checkNotNull(type);
-        register(type);
+        if (CustomEnvironmentType.class.isAssignableFrom(type)) {
+            @SuppressWarnings("unchecked") // checked one line above
+            Class<? extends CustomEnvironmentType> customType =
+                    (Class<? extends CustomEnvironmentType>) type;
+            register(customType);
+        }
         setCurrentType(type);
     }
 
@@ -362,7 +327,7 @@ public final class Environment implements Logging {
     @VisibleForTesting
     public void reset() {
         setCurrentType(null);
-        this.registeredTypes = STANDARD_TYPES;
+        this.knownTypes = STANDARD_TYPES;
         TestsProperty.clear();
     }
 }

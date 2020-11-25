@@ -250,7 +250,7 @@ class EnvironmentTest {
     }
 
     @Immutable
-    static final class Local extends EnvironmentType {
+    static final class Local extends CustomEnvironmentType {
 
         @Override
         public boolean enabled() {
@@ -260,7 +260,7 @@ class EnvironmentTest {
     }
 
     @Immutable
-    static final class Staging extends EnvironmentType {
+    static final class Staging extends CustomEnvironmentType {
 
         static final String STAGING_ENV_TYPE_KEY = "io.spine.base.EnvironmentTest.is_staging";
 
@@ -280,7 +280,7 @@ class EnvironmentTest {
     }
 
     @Immutable
-    static final class Travis extends EnvironmentType {
+    static final class Travis extends CustomEnvironmentType {
 
         @Override
         public boolean enabled() {

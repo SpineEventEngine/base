@@ -43,7 +43,7 @@ public abstract class EnvironmentType {
      * Returns the {@code hashCode()} of the class.
      */
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return getClass().hashCode();
     }
 
@@ -51,13 +51,13 @@ public abstract class EnvironmentType {
      * Returns {@code true} if this and passed objects are of the same class,
      * otherwise {@code false}.
      *
-     * @implNote The derived classes are meant to emulate enums in the sense that all instances
-     * of them are interchangeable. Therefore, we are interested only in the class information
-     * for the comparison.
+     * @implNote The derived classes are meant to emulate enums in the sense that all
+     *         instances of them are interchangeable. Therefore, we are interested only in the class
+     *         information for the comparison.
      */
     @Override
-    @SuppressWarnings("EqualsGetClass") // see @implNote
-    public boolean equals(Object obj) {
+    @SuppressWarnings("EqualsGetClass" /* see @implNote */)
+    public final boolean equals(Object obj) {
         if (obj == null) {
             return false;
         }

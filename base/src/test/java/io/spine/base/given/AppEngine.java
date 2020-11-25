@@ -20,12 +20,12 @@
 
 package io.spine.base.given;
 
-import io.spine.base.EnvironmentType;
+import io.spine.base.CustomEnvironmentType;
 
 /**
  * An environment that denotes that the system is running under Google App Engine.
  *
  * <p>Leaves the implementation of {@link #enabled()} to subclasses.
  */
-public abstract class AppEngine extends EnvironmentType {
+public abstract class AppEngine extends CustomEnvironmentType {
 }
