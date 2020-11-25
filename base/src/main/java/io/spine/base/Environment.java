@@ -74,7 +74,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  * <h3>Custom environment types</h3>
  *
- * {@code Environment} allows to {@link #register(EnvironmentType) reguster custom types}.
+ * {@code Environment} allows to {@link #register(Class) reguster custom types}.
  * In this case the environment detection functionality iterates over all known types, starting
  * with those registered by the framework user:
  *
@@ -156,15 +156,16 @@ public final class Environment implements Logging {
      * The types the environment can be in.
      *
      * <p>Always contains {@link #BASE_TYPES} as last two elements.
+     *
      * @see #register(EnvironmentType)
      */
-    private ImmutableList<EnvironmentType> knownTypes;
+    private ImmutableList<EnvironmentType> registeredTypes;
 
     /**
      * The type the environment is in.
      *
      * <p>If {@code null} the type will be {@linkplain #type() determined} among
-     * {@linkplain #knownTypes already known} types.
+     * {@linkplain #registeredTypes already known} types.
      *
      * @implNote This field is explicitly initialized to avoid the "non-initialized" warning
      *         when queried for the first time.
@@ -175,12 +176,12 @@ public final class Environment implements Logging {
      * Creates a new instance with only {@linkplain #BASE_TYPES base known types}.
      */
     private Environment() {
-        this.knownTypes = BASE_TYPES;
+        this.registeredTypes = BASE_TYPES;
     }
 
     /** Creates a new instance with the copy of the state of the passed environment. */
     private Environment(Environment copy) {
-        this.knownTypes = copy.knownTypes;
+        this.registeredTypes = copy.registeredTypes;
         setCurrentType(copy.currentType);
     }
 
@@ -200,11 +201,11 @@ public final class Environment implements Logging {
      */
     @CanIgnoreReturnValue
     private Environment register(EnvironmentType type) {
-        if (!knownTypes.contains(type)) {
-            knownTypes = ImmutableList
+        if (!registeredTypes.contains(type)) {
+            registeredTypes = ImmutableList
                     .<EnvironmentType>builder()
                     .add(type)
-                    .addAll(INSTANCE.knownTypes)
+                    .addAll(INSTANCE.registeredTypes)
                     .build();
             // Give the new type a chance to become the current when queried
             // from `firstEnabled()`.
@@ -291,10 +292,10 @@ public final class Environment implements Logging {
 
     private Class<? extends EnvironmentType> firstEnabled() {
         EnvironmentType result =
-                knownTypes.stream()
-                          .filter(EnvironmentType::enabled)
-                          .findFirst()
-                          .orElseThrow(() -> newIllegalStateException(
+                registeredTypes.stream()
+                               .filter(EnvironmentType::enabled)
+                               .findFirst()
+                               .orElseThrow(() -> newIllegalStateException(
                                   "`Environment` could not find an active environment type."
                           ));
         return result.getClass();
@@ -308,7 +309,7 @@ public final class Environment implements Logging {
     @VisibleForTesting
     public void restoreFrom(Environment copy) {
         // Make sure this matches the set of fields copied in the copy constructor.
-        this.knownTypes = copy.knownTypes;
+        this.registeredTypes = copy.registeredTypes;
         setCurrentType(copy.currentType);
     }
 
@@ -353,7 +354,7 @@ public final class Environment implements Logging {
     @VisibleForTesting
     public void reset() {
         setCurrentType(null);
-        this.knownTypes = BASE_TYPES;
+        this.registeredTypes = BASE_TYPES;
         TestsProperty.clear();
     }
 }
