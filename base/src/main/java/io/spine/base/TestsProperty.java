@@ -104,11 +104,4 @@ final class TestsProperty {
     static void clear() {
         System.clearProperty(KEY);
     }
-
-    /**
-     * Assigns the property the value of {@code "true"}.
-     */
-    static void setTrue() {
-        System.setProperty(KEY, TRUE.toString());
-    }
 }

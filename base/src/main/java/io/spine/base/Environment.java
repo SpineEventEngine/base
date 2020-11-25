@@ -107,7 +107,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 @SPI
 public final class Environment implements Logging {
 
-    private static final ImmutableList<EnvironmentType> STANDARD_TYPES =
+    private static final ImmutableList<StandardEnvironmentType> STANDARD_TYPES =
             ImmutableList.of(Tests.type(), Production.type());
 
     private static final Environment INSTANCE = new Environment();
@@ -136,7 +136,11 @@ public final class Environment implements Logging {
      * Creates a new instance with only {@linkplain #STANDARD_TYPES base known types}.
      */
     private Environment() {
-        this.knownTypes = STANDARD_TYPES;
+        this.knownTypes = standardOnly();
+    }
+
+    private static ImmutableList<EnvironmentType> standardOnly() {
+        return ImmutableList.copyOf(STANDARD_TYPES);
     }
 
     /** Creates a new instance with the copy of the state of the passed environment. */
@@ -162,10 +166,11 @@ public final class Environment implements Logging {
     @CanIgnoreReturnValue
     private Environment register(EnvironmentType type) {
         if (!knownTypes.contains(type)) {
+            ImmutableList<EnvironmentType> currentlyKnown = knownTypes;
             knownTypes = ImmutableList
                     .<EnvironmentType>builder()
                     .add(type)
-                    .addAll(INSTANCE.knownTypes)
+                    .addAll(currentlyKnown)
                     .build();
             // Give the new type a chance to become the current when queried
             // from `firstEnabled()`.
@@ -327,7 +332,7 @@ public final class Environment implements Logging {
     @VisibleForTesting
     public void reset() {
         setCurrentType(null);
-        this.knownTypes = STANDARD_TYPES;
+        this.knownTypes = standardOnly();
         TestsProperty.clear();
     }
 }

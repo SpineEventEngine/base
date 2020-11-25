@@ -32,7 +32,7 @@ import com.google.errorprone.annotations.Immutable;
  * <p>This option is mutually exclusive with {@link Production}, i.e. one of them is always enabled.
  */
 @Immutable
-public final class Tests extends EnvironmentType {
+public final class Tests extends StandardEnvironmentType {
 
     private static final Tests INSTANCE = new Tests();
 

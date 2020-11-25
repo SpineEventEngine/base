@@ -20,34 +20,11 @@
 
 package io.spine.base;
 
-import com.google.errorprone.annotations.Immutable;
-
 /**
- * A non-testing environment.
+ * Abstract base for standard environment types.
  *
- * <p>If the system is not in the {@link Tests} environment, it is in the production environment.
+ * @see Tests
+ * @see Production
  */
-@Immutable
-public final class Production extends StandardEnvironmentType {
-
-    private static final Production INSTANCE = new Production();
-
-    /**
-     * Obtains the singleton instance.
-     */
-    static Production type() {
-        return INSTANCE;
-    }
-
-    /** Prevents direct instantiation. */
-    private Production() {
-        super();
-    }
-
-    @Override
-    protected boolean enabled() {
-        boolean tests = Tests.type()
-                             .enabled();
-        return !tests;
-    }
+public abstract class StandardEnvironmentType extends EnvironmentType {
 }
