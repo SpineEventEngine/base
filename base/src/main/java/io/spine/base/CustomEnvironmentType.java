@@ -33,8 +33,8 @@ package io.spine.base;
  *
  *     static {
  *         Environment.instance()
- *                    .register(new Staging())
- *                    .register(new LoadTesting());
+ *                    .register(Staging.class)
+ *                    .register(LoadTesting().class);
  *     }
  *
  *     private final ConnectionPool pool;
