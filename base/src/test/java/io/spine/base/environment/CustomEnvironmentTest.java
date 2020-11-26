@@ -28,33 +28,32 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("Environment should")
+@DisplayName("`Environment` should")
 class CustomEnvironmentTest {
+
+    private static final Environment environment = Environment.instance();
 
     @BeforeEach
     void reset() {
-        Environment.instance()
-                   .reset();
+        environment.reset();
     }
 
     @Test
-    @DisplayName("allow a custom user type")
+    @DisplayName("allow a custom type")
     void allowCustomType() {
-        Environment.instance()
-                   .register(new Staging());
+        environment.register(Staging.class);
 
         Staging.enable();
-        assertThat(Environment.instance()
-                              .is(Staging.class)).isTrue();
+        assertThat(environment.is(Staging.class)).isTrue();
     }
 
     @Test
     @DisplayName("fallback to the default type")
     void fallbackToCustomType() {
-        Environment.instance().register(new Staging());
+        environment.register(Staging.class);
 
         Staging.disable();
 
-        assertThat(Environment.instance().is(Tests.class)).isTrue();
+        assertThat(environment.is(Tests.class)).isTrue();
     }
 }

@@ -21,16 +21,10 @@
 package io.spine.base;
 
 /**
- * This exception is thrown when one type cannot be converted to another.
+ * Abstract base for standard environment types.
  *
- * @deprecated This type has been out of use for a while. Will be deleted in future releases.
+ * @see Tests
+ * @see Production
  */
-@Deprecated
-public class ConversionException extends Exception {
-
-    private static final long serialVersionUID = 0L;
-
-    public ConversionException(String message, Throwable cause) {
-        super(message, cause);
-    }
+abstract class StandardEnvironmentType extends EnvironmentType {
 }

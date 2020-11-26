@@ -20,7 +20,7 @@
 
 package io.spine.base.environment;
 
-import io.spine.base.EnvironmentType;
+import io.spine.base.CustomEnvironmentType;
 
 /**
  * An environment type that mimics production but receives less traffic and is suitable for testing
@@ -28,7 +28,7 @@ import io.spine.base.EnvironmentType;
  *
  * <p>This implementations relies on a static {@code boolean} flag for detection.
  */
-final class Staging extends EnvironmentType {
+final class Staging extends CustomEnvironmentType {
 
     private static boolean enabled = false;
 

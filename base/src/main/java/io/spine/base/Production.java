@@ -28,7 +28,7 @@ import com.google.errorprone.annotations.Immutable;
  * <p>If the system is not in the {@link Tests} environment, it is in the production environment.
  */
 @Immutable
-public final class Production extends EnvironmentType {
+public final class Production extends StandardEnvironmentType {
 
     private static final Production INSTANCE = new Production();
 
