@@ -34,7 +34,7 @@
 /**
  * The version of this library.
  */
-val base = "1.6.14"
+val base = "1.6.15"
 
 
 project.extra.apply {
