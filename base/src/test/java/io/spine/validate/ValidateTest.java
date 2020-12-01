@@ -22,7 +22,6 @@ package io.spine.validate;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Message;
-import com.google.protobuf.StringValue;
 import io.spine.base.Field;
 import io.spine.base.Time;
 import io.spine.code.proto.FieldContext;
@@ -41,10 +40,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static com.google.protobuf.TextFormat.shortDebugString;
-import static io.spine.testing.Assertions.assertIllegalState;
-import static io.spine.testing.TestValues.newUuidValue;
-import static io.spine.validate.Validate.checkDefault;
 import static io.spine.validate.Validate.checkValidChange;
 import static io.spine.validate.Validate.violationsOf;
 import static io.spine.validate.Validate.violationsOfCustomConstraints;
@@ -63,38 +58,6 @@ class ValidateTest extends UtilityClassTest<Validate> {
         super.configure(tester);
         tester.setDefault(Message.class, Time.currentTime())
               .setDefault(FieldContext.class, FieldContext.empty());
-    }
-
-
-    @SuppressWarnings("deprecation") // Test until the end of the deprecation cycle.
-    @Test
-    @DisplayName("check that message is in default state")
-    void checkIfMessageIsInDefault() {
-        StringValue nonDefault = newUuidValue();
-        IllegalStateException exception = assertIllegalState(() -> checkDefault(nonDefault));
-        assertThat(exception)
-                .hasMessageThat()
-                .contains(shortDebugString(nonDefault));
-    }
-
-    @SuppressWarnings("deprecation") // Test until the end of the deprecation cycle.
-    @Test
-    @DisplayName("check that message is in default state with a parametrized error message")
-    void checkAMessageIsDefaultWithParametrizedErrorMessage() {
-        StringValue nonDefault = newUuidValue();
-        assertIllegalState(() -> checkDefault(nonDefault,
-                                              "Message value: %s, Type name: %s",
-                                              nonDefault,
-                                              TypeName.of(nonDefault)));
-    }
-
-    @SuppressWarnings("deprecation") // Test until the end of the deprecation cycle.
-    @Test
-    @DisplayName("return default value on check")
-    void returnDefaultValueOnCheck() {
-        Message defaultValue = StringValue.getDefaultInstance();
-        assertEquals(defaultValue, checkDefault(defaultValue));
-        assertEquals(defaultValue, checkDefault(defaultValue, "error message"));
     }
 
     @Test
