@@ -36,7 +36,6 @@
  */
 val base = "1.6.15"
 
-
 project.extra.apply {
     this["spineVersion"] = base
     this["spineBaseVersion"] = base // Used by `filter-internal-javadoc.gradle`.
