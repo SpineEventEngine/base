@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
 import com.google.protobuf.Message;
+import io.spine.annotation.Internal;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
@@ -92,8 +93,12 @@ public final class Validate {
      * @param context
      *         the validation field context
      * @return violations of the validation rules or an empty list if the message is valid
+     * @apiNote This method is used by the generated code, and as such needs to
+     *         be {@code public}.
      */
-    private static
+    @Internal
+    @SuppressWarnings("WeakerAccess") // see apiNote.
+    public static
     List<ConstraintViolation> validateAtRuntime(Message message, FieldContext context) {
         Optional<ValidationError> error =
                 Constraints.of(MessageType.of(message), context)
