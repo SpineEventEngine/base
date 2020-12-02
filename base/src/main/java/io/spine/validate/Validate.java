@@ -98,8 +98,8 @@ public final class Validate {
      */
     @Internal
     @SuppressWarnings("WeakerAccess") // see apiNote.
-    public static
-    List<ConstraintViolation> validateAtRuntime(Message message, FieldContext context) {
+    public static List<ConstraintViolation> 
+    validateAtRuntime(Message message, FieldContext context) {
         Optional<ValidationError> error =
                 Constraints.of(MessageType.of(message), context)
                            .runThrough(new MessageValidator(message, context));
@@ -166,6 +166,7 @@ public final class Validate {
      *         the type of the message
      * @return list of constraint violations, if the transaction is invalid, an empty list otherwise
      */
+    @SuppressWarnings("WeakerAccess") // part of public API.
     public static <M extends Message> ImmutableSet<ConstraintViolation>
     validateChange(M previous, M current) {
         checkNotNull(previous);
