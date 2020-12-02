@@ -83,11 +83,15 @@ subprojects {
 
     val spineVersion: String by extra
 
+    /**
+     * These dependencies are applied to all sub-projects and does not have to be included
+     * explicitly.
+     */
     dependencies {
-        implementation(Deps.build.errorProneCore)
-        Deps.build.errorProneAnnotations.forEach { implementation(it) }
+        Deps.build.errorProneAnnotations.forEach { compileOnly(it) }
         implementation("io.spine:spine-base:$spineVersion")
         testImplementation("io.spine:spine-testlib:$spineVersion")
+        Deps.test.truth.forEach { testImplementation(it) }
         testRuntimeOnly(Deps.test.junit5Runner)
     }
 
