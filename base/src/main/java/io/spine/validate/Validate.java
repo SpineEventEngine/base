@@ -98,8 +98,8 @@ public final class Validate {
      */
     @Internal
     @SuppressWarnings("WeakerAccess") // see apiNote.
-    public static
-    List<ConstraintViolation> validateAtRuntime(Message message, FieldContext context) {
+    public static List<ConstraintViolation> 
+    validateAtRuntime(Message message, FieldContext context) {
         Optional<ValidationError> error =
                 Constraints.of(MessageType.of(message), context)
                            .runThrough(new MessageValidator(message, context));
