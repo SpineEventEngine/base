@@ -58,16 +58,6 @@ public abstract class UtilityClassTest<C> extends ClassTest<C> {
         super(subject);
     }
 
-    /**
-     * Obtains the class under the test.
-     *
-     * @deprecated please use {@link #subject()}
-     */
-    @Deprecated
-    protected final Class<C> getUtilityClass() {
-        return subject();
-    }
-
     @Test
     @DisplayName("have utility constructor")
     void hasUtilityConstructor() {
