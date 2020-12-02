@@ -18,8 +18,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.gradle.internal.Deps
-
 group = "io.spine.tools"
 
 dependencies {
@@ -28,6 +26,4 @@ dependencies {
     testImplementation(project(":testlib"))
     testImplementation(project(":plugin-testlib"))
     testImplementation(gradleTestKit())
-    Deps.test.junit5Api.forEach { testImplementation(it) }
-    testImplementation(Deps.test.junit5Runner)
 }

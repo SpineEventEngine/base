@@ -33,7 +33,6 @@ dependencies {
     testImplementation(project(":base"))
     testImplementation(project(":testlib"))
     testImplementation(project(":mute-logging"))
-    Deps.test.truth.forEach { testImplementation(it) }
 }
 
 tasks.jar {
