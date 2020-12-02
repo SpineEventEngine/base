@@ -20,11 +20,6 @@
 
 import io.spine.gradle.internal.Deps
 
-plugins {
-    java
-    id("io.spine.tools.spine-model-compiler")
-}
-
 modelCompiler {
     generateValidation = true
 }

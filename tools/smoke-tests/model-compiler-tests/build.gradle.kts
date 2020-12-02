@@ -18,10 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.gradle.internal.Deps
-import io.spine.tools.protoc.MessageSelectorFactory.prefix
-import io.spine.tools.protoc.MessageSelectorFactory.regex
-import io.spine.tools.protoc.MessageSelectorFactory.suffix
+import io.spine.tools.protoc.MessageSelectorFactory.*
 
 plugins {
     java
@@ -30,7 +27,6 @@ plugins {
 
 dependencies {
     testImplementation(project(":test-factories"))
-    Deps.test.truth.forEach { testImplementation(it) }
 }
 
 modelCompiler {
