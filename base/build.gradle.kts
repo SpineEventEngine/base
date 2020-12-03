@@ -42,7 +42,6 @@ dependencies {
     Deps.build.protobuf.forEach { protobuf(it) }
     annotationProcessor(Deps.build.autoService.processor)
     compileOnly(Deps.build.autoService.annotations)
-    Deps.build.errorProneAnnotations.forEach { api(it) }
     testImplementation(project(":testlib"))
     testImplementation(project(":mute-logging"))
 }

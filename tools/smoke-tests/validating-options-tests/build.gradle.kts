@@ -20,10 +20,6 @@
 
 import io.spine.gradle.internal.Deps
 
-plugins {
-    java
-}
-
 dependencies {
     testAnnotationProcessor(Deps.build.autoService.processor)
     testCompileOnly(Deps.build.autoService.annotations)

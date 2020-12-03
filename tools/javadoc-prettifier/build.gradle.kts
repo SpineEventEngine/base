@@ -18,12 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.gradle.internal.Deps
-
 group = "io.spine.tools"
 
 dependencies {
-    implementation(Deps.build.guava)
     implementation(project(":base"))
     implementation(project(":plugin-base"))
     testImplementation(project(":testlib"))

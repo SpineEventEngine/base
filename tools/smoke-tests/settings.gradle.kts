@@ -51,7 +51,7 @@ val links = mapOf(
  */
 includeBuild("$rootDir/../../") {
     dependencySubstitution {
-        links.forEach { id, projectPath ->
+        links.forEach { (id, projectPath) ->
             substitute(module(id)).with(project(projectPath))
         }
     }

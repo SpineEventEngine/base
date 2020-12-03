@@ -43,7 +43,6 @@ dependencies {
     }
     implementation(Deps.build.gradlePlugins.protobuf)
     testImplementation(project(":testlib"))
-    testImplementation(Deps.test.junitPioneer)
     testImplementation(gradleTestKit())
     testImplementation(project(":plugin-testlib"))
 }

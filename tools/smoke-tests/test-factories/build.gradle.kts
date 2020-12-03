@@ -24,10 +24,6 @@ import io.spine.gradle.internal.Deps
     This Smoke Tests module holds a TestMethodFactory that is used in model-compiler-test module.
 */
 
-plugins {
-    java
-}
-
 val spineVersion: String by extra
 
 dependencies {
