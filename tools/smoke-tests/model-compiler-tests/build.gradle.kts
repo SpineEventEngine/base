@@ -18,7 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.tools.protoc.MessageSelectorFactory.*
+import io.spine.tools.protoc.MessageSelectorFactory.prefix
+import io.spine.tools.protoc.MessageSelectorFactory.regex
+import io.spine.tools.protoc.MessageSelectorFactory.suffix
 
 plugins {
     java
