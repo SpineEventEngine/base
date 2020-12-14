@@ -109,18 +109,10 @@ artifact, which is equal to the version of the Spine Gradle plugin used.
 
 #### Assembling
 
-The plugin consists of two artifacts:
- - a shell runner;
- - the executable JAR with the actual `protoc` plugin.
+The plugin is a self-executable JAR with the `protoc` plugin.
  
 Both the plugins are published alongside with the Spine Gradle plugin. To update the `protoc` 
 plugin, the user should update the Gradle plugin.
-
-The shell runner artifact is OS-sensitive, thus when building on different systems 
-different artifacts (for [Windows](./plugin_runner.bat) or [Unix-like](./plugin_runner.sh)) are 
-used. This switch is performed automatically.
-
-The JAR artifact is the same no matter which shell runner is used.
 
 The JAR contains a simple Java program, which reads from stdin and writes into stdout according to 
 the [Protobuf compiler contract](https://developers.google.com/protocol-buffers/docs/reference/other#plugins).
