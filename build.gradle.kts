@@ -29,19 +29,19 @@ buildscript {
     apply(from = "$rootDir/version.gradle.kts")
 
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    val resolution = io.spine.gradle.internal.DependencyResolution
-    resolution.defaultRepositories(repositories)
-    resolution.forceConfiguration(configurations)
+    io.spine.gradle.internal.DependencyResolution.apply {
+        defaultRepositories(repositories)
+        forceConfiguration(configurations)
+    }
 }
 
 // Apply some plugins to make type-safe extension accessors available in this script file.
+@Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
 plugins {
     `java-library`
     idea
-    @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    id("com.google.protobuf").version(io.spine.gradle.internal.Deps.versions.protobufPlugin)
-    @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    id("net.ltgt.errorprone").version(io.spine.gradle.internal.Deps.versions.errorPronePlugin)
+    id("com.google.protobuf") version io.spine.gradle.internal.Deps.versions.protobufPlugin
+    id("net.ltgt.errorprone") version io.spine.gradle.internal.Deps.versions.errorPronePlugin
 }
 
 apply(from = "$rootDir/version.gradle.kts")
@@ -98,12 +98,12 @@ subprojects {
 
     apply(from = "$rootDir/version.gradle.kts")
 
-    val sourcesRootDir by extra("$projectDir/src")
-    val generatedRootDir by extra("$projectDir/generated")
-    val generatedJavaDir by extra("$generatedRootDir/main/java")
-    val generatedTestJavaDir by extra("$generatedRootDir/test/java")
-    val generatedSpineDir by extra("$generatedRootDir/main/spine")
-    val generatedTestSpineDir by extra("$generatedRootDir/test/spine")
+    val srcDir by extra("$projectDir/src")
+    val generatedDir by extra("$projectDir/generated")
+    val generatedJavaDir by extra("$generatedDir/main/java")
+    val generatedTestJavaDir by extra("$generatedDir/test/java")
+    val generatedSpineDir by extra("$generatedDir/main/spine")
+    val generatedTestSpineDir by extra("$generatedDir/test/spine")
 
     apply {
         plugin("java-library")
@@ -124,35 +124,41 @@ subprojects {
     dependencies {
         errorprone(Deps.build.errorProneCore)
         errorproneJavac(Deps.build.errorProneJavac)
-        Deps.build.protobuf.forEach { api(it) }
-        api(Deps.build.flogger)
-        implementation(Deps.build.guava)
-        implementation(Deps.build.checkerAnnotations)
-        implementation(Deps.build.jsr305Annotations)
-        Deps.build.errorProneAnnotations.forEach { implementation(it) }
-        testImplementation(Deps.test.guavaTestlib)
-        testImplementation(Deps.test.junit5Runner)
-        testImplementation(Deps.test.junitPioneer)
-        Deps.test.junit5Api.forEach { testImplementation(it) }
+        Deps.build.apply {
+            protobuf.forEach { api(it) }
+            api(flogger)
+            implementation(guava)
+            implementation(checkerAnnotations)
+            implementation(jsr305Annotations)
+            errorProneAnnotations.forEach { implementation(it) }
+        }
+        Deps.test.apply {
+            testImplementation(guavaTestlib)
+            testImplementation(junit5Runner)
+            testImplementation(junitPioneer)
+            junit5Api.forEach { testImplementation(it) }
+        }
         runtimeOnly(Deps.runtime.flogger.systemBackend)
     }
 
-    DependencyResolution.forceConfiguration(configurations)
-    DependencyResolution.excludeProtobufLite(configurations)
+    DependencyResolution.apply {
+        forceConfiguration(configurations)
+        excludeProtobufLite(configurations)
+    }
 
     sourceSets {
         main {
-            java.srcDirs(generatedJavaDir, "$sourcesRootDir/main/java", generatedSpineDir)
-            resources.srcDirs("$sourcesRootDir/main/resources", "$generatedRootDir/main/resources")
+            java.srcDirs(generatedJavaDir, "$srcDir/main/java", generatedSpineDir)
+            resources.srcDirs("$srcDir/main/resources", "$generatedDir/main/resources")
         }
         test {
-            java.srcDirs(generatedTestJavaDir, "$sourcesRootDir/test/java", generatedTestSpineDir)
-            resources.srcDirs("$sourcesRootDir/test/resources", "$generatedRootDir/test/resources")
+            java.srcDirs(generatedTestJavaDir, "$srcDir/test/java", generatedTestSpineDir)
+            resources.srcDirs("$srcDir/test/resources", "$generatedDir/test/resources")
         }
     }
 
     protobuf {
-        generatedFilesBaseDir = generatedRootDir
+        generatedFilesBaseDir = generatedDir
 
         protoc {
             artifact = Deps.build.protoc
@@ -167,9 +173,11 @@ subprojects {
     }
 
     apply {
-        from(Deps.scripts.testOutput(project))
-        from(Deps.scripts.javadocOptions(project))
-        from(Deps.scripts.javacArgs(project))
+        with(Deps.scripts) {
+            from(testOutput(project))
+            from(javadocOptions(project))
+            from(javacArgs(project))
+        }
     }
 
     tasks.create("sourceJar", Jar::class) {
@@ -207,17 +215,21 @@ subprojects {
 
     ext["allowInternalJavadoc"] = true
     apply {
-        from(Deps.scripts.pmd(project))
-        from(Deps.scripts.updateGitHubPages(project))
+        with(Deps.scripts) {
+            from(pmd(project))
+            from(updateGitHubPages(project))
+        }
     }
     project.tasks["publish"].dependsOn("${project.path}:updateGitHubPages")
 }
 
 apply {
-    from(Deps.scripts.jacoco(project))
-    from(Deps.scripts.publish(project))
-    from(Deps.scripts.generatePom(project))
-    from(Deps.scripts.repoLicenseReport(project))
+    with(Deps.scripts) {
+        from(jacoco(project))
+        from(publish(project))
+        from(generatePom(project))
+        from(repoLicenseReport(project))
+    }
 }
 
 val smokeTests by tasks.registering(RunBuild::class) {
