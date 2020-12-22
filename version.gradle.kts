@@ -40,7 +40,8 @@
 /**
  * The version of this library.
  */
-val base = "1.7.0"
+val base = "2.0.0-jdk8.SNAPSHOT.8"
+
 
 project.extra.apply {
     this["spineVersion"] = base

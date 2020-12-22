@@ -60,7 +60,7 @@ public final class FileDescriptorSuperset implements Logging {
     private final Set<FileDescriptorSet> descriptors;
 
     /**
-     * Creates a new instance of {@code FileDescriptorSuperset}.
+     * Creates a new instance.
      */
     public FileDescriptorSuperset() {
         this.descriptors = newHashSet();

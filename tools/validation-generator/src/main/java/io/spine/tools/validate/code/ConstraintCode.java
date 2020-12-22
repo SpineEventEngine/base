@@ -119,9 +119,9 @@ public final class ConstraintCode implements Logging {
     }
 
     /**
-     * Creates a new instance of {@code Builder} for {@code ConstraintCode} instances.
+     * Creates a new builder for the instances of this type.
      *
-     * @return new instance of {@code Builder}
+     * @return new builder
      */
     public static Builder forField(FieldDeclaration field) {
         return new Builder(field);
@@ -193,9 +193,7 @@ public final class ConstraintCode implements Logging {
         }
 
         /**
-         * Creates a new instance of {@code ConstraintCode}.
-         *
-         * @return new instance of {@code ConstraintCode}
+         * Creates a new instance of a {@link ConstraintCode}.
          */
         public ConstraintCode build() {
             checkNotNull(messageAccess);

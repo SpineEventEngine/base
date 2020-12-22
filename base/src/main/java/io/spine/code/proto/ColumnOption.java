@@ -34,9 +34,6 @@ import io.spine.type.MessageType;
 import java.util.Optional;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.option.EntityOption.Kind.ENTITY;
-import static io.spine.option.EntityOption.Kind.PROCESS_MANAGER;
-import static io.spine.option.EntityOption.Kind.PROJECTION;
 
 /**
  * An option which marks entity state fields as entity columns.
@@ -64,7 +61,7 @@ public final class ColumnOption extends FieldOption<Boolean> {
      * of how fields are declared.
      */
     public static boolean hasColumns(MessageType messageType) {
-        if (!eligibleForColumns(messageType)) {
+        if (!declaresEntity(messageType)) {
             return false;
         }
         boolean result = messageType.fields()
@@ -80,7 +77,7 @@ public final class ColumnOption extends FieldOption<Boolean> {
      * how fields are declared.
      */
     public static ImmutableList<FieldDeclaration> columnsOf(MessageType messageType) {
-        if (!eligibleForColumns(messageType)) {
+        if (!declaresEntity(messageType)) {
             return ImmutableList.of();
         }
         ImmutableList<FieldDeclaration> result = messageType.fields()
@@ -99,7 +96,7 @@ public final class ColumnOption extends FieldOption<Boolean> {
      * <p>The {@code repeated} and {@code map} fields cannot be columns.
      */
     public static boolean isColumn(FieldDeclaration field) {
-        if (!eligibleForColumns(field.declaringType())) {
+        if (!declaresEntity(field.declaringType())) {
             return false;
         }
         if (field.isCollection()) {
@@ -112,20 +109,11 @@ public final class ColumnOption extends FieldOption<Boolean> {
     }
 
     /**
-     * Returns {@code true} if the given message type is eligible for having columns.
-     *
-     * <p>Currently, only projection and process manager types can have columns.
-     *
-     * <p>The column presence for {@linkplain io.spine.option.EntityOption.Kind#ENTITY generic}
-     * entity types is also allowed for convenience of tests.
+     * Returns {@code true} if the given message type is declared as an entity and may have columns.
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted") // For readability.
-    private static boolean eligibleForColumns(MessageType messageType) {
+    private static boolean declaresEntity(MessageType messageType) {
         Optional<EntityOption> entityOption = EntityStateOption.valueOf(messageType.descriptor());
-        if (!entityOption.isPresent()) {
-            return false;
-        }
-        EntityOption.Kind kind = entityOption.get().getKind();
-        return kind == PROJECTION || kind == PROCESS_MANAGER || kind == ENTITY;
+        return entityOption.isPresent();
     }
 }

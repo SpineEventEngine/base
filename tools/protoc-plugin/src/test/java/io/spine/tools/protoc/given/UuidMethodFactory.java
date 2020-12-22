@@ -46,7 +46,7 @@ public class UuidMethodFactory implements MethodFactory {
             new GeneratedMethod("public static boolean isUuid(){return true;}");
 
     @Override
-    public List<GeneratedMethod> createFor(MessageType messageType) {
+    public List<GeneratedMethod> generateMethodsFor(MessageType messageType) {
         return ImmutableList.of(TEST_METHOD);
     }
 }

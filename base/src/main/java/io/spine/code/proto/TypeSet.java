@@ -302,9 +302,9 @@ public final class TypeSet {
     }
 
     /**
-     * Creates a new instance of {@code Builder} for {@code TypeSet} instances.
+     * Creates a new builder for the instances of this type.
      *
-     * @return new instance of {@code Builder}
+     * @return new builder
      */
     public static Builder newBuilder() {
         return new Builder();
@@ -355,9 +355,7 @@ public final class TypeSet {
         }
 
         /**
-         * Creates a new instance of {@code TypeSet}.
-         *
-         * @return new instance of {@code TypeSet}
+         * Creates a new instance of {@link TypeSet}.
          */
         public TypeSet build() {
             return new TypeSet(this);

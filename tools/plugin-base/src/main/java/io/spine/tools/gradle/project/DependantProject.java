@@ -62,7 +62,7 @@ public final class DependantProject implements Dependant {
     }
 
     /**
-     * Creates a new instance of {@code DependantProject} for the given project.
+     * Creates a new instance for the given project.
      */
     public static DependantProject from(Project project) {
         checkNotNull(project);

@@ -27,20 +27,29 @@
 package io.spine.code.gen.java.column;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.WildcardTypeName;
+import io.spine.code.gen.java.EmptyPrivateCtor;
 import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.gen.java.GeneratedTypeSpec;
+import io.spine.code.gen.java.JavaPoetName;
 import io.spine.code.java.PackageName;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.query.EntityColumn;
 import io.spine.type.MessageType;
+
+import java.util.HashSet;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
-import static io.spine.code.gen.java.EmptyPrivateCtor.spec;
 import static io.spine.code.proto.ColumnOption.columnsOf;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -74,9 +83,11 @@ import static javax.lang.model.element.Modifier.STATIC;
  *         // Prevent instantiation.
  *     }
  *
- *     public static io.spine.base.EntityColumn name() {...}
+ *    {@literal public static EntityColumn<ProjectDetails, ProjectName>} name() {...}
  *
- *     public static io.spine.base.EntityColumn taskCount() {...}
+ *    {@literal public static EntityColumn<ProjectDetails, Integer>} taskCount() {...}
+ *
+ *    {@literal public static ImmutableSet<EntityColumn<ProjectDetails, ?>>} definitions() {...}
  * }
  * </pre>
  *
@@ -92,10 +103,12 @@ public final class ColumnContainerSpec implements GeneratedTypeSpec {
 
     private final MessageType messageType;
     private final ImmutableList<FieldDeclaration> columns;
+    private final TypeName definitionsReturnType;
 
     private ColumnContainerSpec(MessageType messageType) {
         this.messageType = messageType;
         this.columns = columnsOf(messageType);
+        this.definitionsReturnType = immutableColumnSetOfType(messageType);
     }
 
     public static ColumnContainerSpec of(MessageType messageType) {
@@ -110,19 +123,21 @@ public final class ColumnContainerSpec implements GeneratedTypeSpec {
 
     @Override
     public TypeSpec typeSpec() {
+        ImmutableList<MethodSpec> columnMethods = columns();
         TypeSpec result = TypeSpec
                 .classBuilder(CLASS_NAME)
-                .addJavadoc(javadoc().spec())
+                .addJavadoc(classJavadoc().spec())
                 .addAnnotation(generatedBySpineModelCompiler())
                 .addModifiers(PUBLIC, STATIC, FINAL)
-                .addMethod(spec())
-                .addMethods(columns())
+                .addMethod(EmptyPrivateCtor.spec())
+                .addMethods(columnMethods)
+                .addMethod(definitions(columnMethods))
                 .build();
         return result;
     }
 
     /**
-     * Generates the methods which return entity columns as {@link io.spine.base.EntityColumn}
+     * Generates the methods which return entity columns as {@link EntityColumn}
      * instances.
      */
     private ImmutableList<MethodSpec> columns() {
@@ -132,12 +147,54 @@ public final class ColumnContainerSpec implements GeneratedTypeSpec {
                        .map(ColumnAccessor::methodSpec)
                        .collect(toImmutableList());
         return result;
+
+    }
+
+    /**
+     * Generates {@code definitions()} method which enumerates all the columns in this container.
+     */
+    private MethodSpec definitions(ImmutableList<MethodSpec> columns) {
+        MethodSpec.Builder builder = MethodSpec
+                .methodBuilder("definitions")
+                .addJavadoc("Returns all the column definitions for this type.")
+                .addModifiers(PUBLIC, STATIC)
+                .returns(definitionsReturnType);
+        ClassName setName = ClassName.get(HashSet.class);
+        TypeName parameterizedSetName = columnHashSetOfType(messageType);
+        builder.addStatement("$T result = new $T<>()",
+                             parameterizedSetName, setName);
+        for (MethodSpec methodSpec : columns) {
+            builder.addStatement("result.add($N())", methodSpec);
+        }
+        builder.addStatement("return $T.copyOf(result)", ClassName.get(ImmutableSet.class));
+
+        MethodSpec result = builder.build();
+        return result;
+    }
+
+    private static TypeName immutableColumnSetOfType(MessageType type) {
+        return paramdColSetOf(type, ClassName.get(ImmutableSet.class));
+    }
+
+    private static TypeName columnHashSetOfType(MessageType type) {
+        return paramdColSetOf(type, ClassName.get(HashSet.class));
+    }
+
+    private static TypeName paramdColSetOf(MessageType type, ClassName setType) {
+        JavaPoetName entityColumnType = JavaPoetName.of(EntityColumn.class);
+        JavaPoetName messageTypeName = JavaPoetName.of(type);
+        ParameterizedTypeName parameterizedColumn =
+                ParameterizedTypeName.get(entityColumnType.className(),
+                                          messageTypeName.className(),
+                                          WildcardTypeName.subtypeOf(Object.class));
+        ParameterizedTypeName result = ParameterizedTypeName.get(setType, parameterizedColumn);
+        return result;
     }
 
     /**
      * Obtains the class Javadoc.
      */
-    private static GeneratedJavadoc javadoc() {
+    private static GeneratedJavadoc classJavadoc() {
         return GeneratedJavadoc.twoParagraph(
                 CodeBlock.of("A listing of all entity columns of the type."),
                 CodeBlock.of("Use static methods of this class to access the columns of the " +

@@ -49,7 +49,7 @@ public final class ProjectSourceSuperset implements SourceSuperset {
     }
 
     /**
-     * Creates a new instance of {@code ProjectSourceSuperset} for the given project.
+     * Creates a new instance for the given project.
      */
     public static ProjectSourceSuperset of(Project project) {
         checkNotNull(project);

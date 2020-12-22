@@ -65,7 +65,7 @@ public abstract class ValueHolder<T extends Serializable> implements Serializabl
         if (!(obj instanceof ValueHolder)) {
             return false;
         }
-        ValueHolder other = (ValueHolder) obj;
+        ValueHolder<?> other = (ValueHolder<?>) obj;
         return Objects.equals(this.value, other.value);
     }
 }

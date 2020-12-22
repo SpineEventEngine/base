@@ -50,7 +50,7 @@ public final class ServiceType extends Type<ServiceDescriptor, ServiceDescriptor
     }
 
     /**
-     * Creates a new instance of {@code ServiceType} from the given service descriptor.
+     * Creates a new instance from the given service descriptor.
      *
      * @param descriptor
      *         the service descriptor

@@ -46,7 +46,7 @@ final class MethodFactoryTest {
     @DisplayName("obey the defined contract")
     @Test
     void obeyTheContract() {
-        assertThat(new TestMethodFactory().createFor(nullRef())).isEmpty();
+        assertThat(new TestMethodFactory().generateMethodsFor(nullRef())).isEmpty();
     }
 
     @Immutable
@@ -56,7 +56,7 @@ final class MethodFactoryTest {
         }
 
         @Override
-        public List<GeneratedMethod> createFor(MessageType messageType) {
+        public List<GeneratedMethod> generateMethodsFor(MessageType messageType) {
             return ImmutableList.of();
         }
     }

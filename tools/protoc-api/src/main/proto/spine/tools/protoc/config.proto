@@ -67,58 +67,57 @@ message SpineProtocConfig {
     // Nested classes generation tasks.
     AddNestedClasses add_nested_classes = 5;
 
-    // Column generation tasks.
-    AddColumns add_columns = 6;
+    // Reserved for the deleted `add_columns` option.
+    //
+    // Use `add_entity_queries` instead.
+    //
+    reserved 6;
+    reserved "add_columns";
 
     // Field generation tasks.
     AddFields add_fields = 7;
 
+    // Configures the generation of the entity columns and queries.
+    AddEntityQueries add_entity_queries = 8;
+
     // The classpath used to lookup types by their fully-qualified names.
-    Classpath classpath = 8;
+    Classpath classpath = 9;
 }
 
-// Interfaces generation configuration.
+// Configures the generation of interfaces for the classes of certain messages.
 message AddInterfaces {
 
-    // UUID value interface.
+    // An interface for the messages holding UUID value.
     UuidConfig uuid_interface = 1;
 
-    // Pattern-based interfaces.
+    // Interfaces to be generated according to the messages residing in files-by-pattern.
     repeated ConfigByPattern interface_by_pattern = 2;
 
-    // Entity state interface.
+    // An interface for the messages representing an entity state.
     EntityStateConfig entity_state_interface = 3;
 }
 
-// Methods generation configuration.
+// Configures the generation of the methods.
 message AddMethods {
 
-    // UUID value method factory.
+    // A factory for the messages holding UUID value.
     UuidConfig uuid_factory = 1;
 
-    // Pattern-based method factories.
+    // Factories for the messages declared in files according to a certain pattern.
     repeated ConfigByPattern factory_by_pattern = 2;
-
     // Field number and name reservation due to a deleted field.
     reserved 3;
     reserved "factory_classpath";
 }
 
-// Nested classes generation configuration.
+// Configures the generation of the nested classes.
 message AddNestedClasses {
 
-    // Pattern-based nested class factories.
+    // Factories for the messages declared in files satisfying a certain pattern.
     repeated ConfigByPattern factory_by_pattern = 1;
 }
 
-// Strongly-typed columns generation configuration.
-message AddColumns {
-
-    // The flag which allows to enable and disable the column generation.
-    bool generate = 1;
-}
-
-// Strongly-typed fields generation configuration.
+// Configures the generation of the strongly-typed fields.
 message AddFields {
 
     // Enables strongly-typed field generation for messages that represent entity states.
@@ -131,8 +130,14 @@ message AddFields {
     repeated ConfigByType config_by_type = 3;
 }
 
-// UUID value code generation configuration.
-//
+// DSL for building `Entity`-specific queries.
+message AddEntityQueries {
+
+    // The flag which allows to enable and disable the generation of entity columns and queries.
+    bool generate = 1;
+}
+
+// Configures the code generation for the messages holding a UUID value.
 message UuidConfig {
 
     // A fully-qualified name of the target.
@@ -142,8 +147,7 @@ message UuidConfig {
     string value = 1;
 }
 
-// The code generation configuration for entity state messages.
-//
+// Configures the code generation for the messages representing an entity state.
 message EntityStateConfig {
 
     // A fully-qualified name of the target.
@@ -153,8 +157,7 @@ message EntityStateConfig {
     string value = 1;
 }
 
-// Code generation configuration based on the FilePattern.
-//
+// Tells what should be applied to the messages of files which satisfy a certain pattern.
 message ConfigByPattern {
 
 
@@ -169,8 +172,7 @@ message ConfigByPattern {
     FilePattern pattern = 2;
 }
 
-// Code generation configuration which affects the specific type.
-//
+// Adds a configuration to the messages which satisfy a certain type pattern.
 message ConfigByType {
 
     // A fully-qualified name of the target.
@@ -183,8 +185,7 @@ message ConfigByType {
     TypePattern pattern = 2;
 }
 
-// File pattern which is used to filter messages.
-//
+// File pattern used to filter messages residing in files.
 message FilePattern {
 
     oneof value {

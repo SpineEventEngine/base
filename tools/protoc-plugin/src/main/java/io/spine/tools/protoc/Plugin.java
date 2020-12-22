@@ -36,6 +36,7 @@ import io.spine.tools.protoc.field.FieldGenerator;
 import io.spine.tools.protoc.iface.InterfaceGenerator;
 import io.spine.tools.protoc.method.MethodGenerator;
 import io.spine.tools.protoc.nested.NestedClassGenerator;
+import io.spine.tools.protoc.query.EntityQueryGenerator;
 import io.spine.tools.protoc.validation.ValidatorCode;
 
 import java.io.FileInputStream;
@@ -79,6 +80,7 @@ public final class Plugin {
                 .add(ValidatorCode.instance(config))
                 .add(NestedClassGenerator.instance(config))
                 .add(ColumnGenerator.instance(config))
+                .add(EntityQueryGenerator.instance(config))
                 .add(FieldGenerator.instance(config))
                 .build();
         CodeGeneratorResponse response = generator.process(request);

@@ -29,6 +29,7 @@ package io.spine.tools.protoc;
 import com.google.common.collect.ImmutableList;
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
+import io.spine.query.EntityStateField;
 
 import java.util.Map;
 
@@ -57,7 +58,7 @@ public final class GeneratedFields extends GeneratedConfigurations<AddFields> {
      * represent an entity state and marks the generated fields as {@code some.custom.Field}.
      *
      * <p>It is expected by the Spine routines that the type passed to the {@code markAs} method is
-     * a {@code public} non-{@code final} descendant of {@link io.spine.base.EntityStateField} and
+     * a {@code public} non-{@code final} descendant of {@link EntityStateField} and
      * has a {@code public} constructor accepting a single {@link io.spine.base.Field Field}
      * argument.
      */

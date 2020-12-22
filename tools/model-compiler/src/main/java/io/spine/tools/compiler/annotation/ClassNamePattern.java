@@ -51,7 +51,7 @@ public final class ClassNamePattern {
     }
 
     /**
-     * Creates a new instance of {@code ClassNamePattern} based on the given regular expression.
+     * Creates a new instance from the passed regular expression.
      *
      * <p>The regex does not receive additional flags.
      *

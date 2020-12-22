@@ -43,7 +43,7 @@ public final class ArchiveEntry {
     }
 
     /**
-     * Creates a new instance of {@code ArchiveEntry}.
+     * Creates a new instance.
      *
      * <p>Note that the passed {@code bytes} are not copied. Do not edit the array after calling
      * this method.

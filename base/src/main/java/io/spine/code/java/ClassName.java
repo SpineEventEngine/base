@@ -78,7 +78,7 @@ public final class ClassName extends StringTypeValue {
      *         the class to get name from
      * @return new instance
      */
-    public static ClassName of(Class cls) {
+    public static ClassName of(Class<?> cls) {
         checkNotNull(cls);
         return new ClassName(cls.getName());
     }

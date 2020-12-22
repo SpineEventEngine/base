@@ -40,7 +40,7 @@ import java.util.List;
 public final class TestMethodFactory implements MethodFactory {
 
     @Override
-    public List<GeneratedMethod> createFor(MessageType messageType) {
+    public List<GeneratedMethod> generateMethodsFor(MessageType messageType) {
         MethodSpec spec = MethodSpec
                 .methodBuilder("ownType")
                 .returns(MessageType.class)

@@ -25,7 +25,7 @@
  */
 
 include("annotator-tests")
-include("column-tests")
+include("entity-queries-tests")
 include("generated-validation-tests")
 include("known-types-tests")
 include("model-compiler-tests")

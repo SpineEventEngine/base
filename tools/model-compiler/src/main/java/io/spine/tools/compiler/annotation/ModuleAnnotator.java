@@ -196,7 +196,7 @@ public final class ModuleAnnotator {
     }
 
     /**
-     * Creates a new instance of {@code Builder} for {@code ModuleAnnotator} instances.
+     * Creates a new builder for the instances of this type.
      *
      * @return new instance of {@code Builder}
      */
@@ -283,9 +283,7 @@ public final class ModuleAnnotator {
         }
 
         /**
-         * Creates a new instance of {@code ModuleAnnotator}.
-         *
-         * @return new instance of {@code ModuleAnnotator}
+         * Creates a new instance of {@link ModuleAnnotator}.
          */
         public ModuleAnnotator build() {
             checkNotNull(annotatorFactory);
