@@ -23,6 +23,7 @@ package io.spine.testing;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("TestValues utility class should")
@@ -33,14 +34,20 @@ class TestValuesTest extends UtilityClassTest<TestValues> {
     }
 
     @Test
+    @DisplayName("provide null reference method")
+    void nullRef() {
+        assertNull(TestValues.nullRef());
+    }
+
+    @Test
     @DisplayName("provide a random non-negative number")
-    void provide_random_non_negative_number() {
+    void randomNegativeNumber() {
         assertTrue(TestValues.random(100) >= 0);
     }
 
     @Test
     @DisplayName("provide a random number in a range")
-    void provide_random_number_in_range() {
+    void randomNumber() {
         int value = TestValues.random(-100, 100);
         assertTrue(value >= -100);
         assertTrue(value <= 100);

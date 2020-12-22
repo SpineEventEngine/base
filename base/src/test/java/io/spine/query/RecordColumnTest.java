@@ -20,13 +20,13 @@
 
 package io.spine.query;
 
-import io.spine.testing.Tests;
+import io.spine.testing.TestValues;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.testing.Tests.nullRef;
+import static io.spine.testing.TestValues.nullRef;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`RecordColumn` should")
@@ -57,7 +57,7 @@ class RecordColumnTest {
                          () -> new RecordColumn<>("", String.class, (r) -> ""));
 
             assertThrows(NullPointerException.class,
-                         () -> new RecordColumn<Manufacturer, String>(Tests.<String>nullRef(),
+                         () -> new RecordColumn<Manufacturer, String>(TestValues.<String>nullRef(),
                                                                       String.class,
                                                                       (r) -> ""));
         }

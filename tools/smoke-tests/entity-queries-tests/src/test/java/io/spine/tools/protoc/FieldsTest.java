@@ -33,7 +33,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.testing.Assertions.assertHasPrivateParameterlessCtor;
 
 @DisplayName("`ProtocPlugin`, when generating subscribable fields, should")
 class FieldsTest {

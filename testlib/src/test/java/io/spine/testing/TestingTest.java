@@ -18,40 +18,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.nested;
+package io.spine.testing;
 
-import com.google.common.collect.ImmutableList;
-import com.google.errorprone.annotations.Immutable;
-import io.spine.type.MessageType;
+import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.FieldMask;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.testing.TestValues.nullRef;
+import static io.spine.testing.Testing.repeat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-/**
- * With this unit test we are fixating the {@link NestedClassFactory} contract.
- */
-@DisplayName("`NestedClassFactory` should")
-final class NestedClassFactoryTest {
+@DisplayName("Tests utility class should")
+class TestingTest extends UtilityClassTest<Testing> {
 
-    @DisplayName("obey the defined contract")
-    @Test
-    void obeyTheContract() {
-        assertThat(new TestNestedClassFactory().generateClassesFor(nullRef())).isEmpty();
+    TestingTest() {
+        super(Testing.class);
     }
 
-    @Immutable
-    public static final class TestNestedClassFactory implements NestedClassFactory {
+    @Override
+    protected void configure(NullPointerTester tester) {
+        tester.setDefault(FieldMask.class, FieldMask.getDefaultInstance());
+    }
 
-        public TestNestedClassFactory() {
-        }
+    @Test
+    @DisplayName("repeat an action a number of times")
+    void repeating() {
+        int expected = TestValues.random(10);
+        AtomicInteger counter = new AtomicInteger(0);
+        repeat(expected, counter::incrementAndGet);
 
-        @Override
-        public List<GeneratedNestedClass> generateClassesFor(MessageType messageType) {
-            return ImmutableList.of();
-        }
+        assertThat(counter.get())
+                .isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("provide method `halt()` for failing methods that should never be called")
+    void haltMethod() {
+        assertThrows(AssertionError.class, Testing::halt);
     }
 }

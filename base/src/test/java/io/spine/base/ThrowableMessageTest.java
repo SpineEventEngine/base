@@ -35,7 +35,7 @@ import java.util.Optional;
 
 import static io.spine.testing.Assertions.assertIllegalState;
 import static io.spine.testing.Assertions.assertNpe;
-import static io.spine.testing.Tests.nullRef;
+import static io.spine.testing.TestValues.nullRef;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;

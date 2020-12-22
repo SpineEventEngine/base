@@ -74,4 +74,19 @@ public final class TestValues {
         long randomNum = ThreadLocalRandom.current().nextLong(min, max);
         return randomNum;
     }
+
+    /**
+     * Returns {@code null}.
+     *
+     * <p>Use it when it is needed to pass {@code null} to a method in tests so that no
+     * warnings suppression is needed.
+     *
+     * @apiNote The method doesn't take {@code Class<T>} to keep
+     *         the test API small and convenient
+     */
+    @SuppressWarnings("TypeParameterUnusedInFormals" /* See api note. */)
+    public static <T> T nullRef() {
+        T nullRef = null;
+        return nullRef;
+    }
 }

@@ -43,7 +43,7 @@ import static io.spine.base.Time.setProvider;
 import static io.spine.base.Time.systemTime;
 import static io.spine.base.given.GivenDurations.DURATION_1_MINUTE;
 import static io.spine.base.given.GivenDurations.DURATION_5_MINUTES;
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.testing.Assertions.assertHasPrivateParameterlessCtor;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DisplayName("`Time` class should")

@@ -29,7 +29,7 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import io.spine.test.protobuf.MessageToPack;
-import io.spine.testing.Tests;
+import io.spine.testing.TestValues;
 import io.spine.testing.UtilityClassTest;
 import io.spine.type.TypeUrl;
 import io.spine.type.UnexpectedTypeException;
@@ -48,7 +48,7 @@ import static io.spine.protobuf.AnyPacker.unpack;
 import static io.spine.protobuf.AnyPacker.unpackFunc;
 import static io.spine.testing.Assertions.assertNpe;
 import static io.spine.testing.TestValues.newUuidValue;
-import static io.spine.testing.Tests.nullRef;
+import static io.spine.testing.TestValues.nullRef;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -129,7 +129,7 @@ class AnyPackerTest extends UtilityClassTest<AnyPacker> {
     @Test
     @DisplayName("fail on attempt to pack null")
     void failOnAttemptToPackNull() {
-        assertNpe(() -> pack(Tests.<Message>nullRef()));
+        assertNpe(() -> pack(TestValues.<Message>nullRef()));
     }
 
     @Test
