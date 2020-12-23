@@ -1,6 +1,12 @@
 /*
  * Copyright 2020, TeamDev. All rights reserved.
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
  * disclaimer.
@@ -83,11 +89,15 @@ subprojects {
 
     val spineVersion: String by extra
 
+    /**
+     * These dependencies are applied to all sub-projects and does not have to be included
+     * explicitly.
+     */
     dependencies {
-        implementation(Deps.build.errorProneCore)
-        Deps.build.errorProneAnnotations.forEach { implementation(it) }
+        Deps.build.errorProneAnnotations.forEach { compileOnly(it) }
         implementation("io.spine:spine-base:$spineVersion")
         testImplementation("io.spine:spine-testlib:$spineVersion")
+        Deps.test.truth.forEach { testImplementation(it) }
         testRuntimeOnly(Deps.test.junit5Runner)
     }
 

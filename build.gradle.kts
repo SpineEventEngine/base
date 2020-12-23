@@ -1,6 +1,12 @@
 /*
  * Copyright 2020, TeamDev. All rights reserved.
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
  * disclaimer.
@@ -121,20 +127,28 @@ subprojects {
     }
 
     DependencyResolution.defaultRepositories(repositories)
+
+    /**
+     * These dependencies are applied to all sub-projects and does not have to be included
+     * explicitly.
+     */
     dependencies {
         errorprone(Deps.build.errorProneCore)
         errorproneJavac(Deps.build.errorProneJavac)
+
         Deps.build.protobuf.forEach { api(it) }
         api(Deps.build.flogger)
+        compileOnlyApi(Deps.build.checkerAnnotations)
+        compileOnlyApi(Deps.build.jsr305Annotations)
+        Deps.build.errorProneAnnotations.forEach { compileOnlyApi(it) }
         implementation(Deps.build.guava)
-        implementation(Deps.build.checkerAnnotations)
-        implementation(Deps.build.jsr305Annotations)
-        Deps.build.errorProneAnnotations.forEach { implementation(it) }
+        runtimeOnly(Deps.runtime.flogger.systemBackend)
+
         testImplementation(Deps.test.guavaTestlib)
-        testImplementation(Deps.test.junit5Runner)
         testImplementation(Deps.test.junitPioneer)
         Deps.test.junit5Api.forEach { testImplementation(it) }
-        runtimeOnly(Deps.runtime.flogger.systemBackend)
+        Deps.test.truth.forEach { testImplementation(it) }
+        testRuntimeOnly(Deps.test.junit5Runner)
     }
 
     DependencyResolution.forceConfiguration(configurations)

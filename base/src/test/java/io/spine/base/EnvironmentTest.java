@@ -1,6 +1,12 @@
 /*
  * Copyright 2020, TeamDev. All rights reserved.
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
  * disclaimer.
@@ -100,23 +106,6 @@ class EnvironmentTest {
             // As we run this from under JUnit...
             assertThat(environment.is(Tests.class)).isTrue();
         }
-
-        @Test
-        @DisplayName("when a deprecated `isTests()` method is used")
-        void underTestFrameworkDeprecated() {
-            @SuppressWarnings("deprecation")
-            boolean isTests = environment.isTests();
-            assertThat(isTests).isTrue();
-        }
-
-        @Test
-        @DisplayName("if explicitly set to tests using the deprecated `setToTests()` method")
-        @SuppressWarnings("deprecation")
-        void explicitlySetTrue() {
-            environment.setToTests();
-
-            assertThat(environment.is(Tests.class)).isTrue();
-        }
     }
 
     @Nested
@@ -129,16 +118,6 @@ class EnvironmentTest {
             System.setProperty(TestsProperty.KEY, "neitherTrueNor1");
 
             assertThat(environment.is(Production.class)).isTrue();
-        }
-
-        @Test
-        @DisplayName("the deprecated method `isProduction()` is used")
-        void inProductionUsingDeprecatedMethod() {
-            System.setProperty(TestsProperty.KEY, "neitherTrueNor1");
-
-            @SuppressWarnings("deprecation")
-            boolean isProduction = environment.isProduction();
-            assertThat(isProduction).isTrue();
         }
     }
 
@@ -168,15 +147,6 @@ class EnvironmentTest {
 
         environment.setTo(Staging.class);
         assertThat(environment.is(Staging.class)).isTrue();
-    }
-
-    @Test
-    @DisplayName("turn production mode on using a deprecated method")
-    @SuppressWarnings("deprecation")
-    void turnProductionOnUsingDeprecatedMethod() {
-        environment.setToProduction();
-
-        assertThat(environment.is(Production.class)).isTrue();
     }
 
     @Test
@@ -286,7 +256,7 @@ class EnvironmentTest {
     }
 
     @Immutable
-    static final class Local extends EnvironmentType {
+    static final class Local extends CustomEnvironmentType {
 
         @Override
         public boolean enabled() {
@@ -296,7 +266,7 @@ class EnvironmentTest {
     }
 
     @Immutable
-    static final class Staging extends EnvironmentType {
+    static final class Staging extends CustomEnvironmentType {
 
         static final String STAGING_ENV_TYPE_KEY = "io.spine.base.EnvironmentTest.is_staging";
 
@@ -316,7 +286,7 @@ class EnvironmentTest {
     }
 
     @Immutable
-    static final class Travis extends EnvironmentType {
+    static final class Travis extends CustomEnvironmentType {
 
         @Override
         public boolean enabled() {

@@ -1,6 +1,12 @@
 /*
  * Copyright 2020, TeamDev. All rights reserved.
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
  * disclaimer.
@@ -40,7 +46,7 @@ final class TestsProperty {
     /**
      * The key name of the system property which tells if a code runs under a testing framework.
      *
-     * <p>If your testing framework is not among the {@link Tests#KNOWN_TESTING_FRAMEWORKS},
+     * <p>If your testing framework is not among the {@link Tests#knownTestingFrameworks()},
      * set this property to {@code true} before running tests.
      */
     @VisibleForTesting
@@ -103,12 +109,5 @@ final class TestsProperty {
      */
     static void clear() {
         System.clearProperty(KEY);
-    }
-
-    /**
-     * Assigns the property the value of {@code "true"}.
-     */
-    static void setTrue() {
-        System.setProperty(KEY, TRUE.toString());
     }
 }

@@ -1,6 +1,12 @@
 /*
  * Copyright 2020, TeamDev. All rights reserved.
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
  * disclaimer.
@@ -32,19 +38,30 @@ import com.google.errorprone.annotations.Immutable;
  * <p>This option is mutually exclusive with {@link Production}, i.e. one of them is always enabled.
  */
 @Immutable
-public final class Tests extends EnvironmentType {
+public final class Tests extends StandardEnvironmentType {
 
     private static final Tests INSTANCE = new Tests();
 
+    @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in another context. */)
+    private static final ImmutableList<String> KNOWN_TESTING_FRAMEWORKS =
+            ImmutableList.of("org.junit", "org.testng", "io.spine.testing");
+
     /**
      * The names of the packages that when discovered in a stacktrace would tell that
-     * we are running tests.
+     * the code is executed under tests.
+     *
+     * <p>The returned package names are:
+     * <ol>
+     *     <li>"org.junit"
+     *     <li>"org.testng"
+     *     <li>"io.spine.testing"
+     * </ol>
      *
      * @see #enabled()
      */
-    @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in another context. */)
-    public static final ImmutableList<String> KNOWN_TESTING_FRAMEWORKS =
-            ImmutableList.of("org.junit", "org.testng", "io.spine.testing");
+    public static ImmutableList<String> knownTestingFrameworks() {
+        return KNOWN_TESTING_FRAMEWORKS;
+    }
 
     /**
      * Obtains the singleton instance.
@@ -61,15 +78,16 @@ public final class Tests extends EnvironmentType {
     /**
      * Verifies if the code currently runs under a unit testing framework.
      *
-     * <p>The method returns {@code true} if {@linkplain #KNOWN_TESTING_FRAMEWORKS
+     * <p>The method returns {@code true} if {@linkplain #knownTestingFrameworks()
      * known testing framework packages} are discovered in the stacktrace.
      *
      * @return {@code true} if the code runs under a testing framework, {@code false} otherwise
      * @implNote In addition to checking the stack trace, this method checks the
      *         environment variable value. If you wish to simulate not being in tests, the
      *         variable must be set to {@code false} explicitly. If your framework is not
-     *         among the {@linkplain #KNOWN_TESTING_FRAMEWORKS known ones}, make sure to set
+     *         among the {@linkplain #knownTestingFrameworks() known ones}, make sure to set
      *         the system property explicitly.
+     * @see #knownTestingFrameworks()
      */
     @Override
     protected boolean enabled() {
@@ -80,7 +98,7 @@ public final class Tests extends EnvironmentType {
 
         String stacktrace = Throwables.getStackTraceAsString(new RuntimeException(""));
         boolean result =
-                KNOWN_TESTING_FRAMEWORKS.stream()
+                knownTestingFrameworks().stream()
                                         .anyMatch(stacktrace::contains);
         return result;
     }

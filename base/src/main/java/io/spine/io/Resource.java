@@ -1,6 +1,12 @@
 /*
  * Copyright 2020, TeamDev. All rights reserved.
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
  * disclaimer.
@@ -59,24 +65,6 @@ public final class Resource {
     private Resource(String path, ClassLoader classLoader) {
         this.path = path;
         this.classLoader = classLoader;
-    }
-
-    /**
-     * Creates a new resource reference.
-     *
-     * @param path
-     *         the path to the resource file, relative to the classpath
-     * @deprecated Using the {@code ClassLoader} of this class may lead to unexpected behaviour.
-     * As this overload uses the {@code ClassLoader} of the {@code Resource} class, it might be
-     * unable to find some resources. For example, some environments use an isolated class loader
-     * for each dependency JAR, and so the {@code Resource} class loader would not be able to find
-     * resource files in neighbouring JARs. Please specify a {@code ClassLoader} explicitly
-     * via {@link #file(String, ClassLoader)}. This overload will be deleted in a future release.
-     */
-    @Deprecated
-    public static Resource file(String path) {
-        checkNotEmptyOrBlank(path);
-        return new Resource(path, Resource.class.getClassLoader());
     }
 
     /**
