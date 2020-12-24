@@ -1,6 +1,12 @@
 /*
  * Copyright 2020, TeamDev. All rights reserved.
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
  * disclaimer.
@@ -26,6 +32,7 @@ package io.spine.base;
  * <p>Some examples may be {@code STAGING} or {@code LOCAL} environments.
  *
  * @implNote Not an {@code interface} to limit the access level of {@link #enabled()}
+ * @see Environment
  */
 public abstract class EnvironmentType {
 
@@ -42,7 +49,7 @@ public abstract class EnvironmentType {
      * Returns the {@code hashCode()} of the class.
      */
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return getClass().hashCode();
     }
 
@@ -50,13 +57,13 @@ public abstract class EnvironmentType {
      * Returns {@code true} if this and passed objects are of the same class,
      * otherwise {@code false}.
      *
-     * @implNote The derived classes are meant to emulate enums in the sense that all instances
-     * of them are interchangeable. Therefore, we are interested only in the class information
-     * for the comparison.
+     * @implNote The derived classes are meant to emulate enums in the sense that all
+     *         instances of them are interchangeable. Therefore, we are interested only in the class
+     *         information for the comparison.
      */
     @Override
-    @SuppressWarnings("EqualsGetClass") // see @implNote
-    public boolean equals(Object obj) {
+    @SuppressWarnings("EqualsGetClass" /* see @implNote */)
+    public final boolean equals(Object obj) {
         if (obj == null) {
             return false;
         }

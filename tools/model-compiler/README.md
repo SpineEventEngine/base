@@ -11,9 +11,8 @@ These features include:
 
 * [Annotating](src/main/java/io/spine/tools/compiler/annotation) Java files generated from the 
   Protobuf definitions.
-* [Generating](src/main/java/io/spine/tools/compiler/rejection) Rejections from the `proto` 
+* [Generating](src/main/java/io/spine/tools/compiler/gen/rejection) Rejections from the `proto` 
   messages.
-* Various [validation tools](src/main/java/io/spine/tools/compiler/validation).
 
 ## Usage
 
@@ -28,7 +27,7 @@ apply plugin: "com.google.protobuf"
 All operations performed by the Spine Model Compiler plugin are automatically injected in the 
 `.proto` compilation process performed by the Protobuf plugin.
 
-The required version of the Protobuf Gradle plugin is `0.8.3` or higher.
+The required version of the Protobuf Gradle plugin is `0.8.13` or higher.
 
 ## Settings
 

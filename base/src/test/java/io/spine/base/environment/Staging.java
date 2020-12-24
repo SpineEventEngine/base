@@ -1,6 +1,12 @@
 /*
  * Copyright 2020, TeamDev. All rights reserved.
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
  * disclaimer.
@@ -20,7 +26,7 @@
 
 package io.spine.base.environment;
 
-import io.spine.base.EnvironmentType;
+import io.spine.base.CustomEnvironmentType;
 
 /**
  * An environment type that mimics production but receives less traffic and is suitable for testing
@@ -28,7 +34,7 @@ import io.spine.base.EnvironmentType;
  *
  * <p>This implementations relies on a static {@code boolean} flag for detection.
  */
-final class Staging extends EnvironmentType {
+final class Staging extends CustomEnvironmentType {
 
     private static boolean enabled = false;
 

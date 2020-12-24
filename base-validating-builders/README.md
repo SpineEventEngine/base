@@ -18,6 +18,6 @@ the JAR archive rebuild the same way.
 
 ## References
 
-See [`base-validating-builders/build.gradle`](./build.gradle) for the builders assembly.
+See [`base-validating-builders/build.gradle`](./build.gradle.kts) for the builders assembly.
 
-See [`base/build.gradle`](../base/build.gradle) for the builders usage.
+See [`base/build.gradle`](../base/build.gradle.kts) for the builders usage.
