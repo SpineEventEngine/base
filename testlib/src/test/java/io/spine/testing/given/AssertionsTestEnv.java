@@ -23,10 +23,10 @@ package io.spine.testing.given;
 /**
  * Test environment for {@link io.spine.testing.TestsTest TestsTest}.
  */
-public class TestsTestEnv {
+public class AssertionsTestEnv {
 
     /** Prevents instantiation of this utility class. */
-    private TestsTestEnv() {
+    private AssertionsTestEnv() {
     }
 
     public static class ClassWithPrivateCtor {

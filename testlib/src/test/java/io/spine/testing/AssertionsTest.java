@@ -25,7 +25,10 @@ import com.google.protobuf.Any;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.FieldMaskUtil;
-import io.spine.testing.given.TestsTestEnv;
+import io.spine.testing.given.AssertionsTestEnv.ClassThrowingExceptionInConstructor;
+import io.spine.testing.given.AssertionsTestEnv.ClassWithCtorWithArgs;
+import io.spine.testing.given.AssertionsTestEnv.ClassWithPrivateCtor;
+import io.spine.testing.given.AssertionsTestEnv.ClassWithPublicCtor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -68,25 +71,25 @@ class AssertionsTest extends UtilityClassTest<Assertions> {
         @Test
         @DisplayName("returning false if it's public")
         void publicCtor() {
-            assertFalse(hasPrivateParameterlessCtor(TestsTestEnv.ClassWithPublicCtor.class));
+            assertFalse(hasPrivateParameterlessCtor(ClassWithPublicCtor.class));
         }
 
         @Test
         @DisplayName("return false if no parameterless ctor found")
         void ctorWithArgs() {
-            assertFalse(hasPrivateParameterlessCtor(TestsTestEnv.ClassWithCtorWithArgs.class));
+            assertFalse(hasPrivateParameterlessCtor(ClassWithCtorWithArgs.class));
         }
 
         @Test
         @DisplayName("accepting private parameterless ctor")
         void privateCtor() {
-            assertTrue(hasPrivateParameterlessCtor(TestsTestEnv.ClassWithPrivateCtor.class));
+            assertTrue(hasPrivateParameterlessCtor(ClassWithPrivateCtor.class));
         }
 
         @Test
         @DisplayName("ignore exceptions called thrown by the constructor")
         void ignoreExceptions() {
-            assertTrue(hasPrivateParameterlessCtor(TestsTestEnv.ClassThrowingExceptionInConstructor.class));
+            assertTrue(hasPrivateParameterlessCtor(ClassThrowingExceptionInConstructor.class));
         }
     }
 
