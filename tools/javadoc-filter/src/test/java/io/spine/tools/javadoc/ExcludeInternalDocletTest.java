@@ -29,7 +29,7 @@ package io.spine.tools.javadoc;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.RootDoc;
-import io.spine.testing.Tests;
+import io.spine.testing.TestValues;
 import io.spine.testing.logging.MuteLogging;
 import io.spine.util.Exceptions;
 import org.junit.jupiter.api.AfterEach;
@@ -292,7 +292,7 @@ class ExcludeInternalDocletTest {
         ExcludeInternalDoclet doclet = new NullProcessingTestDoclet();
 
         assertDoesNotThrow(
-                () -> doclet.process(Tests.nullRef(), void.class)
+                () -> doclet.process(TestValues.nullRef(), void.class)
         );
     }
 

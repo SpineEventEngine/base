@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.testing.Tests.nullRef;
+import static io.spine.testing.TestValues.nullRef;
 
 /**
  * With this unit test we are fixating the {@link NestedClassFactory} contract.

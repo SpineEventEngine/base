@@ -45,7 +45,7 @@ import static io.spine.json.Json.fromJson;
 import static io.spine.json.Json.toCompactJson;
 import static io.spine.json.Json.toJson;
 import static io.spine.testing.Assertions.assertNpe;
-import static io.spine.testing.Tests.nullRef;
+import static io.spine.testing.TestValues.nullRef;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

@@ -41,7 +41,7 @@ import static io.spine.query.ComparisonOperator.GREATER_OR_EQUALS;
 import static io.spine.query.ComparisonOperator.GREATER_THAN;
 import static io.spine.query.ComparisonOperator.LESS_OR_EQUALS;
 import static io.spine.query.ComparisonOperator.LESS_THAN;
-import static io.spine.testing.Tests.nullRef;
+import static io.spine.testing.TestValues.nullRef;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`ComparisonOperator` should")

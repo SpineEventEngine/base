@@ -31,10 +31,10 @@ import com.google.protobuf.Any;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.FieldMaskUtil;
-import io.spine.testing.given.TestsTestEnv.ClassThrowingExceptionInConstructor;
-import io.spine.testing.given.TestsTestEnv.ClassWithCtorWithArgs;
-import io.spine.testing.given.TestsTestEnv.ClassWithPrivateCtor;
-import io.spine.testing.given.TestsTestEnv.ClassWithPublicCtor;
+import io.spine.testing.given.AssertionsTestEnv.ClassThrowingExceptionInConstructor;
+import io.spine.testing.given.AssertionsTestEnv.ClassWithCtorWithArgs;
+import io.spine.testing.given.AssertionsTestEnv.ClassWithPrivateCtor;
+import io.spine.testing.given.AssertionsTestEnv.ClassWithPublicCtor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -42,9 +42,10 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.Assertions.assertInDelta;
+import static io.spine.testing.Assertions.assertMatchesMask;
+import static io.spine.testing.Assertions.hasPrivateParameterlessCtor;
 import static io.spine.testing.HospitalPolicy.ACCEPTED_CONDITION_FIELD_NUMBER;
 import static io.spine.testing.HospitalPolicy.PatientCondition.CRITICAL;
 import static io.spine.testing.HospitalPolicy.PatientCondition.CRITICAL_BUT_STABLE;
@@ -52,24 +53,20 @@ import static io.spine.testing.Prescription.PRESCRIBED_DRUG_FIELD_NUMBER;
 import static io.spine.testing.Prescription.PRESCRIBED_ON_FIELD_NUMBER;
 import static io.spine.testing.PrescriptionHistory.PRESCRIPTION_RECEIVER_FIELD_NUMBER;
 import static io.spine.testing.PrescriptionHistory.RECEIVED_PRESCRIPTION_FIELD_NUMBER;
-import static io.spine.testing.Tests.assertInDelta;
-import static io.spine.testing.Tests.assertMatchesMask;
-import static io.spine.testing.Tests.hasPrivateParameterlessCtor;
-import static io.spine.testing.Tests.repeat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("Tests utility class should")
-class TestsTest extends UtilityClassTest<Tests> {
+@DisplayName("`Assertions` should")
+class AssertionsTest extends UtilityClassTest<Assertions> {
 
-    TestsTest() {
-        super(Tests.class);
+    private AssertionsTest() {
+        super(Assertions.class);
     }
 
     @Override
     protected void configure(NullPointerTester tester) {
+        super.configure(tester);
         tester.setDefault(FieldMask.class, FieldMask.getDefaultInstance());
     }
 
@@ -102,61 +99,9 @@ class TestsTest extends UtilityClassTest<Tests> {
         }
     }
 
-    @Test
-    @DisplayName("provide null reference method")
-    void nullRef() {
-        assertNull(Tests.nullRef());
-    }
-
-    @Nested
-    @DisplayName("Assert boolean equality")
-    class BooleanAssert {
-
-        @Test
-        @DisplayName("when true")
-        void onTrue() {
-            Tests.assertEquals(true, true);
-        }
-
-        @Test
-        @DisplayName("when false")
-        void onFalse() {
-            Tests.assertEquals(false, false);
-        }
-
-        @Test
-        @DisplayName("fail when not equal")
-        void failInequality() {
-            assertThrows(
-                    AssertionError.class,
-                    () -> Tests.assertEquals(true, false)
-            );
-        }
-    }
-
-    @Nested
-    @DisplayName("Assert true")
-    class AssertTrue {
-
-        @Test
-        @DisplayName("when true")
-        void onTrue() {
-            Tests.assertTrue(true);
-        }
-
-        @Test
-        @DisplayName("fail when false")
-        void whenFalse() {
-            assertThrows(
-                    AssertionError.class,
-                    () -> Tests.assertTrue(false)
-            );
-        }
-    }
-
     @Nested
     @DisplayName("Assert matches mask")
-    class AssertMatchesMask {
+    class TestingMatchesMask {
 
         private Timestamp timestampMsg;
 
@@ -310,7 +255,7 @@ class TestsTest extends UtilityClassTest<Tests> {
 
     @Nested
     @DisplayName("Assert values in delta")
-    class AssertInDelta {
+    class TestingInDelta {
 
         private static final long DELTA = 10;
         private static final long VALUE = 100;
@@ -389,22 +334,5 @@ class TestsTest extends UtilityClassTest<Tests> {
                     () -> assertInDelta(expectedValue, actualValue, DELTA)
             );
         }
-    }
-
-    @Test
-    @DisplayName("repeat an action a number of times")
-    void repeating() {
-        int expected = TestValues.random(10);
-        AtomicInteger counter = new AtomicInteger(0);
-        repeat(expected, counter::incrementAndGet);
-
-        assertThat(counter.get())
-                .isEqualTo(expected);
-    }
-
-    @Test
-    @DisplayName("provide method `halt()` for failing methods that should never be called")
-    void haltMethod() {
-        assertThrows(AssertionError.class, Tests::halt);
     }
 }

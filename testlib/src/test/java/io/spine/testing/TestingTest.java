@@ -1,12 +1,6 @@
 /*
  * Copyright 2020, TeamDev. All rights reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
  * disclaimer.
@@ -26,36 +20,43 @@
 
 package io.spine.testing;
 
+import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.FieldMask;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.concurrent.atomic.AtomicInteger;
 
-@DisplayName("TestValues utility class should")
-class TestValuesTest extends UtilityClassTest<TestValues> {
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.Testing.repeat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-    TestValuesTest() {
-        super(TestValues.class);
+@DisplayName("Tests utility class should")
+class TestingTest extends UtilityClassTest<Testing> {
+
+    TestingTest() {
+        super(Testing.class);
+    }
+
+    @Override
+    protected void configure(NullPointerTester tester) {
+        tester.setDefault(FieldMask.class, FieldMask.getDefaultInstance());
     }
 
     @Test
-    @DisplayName("provide `null` reference method")
-    void nullRef() {
-        assertNull(TestValues.nullRef());
+    @DisplayName("repeat an action a number of times")
+    void repeating() {
+        int expected = TestValues.random(10);
+        AtomicInteger counter = new AtomicInteger(0);
+        repeat(expected, counter::incrementAndGet);
+
+        assertThat(counter.get())
+                .isEqualTo(expected);
     }
 
     @Test
-    @DisplayName("provide a random non-negative number")
-    void randomNegativeNumber() {
-        assertTrue(TestValues.random(100) >= 0);
-    }
-
-    @Test
-    @DisplayName("provide a random number in a range")
-    void randomNumber() {
-        int value = TestValues.random(-100, 100);
-        assertTrue(value >= -100);
-        assertTrue(value <= 100);
+    @DisplayName("provide method `halt()` for failing methods that should never be called")
+    void haltMethod() {
+        assertThrows(AssertionError.class, Testing::halt);
     }
 }

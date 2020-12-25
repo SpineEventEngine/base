@@ -45,8 +45,8 @@ import java.util.stream.IntStream;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.query.RecordColumn.create;
+import static io.spine.testing.TestValues.nullRef;
 import static io.spine.testing.TestValues.randomString;
-import static io.spine.testing.Tests.nullRef;
 
 /**
  * Test environment data for {@link io.spine.query.RecordQueryBuilderTest RecordQueryBuilderTest}.

@@ -27,7 +27,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.testing.Assertions.assertHasPrivateParameterlessCtor;
 import static io.spine.tools.protoc.given.ColumnsTestEnv.assertDoesNotContainMethod;
 import static io.spine.tools.protoc.given.ColumnsTestEnv.checkColumnName;
 

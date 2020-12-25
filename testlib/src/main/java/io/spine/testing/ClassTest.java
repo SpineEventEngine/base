@@ -35,7 +35,7 @@ import java.lang.reflect.Modifier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.testing.NullPointerTester.Visibility.PUBLIC;
-import static io.spine.testing.Tests.assertTrue;
+import static io.spine.testing.Assertions.assertTrue;
 
 /**
  * Abstract base for test suites that test a class (e.g. static methods) rather than an object.
@@ -126,7 +126,7 @@ public abstract class ClassTest<C> {
      */
     @SuppressWarnings("NewMethodNamingConvention")
     protected final void assertHasPrivateParameterlessCtor() {
-        Tests.assertHasPrivateParameterlessCtor(subject());
+        Assertions.assertHasPrivateParameterlessCtor(subject());
     }
 
     /**
