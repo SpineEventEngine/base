@@ -119,7 +119,7 @@ public final class Assertions {
      * <pre>
      * public class MyUtilityShould
      *     ...
-     *     {@literal @}Test
+     *    {@literal @}Test
      *     public void haveUtilityCtor() {
      *         assertHasPrivateParameterlessCtor(MyUtility.class));
      *     }

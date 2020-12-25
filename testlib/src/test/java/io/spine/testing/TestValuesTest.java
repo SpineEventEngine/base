@@ -40,7 +40,7 @@ class TestValuesTest extends UtilityClassTest<TestValues> {
     }
 
     @Test
-    @DisplayName("provide null reference method")
+    @DisplayName("provide `null` reference method")
     void nullRef() {
         assertNull(TestValues.nullRef());
     }
