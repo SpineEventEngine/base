@@ -103,8 +103,8 @@ public final class Types {
     public static boolean isEnumClass(Type type) {
         checkNotNull(type);
         if (type instanceof Class) {
-            Class aClass = (Class) type;
-            boolean isEnum = aClass.isEnum();
+            Class<?> cls = (Class<?>) type;
+            boolean isEnum = cls.isEnum();
             return isEnum;
         }
         return false;
@@ -120,8 +120,8 @@ public final class Types {
     public static boolean isMessageClass(Type type) {
         checkNotNull(type);
         if (type instanceof Class) {
-            Class<?> aClass = (Class) type;
-            boolean isMessage = Message.class.isAssignableFrom(aClass);
+            Class<?> cls = (Class<?>) type;
+            boolean isMessage = Message.class.isAssignableFrom(cls);
             return isMessage;
         }
         return false;
