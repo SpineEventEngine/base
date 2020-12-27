@@ -297,7 +297,8 @@ public class KnownTypes implements Serializable {
             logger.atFine().log("Adding types `%s` to known types.", moreKnownTypes);
             lock.lock();
             try {
-                instance = instance.extendWith(moreKnownTypes);
+                KnownTypes extended = instance.extendWith(moreKnownTypes);
+                instance = extended;
                 ExternalConstraints.updateFrom(instance.messageTypes());
             } finally {
                 lock.unlock();
