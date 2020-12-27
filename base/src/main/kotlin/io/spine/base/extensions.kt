@@ -44,7 +44,7 @@ import java.io.OutputStream
 //TODO:2020-12-27:alexander.yevsyukov: Update code
 // generation to create `events.kt` classes for each package with generated events.
 inline fun <reified E: Error> event(block: Error.Builder.() -> Unit): E {
-    val builder = ValidatedMessage.builderOf(E::class.java)
+    val builder = ValidatableMessage.builderOf(E::class.java)
     block.invoke(builder)
     return builder.vBuild() as E
 }
@@ -67,7 +67,7 @@ private fun test() {
 }
 
 
-private class SomeMsg: ValidatedMessage<SomeBuilder, SomeMsg> {
+private class SomeMsg: ValidatableMessage<SomeBuilder, SomeMsg> {
 
     class SomeBuilder: ValidatingBuilder<SomeMsg> {
         override fun getDefaultInstanceForType(): Message {
