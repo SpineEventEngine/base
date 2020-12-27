@@ -34,11 +34,7 @@ import com.google.protobuf.MessageLite;
 import com.google.protobuf.ProtocolMessageEnum;
 import io.spine.annotation.Internal;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.format;
 
 /**
  * Utility class for working with {@link Message} objects.
@@ -69,30 +65,19 @@ public final class Messages {
      */
     public static <M extends Message> M defaultInstance(Class<M> messageClass) {
         checkNotNull(messageClass);
-
         @SuppressWarnings("unchecked")  // Ensured by the `MessageCacheLoader` implementation.
         M result = (M) defaultInstances.getUnchecked(messageClass);
         return result;
     }
 
     /**
-     * Returns the builder of the {@code Message}.
-     *
-     * @param clazz the message class
-     * @return the message builder
+     * Returns the builder for the passed message class.
      */
     @Internal
-    public static Message.Builder builderFor(Class<? extends Message> clazz) {
-        checkNotNull(clazz);
-        try {
-            Method factoryMethod = clazz.getDeclaredMethod(METHOD_NEW_BUILDER);
-            Message.Builder result = (Message.Builder) factoryMethod.invoke(null);
-            return result;
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            String errMsg = format("Class %s must be a generated proto message",
-                                   clazz.getCanonicalName());
-            throw new IllegalArgumentException(errMsg, e);
-        }
+    public static Message.Builder builderFor(Class<? extends Message> cls) {
+        checkNotNull(cls);
+        Message.Builder builder = defaultInstance(cls).toBuilder();
+        return builder;
     }
 
     /**
