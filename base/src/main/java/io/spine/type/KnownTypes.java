@@ -92,26 +92,41 @@ public class KnownTypes implements Serializable {
         return Holder.instance();
     }
 
-    private KnownTypes() {
-        this(load());
-    }
-
     private KnownTypes(TypeSet types) {
         this.typeSet = checkNotNull(types);
     }
 
+    private static KnownTypes load() {
+        TypeSet types = loadTypeSet();
+        KnownTypes result = new KnownTypes(types);
+        return result;
+    }
+
+    @SuppressWarnings("MethodOnlyUsedFromInnerClass")
+    private KnownTypes extendWith(TypeSet moreTypes) {
+        checkNotNull(moreTypes);
+        TypeSet combined = typeSet.union(moreTypes);
+        KnownTypes result = new KnownTypes(combined);
+        return result;
+    }
+
     private Object readResolve() {
-        return new KnownTypes();
+        return load();
     }
 
     private Set<Type<?, ?>> types() {
         return typeSet.allTypes();
     }
 
+    @SuppressWarnings("MethodOnlyUsedFromInnerClass")
+    private ImmutableSet<MessageType> messageTypes() {
+        return typeSet.messageTypes();
+    }
+
     /**
      * Loads known types from the classpath.
      */
-    private static TypeSet load() {
+    private static TypeSet loadTypeSet() {
         FileSet protoDefinitions = FileSet.load();
         TypeSet types = TypeSet.from(protoDefinitions);
         return types;
@@ -242,8 +257,8 @@ public class KnownTypes implements Serializable {
     /**
      * A holder of the {@link KnownTypes} instance.
      *
-     * @apiNote This class is public for allowing extension of known types by the
-     *         development tools.
+     * @apiNote This class is public for allowing extension of known types by
+     *  the development tools.
      */
     @Internal
     public static final class Holder {
@@ -253,8 +268,8 @@ public class KnownTypes implements Serializable {
         /** The lock to synchronize the write access to the {@code KnownTypes} instance. */
         private static final Lock lock = new ReentrantLock(false);
 
-        /** The singleton instance. */
-        private static KnownTypes instance = new KnownTypes();
+        /** The singleton instance, which can be updated by {@link #extendWith(TypeSet)}. */
+        private static KnownTypes instance = load();
 
         /** Prevents instantiation from outside. */
         private Holder() {
@@ -279,13 +294,11 @@ public class KnownTypes implements Serializable {
          */
         public static void extendWith(TypeSet moreKnownTypes) {
             InvocationGuard.allowOnly("io.spine.tools.type.MoreKnownTypes");
-            logger.atFine()
-                  .log("Adding types `%s` to known types.", moreKnownTypes);
+            logger.atFine().log("Adding types `%s` to known types.", moreKnownTypes);
             lock.lock();
             try {
-                TypeSet newKnownTypes = instance.typeSet.union(moreKnownTypes);
-                instance = new KnownTypes(newKnownTypes);
-                ExternalConstraints.updateFrom(moreKnownTypes.messageTypes());
+                instance = instance.extendWith(moreKnownTypes);
+                ExternalConstraints.updateFrom(instance.messageTypes());
             } finally {
                 lock.unlock();
             }
