@@ -26,6 +26,7 @@
 
 package io.spine.dart;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import org.apache.tools.ant.taskdefs.condition.Os;
 
@@ -39,10 +40,10 @@ import static org.apache.tools.ant.taskdefs.condition.Os.FAMILY_WINDOWS;
 /**
  * A utility for working with the local Pub cache.
  */
-@SuppressWarnings("WeakerAccess") // Part of the public API.
 public final class PubCache {
 
-    private static final String BIN = "bin";
+    @VisibleForTesting
+    static final String BIN = "bin";
     private static final String APP_DATA_ENV = "APPDATA";
     private static final String LOCAL_APP_DATA_ENV = "LOCALAPPDATA";
     private static final String PUB_CACHE_ENV = "PUB_CACHE";

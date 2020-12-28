@@ -26,18 +26,21 @@
 
 package io.spine.dart;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.EnabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth8.assertThat;
-import static java.nio.file.Files.exists;
+import static io.spine.dart.PubCache.BIN;
 import static org.junit.jupiter.api.condition.OS.WINDOWS;
 
 @DisplayName("`PubCache` should")
@@ -48,25 +51,30 @@ class PubCacheTest extends UtilityClassTest<PubCache> {
     }
 
     @Test
-    @DisplayName("produce a non-empty path on *nix systems")
+    @DisplayName("produce a path on *nix systems")
     @DisabledOnOs(WINDOWS)
     void nix() {
-        Path bin = PubCache.bin();
-        assertThat(bin)
-                .isNotNull();
-        assertThat(exists(bin))
-                .isTrue();
+        checkPath();
     }
 
 
     @Test
-    @DisplayName("produce a non-empty path on Windows systems")
+    @DisplayName("produce a path on Windows systems")
     @EnabledOnOs(WINDOWS)
     void win() {
+        Path path = checkPath();
+        List<Path> elements = newArrayList(path);
+        assertThat(elements)
+                .contains(Paths.get("AppData"));
+    }
+
+    @CanIgnoreReturnValue
+    private static Path checkPath() {
         Path bin = PubCache.bin();
         assertThat(bin)
                 .isNotNull();
-        assertThat(exists(bin))
+        assertThat(bin.endsWith(BIN))
                 .isTrue();
+        return bin;
     }
 }
