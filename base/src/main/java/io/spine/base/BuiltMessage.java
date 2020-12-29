@@ -47,9 +47,8 @@ import io.spine.protobuf.ValidatingBuilder;
  * @param <M>
  *         the type of the message used for binging of the builder type
  */
-public interface ValidatableMessage<B extends ValidatingBuilder<M>,
-                                    M extends ValidatableMessage<B, M>>
-    extends KnownMessage {
+public interface BuiltMessage<B extends ValidatingBuilder<M>, M extends BuiltMessage<B, M>>
+        extends KnownMessage {
 
     /**
      * Obtains the instance of the builder for the passed message class.
@@ -62,7 +61,7 @@ public interface ValidatableMessage<B extends ValidatingBuilder<M>,
      *          the type of the message
      * @return a new empty builder
      */
-    static <B extends ValidatingBuilder<M>, M extends ValidatableMessage<B, M>>
+    static <B extends ValidatingBuilder<M>, M extends BuiltMessage<B, M>>
     B builderOf(Class<? extends M> messageClass) {
         @SuppressWarnings("unchecked") // the case is protected by generic params of the interface
         B builder = (B) Messages.builderFor(messageClass);

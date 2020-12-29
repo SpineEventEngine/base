@@ -32,7 +32,7 @@ import io.spine.protobuf.ValidatingBuilder
 //TODO:2020-12-27:alexander.yevsyukov: Update code
 // generation to create `events.kt` classes for each package with generated events.
 inline fun <reified E: Error> event(block: Error.Builder.() -> Unit): E {
-    val builder = ValidatableMessage.builderOf(E::class.java)
+    val builder = BuiltMessage.builderOf(E::class.java)
     block.invoke(builder)
     return builder.vBuild() as E
 }
@@ -41,7 +41,7 @@ inline fun <reified E: Error> event(block: Error.Builder.() -> Unit): E {
  * Creates a copy of this message by copies of its properties and then applying
  * values of properties defined in the passed block.
  */
-inline fun <M: ValidatableMessage<B, M>, B: ValidatingBuilder<M>>
+inline fun <M: BuiltMessage<B, M>, B: ValidatingBuilder<M>>
         M.copy(block: B.() -> Unit): M {
     @Suppress("UNCHECKED_CAST") // ensured by the generated code
     val builder = this.toBuilder() as B
