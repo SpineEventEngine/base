@@ -87,7 +87,7 @@ import io.spine.base.EntityState;
  * @param <V> the type of the column value
  */
 @Immutable
-public final class EntityColumn<S extends EntityState<?>, V> extends RecordColumn<S, V> {
+public final class EntityColumn<S extends EntityState<?, ?, ?>, V> extends RecordColumn<S, V> {
 
     private static final long serialVersionUID = 0L;
 

@@ -28,14 +28,14 @@ package io.spine.base
 
 import io.spine.protobuf.ValidatingBuilder
 
-@Suppress("FINAL_UPPER_BOUND")
+//@Suppress("FINAL_UPPER_BOUND")
 //TODO:2020-12-27:alexander.yevsyukov: Update code
 // generation to create `events.kt` classes for each package with generated events.
-inline fun <reified E: Error> event(block: Error.Builder.() -> Unit): E {
-    val builder = BuiltMessage.builderOf(E::class.java)
-    block.invoke(builder)
-    return builder.vBuild() as E
-}
+//inline fun <reified E: Error> event(block: Error.Builder.() -> Unit): E {
+//    val builder = BuiltMessage.builderOf(E::class.java)
+//    block.invoke(builder)
+//    return builder.vBuild() as E
+//}
 
 /**
  * Creates a copy of this message by copies of its properties and then applying

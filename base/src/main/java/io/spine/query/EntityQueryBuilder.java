@@ -51,7 +51,7 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
  *         is aimed to build
  */
 public abstract class EntityQueryBuilder<I,
-                                         S extends EntityState<I>,
+                                         S extends EntityState<I, ?, ?>,
                                          B extends EntityQueryBuilder<I, S, B, Q>,
                                          Q extends EntityQuery<I, S, B>>
         extends AbstractQueryBuilder<I, S, EntitySubjectParameter<S, ?>, B, Q> {

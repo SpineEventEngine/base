@@ -45,7 +45,7 @@ import io.spine.base.EntityState;
  *         to create the query instances
  */
 public abstract class EntityQuery<I,
-                                  S extends EntityState<I>,
+                                  S extends EntityState<I, ?, ?>,
                                   B extends EntityQueryBuilder<I, S, B, ?>>
         extends AbstractQuery<I, S, EntitySubjectParameter<S, ?>> {
 

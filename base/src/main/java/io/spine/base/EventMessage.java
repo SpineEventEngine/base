@@ -27,6 +27,7 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
+import io.spine.protobuf.ValidatingBuilder;
 
 /**
  * A common interface for event messages.
@@ -36,5 +37,6 @@ import com.google.errorprone.annotations.Immutable;
  * with {@code events.proto}.
  */
 @Immutable
-public interface EventMessage extends KnownMessage {
+public interface EventMessage<B extends ValidatingBuilder<M>, M extends EventMessage<B, M>>
+        extends BuiltMessage<B, M> {
 }

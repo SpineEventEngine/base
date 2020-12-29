@@ -30,6 +30,7 @@ import com.google.errorprone.annotations.Immutable;
 import io.spine.annotation.FirstGenericParameter;
 import io.spine.annotation.GeneratedMixin;
 import io.spine.protobuf.FirstMessageField;
+import io.spine.protobuf.ValidatingBuilder;
 
 /**
  * A common interface for entity state messages.
@@ -53,12 +54,17 @@ import io.spine.protobuf.FirstMessageField;
  *
  * @param <I>
  *         the type of entity identifiers
+ * @param <B>
+ *         the type of the builder for this entity state
+ * @param <M>
+ *         the type of this entity state, which is used for binding of the builder type
  * @see io.spine.code.proto.EntityStateOption
  */
 @SuppressWarnings("unused") /* Used in the generated code. */
 @Immutable
 @GeneratedMixin
 @FirstGenericParameter(is = FirstMessageField.class)
-public interface EntityState<I> extends KnownMessage {
+public interface EntityState<I, B extends ValidatingBuilder<M>, M extends EntityState<I, B, M>>
+        extends KnownMessage {
 
 }

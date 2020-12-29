@@ -27,6 +27,7 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
+import io.spine.protobuf.ValidatingBuilder;
 
 /**
  * A common interface for rejection messages.
@@ -36,5 +37,6 @@ import com.google.errorprone.annotations.Immutable;
  * with {@code rejections.proto}.
  */
 @Immutable
-public interface RejectionMessage extends EventMessage {
+public interface RejectionMessage<B extends ValidatingBuilder<M>, M extends  RejectionMessage<B, M>>
+        extends EventMessage<B, M> {
 }

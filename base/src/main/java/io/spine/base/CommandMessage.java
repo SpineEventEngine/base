@@ -27,6 +27,7 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
+import io.spine.protobuf.ValidatingBuilder;
 
 /**
  * A common interface for command messages.
@@ -36,5 +37,6 @@ import com.google.errorprone.annotations.Immutable;
  * with {@code commands.proto}.
  */
 @Immutable
-public interface CommandMessage extends KnownMessage {
+public interface CommandMessage<B extends ValidatingBuilder<M>, M extends CommandMessage<B, M>>
+        extends BuiltMessage<B, M> {
 }
