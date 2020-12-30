@@ -27,7 +27,6 @@
 package io.spine.base.given;
 
 import com.google.protobuf.AbstractMessage;
-import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Message;
 import com.google.protobuf.Parser;
@@ -37,7 +36,7 @@ import io.spine.base.EntityState;
 import java.util.Map;
 
 @SuppressWarnings({"ReturnOfNull", "Immutable"}) // OK for a fake.
-public final class FakeEntityState extends AbstractMessage implements EntityState<Any> {
+public final class FakeEntityState extends AbstractMessage implements EntityState {
 
     private static final long serialVersionUID = 0;
 
