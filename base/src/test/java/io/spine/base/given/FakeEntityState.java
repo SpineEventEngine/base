@@ -27,16 +27,28 @@
 package io.spine.base.given;
 
 import com.google.protobuf.AbstractMessage;
+import com.google.protobuf.Any;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.Descriptors;
+import com.google.protobuf.ExtensionRegistryLite;
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
+import com.google.protobuf.MessageLite;
 import com.google.protobuf.Parser;
 import com.google.protobuf.UnknownFieldSet;
 import io.spine.base.EntityState;
+import io.spine.protobuf.ValidatingBuilder;
+import io.spine.validate.NonValidated;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings({"ReturnOfNull", "Immutable", "rawtypes"}) // OK for a fake.
-public final class FakeEntityState extends AbstractMessage implements EntityState {
+public final class FakeEntityState extends AbstractMessage
+        implements EntityState<Any, FakeEntityState.Builder, FakeEntityState> {
 
     private static final long serialVersionUID = 0;
 
@@ -93,5 +105,229 @@ public final class FakeEntityState extends AbstractMessage implements EntityStat
     @Override
     public UnknownFieldSet getUnknownFields() {
         return null;
+    }
+
+    public static class Builder implements ValidatingBuilder<FakeEntityState> {
+
+        @Override
+        public Message.Builder clear() {
+            return null;
+        }
+
+        @Override
+        public Message.Builder mergeFrom(Message other) {
+            return null;
+        }
+
+        @Override
+        public @NonValidated FakeEntityState build() {
+            return null;
+        }
+
+        @Override
+        public @NonValidated FakeEntityState buildPartial() {
+            return null;
+        }
+
+        @Override
+        public Message.Builder clone() {
+            return null;
+        }
+
+        @Override
+        public Message.Builder mergeFrom(CodedInputStream input) throws IOException {
+            return null;
+        }
+
+        @Override
+        public Message.Builder mergeFrom(CodedInputStream input,
+                                         ExtensionRegistryLite extensionRegistry) throws
+                                                                                  IOException {
+            return null;
+        }
+
+        @Override
+        public Message getDefaultInstanceForType() {
+            return null;
+        }
+
+        @Override
+        public boolean isInitialized() {
+            return false;
+        }
+
+        @Override
+        public List<String> findInitializationErrors() {
+            return null;
+        }
+
+        @Override
+        public String getInitializationErrorString() {
+            return null;
+        }
+
+        @Override
+        public Descriptors.Descriptor getDescriptorForType() {
+            return null;
+        }
+
+        @Override
+        public Map<Descriptors.FieldDescriptor, Object> getAllFields() {
+            return null;
+        }
+
+        @Override
+        public boolean hasOneof(Descriptors.OneofDescriptor oneof) {
+            return false;
+        }
+
+        @Override
+        public Descriptors.FieldDescriptor getOneofFieldDescriptor(
+                Descriptors.OneofDescriptor oneof) {
+            return null;
+        }
+
+        @Override
+        public boolean hasField(Descriptors.FieldDescriptor field) {
+            return false;
+        }
+
+        @Override
+        public Object getField(Descriptors.FieldDescriptor field) {
+            return null;
+        }
+
+        @Override
+        public int getRepeatedFieldCount(Descriptors.FieldDescriptor field) {
+            return 0;
+        }
+
+        @Override
+        public Object getRepeatedField(Descriptors.FieldDescriptor field, int index) {
+            return null;
+        }
+
+        @Override
+        public UnknownFieldSet getUnknownFields() {
+            return null;
+        }
+
+        @Override
+        public Message.Builder newBuilderForField(Descriptors.FieldDescriptor field) {
+            return null;
+        }
+
+        @Override
+        public Message.Builder getFieldBuilder(Descriptors.FieldDescriptor field) {
+            return null;
+        }
+
+        @Override
+        public Message.Builder getRepeatedFieldBuilder(Descriptors.FieldDescriptor field,
+                                                       int index) {
+            return null;
+        }
+
+        @Override
+        public Message.Builder setField(Descriptors.FieldDescriptor field, Object value) {
+            return null;
+        }
+
+        @Override
+        public Message.Builder clearField(Descriptors.FieldDescriptor field) {
+            return null;
+        }
+
+        @Override
+        public Message.Builder clearOneof(Descriptors.OneofDescriptor oneof) {
+            return null;
+        }
+
+        @Override
+        public Message.Builder setRepeatedField(Descriptors.FieldDescriptor field, int index,
+                                                Object value) {
+            return null;
+        }
+
+        @Override
+        public Message.Builder addRepeatedField(Descriptors.FieldDescriptor field, Object value) {
+            return null;
+        }
+
+        @Override
+        public Message.Builder setUnknownFields(UnknownFieldSet unknownFields) {
+            return null;
+        }
+
+        @Override
+        public Message.Builder mergeUnknownFields(UnknownFieldSet unknownFields) {
+            return null;
+        }
+
+        @Override
+        public Message.Builder mergeFrom(ByteString data) throws InvalidProtocolBufferException {
+            return null;
+        }
+
+        @Override
+        public Message.Builder mergeFrom(ByteString data,
+                                         ExtensionRegistryLite extensionRegistry) throws
+                                                                                  InvalidProtocolBufferException {
+            return null;
+        }
+
+        @Override
+        public Message.Builder mergeFrom(byte[] data) throws InvalidProtocolBufferException {
+            return null;
+        }
+
+        @Override
+        public Message.Builder mergeFrom(byte[] data, int off, int len) throws
+                                                                        InvalidProtocolBufferException {
+            return null;
+        }
+
+        @Override
+        public Message.Builder mergeFrom(byte[] data,
+                                         ExtensionRegistryLite extensionRegistry) throws
+                                                                                  InvalidProtocolBufferException {
+            return null;
+        }
+
+        @Override
+        public Message.Builder mergeFrom(byte[] data, int off, int len,
+                                         ExtensionRegistryLite extensionRegistry) throws
+                                                                                  InvalidProtocolBufferException {
+            return null;
+        }
+
+        @Override
+        public Message.Builder mergeFrom(InputStream input) throws IOException {
+            return null;
+        }
+
+        @Override
+        public Message.Builder mergeFrom(InputStream input,
+                                         ExtensionRegistryLite extensionRegistry) throws
+                                                                                  IOException {
+            return null;
+        }
+
+        @Override
+        public MessageLite.Builder mergeFrom(MessageLite other) {
+            return null;
+        }
+
+        @Override
+        public boolean mergeDelimitedFrom(InputStream input) throws IOException {
+            return false;
+        }
+
+        @Override
+        public boolean mergeDelimitedFrom(InputStream input,
+                                          ExtensionRegistryLite extensionRegistry) throws
+                                                                                   IOException {
+            return false;
+        }
     }
 }
