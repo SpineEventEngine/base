@@ -35,7 +35,7 @@ import io.spine.base.EntityState;
 
 import java.util.Map;
 
-@SuppressWarnings({"ReturnOfNull", "Immutable"}) // OK for a fake.
+@SuppressWarnings({"ReturnOfNull", "Immutable", "rawtypes"}) // OK for a fake.
 public final class FakeEntityState extends AbstractMessage implements EntityState {
 
     private static final long serialVersionUID = 0;
