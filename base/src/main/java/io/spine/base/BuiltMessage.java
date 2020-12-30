@@ -26,6 +26,7 @@
 
 package io.spine.base;
 
+import com.google.errorprone.annotations.Immutable;
 import io.spine.protobuf.Messages;
 import io.spine.protobuf.ValidatingBuilder;
 
@@ -47,6 +48,7 @@ import io.spine.protobuf.ValidatingBuilder;
  * @param <M>
  *         the type of the message used for binging of the builder type
  */
+@Immutable
 public interface BuiltMessage<B extends ValidatingBuilder<M>, M extends BuiltMessage<B, M>>
         extends KnownMessage {
 
