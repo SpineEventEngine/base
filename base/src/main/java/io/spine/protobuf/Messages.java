@@ -28,6 +28,7 @@ package io.spine.protobuf;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.util.concurrent.UncheckedExecutionException;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import com.google.protobuf.MessageLite;
@@ -35,6 +36,7 @@ import com.google.protobuf.ProtocolMessageEnum;
 import io.spine.annotation.Internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 
 /**
  * Utility class for working with {@link Message} objects.
@@ -76,8 +78,15 @@ public final class Messages {
     @Internal
     public static Message.Builder builderFor(Class<? extends Message> cls) {
         checkNotNull(cls);
-        Message.Builder builder = defaultInstance(cls).toBuilder();
-        return builder;
+        try {
+            Message message = defaultInstance(cls);
+            Message.Builder builder = message.toBuilder();
+            return builder;
+        } catch (UncheckedExecutionException e) {
+            String errMsg = format("Class `%s` must be a generated proto message.",
+                                   cls.getCanonicalName());
+            throw new IllegalArgumentException(errMsg, e);
+        }
     }
 
     /**
