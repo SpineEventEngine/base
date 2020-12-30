@@ -35,6 +35,11 @@ import io.spine.protobuf.ValidatingBuilder;
  * <p>This interface is used by the Model Compiler for marking event messages.
  * By convention, event messages are defined in a proto file, which name ends
  * with {@code events.proto}.
+ *
+ * @param <B>
+ *         the type of the builder of the event message
+ * @param <M>
+ *         the type of the message used for binging of the builder type
  */
 @Immutable
 public interface EventMessage<B extends ValidatingBuilder<M>, M extends EventMessage<B, M>>

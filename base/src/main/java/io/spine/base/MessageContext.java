@@ -31,6 +31,11 @@ import io.spine.protobuf.ValidatingBuilder;
 
 /**
  * Base interface for message contexts.
+ *
+ * @param <B>
+ *         the type of the builder of the message context
+ * @param <M>
+ *         the type of the message used for binging of the builder type
  */
 @Immutable
 public interface MessageContext<B extends ValidatingBuilder<M>, M extends MessageContext<B, M>>

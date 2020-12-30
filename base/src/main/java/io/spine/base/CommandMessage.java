@@ -35,6 +35,11 @@ import io.spine.protobuf.ValidatingBuilder;
  * <p>This interface is used by the Model Compiler for marking command messages.
  * By convention, command messages are defined in a proto file, which name ends
  * with {@code commands.proto}.
+ *
+ * @param <B>
+ *         the type of the builder of the command message
+ * @param <M>
+ *         the type of the message used for binging of the builder type
  */
 @Immutable
 public interface CommandMessage<B extends ValidatingBuilder<M>, M extends CommandMessage<B, M>>
