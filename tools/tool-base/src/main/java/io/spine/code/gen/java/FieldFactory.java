@@ -31,8 +31,8 @@ import com.google.errorprone.annotations.Immutable;
 import io.spine.base.SubscribableField;
 import io.spine.code.gen.java.field.FieldContainerSpec;
 import io.spine.code.java.ClassName;
-import io.spine.tools.protoc.nested.GeneratedNestedClass;
-import io.spine.tools.protoc.nested.NestedClassFactory;
+import io.spine.tools.protoc.plugin.nested.GeneratedNestedClass;
+import io.spine.tools.protoc.plugin.nested.NestedClassFactory;
 import io.spine.type.MessageType;
 
 import java.util.List;

@@ -28,7 +28,7 @@ package io.spine.tools.protoc.plugin;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.protoc.iface.MessageInterface;
+import io.spine.tools.protoc.plugin.iface.MessageInterface;
 import io.spine.type.Type;
 
 import static java.util.stream.Collectors.joining;

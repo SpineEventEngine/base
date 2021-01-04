@@ -33,7 +33,7 @@ import org.checkerframework.checker.regex.qual.Regex;
  */
 public final class SuffixSelector extends PatternSelector {
 
-    SuffixSelector(@Regex String suffix) {
+    public SuffixSelector(@Regex String suffix) {
         super(suffix);
     }
 
