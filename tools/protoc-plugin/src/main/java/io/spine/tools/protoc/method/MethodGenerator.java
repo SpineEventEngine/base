@@ -29,13 +29,14 @@ package io.spine.tools.protoc.method;
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.AddMethods;
 import io.spine.tools.protoc.Classpath;
-import io.spine.tools.protoc.CodeGenerationTask;
-import io.spine.tools.protoc.CodeGenerationTasks;
-import io.spine.tools.protoc.CodeGenerator;
-import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.plugin.CodeGenerationTask;
+import io.spine.tools.protoc.plugin.CodeGenerationTasks;
+import io.spine.tools.protoc.plugin.CodeGenerator;
+import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.tools.protoc.ConfigByPattern;
-import io.spine.tools.protoc.ExternalClassLoader;
+import io.spine.tools.protoc.plugin.ExternalClassLoader;
 import io.spine.tools.protoc.SpineProtocConfig;
+import io.spine.tools.protoc.plugin.InsertionPoint;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 
@@ -48,7 +49,7 @@ import static io.spine.protobuf.Messages.isNotDefault;
  * The {@link CodeGenerator} implementation generating additional message methods.
  *
  * <p>The generator produces {@link CompilerOutput compiler output} that fits into the message's
- * {@link io.spine.tools.protoc.InsertionPoint#class_scope class scope} insertion point.
+ * {@link InsertionPoint#class_scope class scope} insertion point.
  */
 public final class MethodGenerator extends CodeGenerator {
 

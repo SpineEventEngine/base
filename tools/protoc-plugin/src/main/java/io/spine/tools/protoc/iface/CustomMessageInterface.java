@@ -29,9 +29,9 @@ package io.spine.tools.protoc.iface;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.squareup.javapoet.JavaFile;
 import io.spine.code.fs.java.SourceFile;
-import io.spine.tools.protoc.AbstractCompilerOutput;
-import io.spine.tools.protoc.ProtocPluginFiles;
-import io.spine.tools.protoc.TypeParameters;
+import io.spine.tools.protoc.plugin.AbstractCompilerOutput;
+import io.spine.tools.protoc.plugin.ProtocPluginFiles;
+import io.spine.tools.protoc.plugin.TypeParameters;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

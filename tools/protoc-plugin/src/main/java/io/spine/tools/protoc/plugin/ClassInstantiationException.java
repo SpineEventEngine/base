@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,42 +24,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.plugin;
 
-import io.spine.type.MessageType;
-
-import java.util.function.Predicate;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 
 /**
- * {@link FilePattern} predicate that returns {@code true} if supplied Protobuf
- * {@link MessageType type} matches pattern's value.
+ * Exception that is thrown when a particular class cannot be instantiated by the
+ * {@link ExternalClassLoader}.
  */
-public final class FilePatternMatcher implements Predicate<MessageType> {
+public final class ClassInstantiationException extends RuntimeException {
 
-    private final FilePattern pattern;
+    private static final long serialVersionUID = 0L;
 
-    public FilePatternMatcher(FilePattern filePattern) {
-        checkNotNull(filePattern);
-        this.pattern = filePattern;
+    /**
+     * Creates a new instance with the class name.
+     *
+     * @param className
+     *         the class name
+     */
+    ClassInstantiationException(String className) {
+        super(makeMsg(className));
     }
 
-    @Override
-    public boolean test(MessageType type) {
-        checkNotNull(type);
-        String protoFileName = type.declaringFileName()
-                                   .value();
-        switch (pattern.getValueCase()) {
-            case SUFFIX:
-                return protoFileName.endsWith(pattern.getSuffix());
-            case PREFIX:
-                return protoFileName.startsWith(pattern.getPrefix());
-            case REGEX:
-                return protoFileName.matches(pattern.getRegex());
-            case VALUE_NOT_SET:
-            default:
-                return false;
-        }
+    private static String makeMsg(String className) {
+        return format("Unable to instantiate class `%s`.", className);
+    }
+
+    /**
+     * Creates a new instance with the class name and the cause.
+     *
+     * @param className
+     *         the class name
+     * @param cause
+     *         the exception cause
+     */
+    ClassInstantiationException(String className, Throwable cause) {
+        super(makeMsg(className), cause);
     }
 }

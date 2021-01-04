@@ -27,7 +27,7 @@
 package io.spine.tools.protoc.method;
 
 import com.google.protobuf.Descriptors;
-import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
 import io.spine.type.ServiceType;

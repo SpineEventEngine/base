@@ -30,7 +30,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
 import io.spine.base.SubscribableField;
 import io.spine.code.gen.java.FieldFactory;
-import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.tools.protoc.EntityStateConfig;
 import io.spine.tools.protoc.iface.ProtocProject;
 import io.spine.tools.protoc.iface.ProtocProjectId;
@@ -44,7 +44,7 @@ import org.junit.jupiter.api.Test;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.tools.protoc.InsertionPoint.class_scope;
+import static io.spine.tools.protoc.plugin.InsertionPoint.class_scope;
 
 @DisplayName("`GenerateEntityStateFields` task should")
 final class GenerateEntityStateFieldsTest {

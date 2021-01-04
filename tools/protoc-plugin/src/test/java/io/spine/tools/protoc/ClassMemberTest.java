@@ -29,6 +29,7 @@ package io.spine.tools.protoc;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.code.fs.java.SourceFile;
 import io.spine.tools.protoc.method.GeneratedMethod;
+import io.spine.tools.protoc.plugin.ClassMember;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,22 +24,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.plugin;
 
-import com.google.errorprone.annotations.Immutable;
-import io.spine.type.Type;
+import com.google.common.collect.ImmutableList;
+import io.spine.type.MessageType;
 
 /**
- * The message interface parameter whose value is the target {@code Message} itself.
- *
- * <p>So, for the {@code ProjectId} class implementing some message interface, the value of the
- * parameter will be {@code ProjectId}.
+ * A Protobuf code generation task.
  */
-@Immutable
-public final class IdentityParameter implements TypeParameter {
+public interface CodeGenerationTask {
 
-    @Override
-    public String valueFor(Type<?, ?> type) {
-        return type.simpleJavaClassName().value();
-    }
+    /**
+     * Generates code for the supplied {@code type}.
+     */
+    ImmutableList<CompilerOutput> generateFor(MessageType type);
 }

@@ -27,10 +27,10 @@
 package io.spine.tools.protoc.nested;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.protoc.ClassMember;
-import io.spine.tools.protoc.CodeGenerationTask;
-import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.ExternalClassLoader;
+import io.spine.tools.protoc.plugin.ClassMember;
+import io.spine.tools.protoc.plugin.CodeGenerationTask;
+import io.spine.tools.protoc.plugin.CompilerOutput;
+import io.spine.tools.protoc.plugin.ExternalClassLoader;
 import io.spine.type.MessageType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 

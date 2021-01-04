@@ -30,7 +30,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
 import io.spine.base.EntityState;
 import io.spine.code.java.ClassName;
-import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.tools.protoc.EntityStateConfig;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Test;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.tools.protoc.InsertionPoint.message_implements;
+import static io.spine.tools.protoc.plugin.InsertionPoint.message_implements;
 import static io.spine.tools.protoc.ProtocTaskConfigs.entityStateConfig;
 
 @DisplayName("`GenerateEntityStateInterfaces` task should")

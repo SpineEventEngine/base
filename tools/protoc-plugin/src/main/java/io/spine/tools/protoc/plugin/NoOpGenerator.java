@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,16 +24,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.plugin;
 
-import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
+import com.google.common.collect.ImmutableSet;
+import io.spine.type.Type;
+
+import java.util.Collection;
 
 /**
- * A {@link CompilerOutput} with a predefined {@link File}.
+ * A {@link CodeGenerator} which generates no code.
  */
-final class FileOutput extends AbstractCompilerOutput {
+public final class NoOpGenerator extends CodeGenerator {
 
-    FileOutput(File file) {
-        super(file);
+    private static final CodeGenerator instance = new NoOpGenerator();
+
+    /**
+     * Prevents direct instantiation.
+     */
+    private NoOpGenerator() {
+        super();
+    }
+
+    public static CodeGenerator instance() {
+        return instance;
+    }
+
+    @Override
+    protected Collection<CompilerOutput> generate(Type<?, ?> type) {
+        return ImmutableSet.of();
     }
 }

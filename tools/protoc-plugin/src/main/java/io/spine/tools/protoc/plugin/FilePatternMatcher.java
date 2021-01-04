@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,33 +24,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.plugin;
 
-import com.google.common.collect.ImmutableList;
+import io.spine.tools.protoc.FilePattern;
 import io.spine.type.MessageType;
+
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * {@link CodeGenerationTask}s container.
+ * {@link FilePattern} predicate that returns {@code true} if supplied Protobuf
+ * {@link MessageType type} matches pattern's value.
  */
-public final class CodeGenerationTasks {
+public final class FilePatternMatcher implements Predicate<MessageType> {
 
-    private final ImmutableList<CodeGenerationTask> tasks;
+    private final FilePattern pattern;
 
-    public CodeGenerationTasks(ImmutableList<CodeGenerationTask> tasks) {
-        this.tasks = checkNotNull(tasks);
+    public FilePatternMatcher(FilePattern filePattern) {
+        checkNotNull(filePattern);
+        this.pattern = filePattern;
     }
 
-    /**
-     * Generates code for the supplied {@code type} using all configured {@code tasks}.
-     */
-    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
+    @Override
+    public boolean test(MessageType type) {
         checkNotNull(type);
-        ImmutableList.Builder<CompilerOutput> result = ImmutableList.builder();
-        for (CodeGenerationTask task : tasks) {
-            result.addAll(task.generateFor(type));
+        String protoFileName = type.declaringFileName()
+                                   .value();
+        switch (pattern.getValueCase()) {
+            case SUFFIX:
+                return protoFileName.endsWith(pattern.getSuffix());
+            case PREFIX:
+                return protoFileName.startsWith(pattern.getPrefix());
+            case REGEX:
+                return protoFileName.matches(pattern.getRegex());
+            case VALUE_NOT_SET:
+            default:
+                return false;
         }
-        return result.build();
     }
 }

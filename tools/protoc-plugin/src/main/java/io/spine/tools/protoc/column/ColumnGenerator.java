@@ -28,11 +28,12 @@ package io.spine.tools.protoc.column;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.gen.java.ColumnFactory;
-import io.spine.tools.protoc.ClassMember;
-import io.spine.tools.protoc.CodeGenerator;
-import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.plugin.ClassMember;
+import io.spine.tools.protoc.plugin.CodeGenerator;
+import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.nested.GeneratedNestedClass;
+import io.spine.tools.protoc.plugin.InsertionPoint;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 
@@ -47,7 +48,7 @@ import static io.spine.code.proto.ColumnOption.hasColumns;
  * A code generator which adds the strongly-typed columns to a message type.
  *
  * <p>The generator produces {@link CompilerOutput compiler output} that fits into the message's
- * {@link io.spine.tools.protoc.InsertionPoint#class_scope class_scope} insertion point.
+ * {@link InsertionPoint#class_scope class_scope} insertion point.
  *
  * <p>Generates output only for those message types that represent an
  * {@linkplain MessageType#isEntityState() entity state} with

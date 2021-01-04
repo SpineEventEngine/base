@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,41 +24,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.plugin;
 
-import static java.lang.String.format;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.tools.protoc.iface.MessageInterface;
+import io.spine.type.Type;
 
 /**
- * Exception that is thrown when a particular class cannot be instantiated by the
- * {@link ExternalClassLoader}.
+ * The generic parameter of the {@link MessageInterface}.
+ *
+ * <p>Parameter value is presented as {@code String} for usage in the generated code.
  */
-public final class ClassInstantiationException extends RuntimeException {
-
-    private static final long serialVersionUID = 0L;
-
-    /**
-     * Creates a new instance with the class name.
-     *
-     * @param className
-     *         the class name
-     */
-    ClassInstantiationException(String className) {
-        super(makeMsg(className));
-    }
-
-    private static String makeMsg(String className) {
-        return format("Unable to instantiate class `%s`.", className);
-    }
+@Immutable
+public interface TypeParameter {
 
     /**
-     * Creates a new instance with the class name and the cause.
+     * Obtains a parameter value based on who is the message interface descendant.
      *
-     * @param className
-     *         the class name
-     * @param cause
-     *         the exception cause
+     * @param descendant
+     *         the {@code Message} class implementing the interface
+     * @return the value of the generic parameter
      */
-    ClassInstantiationException(String className, Throwable cause) {
-        super(makeMsg(className), cause);
-    }
+    String valueFor(Type<?, ?> descendant);
 }

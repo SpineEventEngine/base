@@ -41,7 +41,7 @@ import io.spine.code.fs.java.Directory;
 import io.spine.code.fs.java.FileName;
 import io.spine.code.fs.java.SourceFile;
 import io.spine.code.java.PackageName;
-import io.spine.tools.protoc.CodeGenerator;
+import io.spine.tools.protoc.plugin.CodeGenerator;
 import io.spine.tools.protoc.GeneratedInterfaces;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.given.SpineProtocConfigGiven;

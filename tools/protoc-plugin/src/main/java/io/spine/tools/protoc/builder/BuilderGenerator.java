@@ -27,9 +27,9 @@
 package io.spine.tools.protoc.builder;
 
 import com.google.common.collect.ImmutableSet;
-import io.spine.tools.protoc.CodeGenerator;
-import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.NoOpGenerator;
+import io.spine.tools.protoc.plugin.CodeGenerator;
+import io.spine.tools.protoc.plugin.CompilerOutput;
+import io.spine.tools.protoc.plugin.NoOpGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
 import io.spine.type.Type;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,18 +24,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.plugin;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.type.MessageType;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * A Protobuf code generation task.
+ * {@link CodeGenerationTask}s container.
  */
-public interface CodeGenerationTask {
+public final class CodeGenerationTasks {
+
+    private final ImmutableList<CodeGenerationTask> tasks;
+
+    public CodeGenerationTasks(ImmutableList<CodeGenerationTask> tasks) {
+        this.tasks = checkNotNull(tasks);
+    }
 
     /**
-     * Generates code for the supplied {@code type}.
+     * Generates code for the supplied {@code type} using all configured {@code tasks}.
      */
-    ImmutableList<CompilerOutput> generateFor(MessageType type);
+    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
+        checkNotNull(type);
+        ImmutableList.Builder<CompilerOutput> result = ImmutableList.builder();
+        for (CodeGenerationTask task : tasks) {
+            result.addAll(task.generateFor(type));
+        }
+        return result.build();
+    }
 }

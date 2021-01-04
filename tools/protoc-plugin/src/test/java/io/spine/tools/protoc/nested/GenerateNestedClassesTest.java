@@ -27,9 +27,9 @@
 package io.spine.tools.protoc.nested;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.tools.protoc.ConfigByPattern;
-import io.spine.tools.protoc.ExternalClassLoader;
+import io.spine.tools.protoc.plugin.ExternalClassLoader;
 import io.spine.tools.protoc.FilePatterns;
 import io.spine.tools.protoc.given.TestNestedClassFactory;
 import io.spine.tools.protoc.nested.given.TestClassLoader;

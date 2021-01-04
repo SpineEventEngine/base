@@ -28,9 +28,9 @@ package io.spine.tools.protoc.iface;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.java.ClassName;
-import io.spine.tools.protoc.CodeGenerationTask;
-import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.TypeParameters;
+import io.spine.tools.protoc.plugin.CodeGenerationTask;
+import io.spine.tools.protoc.plugin.CompilerOutput;
+import io.spine.tools.protoc.plugin.TypeParameters;
 import io.spine.type.MessageType;
 
 import static io.spine.tools.protoc.iface.MessageImplements.implementInterface;

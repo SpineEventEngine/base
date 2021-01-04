@@ -40,6 +40,8 @@ import io.spine.tools.protoc.given.TestMethodFactory;
 import io.spine.tools.protoc.given.TestNestedClassFactory;
 import io.spine.tools.protoc.given.UuidMethodFactory;
 import io.spine.tools.protoc.method.TestMethodProtos;
+import io.spine.tools.protoc.plugin.InsertionPoint;
+import io.spine.tools.protoc.plugin.Plugin;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -30,7 +30,7 @@ import com.google.common.testing.NullPointerTester;
 import io.spine.base.SubscribableField;
 import io.spine.tools.protoc.AddFields;
 import io.spine.tools.protoc.Classpath;
-import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.FilePatterns;
 import io.spine.tools.protoc.SpineProtocConfig;

@@ -28,11 +28,11 @@ package io.spine.tools.protoc.builder;
 
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.protobuf.ValidatingBuilder;
-import io.spine.tools.protoc.AbstractCompilerOutput;
-import io.spine.tools.protoc.IdentityParameter;
-import io.spine.tools.protoc.InsertionPoint;
-import io.spine.tools.protoc.ProtocPluginFiles;
-import io.spine.tools.protoc.TypeParameters;
+import io.spine.tools.protoc.plugin.AbstractCompilerOutput;
+import io.spine.tools.protoc.plugin.IdentityParameter;
+import io.spine.tools.protoc.plugin.InsertionPoint;
+import io.spine.tools.protoc.plugin.ProtocPluginFiles;
+import io.spine.tools.protoc.plugin.TypeParameters;
 import io.spine.type.MessageType;
 
 import static java.lang.String.format;

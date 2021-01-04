@@ -26,7 +26,7 @@
 
 package io.spine.tools.protoc.iface;
 
-import io.spine.tools.protoc.TypeParameters;
+import io.spine.tools.protoc.plugin.TypeParameters;
 
 /**
  * An interface to be implemented by the Protobuf message.

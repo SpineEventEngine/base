@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,33 +24,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
-
-import com.google.common.collect.ImmutableSet;
-import io.spine.type.Type;
-
-import java.util.Collection;
-
 /**
- * A {@link CodeGenerator} which generates no code.
+ * This package contains the basic mechanism of building the {@code protoc} plugins.
+ *
+ * <p>See <a href="https://developers.google.com/protocol-buffers/docs/reference/cpp/google.protobuf.compiler.plugin.pb">
+ * Google documentation</a> for more info about the {@code protoc} plugins
  */
-public final class NoOpGenerator extends CodeGenerator {
 
-    private static final CodeGenerator instance = new NoOpGenerator();
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.protoc.plugin;
 
-    /**
-     * Prevents direct instantiation.
-     */
-    private NoOpGenerator() {
-        super();
-    }
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    public static CodeGenerator instance() {
-        return instance;
-    }
-
-    @Override
-    protected Collection<CompilerOutput> generate(Type<?, ?> type) {
-        return ImmutableSet.of();
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

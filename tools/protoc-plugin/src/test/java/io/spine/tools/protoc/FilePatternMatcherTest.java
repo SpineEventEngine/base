@@ -26,6 +26,7 @@
 
 package io.spine.tools.protoc;
 
+import io.spine.tools.protoc.plugin.FilePatternMatcher;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

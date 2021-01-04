@@ -27,7 +27,7 @@
 package io.spine.tools.protoc.iface;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.tools.protoc.EntityStateConfig;
 import io.spine.type.MessageType;
 

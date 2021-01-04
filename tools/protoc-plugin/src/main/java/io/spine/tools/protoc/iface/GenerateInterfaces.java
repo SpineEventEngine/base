@@ -27,9 +27,9 @@
 package io.spine.tools.protoc.iface;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.tools.protoc.ConfigByPattern;
-import io.spine.tools.protoc.FilePatternMatcher;
+import io.spine.tools.protoc.plugin.FilePatternMatcher;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;

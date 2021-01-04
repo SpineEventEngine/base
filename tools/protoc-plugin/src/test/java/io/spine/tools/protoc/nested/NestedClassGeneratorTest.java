@@ -29,7 +29,7 @@ package io.spine.tools.protoc.nested;
 import com.google.common.testing.NullPointerTester;
 import io.spine.tools.protoc.AddNestedClasses;
 import io.spine.tools.protoc.Classpath;
-import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.FilePatterns;
 import io.spine.tools.protoc.SpineProtocConfig;

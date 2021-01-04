@@ -27,15 +27,16 @@
 package io.spine.tools.protoc.iface;
 
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import io.spine.tools.protoc.AbstractCompilerOutput;
-import io.spine.tools.protoc.InsertionPoint;
-import io.spine.tools.protoc.ProtocPluginFiles;
-import io.spine.tools.protoc.TypeParameters;
+import io.spine.tools.protoc.plugin.AbstractCompilerOutput;
+import io.spine.tools.protoc.plugin.InsertionPoint;
+import io.spine.tools.protoc.plugin.ProtocPluginFiles;
+import io.spine.tools.protoc.plugin.TypeParameters;
+import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 
 /**
- * A {@link io.spine.tools.protoc.CompilerOutput CompilerOutput} item, which alters a generated
+ * A {@link CompilerOutput CompilerOutput} item, which alters a generated
  * message class to implement a given interface.
  */
 public final class MessageImplements extends AbstractCompilerOutput {

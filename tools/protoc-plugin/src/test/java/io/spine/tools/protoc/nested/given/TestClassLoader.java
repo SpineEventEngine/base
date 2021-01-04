@@ -27,7 +27,7 @@
 package io.spine.tools.protoc.nested.given;
 
 import io.spine.tools.protoc.Classpath;
-import io.spine.tools.protoc.ExternalClassLoader;
+import io.spine.tools.protoc.plugin.ExternalClassLoader;
 import io.spine.tools.protoc.nested.NestedClassFactory;
 
 /**

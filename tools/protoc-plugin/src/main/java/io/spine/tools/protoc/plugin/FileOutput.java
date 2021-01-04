@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,29 +24,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.plugin;
 
-import static com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
+import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
 /**
- * Output of the Protobuf compiler plugin.
+ * A {@link CompilerOutput} with a predefined {@link File}.
  */
-public interface CompilerOutput {
+final class FileOutput extends AbstractCompilerOutput {
 
-    /**
-     * Obtains the {@link File CodeGeneratorResponse.File} representing this output item.
-     *
-     * @return compiler output as a {@link File}
-     */
-    File asFile();
-
-    /**
-     * Creates a new {@code CompilerOutput} with the given file.
-     *
-     * @param file
-     *         the Protobuf compiler output file
-     */
-    static CompilerOutput wrapping(File file) {
-        return new FileOutput(file);
+    FileOutput(File file) {
+        super(file);
     }
 }

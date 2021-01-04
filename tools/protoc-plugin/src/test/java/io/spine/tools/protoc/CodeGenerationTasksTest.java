@@ -27,6 +27,9 @@
 package io.spine.tools.protoc;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.tools.protoc.plugin.CodeGenerationTask;
+import io.spine.tools.protoc.plugin.CodeGenerationTasks;
+import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

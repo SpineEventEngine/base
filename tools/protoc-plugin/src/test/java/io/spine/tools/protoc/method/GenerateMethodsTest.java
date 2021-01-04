@@ -28,7 +28,7 @@ package io.spine.tools.protoc.method;
 
 import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.ConfigByPattern;
-import io.spine.tools.protoc.ExternalClassLoader;
+import io.spine.tools.protoc.plugin.ExternalClassLoader;
 import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.FilePatterns;
 import io.spine.tools.protoc.given.TestMethodFactory;

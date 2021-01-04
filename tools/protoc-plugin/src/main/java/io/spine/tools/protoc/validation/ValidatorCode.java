@@ -29,11 +29,11 @@ package io.spine.tools.protoc.validation;
 import com.google.common.collect.ImmutableSet;
 import io.spine.code.java.ClassName;
 import io.spine.protobuf.MessageWithConstraints;
-import io.spine.tools.protoc.CodeGenerator;
-import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.InsertionPoint;
-import io.spine.tools.protoc.NoOpGenerator;
-import io.spine.tools.protoc.ProtocPluginFiles;
+import io.spine.tools.protoc.plugin.CodeGenerator;
+import io.spine.tools.protoc.plugin.CompilerOutput;
+import io.spine.tools.protoc.plugin.InsertionPoint;
+import io.spine.tools.protoc.plugin.NoOpGenerator;
+import io.spine.tools.protoc.plugin.ProtocPluginFiles;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.iface.MessageImplements;
 import io.spine.tools.protoc.iface.MessageInterface;
@@ -44,9 +44,9 @@ import io.spine.type.Type;
 
 import java.util.Collection;
 
-import static io.spine.tools.protoc.InsertionPoint.builder_scope;
-import static io.spine.tools.protoc.InsertionPoint.class_scope;
-import static io.spine.tools.protoc.TypeParameters.empty;
+import static io.spine.tools.protoc.plugin.InsertionPoint.builder_scope;
+import static io.spine.tools.protoc.plugin.InsertionPoint.class_scope;
+import static io.spine.tools.protoc.plugin.TypeParameters.empty;
 import static io.spine.tools.protoc.iface.MessageImplements.implementInterface;
 
 /**
