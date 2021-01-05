@@ -26,6 +26,6 @@
 
 modelCompiler {
     fields {
-        generateFor("spine.tools.column.ProjectName", markAs("io.spine.tools.protoc.given.ProjectNameField"))
+        generateFor("spine.tools.column.ProjectName", markAs("io.spine.tools.protoc.columns.given.ProjectNameField"))
     }
 }

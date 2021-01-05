@@ -30,7 +30,7 @@
 
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.protoc.plugin.given;
+package io.spine.tools.protoc.columns.given;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 
