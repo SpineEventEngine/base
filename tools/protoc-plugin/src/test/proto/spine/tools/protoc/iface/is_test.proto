@@ -35,7 +35,7 @@ option java_outer_classname = "IsTestProto";
 option java_package = "io.spine.tools.protoc.plugin.iface";
 
 message ProtocNameUpdated {
-    option (is).java_type = "io.spine.tools.protoc.iface.ProtocCustomerEvent";
+    option (is).java_type = "io.spine.tools.protoc.plugin.iface.ProtocCustomerEvent";
 
     string uid = 1;
     Name new_name = 2;

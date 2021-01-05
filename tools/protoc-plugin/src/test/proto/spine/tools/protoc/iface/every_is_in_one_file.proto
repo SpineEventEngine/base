@@ -34,7 +34,7 @@ option java_multiple_files = false;
 option java_outer_classname = "EveryIsInOneFileProto";
 option java_package = "io.spine.tools.protoc.plugin.iface";
 
-option (every_is).java_type = "io.spine.tools.protoc.iface.ProtocCustomerEvent";
+option (every_is).java_type = "io.spine.tools.protoc.plugin.iface.ProtocCustomerEvent";
 
 message ProtocCustomerNotified {
 

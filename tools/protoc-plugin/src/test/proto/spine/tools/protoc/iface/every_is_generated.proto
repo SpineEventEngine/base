@@ -34,8 +34,8 @@ option java_multiple_files = true;
 option java_outer_classname = "EveryIsGeneratedProto";
 option java_package = "io.spine.tools.protoc.plugin.iface";
 
-//option (every_is) = {java_type: "io.spine.tools.protoc.iface.ProtocProjectEvent" generate: true};
-option (every_is).java_type = "io.spine.tools.protoc.iface.ProtocProjectEvent";
+//option (every_is) = {java_type: "io.spine.tools.protoc.plugin.iface.ProtocProjectEvent" generate: true};
+option (every_is).java_type = "io.spine.tools.protoc.plugin.iface.ProtocProjectEvent";
 option (every_is).generate = true;
 
 message ProtocProjectCreated {

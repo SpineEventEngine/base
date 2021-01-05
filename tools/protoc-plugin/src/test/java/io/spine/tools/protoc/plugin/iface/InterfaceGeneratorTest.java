@@ -433,8 +433,8 @@ final class InterfaceGeneratorTest {
         assertGeneratedFiles.doesNotContain("io/spine/tools/protoc/iface/UserName.java");
         assertGeneratedFiles.doesNotContain("io/spine/tools/protoc/iface/Name.java");
         assertGeneratedFiles.containsExactly(
-                "io/spine/tools/protoc/iface/User.java",
-                "io/spine/tools/protoc/iface/LawSubject.java"
+                "io/spine/tools/protoc/plugin/iface/User.java",
+                "io/spine/tools/protoc/plugin/iface/LawSubject.java"
         );
     }
 
@@ -466,7 +466,8 @@ final class InterfaceGeneratorTest {
     private static void assertPackage(File generatedFile) {
         Path generatedFilePath = Paths.get(generatedFile.getName());
         Directory directory = Directory.of(PACKAGE_NAME);
-        assertTrue(generatedFilePath.startsWith(directory.path()));
+        assertTrue(generatedFilePath.startsWith(directory.path()),
+                   format("Invalid path `%s`.", generatedFilePath));
     }
 
     /**

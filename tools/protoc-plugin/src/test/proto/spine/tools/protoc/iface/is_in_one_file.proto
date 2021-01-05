@@ -35,14 +35,14 @@ option java_outer_classname = "IsInOneFileProto";
 option java_package = "io.spine.tools.protoc.plugin.iface";
 
 message ProtocAddressUpdated {
-    option (is).java_type = "io.spine.tools.protoc.iface.ProtocCustomerEvent";
+    option (is).java_type = "io.spine.tools.protoc.plugin.iface.ProtocCustomerEvent";
 
     string uid = 1;
     string new_address = 2;
 }
 
 message ProtocPlanUpdated {
-    option (is).java_type = "io.spine.tools.protoc.iface.ProtocCustomerEvent";
+    option (is).java_type = "io.spine.tools.protoc.plugin.iface.ProtocCustomerEvent";
 
     string uid = 1;
     Plan new_plan = 2;
