@@ -30,7 +30,7 @@ package spine.tools.protoc.method;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.tools.protoc.method";
+option java_package = "io.spine.tools.protoc.plugin.method";
 option java_outer_classname = "TestPatternsProto";
 option java_multiple_files = true;
 

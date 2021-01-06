@@ -50,7 +50,7 @@ tasks.jar {
     )
 
     manifest {
-        attributes(mapOf("Main-Class" to "io.spine.tools.protoc.Plugin"))
+        attributes(mapOf("Main-Class" to "io.spine.tools.protoc.plugin.Plugin"))
     }
     // Assemble "Fat-JAR" artifact containing all the dependencies.
     from(configurations.runtimeClasspath.get().map {

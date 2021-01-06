@@ -32,17 +32,23 @@ import "spine/options.proto";
 option (type_url_prefix) = "type.spine.io";
 option java_multiple_files = true;
 option java_outer_classname = "IsGeneratedProto";
-option java_package = "io.spine.tools.protoc.iface";
+option java_package = "io.spine.tools.protoc.plugin.iface";
 
 message ProtocSurnameUpdated {
-    option (is) = {java_type: "io.spine.tools.protoc.iface.ProtocCustomerEvent" generate: true};
+    option (is) = {
+        java_type: "io.spine.tools.protoc.plugin.iface.ProtocCustomerEvent"
+        generate: true
+    };
 
     string uid = 1;
     Surname new_surname = 2;
 }
 
 message ProtocUpdateSurname {
-    option (is) = {java_type: "io.spine.tools.protoc.iface.ProtocCustomerCommand" generate: true};
+    option (is) = {
+        java_type: "io.spine.tools.protoc.plugin.iface.ProtocCustomerCommand"
+        generate: true
+    };
 
     string uid = 1;
     Surname new_surname = 2;

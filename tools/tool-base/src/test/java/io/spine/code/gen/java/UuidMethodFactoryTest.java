@@ -27,7 +27,7 @@
 package io.spine.code.gen.java;
 
 import io.spine.test.code.generate.uuid.UuidMessage;
-import io.spine.tools.protoc.method.GeneratedMethod;
+import io.spine.tools.protoc.plugin.method.GeneratedMethod;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
