@@ -32,7 +32,7 @@ import io.spine.code.java.ClassName;
 import io.spine.protobuf.DetermineType;
 import io.spine.tools.protoc.plugin.CodeGenerationTask;
 import io.spine.tools.protoc.plugin.CompilerOutput;
-import io.spine.tools.protoc.TypeParameter;
+import io.spine.tools.protoc.plugin.TypeParameter;
 import io.spine.tools.protoc.plugin.TypeParameters;
 import io.spine.type.MessageType;
 

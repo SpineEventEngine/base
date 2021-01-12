@@ -24,16 +24,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.query;
+package io.spine.tools.protoc.plugin.query;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.gen.java.EntityQueryFactory;
-import io.spine.tools.protoc.ClassMember;
-import io.spine.tools.protoc.CodeGenerator;
-import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.plugin.ClassMember;
+import io.spine.tools.protoc.plugin.CodeGenerator;
+import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.tools.protoc.SpineProtocConfig;
-import io.spine.tools.protoc.method.GeneratedMethod;
-import io.spine.tools.protoc.nested.GeneratedNestedClass;
+import io.spine.tools.protoc.plugin.method.GeneratedMethod;
+import io.spine.tools.protoc.plugin.nested.GeneratedNestedClass;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 

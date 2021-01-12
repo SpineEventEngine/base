@@ -24,28 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.iface;
-
-import com.google.errorprone.annotations.Immutable;
-import io.spine.code.java.ClassName;
-import io.spine.tools.protoc.TypeParameter;
-import io.spine.type.Type;
-
 /**
- * The message interface parameter with a fixed predefined value which does not depend
- * on the type of an actual descendant.
+ * This package defines the code generator of the {@code Query} for {@code Entity} state classes.
  */
-@Immutable
-final class PredefinedTypeParameter implements TypeParameter {
 
-    private final ClassName value;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.protoc.plugin.query;
 
-    PredefinedTypeParameter(ClassName value) {
-        this.value = value;
-    }
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    @Override
-    public String valueFor(Type<?, ?> descendant) {
-        return value.toString();
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

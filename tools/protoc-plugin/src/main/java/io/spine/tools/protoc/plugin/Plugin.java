@@ -37,7 +37,7 @@ import io.spine.tools.protoc.plugin.field.FieldGenerator;
 import io.spine.tools.protoc.plugin.iface.InterfaceGenerator;
 import io.spine.tools.protoc.plugin.method.MethodGenerator;
 import io.spine.tools.protoc.plugin.nested.NestedClassGenerator;
-import io.spine.tools.protoc.query.EntityQueryGenerator;
+import io.spine.tools.protoc.plugin.query.EntityQueryGenerator;
 import io.spine.tools.protoc.plugin.validation.ValidatorCode;
 
 import java.io.FileInputStream;
