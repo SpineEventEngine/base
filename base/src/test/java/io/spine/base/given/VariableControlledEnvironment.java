@@ -38,11 +38,13 @@ public abstract class VariableControlledEnvironment extends EnvironmentType {
     private final String envVariable;
 
     VariableControlledEnvironment(String variable) {
+        super();
         this.envVariable = variable;
     }
 
     @SuppressWarnings("unused" /* invoked via reflection. */)
     VariableControlledEnvironment() {
+        super();
         this.envVariable = "";
     }
 

@@ -46,7 +46,7 @@ public final class MessageImplements extends AbstractCompilerOutput {
     }
 
     /**
-     * Creates a new instance of {@code MessageImplements}.
+     * Creates a new instance.
      *
      * @param type
      *         the type declaration that should be altered

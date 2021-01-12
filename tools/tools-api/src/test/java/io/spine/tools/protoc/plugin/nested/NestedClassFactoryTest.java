@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.testing.Tests.nullRef;
+import static io.spine.testing.TestValues.nullRef;
 
 /**
  * With this unit test we are fixating the {@link NestedClassFactory} contract.
@@ -46,7 +46,7 @@ final class NestedClassFactoryTest {
     @DisplayName("obey the defined contract")
     @Test
     void obeyTheContract() {
-        assertThat(new TestNestedClassFactory().createFor(nullRef())).isEmpty();
+        assertThat(new TestNestedClassFactory().generateClassesFor(nullRef())).isEmpty();
     }
 
     @Immutable
@@ -56,7 +56,7 @@ final class NestedClassFactoryTest {
         }
 
         @Override
-        public List<GeneratedNestedClass> createFor(MessageType messageType) {
+        public List<GeneratedNestedClass> generateClassesFor(MessageType messageType) {
             return ImmutableList.of();
         }
     }

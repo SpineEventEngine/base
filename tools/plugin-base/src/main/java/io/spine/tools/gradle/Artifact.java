@@ -142,9 +142,9 @@ public final class Artifact {
     }
 
     /**
-     * Creates a new instance of {@code Builder} for {@code Artifact} instances.
+     * Creates a new builder for the instances of this type.
      * 
-     * @return new instance of {@code Builder}
+     * @return new builder instance
      */
     public static Builder newBuilder() {
         return new Builder();
@@ -201,9 +201,7 @@ public final class Artifact {
         }
 
         /**
-         * Creates a new instance of {@code Artifact}.
-         * 
-         * @return new instance of {@code Artifact}
+         * Creates a new instance of {@link Artifact}.
          */
         public Artifact build() {
             checkNotNull(group);

@@ -61,7 +61,7 @@ public class Required
     }
 
     /**
-     * Creates a new instance of the {@code Required} option.
+     * Creates a new instance.
      *
      * <p>If the specified parameter is {@code true}, a returned option always assumes a field to
      * be {@code required}, regardless of the field value.

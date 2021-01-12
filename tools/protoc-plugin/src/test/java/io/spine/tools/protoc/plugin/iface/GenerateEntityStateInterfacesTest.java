@@ -118,6 +118,7 @@ class GenerateEntityStateInterfacesTest {
         return markEntityStatesAs(ClassName.of(className));
     }
 
+    @SuppressWarnings("rawtypes")   // due to the nature of {@code Some.class} in Java.
     private static GenerateEntityStateInterfaces
     markEntityStatesAs(Class<? extends EntityState> clazz) {
         return markEntityStatesAs(ClassName.of(clazz));

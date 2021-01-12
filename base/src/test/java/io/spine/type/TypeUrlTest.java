@@ -50,7 +50,7 @@ import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.Assertions.assertNpe;
 import static io.spine.testing.Assertions.assertUnknownType;
-import static io.spine.testing.Tests.nullRef;
+import static io.spine.testing.TestValues.nullRef;
 import static io.spine.type.TypeUrl.composeTypeUrl;
 import static io.spine.type.TypeUrl.parse;
 import static org.junit.jupiter.api.Assertions.assertThrows;

@@ -37,10 +37,8 @@
  * the publishing application accordingly.
  */
 
-/**
- * The version of this library.
- */
-val base = "1.7.4"
+/** The version of this library. */
+val base = "2.0.0-jdk8.SNAPSHOT.10"
 
 project.extra.apply {
     this["spineVersion"] = base

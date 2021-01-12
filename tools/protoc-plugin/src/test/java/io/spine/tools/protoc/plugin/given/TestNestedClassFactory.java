@@ -44,7 +44,7 @@ public final class TestNestedClassFactory implements NestedClassFactory {
             new GeneratedNestedClass("static class NestedClass {}");
 
     @Override
-    public List<GeneratedNestedClass> createFor(MessageType messageType) {
+    public List<GeneratedNestedClass> generateClassesFor(MessageType messageType) {
         return ImmutableList.of(NESTED_CLASS);
     }
 }

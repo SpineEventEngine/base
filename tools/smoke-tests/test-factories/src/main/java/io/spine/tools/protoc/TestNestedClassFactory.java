@@ -49,7 +49,7 @@ import static javax.lang.model.element.Modifier.STATIC;
 public final class TestNestedClassFactory implements NestedClassFactory {
 
     @Override
-    public List<GeneratedNestedClass> createFor(MessageType messageType) {
+    public List<GeneratedNestedClass> generateClassesFor(MessageType messageType) {
         ClassName messageClassName = ClassName.get("", messageType.simpleJavaClassName().value());
         MethodSpec ownClass = MethodSpec
                 .methodBuilder("messageClass")

@@ -141,7 +141,7 @@ final class ExternalClassLoaderTest {
     private static class EmptyMethodFactory implements MethodFactory {
 
         @Override
-        public ImmutableList<GeneratedMethod> createFor(MessageType messageType) {
+        public ImmutableList<GeneratedMethod> generateMethodsFor(MessageType messageType) {
             return ImmutableList.of();
         }
     }

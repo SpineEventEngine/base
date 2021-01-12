@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.testing.Tests.nullRef;
+import static io.spine.testing.TestValues.nullRef;
 
 /**
  * With this unit test we are fixating the {@link MethodFactory} contract.
@@ -46,7 +46,7 @@ final class MethodFactoryTest {
     @DisplayName("obey the defined contract")
     @Test
     void obeyTheContract() {
-        assertThat(new TestMethodFactory().createFor(nullRef())).isEmpty();
+        assertThat(new TestMethodFactory().generateMethodsFor(nullRef())).isEmpty();
     }
 
     @Immutable
@@ -56,7 +56,7 @@ final class MethodFactoryTest {
         }
 
         @Override
-        public List<GeneratedMethod> createFor(MessageType messageType) {
+        public List<GeneratedMethod> generateMethodsFor(MessageType messageType) {
             return ImmutableList.of();
         }
     }

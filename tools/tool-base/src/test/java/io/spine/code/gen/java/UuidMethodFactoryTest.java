@@ -46,7 +46,7 @@ final class UuidMethodFactoryTest {
     @DisplayName("not allow null values")
     @Test
     void notAllowNulls() {
-        assertNpe(() -> factory.createFor(null));
+        assertNpe(() -> factory.generateMethodsFor(null));
     }
 
     @SuppressWarnings("HardcodedLineSeparator")
@@ -58,7 +58,7 @@ final class UuidMethodFactoryTest {
         @Test
         void generateMethod() {
             MessageType uuidType = new MessageType(UuidMessage.getDescriptor());
-            List<GeneratedMethod> methods = factory.createFor(uuidType);
+            List<GeneratedMethod> methods = factory.generateMethodsFor(uuidType);
             GeneratedMethod generate = methods.get(0);
             assertThat(generate.toString())
                     .isEqualTo("/**\n" +
@@ -74,7 +74,7 @@ final class UuidMethodFactoryTest {
         @Test
         void ofMethod() {
             MessageType uuidType = new MessageType(UuidMessage.getDescriptor());
-            List<GeneratedMethod> methods = factory.createFor(uuidType);
+            List<GeneratedMethod> methods = factory.generateMethodsFor(uuidType);
             GeneratedMethod of = methods.get(1);
             assertThat(of.toString())
                     .isEqualTo("/**\n" +

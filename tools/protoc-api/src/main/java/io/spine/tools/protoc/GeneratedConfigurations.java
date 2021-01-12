@@ -44,7 +44,7 @@ import static io.spine.tools.protoc.ProtocTaskConfigs.byPatternConfig;
  * @see GeneratedInterfaces
  * @see GeneratedMethods
  * @see GeneratedNestedClasses
- * @see GeneratedColumns
+ * @see GeneratedEntityQueries
  * @see GeneratedFields
  */
 abstract class GeneratedConfigurations<C extends Message> {

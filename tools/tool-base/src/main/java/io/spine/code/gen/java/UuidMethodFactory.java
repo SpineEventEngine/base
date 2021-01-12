@@ -28,11 +28,9 @@ package io.spine.code.gen.java;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
-import io.spine.code.java.PackageName;
-import io.spine.code.java.SimpleClassName;
+import com.squareup.javapoet.TypeName;
 import io.spine.tools.protoc.plugin.method.GeneratedMethod;
 import io.spine.tools.protoc.plugin.method.MethodFactory;
 import io.spine.type.MessageType;
@@ -62,17 +60,17 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Immutable
 public final class UuidMethodFactory implements MethodFactory {
 
+    @SuppressWarnings("DuplicateStringLiteralInspection")   // Duplicates in the generated code.
     private static final String INVALID_STRING_MESSAGE = "Invalid UUID string: %s";
 
     @Override
-    public List<GeneratedMethod> createFor(MessageType messageType) {
+    public List<GeneratedMethod> generateMethodsFor(MessageType messageType) {
         checkNotNull(messageType);
         if (!messageType.isUuidValue()) {
             return ImmutableList.of();
         }
-        PackageName packageName = messageType.javaPackage();
-        SimpleClassName simpleClassName = messageType.simpleJavaClassName();
-        ClassName self = ClassName.get(packageName.value(), simpleClassName.value());
+        TypeName self = JavaPoetName.of(messageType)
+                                    .value();
         return ImmutableList.of(newGenerateMethodSpec(self), newOfMethodSpec(self));
     }
 
@@ -93,7 +91,7 @@ public final class UuidMethodFactory implements MethodFactory {
      *     }
      * </pre>
      */
-    private static GeneratedMethod newOfMethodSpec(ClassName self) {
+    private static GeneratedMethod newOfMethodSpec(TypeName self) {
         ParameterSpec uuidParameter = ParameterSpec
                 .builder(String.class, "uuid")
                 .build();
@@ -127,8 +125,7 @@ public final class UuidMethodFactory implements MethodFactory {
      *      }
      * </pre>
      */
-    private static GeneratedMethod newGenerateMethodSpec(ClassName self) {
-        @SuppressWarnings("DuplicateStringLiteralInspection") // local semantic: method name
+    private static GeneratedMethod newGenerateMethodSpec(TypeName self) {
         MethodSpec spec = MethodSpec
                 .methodBuilder("generate")
                 .returns(self)
