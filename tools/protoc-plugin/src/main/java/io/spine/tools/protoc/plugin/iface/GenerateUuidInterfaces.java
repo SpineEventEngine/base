@@ -58,7 +58,7 @@ final class GenerateUuidInterfaces extends InterfaceGenerationTask {
     }
 
     @Override
-    TypeParameters interfaceParameters() {
+    TypeParameters interfaceParameters(MessageType type) {
         return TypeParameters.of(new IdentityParameter());
     }
 }

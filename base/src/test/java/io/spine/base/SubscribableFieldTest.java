@@ -27,6 +27,7 @@
 package io.spine.base;
 
 import com.google.common.testing.NullPointerTester;
+import io.spine.query.EntityStateField;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

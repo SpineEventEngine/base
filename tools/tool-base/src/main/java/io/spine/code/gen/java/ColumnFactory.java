@@ -44,7 +44,7 @@ import java.util.List;
 public final class ColumnFactory implements NestedClassFactory {
 
     @Override
-    public List<GeneratedNestedClass> createFor(MessageType messageType) {
+    public List<GeneratedNestedClass> generateClassesFor(MessageType messageType) {
         String generatedCode = ColumnContainerSpec.of(messageType)
                                                   .typeSpec()
                                                   .toString();
