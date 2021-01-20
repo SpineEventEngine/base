@@ -27,6 +27,7 @@
 package io.spine.tools.protoc;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import io.spine.type.Type;
 
 import java.util.Collection;
@@ -50,9 +51,11 @@ public final class CompositeGenerator extends CodeGenerator {
 
     @Override
     protected Collection<CompilerOutput> generate(Type<?, ?> type) {
-        return generators.stream()
-                         .flatMap(generator -> generator.generate(type).stream())
-                         .collect(toImmutableSet());
+        ImmutableSet<CompilerOutput> output =
+                generators.stream()
+                          .flatMap(generator -> generator.generate(type).stream())
+                          .collect(toImmutableSet());
+        return output;
     }
 
     /**
