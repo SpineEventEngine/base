@@ -104,7 +104,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      * {@link EventMessage io.spine.base.EventMessage} and thus it is safe to mark all events with
      * this interface instead of the default one.
      */
-    public final void mark(PatternSelector selector, @FullyQualifiedName ClassName interfaceName) {
+    public final void mark(PatternSelector selector, ClassName interfaceName) {
         checkNotNull(selector);
         checkNotNull(interfaceName);
         addPattern(selector, interfaceName);
@@ -155,7 +155,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      * A syntax sugar method used for a more natural Gradle DSL.
      */
     @SuppressWarnings({"MethodMayBeStatic", "unused"}) // Gradle DSL
-    public final ClassName asType(String interfaceName){
+    public final ClassName asType(@FullyQualifiedName String interfaceName){
         return ClassName.of(interfaceName);
     }
 
