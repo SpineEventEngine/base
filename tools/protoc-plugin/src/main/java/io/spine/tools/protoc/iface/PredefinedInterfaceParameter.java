@@ -28,7 +28,7 @@ package io.spine.tools.protoc.iface;
 
 import com.google.errorprone.annotations.Immutable;
 import io.spine.code.java.ClassName;
-import io.spine.tools.protoc.TypeParameter;
+import io.spine.tools.protoc.InterfaceParameter;
 import io.spine.type.Type;
 
 /**
@@ -36,11 +36,11 @@ import io.spine.type.Type;
  * on the type of an actual descendant.
  */
 @Immutable
-final class PredefinedTypeParameter implements TypeParameter {
+final class PredefinedInterfaceParameter implements InterfaceParameter {
 
     private final ClassName value;
 
-    PredefinedTypeParameter(ClassName value) {
+    PredefinedInterfaceParameter(ClassName value) {
         this.value = value;
     }
 

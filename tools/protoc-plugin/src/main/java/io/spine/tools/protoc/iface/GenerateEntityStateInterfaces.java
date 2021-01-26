@@ -29,7 +29,7 @@ package io.spine.tools.protoc.iface;
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.EntityStateConfig;
-import io.spine.tools.protoc.TypeParameter;
+import io.spine.tools.protoc.InterfaceParameter;
 import io.spine.tools.protoc.TypeParameters;
 import io.spine.type.MessageType;
 
@@ -65,13 +65,13 @@ final class GenerateEntityStateInterfaces extends InterfaceGenerationTask {
         if (!type.isEntityState()) {
             return TypeParameters.of();
         }
-        Optional<TypeParameter> firstParameter = readFirstGenericParameter(type);
+        Optional<InterfaceParameter> firstParameter = readFirstGenericParameter(type);
         if (!firstParameter.isPresent()) {
             throw newIllegalStateException(
-                    "The first generic parameter must be defined for the `EntityState` interface. " +
-                            "Use `@FirstGenericParameter` with `EntityState` for this purpose.");
+                    "The first generic parameter must be defined for the `EntityState` interface. "
+                            + "Please use `@FirstGenericParameter`.");
         }
-        TypeParameter parameter = firstParameter.get();
+        InterfaceParameter parameter = firstParameter.get();
         return TypeParameters.of(parameter);
     }
 }

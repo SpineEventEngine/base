@@ -28,32 +28,35 @@ package io.spine.tools.protoc;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.protoc.iface.MessageInterface;
 import io.spine.type.Type;
 
 import static java.util.stream.Collectors.joining;
 
 /**
- * The generic parameters of the {@link MessageInterface}.
+ * A collection of generic parameters to be used for generating a class.
  *
- * <p>Contrary to the type information contained in a {@link Class} instance, the
- * {@code TypeParameter} carries the logic on how to initialize itself based on the
- * message interface descendant.
+ * @see InterfaceParameter
  */
 @Immutable
 public final class TypeParameters {
 
-    private final ImmutableList<TypeParameter> params;
+    private final ImmutableList<InterfaceParameter> params;
 
-    private TypeParameters(ImmutableList<TypeParameter> params) {
+    private TypeParameters(ImmutableList<InterfaceParameter> params) {
         this.params = params;
     }
 
-    public static TypeParameters of(TypeParameter... parameters) {
-        ImmutableList<TypeParameter> params = ImmutableList.copyOf(parameters);
+    /**
+     * Creates a collection of type parameters using the passed values.
+     */
+    public static TypeParameters of(InterfaceParameter... parameters) {
+        ImmutableList<InterfaceParameter> params = ImmutableList.copyOf(parameters);
         return new TypeParameters(params);
     }
 
+    /**
+     * Obtains empty instance.
+     */
     public static TypeParameters empty() {
         return new TypeParameters(ImmutableList.of());
     }
@@ -69,11 +72,11 @@ public final class TypeParameters {
         if (params.isEmpty()) {
             return "";
         }
-        String result = '<' + initParams(type) + '>';
+        String result = '<' + joinFor(type) + '>';
         return result;
     }
 
-    private String initParams(Type<?, ?> type) {
+    private String joinFor(Type<?, ?> type) {
         return params.stream()
                      .map(param -> param.valueFor(type))
                      .collect(joining(", "));

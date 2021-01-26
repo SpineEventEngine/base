@@ -36,7 +36,7 @@ import io.spine.type.Type;
  * parameter will be {@code ProjectId}.
  */
 @Immutable
-public final class IdentityParameter implements TypeParameter {
+public final class IdentityParameter implements InterfaceParameter {
 
     @Override
     public String valueFor(Type<?, ?> type) {

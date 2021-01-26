@@ -31,12 +31,11 @@ import io.spine.tools.protoc.iface.MessageInterface;
 import io.spine.type.Type;
 
 /**
- * The generic parameter of the {@link MessageInterface}.
- *
- * <p>Parameter value is presented as {@code String} for usage in the generated code.
+ * A generic parameter of an {@linkplain MessageInterface interface} which will be
+ * used in a generated code.
  */
 @Immutable
-public interface TypeParameter {
+public interface InterfaceParameter {
 
     /**
      * Obtains a parameter value based on who is the message interface descendant.
