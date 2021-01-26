@@ -77,6 +77,8 @@ final class UserDefinedInterface extends AbstractCompilerOutput implements Messa
 
     /**
      * Generic params are currently not supported for user-defined message interfaces.
+     *
+     * @return {@link InterfaceParameters#empty()} always
      */
     @Override
     public InterfaceParameters parameters() {
