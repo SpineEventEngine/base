@@ -49,8 +49,8 @@ public final class InterfaceParameters {
         this.params = params;
     }
 
-    public static InterfaceParameters of(InterfaceParameter... parameters) {
-        ImmutableList<InterfaceParameter> params = ImmutableList.copyOf(parameters);
+    public static InterfaceParameters of(InterfaceParameter... param) {
+        ImmutableList<InterfaceParameter> params = ImmutableList.copyOf(param);
         return new InterfaceParameters(params);
     }
 
