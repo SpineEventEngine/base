@@ -47,8 +47,8 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  */
 final class GenerateEntityStateInterfaces extends InterfaceGenerationTask {
 
-    GenerateEntityStateInterfaces(EntityStateConfig entityStateConfig) {
-        super(entityStateConfig.getValue());
+    GenerateEntityStateInterfaces(EntityStateConfig config) {
+        super(config.getValue());
     }
 
     @Override
