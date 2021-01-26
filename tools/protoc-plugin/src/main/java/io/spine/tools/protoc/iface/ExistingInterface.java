@@ -24,22 +24,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.iface;
 
-import com.google.errorprone.annotations.Immutable;
-import io.spine.type.Type;
+import io.spine.code.java.ClassName;
+import io.spine.tools.protoc.InterfaceParameters;
 
 /**
- * The message interface parameter whose value is the target {@code Message} itself.
- *
- * <p>So, for the {@code ProjectId} class implementing some message interface, the value of the
- * parameter will be {@code ProjectId}.
+ * An interface which already exists.
  */
-@Immutable
-public final class IdentityParameter implements TypeParameter {
+public final class ExistingInterface implements MessageInterface {
+
+    private final ClassName name;
+    private final InterfaceParameters parameters;
+
+    public ExistingInterface(ClassName name, InterfaceParameters params) {
+        this.name = name;
+        this.parameters = params;
+    }
 
     @Override
-    public String valueFor(Type<?, ?> type) {
-        return type.simpleJavaClassName().value();
+    public String name() {
+        return name.value();
+    }
+
+    @Override
+    public InterfaceParameters parameters() {
+        return parameters;
     }
 }

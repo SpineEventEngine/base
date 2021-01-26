@@ -30,8 +30,8 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.squareup.javapoet.JavaFile;
 import io.spine.code.fs.java.SourceFile;
 import io.spine.tools.protoc.AbstractCompilerOutput;
+import io.spine.tools.protoc.InterfaceParameters;
 import io.spine.tools.protoc.ProtocPluginFiles;
-import io.spine.tools.protoc.TypeParameters;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -79,7 +79,7 @@ final class CustomMessageInterface extends AbstractCompilerOutput implements Mes
      * Generic params are currently not supported for user-defined message interfaces.
      */
     @Override
-    public TypeParameters parameters() {
-        return TypeParameters.empty();
+    public InterfaceParameters parameters() {
+        return InterfaceParameters.empty();
     }
 }

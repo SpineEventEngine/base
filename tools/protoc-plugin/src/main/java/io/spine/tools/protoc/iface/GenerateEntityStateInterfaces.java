@@ -29,8 +29,8 @@ package io.spine.tools.protoc.iface;
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.EntityStateConfig;
-import io.spine.tools.protoc.TypeParameter;
-import io.spine.tools.protoc.TypeParameters;
+import io.spine.tools.protoc.InterfaceParameter;
+import io.spine.tools.protoc.InterfaceParameters;
 import io.spine.type.MessageType;
 
 import java.util.Optional;
@@ -61,17 +61,17 @@ final class GenerateEntityStateInterfaces extends InterfaceGenerationTask {
     }
 
     @Override
-    TypeParameters interfaceParameters(MessageType type) {
+    InterfaceParameters interfaceParameters(MessageType type) {
         if (!type.isEntityState()) {
-            return TypeParameters.of();
+            return InterfaceParameters.empty();
         }
-        Optional<TypeParameter> firstParameter = readFirstGenericParameter(type);
+        Optional<InterfaceParameter> firstParameter = readFirstGenericParameter(type);
         if (!firstParameter.isPresent()) {
             throw newIllegalStateException(
                     "The first generic parameter must be defined for the `EntityState` interface. " +
                             "Use `@FirstGenericParameter` with `EntityState` for this purpose.");
         }
-        TypeParameter parameter = firstParameter.get();
-        return TypeParameters.of(parameter);
+        InterfaceParameter parameter = firstParameter.get();
+        return InterfaceParameters.of(parameter);
     }
 }

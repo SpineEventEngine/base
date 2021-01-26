@@ -41,21 +41,21 @@ import static java.util.stream.Collectors.joining;
  * message interface descendant.
  */
 @Immutable
-public final class TypeParameters {
+public final class InterfaceParameters {
 
-    private final ImmutableList<TypeParameter> params;
+    private final ImmutableList<InterfaceParameter> params;
 
-    private TypeParameters(ImmutableList<TypeParameter> params) {
+    private InterfaceParameters(ImmutableList<InterfaceParameter> params) {
         this.params = params;
     }
 
-    public static TypeParameters of(TypeParameter... parameters) {
-        ImmutableList<TypeParameter> params = ImmutableList.copyOf(parameters);
-        return new TypeParameters(params);
+    public static InterfaceParameters of(InterfaceParameter... parameters) {
+        ImmutableList<InterfaceParameter> params = ImmutableList.copyOf(parameters);
+        return new InterfaceParameters(params);
     }
 
-    public static TypeParameters empty() {
-        return new TypeParameters(ImmutableList.of());
+    public static InterfaceParameters empty() {
+        return new InterfaceParameters(ImmutableList.of());
     }
 
     /**
@@ -69,11 +69,11 @@ public final class TypeParameters {
         if (params.isEmpty()) {
             return "";
         }
-        String result = '<' + initParams(type) + '>';
+        String result = '<' + joinFor(type) + '>';
         return result;
     }
 
-    private String initParams(Type<?, ?> type) {
+    private String joinFor(Type<?, ?> type) {
         return params.stream()
                      .map(param -> param.valueFor(type))
                      .collect(joining(", "));

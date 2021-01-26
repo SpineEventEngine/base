@@ -27,6 +27,7 @@
 package io.spine.tools.protoc.validation;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.compiler.PluginProtos;
 import io.spine.code.java.ClassName;
 import io.spine.protobuf.MessageWithConstraints;
 import io.spine.tools.protoc.CodeGenerator;
@@ -35,9 +36,9 @@ import io.spine.tools.protoc.InsertionPoint;
 import io.spine.tools.protoc.NoOpGenerator;
 import io.spine.tools.protoc.ProtocPluginFiles;
 import io.spine.tools.protoc.SpineProtocConfig;
+import io.spine.tools.protoc.iface.ExistingInterface;
 import io.spine.tools.protoc.iface.MessageImplements;
 import io.spine.tools.protoc.iface.MessageInterface;
-import io.spine.tools.protoc.iface.PredefinedInterface;
 import io.spine.tools.validate.ValidateGenerator;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
@@ -46,7 +47,7 @@ import java.util.Collection;
 
 import static io.spine.tools.protoc.InsertionPoint.builder_scope;
 import static io.spine.tools.protoc.InsertionPoint.class_scope;
-import static io.spine.tools.protoc.TypeParameters.empty;
+import static io.spine.tools.protoc.InterfaceParameters.empty;
 import static io.spine.tools.protoc.iface.MessageImplements.implementInterface;
 
 /**
@@ -56,7 +57,7 @@ import static io.spine.tools.protoc.iface.MessageImplements.implementInterface;
 public final class ValidatorCode extends CodeGenerator {
 
     private static final MessageInterface VALIDATABLE_MESSAGE =
-            new PredefinedInterface(ClassName.of(MessageWithConstraints.class), empty());
+            new ExistingInterface(ClassName.of(MessageWithConstraints.class), empty());
 
     /**
      * Prevents direct instantiation.
@@ -97,10 +98,11 @@ public final class ValidatorCode extends CodeGenerator {
 
     private static CompilerOutput
     insertCode(Type<?, ?> type, InsertionPoint target, String javaCode) {
-        return CompilerOutput.wrapping(ProtocPluginFiles
-                                               .prepareFile(type)
-                                               .setInsertionPoint(target.forType(type))
-                                               .setContent(javaCode)
-                                               .build());
+        PluginProtos.CodeGeneratorResponse.File file = ProtocPluginFiles
+                .prepareFile(type)
+                .setInsertionPoint(target.forType(type))
+                .setContent(javaCode)
+                .build();
+        return CompilerOutput.wrapping(file);
     }
 }

@@ -24,31 +24,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.iface;
+package io.spine.tools.protoc;
 
-import io.spine.code.java.ClassName;
-import io.spine.tools.protoc.TypeParameters;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.tools.protoc.iface.MessageInterface;
+import io.spine.type.Type;
 
 /**
- * An interface which already exists.
+ * The generic parameter of the {@link MessageInterface}.
+ *
+ * <p>Parameter value is presented as {@code String} for usage in the generated code.
  */
-public final class PredefinedInterface implements MessageInterface {
+@Immutable
+public interface InterfaceParameter {
 
-    private final ClassName name;
-    private final TypeParameters parameters;
-
-    public PredefinedInterface(ClassName name, TypeParameters parameters) {
-        this.name = name;
-        this.parameters = parameters;
-    }
-
-    @Override
-    public String name() {
-        return name.value();
-    }
-
-    @Override
-    public TypeParameters parameters() {
-        return parameters;
-    }
+    /**
+     * Obtains a parameter value based on who is the message interface descendant.
+     *
+     * @param descendant
+     *         the {@code Message} class implementing the interface
+     * @return the value of the generic parameter
+     */
+    String valueFor(Type<?, ?> descendant);
 }

@@ -27,23 +27,20 @@
 package io.spine.tools.protoc;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.protoc.iface.MessageInterface;
 import io.spine.type.Type;
 
 /**
- * The generic parameter of the {@link MessageInterface}.
+ * The message interface parameter whose value is the class itself (which is going to implement
+ * the interface).
  *
- * <p>Parameter value is presented as {@code String} for usage in the generated code.
+ * <p>So, for the {@code ProjectId} class implementing some message interface, the value of the
+ * parameter will be {@code ProjectId}.
  */
 @Immutable
-public interface TypeParameter {
+public final class GeneratedClass implements InterfaceParameter {
 
-    /**
-     * Obtains a parameter value based on who is the message interface descendant.
-     *
-     * @param descendant
-     *         the {@code Message} class implementing the interface
-     * @return the value of the generic parameter
-     */
-    String valueFor(Type<?, ?> descendant);
+    @Override
+    public String valueFor(Type<?, ?> type) {
+        return type.simpleJavaClassName().value();
+    }
 }

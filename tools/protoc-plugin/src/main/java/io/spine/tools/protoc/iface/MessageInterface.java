@@ -26,7 +26,7 @@
 
 package io.spine.tools.protoc.iface;
 
-import io.spine.tools.protoc.TypeParameters;
+import io.spine.tools.protoc.InterfaceParameters;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 /**
@@ -43,7 +43,7 @@ public interface MessageInterface {
      * Obtains generic parameters of the interface.
      *
      * @return generic parameters if the interface is parameterised, or
-     *         {@link TypeParameters#empty()} otherwise
+     *         {@link InterfaceParameters#empty()} otherwise
      */
-    TypeParameters parameters();
+    InterfaceParameters parameters();
 }

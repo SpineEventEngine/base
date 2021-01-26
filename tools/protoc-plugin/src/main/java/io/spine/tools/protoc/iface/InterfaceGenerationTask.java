@@ -32,8 +32,8 @@ import io.spine.code.java.ClassName;
 import io.spine.protobuf.DetermineType;
 import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.TypeParameter;
-import io.spine.tools.protoc.TypeParameters;
+import io.spine.tools.protoc.InterfaceParameter;
+import io.spine.tools.protoc.InterfaceParameters;
 import io.spine.type.MessageType;
 
 import java.lang.reflect.Constructor;
@@ -57,8 +57,8 @@ abstract class InterfaceGenerationTask implements CodeGenerationTask {
     /**
      * Creates {@link MessageInterface} parameters.
      */
-    TypeParameters interfaceParameters(MessageType type) {
-        return TypeParameters.empty();
+    InterfaceParameters interfaceParameters(MessageType type) {
+        return InterfaceParameters.empty();
     }
 
     /**
@@ -67,7 +67,7 @@ abstract class InterfaceGenerationTask implements CodeGenerationTask {
     ImmutableList<CompilerOutput> generateInterfacesFor(MessageType type) {
         ClassName interfaceName = ClassName.of(this.interfaceName);
         MessageInterface messageInterface =
-                new PredefinedInterface(interfaceName, interfaceParameters(type));
+                new ExistingInterface(interfaceName, interfaceParameters(type));
         MessageImplements result = implementInterface(type, messageInterface);
         return ImmutableList.of(result);
     }
@@ -79,14 +79,14 @@ abstract class InterfaceGenerationTask implements CodeGenerationTask {
      * @return the type of the generic parameter,
      *         or {@code Optional.empty()} if no annotation is defined for the message type
      */
-    Optional<TypeParameter> readFirstGenericParameter(MessageType type) {
+    Optional<InterfaceParameter> readFirstGenericParameter(MessageType type) {
         Class<?> iface;
         try {
             iface = Class.forName(interfaceName);
         } catch (ClassNotFoundException e) {
             return Optional.empty();
         }
-        Optional<TypeParameter> firstParameter = Optional.empty();
+        Optional<InterfaceParameter> firstParameter = Optional.empty();
 
         if (iface.isAnnotationPresent(FirstGenericParameter.class)) {
             FirstGenericParameter annotation = iface.getAnnotation(FirstGenericParameter.class);
@@ -95,9 +95,9 @@ abstract class InterfaceGenerationTask implements CodeGenerationTask {
         return firstParameter;
     }
 
-    private static Optional<TypeParameter>
+    private static Optional<InterfaceParameter>
     detectParameter(MessageType type, FirstGenericParameter annotation) {
-        Optional<TypeParameter> firstParameter;
+        Optional<InterfaceParameter> firstParameter;
         try {
             Class<? extends DetermineType> fieldTypeDetector = annotation.is();
             Constructor<? extends DetermineType> ctor = fieldTypeDetector.getConstructor();
