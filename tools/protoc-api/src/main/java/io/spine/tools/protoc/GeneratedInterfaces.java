@@ -37,6 +37,19 @@ import static io.spine.tools.protoc.ProtocTaskConfigs.uuidConfig;
 
 /**
  * A configuration of interfaces to be generated for Java message classes.
+ *
+ * <p>The configuration is declared under the {@code interfaces} part of
+ * the {@code modelCompiler} section in a Gradle script:
+ *
+ * <pre>
+ * modelCompiler {
+ *     interfaces {
+ *        // ...
+ *     }
+ * }
+ * </pre>
+ *
+ * @see #mark(PatternSelector, ClassName)
  */
 public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterfaces> {
 
@@ -91,10 +104,10 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      * {@link EventMessage io.spine.base.EventMessage} and thus it is safe to mark all events with
      * this interface instead of the default one.
      */
-    public final void mark(PatternSelector patternSelector, @FullyQualifiedName ClassName interfaceName) {
-        checkNotNull(patternSelector);
+    public final void mark(PatternSelector selector, ClassName interfaceName) {
+        checkNotNull(selector);
         checkNotNull(interfaceName);
-        addPattern(patternSelector, interfaceName);
+        addPattern(selector, interfaceName);
     }
 
     /**
@@ -142,7 +155,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
      * A syntax sugar method used for a more natural Gradle DSL.
      */
     @SuppressWarnings({"MethodMayBeStatic", "unused"}) // Gradle DSL
-    public final ClassName asType(String interfaceName){
+    public final ClassName asType(@FullyQualifiedName String interfaceName){
         return ClassName.of(interfaceName);
     }
 

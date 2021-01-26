@@ -77,7 +77,7 @@ public final class SimpleClassName extends StringTypeValue {
      */
     public static SimpleClassName outerOf(FileDescriptorProto file) {
         checkNotNull(file);
-        String value = getOuterClassName(file);
+        String value = outerClassNameOf(file);
         SimpleClassName result = create(value);
         return result;
     }
@@ -98,14 +98,18 @@ public final class SimpleClassName extends StringTypeValue {
      *         {@linkplain Optional#empty() empty Optional} if the option is not set
      */
     public static Optional<SimpleClassName> declaredOuterClassName(FileDescriptor file) {
-        String className = file.getOptions()
-                               .getJavaOuterClassname();
+        String className = declaredOuterClassName(file.toProto());
         if (className.isEmpty()) {
             return Optional.empty();
         }
-
         SimpleClassName result = outerOf(file);
         return Optional.of(result);
+    }
+
+    private static String declaredOuterClassName(FileDescriptorProto file) {
+        String result = file.getOptions()
+                            .getJavaOuterClassname();
+        return result;
     }
 
     /**
@@ -116,19 +120,19 @@ public final class SimpleClassName extends StringTypeValue {
      * <a href="https://developers.google.com/protocol-buffers/docs/reference/java-generated#invocation">
      * Protobuf compiler conventions</a>.
      *
-     * @param file a descriptor for file for which outer class name will be generated
+     * @param file
+     *         a descriptor for file for which outer class name will be generated
      * @return non-qualified outer class name
      */
-    private static String getOuterClassName(FileDescriptorProto file) {
+    private static String outerClassNameOf(FileDescriptorProto file) {
         checkNotNull(file);
-        String outerClassNameFromOptions = file.getOptions()
-                                               .getJavaOuterClassname();
-        if (!outerClassNameFromOptions.isEmpty()) {
-            return outerClassNameFromOptions;
+        String nameDeclaredInOptions = declaredOuterClassName(file);
+        if (!nameDeclaredInOptions.isEmpty()) {
+            return nameDeclaredInOptions;
         }
-
-        String className = io.spine.code.proto.FileName.from(file)
-                                                       .nameOnlyCamelCase();
+        String className =
+                io.spine.code.proto.FileName.from(file)
+                                            .nameOnlyCamelCase();
         return className;
     }
 

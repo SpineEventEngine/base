@@ -27,6 +27,7 @@
 package io.spine.tools.protoc.iface;
 
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Message;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.tools.protoc.AddInterfaces;
 import io.spine.tools.protoc.CodeGenerationTask;
@@ -34,7 +35,9 @@ import io.spine.tools.protoc.CodeGenerationTasks;
 import io.spine.tools.protoc.CodeGenerator;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.ConfigByPattern;
+import io.spine.tools.protoc.EntityStateConfig;
 import io.spine.tools.protoc.SpineProtocConfig;
+import io.spine.tools.protoc.UuidConfig;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 
@@ -74,16 +77,26 @@ public final class InterfaceGenerator extends CodeGenerator {
         checkNotNull(spineProtocConfig);
         AddInterfaces config = spineProtocConfig.getAddInterfaces();
         ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();
-        if (isNotDefault(config.getUuidInterface())) {
-            tasks.add(new GenerateUuidInterfaces(config.getUuidInterface()));
+        UuidConfig uuidInterface = config.getUuidInterface();
+        if (generate(uuidInterface)) {
+            tasks.add(new GenerateUuidInterfaces(uuidInterface));
         }
         for (ConfigByPattern byPattern : config.getInterfaceByPatternList()) {
             tasks.add(new GenerateInterfaces(byPattern));
         }
-        if (isNotDefault(config.getEntityStateInterface())) {
-            tasks.add(new GenerateEntityStateInterfaces(config.getEntityStateInterface()));
+        EntityStateConfig entityStateInterface = config.getEntityStateInterface();
+        if (generate(entityStateInterface)) {
+            tasks.add(new GenerateEntityStateInterfaces(entityStateInterface));
         }
         return new InterfaceGenerator(tasks.build());
+    }
+
+    /**
+     * This is a DSL method for checking if a passed Model Compiler configuration setting
+     * (such as {@link UuidConfig} or {@link EntityStateConfig}) is turned on.
+     */
+    private static boolean generate(Message config) {
+        return isNotDefault(config);
     }
 
     /**
