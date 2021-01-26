@@ -43,11 +43,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * an {@link io.spine.option.OptionsProto#everyIs (every_is)} option. See the option doc for
  * details.
  */
-final class CustomMessageInterface extends AbstractCompilerOutput implements MessageInterface {
+final class UserDefinedInterface extends AbstractCompilerOutput implements MessageInterface {
 
     private final String interfaceFqn;
 
-    private CustomMessageInterface(File file, @FullyQualifiedName String interfaceFqn) {
+    private UserDefinedInterface(File file, @FullyQualifiedName String interfaceFqn) {
         super(file);
         this.interfaceFqn = interfaceFqn;
     }
@@ -59,7 +59,7 @@ final class CustomMessageInterface extends AbstractCompilerOutput implements Mes
      *         the interface spec to create an interface from
      * @return new instance of {@code CustomMessageInterface}
      */
-    static CustomMessageInterface from(MessageInterfaceSpec spec) {
+    static UserDefinedInterface from(MessageInterfaceSpec spec) {
         checkNotNull(spec);
         JavaFile javaCode = spec.toJavaCode();
         SourceFile file = spec.toSourceFile();
@@ -67,7 +67,7 @@ final class CustomMessageInterface extends AbstractCompilerOutput implements Mes
                 .setContent(javaCode.toString())
                 .build();
         String fqn = spec.fullName();
-        return new CustomMessageInterface(interfaceFile, fqn);
+        return new UserDefinedInterface(interfaceFile, fqn);
     }
 
     @Override
