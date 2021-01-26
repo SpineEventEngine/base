@@ -32,6 +32,7 @@ import io.spine.code.fs.java.SourceFile;
 import io.spine.tools.protoc.AbstractCompilerOutput;
 import io.spine.tools.protoc.ProtocPluginFiles;
 import io.spine.tools.protoc.TypeParameters;
+import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -46,7 +47,7 @@ final class CustomMessageInterface extends AbstractCompilerOutput implements Mes
 
     private final String interfaceFqn;
 
-    private CustomMessageInterface(File file, String interfaceFqn) {
+    private CustomMessageInterface(File file, @FullyQualifiedName String interfaceFqn) {
         super(file);
         this.interfaceFqn = interfaceFqn;
     }
@@ -65,7 +66,7 @@ final class CustomMessageInterface extends AbstractCompilerOutput implements Mes
         File interfaceFile = ProtocPluginFiles.prepareFile(file.toString())
                 .setContent(javaCode.toString())
                 .build();
-        String fqn = spec.getFqn();
+        String fqn = spec.fullName();
         return new CustomMessageInterface(interfaceFile, fqn);
     }
 

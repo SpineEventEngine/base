@@ -27,6 +27,7 @@
 package io.spine.tools.protoc.iface;
 
 import io.spine.tools.protoc.TypeParameters;
+import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 /**
  * An interface to be implemented by the Protobuf message.
@@ -39,7 +40,7 @@ public interface MessageInterface {
     /**
      * Obtains a fully-qualified name of the interface.
      */
-    String name();
+    @FullyQualifiedName String name();
 
     /**
      * Obtains the generic params of the interface.

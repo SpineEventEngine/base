@@ -26,46 +26,28 @@
 
 package io.spine.code.gen.java;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.CodeBlock;
 
 import javax.annotation.Generated;
 
 /**
- * A factory for Java annotation specs.
+ * Provides {@link javax.annotation.Generated Generated} annotation for the code produced by
+ * the Spine Model Compiler.
  */
-public final class Annotations {
+public final class GeneratedBy {
 
-    private static final AnnotationSpec GENERATED =
+    @SuppressWarnings("DuplicateStringLiteralInspection")
+    private static final AnnotationSpec BY_MODEL_COMPILER =
             AnnotationSpec.builder(Generated.class)
-                          .addMember(GeneratedBySpine.instance().fieldName(),
-                                     CodeBlock.of(GeneratedBySpine.instance().codeBlock()))
+                          .addMember("value", CodeBlock.of("\"by Spine Model Compiler\""))
                           .build();
 
-    private static final AnnotationSpec CAN_IGNORE_RETURN_VALUE =
-            AnnotationSpec.builder(CanIgnoreReturnValue.class)
-                          .build();
-
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private Annotations() {
+    /** Prevents instantiation from outside. */
+    private GeneratedBy() {
     }
 
-    /**
-     * Obtains annotation spec. for
-     * {@link javax.annotation.Generated @Generated("by Spine Model Compiler")}
-     */
-    public static AnnotationSpec generatedBySpineModelCompiler() {
-        return GENERATED;
-    }
-
-    /**
-     * Obtains {@link com.google.errorprone.annotations.CanIgnoreReturnValue @CanIgnoreReturnValue}
-     * annotation spec.
-     */
-    public static AnnotationSpec canIgnoreReturnValue() {
-        return CAN_IGNORE_RETURN_VALUE;
+    public static AnnotationSpec spineModelCompiler() {
+        return BY_MODEL_COMPILER;
     }
 }

@@ -28,16 +28,13 @@ package io.spine.tools.protoc.iface;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Message;
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.code.fs.java.SourceFile;
-import io.spine.code.gen.java.GeneratedBySpine;
+import io.spine.code.gen.java.GeneratedBy;
 import io.spine.option.IsOption;
 import io.spine.type.Type;
 
-import javax.annotation.Generated;
 import java.util.Objects;
 
 import static io.spine.code.java.PackageName.delimiter;
@@ -49,8 +46,6 @@ import static javax.lang.model.element.Modifier.PUBLIC;
  * <p>The specification includes the package name and the type name.
  */
 final class MessageInterfaceSpec {
-
-    private static final AnnotationSpec BY_MODEL_COMPILER = byModelCompilerSpec();
 
     private final String packageName;
     private final String name;
@@ -89,10 +84,10 @@ final class MessageInterfaceSpec {
      */
     JavaFile toJavaCode() {
         TypeSpec spec = TypeSpec
-                .interfaceBuilder(getName())
+                .interfaceBuilder(name())
                 .addSuperinterface(Message.class)
                 .addModifiers(PUBLIC)
-                .addAnnotation(BY_MODEL_COMPILER)
+                .addAnnotation(GeneratedBy.spineModelCompiler())
                 .build();
         JavaFile javaFile = JavaFile
                 .builder(packageName, spec)
@@ -105,17 +100,17 @@ final class MessageInterfaceSpec {
         return result;
     }
 
-    String getName() {
+    private String name() {
         return name;
     }
 
-    String getFqn() {
+    String fullName() {
         return packageName + delimiter() + name;
     }
 
     @Override
     public String toString() {
-        return getFqn();
+        return fullName();
     }
 
     @Override
@@ -134,13 +129,5 @@ final class MessageInterfaceSpec {
         MessageInterfaceSpec other = (MessageInterfaceSpec) obj;
         return Objects.equals(this.packageName, other.packageName)
                 && Objects.equals(this.name, other.name);
-    }
-
-    private static AnnotationSpec byModelCompilerSpec() {
-        GeneratedBySpine bySpine = GeneratedBySpine.instance();
-        return AnnotationSpec
-                .builder(Generated.class)
-                .addMember(bySpine.fieldName(), CodeBlock.of(bySpine.codeBlock()))
-                .build();
     }
 }

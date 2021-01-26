@@ -31,6 +31,7 @@ import com.google.errorprone.annotations.concurrent.LazyInit;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import io.spine.code.gen.java.GeneratedBy;
 import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.java.ClassName;
@@ -44,7 +45,6 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
 import static io.spine.code.gen.java.EmptyPrivateCtor.spec;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -158,7 +158,7 @@ public final class FieldContainerSpec implements GeneratedTypeSpec {
                 .classBuilder(CLASS_NAME)
                 .addJavadoc(javadoc().spec())
                 .addModifiers(PUBLIC, STATIC, FINAL)
-                .addAnnotation(generatedBySpineModelCompiler())
+                .addAnnotation(GeneratedBy.spineModelCompiler())
                 .addMethod(spec())
                 .addMethods(fields())
                 .addTypes(messageTypeFields())
