@@ -32,20 +32,19 @@ import io.spine.tools.protoc.InterfaceParameter;
 import io.spine.type.Type;
 
 /**
- * The message interface parameter with a fixed predefined value which does not depend
- * on the type of an actual descendant.
+ * An interface parameter which is already existing class.
  */
 @Immutable
-final class ExistingInterfaceParameter implements InterfaceParameter {
+final class ExistingClass implements InterfaceParameter {
 
     private final ClassName value;
 
-    ExistingInterfaceParameter(ClassName value) {
+    ExistingClass(ClassName value) {
         this.value = value;
     }
 
     @Override
-    public String valueFor(Type<?, ?> descendant) {
+    public String valueFor(Type<?, ?> ignored) {
         return value.toString();
     }
 }

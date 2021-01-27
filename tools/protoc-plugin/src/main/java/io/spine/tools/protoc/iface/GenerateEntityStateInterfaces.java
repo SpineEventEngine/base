@@ -72,6 +72,6 @@ final class GenerateEntityStateInterfaces extends InterfaceGenerationTask {
                    "At least one field is required in an `EntityState` message type.");
         FieldDeclaration declaration = fields.get(0);
         ClassName value = declaration.className();
-        return new ExistingInterfaceParameter(value);
+        return new ExistingClass(value);
     }
 }
