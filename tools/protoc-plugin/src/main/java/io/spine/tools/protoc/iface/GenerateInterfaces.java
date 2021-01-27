@@ -30,6 +30,7 @@ import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.FilePatternMatcher;
+import io.spine.tools.protoc.InterfaceParameters;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -47,6 +48,11 @@ final class GenerateInterfaces extends InterfaceGenerationTask {
         super(config.getValue());
         checkNotDefaultArg(config.getPattern());
         this.patternMatcher = new FilePatternMatcher(config.getPattern());
+    }
+
+    @Override
+    InterfaceParameters interfaceParameters(MessageType type) {
+        return InterfaceParameters.empty();
     }
 
     /**

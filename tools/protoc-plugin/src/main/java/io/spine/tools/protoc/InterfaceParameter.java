@@ -45,4 +45,11 @@ public interface InterfaceParameter {
      * @return the value of the generic parameter
      */
     String valueFor(Type<?, ?> descendant);
+
+    /**
+     * Creates a one-element collection of parameters containing this parameter.
+     */
+    default InterfaceParameters toCollection() {
+        return InterfaceParameters.of(this);
+    }
 }

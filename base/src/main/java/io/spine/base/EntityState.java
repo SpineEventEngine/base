@@ -27,9 +27,7 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.annotation.FirstGenericParameter;
 import io.spine.annotation.GeneratedMixin;
-import io.spine.protobuf.FirstMessageField;
 import io.spine.protobuf.ValidatingBuilder;
 
 /**
@@ -63,7 +61,6 @@ import io.spine.protobuf.ValidatingBuilder;
 @SuppressWarnings("unused") /* Used in the generated code. */
 @Immutable
 @GeneratedMixin
-@FirstGenericParameter(is = FirstMessageField.class)
 public interface EntityState<I, B extends ValidatingBuilder<M>, M extends EntityState<I, B, M>>
         extends KnownMessage {
 

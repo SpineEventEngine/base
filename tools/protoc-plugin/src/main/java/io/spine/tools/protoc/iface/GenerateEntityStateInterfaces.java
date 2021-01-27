@@ -27,6 +27,10 @@
 package io.spine.tools.protoc.iface;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.primitives.Primitives;
+import io.spine.code.java.ClassName;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.code.proto.ScalarType;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.EntityStateConfig;
 import io.spine.tools.protoc.InterfaceParameter;
@@ -36,14 +40,11 @@ import io.spine.type.MessageType;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.util.Exceptions.newIllegalStateException;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * Marks the provided message type with the {@link io.spine.base.EntityState EntityState} interface
  * if the type is recognized as entity state.
- *
- * <p>Requires the {@code EntityState} to be properly configured with
- * {@link io.spine.annotation.FirstGenericParameter FirstGenericParameter annotation}.
  */
 final class GenerateEntityStateInterfaces extends InterfaceGenerationTask {
 
@@ -65,13 +66,33 @@ final class GenerateEntityStateInterfaces extends InterfaceGenerationTask {
         if (!type.isEntityState()) {
             return InterfaceParameters.empty();
         }
-        Optional<InterfaceParameter> firstParameter = readFirstGenericParameter(type);
-        if (!firstParameter.isPresent()) {
-            throw newIllegalStateException(
-                    "The first generic parameter must be defined for the `EntityState` interface. "
-                            + "Please use `@FirstGenericParameter`.");
+        InterfaceParameter firstParam = firstFieldOf(type);
+        return firstParam.toCollection();
+    }
+
+    private static InterfaceParameter firstFieldOf(MessageType type) {
+        ImmutableList<FieldDeclaration> fields = type.fields();
+        checkState(fields.size() > 0,
+                   "At least one field is required in an `EntityState` message type.");
+        FieldDeclaration declaration = fields.get(0);
+        ClassName value = toClassName(declaration);
+        return new ExistingInterfaceParameter(value);
+    }
+
+    private static ClassName toClassName(FieldDeclaration declaration) {
+        Optional<ScalarType> maybeScalar =
+                ScalarType.of(declaration.descriptor()
+                                         .toProto());
+        ClassName result;
+        if (maybeScalar.isPresent()) {
+            Class<?> scalarType =
+                    maybeScalar.get()
+                               .javaClass();
+            Class<?> wrapped = Primitives.wrap(scalarType);
+            result = ClassName.of(wrapped);
+        } else {
+            result = ClassName.of(declaration.javaTypeName());
         }
-        InterfaceParameter parameter = firstParameter.get();
-        return InterfaceParameters.of(parameter);
+        return result;
     }
 }
