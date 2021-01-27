@@ -24,40 +24,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.annotation;
+package io.spine.tools.protoc.iface;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.TypeName;
-import io.spine.code.gen.java.Annotations;
-import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import io.spine.code.java.ClassName;
+import io.spine.tools.protoc.InterfaceParameters;
 
-import javax.annotation.Generated;
+/**
+ * An interface which already exists.
+ */
+public final class ExistingInterface implements MessageInterface {
 
-import static io.spine.code.gen.java.Annotations.canIgnoreReturnValue;
-import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+    private final ClassName name;
+    private final InterfaceParameters parameters;
 
-@DisplayName("Annotations utility class should")
-class AnnotationsTest extends UtilityClassTest<Annotations> {
-
-    AnnotationsTest() {
-        super(Annotations.class);
+    public ExistingInterface(ClassName name, InterfaceParameters params) {
+        this.name = name;
+        this.parameters = params;
     }
 
-    @Test
-    @DisplayName("provide Model Compiler annotation")
-    void ofModelCompiler() {
-        AnnotationSpec spec = generatedBySpineModelCompiler();
-        assertEquals(spec.type, TypeName.get(Generated.class));
+    @Override
+    public String name() {
+        return name.value();
     }
 
-    @Test
-    @DisplayName("provide CanIgnoreReturnValue annotation")
-    void ofCanIgnoreReturnValue() {
-        AnnotationSpec spec = canIgnoreReturnValue();
-        assertEquals(spec.type, TypeName.get(CanIgnoreReturnValue.class));
+    @Override
+    public InterfaceParameters parameters() {
+        return parameters;
     }
 }

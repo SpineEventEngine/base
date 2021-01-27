@@ -32,7 +32,7 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.annotation.Beta;
-import io.spine.code.gen.java.GeneratedBySpine;
+import io.spine.code.gen.java.GeneratedBy;
 import io.spine.code.gen.java.NestedClassName;
 import io.spine.type.MessageType;
 import io.spine.validate.ConstraintViolation;
@@ -105,8 +105,8 @@ public final class ValidateGenerator {
     /**
      * Generates the {@code Validator} class for the associated message type.
      *
-     * <p>The {@code Validator} class is supposed to be nested inside the message class. It is
-     * declared {@code private} and {@code static}.
+     * <p>The {@code Validator} class is supposed to be nested inside the message class.
+     * It is declared {@code private} and {@code static}.
      *
      * <p>The name of the class is most often {@code Validator}. However, when a name clash occurs,
      * the name is padded with the {@code $} (dollar sign). For instance if the message itself is
@@ -131,11 +131,7 @@ public final class ValidateGenerator {
                 .addModifiers(PRIVATE)
                 .addJavadoc("Prevents validator class instantiation.")
                 .build();
-        GeneratedBySpine bySpine = GeneratedBySpine.instance();
-        AnnotationSpec generated = AnnotationSpec
-                .builder(Generated.class)
-                .addMember(bySpine.fieldName(), bySpine.codeBlock())
-                .build();
+        AnnotationSpec generated = GeneratedBy.spineModelCompiler();
         TypeSpec.Builder type = TypeSpec
                 .classBuilder(validatorSimpleName)
                 .addAnnotation(generated)

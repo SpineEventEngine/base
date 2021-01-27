@@ -36,6 +36,7 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.WildcardTypeName;
 import io.spine.code.gen.java.EmptyPrivateCtor;
+import io.spine.code.gen.java.GeneratedBy;
 import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.gen.java.JavaPoetName;
@@ -49,7 +50,6 @@ import java.util.HashSet;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
 import static io.spine.code.proto.ColumnOption.columnsOf;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -127,7 +127,7 @@ public final class ColumnContainerSpec implements GeneratedTypeSpec {
         TypeSpec result = TypeSpec
                 .classBuilder(CLASS_NAME)
                 .addJavadoc(classJavadoc().spec())
-                .addAnnotation(generatedBySpineModelCompiler())
+                .addAnnotation(GeneratedBy.spineModelCompiler())
                 .addModifiers(PUBLIC, STATIC, FINAL)
                 .addMethod(EmptyPrivateCtor.spec())
                 .addMethods(columnMethods)

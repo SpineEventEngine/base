@@ -30,8 +30,9 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.squareup.javapoet.JavaFile;
 import io.spine.code.fs.java.SourceFile;
 import io.spine.tools.protoc.AbstractCompilerOutput;
+import io.spine.tools.protoc.InterfaceParameters;
 import io.spine.tools.protoc.ProtocPluginFiles;
-import io.spine.tools.protoc.TypeParameters;
+import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -42,11 +43,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * an {@link io.spine.option.OptionsProto#everyIs (every_is)} option. See the option doc for
  * details.
  */
-final class CustomMessageInterface extends AbstractCompilerOutput implements MessageInterface {
+final class UserDefinedInterface extends AbstractCompilerOutput implements MessageInterface {
 
     private final String interfaceFqn;
 
-    private CustomMessageInterface(File file, String interfaceFqn) {
+    private UserDefinedInterface(File file, @FullyQualifiedName String interfaceFqn) {
         super(file);
         this.interfaceFqn = interfaceFqn;
     }
@@ -58,15 +59,15 @@ final class CustomMessageInterface extends AbstractCompilerOutput implements Mes
      *         the interface spec to create an interface from
      * @return new instance of {@code CustomMessageInterface}
      */
-    static CustomMessageInterface from(MessageInterfaceSpec spec) {
+    static UserDefinedInterface from(MessageInterfaceSpec spec) {
         checkNotNull(spec);
         JavaFile javaCode = spec.toJavaCode();
         SourceFile file = spec.toSourceFile();
         File interfaceFile = ProtocPluginFiles.prepareFile(file.toString())
                 .setContent(javaCode.toString())
                 .build();
-        String fqn = spec.getFqn();
-        return new CustomMessageInterface(interfaceFile, fqn);
+        String fqn = spec.fullName();
+        return new UserDefinedInterface(interfaceFile, fqn);
     }
 
     @Override
@@ -76,9 +77,11 @@ final class CustomMessageInterface extends AbstractCompilerOutput implements Mes
 
     /**
      * Generic params are currently not supported for user-defined message interfaces.
+     *
+     * @return {@link InterfaceParameters#empty()} always
      */
     @Override
-    public TypeParameters parameters() {
-        return TypeParameters.empty();
+    public InterfaceParameters parameters() {
+        return InterfaceParameters.empty();
     }
 }

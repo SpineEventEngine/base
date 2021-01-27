@@ -65,7 +65,7 @@ public final class PackageName extends StringTypeValue {
      *         the class to create the package for
      * @return a new instance
      */
-    public static PackageName of(Class cls) {
+    public static PackageName of(Class<?> cls) {
         return of(cls.getPackage()
                      .getName());
     }

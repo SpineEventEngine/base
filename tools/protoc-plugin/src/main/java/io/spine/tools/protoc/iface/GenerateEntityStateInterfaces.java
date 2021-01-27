@@ -30,7 +30,7 @@ import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.EntityStateConfig;
 import io.spine.tools.protoc.InterfaceParameter;
-import io.spine.tools.protoc.TypeParameters;
+import io.spine.tools.protoc.InterfaceParameters;
 import io.spine.type.MessageType;
 
 import java.util.Optional;
@@ -61,9 +61,9 @@ final class GenerateEntityStateInterfaces extends InterfaceGenerationTask {
     }
 
     @Override
-    TypeParameters interfaceParameters(MessageType type) {
+    InterfaceParameters interfaceParameters(MessageType type) {
         if (!type.isEntityState()) {
-            return TypeParameters.of();
+            return InterfaceParameters.empty();
         }
         Optional<InterfaceParameter> firstParameter = readFirstGenericParameter(type);
         if (!firstParameter.isPresent()) {
@@ -72,6 +72,6 @@ final class GenerateEntityStateInterfaces extends InterfaceGenerationTask {
                             + "Please use `@FirstGenericParameter`.");
         }
         InterfaceParameter parameter = firstParameter.get();
-        return TypeParameters.of(parameter);
+        return InterfaceParameters.of(parameter);
     }
 }

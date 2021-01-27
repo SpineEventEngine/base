@@ -33,6 +33,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import io.spine.code.gen.java.GeneratedBy;
 import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.query.EntityQuery;
@@ -41,7 +42,6 @@ import io.spine.query.IdCriterion;
 import io.spine.type.MessageType;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
 import static io.spine.code.proto.ColumnOption.columnsOf;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
@@ -66,7 +66,7 @@ public final class EntityQueryBuilderSpec extends AbstractEntityQuerySpec {
         TypeSpec result = TypeSpec
                 .classBuilder(queryBuilderType().className())
                 .superclass(entityQueryBuilder())
-                .addAnnotation(generatedBySpineModelCompiler())
+                .addAnnotation(GeneratedBy.spineModelCompiler())
                 .addModifiers(PUBLIC, STATIC, FINAL)
                 .addMethod(ctor())
                 .addMethod(id())

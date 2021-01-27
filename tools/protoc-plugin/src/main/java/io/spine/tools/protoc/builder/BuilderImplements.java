@@ -29,10 +29,10 @@ package io.spine.tools.protoc.builder;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.protobuf.ValidatingBuilder;
 import io.spine.tools.protoc.AbstractCompilerOutput;
-import io.spine.tools.protoc.IdentityParameter;
+import io.spine.tools.protoc.GeneratedClass;
 import io.spine.tools.protoc.InsertionPoint;
+import io.spine.tools.protoc.InterfaceParameters;
 import io.spine.tools.protoc.ProtocPluginFiles;
-import io.spine.tools.protoc.TypeParameters;
 import io.spine.type.MessageType;
 
 import static java.lang.String.format;
@@ -58,8 +58,8 @@ final class BuilderImplements extends AbstractCompilerOutput {
     }
 
     private static String mixinFor(MessageType type) {
-        String generic = TypeParameters.of(new IdentityParameter())
-                                       .asStringFor(type);
+        String generic = InterfaceParameters.of(new GeneratedClass())
+                                            .asStringFor(type);
         return format("%s%s,", ValidatingBuilder.class.getName(), generic);
     }
 }

@@ -32,12 +32,12 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import io.spine.code.gen.java.GeneratedBy;
 import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.gen.java.GeneratedMethodSpec;
 import io.spine.query.EntityQuery;
 import io.spine.type.MessageType;
 
-import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PROTECTED;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -64,7 +64,7 @@ public final class EntityQuerySpec extends AbstractEntityQuerySpec implements Ge
                 .classBuilder(queryType().className())
                 .superclass(entityQuery())
                 .addMethod(constructor())
-                .addAnnotation(generatedBySpineModelCompiler())
+                .addAnnotation(GeneratedBy.spineModelCompiler())
                 .addModifiers(PUBLIC, STATIC, FINAL)
                 .build();
         return result;

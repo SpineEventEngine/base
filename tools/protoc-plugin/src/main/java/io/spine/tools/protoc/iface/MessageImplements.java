@@ -29,8 +29,8 @@ package io.spine.tools.protoc.iface;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.tools.protoc.AbstractCompilerOutput;
 import io.spine.tools.protoc.InsertionPoint;
+import io.spine.tools.protoc.InterfaceParameters;
 import io.spine.tools.protoc.ProtocPluginFiles;
-import io.spine.tools.protoc.TypeParameters;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 
@@ -77,7 +77,7 @@ public final class MessageImplements extends AbstractCompilerOutput {
 
     private static String initGenericParams(MessageInterface messageInterface,
                                             Type<?, ?> type) {
-        TypeParameters parameters = messageInterface.parameters();
+        InterfaceParameters parameters = messageInterface.parameters();
         String result = parameters.asStringFor(type);
         return result;
     }

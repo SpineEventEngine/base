@@ -38,27 +38,21 @@ import static java.util.stream.Collectors.joining;
  * @see InterfaceParameter
  */
 @Immutable
-public final class TypeParameters {
+public final class InterfaceParameters {
 
     private final ImmutableList<InterfaceParameter> params;
 
-    private TypeParameters(ImmutableList<InterfaceParameter> params) {
+    private InterfaceParameters(ImmutableList<InterfaceParameter> params) {
         this.params = params;
     }
 
-    /**
-     * Creates a collection of type parameters using the passed values.
-     */
-    public static TypeParameters of(InterfaceParameter... parameters) {
-        ImmutableList<InterfaceParameter> params = ImmutableList.copyOf(parameters);
-        return new TypeParameters(params);
+    public static InterfaceParameters of(InterfaceParameter... param) {
+        ImmutableList<InterfaceParameter> params = ImmutableList.copyOf(param);
+        return new InterfaceParameters(params);
     }
 
-    /**
-     * Obtains empty instance.
-     */
-    public static TypeParameters empty() {
-        return new TypeParameters(ImmutableList.of());
+    public static InterfaceParameters empty() {
+        return new InterfaceParameters(ImmutableList.of());
     }
 
     /**

@@ -33,7 +33,7 @@ import io.spine.protobuf.DetermineType;
 import io.spine.tools.protoc.CodeGenerationTask;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.InterfaceParameter;
-import io.spine.tools.protoc.TypeParameters;
+import io.spine.tools.protoc.InterfaceParameters;
 import io.spine.type.MessageType;
 
 import java.lang.reflect.Constructor;
@@ -58,16 +58,17 @@ abstract class InterfaceGenerationTask implements CodeGenerationTask {
     /**
      * Obtains generic parameters of the passed type.
      */
-    TypeParameters interfaceParameters(MessageType type) {
-        return TypeParameters.empty();
+    InterfaceParameters interfaceParameters(MessageType type) {
+        return InterfaceParameters.empty();
     }
 
     /**
      * Performs the actual interface code generation.
      */
     ImmutableList<CompilerOutput> generateInterfacesFor(MessageType type) {
-        TypeParameters params = interfaceParameters(type);
-        MessageInterface messageInterface = new PredefinedInterface(interfaceName, params);
+        ClassName interfaceName = ClassName.of(this.interfaceName);
+        MessageInterface messageInterface =
+                new ExistingInterface(interfaceName, interfaceParameters(type));
         MessageImplements result = implementInterface(type, messageInterface);
         return ImmutableList.of(result);
     }

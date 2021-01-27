@@ -50,10 +50,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 final class MessageAndInterface {
 
     private final MessageImplements messageFile;
-    private final @Nullable CustomMessageInterface interfaceFile;
+    private final @Nullable UserDefinedInterface interfaceFile;
 
     private MessageAndInterface(MessageImplements messageFile,
-                                @Nullable CustomMessageInterface interfaceFile) {
+                                @Nullable UserDefinedInterface interfaceFile) {
         this.messageFile = checkNotNull(messageFile);
         this.interfaceFile = interfaceFile;
     }
@@ -94,9 +94,9 @@ final class MessageAndInterface {
     private static MessageAndInterface generateFile(MessageType type,
                                                     IsOption optionValue) {
         MessageInterfaceSpec interfaceSpec = MessageInterfaceSpec.prepareInterface(optionValue, type);
-        CustomMessageInterface messageInterface = CustomMessageInterface.from(interfaceSpec);
+        UserDefinedInterface messageInterface = UserDefinedInterface.from(interfaceSpec);
         MessageImplements message = MessageImplements.implementInterface(type, messageInterface);
-        CustomMessageInterface interfaceToGenerate = optionValue.getGenerate()
+        UserDefinedInterface interfaceToGenerate = optionValue.getGenerate()
                                                      ? messageInterface
                                                      : null;
         MessageAndInterface result = new MessageAndInterface(message, interfaceToGenerate);
