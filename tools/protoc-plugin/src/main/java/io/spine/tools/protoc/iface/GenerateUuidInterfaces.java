@@ -28,8 +28,6 @@ package io.spine.tools.protoc.iface;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.GeneratedClass;
-import io.spine.tools.protoc.InterfaceParameters;
 import io.spine.tools.protoc.UuidConfig;
 import io.spine.type.MessageType;
 
@@ -45,9 +43,9 @@ final class GenerateUuidInterfaces extends InterfaceGenerationTask {
     }
 
     /**
-     * Makes supplied {@link io.spine.base.UuidValue UuidValue} Protobuf type implement configured
-     * interface.
-     **/
+     * Makes supplied {@link io.spine.base.UuidValue UuidValue} type implement
+     * the configured interface.
+     */
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
@@ -55,10 +53,5 @@ final class GenerateUuidInterfaces extends InterfaceGenerationTask {
             return ImmutableList.of();
         }
         return generateInterfacesFor(type);
-    }
-
-    @Override
-    InterfaceParameters interfaceParameters(MessageType type) {
-        return InterfaceParameters.of(new GeneratedClass());
     }
 }

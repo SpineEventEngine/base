@@ -285,9 +285,8 @@ final class InterfaceGeneratorTest {
             for (File file : files) {
                 assertTrue(file.hasInsertionPoint());
                 assertTrue(file.hasName());
-
-                String genericParam = '<' + ProjectId.class.getSimpleName() + '>';
-                assertEquals(UuidValue.class.getName() + genericParam + ',', file.getContent());
+                assertThat(file.getContent())
+                        .isEqualTo(UuidValue.class.getName() + ',');
             }
         }
     }
