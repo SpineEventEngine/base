@@ -27,17 +27,13 @@
 package io.spine.tools.protoc.iface;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.primitives.Primitives;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.code.proto.ScalarType;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.EntityStateConfig;
 import io.spine.tools.protoc.InterfaceParameter;
 import io.spine.tools.protoc.InterfaceParameters;
 import io.spine.type.MessageType;
-
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -75,24 +71,7 @@ final class GenerateEntityStateInterfaces extends InterfaceGenerationTask {
         checkState(fields.size() > 0,
                    "At least one field is required in an `EntityState` message type.");
         FieldDeclaration declaration = fields.get(0);
-        ClassName value = toClassName(declaration);
+        ClassName value = declaration.className();
         return new ExistingInterfaceParameter(value);
-    }
-
-    private static ClassName toClassName(FieldDeclaration declaration) {
-        Optional<ScalarType> maybeScalar =
-                ScalarType.of(declaration.descriptor()
-                                         .toProto());
-        ClassName result;
-        if (maybeScalar.isPresent()) {
-            Class<?> scalarType =
-                    maybeScalar.get()
-                               .javaClass();
-            Class<?> wrapped = Primitives.wrap(scalarType);
-            result = ClassName.of(wrapped);
-        } else {
-            result = ClassName.of(declaration.javaTypeName());
-        }
-        return result;
     }
 }

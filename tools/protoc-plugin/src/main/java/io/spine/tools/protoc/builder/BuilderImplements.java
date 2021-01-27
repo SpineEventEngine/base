@@ -31,7 +31,6 @@ import io.spine.protobuf.ValidatingBuilder;
 import io.spine.tools.protoc.AbstractCompilerOutput;
 import io.spine.tools.protoc.GeneratedClass;
 import io.spine.tools.protoc.InsertionPoint;
-import io.spine.tools.protoc.InterfaceParameters;
 import io.spine.tools.protoc.ProtocPluginFiles;
 import io.spine.type.MessageType;
 
@@ -58,8 +57,9 @@ final class BuilderImplements extends AbstractCompilerOutput {
     }
 
     private static String mixinFor(MessageType type) {
-        String generic = InterfaceParameters.of(new GeneratedClass())
-                                            .asStringFor(type);
+        String generic = new GeneratedClass()
+                .toCollection()
+                .asStringFor(type);
         return format("%s%s,", ValidatingBuilder.class.getName(), generic);
     }
 }
