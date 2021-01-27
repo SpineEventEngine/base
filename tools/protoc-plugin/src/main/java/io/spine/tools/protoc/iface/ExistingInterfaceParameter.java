@@ -36,11 +36,11 @@ import io.spine.type.Type;
  * on the type of an actual descendant.
  */
 @Immutable
-final class PredefinedInterfaceParameter implements InterfaceParameter {
+final class ExistingInterfaceParameter implements InterfaceParameter {
 
     private final ClassName value;
 
-    PredefinedInterfaceParameter(ClassName value) {
+    ExistingInterfaceParameter(ClassName value) {
         this.value = value;
     }
 

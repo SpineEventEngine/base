@@ -66,9 +66,8 @@ abstract class InterfaceGenerationTask implements CodeGenerationTask {
      * Performs the actual interface code generation.
      */
     ImmutableList<CompilerOutput> generateInterfacesFor(MessageType type) {
-        ClassName interfaceName = ClassName.of(this.interfaceName);
-        MessageInterface messageInterface =
-                new ExistingInterface(interfaceName, interfaceParameters(type));
+        InterfaceParameters params = interfaceParameters(type);
+        MessageInterface messageInterface = new ExistingInterface(interfaceName, params);
         MessageImplements result = implementInterface(type, messageInterface);
         return ImmutableList.of(result);
     }
@@ -104,7 +103,7 @@ abstract class InterfaceGenerationTask implements CodeGenerationTask {
             Constructor<? extends DetermineType> ctor = fieldTypeDetector.getConstructor();
             DetermineType detector = ctor.newInstance();
             ClassName value = detector.apply(type);
-            firstParameter = Optional.of(new PredefinedInterfaceParameter(value));
+            firstParameter = Optional.of(new ExistingInterfaceParameter(value));
         } catch (@SuppressWarnings("OverlyBroadCatchBlock")  // all exceptions handled similarly.
                 Exception e) {
             throw newIllegalArgumentException(
