@@ -93,7 +93,7 @@ final class MessageAndInterface {
 
     private static MessageAndInterface generateFile(MessageType type,
                                                     IsOption optionValue) {
-        MessageInterfaceSpec interfaceSpec = MessageInterfaceSpec.prepareInterface(optionValue, type);
+        InterfaceSpec interfaceSpec = InterfaceSpec.prepareInterface(optionValue, type);
         UserDefinedInterface messageInterface = UserDefinedInterface.from(interfaceSpec);
         Implement message = Implement.interfaceFor(type, messageInterface);
         UserDefinedInterface interfaceToGenerate = optionValue.getGenerate()

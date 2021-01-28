@@ -45,26 +45,26 @@ import static javax.lang.model.element.Modifier.PUBLIC;
  *
  * <p>The specification includes the package name and the type name.
  */
-final class MessageInterfaceSpec {
+final class InterfaceSpec {
 
     private final String packageName;
     private final String name;
 
     @VisibleForTesting
-    MessageInterfaceSpec(String packageName, String name) {
+    InterfaceSpec(String packageName, String name) {
         this.packageName = packageName;
         this.name = name;
     }
 
-    static MessageInterfaceSpec prepareInterface(IsOption optionValue, Type<?, ?> declaringType) {
+    static InterfaceSpec prepareInterface(IsOption optionValue, Type<?, ?> declaringType) {
         String javaType = optionValue.getJavaType();
-        MessageInterfaceSpec spec;
+        InterfaceSpec spec;
         if (javaType.contains(delimiter())) {
             spec = from(javaType);
         } else {
             String javaPackage = declaringType.javaPackage()
                                               .value();
-            spec = new MessageInterfaceSpec(javaPackage, javaType);
+            spec = new InterfaceSpec(javaPackage, javaType);
         }
         return spec;
     }
@@ -72,11 +72,11 @@ final class MessageInterfaceSpec {
     /**
      * Parses a {@code MessageInterfaceSpec} from the given type fully qualified name.
      */
-    private static MessageInterfaceSpec from(String fullName) {
+    private static InterfaceSpec from(String fullName) {
         int index = fullName.lastIndexOf(delimiter());
         String name = fullName.substring(index + 1);
         String packageName = fullName.substring(0, index);
-        return new MessageInterfaceSpec(packageName, name);
+        return new InterfaceSpec(packageName, name);
     }
 
     /**
@@ -126,7 +126,7 @@ final class MessageInterfaceSpec {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        MessageInterfaceSpec other = (MessageInterfaceSpec) obj;
+        InterfaceSpec other = (InterfaceSpec) obj;
         return Objects.equals(this.packageName, other.packageName)
                 && Objects.equals(this.name, other.name);
     }

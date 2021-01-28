@@ -59,7 +59,7 @@ final class UserDefinedInterface extends AbstractCompilerOutput implements Messa
      *         the interface spec to create an interface from
      * @return new instance of {@code CustomMessageInterface}
      */
-    static UserDefinedInterface from(MessageInterfaceSpec spec) {
+    static UserDefinedInterface from(InterfaceSpec spec) {
         checkNotNull(spec);
         JavaFile javaCode = spec.toJavaCode();
         SourceFile file = spec.toSourceFile();

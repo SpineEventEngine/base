@@ -36,14 +36,14 @@ import javax.annotation.Generated;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("MessageInterfaceSpec should")
-final class MessageInterfaceSpecTest {
+final class InterfaceSpecTest {
 
     @Test
     @DisplayName("generate interfaces")
     void generateInterfaces() {
         String packageName = "io.spine.test";
         String interfaceName = "CustomerEvent";
-        JavaFile javaFile = new MessageInterfaceSpec(packageName, interfaceName).toJavaCode();
+        JavaFile javaFile = new InterfaceSpec(packageName, interfaceName).toJavaCode();
 
         AnnotationSpec generated = javaFile.typeSpec.annotations.get(0);
         assertEquals(Generated.class.getName(), generated.type.toString());
