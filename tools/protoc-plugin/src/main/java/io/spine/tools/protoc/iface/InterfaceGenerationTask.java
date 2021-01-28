@@ -33,7 +33,7 @@ import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.InterfaceParameters;
 import io.spine.type.MessageType;
 
-import static io.spine.tools.protoc.iface.MessageImplements.implementInterface;
+import static io.spine.tools.protoc.iface.Implement.interfaceFor;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -59,7 +59,7 @@ abstract class InterfaceGenerationTask implements CodeGenerationTask {
     ImmutableList<CompilerOutput> generateInterfacesFor(MessageType type) {
         InterfaceParameters params = interfaceParameters(type);
         MessageInterface messageInterface = new ExistingInterface(interfaceName, params);
-        MessageImplements result = implementInterface(type, messageInterface);
+        Implement result = interfaceFor(type, messageInterface);
         return ImmutableList.of(result);
     }
 }

@@ -35,12 +35,12 @@ import io.spine.type.MessageType;
 import io.spine.type.Type;
 
 /**
- * A {@link io.spine.tools.protoc.CompilerOutput CompilerOutput} item, which alters a generated
- * message class to implement a given interface.
+ * A {@link io.spine.tools.protoc.CompilerOutput CompilerOutput} which makes a message class
+ * implement a given interface.
  */
-public final class MessageImplements extends AbstractCompilerOutput {
+public final class Implement extends AbstractCompilerOutput {
 
-    private MessageImplements(File file) {
+    private Implement(File file) {
         super(file);
     }
 
@@ -49,19 +49,18 @@ public final class MessageImplements extends AbstractCompilerOutput {
      *
      * @param type
      *         the type declaration that should be altered
-     * @param messageInterface
+     * @param iface
      *         the interface to implement
      * @return new instance of {@code MessageImplements}
      */
-    public static MessageImplements implementInterface(MessageType type,
-                                                       MessageInterface messageInterface) {
+    public static Implement interfaceFor(MessageType type, MessageInterface iface) {
         String insertionPoint = InsertionPoint.message_implements.forType(type);
-        String content = buildContent(type, messageInterface);
+        String content = buildContent(type, iface);
         File.Builder file = ProtocPluginFiles.prepareFile(type);
         File result = file.setInsertionPoint(insertionPoint)
                           .setContent(content)
                           .build();
-        return new MessageImplements(result);
+        return new Implement(result);
     }
 
     /**
@@ -70,14 +69,13 @@ public final class MessageImplements extends AbstractCompilerOutput {
      * <p>It is assumed that any Protobuf message always implements at least its own parent
      * interface.
      */
-    private static String buildContent(MessageType type, MessageInterface messageInterface) {
-        String result = messageInterface.name() + initGenericParams(messageInterface, type) + ',';
+    private static String buildContent(MessageType type, MessageInterface iface) {
+        String result = iface.name() + initGenericParams(iface, type) + ',';
         return result;
     }
 
-    private static String initGenericParams(MessageInterface messageInterface,
-                                            Type<?, ?> type) {
-        InterfaceParameters parameters = messageInterface.parameters();
+    private static String initGenericParams(MessageInterface iface, Type<?, ?> type) {
+        InterfaceParameters parameters = iface.parameters();
         String result = parameters.asStringFor(type);
         return result;
     }

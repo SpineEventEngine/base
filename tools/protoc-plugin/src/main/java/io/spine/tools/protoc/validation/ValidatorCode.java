@@ -37,7 +37,7 @@ import io.spine.tools.protoc.NoOpGenerator;
 import io.spine.tools.protoc.ProtocPluginFiles;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.iface.ExistingInterface;
-import io.spine.tools.protoc.iface.MessageImplements;
+import io.spine.tools.protoc.iface.Implement;
 import io.spine.tools.protoc.iface.MessageInterface;
 import io.spine.tools.validate.ValidateGenerator;
 import io.spine.type.MessageType;
@@ -48,7 +48,7 @@ import java.util.Collection;
 import static io.spine.tools.protoc.InsertionPoint.builder_scope;
 import static io.spine.tools.protoc.InsertionPoint.class_scope;
 import static io.spine.tools.protoc.InterfaceParameters.empty;
-import static io.spine.tools.protoc.iface.MessageImplements.implementInterface;
+import static io.spine.tools.protoc.iface.Implement.interfaceFor;
 
 /**
  * Generates code which validates message fields upon the constraints, as well as the API which
@@ -56,7 +56,7 @@ import static io.spine.tools.protoc.iface.MessageImplements.implementInterface;
  */
 public final class ValidatorCode extends CodeGenerator {
 
-    private static final MessageInterface VALIDATABLE_MESSAGE =
+    private static final MessageInterface MESSAGE_WITH_CONSTRAINTS =
             new ExistingInterface(ClassName.of(MessageWithConstraints.class), empty());
 
     /**
@@ -87,12 +87,12 @@ public final class ValidatorCode extends CodeGenerator {
                 insertCode(type, class_scope, factory.generateValidate().toString());
         CompilerOutput validatorClass =
                 insertCode(type, class_scope, factory.generateClass().toString());
-        MessageImplements messageInterface = implementInterface(type, VALIDATABLE_MESSAGE);
+        Implement iface = interfaceFor(type, MESSAGE_WITH_CONSTRAINTS);
         return ImmutableSet.of(
                 builderInsertionPoint,
                 validateMethod,
                 validatorClass,
-                messageInterface
+                iface
         );
     }
 
