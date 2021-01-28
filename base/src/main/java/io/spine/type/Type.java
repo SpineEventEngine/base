@@ -31,6 +31,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.Message;
@@ -81,6 +82,13 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
      */
     public T descriptor() {
         return this.descriptor;
+    }
+
+    /**
+     * Obtains a file in which the type is declared.
+     */
+    public Descriptors.FileDescriptor file() {
+        return this.descriptor.getFile();
     }
 
     /**
@@ -168,7 +176,7 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
      * Obtains {@code FileName} of a declaring Protobuf file.
      */
     public FileName declaringFileName() {
-        return FileName.from(descriptor().getFile());
+        return FileName.from(file());
     }
 
     /**

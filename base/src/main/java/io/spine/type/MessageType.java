@@ -152,8 +152,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * Tells if this message is under the "google" package.
      */
     public boolean isGoogle() {
-        FileDescriptor file = descriptor().getFile();
-        boolean result = FileDescriptors.isGoogle(file);
+        boolean result = FileDescriptors.isGoogle(file());
         return result;
     }
 
@@ -166,8 +165,9 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
             return false;
         }
         FileDescriptor optionsProto = OptionsProto.getDescriptor();
-        FileDescriptor file = descriptor().getFile();
-        return !sameFiles(optionsProto, file);
+        FileDescriptor file = file();
+        boolean result = !sameFiles(optionsProto, file);
+        return result;
     }
 
     /**
