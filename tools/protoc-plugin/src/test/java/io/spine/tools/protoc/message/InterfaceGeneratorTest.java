@@ -28,6 +28,7 @@ package io.spine.tools.protoc.message;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.common.truth.IterableSubject;
+import com.google.common.truth.StringSubject;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
@@ -58,6 +59,7 @@ import io.spine.tools.protoc.message.tests.TestEventsProto;
 import io.spine.tools.protoc.message.tests.UserNameProto;
 import io.spine.tools.protoc.message.tests.UserProto;
 import io.spine.tools.protoc.message.tests.UuidValues;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -84,10 +86,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 final class InterfaceGeneratorTest {
 
     private static final String INSERTION_POINT_IMPLEMENTS = "message_implements:%s";
-    private static final String PROTO_PACKAGE = "spine.tools.protoc.msg.";
 
-    private static final PackageName PACKAGE_NAME =
+    private static final String PROTO_PACKAGE = "spine.tools.protoc.msg";
+    private static final String PROTO_DIR = PROTO_PACKAGE.replace('.', '/');
+
+    private static final PackageName JAVA_PACKAGE =
             PackageName.of(InterfaceGeneratorTest.class).nested("tests");
+    private static final String JAVA_DIR = JAVA_PACKAGE.value().replace('.', '/');
+
     private static final Pattern CUSTOMER_EVENT_INTERFACE_PATTERN =
             compile("^\\s*io\\.spine\\.tools\\.protoc\\.message\\.tests" +
                             "\\.ProtocCustomerEvent\\s*,\\s*$");
@@ -102,6 +108,14 @@ final class InterfaceGeneratorTest {
             compile("Customer(Command|Event)");
 
     private CodeGenerator codeGenerator;
+
+    private static String protoFile(String shortName) {
+        return PROTO_DIR + '/' + shortName;
+    }
+
+    private static String javaFile(String shortName) {
+        return JAVA_DIR + '/' + shortName;
+    }
 
     private static Version version() {
         return Version.newBuilder()
@@ -129,6 +143,14 @@ final class InterfaceGeneratorTest {
                 .testAllPublicStaticMethods(InterfaceGenerator.class);
     }
 
+    @NotNull
+    private static String messageNameFrom(File file) {
+        String fileName = file.getName();
+        String messageName = PROTO_PACKAGE + '.' +
+                fileName.substring(fileName.lastIndexOf('/') + 1, fileName.lastIndexOf('.'));
+        return messageName;
+    }
+
     @Nested
     @DisplayName("generate insertion point contents for")
     class InsertionPoints {
@@ -136,37 +158,37 @@ final class InterfaceGeneratorTest {
         @Test
         @DisplayName("`EveryIs` option")
         void everyIsOption() {
-            String filePath = "spine/tools/protoc/msg/every_is_test.proto";
+            String filePath = protoFile("every_is_test.proto");
 
-            FileDescriptorProto descriptor = EveryIsTestProto.getDescriptor()
-                                                             .toProto();
-            CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
+            FileDescriptorProto fileDescr =
+                    EveryIsTestProto.getDescriptor()
+                                    .toProto();
+            CodeGeneratorResponse response = processCodeGenRequest(filePath, fileDescr);
             assertNotNull(response);
             List<File> files = response.getFileList();
             assertEquals(2, files.size());
             for (File file : files) {
                 assertPackage(file);
 
-                String name = file.getName();
+                String messageName = messageNameFrom(file);
                 String insertionPoint = file.getInsertionPoint();
-                String messageName = PROTO_PACKAGE + name.substring(name.lastIndexOf('/') + 1,
-                                                                    name.lastIndexOf('.'));
-                assertEquals(insertionPoint, format(INSERTION_POINT_IMPLEMENTS, messageName));
-
+                assertThat(insertionPoint)
+                        .isEqualTo(format(INSERTION_POINT_IMPLEMENTS, messageName));
                 String content = file.getContent();
-                Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
-                assertTrue(matcher.matches());
+                assertThat(content)
+                        .matches(CUSTOMER_EVENT_INTERFACE_PATTERN);
             }
         }
 
         @Test
         @DisplayName("`Is` option")
         void generateInsertionPointContentsForIsOption() {
-            String filePath = "spine/tools/protoc/msg/is_test.proto";
+            String filePath = protoFile("is_test.proto");
 
-            FileDescriptorProto descriptor = IsTestProto.getDescriptor()
-                                                        .toProto();
-            CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
+            FileDescriptorProto fileDescr =
+                    IsTestProto.getDescriptor()
+                               .toProto();
+            CodeGeneratorResponse response = processCodeGenRequest(filePath, fileDescr);
             assertNotNull(response);
             List<File> files = response.getFileList();
             assertEquals(2, files.size());
@@ -177,10 +199,11 @@ final class InterfaceGeneratorTest {
                 String insertionPoint = file.getInsertionPoint();
                 assertFalse(insertionPoint.isEmpty());
                 String content = file.getContent();
+                StringSubject assertContent = assertThat(content);
                 if (name.endsWith("ProtocNameUpdated.java")) {
-                    assertTrue(content.contains("Event,"));
+                    assertContent.contains("Event,");
                 } else if (name.endsWith("ProtocUpdateName.java")) {
-                    assertTrue(content.contains("Command,"));
+                    assertContent.contains("Command,");
                 }
             }
         }
@@ -188,11 +211,12 @@ final class InterfaceGeneratorTest {
         @Test
         @DisplayName("`EveryIs` in single file")
         void generateInsertionPointContentsForEveryIsInSingleFile() {
-            String filePath = "spine/tools/protoc/msg/every_is_in_one_file.proto";
+            String filePath = protoFile("every_is_in_one_file.proto");
 
-            FileDescriptorProto descriptor = EveryIsInOneFileProto.getDescriptor()
-                                                                  .toProto();
-            CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
+            FileDescriptorProto fileDescr =
+                    EveryIsInOneFileProto.getDescriptor()
+                                         .toProto();
+            CodeGeneratorResponse response = processCodeGenRequest(filePath, fileDescr);
             assertNotNull(response);
             List<File> files = response.getFileList();
             assertEquals(2, files.size());
@@ -201,11 +225,11 @@ final class InterfaceGeneratorTest {
                     assertFilePath(file, sourceWithPackage("EveryIsInOneFileProto"));
 
                     String insertionPoint = file.getInsertionPoint();
-                    assertTrue(insertionPoint.startsWith(format(INSERTION_POINT_IMPLEMENTS,
-                                                                PROTO_PACKAGE)));
+                    assertThat(insertionPoint)
+                            .startsWith(format(INSERTION_POINT_IMPLEMENTS, PROTO_PACKAGE));
                     String content = file.getContent();
-                    Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
-                    assertTrue(matcher.matches(), content);
+                    assertThat(content)
+                            .matches(CUSTOMER_EVENT_INTERFACE_PATTERN);
                 }
             }
         }
@@ -213,11 +237,12 @@ final class InterfaceGeneratorTest {
         @Test
         @DisplayName("`Is` in single file")
         void isInSingleFile() {
-            String filePath = "spine/tools/protoc/msg/is_in_one_file.proto";
+            String filePath = protoFile("is_in_one_file.proto");
 
-            FileDescriptorProto descriptor = IsInOneFileProto.getDescriptor()
-                                                             .toProto();
-            CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
+            FileDescriptorProto fileDescr =
+                    IsInOneFileProto.getDescriptor()
+                                    .toProto();
+            CodeGeneratorResponse response = processCodeGenRequest(filePath, fileDescr);
             assertNotNull(response);
             List<File> files = response.getFileList();
             assertEquals(2, files.size());
@@ -225,11 +250,11 @@ final class InterfaceGeneratorTest {
                 assertFilePath(file, sourceWithPackage("IsInOneFileProto"));
 
                 String insertionPoint = file.getInsertionPoint();
-                assertTrue(insertionPoint.startsWith(format(INSERTION_POINT_IMPLEMENTS,
-                                                            PROTO_PACKAGE)));
+                assertThat(insertionPoint)
+                        .startsWith(format(INSERTION_POINT_IMPLEMENTS, PROTO_PACKAGE));
                 String content = file.getContent();
-                Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
-                assertTrue(matcher.matches(), format("Unexpected inserted content: %s", content));
+                assertThat(content)
+                        .matches(CUSTOMER_EVENT_INTERFACE_PATTERN);
             }
         }
     }
@@ -241,11 +266,12 @@ final class InterfaceGeneratorTest {
         @Test
         @DisplayName("`EventMessage`")
         void eventMessage() {
-            String filePath = "spine/tools/protoc/msg/test_events.proto";
+            String filePath = protoFile("test_events.proto");
 
-            FileDescriptorProto descriptor = TestEventsProto.getDescriptor()
-                                                            .toProto();
-            CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
+            FileDescriptorProto fileDescr =
+                    TestEventsProto.getDescriptor()
+                                   .toProto();
+            CodeGeneratorResponse response = processCodeGenRequest(filePath, fileDescr);
             assertNotNull(response);
             List<File> files = response.getFileList();
             assertEquals(2, files.size());
@@ -257,11 +283,12 @@ final class InterfaceGeneratorTest {
         @Test
         @DisplayName("`CommandMessage`")
         void commandMessage() {
-            String filePath = "spine/tools/protoc/msg/test_commands.proto";
+            String filePath = protoFile("test_commands.proto");
 
-            FileDescriptorProto descriptor = TestCommandsProto.getDescriptor()
-                                                              .toProto();
-            CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
+            FileDescriptorProto fileDescr =
+                    TestCommandsProto.getDescriptor()
+                                     .toProto();
+            CodeGeneratorResponse response = processCodeGenRequest(filePath, fileDescr);
             assertNotNull(response);
             List<File> files = response.getFileList();
             assertEquals(2, files.size());
@@ -273,11 +300,12 @@ final class InterfaceGeneratorTest {
         @Test
         @DisplayName("`RejectionMessage`")
         void generateRejectionMessageInsertionPoints() {
-            String filePath = "spine/tools/protoc/msg/test_rejections.proto";
+            String filePath = protoFile("test_rejections.proto");
 
-            FileDescriptorProto descriptor = Rejections.getDescriptor()
-                                                       .toProto();
-            CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
+            FileDescriptorProto fileDescr =
+                    Rejections.getDescriptor()
+                              .toProto();
+            CodeGeneratorResponse response = processCodeGenRequest(filePath, fileDescr);
             assertNotNull(response);
             List<File> files = response.getFileList();
             assertEquals(1, files.size());
@@ -289,11 +317,12 @@ final class InterfaceGeneratorTest {
         @Test
         @DisplayName("`UuidValue`")
         void uuidValue() {
-            String filePath = "spine/tools/protoc/msg/uuid_values.proto";
+            String filePath = protoFile("uuid_values.proto");
 
-            FileDescriptorProto descriptor = UuidValues.getDescriptor()
-                                                       .toProto();
-            CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
+            FileDescriptorProto fileDescr =
+                    UuidValues.getDescriptor()
+                              .toProto();
+            CodeGeneratorResponse response = processCodeGenRequest(filePath, fileDescr);
             assertNotNull(response);
             List<File> files = response.getFileList();
             assertEquals(1, files.size());
@@ -309,14 +338,15 @@ final class InterfaceGeneratorTest {
     @Test
     @DisplayName("not generate `UuidValue` insertion points for ineligible messages")
     void notGenerateUuidValueForNonEligible() {
-        String filePath = "spine/tools/protoc/msg/non_uuid_values.proto";
+        String filePath = protoFile("non_uuid_values.proto");
 
-        FileDescriptorProto descriptor = NonUuidValues.getDescriptor()
-                                                      .toProto();
-        CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
+        FileDescriptorProto fileDescr =
+                NonUuidValues.getDescriptor()
+                             .toProto();
+        CodeGeneratorResponse response = processCodeGenRequest(filePath, fileDescr);
         assertNotNull(response);
         List<File> files = response.getFileList();
-        assertTrue(files.isEmpty());
+        assertThat(files).isEmpty();
     }
 
     @Test
@@ -354,32 +384,34 @@ final class InterfaceGeneratorTest {
         @Test
         @DisplayName("`(is)` if `generate = true`")
         void forIs() {
-            String filePath = "spine/tools/protoc/msg/is_generated.proto";
+            String filePath = protoFile("is_generated.proto");
 
-            FileDescriptorProto descriptor = IsGeneratedProto.getDescriptor()
-                                                             .toProto();
-            CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
+            FileDescriptorProto fileDescr =
+                    IsGeneratedProto.getDescriptor()
+                                    .toProto();
+            CodeGeneratorResponse response = processCodeGenRequest(filePath, fileDescr);
             assertNotNull(response);
             List<File> files = response.getFileList();
             assertEquals(4, files.size());
             for (File file : files) {
                 assertPackage(file);
 
-                String name = file.getName();
+                String fileName = file.getName();
                 String insertionPoint = file.getInsertionPoint();
                 if (!insertionPoint.isEmpty()) {
-                    String messageName = PROTO_PACKAGE +
-                            name.substring(name.lastIndexOf('/') + 1, name.lastIndexOf('.'));
-                    assertEquals(format(INSERTION_POINT_IMPLEMENTS, messageName), insertionPoint);
+                    String messageName = messageNameFrom(file);
+                    assertThat(insertionPoint)
+                            .isEqualTo(format(INSERTION_POINT_IMPLEMENTS, messageName));
                 }
 
                 String content = file.getContent();
-                if (name.endsWith("ProtocSurnameUpdated.java")) {
-                    assertTrue(content.contains("Event,"));
-                } else if (name.endsWith("ProtocUpdateSurname.java")) {
-                    assertTrue(content.contains("Command,"));
+                StringSubject assertContent = assertThat(content);
+                if (fileName.endsWith("ProtocSurnameUpdated.java")) {
+                    assertContent.contains("Event,");
+                } else if (fileName.endsWith("ProtocUpdateSurname.java")) {
+                    assertContent.contains("Command,");
                 } else {
-                    assertTrue(CUSTOMER_EVENT_OR_COMMAND.matcher(name)
+                    assertTrue(CUSTOMER_EVENT_OR_COMMAND.matcher(fileName)
                                                         .find());
                 }
             }
@@ -388,29 +420,28 @@ final class InterfaceGeneratorTest {
         @Test
         @DisplayName("`(every_is)` if `generate = true`")
         void forEveryIs() {
-            String filePath = "spine/tools/protoc/msg/every_is_generated.proto";
+            String filePath = protoFile("every_is_generated.proto");
 
-            FileDescriptorProto descriptor = EveryIsGeneratedProto.getDescriptor()
-                                                                  .toProto();
-            CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
+            FileDescriptorProto fileDescr =
+                    EveryIsGeneratedProto.getDescriptor()
+                                         .toProto();
+            CodeGeneratorResponse response = processCodeGenRequest(filePath, fileDescr);
             assertNotNull(response);
             List<File> files = response.getFileList();
             assertEquals(3, files.size());
             for (File file : files) {
                 assertPackage(file);
 
-                String name = file.getName();
+                String content = file.getContent();
                 String insertionPoint = file.getInsertionPoint();
                 if (!insertionPoint.isEmpty()) {
-                    String messageName = PROTO_PACKAGE + name.substring(name.lastIndexOf('/') + 1,
-                                                                        name.lastIndexOf('.'));
-                    assertEquals(insertionPoint, format(INSERTION_POINT_IMPLEMENTS, messageName));
+                    String messageName = messageNameFrom(file);
+                    assertThat(insertionPoint)
+                            .isEqualTo(format(INSERTION_POINT_IMPLEMENTS, messageName));
 
-                    String content = file.getContent();
                     Matcher matcher = PROJECT_EVENT_INTERFACE_PATTERN.matcher(content);
                     assertTrue(matcher.matches());
                 } else {
-                    String content = file.getContent();
                     Matcher matcher = PROJECT_EVENT_INTERFACE_DECL_PATTERN.matcher(content);
                     assertTrue(matcher.find());
                 }
@@ -430,8 +461,7 @@ final class InterfaceGeneratorTest {
         CodeGeneratorRequest request =
                 CodeGeneratorRequest.newBuilder()
                                     .setCompilerVersion(version())
-                                    .addFileToGenerate(
-                                            "spine/tools/protoc/msg/user.proto")
+                                    .addFileToGenerate(protoFile("user.proto"))
                                     .addProtoFile(requestedTypes)
                                     .addProtoFile(includedTypes)
                                     .build();
@@ -441,12 +471,12 @@ final class InterfaceGeneratorTest {
                                              .map(File::getName)
                                              .collect(toSet());
 
-        IterableSubject assertGeneratedFiles = assertThat(generatedFiles);
-        assertGeneratedFiles.doesNotContain("io/spine/tools/protoc/message/tests/UserName.java");
-        assertGeneratedFiles.doesNotContain("io/spine/tools/protoc/message/tests/Name.java");
-        assertGeneratedFiles.containsExactly(
-                "io/spine/tools/protoc/message/tests/User.java",
-                "io/spine/tools/protoc/message/tests/LawSubject.java"
+        IterableSubject assertFiles = assertThat(generatedFiles);
+        assertFiles.doesNotContain(javaFile("UserName.java"));
+        assertFiles.doesNotContain(javaFile("Name.java"));
+        assertFiles.containsExactly(
+                javaFile("User.java"),
+                javaFile("LawSubject.java")
         );
     }
 
@@ -463,7 +493,7 @@ final class InterfaceGeneratorTest {
 
     private static SourceFile sourceWithPackage(String typeName) {
         FileName fileName = FileName.forType(typeName);
-        return Directory.of(PACKAGE_NAME).resolve(fileName);
+        return Directory.of(JAVA_PACKAGE).resolve(fileName);
     }
 
     private static boolean haveSamePath(File generatedFile, SourceFile anotherFile) {
@@ -477,7 +507,7 @@ final class InterfaceGeneratorTest {
 
     private static void assertPackage(File generatedFile) {
         Path generatedFilePath = Paths.get(generatedFile.getName());
-        Directory directory = Directory.of(PACKAGE_NAME);
+        Directory directory = Directory.of(JAVA_PACKAGE);
         assertThat(generatedFilePath.toString())
                 .startsWith(directory.path().toString());
     }
