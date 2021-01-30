@@ -53,16 +53,13 @@ final class ImplementInterfaceByPattern extends ImplementInterface {
 
     @Override
     InterfaceParameters interfaceParameters(MessageType type) {
-        InterfaceParameter validatingBuilder = new BuilderOfGeneratedClass();
-        InterfaceParameter generatedClass = new GeneratedClass();
-        return InterfaceParameters.of(validatingBuilder, generatedClass);
+        return InterfaceParameters.empty();
     }
 
     /**
      * Makes supplied type implement configured interface.
      *
      * <p>The type does not implement an interface if:
-     *
      * <ul>
      *     <li>the type is not {@link MessageType#isTopLevel() top level};
      *     <li>the type file name does not match supplied

@@ -32,11 +32,13 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.annotation.Beta;
+import io.spine.base.ValidatingBuilder;
 import io.spine.code.gen.java.GeneratedBy;
 import io.spine.code.gen.java.NestedClassName;
 import io.spine.type.MessageType;
 import io.spine.validate.ConstraintViolation;
 import io.spine.validate.Constraints;
+import io.spine.validate.MessageWithConstraints;
 import io.spine.validate.ValidationException;
 
 import javax.annotation.Generated;
@@ -54,7 +56,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  * A factory of message validation code.
  *
  * @implSpec The public generated API of a message validation is the {@code validate()} method
- *           declared in {@link io.spine.protobuf.MessageWithConstraints}.
+ *           declared in {@link MessageWithConstraints}.
  */
 public final class ValidateSpecs {
 
@@ -155,7 +157,7 @@ public final class ValidateSpecs {
      *
      * <p>The method is {@code public} and returns a list of {@link ConstraintViolation}s if
      * the message is not valid. For the full contract, see
-     * {@link io.spine.protobuf.MessageWithConstraints#validate()}.
+     * {@link MessageWithConstraints#validate()}.
      *
      * @return {@code validate()} method
      */
@@ -177,7 +179,7 @@ public final class ValidateSpecs {
      * Generates the {@code vBuild()} method for the message builder class.
      *
      * @return {@code vBuild()} method
-     * @see io.spine.protobuf.ValidatingBuilder#vBuild() for the full contract.
+     * @see ValidatingBuilder#vBuild() for the full contract.
      */
     public MethodSpec vBuildMethod() {
         ClassName messageClass = bestGuess(messageSimpleName.value());

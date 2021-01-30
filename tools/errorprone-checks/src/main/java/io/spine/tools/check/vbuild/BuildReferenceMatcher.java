@@ -33,7 +33,7 @@ import com.google.errorprone.fixes.SuggestedFix;
 import com.google.errorprone.matchers.Matcher;
 import com.sun.source.tree.MemberReferenceTree;
 import com.sun.source.tree.Tree;
-import io.spine.protobuf.ValidatingBuilder;
+import io.spine.base.ValidatingBuilder;
 
 import java.util.stream.Stream;
 

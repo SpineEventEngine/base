@@ -26,6 +26,8 @@
 
 package io.spine.validate;
 
+import io.spine.base.ValidatingBuilder;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -41,7 +43,7 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
  * validate certain parts of model at a certain point. For example, to group them into a bigger
  * message which is going to be validated later.
  *
- * @see io.spine.protobuf.ValidatingBuilder
+ * @see ValidatingBuilder
  * @see Validated
  */
 @Documented

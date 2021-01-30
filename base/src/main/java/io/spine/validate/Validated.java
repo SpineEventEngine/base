@@ -26,6 +26,8 @@
 
 package io.spine.validate;
 
+import io.spine.base.ValidatingBuilder;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -42,7 +44,7 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
  * is overridden with a version which returns only valid messages, that version should be marked
  * with this annotation.
  *
- * @see io.spine.protobuf.ValidatingBuilder
+ * @see ValidatingBuilder
  * @see NonValidated
  */
 @Documented

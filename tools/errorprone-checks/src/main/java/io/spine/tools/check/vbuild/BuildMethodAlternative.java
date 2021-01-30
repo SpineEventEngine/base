@@ -29,11 +29,12 @@ package io.spine.tools.check.vbuild;
 import com.google.errorprone.fixes.Fix;
 import com.google.errorprone.fixes.SuggestedFix;
 import com.sun.source.tree.Tree;
+import io.spine.base.ValidatingBuilder;
 
 /**
  * The alternatives to the {@code Builder.build()} method.
  *
- * @see io.spine.protobuf.ValidatingBuilder
+ * @see ValidatingBuilder
  */
 enum BuildMethodAlternative {
 

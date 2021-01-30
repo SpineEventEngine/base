@@ -64,8 +64,8 @@ public final class Implement extends AbstractCompilerOutput {
     /**
      * Creates an {@code implement INTERFACE_NAME,} string.
      *
-     * <p>It is assumed that any Protobuf message always implements at least its own parent
-     * interface.
+     * <p>The trailing comma is added assuming that a Protobuf message also implements
+     * a generated {@code MessageOrBuilder} interface.
      */
     private static String buildContent(MessageType type, Interface iface) {
         String result = iface.name() + initGenericParams(iface, type) + ',';

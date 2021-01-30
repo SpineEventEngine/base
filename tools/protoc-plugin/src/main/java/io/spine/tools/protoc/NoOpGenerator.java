@@ -29,8 +29,6 @@ package io.spine.tools.protoc;
 import com.google.common.collect.ImmutableSet;
 import io.spine.type.Type;
 
-import java.util.Collection;
-
 /**
  * A {@link CodeGenerator} which generates no code.
  */
@@ -50,7 +48,7 @@ public final class NoOpGenerator extends CodeGenerator {
     }
 
     @Override
-    protected Collection<CompilerOutput> generate(Type<?, ?> type) {
+    protected ImmutableSet<CompilerOutput> generate(Type<?, ?> type) {
         return ImmutableSet.of();
     }
 }

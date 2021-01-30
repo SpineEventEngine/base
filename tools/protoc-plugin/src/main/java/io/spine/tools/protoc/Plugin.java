@@ -30,14 +30,14 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import io.spine.code.proto.OptionExtensionRegistry;
-import io.spine.tools.protoc.column.ColumnGenerator;
-import io.spine.tools.protoc.field.FieldGenerator;
-import io.spine.tools.protoc.message.BuilderGenerator;
-import io.spine.tools.protoc.message.InterfaceGenerator;
-import io.spine.tools.protoc.method.MethodGenerator;
-import io.spine.tools.protoc.nested.NestedClassGenerator;
-import io.spine.tools.protoc.query.EntityQueryGenerator;
-import io.spine.tools.protoc.validation.ValidatorCode;
+import io.spine.tools.protoc.column.ColumnGen;
+import io.spine.tools.protoc.field.FieldGen;
+import io.spine.tools.protoc.message.BuilderGen;
+import io.spine.tools.protoc.message.InterfaceGen;
+import io.spine.tools.protoc.message.ValidationGen;
+import io.spine.tools.protoc.method.MethodGen;
+import io.spine.tools.protoc.nested.NestedClassGen;
+import io.spine.tools.protoc.query.EntityQueryGen;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -54,8 +54,8 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * <p>The program reads a {@link CodeGeneratorRequest} from {@code System.in} and writes
  * a {@link CodeGeneratorResponse} into the {@code System.out}.
  *
- * <p>For the description of the plugin behavior see {@link InterfaceGenerator} and
- * {@link MethodGenerator}.
+ * <p>For the description of the plugin behavior see {@link InterfaceGen} and
+ * {@link MethodGen}.
  *
  * <p>For the plugin mechanism see <a href="SpineProtoGenerator.html#contract">
  * {@code SpineProtoGenerator}</a>.
@@ -72,17 +72,16 @@ public final class Plugin {
     public static void main(String[] args) {
         CodeGeneratorRequest request = readRequest();
         SpineProtocConfig config = readConfig(request);
-        CompositeGenerator generator = CompositeGenerator
-                .builder()
-                .add(InterfaceGenerator.instance(config))
-                .add(MethodGenerator.instance(config))
-                .add(BuilderGenerator.instance(config))
-                .add(ValidatorCode.instance(config))
-                .add(NestedClassGenerator.instance(config))
-                .add(ColumnGenerator.instance(config))
-                .add(EntityQueryGenerator.instance(config))
-                .add(FieldGenerator.instance(config))
-                .build();
+        CompositeGenerator generator = CompositeGenerator.of(
+                InterfaceGen.instance(config),
+                MethodGen.instance(config),
+                BuilderGen.instance(config),
+                ValidationGen.instance(config),
+                NestedClassGen.instance(config),
+                ColumnGen.instance(config),
+                EntityQueryGen.instance(config),
+                FieldGen.instance(config)
+        );
         CodeGeneratorResponse response = generator.process(request);
         writeResponse(response);
     }

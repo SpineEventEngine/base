@@ -52,7 +52,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("`ThrowableMessage` should")
 class ThrowableMessageTest {
 
-    private RejectionMessage message;
+    private RejectionMessage<?, ?> message;
     private ThrowableMessage throwableMessage;
     private Any producer;
 

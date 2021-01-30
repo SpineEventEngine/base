@@ -26,7 +26,7 @@
 
 package io.spine.base.given;
 
-import io.spine.base.EnvironmentType;
+import io.spine.environment.EnvironmentType;
 
 /**
  * An environment {@linkplain #enabled() that is enabled} based on the value of an env variable

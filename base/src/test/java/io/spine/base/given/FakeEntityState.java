@@ -39,7 +39,7 @@ import com.google.protobuf.MessageLite;
 import com.google.protobuf.Parser;
 import com.google.protobuf.UnknownFieldSet;
 import io.spine.base.EntityState;
-import io.spine.protobuf.ValidatingBuilder;
+import io.spine.base.ValidatingBuilder;
 import io.spine.validate.ConstraintViolation;
 import io.spine.validate.NonValidated;
 

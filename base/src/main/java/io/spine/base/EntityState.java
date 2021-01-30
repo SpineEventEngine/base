@@ -28,8 +28,6 @@ package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
 import io.spine.annotation.GeneratedMixin;
-import io.spine.protobuf.BuiltMessage;
-import io.spine.protobuf.ValidatingBuilder;
 
 /**
  * A common interface for entity state messages.

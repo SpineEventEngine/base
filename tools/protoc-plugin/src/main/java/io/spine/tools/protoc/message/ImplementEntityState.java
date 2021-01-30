@@ -35,6 +35,8 @@ import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static io.spine.tools.protoc.message.InterfaceParameter.generatedClass;
+import static io.spine.tools.protoc.message.InterfaceParameter.validatingBuilder;
 
 /**
  * Marks the provided message type with the {@link io.spine.base.EntityState EntityState} interface
@@ -61,9 +63,7 @@ final class ImplementEntityState extends ImplementInterface {
             return InterfaceParameters.empty();
         }
         InterfaceParameter idType = firstFieldOf(type);
-        InterfaceParameter validatingBuilder = new BuilderOfGeneratedClass();
-        InterfaceParameter generatedClass = new GeneratedClass();
-        return InterfaceParameters.of(idType, validatingBuilder, generatedClass);
+        return InterfaceParameters.of(idType, validatingBuilder(), generatedClass());
     }
 
     private static InterfaceParameter firstFieldOf(MessageType type) {

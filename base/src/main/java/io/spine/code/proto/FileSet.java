@@ -296,7 +296,7 @@ public final class FileSet {
         Map<FileName, FileDescriptor> found = newHashMapWithExpectedSize(fileNames.size());
         for (FileName name : fileNames) {
             Optional<FileDescriptor> file = tryFind(name);
-            file.ifPresent(descriptor -> found.put(name, descriptor));
+            file.ifPresent(fileDescr -> found.put(name, fileDescr));
         }
         return new FileSet(found);
     }
