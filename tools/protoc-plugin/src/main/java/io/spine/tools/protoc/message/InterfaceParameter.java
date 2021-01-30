@@ -27,7 +27,7 @@
 package io.spine.tools.protoc.message;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.type.Type;
+import io.spine.type.MessageType;
 
 /**
  * A generic parameter of an {@linkplain Interface interface} which will be
@@ -39,11 +39,11 @@ public interface InterfaceParameter {
     /**
      * Obtains a parameter value based on who is the message interface descendant.
      *
-     * @param descendant
+     * @param generatedClass
      *         the {@code Message} class implementing the interface
      * @return the value of the generic parameter
      */
-    String valueFor(Type<?, ?> descendant);
+    String valueFor(MessageType generatedClass);
 
     /**
      * Creates a one-element collection of parameters containing this parameter.

@@ -31,7 +31,6 @@ import io.spine.tools.protoc.AbstractCompilerOutput;
 import io.spine.tools.protoc.InsertionPoint;
 import io.spine.tools.protoc.ProtocPluginFiles;
 import io.spine.type.MessageType;
-import io.spine.type.Type;
 
 /**
  * A {@link io.spine.tools.protoc.CompilerOutput CompilerOutput} which makes a message class
@@ -73,7 +72,7 @@ public final class Implement extends AbstractCompilerOutput {
         return result;
     }
 
-    private static String initGenericParams(Interface iface, Type<?, ?> type) {
+    private static String initGenericParams(Interface iface, MessageType type) {
         InterfaceParameters parameters = iface.parameters();
         String result = parameters.asStringFor(type);
         return result;

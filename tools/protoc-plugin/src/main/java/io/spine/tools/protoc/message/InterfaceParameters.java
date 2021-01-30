@@ -28,7 +28,7 @@ package io.spine.tools.protoc.message;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.type.Type;
+import io.spine.type.MessageType;
 
 import static java.util.stream.Collectors.joining;
 
@@ -56,13 +56,16 @@ public final class InterfaceParameters {
     }
 
     /**
-     * Initializes parameter values based on the message interface descendant.
+     * Initializes parameter values based on the type of the generated message.
      *
      * <p>The values are then concatenated to a {@code String} of generated code.
      *
      * <p>Example output: {@code <ProjectId, String>}.
+     *
+     * @param type
+     *         the type of the generated message
      */
-    public String asStringFor(Type<?, ?> type) {
+    String asStringFor(MessageType type) {
         if (params.isEmpty()) {
             return "";
         }
@@ -70,7 +73,7 @@ public final class InterfaceParameters {
         return result;
     }
 
-    private String joinFor(Type<?, ?> type) {
+    private String joinFor(MessageType type) {
         return params.stream()
                      .map(param -> param.valueFor(type))
                      .collect(joining(", "));
