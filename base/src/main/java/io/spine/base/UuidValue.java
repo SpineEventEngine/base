@@ -38,7 +38,6 @@ import com.google.errorprone.annotations.Immutable;
  * named 'uuid':
  * <pre>
  *     {@code
- *
  *         message ProjectId {
  *             // UUID-based generated value.
  *             string uuid = 1;
