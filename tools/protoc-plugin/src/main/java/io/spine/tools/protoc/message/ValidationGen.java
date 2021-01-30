@@ -28,7 +28,6 @@ package io.spine.tools.protoc.message;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.compiler.PluginProtos;
-import io.spine.base.BuiltMessage;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.CodeGenerator;
 import io.spine.tools.protoc.CompilerOutput;
@@ -39,12 +38,12 @@ import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.validate.ValidateSpecs;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
+import io.spine.validate.MessageWithConstraints;
 
 import static io.spine.tools.protoc.InsertionPoint.builder_scope;
 import static io.spine.tools.protoc.InsertionPoint.class_scope;
 import static io.spine.tools.protoc.message.Implement.interfaceFor;
-import static io.spine.tools.protoc.message.InterfaceParameter.generatedClass;
-import static io.spine.tools.protoc.message.InterfaceParameter.validatingBuilder;
+import static io.spine.tools.protoc.message.InterfaceParameters.empty;
 
 /**
  * Generates code which validates message fields upon the constraints, as well as the API which
@@ -52,11 +51,8 @@ import static io.spine.tools.protoc.message.InterfaceParameter.validatingBuilder
  */
 public final class ValidationGen extends CodeGenerator {
 
-    private static final Interface BUILT_MESSAGE = new ExistingInterface(
-            ClassName.of(BuiltMessage.class),
-            InterfaceParameters.of(validatingBuilder(), generatedClass())
-    );
-
+    private static final Interface MESSAGE_WITH_CONSTRAINTS =
+            new ExistingInterface(ClassName.of(MessageWithConstraints.class), empty());
     /**
      * Prevents direct instantiation.
      */
@@ -85,7 +81,7 @@ public final class ValidationGen extends CodeGenerator {
                 insertCode(type, class_scope, factory.validateMethod().toString());
         CompilerOutput validatorClass =
                 insertCode(type, class_scope, factory.validatorClass().toString());
-        Implement iface = interfaceFor(type, BUILT_MESSAGE);
+        Implement iface = interfaceFor(type, MESSAGE_WITH_CONSTRAINTS);
         return ImmutableSet.of(
                 builderInsertionPoint,
                 validateMethod,

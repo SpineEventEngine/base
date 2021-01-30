@@ -73,7 +73,6 @@ extra.apply {
     this["projectsToPublish"] = listOf(
             "base",
             "tool-base",
-            "tools-api",
             "testlib",
             "mute-logging",
             "errorprone-checks",

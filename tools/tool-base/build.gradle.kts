@@ -30,7 +30,6 @@ group = "io.spine.tools"
 
 dependencies {
     api(project(":base"))
-    api(project(":tools-api"))
     implementation(Deps.gen.javaPoet)
     implementation(Deps.gen.javaxAnnotation)
 

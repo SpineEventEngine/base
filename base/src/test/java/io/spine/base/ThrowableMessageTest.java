@@ -25,7 +25,6 @@
  */
 package io.spine.base;
 
-import com.google.common.collect.ImmutableList;
 import com.google.protobuf.AbstractMessage;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors;
@@ -33,7 +32,6 @@ import com.google.protobuf.Message;
 import com.google.protobuf.Parser;
 import com.google.protobuf.UnknownFieldSet;
 import com.google.protobuf.util.Timestamps;
-import io.spine.validate.ConstraintViolation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -187,11 +185,6 @@ class ThrowableMessageTest {
 
         @Override
         public UnknownFieldSet getUnknownFields() {
-            return null;
-        }
-
-        @Override
-        public ImmutableList<ConstraintViolation> validate() {
             return null;
         }
     }
