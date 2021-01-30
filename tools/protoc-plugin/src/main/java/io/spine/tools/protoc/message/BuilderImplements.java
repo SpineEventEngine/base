@@ -47,7 +47,7 @@ final class BuilderImplements extends AbstractCompilerOutput {
 
     static BuilderImplements implementValidatingBuilder(MessageType targetType) {
         String insertionPointName = InsertionPoint.builder_implements.forType(targetType);
-        String content = mixinFor(targetType);
+        String content = builderFor(targetType);
         File file = prepareFile(targetType)
                 .setInsertionPoint(insertionPointName)
                 .setContent(content)
@@ -55,7 +55,7 @@ final class BuilderImplements extends AbstractCompilerOutput {
         return new BuilderImplements(file);
     }
 
-    private static String mixinFor(MessageType type) {
+    private static String builderFor(MessageType type) {
         String generic = new GeneratedClass()
                 .toCollection()
                 .asStringFor(type);
