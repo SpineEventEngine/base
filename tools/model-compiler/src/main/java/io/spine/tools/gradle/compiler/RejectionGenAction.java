@@ -27,6 +27,7 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableSet;
+import io.spine.base.RejectionType;
 import io.spine.code.gen.Indent;
 import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.gen.java.TypeSpecWriter;
@@ -37,7 +38,6 @@ import io.spine.code.proto.RejectionsFile;
 import io.spine.code.proto.SourceProtoBelongsToModule;
 import io.spine.tools.compiler.gen.rejection.RejectionSpec;
 import io.spine.tools.gradle.CodeGenerationAction;
-import io.spine.type.RejectionType;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 

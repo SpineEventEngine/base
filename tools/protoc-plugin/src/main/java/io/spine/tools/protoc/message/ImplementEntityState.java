@@ -40,9 +40,9 @@ import static com.google.common.base.Preconditions.checkState;
  * Marks the provided message type with the {@link io.spine.base.EntityState EntityState} interface
  * if the type is recognized as entity state.
  */
-final class GenerateEntityStateInterfaces extends InterfaceGenerationTask {
+final class ImplementEntityState extends ImplementInterface {
 
-    GenerateEntityStateInterfaces(EntityStateConfig config) {
+    ImplementEntityState(EntityStateConfig config) {
         super(config.getValue());
     }
 
@@ -52,7 +52,7 @@ final class GenerateEntityStateInterfaces extends InterfaceGenerationTask {
         if (!type.isEntityState()) {
             return ImmutableList.of();
         }
-        return generateInterfacesFor(type);
+        return super.generateFor(type);
     }
 
     @Override

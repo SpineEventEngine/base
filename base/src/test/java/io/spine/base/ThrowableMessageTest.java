@@ -25,6 +25,7 @@
  */
 package io.spine.base;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.AbstractMessage;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors;
@@ -32,6 +33,7 @@ import com.google.protobuf.Message;
 import com.google.protobuf.Parser;
 import com.google.protobuf.UnknownFieldSet;
 import com.google.protobuf.util.Timestamps;
+import io.spine.validate.ConstraintViolation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -113,7 +115,7 @@ class ThrowableMessageTest {
 
         private static final long serialVersionUID = 0L;
 
-        private TestThrowableMessage(RejectionMessage rejection) {
+        private TestThrowableMessage(@SuppressWarnings("rawtypes") RejectionMessage rejection) {
             super(rejection);
         }
     }
@@ -128,7 +130,7 @@ class ThrowableMessageTest {
      * the Spine Protobuf Compiler plugin. However, in this module we're unable to use the plugin,
      * so this fake implementation is declared.
      */
-    @SuppressWarnings({"ReturnOfNull", "Immutable"}) // OK for a fake.
+    @SuppressWarnings({"ReturnOfNull", "Immutable", "rawtypes"}) // OK for a fake.
     private static class FakeRejectionMessage extends AbstractMessage implements RejectionMessage {
 
         private static final long serialVersionUID = 0L;
@@ -185,6 +187,11 @@ class ThrowableMessageTest {
 
         @Override
         public UnknownFieldSet getUnknownFields() {
+            return null;
+        }
+
+        @Override
+        public ImmutableList<ConstraintViolation> validate() {
             return null;
         }
     }

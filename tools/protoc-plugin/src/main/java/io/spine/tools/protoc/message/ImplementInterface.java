@@ -37,11 +37,11 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * An abstract base for the interface code generation tasks.
  */
-abstract class InterfaceGenerationTask implements CodeGenerationTask {
+abstract class ImplementInterface implements CodeGenerationTask {
 
     private final ClassName interfaceName;
 
-    InterfaceGenerationTask(String interfaceName) {
+    ImplementInterface(String interfaceName) {
         checkNotEmptyOrBlank(interfaceName);
         this.interfaceName = ClassName.of(interfaceName);
     }
@@ -54,7 +54,8 @@ abstract class InterfaceGenerationTask implements CodeGenerationTask {
     /**
      * Performs the actual interface code generation.
      */
-    ImmutableList<CompilerOutput> generateInterfacesFor(MessageType type) {
+    @Override
+    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         InterfaceParameters params = interfaceParameters(type);
         Interface iface = new ExistingInterface(interfaceName, params);
         Implement result = Implement.interfaceFor(type, iface);

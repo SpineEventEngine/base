@@ -26,7 +26,7 @@
 
 package io.spine.tools.protoc;
 
-import io.spine.base.KnownMessage;
+import io.spine.type.KnownMessage;
 
 public interface DocumentMessage extends KnownMessage {
 }

@@ -59,7 +59,6 @@ import io.spine.tools.protoc.message.tests.TestEventsProto;
 import io.spine.tools.protoc.message.tests.UserNameProto;
 import io.spine.tools.protoc.message.tests.UserProto;
 import io.spine.tools.protoc.message.tests.UuidValues;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -143,7 +142,6 @@ final class InterfaceGeneratorTest {
                 .testAllPublicStaticMethods(InterfaceGenerator.class);
     }
 
-    @NotNull
     private static String messageNameFrom(File file) {
         String fileName = file.getName();
         String messageName = PROTO_PACKAGE + '.' +

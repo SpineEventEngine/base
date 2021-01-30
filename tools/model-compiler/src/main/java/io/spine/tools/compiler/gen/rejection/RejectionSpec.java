@@ -31,6 +31,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import io.spine.base.RejectionType;
 import io.spine.base.ThrowableMessage;
 import io.spine.code.gen.java.FieldName;
 import io.spine.code.gen.java.GeneratedBy;
@@ -40,7 +41,6 @@ import io.spine.code.java.PackageName;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.logging.Logging;
 import io.spine.tools.compiler.gen.NoArgMethod;
-import io.spine.type.RejectionType;
 
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
 import static javax.lang.model.element.Modifier.FINAL;

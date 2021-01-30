@@ -28,25 +28,18 @@ package io.spine.tools.protoc.message;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.CompilerOutput;
-import io.spine.tools.protoc.ConfigByPattern;
-import io.spine.tools.protoc.FilePatternMatcher;
+import io.spine.tools.protoc.UuidConfig;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.util.Preconditions2.checkNotDefaultArg;
 
 /**
- * Generates interfaces for Protobuf messages that match supplied
- * {@link io.spine.tools.protoc.FilePattern pattern}.
+ * Generates {@link io.spine.base.UuidValue UuidValue} interfaces.
  */
-final class GenerateInterfaces extends InterfaceGenerationTask {
+final class ImplementUuidValue extends ImplementInterface {
 
-    private final FilePatternMatcher patternMatcher;
-
-    GenerateInterfaces(ConfigByPattern config) {
+    ImplementUuidValue(UuidConfig config) {
         super(config.getValue());
-        checkNotDefaultArg(config.getPattern());
-        this.patternMatcher = new FilePatternMatcher(config.getPattern());
     }
 
     @Override
@@ -55,22 +48,15 @@ final class GenerateInterfaces extends InterfaceGenerationTask {
     }
 
     /**
-     * Makes supplied type implement configured interface.
-     *
-     * <p>The type does not implement an interface if:
-     *
-     * <ul>
-     *     <li>the type is not {@link MessageType#isTopLevel() top level};
-     *     <li>the type file name does not match supplied
-     *     {@link io.spine.tools.protoc.FilePattern pattern}.
-     * </ul>
+     * Makes supplied {@link io.spine.base.UuidValue UuidValue} type implement
+     * the configured interface.
      */
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
-        if (!type.isTopLevel() || !patternMatcher.test(type)) {
+        if (!type.isUuidValue()) {
             return ImmutableList.of();
         }
-        return generateInterfacesFor(type);
+        return super.generateFor(type);
     }
 }

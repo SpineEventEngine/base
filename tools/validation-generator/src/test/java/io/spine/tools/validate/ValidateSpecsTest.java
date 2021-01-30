@@ -41,14 +41,14 @@ import static javax.lang.model.SourceVersion.isName;
 import static javax.lang.model.element.Modifier.PRIVATE;
 
 @DisplayName("`MessageValidatorFactory` should")
-class ValidateGeneratorTest {
+class ValidateSpecsTest {
 
     @Test
     @DisplayName("generate `Validator` class")
     void generateClass() {
         MessageType type = new MessageType(Greenhouse.getDescriptor());
-        ValidateGenerator factory = new ValidateGenerator(type);
-        TypeSpec validatorClass = factory.generateClass();
+        ValidateSpecs factory = new ValidateSpecs(type);
+        TypeSpec validatorClass = factory.validatorClass();
         assertThat(isName(validatorClass.name))
                 .isTrue();
         assertThat(validatorClass.methodSpecs)
@@ -61,8 +61,8 @@ class ValidateGeneratorTest {
     @DisplayName("generate `validate()` method")
     void generateValidate() {
         MessageType type = new MessageType(Greenhouse.getDescriptor());
-        ValidateGenerator factory = new ValidateGenerator(type);
-        MethodSpec validateMethod = factory.generateValidate();
+        ValidateSpecs factory = new ValidateSpecs(type);
+        MethodSpec validateMethod = factory.validateMethod();
         assertThat(isName(validateMethod.name))
                 .isTrue();
         assertThat(validateMethod.returnType.toString())
@@ -73,8 +73,8 @@ class ValidateGeneratorTest {
     @DisplayName("generate `vBuild()` method")
     void generateVBuild() {
         MessageType type = new MessageType(Greenhouse.getDescriptor());
-        ValidateGenerator factory = new ValidateGenerator(type);
-        MethodSpec validateMethod = factory.generateVBuild();
+        ValidateSpecs factory = new ValidateSpecs(type);
+        MethodSpec validateMethod = factory.vBuildMethod();
         assertThat(isName(validateMethod.name))
                 .isTrue();
         assertThat(validateMethod.returnType.toString())
@@ -89,7 +89,7 @@ class ValidateGeneratorTest {
     }
 
     private static void checkEscaped(Descriptor type) {
-        ValidateGenerator ifOuterClass = new ValidateGenerator(new MessageType(type));
-        assertThat(ifOuterClass.generateClass().name).isEqualTo("Validator$");
+        ValidateSpecs ifOuterClass = new ValidateSpecs(new MessageType(type));
+        assertThat(ifOuterClass.validatorClass().name).isEqualTo("Validator$");
     }
 }

@@ -39,7 +39,7 @@ import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.message.ExistingInterface;
 import io.spine.tools.protoc.message.Implement;
 import io.spine.tools.protoc.message.Interface;
-import io.spine.tools.validate.ValidateGenerator;
+import io.spine.tools.validate.ValidateSpecs;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 
@@ -79,14 +79,14 @@ public final class ValidatorCode extends CodeGenerator {
                : ImmutableSet.of();
     }
 
-    private static Collection<CompilerOutput> compileValidation(MessageType type) {
-        ValidateGenerator factory = new ValidateGenerator(type);
+    private static ImmutableSet<CompilerOutput> compileValidation(MessageType type) {
+        ValidateSpecs factory = new ValidateSpecs(type);
         CompilerOutput builderInsertionPoint =
-                insertCode(type, builder_scope, factory.generateVBuild().toString());
+                insertCode(type, builder_scope, factory.vBuildMethod().toString());
         CompilerOutput validateMethod =
-                insertCode(type, class_scope, factory.generateValidate().toString());
+                insertCode(type, class_scope, factory.validateMethod().toString());
         CompilerOutput validatorClass =
-                insertCode(type, class_scope, factory.generateClass().toString());
+                insertCode(type, class_scope, factory.validatorClass().toString());
         Implement iface = interfaceFor(type, MESSAGE_WITH_CONSTRAINTS);
         return ImmutableSet.of(
                 builderInsertionPoint,

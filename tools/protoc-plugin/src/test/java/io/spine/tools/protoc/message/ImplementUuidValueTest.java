@@ -43,7 +43,7 @@ import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.Assertions.assertNpe;
 
 @DisplayName("`GenerateInterfaces` should")
-final class GenerateUuidInterfacesTest {
+final class ImplementUuidValueTest {
 
     @Nested
     @DisplayName("throw `NullPointerException` if")
@@ -52,14 +52,14 @@ final class GenerateUuidInterfacesTest {
         @Test
         @DisplayName("is created with `null` arguments")
         void isCreatedWithNullArguments() {
-            assertNpe(() -> new GenerateUuidInterfaces(null));
+            assertNpe(() -> new ImplementUuidValue(null));
         }
 
         @Test
         @DisplayName("`null` `MessageType` is supplied")
         void nullMessageTypeIsSupplied() {
             UuidConfig config = newTaskConfig("test");
-            GenerateUuidInterfaces generateMethods = new GenerateUuidInterfaces(config);
+            ImplementUuidValue generateMethods = new ImplementUuidValue(config);
             assertNpe(() -> generateMethods.generateFor(null));
         }
     }
@@ -96,8 +96,8 @@ final class GenerateUuidInterfacesTest {
                 .isNotEmpty();
     }
 
-    private static GenerateUuidInterfaces newTask(UuidConfig config) {
-        return new GenerateUuidInterfaces(config);
+    private static ImplementUuidValue newTask(UuidConfig config) {
+        return new ImplementUuidValue(config);
     }
 
     private static UuidConfig newTaskConfig(String interfaceName) {

@@ -56,7 +56,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  * @implSpec The public generated API of a message validation is the {@code validate()} method
  *           declared in {@link io.spine.protobuf.MessageWithConstraints}.
  */
-public final class ValidateGenerator {
+public final class ValidateSpecs {
 
     private static final String VALIDATE_METHOD = "validate";
     private static final String MESSAGE_VARIABLE = "msg";
@@ -67,12 +67,12 @@ public final class ValidateGenerator {
     private final String validatorSimpleName;
 
     /**
-     * Creates a new {@code MessageValidatorFactory} for the given type.
+     * Creates a new instance for the given type.
      *
      * @param type
      *         type of the message to validate
      */
-    public ValidateGenerator(MessageType type) {
+    public ValidateSpecs(MessageType type) {
         this.type = type;
         this.messageSimpleName = NestedClassName.from(type.javaClassName());
         this.validatorSimpleName = nameForValidator(type);
@@ -125,7 +125,7 @@ public final class ValidateGenerator {
      *
      * @return the validator class
      */
-    public TypeSpec generateClass() {
+    public TypeSpec validatorClass() {
         MethodSpec ctor = MethodSpec
                 .constructorBuilder()
                 .addModifiers(PRIVATE)
@@ -159,7 +159,7 @@ public final class ValidateGenerator {
      *
      * @return {@code validate()} method
      */
-    public MethodSpec generateValidate() {
+    public MethodSpec validateMethod() {
         return MethodSpec
                 .methodBuilder(VALIDATE_METHOD)
                 .addModifiers(PUBLIC)
@@ -179,7 +179,7 @@ public final class ValidateGenerator {
      * @return {@code vBuild()} method
      * @see io.spine.protobuf.ValidatingBuilder#vBuild() for the full contract.
      */
-    public MethodSpec generateVBuild() {
+    public MethodSpec vBuildMethod() {
         ClassName messageClass = bestGuess(messageSimpleName.value());
         Class<ValidationException> exceptionClass = ValidationException.class;
         CodeBlock body = CodeBlock

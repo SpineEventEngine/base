@@ -46,7 +46,7 @@ import static io.spine.tools.protoc.FilePatterns.filePrefix;
 import static io.spine.tools.protoc.FilePatterns.fileSuffix;
 
 @DisplayName("`GenerateInterfaces` should")
-final class GenerateInterfacesTest {
+final class InterfacesTest {
 
     @DisplayName("throw `NullPointerException` if")
     @Nested
@@ -55,7 +55,7 @@ final class GenerateInterfacesTest {
         @DisplayName("is created with `null` arguments")
         @Test
         void isCreatedWithNullArguments() {
-            assertNpe(() -> new GenerateInterfaces(null));
+            assertNpe(() -> new ImplementInterfaceByPattern(null));
         }
 
         @DisplayName("`null` `MessageType` is supplied")
@@ -64,7 +64,7 @@ final class GenerateInterfacesTest {
             ConfigByPattern config = newTaskConfig("test")
                     .setPattern(filePrefix("non-default"))
                     .build();
-            GenerateInterfaces generateMethods = new GenerateInterfaces(config);
+            ImplementInterfaceByPattern generateMethods = new ImplementInterfaceByPattern(config);
             assertNpe(() -> generateMethods.generateFor(null));
         }
     }
@@ -125,8 +125,8 @@ final class GenerateInterfacesTest {
                 .isNotEmpty();
     }
 
-    private static GenerateInterfaces newTask(ConfigByPattern config) {
-        return new GenerateInterfaces(config);
+    private static ImplementInterfaceByPattern newTask(ConfigByPattern config) {
+        return new ImplementInterfaceByPattern(config);
     }
 
     private static ConfigByPattern.Builder newTaskConfig(String interfaceName) {

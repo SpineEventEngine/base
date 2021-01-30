@@ -48,9 +48,9 @@ import static io.spine.tools.protoc.InsertionPoint.message_implements;
 import static io.spine.tools.protoc.ProtocTaskConfigs.entityStateConfig;
 
 @DisplayName("`GenerateEntityStateInterfaces` task should")
-class GenerateEntityStateInterfacesTest {
+class ImplementEntityStateTest {
 
-    private GenerateEntityStateInterfaces task;
+    private ImplementEntityState task;
 
     @BeforeEach
     void initTask() {
@@ -117,18 +117,18 @@ class GenerateEntityStateInterfacesTest {
         }
     }
 
-    private static GenerateEntityStateInterfaces markEntityStatesAs(String className) {
+    private static ImplementEntityState markEntityStatesAs(String className) {
         return markEntityStatesAs(ClassName.of(className));
     }
 
     @SuppressWarnings("rawtypes")   // due to the nature of {@code Some.class} in Java.
-    private static GenerateEntityStateInterfaces
+    private static ImplementEntityState
     markEntityStatesAs(Class<? extends EntityState> clazz) {
         return markEntityStatesAs(ClassName.of(clazz));
     }
 
-    private static GenerateEntityStateInterfaces markEntityStatesAs(ClassName className) {
+    private static ImplementEntityState markEntityStatesAs(ClassName className) {
         EntityStateConfig config = entityStateConfig(className);
-        return new GenerateEntityStateInterfaces(config);
+        return new ImplementEntityState(config);
     }
 }

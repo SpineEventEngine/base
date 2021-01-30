@@ -77,16 +77,16 @@ public final class InterfaceGenerator extends CodeGenerator {
         checkNotNull(spineProtocConfig);
         AddInterfaces config = spineProtocConfig.getAddInterfaces();
         ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();
-        UuidConfig uuidInterface = config.getUuidInterface();
-        if (generate(uuidInterface)) {
-            tasks.add(new GenerateUuidInterfaces(uuidInterface));
+        UuidConfig uuidConfig = config.getUuidInterface();
+        if (generate(uuidConfig)) {
+            tasks.add(new ImplementUuidValue(uuidConfig));
         }
         for (ConfigByPattern byPattern : config.getInterfaceByPatternList()) {
-            tasks.add(new GenerateInterfaces(byPattern));
+            tasks.add(new ImplementInterfaceByPattern(byPattern));
         }
-        EntityStateConfig entityStateInterface = config.getEntityStateInterface();
-        if (generate(entityStateInterface)) {
-            tasks.add(new GenerateEntityStateInterfaces(entityStateInterface));
+        EntityStateConfig esConfig = config.getEntityStateInterface();
+        if (generate(esConfig)) {
+            tasks.add(new ImplementEntityState(esConfig));
         }
         return new InterfaceGenerator(tasks.build());
     }

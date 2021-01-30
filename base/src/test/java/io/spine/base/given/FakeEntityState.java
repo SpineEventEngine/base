@@ -26,6 +26,7 @@
 
 package io.spine.base.given;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.AbstractMessage;
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
@@ -39,6 +40,7 @@ import com.google.protobuf.Parser;
 import com.google.protobuf.UnknownFieldSet;
 import io.spine.base.EntityState;
 import io.spine.protobuf.ValidatingBuilder;
+import io.spine.validate.ConstraintViolation;
 import io.spine.validate.NonValidated;
 
 import java.io.IOException;
@@ -104,6 +106,11 @@ public final class FakeEntityState extends AbstractMessage
 
     @Override
     public UnknownFieldSet getUnknownFields() {
+        return null;
+    }
+
+    @Override
+    public ImmutableList<ConstraintViolation> validate() {
         return null;
     }
 

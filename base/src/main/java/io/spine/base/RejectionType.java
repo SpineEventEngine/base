@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.type;
+package io.spine.base;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FileName;
+import io.spine.type.MessageType;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Objects;
@@ -104,6 +105,7 @@ public final class RejectionType extends MessageType {
      *
      * @return the fully qualified class name for a throwable message
      */
+    @SuppressWarnings("unused")
     public ClassName throwableClass() {
         return ClassName.of(javaPackage().value() + '.' + descriptor().getName());
     }
