@@ -31,6 +31,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
@@ -48,8 +49,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A Protobuf type, such as a message or an enum.
  *
- * @param <T> the type of the type descriptor
- * @param <P> the type of the proto message of the descriptor
+ * @param <T>
+ *         the type of the type descriptor
+ * @param <P>
+ *         the type of the proto message of the descriptor
  */
 @Immutable(containerOf = {"T", "P"})
 @Internal
@@ -65,9 +68,10 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
      *         Which is why a straightforward get-put approach with a plain {@code Cache}
      *         implementation is used.
      */
-    private static final Cache<String, Class<?>> knownClasses = CacheBuilder.newBuilder()
-                                                                            .maximumSize(1_000)
-                                                                            .build();
+    private static final Cache<String, Class<?>> knownClasses =
+            CacheBuilder.newBuilder()
+                        .maximumSize(1_000)
+                        .build();
 
     private final T descriptor;
     private final boolean supportsBuilders;
@@ -134,8 +138,8 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
      * Obtains package for the corresponding Java type.
      */
     public PackageName javaPackage() {
-        PackageName result = PackageName.resolve(descriptor.getFile()
-                                                           .toProto());
+        FileDescriptorProto fileDescr = descriptor.getFile().toProto();
+        PackageName result = PackageName.resolve(fileDescr);
         return result;
     }
 
