@@ -56,8 +56,8 @@ abstract class InterfaceGenerationTask implements CodeGenerationTask {
      */
     ImmutableList<CompilerOutput> generateInterfacesFor(MessageType type) {
         InterfaceParameters params = interfaceParameters(type);
-        Interface messageInterface = new ExistingInterface(interfaceName, params);
-        Implement result = Implement.interfaceFor(type, messageInterface);
+        Interface iface = new ExistingInterface(interfaceName, params);
+        Implement result = Implement.interfaceFor(type, iface);
         return ImmutableList.of(result);
     }
 }
