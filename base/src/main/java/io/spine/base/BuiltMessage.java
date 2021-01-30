@@ -26,11 +26,9 @@
 
 package io.spine.base;
 
-import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.protobuf.Messages;
 import io.spine.type.KnownMessage;
-import io.spine.validate.ConstraintViolation;
 import io.spine.validate.MessageWithConstraints;
 
 /**
@@ -72,11 +70,5 @@ public interface BuiltMessage<B extends ValidatingBuilder<M>, M extends BuiltMes
         @SuppressWarnings("unchecked") // The cast is ensured by generic params of `BuildMessage`.
         B builder = (B) Messages.builderFor(messageClass);
         return builder;
-    }
-
-    @Override
-    default ImmutableList<ConstraintViolation> validate() {
-        //TODO:2021-01-30:alexander.yevsyukov: Remove when validating code is generated properly.
-        return ImmutableList.of();
     }
 }
