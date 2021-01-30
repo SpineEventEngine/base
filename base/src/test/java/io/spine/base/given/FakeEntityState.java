@@ -46,7 +46,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings({"ReturnOfNull", "Immutable", "rawtypes"}) // OK for a fake.
+@SuppressWarnings({"ReturnOfNull", "Immutable"}) // OK for a fake.
 public final class FakeEntityState extends AbstractMessage
         implements EntityState<Any, FakeEntityState.Builder, FakeEntityState> {
 
@@ -129,6 +129,7 @@ public final class FakeEntityState extends AbstractMessage
             return null;
         }
 
+        @SuppressWarnings("MethodDoesntCallSuperMethod")
         @Override
         public Message.Builder clone() {
             return null;
@@ -319,14 +320,13 @@ public final class FakeEntityState extends AbstractMessage
         }
 
         @Override
-        public boolean mergeDelimitedFrom(InputStream input) throws IOException {
+        public boolean mergeDelimitedFrom(InputStream input) {
             return false;
         }
 
         @Override
         public boolean mergeDelimitedFrom(InputStream input,
-                                          ExtensionRegistryLite extensionRegistry) throws
-                                                                                   IOException {
+                                          ExtensionRegistryLite extensionRegistry) {
             return false;
         }
     }

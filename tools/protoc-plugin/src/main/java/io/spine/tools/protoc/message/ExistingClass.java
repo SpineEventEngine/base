@@ -28,7 +28,7 @@ package io.spine.tools.protoc.message;
 
 import com.google.errorprone.annotations.Immutable;
 import io.spine.code.java.ClassName;
-import io.spine.type.Type;
+import io.spine.type.MessageType;
 
 /**
  * An interface parameter which is already existing class.
@@ -43,7 +43,7 @@ final class ExistingClass implements InterfaceParameter {
     }
 
     @Override
-    public String valueFor(Type<?, ?> ignored) {
+    public String valueFor(MessageType ignored) {
         return value.toString();
     }
 }
