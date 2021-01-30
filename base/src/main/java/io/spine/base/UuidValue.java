@@ -27,6 +27,7 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
+import io.spine.type.KnownMessage;
 
 /**
  * A common interface for the {@code string}-based unique identifiers.
@@ -47,5 +48,5 @@ import com.google.errorprone.annotations.Immutable;
  */
 @SuppressWarnings("InterfaceNeverImplemented") // Used by the Protobuf Compiler plugin.
 @Immutable
-public interface UuidValue extends SerializableMessage {
+public interface UuidValue extends KnownMessage {
 }
