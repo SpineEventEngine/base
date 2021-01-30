@@ -27,20 +27,24 @@
 package io.spine.tools.protoc.message;
 
 import com.google.errorprone.annotations.Immutable;
+import io.spine.code.java.SimpleClassName;
 import io.spine.type.MessageType;
 
+import static java.lang.String.format;
+
 /**
- * The message interface parameter whose value is the class itself (which is going to implement
- * the interface).
+ * Short class name of the builder of the generated message class.
  *
- * <p>So, for the {@code ProjectId} class implementing some message interface, the value of the
- * parameter will be {@code ProjectId}.
+ * @see SimpleClassName#ofBuilder()
  */
 @Immutable
-final class GeneratedClass implements InterfaceParameter {
+final class BuilderOfGeneratedClass implements InterfaceParameter {
 
     @Override
     public String valueFor(MessageType generatedClass) {
-        return generatedClass.simpleJavaClassName().value();
+        String result = format(
+                "%s.%s", generatedClass.simpleJavaClassName(), SimpleClassName.ofBuilder()
+        );
+        return result;
     }
 }

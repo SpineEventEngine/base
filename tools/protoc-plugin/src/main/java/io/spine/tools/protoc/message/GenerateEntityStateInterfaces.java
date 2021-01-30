@@ -60,8 +60,10 @@ final class GenerateEntityStateInterfaces extends InterfaceGenerationTask {
         if (!type.isEntityState()) {
             return InterfaceParameters.empty();
         }
-        InterfaceParameter firstParam = firstFieldOf(type);
-        return firstParam.toCollection();
+        InterfaceParameter idType = firstFieldOf(type);
+        InterfaceParameter validatingBuilder = new BuilderOfGeneratedClass();
+        InterfaceParameter generatedClass = new GeneratedClass();
+        return InterfaceParameters.of(idType, validatingBuilder, generatedClass);
     }
 
     private static InterfaceParameter firstFieldOf(MessageType type) {
