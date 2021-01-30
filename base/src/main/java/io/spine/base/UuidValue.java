@@ -48,12 +48,4 @@ import com.google.errorprone.annotations.Immutable;
 @SuppressWarnings("InterfaceNeverImplemented") // Used by the Protobuf Compiler plugin.
 @Immutable
 public interface UuidValue extends SerializableMessage {
-
-    /**
-     * Obtains a {@code MessageClassifier} for types which define a single
-     * string field named {@code uuid}.
-     */
-    static MessageClassifier classifier() {
-        return new UuidValueClassifier();
-    }
 }
