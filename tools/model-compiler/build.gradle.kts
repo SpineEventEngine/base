@@ -58,9 +58,11 @@ protobuf {
         all().forEach { task ->
             val scope = task.sourceSet.name
             task.generateDescriptorSet = true
-            task.descriptorSetOptions.path = "$buildDir/descriptors/${scope}/io.spine.tools.spine-model-compiler-${scope}.desc"
-            task.descriptorSetOptions.includeImports = true
-            task.descriptorSetOptions.includeSourceInfo = true
+            with(task.descriptorSetOptions) {
+                path = "$buildDir/descriptors/${scope}/io.spine.tools.spine-model-compiler-${scope}.desc"
+                includeImports = true
+                includeSourceInfo = true
+            }
         }
     }
 }
