@@ -55,7 +55,7 @@ val links = mapOf(
  * See the Gradle manual for more info:
  * https://docs.gradle.org/current/userguide/composite_builds.html
  */
-includeBuild("$rootDir/../../") {
+includeBuild("$rootDir/../") {
     dependencySubstitution {
         links.forEach { (id, projectPath) ->
             substitute(module(id)).with(project(projectPath))
