@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.gen.rejection;
+package io.spine.tools.compiler.gen;
 
 import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.ClassName;
@@ -41,8 +41,7 @@ import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 import io.spine.protobuf.Messages;
-import io.spine.tools.compiler.field.type.FieldType;
-import io.spine.tools.compiler.gen.NoArgMethod;
+import io.spine.tools.compiler.field.FieldType;
 import io.spine.validate.Validate;
 
 import java.util.List;

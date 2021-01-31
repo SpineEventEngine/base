@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,13 +24,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.compiler.field;
+
+import com.google.common.collect.ImmutableSet;
+import com.squareup.javapoet.TypeName;
+import io.spine.code.proto.FieldDeclaration;
+
 /**
- * Classes for working with different proto field types.
+ * The type information of a field for a code-generation.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.field.type;
+public interface FieldType {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    /**
+     * Obtains the {@link TypeName} for the field.
+     *
+     * @return the type name
+     */
+    TypeName getTypeName();
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    /**
+     * Obtains the setter prefix for the field.
+     *
+     * @return the setter prefix
+     */
+    AccessorTemplate primarySetterTemplate();
+
+    /**
+     * Obtains the templates of the generated Java accessors for a field of this type.
+     *
+     * @return the accessor templates
+     */
+    ImmutableSet<AccessorTemplate> generatedAccessorTemplates();
+
+    /**
+     * Creates a an instances basing on the type of the field.
+     */
+    static FieldType of(FieldDeclaration field) {
+        if (field.isMap()) {
+            return new MapFieldType(field);
+        } else if (field.isRepeated()) {
+            return new RepeatedFieldType(field);
+        } else {
+            return new SingularFieldType(field);
+        }
+    }
+}

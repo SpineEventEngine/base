@@ -36,7 +36,7 @@ import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.RejectionsFile;
 import io.spine.code.proto.SourceProtoBelongsToModule;
-import io.spine.tools.compiler.gen.rejection.RejectionSpec;
+import io.spine.tools.compiler.gen.RejectionSpec;
 import io.spine.tools.gradle.CodeGenerationAction;
 import org.gradle.api.Project;
 import org.gradle.api.Task;

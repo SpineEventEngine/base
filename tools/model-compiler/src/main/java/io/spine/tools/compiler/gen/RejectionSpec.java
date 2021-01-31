@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.compiler.gen.rejection;
+package io.spine.tools.compiler.gen;
 
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
@@ -40,7 +40,6 @@ import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.logging.Logging;
-import io.spine.tools.compiler.gen.NoArgMethod;
 
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
 import static javax.lang.model.element.Modifier.FINAL;

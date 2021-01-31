@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,58 +24,52 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.field.type;
+package io.spine.tools.compiler.field;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import io.spine.code.java.PrimitiveType;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.tools.compiler.field.AccessorTemplate;
 
+import java.util.List;
 import java.util.Optional;
 
-import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.STRING;
-import static io.spine.tools.compiler.field.AccessorTemplate.prefix;
-import static io.spine.tools.compiler.field.AccessorTemplate.prefixAndPostfix;
+import static io.spine.tools.compiler.field.AccessorTemplates.adder;
+import static io.spine.tools.compiler.field.AccessorTemplates.allAdder;
 import static io.spine.tools.compiler.field.AccessorTemplates.clearer;
+import static io.spine.tools.compiler.field.AccessorTemplates.countGetter;
 import static io.spine.tools.compiler.field.AccessorTemplates.getter;
+import static io.spine.tools.compiler.field.AccessorTemplates.listGetter;
 import static io.spine.tools.compiler.field.AccessorTemplates.setter;
 
 /**
- * Represents singular {@linkplain FieldType field type}.
+ * Represents repeated {@linkplain FieldType field type}.
  */
-public final class SingularFieldType implements FieldType {
-
-    private static final String BYTES = "Bytes";
+final class RepeatedFieldType implements FieldType {
 
     private static final ImmutableSet<AccessorTemplate> GENERATED_ACCESSORS =
             ImmutableSet.of(
-                    prefix("has"),
                     getter(),
+                    listGetter(),
+                    countGetter(),
                     setter(),
+                    adder(),
+                    allAdder(),
                     clearer()
             );
 
-    private static final ImmutableSet<AccessorTemplate> GENERATED_STRING_ACCESSORS =
-            ImmutableSet.of(
-                    prefixAndPostfix("get", BYTES),
-                    prefixAndPostfix("set", BYTES)
-            );
-
     private final TypeName typeName;
-    private final JavaType javaType;
 
     /**
-     * Creates a new instance based on field type name.
+     * Constructs a new instance based on component type.
      *
      * @param declaration
-     *         the field declaration
+     *         the declaration of the field
      */
-    SingularFieldType(FieldDeclaration declaration) {
+    RepeatedFieldType(FieldDeclaration declaration) {
         this.typeName = constructTypeNameFor(declaration.javaTypeName());
-        this.javaType = declaration.javaType();
     }
 
     @Override
@@ -85,38 +79,32 @@ public final class SingularFieldType implements FieldType {
 
     @Override
     public ImmutableSet<AccessorTemplate> generatedAccessorTemplates() {
-        return javaType == STRING
-             ? ImmutableSet.<AccessorTemplate>builder()
-                           .addAll(GENERATED_ACCESSORS)
-                           .addAll(GENERATED_STRING_ACCESSORS)
-                           .build()
-             : GENERATED_ACCESSORS;
+        return GENERATED_ACCESSORS;
     }
 
     /**
-     * Returns "set" setter template used to initialize a singular field using a Protobuf message
-     * builder.
-     *
-     * <p>The call should have the following structure: {@code builder.setFieldName(FieldType)}.
+     * Returns "addAll" setter prefix, used to initialize a repeated field using with a call to
+     * Protobuf message builder.
      */
     @Override
     public AccessorTemplate primarySetterTemplate() {
-        return setter();
+        return allAdder();
     }
 
-    private static TypeName constructTypeNameFor(String name) {
-        Optional<? extends Class<?>> boxedScalarPrimitive =
-                PrimitiveType.getWrapperClass(name);
+    private static TypeName constructTypeNameFor(String componentTypeName) {
+        Optional<? extends Class<?>> wrapperClass =
+                PrimitiveType.getWrapperClass(componentTypeName);
 
-        if (boxedScalarPrimitive.isPresent()) {
-            TypeName unboxed = TypeName.get(boxedScalarPrimitive.get())
-                                       .unbox();
-            return unboxed;
-        }
-
-        // Make a possibly nested class name use the dot notation.
-        String dottedName = name.replace('$', '.');
-        ClassName result = ClassName.bestGuess(dottedName);
+        TypeName componentType = wrapperClass.isPresent()
+                                 ? TypeName.get(wrapperClass.get())
+                                 : ClassName.bestGuess(componentTypeName);
+        ParameterizedTypeName result =
+                ParameterizedTypeName.get(ClassName.get(List.class), componentType);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return typeName.toString();
     }
 }

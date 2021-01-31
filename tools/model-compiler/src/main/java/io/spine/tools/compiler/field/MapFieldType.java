@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.field.type;
+package io.spine.tools.compiler.field;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -33,7 +33,6 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.tools.compiler.field.AccessorTemplate;
 
 import java.util.AbstractMap;
 import java.util.Map;
@@ -52,7 +51,7 @@ import static io.spine.tools.compiler.field.AccessorTemplates.remover;
 /**
  * Represents map {@linkplain FieldType field type}.
  */
-public final class MapFieldType implements FieldType {
+final class MapFieldType implements FieldType {
 
     private static final String GET = "get";
 

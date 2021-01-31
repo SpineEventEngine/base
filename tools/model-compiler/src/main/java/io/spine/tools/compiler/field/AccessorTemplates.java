@@ -26,16 +26,13 @@
 
 package io.spine.tools.compiler.field;
 
-import io.spine.annotation.Internal;
-
 import static io.spine.tools.compiler.field.AccessorTemplate.prefix;
 import static io.spine.tools.compiler.field.AccessorTemplate.prefixAndPostfix;
 
 /**
  * A factory of commonly used {@link AccessorTemplate} instances.
  */
-@Internal
-public final class AccessorTemplates {
+final class AccessorTemplates {
 
     private static final String GET_PREFIX = "get";
 
