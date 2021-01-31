@@ -33,8 +33,7 @@ import io.spine.tools.protoc.ProtocPluginFiles;
 import io.spine.type.MessageType;
 
 /**
- * A {@link io.spine.tools.protoc.CompilerOutput CompilerOutput} which makes a message class
- * implement a given interface.
+ * A compiler output which makes a message class implement a given interface.
  */
 public final class Implement extends AbstractCompilerOutput {
 
@@ -68,13 +67,9 @@ public final class Implement extends AbstractCompilerOutput {
      * a generated {@code MessageOrBuilder} interface.
      */
     private static String buildContent(MessageType type, Interface iface) {
-        String result = iface.name() + initGenericParams(iface, type) + ',';
-        return result;
-    }
-
-    private static String initGenericParams(Interface iface, MessageType type) {
-        InterfaceParameters parameters = iface.parameters();
-        String result = parameters.asStringFor(type);
+        String params = iface.parameters()
+                             .asStringFor(type);
+        String result = iface.name() + params + ',';
         return result;
     }
 }

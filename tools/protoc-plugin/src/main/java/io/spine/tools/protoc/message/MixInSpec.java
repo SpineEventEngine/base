@@ -27,24 +27,24 @@
 package io.spine.tools.protoc.message;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.option.IsOption;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.type.MessageType;
+import io.spine.type.Type;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protoc.message.Implement.interfaceFor;
-import static io.spine.tools.protoc.message.InterfaceSpec.createFor;
 
 /**
- * A tuple of two {@link File} instances representing a message and the interface resolved for
- * that message.
+ * A specification of interfaces that a generated type is going to implement.
+ *
+ * <p>If a custom interface is specified in a proto option, then the generated class is going
+ * to implement two interfaces: a standard interface, which corresponds to the passed type,
+ * and the one, which used defined in the option.
  */
 final class MixInSpec {
 
@@ -57,50 +57,61 @@ final class MixInSpec {
     }
 
     /**
-     * Scans the given {@linkplain FileDescriptorProto file} for the {@code (every_is)} option.
+     * Generates compiler output for a possibly declared {@code (is)} and
+     * {@code (every_is)} options for the passed message type.
+     *
+     * @see InterfaceGen#generate(Type)
      */
-    static ImmutableSet<CompilerOutput> scanFileOption(MessageType type) {
-        Optional<MixInSpec> mixin =
-                EveryIs.of(type)
-                       .map(option -> mixFor(type, option));
-        ImmutableSet<CompilerOutput> files =
-                mixin.map(MixInSpec::asSet)
-                     .orElseGet(ImmutableSet::of);
-        return files;
+    static ImmutableList<CompilerOutput> scanOptionsFor(MessageType type) {
+        ImmutableList<CompilerOutput> fromFileOption = scanEveryIsOption(type);
+        ImmutableList<CompilerOutput> fromTypeOption = scanIsOption(type);
+        ImmutableSet<CompilerOutput> deduplicated = ImmutableSet.<CompilerOutput>builder()
+                .addAll(fromFileOption)
+                .addAll(fromTypeOption)
+                .build();
+        return deduplicated.asList();
     }
 
     /**
-     * Scans the given {@linkplain DescriptorProto message} for the {@code (is)} option.
+     * Scans the given {@linkplain FileDescriptorProto file} for the {@code (every_is)} option.
      */
-    static ImmutableSet<CompilerOutput> scanMsgOption(MessageType type) {
-        Optional<MixInSpec> mixin =
-                Is.of(type)
-                  .map(option -> mixFor(type, option));
-        ImmutableSet<CompilerOutput> files =
-                mixin.map(MixInSpec::asSet)
-                     .orElseGet(ImmutableSet::of);
-        return files;
+    private static ImmutableList<CompilerOutput> scanEveryIsOption(MessageType type) {
+        @Nullable IsOption option = EveryIs.of(type).orElse(null);
+        return process(type, option);
+    }
+
+    private static ImmutableList<CompilerOutput> scanIsOption(MessageType type) {
+        @Nullable IsOption option = Is.of(type).orElse(null);
+        return process(type, option);
+    }
+
+    private static ImmutableList<CompilerOutput>
+    process(MessageType type, @Nullable IsOption option) {
+        if (option == null) {
+            return ImmutableList.of();
+        }
+        MixInSpec mix = mixFor(type, option);
+        return mix.asList();
     }
 
     private static MixInSpec mixFor(MessageType type, IsOption isOption) {
-        InterfaceSpec spec = createFor(type, isOption);
-        UserDefinedInterface fromOption = UserDefinedInterface.from(spec);
-        Implement message = interfaceFor(type, fromOption);
-        @Nullable UserDefinedInterface interfaceToGenerate =
+        UserDefinedInterface fromOption = UserDefinedInterface.declaredFor(type, isOption);
+        Implement standard = interfaceFor(type, fromOption);
+        @Nullable UserDefinedInterface custom =
                 isOption.getGenerate()
                 ? fromOption
                 : null;
-        MixInSpec result = new MixInSpec(message, interfaceToGenerate);
+        MixInSpec result = new MixInSpec(standard, custom);
         return result;
     }
 
     /**
      * Converts the instance into the pair containing a message file and an interface file.
      */
-    private ImmutableSet<CompilerOutput> asSet() {
+    private ImmutableList<CompilerOutput> asList() {
         return customInterface == null
-               ? ImmutableSet.of(standardInterface)
-               : ImmutableSet.of(standardInterface, customInterface);
+               ? ImmutableList.of(standardInterface)
+               : ImmutableList.of(standardInterface, customInterface);
     }
 
     @Override

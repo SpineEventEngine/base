@@ -29,20 +29,26 @@ package io.spine.tools.protoc.message;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.squareup.javapoet.JavaFile;
 import io.spine.code.fs.java.SourceFile;
+import io.spine.option.IsOption;
 import io.spine.tools.protoc.AbstractCompilerOutput;
-import io.spine.tools.protoc.ProtocPluginFiles;
+import io.spine.type.MessageType;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.protoc.ProtocPluginFiles.prepareFile;
+import static io.spine.tools.protoc.message.InterfaceSpec.createFor;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * A user-defined message interface.
+ * A user-defined interface or a message type.
  *
  * <p>This interface is declared with an {@link io.spine.option.OptionsProto#is (is)} or
- * an {@link io.spine.option.OptionsProto#everyIs (every_is)} option. See the option doc for
- * details.
+ * an {@link io.spine.option.OptionsProto#everyIs (every_is)} options. Please see the documentation
+ * in the proto files declaring these options for details.
  */
-final class UserDefinedInterface extends AbstractCompilerOutput implements Interface {
+final class UserDefinedInterface
+        extends AbstractCompilerOutput
+        implements Interface {
 
     private final String interfaceFqn;
 
@@ -52,21 +58,27 @@ final class UserDefinedInterface extends AbstractCompilerOutput implements Inter
     }
 
     /**
-     * Creates a {@code CustomMessageInterface} from the given spec.
+     * Creates a new compiler output for implementing an interfaces specified in
+     * the passed option.
      *
-     * @param spec
-     *         the interface spec to create an interface from
-     * @return new instance of {@code CustomMessageInterface}
+     * @param type
+     *         the type which is going to implement the custom interface
+     * @param isOption
+     *         the option which specifies the custom interface name
      */
-    static UserDefinedInterface from(InterfaceSpec spec) {
-        checkNotNull(spec);
+    static UserDefinedInterface declaredFor(MessageType type, IsOption isOption) {
+        checkNotNull(type);
+        checkNotNull(isOption);
+        checkNotEmptyOrBlank(isOption.getJavaType());
+        InterfaceSpec spec = createFor(type, isOption);
         JavaFile javaCode = spec.toJavaCode();
         SourceFile file = spec.toSourceFile();
-        File interfaceFile = ProtocPluginFiles.prepareFile(file.toString())
+        File interfaceFile = prepareFile(file.toString())
                 .setContent(javaCode.toString())
                 .build();
         String fqn = spec.fullName();
-        return new UserDefinedInterface(interfaceFile, fqn);
+        UserDefinedInterface result = new UserDefinedInterface(interfaceFile, fqn);
+        return result;
     }
 
     @Override

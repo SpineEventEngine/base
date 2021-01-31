@@ -27,6 +27,7 @@
 package io.spine.tools.protoc.message;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Message;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.tools.protoc.AddInterfaces;
@@ -113,23 +114,28 @@ public final class InterfaceGen extends CodeGenerator {
      *         the interface name is extracted from this option and both the interface and
      *         the message insertion point are generated.
      * </ol>
-     * Otherwise, no compiler response is generated for this message type.
+     *
+     * <p>If the passed type does not represent a message, no compiler response is generated.
      */
     @Override
     protected Collection<CompilerOutput> generate(Type<?, ?> type) {
-        return type instanceof MessageType
-               ? processMessageType((MessageType) type)
-               : ImmutableList.of();
+        if (!(type instanceof MessageType)) {
+            return ImmutableList.of();
+        }
+        return process((MessageType) type);
     }
 
-    private ImmutableList<CompilerOutput> processMessageType(MessageType type) {
+    private ImmutableList<CompilerOutput> process(MessageType type) {
         ImmutableList<CompilerOutput> matched = tasks.generateFor(type);
-        Collection<CompilerOutput> fromMsgOption = MixInSpec.scanMsgOption(type);
-        Collection<CompilerOutput> fromFileOption = MixInSpec.scanFileOption(type);
-        return ImmutableList.<CompilerOutput>builder()
-                            .addAll(matched)
-                            .addAll(fromMsgOption)
-                            .addAll(fromFileOption)
-                            .build();
+        ImmutableList<CompilerOutput> mixed = MixInSpec.scanOptionsFor(type);
+        ImmutableList<CompilerOutput> allInterfaces =
+                ImmutableList.<CompilerOutput>builder()
+                        .addAll(matched)
+                        .addAll(mixed)
+                        .build();
+        ImmutableList<CompilerOutput> deduplicated =
+                ImmutableSet.copyOf(allInterfaces)
+                            .asList();
+        return deduplicated;
     }
 }
