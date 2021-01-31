@@ -24,29 +24,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.nested;
+package io.spine.code.gen.java;
 
-import com.google.errorprone.annotations.Immutable;
-import io.spine.value.StringTypeValue;
+import io.spine.code.java.PackageName;
 
 /**
- * A generated Java nested class source code.
- *
- * <p>SPI users are responsible for checking that the generated code is properly formatted and
- * contains all the required modifiers, comments, and Javadoc.
- *
- * <p>The actual compilation of the class is performed as a part of the compilation of other
- * Protobuf-generated sources.
+ * A JavaPoet-based spec of a generated type.
  */
-@Immutable
-public final class GeneratedNestedClass extends StringTypeValue {
-
-    private static final long serialVersionUID = 0L;
+public interface TypeSpec {
 
     /**
-     * Creates a new instance of the generated code holder.
+     * The package under which the type will be generated.
      */
-    public GeneratedNestedClass(String value) {
-        super(value);
-    }
+    PackageName packageName();
+
+    /**
+     * A JavaPoet spec of the type.
+     */
+    com.squareup.javapoet.TypeSpec toPoet();
 }

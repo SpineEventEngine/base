@@ -24,23 +24,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.gen.java;
+package io.spine.tools.protoc.nested;
 
-import com.squareup.javapoet.TypeSpec;
-import io.spine.code.java.PackageName;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.code.gen.java.TypeSpec;
+import io.spine.value.StringTypeValue;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A JavaPoet-based spec of a generated type.
+ * A generated Java nested class source code.
+ *
+ * <p>SPI users are responsible for checking that the generated code is properly formatted and
+ * contains all the required modifiers, comments, and Javadoc.
+ *
+ * <p>The actual compilation of the class is performed as a part of the compilation of other
+ * Protobuf-generated sources.
  */
-public interface GeneratedTypeSpec {
+@Immutable
+public final class NestedClass extends StringTypeValue {
+
+    private static final long serialVersionUID = 0L;
 
     /**
-     * The package under which the type will be generated.
+     * Creates a new instance of the generated code for a nested class.
      */
-    PackageName packageName();
+    @VisibleForTesting
+    public NestedClass(String code) {
+        super(code);
+    }
 
     /**
-     * A JavaPoet spec of the type.
+     * Creates an instance with the code of the class obtained from the passed spec.
      */
-    TypeSpec typeSpec();
+    public NestedClass(TypeSpec spec) {
+        this(toCode(spec));
+    }
+
+    private static String toCode(TypeSpec spec) {
+        checkNotNull(spec);
+        com.squareup.javapoet.TypeSpec poet = spec.toPoet();
+        return poet.toString();
+    }
 }

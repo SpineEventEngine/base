@@ -56,7 +56,7 @@ final class NestedClassFactoryTest {
         }
 
         @Override
-        public List<GeneratedNestedClass> generateClassesFor(MessageType messageType) {
+        public List<NestedClass> generateClassesFor(MessageType messageType) {
             return ImmutableList.of();
         }
     }

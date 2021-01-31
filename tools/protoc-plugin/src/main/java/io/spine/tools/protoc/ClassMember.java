@@ -28,7 +28,7 @@ package io.spine.tools.protoc;
 
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.tools.protoc.method.Method;
-import io.spine.tools.protoc.nested.GeneratedNestedClass;
+import io.spine.tools.protoc.nested.NestedClass;
 import io.spine.type.MessageType;
 
 /**
@@ -66,7 +66,7 @@ public final class ClassMember extends AbstractCompilerOutput {
      *         the generated message type
      * @return a new instance of the {@code ClassMember} compiler output
      */
-    public static ClassMember nestedClass(GeneratedNestedClass cls, MessageType type) {
+    public static ClassMember nestedClass(NestedClass cls, MessageType type) {
         File response = codeGeneratorResponse(cls.toString(), type);
         return new ClassMember(response);
     }

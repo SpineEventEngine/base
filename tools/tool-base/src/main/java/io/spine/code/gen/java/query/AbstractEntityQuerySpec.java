@@ -27,8 +27,8 @@
 package io.spine.code.gen.java.query;
 
 import com.squareup.javapoet.TypeName;
-import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.gen.java.JavaPoetName;
+import io.spine.code.gen.java.TypeSpec;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.EntityIdField;
@@ -37,7 +37,7 @@ import io.spine.type.MessageType;
 /**
  * Abstract base for code specifications related to generation of entity queries.
  */
-abstract class AbstractEntityQuerySpec implements GeneratedTypeSpec {
+abstract class AbstractEntityQuerySpec implements TypeSpec {
 
     private static final JavaPoetName queryBuilderType =
             JavaPoetName.of(SimpleClassName.create("QueryBuilder"));

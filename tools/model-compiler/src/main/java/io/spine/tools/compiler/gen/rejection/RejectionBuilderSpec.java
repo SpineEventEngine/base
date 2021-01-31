@@ -32,10 +32,9 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
-import com.squareup.javapoet.TypeSpec;
 import io.spine.base.RejectionType;
-import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.gen.java.JavaPoetName;
+import io.spine.code.gen.java.TypeSpec;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.javadoc.JavadocText;
@@ -62,7 +61,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  * <p>A generated builder validates rejection messages using
  * {@link io.spine.validate.Validate#checkValid(com.google.protobuf.Message)}.
  */
-final class RejectionBuilderSpec implements GeneratedTypeSpec {
+final class RejectionBuilderSpec implements TypeSpec {
 
     private static final NoArgMethod newBuilder = new NoArgMethod(Messages.METHOD_NEW_BUILDER);
     private static final String BUILDER_FIELD = "builder";
@@ -88,8 +87,8 @@ final class RejectionBuilderSpec implements GeneratedTypeSpec {
     }
 
     @Override
-    public TypeSpec typeSpec() {
-        TypeSpec typeSpec = TypeSpec
+    public com.squareup.javapoet.TypeSpec toPoet() {
+        com.squareup.javapoet.TypeSpec result = com.squareup.javapoet.TypeSpec
                 .classBuilder(name.value())
                 .addModifiers(PUBLIC, STATIC)
                 .addJavadoc(classJavadoc().value())
@@ -99,7 +98,7 @@ final class RejectionBuilderSpec implements GeneratedTypeSpec {
                 .addMethod(rejectionMessage())
                 .addMethod(build())
                 .build();
-        return typeSpec;
+        return result;
     }
 
     /**

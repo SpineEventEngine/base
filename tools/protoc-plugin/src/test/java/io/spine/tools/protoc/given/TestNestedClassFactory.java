@@ -28,7 +28,7 @@ package io.spine.tools.protoc.given;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.protoc.nested.GeneratedNestedClass;
+import io.spine.tools.protoc.nested.NestedClass;
 import io.spine.tools.protoc.nested.NestedClassFactory;
 import io.spine.type.MessageType;
 
@@ -40,11 +40,11 @@ import java.util.List;
 @Immutable
 public final class TestNestedClassFactory implements NestedClassFactory {
 
-    public static final GeneratedNestedClass NESTED_CLASS =
-            new GeneratedNestedClass("static class NestedClass {}");
+    public static final NestedClass NESTED_CLASS =
+            new NestedClass("static class NestedClass {}");
 
     @Override
-    public List<GeneratedNestedClass> generateClassesFor(MessageType messageType) {
+    public List<NestedClass> generateClassesFor(MessageType messageType) {
         return ImmutableList.of(NESTED_CLASS);
     }
 }

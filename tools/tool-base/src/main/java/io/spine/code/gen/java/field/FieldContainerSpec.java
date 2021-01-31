@@ -30,10 +30,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.concurrent.LazyInit;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeSpec;
 import io.spine.code.gen.java.GeneratedBy;
 import io.spine.code.gen.java.GeneratedJavadoc;
-import io.spine.code.gen.java.GeneratedTypeSpec;
+import io.spine.code.gen.java.TypeSpec;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.PackageName;
 import io.spine.code.javadoc.JavadocText;
@@ -110,7 +109,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  * <p>Please note that for {@code repeated} and {@code map} fields the nested fields are not
  * exposed (because targeting them in a filter won't always be processed properly on the server).
  */
-public final class FieldContainerSpec implements GeneratedTypeSpec {
+public final class FieldContainerSpec implements TypeSpec {
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     private static final String CLASS_NAME = "Field";
@@ -153,8 +152,8 @@ public final class FieldContainerSpec implements GeneratedTypeSpec {
     }
 
     @Override
-    public TypeSpec typeSpec() {
-        TypeSpec result = TypeSpec
+    public com.squareup.javapoet.TypeSpec toPoet() {
+        com.squareup.javapoet.TypeSpec result = com.squareup.javapoet.TypeSpec
                 .classBuilder(CLASS_NAME)
                 .addJavadoc(javadoc().spec())
                 .addModifiers(PUBLIC, STATIC, FINAL)
@@ -187,11 +186,11 @@ public final class FieldContainerSpec implements GeneratedTypeSpec {
      *
      * @see MessageTypedField
      */
-    private ImmutableList<TypeSpec> messageTypeFields() {
-        ImmutableList<TypeSpec> result =
+    private ImmutableList<com.squareup.javapoet.TypeSpec> messageTypeFields() {
+        ImmutableList<com.squareup.javapoet.TypeSpec> result =
                 nestedFieldTypes().stream()
                                   .map(type -> new MessageTypedField(type, fieldSupertype))
-                                  .map(MessageTypedField::typeSpec)
+                                  .map(MessageTypedField::toPoet)
                                   .collect(toImmutableList());
         return result;
     }

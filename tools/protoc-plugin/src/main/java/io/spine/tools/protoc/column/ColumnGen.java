@@ -32,7 +32,7 @@ import io.spine.tools.protoc.ClassMember;
 import io.spine.tools.protoc.CodeGenerator;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.SpineProtocConfig;
-import io.spine.tools.protoc.nested.GeneratedNestedClass;
+import io.spine.tools.protoc.nested.NestedClass;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 
@@ -86,7 +86,7 @@ public final class ColumnGen extends CodeGenerator {
     }
 
     private ImmutableList<CompilerOutput> generateFor(MessageType type) {
-        List<GeneratedNestedClass> generatedClasses = factory.generateClassesFor(type);
+        List<NestedClass> generatedClasses = factory.generateClassesFor(type);
         ImmutableList<CompilerOutput> result =
                 generatedClasses.stream()
                                 .map(cls -> ClassMember.nestedClass(cls, type))

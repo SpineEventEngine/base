@@ -32,7 +32,7 @@ import io.spine.code.gen.java.query.EntityQueryBuilderSpec;
 import io.spine.code.gen.java.query.EntityQuerySpec;
 import io.spine.tools.protoc.method.Method;
 import io.spine.tools.protoc.method.MethodFactory;
-import io.spine.tools.protoc.nested.GeneratedNestedClass;
+import io.spine.tools.protoc.nested.NestedClass;
 import io.spine.tools.protoc.nested.NestedClassFactory;
 import io.spine.type.MessageType;
 
@@ -47,20 +47,10 @@ import java.util.List;
 public final class EntityQueryFactory implements NestedClassFactory, MethodFactory {
 
     @Override
-    public List<GeneratedNestedClass> generateClassesFor(MessageType messageType) {
-        GeneratedNestedClass generatedQueryType =
-                asGeneratedClass(new EntityQuerySpec(messageType));
-        GeneratedNestedClass generatedQueryBuilderType =
-                asGeneratedClass(new EntityQueryBuilderSpec(messageType));
-
-        return ImmutableList.of(generatedQueryType, generatedQueryBuilderType);
-    }
-
-    private static GeneratedNestedClass asGeneratedClass(GeneratedTypeSpec spec) {
-        String rawOutput = spec.typeSpec()
-                               .toString();
-        GeneratedNestedClass generatedQueryType = new GeneratedNestedClass(rawOutput);
-        return generatedQueryType;
+    public List<NestedClass> generateClassesFor(MessageType type) {
+        NestedClass queryType = new NestedClass(new EntityQuerySpec(type));
+        NestedClass queryBuilderType = new NestedClass(new EntityQueryBuilderSpec(type));
+        return ImmutableList.of(queryType, queryBuilderType);
     }
 
     @Override

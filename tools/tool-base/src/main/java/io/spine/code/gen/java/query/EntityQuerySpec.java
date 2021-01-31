@@ -59,7 +59,7 @@ public final class EntityQuerySpec extends AbstractEntityQuerySpec implements Ge
     }
 
     @Override
-    public TypeSpec typeSpec() {
+    public TypeSpec toPoet() {
         TypeSpec result = TypeSpec
                 .classBuilder(queryType().className())
                 .superclass(entityQuery())

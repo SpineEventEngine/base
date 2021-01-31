@@ -30,14 +30,14 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
 import io.spine.base.RejectionType;
 import io.spine.base.ThrowableMessage;
 import io.spine.code.gen.java.FieldName;
 import io.spine.code.gen.java.GeneratedBy;
-import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.gen.java.JavaPoetName;
+import io.spine.code.gen.java.TypeSpec;
 import io.spine.code.java.PackageName;
+import io.spine.code.java.SimpleClassName;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.logging.Logging;
 import io.spine.tools.compiler.gen.NoArgMethod;
@@ -54,7 +54,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  * <p>The generated type extends {@link ThrowableMessage} and encloses an instance of the
  * corresponding {@linkplain io.spine.base.RejectionMessage rejection message}.
  */
-public final class RejectionSpec implements GeneratedTypeSpec, Logging {
+public final class RejectionSpec implements TypeSpec, Logging {
 
     private static final NoArgMethod messageThrown = new NoArgMethod("messageThrown");
 
@@ -84,11 +84,10 @@ public final class RejectionSpec implements GeneratedTypeSpec, Logging {
     }
 
     @Override
-    public TypeSpec typeSpec() {
-        String className = declaration.simpleJavaClassName()
-                                      .value();
-        TypeSpec rejection =
-                TypeSpec.classBuilder(className)
+    public com.squareup.javapoet.TypeSpec toPoet() {
+        SimpleClassName className = declaration.simpleJavaClassName();
+        com.squareup.javapoet.TypeSpec rejection =
+                com.squareup.javapoet.TypeSpec.classBuilder(className.value())
                         .addJavadoc(classJavadoc())
                         .addAnnotation(GeneratedBy.spineModelCompiler())
                         .addModifiers(PUBLIC)
@@ -97,7 +96,7 @@ public final class RejectionSpec implements GeneratedTypeSpec, Logging {
                         .addMethod(constructor())
                         .addMethod(messageThrown())
                         .addMethod(builder.newBuilder())
-                        .addType(builder.typeSpec())
+                        .addType(builder.toPoet())
                         .build();
         return rejection;
     }

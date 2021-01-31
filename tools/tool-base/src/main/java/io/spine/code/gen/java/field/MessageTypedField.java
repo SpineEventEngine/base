@@ -30,12 +30,11 @@ import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
 import io.spine.base.Field;
 import io.spine.base.SubscribableField;
 import io.spine.code.gen.java.GeneratedJavadoc;
-import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.gen.java.JavaPoetName;
+import io.spine.code.gen.java.TypeSpec;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
@@ -67,7 +66,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  * <p>See the {@link FieldContainerSpec} for the example usage.
  */
 @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication of the generated code.
-final class MessageTypedField implements GeneratedTypeSpec {
+final class MessageTypedField implements TypeSpec {
 
     private final MessageType fieldType;
     private final ClassName fieldSupertype;
@@ -83,8 +82,8 @@ final class MessageTypedField implements GeneratedTypeSpec {
     }
 
     @Override
-    public TypeSpec typeSpec() {
-        TypeSpec result = TypeSpec
+    public com.squareup.javapoet.TypeSpec toPoet() {
+        com.squareup.javapoet.TypeSpec result = com.squareup.javapoet.TypeSpec
                 .classBuilder(typeName().value())
                 .addJavadoc(javadoc().spec())
                 .addModifiers(PUBLIC, STATIC, FINAL)

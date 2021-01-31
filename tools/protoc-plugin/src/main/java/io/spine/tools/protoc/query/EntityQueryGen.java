@@ -33,7 +33,7 @@ import io.spine.tools.protoc.CodeGenerator;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.method.Method;
-import io.spine.tools.protoc.nested.GeneratedNestedClass;
+import io.spine.tools.protoc.nested.NestedClass;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 
@@ -126,8 +126,8 @@ public class EntityQueryGen extends CodeGenerator {
     }
 
     private void addClasses(MessageType type, ImmutableList.Builder<CompilerOutput> builder) {
-        List<GeneratedNestedClass> classes = factory.generateClassesFor(type);
-        for (GeneratedNestedClass cls : classes) {
+        List<NestedClass> classes = factory.generateClassesFor(type);
+        for (NestedClass cls : classes) {
             builder.add(ClassMember.nestedClass(cls, type));
         }
     }

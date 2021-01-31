@@ -29,7 +29,7 @@ package io.spine.tools.gradle.compiler;
 import com.google.common.collect.ImmutableSet;
 import io.spine.base.RejectionType;
 import io.spine.code.gen.Indent;
-import io.spine.code.gen.java.GeneratedTypeSpec;
+import io.spine.code.gen.java.TypeSpec;
 import io.spine.code.gen.java.TypeSpecWriter;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
@@ -104,7 +104,7 @@ final class RejectionGenAction extends CodeGenerationAction {
             // as for the Protobuf message.
             _debug().log("Processing rejection `%s`.", rejectionType.simpleJavaClassName());
 
-            GeneratedTypeSpec spec = new RejectionSpec(rejectionType);
+            TypeSpec spec = new RejectionSpec(rejectionType);
             TypeSpecWriter writer = new TypeSpecWriter(spec, indent());
             writer.write(targetDir().toPath());
         }

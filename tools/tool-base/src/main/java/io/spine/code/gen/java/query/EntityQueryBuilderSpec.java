@@ -62,7 +62,7 @@ public final class EntityQueryBuilderSpec extends AbstractEntityQuerySpec {
     }
 
     @Override
-    public TypeSpec typeSpec() {
+    public TypeSpec toPoet() {
         TypeSpec result = TypeSpec
                 .classBuilder(queryBuilderType().className())
                 .superclass(entityQueryBuilder())

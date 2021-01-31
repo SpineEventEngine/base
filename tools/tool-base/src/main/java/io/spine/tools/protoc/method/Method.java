@@ -54,7 +54,7 @@ public final class Method extends StringTypeValue {
     }
 
     /**
-     * Obtains the code of the method from the passed spec.
+     * Cretes an instance with the code of the method obtained from the passed spec.
      */
     public Method(MethodSpec spec) {
         this(spec.toString());
