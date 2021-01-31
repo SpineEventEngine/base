@@ -30,6 +30,7 @@ import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.ExternalClassLoader;
+import io.spine.tools.protoc.MethodFactory;
 import io.spine.tools.protoc.UuidConfig;
 import io.spine.tools.protoc.given.TestMethodFactory;
 import io.spine.type.MessageType;

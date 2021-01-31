@@ -31,9 +31,9 @@ import io.spine.code.gen.java.EntityQueryFactory;
 import io.spine.tools.protoc.ClassMember;
 import io.spine.tools.protoc.CodeGenerator;
 import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.Method;
+import io.spine.tools.protoc.NestedClass;
 import io.spine.tools.protoc.SpineProtocConfig;
-import io.spine.tools.protoc.method.Method;
-import io.spine.tools.protoc.nested.NestedClass;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 

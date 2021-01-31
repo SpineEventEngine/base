@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.method;
+package io.spine.tools.protoc;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
@@ -38,25 +38,25 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.TestValues.nullRef;
 
 /**
- * With this unit test we are fixating the {@link MethodFactory} contract.
+ * With this unit test we are fixating the {@link NestedClassFactory} contract.
  */
-@DisplayName("`MethodFactory` should")
-final class MethodFactoryTest {
+@DisplayName("`NestedClassFactory` should")
+final class NestedClassFactoryTest {
 
     @DisplayName("obey the defined contract")
     @Test
     void obeyTheContract() {
-        assertThat(new TestMethodFactory().generateMethodsFor(nullRef())).isEmpty();
+        assertThat(new TestNestedClassFactory().generateClassesFor(nullRef())).isEmpty();
     }
 
     @Immutable
-    public static class TestMethodFactory implements MethodFactory {
+    public static final class TestNestedClassFactory implements NestedClassFactory {
 
-        public TestMethodFactory() {
+        public TestNestedClassFactory() {
         }
 
         @Override
-        public List<Method> generateMethodsFor(MessageType messageType) {
+        public List<NestedClass> generateClassesFor(MessageType messageType) {
             return ImmutableList.of();
         }
     }

@@ -31,6 +31,7 @@ import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.ExternalClassLoader;
 import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.FilePatterns;
+import io.spine.tools.protoc.MethodFactory;
 import io.spine.tools.protoc.given.TestMethodFactory;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;

@@ -35,6 +35,7 @@ import io.spine.tools.protoc.CodeGenerator;
 import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.ExternalClassLoader;
+import io.spine.tools.protoc.NestedClassFactory;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
 import io.spine.type.Type;

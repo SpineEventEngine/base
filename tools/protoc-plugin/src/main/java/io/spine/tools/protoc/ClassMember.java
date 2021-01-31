@@ -27,8 +27,6 @@
 package io.spine.tools.protoc;
 
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import io.spine.tools.protoc.method.Method;
-import io.spine.tools.protoc.nested.NestedClass;
 import io.spine.type.MessageType;
 
 /**

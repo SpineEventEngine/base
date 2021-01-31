@@ -31,6 +31,7 @@ import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.ExternalClassLoader;
 import io.spine.tools.protoc.FilePatterns;
+import io.spine.tools.protoc.NestedClassFactory;
 import io.spine.tools.protoc.given.TestNestedClassFactory;
 import io.spine.tools.protoc.nested.given.TestClassLoader;
 import io.spine.type.MessageType;

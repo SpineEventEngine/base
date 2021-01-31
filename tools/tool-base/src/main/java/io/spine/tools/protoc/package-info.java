@@ -25,11 +25,7 @@
  */
 
 /**
- * This package provides extension point for the Protoc plugins and derived custom code generation
- * utilities.
- *
- * <p>One who's willing to extend the generated Protobuf classes should implement provided
- * interfaces.
+ * This package provides extension points for Protoc plugins.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
