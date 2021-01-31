@@ -54,7 +54,7 @@ The repository also contains:
 * Validating Builders [assembler](base-validating-builders) for `base`.
 * A [common base](tools/plugin-base) for Spine Gradle plugins.
 * [Test utilities](tools/plugin-testlib) for Spine plugins.
-* [Integration tests](tools/smoke-tests) for all Spine tools.
+* [Integration tests](smoke-tests) for all Spine tools.
 
 ### Notes on Coverage
 

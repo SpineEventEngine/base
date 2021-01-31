@@ -275,7 +275,7 @@ apply {
 }
 
 val smokeTests by tasks.registering(RunBuild::class) {
-    directory = "$rootDir/tools/smoke-tests"
+    directory = "$rootDir/smoke-tests"
 }
 
 tasks.register("buildAll") {

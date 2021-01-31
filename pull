@@ -38,4 +38,4 @@ echo "Copying buildSrc to base-validating-builders"
 cp -R ./buildSrc ./base-validating-builders
 
 echo "Copying buildSrc to smoke-tests"
-cp -R ./buildSrc ./tools/smoke-tests
+cp -R ./buildSrc ./smoke-tests
