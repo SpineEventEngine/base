@@ -50,6 +50,7 @@ dependencies {
     compileOnly(Deps.build.autoService.annotations)
     testImplementation(project(":testlib"))
     testImplementation(project(":mute-logging"))
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 sourceSets {
@@ -146,4 +147,3 @@ fun FileTreeElement.isGoogleProtoSource(): Boolean {
 tasks.withType(Jar::class) {
     exclude { it.isGoogleProtoSource() }
 }
-

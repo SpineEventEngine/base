@@ -1,10 +1,3 @@
-pluginManagement {
-    repositories {
-        maven("https://dl.bintray.com/kotlin/kotlin-eap")
-        mavenCentral()
-        maven("https://plugins.gradle.org/m2/")
-    }
-}
 /*
  * Copyright 2020, TeamDev. All rights reserved.
  *
@@ -31,31 +24,29 @@ pluginManagement {
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "spine-base"
+package io.spine.tools.protoc;
 
-include("base")
-include("testlib")
+import com.google.common.collect.ImmutableList;
+import com.squareup.javapoet.MethodSpec;
+import io.spine.type.MessageType;
+import jdk.nashorn.internal.ir.annotations.Immutable;
 
-/**
- * Includes a module and sets custom project directory to it.
- */
-fun toolsModule(name: String) {
-    include(name)
-    project(":$name").projectDir = File("$rootDir/tools/$name")
+import javax.lang.model.element.Modifier;
+import java.util.List;
+
+@Immutable
+public final class TestMethodFactory implements MethodFactory {
+
+    @Override
+    public List<Method> generateMethodsFor(MessageType messageType) {
+        MethodSpec spec = MethodSpec
+                .methodBuilder("ownType")
+                .returns(MessageType.class)
+                .addStatement("return new $T(getDescriptor())", MessageType.class)
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                .addJavadoc("Returns {@link $T MessageType} of the current message.%n",
+                            MessageType.class)
+                .build();
+        return ImmutableList.of(new Method(spec.toString()));
+    }
 }
-
-toolsModule("tool-base")
-toolsModule("plugin-base")
-toolsModule("plugin-testlib")
-
-toolsModule("mute-logging")
-toolsModule("errorprone-checks")
-toolsModule("javadoc-filter")
-toolsModule("javadoc-prettifier")
-toolsModule("model-compiler")
-
-toolsModule("proto-dart-plugin")
-toolsModule("proto-js-plugin")
-
-toolsModule("validation-generator")
-toolsModule("protoc-plugin")

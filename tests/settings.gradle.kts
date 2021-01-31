@@ -24,15 +24,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include("annotator-tests")
-include("entity-queries-tests")
-include("generated-validation-tests")
-include("known-types-tests")
-include("model-compiler-tests")
-include("rejection-tests")
-include("test-factories")
-include("validating-options-tests")
-include("validation-tests")
+include("annotator")
+include("factories")
+include("entity-queries")
+include("known-types")
+include("model-compiler")
+include("rejection")
+include("validating-options")
+include("validation")
+include("validation-gen")
 
 /*
  * Dependency links established with the Gradle included build.
@@ -47,10 +47,10 @@ val links = mapOf(
 )
 
 /*
- * Include the `base` build into `smoke-test` project build.
+ * Include the `base` build into the `tests` project build.
  *
- * Smoke tests are built separately in order to be able to test current version of the Gradle
- * plugins.
+ * Integration tests are built separately in order to be able to test the current
+ * version of the Gradle plugins.
  *
  * See the Gradle manual for more info:
  * https://docs.gradle.org/current/userguide/composite_builds.html
@@ -62,4 +62,3 @@ includeBuild("$rootDir/../") {
         }
     }
 }
-

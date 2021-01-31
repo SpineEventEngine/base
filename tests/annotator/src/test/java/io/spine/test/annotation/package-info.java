@@ -1,10 +1,3 @@
-pluginManagement {
-    repositories {
-        maven("https://dl.bintray.com/kotlin/kotlin-eap")
-        mavenCentral()
-        maven("https://plugins.gradle.org/m2/")
-    }
-}
 /*
  * Copyright 2020, TeamDev. All rights reserved.
  *
@@ -31,31 +24,13 @@ pluginManagement {
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "spine-base"
-
-include("base")
-include("testlib")
-
 /**
- * Includes a module and sets custom project directory to it.
+ * This package contains annotation types to use for generated code.
  */
-fun toolsModule(name: String) {
-    include(name)
-    project(":$name").projectDir = File("$rootDir/tools/$name")
-}
 
-toolsModule("tool-base")
-toolsModule("plugin-base")
-toolsModule("plugin-testlib")
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.test.annotation;
 
-toolsModule("mute-logging")
-toolsModule("errorprone-checks")
-toolsModule("javadoc-filter")
-toolsModule("javadoc-prettifier")
-toolsModule("model-compiler")
-
-toolsModule("proto-dart-plugin")
-toolsModule("proto-js-plugin")
-
-toolsModule("validation-generator")
-toolsModule("protoc-plugin")
+import javax.annotation.CheckReturnValue;
+import javax.annotation.ParametersAreNonnullByDefault;

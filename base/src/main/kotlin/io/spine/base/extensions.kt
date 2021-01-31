@@ -26,17 +26,6 @@
 
 package io.spine.base
 
-import io.spine.base.ValidatingBuilder
-
-//@Suppress("FINAL_UPPER_BOUND")
-//TODO:2020-12-27:alexander.yevsyukov: Update code
-// generation to create `events.kt` classes for each package with generated events.
-//inline fun <reified E: Error> event(block: Error.Builder.() -> Unit): E {
-//    val builder = BuiltMessage.builderOf(E::class.java)
-//    block.invoke(builder)
-//    return builder.vBuild() as E
-//}
-
 /**
  * Creates a copy of this message by copies of its properties and then applying
  * values of properties defined in the passed block.
@@ -47,4 +36,24 @@ inline fun <M: BuiltMessage<B, M>, B: ValidatingBuilder<M>>
     val builder = this.toBuilder() as B
     block.invoke(builder)
     return builder.vBuild()
+}
+
+/**
+ * Creates a command message using the passed builder block.
+ */
+inline fun <reified C: CommandMessage<B, C>, B: ValidatingBuilder<C>>
+        command(block: B.() -> Unit): C {
+    val builder = BuiltMessage.builderOf(C::class.java)
+    block.invoke(builder)
+    return builder.vBuild() as C
+}
+
+/**
+ * Creates an event message using the passed builder block.
+ */
+inline fun <reified E: EventMessage<B, E>, B: ValidatingBuilder<E>>
+        event(block: B.() -> Unit): E {
+    val builder = BuiltMessage.builderOf(E::class.java)
+    block.invoke(builder)
+    return builder.vBuild() as E
 }
