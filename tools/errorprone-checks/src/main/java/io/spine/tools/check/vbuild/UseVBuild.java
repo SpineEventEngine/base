@@ -38,7 +38,6 @@ import com.google.errorprone.matchers.Description;
 import com.sun.source.tree.MemberReferenceTree;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.Tree;
-import io.spine.base.ValidatingBuilder;
 import io.spine.tools.check.BugPatternMatcher;
 
 import static com.google.errorprone.BugPattern.LinkType.NONE;
@@ -49,8 +48,8 @@ import static com.google.errorprone.matchers.Description.NO_MATCH;
 
 /**
  * An ErrorProne check which warns users to prefer
- * {@link ValidatingBuilder#vBuild()} over
- * {@link ValidatingBuilder#build()}.
+ * {@link io.spine.base.ValidatingBuilder#vBuild() vBuild()} method over
+ * {@link io.spine.base.ValidatingBuilder#build() build()}.
  *
  * <p>Unlike {@code build()}, {@code vBuild()} ensures that the constructed message is valid. This
  * is what the user wants in most cases. If, however, for some reason, the validation is unwanted,
