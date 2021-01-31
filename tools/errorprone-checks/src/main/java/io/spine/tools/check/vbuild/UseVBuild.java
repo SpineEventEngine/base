@@ -41,7 +41,6 @@ import com.sun.source.tree.Tree;
 import io.spine.tools.check.BugPatternMatcher;
 
 import static com.google.errorprone.BugPattern.LinkType.NONE;
-import static com.google.errorprone.BugPattern.ProvidesFix.REQUIRES_HUMAN_ATTENTION;
 import static com.google.errorprone.BugPattern.SeverityLevel.WARNING;
 import static com.google.errorprone.BugPattern.StandardTags.FRAGILE_CODE;
 import static com.google.errorprone.matchers.Description.NO_MATCH;
@@ -64,7 +63,6 @@ import static com.google.errorprone.matchers.Description.NO_MATCH;
         summary = UseVBuild.SUMMARY,
         severity = WARNING,
         linkType = NONE,
-        providesFix = REQUIRES_HUMAN_ATTENTION,
         tags = FRAGILE_CODE
 )
 public final class UseVBuild
