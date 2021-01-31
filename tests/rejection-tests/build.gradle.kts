@@ -24,31 +24,4 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
-
-import com.google.common.collect.ImmutableList;
-import com.squareup.javapoet.MethodSpec;
-import io.spine.tools.protoc.method.GeneratedMethod;
-import io.spine.tools.protoc.method.MethodFactory;
-import io.spine.type.MessageType;
-import jdk.nashorn.internal.ir.annotations.Immutable;
-
-import javax.lang.model.element.Modifier;
-import java.util.List;
-
-@Immutable
-public final class TestMethodFactory implements MethodFactory {
-
-    @Override
-    public List<GeneratedMethod> generateMethodsFor(MessageType messageType) {
-        MethodSpec spec = MethodSpec
-                .methodBuilder("ownType")
-                .returns(MessageType.class)
-                .addStatement("return new $T(getDescriptor())", MessageType.class)
-                .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                .addJavadoc("Returns {@link $T MessageType} of the current message.\n",
-                            MessageType.class)
-                .build();
-        return ImmutableList.of(new GeneratedMethod(spec.toString()));
-    }
-}
+// No additional config is required. See tests/build.gradle for all the config of the project.

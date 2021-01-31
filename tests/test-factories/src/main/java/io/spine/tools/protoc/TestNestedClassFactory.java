@@ -32,7 +32,6 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.tools.protoc.nested.GeneratedNestedClass;
-import io.spine.tools.protoc.nested.NestedClassFactory;
 import io.spine.type.MessageType;
 
 import java.util.List;

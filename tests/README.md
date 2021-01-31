@@ -13,10 +13,10 @@ They also should be run separately from the `main` project build like this:
 ```bash
   ./gradlew build check --stacktrace
   
-  cd ./smoke-tests
+  cd ./tests
   
   ./gradlew check --stacktrace
 ```
 
-To configure Intellij Idea for recognizing `smoke-tests` module as the actual source code, see 
+To configure Intellij Idea for recognizing `tests` module as the actual source code, see 
 [this page](https://blog.jetbrains.com/idea/2016/10/intellij-idea-2016-3-eap-gradle-composite-builds-and-android-studio-2-2/).

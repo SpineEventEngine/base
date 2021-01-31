@@ -22,7 +22,7 @@ install:
 
 script:
   - ./gradlew build --stacktrace
-  - cd ./smoke-tests
+  - cd ./tests
   - ./gradlew build --stacktrace
   - cd ../..
 

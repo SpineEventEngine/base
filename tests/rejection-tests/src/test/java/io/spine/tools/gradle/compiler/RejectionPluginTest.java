@@ -24,4 +24,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// No additional config is required. See smoke-tests/build.gradle for all the config of the project.
+package io.spine.tools.gradle.compiler;
+
+import io.spine.base.Identifier;
+import io.spine.tools.rejections.CannotUpdateUsername;
+import io.spine.tools.rejections.Rejections;
+import io.spine.validate.ValidationException;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@DisplayName("RejectionGen plugin should")
+class RejectionPluginTest {
+
+    @Test
+    @DisplayName("generate a rejection, which extends ThrowableMessage")
+    void generate() {
+        String username = Identifier.newUuid();
+        CannotUpdateUsername rejection = CannotUpdateUsername
+                .newBuilder()
+                .setUsername(username)
+                .build();
+        Rejections.CannotUpdateUsername rejectionMessage = rejection.messageThrown();
+        assertEquals(username, rejectionMessage.getUsername());
+    }
+
+    @Test
+    @DisplayName("throw ValidationException if a rejection message is not valid")
+    void validate() {
+        assertThrows(ValidationException.class, () -> CannotUpdateUsername.newBuilder()
+                                                                          .build());
+    }
+}

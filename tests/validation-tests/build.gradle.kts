@@ -24,4 +24,4 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// No additional config is required. See smoke-tests/build.gradle for all the config of the project.
+// No additional config is required. See tests/build.gradle for all the config of the project.

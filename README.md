@@ -54,7 +54,7 @@ The repository also contains:
 * Validating Builders [assembler](base-validating-builders) for `base`.
 * A [common base](tools/plugin-base) for Spine Gradle plugins.
 * [Test utilities](tools/plugin-testlib) for Spine plugins.
-* [Integration tests](smoke-tests) for all Spine tools.
+* [Integration tests](tests) for all Spine tools.
 
 ### Notes on Coverage
 
@@ -68,7 +68,7 @@ percentage shown is significantly lower than a real one.
 
 In most Spine repositories, we update the `config` submodule by running `./config/pull` (or its
 Batch equivalent). However, in `base` we also need to copy Gradle `buildSrc` directory into included
-builds: `smoke-tests` and `base-validating-builders`. Thus, here we have `./pull` and `.\pull.bat`
+builds: `tests` and `base-validating-builders`. Thus, here we have `./pull` and `.\pull.bat`
 scripts which do whatever their `config` counterparts do and also copy `buildSrc` into the two
 included build directories.
 

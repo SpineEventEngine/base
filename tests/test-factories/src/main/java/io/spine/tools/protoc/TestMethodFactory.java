@@ -24,37 +24,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler;
+package io.spine.tools.protoc;
 
-import io.spine.base.Identifier;
-import io.spine.tools.rejections.CannotUpdateUsername;
-import io.spine.tools.rejections.Rejections;
-import io.spine.validate.ValidationException;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.common.collect.ImmutableList;
+import com.squareup.javapoet.MethodSpec;
+import io.spine.tools.protoc.method.GeneratedMethod;
+import io.spine.type.MessageType;
+import jdk.nashorn.internal.ir.annotations.Immutable;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import javax.lang.model.element.Modifier;
+import java.util.List;
 
-@DisplayName("RejectionGen plugin should")
-class RejectionPluginTest {
+@Immutable
+public final class TestMethodFactory implements MethodFactory {
 
-    @Test
-    @DisplayName("generate a rejection, which extends ThrowableMessage")
-    void generate() {
-        String username = Identifier.newUuid();
-        CannotUpdateUsername rejection = CannotUpdateUsername
-                .newBuilder()
-                .setUsername(username)
+    @Override
+    public List<GeneratedMethod> generateMethodsFor(MessageType messageType) {
+        MethodSpec spec = MethodSpec
+                .methodBuilder("ownType")
+                .returns(MessageType.class)
+                .addStatement("return new $T(getDescriptor())", MessageType.class)
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                .addJavadoc("Returns {@link $T MessageType} of the current message.\n",
+                            MessageType.class)
                 .build();
-        Rejections.CannotUpdateUsername rejectionMessage = rejection.messageThrown();
-        assertEquals(username, rejectionMessage.getUsername());
-    }
-
-    @Test
-    @DisplayName("throw ValidationException if a rejection message is not valid")
-    void validate() {
-        assertThrows(ValidationException.class, () -> CannotUpdateUsername.newBuilder()
-                                                                          .build());
+        return ImmutableList.of(new GeneratedMethod(spec.toString()));
     }
 }
