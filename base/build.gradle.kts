@@ -50,7 +50,6 @@ dependencies {
     compileOnly(Deps.build.autoService.annotations)
     testImplementation(project(":testlib"))
     testImplementation(project(":mute-logging"))
-    implementation(kotlin("stdlib-jdk8"))
 }
 
 sourceSets {
@@ -67,8 +66,8 @@ sourceSets {
 /**
  * The JAR task assembles class files with a respect to the re-built message classes.
  *
- * The task checks each input file for a newer version in the `base-validating-builders`. If such
- * a version is found, the older version is excluded.
+ * The task checks each input file for a newer version in the `base-validating-builders`.
+ * If such a version is found, the older version is excluded.
  */
 tasks.jar.configure {
     // See `base-validating-builders/README.md`

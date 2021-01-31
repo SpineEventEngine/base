@@ -164,6 +164,8 @@ subprojects {
             implementation(jsr305Annotations)
             errorProneAnnotations.forEach { implementation(it) }
         }
+        implementation(kotlin("stdlib-jdk8"))
+
         Deps.test.apply {
             testImplementation(guavaTestlib)
             testImplementation(junit5Runner)
