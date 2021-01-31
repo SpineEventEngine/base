@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,66 +26,67 @@
 
 package io.spine.tools.protoc;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
 
-import static io.spine.tools.protoc.MessageSelectorFactory.prefix;
-import static io.spine.tools.protoc.MessageSelectorFactory.regex;
-import static io.spine.tools.protoc.MessageSelectorFactory.suffix;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("`GeneratedNestedClasses` should")
-class NestedClassesTest {
+@DisplayName("GeneratedMethods should")
+final class MethodsTest {
 
-    public static final String FACTORY = "io.spine.test.NestedClassFactory";
-
-    @Test
     @DisplayName("convert to proper Protoc configuration")
+    @Test
     void convertToProperProtocConfiguration() {
-        NestedClasses classes = new NestedClasses();
-        MessageSelectorFactory messages = classes.messages();
-        classes.applyFactory(FACTORY, messages.inFiles(suffix("_test.proto")));
-        AddNestedClasses config = classes.asProtocConfig();
+        String testMethodFactory = "io.spine.test.MethodFactory";
+        Methods methods = new Methods();
+        MessageSelectorFactory messages = methods.messages();
+        methods.applyFactory(testMethodFactory, messages.uuid());
+        methods.applyFactory(testMethodFactory, messages.inFiles(
+                MessageSelectorFactory.suffix("_test.proto")));
+        AddMethods config = methods.asProtocConfig();
 
-        assertEquals(FACTORY, config.getFactoryByPattern(0)
-                                    .getValue());
+        Assertions.assertEquals(testMethodFactory, config.getUuidFactory()
+                                                         .getValue());
+        Assertions.assertEquals(testMethodFactory, config.getFactoryByPattern(0)
+                                                         .getValue());
     }
 
-    @Test
     @DisplayName("add multiple file patterns")
+    @Test
     void addMultipleFilePatterns() {
-        String pattern = "file_name_pattern";
+        String pattern = "testPattern";
+        String interfaceName = "io.spine.test.TestInterface";
 
-        NestedClasses defaults = new NestedClasses();
+        Methods defaults = new Methods();
         MessageSelectorFactory messages = defaults.messages();
-        defaults.applyFactory(FACTORY, messages.inFiles(suffix(pattern)));
-        defaults.applyFactory(FACTORY, messages.inFiles(prefix(pattern)));
-        defaults.applyFactory(FACTORY, messages.inFiles(regex(pattern)));
+        defaults.applyFactory(interfaceName, messages.inFiles(MessageSelectorFactory.suffix(pattern)));
+        defaults.applyFactory(interfaceName, messages.inFiles(MessageSelectorFactory.prefix(pattern)));
+        defaults.applyFactory(interfaceName, messages.inFiles(MessageSelectorFactory.regex(pattern)));
 
-        assertTrue(hasSuffixConfig(pattern, FACTORY, defaults.asProtocConfig()));
-        assertTrue(hasPrefixConfig(pattern, FACTORY, defaults.asProtocConfig()));
-        assertTrue(hasRegexConfig(pattern, FACTORY, defaults.asProtocConfig()));
+        assertTrue(hasSuffixConfig(pattern, interfaceName, defaults.asProtocConfig()));
+        assertTrue(hasPrefixConfig(pattern, interfaceName, defaults.asProtocConfig()));
+        assertTrue(hasRegexConfig(pattern, interfaceName, defaults.asProtocConfig()));
     }
 
     private static boolean
-    hasSuffixConfig(String suffix, String factoryName, AddNestedClasses config) {
+    hasSuffixConfig(String suffix, String factoryName, AddMethods config) {
         return hasConfig(config, factoryName, pattern -> suffix.equals(pattern.getSuffix()));
     }
 
     private static boolean
-    hasPrefixConfig(String prefix, String factoryName, AddNestedClasses config) {
+    hasPrefixConfig(String prefix, String factoryName, AddMethods config) {
         return hasConfig(config, factoryName, pattern -> prefix.equals(pattern.getPrefix()));
     }
 
     private static boolean
-    hasRegexConfig(String regex, String factoryName, AddNestedClasses config) {
+    hasRegexConfig(String regex, String factoryName, AddMethods config) {
         return hasConfig(config, factoryName, pattern -> regex.equals(pattern.getRegex()));
     }
 
-    private static boolean hasConfig(AddNestedClasses config,
+    private static boolean hasConfig(AddMethods config,
                                      String factoryName,
                                      Predicate<? super FilePattern> patternPredicate) {
         return config

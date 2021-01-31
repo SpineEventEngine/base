@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,27 +26,29 @@
 
 package io.spine.tools.protoc;
 
+import com.google.common.truth.Subject;
+import com.google.common.truth.Truth;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.google.common.truth.Truth.assertThat;
+@DisplayName("`PatternSelector` implementations should")
+final class PatternSelectorsTest {
 
-@DisplayName("MessageSelector should")
-final class MessageSelectorTest {
-
-    @DisplayName("be enabled by default")
+    @DisplayName("be different from each other")
     @Test
-    void beEnabledByDefault() {
-        assertThat(new MessageSelector().enabled()).isTrue();
-    }
+    void implementationsDiffer() {
+        String pattern = "testPattern";
 
-    @DisplayName("allow disabling and enabling itself")
-    @Test
-    void allowDisablingAndEnablingItself() {
-        MessageSelector selector = new MessageSelector();
-        selector.disable();
-        assertThat(selector.enabled()).isFalse();
-        selector.enable();
-        assertThat(selector.enabled()).isTrue();
+        Subject prefix = Truth.assertThat(new PrefixSelector(pattern));
+        prefix.isNotEqualTo(new SuffixSelector(pattern));
+        prefix.isNotEqualTo(new RegexSelector(pattern));
+
+        Subject suffix = Truth.assertThat(new SuffixSelector(pattern));
+        suffix.isNotEqualTo(new PrefixSelector(pattern));
+        suffix.isNotEqualTo(new RegexSelector(pattern));
+
+        Subject regex = Truth.assertThat(new RegexSelector(pattern));
+        regex.isNotEqualTo(new SuffixSelector(pattern));
+        regex.isNotEqualTo(new PrefixSelector(pattern));
     }
 }

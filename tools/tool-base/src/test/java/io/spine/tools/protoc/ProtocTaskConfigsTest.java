@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,13 +27,12 @@
 package io.spine.tools.protoc;
 
 import com.google.common.testing.NullPointerTester;
+import com.google.common.truth.Truth;
 import io.spine.code.java.ClassName;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("`ProtocTaskConfigs` should")
 final class ProtocTaskConfigsTest extends UtilityClassTest<ProtocTaskConfigs> {
@@ -57,7 +56,7 @@ final class ProtocTaskConfigsTest extends UtilityClassTest<ProtocTaskConfigs> {
         void uuidConfig() {
             ClassName className = ClassName.of("test-value");
             UuidConfig actual = ProtocTaskConfigs.uuidConfig(className);
-            assertThat(actual.getValue()).isEqualTo(className.value());
+            Truth.assertThat(actual.getValue()).isEqualTo(className.value());
         }
 
         @Test
@@ -65,7 +64,7 @@ final class ProtocTaskConfigsTest extends UtilityClassTest<ProtocTaskConfigs> {
         void entityStateConfig() {
             ClassName className = ClassName.of("TestEntityState");
             EntityStateConfig actual = ProtocTaskConfigs.entityStateConfig(className);
-            assertThat(actual.getValue()).isEqualTo(className.value());
+            Truth.assertThat(actual.getValue()).isEqualTo(className.value());
         }
 
         @Test
@@ -74,8 +73,8 @@ final class ProtocTaskConfigsTest extends UtilityClassTest<ProtocTaskConfigs> {
             ClassName className = ClassName.of("test-value");
             FilePattern pattern = FilePatterns.filePrefix("test");
             ConfigByPattern actual = ProtocTaskConfigs.byPatternConfig(className, pattern);
-            assertThat(actual.getValue()).isEqualTo(className.value());
-            assertThat(actual.getPattern()).isEqualTo(pattern);
+            Truth.assertThat(actual.getValue()).isEqualTo(className.value());
+            Truth.assertThat(actual.getPattern()).isEqualTo(pattern);
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,13 +24,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Spine Protoc Gradle plugin configurations.
- */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
 package io.spine.tools.protoc;
 
-import com.google.errorprone.annotations.CheckReturnValue;
+import com.google.common.truth.Truth;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+@DisplayName("MessageSelector should")
+final class MessageSelectorTest {
+
+    @DisplayName("be enabled by default")
+    @Test
+    void beEnabledByDefault() {
+        Truth.assertThat(new MessageSelector().enabled()).isTrue();
+    }
+
+    @DisplayName("allow disabling and enabling itself")
+    @Test
+    void allowDisablingAndEnablingItself() {
+        MessageSelector selector = new MessageSelector();
+        selector.disable();
+        Truth.assertThat(selector.enabled()).isFalse();
+        selector.enable();
+        Truth.assertThat(selector.enabled()).isTrue();
+    }
+}

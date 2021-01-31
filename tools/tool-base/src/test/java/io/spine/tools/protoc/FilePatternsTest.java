@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,13 +27,12 @@
 package io.spine.tools.protoc;
 
 import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.testing.Assertions.assertNpe;
-import static io.spine.tools.protoc.FilePatterns.fileRegex;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("FilePatterns should")
 final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
@@ -68,7 +67,7 @@ final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
         @DisplayName("regex pattern")
         @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
         void regex() {
-            assertNpe(() -> fileRegex(null));
+            assertNpe(() -> FilePatterns.fileRegex(null));
         }
     }
 
@@ -85,7 +84,7 @@ final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
             void withFileName() {
                 String suffix = "documents.proto";
                 FilePattern filter = FilePatterns.fileSuffix(suffix);
-                assertEquals(suffix, filter.getSuffix());
+                Assertions.assertEquals(suffix, filter.getSuffix());
             }
 
             @Test
@@ -93,7 +92,7 @@ final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
             void withPathParts() {
                 String suffix = "tools/protoc/documents.proto";
                 FilePattern filter = FilePatterns.fileSuffix(suffix);
-                assertEquals(suffix, filter.getSuffix());
+                Assertions.assertEquals(suffix, filter.getSuffix());
             }
 
             @Test
@@ -101,7 +100,7 @@ final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
             void withAbsolutePath() {
                 String suffix = "/home/user/development/petproject/src/main/proto/documents.proto";
                 FilePattern filter = FilePatterns.fileSuffix(suffix);
-                assertEquals(suffix, filter.getSuffix());
+                Assertions.assertEquals(suffix, filter.getSuffix());
             }
         }
 
@@ -114,7 +113,7 @@ final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
             void withFileName() {
                 String prefix = "documents_";
                 FilePattern pattern = FilePatterns.filePrefix(prefix);
-                assertEquals(prefix, pattern.getPrefix());
+                Assertions.assertEquals(prefix, pattern.getPrefix());
             }
 
             @DisplayName("with path parts")
@@ -122,7 +121,7 @@ final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
             void withPathParts() {
                 String prefix = "io/spine/tools/documents_";
                 FilePattern pattern = FilePatterns.filePrefix(prefix);
-                assertEquals(prefix, pattern.getPrefix());
+                Assertions.assertEquals(prefix, pattern.getPrefix());
             }
 
             @DisplayName("with absolute file path")
@@ -130,7 +129,7 @@ final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
             void withAbsolutePath() {
                 String prefix = "/home/user/development/petproject/src/main/proto/test_";
                 FilePattern filter = FilePatterns.filePrefix(prefix);
-                assertEquals(prefix, filter.getPrefix());
+                Assertions.assertEquals(prefix, filter.getPrefix());
             }
         }
 
@@ -143,7 +142,7 @@ final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
             void withBothWildcards() {
                 String regex = ".*documents.*";
                 FilePattern pattern = FilePatterns.fileRegex(regex);
-                assertEquals(regex, pattern.getRegex());
+                Assertions.assertEquals(regex, pattern.getRegex());
             }
 
             @DisplayName("with path parts")
@@ -151,7 +150,7 @@ final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
             void withPathParts() {
                 String regex = "io/spine/.*/documents/.*\\.proto";
                 FilePattern pattern = FilePatterns.fileRegex(regex);
-                assertEquals(regex, pattern.getRegex());
+                Assertions.assertEquals(regex, pattern.getRegex());
             }
 
             @DisplayName("with absolute file path")
@@ -159,7 +158,7 @@ final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
             void withAbsolutePath() {
                 String regex = "/home/user/development/petproject/.*/proto/test_.*\\.proto";
                 FilePattern filter = FilePatterns.fileRegex(regex);
-                assertEquals(regex, filter.getRegex());
+                Assertions.assertEquals(regex, filter.getRegex());
             }
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,15 +26,11 @@
 
 package io.spine.tools.protoc;
 
+import com.google.common.truth.Truth;
 import io.spine.base.SubscribableField;
 import io.spine.query.EntityStateField;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static com.google.common.truth.Truth.assertThat;
-import static io.spine.tools.protoc.MessageSelectorFactory.prefix;
-import static io.spine.tools.protoc.MessageSelectorFactory.regex;
-import static io.spine.tools.protoc.MessageSelectorFactory.suffix;
 
 @DisplayName("`GeneratedFields` should")
 class FieldsTest {
@@ -48,22 +44,22 @@ class FieldsTest {
         Fields config = new Fields();
         MessageSelectorFactory messages = config.messages();
         config.generateFor(messages.entityState(), config.markAs(ENTITY_STATE_FIELD));
-        config.generateFor(messages.inFiles(suffix("_test.proto")),
+        config.generateFor(messages.inFiles(MessageSelectorFactory.suffix("_test.proto")),
                            config.markAs(GENERIC_FIELD));
         config.generateFor("some.custom.Type", config.markAs(GENERIC_FIELD));
 
         AddFields protocConfig = config.asProtocConfig();
 
-        assertThat(protocConfig.getEntityStateConfig().getValue())
-                .isEqualTo(ENTITY_STATE_FIELD);
-        assertThat(protocConfig.getConfigByPatternCount())
-                .isEqualTo(1);
-        assertThat(protocConfig.getConfigByPattern(0).getValue())
-                .isEqualTo(GENERIC_FIELD);
-        assertThat(protocConfig.getConfigByTypeCount())
-                .isEqualTo(1);
-        assertThat(protocConfig.getConfigByType(0).getValue())
-                .isEqualTo(GENERIC_FIELD);
+        Truth.assertThat(protocConfig.getEntityStateConfig().getValue())
+             .isEqualTo(ENTITY_STATE_FIELD);
+        Truth.assertThat(protocConfig.getConfigByPatternCount())
+             .isEqualTo(1);
+        Truth.assertThat(protocConfig.getConfigByPattern(0).getValue())
+             .isEqualTo(GENERIC_FIELD);
+        Truth.assertThat(protocConfig.getConfigByTypeCount())
+             .isEqualTo(1);
+        Truth.assertThat(protocConfig.getConfigByType(0).getValue())
+             .isEqualTo(GENERIC_FIELD);
     }
 
     @Test
@@ -73,13 +69,13 @@ class FieldsTest {
 
         Fields config = new Fields();
         MessageSelectorFactory messages = config.messages();
-        config.generateFor(messages.inFiles(suffix(pattern)), config.markAs(GENERIC_FIELD));
-        config.generateFor(messages.inFiles(prefix(pattern)), config.markAs(GENERIC_FIELD));
-        config.generateFor(messages.inFiles(regex(pattern)), config.markAs(GENERIC_FIELD));
+        config.generateFor(messages.inFiles(MessageSelectorFactory.suffix(pattern)), config.markAs(GENERIC_FIELD));
+        config.generateFor(messages.inFiles(MessageSelectorFactory.prefix(pattern)), config.markAs(GENERIC_FIELD));
+        config.generateFor(messages.inFiles(MessageSelectorFactory.regex(pattern)), config.markAs(GENERIC_FIELD));
 
         AddFields protocConfig = config.asProtocConfig();
 
-        assertThat(protocConfig.getConfigByPatternCount()).isEqualTo(3);
+        Truth.assertThat(protocConfig.getConfigByPatternCount()).isEqualTo(3);
     }
 
     @Test
@@ -93,6 +89,6 @@ class FieldsTest {
 
         AddFields protocConfig = config.asProtocConfig();
 
-        assertThat(protocConfig.getConfigByTypeCount()).isEqualTo(2);
+        Truth.assertThat(protocConfig.getConfigByTypeCount()).isEqualTo(2);
     }
 }

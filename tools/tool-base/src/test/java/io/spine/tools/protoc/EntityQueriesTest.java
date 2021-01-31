@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,9 @@
 
 package io.spine.tools.protoc;
 
+import com.google.common.truth.Truth;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("`GeneratedEntityQueries` should")
 class EntityQueriesTest {
@@ -41,6 +40,6 @@ class EntityQueriesTest {
         value.generate(true);
         AddEntityQueries protocConfig = value.asProtocConfig();
 
-        assertThat(protocConfig.getGenerate()).isTrue();
+        Truth.assertThat(protocConfig.getGenerate()).isTrue();
     }
 }

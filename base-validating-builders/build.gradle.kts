@@ -24,7 +24,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.ProtobufConfigurator.JavaGenerateProtoTaskCollection
 import com.google.protobuf.gradle.*
 import io.spine.gradle.internal.Deps
 import org.gradle.internal.os.OperatingSystem
@@ -64,11 +63,10 @@ buildscript {
         }
 
         classpath(files(
-                "$projectDir/../tools/protoc-api/build/libs/protoc-api-${spineVersion}.jar",
-                "$projectDir/../tools/model-compiler/build/libs/model-compiler-${spineVersion}.jar",
-                "$projectDir/../tools/plugin-base/build/libs/plugin-base-${spineVersion}.jar",
+                "$projectDir/../base/build/libs/base-${spineVersion}.jar",
                 "$projectDir/../tools/tool-base/build/libs/tool-base-${spineVersion}.jar",
-                "$projectDir/../base/build/libs/base-${spineVersion}.jar"
+                "$projectDir/../tools/plugin-base/build/libs/plugin-base-${spineVersion}.jar",
+                "$projectDir/../tools/model-compiler/build/libs/model-compiler-${spineVersion}.jar"
         ))
     }
 }

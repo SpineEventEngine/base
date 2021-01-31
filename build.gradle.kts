@@ -88,7 +88,6 @@ extra.apply {
             "plugin-testlib",
 
             // Protoc compiler plugin
-            "protoc-api",
             "validation-generator",
             "protoc-plugin"
     )

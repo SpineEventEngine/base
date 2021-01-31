@@ -30,7 +30,6 @@ group = "io.spine.tools"
 
 dependencies {
     implementation(project(":tool-base"))
-    implementation(project(":protoc-api"))
     implementation(project(":validation-generator"))
     implementation(Deps.gen.javaPoet)
     implementation(Deps.gen.javaxAnnotation)
@@ -42,7 +41,6 @@ dependencies {
 
 tasks.jar {
     dependsOn(
-            ":protoc-api:jar",
             ":tool-base:jar",
             ":validation-generator:jar"
     )

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,14 +30,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("PrefixPattern should")
-final class PrefixPatternTest {
+@DisplayName("SuffixPattern should")
+final class SuffixPatternTest {
 
     @DisplayName("translate itself to Protobuf counterpart")
     @Test
     void convertToProtobufCounterpart() {
-        String prefix = "io/spine/test_";
-        FilePattern pattern = new PrefixSelector(prefix).toProto();
-        Assertions.assertEquals(prefix, pattern.getPrefix());
+        String suffix = "test.proto";
+        FilePattern pattern = new SuffixSelector(suffix).toProto();
+        Assertions.assertEquals(suffix, pattern.getSuffix());
     }
 }

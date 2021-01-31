@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,16 +26,13 @@
 
 package io.spine.tools.protoc;
 
+import com.google.common.truth.Truth;
 import io.spine.code.java.ClassName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
 
-import static com.google.common.truth.Truth.assertThat;
-import static io.spine.tools.protoc.MessageSelectorFactory.prefix;
-import static io.spine.tools.protoc.MessageSelectorFactory.regex;
-import static io.spine.tools.protoc.MessageSelectorFactory.suffix;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("`GeneratedInterfaces` should")
@@ -49,9 +46,9 @@ final class InterfacesTest {
 
         Interfaces defaults = new Interfaces();
         MessageSelectorFactory messages = defaults.messages();
-        defaults.mark(messages.inFiles(suffix(pattern)), interfaceName);
-        defaults.mark(messages.inFiles(prefix(pattern)), interfaceName);
-        defaults.mark(messages.inFiles(regex(pattern)), interfaceName);
+        defaults.mark(messages.inFiles(MessageSelectorFactory.suffix(pattern)), interfaceName);
+        defaults.mark(messages.inFiles(MessageSelectorFactory.prefix(pattern)), interfaceName);
+        defaults.mark(messages.inFiles(MessageSelectorFactory.regex(pattern)), interfaceName);
 
         assertTrue(hasSuffixConfig(pattern, interfaceName, defaults.asProtocConfig()));
         assertTrue(hasPrefixConfig(pattern, interfaceName, defaults.asProtocConfig()));
@@ -63,7 +60,7 @@ final class InterfacesTest {
     void allowAsTypeSugar() {
         Interfaces interfaces = new Interfaces();
         String interfaceName = "MyInterface";
-        assertThat(interfaces.asType(interfaceName)).isEqualTo(ClassName.of(interfaceName));
+        Truth.assertThat(interfaces.asType(interfaceName)).isEqualTo(ClassName.of(interfaceName));
     }
 
     private static boolean

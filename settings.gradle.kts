@@ -51,6 +51,5 @@ module("model-compiler")
 module("proto-dart-plugin")
 module("proto-js-plugin")
 
-module("protoc-api")
 module("validation-generator")
 module("protoc-plugin")

@@ -35,7 +35,6 @@ val spineVersion: String by extra
 
 dependencies {
     implementation(project(":plugin-base"))
-    implementation(project(":protoc-api"))
     implementation(Deps.gen.javaPoet)
 
     // A library for parsing Java sources.
