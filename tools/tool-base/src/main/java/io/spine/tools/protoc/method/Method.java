@@ -26,7 +26,9 @@
 
 package io.spine.tools.protoc.method;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.errorprone.annotations.Immutable;
+import com.squareup.javapoet.MethodSpec;
 import io.spine.value.StringTypeValue;
 
 /**
@@ -39,14 +41,22 @@ import io.spine.value.StringTypeValue;
  * of other Protobuf-generated sources.
  */
 @Immutable
-public final class GeneratedMethod extends StringTypeValue {
+public final class Method extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
 
     /**
-     * Creates a new instance of the method value holder.
+     * Creates a new instance with the passed code block.
      */
-    public GeneratedMethod(String value) {
-        super(value);
+    @VisibleForTesting
+    public Method(String code) {
+        super(code);
+    }
+
+    /**
+     * Obtains the code of the method from the passed spec.
+     */
+    public Method(MethodSpec spec) {
+        this(spec.toString());
     }
 }

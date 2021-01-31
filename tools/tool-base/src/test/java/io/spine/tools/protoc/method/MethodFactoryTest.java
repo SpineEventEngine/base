@@ -56,7 +56,7 @@ final class MethodFactoryTest {
         }
 
         @Override
-        public List<GeneratedMethod> generateMethodsFor(MessageType messageType) {
+        public List<Method> generateMethodsFor(MessageType messageType) {
             return ImmutableList.of();
         }
     }

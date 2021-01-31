@@ -29,7 +29,7 @@ package io.spine.tools.protoc.given;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.tools.protoc.UuidMessage;
-import io.spine.tools.protoc.method.GeneratedMethod;
+import io.spine.tools.protoc.method.Method;
 import io.spine.tools.protoc.method.MethodFactory;
 import io.spine.type.MessageType;
 
@@ -42,11 +42,11 @@ import java.util.List;
 @Immutable
 public class UuidMethodFactory implements MethodFactory {
 
-    private static final GeneratedMethod TEST_METHOD =
-            new GeneratedMethod("public static boolean isUuid(){return true;}");
+    private static final Method TEST_METHOD =
+            new Method("public static boolean isUuid(){return true;}");
 
     @Override
-    public List<GeneratedMethod> generateMethodsFor(MessageType messageType) {
+    public List<Method> generateMethodsFor(MessageType messageType) {
         return ImmutableList.of(TEST_METHOD);
     }
 }

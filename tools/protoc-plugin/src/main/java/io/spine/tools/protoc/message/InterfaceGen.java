@@ -128,14 +128,10 @@ public final class InterfaceGen extends CodeGenerator {
     private ImmutableList<CompilerOutput> process(MessageType type) {
         ImmutableList<CompilerOutput> matched = tasks.generateFor(type);
         ImmutableList<CompilerOutput> mixed = MixInSpec.scanOptionsFor(type);
-        ImmutableList<CompilerOutput> allInterfaces =
-                ImmutableList.<CompilerOutput>builder()
-                        .addAll(matched)
-                        .addAll(mixed)
-                        .build();
-        ImmutableList<CompilerOutput> deduplicated =
-                ImmutableSet.copyOf(allInterfaces)
-                            .asList();
-        return deduplicated;
+        ImmutableSet<CompilerOutput> deduplicated = ImmutableSet.<CompilerOutput>builder()
+                .addAll(matched)
+                .addAll(mixed)
+                .build();
+        return deduplicated.asList();
     }
 }

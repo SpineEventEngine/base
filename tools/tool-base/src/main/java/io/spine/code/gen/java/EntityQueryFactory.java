@@ -30,7 +30,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.code.gen.java.query.EntityQueryBuilderSpec;
 import io.spine.code.gen.java.query.EntityQuerySpec;
-import io.spine.tools.protoc.method.GeneratedMethod;
+import io.spine.tools.protoc.method.Method;
 import io.spine.tools.protoc.method.MethodFactory;
 import io.spine.tools.protoc.nested.GeneratedNestedClass;
 import io.spine.tools.protoc.nested.NestedClassFactory;
@@ -64,10 +64,9 @@ public final class EntityQueryFactory implements NestedClassFactory, MethodFacto
     }
 
     @Override
-    public List<GeneratedMethod> generateMethodsFor(MessageType messageType) {
-        EntityQuerySpec spec = new EntityQuerySpec(messageType);
-        GeneratedMethod method = new GeneratedMethod(spec.methodSpec()
-                                                         .toString());
+    public List<Method> generateMethodsFor(MessageType type) {
+        EntityQuerySpec spec = new EntityQuerySpec(type);
+        Method method = new Method(spec.methodSpec());
         return ImmutableList.of(method);
     }
 }

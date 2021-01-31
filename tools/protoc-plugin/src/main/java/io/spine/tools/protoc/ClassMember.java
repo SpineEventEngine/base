@@ -26,8 +26,8 @@
 
 package io.spine.tools.protoc;
 
-import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
-import io.spine.tools.protoc.method.GeneratedMethod;
+import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
+import io.spine.tools.protoc.method.Method;
 import io.spine.tools.protoc.nested.GeneratedNestedClass;
 import io.spine.type.MessageType;
 
@@ -38,22 +38,21 @@ import io.spine.type.MessageType;
  */
 public final class ClassMember extends AbstractCompilerOutput {
 
-    private ClassMember(CodeGeneratorResponse.File file) {
+    private ClassMember(File file) {
         super(file);
     }
 
     /**
      * Creates a compiler output which alters the generated message with an additional method.
      *
-     * @param generatedMethod
+     * @param method
      *         the source code of the added method
-     * @param messageType
+     * @param type
      *         the generated message type
      * @return a new instance of the {@code ClassMember} compiler output
      */
-    public static ClassMember method(GeneratedMethod generatedMethod, MessageType messageType) {
-        CodeGeneratorResponse.File response =
-                codeGeneratorResponse(generatedMethod.toString(), messageType);
+    public static ClassMember method(Method method, MessageType type) {
+        File response = codeGeneratorResponse(method.toString(), type);
         return new ClassMember(response);
     }
 
@@ -61,26 +60,24 @@ public final class ClassMember extends AbstractCompilerOutput {
      * Creates a compiler output which alters the generated message with
      * an additional nested class.
      *
-     * @param generatedNestedClass
+     * @param cls
      *         the source code of the added nested class
-     * @param messageType
+     * @param type
      *         the generated message type
      * @return a new instance of the {@code ClassMember} compiler output
      */
-    public static ClassMember nestedClass(GeneratedNestedClass generatedNestedClass,
-                                          MessageType messageType) {
-        CodeGeneratorResponse.File response =
-                codeGeneratorResponse(generatedNestedClass.toString(), messageType);
+    public static ClassMember nestedClass(GeneratedNestedClass cls, MessageType type) {
+        File response = codeGeneratorResponse(cls.toString(), type);
         return new ClassMember(response);
     }
 
-    private static CodeGeneratorResponse.File
-    codeGeneratorResponse(String content, MessageType messageType) {
-        String insertionPoint = InsertionPoint.class_scope.forType(messageType);
-        CodeGeneratorResponse.File.Builder file = ProtocPluginFiles.prepareFile(messageType);
-        CodeGeneratorResponse.File result = file.setInsertionPoint(insertionPoint)
-                                                .setContent(content)
-                                                .build();
+    private static File
+    codeGeneratorResponse(String content, MessageType type) {
+        String insertionPoint = InsertionPoint.class_scope.forType(type);
+        File result = ProtocPluginFiles.prepareFile(type)
+               .setInsertionPoint(insertionPoint)
+               .setContent(content)
+               .build();
         return result;
     }
 }
