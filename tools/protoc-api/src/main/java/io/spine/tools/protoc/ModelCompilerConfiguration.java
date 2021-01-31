@@ -41,17 +41,17 @@ import static io.spine.tools.protoc.ProtocTaskConfigs.byPatternConfig;
  *
  * @param <C>
  *         Protobuf configuration
- * @see GeneratedInterfaces
- * @see GeneratedMethods
- * @see GeneratedNestedClasses
- * @see GeneratedEntityQueries
- * @see GeneratedFields
+ * @see Interfaces
+ * @see Methods
+ * @see NestedClasses
+ * @see EntityQueries
+ * @see Fields
  */
-abstract class GeneratedConfigurations<C extends Message> {
+abstract class ModelCompilerConfiguration<C extends Message> {
 
     private final Map<PatternSelector, ClassName> patterns;
 
-    GeneratedConfigurations() {
+    ModelCompilerConfiguration() {
         this.patterns = Maps.newConcurrentMap();
     }
 

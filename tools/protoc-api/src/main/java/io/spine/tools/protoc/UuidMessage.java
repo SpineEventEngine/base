@@ -33,8 +33,8 @@ import io.spine.code.java.ClassName;
  *
  * <p>A UUID message is a message with a single {@code string} field named {@code uuid}.
  *
- * @see GeneratedInterfaces#mark(UuidMessage, ClassName)
- * @see GeneratedMethods#applyFactory(String, UuidMessage)
+ * @see Interfaces#mark(UuidMessage, ClassName)
+ * @see Methods#applyFactory(String, UuidMessage)
  */
 public final class UuidMessage extends MessageSelector {
 

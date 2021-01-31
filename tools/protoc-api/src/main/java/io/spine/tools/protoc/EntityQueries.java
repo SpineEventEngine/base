@@ -32,7 +32,7 @@ import io.spine.annotation.Internal;
  * Configuration of the entity query generation applied to the Protobuf messages, which define
  * states of entities.
  */
-public final class GeneratedEntityQueries extends GeneratedConfigurations<AddEntityQueries> {
+public final class EntityQueries extends ModelCompilerConfiguration<AddEntityQueries> {
 
     private boolean generate = false;
 

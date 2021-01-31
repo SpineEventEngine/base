@@ -32,12 +32,12 @@ import org.junit.jupiter.api.Test;
 import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("`GeneratedEntityQueries` should")
-class GeneratedEntityQueriesTest {
+class EntityQueriesTest {
 
     @Test
     @DisplayName("convert to the corresponding Protoc configuration")
     void convertToProperProtocConfiguration() {
-        GeneratedEntityQueries value = new GeneratedEntityQueries();
+        EntityQueries value = new EntityQueries();
         value.generate(true);
         AddEntityQueries protocConfig = value.asProtocConfig();
 

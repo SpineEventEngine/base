@@ -33,9 +33,9 @@ import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
 import io.spine.code.gen.java.UuidMethodFactory;
 import io.spine.code.java.ClassName;
-import io.spine.tools.protoc.GeneratedInterfaces;
-import io.spine.tools.protoc.GeneratedMethods;
+import io.spine.tools.protoc.Interfaces;
 import io.spine.tools.protoc.MessageSelectorFactory;
+import io.spine.tools.protoc.Methods;
 import io.spine.tools.protoc.SpineProtocConfig;
 
 import static io.spine.base.MessageFile.COMMANDS;
@@ -65,11 +65,11 @@ public final class SpineProtocConfigGiven {
     }
 
     /**
-     * Creates an instance of the {@link GeneratedInterfaces} that represents the default Spine
+     * Creates an instance of the {@link Interfaces} that represents the default Spine
      * model compiler configuration.
      */
-    public static GeneratedInterfaces defaultInterfaces() {
-        GeneratedInterfaces config = new GeneratedInterfaces();
+    public static Interfaces defaultInterfaces() {
+        Interfaces config = new Interfaces();
         MessageSelectorFactory messages = config.messages();
         config.mark(messages.inFiles(suffix(COMMANDS.suffix())),
                     ClassName.of(CommandMessage.class));
@@ -83,11 +83,11 @@ public final class SpineProtocConfigGiven {
     }
 
     /**
-     * Creates an instance of the {@link GeneratedMethods} that represents the default Spine
+     * Creates an instance of the {@link Methods} that represents the default Spine
      * model compiler configuration.
      */
-    public static GeneratedMethods defaultMethods() {
-        GeneratedMethods methods = new GeneratedMethods();
+    public static Methods defaultMethods() {
+        Methods methods = new Methods();
         MessageSelectorFactory messages = methods.messages();
         methods.applyFactory(UuidMethodFactory.class.getName(), messages.uuid());
         return methods;

@@ -37,7 +37,7 @@ import static io.spine.tools.protoc.MessageSelectorFactory.regex;
 import static io.spine.tools.protoc.MessageSelectorFactory.suffix;
 
 @DisplayName("`GeneratedFields` should")
-class GeneratedFieldsTest {
+class FieldsTest {
 
     private static final String ENTITY_STATE_FIELD = EntityStateField.class.getCanonicalName();
     private static final String GENERIC_FIELD = SubscribableField.class.getCanonicalName();
@@ -45,7 +45,7 @@ class GeneratedFieldsTest {
     @Test
     @DisplayName("convert to proper Protoc configuration")
     void convertToProperProtocConfiguration() {
-        GeneratedFields config = new GeneratedFields();
+        Fields config = new Fields();
         MessageSelectorFactory messages = config.messages();
         config.generateFor(messages.entityState(), config.markAs(ENTITY_STATE_FIELD));
         config.generateFor(messages.inFiles(suffix("_test.proto")),
@@ -71,7 +71,7 @@ class GeneratedFieldsTest {
     void addMultipleFilePatterns() {
         String pattern = "a_file_name_pattern";
 
-        GeneratedFields config = new GeneratedFields();
+        Fields config = new Fields();
         MessageSelectorFactory messages = config.messages();
         config.generateFor(messages.inFiles(suffix(pattern)), config.markAs(GENERIC_FIELD));
         config.generateFor(messages.inFiles(prefix(pattern)), config.markAs(GENERIC_FIELD));
@@ -85,7 +85,7 @@ class GeneratedFieldsTest {
     @Test
     @DisplayName("add multiple type patterns")
     void addMultipleTypePatterns() {
-        GeneratedFields config = new GeneratedFields();
+        Fields config = new Fields();
         String type1 = "some.protobuf.Type1";
         String type2 = "some.protobuf.Type2";
         config.generateFor(type1, config.markAs(GENERIC_FIELD));

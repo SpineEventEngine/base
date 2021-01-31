@@ -30,7 +30,7 @@ package io.spine.tools.protoc;
  * Represents a Protoc Spine plugin configuration selector.
  *
  * <p>Is used as a marker for selecting the required protoc configuration when creating the
- * {@link GeneratedConfigurations}.
+ * {@link ModelCompilerConfiguration}.
  *
  * <p>An example of using selector in Gradle:
  * <pre>

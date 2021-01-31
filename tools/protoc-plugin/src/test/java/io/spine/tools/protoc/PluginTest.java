@@ -84,13 +84,13 @@ final class PluginTest {
     @Test
     @DisplayName("process suffix patterns")
     void processSuffixPatterns() {
-        GeneratedInterfaces interfaces = new GeneratedInterfaces();
+        Interfaces interfaces = new Interfaces();
         MessageSelectorFactory messages = interfaces.messages();
         PatternSelector suffixSelector = messages.inFiles(suffix(TEST_PROTO_SUFFIX));
         interfaces.mark(suffixSelector, ClassName.of(TestInterface.class));
-        GeneratedMethods methods = new GeneratedMethods();
+        Methods methods = new Methods();
         methods.applyFactory(TestMethodFactory.class.getName(), suffixSelector);
-        GeneratedNestedClasses nestedClasses = new GeneratedNestedClasses();
+        NestedClasses nestedClasses = new NestedClasses();
         nestedClasses.applyFactory(TestNestedClassFactory.class.getName(), suffixSelector);
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
@@ -106,7 +106,7 @@ final class PluginTest {
     @Test
     @DisplayName("generate UUID message")
     void generateUuidMethod() {
-        GeneratedMethods methods = new GeneratedMethods();
+        Methods methods = new Methods();
         MessageSelectorFactory messages = methods.messages();
         methods.applyFactory(UuidMethodFactory.class.getName(), messages.uuid());
 
@@ -126,13 +126,13 @@ final class PluginTest {
     @Test
     @DisplayName("process prefix patterns")
     void processPrefixPatterns() {
-        GeneratedInterfaces interfaces = new GeneratedInterfaces();
+        Interfaces interfaces = new Interfaces();
         MessageSelectorFactory messages = interfaces.messages();
         PatternSelector prefixSelector = messages.inFiles(prefix(TEST_PROTO_PREFIX));
         interfaces.mark(prefixSelector, ClassName.of(TestInterface.class));
-        GeneratedMethods methods = new GeneratedMethods();
+        Methods methods = new Methods();
         methods.applyFactory(TestMethodFactory.class.getName(), prefixSelector);
-        GeneratedNestedClasses nestedClasses = new GeneratedNestedClasses();
+        NestedClasses nestedClasses = new NestedClasses();
         nestedClasses.applyFactory(TestNestedClassFactory.class.getName(), prefixSelector);
 
         CodeGeneratorRequest request = requestBuilder()
@@ -149,13 +149,13 @@ final class PluginTest {
     @Test
     @DisplayName("process regex patterns")
     void processRegexPatterns() {
-        GeneratedInterfaces interfaces = new GeneratedInterfaces();
+        Interfaces interfaces = new Interfaces();
         MessageSelectorFactory messages = interfaces.messages();
         PatternSelector regexSelector = messages.inFiles(regex(TEST_PROTO_REGEX));
         interfaces.mark(regexSelector, ClassName.of(TestInterface.class));
-        GeneratedMethods methods = new GeneratedMethods();
+        Methods methods = new Methods();
         methods.applyFactory(TestMethodFactory.class.getName(), regexSelector);
-        GeneratedNestedClasses nestedClasses = new GeneratedNestedClasses();
+        NestedClasses nestedClasses = new NestedClasses();
         nestedClasses.applyFactory(TestNestedClassFactory.class.getName(), regexSelector);
 
         CodeGeneratorRequest request = requestBuilder()
@@ -173,9 +173,9 @@ final class PluginTest {
     @DisplayName("mark generated message builders with the `ValidatingBuilder` interface")
     void markBuildersWithInterface() {
         FileDescriptor testGeneratorsDescriptor = TestGeneratorsProto.getDescriptor();
-        String protocConfigPath = protocConfig(new GeneratedInterfaces(),
-                                               new GeneratedMethods(),
-                                               new GeneratedNestedClasses(),
+        String protocConfigPath = protocConfig(new Interfaces(),
+                                               new Methods(),
+                                               new NestedClasses(),
                                                testPluginConfig);
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(testGeneratorsDescriptor.toProto())

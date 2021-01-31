@@ -63,11 +63,11 @@ import static io.spine.protobuf.Messages.isNotDefault;
  */
 public final class InterfaceGen extends CodeGenerator {
 
-    private final CodeGenerationTasks codeGenerationTasks;
+    private final CodeGenerationTasks tasks;
 
     private InterfaceGen(ImmutableList<CodeGenerationTask> tasks) {
         super();
-        this.codeGenerationTasks = new CodeGenerationTasks(tasks);
+        this.tasks = new CodeGenerationTasks(tasks);
     }
 
     /**
@@ -123,7 +123,7 @@ public final class InterfaceGen extends CodeGenerator {
     }
 
     private ImmutableList<CompilerOutput> processMessageType(MessageType type) {
-        ImmutableList<CompilerOutput> matched = codeGenerationTasks.generateFor(type);
+        ImmutableList<CompilerOutput> matched = tasks.generateFor(type);
         Collection<CompilerOutput> fromMsgOption = MixInSpec.scanMsgOption(type);
         Collection<CompilerOutput> fromFileOption = MixInSpec.scanFileOption(type);
         return ImmutableList.<CompilerOutput>builder()

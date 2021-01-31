@@ -38,14 +38,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("`GeneratedNestedClasses` should")
-class GeneratedNestedClassesTest {
+class NestedClassesTest {
 
     public static final String FACTORY = "io.spine.test.NestedClassFactory";
 
     @Test
     @DisplayName("convert to proper Protoc configuration")
     void convertToProperProtocConfiguration() {
-        GeneratedNestedClasses classes = new GeneratedNestedClasses();
+        NestedClasses classes = new NestedClasses();
         MessageSelectorFactory messages = classes.messages();
         classes.applyFactory(FACTORY, messages.inFiles(suffix("_test.proto")));
         AddNestedClasses config = classes.asProtocConfig();
@@ -59,7 +59,7 @@ class GeneratedNestedClassesTest {
     void addMultipleFilePatterns() {
         String pattern = "file_name_pattern";
 
-        GeneratedNestedClasses defaults = new GeneratedNestedClasses();
+        NestedClasses defaults = new NestedClasses();
         MessageSelectorFactory messages = defaults.messages();
         defaults.applyFactory(FACTORY, messages.inFiles(suffix(pattern)));
         defaults.applyFactory(FACTORY, messages.inFiles(prefix(pattern)));

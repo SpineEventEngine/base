@@ -36,6 +36,7 @@ import io.spine.tools.protoc.CompilerOutput;
 import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.ConfigByType;
 import io.spine.tools.protoc.EntityStateConfig;
+import io.spine.tools.protoc.Fields;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
@@ -52,7 +53,7 @@ import static io.spine.protobuf.Messages.isNotDefault;
  * {@link io.spine.tools.protoc.InsertionPoint#class_scope class_scope} insertion point.
  *
  * <p>Generates output based on the passed
- * {@linkplain io.spine.tools.protoc.GeneratedFields Protoc config}.
+ * {@linkplain Fields Protoc config}.
  */
 public final class FieldGen extends CodeGenerator {
 

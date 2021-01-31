@@ -51,12 +51,12 @@ import static io.spine.tools.protoc.ProtocTaskConfigs.uuidConfig;
  *
  * @see #mark(PatternSelector, ClassName)
  */
-public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterfaces> {
+public final class Interfaces extends ModelCompilerConfiguration<AddInterfaces> {
 
     private UuidConfig uuidInterface = UuidConfig.getDefaultInstance();
     private EntityStateConfig entityStateInterface = EntityStateConfig.getDefaultInstance();
 
-    public GeneratedInterfaces() {
+    public Interfaces() {
         super();
     }
 
@@ -169,7 +169,7 @@ public final class GeneratedInterfaces extends GeneratedConfigurations<AddInterf
                 .setEntityStateInterface(entityStateInterface);
         patternConfigurations()
                 .stream()
-                .map(GeneratedConfigurations::toPatternConfig)
+                .map(ModelCompilerConfiguration::toPatternConfig)
                 .forEach(result::addInterfaceByPattern);
         return result.build();
     }

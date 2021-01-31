@@ -29,9 +29,9 @@ package io.spine.tools.protoc.given;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.compiler.PluginProtos;
 import io.spine.option.OptionsProto;
-import io.spine.tools.protoc.GeneratedInterfaces;
-import io.spine.tools.protoc.GeneratedMethods;
-import io.spine.tools.protoc.GeneratedNestedClasses;
+import io.spine.tools.protoc.Interfaces;
+import io.spine.tools.protoc.Methods;
+import io.spine.tools.protoc.NestedClasses;
 import io.spine.tools.protoc.SpineProtocConfig;
 
 import java.io.File;
@@ -82,18 +82,18 @@ public final class CodeGeneratorRequestGiven {
      * a default instance of {@code GeneratedInterfaces} and stores it in the supplied {@code path}.
      *
      * @return base64 encoded path to the plugin configuration
-     * @see #protocConfig(GeneratedInterfaces, GeneratedMethods, File)
+     * @see #protocConfig(Interfaces, Methods, File)
      */
-    public static String protocConfig(GeneratedMethods methods, Path configPath) {
-        return protocConfig(new GeneratedInterfaces(),
+    public static String protocConfig(Methods methods, Path configPath) {
+        return protocConfig(new Interfaces(),
                             methods,
-                            new GeneratedNestedClasses(),
+                            new NestedClasses(),
                             configPath);
     }
 
-    public static String protocConfig(GeneratedNestedClasses nestedClasses, Path configPath) {
-        return protocConfig(new GeneratedInterfaces(),
-                            new GeneratedMethods(),
+    public static String protocConfig(NestedClasses nestedClasses, Path configPath) {
+        return protocConfig(new Interfaces(),
+                            new Methods(),
                             nestedClasses,
                             configPath);
     }
@@ -103,12 +103,12 @@ public final class CodeGeneratorRequestGiven {
      * a default instance of {@code GeneratedMethods} and stores it in the supplied {@code path}.
      *
      * @return base64 encoded path to the plugin configuration
-     * @see #protocConfig(GeneratedInterfaces, GeneratedMethods, File)
+     * @see #protocConfig(Interfaces, Methods, File)
      */
-    public static String protocConfig(GeneratedInterfaces interfaces, Path configPath) {
+    public static String protocConfig(Interfaces interfaces, Path configPath) {
         return protocConfig(interfaces,
-                            new GeneratedMethods(),
-                            new GeneratedNestedClasses(),
+                            new Methods(),
+                            new NestedClasses(),
                             configPath);
     }
 
@@ -118,9 +118,9 @@ public final class CodeGeneratorRequestGiven {
      *
      * @return base64 encoded path to the plugin configuration
      */
-    public static String protocConfig(GeneratedInterfaces interfaces,
-                                      GeneratedMethods methods,
-                                      GeneratedNestedClasses nestedClasses,
+    public static String protocConfig(Interfaces interfaces,
+                                      Methods methods,
+                                      NestedClasses nestedClasses,
                                       Path configPath) {
         SpineProtocConfig config = SpineProtocConfig
                 .newBuilder()

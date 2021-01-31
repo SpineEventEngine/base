@@ -32,7 +32,7 @@ import io.spine.code.java.ClassName;
  * A selector which signalizes that the configuration should be applied to all messages that
  * represent an entity state.
  *
- * @see GeneratedInterfaces#mark(EntityState, ClassName)
+ * @see Interfaces#mark(EntityState, ClassName)
  */
 final class EntityState extends MessageSelector {
 

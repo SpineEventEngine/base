@@ -35,7 +35,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A configuration of nested classes to be generated for Java message classes.
  */
-public final class GeneratedNestedClasses extends GeneratedConfigurations<AddNestedClasses> {
+public final class NestedClasses extends ModelCompilerConfiguration<AddNestedClasses> {
 
     /**
      * Configures nested class generation for messages declared in files matching a given pattern.
@@ -67,7 +67,7 @@ public final class GeneratedNestedClasses extends GeneratedConfigurations<AddNes
         AddNestedClasses.Builder result = AddNestedClasses.newBuilder();
         patternConfigurations()
                 .stream()
-                .map(GeneratedConfigurations::toPatternConfig)
+                .map(ModelCompilerConfiguration::toPatternConfig)
                 .forEach(result::addFactoryByPattern);
         return result.build();
     }

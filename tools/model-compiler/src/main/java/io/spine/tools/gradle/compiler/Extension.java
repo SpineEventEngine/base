@@ -33,11 +33,11 @@ import io.spine.annotation.Beta;
 import io.spine.code.fs.java.DefaultJavaProject;
 import io.spine.code.gen.Indent;
 import io.spine.tools.gradle.GradleExtension;
-import io.spine.tools.protoc.GeneratedEntityQueries;
-import io.spine.tools.protoc.GeneratedFields;
-import io.spine.tools.protoc.GeneratedInterfaces;
-import io.spine.tools.protoc.GeneratedMethods;
-import io.spine.tools.protoc.GeneratedNestedClasses;
+import io.spine.tools.protoc.EntityQueries;
+import io.spine.tools.protoc.Fields;
+import io.spine.tools.protoc.Interfaces;
+import io.spine.tools.protoc.Methods;
+import io.spine.tools.protoc.NestedClasses;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -173,15 +173,15 @@ public class Extension extends GradleExtension {
 
     public final CodeGenAnnotations generateAnnotations = new CodeGenAnnotations();
 
-    public final GeneratedInterfaces interfaces = new GeneratedInterfaces();
+    public final Interfaces interfaces = new Interfaces();
 
-    public final GeneratedMethods methods = new GeneratedMethods();
+    public final Methods methods = new Methods();
 
-    public final GeneratedNestedClasses nestedClasses = new GeneratedNestedClasses();
+    public final NestedClasses nestedClasses = new NestedClasses();
 
-    public final GeneratedFields fields = new GeneratedFields();
+    public final Fields fields = new Fields();
 
-    public final GeneratedEntityQueries entityQueries = new GeneratedEntityQueries();
+    public final EntityQueries entityQueries = new EntityQueries();
 
     public boolean generateValidatingBuilders = true;
 
@@ -358,7 +358,7 @@ public class Extension extends GradleExtension {
     }
 
     @SuppressWarnings("unused") // Configures `interfaces` closure.
-    public void interfaces(Action<? super GeneratedInterfaces> action) {
+    public void interfaces(Action<? super Interfaces> action) {
         action.execute(interfaces);
     }
 
@@ -368,7 +368,7 @@ public class Extension extends GradleExtension {
     }
 
     @SuppressWarnings("unused") // Configures `methods` closure.
-    public void methods(Action<? super GeneratedMethods> action) {
+    public void methods(Action<? super Methods> action) {
         action.execute(methods);
     }
 
@@ -378,7 +378,7 @@ public class Extension extends GradleExtension {
     }
 
     @SuppressWarnings("unused") // Configures `nestedClasses` closure.
-    public void nestedClasses(Action<? super GeneratedNestedClasses> action) {
+    public void nestedClasses(Action<? super NestedClasses> action) {
         action.execute(nestedClasses);
     }
 
@@ -388,7 +388,7 @@ public class Extension extends GradleExtension {
     }
 
     @SuppressWarnings("unused") // Configures `fields` closure.
-    public void fields(Action<? super GeneratedFields> action) {
+    public void fields(Action<? super Fields> action) {
         action.execute(fields);
     }
 
@@ -398,7 +398,7 @@ public class Extension extends GradleExtension {
     }
 
     @SuppressWarnings("unused") // Configures `entityQueries` closure.
-    public void entityQueries(Action<? super GeneratedEntityQueries> action) {
+    public void entityQueries(Action<? super EntityQueries> action) {
         action.execute(entityQueries);
     }
 
@@ -407,28 +407,28 @@ public class Extension extends GradleExtension {
         return annotations;
     }
 
-    public static GeneratedInterfaces getInterfaces(Project project) {
-        GeneratedInterfaces interfaces = extension(project).interfaces;
+    public static Interfaces getInterfaces(Project project) {
+        Interfaces interfaces = extension(project).interfaces;
         return interfaces;
     }
 
-    public static GeneratedMethods getMethods(Project project) {
-        GeneratedMethods methods = extension(project).methods;
+    public static Methods getMethods(Project project) {
+        Methods methods = extension(project).methods;
         return methods;
     }
 
-    public static GeneratedNestedClasses getNestedClasses(Project project) {
-        GeneratedNestedClasses nestedClasses = extension(project).nestedClasses;
+    public static NestedClasses getNestedClasses(Project project) {
+        NestedClasses nestedClasses = extension(project).nestedClasses;
         return nestedClasses;
     }
 
-    public static GeneratedFields getFields(Project project) {
-        GeneratedFields fields = extension(project).fields;
+    public static Fields getFields(Project project) {
+        Fields fields = extension(project).fields;
         return fields;
     }
 
-    public static GeneratedEntityQueries getEntityQueries(Project project) {
-        GeneratedEntityQueries columns = extension(project).entityQueries;
+    public static EntityQueries getEntityQueries(Project project) {
+        EntityQueries columns = extension(project).entityQueries;
         return columns;
     }
 

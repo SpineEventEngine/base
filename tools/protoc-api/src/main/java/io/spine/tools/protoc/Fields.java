@@ -41,7 +41,7 @@ import static com.google.common.collect.Maps.newHashMap;
  *
  * @see io.spine.base.SubscribableField
  */
-public final class GeneratedFields extends GeneratedConfigurations<AddFields> {
+public final class Fields extends ModelCompilerConfiguration<AddFields> {
 
     private EntityStateConfig entityStateConfig = EntityStateConfig.getDefaultInstance();
     private final Map<String, ClassName> byType = newHashMap();
@@ -140,7 +140,7 @@ public final class GeneratedFields extends GeneratedConfigurations<AddFields> {
                 .addAllConfigByType(generatedTypes());
         patternConfigurations()
                 .stream()
-                .map(GeneratedConfigurations::toPatternConfig)
+                .map(ModelCompilerConfiguration::toPatternConfig)
                 .forEach(result::addConfigByPattern);
         return result.build();
     }

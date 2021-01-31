@@ -26,72 +26,75 @@
 
 package io.spine.tools.protoc;
 
-import io.spine.code.java.ClassName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
 
-import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.protoc.MessageSelectorFactory.prefix;
 import static io.spine.tools.protoc.MessageSelectorFactory.regex;
 import static io.spine.tools.protoc.MessageSelectorFactory.suffix;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("`GeneratedInterfaces` should")
-final class GeneratedInterfacesTest {
+@DisplayName("GeneratedMethods should")
+final class MethodsTest {
+
+    @DisplayName("convert to proper Protoc configuration")
+    @Test
+    void convertToProperProtocConfiguration() {
+        String testMethodFactory = "io.spine.test.MethodFactory";
+        Methods methods = new Methods();
+        MessageSelectorFactory messages = methods.messages();
+        methods.applyFactory(testMethodFactory, messages.uuid());
+        methods.applyFactory(testMethodFactory, messages.inFiles(suffix("_test.proto")));
+        AddMethods config = methods.asProtocConfig();
+
+        assertEquals(testMethodFactory, config.getUuidFactory()
+                                              .getValue());
+        assertEquals(testMethodFactory, config.getFactoryByPattern(0)
+                                              .getValue());
+    }
 
     @DisplayName("add multiple file patterns")
     @Test
     void addMultipleFilePatterns() {
         String pattern = "testPattern";
-        ClassName interfaceName = ClassName.of("io.spine.test.TestInterface");
+        String interfaceName = "io.spine.test.TestInterface";
 
-        GeneratedInterfaces defaults = new GeneratedInterfaces();
+        Methods defaults = new Methods();
         MessageSelectorFactory messages = defaults.messages();
-        defaults.mark(messages.inFiles(suffix(pattern)), interfaceName);
-        defaults.mark(messages.inFiles(prefix(pattern)), interfaceName);
-        defaults.mark(messages.inFiles(regex(pattern)), interfaceName);
+        defaults.applyFactory(interfaceName, messages.inFiles(suffix(pattern)));
+        defaults.applyFactory(interfaceName, messages.inFiles(prefix(pattern)));
+        defaults.applyFactory(interfaceName, messages.inFiles(regex(pattern)));
 
         assertTrue(hasSuffixConfig(pattern, interfaceName, defaults.asProtocConfig()));
         assertTrue(hasPrefixConfig(pattern, interfaceName, defaults.asProtocConfig()));
         assertTrue(hasRegexConfig(pattern, interfaceName, defaults.asProtocConfig()));
     }
 
-    @DisplayName("allows asType syntax sugar method")
-    @Test
-    void allowAsTypeSugar() {
-        GeneratedInterfaces interfaces = new GeneratedInterfaces();
-        String interfaceName = "MyInterface";
-        assertThat(interfaces.asType(interfaceName)).isEqualTo(ClassName.of(interfaceName));
+    private static boolean
+    hasSuffixConfig(String suffix, String factoryName, AddMethods config) {
+        return hasConfig(config, factoryName, pattern -> suffix.equals(pattern.getSuffix()));
     }
 
     private static boolean
-    hasSuffixConfig(String suffix, ClassName interfaceName, AddInterfaces config) {
-        return hasInterface(config, interfaceName,
-                            pattern -> suffix.equals(pattern.getSuffix()));
+    hasPrefixConfig(String prefix, String factoryName, AddMethods config) {
+        return hasConfig(config, factoryName, pattern -> prefix.equals(pattern.getPrefix()));
     }
 
     private static boolean
-    hasPrefixConfig(String prefix, ClassName interfaceName, AddInterfaces config) {
-        return hasInterface(config, interfaceName,
-                            pattern -> prefix.equals(pattern.getPrefix()));
+    hasRegexConfig(String regex, String factoryName, AddMethods config) {
+        return hasConfig(config, factoryName, pattern -> regex.equals(pattern.getRegex()));
     }
 
-    private static boolean
-    hasRegexConfig(String regex, ClassName interfaceName, AddInterfaces config) {
-        return hasInterface(config, interfaceName,
-                            pattern -> regex.equals(pattern.getRegex()));
-    }
-
-    private static boolean hasInterface(AddInterfaces config,
-                                        ClassName interfaceName,
-                                        Predicate<? super FilePattern> patternPredicate) {
+    private static boolean hasConfig(AddMethods config,
+                                     String factoryName,
+                                     Predicate<? super FilePattern> patternPredicate) {
         return config
-                .getInterfaceByPatternList()
+                .getFactoryByPatternList()
                 .stream()
-                .filter(byPattern -> interfaceName.value()
-                                                  .equals(byPattern.getValue()))
+                .filter(byPattern -> factoryName.equals(byPattern.getValue()))
                 .map(ConfigByPattern::getPattern)
                 .anyMatch(patternPredicate);
     }
