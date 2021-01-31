@@ -75,41 +75,42 @@ object Repos {
 }
 
 object Versions {
+    val animalSniffer    = "1.19"
+    val apacheHttpClient = "2.1.2"
+    val apiguardian      = "1.1.0"
+    val appengineApi     = "1.9.82"
+    val appenginePlugin  = "2.2.0"
+    val assertK          = "0.23"
+    val autoCommon       = "0.10"
+    val autoService      = "1.0-rc7"
+    val bouncyCastlePkcs = "1.66"
     val checkerFramework = "3.7.1"
+    val checkstyle       = "8.29"
     val errorProne       = "2.4.0"
     val errorProneJavac  = "9+181-r4173-1" // taken from here: https://github.com/tbroyer/gradle-errorprone-plugin/blob/v0.8/build.gradle.kts
     val errorPronePlugin = "1.3.0"
-    val pmd              = "6.24.0"
-    val checkstyle       = "8.29"
-    val protobufPlugin   = "0.8.13"
-    val appengineApi     = "1.9.82"
-    val appenginePlugin  = "2.2.0"
     val findBugs         = "3.0.2"
-    val guava            = "30.0-jre"
-    val protobuf         = "3.13.0"
-    val grpc             = "1.28.1"
+    val firebaseAdmin    = "6.12.2"
     val flogger          = "0.5.1"
+    val grpc             = "1.28.1"
+    val guava            = "30.0-jre"
+    val httpClient       = "1.34.2"
+    val jackson          = "2.9.10.5"
+    val javaPoet         = "1.13.0"
+    val javaxAnnotation  = "1.3.2"
     val junit4           = "4.13.1"
     val junit5           = "5.7.0"
-    val junitPlatform    = "1.7.0"
     val junitPioneer     = "1.0.0"
-    val truth            = "1.1"
-    val httpClient       = "1.34.2"
-    val apacheHttpClient = "2.1.2"
-    val firebaseAdmin    = "6.12.2"
-    val roaster          = "2.21.2.Final"
-    val licensePlugin    = "1.13"
-    val javaPoet         = "1.13.0"
-    val autoService      = "1.0-rc7"
-    val autoCommon       = "0.10"
-    val jackson          = "2.9.10.5"
-    val animalSniffer    = "1.19"
-    val apiguardian      = "1.1.0"
-    val javaxAnnotation  = "1.3.2"
+    val junitPlatform    = "1.7.0"
     val klaxon           = "5.4"
+    val kotlin           = "1.4.21"
+    val licensePlugin    = "1.13"
     val ouathJwt         = "3.11.0"
-    val bouncyCastlePkcs = "1.66"
-    val assertK          = "0.23"
+    val pmd              = "6.24.0"
+    val protobuf         = "3.13.0"
+    val protobufPlugin   = "0.8.13"
+    val roaster          = "2.21.2.Final"
+    val truth            = "1.1"
 
     /**
      * Version of the SLF4J library.
@@ -129,6 +130,13 @@ object GradlePlugins {
     val protobuf        = "com.google.protobuf:protobuf-gradle-plugin:${Versions.protobufPlugin}"
     val appengine       = "com.google.cloud.tools:appengine-gradle-plugin:${Versions.appenginePlugin}"
     val licenseReport   = "com.github.jk1:gradle-license-report:${Versions.licensePlugin}"
+}
+
+object Kotlin {
+    val reflect = "org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}"
+    val stdLib  = "org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin}"
+    val stdLibCommon = "org.jetbrains.kotlin:kotlin-stdlib-common:${Versions.kotlin}"
+    val stdLibJdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}"
 }
 
 object Build {
@@ -165,6 +173,8 @@ object Build {
     val animalSniffer          = "org.codehaus.mojo:animal-sniffer-annotations:${Versions.animalSniffer}"
     val ci = "true".equals(System.getenv("CI"))
     val gradlePlugins = GradlePlugins
+    val kotlin = Kotlin
+
     @Deprecated("Use Flogger over SLF4J.", replaceWith = ReplaceWith("flogger"))
     @Suppress("DEPRECATION") // Version of SLF4J.
     val slf4j                  = "org.slf4j:slf4j-api:${Versions.slf4j}"
@@ -305,20 +315,32 @@ object DependencyResolution {
                 failOnVersionConflict()
                 cacheChangingModulesFor(0, "seconds")
                 @Suppress("DEPRECATION") // Force SLF4J version.
-                force(
-                    Deps.build.slf4j,
-                    Deps.build.errorProneAnnotations,
-                    Deps.build.jsr305Annotations,
-                    Deps.build.checkerAnnotations,
-                    Deps.build.autoCommon,
-                    Deps.build.guava,
-                    Deps.build.animalSniffer,
-                    Deps.build.protobuf,
-                    Deps.test.guavaTestlib,
-                    Deps.test.truth,
-                    Deps.test.junit5Api,
-                    Deps.test.junit4,
+                with(Deps.build) {
+                    force(
+                        slf4j,
+                        errorProneAnnotations,
+                        jsr305Annotations,
+                        checkerAnnotations,
+                        autoCommon,
+                        guava,
+                        animalSniffer,
+                        protobuf,
+                        kotlin.reflect,
+                        kotlin.stdLib,
+                        kotlin.stdLibCommon,
+                        kotlin.stdLibJdk8
+                    )
+                }
 
+                with(Deps.test) {
+                    force(
+                        guavaTestlib,
+                        truth,
+                        junit5Api,
+                        junit4
+                    )
+                }
+                force(
                     // Transitive dependencies of 3rd party components that we don't use directly.
                     "org.junit.platform:junit-platform-commons:${Versions.junitPlatform}",
                     "com.google.auto.value:auto-value-annotations:1.7.4",

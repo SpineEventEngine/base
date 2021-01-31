@@ -41,7 +41,6 @@
 val base = "2.0.0-jdk8.SNAPSHOT.11"
 
 project.extra.apply {
-    this["kotlinVersion"] = "1.4.21"
     this["spineVersion"] = base
     this["spineBaseVersion"] = base // Used by `filter-internal-javadoc.gradle`.
     this["versionToPublish"] = base

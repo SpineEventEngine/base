@@ -40,23 +40,13 @@ buildscript {
         defaultRepositories(repositories)
         forceConfiguration(configurations)
     }
-
-    val kotlinVersion: String by extra
-    configurations.all {
-        resolutionStrategy {
-            force(
-                "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion",
-                "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlinVersion"
-            )
-        }
-    }
 }
 
 // Apply some plugins to make type-safe extension accessors available in this script file.
 @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
 plugins {
     `java-library`
-    kotlin("jvm") version "1.4.21"
+    kotlin("jvm") version io.spine.gradle.internal.Deps.versions.kotlin
     idea
     io.spine.gradle.internal.Deps.versions.apply {
         id("com.google.protobuf") version protobufPlugin
@@ -65,7 +55,6 @@ plugins {
 }
 
 apply(from = "$rootDir/version.gradle.kts")
-val kotlinVersion: String by extra
 
 extra.apply {
     this["groupId"] = "io.spine"
@@ -107,22 +96,20 @@ subprojects {
     buildscript {
         apply(from = "$rootDir/version.gradle.kts")
 
-        DependencyResolution.defaultRepositories(repositories)
-        dependencies {
-            classpath(Deps.build.gradlePlugins.protobuf)
-            classpath(Deps.build.gradlePlugins.errorProne)
+        DependencyResolution.apply {
+            defaultRepositories(repositories)
+            forceConfiguration(configurations)
         }
-        DependencyResolution.forceConfiguration(configurations)
+
+        Deps.build.apply {
+            dependencies {
+                classpath(gradlePlugins.protobuf)
+                classpath(gradlePlugins.errorProne)
+            }
+        }
     }
 
     apply(from = "$rootDir/version.gradle.kts")
-
-    val srcDir by extra("$projectDir/src")
-    val generatedDir by extra("$projectDir/generated")
-    val generatedJavaDir by extra("$generatedDir/main/java")
-    val generatedTestJavaDir by extra("$generatedDir/test/java")
-    val generatedSpineDir by extra("$generatedDir/main/spine")
-    val generatedTestSpineDir by extra("$generatedDir/test/spine")
 
     apply {
         plugin("java-library")
@@ -146,7 +133,11 @@ subprojects {
         }
     }
 
-    DependencyResolution.defaultRepositories(repositories)
+    DependencyResolution.apply {
+        defaultRepositories(repositories)
+        excludeProtobufLite(configurations)
+        forceConfiguration(configurations)
+    }
 
     /**
      * These dependencies are applied to all sub-projects and do not have to
@@ -159,10 +150,10 @@ subprojects {
 
             protobuf.forEach { api(it) }
             api(flogger)
-            implementation(guava)
-            implementation(checkerAnnotations)
-            implementation(jsr305Annotations)
-            errorProneAnnotations.forEach { implementation(it) }
+            api(guava)
+            api(checkerAnnotations)
+            api(jsr305Annotations)
+            errorProneAnnotations.forEach { api(it) }
         }
         implementation(kotlin("stdlib-jdk8"))
 
@@ -175,20 +166,12 @@ subprojects {
         runtimeOnly(Deps.runtime.flogger.systemBackend)
     }
 
-    DependencyResolution.apply {
-        forceConfiguration(configurations)
-        excludeProtobufLite(configurations)
-    }
-    configurations {
-        all {
-            resolutionStrategy {
-                force(
-                    "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion",
-                    "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlinVersion"
-                )
-            }
-        }
-    }
+    val srcDir by extra("$projectDir/src")
+    val generatedDir by extra("$projectDir/generated")
+    val generatedJavaDir by extra("$generatedDir/main/java")
+    val generatedTestJavaDir by extra("$generatedDir/test/java")
+    val generatedSpineDir by extra("$generatedDir/main/spine")
+    val generatedTestSpineDir by extra("$generatedDir/test/spine")
 
     sourceSets {
         main {

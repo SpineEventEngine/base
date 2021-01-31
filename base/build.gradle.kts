@@ -119,9 +119,11 @@ protobuf {
         for (task in all()) {
             val scope = task.sourceSet.name
             task.generateDescriptorSet = true
-            task.descriptorSetOptions.path = "$buildDir/descriptors/$scope/known_types_${scope}.desc"
-            task.descriptorSetOptions.includeImports = true
-            task.descriptorSetOptions.includeSourceInfo = true
+            with(task.descriptorSetOptions) {
+                path = "$buildDir/descriptors/$scope/known_types_${scope}.desc"
+                includeImports = true
+                includeSourceInfo = true
+            }
 
             if (scope.contains("test")) {
                 pruneTestGoogleProtos.configure { dependsOn(task) }
