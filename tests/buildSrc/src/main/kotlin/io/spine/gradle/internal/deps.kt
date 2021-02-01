@@ -139,8 +139,9 @@ object AppEngine {
     const val gradlePlugin = "com.google.cloud.tools:appengine-gradle-plugin:${gradlePluginVersion}"
 }
 
+// https://checkerframework.org/
 object CheckerFramework {
-    private const val version     = "3.7.1"
+    private const val version = "3.7.1"
     const val annotations = "org.checkerframework:checker-qual:${version}"
     val dataflow = listOf(
         "org.checkerframework:dataflow:${version}",
@@ -148,15 +149,9 @@ object CheckerFramework {
     )
 }
 
-object GradlePlugins {
-    const val errorProne  = ErrorProne.gradlePlugin
-    const val protobuf    = Protobuf.gradlePlugin
-    const val appengine   = AppEngine.gradlePlugin
-    val licenseReport = "com.github.jk1:gradle-license-report:${Versions.licensePlugin}"
-}
-
+// https://errorprone.info/
 object ErrorProne {
-    private const val version = "2.4.0"
+    private const val version = "2.5.1"
     const val gradlePluginVersion = "1.3.0"
     // Taken from here: https://github.com/tbroyer/gradle-errorprone-plugin/blob/v0.8/build.gradle.kts
     const val javacPluginVersion = "9+181-r4173-1"
@@ -173,6 +168,7 @@ object ErrorProne {
     const val gradlePlugin = "net.ltgt.gradle:gradle-errorprone-plugin:${gradlePluginVersion}"
 }
 
+// https://github.com/google/flogger
 object Flogger {
     internal const val version = "0.5.1"
     const val lib     = "com.google.flogger:flogger:${version}"
@@ -183,15 +179,17 @@ object Flogger {
     }
 }
 
+// https://github.com/google/guava
 object Guava {
     private const val version = "30.1-jre"
     const val lib     = "com.google.guava:guava:${version}"
     const val testLib = "com.google.guava:guava-testlib:${version}"
 }
 
+// https://github.com/grpc/grpc-java
 object Grpc {
     @Suppress("MemberVisibilityCanBePrivate")
-    const val version = "1.28.1"
+    const val version     = "1.35.0"
     const val core        = "io.grpc:grpc-core:${version}"
     const val stub        = "io.grpc:grpc-stub:${version}"
     const val okHttp      = "io.grpc:grpc-okhttp:${version}"
@@ -201,6 +199,7 @@ object Grpc {
     const val context     = "io.grpc:grpc-context:${version}"
 }
 
+// https://junit.org/junit5/
 object JUnit {
     private const val version            = "5.7.0"
     private const val legacyVersion      = "4.13.1"
@@ -219,6 +218,8 @@ object JUnit {
     const val platformCommons = "org.junit.platform:junit-platform-commons:${platformVersion}"
 }
 
+// https://github.com/JetBrains/kotlin
+// https://github.com/Kotlin
 object Kotlin {
     @Suppress("MemberVisibilityCanBePrivate") // used directly from outside
     const val version      = "1.4.21"
@@ -228,6 +229,7 @@ object Kotlin {
     const val stdLibJdk8   = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${version}"
 }
 
+// https://github.com/protocolbuffers/protobuf
 object Protobuf {
     @Suppress("MemberVisibilityCanBePrivate") // used directly from outside
     const val version    = "3.13.0"
@@ -240,14 +242,16 @@ object Protobuf {
     const val gradlePlugin = "com.google.protobuf:protobuf-gradle-plugin:${gradlePluginVersion}"
 }
 
+// https://github.com/forge/roaster
 object Roaster {
     private const val version = "2.21.2.Final"
     const val api     = "org.jboss.forge.roaster:roaster-api:${version}"
     const val jdt     = "org.jboss.forge.roaster:roaster-jdt:${version}"
 }
 
+// https://github.com/google/truth
 object Truth {
-    private const val version = "1.1"
+    private const val version = "1.1.2"
     val libs = listOf(
         "com.google.truth:truth:${version}",
         "com.google.truth.extensions:truth-java8-extension:${version}",
@@ -258,6 +262,13 @@ object Truth {
 /*
  * Objects below gather dependencies declared above into the groups by purpose.
  */
+
+object GradlePlugins {
+    const val errorProne  = ErrorProne.gradlePlugin
+    const val protobuf    = Protobuf.gradlePlugin
+    const val appengine   = AppEngine.gradlePlugin
+    val licenseReport = "com.github.jk1:gradle-license-report:${Versions.licensePlugin}"
+}
 
 object Build {
     val animalSniffer = "org.codehaus.mojo:animal-sniffer-annotations:${Versions.animalSniffer}"
@@ -321,7 +332,6 @@ object Test {
 }
 
 object Scripts {
-
     private const val COMMON_PATH = "/config/gradle/"
 
     fun testArtifacts(p: Project)          = p.script("test-artifacts.gradle")
