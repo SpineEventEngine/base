@@ -64,10 +64,11 @@ protobuf {
                 }
             }
             task.generateDescriptorSet = true
-            task.descriptorSetOptions.path = "${projectDir}/build/descriptors/${task.sourceSet.name}/known_types.desc"
-            task.descriptorSetOptions.includeImports = true
-            task.descriptorSetOptions.includeSourceInfo = true
-
+            with (task.descriptorSetOptions) {
+                path = "${projectDir}/build/descriptors/${task.sourceSet.name}/known_types.desc"
+                includeImports = true
+                includeSourceInfo = true
+            }
             compileProtoToJs.get().dependsOn(task)
         }
     }
