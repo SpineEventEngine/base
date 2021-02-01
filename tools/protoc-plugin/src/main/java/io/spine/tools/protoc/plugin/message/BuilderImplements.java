@@ -24,42 +24,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.plugin;
+package io.spine.tools.protoc.plugin.message;
 
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import io.spine.code.fs.java.SourceFile;
-import io.spine.tools.protoc.Method;
+import io.spine.base.ValidatingBuilder;
+import io.spine.tools.protoc.plugin.AbstractCompilerOutput;
+import io.spine.tools.protoc.plugin.InsertionPoint;
 import io.spine.type.MessageType;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
+import static io.spine.tools.protoc.plugin.ProtocPluginFiles.prepareFile;
 import static java.lang.String.format;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("`ClassMember` should")
-final class ClassMemberTest {
+/**
+ * An insertion point which adds the {@link ValidatingBuilder} interface to the list of implemented
+ * interfaces of the {@code Builder} of the given message type.
+ */
+final class BuilderImplements extends AbstractCompilerOutput {
 
-    @DisplayName("create valid compiler output")
-    @Test
-    void createValidCompilerOutput() {
-        String methodBody = "public void test(){}";
-        Method method = new Method(methodBody);
-        MessageType type = new MessageType(MessageWithClassScopeInsertion.getDescriptor());
-        ClassMember result = ClassMember.method(method, type);
-        File file = result.asFile();
-
-        assertEquals(methodBody, file.getContent());
-        assertEquals(insertionPoint(type), file.getInsertionPoint());
-        assertEquals(sourceName(type), file.getName());
+    private BuilderImplements(File file) {
+        super(file);
     }
 
-    private static String sourceName(MessageType type) {
-        return SourceFile.forType(type)
-                         .toString()
-                         .replace('\\', '/');
+    static BuilderImplements implementValidatingBuilder(MessageType targetType) {
+        String insertionPointName = InsertionPoint.builder_implements.forType(targetType);
+        String content = builderFor(targetType);
+        File file = prepareFile(targetType)
+                .setInsertionPoint(insertionPointName)
+                .setContent(content)
+                .build();
+        return new BuilderImplements(file);
     }
 
-    private static String insertionPoint(MessageType type) {
-        return format("class_scope:%s", type.name());
+    private static String builderFor(MessageType type) {
+        String generic = new GeneratedClass()
+                .toCollection()
+                .asStringFor(type);
+        return format("%s%s,", ValidatingBuilder.class.getName(), generic);
     }
 }

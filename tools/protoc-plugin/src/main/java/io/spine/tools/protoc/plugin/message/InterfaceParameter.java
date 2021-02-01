@@ -24,27 +24,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.plugin.given;
+package io.spine.tools.protoc.plugin.message;
 
-import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.protoc.NestedClass;
-import io.spine.tools.protoc.NestedClassFactory;
 import io.spine.type.MessageType;
 
-import java.util.List;
-
 /**
- * A test-only implementation of a {@link NestedClassFactory}.
+ * A generic parameter of an {@linkplain Interface interface} which will be
+ * used in a generated code.
  */
 @Immutable
-public final class TestNestedClassFactory implements NestedClassFactory {
+public interface InterfaceParameter {
 
-    public static final NestedClass NESTED_CLASS =
-            new NestedClass("static class NestedClass {}");
+    /**
+     * Obtains a parameter value based on who is the message interface descendant.
+     *
+     * @param generatedClass
+     *         the {@code Message} class implementing the interface
+     * @return the value of the generic parameter
+     */
+    String valueFor(MessageType generatedClass);
 
-    @Override
-    public List<NestedClass> generateClassesFor(MessageType messageType) {
-        return ImmutableList.of(NESTED_CLASS);
+    /**
+     * Creates a one-element collection of parameters containing this parameter.
+     */
+    default InterfaceParameters toCollection() {
+        return InterfaceParameters.of(this);
+    }
+
+    /**
+     * The parameter for the validating builder of the generated message.
+     */
+    static InterfaceParameter validatingBuilder() {
+        return new BuilderOfGeneratedClass();
+    }
+
+    /**
+     * The parameter for the generated message class.
+     */
+    static InterfaceParameter generatedClass() {
+        return new GeneratedClass();
     }
 }

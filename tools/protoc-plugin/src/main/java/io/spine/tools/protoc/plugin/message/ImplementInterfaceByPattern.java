@@ -24,36 +24,54 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.plugin.method;
+package io.spine.tools.protoc.plugin.message;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.plugin.CompilerOutput;
-import io.spine.tools.protoc.plugin.ExternalClassLoader;
-import io.spine.tools.protoc.MethodFactory;
-import io.spine.tools.protoc.UuidConfig;
+import io.spine.tools.protoc.ConfigByPattern;
+import io.spine.tools.protoc.FilePattern;
+import io.spine.tools.protoc.plugin.FilePatternMatcher;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Preconditions2.checkNotDefaultArg;
 
 /**
- * Generates methods for supplied UUID value type based on {@link UuidConfig uuid configuration}.
+ * Generates interfaces for Protobuf messages that match supplied
+ * {@link io.spine.tools.protoc.FilePattern pattern}.
  */
-public final class GenerateUuidMethods extends MethodGenerationTask {
+final class ImplementInterfaceByPattern extends ImplementInterface {
 
-    public GenerateUuidMethods(ExternalClassLoader<MethodFactory> classLoader, UuidConfig config) {
-        super(classLoader, config.getValue());
+    private final FilePatternMatcher patternMatcher;
+
+    ImplementInterfaceByPattern(ConfigByPattern config) {
+        super(config.getValue());
+        FilePattern filePattern = config.getPattern();
+        checkNotDefaultArg(filePattern);
+        this.patternMatcher = new FilePatternMatcher(filePattern);
+    }
+
+    @Override
+    public InterfaceParameters interfaceParameters(MessageType type) {
+        return InterfaceParameters.empty();
     }
 
     /**
-     * Generates new methods for supplied {@link io.spine.base.UuidValue UuidValue} Protobuf
-     * {@code type}.
+     * Makes supplied type implement configured interface.
+     *
+     * <p>The type does not implement an interface if:
+     * <ul>
+     *     <li>the type is not {@link MessageType#isTopLevel() top level};
+     *     <li>the type file name does not match supplied
+     *     {@link io.spine.tools.protoc.FilePattern pattern}.
+     * </ul>
      */
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
-        if (!type.isUuidValue()) {
+        if (!type.isTopLevel() || !patternMatcher.test(type)) {
             return ImmutableList.of();
         }
-        return generateMethodsFor(type);
+        return super.generateFor(type);
     }
 }

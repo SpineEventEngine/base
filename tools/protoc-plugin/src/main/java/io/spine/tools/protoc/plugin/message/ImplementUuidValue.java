@@ -24,44 +24,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.plugin.method;
+package io.spine.tools.protoc.plugin.message;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.protoc.plugin.ClassMember;
-import io.spine.tools.protoc.plugin.CodeGenerationTask;
 import io.spine.tools.protoc.plugin.CompilerOutput;
-import io.spine.tools.protoc.plugin.ExternalClassLoader;
-import io.spine.tools.protoc.MethodFactory;
+import io.spine.tools.protoc.UuidConfig;
 import io.spine.type.MessageType;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * An abstract base for the method code generation tasks.
+ * Generates {@link io.spine.base.UuidValue UuidValue} interfaces.
  */
-public abstract class MethodGenerationTask implements CodeGenerationTask {
+public final class ImplementUuidValue extends ImplementInterface {
 
-    private final ExternalClassLoader<MethodFactory> classLoader;
-    private final String factoryName;
+    public ImplementUuidValue(UuidConfig config) {
+        super(config.getValue());
+    }
 
-    protected MethodGenerationTask(ExternalClassLoader<MethodFactory> classLoader, String factoryName) {
-        this.classLoader = checkNotNull(classLoader);
-        this.factoryName = checkNotEmptyOrBlank(factoryName);
+    @Override
+    public InterfaceParameters interfaceParameters(MessageType type) {
+        return InterfaceParameters.empty();
     }
 
     /**
-     * Performs the actual method code generation using the supplied
-     * {@linkplain #factoryName factory}.
+     * Makes supplied {@link io.spine.base.UuidValue UuidValue} type implement
+     * the configured interface.
      */
-    protected ImmutableList<CompilerOutput> generateMethodsFor(@NonNull MessageType type) {
-        MethodFactory factory = classLoader.newInstance(factoryName);
-        return factory
-                .generateMethodsFor(type)
-                .stream()
-                .map(methodBody -> ClassMember.method(methodBody, type))
-                .collect(toImmutableList());
+    @Override
+    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
+        checkNotNull(type);
+        if (!type.isUuidValue()) {
+            return ImmutableList.of();
+        }
+        return super.generateFor(type);
     }
 }

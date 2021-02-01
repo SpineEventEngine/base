@@ -28,9 +28,9 @@ package io.spine.tools.protoc.query;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.gen.java.EntityQueryFactory;
-import io.spine.tools.protoc.ClassMember;
-import io.spine.tools.protoc.CodeGenerator;
-import io.spine.tools.protoc.CompilerOutput;
+import io.spine.tools.protoc.plugin.ClassMember;
+import io.spine.tools.protoc.plugin.CodeGenerator;
+import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.tools.protoc.Method;
 import io.spine.tools.protoc.NestedClass;
 import io.spine.tools.protoc.SpineProtocConfig;

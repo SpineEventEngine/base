@@ -24,27 +24,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.plugin.given;
+package io.spine.tools.protoc.plugin.message;
 
-import com.google.common.collect.ImmutableList;
-import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.protoc.NestedClass;
-import io.spine.tools.protoc.NestedClassFactory;
+import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.proto.FileOption;
+import io.spine.option.IsOption;
+import io.spine.option.OptionsProto;
 import io.spine.type.MessageType;
 
-import java.util.List;
+import java.util.Optional;
 
 /**
- * A test-only implementation of a {@link NestedClassFactory}.
+ * An option for a specified file which defines if marker interfaces should be generated and
+ * the Java type of the message.
+ *
+ * @see Is Is option
  */
-@Immutable
-public final class TestNestedClassFactory implements NestedClassFactory {
+final class EveryIs extends FileOption<IsOption> {
 
-    public static final NestedClass NESTED_CLASS =
-            new NestedClass("static class NestedClass {}");
+    /** Creates a new instance of this option. */
+    private EveryIs() {
+        super(OptionsProto.everyIs);
+    }
 
-    @Override
-    public List<NestedClass> generateClassesFor(MessageType messageType) {
-        return ImmutableList.of(NESTED_CLASS);
+    /**
+     * Obtains a value of the option declared for every type declared in the same file with
+     * the passed message type.
+     *
+     * @return the value of the option, or {@code Optional.empty()} if the option is not specified
+     */
+    static Optional<IsOption> of(MessageType type) {
+        FileDescriptor file = type.file();
+        Optional<IsOption> value = new EveryIs().valueFrom(file);
+        return value;
     }
 }

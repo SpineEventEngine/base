@@ -24,15 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.plugin.method;
+package io.spine.tools.protoc.plugin.message;
 
-import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.FilePatterns;
-import io.spine.tools.protoc.MethodFactory;
-import io.spine.tools.protoc.given.TestMethodFactory;
-import io.spine.tools.protoc.plugin.ExternalClassLoader;
+import io.spine.tools.protoc.plugin.given.TestInterface;
+import io.spine.tools.protoc.message.tests.ProjectCreated;
+import io.spine.tools.protoc.plugin.method.OuterMessage;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -44,91 +43,94 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.Assertions.assertNpe;
 import static io.spine.tools.protoc.FilePatterns.filePrefix;
+import static io.spine.tools.protoc.FilePatterns.fileSuffix;
 
-@DisplayName("`GenerateMethods` should")
-final class GenerateMethodsTest {
+@DisplayName("`GenerateInterfaces` should")
+final class InterfacesTest {
 
-    @Nested
     @DisplayName("throw `NullPointerException` if")
+    @Nested
     class ThrowNpe {
 
-        @Test
         @DisplayName("is created with `null` arguments")
+        @Test
         void isCreatedWithNullArguments() {
-            assertNpe(() -> new GenerateMethods(null, ConfigByPattern.getDefaultInstance()));
-            assertNpe(() -> new GenerateMethods(testClassLoader(), null));
+            assertNpe(() -> new ImplementInterfaceByPattern(null));
         }
 
-        @Test
         @DisplayName("`null` `MessageType` is supplied")
+        @Test
         void nullMessageTypeIsSupplied() {
             ConfigByPattern config = newTaskConfig("test")
                     .setPattern(filePrefix("non-default"))
                     .build();
-            GenerateMethods generateMethods = new GenerateMethods(testClassLoader(), config);
+            ImplementInterfaceByPattern generateMethods = new ImplementInterfaceByPattern(config);
             assertNpe(() -> generateMethods.generateFor(null));
         }
     }
 
-    @Test
     @DisplayName("reject empty `FilePattern`")
-    void rejectEmptyFilePattern() {
+    @Test
+    void rejectingEmptyFilePattern() {
         assertIllegalArgument(() -> newTask(newTaskConfig("not-empty-name").build()));
     }
 
-    @DisplayName("throw `IllegalArgumentException` if factory name is ")
+    @DisplayName("throw `IllegalArgumentException` if interface name is")
     @ParameterizedTest(name = "\"{0}\"")
     @ValueSource(strings = {"", "  "})
-    void throwIllegalArgumentException(String factoryName) {
-        ConfigByPattern config = newTaskConfig(factoryName)
-                .setPattern(filePrefix("non-default"))
-                .build();
-        assertIllegalArgument(() -> new GenerateMethods(testClassLoader(), config));
+    void throwIllegalArgumentException(String interfaceName) {
+        assertIllegalArgument(() -> newTask(newTaskConfig(interfaceName).build()));
     }
 
+    @DisplayName("generate empty result if a `Message`")
     @Nested
-    @DisplayName("generate empty result if")
     class GenerateEmptyResult {
 
+        @DisplayName("does not match pattern")
         @Test
-        @DisplayName("message does not match pattern")
         void messageDoesNotMatchPattern() {
-            assertEmptyResult(TestMethodFactory.class.getName(), FilePatterns.fileRegex("wrong"));
+            assertEmptyResult(TestInterface.class.getName(), FilePatterns.fileRegex("wrong"));
         }
 
-        private void assertEmptyResult(String factoryName, FilePattern filePattern) {
-            ConfigByPattern config = newTaskConfig(factoryName)
+        @DisplayName("is not top level")
+        @Test
+        void messageIsNotTopLevel() {
+            assertEmptyResult(TestInterface.class.getName(),
+                              fileSuffix("inner_messages.proto"),
+                              new MessageType(OuterMessage.InnerMessage.getDescriptor()));
+        }
+
+        private void assertEmptyResult(String interfaceName, FilePattern filePattern) {
+            assertEmptyResult(interfaceName, filePattern,
+                              new MessageType(ProjectCreated.getDescriptor()));
+        }
+
+        private void
+        assertEmptyResult(String interfaceName, FilePattern filePattern, MessageType type) {
+            ConfigByPattern config = newTaskConfig(interfaceName)
                     .setPattern(filePattern)
                     .build();
-            assertThat(newTask(config).generateFor(testType()))
+            assertThat(newTask(config).generateFor(type))
                     .isEmpty();
         }
     }
 
+    @DisplayName("implement interface")
     @Test
-    @DisplayName("generate new methods")
-    void generateNewMethods() {
-        ConfigByPattern config = newTaskConfig(TestMethodFactory.class.getName())
-                .setPattern(FilePatterns.fileSuffix("test_patterns.proto"))
+    void implementInterface() {
+        ConfigByPattern config = newTaskConfig(TestInterface.class.getName())
+                .setPattern(fileSuffix("test_events.proto"))
                 .build();
-        assertThat(newTask(config).generateFor(testType()))
+        assertThat(newTask(config).generateFor(new MessageType(ProjectCreated.getDescriptor())))
                 .isNotEmpty();
     }
 
-    private static ConfigByPattern.Builder newTaskConfig(String factoryName) {
+    private static ImplementInterfaceByPattern newTask(ConfigByPattern config) {
+        return new ImplementInterfaceByPattern(config);
+    }
+
+    private static ConfigByPattern.Builder newTaskConfig(String interfaceName) {
         return ConfigByPattern.newBuilder()
-                              .setValue(factoryName);
-    }
-
-    private static GenerateMethods newTask(ConfigByPattern config) {
-        return new GenerateMethods(testClassLoader(), config);
-    }
-
-    private static ExternalClassLoader<MethodFactory> testClassLoader() {
-        return new ExternalClassLoader<>(Classpath.getDefaultInstance(), MethodFactory.class);
-    }
-
-    private static MessageType testType() {
-        return new MessageType(EnhancedWithPatternBasedCodeGeneration.getDescriptor());
+                              .setValue(interfaceName);
     }
 }

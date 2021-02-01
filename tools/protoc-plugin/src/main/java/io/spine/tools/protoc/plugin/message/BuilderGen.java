@@ -24,27 +24,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.plugin.given;
+package io.spine.tools.protoc.plugin.message;
 
-import com.google.common.collect.ImmutableList;
-import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.protoc.NestedClass;
-import io.spine.tools.protoc.NestedClassFactory;
+import com.google.common.collect.ImmutableSet;
+import io.spine.base.ValidatingBuilder;
+import io.spine.tools.protoc.plugin.CodeGenerator;
+import io.spine.tools.protoc.plugin.CompilerOutput;
+import io.spine.tools.protoc.plugin.NoOpGenerator;
+import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
+import io.spine.type.Type;
 
-import java.util.List;
+import static io.spine.tools.protoc.plugin.message.BuilderImplements.implementValidatingBuilder;
 
 /**
- * A test-only implementation of a {@link NestedClassFactory}.
+ * A code generator which makes the generated message builders implement
+ * {@link ValidatingBuilder}.
  */
-@Immutable
-public final class TestNestedClassFactory implements NestedClassFactory {
+public final class BuilderGen extends CodeGenerator {
 
-    public static final NestedClass NESTED_CLASS =
-            new NestedClass("static class NestedClass {}");
+    /**
+     * Prevents direct instantiation.
+     */
+    private BuilderGen() {
+        super();
+    }
+
+    /**
+     * Creates a new instance of the generator.
+     */
+    public static CodeGenerator instance(SpineProtocConfig config) {
+        return config.getSkipValidatingBuilders()
+               ? NoOpGenerator.instance()
+               : new BuilderGen();
+    }
 
     @Override
-    public List<NestedClass> generateClassesFor(MessageType messageType) {
-        return ImmutableList.of(NESTED_CLASS);
+    protected ImmutableSet<CompilerOutput> generate(Type<?, ?> type) {
+        if (type instanceof MessageType) {
+            CompilerOutput insertionPoint = implementValidatingBuilder((MessageType) type);
+            return ImmutableSet.of(insertionPoint);
+        } else {
+            return ImmutableSet.of();
+        }
     }
 }

@@ -24,27 +24,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.plugin.given;
-
-import com.google.common.collect.ImmutableList;
-import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.protoc.NestedClass;
-import io.spine.tools.protoc.NestedClassFactory;
-import io.spine.type.MessageType;
-
-import java.util.List;
-
 /**
- * A test-only implementation of a {@link NestedClassFactory}.
+ * This package contains the routines of manipulating the Protoc Insertion Point to alter the
+ * generated Protobuf messages.
  */
-@Immutable
-public final class TestNestedClassFactory implements NestedClassFactory {
 
-    public static final NestedClass NESTED_CLASS =
-            new NestedClass("static class NestedClass {}");
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.protoc.plugin.message;
 
-    @Override
-    public List<NestedClass> generateClassesFor(MessageType messageType) {
-        return ImmutableList.of(NESTED_CLASS);
-    }
-}
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import javax.annotation.ParametersAreNonnullByDefault;

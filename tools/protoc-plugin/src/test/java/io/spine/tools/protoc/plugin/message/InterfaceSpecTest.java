@@ -24,27 +24,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.plugin.given;
+package io.spine.tools.protoc.plugin.message;
 
-import com.google.common.collect.ImmutableList;
-import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.protoc.NestedClass;
-import io.spine.tools.protoc.NestedClassFactory;
-import io.spine.type.MessageType;
+import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.JavaFile;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import javax.annotation.Generated;
 
-/**
- * A test-only implementation of a {@link NestedClassFactory}.
- */
-@Immutable
-public final class TestNestedClassFactory implements NestedClassFactory {
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-    public static final NestedClass NESTED_CLASS =
-            new NestedClass("static class NestedClass {}");
+@DisplayName("MessageInterfaceSpec should")
+final class InterfaceSpecTest {
 
-    @Override
-    public List<NestedClass> generateClassesFor(MessageType messageType) {
-        return ImmutableList.of(NESTED_CLASS);
+    @Test
+    @DisplayName("generate interfaces")
+    void generateInterfaces() {
+        String packageName = "io.spine.test";
+        String interfaceName = "CustomerEvent";
+        JavaFile javaFile = new InterfaceSpec(packageName, interfaceName).toJavaCode();
+
+        AnnotationSpec generated = javaFile.typeSpec.annotations.get(0);
+        assertEquals(Generated.class.getName(), generated.type.toString());
+
+        assertEquals(packageName, javaFile.packageName);
+        assertEquals(interfaceName, javaFile.typeSpec.name);
     }
 }

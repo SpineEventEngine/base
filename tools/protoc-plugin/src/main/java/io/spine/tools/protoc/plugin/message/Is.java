@@ -24,27 +24,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.plugin.given;
+package io.spine.tools.protoc.plugin.message;
 
-import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.protoc.NestedClass;
-import io.spine.tools.protoc.NestedClassFactory;
+import io.spine.code.proto.MessageOption;
+import io.spine.option.IsOption;
+import io.spine.option.OptionsProto;
 import io.spine.type.MessageType;
 
-import java.util.List;
+import java.util.Optional;
 
 /**
- * A test-only implementation of a {@link NestedClassFactory}.
+ * For a given message, declares if the message is of the specified Java type and
+ * the generation of marker interfaces is enabled.
  */
 @Immutable
-public final class TestNestedClassFactory implements NestedClassFactory {
+@SuppressWarnings("NewClassNamingConvention")
+final class Is extends MessageOption<IsOption> {
 
-    public static final NestedClass NESTED_CLASS =
-            new NestedClass("static class NestedClass {}");
+    private Is() {
+        super(OptionsProto.is);
+    }
 
-    @Override
-    public List<NestedClass> generateClassesFor(MessageType messageType) {
-        return ImmutableList.of(NESTED_CLASS);
+    static Optional<IsOption> of(MessageType type) {
+        Optional<IsOption> result = new Is().valueFrom(type.descriptor());
+        return result;
     }
 }

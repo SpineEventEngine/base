@@ -24,19 +24,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.plugin;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import io.spine.code.proto.OptionExtensionRegistry;
-import io.spine.tools.protoc.column.ColumnGen;
-import io.spine.tools.protoc.field.FieldGen;
-import io.spine.tools.protoc.message.BuilderGen;
-import io.spine.tools.protoc.message.InterfaceGen;
-import io.spine.tools.protoc.message.ValidationGen;
-import io.spine.tools.protoc.method.MethodGen;
-import io.spine.tools.protoc.nested.NestedClassGen;
+import io.spine.tools.protoc.SpineProtocConfig;
+import io.spine.tools.protoc.plugin.column.ColumnGen;
+import io.spine.tools.protoc.plugin.field.FieldGen;
+import io.spine.tools.protoc.plugin.message.BuilderGen;
+import io.spine.tools.protoc.plugin.message.InterfaceGen;
+import io.spine.tools.protoc.plugin.message.ValidationGen;
+import io.spine.tools.protoc.plugin.message.NestedClassGen;
+import io.spine.tools.protoc.plugin.method.MethodGen;
 import io.spine.tools.protoc.query.EntityQueryGen;
 
 import java.io.FileInputStream;

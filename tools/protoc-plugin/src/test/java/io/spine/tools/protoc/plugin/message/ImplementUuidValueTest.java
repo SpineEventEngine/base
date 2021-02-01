@@ -24,15 +24,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.plugin.method;
+package io.spine.tools.protoc.plugin.message;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.tools.protoc.Classpath;
-import io.spine.tools.protoc.plugin.CompilerOutput;
-import io.spine.tools.protoc.plugin.ExternalClassLoader;
-import io.spine.tools.protoc.MethodFactory;
+import com.google.protobuf.Descriptors;
 import io.spine.tools.protoc.UuidConfig;
-import io.spine.tools.protoc.given.TestMethodFactory;
+import io.spine.tools.protoc.plugin.given.TestInterface;
+import io.spine.tools.protoc.message.tests.IdWrongFieldName;
+import io.spine.tools.protoc.message.tests.ProjectId;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -44,8 +42,8 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.Assertions.assertNpe;
 
-@DisplayName("`GenerateUuidMethods` should")
-final class GenerateUuidMethodsTest {
+@DisplayName("`GenerateInterfaces` should")
+final class ImplementUuidValueTest {
 
     @Nested
     @DisplayName("throw `NullPointerException` if")
@@ -54,25 +52,23 @@ final class GenerateUuidMethodsTest {
         @Test
         @DisplayName("is created with `null` arguments")
         void isCreatedWithNullArguments() {
-            assertNpe(() -> new GenerateUuidMethods(null, UuidConfig.getDefaultInstance()));
-            assertNpe(() -> new GenerateUuidMethods(testClassLoader(), null));
+            assertNpe(() -> new ImplementUuidValue(null));
         }
 
         @Test
         @DisplayName("`null` `MessageType` is supplied")
         void nullMessageTypeIsSupplied() {
             UuidConfig config = newTaskConfig("test");
-            GenerateUuidMethods task = new GenerateUuidMethods(testClassLoader(), config);
-            assertNpe(() -> task.generateFor(null));
+            ImplementUuidValue generateMethods = new ImplementUuidValue(config);
+            assertNpe(() -> generateMethods.generateFor(null));
         }
     }
 
     @ParameterizedTest(name = "\"{0}\"")
     @ValueSource(strings = {"", "  "})
-    @DisplayName("throw `IllegalArgumentException` if factory name is ")
-    void throwIllegalArgumentException(String factoryName) {
-        UuidConfig config = newTaskConfig(factoryName);
-        assertIllegalArgument(() -> new GenerateUuidMethods(testClassLoader(), config));
+    @DisplayName("throw `IllegalArgumentException` if interface name is")
+    void throwIllegalArgumentException(String interfaceName) {
+        assertIllegalArgument(() -> newTask(newTaskConfig(interfaceName)));
     }
 
     @Nested
@@ -80,42 +76,33 @@ final class GenerateUuidMethodsTest {
     class GenerateEmptyResult {
 
         @Test
-        @DisplayName("message is not UUID value")
+        @DisplayName("message is not UUID")
         void notUuid() {
-            assertEmptyResult(TestMethodFactory.class.getName());
+            assertEmptyResult(TestInterface.class.getName(), IdWrongFieldName.getDescriptor());
         }
 
-        private void assertEmptyResult(String factoryName) {
-            UuidConfig config = newTaskConfig(factoryName);
-            ImmutableList<CompilerOutput> result = newTask(config)
-                    .generateFor(new MessageType(NonEnhancedMessage.getDescriptor()));
-            assertThat(result).isEmpty();
+        private void assertEmptyResult(String interfaceName, Descriptors.Descriptor descriptor) {
+            UuidConfig config = newTaskConfig(interfaceName);
+            assertThat(newTask(config).generateFor(new MessageType(descriptor)))
+                    .isEmpty();
         }
     }
 
     @Test
-    @DisplayName("generate new methods")
-    void generateNewMethods() {
-        UuidConfig config = newTaskConfig(TestMethodFactory.class.getName());
-        assertThat(newTask(config).generateFor(testType()))
+    @DisplayName("implement interface")
+    void implementInterface() {
+        UuidConfig config = newTaskConfig(TestInterface.class.getName());
+        assertThat(newTask(config).generateFor(new MessageType(ProjectId.getDescriptor())))
                 .isNotEmpty();
     }
 
-    private static UuidConfig newTaskConfig(String factoryName) {
+    private static ImplementUuidValue newTask(UuidConfig config) {
+        return new ImplementUuidValue(config);
+    }
+
+    private static UuidConfig newTaskConfig(String interfaceName) {
         return UuidConfig.newBuilder()
-                                 .setValue(factoryName)
-                                 .build();
-    }
-
-    private static GenerateUuidMethods newTask(UuidConfig config) {
-        return new GenerateUuidMethods(testClassLoader(), config);
-    }
-
-    private static ExternalClassLoader<MethodFactory> testClassLoader() {
-        return new ExternalClassLoader<>(Classpath.getDefaultInstance(), MethodFactory.class);
-    }
-
-    private static MessageType testType() {
-        return new MessageType(TestUuidValue.getDescriptor());
+                         .setValue(interfaceName)
+                         .build();
     }
 }

@@ -24,44 +24,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.plugin.method;
+package io.spine.tools.protoc.plugin.message;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.protoc.plugin.ClassMember;
-import io.spine.tools.protoc.plugin.CodeGenerationTask;
 import io.spine.tools.protoc.plugin.CompilerOutput;
+import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.plugin.ExternalClassLoader;
-import io.spine.tools.protoc.MethodFactory;
+import io.spine.tools.protoc.plugin.FilePatternMatcher;
+import io.spine.tools.protoc.NestedClassFactory;
 import io.spine.type.MessageType;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+import static io.spine.util.Preconditions2.checkNotDefaultArg;
 
 /**
- * An abstract base for the method code generation tasks.
+ * Generates nested classes for the supplied type based on
+ * {@link ConfigByPattern pattern configuration}.
  */
-public abstract class MethodGenerationTask implements CodeGenerationTask {
+public final class GenerateNestedClasses extends NestedClassGenerationTask {
 
-    private final ExternalClassLoader<MethodFactory> classLoader;
-    private final String factoryName;
+    private final FilePatternMatcher patternMatcher;
 
-    protected MethodGenerationTask(ExternalClassLoader<MethodFactory> classLoader, String factoryName) {
-        this.classLoader = checkNotNull(classLoader);
-        this.factoryName = checkNotEmptyOrBlank(factoryName);
+    public GenerateNestedClasses(ExternalClassLoader<NestedClassFactory> classLoader,
+                          ConfigByPattern config) {
+        super(classLoader, config.getValue());
+        checkNotDefaultArg(config.getPattern());
+        this.patternMatcher = new FilePatternMatcher(config.getPattern());
     }
 
     /**
-     * Performs the actual method code generation using the supplied
-     * {@linkplain #factoryName factory}.
+     * Generates nested classes for the given type.
+     *
+     * <p>No code is generated if the type file name does not match the supplied
+     * {@link io.spine.tools.protoc.FilePattern pattern}.
      */
-    protected ImmutableList<CompilerOutput> generateMethodsFor(@NonNull MessageType type) {
-        MethodFactory factory = classLoader.newInstance(factoryName);
-        return factory
-                .generateMethodsFor(type)
-                .stream()
-                .map(methodBody -> ClassMember.method(methodBody, type))
-                .collect(toImmutableList());
+    @Override
+    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
+        checkNotNull(type);
+        if (!patternMatcher.test(type)) {
+            return ImmutableList.of();
+        }
+        return generateNestedClassesFor(type);
     }
 }

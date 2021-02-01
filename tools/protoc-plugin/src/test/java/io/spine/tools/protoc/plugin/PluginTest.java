@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.protoc.plugin;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
@@ -35,11 +35,16 @@ import io.spine.base.ValidatingBuilder;
 import io.spine.code.fs.java.SourceFile;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.OptionExtensionRegistry;
-import io.spine.tools.protoc.given.TestInterface;
+import io.spine.tools.protoc.Interfaces;
+import io.spine.tools.protoc.MessageSelectorFactory;
+import io.spine.tools.protoc.Methods;
+import io.spine.tools.protoc.NestedClasses;
+import io.spine.tools.protoc.PatternSelector;
+import io.spine.tools.protoc.plugin.given.TestInterface;
 import io.spine.tools.protoc.given.TestMethodFactory;
-import io.spine.tools.protoc.given.TestNestedClassFactory;
-import io.spine.tools.protoc.given.UuidMethodFactory;
-import io.spine.tools.protoc.method.TestMethodProtos;
+import io.spine.tools.protoc.plugin.given.TestNestedClassFactory;
+import io.spine.tools.protoc.plugin.given.UuidMethodFactory;
+import io.spine.tools.protoc.plugin.method.TestMethodProtos;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -58,8 +63,8 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.protoc.MessageSelectorFactory.prefix;
 import static io.spine.tools.protoc.MessageSelectorFactory.regex;
 import static io.spine.tools.protoc.MessageSelectorFactory.suffix;
-import static io.spine.tools.protoc.given.CodeGeneratorRequestGiven.protocConfig;
-import static io.spine.tools.protoc.given.CodeGeneratorRequestGiven.requestBuilder;
+import static io.spine.tools.protoc.plugin.given.CodeGeneratorRequestGiven.protocConfig;
+import static io.spine.tools.protoc.plugin.given.CodeGeneratorRequestGiven.requestBuilder;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

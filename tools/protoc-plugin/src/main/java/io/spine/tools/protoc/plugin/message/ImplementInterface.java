@@ -24,44 +24,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.plugin.method;
+package io.spine.tools.protoc.plugin.message;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.protoc.plugin.ClassMember;
+import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.plugin.CodeGenerationTask;
 import io.spine.tools.protoc.plugin.CompilerOutput;
-import io.spine.tools.protoc.plugin.ExternalClassLoader;
-import io.spine.tools.protoc.MethodFactory;
 import io.spine.type.MessageType;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * An abstract base for the method code generation tasks.
+ * An abstract base for the interface code generation tasks.
  */
-public abstract class MethodGenerationTask implements CodeGenerationTask {
+public abstract class ImplementInterface implements CodeGenerationTask {
 
-    private final ExternalClassLoader<MethodFactory> classLoader;
-    private final String factoryName;
+    private final ClassName interfaceName;
 
-    protected MethodGenerationTask(ExternalClassLoader<MethodFactory> classLoader, String factoryName) {
-        this.classLoader = checkNotNull(classLoader);
-        this.factoryName = checkNotEmptyOrBlank(factoryName);
+    ImplementInterface(String interfaceName) {
+        checkNotEmptyOrBlank(interfaceName);
+        this.interfaceName = ClassName.of(interfaceName);
     }
 
     /**
-     * Performs the actual method code generation using the supplied
-     * {@linkplain #factoryName factory}.
+     * Obtains generic parameters of the passed type.
      */
-    protected ImmutableList<CompilerOutput> generateMethodsFor(@NonNull MessageType type) {
-        MethodFactory factory = classLoader.newInstance(factoryName);
-        return factory
-                .generateMethodsFor(type)
-                .stream()
-                .map(methodBody -> ClassMember.method(methodBody, type))
-                .collect(toImmutableList());
+    public abstract InterfaceParameters interfaceParameters(MessageType type);
+
+    /**
+     * Performs the actual interface code generation.
+     */
+    @Override
+    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
+        InterfaceParameters params = interfaceParameters(type);
+        Interface iface = new ExistingInterface(interfaceName, params);
+        Implement result = Implement.interfaceFor(type, iface);
+        return ImmutableList.of(result);
     }
 }

@@ -26,34 +26,40 @@
 
 package io.spine.tools.protoc.plugin.method;
 
-import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Descriptors;
 import io.spine.tools.protoc.plugin.CompilerOutput;
-import io.spine.tools.protoc.plugin.ExternalClassLoader;
-import io.spine.tools.protoc.MethodFactory;
-import io.spine.tools.protoc.UuidConfig;
+import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
+import io.spine.type.ServiceType;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.Collection;
 
-/**
- * Generates methods for supplied UUID value type based on {@link UuidConfig uuid configuration}.
- */
-public final class GenerateUuidMethods extends MethodGenerationTask {
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-    public GenerateUuidMethods(ExternalClassLoader<MethodFactory> classLoader, UuidConfig config) {
-        super(classLoader, config.getValue());
+@DisplayName("MethodGenerator should")
+final class MethodGenTest {
+
+    @DisplayName("ignore non-message types")
+    @Test
+    void ignoreNonMessageTypes() {
+        MethodGen generator =
+                MethodGen.instance(SpineProtocConfig.getDefaultInstance());
+        Descriptors.ServiceDescriptor service = TestServiceProto.getDescriptor()
+                                                                .findServiceByName("MGTService");
+        ServiceType type = ServiceType.of(service);
+        Collection<CompilerOutput> result = generator.generate(type);
+        assertTrue(result.isEmpty());
     }
 
-    /**
-     * Generates new methods for supplied {@link io.spine.base.UuidValue UuidValue} Protobuf
-     * {@code type}.
-     */
-    @Override
-    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
-        checkNotNull(type);
-        if (!type.isUuidValue()) {
-            return ImmutableList.of();
-        }
-        return generateMethodsFor(type);
+    @DisplayName("try to generate methods for message types")
+    @Test
+    void generateMethodsForMessageTypes() {
+        MessageType type = new MessageType(EnhancedMessage.getDescriptor());
+        MethodGen generator =
+                MethodGen.instance(SpineProtocConfig.getDefaultInstance());
+        Collection<CompilerOutput> result = generator.generate(type);
+        assertTrue(result.isEmpty());
     }
 }

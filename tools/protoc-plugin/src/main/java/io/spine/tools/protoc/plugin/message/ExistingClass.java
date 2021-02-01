@@ -24,27 +24,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.plugin.given;
+package io.spine.tools.protoc.plugin.message;
 
-import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.protoc.NestedClass;
-import io.spine.tools.protoc.NestedClassFactory;
+import io.spine.code.java.ClassName;
 import io.spine.type.MessageType;
 
-import java.util.List;
-
 /**
- * A test-only implementation of a {@link NestedClassFactory}.
+ * An interface parameter which is already existing class.
  */
 @Immutable
-public final class TestNestedClassFactory implements NestedClassFactory {
+final class ExistingClass implements InterfaceParameter {
 
-    public static final NestedClass NESTED_CLASS =
-            new NestedClass("static class NestedClass {}");
+    private final ClassName value;
+
+    ExistingClass(ClassName value) {
+        this.value = value;
+    }
 
     @Override
-    public List<NestedClass> generateClassesFor(MessageType messageType) {
-        return ImmutableList.of(NESTED_CLASS);
+    public String valueFor(MessageType ignored) {
+        return value.toString();
     }
 }

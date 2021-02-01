@@ -24,12 +24,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.plugin.field;
+package io.spine.tools.protoc.plugin.message;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
-import io.spine.base.SubscribableField;
-import io.spine.code.gen.java.FieldFactory;
+import io.spine.base.EntityState;
+import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.tools.protoc.EntityStateConfig;
 import io.spine.tools.protoc.message.tests.ProtocProject;
@@ -44,17 +44,17 @@ import org.junit.jupiter.api.Test;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.tools.protoc.plugin.InsertionPoint.class_scope;
+import static io.spine.tools.protoc.plugin.InsertionPoint.message_implements;
+import static io.spine.tools.protoc.ProtocTaskConfigs.entityStateConfig;
 
-@DisplayName("`GenerateEntityStateFields` task should")
-final class GenerateEntityStateFieldsTest {
+@DisplayName("`GenerateEntityStateInterfaces` task should")
+class ImplementEntityStateTest {
 
-    private final FieldFactory factory = new FieldFactory();
-    private GenerateEntityStateFields task;
+    private ImplementEntityState task;
 
     @BeforeEach
     void initTask() {
-        task = newTask();
+        this.task = markEntityStatesAs(EntityState.class);
     }
 
     @Test
@@ -64,21 +64,22 @@ final class GenerateEntityStateFieldsTest {
                 .testAllPublicInstanceMethods(task);
     }
 
-    @SuppressWarnings("CheckReturnValue") // The method called to throw an exception.
     @Nested
-    @DisplayName("throw `IllegalArgumentException` when the specified field type name is")
+    @DisplayName("throw `IllegalArgumentException` when the specified class name is")
+    @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
+            // Method called to throw exception.
     class ThrowOnClassName {
 
         @Test
         @DisplayName("blank")
         void blank() {
-            assertIllegalArgument(() -> newTask(config("")));
+            assertIllegalArgument(() -> markEntityStatesAs(""));
         }
 
         @Test
         @DisplayName("effectively blank")
         void effectivelyBlank() {
-            assertIllegalArgument(() -> newTask(config("   ")));
+            assertIllegalArgument(() -> markEntityStatesAs("   "));
         }
     }
 
@@ -92,7 +93,7 @@ final class GenerateEntityStateFieldsTest {
         CompilerOutput compilerOutput = output.get(0);
         String insertionPoint = compilerOutput.asFile()
                                               .getInsertionPoint();
-        assertThat(insertionPoint).startsWith(class_scope.name());
+        assertThat(insertionPoint).startsWith(message_implements.name());
     }
 
     @Nested
@@ -116,23 +117,18 @@ final class GenerateEntityStateFieldsTest {
         }
     }
 
-    private GenerateEntityStateFields newTask() {
-        return newTask(config());
+    private static ImplementEntityState markEntityStatesAs(String className) {
+        return markEntityStatesAs(ClassName.of(className));
     }
 
-    private GenerateEntityStateFields newTask(EntityStateConfig config) {
-        return new GenerateEntityStateFields(config, factory);
+    @SuppressWarnings("rawtypes")   // due to the nature of {@code Some.class} in Java.
+    private static ImplementEntityState
+    markEntityStatesAs(Class<? extends EntityState> clazz) {
+        return markEntityStatesAs(ClassName.of(clazz));
     }
 
-    private static EntityStateConfig config() {
-        return config(SubscribableField.class.getCanonicalName());
-    }
-
-    private static EntityStateConfig config(String fieldType) {
-        EntityStateConfig result = EntityStateConfig
-                .newBuilder()
-                .setValue(fieldType)
-                .build();
-        return result;
+    private static ImplementEntityState markEntityStatesAs(ClassName className) {
+        EntityStateConfig config = entityStateConfig(className);
+        return new ImplementEntityState(config);
     }
 }

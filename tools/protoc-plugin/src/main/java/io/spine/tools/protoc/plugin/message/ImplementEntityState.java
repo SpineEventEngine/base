@@ -24,36 +24,54 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.plugin.method;
+package io.spine.tools.protoc.plugin.message;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.code.java.ClassName;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.protoc.plugin.CompilerOutput;
-import io.spine.tools.protoc.plugin.ExternalClassLoader;
-import io.spine.tools.protoc.MethodFactory;
-import io.spine.tools.protoc.UuidConfig;
+import io.spine.tools.protoc.EntityStateConfig;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+import static io.spine.tools.protoc.plugin.message.InterfaceParameter.generatedClass;
+import static io.spine.tools.protoc.plugin.message.InterfaceParameter.validatingBuilder;
 
 /**
- * Generates methods for supplied UUID value type based on {@link UuidConfig uuid configuration}.
+ * Marks the provided message type with the {@link io.spine.base.EntityState EntityState} interface
+ * if the type is recognized as entity state.
  */
-public final class GenerateUuidMethods extends MethodGenerationTask {
+final class ImplementEntityState extends ImplementInterface {
 
-    public GenerateUuidMethods(ExternalClassLoader<MethodFactory> classLoader, UuidConfig config) {
-        super(classLoader, config.getValue());
+    ImplementEntityState(EntityStateConfig config) {
+        super(config.getValue());
     }
 
-    /**
-     * Generates new methods for supplied {@link io.spine.base.UuidValue UuidValue} Protobuf
-     * {@code type}.
-     */
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
-        if (!type.isUuidValue()) {
+        if (!type.isEntityState()) {
             return ImmutableList.of();
         }
-        return generateMethodsFor(type);
+        return super.generateFor(type);
+    }
+
+    @Override
+    public InterfaceParameters interfaceParameters(MessageType type) {
+        if (!type.isEntityState()) {
+            return InterfaceParameters.empty();
+        }
+        InterfaceParameter idType = firstFieldOf(type);
+        return InterfaceParameters.of(idType, validatingBuilder(), generatedClass());
+    }
+
+    private static InterfaceParameter firstFieldOf(MessageType type) {
+        ImmutableList<FieldDeclaration> fields = type.fields();
+        checkState(fields.size() > 0,
+                   "At least one field is required in an `EntityState` message type.");
+        FieldDeclaration declaration = fields.get(0);
+        ClassName value = declaration.className();
+        return new ExistingClass(value);
     }
 }

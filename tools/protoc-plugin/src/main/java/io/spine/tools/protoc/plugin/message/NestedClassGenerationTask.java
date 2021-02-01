@@ -24,14 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.plugin.method;
+package io.spine.tools.protoc.plugin.message;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.plugin.ClassMember;
 import io.spine.tools.protoc.plugin.CodeGenerationTask;
 import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.tools.protoc.plugin.ExternalClassLoader;
-import io.spine.tools.protoc.MethodFactory;
+import io.spine.tools.protoc.NestedClassFactory;
 import io.spine.type.MessageType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -40,28 +40,28 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * An abstract base for the method code generation tasks.
+ * An abstract base for the nested classes generation tasks.
  */
-public abstract class MethodGenerationTask implements CodeGenerationTask {
+abstract class NestedClassGenerationTask implements CodeGenerationTask {
 
-    private final ExternalClassLoader<MethodFactory> classLoader;
+    private final ExternalClassLoader<NestedClassFactory> classLoader;
     private final String factoryName;
 
-    protected MethodGenerationTask(ExternalClassLoader<MethodFactory> classLoader, String factoryName) {
+    NestedClassGenerationTask(ExternalClassLoader<NestedClassFactory> classLoader,
+                              String factoryName) {
         this.classLoader = checkNotNull(classLoader);
         this.factoryName = checkNotEmptyOrBlank(factoryName);
     }
 
     /**
-     * Performs the actual method code generation using the supplied
-     * {@linkplain #factoryName factory}.
+     * Performs the actual code generation using the supplied {@linkplain #factoryName factory}.
      */
-    protected ImmutableList<CompilerOutput> generateMethodsFor(@NonNull MessageType type) {
-        MethodFactory factory = classLoader.newInstance(factoryName);
+    ImmutableList<CompilerOutput> generateNestedClassesFor(@NonNull MessageType type) {
+        NestedClassFactory factory = classLoader.newInstance(factoryName);
         return factory
-                .generateMethodsFor(type)
+                .generateClassesFor(type)
                 .stream()
-                .map(methodBody -> ClassMember.method(methodBody, type))
+                .map(classBody -> ClassMember.nestedClass(classBody, type))
                 .collect(toImmutableList());
     }
 }
