@@ -46,12 +46,10 @@ buildscript {
 @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
 plugins {
     `java-library`
-    kotlin("jvm") version io.spine.gradle.internal.Deps.versions.kotlin
+    kotlin("jvm") version io.spine.gradle.internal.Kotlin.version
     idea
-    io.spine.gradle.internal.Deps.versions.apply {
-        id("com.google.protobuf") version protobufPlugin
-        id("net.ltgt.errorprone") version errorPronePlugin
-    }
+    id("com.google.protobuf") version io.spine.gradle.internal.Protobuf.gradlePluginVersion
+    id("net.ltgt.errorprone") version io.spine.gradle.internal.ErrorProne.gradlePluginVersion
 }
 
 apply(from = "$rootDir/version.gradle.kts")
@@ -145,23 +143,23 @@ subprojects {
      */
     dependencies {
         Deps.build.apply {
-            errorprone(errorProneCore)
-            errorproneJavac(errorProneJavac)
+            errorprone(errorProne.core)
+            errorproneJavac(errorProne.javacPlugin)
 
-            protobuf.forEach { api(it) }
-            api(flogger)
+            protobuf.libs.forEach { api(it) }
+            api(flogger.lib)
             api(guava)
-            api(checkerAnnotations)
+            api(checker.annotations)
             api(jsr305Annotations)
-            errorProneAnnotations.forEach { api(it) }
+            errorProne.annotations.forEach { api(it) }
         }
         implementation(kotlin("stdlib-jdk8"))
 
         Deps.test.apply {
             testImplementation(guavaTestlib)
-            testImplementation(junit5Runner)
-            testImplementation(junitPioneer)
-            junit5Api.forEach { testImplementation(it) }
+            testImplementation(junit.runner)
+            testImplementation(junit.pioneer)
+            junit.api.forEach { testImplementation(it) }
         }
         runtimeOnly(Deps.runtime.flogger.systemBackend)
     }
@@ -188,7 +186,7 @@ subprojects {
         generatedFilesBaseDir = generatedDir
 
         protoc {
-            artifact = Deps.build.protoc
+            artifact = Deps.build.protobuf.compiler
         }
     }
 

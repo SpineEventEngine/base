@@ -37,16 +37,18 @@ dependencies {
     implementation(project(":plugin-base"))
     implementation(Deps.gen.javaPoet)
 
-    // A library for parsing Java sources.
-    // Used for parsing Java sources generated from Protobuf files
-    // to make their annotation more convenient.
-    implementation(Deps.build.roasterApi) {
-        exclude(group = "com.google.guava")
+    Deps.build.apply {
+        // A library for parsing Java sources.
+        // Used for parsing Java sources generated from Protobuf files
+        // to make their annotation more convenient.
+        implementation(roaster.api) {
+            exclude(group = "com.google.guava")
+        }
+        implementation(roaster.jdt) {
+            exclude(group = "com.google.guava")
+        }
+        implementation(gradlePlugins.protobuf)
     }
-    implementation(Deps.build.roasterJdt) {
-        exclude(group = "com.google.guava")
-    }
-    implementation(Deps.build.gradlePlugins.protobuf)
     testImplementation(project(":testlib"))
     testImplementation(gradleTestKit())
     testImplementation(project(":plugin-testlib"))

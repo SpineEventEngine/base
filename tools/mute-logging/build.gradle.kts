@@ -31,5 +31,5 @@ group = "io.spine.tools"
 dependencies {
     implementation(project(":base"))
     implementation(project(":testlib"))
-    Deps.test.junit5Api.forEach { implementation(it) }
+    Deps.test.junit.api.forEach { implementation(it) }
 }

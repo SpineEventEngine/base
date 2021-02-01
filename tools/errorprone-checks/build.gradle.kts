@@ -35,13 +35,15 @@ repositories {
 }
 
 dependencies {
-    annotationProcessor(Deps.build.autoService.processor)
-    compileOnly(Deps.build.autoService.annotations)
-    implementation(project(":base"))
-    implementation(project(":plugin-base"))
-    implementation(Deps.build.errorProneCore)
-    Deps.build.errorProneAnnotations.forEach { implementation(it) }
-    testImplementation(Deps.build.errorProneTestHelpers)
+    Deps.build.apply {
+        annotationProcessor(autoService.processor)
+        compileOnly(autoService.annotations)
+        implementation(project(":base"))
+        implementation(project(":plugin-base"))
+        implementation(errorProne.core)
+        errorProne.annotations.forEach { implementation(it) }
+        testImplementation(errorProne.testHelpers)
+    }
 }
 
 fun getResolvedArtifactFor(dependency: String): String {

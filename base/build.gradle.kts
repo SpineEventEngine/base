@@ -45,7 +45,7 @@ apply<IncrementGuard>()
 DependencyResolution.excludeProtobufLite(configurations)
 
 dependencies {
-    Deps.build.protobuf.forEach { protobuf(it) }
+    Deps.build.protobuf.libs.forEach { protobuf(it) }
     annotationProcessor(Deps.build.autoService.processor)
     compileOnly(Deps.build.autoService.annotations)
     testImplementation(project(":testlib"))
