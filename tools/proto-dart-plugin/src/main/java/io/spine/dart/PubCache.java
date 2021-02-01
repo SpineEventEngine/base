@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@
 
 package io.spine.dart;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import org.apache.tools.ant.taskdefs.condition.Os;
 
@@ -39,10 +40,11 @@ import static org.apache.tools.ant.taskdefs.condition.Os.FAMILY_WINDOWS;
 /**
  * A utility for working with the local Pub cache.
  */
-@SuppressWarnings("WeakerAccess") // Part of the public API.
 public final class PubCache {
 
-    private static final String BIN = "bin";
+    @VisibleForTesting
+    static final String BIN = "bin";
+    private static final String APP_DATA_ENV = "APPDATA";
     private static final String LOCAL_APP_DATA_ENV = "LOCALAPPDATA";
     private static final String PUB_CACHE_ENV = "PUB_CACHE";
 
@@ -61,18 +63,46 @@ public final class PubCache {
         return customPath().orElseGet(PubCache::defaultPath);
     }
 
+    /**
+     * Obtains the default path to the Pub cache.
+     *
+     * <p>On Windows, the cache can be located in the {@code %LOCALAPPDATA%} or {@code %APPDATA%}
+     * directories.
+     *
+     * <p>On *nix operating systems, the cache is located under the user's home directory.
+     */
     private static Path defaultPath() {
-        Path pubCache;
         if (Os.isFamily(FAMILY_WINDOWS)) {
-            @SuppressWarnings("CallToSystemGetenv")
-            String localAppData = System.getenv(LOCAL_APP_DATA_ENV);
-            pubCache = Paths.get(localAppData).resolve("Pub").resolve("Cache").resolve(BIN);
+            Path inLocalAppData = winPathFromEnv(LOCAL_APP_DATA_ENV);
+            if (exists(inLocalAppData)) {
+                return inLocalAppData;
+            } else {
+                return winPathFromEnv(APP_DATA_ENV);
+            }
         } else {
             @SuppressWarnings("AccessOfSystemProperties")
             String userHome = System.getProperty("user.home");
-            pubCache = Paths.get(userHome).resolve(".pub-cache").resolve(BIN);
+            Path path = Paths.get(userHome)
+                             .resolve(".pub-cache")
+                             .resolve(BIN);
+            return path;
         }
-        return pubCache;
+    }
+
+    /**
+     * Reads the path from the given environment variable and appends it with the relative path
+     * to the Pub cache.
+     *
+     * @param envVariableName
+     *         the name of the environment variable
+     */
+    private static Path winPathFromEnv(String envVariableName) {
+        @SuppressWarnings("CallToSystemGetenv")
+        String localAppData = System.getenv(envVariableName);
+        return Paths.get(localAppData)
+                    .resolve("Pub")
+                    .resolve("Cache")
+                    .resolve(BIN);
     }
 
     private static Optional<Path> customPath() {

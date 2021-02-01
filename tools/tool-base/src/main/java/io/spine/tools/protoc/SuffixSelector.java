@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ import org.checkerframework.checker.regex.qual.Regex;
  */
 public final class SuffixSelector extends PatternSelector {
 
-    SuffixSelector(@Regex String suffix) {
+    public SuffixSelector(@Regex String suffix) {
         super(suffix);
     }
 

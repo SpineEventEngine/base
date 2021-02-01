@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,11 +37,9 @@ option java_package = "io.spine.tools.protoc.message.tests";
 option (every_is).java_type = "io.spine.tools.protoc.message.tests.ProtocCustomerEvent";
 
 message ProtocCustomerCreated {
-
     string uid = 1;
 }
 
 message ProtocCustomerDeleted {
-
     string uid = 1;
 }

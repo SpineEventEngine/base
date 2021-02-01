@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,14 +35,20 @@ option java_outer_classname = "IsGeneratedProto";
 option java_package = "io.spine.tools.protoc.message.tests";
 
 message ProtocSurnameUpdated {
-    option (is) = {java_type: "io.spine.tools.protoc.message.tests.ProtocCustomerEvent" generate: true};
+    option (is) = {
+        java_type: "io.spine.tools.protoc.message.tests.ProtocCustomerEvent"
+        generate: true
+    };
 
     string uid = 1;
     Surname new_surname = 2;
 }
 
 message ProtocUpdateSurname {
-    option (is) = {java_type: "io.spine.tools.protoc.message.tests.ProtocCustomerCommand" generate: true};
+    option (is) = {
+        java_type: "io.spine.tools.protoc.message.tests.ProtocCustomerCommand"
+        generate: true
+    };
 
     string uid = 1;
     Surname new_surname = 2;

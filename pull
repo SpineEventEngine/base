@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #
-# Copyright 2020, TeamDev. All rights reserved.
+# Copyright 2021, TeamDev. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@
 #
 
 cd ./config || exit
-echo "Switching the pointer of the 'config' submodule to its '2.x-jdk8-master'."
-git checkout 2.x-jdk8-master
+echo "Switching the pointer of the 'config' submodule to its 'master'."
+git checkout master
 git pull
 
 cd ..
