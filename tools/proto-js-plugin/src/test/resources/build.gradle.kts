@@ -63,12 +63,14 @@ protobuf {
                     option("import_style=commonjs")
                 }
             }
+
             task.generateDescriptorSet = true
-            with (task.descriptorSetOptions) {
+            with(task.descriptorSetOptions) {
                 path = "${projectDir}/build/descriptors/${task.sourceSet.name}/known_types.desc"
                 includeImports = true
                 includeSourceInfo = true
             }
+
             compileProtoToJs.get().dependsOn(task)
         }
     }
