@@ -116,6 +116,8 @@ class LoggingTest {
 
         private void assertApi(Supplier<FluentLogger.Api> method, Level expectedLevel) {
             julLogger.setLevel(expectedLevel);
+            @SuppressWarnings("FloggerSplitLogStatement")
+            // See: https://github.com/SpineEventEngine/base/issues/612
             FluentLogger.Api api = method.get();
             assertThat(api)
                     .isInstanceOf(LogContext.class);
