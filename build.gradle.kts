@@ -148,7 +148,7 @@ subprojects {
 
             protobuf.libs.forEach { api(it) }
             api(flogger.lib)
-            api(guava)
+            api(guava.lib)
             api(checker.annotations)
             api(jsr305Annotations)
             errorProne.annotations.forEach { api(it) }

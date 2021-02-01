@@ -78,12 +78,12 @@ object Repos {
  * Versions of one-line dependencies.
  *
  * For versions of other dependencies please see `version` properties of objects declared below.
+ *
+ * See also: https://github.com/SpineEventEngine/config/issues/171
  */
 object Versions {
     val animalSniffer    = "1.19"
     val apacheHttpClient = "2.1.2"
-    val appengineApi     =  "???"
-    val appenginePlugin  =  "???"
     val assertK          = "0.23"
     val bouncyCastlePkcs = "1.66"
     val checkstyle       = "8.29"
@@ -279,7 +279,7 @@ object Build {
     val errorProne = ErrorProne
     val firebaseAdmin = "com.google.firebase:firebase-admin:${Versions.firebaseAdmin}"
     val flogger = Flogger
-    const val guava = Guava.lib
+    const val guava = Guava
     val googleHttpClient = "com.google.http-client:google-http-client:${Versions.httpClient}"
     val googleHttpClientApache =
         "com.google.http-client:google-http-client-apache:${Versions.apacheHttpClient}"
@@ -332,7 +332,7 @@ object Test {
 }
 
 object Scripts {
-    private const val COMMON_PATH = "/config/gradle/"
+    private const val commonPath = "/config/gradle/"
 
     fun testArtifacts(p: Project)          = p.script("test-artifacts.gradle")
     fun testOutput(p: Project)             = p.script("test-output.gradle")
@@ -360,7 +360,7 @@ object Scripts {
     fun generatePom(p: Project)            = p.script("generate-pom.gradle")
     fun updateGitHubPages(p: Project)      = p.script("update-gh-pages.gradle")
 
-    private fun Project.script(name: String) = "${rootDir}$COMMON_PATH$name"
+    private fun Project.script(name: String) = "${rootDir}${commonPath}${name}"
 }
 
 object Deps {
@@ -390,7 +390,7 @@ object DependencyResolution {
                         autoService.annotations,
                         checker.annotations,
                         errorProne.annotations,
-                        guava,
+                        guava.lib,
                         jsr305Annotations,
                         kotlin.reflect,
                         kotlin.stdLib,

@@ -43,7 +43,7 @@ buildscript {
     dependencies {
         deps.build.protobuf.libs.forEach { classpath(it) }
         deps.build.apply {
-            classpath(guava)
+            classpath(guava.lib)
             classpath(flogger.lib)
             classpath(checker.annotations)
             errorProne.annotations.forEach { classpath(it) }
@@ -105,7 +105,7 @@ val spineVersion: String by extra
 dependencies {
     Deps.build.protobuf.libs.forEach { compileOnly(it) }
     Deps.build.apply {
-        compileOnly(guava)
+        compileOnly(guava.lib)
         compileOnly(flogger.lib)
         compileOnly(checker.annotations)
         errorProne.annotations.forEach { compileOnly(it) }

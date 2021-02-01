@@ -45,7 +45,7 @@ buildscript {
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
     val deps = io.spine.gradle.internal.Deps
     dependencies {
-        classpath(deps.build.guava)
+        classpath(deps.build.guava.lib)
         classpath(deps.build.gradlePlugins.protobuf) {
             exclude(group = "com.google.guava")
         }
@@ -94,7 +94,7 @@ subprojects {
      * explicitly.
      */
     dependencies {
-        Deps.build.errorProneAnnotations.forEach { compileOnly(it) }
+        Deps.build.errorProne.annotations.forEach { compileOnly(it) }
         implementation("io.spine:spine-base:$spineVersion")
         testImplementation("io.spine:spine-testlib:$spineVersion")
         Deps.test.truth.forEach { testImplementation(it) }
