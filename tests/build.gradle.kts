@@ -60,7 +60,7 @@ plugins {
     java
     idea
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    id("com.google.protobuf").version(io.spine.gradle.internal.Deps.versions.protobufPlugin)
+    id("com.google.protobuf").version(io.spine.gradle.internal.Protobuf.gradlePluginVersion)
 }
 
 val baseRoot = "$rootDir/../"

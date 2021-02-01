@@ -30,7 +30,7 @@ import io.spine.gradle.internal.Deps
 plugins {
     java
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    id("com.google.protobuf").version(io.spine.gradle.internal.Deps.versions.protobufPlugin)
+    id("com.google.protobuf").version(io.spine.gradle.internal.Protobuf.gradlePluginVersion)
 }
 
 // NOTE: this file is copied from the root project in the test setup.
