@@ -100,6 +100,8 @@ public final class ModuleAnnotator {
             this.javaAnnotation = javaAnnotation;
         }
 
+        @SuppressWarnings("FloggerSplitLogStatement")
+        // See: https://github.com/SpineEventEngine/base/issues/612
         @Override
         public void execute(AnnotatorFactory factory) {
             FluentLogger.Api debug = _debug();

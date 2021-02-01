@@ -201,10 +201,15 @@ public class Extension extends GradleExtension {
         return DefaultJavaProject.at(project.getProjectDir());
     }
 
-    @SuppressWarnings("PMD.MethodNamingConventions")
+    @SuppressWarnings({
+            "PMD.MethodNamingConventions",
+            "FloggerSplitLogStatement" // See: https://github.com/SpineEventEngine/base/issues/612
+    })
     private static FluentLogger.Api _debug() {
         return logger.atFine();
     }
+
+    @SuppressWarnings("FloggerSplitLogStatement")
 
     public static String getMainProtoSrcDir(Project project) {
         Extension extension = extension(project);
