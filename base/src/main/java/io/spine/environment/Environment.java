@@ -316,6 +316,8 @@ public final class Environment implements Logging {
     private void setCurrentType(@Nullable Class<? extends EnvironmentType> newCurrent) {
         @Nullable Class<? extends EnvironmentType> previous = this.currentType;
         this.currentType = newCurrent;
+        @SuppressWarnings("FloggerSplitLogStatement")
+                // See: https://github.com/SpineEventEngine/base/issues/612
         FluentLogger.Api info = _info();
         if (previous == null) {
             if (newCurrent != null) {

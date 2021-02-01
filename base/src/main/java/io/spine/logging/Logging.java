@@ -47,9 +47,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *          distinguishable from the real code.
  */
 @SuppressWarnings({
-        "NewMethodNamingConvention", "PMD.MethodNamingConventions"
+        "NewMethodNamingConvention", "PMD.MethodNamingConventions",
         /* These methods are prefixed with underscore to highlight the fact that these methods
            are for logging, and to make them more visible in the real code. */
+        "FloggerSplitLogStatement" /* We use logging API directly for brevity.
+          See: https://github.com/SpineEventEngine/base/issues/612 */
 })
 public interface Logging {
 

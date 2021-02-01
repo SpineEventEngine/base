@@ -72,6 +72,8 @@ final class Linker {
 
     static FileSet link(Collection<FileDescriptorProto> files) {
         Linker linker = new Linker(files);
+        @SuppressWarnings("FloggerSplitLogStatement")
+            // See: https://github.com/SpineEventEngine/base/issues/612
         FluentLogger.Api debug = logger.atFine();
         debug.log("Trying to link %d files.", files.size());
         try {

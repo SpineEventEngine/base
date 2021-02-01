@@ -32,7 +32,6 @@ import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -92,7 +91,7 @@ public abstract class AbstractOption<@ImmutableTypeParameter T,
             return false;
         }
         AbstractOption<?, ?, ?> option = (AbstractOption<?, ?, ?>) o;
-        return Objects.equals(extension.getNumber(), option.extension.getNumber());
+        return extension.getNumber() == option.extension.getNumber();
     }
 
     /**

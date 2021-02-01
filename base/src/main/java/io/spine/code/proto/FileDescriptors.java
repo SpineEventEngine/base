@@ -85,7 +85,8 @@ public final class FileDescriptors {
         return parseAndFilter(descriptorSetFile, descriptor -> true);
     }
 
-    @SuppressWarnings("PMD.MethodNamingConventions") // to make it more visible.
+    @SuppressWarnings({"PMD.MethodNamingConventions", // to make it more visible.
+            "FloggerSplitLogStatement"}) // see https://github.com/SpineEventEngine/base/issues/612
     private static FluentLogger.Api _debug() {
         return logger.atFine();
     }
