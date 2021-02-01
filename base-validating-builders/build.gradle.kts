@@ -41,13 +41,15 @@ buildscript {
     val deps = io.spine.gradle.internal.Deps
 
     dependencies {
-        deps.build.protobuf.forEach { classpath(it) }
-        classpath(deps.build.guava)
-        classpath(deps.build.flogger)
-        classpath(deps.build.checkerAnnotations)
-        deps.build.errorProneAnnotations.forEach { classpath(it) }
-        classpath(deps.build.jsr305Annotations)
-        classpath(deps.build.gradlePlugins.protobuf)
+        deps.build.protobuf.libs.forEach { classpath(it) }
+        deps.build.apply {
+            classpath(guava)
+            classpath(flogger.lib)
+            classpath(checker.annotations)
+            errorProne.annotations.forEach { classpath(it) }
+            classpath(jsr305Annotations)
+            classpath(gradlePlugins.protobuf)
+        }
 
         classpath(deps.gen.javaPoet)
         classpath(deps.runtime.flogger.systemBackend)
@@ -55,11 +57,13 @@ buildscript {
         // A library for parsing Java sources.
         // Used for parsing Java sources generated from Protobuf files
         // to make their annotation more convenient.
-        classpath(deps.build.roasterApi) {
-            exclude(group = "com.google.guava")
-        }
-        classpath (deps.build.roasterJdt) {
-            exclude(group = "com.google.guava")
+        deps.build.roaster.apply {
+            classpath(api) {
+                exclude(group = "com.google.guava")
+            }
+            classpath(jdt) {
+                exclude(group = "com.google.guava")
+            }
         }
 
         classpath(files(
@@ -99,12 +103,14 @@ repositories {
 val spineVersion: String by extra
 
 dependencies {
-    Deps.build.protobuf.forEach { compileOnly(it) }
-    compileOnly(Deps.build.guava)
-    compileOnly(Deps.build.flogger)
-    compileOnly(Deps.build.checkerAnnotations)
-    Deps.build.errorProneAnnotations.forEach { compileOnly(it) }
-    compileOnly(Deps.build.jsr305Annotations)
+    Deps.build.protobuf.libs.forEach { compileOnly(it) }
+    Deps.build.apply {
+        compileOnly(guava)
+        compileOnly(flogger.lib)
+        compileOnly(checker.annotations)
+        errorProne.annotations.forEach { compileOnly(it) }
+        compileOnly(jsr305Annotations)
+    }
 
     // The below dependency refers to a local artifact.
     // See `repositories.flatDir` definition above.
