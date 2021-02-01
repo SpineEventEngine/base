@@ -52,7 +52,7 @@ val compileProtoToJs by tasks.registering
 protobuf {
     generatedFilesBaseDir = "$projectDir/generated"
     protoc {
-        artifact = Deps.build.protoc
+        artifact = Deps.build.protobuf.compiler
     }
     generateProtoTasks {
         // Copy the task collection to avoid `ConcurrentModificationException`.
