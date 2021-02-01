@@ -62,6 +62,8 @@ public final class LogTruth {
     }
 
     /** Creates a subject for the logging API. */
+    @SuppressWarnings("FloggerSplitLogStatement")
+    // See: https://github.com/SpineEventEngine/base/issues/612
     public static Subject assertThat(@NullableDecl FluentLogger.Api actual) {
         return assert_().that(actual);
     }
