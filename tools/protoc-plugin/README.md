@@ -6,7 +6,7 @@ a plugin into a Protobuf compiler (a.k.a. `protoc`) is implemented.
 
 ## Features
 
-### Message interfaces
+### `(is)`/`(every_is)`
 
 Spine `protoc` plugin enables the user to mark certain message classes with interfaces.
 
@@ -74,17 +74,12 @@ In the example above, the Java FQN of the generated message interface is
 `org.example.pet.SmallPet`.
 If `java_package` option is absent, the Protobuf package is used instead.
 
-#### Built-in interfaces
+#### Code generation from configuration
 
-The plugin has a number of built-in interfaces that are applied to messages which match a certain 
-convention:
- - `io.spine.base.EventMessage` is applied to all top-level messages declared in a file which has
-   a name ending with `events.proto`;
- - `io.spine.base.CommandMessage` is applied to all top-level messages declared in a file which has
-   a name ending with `commands.proto`;
- - `io.spine.base.RejectionMessage` is applied to all top-level messages declared in a file which
-   has a name ending with `rejections.proto`;
- - `io.spine.base.UuidValue` is applied to all messages with a single string field called `uuid`.
+The plugin supports a multitude of code generation functions, such as adding interfaces to messages
+by a pattern, generating extra methods and nested classes, generating data validation based on Spine
+options, etc. See `spine.tools.protoc.SpineProtocConfig` for all the functions and their
+configuration.
 
 ## Usage
 
