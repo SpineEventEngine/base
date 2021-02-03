@@ -46,6 +46,9 @@ tasks.jar {
             ":validation-generator:jar"
     )
 
+    // See https://stackoverflow.com/questions/35704403/what-are-the-eclipsef-rsa-and-eclipsef-sf-in-a-java-jar-file
+    exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
+
     manifest {
         attributes(mapOf("Main-Class" to "io.spine.tools.protoc.plugin.Plugin"))
     }
