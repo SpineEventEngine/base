@@ -95,7 +95,7 @@ apply plugin: "io.spine.tools.spine-model-compiler"
 apply plugin: "com.google.protobuf"
 ```
 
-Make sure to use the Protobuf Gradle plugin of version `0.8.3` or later.
+Make sure to use the Protobuf Gradle plugin of version `0.8.13` or later.
 
 The Spine Gradle plugin automatically attaches the Spine `protoc` plugin to the Protobuf compilation
 process performed by Protobuf Gradle plugin.
