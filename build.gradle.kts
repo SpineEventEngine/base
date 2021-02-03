@@ -257,10 +257,10 @@ apply {
     }
 }
 
-val smokeTests by tasks.registering(RunBuild::class) {
+val integrationTests by tasks.registering(RunBuild::class) {
     directory = "$rootDir/tests"
 }
 
 tasks.register("buildAll") {
-    dependsOn(tasks.build, smokeTests)
+    dependsOn(tasks.build, integrationTests)
 }
