@@ -32,11 +32,11 @@ import "spine/options.proto";
 option (type_url_prefix) = "type.spine.io";
 option java_multiple_files = true;
 option java_outer_classname = "IsGeneratedProto";
-option java_package = "io.spine.tools.protoc.message.tests";
+option java_package = "io.spine.tools.protoc.plugin.message.tests";
 
 message ProtocSurnameUpdated {
     option (is) = {
-        java_type: "io.spine.tools.protoc.message.tests.ProtocCustomerEvent"
+        java_type: "io.spine.tools.protoc.plugin.message.tests.ProtocCustomerEvent"
         generate: true
     };
 
@@ -46,7 +46,7 @@ message ProtocSurnameUpdated {
 
 message ProtocUpdateSurname {
     option (is) = {
-        java_type: "io.spine.tools.protoc.message.tests.ProtocCustomerCommand"
+        java_type: "io.spine.tools.protoc.plugin.message.tests.ProtocCustomerCommand"
         generate: true
     };
 

@@ -30,7 +30,7 @@ package spine.tools.protoc.msg;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.tools.protoc.message.tests";
+option java_package = "io.spine.tools.protoc.plugin.message.tests";
 option java_outer_classname = "NonUuidValues";
 option java_multiple_files = true;
 

@@ -45,19 +45,19 @@ import io.spine.code.java.PackageName;
 import io.spine.tools.protoc.plugin.CodeGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.plugin.given.SpineProtocConfigGiven;
-import io.spine.tools.protoc.message.tests.EveryIsGeneratedProto;
-import io.spine.tools.protoc.message.tests.EveryIsInOneFileProto;
-import io.spine.tools.protoc.message.tests.EveryIsTestProto;
-import io.spine.tools.protoc.message.tests.IsGeneratedProto;
-import io.spine.tools.protoc.message.tests.IsInOneFileProto;
-import io.spine.tools.protoc.message.tests.IsTestProto;
-import io.spine.tools.protoc.message.tests.NonUuidValues;
-import io.spine.tools.protoc.message.tests.Rejections;
-import io.spine.tools.protoc.message.tests.TestCommandsProto;
-import io.spine.tools.protoc.message.tests.TestEventsProto;
-import io.spine.tools.protoc.message.tests.UserNameProto;
-import io.spine.tools.protoc.message.tests.UserProto;
-import io.spine.tools.protoc.message.tests.UuidValues;
+import io.spine.tools.protoc.plugin.message.tests.EveryIsGeneratedProto;
+import io.spine.tools.protoc.plugin.message.tests.EveryIsInOneFileProto;
+import io.spine.tools.protoc.plugin.message.tests.EveryIsTestProto;
+import io.spine.tools.protoc.plugin.message.tests.IsGeneratedProto;
+import io.spine.tools.protoc.plugin.message.tests.IsInOneFileProto;
+import io.spine.tools.protoc.plugin.message.tests.IsTestProto;
+import io.spine.tools.protoc.plugin.message.tests.NonUuidValues;
+import io.spine.tools.protoc.plugin.message.tests.Rejections;
+import io.spine.tools.protoc.plugin.message.tests.TestCommandsProto;
+import io.spine.tools.protoc.plugin.message.tests.TestEventsProto;
+import io.spine.tools.protoc.plugin.message.tests.UserNameProto;
+import io.spine.tools.protoc.plugin.message.tests.UserProto;
+import io.spine.tools.protoc.plugin.message.tests.UuidValues;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -80,7 +80,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("InterfaceGenerator should")
+@DisplayName("`InterfaceGen` should")
 final class InterfaceGenTest {
 
     private static final String INSERTION_POINT_IMPLEMENTS = "message_implements:%s";
@@ -93,10 +93,10 @@ final class InterfaceGenTest {
     private static final String JAVA_DIR = JAVA_PACKAGE.value().replace('.', '/');
 
     private static final Pattern CUSTOMER_EVENT_INTERFACE_PATTERN =
-            compile("^\\s*io\\.spine\\.tools\\.protoc\\.message\\.tests" +
+            compile("^\\s*io\\.spine\\.tools\\.protoc\\.plugin\\.message\\.tests" +
                             "\\.ProtocCustomerEvent\\s*,\\s*$");
     private static final Pattern PROJECT_EVENT_INTERFACE_PATTERN =
-            compile("^\\s*io\\.spine\\.tools\\.protoc\\.message\\.tests" +
+            compile("^\\s*io\\.spine\\.tools\\.protoc\\.plugin\\.message\\.tests" +
                             "\\.ProtocProjectEvent\\s*,\\s*$");
 
     private static final Pattern PROJECT_EVENT_INTERFACE_DECL_PATTERN =
