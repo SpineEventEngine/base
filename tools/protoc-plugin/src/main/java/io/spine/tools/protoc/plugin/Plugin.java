@@ -52,11 +52,15 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 /**
  * A Protobuf Compiler ({@literal a.k.a.} {@code protoc}) plugin.
  *
- * <p>The program reads a {@link CodeGeneratorRequest} from {@code System.in} and writes
- * a {@link CodeGeneratorResponse} into the {@code System.out}.
+ * <p>The program reads
+ * a {@link com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest CodeGeneratorRequest}
+ * from {@code System.in} and writes
+ * a {@link com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse CodeGeneratorResponse}
+ * into the {@code System.out}.
  *
- * <p>For the description of the plugin behavior see {@link InterfaceGen} and
- * {@link MethodGen}.
+ * <p>For the description of the plugin behavior see
+ * {@link io.spine.tools.protoc.plugin.message.InterfaceGen InterfaceGen} and
+ * {@link io.spine.tools.protoc.plugin.method.MethodGen MethodGen}.
  *
  * <p>For the plugin mechanism see <a href="SpineProtoGenerator.html#contract">
  * {@code SpineProtoGenerator}</a>.
