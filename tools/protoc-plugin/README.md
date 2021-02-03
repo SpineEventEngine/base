@@ -100,11 +100,6 @@ Make sure to use the Protobuf Gradle plugin of version `0.8.3` or later.
 The Spine Gradle plugin automatically attaches the Spine `protoc` plugin to the Protobuf compilation
 process performed by Protobuf Gradle plugin.
 
-For that, the Spine `protoc` plugin artifact is fetched from a maven repository and copied into 
-the directory `.spine` found under the project root, so that the artifact relative path is 
-`<projectDir>/.spine/spine-protoc-plugin-X.X.X.jar`, where `X.X.X` is the version of the downloaded 
-artifact, which is equal to the version of the Spine Gradle plugin used.
-
 ## How it works
 
 #### Assembling
