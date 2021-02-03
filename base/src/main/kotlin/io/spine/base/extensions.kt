@@ -37,23 +37,3 @@ inline fun <M: BuiltMessage<B, M>, B: ValidatingBuilder<M>>
     block.invoke(builder)
     return builder.vBuild()
 }
-
-/**
- * Creates a command message using the passed builder block.
- */
-inline fun <reified C: CommandMessage<B, C>, B: ValidatingBuilder<C>>
-        command(block: B.() -> Unit): C {
-    val builder = BuiltMessage.builderOf(C::class.java)
-    block.invoke(builder)
-    return builder.vBuild() as C
-}
-
-/**
- * Creates an event message using the passed builder block.
- */
-inline fun <reified E: EventMessage<B, E>, B: ValidatingBuilder<E>>
-        event(block: B.() -> Unit): E {
-    val builder = BuiltMessage.builderOf(E::class.java)
-    block.invoke(builder)
-    return builder.vBuild() as E
-}
