@@ -67,10 +67,10 @@ buildscript {
         }
 
         classpath(files(
-                "$projectDir/../base/build/libs/base-${spineVersion}.jar",
-                "$projectDir/../tools/tool-base/build/libs/tool-base-${spineVersion}.jar",
+                "$projectDir/../tools/model-compiler/build/libs/model-compiler-${spineVersion}.jar",
                 "$projectDir/../tools/plugin-base/build/libs/plugin-base-${spineVersion}.jar",
-                "$projectDir/../tools/model-compiler/build/libs/model-compiler-${spineVersion}.jar"
+                "$projectDir/../tools/tool-base/build/libs/tool-base-${spineVersion}.jar",
+                "$projectDir/../base/build/libs/base-${spineVersion}.jar"
         ))
     }
 }
