@@ -24,10 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.gradle.internal.Deps
-
 buildscript {
-
     val baseRoot = "$rootDir/../"
     val versionGradle = "$baseRoot/version.gradle.kts"
 
@@ -45,12 +42,14 @@ buildscript {
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
     val deps = io.spine.gradle.internal.Deps
     dependencies {
-        classpath(deps.build.guava.lib)
-        classpath(deps.build.gradlePlugins.protobuf) {
-            exclude(group = "com.google.guava")
-        }
-        classpath(deps.build.gradlePlugins.errorProne) {
-            exclude(group = "com.google.guava")
+        deps.build.apply {
+            classpath(guava.lib)
+            classpath(gradlePlugins.protobuf) {
+                exclude(group = "com.google.guava")
+            }
+            classpath(gradlePlugins.errorProne) {
+                exclude(group = "com.google.guava")
+            }
         }
         classpath("io.spine.tools:spine-model-compiler:$spineVersion")
     }
@@ -78,7 +77,6 @@ allprojects {
 }
 
 subprojects {
-
     apply {
         plugin("com.google.protobuf")
         plugin("io.spine.tools.spine-model-compiler")
@@ -88,17 +86,20 @@ subprojects {
     }
 
     val spineVersion: String by extra
+    @Suppress("RemoveRedundantQualifierName")
+    // Similarly to `buildscript`, instead of import.
+    val deps = io.spine.gradle.internal.Deps
 
     /**
      * These dependencies are applied to all sub-projects and does not have to be included
      * explicitly.
      */
     dependencies {
-        Deps.build.errorProne.annotations.forEach { compileOnly(it) }
+        deps.build.errorProne.annotations.forEach { compileOnly(it) }
         implementation("io.spine:spine-base:$spineVersion")
         testImplementation("io.spine:spine-testlib:$spineVersion")
-        Deps.test.truth.forEach { testImplementation(it) }
-        testRuntimeOnly(Deps.test.junit5Runner)
+        deps.test.truth.libs.forEach { testImplementation(it) }
+        testRuntimeOnly(deps.test.junit.runner)
     }
 
     idea.module {
@@ -118,7 +119,6 @@ subprojects {
                          "$projectDir/src/main/java")
             resources.srcDir("$projectDir/generated/main/resources")
         }
-
         test {
             proto.srcDir("$projectDir/src/test/proto")
             java.srcDirs("$projectDir/generated/test/java",
@@ -132,7 +132,6 @@ subprojects {
         useJUnitPlatform {
             includeEngines("junit-jupiter")
         }
-
         include("**/*Test.class")
     }
 }
