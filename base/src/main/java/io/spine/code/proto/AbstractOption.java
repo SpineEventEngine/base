@@ -32,7 +32,6 @@ import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 
-import java.util.Objects;
 import java.util.Optional;
 
 /**
