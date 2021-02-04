@@ -39,9 +39,9 @@ dependencies {
     compileOnly(Deps.build.autoService.annotations)
     implementation(project(":base"))
     implementation(project(":plugin-base"))
-    implementation(Deps.build.errorProneCore)
-    Deps.build.errorProneAnnotations.forEach { implementation(it) }
-    testImplementation(Deps.build.errorProneTestHelpers)
+    implementation(Deps.build.errorProne.core)
+    Deps.build.errorProne.annotations.forEach { implementation(it) }
+    testImplementation(Deps.build.errorProne.testHelpers)
 }
 
 fun getResolvedArtifactFor(dependency: String): String {

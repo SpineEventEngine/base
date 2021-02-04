@@ -45,11 +45,11 @@ buildscript {
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
     val deps = io.spine.gradle.internal.Deps
     dependencies {
-        classpath(deps.build.guava)
-        classpath(deps.build.gradlePlugins.protobuf) {
+        classpath(deps.build.guava.lib)
+        classpath(deps.build.protobuf.gradlePlugin) {
             exclude(group = "com.google.guava")
         }
-        classpath(deps.build.gradlePlugins.errorProne) {
+        classpath(deps.build.errorProne.gradlePlugin) {
             exclude(group = "com.google.guava")
         }
         classpath("io.spine.tools:spine-model-compiler:$spineVersion")
@@ -60,7 +60,7 @@ plugins {
     java
     idea
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    id("com.google.protobuf").version(io.spine.gradle.internal.Deps.versions.protobufPlugin)
+    id("com.google.protobuf").version(io.spine.gradle.internal.Deps.build.protobuf.gradlePluginVersion)
 }
 
 val baseRoot = "$rootDir/../.."
@@ -94,11 +94,11 @@ subprojects {
      * explicitly.
      */
     dependencies {
-        Deps.build.errorProneAnnotations.forEach { compileOnly(it) }
+        Deps.build.errorProne.annotations.forEach { compileOnly(it) }
         implementation("io.spine:spine-base:$spineVersion")
         testImplementation("io.spine:spine-testlib:$spineVersion")
-        Deps.test.truth.forEach { testImplementation(it) }
-        testRuntimeOnly(Deps.test.junit5Runner)
+        Deps.test.truth.libs.forEach { testImplementation(it) }
+        testRuntimeOnly(Deps.test.junit.runner)
     }
 
     idea.module {

@@ -45,10 +45,10 @@ buildscript {
 
     val spineVersion: String by extra
     dependencies {
-        io.spine.gradle.internal.Deps.build.protobuf.forEach { classpath(it) }
+        io.spine.gradle.internal.Deps.build.protobuf.libs.forEach { classpath(it) }
 
         // Exclude `guava:18.0` as a transitive dependency by Protobuf Gradle plugin.
-        classpath(io.spine.gradle.internal.Deps.build.gradlePlugins.protobuf) {
+        classpath(io.spine.gradle.internal.Deps.build.protobuf.gradlePlugin) {
             exclude(group = "com.google.guava")
         }
         classpath("io.spine.tools:spine-model-compiler:${spineVersion}")

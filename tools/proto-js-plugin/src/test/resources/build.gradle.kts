@@ -30,7 +30,7 @@ import io.spine.gradle.internal.Deps
 plugins {
     java
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    id("com.google.protobuf").version(io.spine.gradle.internal.Deps.versions.protobufPlugin)
+    id("com.google.protobuf").version(io.spine.gradle.internal.Deps.build.protobuf.gradlePluginVersion)
 }
 
 // NOTE: this file is copied from the root project in the test setup.
@@ -52,7 +52,7 @@ val compileProtoToJs by tasks.registering
 protobuf {
     generatedFilesBaseDir = "$projectDir/generated"
     protoc {
-        artifact = Deps.build.protoc
+        artifact = Deps.build.protobuf.compiler
     }
     generateProtoTasks {
         // Copy the task collection to avoid `ConcurrentModificationException`.

@@ -33,9 +33,9 @@ dependencies {
         Expose tools we use as transitive dependencies to simplify dependency management in
         sub-projects.
     */
-    Deps.build.protobuf.forEach { api(it) }
-    Deps.test.junit5Api.forEach { api(it) }
-    Deps.test.truth.forEach { api(it) }
+    Deps.build.protobuf.libs.forEach { api(it) }
+    Deps.test.junit.api.forEach { api(it) }
+    Deps.test.truth.libs.forEach { api(it) }
     api(Deps.test.guavaTestlib)
     implementation(project(":base"))
 }
