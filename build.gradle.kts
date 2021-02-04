@@ -46,8 +46,8 @@ buildscript {
 plugins {
     `java-library`
     idea
-    id("com.google.protobuf") version io.spine.gradle.internal.Deps.versions.protobufPlugin
-    id("net.ltgt.errorprone") version io.spine.gradle.internal.Deps.versions.errorPronePlugin
+    id("com.google.protobuf") version io.spine.gradle.internal.Deps.build.protobuf.gradlePluginVersion
+    id("net.ltgt.errorprone") version io.spine.gradle.internal.Deps.build.errorProne.gradlePluginVersion
 }
 
 apply(from = "$rootDir/version.gradle.kts")
@@ -134,21 +134,21 @@ subprojects {
      */
     dependencies {
         Deps.build.apply {
-            errorprone(errorProneCore)
-            errorproneJavac(errorProneJavac)
+            errorprone(errorProne.core)
+            errorproneJavac(errorProne.javacPlugin)
 
-            protobuf.forEach { api(it) }
-            api(flogger)
-            implementation(guava)
-            implementation(checkerAnnotations)
+            protobuf.libs.forEach { api(it) }
+            api(flogger.lib)
+            implementation(guava.lib)
+            implementation(checker.annotations)
             implementation(jsr305Annotations)
-            errorProneAnnotations.forEach { implementation(it) }
+            errorProne.annotations.forEach { implementation(it) }
         }
         Deps.test.apply {
             testImplementation(guavaTestlib)
-            testImplementation(junit5Runner)
-            testImplementation(junitPioneer)
-            junit5Api.forEach { testImplementation(it) }
+            testImplementation(junit.runner)
+            testImplementation(junit.pioneer)
+            junit.api.forEach { testImplementation(it) }
         }
         runtimeOnly(Deps.runtime.flogger.systemBackend)
     }
@@ -173,7 +173,7 @@ subprojects {
         generatedFilesBaseDir = generatedDir
 
         protoc {
-            artifact = Deps.build.protoc
+            artifact = Deps.build.protobuf.compiler
         }
     }
 

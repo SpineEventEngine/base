@@ -41,10 +41,10 @@ dependencies {
     // A library for parsing Java sources.
     // Used for parsing Java sources generated from Protobuf files
     // to make their annotation more convenient.
-    implementation(Deps.build.roasterApi) {
+    implementation(Deps.build.roaster.api) {
         exclude(group = "com.google.guava")
     }
-    implementation(Deps.build.roasterJdt) {
+    implementation(Deps.build.roaster.jdt) {
         exclude(group = "com.google.guava")
     }
     implementation(Deps.build.gradlePlugins.protobuf)
