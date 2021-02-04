@@ -1,14 +1,14 @@
-# Smoke tests
+# Integration tests
 
-Smoke tests module contains the integration tests for the Spine tools.
+This module contains the integration tests for the Spine tools.
 
-This module is treated as a separate Gradle project and depends on `main` via Gradle
+This module is a separate Gradle project and depends on `base` via Gradle
 [composite build](https://docs.gradle.org/current/userguide/composite_builds.html#included_build_declaring_substitutions).
 
-Tests in this module are run in the separate Gradle process and currently cannot be included in the 
+Tests in this module are run in a separate Gradle process and currently cannot be included in the 
 repository code coverage.
 
-They also should be run separately from the `main` project build like this:
+They also should be run separately from the `base` project build like this:
 
 ```bash
   ./gradlew build check --stacktrace
@@ -18,5 +18,5 @@ They also should be run separately from the `main` project build like this:
   ./gradlew check --stacktrace
 ```
 
-To configure Intellij Idea for recognizing `tests` module as the actual source code, see 
+To configure IntelliJ IDEA for recognizing `tests` module as the actual source code, see 
 [this page](https://blog.jetbrains.com/idea/2016/10/intellij-idea-2016-3-eap-gradle-composite-builds-and-android-studio-2-2/).
