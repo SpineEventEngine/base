@@ -42,13 +42,13 @@ buildscript {
     val deps = io.spine.gradle.internal.Deps
 
     dependencies {
-        deps.build.protobuf.forEach { classpath(it) }
-        classpath(deps.build.guava)
-        classpath(deps.build.flogger)
-        classpath(deps.build.checkerAnnotations)
-        deps.build.errorProneAnnotations.forEach { classpath(it) }
+        deps.build.protobuf.libs.forEach { classpath(it) }
+        classpath(deps.build.guava.lib)
+        classpath(deps.build.flogger.lib)
+        classpath(deps.build.checker.annotations)
+        deps.build.errorProne.annotations.forEach { classpath(it) }
         classpath(deps.build.jsr305Annotations)
-        classpath(deps.build.gradlePlugins.protobuf)
+        classpath(deps.build.protobuf.gradlePlugin)
 
         classpath(deps.gen.javaPoet)
         classpath(deps.runtime.flogger.systemBackend)
@@ -56,10 +56,10 @@ buildscript {
         // A library for parsing Java sources.
         // Used for parsing Java sources generated from Protobuf files
         // to make their annotation more convenient.
-        classpath(deps.build.roasterApi) {
+        classpath(deps.build.roaster.api) {
             exclude(group = "com.google.guava")
         }
-        classpath (deps.build.roasterJdt) {
+        classpath (deps.build.roaster.jdt) {
             exclude(group = "com.google.guava")
         }
 
@@ -77,7 +77,7 @@ plugins {
     java
     idea
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    id("com.google.protobuf").version(io.spine.gradle.internal.Deps.versions.protobufPlugin)
+    id("com.google.protobuf").version(io.spine.gradle.internal.Deps.build.protobuf.gradlePluginVersion)
 }
 
 apply(plugin = "io.spine.tools.spine-model-compiler")
@@ -101,11 +101,11 @@ repositories {
 val spineVersion: String by extra
 
 dependencies {
-    Deps.build.protobuf.forEach { compileOnly(it) }
-    compileOnly(Deps.build.guava)
-    compileOnly(Deps.build.flogger)
-    compileOnly(Deps.build.checkerAnnotations)
-    Deps.build.errorProneAnnotations.forEach { compileOnly(it) }
+    Deps.build.protobuf.libs.forEach { compileOnly(it) }
+    compileOnly(Deps.build.guava.lib)
+    compileOnly(Deps.build.flogger.lib)
+    compileOnly(Deps.build.checker.annotations)
+    Deps.build.errorProne.annotations.forEach { compileOnly(it) }
     compileOnly(Deps.build.jsr305Annotations)
 
     // The below dependency refers to a local artifact.
