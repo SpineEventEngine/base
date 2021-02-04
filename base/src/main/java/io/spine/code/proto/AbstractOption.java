@@ -92,7 +92,7 @@ public abstract class AbstractOption<@ImmutableTypeParameter T,
             return false;
         }
         AbstractOption<?, ?, ?> option = (AbstractOption<?, ?, ?>) o;
-        return Objects.equals(extension.getNumber(), option.extension.getNumber());
+        return extension.getNumber() == option.extension.getNumber();
     }
 
     /**
