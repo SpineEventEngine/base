@@ -83,7 +83,7 @@ public final class InterfaceGen extends CodeGenerator {
             tasks.add(new ImplementUuidValue(uuidConfig));
         }
         for (ConfigByPattern byPattern : config.getInterfaceByPatternList()) {
-            tasks.add(new ImplementInterfaceByPattern(byPattern));
+            tasks.add(new ImplementByPattern(byPattern));
         }
         EntityStateConfig esConfig = config.getEntityStateInterface();
         if (generate(esConfig)) {

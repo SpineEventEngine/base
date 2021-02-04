@@ -55,7 +55,7 @@ final class InterfacesTest {
         @DisplayName("is created with `null` arguments")
         @Test
         void isCreatedWithNullArguments() {
-            assertNpe(() -> new ImplementInterfaceByPattern(null));
+            assertNpe(() -> new ImplementByPattern(null));
         }
 
         @DisplayName("`null` `MessageType` is supplied")
@@ -64,7 +64,7 @@ final class InterfacesTest {
             ConfigByPattern config = newTaskConfig("test")
                     .setPattern(filePrefix("non-default"))
                     .build();
-            ImplementInterfaceByPattern generateMethods = new ImplementInterfaceByPattern(config);
+            ImplementByPattern generateMethods = new ImplementByPattern(config);
             assertNpe(() -> generateMethods.generateFor(null));
         }
     }
@@ -125,8 +125,8 @@ final class InterfacesTest {
                 .isNotEmpty();
     }
 
-    private static ImplementInterfaceByPattern newTask(ConfigByPattern config) {
-        return new ImplementInterfaceByPattern(config);
+    private static ImplementByPattern newTask(ConfigByPattern config) {
+        return new ImplementByPattern(config);
     }
 
     private static ConfigByPattern.Builder newTaskConfig(String interfaceName) {

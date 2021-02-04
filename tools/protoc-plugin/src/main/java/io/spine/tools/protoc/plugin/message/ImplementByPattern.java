@@ -40,15 +40,15 @@ import static io.spine.util.Preconditions2.checkNotDefaultArg;
  * Generates interfaces for Protobuf messages that match supplied
  * {@link io.spine.tools.protoc.FilePattern pattern}.
  */
-final class ImplementInterfaceByPattern extends ImplementInterface {
+final class ImplementByPattern extends ImplementInterface {
 
-    private final FilePatternMatcher patternMatcher;
+    private final FilePatternMatcher matcher;
 
-    ImplementInterfaceByPattern(ConfigByPattern config) {
+    ImplementByPattern(ConfigByPattern config) {
         super(config.getValue());
         FilePattern filePattern = config.getPattern();
         checkNotDefaultArg(filePattern);
-        this.patternMatcher = new FilePatternMatcher(filePattern);
+        this.matcher = new FilePatternMatcher(filePattern);
     }
 
     @Override
@@ -69,7 +69,7 @@ final class ImplementInterfaceByPattern extends ImplementInterface {
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
-        if (!type.isTopLevel() || !patternMatcher.test(type)) {
+        if (!type.isTopLevel() || !matcher.test(type)) {
             return ImmutableList.of();
         }
         return super.generateFor(type);

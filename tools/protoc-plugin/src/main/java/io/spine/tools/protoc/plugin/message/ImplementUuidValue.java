@@ -38,7 +38,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class ImplementUuidValue extends ImplementInterface {
 
-    public ImplementUuidValue(UuidConfig config) {
+    ImplementUuidValue(UuidConfig config) {
         super(config.getValue());
     }
 

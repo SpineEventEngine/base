@@ -36,9 +36,13 @@ public final class ExistingInterface implements Interface {
     private final ClassName name;
     private final InterfaceParameters parameters;
 
-    public ExistingInterface(ClassName name, InterfaceParameters params) {
+    ExistingInterface(ClassName name, InterfaceParameters params) {
         this.name = name;
         this.parameters = params;
+    }
+
+    public ExistingInterface(ClassName name) {
+        this(name, InterfaceParameters.empty());
     }
 
     @Override

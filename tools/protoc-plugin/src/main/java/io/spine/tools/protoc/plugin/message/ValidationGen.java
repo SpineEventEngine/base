@@ -52,7 +52,7 @@ import static io.spine.tools.protoc.plugin.message.InterfaceParameters.empty;
 public final class ValidationGen extends CodeGenerator {
 
     private static final Interface MESSAGE_WITH_CONSTRAINTS =
-            new ExistingInterface(ClassName.of(MessageWithConstraints.class), empty());
+            new ExistingInterface(ClassName.of(MessageWithConstraints.class));
     /**
      * Prevents direct instantiation.
      */
