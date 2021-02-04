@@ -57,6 +57,7 @@ buildscript {
 
 plugins {
     java
+    kotlin("jvm") version io.spine.gradle.internal.Kotlin.version
     idea
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
     id("com.google.protobuf").version(io.spine.gradle.internal.Protobuf.gradlePluginVersion)
@@ -78,11 +79,24 @@ allprojects {
 
 subprojects {
     apply {
+        plugin("java-library")
         plugin("com.google.protobuf")
+        plugin("kotlin")
         plugin("io.spine.tools.spine-model-compiler")
         plugin("idea")
         from("$baseRoot/config/gradle/test-output.gradle")
         from("$baseRoot/config/gradle/model-compiler.gradle")
+    }
+
+    the<JavaPluginExtension>().apply {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+        kotlinOptions {
+            jvmTarget = JavaVersion.VERSION_1_8.toString()
+        }
     }
 
     val spineVersion: String by extra
@@ -97,6 +111,7 @@ subprojects {
     dependencies {
         deps.build.errorProne.annotations.forEach { compileOnly(it) }
         implementation("io.spine:spine-base:$spineVersion")
+        implementation(kotlin("stdlib-jdk8"))
         testImplementation("io.spine:spine-testlib:$spineVersion")
         deps.test.truth.libs.forEach { testImplementation(it) }
         testRuntimeOnly(deps.test.junit.runner)
