@@ -26,11 +26,14 @@
 
 package io.spine.base.given;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.AbstractMessage;
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.Descriptors;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.ExtensionRegistryLite;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
@@ -39,6 +42,7 @@ import com.google.protobuf.Parser;
 import com.google.protobuf.UnknownFieldSet;
 import io.spine.base.EntityState;
 import io.spine.base.ValidatingBuilder;
+import io.spine.validate.ConstraintViolation;
 import io.spine.validate.NonValidated;
 
 import java.io.IOException;
@@ -73,38 +77,43 @@ public final class FakeEntityState extends AbstractMessage
     }
 
     @Override
-    public Descriptors.Descriptor getDescriptorForType() {
+    public Descriptor getDescriptorForType() {
         return null;
     }
 
     @Override
-    public Map<Descriptors.FieldDescriptor, Object> getAllFields() {
+    public Map<FieldDescriptor, Object> getAllFields() {
         return null;
     }
 
     @Override
-    public boolean hasField(Descriptors.FieldDescriptor field) {
+    public boolean hasField(FieldDescriptor field) {
         return false;
     }
 
     @Override
-    public Object getField(Descriptors.FieldDescriptor field) {
+    public Object getField(FieldDescriptor field) {
         return null;
     }
 
     @Override
-    public int getRepeatedFieldCount(Descriptors.FieldDescriptor field) {
+    public int getRepeatedFieldCount(FieldDescriptor field) {
         return 0;
     }
 
     @Override
-    public Object getRepeatedField(Descriptors.FieldDescriptor field, int index) {
+    public Object getRepeatedField(FieldDescriptor field, int index) {
         return null;
     }
 
     @Override
     public UnknownFieldSet getUnknownFields() {
         return null;
+    }
+
+    //@Override
+    public ImmutableList<ConstraintViolation> validate() {
+        return ImmutableList.of();
     }
 
     public static class Builder implements ValidatingBuilder<FakeEntityState> {
@@ -168,12 +177,12 @@ public final class FakeEntityState extends AbstractMessage
         }
 
         @Override
-        public Descriptors.Descriptor getDescriptorForType() {
+        public Descriptor getDescriptorForType() {
             return null;
         }
 
         @Override
-        public Map<Descriptors.FieldDescriptor, Object> getAllFields() {
+        public Map<FieldDescriptor, Object> getAllFields() {
             return null;
         }
 
@@ -183,28 +192,28 @@ public final class FakeEntityState extends AbstractMessage
         }
 
         @Override
-        public Descriptors.FieldDescriptor getOneofFieldDescriptor(
+        public FieldDescriptor getOneofFieldDescriptor(
                 Descriptors.OneofDescriptor oneof) {
             return null;
         }
 
         @Override
-        public boolean hasField(Descriptors.FieldDescriptor field) {
+        public boolean hasField(FieldDescriptor field) {
             return false;
         }
 
         @Override
-        public Object getField(Descriptors.FieldDescriptor field) {
+        public Object getField(FieldDescriptor field) {
             return null;
         }
 
         @Override
-        public int getRepeatedFieldCount(Descriptors.FieldDescriptor field) {
+        public int getRepeatedFieldCount(FieldDescriptor field) {
             return 0;
         }
 
         @Override
-        public Object getRepeatedField(Descriptors.FieldDescriptor field, int index) {
+        public Object getRepeatedField(FieldDescriptor field, int index) {
             return null;
         }
 
@@ -214,28 +223,28 @@ public final class FakeEntityState extends AbstractMessage
         }
 
         @Override
-        public Message.Builder newBuilderForField(Descriptors.FieldDescriptor field) {
+        public Message.Builder newBuilderForField(FieldDescriptor field) {
             return null;
         }
 
         @Override
-        public Message.Builder getFieldBuilder(Descriptors.FieldDescriptor field) {
+        public Message.Builder getFieldBuilder(FieldDescriptor field) {
             return null;
         }
 
         @Override
-        public Message.Builder getRepeatedFieldBuilder(Descriptors.FieldDescriptor field,
+        public Message.Builder getRepeatedFieldBuilder(FieldDescriptor field,
                                                        int index) {
             return null;
         }
 
         @Override
-        public Message.Builder setField(Descriptors.FieldDescriptor field, Object value) {
+        public Message.Builder setField(FieldDescriptor field, Object value) {
             return null;
         }
 
         @Override
-        public Message.Builder clearField(Descriptors.FieldDescriptor field) {
+        public Message.Builder clearField(FieldDescriptor field) {
             return null;
         }
 
@@ -245,13 +254,13 @@ public final class FakeEntityState extends AbstractMessage
         }
 
         @Override
-        public Message.Builder setRepeatedField(Descriptors.FieldDescriptor field, int index,
+        public Message.Builder setRepeatedField(FieldDescriptor field, int index,
                                                 Object value) {
             return null;
         }
 
         @Override
-        public Message.Builder addRepeatedField(Descriptors.FieldDescriptor field, Object value) {
+        public Message.Builder addRepeatedField(FieldDescriptor field, Object value) {
             return null;
         }
 

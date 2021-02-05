@@ -29,12 +29,12 @@ package io.spine.tools.protoc.plugin.message;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.compiler.PluginProtos;
 import io.spine.code.java.ClassName;
+import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.plugin.CodeGenerator;
 import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.tools.protoc.plugin.InsertionPoint;
 import io.spine.tools.protoc.plugin.NoOpGenerator;
 import io.spine.tools.protoc.plugin.ProtocPluginFiles;
-import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.validate.ValidateSpecs;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
@@ -43,7 +43,6 @@ import io.spine.validate.MessageWithConstraints;
 import static io.spine.tools.protoc.plugin.InsertionPoint.builder_scope;
 import static io.spine.tools.protoc.plugin.InsertionPoint.class_scope;
 import static io.spine.tools.protoc.plugin.message.Implement.interfaceFor;
-import static io.spine.tools.protoc.plugin.message.InterfaceParameters.empty;
 
 /**
  * Generates code which validates message fields upon the constraints, as well as the API which
@@ -51,17 +50,15 @@ import static io.spine.tools.protoc.plugin.message.InterfaceParameters.empty;
  */
 public final class ValidationGen extends CodeGenerator {
 
-    private static final Interface MESSAGE_WITH_CONSTRAINTS =
-            new ExistingInterface(ClassName.of(MessageWithConstraints.class));
-    /**
-     * Prevents direct instantiation.
-     */
+    /** Prevents direct instantiation. */
     private ValidationGen() {
         super();
     }
 
     public static CodeGenerator instance(SpineProtocConfig config) {
-        return config.getSkipValidatingBuilders() || !config.getGenerateValidation()
+        boolean skipBuilders = config.getSkipValidatingBuilders();
+        boolean doNotGenerate = !config.getGenerateValidation();
+        return skipBuilders || doNotGenerate
                ? NoOpGenerator.instance()
                : new ValidationGen();
     }
@@ -81,13 +78,17 @@ public final class ValidationGen extends CodeGenerator {
                 insertCode(type, class_scope, factory.validateMethod().toString());
         CompilerOutput validatorClass =
                 insertCode(type, class_scope, factory.validatorClass().toString());
-        Implement iface = interfaceFor(type, MESSAGE_WITH_CONSTRAINTS);
+        Implement iface = interfaceFor(type, messageWithConstraints());
         return ImmutableSet.of(
                 builderInsertionPoint,
                 validateMethod,
                 validatorClass,
                 iface
         );
+    }
+
+    private static ExistingInterface messageWithConstraints() {
+        return new ExistingInterface(ClassName.of(MessageWithConstraints.class));
     }
 
     private static CompilerOutput

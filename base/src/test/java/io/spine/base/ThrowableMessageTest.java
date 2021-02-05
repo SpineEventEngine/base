@@ -25,13 +25,16 @@
  */
 package io.spine.base;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.AbstractMessage;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import com.google.protobuf.Parser;
 import com.google.protobuf.UnknownFieldSet;
 import com.google.protobuf.util.Timestamps;
+import io.spine.validate.ConstraintViolation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -159,33 +162,38 @@ class ThrowableMessageTest {
         }
 
         @Override
-        public Map<Descriptors.FieldDescriptor, Object> getAllFields() {
+        public Map<FieldDescriptor, Object> getAllFields() {
             return null;
         }
 
         @Override
-        public boolean hasField(Descriptors.FieldDescriptor field) {
+        public boolean hasField(FieldDescriptor field) {
             return false;
         }
 
         @Override
-        public Object getField(Descriptors.FieldDescriptor field) {
+        public Object getField(FieldDescriptor field) {
             return null;
         }
 
         @Override
-        public int getRepeatedFieldCount(Descriptors.FieldDescriptor field) {
+        public int getRepeatedFieldCount(FieldDescriptor field) {
             return 0;
         }
 
         @Override
-        public Object getRepeatedField(Descriptors.FieldDescriptor field, int index) {
+        public Object getRepeatedField(FieldDescriptor field, int index) {
             return null;
         }
 
         @Override
         public UnknownFieldSet getUnknownFields() {
             return null;
+        }
+
+        //@Override
+        public ImmutableList<ConstraintViolation> validate() {
+            return ImmutableList.of();
         }
     }
 }
