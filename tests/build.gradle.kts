@@ -28,7 +28,7 @@ import io.spine.gradle.internal.Deps
 
 buildscript {
 
-    val baseRoot = "$rootDir/../.."
+    val baseRoot = "$rootDir/.."
     val versionGradle = "$baseRoot/version.gradle.kts"
 
     apply(from = versionGradle)
@@ -63,7 +63,7 @@ plugins {
     id("com.google.protobuf").version(io.spine.gradle.internal.Deps.build.protobuf.gradlePluginVersion)
 }
 
-val baseRoot = "$rootDir/../.."
+val baseRoot = "$rootDir/.."
 
 allprojects {
     apply(from = "$baseRoot/version.gradle.kts")
