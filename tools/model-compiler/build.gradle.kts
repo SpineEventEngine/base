@@ -35,20 +35,19 @@ val spineVersion: String by extra
 
 dependencies {
     implementation(project(":plugin-base"))
+    implementation(project(":protoc-api"))
     implementation(Deps.gen.javaPoet)
 
-    Deps.build.apply {
-        // A library for parsing Java sources.
-        // Used for parsing Java sources generated from Protobuf files
-        // to make their annotation more convenient.
-        implementation(roaster.api) {
-            exclude(group = "com.google.guava")
-        }
-        implementation(roaster.jdt) {
-            exclude(group = "com.google.guava")
-        }
-        implementation(gradlePlugins.protobuf)
+    // A library for parsing Java sources.
+    // Used for parsing Java sources generated from Protobuf files
+    // to make their annotation more convenient.
+    implementation(Deps.build.roaster.api) {
+        exclude(group = "com.google.guava")
     }
+    implementation(Deps.build.roaster.jdt) {
+        exclude(group = "com.google.guava")
+    }
+    implementation(Deps.build.gradlePlugins.protobuf)
     testImplementation(project(":testlib"))
     testImplementation(gradleTestKit())
     testImplementation(project(":plugin-testlib"))
@@ -59,11 +58,9 @@ protobuf {
         all().forEach { task ->
             val scope = task.sourceSet.name
             task.generateDescriptorSet = true
-            with(task.descriptorSetOptions) {
-                path = "$buildDir/descriptors/${scope}/io.spine.tools.spine-model-compiler-${scope}.desc"
-                includeImports = true
-                includeSourceInfo = true
-            }
+            task.descriptorSetOptions.path = "$buildDir/descriptors/${scope}/io.spine.tools.spine-model-compiler-${scope}.desc"
+            task.descriptorSetOptions.includeImports = true
+            task.descriptorSetOptions.includeSourceInfo = true
         }
     }
 }

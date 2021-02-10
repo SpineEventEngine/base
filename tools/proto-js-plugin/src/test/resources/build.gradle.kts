@@ -30,7 +30,7 @@ import io.spine.gradle.internal.Deps
 plugins {
     java
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    id("com.google.protobuf").version(io.spine.gradle.internal.Protobuf.gradlePluginVersion)
+    id("com.google.protobuf").version(io.spine.gradle.internal.Deps.build.protobuf.gradlePluginVersion)
 }
 
 // NOTE: this file is copied from the root project in the test setup.
@@ -63,13 +63,10 @@ protobuf {
                     option("import_style=commonjs")
                 }
             }
-
             task.generateDescriptorSet = true
-            with(task.descriptorSetOptions) {
-                path = "${projectDir}/build/descriptors/${task.sourceSet.name}/known_types.desc"
-                includeImports = true
-                includeSourceInfo = true
-            }
+            task.descriptorSetOptions.path = "${projectDir}/build/descriptors/${task.sourceSet.name}/known_types.desc"
+            task.descriptorSetOptions.includeImports = true
+            task.descriptorSetOptions.includeSourceInfo = true
 
             compileProtoToJs.get().dependsOn(task)
         }

@@ -24,6 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import com.google.protobuf.gradle.ProtobufConfigurator.JavaGenerateProtoTaskCollection
 import com.google.protobuf.gradle.*
 import io.spine.gradle.internal.Deps
 import org.gradle.internal.os.OperatingSystem
@@ -42,14 +43,12 @@ buildscript {
 
     dependencies {
         deps.build.protobuf.libs.forEach { classpath(it) }
-        deps.build.apply {
-            classpath(guava.lib)
-            classpath(flogger.lib)
-            classpath(checker.annotations)
-            errorProne.annotations.forEach { classpath(it) }
-            classpath(jsr305Annotations)
-            classpath(gradlePlugins.protobuf)
-        }
+        classpath(deps.build.guava.lib)
+        classpath(deps.build.flogger.lib)
+        classpath(deps.build.checker.annotations)
+        deps.build.errorProne.annotations.forEach { classpath(it) }
+        classpath(deps.build.jsr305Annotations)
+        classpath(deps.build.protobuf.gradlePlugin)
 
         classpath(deps.gen.javaPoet)
         classpath(deps.runtime.flogger.systemBackend)
@@ -57,16 +56,15 @@ buildscript {
         // A library for parsing Java sources.
         // Used for parsing Java sources generated from Protobuf files
         // to make their annotation more convenient.
-        deps.build.roaster.apply {
-            classpath(api) {
-                exclude(group = "com.google.guava")
-            }
-            classpath(jdt) {
-                exclude(group = "com.google.guava")
-            }
+        classpath(deps.build.roaster.api) {
+            exclude(group = "com.google.guava")
+        }
+        classpath (deps.build.roaster.jdt) {
+            exclude(group = "com.google.guava")
         }
 
         classpath(files(
+                "$projectDir/../tools/protoc-api/build/libs/protoc-api-${spineVersion}.jar",
                 "$projectDir/../tools/model-compiler/build/libs/model-compiler-${spineVersion}.jar",
                 "$projectDir/../tools/plugin-base/build/libs/plugin-base-${spineVersion}.jar",
                 "$projectDir/../tools/tool-base/build/libs/tool-base-${spineVersion}.jar",
@@ -79,7 +77,7 @@ plugins {
     java
     idea
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    id("com.google.protobuf").version(io.spine.gradle.internal.Protobuf.gradlePluginVersion)
+    id("com.google.protobuf").version(io.spine.gradle.internal.Deps.build.protobuf.gradlePluginVersion)
 }
 
 apply(plugin = "io.spine.tools.spine-model-compiler")
@@ -104,13 +102,11 @@ val spineVersion: String by extra
 
 dependencies {
     Deps.build.protobuf.libs.forEach { compileOnly(it) }
-    Deps.build.apply {
-        compileOnly(guava.lib)
-        compileOnly(flogger.lib)
-        compileOnly(checker.annotations)
-        errorProne.annotations.forEach { compileOnly(it) }
-        compileOnly(jsr305Annotations)
-    }
+    compileOnly(Deps.build.guava.lib)
+    compileOnly(Deps.build.flogger.lib)
+    compileOnly(Deps.build.checker.annotations)
+    Deps.build.errorProne.annotations.forEach { compileOnly(it) }
+    compileOnly(Deps.build.jsr305Annotations)
 
     // The below dependency refers to a local artifact.
     // See `repositories.flatDir` definition above.

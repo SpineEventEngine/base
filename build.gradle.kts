@@ -30,7 +30,6 @@ import io.spine.gradle.internal.DependencyResolution
 import io.spine.gradle.internal.Deps
 import io.spine.gradle.internal.PublishingRepos
 import io.spine.gradle.internal.RunBuild
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     apply(from = "$rootDir/version.gradle.kts")
@@ -46,10 +45,9 @@ buildscript {
 @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
 plugins {
     `java-library`
-    kotlin("jvm") version io.spine.gradle.internal.Kotlin.version
     idea
-    id("com.google.protobuf") version io.spine.gradle.internal.Protobuf.gradlePluginVersion
-    id("net.ltgt.errorprone") version io.spine.gradle.internal.ErrorProne.gradlePluginVersion
+    id("com.google.protobuf") version io.spine.gradle.internal.Deps.build.protobuf.gradlePluginVersion
+    id("net.ltgt.errorprone") version io.spine.gradle.internal.Deps.build.errorProne.gradlePluginVersion
 }
 
 apply(from = "$rootDir/version.gradle.kts")
@@ -60,6 +58,7 @@ extra.apply {
     this["projectsToPublish"] = listOf(
             "base",
             "tool-base",
+            "tools-api",
             "testlib",
             "mute-logging",
             "errorprone-checks",
@@ -75,6 +74,7 @@ extra.apply {
             "plugin-testlib",
 
             // Protoc compiler plugin
+            "protoc-api",
             "validation-generator",
             "protoc-plugin"
     )
@@ -94,24 +94,25 @@ subprojects {
     buildscript {
         apply(from = "$rootDir/version.gradle.kts")
 
-        DependencyResolution.apply {
-            defaultRepositories(repositories)
-            forceConfiguration(configurations)
+        DependencyResolution.defaultRepositories(repositories)
+        dependencies {
+            classpath(Deps.build.gradlePlugins.protobuf)
+            classpath(Deps.build.gradlePlugins.errorProne)
         }
-
-        Deps.build.apply {
-            dependencies {
-                classpath(gradlePlugins.protobuf)
-                classpath(gradlePlugins.errorProne)
-            }
-        }
+        DependencyResolution.forceConfiguration(configurations)
     }
 
     apply(from = "$rootDir/version.gradle.kts")
 
+    val srcDir by extra("$projectDir/src")
+    val generatedDir by extra("$projectDir/generated")
+    val generatedJavaDir by extra("$generatedDir/main/java")
+    val generatedTestJavaDir by extra("$generatedDir/test/java")
+    val generatedSpineDir by extra("$generatedDir/main/spine")
+    val generatedTestSpineDir by extra("$generatedDir/test/spine")
+
     apply {
         plugin("java-library")
-        plugin("kotlin")
         plugin("pmd")
         plugin("com.google.protobuf")
         plugin("net.ltgt.errorprone")
@@ -125,17 +126,7 @@ subprojects {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    tasks.withType<KotlinCompile>().configureEach {
-        kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_1_8.toString()
-        }
-    }
-
-    DependencyResolution.apply {
-        defaultRepositories(repositories)
-        excludeProtobufLite(configurations)
-        forceConfiguration(configurations)
-    }
+    DependencyResolution.defaultRepositories(repositories)
 
     /**
      * These dependencies are applied to all sub-projects and do not have to
@@ -148,13 +139,11 @@ subprojects {
 
             protobuf.libs.forEach { api(it) }
             api(flogger.lib)
-            api(guava.lib)
-            api(checker.annotations)
-            api(jsr305Annotations)
-            errorProne.annotations.forEach { api(it) }
+            implementation(guava.lib)
+            implementation(checker.annotations)
+            implementation(jsr305Annotations)
+            errorProne.annotations.forEach { implementation(it) }
         }
-        implementation(kotlin("stdlib-jdk8"))
-
         Deps.test.apply {
             testImplementation(guavaTestlib)
             testImplementation(junit.runner)
@@ -164,12 +153,10 @@ subprojects {
         runtimeOnly(Deps.runtime.flogger.systemBackend)
     }
 
-    val srcDir by extra("$projectDir/src")
-    val generatedDir by extra("$projectDir/generated")
-    val generatedJavaDir by extra("$generatedDir/main/java")
-    val generatedTestJavaDir by extra("$generatedDir/test/java")
-    val generatedSpineDir by extra("$generatedDir/main/spine")
-    val generatedTestSpineDir by extra("$generatedDir/test/spine")
+    DependencyResolution.apply {
+        forceConfiguration(configurations)
+        excludeProtobufLite(configurations)
+    }
 
     sourceSets {
         main {
@@ -257,10 +244,10 @@ apply {
     }
 }
 
-val integrationTests by tasks.registering(RunBuild::class) {
-    directory = "$rootDir/tests"
+val smokeTests by tasks.registering(RunBuild::class) {
+    directory = "$rootDir/tools/smoke-tests"
 }
 
 tasks.register("buildAll") {
-    dependsOn(tasks.build, integrationTests)
+    dependsOn(tasks.build, smokeTests)
 }

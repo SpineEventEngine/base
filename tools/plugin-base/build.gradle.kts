@@ -61,8 +61,8 @@ val prepareProtocConfigVersions by tasks.registering {
 
     val versions = Properties()
     versions.setProperty("baseVersion", spineBaseVersion)
-    versions.setProperty("protobufVersion", io.spine.gradle.internal.Protobuf.version)
-    versions.setProperty("gRPCVersion", io.spine.gradle.internal.Grpc.version)
+    versions.setProperty("protobufVersion", Deps.build.protobuf.version)
+    versions.setProperty("gRPCVersion", Deps.grpc.version)
 
     @Suppress("UNCHECKED_CAST")
     inputs.properties(HashMap(versions) as MutableMap<String, *>)

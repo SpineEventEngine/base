@@ -30,14 +30,12 @@ group = "io.spine"
 
 dependencies {
     /*
-        Expose tools we use as transitive dependencies to simplify dependency management
-        in sub-projects.
+        Expose tools we use as transitive dependencies to simplify dependency management in
+        sub-projects.
     */
     Deps.build.protobuf.libs.forEach { api(it) }
-    Deps.test.apply {
-        api(guavaTestlib)
-        junit.api.forEach { api(it) }
-        truth.libs.forEach { api(it) }
-    }
+    Deps.test.junit.api.forEach { api(it) }
+    Deps.test.truth.libs.forEach { api(it) }
+    api(Deps.test.guavaTestlib)
     implementation(project(":base"))
 }

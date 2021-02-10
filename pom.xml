@@ -12,7 +12,7 @@ all modules and does not describe the project structure per-subproject.
 
 <groupId>io.spine</groupId>
 <artifactId>spine-base</artifactId>
-<version>2.0.0-jdk8.SNAPSHOT.14</version>
+<version>2.0.0-SNAPSHOT.1</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -134,18 +134,6 @@ all modules and does not describe the project structure per-subproject.
     <scope>compile</scope>
   </dependency>
   <dependency>
-    <groupId>org.jetbrains.kotlin</groupId>
-    <artifactId>kotlin-stdlib</artifactId>
-    <version>1.4.21</version>
-    <scope>compile</scope>
-  </dependency>
-  <dependency>
-    <groupId>org.jetbrains.kotlin</groupId>
-    <artifactId>kotlin-stdlib-jdk8</artifactId>
-    <version>1.4.21</version>
-    <scope>compile</scope>
-  </dependency>
-  <dependency>
     <groupId>com.google.flogger</groupId>
     <artifactId>flogger-system-backend</artifactId>
     <version>0.5.1</version>
@@ -233,27 +221,12 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>org.jacoco</groupId>
     <artifactId>org.jacoco.agent</artifactId>
-    <version>0.8.6</version>
+    <version>0.8.5</version>
   </dependency>
   <dependency>
     <groupId>org.jacoco</groupId>
     <artifactId>org.jacoco.ant</artifactId>
-    <version>0.8.6</version>
-  </dependency>
-  <dependency>
-    <groupId>org.jetbrains.kotlin</groupId>
-    <artifactId>kotlin-compiler-embeddable</artifactId>
-    <version>1.4.21</version>
-  </dependency>
-  <dependency>
-    <groupId>org.jetbrains.kotlin</groupId>
-    <artifactId>kotlin-klib-commonizer-embeddable</artifactId>
-    <version>1.4.21</version>
-  </dependency>
-  <dependency>
-    <groupId>org.jetbrains.kotlin</groupId>
-    <artifactId>kotlin-scripting-compiler-embeddable</artifactId>
-    <version>1.4.21</version>
+    <version>0.8.5</version>
   </dependency>
 </dependencies>
 </project>
