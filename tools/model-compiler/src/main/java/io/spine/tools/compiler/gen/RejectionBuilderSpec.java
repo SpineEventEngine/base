@@ -33,8 +33,8 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import io.spine.base.RejectionType;
+import io.spine.code.gen.java.BuilderSpec;
 import io.spine.code.gen.java.JavaPoetName;
-import io.spine.code.gen.java.TypeSpec;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.javadoc.JavadocText;
@@ -60,9 +60,10 @@ import static javax.lang.model.element.Modifier.STATIC;
  * <p>A generated builder validates rejection messages using
  * {@link io.spine.validate.Validate#checkValid(com.google.protobuf.Message)}.
  */
-final class RejectionBuilderSpec implements TypeSpec {
+final class RejectionBuilderSpec implements BuilderSpec {
 
     private static final NoArgMethod newBuilder = new NoArgMethod(Messages.METHOD_NEW_BUILDER);
+    @SuppressWarnings("DuplicateStringLiteralInspection") // local semantics.
     private static final String BUILDER_FIELD = "builder";
 
     private final RejectionType rejection;
@@ -176,7 +177,7 @@ final class RejectionBuilderSpec implements TypeSpec {
         JavadocText javadoc = JavadocText.fromEscaped(rawJavadoc)
                                          .withNewLine();
         return MethodSpec
-                .methodBuilder("build")
+                .methodBuilder(BUILD_METHOD_NAME)
                 .addModifiers(PUBLIC)
                 .addJavadoc(javadoc.value())
                 .returns(throwableClass.value())
@@ -229,7 +230,7 @@ final class RejectionBuilderSpec implements TypeSpec {
                 .returns(thisType())
                 .addParameter(fieldType.getTypeName(), parameterName)
                 .addStatement("$L.$L($L)", BUILDER_FIELD, methodName, parameterName)
-                .addStatement("return this");
+                .addStatement(RETURN_STATEMENT);
         Optional<String> comments = field.leadingComments();
         comments.ifPresent(
                 text -> methodBuilder.addJavadoc(JavadocText.fromUnescaped(text)

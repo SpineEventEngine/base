@@ -33,6 +33,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import io.spine.code.gen.java.BuilderSpec;
 import io.spine.code.gen.java.GeneratedBy;
 import io.spine.code.gen.java.GeneratedJavadoc;
 import io.spine.code.proto.FieldDeclaration;
@@ -52,7 +53,7 @@ import static javax.lang.model.element.Modifier.STATIC;
 /**
  * Assembles the specification for the {@code QueryBuilder} class generated for entity state types.
  */
-public final class EntityQueryBuilderSpec extends AbstractEntityQuerySpec {
+public final class EntityQueryBuilderSpec extends AbstractEntityQuerySpec implements BuilderSpec {
 
     private final ImmutableList<FieldDeclaration> columns;
 
@@ -95,7 +96,7 @@ public final class EntityQueryBuilderSpec extends AbstractEntityQuerySpec {
     private static MethodSpec build() {
         TypeName typeOfQuery = queryType().value();
         return MethodSpec
-                .methodBuilder("build")
+                .methodBuilder(BUILD_METHOD_NAME)
                 .addJavadoc(buildJavadoc().spec())
                 .addAnnotation(Override.class)
                 .addModifiers(PUBLIC)
@@ -153,13 +154,12 @@ public final class EntityQueryBuilderSpec extends AbstractEntityQuerySpec {
     /**
      * Generates {@code thisRef()} method.
      */
-    @SuppressWarnings("DuplicateStringLiteralInspection")
     private static MethodSpec thisRef() {
         return MethodSpec
                 .methodBuilder("thisRef")
                 .addAnnotation(Override.class)
                 .addModifiers(PROTECTED)
-                .addStatement("return this")
+                .addStatement(RETURN_STATEMENT)
                 .returns(queryBuilderType().value())
                 .build();
     }

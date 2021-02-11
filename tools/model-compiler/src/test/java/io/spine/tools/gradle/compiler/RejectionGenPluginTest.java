@@ -27,6 +27,7 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.code.gen.java.BuilderSpec;
 import io.spine.code.java.SimpleClassName;
 import io.spine.protobuf.Messages;
 import io.spine.tools.gradle.testing.GradleProject;
@@ -103,7 +104,9 @@ class RejectionGenPluginTest {
 
     private static void assertBuilderJavadoc(JavaClassSource builder) {
         assertDoc(getExpectedBuilderClassComment(), builder);
-        assertMethodDoc("Creates the rejection from the builder and validates it.", builder, "build"
+        assertMethodDoc(
+                "Creates the rejection from the builder and validates it.", builder,
+                BuilderSpec.BUILD_METHOD_NAME
         );
         assertMethodDoc(getExpectedFirstFieldComment(), builder, "setId");
         assertMethodDoc(getExpectedSecondFieldComment(), builder, "setRejectionMessage");
