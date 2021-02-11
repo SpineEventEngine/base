@@ -75,7 +75,6 @@ class RejectionGenPluginTest {
                                              .setProjectName("rejections-gen-plugin-test")
                                              .setProjectFolder(testProjectDir)
                                              .addProtoFiles(files)
-                                             .enableDebug()
                                              .build();
         project.executeTask(compileJava);
     }
