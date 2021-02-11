@@ -65,14 +65,14 @@ public final class RejectionSpec implements TypeSpec, Logging {
     /**
      * Creates a new instance.
      *
-     *  @param rejectionType
+     *  @param type
      *         a rejection declaration
      */
-    public RejectionSpec(RejectionType rejectionType) {
-        this.declaration = rejectionType;
-        this.messageClass = JavaPoetName.of(rejectionType.messageClass());
+    public RejectionSpec(RejectionType type) {
+        this.declaration = type;
+        this.messageClass = JavaPoetName.of(type.messageClass());
         this.builder = new RejectionBuilderSpec(
-                rejectionType, messageClass, JavaPoetName.of(rejectionType.throwableClass())
+                type, messageClass, JavaPoetName.of(type.throwableClass())
         );
     }
 

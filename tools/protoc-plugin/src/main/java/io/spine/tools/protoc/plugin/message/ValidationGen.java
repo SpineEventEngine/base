@@ -27,7 +27,11 @@
 package io.spine.tools.protoc.plugin.message;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.Message;
 import com.google.protobuf.compiler.PluginProtos;
+import io.spine.base.CommandMessage;
+import io.spine.base.EventMessage;
+import io.spine.base.RejectionMessage;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.plugin.CodeGenerator;
@@ -78,7 +82,7 @@ public final class ValidationGen extends CodeGenerator {
                 insertCode(type, class_scope, factory.validateMethod().toString());
         CompilerOutput validatorClass =
                 insertCode(type, class_scope, factory.validatorClass().toString());
-        Implement iface = interfaceFor(type, messageWithConstraints());
+        Implement iface = interfaceFor(type, implementingBaseTypeOf(type));
         return ImmutableSet.of(
                 builderInsertionPoint,
                 validateMethod,
@@ -87,8 +91,23 @@ public final class ValidationGen extends CodeGenerator {
         );
     }
 
-    private static ExistingInterface messageWithConstraints() {
-        return new ExistingInterface(ClassName.of(MessageWithConstraints.class));
+    private static ExistingInterface implementingBaseTypeOf(MessageType type) {
+        Class<? extends Message> javaClass = type.javaClass();
+        boolean isEventMessage = EventMessage.class.isAssignableFrom(javaClass);
+        boolean isRejectionMessage = RejectionMessage.class.isAssignableFrom(javaClass);
+        boolean isCommandMessage = CommandMessage.class.isAssignableFrom(javaClass);
+        Class<? extends Message> baseClass;
+        if (isEventMessage) {
+            baseClass = isRejectionMessage
+                ? RejectionMessage.class
+                : EventMessage.class;
+        } else if (isCommandMessage) {
+            baseClass = CommandMessage.class;
+        } else {
+            baseClass = MessageWithConstraints.class;
+        }
+        ExistingInterface result = new ExistingInterface(ClassName.of(baseClass));
+        return result;
     }
 
     private static CompilerOutput

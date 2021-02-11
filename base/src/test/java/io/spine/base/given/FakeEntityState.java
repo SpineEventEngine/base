@@ -111,7 +111,7 @@ public final class FakeEntityState extends AbstractMessage
         return null;
     }
 
-    //@Override
+    @Override
     public ImmutableList<ConstraintViolation> validate() {
         return ImmutableList.of();
     }

@@ -191,7 +191,7 @@ class ThrowableMessageTest {
             return null;
         }
 
-        //@Override
+        @Override
         public ImmutableList<ConstraintViolation> validate() {
             return ImmutableList.of();
         }

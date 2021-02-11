@@ -27,13 +27,18 @@
 package io.spine.tools.protoc.plugin.message;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.protoc.plugin.CompilerOutput;
+import com.google.protobuf.Message;
+import io.spine.base.CommandMessage;
+import io.spine.base.EventMessage;
 import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.FilePattern;
+import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.tools.protoc.plugin.FilePatternMatcher;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.protoc.plugin.message.InterfaceParameter.generatedClass;
+import static io.spine.tools.protoc.plugin.message.InterfaceParameter.validatingBuilder;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 
 /**
@@ -53,6 +58,12 @@ final class ImplementByPattern extends ImplementInterface {
 
     @Override
     public InterfaceParameters interfaceParameters(MessageType type) {
+        Class<? extends Message> javaClass = type.javaClass();
+        boolean isEventMessage = EventMessage.class.isAssignableFrom(javaClass);
+        boolean isCommandMessage = CommandMessage.class.isAssignableFrom(javaClass);
+        if (isEventMessage || isCommandMessage) {
+            return InterfaceParameters.of(validatingBuilder(), generatedClass());
+        }
         return InterfaceParameters.empty();
     }
 

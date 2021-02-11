@@ -36,11 +36,11 @@ import org.junit.jupiter.api.Test;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("RejectionGen plugin should")
+@DisplayName("Rejection generation plugin should")
 class RejectionPluginTest {
 
     @Test
-    @DisplayName("generate a rejection, which extends ThrowableMessage")
+    @DisplayName("generate a rejection, which extends `ThrowableMessage`")
     void generate() {
         String username = Identifier.newUuid();
         CannotUpdateUsername rejection = CannotUpdateUsername
