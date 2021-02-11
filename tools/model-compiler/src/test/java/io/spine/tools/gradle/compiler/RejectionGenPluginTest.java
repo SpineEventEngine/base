@@ -54,7 +54,7 @@ import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.newProjectWi
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.rejectionsJavadocThrowableSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("RejectionGenPlugin should")
+@DisplayName("`RejectionGenPlugin` should")
 class RejectionGenPluginTest {
 
     private File testProjectDir;
@@ -75,6 +75,7 @@ class RejectionGenPluginTest {
                                              .setProjectName("rejections-gen-plugin-test")
                                              .setProjectFolder(testProjectDir)
                                              .addProtoFiles(files)
+                                             .enableDebug()
                                              .build();
         project.executeTask(compileJava);
     }
@@ -121,8 +122,8 @@ class RejectionGenPluginTest {
         assertDoc(expectedComment, method);
     }
 
-    private static void assertDoc(String expectedText, JavaDocCapableSource source) {
-        JavaDocSource javadoc = source.getJavaDoc();
+    private static void assertDoc(String expectedText, JavaDocCapableSource<?> source) {
+        JavaDocSource<?> javadoc = source.getJavaDoc();
         assertEquals(expectedText, javadoc.getFullText());
     }
 }
