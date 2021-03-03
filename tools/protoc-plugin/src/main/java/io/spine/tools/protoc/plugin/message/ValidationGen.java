@@ -92,22 +92,22 @@ public final class ValidationGen extends CodeGenerator {
     }
 
     private static ExistingInterface implementingBaseTypeOf(MessageType type) {
-        Class<? extends Message> javaClass = type.javaClass();
-        boolean isEventMessage = EventMessage.class.isAssignableFrom(javaClass);
-        boolean isRejectionMessage = RejectionMessage.class.isAssignableFrom(javaClass);
-        boolean isCommandMessage = CommandMessage.class.isAssignableFrom(javaClass);
-        Class<? extends Message> baseClass;
-        if (isEventMessage) {
-            baseClass = isRejectionMessage
-                ? RejectionMessage.class
-                : EventMessage.class;
-        } else if (isCommandMessage) {
-            baseClass = CommandMessage.class;
-        } else {
-            baseClass = MessageWithConstraints.class;
-        }
+        Class<? extends Message> baseClass = toBaseClass(type);
         ExistingInterface result = new ExistingInterface(ClassName.of(baseClass));
         return result;
+    }
+
+    private static Class<? extends Message> toBaseClass(MessageType type) {
+        if (type.isEvent()) {
+            return EventMessage.class;
+        }
+        if (type.isCommand()) {
+            return CommandMessage.class;
+        }
+        if (type.isRejection()) {
+            return RejectionMessage.class;
+        }
+        return MessageWithConstraints.class;
     }
 
     private static CompilerOutput

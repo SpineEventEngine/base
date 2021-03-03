@@ -58,10 +58,11 @@ final class ImplementByPattern extends ImplementInterface {
 
     @Override
     public InterfaceParameters interfaceParameters(MessageType type) {
-        Class<? extends Message> javaClass = type.javaClass();
-        boolean isEventMessage = EventMessage.class.isAssignableFrom(javaClass);
-        boolean isCommandMessage = CommandMessage.class.isAssignableFrom(javaClass);
-        if (isEventMessage || isCommandMessage) {
+        boolean isEventMessage = type.isEvent();
+        boolean isCommandMessage = type.isCommand();
+        boolean isRejection = type.isRejection();
+
+        if (isEventMessage || isRejection || isCommandMessage) {
             return InterfaceParameters.of(validatingBuilder(), generatedClass());
         }
         return InterfaceParameters.empty();
