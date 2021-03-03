@@ -26,16 +26,18 @@
 
 package io.spine.tools.compiler.gen;
 
-import io.spine.value.StringTypeValue;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.tools.protoc.Method;
 
 /**
  * A reference to a method with no arguments.
  */
-public final class NoArgMethod extends StringTypeValue {
+@Immutable
+final class NoArgMethod extends Method {
 
     private static final long serialVersionUID = 0L;
 
-    public NoArgMethod(String methodName) {
+    NoArgMethod(String methodName) {
         super(methodName);
     }
 
@@ -43,7 +45,7 @@ public final class NoArgMethod extends StringTypeValue {
         return value();
     }
 
-    public String signature() {
+    String signature() {
         return value() + "()";
     }
 }

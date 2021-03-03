@@ -41,7 +41,7 @@ import io.spine.value.StringTypeValue;
  * of other Protobuf-generated sources.
  */
 @Immutable
-public final class Method extends StringTypeValue {
+public class Method extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
 
@@ -54,7 +54,7 @@ public final class Method extends StringTypeValue {
     }
 
     /**
-     * Cretes an instance with the code of the method obtained from the passed spec.
+     * Creates an instance with the code of the method obtained from the passed spec.
      */
     public Method(MethodSpec spec) {
         this(spec.toString());
