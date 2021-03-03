@@ -53,14 +53,14 @@ import static javax.lang.model.element.Modifier.STATIC;
  * <p>The generated type extends {@link RejectionThrowable} and encloses an instance of the
  * corresponding {@linkplain io.spine.base.RejectionMessage rejection message}.
  */
-public final class RejectionSpec implements TypeSpec, Logging {
+public final class RThrowableSpec implements TypeSpec, Logging {
 
     private static final NoArgMethod messageThrown = new NoArgMethod("messageThrown");
 
     private final RejectionType declaration;
     private final JavaPoetName messageClass;
 
-    private final RejectionBuilderSpec builder;
+    private final RThrowableBuilderSpec builder;
 
     /**
      * Creates a new instance.
@@ -68,10 +68,10 @@ public final class RejectionSpec implements TypeSpec, Logging {
      *  @param type
      *         a rejection declaration
      */
-    public RejectionSpec(RejectionType type) {
+    public RThrowableSpec(RejectionType type) {
         this.declaration = type;
         this.messageClass = JavaPoetName.of(type.messageClass());
-        this.builder = new RejectionBuilderSpec(
+        this.builder = new RThrowableBuilderSpec(
                 type, messageClass, JavaPoetName.of(type.throwableClass())
         );
     }

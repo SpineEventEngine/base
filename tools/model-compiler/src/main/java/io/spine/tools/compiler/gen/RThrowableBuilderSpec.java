@@ -60,7 +60,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  * <p>A generated builder validates rejection messages using
  * {@link io.spine.validate.Validate#checkValid(com.google.protobuf.Message)}.
  */
-final class RejectionBuilderSpec implements BuilderSpec {
+final class RThrowableBuilderSpec implements BuilderSpec {
 
     private static final NoArgMethod newBuilder = new NoArgMethod(Messages.METHOD_NEW_BUILDER);
     @SuppressWarnings("DuplicateStringLiteralInspection") // local semantics.
@@ -71,9 +71,9 @@ final class RejectionBuilderSpec implements BuilderSpec {
     private final JavaPoetName throwableClass;
     private final SimpleClassName name;
 
-    RejectionBuilderSpec(RejectionType rejection,
-                         JavaPoetName messageClass,
-                         JavaPoetName throwableClass) {
+    RThrowableBuilderSpec(RejectionType rejection,
+                          JavaPoetName messageClass,
+                          JavaPoetName throwableClass) {
         this.rejection = rejection;
         this.messageClass = messageClass;
         this.throwableClass = throwableClass;

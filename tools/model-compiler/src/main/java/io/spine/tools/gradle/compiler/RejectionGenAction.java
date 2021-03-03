@@ -37,7 +37,7 @@ import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.RejectionsFile;
 import io.spine.code.proto.SourceProtoBelongsToModule;
-import io.spine.tools.compiler.gen.RejectionSpec;
+import io.spine.tools.compiler.gen.RThrowableSpec;
 import io.spine.tools.gradle.CodeGenerationAction;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -105,7 +105,7 @@ final class RejectionGenAction extends CodeGenerationAction {
             // as for the Protobuf message.
             _debug().log("Processing rejection `%s`.", rejectionType.simpleJavaClassName());
 
-            TypeSpec spec = new RejectionSpec(rejectionType);
+            TypeSpec spec = new RThrowableSpec(rejectionType);
             TypeSpecWriter writer = new TypeSpecWriter(spec, indent());
             writer.write(targetDir().toPath());
         }
