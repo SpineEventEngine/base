@@ -27,6 +27,7 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableSet;
+import io.spine.base.RejectionThrowable;
 import io.spine.base.RejectionType;
 import io.spine.code.gen.Indent;
 import io.spine.code.gen.java.TypeSpec;
@@ -52,7 +53,7 @@ import static io.spine.code.proto.RejectionsFile.findAll;
  * Generates source code of rejections.
  *
  * <p>For each message type declared in the {@code rejections.proto} generates a corresponding
- * rejection type which extends {@link io.spine.base.ThrowableMessage} and encloses an instance of
+ * rejection type which extends {@link RejectionThrowable} and encloses an instance of
  * the corresponding proto message.
  *
  * <p>The {@link Extension#targetGenRejectionsRootDir} and

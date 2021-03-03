@@ -101,7 +101,7 @@ public final class RejectionType extends MessageType {
     }
 
     /**
-     * Obtains the class name of the {@linkplain io.spine.base.ThrowableMessage rejection}.
+     * Obtains the class name of the {@linkplain RejectionThrowable rejection}.
      *
      * @return the fully qualified class name for a throwable message
      */

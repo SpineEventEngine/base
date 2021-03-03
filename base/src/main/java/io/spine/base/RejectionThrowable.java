@@ -45,11 +45,11 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * <p>Typically used to signalize about a command rejection, occurred in a system. In which case
  * the {@code message} thrown is a detailed description of the rejection reason.
  */
-public abstract class ThrowableMessage extends Throwable {
+public abstract class RejectionThrowable extends Throwable {
 
     private static final long serialVersionUID = 0L;
 
-    private final RejectionMessage message;
+    private final RejectionMessage<?, ?> message;
 
     /** The moment of creation of this object. */
     private final Timestamp timestamp;
@@ -57,7 +57,7 @@ public abstract class ThrowableMessage extends Throwable {
     /** Optional ID of the entity which thrown the message. */
     private @MonotonicNonNull Any producerId;
 
-    protected ThrowableMessage(RejectionMessage message) {
+    protected RejectionThrowable(RejectionMessage<?, ?> message) {
         super();
         this.message = checkNotNull(message);
         this.timestamp = currentTime();
@@ -66,7 +66,7 @@ public abstract class ThrowableMessage extends Throwable {
     /**
      * Obtains the thrown rejection message.
      */
-    public RejectionMessage messageThrown() {
+    public RejectionMessage<?, ?> messageThrown() {
         return message;
     }
 
@@ -88,12 +88,12 @@ public abstract class ThrowableMessage extends Throwable {
      */
     @Internal
     @CanIgnoreReturnValue
-    public synchronized ThrowableMessage initProducer(Any producerId) {
+    public synchronized RejectionThrowable initProducer(Any producerId) {
         checkNotNull(producerId);
         if (this.producerId != null) {
             Object unpackedId = Identifier.unpack(producerId);
             String stringId = Stringifiers.toString(unpackedId);
-            throw newIllegalStateException("Producer already initialized: %s", stringId);
+            throw newIllegalStateException("Producer already initialized: `%s`.", stringId);
         }
         this.producerId = producerId;
         return this;

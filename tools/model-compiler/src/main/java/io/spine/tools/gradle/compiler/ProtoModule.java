@@ -26,6 +26,7 @@
 
 package io.spine.tools.gradle.compiler;
 
+import io.spine.base.RejectionThrowable;
 import io.spine.tools.gradle.SourceScope;
 import org.gradle.api.Project;
 import org.gradle.api.file.FileCollection;
@@ -119,7 +120,7 @@ final class ProtoModule {
 
     /**
      * Obtains a {@linkplain FileCollection collection of files} containing all the production
-     * {@linkplain io.spine.base.ThrowableMessage rejections} generated in this module.
+     * {@linkplain RejectionThrowable rejections} generated in this module.
      *
      * @apiNote The returned collection is a live view on the files, i.e. as the generated
      *        directory is changing, the contents of the collection are mutated.
@@ -132,7 +133,7 @@ final class ProtoModule {
 
     /**
      * Obtains a {@linkplain FileCollection collection of files} containing all the test
-     * {@linkplain io.spine.base.ThrowableMessage rejections} generated in this module.
+     * {@linkplain RejectionThrowable rejections} generated in this module.
      *
      * @apiNote The returned collection is a live view on the files, i.e. as the generated
      *        directory is changing, the contents of the collection are mutated.

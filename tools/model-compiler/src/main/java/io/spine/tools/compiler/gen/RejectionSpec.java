@@ -31,7 +31,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import io.spine.base.RejectionType;
-import io.spine.base.ThrowableMessage;
+import io.spine.base.RejectionThrowable;
 import io.spine.code.gen.java.FieldName;
 import io.spine.code.gen.java.GeneratedBy;
 import io.spine.code.gen.java.JavaPoetName;
@@ -50,7 +50,7 @@ import static javax.lang.model.element.Modifier.STATIC;
 /**
  * A spec for a generated rejection type.
  *
- * <p>The generated type extends {@link ThrowableMessage} and encloses an instance of the
+ * <p>The generated type extends {@link RejectionThrowable} and encloses an instance of the
  * corresponding {@linkplain io.spine.base.RejectionMessage rejection message}.
  */
 public final class RejectionSpec implements TypeSpec, Logging {
@@ -90,7 +90,7 @@ public final class RejectionSpec implements TypeSpec, Logging {
                         .addJavadoc(classJavadoc())
                         .addAnnotation(GeneratedBy.spineModelCompiler())
                         .addModifiers(PUBLIC)
-                        .superclass(ThrowableMessage.class)
+                        .superclass(RejectionThrowable.class)
                         .addField(serialVersionUID())
                         .addMethod(constructor())
                         .addMethod(messageThrown())
@@ -116,7 +116,7 @@ public final class RejectionSpec implements TypeSpec, Logging {
 
     private MethodSpec messageThrown() {
         String methodSignature = messageThrown.signature();
-        _debug().log("Constructing method `%s`.", methodSignature);
+        _debug().log("Adding method `%s`.", methodSignature);
         TypeName returnType = messageClass.value();
         return MethodSpec.methodBuilder(messageThrown.name())
                          .addAnnotation(Override.class)

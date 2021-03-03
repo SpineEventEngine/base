@@ -51,41 +51,41 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("`ThrowableMessage` should")
-class ThrowableMessageTest {
+class RejectionThrowableTest {
 
     private RejectionMessage<?, ?> message;
-    private ThrowableMessage throwableMessage;
+    private RejectionThrowable rejectionThrowable;
     private Any producer;
 
     @BeforeEach
     void setUp() {
         message = new FakeRejectionMessage();
-        throwableMessage = new TestThrowableMessage(message);
+        rejectionThrowable = new TestRejectionThrowable(message);
         producer = Identifier.pack(getClass().getName());
     }
 
     @Test
     @DisplayName("return the thrown message")
     void messageThrown() {
-        assertEquals(message, throwableMessage.messageThrown());
+        assertEquals(message, rejectionThrowable.messageThrown());
     }
 
     @Test
     @DisplayName("have timestamp")
     void haveTimestamp() {
-        assertTrue(Timestamps.isValid(throwableMessage.timestamp()));
+        assertTrue(Timestamps.isValid(rejectionThrowable.timestamp()));
     }
 
     @Test
     @DisplayName("initialize the producer")
     void producer() {
-        assertFalse(throwableMessage.producerId()
-                                    .isPresent());
+        assertFalse(rejectionThrowable.producerId()
+                                      .isPresent());
 
-        ThrowableMessage retVal = throwableMessage.initProducer(producer);
+        RejectionThrowable retVal = rejectionThrowable.initProducer(producer);
 
-        assertSame(throwableMessage, retVal);
-        Optional<Any> optional = throwableMessage.producerId();
+        assertSame(rejectionThrowable, retVal);
+        Optional<Any> optional = rejectionThrowable.producerId();
         assertTrue(optional.isPresent());
         assertEquals(producer, optional.get());
     }
@@ -93,30 +93,30 @@ class ThrowableMessageTest {
     @Test
     @DisplayName("not allow repeated producer initialization")
     void initOnce() {
-        throwableMessage.initProducer(producer);
-        assertIllegalState(() -> throwableMessage.initProducer(producer));
+        rejectionThrowable.initProducer(producer);
+        assertIllegalState(() -> rejectionThrowable.initProducer(producer));
     }
 
     @Test
     @DisplayName("not allow null producer")
     void prohibitNullProducer() {
-        assertNpe(() -> throwableMessage.initProducer(nullRef()));
+        assertNpe(() -> rejectionThrowable.initProducer(nullRef()));
     }
 
     @Test
     @DisplayName("prohibit null message")
     void prohibitNullMessage() {
-        assertNpe(() -> new TestThrowableMessage(nullRef()));
+        assertNpe(() -> new TestRejectionThrowable(nullRef()));
     }
 
     /**
      * Sample {@code ThrowableMessage} class used for test purposes only.
      */
-    private static class TestThrowableMessage extends ThrowableMessage {
+    private static class TestRejectionThrowable extends RejectionThrowable {
 
         private static final long serialVersionUID = 0L;
 
-        private TestThrowableMessage(@SuppressWarnings("rawtypes") RejectionMessage rejection) {
+        private TestRejectionThrowable(@SuppressWarnings("rawtypes") RejectionMessage rejection) {
             super(rejection);
         }
     }
