@@ -82,6 +82,10 @@ dependencies {
     implementation("io.spine:spine-base:$spineVersion")
 }
 
+extensions["modelCompiler"].withGroovyBuilder {
+    setProperty("generateValidation", true)
+}
+
 sourceSets {
     main {
         java.srcDirs("$projectDir/generated/main/java", "$projectDir/generated/main/spine")
