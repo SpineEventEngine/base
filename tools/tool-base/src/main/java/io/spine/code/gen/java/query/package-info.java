@@ -36,5 +36,5 @@ package io.spine.code.gen.java.query;
 
 import io.spine.annotation.Internal;
 
-import javax.annotation.CheckReturnValue;
+import com.google.errorprone.annotations.CheckReturnValue;
 import javax.annotation.ParametersAreNonnullByDefault;

@@ -32,5 +32,5 @@
 @ParametersAreNonnullByDefault
 package io.spine.test.annotation;
 
-import javax.annotation.CheckReturnValue;
+import com.google.errorprone.annotations.CheckReturnValue;
 import javax.annotation.ParametersAreNonnullByDefault;

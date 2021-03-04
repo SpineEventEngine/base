@@ -28,5 +28,5 @@
 @ParametersAreNonnullByDefault
 package io.spine.gradle.compiler.given;
 
-import javax.annotation.CheckReturnValue;
+import com.google.errorprone.annotations.CheckReturnValue;
 import javax.annotation.ParametersAreNonnullByDefault;
