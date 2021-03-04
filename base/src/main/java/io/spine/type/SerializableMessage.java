@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.type;
 
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Message;
