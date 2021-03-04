@@ -40,11 +40,11 @@ import static io.spine.util.Preconditions2.checkNotDefaultArg;
 /**
  * Generates methods for the supplied type based on {@link ConfigByPattern pattern configuration}.
  */
-public final class GenerateMethods extends MethodGenerationTask {
+final class GenerateMethods extends MethodGenerationTask {
 
     private final FilePatternMatcher patternMatcher;
 
-    public GenerateMethods(ExternalClassLoader<MethodFactory> classLoader, ConfigByPattern config) {
+    GenerateMethods(ExternalClassLoader<MethodFactory> classLoader, ConfigByPattern config) {
         super(classLoader, config.getValue());
         checkNotDefaultArg(config.getPattern());
         this.patternMatcher = new FilePatternMatcher(config.getPattern());

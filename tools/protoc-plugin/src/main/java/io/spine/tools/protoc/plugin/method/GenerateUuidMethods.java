@@ -38,9 +38,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Generates methods for supplied UUID value type based on {@link UuidConfig uuid configuration}.
  */
-public final class GenerateUuidMethods extends MethodGenerationTask {
+final class GenerateUuidMethods extends MethodGenerationTask {
 
-    public GenerateUuidMethods(ExternalClassLoader<MethodFactory> classLoader, UuidConfig config) {
+    GenerateUuidMethods(ExternalClassLoader<MethodFactory> classLoader, UuidConfig config) {
         super(classLoader, config.getValue());
     }
 
