@@ -59,9 +59,8 @@ public final class RejectionType extends MessageType {
     public static boolean test(Descriptor type) {
         checkNotNull(type);
         boolean topLevel = isTopLevel(type);
-        boolean inRejectionsFile = FileName.from(type.getFile())
-                                           .isRejections();
-        return topLevel && inRejectionsFile;
+        FileName fileName = FileName.from(type.getFile());
+        return topLevel && fileName.isRejections();
     }
 
     /**
@@ -74,7 +73,7 @@ public final class RejectionType extends MessageType {
         super(message);
         checkArgument(
                 test(message),
-                "Cannot create rejection type from the type `%s`.", message.getFullName()
+                "The type `%s` is not a rejection message.", message.getFullName()
         );
         this.outerJavaClass = SimpleClassName.outerOf(message.getFile());
     }
@@ -90,8 +89,8 @@ public final class RejectionType extends MessageType {
     }
 
     /**
-     * Obtains the class name for the
-     * {@link io.spine.base.RejectionMessage RejectionMessage}.
+     * Obtains a name of the class of the {@linkplain RejectionMessage message} part of
+     * this rejection type.
      *
      * @return the fully qualified class name for the rejection message
      */
@@ -101,11 +100,11 @@ public final class RejectionType extends MessageType {
     }
 
     /**
-     * Obtains the class name of the {@linkplain RejectionThrowable rejection}.
+     * Obtains the class name of the {@linkplain RejectionThrowable throwable} part of
+     * this rejection type.
      *
-     * @return the fully qualified class name for a throwable message
+     * @return the fully qualified class name for a throwable part of the rejection
      */
-    @SuppressWarnings("unused")
     public ClassName throwableClass() {
         return ClassName.of(javaPackage().value() + '.' + descriptor().getName());
     }
