@@ -26,7 +26,6 @@
 
 package io.spine.tools.gradle.compiler;
 
-import io.spine.base.RejectionThrowable;
 import io.spine.tools.gradle.SourceScope;
 import org.gradle.api.Project;
 import org.gradle.api.file.FileCollection;
@@ -38,10 +37,9 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.gradle.SourceScope.main;
 import static io.spine.tools.gradle.SourceScope.test;
-import static io.spine.tools.gradle.compiler.Extension.getTargetGenColumnsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
-import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenColumnsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenRejectionsRootDir;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A source code module with Protobuf.
@@ -110,17 +108,18 @@ final class ProtoModule {
     }
 
     private SourceSet sourceSet(SourceScope sourceScope) {
-        JavaPluginConvention javaConvention = project.getConvention()
-                                                     .getPlugin(JavaPluginConvention.class);
-        SourceSet sourceSet = javaConvention.getSourceSets()
-                                            .findByName(sourceScope.name());
-        checkNotNull(sourceSet);
-        return sourceSet;
+        JavaPluginConvention javaConvention =
+                project.getConvention()
+                       .getPlugin(JavaPluginConvention.class);
+        SourceSet sourceSet =
+                javaConvention.getSourceSets()
+                              .findByName(sourceScope.name());
+        return requireNonNull(sourceSet);
     }
 
     /**
      * Obtains a {@linkplain FileCollection collection of files} containing all the production
-     * {@linkplain RejectionThrowable rejections} generated in this module.
+     * {@linkplain io.spine.base.RejectionThrowable rejections} generated in this module.
      *
      * @apiNote The returned collection is a live view on the files, i.e. as the generated
      *        directory is changing, the contents of the collection are mutated.
@@ -133,39 +132,13 @@ final class ProtoModule {
 
     /**
      * Obtains a {@linkplain FileCollection collection of files} containing all the test
-     * {@linkplain RejectionThrowable rejections} generated in this module.
+     * {@linkplain io.spine.base.RejectionThrowable rejections} generated in this module.
      *
      * @apiNote The returned collection is a live view on the files, i.e. as the generated
      *        directory is changing, the contents of the collection are mutated.
      */
     FileCollection testCompiledRejections() {
         String targetDir = getTargetTestGenRejectionsRootDir(project);
-        FileCollection files = project.fileTree(targetDir);
-        return files;
-    }
-
-    /**
-     * Obtains a {@linkplain FileCollection file collection} of all generated column-declaring
-     * types for {@code main} source set.
-     *
-     * @apiNote The returned collection is a live view on the files, i.e. as the generated
-     *        directory is changing, the contents of the collection are mutated.
-     */
-    FileCollection compiledColumns() {
-        String targetDir = getTargetGenColumnsRootDir(project);
-        FileCollection files = project.fileTree(targetDir);
-        return files;
-    }
-
-    /**
-     * Obtains a {@linkplain FileCollection file collection} of all generated column-declaring
-     * types for {@code test} source set.
-     *
-     * @apiNote The returned collection is a live view on the files, i.e. as the generated
-     *        directory is changing, the contents of the collection are mutated.
-     */
-    FileCollection testCompiledColumns() {
-        String targetDir = getTargetTestGenColumnsRootDir(project);
         FileCollection files = project.fileTree(targetDir);
         return files;
     }
