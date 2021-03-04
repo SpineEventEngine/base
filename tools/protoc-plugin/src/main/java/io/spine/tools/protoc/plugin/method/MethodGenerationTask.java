@@ -42,12 +42,12 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * An abstract base for the method code generation tasks.
  */
-public abstract class MethodGenerationTask implements CodeGenerationTask {
+abstract class MethodGenerationTask implements CodeGenerationTask {
 
     private final ExternalClassLoader<MethodFactory> classLoader;
     private final String factoryName;
 
-    protected MethodGenerationTask(ExternalClassLoader<MethodFactory> classLoader, String factoryName) {
+    MethodGenerationTask(ExternalClassLoader<MethodFactory> classLoader, String factoryName) {
         this.classLoader = checkNotNull(classLoader);
         this.factoryName = checkNotEmptyOrBlank(factoryName);
     }
@@ -56,7 +56,7 @@ public abstract class MethodGenerationTask implements CodeGenerationTask {
      * Performs the actual method code generation using the supplied
      * {@linkplain #factoryName factory}.
      */
-    protected ImmutableList<CompilerOutput> generateMethodsFor(@NonNull MessageType type) {
+    ImmutableList<CompilerOutput> generateMethodsFor(@NonNull MessageType type) {
         MethodFactory factory = classLoader.newInstance(factoryName);
         return factory
                 .generateMethodsFor(type)
