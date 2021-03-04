@@ -221,6 +221,13 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     }
 
     /**
+     * Tells if this message is a signal.
+     */
+    public boolean isSignal() {
+        return isCommand() || isEvent() || isRejection();
+    }
+
+    /**
      * Tells if this message is an entity state.
      */
     public boolean isEntityState() {

@@ -69,12 +69,32 @@ public final class ValidationGen extends CodeGenerator {
 
     @Override
     protected ImmutableSet<CompilerOutput> generate(Type<?, ?> type) {
+        System.err.println("  * [ValidationGen] Evaluating type `" + type + '`');
         return type instanceof MessageType
                ? generateValidationFor((MessageType) type)
                : ImmutableSet.of();
     }
 
+    /**
+     * Generates the validation code for several insertion points of the given {@code Message} type.
+     *
+     * <p>The returned compiler output explicitly marks the given type with
+     * the {@link MessageWithConstraints} interface and includes the code pieces to comply with
+     * its contract, such as the implementation of {@code MessageWithConstraints} API and
+     * the nested {@code Validator} type.
+     *
+     * <p>In case the processed type is a {@linkplain MessageType#isSignal() signal},
+     * the {@link MessageWithConstraints} marker interface is <em>not</em> appended. This is so,
+     * because the contract of signals (e.g. {@link EventMessage} contract) already implies
+     * them being a constrained message.
+     *
+     * @param type
+     *         the type to generate the validation code for
+     * @return compiler output relevant for the passed type
+     */
     private static ImmutableSet<CompilerOutput> generateValidationFor(MessageType type) {
+        System.err.println("  * [ValidationGen] Generating the validation code" +
+                                   " for the message type `" + type + '`');
         ValidateSpecs factory = new ValidateSpecs(type);
         CompilerOutput builderInsertionPoint =
                 insertCode(type, builder_scope, factory.vBuildMethod().toString());
@@ -82,22 +102,23 @@ public final class ValidationGen extends CodeGenerator {
                 insertCode(type, class_scope, factory.validateMethod().toString());
         CompilerOutput validatorClass =
                 insertCode(type, class_scope, factory.validatorClass().toString());
-        Implement iface = interfaceFor(type, implementingBaseTypeOf(type));
-        return ImmutableSet.of(
-                builderInsertionPoint,
-                validateMethod,
-                validatorClass,
-                iface
-        );
+        ImmutableSet.Builder<CompilerOutput> builder = ImmutableSet.builder();
+        builder.add(builderInsertionPoint, validateMethod, validatorClass);
+        if(!type.isSignal()) {
+            Implement iface = interfaceFor(type, implementingBaseTypeOf(type));
+            builder.add(iface);
+        }
+        ImmutableSet<CompilerOutput> result = builder.build();
+        return result;
     }
 
     private static ExistingInterface implementingBaseTypeOf(MessageType type) {
-        Class<? extends Message> baseClass = toBaseClass(type);
+        Class<? extends Message> baseClass = toBaseInterface(type);
         ExistingInterface result = new ExistingInterface(ClassName.of(baseClass));
         return result;
     }
 
-    private static Class<? extends Message> toBaseClass(MessageType type) {
+    private static Class<? extends Message> toBaseInterface(MessageType type) {
         if (type.isEvent()) {
             return EventMessage.class;
         }

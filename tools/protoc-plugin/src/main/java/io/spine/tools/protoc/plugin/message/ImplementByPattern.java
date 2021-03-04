@@ -27,9 +27,6 @@
 package io.spine.tools.protoc.plugin.message;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Message;
-import io.spine.base.CommandMessage;
-import io.spine.base.EventMessage;
 import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.plugin.CompilerOutput;
@@ -58,11 +55,7 @@ final class ImplementByPattern extends ImplementInterface {
 
     @Override
     public InterfaceParameters interfaceParameters(MessageType type) {
-        boolean isEventMessage = type.isEvent();
-        boolean isCommandMessage = type.isCommand();
-        boolean isRejection = type.isRejection();
-
-        if (isEventMessage || isRejection || isCommandMessage) {
+        if (type.isSignal()) {
             return InterfaceParameters.of(validatingBuilder(), generatedClass());
         }
         return InterfaceParameters.empty();
