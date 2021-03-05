@@ -67,7 +67,7 @@ public interface BuiltMessage<B extends ValidatingBuilder<M>, M extends BuiltMes
     @SuppressWarnings("unused")
     static <B extends ValidatingBuilder<M>, M extends BuiltMessage<B, M>>
     B builderOf(Class<? extends M> messageClass) {
-        @SuppressWarnings("unchecked") // The cast is ensured by generic params of `BuildMessage`.
+        @SuppressWarnings("unchecked") // The cast is ensured by generic params of `BuiltMessage`.
         B builder = (B) Messages.builderFor(messageClass);
         return builder;
     }
