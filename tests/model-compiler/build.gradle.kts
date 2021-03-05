@@ -39,6 +39,8 @@ dependencies {
 
 modelCompiler {
 
+    generateValidation = true
+
     interfaces {
         mark(messages().inFiles(suffix("documents.proto")), asType("io.spine.tools.protoc.DocumentMessage"))
         mark(messages().inFiles(prefix("spine/tools/protoc/prefix_generation")), asType("io.spine.tools.protoc.PrefixedMessage"))
