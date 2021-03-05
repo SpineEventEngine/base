@@ -26,7 +26,7 @@
 
 package io.spine.tools.protoc;
 
-import io.spine.base.SerializableMessage;
+import io.spine.type.SerializableMessage;
 
 public interface RegexedMessage extends SerializableMessage {
 }
