@@ -69,7 +69,6 @@ public final class ValidationGen extends CodeGenerator {
 
     @Override
     protected ImmutableSet<CompilerOutput> generate(Type<?, ?> type) {
-        System.err.println("  * [ValidationGen] Evaluating type `" + type + '`');
         return type instanceof MessageType
                ? generateValidationFor((MessageType) type)
                : ImmutableSet.of();
@@ -93,8 +92,6 @@ public final class ValidationGen extends CodeGenerator {
      * @return compiler output relevant for the passed type
      */
     private static ImmutableSet<CompilerOutput> generateValidationFor(MessageType type) {
-        System.err.println("  * [ValidationGen] Generating the validation code" +
-                                   " for the message type `" + type + '`');
         ValidateSpecs factory = new ValidateSpecs(type);
         CompilerOutput builderInsertionPoint =
                 insertCode(type, builder_scope, factory.vBuildMethod().toString());
@@ -105,14 +102,14 @@ public final class ValidationGen extends CodeGenerator {
         ImmutableSet.Builder<CompilerOutput> builder = ImmutableSet.builder();
         builder.add(builderInsertionPoint, validateMethod, validatorClass);
         if(!type.isSignal()) {
-            Implement iface = interfaceFor(type, implementingBaseTypeOf(type));
+            Implement iface = interfaceFor(type, implementingBaseInterfaceOf(type));
             builder.add(iface);
         }
         ImmutableSet<CompilerOutput> result = builder.build();
         return result;
     }
 
-    private static ExistingInterface implementingBaseTypeOf(MessageType type) {
+    private static ExistingInterface implementingBaseInterfaceOf(MessageType type) {
         Class<? extends Message> baseClass = toBaseInterface(type);
         ExistingInterface result = new ExistingInterface(ClassName.of(baseClass));
         return result;
