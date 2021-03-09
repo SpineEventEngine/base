@@ -31,7 +31,7 @@ import io.spine.code.java.ClassName;
 /**
  * An interface which already exists.
  */
-public final class ExistingInterface implements Interface {
+final class ExistingInterface implements Interface {
 
     private final ClassName name;
     private final InterfaceParameters parameters;
@@ -41,7 +41,7 @@ public final class ExistingInterface implements Interface {
         this.parameters = params;
     }
 
-    public ExistingInterface(ClassName name) {
+    ExistingInterface(ClassName name) {
         this(name, InterfaceParameters.empty());
     }
 
