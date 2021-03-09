@@ -148,10 +148,6 @@ message Blizzard {
     repeated Snowflake snowflake = 1 [(distinct) = true];
 }
 
-message Constitution {
-    string amendments = 1 [(distinct) = true];
-}
-
 // Artificial blizzards allow repeating snowflakes.
 message ArtificialBlizzard {
     repeated Snowflake snowflake = 1 [(distinct) = false];
@@ -180,17 +176,6 @@ message DecimalDigit {
     int32 value = 1 [(range) = "[0..10)"];
 }
 
-// A malformed range expression, the range is not closed (as in the right edge is omitted).
-message UpToInfinity {
-
-    int32 value = 1 [(range) = "[0.."];
-}
-
-// A malformed range expression, the range is unopened (as in the left edge is omitted).
-message Unopened {
-    int32 value = 1 [(range) = "..2)"];
-}
-
 // A bet that has below 50% chance to win.
 message UnsafeBet {
     double odds = 1 [(range) = "[0.0..0.5)"];
@@ -205,8 +190,8 @@ message FrostyWeather {
     double celcius = 1 [(range) = "(-10.0..-5.5]"];
 }
 
-// This message declares a field that has a value with boundary types inconsistent to its
-// value type.
+// This message declares a field that has a value with boundary types inconsistent
+// while the value of the value type.
 message FrostyWeatherButInWholeNumber {
 
     // Since `celcius` is of type `double`, the boundaries cannot be of a whole
@@ -227,20 +212,8 @@ message SpacedOutBoundaries {
     int32 value = 1 [(range) = " [  31..32 ) "];
 }
 
-message MinorCitizen {
-
-    // Malformed range - the value the field is `int32` - whole number, while the value of the
-    // left range edge is a floating point number.
-    int32 age = 1 [(range) = "(0..18.01)"];
-}
-
-// A message with a value that has a malformed range.
-message IllegalRanges {
-    double value = 1 [(range) = "{0.6..4.2}"];
-}
-
-// A snowflake is represented by a polygon. Two snowflakes are equal if they have the same
-// amount of edges.
+// A snowflake is represented by a polygon. Two snowflakes are equal if they
+// have the same amount of edges.
 message Snowflake {
 
     int32 edges = 1;

@@ -26,6 +26,7 @@
 
 package io.spine.tools.protoc;
 
+import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Message;
 import io.spine.base.CommandMessage;
@@ -51,6 +52,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -119,9 +121,11 @@ final class ProtocPluginTest {
     @DisplayName("skip non specified message types")
     void skipNonSpecifiedMessageTypes() {
         Class<?> cls = CustomerName.class;
-        Class<?>[] interfaces = cls.getInterfaces();
-        assertEquals(1, interfaces.length);
-        assertSame(CustomerNameOrBuilder.class, interfaces[0]);
+        List<Class<?>> interfaces = ImmutableList.copyOf(cls.getInterfaces());
+        assertThat(interfaces).containsAtLeast(
+                CustomerNameOrBuilder.class,
+                io.spine.validate.MessageWithConstraints.class
+        );
     }
 
     @Test

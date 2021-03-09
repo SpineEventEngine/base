@@ -36,7 +36,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("MessageValidator should")
+@DisplayName("`MessageValidator` should")
 class ValidatorTest {
 
     private List<ConstraintViolation> violations;
