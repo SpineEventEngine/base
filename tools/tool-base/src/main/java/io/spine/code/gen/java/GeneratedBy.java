@@ -47,6 +47,10 @@ public final class GeneratedBy {
     private GeneratedBy() {
     }
 
+    /**
+     * Obtains the specification of the annotation of the code produced by
+     * Spine Model Compiler.
+     */
     public static AnnotationSpec spineModelCompiler() {
         return BY_MODEL_COMPILER;
     }
