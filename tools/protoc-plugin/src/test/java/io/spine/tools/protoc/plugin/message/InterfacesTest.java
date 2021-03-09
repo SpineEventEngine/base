@@ -31,7 +31,7 @@ import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.FilePatterns;
 import io.spine.tools.protoc.plugin.given.TestInterface;
 import io.spine.tools.protoc.plugin.message.tests.ProjectCreated;
-import io.spine.tools.protoc.plugin.method.OuterMessage;
+import io.spine.tools.protoc.plugin.message.tests.OuterMessage;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
