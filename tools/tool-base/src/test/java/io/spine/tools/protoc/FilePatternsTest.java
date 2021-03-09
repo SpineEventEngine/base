@@ -27,12 +27,12 @@
 package io.spine.tools.protoc;
 
 import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.testing.Assertions.assertNpe;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("FilePatterns should")
 final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
@@ -41,31 +41,25 @@ final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
         super(FilePatterns.class);
     }
 
-    @DisplayName("not allow null values for")
     @Nested
+    @DisplayName("not allow `null` values for")
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
     final class NotAllowNulls {
 
-        @DisplayName("fileSuffix pattern")
         @Test
+        @DisplayName("fileSuffix pattern")
         void fileSuffix() {
-            assertNpe(() -> {
-                //noinspection ConstantConditions,ResultOfMethodCallIgnored
-                FilePatterns.fileSuffix(null);
-            });
+            assertNpe(() -> FilePatterns.fileSuffix(null));
         }
 
-        @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
-        @DisplayName("filePrefix pattern")
         @Test
+        @DisplayName("filePrefix pattern")
         void filePrefix() {
-            assertNpe(() -> {
-                FilePatterns.filePrefix(null);
-            });
+            assertNpe(() -> FilePatterns.filePrefix(null));
         }
 
         @Test
         @DisplayName("regex pattern")
-        @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
         void regex() {
             assertNpe(() -> FilePatterns.fileRegex(null));
         }
@@ -84,7 +78,7 @@ final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
             void withFileName() {
                 String suffix = "documents.proto";
                 FilePattern filter = FilePatterns.fileSuffix(suffix);
-                Assertions.assertEquals(suffix, filter.getSuffix());
+                assertEquals(suffix, filter.getSuffix());
             }
 
             @Test
@@ -92,7 +86,7 @@ final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
             void withPathParts() {
                 String suffix = "tools/protoc/documents.proto";
                 FilePattern filter = FilePatterns.fileSuffix(suffix);
-                Assertions.assertEquals(suffix, filter.getSuffix());
+                assertEquals(suffix, filter.getSuffix());
             }
 
             @Test
@@ -100,65 +94,65 @@ final class FilePatternsTest extends UtilityClassTest<FilePatterns> {
             void withAbsolutePath() {
                 String suffix = "/home/user/development/petproject/src/main/proto/documents.proto";
                 FilePattern filter = FilePatterns.fileSuffix(suffix);
-                Assertions.assertEquals(suffix, filter.getSuffix());
+                assertEquals(suffix, filter.getSuffix());
             }
         }
 
-        @DisplayName("prefix pattern")
         @Nested
+        @DisplayName("prefix pattern")
         class Prefix {
 
-            @DisplayName("with file name")
             @Test
+            @DisplayName("with file name")
             void withFileName() {
                 String prefix = "documents_";
                 FilePattern pattern = FilePatterns.filePrefix(prefix);
-                Assertions.assertEquals(prefix, pattern.getPrefix());
+                assertEquals(prefix, pattern.getPrefix());
             }
 
-            @DisplayName("with path parts")
             @Test
+            @DisplayName("with path parts")
             void withPathParts() {
                 String prefix = "io/spine/tools/documents_";
                 FilePattern pattern = FilePatterns.filePrefix(prefix);
-                Assertions.assertEquals(prefix, pattern.getPrefix());
+                assertEquals(prefix, pattern.getPrefix());
             }
 
-            @DisplayName("with absolute file path")
             @Test
+            @DisplayName("with absolute file path")
             void withAbsolutePath() {
                 String prefix = "/home/user/development/petproject/src/main/proto/test_";
                 FilePattern filter = FilePatterns.filePrefix(prefix);
-                Assertions.assertEquals(prefix, filter.getPrefix());
+                assertEquals(prefix, filter.getPrefix());
             }
         }
 
-        @DisplayName("regex pattern")
         @Nested
+        @DisplayName("regex pattern")
         class Regex {
 
-            @DisplayName("with prefix and suffix wildcards")
             @Test
+            @DisplayName("with prefix and suffix wildcards")
             void withBothWildcards() {
                 String regex = ".*documents.*";
                 FilePattern pattern = FilePatterns.fileRegex(regex);
-                Assertions.assertEquals(regex, pattern.getRegex());
+                assertEquals(regex, pattern.getRegex());
             }
 
-            @DisplayName("with path parts")
             @Test
+            @DisplayName("with path parts")
             void withPathParts() {
                 String regex = "io/spine/.*/documents/.*\\.proto";
                 FilePattern pattern = FilePatterns.fileRegex(regex);
-                Assertions.assertEquals(regex, pattern.getRegex());
+                assertEquals(regex, pattern.getRegex());
             }
 
-            @DisplayName("with absolute file path")
             @Test
+            @DisplayName("with absolute file path")
             void withAbsolutePath() {
                 String regex = "/home/user/development/petproject/.*/proto/test_.*\\.proto";
                 FilePattern filter = FilePatterns.fileRegex(regex);
-                Assertions.assertEquals(regex, filter.getRegex());
+                assertEquals(regex, filter.getRegex());
             }
         }
     }
