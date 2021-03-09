@@ -43,7 +43,7 @@ import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`ConstraintCompiler` should")
-class ValidationCodeGeneratorTest {
+class ValidationCodeGenTest {
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)

@@ -44,6 +44,7 @@ import io.spine.type.MessageType;
 import io.spine.type.Type;
 import io.spine.validate.MessageWithConstraints;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protoc.plugin.InsertionPoint.builder_scope;
 import static io.spine.tools.protoc.plugin.InsertionPoint.class_scope;
 import static io.spine.tools.protoc.plugin.message.Implement.interfaceFor;
@@ -59,7 +60,12 @@ public final class ValidationGen extends CodeGenerator {
         super();
     }
 
+    /**
+     * Creates a new instance of the generator of the validation code in accordance to
+     * the passed parameters of the Spine Protoc Plugin.
+     */
     public static CodeGenerator instance(SpineProtocConfig config) {
+        checkNotNull(config);
         boolean skipBuilders = config.getSkipValidatingBuilders();
         boolean doNotGenerate = !config.getGenerateValidation();
         return skipBuilders || doNotGenerate

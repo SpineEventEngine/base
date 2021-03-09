@@ -36,10 +36,10 @@ option java_multiple_files = true;
 
 option (internal_all) = true;
 
-// Configuration of the Spine Protoc plugin.
+// Configuration of the Spine Protoc Plugin.
 //
-// The configuration is passed to the plugin as the single option. The passed value is serialized
-// and base-64 encoded.
+// The configuration is passed to the plugin as the single option.
+// The passed value is serialized and base-64 encoded.
 //
 message SpineProtocConfig {
 
@@ -52,15 +52,17 @@ message SpineProtocConfig {
     // Determines if the generation of `ValidatingBuilder` should be skipped.
     //
     // If set to `true`, message builder classes will NOT implement
-    // `io.spine.protobuf.ValidatingBuilder`. Default value is `false`, i.e. the message classes
+    // `io.spine.protobuf.ValidatingBuilder`.
+    // Default value is `false`, i.e. the message classes
     // should implement the `ValidatingBuilder` interface.
     //
     bool skip_validating_builders = 3;
 
     // Determines if the validation code should be generated for the message types.
     //
-    // The benefit of the generated validation code is performance. It is not required to assemble
-    // metadata over all the combinations of fields and options at the program runtime.
+    // The benefit of the generated validation code is performance.
+    // It is not required to assemble metadata over all the combinations of fields and
+    // options at the program runtime.
     //
     bool generate_validation = 4;
 
@@ -69,7 +71,7 @@ message SpineProtocConfig {
 
     // Reserved for the deleted `add_columns` option.
     //
-    // Use `add_entity_queries` instead.
+    // Please use `add_entity_queries` instead.
     //
     reserved 6;
     reserved "add_columns";
@@ -105,6 +107,7 @@ message AddMethods {
 
     // Factories for the messages declared in files according to a certain pattern.
     repeated ConfigByPattern factory_by_pattern = 2;
+
     // Field number and name reservation due to a deleted field.
     reserved 3;
     reserved "factory_classpath";
@@ -163,8 +166,8 @@ message ConfigByPattern {
 
     // A fully-qualified name of the target.
     //
-    // Currently interface name, method factory name, nested class factory name or field type name
-    // is expected.
+    // Currently interface name, method factory name, nested class factory name or
+    // field type name is expected.
     //
     string value = 1;
 
@@ -190,24 +193,24 @@ message FilePattern {
 
     oneof value {
 
-        // A suffix that a .proto file's full name should end with.
+        // A suffix that a `.proto` file's full name should end with.
         //
-        // If a .proto file matches the suffix, some code generation will be applied to all its
-        // messages.
+        // If a `.proto` file matches the suffix, some code generation will be applied to
+        // all its messages.
         //
         string suffix = 1;
 
-        // A prefix that a .proto file's full name should start with.
+        // A prefix that a `.proto` file's full name should start with.
         //
-        // If a .proto file matches the prefix, some code generation will be applied to all its
-        // messages.
+        // If a `.proto` file matches the prefix, some code generation will be applied to
+        // all its messages.
         //
         string prefix = 2;
 
-        // A regex a .proto file's full name should match.
+        // A regex a `.proto` file's full name should match.
         //
-        // If a .proto file matches the regex, some code generation will be applied to all its
-        // messages.
+        // If a `.proto` file matches the regex, some code generation will be applied to
+        // all its messages.
         //
         string regex = 3;
     }
@@ -216,9 +219,8 @@ message FilePattern {
 // A type name pattern.
 message TypePattern {
 
-    // A pattern which is used to check for a strict match between the type name and the specified
-    // expected type.
-    //
+    // A pattern which is used to check for a strict match between the type name and
+    // the specified expected type.
     string expected_type = 1;
 }
 
