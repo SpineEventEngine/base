@@ -34,12 +34,10 @@ option java_multiple_files = true;
 option java_outer_classname = "EveryIsGeneratedProto";
 option java_package = "io.spine.tools.protoc.plugin.message.tests";
 
-// option (every_is) = {
-//    java_type: "io.spine.tools.protoc.plugin.message.tests.ProtocProjectEvent"
-//    generate: true
-// };
-option (every_is).java_type = "io.spine.tools.protoc.plugin.message.tests.ProtocProjectEvent";
-option (every_is).generate = true;
+ option (every_is) = {
+    java_type: "ProtocProjectEvent"
+    generate: true
+ };
 
 message ProtocProjectCreated {
 
