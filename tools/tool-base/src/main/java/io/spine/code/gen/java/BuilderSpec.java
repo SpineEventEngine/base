@@ -26,6 +26,9 @@
 
 package io.spine.code.gen.java;
 
+/**
+ * A specification of a builder type.
+ */
 public interface BuilderSpec extends TypeSpec {
 
     /**
