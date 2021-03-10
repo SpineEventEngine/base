@@ -30,10 +30,9 @@ package io.spine.base
  * Creates a copy of this message by copies of its properties and then applying
  * values of properties defined in the passed block.
  */
-inline fun <M: BuiltMessage<B, M>, B: ValidatingBuilder<M>>
-        M.copy(block: B.() -> Unit): M {
+fun <M: BuiltMessage<B, M>, B: ValidatingBuilder<M>> M.copy(block: B.() -> Unit): M {
     @Suppress("UNCHECKED_CAST") // ensured by the generated code
     val builder = this.toBuilder() as B
-    block.invoke(builder)
+    builder.block()
     return builder.vBuild()
 }
