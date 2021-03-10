@@ -26,12 +26,15 @@
 
 package io.spine.tools.protoc;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
 
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.tools.protoc.MessageSelectorFactory.prefix;
+import static io.spine.tools.protoc.MessageSelectorFactory.regex;
+import static io.spine.tools.protoc.MessageSelectorFactory.suffix;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("GeneratedMethods should")
@@ -44,14 +47,13 @@ final class MethodsTest {
         Methods methods = new Methods();
         MessageSelectorFactory messages = methods.messages();
         methods.applyFactory(testMethodFactory, messages.uuid());
-        methods.applyFactory(testMethodFactory, messages.inFiles(
-                MessageSelectorFactory.suffix("_test.proto")));
+        methods.applyFactory(testMethodFactory, messages.inFiles(suffix("_test.proto")));
         AddMethods config = methods.asProtocConfig();
 
-        Assertions.assertEquals(testMethodFactory, config.getUuidFactory()
-                                                         .getValue());
-        Assertions.assertEquals(testMethodFactory, config.getFactoryByPattern(0)
-                                                         .getValue());
+        assertThat(config.getUuidFactory().getValue())
+                .isEqualTo(testMethodFactory);
+        assertThat(config.getFactoryByPattern(0).getValue())
+                .isEqualTo(testMethodFactory);
     }
 
     @DisplayName("add multiple file patterns")
@@ -62,9 +64,9 @@ final class MethodsTest {
 
         Methods defaults = new Methods();
         MessageSelectorFactory messages = defaults.messages();
-        defaults.applyFactory(interfaceName, messages.inFiles(MessageSelectorFactory.suffix(pattern)));
-        defaults.applyFactory(interfaceName, messages.inFiles(MessageSelectorFactory.prefix(pattern)));
-        defaults.applyFactory(interfaceName, messages.inFiles(MessageSelectorFactory.regex(pattern)));
+        defaults.applyFactory(interfaceName, messages.inFiles(suffix(pattern)));
+        defaults.applyFactory(interfaceName, messages.inFiles(prefix(pattern)));
+        defaults.applyFactory(interfaceName, messages.inFiles(regex(pattern)));
 
         assertTrue(hasSuffixConfig(pattern, interfaceName, defaults.asProtocConfig()));
         assertTrue(hasPrefixConfig(pattern, interfaceName, defaults.asProtocConfig()));
