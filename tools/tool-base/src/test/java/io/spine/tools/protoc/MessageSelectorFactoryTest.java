@@ -28,13 +28,13 @@ package io.spine.tools.protoc;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.testing.NullPointerTester;
-import com.google.common.truth.Truth;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.code.proto.FileName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 
@@ -59,21 +59,21 @@ final class MessageSelectorFactoryTest {
     @Test
     @DisplayName("create `UuidMessage` selector")
     void createUuidSelector() {
-        Truth.assertThat(factory.uuid()).isInstanceOf(UuidMessage.class);
+        assertThat(factory.uuid()).isInstanceOf(UuidMessage.class);
     }
 
     @Test
     @DisplayName("create `EntityState` selector")
     void createEntityStateSelector() {
-        Truth.assertThat(factory.entityState()).isInstanceOf(EntityState.class);
+        assertThat(factory.entityState()).isInstanceOf(EntityState.class);
     }
 
     @Test
     @DisplayName("create all messages selector")
     void createAllSelector() {
         PatternSelector allSelector = factory.all();
-        Truth.assertThat(allSelector).isInstanceOf(SuffixSelector.class);
-        Truth.assertThat(allSelector.getPattern()).isEqualTo(FileName.EXTENSION);
+        assertThat(allSelector).isInstanceOf(SuffixSelector.class);
+        assertThat(allSelector.getPattern()).isEqualTo(FileName.EXTENSION);
     }
 
     @Nested
@@ -84,7 +84,7 @@ final class MessageSelectorFactoryTest {
         @DisplayName(MessageSelectorFactory.SUFFIX)
         void suffix() {
             String suffix = "_documents.proto";
-            Truth.assertThat(inFiles(MessageSelectorFactory.suffix(suffix)))
+            assertThat(inFiles(MessageSelectorFactory.suffix(suffix)))
                  .isInstanceOf(SuffixSelector.class);
         }
 
@@ -92,7 +92,7 @@ final class MessageSelectorFactoryTest {
         @DisplayName(MessageSelectorFactory.PREFIX)
         void prefix() {
             String prefix = "io/spine/test/orders_";
-            Truth.assertThat(inFiles(MessageSelectorFactory.prefix(prefix)))
+            assertThat(inFiles(MessageSelectorFactory.prefix(prefix)))
                  .isInstanceOf(PrefixSelector.class);
         }
 
@@ -100,7 +100,7 @@ final class MessageSelectorFactoryTest {
         @DisplayName(MessageSelectorFactory.REGEX)
         void regex() {
             String regex = ".*test.*";
-            Truth.assertThat(inFiles(MessageSelectorFactory.regex(regex)))
+            assertThat(inFiles(MessageSelectorFactory.regex(regex)))
                  .isInstanceOf(RegexSelector.class);
         }
     }
