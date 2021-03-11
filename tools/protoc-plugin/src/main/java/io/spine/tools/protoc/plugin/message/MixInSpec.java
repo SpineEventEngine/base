@@ -72,7 +72,7 @@ final class MixInSpec {
         return deduplicated.asList();
     }
 
-    /**                                                                                                                       x
+    /**
      * Scans the given {@linkplain FileDescriptorProto file} for the {@code (every_is)} option.
      */
     private static ImmutableList<CompilerOutput> scanEveryIsOption(MessageType type) {
