@@ -1,0 +1,233 @@
+/*
+ * Copyright 2021, TeamDev. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+syntax = "proto3";
+
+package spine.tools.protoc;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.tools.protoc";
+option java_outer_classname = "ConfigProto";
+option java_multiple_files = true;
+
+option (internal_all) = true;
+
+// Configuration of the Spine Protoc Plugin.
+//
+// The configuration is passed to the plugin as the single option.
+// The passed value is serialized and base-64 encoded.
+//
+message SpineProtocConfig {
+
+    // Interfaces generation tasks.
+    AddInterfaces add_interfaces = 1;
+
+    // Methods generation tasks.
+    AddMethods add_methods = 2;
+
+    // Determines if the generation of `ValidatingBuilder` should be skipped.
+    //
+    // If set to `true`, message builder classes will NOT implement
+    // `io.spine.protobuf.ValidatingBuilder`.
+    // Default value is `false`, i.e. the message classes
+    // should implement the `ValidatingBuilder` interface.
+    //
+    bool skip_validating_builders = 3;
+
+    // Determines if the validation code should be generated for the message types.
+    //
+    // The benefit of the generated validation code is performance.
+    // It is not required to assemble metadata over all the combinations of fields and
+    // options at the program runtime.
+    //
+    bool generate_validation = 4;
+
+    // Nested classes generation tasks.
+    AddNestedClasses add_nested_classes = 5;
+
+    // Reserved for the deleted `add_columns` option.
+    //
+    // Please use `add_entity_queries` instead.
+    //
+    reserved 6;
+    reserved "add_columns";
+
+    // Field generation tasks.
+    AddFields add_fields = 7;
+
+    // Configures the generation of the entity columns and queries.
+    AddEntityQueries add_entity_queries = 8;
+
+    // The classpath used to lookup types by their fully-qualified names.
+    Classpath classpath = 9;
+}
+
+// Configures the generation of interfaces for the classes of certain messages.
+message AddInterfaces {
+
+    // An interface for the messages holding UUID value.
+    UuidConfig uuid_interface = 1;
+
+    // Interfaces to be generated according to the messages residing in files-by-pattern.
+    repeated ConfigByPattern interface_by_pattern = 2;
+
+    // An interface for the messages representing an entity state.
+    EntityStateConfig entity_state_interface = 3;
+}
+
+// Configures the generation of the methods.
+message AddMethods {
+
+    // A factory for the messages holding UUID value.
+    UuidConfig uuid_factory = 1;
+
+    // Factories for the messages declared in files according to a certain pattern.
+    repeated ConfigByPattern factory_by_pattern = 2;
+
+    // Field number and name reservation due to a deleted field.
+    reserved 3;
+    reserved "factory_classpath";
+}
+
+// Configures the generation of the nested classes.
+message AddNestedClasses {
+
+    // Factories for the messages declared in files satisfying a certain pattern.
+    repeated ConfigByPattern factory_by_pattern = 1;
+}
+
+// Configures the generation of the strongly-typed fields.
+message AddFields {
+
+    // Enables strongly-typed field generation for messages that represent entity states.
+    EntityStateConfig entity_state_config = 1;
+
+    // Enables strongly-typed field generation by file pattern.
+    repeated ConfigByPattern config_by_pattern = 2;
+
+    // Enables strongly-typed field generation for specific types.
+    repeated ConfigByType config_by_type = 3;
+}
+
+// DSL for building `Entity`-specific queries.
+message AddEntityQueries {
+
+    // The flag which allows to enable and disable the generation of entity columns and queries.
+    bool generate = 1;
+}
+
+// Configures the code generation for the messages holding a UUID value.
+message UuidConfig {
+
+    // A fully-qualified name of the target.
+    //
+    // Currently interface name or method factory name is expected.
+    //
+    string value = 1;
+}
+
+// Configures the code generation for the messages representing an entity state.
+message EntityStateConfig {
+
+    // A fully-qualified name of the target.
+    //
+    // Currently, the interface name or field type name is expected.
+    //
+    string value = 1;
+}
+
+// Tells what should be applied to the messages of files which satisfy a certain pattern.
+message ConfigByPattern {
+
+
+    // A fully-qualified name of the target.
+    //
+    // Currently interface name, method factory name, nested class factory name or
+    // field type name is expected.
+    //
+    string value = 1;
+
+    // A file pattern that defines for which message types code should be generated.
+    FilePattern pattern = 2;
+}
+
+// Adds a configuration to the messages which satisfy a certain type pattern.
+message ConfigByType {
+
+    // A fully-qualified name of the target.
+    //
+    // Currently, only the field type name is expected.
+    //
+    string value = 1;
+
+    // A pattern for the type name.
+    TypePattern pattern = 2;
+}
+
+// File pattern used to filter messages residing in files.
+message FilePattern {
+
+    oneof value {
+
+        // A suffix that a `.proto` file's full name should end with.
+        //
+        // If a `.proto` file matches the suffix, some code generation will be applied to
+        // all its messages.
+        //
+        string suffix = 1;
+
+        // A prefix that a `.proto` file's full name should start with.
+        //
+        // If a `.proto` file matches the prefix, some code generation will be applied to
+        // all its messages.
+        //
+        string prefix = 2;
+
+        // A regex a `.proto` file's full name should match.
+        //
+        // If a `.proto` file matches the regex, some code generation will be applied to
+        // all its messages.
+        //
+        string regex = 3;
+    }
+}
+
+// A type name pattern.
+message TypePattern {
+
+    // A pattern which is used to check for a strict match between the type name and
+    // the specified expected type.
+    string expected_type = 1;
+}
+
+// A container for the java classpath items.
+//
+message Classpath {
+
+    // An absolute OS-dependent path to a particular classpath JAR.
+    repeated string jar = 1;
+}

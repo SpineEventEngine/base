@@ -31,14 +31,14 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import io.spine.code.proto.OptionExtensionRegistry;
 import io.spine.tools.protoc.SpineProtocConfig;
-import io.spine.tools.protoc.plugin.builder.BuilderGenerator;
-import io.spine.tools.protoc.plugin.column.ColumnGenerator;
-import io.spine.tools.protoc.plugin.field.FieldGenerator;
-import io.spine.tools.protoc.plugin.iface.InterfaceGenerator;
-import io.spine.tools.protoc.plugin.method.MethodGenerator;
-import io.spine.tools.protoc.plugin.nested.NestedClassGenerator;
-import io.spine.tools.protoc.plugin.query.EntityQueryGenerator;
-import io.spine.tools.protoc.plugin.validation.ValidatorCode;
+import io.spine.tools.protoc.plugin.column.ColumnGen;
+import io.spine.tools.protoc.plugin.field.FieldGen;
+import io.spine.tools.protoc.plugin.message.BuilderGen;
+import io.spine.tools.protoc.plugin.message.InterfaceGen;
+import io.spine.tools.protoc.plugin.message.ValidationGen;
+import io.spine.tools.protoc.plugin.message.NestedClassGen;
+import io.spine.tools.protoc.plugin.method.MethodGen;
+import io.spine.tools.protoc.query.EntityQueryGen;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -52,11 +52,15 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 /**
  * A Protobuf Compiler ({@literal a.k.a.} {@code protoc}) plugin.
  *
- * <p>The program reads a {@link CodeGeneratorRequest} from {@code System.in} and writes
- * a {@link CodeGeneratorResponse} into the {@code System.out}.
+ * <p>The program reads
+ * a {@link com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest CodeGeneratorRequest}
+ * from {@code System.in} and writes
+ * a {@link com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse CodeGeneratorResponse}
+ * into the {@code System.out}.
  *
- * <p>For the description of the plugin behavior see {@link InterfaceGenerator} and
- * {@link MethodGenerator}.
+ * <p>For the description of the plugin behavior see
+ * {@link io.spine.tools.protoc.plugin.message.InterfaceGen InterfaceGen} and
+ * {@link io.spine.tools.protoc.plugin.method.MethodGen MethodGen}.
  *
  * <p>For the plugin mechanism see <a href="SpineProtoGenerator.html#contract">
  * {@code SpineProtoGenerator}</a>.
@@ -73,17 +77,16 @@ public final class Plugin {
     public static void main(String[] args) {
         CodeGeneratorRequest request = readRequest();
         SpineProtocConfig config = readConfig(request);
-        CompositeGenerator generator = CompositeGenerator
-                .builder()
-                .add(InterfaceGenerator.instance(config))
-                .add(MethodGenerator.instance(config))
-                .add(BuilderGenerator.instance(config))
-                .add(ValidatorCode.instance(config))
-                .add(NestedClassGenerator.instance(config))
-                .add(ColumnGenerator.instance(config))
-                .add(EntityQueryGenerator.instance(config))
-                .add(FieldGenerator.instance(config))
-                .build();
+        CompositeGenerator generator = CompositeGenerator.of(
+                InterfaceGen.instance(config),
+                MethodGen.instance(config),
+                BuilderGen.instance(config),
+                ValidationGen.instance(config),
+                NestedClassGen.instance(config),
+                ColumnGen.instance(config),
+                EntityQueryGen.instance(config),
+                FieldGen.instance(config)
+        );
         CodeGeneratorResponse response = generator.process(request);
         writeResponse(response);
     }

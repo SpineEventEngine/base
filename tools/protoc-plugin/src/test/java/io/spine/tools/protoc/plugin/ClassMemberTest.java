@@ -28,7 +28,7 @@ package io.spine.tools.protoc.plugin;
 
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.code.fs.java.SourceFile;
-import io.spine.tools.protoc.plugin.method.GeneratedMethod;
+import io.spine.tools.protoc.Method;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,7 +43,7 @@ final class ClassMemberTest {
     @Test
     void createValidCompilerOutput() {
         String methodBody = "public void test(){}";
-        GeneratedMethod method = new GeneratedMethod(methodBody);
+        Method method = new Method(methodBody);
         MessageType type = new MessageType(MessageWithClassScopeInsertion.getDescriptor());
         ClassMember result = ClassMember.method(method, type);
         File file = result.asFile();

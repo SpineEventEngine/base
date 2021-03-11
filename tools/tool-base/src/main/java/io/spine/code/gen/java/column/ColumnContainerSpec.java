@@ -33,12 +33,12 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.WildcardTypeName;
 import io.spine.code.gen.java.EmptyPrivateCtor;
+import io.spine.code.gen.java.GeneratedBy;
 import io.spine.code.gen.java.GeneratedJavadoc;
-import io.spine.code.gen.java.GeneratedTypeSpec;
 import io.spine.code.gen.java.JavaPoetName;
+import io.spine.code.gen.java.TypeSpec;
 import io.spine.code.java.PackageName;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
@@ -49,7 +49,6 @@ import java.util.HashSet;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.code.gen.java.Annotations.generatedBySpineModelCompiler;
 import static io.spine.code.proto.ColumnOption.columnsOf;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -97,7 +96,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  * <p>The nested columns are ignored during the class generation as they are currently not
  * supported on the server side.
  */
-public final class ColumnContainerSpec implements GeneratedTypeSpec {
+public final class ColumnContainerSpec implements TypeSpec {
 
     private static final String CLASS_NAME = "Column";
 
@@ -122,12 +121,12 @@ public final class ColumnContainerSpec implements GeneratedTypeSpec {
     }
 
     @Override
-    public TypeSpec typeSpec() {
+    public com.squareup.javapoet.TypeSpec toPoet() {
         ImmutableList<MethodSpec> columnMethods = columns();
-        TypeSpec result = TypeSpec
+        com.squareup.javapoet.TypeSpec result = com.squareup.javapoet.TypeSpec
                 .classBuilder(CLASS_NAME)
                 .addJavadoc(classJavadoc().spec())
-                .addAnnotation(generatedBySpineModelCompiler())
+                .addAnnotation(GeneratedBy.spineModelCompiler())
                 .addModifiers(PUBLIC, STATIC, FINAL)
                 .addMethod(EmptyPrivateCtor.spec())
                 .addMethods(columnMethods)
@@ -147,7 +146,6 @@ public final class ColumnContainerSpec implements GeneratedTypeSpec {
                        .map(ColumnAccessor::methodSpec)
                        .collect(toImmutableList());
         return result;
-
     }
 
     /**

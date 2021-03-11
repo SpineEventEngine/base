@@ -27,6 +27,7 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.code.gen.java.BuilderSpec;
 import io.spine.code.java.SimpleClassName;
 import io.spine.protobuf.Messages;
 import io.spine.tools.gradle.testing.GradleProject;
@@ -46,15 +47,15 @@ import java.nio.file.Path;
 import java.util.Collection;
 
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
-import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedBuilderClassComment;
-import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedClassComment;
-import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedFirstFieldComment;
-import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedSecondFieldComment;
+import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.expectedBuilderClassComment;
+import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.expectedClassComment;
+import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.expectedFirstFieldComment;
+import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.expectedSecondFieldComment;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.newProjectWithRejectionsJavadoc;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.rejectionsJavadocThrowableSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("RejectionGenPlugin should")
+@DisplayName("`RejectionGenPlugin` should")
 class RejectionGenPluginTest {
 
     private File testProjectDir;
@@ -95,18 +96,20 @@ class RejectionGenPluginTest {
     }
 
     private static void assertRejectionJavadoc(JavaClassSource rejection) {
-        assertDoc(getExpectedClassComment(), rejection);
+        assertDoc(expectedClassComment(), rejection);
         assertMethodDoc("@return a new builder for the rejection", rejection,
                         Messages.METHOD_NEW_BUILDER
         );
     }
 
     private static void assertBuilderJavadoc(JavaClassSource builder) {
-        assertDoc(getExpectedBuilderClassComment(), builder);
-        assertMethodDoc("Creates the rejection from the builder and validates it.", builder, "build"
+        assertDoc(expectedBuilderClassComment(), builder);
+        assertMethodDoc(
+                "Creates the rejection from the builder and validates it.", builder,
+                BuilderSpec.BUILD_METHOD_NAME
         );
-        assertMethodDoc(getExpectedFirstFieldComment(), builder, "setId");
-        assertMethodDoc(getExpectedSecondFieldComment(), builder, "setRejectionMessage");
+        assertMethodDoc(expectedFirstFieldComment(), builder, "setId");
+        assertMethodDoc(expectedSecondFieldComment(), builder, "setRejectionMessage");
     }
 
     private static void assertMethodDoc(String expectedComment,
@@ -121,8 +124,8 @@ class RejectionGenPluginTest {
         assertDoc(expectedComment, method);
     }
 
-    private static void assertDoc(String expectedText, JavaDocCapableSource source) {
-        JavaDocSource javadoc = source.getJavaDoc();
+    private static void assertDoc(String expectedText, JavaDocCapableSource<?> source) {
+        JavaDocSource<?> javadoc = source.getJavaDoc();
         assertEquals(expectedText, javadoc.getFullText());
     }
 }

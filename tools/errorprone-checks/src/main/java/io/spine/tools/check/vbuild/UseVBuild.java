@@ -41,15 +41,14 @@ import com.sun.source.tree.Tree;
 import io.spine.tools.check.BugPatternMatcher;
 
 import static com.google.errorprone.BugPattern.LinkType.NONE;
-import static com.google.errorprone.BugPattern.ProvidesFix.REQUIRES_HUMAN_ATTENTION;
 import static com.google.errorprone.BugPattern.SeverityLevel.WARNING;
 import static com.google.errorprone.BugPattern.StandardTags.FRAGILE_CODE;
 import static com.google.errorprone.matchers.Description.NO_MATCH;
 
 /**
  * An ErrorProne check which warns users to prefer
- * {@link io.spine.protobuf.ValidatingBuilder#vBuild()} over
- * {@link io.spine.protobuf.ValidatingBuilder#build()}.
+ * {@link io.spine.base.ValidatingBuilder#vBuild() vBuild()} method over
+ * {@link io.spine.base.ValidatingBuilder#build() build()}.
  *
  * <p>Unlike {@code build()}, {@code vBuild()} ensures that the constructed message is valid. This
  * is what the user wants in most cases. If, however, for some reason, the validation is unwanted,
@@ -64,7 +63,6 @@ import static com.google.errorprone.matchers.Description.NO_MATCH;
         summary = UseVBuild.SUMMARY,
         severity = WARNING,
         linkType = NONE,
-        providesFix = REQUIRES_HUMAN_ATTENTION,
         tags = FRAGILE_CODE
 )
 public final class UseVBuild

@@ -27,7 +27,7 @@
 package io.spine.code.gen.java;
 
 import io.spine.test.code.generate.uuid.UuidMessage;
-import io.spine.tools.protoc.plugin.method.GeneratedMethod;
+import io.spine.tools.protoc.Method;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -58,8 +58,8 @@ final class UuidMethodFactoryTest {
         @Test
         void generateMethod() {
             MessageType uuidType = new MessageType(UuidMessage.getDescriptor());
-            List<GeneratedMethod> methods = factory.generateMethodsFor(uuidType);
-            GeneratedMethod generate = methods.get(0);
+            List<Method> methods = factory.generateMethodsFor(uuidType);
+            Method generate = methods.get(0);
             assertThat(generate.toString())
                     .isEqualTo("/**\n" +
                                        " * Creates a new instance with a random UUID value.\n" +
@@ -74,8 +74,8 @@ final class UuidMethodFactoryTest {
         @Test
         void ofMethod() {
             MessageType uuidType = new MessageType(UuidMessage.getDescriptor());
-            List<GeneratedMethod> methods = factory.generateMethodsFor(uuidType);
-            GeneratedMethod of = methods.get(1);
+            List<Method> methods = factory.generateMethodsFor(uuidType);
+            Method of = methods.get(1);
             assertThat(of.toString())
                     .isEqualTo("/**\n" +
                                        " * Creates a new instance from the passed value.\n" +

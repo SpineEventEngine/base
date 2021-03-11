@@ -74,6 +74,7 @@ public interface GenericTypeIndex<C> {
      */
     default Class<?> argumentIn(Class<? extends C> cls) {
         checkNotNull(cls);
+        @SuppressWarnings("rawtypes")
         Class<? extends GenericTypeIndex> indexClass = getClass();
         @SuppressWarnings("unchecked") /* The type cast is ensured by the declaration of
             the `GenericTypeIndex` interface. */

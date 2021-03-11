@@ -100,16 +100,6 @@ public enum ScalarType {
     /**
      * Verifies if the passed field has scalar type.
      */
-    public static boolean isScalarType(FieldDeclaration field) {
-        FieldDescriptorProto descriptorProto = field.descriptor()
-                                                    .toProto();
-        boolean result = isScalarType(descriptorProto);
-        return result;
-    }
-
-    /**
-     * Verifies if the passed field has scalar type.
-     */
     public static boolean isScalarType(FieldDescriptorProto field) {
         return of(field).isPresent();
     }

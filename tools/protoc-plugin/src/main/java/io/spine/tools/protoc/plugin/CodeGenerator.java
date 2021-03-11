@@ -26,6 +26,7 @@
 
 package io.spine.tools.protoc.plugin;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
@@ -45,6 +46,7 @@ import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.collect.Lists.newArrayListWithExpectedSize;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.partitioningBy;
@@ -110,18 +112,22 @@ public abstract class CodeGenerator {
      */
     public final CodeGeneratorResponse process(CodeGeneratorRequest request) {
         checkNotNull(request);
-        checkCompilerVersion(request);
         checkNotEmpty(request);
+        checkCompilerVersion(request);
         FileSet fileSet = FileSet.of(request.getProtoFileList());
         MoreKnownTypes.extendWith(fileSet);
-        Set<FileName> requestedFileNames = request.getFileToGenerateList()
-                                                  .stream()
-                                                  .map(FileName::of)
-                                                  .collect(toSet());
+        ImmutableSet<FileName> requestedFileNames = toFileNames(request);
         FileSet requestedFiles = fileSet.find(requestedFileNames);
         TypeSet typeSet = TypeSet.from(requestedFiles);
         CodeGeneratorResponse response = process(typeSet);
         return response;
+    }
+
+    private static ImmutableSet<FileName> toFileNames(CodeGeneratorRequest request) {
+        return request.getFileToGenerateList()
+                      .stream()
+                      .map(FileName::of)
+                      .collect(toImmutableSet());
     }
 
     /**
@@ -174,7 +180,6 @@ public abstract class CodeGenerator {
                     .map(this::generate)
                     .flatMap(Collection::stream)
                     .collect(toSet());
-
     }
 
     /**
@@ -183,26 +188,26 @@ public abstract class CodeGenerator {
     private void checkCompilerVersion(CodeGeneratorRequest request) {
         Version version = request.getCompilerVersion();
         checkArgument(version.getMajor() >= 3,
-                      "Use protoc of version 3.* or higher to run %s",
+                      "Please use `protoc` of version 3.* or higher to run `%s`.",
                       getClass().getName());
     }
 
-    private static Collection<File> mergeFiles(Collection<CompilerOutput> allFiles) {
+    private static List<File> mergeFiles(Collection<CompilerOutput> allFiles) {
         Map<Boolean, List<File>> partitionedFiles = allFiles
                 .stream()
                 .map(CompilerOutput::asFile)
                 .collect(partitioningBy(File::hasInsertionPoint));
-        Collection<File> insertionPoints = mergeInsertionPoints(partitionedFiles.get(true));
-        Collection<File> completeFiles = partitionedFiles.get(false);
+        List<File> insertionPoints = mergeInsertionPoints(partitionedFiles.get(true));
+        List<File> completeFiles = partitionedFiles.get(false);
 
-        Collection<File> merged = newArrayListWithExpectedSize(allFiles.size());
+        List<File> merged = newArrayListWithExpectedSize(allFiles.size());
         merged.addAll(insertionPoints);
         merged.addAll(completeFiles);
 
         return merged;
     }
 
-    private static Collection<File> mergeInsertionPoints(Collection<File> insertionPoints) {
+    private static List<File> mergeInsertionPoints(Collection<File> insertionPoints) {
         File emptyFile = File.getDefaultInstance();
         List<File> merged = insertionPoints
                 .stream()

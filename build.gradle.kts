@@ -58,7 +58,6 @@ extra.apply {
     this["projectsToPublish"] = listOf(
             "base",
             "tool-base",
-            "tools-api",
             "testlib",
             "mute-logging",
             "errorprone-checks",
@@ -74,7 +73,6 @@ extra.apply {
             "plugin-testlib",
 
             // Protoc compiler plugin
-            "protoc-api",
             "validation-generator",
             "protoc-plugin"
     )
@@ -244,10 +242,10 @@ apply {
     }
 }
 
-val smokeTests by tasks.registering(RunBuild::class) {
-    directory = "$rootDir/tools/smoke-tests"
+val tests by tasks.registering(RunBuild::class) {
+    directory = "$rootDir/tests"
 }
 
 tasks.register("buildAll") {
-    dependsOn(tasks.build, smokeTests)
+    dependsOn(tasks.build, tests)
 }

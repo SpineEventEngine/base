@@ -29,7 +29,7 @@ package io.spine.tools.protoc.plugin;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
 /**
- * A {@link CompilerOutput} with a predefined {@link File}.
+ * A {@link CompilerOutput} with a given {@link File}.
  */
 final class FileOutput extends AbstractCompilerOutput {
 

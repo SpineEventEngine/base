@@ -30,8 +30,7 @@ group = "io.spine.tools"
 
 dependencies {
     implementation(project(":tool-base"))
-    implementation(project(":tools-api"))
-    implementation(project(":protoc-api"))
+    implementation(project(":plugin-base"))
     implementation(project(":validation-generator"))
     implementation(Deps.gen.javaPoet)
     implementation(Deps.gen.javaxAnnotation)
@@ -43,11 +42,12 @@ dependencies {
 
 tasks.jar {
     dependsOn(
-            ":protoc-api:jar",
-            ":tools-api:jar",
             ":tool-base:jar",
             ":validation-generator:jar"
     )
+
+    // See https://stackoverflow.com/questions/35704403/what-are-the-eclipsef-rsa-and-eclipsef-sf-in-a-java-jar-file
+    exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
 
     manifest {
         attributes(mapOf("Main-Class" to "io.spine.tools.protoc.plugin.Plugin"))

@@ -27,17 +27,17 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableSet;
+import io.spine.base.RejectionType;
 import io.spine.code.gen.Indent;
-import io.spine.code.gen.java.GeneratedTypeSpec;
+import io.spine.code.gen.java.TypeSpec;
 import io.spine.code.gen.java.TypeSpecWriter;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.RejectionsFile;
 import io.spine.code.proto.SourceProtoBelongsToModule;
-import io.spine.tools.compiler.gen.rejection.RejectionSpec;
+import io.spine.tools.compiler.gen.RThrowableSpec;
 import io.spine.tools.gradle.CodeGenerationAction;
-import io.spine.type.RejectionType;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
@@ -52,8 +52,8 @@ import static io.spine.code.proto.RejectionsFile.findAll;
  * Generates source code of rejections.
  *
  * <p>For each message type declared in the {@code rejections.proto} generates a corresponding
- * rejection type which extends {@link io.spine.base.ThrowableMessage} and encloses an instance of
- * the corresponding proto message.
+ * rejection type which extends {@link io.spine.base.RejectionThrowable RejectionThrowable} and
+ * encloses an instance of the corresponding proto message.
  *
  * <p>The {@link Extension#targetGenRejectionsRootDir} and
  * {@link Extension#targetTestGenRejectionsRootDir} options allow to customize the target root
@@ -104,7 +104,7 @@ final class RejectionGenAction extends CodeGenerationAction {
             // as for the Protobuf message.
             _debug().log("Processing rejection `%s`.", rejectionType.simpleJavaClassName());
 
-            GeneratedTypeSpec spec = new RejectionSpec(rejectionType);
+            TypeSpec spec = new RThrowableSpec(rejectionType);
             TypeSpecWriter writer = new TypeSpecWriter(spec, indent());
             writer.write(targetDir().toPath());
         }

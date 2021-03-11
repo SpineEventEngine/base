@@ -27,14 +27,11 @@
 package io.spine.tools.protoc.plugin;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import io.spine.type.Type;
-
-import java.util.Collection;
-import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * A generator which calls other generators and merges their results.
@@ -43,49 +40,23 @@ public final class CompositeGenerator extends CodeGenerator {
 
     private final ImmutableList<? extends CodeGenerator> generators;
 
-    private CompositeGenerator(Builder builder) {
+    public static CompositeGenerator of(CodeGenerator... gen) {
+        checkNotNull(gen);
+        ImmutableList<CodeGenerator> generators = ImmutableList.copyOf(gen);
+        return new CompositeGenerator(generators);
+    }
+
+    private CompositeGenerator(ImmutableList<CodeGenerator> generators) {
         super();
-        this.generators = ImmutableList.copyOf(builder.generators);
+        this.generators = generators;
     }
 
     @Override
-    protected Collection<CompilerOutput> generate(Type<?, ?> type) {
-        return generators.stream()
-                         .flatMap(generator -> generator.generate(type).stream())
-                         .collect(toImmutableSet());
-    }
-
-    /**
-     * Creates a new builder for the instances of this type.
-     */
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    /**
-     * A builder for the {@code CompositeGenerator} instances.
-     */
-    public static final class Builder {
-
-        private final List<CodeGenerator> generators = newArrayList();
-
-        /**
-         * Prevents direct instantiation.
-         */
-        private Builder() {
-        }
-
-        public Builder add(CodeGenerator generator) {
-            checkNotNull(generator);
-            generators.add(generator);
-            return this;
-        }
-
-        /**
-         * Creates a new instance of {@link CompositeGenerator}.
-         */
-        public CompositeGenerator build() {
-            return new CompositeGenerator(this);
-        }
+    protected ImmutableSet<CompilerOutput> generate(Type<?, ?> type) {
+        ImmutableSet<CompilerOutput> output =
+                generators.stream()
+                          .flatMap(gen -> gen.generate(type).stream())
+                          .collect(toImmutableSet());
+        return output;
     }
 }

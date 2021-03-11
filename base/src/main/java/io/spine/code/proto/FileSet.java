@@ -36,6 +36,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.type.KnownTypes;
 import io.spine.type.MessageType;
+import io.spine.type.Type;
 
 import java.io.File;
 import java.util.Collection;
@@ -116,13 +117,13 @@ public final class FileSet {
                                                  .stream()
                                                  .map(FileName::from)
                                                  .collect(toSet());
-        Map<FileName, FileDescriptor> knownFiles = KnownTypes
-                .instance()
+        Map<FileName, FileDescriptor> knownFiles =
+                KnownTypes.instance()
                 .asTypeSet()
                 .allTypes()
                 .stream()
-                .map(type -> type.descriptor().getFile())
-                .filter(descriptor -> fileNames.contains(FileName.from(descriptor.getFile())))
+                .map(Type::file)
+                .filter(descr -> fileNames.contains(FileName.from(descr.getFile())))
                 .collect(toMap(FileName::from,       // File name as the key.
                                file -> file,         // File descriptor as the value.
                                (left, right) -> left // On duplicates, take the first option.
@@ -295,7 +296,7 @@ public final class FileSet {
         Map<FileName, FileDescriptor> found = newHashMapWithExpectedSize(fileNames.size());
         for (FileName name : fileNames) {
             Optional<FileDescriptor> file = tryFind(name);
-            file.ifPresent(descriptor -> found.put(name, descriptor));
+            file.ifPresent(fileDescr -> found.put(name, fileDescr));
         }
         return new FileSet(found);
     }

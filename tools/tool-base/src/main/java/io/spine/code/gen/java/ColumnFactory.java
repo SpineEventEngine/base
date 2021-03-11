@@ -29,8 +29,8 @@ package io.spine.code.gen.java;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.code.gen.java.column.ColumnContainerSpec;
-import io.spine.tools.protoc.plugin.nested.GeneratedNestedClass;
-import io.spine.tools.protoc.plugin.nested.NestedClassFactory;
+import io.spine.tools.protoc.NestedClass;
+import io.spine.tools.protoc.NestedClassFactory;
 import io.spine.type.MessageType;
 
 import java.util.List;
@@ -44,11 +44,9 @@ import java.util.List;
 public final class ColumnFactory implements NestedClassFactory {
 
     @Override
-    public List<GeneratedNestedClass> generateClassesFor(MessageType messageType) {
-        String generatedCode = ColumnContainerSpec.of(messageType)
-                                                  .typeSpec()
-                                                  .toString();
-        GeneratedNestedClass result = new GeneratedNestedClass(generatedCode);
+    public List<NestedClass> generateClassesFor(MessageType messageType) {
+        TypeSpec columnContainer = ColumnContainerSpec.of(messageType);
+        NestedClass result = new NestedClass(columnContainer);
         return ImmutableList.of(result);
     }
 }

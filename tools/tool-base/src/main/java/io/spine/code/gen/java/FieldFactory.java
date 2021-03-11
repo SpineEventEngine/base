@@ -31,8 +31,8 @@ import com.google.errorprone.annotations.Immutable;
 import io.spine.base.SubscribableField;
 import io.spine.code.gen.java.field.FieldContainerSpec;
 import io.spine.code.java.ClassName;
-import io.spine.tools.protoc.plugin.nested.GeneratedNestedClass;
-import io.spine.tools.protoc.plugin.nested.NestedClassFactory;
+import io.spine.tools.protoc.NestedClass;
+import io.spine.tools.protoc.NestedClassFactory;
 import io.spine.type.MessageType;
 
 import java.util.List;
@@ -46,16 +46,16 @@ import java.util.List;
 public final class FieldFactory implements NestedClassFactory {
 
     @Override
-    public List<GeneratedNestedClass> generateClassesFor(MessageType messageType) {
+    public List<NestedClass> generateClassesFor(MessageType messageType) {
         return createFor(messageType, ClassName.of(SubscribableField.class));
     }
 
-    public List<GeneratedNestedClass> createFor(MessageType messageType, ClassName fieldSupertype) {
+    public List<NestedClass> createFor(MessageType messageType, ClassName fieldSupertype) {
         String generatedCode =
                 new FieldContainerSpec(messageType, fieldSupertype)
-                        .typeSpec()
+                        .toPoet()
                         .toString();
-        GeneratedNestedClass result = new GeneratedNestedClass(generatedCode);
+        NestedClass result = new NestedClass(generatedCode);
         return ImmutableList.of(result);
     }
 }

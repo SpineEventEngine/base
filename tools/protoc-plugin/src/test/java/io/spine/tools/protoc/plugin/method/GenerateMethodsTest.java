@@ -28,10 +28,11 @@ package io.spine.tools.protoc.plugin.method;
 
 import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.ConfigByPattern;
-import io.spine.tools.protoc.plugin.ExternalClassLoader;
 import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.FilePatterns;
-import io.spine.tools.protoc.plugin.given.TestMethodFactory;
+import io.spine.tools.protoc.MethodFactory;
+import io.spine.tools.protoc.given.TestMethodFactory;
+import io.spine.tools.protoc.plugin.ExternalClassLoader;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

@@ -66,8 +66,8 @@ sourceSets {
 /**
  * The JAR task assembles class files with a respect to the re-built message classes.
  *
- * The task checks each input file for a newer version in the `base-validating-builders`. If such
- * a version is found, the older version is excluded.
+ * The task checks each input file for a newer version in the `base-validating-builders`.
+ * If such a version is found, the older version is excluded.
  */
 tasks.jar.configure {
     // See `base-validating-builders/README.md`
@@ -119,9 +119,11 @@ protobuf {
         for (task in all()) {
             val scope = task.sourceSet.name
             task.generateDescriptorSet = true
-            task.descriptorSetOptions.path = "$buildDir/descriptors/$scope/known_types_${scope}.desc"
-            task.descriptorSetOptions.includeImports = true
-            task.descriptorSetOptions.includeSourceInfo = true
+            with(task.descriptorSetOptions) {
+                path = "$buildDir/descriptors/$scope/known_types_${scope}.desc"
+                includeImports = true
+                includeSourceInfo = true
+            }
 
             if (scope.contains("test")) {
                 pruneTestGoogleProtos.configure { dependsOn(task) }
@@ -146,4 +148,3 @@ fun FileTreeElement.isGoogleProtoSource(): Boolean {
 tasks.withType(Jar::class) {
     exclude { it.isGoogleProtoSource() }
 }
-

@@ -27,6 +27,7 @@
 package io.spine.code.proto;
 
 import com.google.common.base.Objects;
+import com.google.common.primitives.Primitives;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Any;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
@@ -193,23 +194,6 @@ public final class FieldDeclaration {
     }
 
     /**
-     * Determines whether the field is an entity ID.
-     *
-     * <p>An entity ID satisfies the following conditions:
-     * <ul>
-     *     <li>Declared as the first field.
-     *     <li>Declared inside an {@linkplain EntityOption#getKind() entity state message}.
-     *     <li>Is not a map or a repeated field.
-     * </ul>
-     *
-     * @return {@code true} if the field is an entity ID, {@code false} otherwise
-     * @see #isId()
-     */
-    public boolean isEntityId() {
-        return isFirstField() && isEntityField() && isNotCollection();
-    }
-
-    /**
      * Determines whether the field is an ID.
      *
      * <p>An ID satisfies the following conditions:
@@ -325,6 +309,21 @@ public final class FieldDeclaration {
         checkState(isMessage());
         Descriptor messageType = descriptor().getMessageType();
         return new MessageType(messageType);
+    }
+
+    /**
+     * Obtains a class name of the field type or a name a wrapper class, if the field is scalar.
+     */
+    @Internal
+    public ClassName className() {
+        if (isScalar()) {
+            @SuppressWarnings("OptionalGetWithoutIsPresent") // checked in `if`
+            ScalarType scalarType = ScalarType.of(descriptor().toProto()).get();
+            Class<?> type = scalarType.javaClass();
+            Class<?> wrapped = Primitives.wrap(type);
+            return ClassName.of(wrapped);
+        }
+        return ClassName.of(javaTypeName());
     }
 
     /** Obtains the descriptor of the value of a map. */

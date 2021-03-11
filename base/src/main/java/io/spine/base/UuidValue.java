@@ -27,7 +27,7 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.Message;
+import io.spine.type.KnownMessage;
 
 /**
  * A common interface for the {@code string}-based unique identifiers.
@@ -39,26 +39,14 @@ import com.google.protobuf.Message;
  * named 'uuid':
  * <pre>
  *     {@code
- *
  *         message ProjectId {
  *             // UUID-based generated value.
  *             string uuid = 1;
  *         }
  *     }
  * </pre>
- *
- * @param <I>
- *         the type of the message
  */
 @SuppressWarnings("InterfaceNeverImplemented") // Used by the Protobuf Compiler plugin.
 @Immutable
-public interface UuidValue<I extends Message> extends SerializableMessage {
-
-    /**
-     * Obtains a {@code MessageClassifier} for types which define a single
-     * string field named {@code uuid}.
-     */
-    static MessageClassifier classifier() {
-        return new UuidValueClassifier();
-    }
+public interface UuidValue extends KnownMessage {
 }

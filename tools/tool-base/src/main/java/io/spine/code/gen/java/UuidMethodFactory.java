@@ -31,8 +31,8 @@ import com.google.errorprone.annotations.Immutable;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
-import io.spine.tools.protoc.plugin.method.GeneratedMethod;
-import io.spine.tools.protoc.plugin.method.MethodFactory;
+import io.spine.tools.protoc.Method;
+import io.spine.tools.protoc.MethodFactory;
 import io.spine.type.MessageType;
 import io.spine.util.Exceptions;
 import io.spine.util.Preconditions2;
@@ -64,7 +64,7 @@ public final class UuidMethodFactory implements MethodFactory {
     private static final String INVALID_STRING_MESSAGE = "Invalid UUID string: %s";
 
     @Override
-    public List<GeneratedMethod> generateMethodsFor(MessageType messageType) {
+    public List<Method> generateMethodsFor(MessageType messageType) {
         checkNotNull(messageType);
         if (!messageType.isUuidValue()) {
             return ImmutableList.of();
@@ -91,7 +91,7 @@ public final class UuidMethodFactory implements MethodFactory {
      *     }
      * </pre>
      */
-    private static GeneratedMethod newOfMethodSpec(TypeName self) {
+    private static Method newOfMethodSpec(TypeName self) {
         ParameterSpec uuidParameter = ParameterSpec
                 .builder(String.class, "uuid")
                 .build();
@@ -112,7 +112,7 @@ public final class UuidMethodFactory implements MethodFactory {
                 .addJavadoc("@throws $T if the passed value is not a valid UUID string\n",
                             IllegalArgumentException.class)
                 .build();
-        return new GeneratedMethod(spec.toString());
+        return new Method(spec);
     }
 
     /**
@@ -125,7 +125,7 @@ public final class UuidMethodFactory implements MethodFactory {
      *      }
      * </pre>
      */
-    private static GeneratedMethod newGenerateMethodSpec(TypeName self) {
+    private static Method newGenerateMethodSpec(TypeName self) {
         MethodSpec spec = MethodSpec
                 .methodBuilder("generate")
                 .returns(self)
@@ -135,6 +135,6 @@ public final class UuidMethodFactory implements MethodFactory {
                 .addJavadoc("Creates a new instance with a random UUID value.\n")
                 .addJavadoc("@see $T#randomUUID\n", UUID.class)
                 .build();
-        return new GeneratedMethod(spec.toString());
+        return new Method(spec);
     }
 }

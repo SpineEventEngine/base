@@ -34,7 +34,13 @@ import com.google.errorprone.annotations.Immutable;
  * <p>This interface is used by the Model Compiler for marking rejection messages.
  * By convention, rejection messages are defined in a proto file, which name ends
  * with {@code rejections.proto}.
+ *
+ * @param <B>
+ *         the type of the builder of the rejection message
+ * @param <M>
+ *         the type of the message used for binging of the builder type
  */
 @Immutable
-public interface RejectionMessage extends EventMessage {
+public interface RejectionMessage<B extends ValidatingBuilder<M>, M extends  RejectionMessage<B, M>>
+        extends EventMessage<B, M> {
 }

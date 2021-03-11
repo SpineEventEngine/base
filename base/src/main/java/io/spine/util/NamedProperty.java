@@ -36,8 +36,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * The abstract base for classes obtaining a value of a named property.
  *
- * @param <T> the type of the property
- * @param <H> the type of the object from which we get the value
+ * @param <T>
+ *         the type of the property
+ * @param <H>
+ *         the type of the object holding the property from which we get the value
  */
 public abstract class NamedProperty<T, H> {
 
@@ -74,6 +76,7 @@ public abstract class NamedProperty<T, H> {
     /**
      * Enumeration of generic type parameters of the {@link NamedProperty} class.
      */
+    @SuppressWarnings("rawtypes") // to avoid unnecessary casts in usage
     public enum GenericParameter implements GenericTypeIndex<NamedProperty> {
 
         /**
@@ -82,7 +85,7 @@ public abstract class NamedProperty<T, H> {
         PROPERTY_TYPE(0),
 
         /**
-         * The index of the declaration of the generic parameter {@code <O>}.
+         * The index of the declaration of the generic parameter {@code <H>}.
          */
         OBJECT_TYPE(1);
 

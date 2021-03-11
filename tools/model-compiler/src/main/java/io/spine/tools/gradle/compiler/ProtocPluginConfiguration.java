@@ -29,11 +29,11 @@ package io.spine.tools.gradle.compiler;
 import com.google.common.collect.ImmutableList;
 import io.spine.io.Files2;
 import io.spine.tools.protoc.Classpath;
-import io.spine.tools.protoc.GeneratedEntityQueries;
-import io.spine.tools.protoc.GeneratedFields;
-import io.spine.tools.protoc.GeneratedInterfaces;
-import io.spine.tools.protoc.GeneratedMethods;
-import io.spine.tools.protoc.GeneratedNestedClasses;
+import io.spine.tools.protoc.EntityQueries;
+import io.spine.tools.protoc.Fields;
+import io.spine.tools.protoc.Interfaces;
+import io.spine.tools.protoc.Methods;
+import io.spine.tools.protoc.NestedClasses;
 import io.spine.tools.protoc.SpineProtocConfig;
 import org.gradle.api.Project;
 import org.gradle.api.file.FileCollection;
@@ -96,11 +96,11 @@ final class ProtocPluginConfiguration {
     }
 
     private static SpineProtocConfig assembleSpineProtocConfig(Project project) {
-        GeneratedInterfaces interfaces = getInterfaces(project);
-        GeneratedMethods methods = getMethods(project);
-        GeneratedNestedClasses nestedClasses = getNestedClasses(project);
-        GeneratedFields fields = getFields(project);
-        GeneratedEntityQueries entityQueries = getEntityQueries(project);
+        Interfaces interfaces = getInterfaces(project);
+        Methods methods = getMethods(project);
+        NestedClasses nestedClasses = getNestedClasses(project);
+        Fields fields = getFields(project);
+        EntityQueries entityQueries = getEntityQueries(project);
         boolean shouldGenerateVBuilders = shouldGenerateValidatingBuilders(project);
         boolean shouldGenerateValidation = shouldGenerateValidation(project);
         Classpath projectClasspath = projectClasspath(project);

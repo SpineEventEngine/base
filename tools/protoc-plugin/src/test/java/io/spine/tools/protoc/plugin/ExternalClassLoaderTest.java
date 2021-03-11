@@ -31,10 +31,8 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.testing.logging.MuteLogging;
 import io.spine.tools.protoc.Classpath;
-import io.spine.tools.protoc.plugin.method.GeneratedMethod;
-import io.spine.tools.protoc.plugin.method.MethodFactory;
-import io.spine.tools.protoc.plugin.ClassInstantiationException;
-import io.spine.tools.protoc.plugin.ExternalClassLoader;
+import io.spine.tools.protoc.Method;
+import io.spine.tools.protoc.MethodFactory;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -141,7 +139,7 @@ final class ExternalClassLoaderTest {
     private static class EmptyMethodFactory implements MethodFactory {
 
         @Override
-        public ImmutableList<GeneratedMethod> generateMethodsFor(MessageType messageType) {
+        public ImmutableList<Method> generateMethodsFor(MessageType messageType) {
             return ImmutableList.of();
         }
     }

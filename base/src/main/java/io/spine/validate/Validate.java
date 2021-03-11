@@ -35,7 +35,6 @@ import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 import io.spine.protobuf.Diff;
-import io.spine.protobuf.MessageWithConstraints;
 import io.spine.type.MessageType;
 import io.spine.type.TypeName;
 import io.spine.validate.option.SetOnce;

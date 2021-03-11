@@ -29,6 +29,7 @@ package io.spine.tools.protoc.plugin.method;
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.tools.protoc.plugin.ExternalClassLoader;
+import io.spine.tools.protoc.MethodFactory;
 import io.spine.tools.protoc.UuidConfig;
 import io.spine.type.MessageType;
 

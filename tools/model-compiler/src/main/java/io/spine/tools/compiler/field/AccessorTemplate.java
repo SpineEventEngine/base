@@ -28,7 +28,6 @@ package io.spine.tools.compiler.field;
 
 import com.google.common.base.Objects;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.annotation.Internal;
 import io.spine.code.gen.java.FieldName;
 
 import java.io.Serializable;
@@ -42,7 +41,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * (e.g. {@code ...Count}).
  */
 @Immutable
-@Internal
 public final class AccessorTemplate implements Serializable {
 
     private static final long serialVersionUID = 0L;

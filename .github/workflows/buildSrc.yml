@@ -17,9 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - name: Check root and `smoke-tests` copies are the same.
+      - name: Check root and `tests` copies are the same.
         shell: bash
-        run: ./script/same-dir.sh ./buildSrc ./tools/smoke-tests/buildSrc
+        run: ./script/same-dir.sh ./buildSrc ./tests/buildSrc
 
       - name: Check root and `base-validating-builders` copies are the same.
         shell: bash

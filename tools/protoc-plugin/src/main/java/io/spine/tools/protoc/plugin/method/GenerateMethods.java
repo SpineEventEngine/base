@@ -31,6 +31,7 @@ import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.plugin.ExternalClassLoader;
 import io.spine.tools.protoc.plugin.FilePatternMatcher;
+import io.spine.tools.protoc.MethodFactory;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;

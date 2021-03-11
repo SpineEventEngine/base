@@ -29,7 +29,7 @@ package io.spine.tools.check.vbuild.given;
 import com.google.protobuf.AbstractMessage;
 import com.google.protobuf.Empty;
 import io.spine.base.FieldPath;
-import io.spine.protobuf.ValidatingBuilder;
+import io.spine.base.ValidatingBuilder;
 
 import java.util.function.Supplier;
 

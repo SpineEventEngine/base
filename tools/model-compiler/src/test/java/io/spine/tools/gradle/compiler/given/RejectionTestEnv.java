@@ -95,22 +95,22 @@ public class RejectionTestEnv {
         );
     }
 
-    public static String getExpectedClassComment() {
+    public static String expectedClassComment() {
         return wrappedInPreTag(CLASS_COMMENT)
                 + " Rejection based on proto type  " +
                 "{@code " + JAVA_PACKAGE + '.' + REJECTION_NAME+ '}';
     }
 
-    public static String getExpectedBuilderClassComment() {
+    public static String expectedBuilderClassComment() {
         return format("The builder for the  {@code %s}  rejection.", REJECTION_NAME);
     }
 
-    public static String getExpectedFirstFieldComment() {
+    public static String expectedFirstFieldComment() {
         return wrappedInPreTag(FIRST_FIELD_COMMENT);
 
     }
 
-    public static String getExpectedSecondFieldComment() {
+    public static String expectedSecondFieldComment() {
         return wrappedInPreTag(SECOND_FIELD_COMMENT);
     }
 

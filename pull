@@ -27,15 +27,17 @@
 #
 
 cd ./config || exit
-echo "Switching the pointer of the 'config' submodule to its 'master'."
+echo "Switching the pointer of the 'config' submodule to its 'master'..."
 git checkout master
 git pull
 
 cd ..
 ./config/pull
 
-echo "Copying buildSrc to base-validating-builders"
+echo "Copying 'buildSrc' to 'base-validating-builders'..."
 cp -R ./buildSrc ./base-validating-builders
 
-echo "Copying buildSrc to smoke-tests"
-cp -R ./buildSrc ./tools/smoke-tests
+echo "Copying 'buildSrc' to 'tests'..."
+cp -R ./buildSrc ./tests
+
+echo "'config' updated."

@@ -28,14 +28,12 @@ package io.spine.protobuf;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.util.concurrent.UncheckedExecutionException;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import com.google.protobuf.MessageLite;
 import com.google.protobuf.ProtocolMessageEnum;
 import io.spine.annotation.Internal;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -69,28 +67,24 @@ public final class Messages {
      */
     public static <M extends Message> M defaultInstance(Class<M> messageClass) {
         checkNotNull(messageClass);
-
         @SuppressWarnings("unchecked")  // Ensured by the `MessageCacheLoader` implementation.
         M result = (M) defaultInstances.getUnchecked(messageClass);
         return result;
     }
 
     /**
-     * Returns the builder of the {@code Message}.
-     *
-     * @param clazz the message class
-     * @return the message builder
+     * Returns the builder for the passed message class.
      */
     @Internal
-    public static Message.Builder builderFor(Class<? extends Message> clazz) {
-        checkNotNull(clazz);
+    public static Message.Builder builderFor(Class<? extends Message> cls) {
+        checkNotNull(cls);
         try {
-            Method factoryMethod = clazz.getDeclaredMethod(METHOD_NEW_BUILDER);
-            Message.Builder result = (Message.Builder) factoryMethod.invoke(null);
-            return result;
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            String errMsg = format("Class %s must be a generated proto message",
-                                   clazz.getCanonicalName());
+            Message message = defaultInstance(cls);
+            Message.Builder builder = message.toBuilder();
+            return builder;
+        } catch (UncheckedExecutionException e) {
+            String errMsg = format("Class `%s` must be a generated proto message.",
+                                   cls.getCanonicalName());
             throw new IllegalArgumentException(errMsg, e);
         }
     }

@@ -26,7 +26,7 @@
 
 package io.spine.base.given;
 
-import io.spine.base.CustomEnvironmentType;
+import io.spine.environment.CustomEnvironmentType;
 
 /**
  * An environment that denotes that the system is running under Google App Engine.

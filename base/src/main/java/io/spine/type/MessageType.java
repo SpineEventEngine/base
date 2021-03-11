@@ -38,6 +38,7 @@ import com.google.protobuf.Message;
 import io.spine.base.UuidValue;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldName;
 import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.LocationPath;
 import io.spine.code.proto.TypeSet;
@@ -152,8 +153,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * Tells if this message is under the "google" package.
      */
     public boolean isGoogle() {
-        FileDescriptor file = descriptor().getFile();
-        boolean result = FileDescriptors.isGoogle(file);
+        boolean result = FileDescriptors.isGoogle(file());
         return result;
     }
 
@@ -166,8 +166,9 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
             return false;
         }
         FileDescriptor optionsProto = OptionsProto.getDescriptor();
-        FileDescriptor file = descriptor().getFile();
-        return !sameFiles(optionsProto, file);
+        FileDescriptor file = file();
+        boolean result = !sameFiles(optionsProto, file);
+        return result;
     }
 
     /**
@@ -217,6 +218,13 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     public boolean isEvent() {
         boolean result = isTopLevel() && declaringFileName().isEvents();
         return result;
+    }
+
+    /**
+     * Tells if this message is a signal.
+     */
+    public boolean isSignal() {
+        return isCommand() || isEvent() || isRejection();
     }
 
     /**
@@ -375,7 +383,13 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * Determines if the message type represents a {@link UuidValue}.
      */
     public boolean isUuidValue() {
-        return UuidValue.classifier()
-                        .test(this);
-    }
+        ImmutableList<FieldDeclaration> fields = fields();
+        if (fields.size() != 1) {
+            return false;
+        }
+        FieldDeclaration theField = fields.get(0);
+        FieldName uuid = FieldName.of("uuid");
+        boolean nameMatches = uuid.equals(theField.name());
+        boolean typeMatches = theField.isString();
+        return nameMatches && typeMatches;    }
 }

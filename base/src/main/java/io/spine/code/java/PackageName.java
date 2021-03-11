@@ -30,6 +30,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.value.StringTypeValue;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
@@ -54,6 +55,7 @@ public final class PackageName extends StringTypeValue {
      * @return new instance
      */
     public static PackageName of(String value) {
+        checkNotNull(value);
         PackageName result = new PackageName(value);
         return result;
     }
@@ -65,9 +67,22 @@ public final class PackageName extends StringTypeValue {
      *         the class to create the package for
      * @return a new instance
      */
-    public static PackageName of(Class cls) {
+    public static PackageName of(Class<?> cls) {
+        checkNotNull(cls);
         return of(cls.getPackage()
                      .getName());
+    }
+
+    /**
+     * Creates a package nested into this one.
+     *
+     * @param name a short name of the nested package
+     * @return nested package
+     */
+    public PackageName nested(String name) {
+        checkNotNull(name);
+        PackageName result = of(value() + delimiter() + name);
+        return result;
     }
 
     /**

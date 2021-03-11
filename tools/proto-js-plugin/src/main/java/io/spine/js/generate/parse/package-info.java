@@ -31,5 +31,5 @@
 @ParametersAreNonnullByDefault
 package io.spine.js.generate.parse;
 
-import javax.annotation.CheckReturnValue;
+import com.google.errorprone.annotations.CheckReturnValue;
 import javax.annotation.ParametersAreNonnullByDefault;

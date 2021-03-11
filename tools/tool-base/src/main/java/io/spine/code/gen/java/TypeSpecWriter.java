@@ -27,7 +27,6 @@
 package io.spine.code.gen.java;
 
 import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.TypeSpec;
 import io.spine.code.gen.Indent;
 import io.spine.logging.Logging;
 
@@ -36,14 +35,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * Writes the {@link GeneratedTypeSpec} to a file.
+ * Writes the {@link TypeSpec} to a file.
  */
 public final class TypeSpecWriter implements Logging {
 
-    private final GeneratedTypeSpec spec;
+    private final TypeSpec spec;
     private final Indent indent;
 
-    public TypeSpecWriter(GeneratedTypeSpec spec, Indent indent) {
+    public TypeSpecWriter(TypeSpec spec, Indent indent) {
         this.spec = spec;
         this.indent = indent;
     }
@@ -59,7 +58,7 @@ public final class TypeSpecWriter implements Logging {
             _debug().log("Creating the output directory `%s`.", outputDir);
             Files.createDirectories(outputDir);
 
-            TypeSpec typeSpec = this.spec.typeSpec();
+            com.squareup.javapoet.TypeSpec typeSpec = this.spec.toPoet();
             String className = typeSpec.name;
             _debug().log("Writing `%s.java`.", className);
 

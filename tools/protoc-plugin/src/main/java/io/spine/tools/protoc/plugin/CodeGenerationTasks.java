@@ -55,10 +55,10 @@ public final class CodeGenerationTasks {
                 result.addAll(output);
             }
             return result.build();
-        } catch (@SuppressWarnings("OverlyBroadCatchBlock")   /* We supply each exception      */
-                Exception e) {                                /*  with better diagnostic data. */
-            throw newIllegalStateException(e, "Error generating the code for `%s`.",
-                                                      type.name());
+        } catch (@SuppressWarnings("OverlyBroadCatchBlock")
+                 /* We supply each exception with better diagnostic data. */
+                Exception e) {
+            throw newIllegalStateException(e, "Error generating the code for `%s`.", type.name());
         }
     }
 }

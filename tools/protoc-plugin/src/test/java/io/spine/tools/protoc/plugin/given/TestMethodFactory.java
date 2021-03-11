@@ -24,12 +24,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.plugin.given;
+package io.spine.tools.protoc.given;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.protoc.plugin.method.GeneratedMethod;
-import io.spine.tools.protoc.plugin.method.MethodFactory;
+import io.spine.tools.protoc.Method;
+import io.spine.tools.protoc.MethodFactory;
 import io.spine.type.MessageType;
 
 import java.util.List;
@@ -40,10 +40,10 @@ import java.util.List;
 @Immutable
 public final class TestMethodFactory implements MethodFactory {
 
-    public static final GeneratedMethod TEST_METHOD = new GeneratedMethod("public void test(){}");
+    public static final Method TEST_METHOD = new Method("public void test(){}");
 
     @Override
-    public List<GeneratedMethod> generateMethodsFor(MessageType messageType) {
+    public List<Method> generateMethodsFor(MessageType messageType) {
         return ImmutableList.of(TEST_METHOD);
     }
 }

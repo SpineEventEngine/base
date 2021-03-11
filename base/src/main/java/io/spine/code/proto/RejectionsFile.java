@@ -30,8 +30,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.base.RejectionType;
 import io.spine.code.java.SimpleClassName;
-import io.spine.type.RejectionType;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +39,7 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static io.spine.type.RejectionType.isValidOuterClassName;
+import static io.spine.base.RejectionType.isValidOuterClassName;
 
 /**
  * A proto file with declarations of {@linkplain io.spine.base.RejectionMessage rejections}.

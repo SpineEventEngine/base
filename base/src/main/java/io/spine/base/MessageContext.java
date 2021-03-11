@@ -30,7 +30,13 @@ import com.google.errorprone.annotations.Immutable;
 
 /**
  * Base interface for message contexts.
+ *
+ * @param <B>
+ *         the type of the builder of the message context
+ * @param <M>
+ *         the type of the message used for binging of the builder type
  */
 @Immutable
-public interface MessageContext extends KnownMessage {
+public interface MessageContext<B extends ValidatingBuilder<M>, M extends MessageContext<B, M>>
+        extends BuiltMessage<B, M> {
 }
