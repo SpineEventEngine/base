@@ -461,7 +461,7 @@ object DependencyResolution {
                 includeGroup("io.spine.gcloud")
             }
         }
-        repositories.jcenter()
+        repositories.mavenCentral()
         repositories.maven {
             url = URI(Repos.gradlePlugins)
         }

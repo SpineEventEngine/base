@@ -35,7 +35,7 @@ buildscript {
 
     repositories {
         mavenLocal()
-        jcenter()
+        mavenCentral()
     }
 
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
@@ -95,7 +95,7 @@ repositories {
         dir("$baseRoot/base/build/libs/")
     }
     mavenLocal()
-    jcenter()
+    mavenCentral()
 }
 
 val spineVersion: String by extra

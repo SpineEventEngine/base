@@ -36,8 +36,8 @@ buildscript {
 
     repositories {
         gradlePluginPortal()
-        jcenter()
         mavenLocal()
+        mavenCentral()
     }
 
     val spineVersion: String by extra
@@ -73,7 +73,7 @@ allprojects {
 
     repositories {
         mavenLocal()
-        jcenter()
+        mavenCentral()
     }
 }
 
