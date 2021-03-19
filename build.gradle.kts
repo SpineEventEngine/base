@@ -235,10 +235,13 @@ subprojects {
 
 apply {
     with(Deps.scripts) {
-        from(jacoco(project))
         from(publish(project))
-        from(generatePom(project))
+        // Aggregated coverage report across all subprojects.
+        from(jacoco(project))
+        // Generate a repository-wide report of 3rd-party dependencies and their licenses.
         from(repoLicenseReport(project))
+        // Generate a `pom.xml` file containing first-level dependency of all projects in the repository.
+        from(generatePom(project))
     }
 }
 
