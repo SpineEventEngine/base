@@ -31,30 +31,9 @@ import io.spine.annotation.GeneratedMixin;
 import io.spine.type.KnownMessage;
 
 /**
- * A common interface for entity state messages.
- *
- * <p>Any message that defines an {@code (entity)} option with a valid {@code kind} is marked with
- * this interface by the Model Compiler.
- *
- * <p>The first field of the entity state message is treated as its identifier. It is a convention
- * that has two goals:
- *
- * <ol>
- *     <li>The definition of an entity state always starts with its ID with no extra Protobuf
- *     options. This way it's feels easy and more natural to read the code.
-
- *     <li>Developers don't forget to specify which of the fields declared in Protobuf corresponds
- *     to the entity ID.
- * </ol>
- *
- * <p>At codegen-time, the Model Compiler substitutes the generic parameter {@code <I>} with
- * an actual type of the first field of the entity state message.
- *
- * @param <I>
- *         the type of entity identifiers
+ * A message of a signal, such as an event or a command.
  */
-@SuppressWarnings("unused") /* Used in the generated code. */
 @Immutable
 @GeneratedMixin
-public interface EntityState<I> extends KnownMessage {
+public interface SignalMessage extends KnownMessage {
 }

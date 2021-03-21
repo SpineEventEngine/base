@@ -34,8 +34,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Indicates an interface which is used for extending generated code using default methods
- * declared in the interface.
+ * Indicates an interface which is implemented in the generated code.
+ *
+ * <p>Such an interface can be used for grouping generated classes under a common base, or
+ * by adding desired behavior using default methods declared in the mixin interface.
  *
  * <p>In order to generate a class which implements a custom interface:
  * <ol>
