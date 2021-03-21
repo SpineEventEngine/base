@@ -26,9 +26,6 @@
 
 package io.spine.validate
 
-import io.spine.validate.MessageWithConstraints
-import io.spine.validate.ValidatingBuilder
-
 /**
  * Creates a copy of this message by copies of its properties and then applying
  * values of properties defined in the passed block.
