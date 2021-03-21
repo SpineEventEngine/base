@@ -27,6 +27,7 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
+import io.spine.validate.ValidatingBuilder;
 
 /**
  * A common interface for rejection messages.

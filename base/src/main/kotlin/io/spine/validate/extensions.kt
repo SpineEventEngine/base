@@ -24,13 +24,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base
+package io.spine.validate
+
+import io.spine.validate.MessageWithConstraints
+import io.spine.validate.ValidatingBuilder
 
 /**
  * Creates a copy of this message by copies of its properties and then applying
  * values of properties defined in the passed block.
  */
-fun <M: BuiltMessage<B, M>, B: ValidatingBuilder<M>> M.copy(block: B.() -> Unit): M {
+fun <M: MessageWithConstraints, B: ValidatingBuilder<M>> M.copy(block: B.() -> Unit): M {
     @Suppress("UNCHECKED_CAST") // ensured by the generated code
     val builder = this.toBuilder() as B
     builder.block()
