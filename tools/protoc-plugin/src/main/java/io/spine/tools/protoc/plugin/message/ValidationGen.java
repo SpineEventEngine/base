@@ -102,17 +102,19 @@ public final class ValidationGen extends CodeGenerator {
                 insertCode(type, class_scope, factory.validateMethod().toString());
         CompilerOutput validatorClass =
                 insertCode(type, class_scope, factory.validatorClass().toString());
+        Implement iface = interfaceFor(type, implementMessageWithConstraints());
         ImmutableSet.Builder<CompilerOutput> builder = ImmutableSet.builder();
-        builder.add(builderInsertionPoint, validateMethod, validatorClass);
-        if(!type.isSignal()) {
-            Implement iface = interfaceFor(type, implementingBaseInterfaceOf(type));
-            builder.add(iface);
-        }
+        builder.add(
+                iface,
+                builderInsertionPoint,
+                validateMethod,
+                validatorClass
+        );
         ImmutableSet<CompilerOutput> result = builder.build();
         return result;
     }
 
-    private static ExistingInterface implementingBaseInterfaceOf(MessageType type) {
+    private static ExistingInterface implementMessageWithConstraints() {
         ClassName baseInterface = ClassName.of(MessageWithConstraints.class);
         ExistingInterface result = new ExistingInterface(baseInterface);
         return result;
