@@ -45,9 +45,13 @@ buildscript {
 @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
 plugins {
     `java-library`
+    kotlin("jvm") version "1.4.30"
     idea
-    id("com.google.protobuf") version io.spine.gradle.internal.Deps.build.protobuf.gradlePluginVersion
-    id("net.ltgt.errorprone") version io.spine.gradle.internal.Deps.build.errorProne.gradlePluginVersion
+    @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
+    io.spine.gradle.internal.Deps.build.apply {
+        id("com.google.protobuf") version protobuf.gradlePluginVersion
+        id("net.ltgt.errorprone") version errorProne.gradlePluginVersion
+    }
 }
 
 apply(from = "$rootDir/version.gradle.kts")
@@ -111,12 +115,16 @@ subprojects {
 
     apply {
         plugin("java-library")
-        plugin("pmd")
+        plugin("kotlin")
         plugin("com.google.protobuf")
         plugin("net.ltgt.errorprone")
+        plugin("pmd")
         plugin("maven-publish")
-        from(Deps.scripts.projectLicenseReport(project))
-        from(Deps.scripts.checkstyle(project))
+
+        with(Deps.scripts) {
+            from(projectLicenseReport(project))
+            from(checkstyle(project))
+        }
     }
 
     the<JavaPluginExtension>().apply {
@@ -142,6 +150,8 @@ subprojects {
             implementation(jsr305Annotations)
             errorProne.annotations.forEach { implementation(it) }
         }
+        implementation(kotlin("stdlib-jdk8"))
+        
         Deps.test.apply {
             testImplementation(guavaTestlib)
             testImplementation(junit.runner)
