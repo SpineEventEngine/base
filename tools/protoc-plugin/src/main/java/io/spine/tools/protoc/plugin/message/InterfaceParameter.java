@@ -51,18 +51,4 @@ public interface InterfaceParameter {
     default InterfaceParameters toCollection() {
         return InterfaceParameters.of(this);
     }
-
-    /**
-     * The parameter for the validating builder of the generated message.
-     */
-    static InterfaceParameter validatingBuilder() {
-        return new BuilderOfGeneratedClass();
-    }
-
-    /**
-     * The parameter for the generated message class.
-     */
-    static InterfaceParameter generatedClass() {
-        return new GeneratedClass();
-    }
 }

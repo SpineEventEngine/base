@@ -27,11 +27,8 @@
 package io.spine.tools.protoc.plugin.message;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.Message;
 import com.google.protobuf.compiler.PluginProtos;
-import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
-import io.spine.base.RejectionMessage;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.plugin.CodeGenerator;
@@ -116,22 +113,9 @@ public final class ValidationGen extends CodeGenerator {
     }
 
     private static ExistingInterface implementingBaseInterfaceOf(MessageType type) {
-        Class<? extends Message> baseClass = toBaseInterface(type);
-        ExistingInterface result = new ExistingInterface(ClassName.of(baseClass));
+        ClassName baseInterface = ClassName.of(MessageWithConstraints.class);
+        ExistingInterface result = new ExistingInterface(baseInterface);
         return result;
-    }
-
-    private static Class<? extends Message> toBaseInterface(MessageType type) {
-        if (type.isEvent()) {
-            return EventMessage.class;
-        }
-        if (type.isCommand()) {
-            return CommandMessage.class;
-        }
-        if (type.isRejection()) {
-            return RejectionMessage.class;
-        }
-        return MessageWithConstraints.class;
     }
 
     private static CompilerOutput

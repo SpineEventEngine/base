@@ -39,7 +39,7 @@ import io.spine.base.EntityState;
  * @param <B>
  *         the type of the builder in scope of which this criterion exists
  */
-public final class EntityCriterion<S extends EntityState<?, ?, ?>,
+public final class EntityCriterion<S extends EntityState<?>,
                                    V,
                                    B extends EntityQueryBuilder<?, S, B, ?>>
         extends QueryCriterion<S, V, EntityColumn<S, V>, B> {

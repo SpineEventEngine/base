@@ -28,8 +28,6 @@ package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
 import io.spine.annotation.GeneratedMixin;
-import io.spine.validate.BuiltMessage;
-import io.spine.validate.ValidatingBuilder;
 
 /**
  * A common interface for command messages.

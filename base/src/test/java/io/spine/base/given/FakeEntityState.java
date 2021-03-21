@@ -51,8 +51,7 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings({"ReturnOfNull", "Immutable"}) // OK for a fake.
-public final class FakeEntityState extends AbstractMessage
-        implements EntityState<Any, FakeEntityState.Builder, FakeEntityState> {
+public final class FakeEntityState extends AbstractMessage implements EntityState<Any> {
 
     private static final long serialVersionUID = 0;
 
@@ -109,11 +108,6 @@ public final class FakeEntityState extends AbstractMessage
     @Override
     public UnknownFieldSet getUnknownFields() {
         return null;
-    }
-
-    @Override
-    public ImmutableList<ConstraintViolation> validate() {
-        return ImmutableList.of();
     }
 
     public static class Builder implements ValidatingBuilder<FakeEntityState> {
