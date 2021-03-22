@@ -27,6 +27,7 @@
 package io.spine.gradle.internal
 
 import java.net.URI
+import java.io.File
 import java.util.*
 import org.gradle.api.InvalidUserDataException
 import org.gradle.api.Project
@@ -47,7 +48,8 @@ data class Repository(
     val releases: String,
     val snapshots: String,
     private val credentialsFile: String? = null,
-    private val credentials: Credentials? = null
+    private val credentials: Credentials? = null,
+    val name: String = "Maven repository `$releases`"
 ) {
 
     /**
@@ -57,29 +59,32 @@ data class Repository(
      * the credentials. The file must have properties `user.name` and `user.password`, which store
      * the username and the password for the Maven repository auth.
      */
-    fun credentials(project: Project): Credentials {
+    fun credentials(project: Project): Credentials? {
         if (credentials != null) {
             return credentials
-        } else {
-            credentialsFile!!
-            val log = project.logger
-            log.info("Using credentials from `$credentialsFile`.")
-            val file = project.file(credentialsFile)
-            if (file.exists()) {
-                val properties = Properties()
-                properties.load(file.inputStream())
-                val username = properties.getProperty("user.name")
-                val password = properties.getProperty("user.password")
-                log.info("Publishing build as `${username}`.")
-                return Credentials(username, password)
-            } else {
-                throw InvalidUserDataException(
-                    "Please set up valid credentials." +
-                            " Credentials must be set in `${credentialsFile}` file in" +
-                            " the project root."
-                )
-            }
         }
+        credentialsFile!!
+        val log = project.logger
+        log.info("Using credentials from `$credentialsFile`.")
+        val file = project.rootProject.file(credentialsFile)
+        if (!file.exists()) {
+            return null
+        }
+        val creds = file.readCredentials()
+        log.info("Publishing build as `${creds.username}`.")
+        return creds
+    }
+
+    private fun File.readCredentials(): Credentials {
+        val properties = Properties()
+        properties.load(inputStream())
+        val username = properties.getProperty("user.name")
+        val password = properties.getProperty("user.password")
+        return Credentials(username, password)
+    }
+
+    override fun toString(): String {
+        return name
     }
 }
 
@@ -99,11 +104,13 @@ data class Credentials(
 object PublishingRepos {
 
     val mavenTeamDev = Repository(
+        name = "maven.teamdev.com",
         releases = "http://maven.teamdev.com/repository/spine",
         snapshots = "http://maven.teamdev.com/repository/spine-snapshots",
         credentialsFile = "credentials.properties"
     )
     val cloudRepo = Repository(
+        name = "CloudRepo",
         releases = "https://spine.mycloudrepo.io/public/repositories/releases",
         snapshots = "https://spine.mycloudrepo.io/public/repositories/snapshots",
         credentialsFile = "cloudrepo.properties"
@@ -111,6 +118,7 @@ object PublishingRepos {
 
     fun gitHub(repoName: String): Repository {
         return Repository(
+            name = "GitHub Packages",
             releases = "https://maven.pkg.github.com/SpineEventEngine/$repoName",
             snapshots = "https://maven.pkg.github.com/SpineEventEngine/$repoName",
             credentials = Credentials(

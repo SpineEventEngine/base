@@ -30,6 +30,7 @@ import io.spine.gradle.internal.DependencyResolution
 import io.spine.gradle.internal.Deps
 import io.spine.gradle.internal.PublishingRepos
 import io.spine.gradle.internal.RunBuild
+import io.spine.gradle.internal.spinePublishing
 
 buildscript {
     apply(from = "$rootDir/version.gradle.kts")
@@ -58,27 +59,32 @@ apply(from = "$rootDir/version.gradle.kts")
 
 extra.apply {
     this["groupId"] = "io.spine"
-    this["publishToRepository"] = PublishingRepos.cloudRepo
-    this["projectsToPublish"] = listOf(
-            "base",
-            "tool-base",
-            "testlib",
-            "mute-logging",
-            "errorprone-checks",
+}
 
-            // Gradle plugins
-            "plugin-base",
-            "javadoc-filter",
-            "javadoc-prettifier",
-            "proto-dart-plugin",
-            "proto-js-plugin",
-            "model-compiler",
+spinePublishing {
+    projectsToPublish.addAll(
+        "base",
+        "tool-base",
+        "testlib",
+        "mute-logging",
+        "errorprone-checks",
 
-            "plugin-testlib",
+        // Gradle plugins
+        "plugin-base",
+        "javadoc-filter",
+        "javadoc-prettifier",
+        "proto-dart-plugin",
+        "proto-js-plugin",
+        "model-compiler",
 
-            // Protoc compiler plugin
-            "validation-generator",
-            "protoc-plugin"
+        "plugin-testlib",
+
+        // Protoc compiler plugin
+        "validation-generator",
+        "protoc-plugin"
+    )
+    targetRepositories.addAll(
+        PublishingRepos.cloudRepo
     )
 }
 
@@ -248,7 +254,6 @@ subprojects {
 
 apply {
     with(Deps.scripts) {
-        from(publish(project))
         // Aggregated coverage report across all subprojects.
         from(jacoco(project))
         // Generate a repository-wide report of 3rd-party dependencies and their licenses.
