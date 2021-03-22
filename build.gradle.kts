@@ -85,6 +85,7 @@ spinePublishing {
     )
     targetRepositories.addAll(
         PublishingRepos.cloudRepo
+        // PublishingRepos.gitHub("LibraryName")
     )
 }
 
@@ -93,6 +94,11 @@ allprojects {
         plugin("jacoco")
         plugin("idea")
         plugin("project-report")
+    }
+
+    // Apply “legacy” dependency definitions which are not yet migrated to Kotlin.
+    // The `ext.deps` project property is used by `.gradle` scripts under `config/gradle`.
+    apply {
         from("$rootDir/config/gradle/dependencies.gradle")
     }
     version = rootProject.extra["versionToPublish"]!!
@@ -126,7 +132,9 @@ subprojects {
         plugin("net.ltgt.errorprone")
         plugin("pmd")
         plugin("maven-publish")
+    }
 
+    apply {
         with(Deps.scripts) {
             from(projectLicenseReport(project))
             from(checkstyle(project))
@@ -258,7 +266,8 @@ apply {
         from(jacoco(project))
         // Generate a repository-wide report of 3rd-party dependencies and their licenses.
         from(repoLicenseReport(project))
-        // Generate a `pom.xml` file containing first-level dependency of all projects in the repository.
+        // Generate a `pom.xml` file containing first-level dependency of all projects
+        // in the repository.
         from(generatePom(project))
     }
 }
