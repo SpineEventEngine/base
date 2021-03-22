@@ -137,6 +137,9 @@ subprojects {
     /**
      * These dependencies are applied to all sub-projects and do not have to
      * be included explicitly.
+     *
+     * We expose production code dependencies as API because they are used
+     * by the framework parts that depend on `base`.
      */
     dependencies {
         Deps.build.apply {
@@ -145,12 +148,12 @@ subprojects {
 
             protobuf.libs.forEach { api(it) }
             api(flogger.lib)
-            implementation(guava.lib)
-            implementation(checker.annotations)
-            implementation(jsr305Annotations)
-            errorProne.annotations.forEach { implementation(it) }
+            api(guava.lib)
+            api(checker.annotations)
+            api(jsr305Annotations)
+            errorProne.annotations.forEach { api(it) }
         }
-        implementation(kotlin("stdlib-jdk8"))
+        api(kotlin("stdlib-jdk8"))
         
         Deps.test.apply {
             testImplementation(guavaTestlib)
