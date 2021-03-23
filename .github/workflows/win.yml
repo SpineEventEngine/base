@@ -6,6 +6,15 @@ on:
       - master
 
 jobs:
+  checkenv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Check credential key is present
+        env:
+          CLOUDREPO_CREDENTIALS_KEY: ${{ secrets.CLOUDREPO_CREDENTIALS_KEY }}
+        run: ./tmp.sh
+
   build:
     runs-on: windows-latest
 
