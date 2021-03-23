@@ -29,14 +29,12 @@ package io.spine.tools.protoc.plugin.message;
 import com.google.common.collect.ImmutableList;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.tools.protoc.EntityStateConfig;
+import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static io.spine.tools.protoc.plugin.message.InterfaceParameter.generatedClass;
-import static io.spine.tools.protoc.plugin.message.InterfaceParameter.validatingBuilder;
 
 /**
  * Marks the provided message type with the {@link io.spine.base.EntityState EntityState} interface
@@ -63,7 +61,7 @@ final class ImplementEntityState extends ImplementInterface {
             return InterfaceParameters.empty();
         }
         InterfaceParameter idType = firstFieldOf(type);
-        return InterfaceParameters.of(idType, validatingBuilder(), generatedClass());
+        return InterfaceParameters.of(idType);
     }
 
     private static InterfaceParameter firstFieldOf(MessageType type) {

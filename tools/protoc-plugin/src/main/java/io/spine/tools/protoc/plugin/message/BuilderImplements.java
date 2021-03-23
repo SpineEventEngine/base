@@ -27,7 +27,7 @@
 package io.spine.tools.protoc.plugin.message;
 
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import io.spine.base.ValidatingBuilder;
+import io.spine.validate.ValidatingBuilder;
 import io.spine.tools.protoc.plugin.AbstractCompilerOutput;
 import io.spine.tools.protoc.plugin.InsertionPoint;
 import io.spine.type.MessageType;
