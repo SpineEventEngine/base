@@ -30,6 +30,7 @@ import io.spine.gradle.internal.DependencyResolution
 import io.spine.gradle.internal.Deps
 import io.spine.gradle.internal.PublishingRepos
 import io.spine.gradle.internal.RunBuild
+import io.spine.gradle.internal.spinePublishing
 
 buildscript {
     apply(from = "$rootDir/version.gradle.kts")
@@ -52,10 +53,12 @@ plugins {
 
 apply(from = "$rootDir/version.gradle.kts")
 
-extra.apply {
-    this["groupId"] = "io.spine"
-    this["publishToRepository"] = PublishingRepos.cloudRepo
-    this["projectsToPublish"] = listOf(
+spinePublishing {
+    targetRepositories.addAll(setOf(
+            PublishingRepos.cloudRepo,
+            PublishingRepos.gitHub("base")
+    ))
+    projectsToPublish.addAll(setOf(
             "base",
             "tool-base",
             "testlib",
@@ -75,7 +78,7 @@ extra.apply {
             // Protoc compiler plugin
             "validation-generator",
             "protoc-plugin"
-    )
+    ))
 }
 
 allprojects {
@@ -85,6 +88,7 @@ allprojects {
         plugin("project-report")
         from("$rootDir/config/gradle/dependencies.gradle")
     }
+    group = "io.spine"
     version = rootProject.extra["versionToPublish"]!!
 }
 
@@ -236,7 +240,6 @@ subprojects {
 apply {
     with(Deps.scripts) {
         from(jacoco(project))
-        from(publish(project))
         from(generatePom(project))
         from(repoLicenseReport(project))
     }
