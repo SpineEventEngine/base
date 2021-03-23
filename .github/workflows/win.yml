@@ -6,15 +6,6 @@ on:
       - master
 
 jobs:
-  checkenv:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - name: Check credential key is present
-        env:
-          CLOUDREPO_CREDENTIALS_KEY: ${{ secrets.CLOUDREPO_CREDENTIALS_KEY }}
-        run: ./tmp.sh
-
   build:
     runs-on: windows-latest
 
@@ -36,3 +27,27 @@ jobs:
       - name: Run smoke tests with Gradle
         shell: cmd
         run: cd tests & gradlew.bat build --stacktrace
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/master'
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - run: git submodule update --init --recursive
+
+      - name: Decrypt CloudRepo credentials
+        run: ./script/decrypt.sh "$CLOUDREPO_CREDENTIALS_KEY" ./cloudrepo.properties.gpg ./cloudrepo.properties
+        env:
+          CLOUDREPO_CREDENTIALS_KEY: ${{ secrets.CLOUDREPO_CREDENTIALS_KEY }}
+
+      - name: Publish artifacts to Maven
+        run: ./gradlew assemble publish --stacktrace
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
