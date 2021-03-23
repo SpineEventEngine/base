@@ -31,7 +31,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import io.spine.base.ValidatingBuilder;
+import io.spine.validate.ValidatingBuilder;
 import io.spine.code.fs.java.SourceFile;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.OptionExtensionRegistry;

@@ -171,10 +171,5 @@ class MessageContextTest {
         public UnknownFieldSet getUnknownFields() {
             return null;
         }
-
-        @Override
-        public ImmutableList<ConstraintViolation> validate() {
-            return ImmutableList.of();
-        }
     }
 }

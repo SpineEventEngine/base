@@ -41,7 +41,7 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
  * validate certain parts of model at a certain point. For example, to group them into a bigger
  * message which is going to be validated later.
  *
- * @see io.spine.base.ValidatingBuilder
+ * @see ValidatingBuilder
  * @see Validated
  */
 @Documented

@@ -45,11 +45,12 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * <p>Typically used to signalize about a command rejection, occurred in a system. In which case
  * the {@code message} thrown is a detailed description of the rejection reason.
  */
+@SuppressWarnings("AbstractClassNeverImplemented") // is used by generated code
 public abstract class RejectionThrowable extends Throwable {
 
     private static final long serialVersionUID = 0L;
 
-    private final RejectionMessage<?, ?> message;
+    private final RejectionMessage message;
 
     /** The moment of creation of this object. */
     private final Timestamp timestamp;
@@ -57,7 +58,7 @@ public abstract class RejectionThrowable extends Throwable {
     /** Optional ID of the entity which thrown the message. */
     private @MonotonicNonNull Any producerId;
 
-    protected RejectionThrowable(RejectionMessage<?, ?> message) {
+    protected RejectionThrowable(RejectionMessage message) {
         super();
         this.message = checkNotNull(message);
         this.timestamp = currentTime();
@@ -66,7 +67,7 @@ public abstract class RejectionThrowable extends Throwable {
     /**
      * Obtains the thrown rejection message.
      */
-    public RejectionMessage<?, ?> messageThrown() {
+    public RejectionMessage messageThrown() {
         return message;
     }
 

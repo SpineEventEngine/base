@@ -32,7 +32,7 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.annotation.Beta;
-import io.spine.base.ValidatingBuilder;
+import io.spine.validate.ValidatingBuilder;
 import io.spine.code.gen.java.GeneratedBy;
 import io.spine.code.gen.java.NestedClassName;
 import io.spine.type.MessageType;

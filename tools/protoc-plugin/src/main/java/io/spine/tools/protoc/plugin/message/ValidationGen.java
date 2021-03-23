@@ -27,11 +27,8 @@
 package io.spine.tools.protoc.plugin.message;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.Message;
 import com.google.protobuf.compiler.PluginProtos;
-import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
-import io.spine.base.RejectionMessage;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.plugin.CodeGenerator;
@@ -105,33 +102,22 @@ public final class ValidationGen extends CodeGenerator {
                 insertCode(type, class_scope, factory.validateMethod().toString());
         CompilerOutput validatorClass =
                 insertCode(type, class_scope, factory.validatorClass().toString());
+        Implement iface = interfaceFor(type, implementMessageWithConstraints());
         ImmutableSet.Builder<CompilerOutput> builder = ImmutableSet.builder();
-        builder.add(builderInsertionPoint, validateMethod, validatorClass);
-        if(!type.isSignal()) {
-            Implement iface = interfaceFor(type, implementingBaseInterfaceOf(type));
-            builder.add(iface);
-        }
+        builder.add(
+                iface,
+                builderInsertionPoint,
+                validateMethod,
+                validatorClass
+        );
         ImmutableSet<CompilerOutput> result = builder.build();
         return result;
     }
 
-    private static ExistingInterface implementingBaseInterfaceOf(MessageType type) {
-        Class<? extends Message> baseClass = toBaseInterface(type);
-        ExistingInterface result = new ExistingInterface(ClassName.of(baseClass));
+    private static ExistingInterface implementMessageWithConstraints() {
+        ClassName baseInterface = ClassName.of(MessageWithConstraints.class);
+        ExistingInterface result = new ExistingInterface(baseInterface);
         return result;
-    }
-
-    private static Class<? extends Message> toBaseInterface(MessageType type) {
-        if (type.isEvent()) {
-            return EventMessage.class;
-        }
-        if (type.isCommand()) {
-            return CommandMessage.class;
-        }
-        if (type.isRejection()) {
-            return RejectionMessage.class;
-        }
-        return MessageWithConstraints.class;
     }
 
     private static CompilerOutput

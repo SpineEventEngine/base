@@ -30,6 +30,7 @@ import io.spine.gradle.internal.DependencyResolution
 import io.spine.gradle.internal.Deps
 import io.spine.gradle.internal.PublishingRepos
 import io.spine.gradle.internal.RunBuild
+import io.spine.gradle.internal.spinePublishing
 
 buildscript {
     apply(from = "$rootDir/version.gradle.kts")
@@ -45,36 +46,46 @@ buildscript {
 @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
 plugins {
     `java-library`
+    kotlin("jvm") version "1.4.30"
     idea
-    id("com.google.protobuf") version io.spine.gradle.internal.Deps.build.protobuf.gradlePluginVersion
-    id("net.ltgt.errorprone") version io.spine.gradle.internal.Deps.build.errorProne.gradlePluginVersion
+    @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
+    io.spine.gradle.internal.Deps.build.apply {
+        id("com.google.protobuf") version protobuf.gradlePluginVersion
+        id("net.ltgt.errorprone") version errorProne.gradlePluginVersion
+    }
 }
 
 apply(from = "$rootDir/version.gradle.kts")
 
 extra.apply {
     this["groupId"] = "io.spine"
-    this["publishToRepository"] = PublishingRepos.cloudRepo
-    this["projectsToPublish"] = listOf(
-            "base",
-            "tool-base",
-            "testlib",
-            "mute-logging",
-            "errorprone-checks",
+}
 
-            // Gradle plugins
-            "plugin-base",
-            "javadoc-filter",
-            "javadoc-prettifier",
-            "proto-dart-plugin",
-            "proto-js-plugin",
-            "model-compiler",
+spinePublishing {
+    projectsToPublish.addAll(
+        "base",
+        "tool-base",
+        "testlib",
+        "mute-logging",
+        "errorprone-checks",
 
-            "plugin-testlib",
+        // Gradle plugins
+        "plugin-base",
+        "javadoc-filter",
+        "javadoc-prettifier",
+        "proto-dart-plugin",
+        "proto-js-plugin",
+        "model-compiler",
 
-            // Protoc compiler plugin
-            "validation-generator",
-            "protoc-plugin"
+        "plugin-testlib",
+
+        // Protoc compiler plugin
+        "validation-generator",
+        "protoc-plugin"
+    )
+    targetRepositories.addAll(
+        PublishingRepos.cloudRepo
+        // PublishingRepos.gitHub("LibraryName")
     )
 }
 
@@ -83,6 +94,11 @@ allprojects {
         plugin("jacoco")
         plugin("idea")
         plugin("project-report")
+    }
+
+    // Apply “legacy” dependency definitions which are not yet migrated to Kotlin.
+    // The `ext.deps` project property is used by `.gradle` scripts under `config/gradle`.
+    apply {
         from("$rootDir/config/gradle/dependencies.gradle")
     }
     version = rootProject.extra["versionToPublish"]!!
@@ -111,12 +127,18 @@ subprojects {
 
     apply {
         plugin("java-library")
-        plugin("pmd")
+        plugin("kotlin")
         plugin("com.google.protobuf")
         plugin("net.ltgt.errorprone")
+        plugin("pmd")
         plugin("maven-publish")
-        from(Deps.scripts.projectLicenseReport(project))
-        from(Deps.scripts.checkstyle(project))
+    }
+
+    apply {
+        with(Deps.scripts) {
+            from(projectLicenseReport(project))
+            from(checkstyle(project))
+        }
     }
 
     the<JavaPluginExtension>().apply {
@@ -129,6 +151,9 @@ subprojects {
     /**
      * These dependencies are applied to all sub-projects and do not have to
      * be included explicitly.
+     *
+     * We expose production code dependencies as API because they are used
+     * by the framework parts that depend on `base`.
      */
     dependencies {
         Deps.build.apply {
@@ -137,11 +162,13 @@ subprojects {
 
             protobuf.libs.forEach { api(it) }
             api(flogger.lib)
-            implementation(guava.lib)
-            implementation(checker.annotations)
-            implementation(jsr305Annotations)
-            errorProne.annotations.forEach { implementation(it) }
+            api(guava.lib)
+            api(checker.annotations)
+            api(jsr305Annotations)
+            errorProne.annotations.forEach { api(it) }
         }
+        api(kotlin("stdlib-jdk8"))
+        
         Deps.test.apply {
             testImplementation(guavaTestlib)
             testImplementation(junit.runner)
@@ -235,10 +262,13 @@ subprojects {
 
 apply {
     with(Deps.scripts) {
+        // Aggregated coverage report across all subprojects.
         from(jacoco(project))
-        from(publish(project))
-        from(generatePom(project))
+        // Generate a repository-wide report of 3rd-party dependencies and their licenses.
         from(repoLicenseReport(project))
+        // Generate a `pom.xml` file containing first-level dependency of all projects
+        // in the repository.
+        from(generatePom(project))
     }
 }
 

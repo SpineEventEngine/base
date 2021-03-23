@@ -42,7 +42,7 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
  * is overridden with a version which returns only valid messages, that version should be marked
  * with this annotation.
  *
- * @see io.spine.base.ValidatingBuilder
+ * @see ValidatingBuilder
  * @see NonValidated
  */
 @Documented
