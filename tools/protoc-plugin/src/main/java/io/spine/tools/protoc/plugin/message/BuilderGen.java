@@ -27,7 +27,6 @@
 package io.spine.tools.protoc.plugin.message;
 
 import com.google.common.collect.ImmutableSet;
-import io.spine.base.ValidatingBuilder;
 import io.spine.tools.protoc.plugin.CodeGenerator;
 import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.tools.protoc.plugin.NoOpGenerator;
@@ -39,7 +38,7 @@ import static io.spine.tools.protoc.plugin.message.BuilderImplements.implementVa
 
 /**
  * A code generator which makes the generated message builders implement
- * {@link ValidatingBuilder}.
+ * {@link io.spine.validate.ValidatingBuilder ValidatingBuilder}.
  */
 public final class BuilderGen extends CodeGenerator {
 

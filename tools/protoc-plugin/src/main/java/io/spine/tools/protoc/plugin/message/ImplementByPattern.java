@@ -34,8 +34,6 @@ import io.spine.tools.protoc.plugin.FilePatternMatcher;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.protoc.plugin.message.InterfaceParameter.generatedClass;
-import static io.spine.tools.protoc.plugin.message.InterfaceParameter.validatingBuilder;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 
 /**
@@ -55,9 +53,6 @@ final class ImplementByPattern extends ImplementInterface {
 
     @Override
     public InterfaceParameters interfaceParameters(MessageType type) {
-        if (type.isSignal()) {
-            return InterfaceParameters.of(validatingBuilder(), generatedClass());
-        }
         return InterfaceParameters.empty();
     }
 

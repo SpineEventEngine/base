@@ -27,16 +27,11 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
+import io.spine.type.KnownMessage;
 
 /**
  * Base interface for message contexts.
- *
- * @param <B>
- *         the type of the builder of the message context
- * @param <M>
- *         the type of the message used for binging of the builder type
  */
 @Immutable
-public interface MessageContext<B extends ValidatingBuilder<M>, M extends MessageContext<B, M>>
-        extends BuiltMessage<B, M> {
+public interface MessageContext extends KnownMessage {
 }

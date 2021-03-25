@@ -24,15 +24,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base
+package io.spine.base;
+
+import com.google.errorprone.annotations.Immutable;
+import io.spine.annotation.GeneratedMixin;
+import io.spine.type.KnownMessage;
 
 /**
- * Creates a copy of this message by copies of its properties and then applying
- * values of properties defined in the passed block.
+ * A message of a signal, such as an event or a command.
  */
-fun <M: BuiltMessage<B, M>, B: ValidatingBuilder<M>> M.copy(block: B.() -> Unit): M {
-    @Suppress("UNCHECKED_CAST") // ensured by the generated code
-    val builder = this.toBuilder() as B
-    builder.block()
-    return builder.vBuild()
+@Immutable
+@GeneratedMixin
+public interface SignalMessage extends KnownMessage {
 }

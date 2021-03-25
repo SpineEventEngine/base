@@ -53,7 +53,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("`ThrowableMessage` should")
 class RejectionThrowableTest {
 
-    private RejectionMessage<?, ?> message;
+    private RejectionMessage message;
     private RejectionThrowable rejectionThrowable;
     private Any producer;
 
@@ -189,11 +189,6 @@ class RejectionThrowableTest {
         @Override
         public UnknownFieldSet getUnknownFields() {
             return null;
-        }
-
-        @Override
-        public ImmutableList<ConstraintViolation> validate() {
-            return ImmutableList.of();
         }
     }
 }

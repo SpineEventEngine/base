@@ -26,7 +26,7 @@
 
 import io.spine.gradle.internal.Deps
 
-group = "io.spine"
+group = "io.spine.tools"
 
 dependencies {
     /*
@@ -34,8 +34,10 @@ dependencies {
         sub-projects.
     */
     Deps.build.protobuf.libs.forEach { api(it) }
-    Deps.test.junit.api.forEach { api(it) }
-    Deps.test.truth.libs.forEach { api(it) }
-    api(Deps.test.guavaTestlib)
+    Deps.test.apply {
+        junit.api.forEach { api(it) }
+        truth.libs.forEach { api(it) }
+        api(guavaTestlib)
+    }
     implementation(project(":base"))
 }

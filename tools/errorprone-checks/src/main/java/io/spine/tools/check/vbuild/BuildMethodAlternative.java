@@ -33,7 +33,7 @@ import com.sun.source.tree.Tree;
 /**
  * The alternatives to the {@code Builder.build()} method.
  *
- * @see io.spine.base.ValidatingBuilder
+ * @see io.spine.validate.ValidatingBuilder
  */
 enum BuildMethodAlternative {
 

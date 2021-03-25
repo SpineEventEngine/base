@@ -29,6 +29,7 @@ import io.spine.tools.compiler.check.DependencyConfigurer;
 import io.spine.tools.compiler.check.PreprocessorConfigurer;
 import io.spine.tools.compiler.check.SeverityConfigurer;
 import io.spine.tools.gradle.SpinePlugin;
+import io.spine.validate.ValidatingBuilder;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 
@@ -69,7 +70,7 @@ import org.gradle.api.artifacts.Configuration;
  *
  * <p>The latter overrides the former.
  *
- * @see io.spine.base.ValidatingBuilder
+ * @see ValidatingBuilder
  */
 public final class ErrorProneChecksPlugin extends SpinePlugin {
 

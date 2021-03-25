@@ -37,7 +37,7 @@ import io.spine.base.EntityState;
  * @param <V>
  *         the type of the entity column values
  */
-final class EntitySubjectParameter<S extends EntityState<?, ?, ?>, V>
+final class EntitySubjectParameter<S extends EntityState<?>, V>
         extends SubjectParameter<S, EntityColumn<S, V>, V> {
 
     /**

@@ -24,14 +24,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.validate;
 
 import com.google.protobuf.Message;
 import io.spine.annotation.GeneratedMixin;
-import io.spine.validate.NonValidated;
-import io.spine.validate.Validate;
-import io.spine.validate.Validated;
-import io.spine.validate.ValidationException;
 
 /**
  * Implementation base for generated message builders.

@@ -27,6 +27,7 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
+import io.spine.annotation.GeneratedMixin;
 
 /**
  * A common interface for event messages.
@@ -34,13 +35,8 @@ import com.google.errorprone.annotations.Immutable;
  * <p>This interface is used by the Model Compiler for marking event messages.
  * By convention, event messages are defined in a proto file, which name ends
  * with {@code events.proto}.
- *
- * @param <B>
- *         the type of the builder of the event message
- * @param <M>
- *         the type of the message used for binging of the builder type
  */
 @Immutable
-public interface EventMessage<B extends ValidatingBuilder<M>, M extends EventMessage<B, M>>
-        extends BuiltMessage<B, M> {
+@GeneratedMixin
+public interface EventMessage extends SignalMessage  {
 }
