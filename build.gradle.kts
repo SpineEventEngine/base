@@ -57,11 +57,11 @@ plugins {
 
 apply(from = "$rootDir/version.gradle.kts")
 
-extra.apply {
-    this["groupId"] = "io.spine"
-}
-
 spinePublishing {
+    targetRepositories.addAll(setOf(
+            PublishingRepos.cloudRepo,
+            PublishingRepos.gitHub("base")
+    ))
     projectsToPublish.addAll(
         "base",
         "tool-base",
@@ -83,10 +83,6 @@ spinePublishing {
         "validation-generator",
         "protoc-plugin"
     )
-    targetRepositories.addAll(
-        PublishingRepos.cloudRepo
-        // PublishingRepos.gitHub("LibraryName")
-    )
 }
 
 allprojects {
@@ -101,6 +97,8 @@ allprojects {
     apply {
         from("$rootDir/config/gradle/dependencies.gradle")
     }
+
+    group = "io.spine"
     version = rootProject.extra["versionToPublish"]!!
 }
 
@@ -168,7 +166,7 @@ subprojects {
             errorProne.annotations.forEach { api(it) }
         }
         api(kotlin("stdlib-jdk8"))
-        
+
         Deps.test.apply {
             testImplementation(guavaTestlib)
             testImplementation(junit.runner)
