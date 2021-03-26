@@ -36,7 +36,7 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 1.8
-
+`
       - run: git submodule update --init --recursive
 
 #      - name: Decrypt CloudRepo credentials
@@ -47,7 +47,7 @@ jobs:
       - name: Decrypt Git SSH credentials
         run: ./script/decrypt.sh "GIT_CREDENTIALS_KEY" ./deploy_key_rsa.gpg ./deploy_key_rsa
         env:
-          GIT_CREDENTIALS_KEY: ${{ secrets.GCS_CREDENTIALS_KEY }}
+          GIT_CREDENTIALS_KEY: ${{ secrets.CLOUDREPO_CREDENTIALS_KEY }}
 
 #      - name: Decrypt GCS credentials
 #        run: ./config/scripts/decrypt.sh "GCS_CREDENTIALS_KEY" ./gcs-auth-key.json.gpg ./gcs-auth-key.json
