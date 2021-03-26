@@ -40,3 +40,5 @@ if [ "$#" -ne 3 ]; then
 fi
 
 gpg --no-use-agent --batch --yes --decrypt --passphrase="$1" --output "$3" "$2"
+gpgconf --reload gpg-agent
+
