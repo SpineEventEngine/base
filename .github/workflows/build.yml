@@ -45,7 +45,7 @@ jobs:
           CLOUDREPO_CREDENTIALS_KEY: ${{ secrets.CLOUDREPO_CREDENTIALS_KEY }}
 
       - name: Decrypt Git SSH credentials
-        run: ./config/scripts/decrypt.sh "$GIT_CREDENTIALS_KEY" ./deploy_key_rsa.gpg ./deploy_key_rsa
+        run: ./config/scripts/decrypt.sh "$GIT_CREDENTIALS_KEY" ./deploy_key_rsa.gpg ./deploy_key_rsa & chmod 400 ./deploy_key_rsa
         env:
           GIT_CREDENTIALS_KEY: ${{ secrets.GIT_CREDENTIALS_KEY }}
 
@@ -55,7 +55,7 @@ jobs:
           GCS_CREDENTIALS_KEY: ${{ secrets.GCS_CREDENTIALS_KEY }}
 
       - name: Publish artifacts to Maven
-        run: chmod +x ./config/scripts/register-ssh-key.sh & ./gradlew assemble publish --stacktrace
+        run: chmod +x ./config/scripts/register-ssh-key.sh & ./gradlew assemble updateGitHubPages --stacktrace
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FORMAL_GIT_HUB_PAGES_AUTHOR: developers@spine.io
