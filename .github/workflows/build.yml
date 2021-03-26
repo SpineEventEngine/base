@@ -40,7 +40,7 @@ jobs:
       - run: git submodule update --init --recursive
 
       - name: Decrypt CloudRepo credentials
-        run: ./script/decrypt.sh "$CLOUDREPO_CREDENTIALS_KEY" ./cloudrepo.properties.gpg ./cloudrepo.properties
+        run: ./config/scripts/decrypt.sh "$CLOUDREPO_CREDENTIALS_KEY" ./cloudrepo.properties.gpg ./cloudrepo.properties
         env:
           CLOUDREPO_CREDENTIALS_KEY: ${{ secrets.CLOUDREPO_CREDENTIALS_KEY }}
 
