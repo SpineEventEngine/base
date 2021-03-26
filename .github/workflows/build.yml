@@ -36,7 +36,7 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 1.8
-`
+
       - run: git submodule update --init --recursive
 
 #      - name: Decrypt CloudRepo credentials
