@@ -44,13 +44,13 @@ jobs:
         env:
           CLOUDREPO_CREDENTIALS_KEY: ${{ secrets.CLOUDREPO_CREDENTIALS_KEY }}
 
-#      - name: Decrypt Git SSH credentials
-#        run: ./config/scripts/decrypt.sh "GIT_CREDENTIALS_KEY" ./deploy_key_rsa.gpg ./deploy_key_rsa
-#        env:
-#          GIT_CREDENTIALS_KEY: ${{ secrets.GIT_CREDENTIALS_KEY }}
+      - name: Decrypt Git SSH credentials
+        run: ./config/scripts/decrypt.sh "$GIT_CREDENTIALS_KEY" ./deploy_key_rsa.gpg ./deploy_key_rsa
+        env:
+          GIT_CREDENTIALS_KEY: ${{ secrets.GIT_CREDENTIALS_KEY }}
 
       - name: Decrypt GCS credentials
-        run: ./config/scripts/decrypt.sh "GCS_CREDENTIALS_KEY" ./gcs-auth-key.json.gpg ./gcs-auth-key.json
+        run: ./config/scripts/decrypt.sh "$GCS_CREDENTIALS_KEY" ./gcs-auth-key.json.gpg ./gcs-auth-key.json
         env:
           GCS_CREDENTIALS_KEY: ${{ secrets.GCS_CREDENTIALS_KEY }}
 #
