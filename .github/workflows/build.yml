@@ -28,7 +28,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     needs: build
-#    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
 
     steps:
       - uses: actions/checkout@v1
@@ -49,6 +49,7 @@ jobs:
         env:
           GIT_CREDENTIALS_KEY: ${{ secrets.GIT_CREDENTIALS_KEY }}
 
+        # Make sure the SSH key is not "too visible". SSH agent will not accept it otherwise.
       - run: chmod 400 ./deploy_key_rsa
 
       - name: Decrypt GCS credentials
@@ -57,7 +58,7 @@ jobs:
           GCS_CREDENTIALS_KEY: ${{ secrets.GCS_CREDENTIALS_KEY }}
 
       - name: Publish artifacts to Maven
-        run: chmod +x ./config/scripts/register-ssh-key.sh & ./gradlew assemble updateGitHubPages --stacktrace
+        run: chmod +x ./config/scripts/register-ssh-key.sh & ./gradlew assemble publish --stacktrace
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FORMAL_GIT_HUB_PAGES_AUTHOR: developers@spine.io
