@@ -50,7 +50,8 @@ jobs:
           GIT_CREDENTIALS_KEY: ${{ secrets.GIT_CREDENTIALS_KEY }}
 
         # Make sure the SSH key is not "too visible". SSH agent will not accept it otherwise.
-      - run: chmod 400 ./deploy_key_rsa
+      - name: Set deploy key file system permissions
+        run: chmod 400 ./deploy_key_rsa
 
       - name: Decrypt GCS credentials
         run: ./config/scripts/decrypt.sh "$GCS_CREDENTIALS_KEY" ./gcs-auth-key.json.gpg ./gcs-auth-key.json
