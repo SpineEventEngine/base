@@ -58,7 +58,7 @@ jobs:
           GCS_CREDENTIALS_KEY: ${{ secrets.GCS_CREDENTIALS_KEY }}
 
       - name: Publish artifacts to Maven
-        run: chmod +x ./config/scripts/register-ssh-key.sh & ./gradlew assemble publish --stacktrace
+        run: chmod +x ./config/scripts/register-ssh-key.sh && ./gradlew assemble publish --stacktrace
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FORMAL_GIT_HUB_PAGES_AUTHOR: developers@spine.io
