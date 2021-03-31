@@ -116,6 +116,8 @@ val pruneTestGoogleProtos by tasks.registering(type = Delete::class) {
 protobuf {
     generatedFilesBaseDir = compiledProtoRoot
     generateProtoTasks {
+        val mainTasks = mutableListOf<Task>()
+        val testTasks = mutableListOf<Task>()
         for (task in all()) {
             val scope = task.sourceSet.name
             task.generateDescriptorSet = true
@@ -126,11 +128,13 @@ protobuf {
             }
 
             if (scope.contains("test")) {
-                pruneTestGoogleProtos.configure { dependsOn(task) }
+                testTasks.add(task)
             } else {
-                pruneGoogleProtos.configure { dependsOn(task) }
+                mainTasks.add(task)
             }
         }
+        pruneGoogleProtos.get().dependsOn(mainTasks)
+        pruneTestGoogleProtos.get().dependsOn(testTasks)
     }
 }
 
