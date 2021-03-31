@@ -29,7 +29,6 @@ package io.spine.gradle.internal
 import java.net.URI
 import java.io.File
 import java.util.*
-import org.gradle.api.InvalidUserDataException
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.artifacts.dsl.RepositoryHandler
