@@ -28,6 +28,7 @@ package io.spine.tools.compiler;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.logging.Logging;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -95,7 +96,7 @@ public final class DirectoryCleaner extends SimpleFileVisitor<Path> implements L
     private void delete(Path path) {
         try {
             FileVisitor<Path> visitor = new DirectoryCleaner(path);
-            _debug().log("Starting to delete the files recursively in `%s`.", path.toString());
+            _debug().log("Starting to delete the files recursively in `%s`.", path);
             Files.walkFileTree(path, visitor);
         } catch (IOException e) {
             throw newIllegalStateException(
@@ -118,7 +119,8 @@ public final class DirectoryCleaner extends SimpleFileVisitor<Path> implements L
     }
 
     @Override
-    public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
+    public FileVisitResult postVisitDirectory(Path dir, @Nullable IOException e)
+            throws IOException {
         if (e == null) {
             logDeletionOf(dir);
             Files.delete(dir);
