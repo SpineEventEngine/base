@@ -131,6 +131,6 @@ public final class DirectoryCleaner extends SimpleFileVisitor<Path> implements L
     }
 
     private void logDeletionOf(Path file) {
-        _debug().log("Deleting file `%s`.", file.toString());
+        _debug().log("Deleting file `%s`.", file);
     }
 }
