@@ -31,6 +31,7 @@ import io.spine.gradle.internal.Deps
 import io.spine.gradle.internal.PublishingRepos
 import io.spine.gradle.internal.RunBuild
 import io.spine.gradle.internal.spinePublishing
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     apply(from = "$rootDir/version.gradle.kts")
@@ -46,7 +47,8 @@ buildscript {
 @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
 plugins {
     `java-library`
-    kotlin("jvm") version "1.4.30"
+    // For newer Kotlin version please visit [https://kotlinlang.org/docs/eap.html#build-details].
+    kotlin("jvm") version io.spine.gradle.internal.Kotlin.version
     idea
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
     io.spine.gradle.internal.Deps.build.apply {
@@ -139,9 +141,22 @@ subprojects {
         }
     }
 
+    val javaVersion = JavaVersion.VERSION_1_8
+
     the<JavaPluginExtension>().apply {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = javaVersion
+        targetCompatibility = javaVersion
+    }
+
+    kotlin {
+        explicitApi()
+    }
+
+    tasks.withType<KotlinCompile>().configureEach {
+        kotlinOptions {
+            jvmTarget = javaVersion.toString()
+            useIR = true
+        }
     }
 
     DependencyResolution.defaultRepositories(repositories)
