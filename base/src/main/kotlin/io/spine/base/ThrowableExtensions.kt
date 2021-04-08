@@ -27,10 +27,9 @@
 package io.spine.base
 
 import com.google.common.base.Throwables.getRootCause
-import io.spine.base.RejectionThrowable
 
 /**
  * Tells if this throwable was cased by a [RejectionThrowable].
  */
-fun <T: Throwable> T.causedByRejection(): Boolean =
+public fun <T: Throwable> T.causedByRejection(): Boolean =
     getRootCause(this) is RejectionThrowable
