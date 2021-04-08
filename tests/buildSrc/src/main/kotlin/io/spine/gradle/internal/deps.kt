@@ -185,6 +185,7 @@ object AutoValue {
 object AutoService {
     private const val version = "1.0"
     const val annotations = "com.google.auto.service:auto-service-annotations:${version}"
+    @Suppress("unused")
     const val processor   = "com.google.auto.service:auto-service:${version}"
 }
 
@@ -249,6 +250,7 @@ object CommonsLogging {
 }
 
 // https://errorprone.info/
+@Suppress("unused")
 object ErrorProne {
     private const val version = "2.6.0"
     @Suppress("MemberVisibilityCanBePrivate")
@@ -261,10 +263,8 @@ object ErrorProne {
         "com.google.errorprone:error_prone_type_annotations:${version}"
     )
     const val core = "com.google.errorprone:error_prone_core:${version}"
-    @Suppress("unused")
     const val checkApi = "com.google.errorprone:error_prone_check_api:${version}"
     const val testHelpers = "com.google.errorprone:error_prone_test_helpers:${version}"
-
     const val javacPlugin  = "com.google.errorprone:javac:${javacPluginVersion}"
     const val gradlePlugin = "net.ltgt.gradle:gradle-errorprone-plugin:${gradlePluginVersion}"
 }
@@ -386,6 +386,7 @@ object JUnit {
         "org.junit.jupiter:junit-jupiter-params:${version}"
     )
     const val runner  = "org.junit.jupiter:junit-jupiter-engine:${version}"
+    @Suppress("unused")
     const val pioneer = "org.junit-pioneer:junit-pioneer:${pioneerVersion}"
     const val platformCommons = "org.junit.platform:junit-platform-commons:${platformVersion}"
     const val platformLauncher = "org.junit.platform:junit-platform-launcher:${platformVersion}"
@@ -540,6 +541,7 @@ object Build {
 
 object Gen {
     const val javaPoet = JavaPoet.lib
+    @Suppress("unused")
     const val javaxAnnotation = JavaX.annotations
 }
 
@@ -552,6 +554,7 @@ object Publishing {
 }
 
 object Runtime {
+    @Suppress("unused")
     val flogger = Flogger.Runtime
 }
 
@@ -565,7 +568,7 @@ object Test {
     @Deprecated("Please do not use.")
     const val mockito = "org.mockito:mockito-core:2.12.0"
 
-    @Deprecated("Please use Google Truth instead")
+    @Deprecated("Please use Google Truth instead.")
     const val hamcrest = "org.hamcrest:hamcrest-all:1.3"
 
     @Deprecated(
@@ -616,6 +619,7 @@ object Deps {
     val runtime = Runtime
     val test = Test
     val scripts = Scripts
+    @Suppress("unused")
     val publishing = Publishing
 }
 
@@ -673,6 +677,7 @@ object DependencyResolution {
         }
     }
 
+    @Suppress("unused")
     fun excludeProtobufLite(configurations: ConfigurationContainer) {
         excludeProtoLite(configurations, "runtime")
         excludeProtoLite(configurations, "testRuntime")
@@ -687,6 +692,7 @@ object DependencyResolution {
             .exclude(mapOf("group" to "com.google.protobuf", "module" to "protobuf-lite"))
     }
 
+    @Suppress("unused")
     fun defaultRepositories(repositories: RepositoryHandler) {
         repositories.mavenLocal()
         repositories.maven {
