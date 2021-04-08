@@ -152,27 +152,21 @@ object Repos {
  *
  * See also: https://github.com/SpineEventEngine/config/issues/171
  */
-object Versions {
-    val assertK          = "0.23"
-    val bouncyCastlePkcs = "1.66"
-    val checkstyle       = "8.29"
-    val findBugs         = "3.0.2"
-    val firebaseAdmin    = "6.12.2"
-    val httpClient       = "1.34.2"
-    val jackson          = "2.9.10.5"
-    val javaPoet         = "1.13.0"
-    val javaxAnnotation  = "1.3.2"
-    val klaxon           = "5.4"
-    val licensePlugin    = "1.13"
-    val ouathJwt         = "3.11.0"
-    val pmd              = "6.24.0"
-    val roaster          = "2.21.2.Final"
-}
 
 // https://www.mojohaus.org/animal-sniffer/animal-sniffer-maven-plugin/
 object AnimalSniffer {
     private const val version = "1.19"
     const val lib = "org.codehaus.mojo:animal-sniffer-annotations:${version}"
+}
+
+/**
+ * Assertion library for tests in Kotlin
+ *
+ * [AssertK](https://github.com/willowtreeapps/assertk)
+ */
+object AssertK {
+    private const val version = "0.23.1"
+    const val libJvm = "com.willowtreeapps.assertk:assertk-jvm:${version}"
 }
 
 // https://github.com/google/auto
@@ -194,12 +188,18 @@ object AutoService {
     const val processor   = "com.google.auto.service:auto-service:${version}"
 }
 
+// https://cloud.google.com/java/docs/reference
 object AppEngine {
     private const val version = "1.9.82"
     private const val gradlePluginVersion = "2.2.0"
 
     const val sdk          = "com.google.appengine:appengine-api-1.0-sdk:${version}"
     const val gradlePlugin = "com.google.cloud.tools:appengine-gradle-plugin:${gradlePluginVersion}"
+}
+
+// https://www.bouncycastle.org/java.html
+object BouncyCastle {
+    const val libPkcsJdk15 = "org.bouncycastle:bcpkix-jdk15on:1.68"
 }
 
 // https://checkerframework.org/
@@ -217,6 +217,13 @@ object CheckerFramework {
      * [DependencyResolution.forceConfiguration]
      */
     const val compatQual = "org.checkerframework:checker-compat-qual:2.5.5"
+}
+
+// https://checkstyle.sourceforge.io/
+// See `config/gradle.checkstyle.gradle`.
+@Suppress("unused")
+object CheckStyle {
+    const val version = "8.29"
 }
 
 /**
@@ -244,15 +251,17 @@ object CommonsLogging {
 // https://errorprone.info/
 object ErrorProne {
     private const val version = "2.6.0"
+    @Suppress("MemberVisibilityCanBePrivate")
     const val gradlePluginVersion = "1.3.0"
-    // Taken from here: https://github.com/tbroyer/gradle-errorprone-plugin/blob/v0.8/build.gradle.kts
-    const val javacPluginVersion = "9+181-r4173-1"
+    // https://github.com/tbroyer/gradle-errorprone-plugin/blob/v0.8/build.gradle.kts
+    private const val javacPluginVersion = "9+181-r4173-1"
 
     val annotations = listOf(
         "com.google.errorprone:error_prone_annotations:${version}",
         "com.google.errorprone:error_prone_type_annotations:${version}"
     )
     const val core = "com.google.errorprone:error_prone_core:${version}"
+    @Suppress("unused")
     const val checkApi = "com.google.errorprone:error_prone_check_api:${version}"
     const val testHelpers = "com.google.errorprone:error_prone_test_helpers:${version}"
 
@@ -260,10 +269,29 @@ object ErrorProne {
     const val gradlePlugin = "net.ltgt.gradle:gradle-errorprone-plugin:${gradlePluginVersion}"
 }
 
+/**
+ * The FindBugs project is dead since 2017. It has a successor called SpotBugs, but we don't use it.
+ * We use ErrorProne for static analysis instead. The only reason for having this dependency is
+ * the annotations for null-checking introduced by JSR-305. These annotations are troublesome,
+ * but no alternatives are known for some of them so far.  Please see
+ * [this issue](https://github.com/SpineEventEngine/base/issues/108) for more details.
+ */
+object FindBugs {
+    private const val version = "3.0.2"
+    const val annotations = "com.google.code.findbugs:jsr305:${version}"
+}
+
+// https://firebase.google.com/docs/admin/setup#java
+object Firebase {
+    private const val adminVersion = "6.12.2"
+    const val admin = "com.google.firebase:firebase-admin:${adminVersion}"
+}
+
 // https://github.com/google/flogger
 object Flogger {
     internal const val version = "0.6"
     const val lib     = "com.google.flogger:flogger:${version}"
+    @Suppress("unused")
     object Runtime {
         const val systemBackend = "com.google.flogger:flogger-system-backend:${version}"
         const val log4J         = "com.google.flogger:flogger-log4j:${version}"
@@ -279,6 +307,7 @@ object Guava {
 }
 
 // https://github.com/grpc/grpc-java
+@Suppress("unused")
 object Grpc {
     @Suppress("MemberVisibilityCanBePrivate")
     const val version     = "1.35.1"
@@ -298,7 +327,7 @@ object Grpc {
  * [Gson](https://github.com/google/gson)
  */
 object Gson {
-    const val version = "2.8.6"
+    private const val version = "2.8.6"
     const val lib = "com.google.code.gson:gson:${version}"
 }
 
@@ -317,8 +346,26 @@ object HttpClient {
  * [J2ObjC](https://developers.google.com/j2objc)
  */
 object J2ObjC {
-    const val version = "1.3"
+    private const val version = "1.3"
     const val lib = "com.google.j2objc:j2objc-annotations:${version}"
+}
+
+// https://github.com/FasterXML/jackson-databind
+object Jackson {
+    private const val version = "2.9.10.5"
+    const val databind = "com.fasterxml.jackson.core:jackson-databind:${version}"
+}
+
+// https://github.com/square/javapoet
+object JavaPoet {
+    private const val version = "1.13.0"
+    const val lib = "com.squareup:javapoet:${version}"
+}
+
+// This artifact which used to be a part of J2EE moved under Eclipse EE4J project.
+// https://github.com/eclipse-ee4j/common-annotations-api
+object JavaX {
+    const val annotations = "javax.annotation:javax.annotation-api:1.3.2"
 }
 
 // https://junit.org/junit5/
@@ -334,14 +381,24 @@ object JUnit {
 
     const val legacy = "junit:junit:${legacyVersion}"
     val api = listOf(
+        "org.apiguardian:apiguardian-api:${apiGuardianVersion}",
         "org.junit.jupiter:junit-jupiter-api:${version}",
-        "org.junit.jupiter:junit-jupiter-params:${version}",
-        "org.apiguardian:apiguardian-api:${apiGuardianVersion}"
+        "org.junit.jupiter:junit-jupiter-params:${version}"
     )
     const val runner  = "org.junit.jupiter:junit-jupiter-engine:${version}"
     const val pioneer = "org.junit-pioneer:junit-pioneer:${pioneerVersion}"
     const val platformCommons = "org.junit.platform:junit-platform-commons:${platformVersion}"
     const val platformLauncher = "org.junit.platform:junit-platform-launcher:${platformVersion}"
+}
+
+/**
+ * A JSON parser in Kotlin
+ *
+ * [Klaxon](https://github.com/cbeust/klaxon)
+ */
+object Klaxon {
+    private const val version = "5.4"
+    const val lib = "com.beust:klaxon:${version}"
 }
 
 // https://github.com/JetBrains/kotlin
@@ -355,6 +412,22 @@ object Kotlin {
     const val stdLibJdk8   = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${version}"
 }
 
+// https://github.com/jk1/Gradle-License-Report
+object LicenseReport {
+    private const val version = "1.16"
+    const val gradlePlugin = "com.github.jk1:gradle-license-report:${version}"
+}
+
+/**
+ * A Java implementation of JSON Web Token (JWT) - RFC 7519.
+ *
+ * [Java JWT](https://github.com/auth0/java-jwt)
+ */
+object JavaJwt {
+    private const val version = "3.14.0"
+    const val lib = "com.auth0:java-jwt:${version}"
+}
+
 /**
  * Okio is a transitive dependency which we don't use directly.
  * We `force` it in [DependencyResolution.forceConfiguration].
@@ -363,6 +436,12 @@ object Okio {
     // This is the last version before next major.
     private const val version = "1.17.5"
     const val lib = "com.squareup.okio:okio:${version}"
+}
+
+// https://pmd.github.io/
+@Suppress("unused") // Will be used when `config/gradle/pmd.gradle` migrates to Kotlin.
+object Pmd {
+    const val version = "6.33.0"
 }
 
 // https://github.com/protocolbuffers/protobuf
@@ -385,15 +464,15 @@ object Protobuf {
  * [Plexus Utils](https://codehaus-plexus.github.io/plexus-utils/)
  */
 object Plexus {
-    const val version = "3.3.0"
+    private const val version = "3.3.0"
     const val utils = "org.codehaus.plexus:plexus-utils:${version}"
 }
 
 // https://github.com/forge/roaster
 object Roaster {
     private const val version = "2.22.2.Final"
-    const val api     = "org.jboss.forge.roaster:roaster-api:${version}"
-    const val jdt     = "org.jboss.forge.roaster:roaster-jdt:${version}"
+    const val api = "org.jboss.forge.roaster:roaster-api:${version}"
+    const val jdt = "org.jboss.forge.roaster:roaster-jdt:${version}"
 }
 
 /**
@@ -429,7 +508,7 @@ object GradlePlugins {
     const val protobuf    = Protobuf.gradlePlugin
     const val appengine   = AppEngine.gradlePlugin
     @Suppress("unused")
-    val licenseReport = "com.github.jk1:gradle-license-report:${Versions.licensePlugin}"
+    val licenseReport = LicenseReport.gradlePlugin
 }
 
 @Suppress("unused")
@@ -440,14 +519,14 @@ object Build {
     const val appEngine = AppEngine.sdk
     val checker = CheckerFramework
     val errorProne = ErrorProne
-    val firebaseAdmin = "com.google.firebase:firebase-admin:${Versions.firebaseAdmin}"
+    const val firebaseAdmin = Firebase.admin
     val flogger = Flogger
     val guava = Guava
     const val googleHttpClient = HttpClient.google
     const val googleHttpClientApache = HttpClient.apache
     val gradlePlugins = GradlePlugins
-    val jacksonDatabind = "com.fasterxml.jackson.core:jackson-databind:${Versions.jackson}"
-    val jsr305Annotations = "com.google.code.findbugs:jsr305:${Versions.findBugs}"
+    const val jacksonDatabind = Jackson.databind
+    const val jsr305Annotations = FindBugs.annotations
     val kotlin = Kotlin
     val protobuf = Protobuf
     val roaster = Roaster
@@ -460,15 +539,16 @@ object Build {
 }
 
 object Gen {
-    val javaPoet        = "com.squareup:javapoet:${Versions.javaPoet}"
-    val javaxAnnotation = "javax.annotation:javax.annotation-api:${Versions.javaxAnnotation}"
+    const val javaPoet = JavaPoet.lib
+    const val javaxAnnotation = JavaX.annotations
 }
 
+@Suppress("unused")
 object Publishing {
-    val klaxon           = "com.beust:klaxon:${Versions.klaxon}"
-    val oauthJwt         = "com.auth0:java-jwt:${Versions.ouathJwt}"
-    val bouncyCastlePkcs = "org.bouncycastle:bcpkix-jdk15on:${Versions.bouncyCastlePkcs}"
-    val assertK          = "com.willowtreeapps.assertk:assertk-jvm:${Versions.assertK}"
+    const val klaxon = Klaxon.lib
+    const val oauthJwt = JavaJwt.lib
+    const val bouncyCastlePkcs = BouncyCastle.libPkcsJdk15
+    const val assertK = AssertK.libJvm
 }
 
 object Runtime {
@@ -477,13 +557,13 @@ object Runtime {
 
 object Test {
     const val guavaTestlib = Guava.testLib
-    val junit = JUnit
     val truth = Truth
 
+    val junit = JUnit
     const val junit4 = JUnit.legacy
 
     @Deprecated("Please do not use.")
-    const val mockito       = "org.mockito:mockito-core:2.12.0"
+    const val mockito = "org.mockito:mockito-core:2.12.0"
 
     @Deprecated("Please use Google Truth instead")
     const val hamcrest = "org.hamcrest:hamcrest-all:1.3"
@@ -535,7 +615,6 @@ object Deps {
     val gen = Gen
     val runtime = Runtime
     val test = Test
-    val versions = Versions
     val scripts = Scripts
     val publishing = Publishing
 }
