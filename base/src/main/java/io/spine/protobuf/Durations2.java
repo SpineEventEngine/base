@@ -32,7 +32,6 @@ import io.spine.string.Stringifiers;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.util.Durations.compare;
@@ -40,8 +39,7 @@ import static com.google.protobuf.util.Durations.fromMillis;
 import static com.google.protobuf.util.Durations.fromNanos;
 import static com.google.protobuf.util.Durations.fromSeconds;
 import static com.google.protobuf.util.Durations.toMillis;
-import static io.spine.util.Math2.floorDiv;
-import static io.spine.util.Math2.safeMultiply;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Utility class for working with durations in addition to those available from the
@@ -62,18 +60,6 @@ public final class Durations2 {
 
     public static final Duration ZERO = fromMillis(0L);
 
-    /** The count of seconds in one minute. */
-    @SuppressWarnings("NumericCastThatLosesPrecision")
-    private static final int SECONDS_PER_MINUTE = (int) TimeUnit.MINUTES.toSeconds(1);
-
-    /** The count of minutes in one hour. */
-    @SuppressWarnings("NumericCastThatLosesPrecision")
-    private static final int MINUTES_PER_HOUR = (int) TimeUnit.HOURS.toMinutes(1);
-
-    /** The count of milliseconds in one second. */
-    @SuppressWarnings("NumericCastThatLosesPrecision")
-    private static final int MILLIS_PER_SECOND = (int) TimeUnit.SECONDS.toMillis(1);
-
     /** Prevent instantiation of this utility class. */
     private Durations2() {
     }
@@ -81,27 +67,22 @@ public final class Durations2 {
     /**
      * Obtains an instance of {@code Duration} representing the passed number of minutes.
      *
-     * @param minutes
-     *         the number of minutes, positive or negative.
-     * @return a non-null {@code Duration}
+     * @deprecated please use {@link Durations#fromMinutes(long)}.
      */
+    @Deprecated
     public static Duration fromMinutes(long minutes) {
-        Duration duration = fromSeconds(safeMultiply(minutes, SECONDS_PER_MINUTE));
-        return duration;
+        return Durations.fromMinutes(minutes);
     }
 
     /**
      * Obtains an instance of {@code Duration} representing the passed number of hours.
      *
-     * @param hours
-     *         the number of hours, positive or negative
-     * @return a non-null {@code Duration}
+     * @deprecated please use {@link Durations#fromHours(long)}.
      */
+    @Deprecated
     public static Duration fromHours(long hours) {
-        Duration duration = fromMinutes(safeMultiply(hours, MINUTES_PER_HOUR));
-        return duration;
+        return Durations.fromHours(hours);
     }
-
 
     /*
      * Methods for brief computations with Durations like
@@ -116,8 +97,7 @@ public final class Durations2 {
      * @return a non-null {@code Duration}
      */
     public static Duration nanos(long nanos) {
-        Duration duration = fromNanos(nanos);
-        return duration;
+        return fromNanos(nanos);
     }
 
     /**
@@ -147,7 +127,7 @@ public final class Durations2 {
      * {@code Duration} instance with minutes.
      */
     public static Duration minutes(long minutes) {
-        return fromMinutes(minutes);
+        return Durations.fromMinutes(minutes);
     }
 
     /**
@@ -155,7 +135,7 @@ public final class Durations2 {
      * {@code Duration} instance with hours.
      */
     public static Duration hours(long hours) {
-        return fromHours(hours);
+        return Durations.fromHours(hours);
     }
 
     /**
@@ -199,63 +179,59 @@ public final class Durations2 {
         return result;
     }
 
-    /** Convert a duration to the number of nanoseconds. */
+    /**
+     * Convert a duration to the number of nanoseconds.
+     *
+     * @deprecated please use {@link Durations#toNanos(Duration)}.
+     */
+    @Deprecated
     public static long toNanos(Duration duration) {
-        /* The sole purpose of this method is minimize the dependencies of the classes
-           working with durations. */
-        checkNotNull(duration);
-        long result = Durations.toNanos(duration);
-        return result;
+        return Durations.toNanos(duration);
     }
 
-    /** Convert a duration to the number of seconds. */
+    /**
+     * Convert a duration to the number of seconds.
+     *
+     * @deprecated please use {@link Durations#toSeconds(Duration)}.
+     */
+    @Deprecated
     public static long toSeconds(Duration duration) {
-        checkNotNull(duration);
-        long millis = toMillis(duration);
-        long seconds = floorDiv(millis, MILLIS_PER_SECOND);
-        return seconds;
+        return Durations.toSeconds(duration);
     }
 
     /**
      * Converts passed duration to long value of minutes.
      *
-     * @param duration
-     *         duration to convert
-     * @return duration in minutes
+     * @deprecated please use {@link Durations#toMinutes(Duration)}.
      */
+    @Deprecated
     public static long toMinutes(Duration duration) {
-        checkNotNull(duration);
-        long millis = toMillis(duration);
-        long result = (millis / MILLIS_PER_SECOND) / SECONDS_PER_MINUTE;
-        return result;
+        return Durations.toMinutes(duration);
     }
 
     /**
      * Returns the number of hours in the passed duration.
      *
-     * @param value
-     *         duration
-     * @return number of hours
+     * @deprecated please use {@link Durations#toHours(Duration)}.
      */
+    @Deprecated
     public static long getHours(Duration value) {
-        checkNotNull(value);
-        long hours = toMinutes(value);
-        long result = hours / MINUTES_PER_HOUR;
-        return result;
+        return Durations.toHours(value);
     }
 
     /**
      * Returns the only remainder of minutes from the passed duration subtracting
      * the amount of full hours.
      *
-     * @param value
-     *         duration
-     * @return number of minutes
+     * @deprecated please use {@code Durations.toMinutes(value) % 60}.
      */
+    @Deprecated
     public static int getMinutes(Duration value) {
         checkNotNull(value);
-        long allMinutes = toMinutes(value);
-        long remainder = allMinutes % MINUTES_PER_HOUR;
+        long allMinutes = Durations.toMinutes(value);
+        @SuppressWarnings("MagicNumber") // not that magic.
+        int minutesPerHour = 60;
+        long remainder = allMinutes % minutesPerHour;
         int result = Long.valueOf(remainder)
                          .intValue();
         return result;
@@ -312,12 +288,14 @@ public final class Durations2 {
         return result;
     }
 
-    /** Returns {@code true} if the passed duration is negative, {@code false} otherwise. */
+    /**
+     * Returns {@code true} if the passed duration is negative, {@code false} otherwise.
+     *
+     * @deprecated please use {@link Durations#isNegative(Duration)}.
+     */
+    @Deprecated
     public static boolean isNegative(Duration value) {
-        checkNotNull(value);
-        long nanos = toNanos(value);
-        boolean isNegative = nanos < 0;
-        return isNegative;
+        return Durations.isNegative(value);
     }
 
     /**
@@ -325,7 +303,8 @@ public final class Durations2 {
      */
     public static Duration of(java.time.Duration value) {
         checkNotNull(value);
-        return converter().convert(value);
+        Duration result = converter().convert(value);
+        return requireNonNull(result);
     }
 
     /**
@@ -333,8 +312,10 @@ public final class Durations2 {
      */
     public static java.time.Duration toJavaTime(Duration value) {
         checkNotNull(value);
-        return converter().reverse()
-                          .convert(value);
+        java.time.Duration result =
+                converter().reverse()
+                           .convert(value);
+        return requireNonNull(result);
     }
 
     /**
@@ -348,9 +329,11 @@ public final class Durations2 {
      */
     public static Duration parse(String str) {
         checkNotNull(str);
-        return Stringifiers.forDuration()
-                           .reverse()
-                           .convert(str);
+        Duration result =
+                Stringifiers.forDuration()
+                            .reverse()
+                            .convert(str);
+        return requireNonNull(result);
     }
 
     /**
@@ -372,18 +355,15 @@ public final class Durations2 {
 
         @Override
         protected Duration doForward(java.time.Duration duration) {
-            Duration.Builder result = Duration
-                    .newBuilder()
+            return Duration.newBuilder()
                     .setSeconds(duration.getSeconds())
-                    .setNanos(duration.getNano());
-            return result.build();
+                    .setNanos(duration.getNano())
+                    .build();
         }
 
         @Override
         protected java.time.Duration doBackward(Duration duration) {
-            java.time.Duration result = java.time.Duration
-                    .ofSeconds(duration.getSeconds(), duration.getNanos());
-            return result;
+            return java.time.Duration.ofSeconds(duration.getSeconds(), duration.getNanos());
         }
 
         @Override
@@ -394,6 +374,5 @@ public final class Durations2 {
         private Object readResolve() {
             return INSTANCE;
         }
-
     }
 }
