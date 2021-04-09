@@ -31,21 +31,25 @@ import com.google.protobuf.Duration;
 import com.google.protobuf.util.Durations;
 import io.spine.protobuf.Durations2;
 import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
+import static com.google.protobuf.util.Durations.fromMinutes;
+import static com.google.protobuf.util.Durations.isNegative;
+import static com.google.protobuf.util.Durations.toHours;
+import static com.google.protobuf.util.Durations.toMillis;
+import static com.google.protobuf.util.Durations.toMinutes;
+import static com.google.protobuf.util.Durations.toNanos;
+import static com.google.protobuf.util.Durations.toSeconds;
 import static io.spine.protobuf.Durations2.ZERO;
 import static io.spine.protobuf.Durations2.add;
-import static io.spine.protobuf.Durations2.fromHours;
-import static io.spine.protobuf.Durations2.fromMinutes;
-import static io.spine.protobuf.Durations2.getHours;
-import static io.spine.protobuf.Durations2.getMinutes;
 import static io.spine.protobuf.Durations2.hours;
 import static io.spine.protobuf.Durations2.hoursAndMinutes;
 import static io.spine.protobuf.Durations2.isGreaterThan;
 import static io.spine.protobuf.Durations2.isLessThan;
-import static io.spine.protobuf.Durations2.isNegative;
 import static io.spine.protobuf.Durations2.isPositive;
 import static io.spine.protobuf.Durations2.isPositiveOrZero;
 import static io.spine.protobuf.Durations2.isZero;
@@ -53,14 +57,9 @@ import static io.spine.protobuf.Durations2.milliseconds;
 import static io.spine.protobuf.Durations2.minutes;
 import static io.spine.protobuf.Durations2.nanos;
 import static io.spine.protobuf.Durations2.seconds;
-import static io.spine.protobuf.Durations2.toMinutes;
-import static io.spine.protobuf.Durations2.toNanos;
-import static io.spine.protobuf.Durations2.toSeconds;
 import static io.spine.testing.TestValues.random;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -80,12 +79,12 @@ class Durations2Test extends UtilityClassTest<Durations2> {
     }
 
     @Test
-    @DisplayName("convert to String and parse back")
+    @DisplayName("parse a string")
     void toFromString() {
         Duration expected = randomDuration();
         String str = Durations.toString(expected);
         Duration converted = Durations2.parse(str);
-        assertEquals(expected, converted);
+        assertThat(converted).isEqualTo(expected);
     }
 
     private static Duration randomDuration() {
@@ -95,44 +94,56 @@ class Durations2Test extends UtilityClassTest<Durations2> {
     @Test
     @DisplayName("convert to Java Time and back")
     void toFromJavaTime() {
-        Duration expected = randomDuration();
-        java.time.Duration converted = converter.reverse()
-                                                .convert(expected);
+        Duration original = randomDuration();
+        java.time.Duration converted =
+                converter.reverse()
+                         .convert(original);
         Duration back = converter.convert(converted);
-        assertEquals(expected, back);
+        assertThat(back).isEqualTo(original);
     }
 
     @Test
     @DisplayName("have ZERO constant")
     void zeroConstant() {
-        assertEquals(0, toNanos(ZERO));
+        assertThat(toNanos(ZERO)).isEqualTo(0);
     }
 
     @Nested
-    @DisplayName("Have DSL-like methods")
+    @DisplayName("provide DSL methods for")
     class Dsl {
-        @Test
-        @DisplayName("for seconds")
-        void forSeconds() {
-            assertEquals(100, seconds(100).getSeconds());
-        }
-        
-        @Test
-        @DisplayName("for minutes")
-        void forMinutes() {
-            assertEquals(5, getMinutes(minutes(5)));
+
+        private long value;
+
+        @BeforeEach
+        void generateValue() {
+            value = random(10_000);
         }
 
         @Test
-        @DisplayName("for hours")
+        @DisplayName("hours")
         void forHours() {
-            assertEquals(24, getHours(hours(24)));
+            assertThat(toHours(hours(value)))
+                    .isEqualTo(value);
+        }
+        @Test
+        @DisplayName("minutes")
+        void forMinutes() {
+            assertThat(toMinutes(minutes(value)))
+                    .isEqualTo(value);
+        }
+
+        @Test
+        @DisplayName("for seconds")
+        void forSeconds() {
+            assertThat(toSeconds(seconds(value)))
+                    .isEqualTo(value);
         }
 
         @Test
         @DisplayName("for milliseconds")
         void forMillis() {
-            assertNotNull(milliseconds(100500L));
+            assertThat(toMillis(milliseconds(100500L)))
+                    .isEqualTo(100500L);
         }
 
         @Test
@@ -147,7 +158,6 @@ class Durations2Test extends UtilityClassTest<Durations2> {
 
             assertEquals(expected, actual);
         }
-
     }
 
     private static long minutesToSeconds(long minutes) {
@@ -165,7 +175,7 @@ class Durations2Test extends UtilityClassTest<Durations2> {
         private void test(long hours) {
             Duration expected = seconds(hoursToSeconds(hours));
             Duration actual = hours(hours);
-            assertEquals(expected, actual);
+            assertThat(actual).isEqualTo(expected);
         }
 
         @Test
@@ -217,15 +227,17 @@ class Durations2Test extends UtilityClassTest<Durations2> {
         @Test
         @DisplayName("two nulls -> ZERO")
         void nullPlusNull() {
-            assertEquals(ZERO, add(null, null));
+            assertThat(add(null, null)).isEqualTo(ZERO);
         }
 
         @Test
         @DisplayName("null returning same instance")
         void sameWithNull() {
             Duration duration = seconds(525);
-            assertSame(duration, add(duration, null));
-            assertSame(duration, add(null, duration));
+            assertThat(add(duration, null))
+                    .isSameInstanceAs(duration);
+            assertThat(add(null, duration))
+                    .isSameInstanceAs(duration);
         }
 
         @Test
@@ -254,51 +266,27 @@ class Durations2Test extends UtilityClassTest<Durations2> {
             Duration sumExpected = seconds(secondsTotal);
             Duration sumActual = add(seconds(seconds1), seconds(seconds2));
 
-            assertEquals(sumExpected, sumActual);
-        }
-    }
-    
-    @Nested
-    @DisplayName("Convert Duration to")
-    class Convert {
-
-        @Test
-        @DisplayName("nanoseconds")
-        void amountOfNanoseconds() {
-            assertEquals(10, toNanos(nanos(10)));
-            assertEquals(-256, toNanos(nanos(-256)));
-        }
-
-        @Test
-        @DisplayName("seconds")
-        void amountOfSeconds() {
-            assertEquals(1, toSeconds(seconds(1)));
-            assertEquals(-256, toSeconds(seconds(-256)));
-        }
-
-        @Test
-        @DisplayName("minutes")
-        void amountOfMinutes() {
-            assertEquals(1, toMinutes(minutes(1)));
-            assertEquals(-256, toMinutes(minutes(-256)));
+            assertThat(sumActual).isEqualTo(sumExpected);
         }
     }
 
     @Nested
     @DisplayName("Obtain from Duration")
+    @SuppressWarnings("deprecation")
     class Obtain {
 
         @Test
         void amountOfHours() {
-            assertEquals(1, getHours(fromHours(1)));
-            assertEquals(-256, getHours(fromHours(-256)));
+            assertEquals(10, Durations2.getHours(hoursAndMinutes(10, 40)));
+            assertEquals(-256, Durations2.getHours(hoursAndMinutes(-256, -50)));
         }
 
         @Test
         void remainderOfMinutes() {
             final long minutesRemainder = 8;
             final long minutesTotal = minutesRemainder + 60; // add 1 hour
-            assertEquals(minutesRemainder, getMinutes(fromMinutes(minutesTotal)));
+            assertThat(Durations2.getMinutes(fromMinutes(minutesTotal)))
+                    .isEqualTo(minutesRemainder);
         }
     }
 
