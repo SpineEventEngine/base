@@ -32,7 +32,6 @@ import io.spine.string.Stringifiers;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.util.Durations.compare;
@@ -60,10 +59,6 @@ import static java.util.Objects.requireNonNull;
 public final class Durations2 {
 
     public static final Duration ZERO = fromMillis(0L);
-
-    /** The count of minutes in one hour. */
-    @SuppressWarnings("NumericCastThatLosesPrecision")
-    private static final int MINUTES_PER_HOUR = (int) TimeUnit.HOURS.toMinutes(1);
 
     /** Prevent instantiation of this utility class. */
     private Durations2() {
@@ -234,7 +229,9 @@ public final class Durations2 {
     public static int getMinutes(Duration value) {
         checkNotNull(value);
         long allMinutes = Durations.toMinutes(value);
-        long remainder = allMinutes % MINUTES_PER_HOUR;
+        @SuppressWarnings("MagicNumber") // not that magic.
+        int minutesPerHour = 60;
+        long remainder = allMinutes % minutesPerHour;
         int result = Long.valueOf(remainder)
                          .intValue();
         return result;
