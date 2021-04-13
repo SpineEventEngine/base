@@ -24,36 +24,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-buildscript {
-    repositories {
-        gradlePluginPortal()
-    }
+package io.spine.internal.dependency
 
-    dependencies {
-        classpath("com.github.jk1:gradle-license-report:1.16")
-    }
-}
-
-plugins {
-    java
-    `kotlin-dsl`
-    id("com.github.jk1.dependency-license-report") version "1.16"
-}
-
-kotlinDslPluginOptions {
-    experimentalWarning.set(false)
-}
-
-repositories {
-    mavenLocal()
-    gradlePluginPortal()
-    mavenCentral()
-}
-
-val jacksonVersion = "2.11.0"
-val licenseReportVersion = "1.16"
-
-dependencies {
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
-    api("com.github.jk1:gradle-license-report:${licenseReportVersion}")
+// https://www.bouncycastle.org/java.html
+object BouncyCastle {
+    const val libPkcsJdk15 = "org.bouncycastle:bcpkix-jdk15on:1.68"
 }

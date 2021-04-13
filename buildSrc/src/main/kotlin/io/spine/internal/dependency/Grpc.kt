@@ -24,36 +24,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-buildscript {
-    repositories {
-        gradlePluginPortal()
-    }
+package io.spine.internal.dependency
 
-    dependencies {
-        classpath("com.github.jk1:gradle-license-report:1.16")
-    }
-}
-
-plugins {
-    java
-    `kotlin-dsl`
-    id("com.github.jk1.dependency-license-report") version "1.16"
-}
-
-kotlinDslPluginOptions {
-    experimentalWarning.set(false)
-}
-
-repositories {
-    mavenLocal()
-    gradlePluginPortal()
-    mavenCentral()
-}
-
-val jacksonVersion = "2.11.0"
-val licenseReportVersion = "1.16"
-
-dependencies {
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
-    api("com.github.jk1:gradle-license-report:${licenseReportVersion}")
+// https://github.com/grpc/grpc-java
+@Suppress("unused")
+object Grpc {
+    @Suppress("MemberVisibilityCanBePrivate")
+    const val version     = "1.35.1"
+    const val core        = "io.grpc:grpc-core:${version}"
+    const val stub        = "io.grpc:grpc-stub:${version}"
+    const val okHttp      = "io.grpc:grpc-okhttp:${version}"
+    const val protobuf    = "io.grpc:grpc-protobuf:${version}"
+    const val netty       = "io.grpc:grpc-netty:${version}"
+    const val nettyShaded = "io.grpc:grpc-netty-shaded:${version}"
+    const val context     = "io.grpc:grpc-context:${version}"
 }

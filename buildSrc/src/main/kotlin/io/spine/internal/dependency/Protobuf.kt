@@ -24,36 +24,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-buildscript {
-    repositories {
-        gradlePluginPortal()
+package io.spine.internal.dependency
+
+// https://github.com/protocolbuffers/protobuf
+@Suppress("MemberVisibilityCanBePrivate") // used directly from outside
+object Protobuf {
+    const val version    = "3.15.7"
+    val libs = listOf(
+        "com.google.protobuf:protobuf-java:${version}",
+        "com.google.protobuf:protobuf-java-util:${version}"
+    )
+    const val compiler = "com.google.protobuf:protoc:${version}"
+
+    object GradlePlugin {
+        const val version = "0.8.13"
+        const val id = "com.google.protobuf"
+        const val lib = "com.google.protobuf:protobuf-gradle-plugin:${version}"
     }
-
-    dependencies {
-        classpath("com.github.jk1:gradle-license-report:1.16")
-    }
-}
-
-plugins {
-    java
-    `kotlin-dsl`
-    id("com.github.jk1.dependency-license-report") version "1.16"
-}
-
-kotlinDslPluginOptions {
-    experimentalWarning.set(false)
-}
-
-repositories {
-    mavenLocal()
-    gradlePluginPortal()
-    mavenCentral()
-}
-
-val jacksonVersion = "2.11.0"
-val licenseReportVersion = "1.16"
-
-dependencies {
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
-    api("com.github.jk1:gradle-license-report:${licenseReportVersion}")
 }

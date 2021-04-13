@@ -24,36 +24,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-buildscript {
-    repositories {
-        gradlePluginPortal()
-    }
+package io.spine.internal.dependency
 
-    dependencies {
-        classpath("com.github.jk1:gradle-license-report:1.16")
-    }
-}
+/**
+ * Versions of one-line dependencies.
+ *
+ * For versions of other dependencies please see `version` properties of objects declared below.
+ *
+ * See also: https://github.com/SpineEventEngine/config/issues/171
+ */
 
-plugins {
-    java
-    `kotlin-dsl`
-    id("com.github.jk1.dependency-license-report") version "1.16"
-}
-
-kotlinDslPluginOptions {
-    experimentalWarning.set(false)
-}
-
-repositories {
-    mavenLocal()
-    gradlePluginPortal()
-    mavenCentral()
-}
-
-val jacksonVersion = "2.11.0"
-val licenseReportVersion = "1.16"
-
-dependencies {
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
-    api("com.github.jk1:gradle-license-report:${licenseReportVersion}")
+// https://www.mojohaus.org/animal-sniffer/animal-sniffer-maven-plugin/
+object AnimalSniffer {
+    private const val version = "1.19"
+    const val lib = "org.codehaus.mojo:animal-sniffer-annotations:${version}"
 }

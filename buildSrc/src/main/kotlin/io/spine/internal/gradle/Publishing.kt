@@ -24,36 +24,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-buildscript {
-    repositories {
-        gradlePluginPortal()
-    }
+package io.spine.internal.gradle
 
-    dependencies {
-        classpath("com.github.jk1:gradle-license-report:1.16")
-    }
-}
+import io.spine.internal.dependency.AssertK
+import io.spine.internal.dependency.BouncyCastle
+import io.spine.internal.dependency.JavaJwt
+import io.spine.internal.dependency.Klaxon
 
-plugins {
-    java
-    `kotlin-dsl`
-    id("com.github.jk1.dependency-license-report") version "1.16"
-}
-
-kotlinDslPluginOptions {
-    experimentalWarning.set(false)
-}
-
-repositories {
-    mavenLocal()
-    gradlePluginPortal()
-    mavenCentral()
-}
-
-val jacksonVersion = "2.11.0"
-val licenseReportVersion = "1.16"
-
-dependencies {
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
-    api("com.github.jk1:gradle-license-report:${licenseReportVersion}")
+@Suppress("unused")
+object Publishing {
+    const val klaxon = Klaxon.lib
+    const val oauthJwt = JavaJwt.lib
+    const val bouncyCastlePkcs = BouncyCastle.libPkcsJdk15
+    const val assertK = AssertK.libJvm
 }

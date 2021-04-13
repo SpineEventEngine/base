@@ -24,36 +24,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-buildscript {
-    repositories {
-        gradlePluginPortal()
-    }
+package io.spine.internal.dependency
 
-    dependencies {
-        classpath("com.github.jk1:gradle-license-report:1.16")
-    }
-}
+// https://junit.org/junit5/
+object JUnit {
+    private const val version            = "5.7.1"
+    private const val platformVersion    = "1.7.1"
+    private const val legacyVersion      = "4.13.1"
 
-plugins {
-    java
-    `kotlin-dsl`
-    id("com.github.jk1.dependency-license-report") version "1.16"
-}
+    // https://github.com/apiguardian-team/apiguardian
+    private const val apiGuardianVersion = "1.1.1"
+    // https://github.com/junit-pioneer/junit-pioneer
+    private const val pioneerVersion     = "1.3.8"
 
-kotlinDslPluginOptions {
-    experimentalWarning.set(false)
-}
-
-repositories {
-    mavenLocal()
-    gradlePluginPortal()
-    mavenCentral()
-}
-
-val jacksonVersion = "2.11.0"
-val licenseReportVersion = "1.16"
-
-dependencies {
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
-    api("com.github.jk1:gradle-license-report:${licenseReportVersion}")
+    const val legacy = "junit:junit:${legacyVersion}"
+    val api = listOf(
+        "org.apiguardian:apiguardian-api:${apiGuardianVersion}",
+        "org.junit.jupiter:junit-jupiter-api:${version}",
+        "org.junit.jupiter:junit-jupiter-params:${version}"
+    )
+    const val runner  = "org.junit.jupiter:junit-jupiter-engine:${version}"
+    @Suppress("unused")
+    const val pioneer = "org.junit-pioneer:junit-pioneer:${pioneerVersion}"
+    const val platformCommons = "org.junit.platform:junit-platform-commons:${platformVersion}"
+    const val platformLauncher = "org.junit.platform:junit-platform-launcher:${platformVersion}"
 }
