@@ -90,7 +90,7 @@ tasks.jar.configure {
     }
 }
 
-apply(from = Deps.scripts.publishProto(project))
+apply(from = Scripts.publishProto(project))
 
 val rebuildProtobuf by tasks.registering(RunBuild::class) {
     directory = "$rootDir/base-validating-builders"

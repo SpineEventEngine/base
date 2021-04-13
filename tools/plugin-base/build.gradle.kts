@@ -28,6 +28,7 @@ import com.google.common.io.Files
 import com.google.protobuf.gradle.generateProtoTasks
 import com.google.protobuf.gradle.protobuf
 import io.spine.internal.dependency.Protobuf
+import io.spine.internal.dependency.Grpc
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -61,8 +62,8 @@ val prepareProtocConfigVersions by tasks.registering {
 
     val versions = Properties()
     versions.setProperty("baseVersion", spineBaseVersion)
-    versions.setProperty("protobufVersion", Deps.build.protobuf.version)
-    versions.setProperty("gRPCVersion", Deps.grpc.version)
+    versions.setProperty("protobufVersion", Protobuf.version)
+    versions.setProperty("gRPCVersion", Grpc.version)
 
     @Suppress("UNCHECKED_CAST")
     inputs.properties(HashMap(versions) as MutableMap<String, *>)

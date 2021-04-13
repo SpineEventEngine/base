@@ -36,7 +36,15 @@ import io.spine.internal.dependency.Protobuf
 import io.spine.internal.gradle.applyStandard
 import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.forceVersions
+import io.spine.internal.gradle.PublishingRepos
+import io.spine.internal.gradle.RunBuild
+import io.spine.internal.gradle.Scripts
+import io.spine.internal.gradle.spinePublishing
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+import org.gradle.api.tasks.Delete
+import org.gradle.api.tasks.bundling.Jar
+import org.gradle.api.plugins.JavaPluginExtension
 
 @Suppress("RemoveRedundantQualifierName") // Cannot use imported things here.
 buildscript {
@@ -46,11 +54,11 @@ buildscript {
 }
 
 // Apply some plugins to make type-safe extension accessors available in this script file.
-@Suppress("RemoveRedundantQualifierName") // Cannot use imported things here.
 plugins {
     `java-library`
     kotlin("jvm") version io.spine.internal.dependency.Kotlin.version
     idea
+
     io.spine.internal.dependency.Protobuf.GradlePlugin.apply {
         id(id) version version
     }
@@ -269,17 +277,17 @@ subprojects {
     project.tasks["publish"].dependsOn("${project.path}:updateGitHubPages")
 }
 
-apply {
-    with(Scripts) {
-        // Aggregated coverage report across all subprojects.
-        from(jacoco(project))
-        // Generate a repository-wide report of 3rd-party dependencies and their licenses.
-        from(repoLicenseReport(project))
-        // Generate a `pom.xml` file containing first-level dependency of all projects
-        // in the repository.
-        from(generatePom(project))
-    }
-}
+//apply {
+//    with(Scripts) {
+//        // Aggregated coverage report across all subprojects.
+//        from(jacoco(project))
+//        // Generate a repository-wide report of 3rd-party dependencies and their licenses.
+//        from(repoLicenseReport(project))
+//        // Generate a `pom.xml` file containing first-level dependency of all projects
+//        // in the repository.
+//        from(generatePom(project))
+//    }
+//}
 
 val tests by tasks.registering(RunBuild::class) {
     directory = "$rootDir/tests"

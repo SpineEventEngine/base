@@ -24,6 +24,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import io.spine.internal.dependency.ErrorProne
+import io.spine.internal.dependency.Truth
+import io.spine.internal.dependency.JUnit
+
 buildscript {
 
     val baseRoot = "$rootDir/.."
@@ -90,11 +94,11 @@ subprojects {
      * explicitly.
      */
     dependencies {
-        Deps.build.errorProne.annotations.forEach { compileOnly(it) }
+        ErrorProne.annotations.forEach { compileOnly(it) }
         implementation("io.spine:spine-base:$spineVersion")
         testImplementation("io.spine:spine-testlib:$spineVersion")
-        Deps.test.truth.libs.forEach { testImplementation(it) }
-        testRuntimeOnly(Deps.test.junit.runner)
+        Truth.libs.forEach { testImplementation(it) }
+        testRuntimeOnly(JUnit.runner)
     }
 
     idea.module {

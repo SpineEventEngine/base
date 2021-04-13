@@ -26,7 +26,14 @@
 
 import com.google.protobuf.gradle.ProtobufConfigurator.JavaGenerateProtoTaskCollection
 import com.google.protobuf.gradle.*
+import io.spine.internal.dependency.JavaX
 import org.gradle.internal.os.OperatingSystem
+
+import io.spine.internal.dependency.Protobuf
+import io.spine.internal.dependency.Guava
+import io.spine.internal.dependency.Flogger
+import io.spine.internal.dependency.Checker
+import io.spine.internal.dependency.ErrorProne
 
 buildscript {
     apply(from = "$projectDir/../version.gradle.kts")
@@ -50,7 +57,7 @@ buildscript {
             classpath(it)
         }
 
-        classpath(io.spine.internal.dependency.JavaX.annotations)
+        classpath(JavaX.annotations)
         classpath(io.spine.internal.dependency.Protobuf.GradlePlugin.lib)
 
         classpath(io.spine.internal.dependency.JavaPoet.lib)
@@ -106,12 +113,12 @@ repositories {
 val spineVersion: String by extra
 
 dependencies {
-    Deps.build.protobuf.libs.forEach { compileOnly(it) }
-    compileOnly(Deps.build.guava.lib)
-    compileOnly(Deps.build.flogger.lib)
-    compileOnly(Deps.build.checker.annotations)
-    Deps.build.errorProne.annotations.forEach { compileOnly(it) }
-    compileOnly(Deps.build.jsr305Annotations)
+    Protobuf.libs.forEach { compileOnly(it) }
+    compileOnly(Guava.lib)
+    compileOnly(Flogger.lib)
+    compileOnly(Checker.annotations)
+    ErrorProne.annotations.forEach { compileOnly(it) }
+    compileOnly(JavaX.annotations)
 
     // The below dependency refers to a local artifact.
     // See `repositories.flatDir` definition above.
