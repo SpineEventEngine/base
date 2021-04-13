@@ -206,7 +206,6 @@ subprojects {
 
     protobuf {
         generatedFilesBaseDir = generatedDir
-
         protoc {
             artifact = Protobuf.compiler
         }

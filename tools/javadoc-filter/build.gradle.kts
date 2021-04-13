@@ -24,16 +24,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import io.spine.gradle.internal.JavaX
 import io.spine.internal.dependency.Grpc
 
 group = "io.spine.tools"
 
-val javaxAnnotationsVersion = "1.3.1"
-
 dependencies {
     implementation(files("${System.getProperty("java.home")}/../lib/tools.jar"))
     implementation(project(":base"))
-    implementation("javax.annotation:javax.annotation-api:$javaxAnnotationsVersion")
+    implementation(JavaX.annotations)
     implementation(Grpc.core)
     testImplementation(project(":testlib"))
     testImplementation(project(":mute-logging"))
