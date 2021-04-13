@@ -102,9 +102,9 @@ allprojects {
 
     // Apply “legacy” dependency definitions which are not yet migrated to Kotlin.
     // The `ext.deps` project property is used by `.gradle` scripts under `config/gradle`.
-    apply {
-        from("$rootDir/config/gradle/dependencies.gradle")
-    }
+//    apply {
+//        from("$rootDir/config/gradle/dependencies.gradle")
+//    }
 
     group = "io.spine"
     version = rootProject.extra["versionToPublish"]!!
