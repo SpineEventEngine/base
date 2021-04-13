@@ -26,11 +26,16 @@
 
 import com.google.protobuf.gradle.generateProtoTasks
 import com.google.protobuf.gradle.protobuf
-import io.spine.internal.gradle.excludeProtobufLite
-import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.AutoService
+import io.spine.internal.dependency.Protobuf
+import io.spine.internal.gradle.IncrementGuard
+import io.spine.internal.gradle.RunBuild
 import io.spine.internal.gradle.Scripts
+import io.spine.internal.gradle.excludeProtobufLite
 import java.nio.file.Files.isSameFile
+import org.gradle.api.Task
+import org.gradle.api.tasks.Delete
+import org.gradle.api.tasks.bundling.Jar
 
 plugins {
     `java-library`

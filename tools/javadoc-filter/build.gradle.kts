@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.gradle.internal.JavaX
+import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Grpc
 
 group = "io.spine.tools"
