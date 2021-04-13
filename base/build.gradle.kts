@@ -26,10 +26,10 @@
 
 import com.google.protobuf.gradle.generateProtoTasks
 import com.google.protobuf.gradle.protobuf
-import io.spine.gradle.internal.DependencyResolution
-import io.spine.gradle.internal.Deps
-import io.spine.gradle.internal.IncrementGuard
-import io.spine.gradle.internal.RunBuild
+import io.spine.internal.gradle.excludeProtobufLite
+import io.spine.internal.dependency.Protobuf
+import io.spine.internal.dependency.AutoService
+import io.spine.internal.gradle.Scripts
 import java.nio.file.Files.isSameFile
 
 plugins {
@@ -39,15 +39,15 @@ plugins {
 
 group = "io.spine"
 
-apply(from = Deps.scripts.testArtifacts(project))
+apply(from = Scripts.testArtifacts(project))
 apply<IncrementGuard>()
 
-DependencyResolution.excludeProtobufLite(configurations)
+configurations.excludeProtobufLite()
 
 dependencies {
-    Deps.build.protobuf.libs.forEach { protobuf(it) }
-    annotationProcessor(Deps.build.autoService.processor)
-    compileOnly(Deps.build.autoService.annotations)
+    Protobuf.libs.forEach { protobuf(it) }
+    annotationProcessor(AutoService.processor)
+    compileOnly(AutoService.annotations)
     testImplementation(project(":testlib"))
     testImplementation(project(":mute-logging"))
 }

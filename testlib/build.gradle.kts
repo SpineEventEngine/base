@@ -24,7 +24,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.gradle.internal.Deps
+import io.spine.internal.dependency.Guava
+import io.spine.internal.dependency.JUnit
+import io.spine.internal.dependency.Protobuf
+import io.spine.internal.dependency.Truth
 
 group = "io.spine.tools"
 
@@ -33,11 +36,9 @@ dependencies {
         Expose tools we use as transitive dependencies to simplify dependency management in
         sub-projects.
     */
-    Deps.build.protobuf.libs.forEach { api(it) }
-    Deps.test.apply {
-        junit.api.forEach { api(it) }
-        truth.libs.forEach { api(it) }
-        api(guavaTestlib)
-    }
+    Protobuf.libs.forEach { api(it) }
+    JUnit.api.forEach { api(it) }
+    Truth.libs.forEach { api(it) }
+    api(Guava.testLib)
     implementation(project(":base"))
 }

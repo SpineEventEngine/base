@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.gradle.internal.Deps
+import io.spine.internal.dependency.Grpc
 
 group = "io.spine.tools"
 
@@ -34,7 +34,7 @@ dependencies {
     implementation(files("${System.getProperty("java.home")}/../lib/tools.jar"))
     implementation(project(":base"))
     implementation("javax.annotation:javax.annotation-api:$javaxAnnotationsVersion")
-    implementation(Deps.grpc.core)
+    implementation(Grpc.core)
     testImplementation(project(":testlib"))
     testImplementation(project(":mute-logging"))
 }

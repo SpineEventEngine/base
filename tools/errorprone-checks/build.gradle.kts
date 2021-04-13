@@ -24,24 +24,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.gradle.internal.Deps
-import io.spine.gradle.internal.Repos
+import io.spine.internal.dependency.AutoService
+import io.spine.internal.dependency.ErrorProne
 import java.net.URI
 
 group = "io.spine.tools"
 
 repositories {
-    maven { url = URI(Repos.sonatypeSnapshots) }
+    maven { url = URI(io.spine.internal.gradle.Repos.sonatypeSnapshots) }
 }
 
 dependencies {
-    annotationProcessor(Deps.build.autoService.processor)
-    compileOnly(Deps.build.autoService.annotations)
+    annotationProcessor(AutoService.processor)
+    compileOnly(AutoService.annotations)
     implementation(project(":base"))
     implementation(project(":plugin-base"))
-    implementation(Deps.build.errorProne.core)
-    Deps.build.errorProne.annotations.forEach { implementation(it) }
-    testImplementation(Deps.build.errorProne.testHelpers)
+    implementation(ErrorProne.core)
+    ErrorProne.annotations.forEach { implementation(it) }
+    testImplementation(ErrorProne.testHelpers)
 }
 
 fun getResolvedArtifactFor(dependency: String): String {

@@ -24,14 +24,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.gradle.internal.Deps
+import io.spine.internal.dependency.JavaPoet
+import io.spine.internal.dependency.JavaX
 
 group = "io.spine.tools"
 
 dependencies {
     api(project(":base"))
-    api(Deps.gen.javaPoet)
-    api(Deps.gen.javaxAnnotation)
+    api(JavaPoet.lib)
+    api(JavaX.annotations)
 
     testImplementation(project(":testlib"))
 }

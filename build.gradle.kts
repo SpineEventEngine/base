@@ -26,10 +26,6 @@
 
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.protoc
-import io.spine.gradle.internal.PublishingRepos
-import io.spine.gradle.internal.RunBuild
-import io.spine.gradle.internal.Scripts
-import io.spine.gradle.internal.spinePublishing
 import io.spine.internal.dependency.CheckerFramework
 import io.spine.internal.dependency.ErrorProne
 import io.spine.internal.dependency.Flogger
@@ -275,7 +271,7 @@ subprojects {
 }
 
 apply {
-    with(io.spine.gradle.internal.Deps.scripts) {
+    with(Scripts) {
         // Aggregated coverage report across all subprojects.
         from(jacoco(project))
         // Generate a repository-wide report of 3rd-party dependencies and their licenses.

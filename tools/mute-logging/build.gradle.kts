@@ -1,3 +1,5 @@
+import io.spine.internal.dependency.JUnit
+
 /*
  * Copyright 2021, TeamDev. All rights reserved.
  *
@@ -24,12 +26,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.gradle.internal.Deps
-
 group = "io.spine.tools"
 
 dependencies {
     implementation(project(":base"))
     implementation(project(":testlib"))
-    Deps.test.junit.api.forEach { implementation(it) }
+    JUnit.api.forEach { implementation(it) }
 }

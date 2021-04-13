@@ -1,3 +1,6 @@
+import io.spine.internal.dependency.JavaPoet
+import io.spine.internal.dependency.JavaX
+
 /*
  * Copyright 2021, TeamDev. All rights reserved.
  *
@@ -24,16 +27,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.gradle.internal.Deps
-
 group = "io.spine.tools"
 
 dependencies {
     implementation(project(":tool-base"))
     implementation(project(":plugin-base"))
     implementation(project(":validation-generator"))
-    implementation(Deps.gen.javaPoet)
-    implementation(Deps.gen.javaxAnnotation)
+    implementation(JavaPoet.lib)
+    implementation(JavaX.annotations)
 
     testImplementation(project(":base"))
     testImplementation(project(":testlib"))

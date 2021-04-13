@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.gradle.internal.Repos
+import io.spine.internal.gradle.Repos
 import org.gradle.api.file.SourceDirectorySet
 import java.net.URI
 
@@ -40,15 +40,15 @@ buildscript {
         mavenLocal()
         mavenCentral()
 
-        maven { url = java.net.URI(io.spine.gradle.internal.Repos.spine) }
+        maven { url = java.net.URI(io.spine.internal.gradle.Repos.spine) }
     }
 
     val spineVersion: String by extra
     dependencies {
-        io.spine.gradle.internal.Deps.build.protobuf.libs.forEach { classpath(it) }
+        io.spine.internal.dependency.Protobuf.libs.forEach { classpath(it) }
 
         // Exclude `guava:18.0` as a transitive dependency by Protobuf Gradle plugin.
-        classpath(io.spine.gradle.internal.Deps.build.protobuf.gradlePlugin) {
+        classpath(io.spine.internal.dependency.Protobuf.GradlePlugin.lib) {
             exclude(group = "com.google.guava")
         }
         classpath("io.spine.tools:spine-model-compiler:${spineVersion}")

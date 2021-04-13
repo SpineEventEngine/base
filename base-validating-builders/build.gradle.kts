@@ -26,7 +26,6 @@
 
 import com.google.protobuf.gradle.ProtobufConfigurator.JavaGenerateProtoTaskCollection
 import com.google.protobuf.gradle.*
-import io.spine.gradle.internal.Deps
 import org.gradle.internal.os.OperatingSystem
 
 buildscript {
@@ -38,29 +37,35 @@ buildscript {
         mavenCentral()
     }
 
-    @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    val deps = io.spine.gradle.internal.Deps
-
     dependencies {
-        deps.build.protobuf.libs.forEach { classpath(it) }
-        classpath(deps.build.guava.lib)
-        classpath(deps.build.flogger.lib)
-        classpath(deps.build.checker.annotations)
-        deps.build.errorProne.annotations.forEach { classpath(it) }
-        classpath(deps.build.jsr305Annotations)
-        classpath(deps.build.protobuf.gradlePlugin)
+        io.spine.internal.dependency.Protobuf.libs.forEach {
+            classpath(it)
+        }
 
-        classpath(deps.gen.javaPoet)
-        classpath(deps.runtime.flogger.systemBackend)
+        classpath(io.spine.internal.dependency.Guava.lib)
+        classpath(io.spine.internal.dependency.Flogger.lib)
+        classpath(io.spine.internal.dependency.CheckerFramework.annotations)
+
+        io.spine.internal.dependency.ErrorProne.annotations.forEach {
+            classpath(it)
+        }
+
+        classpath(io.spine.internal.dependency.JavaX.annotations)
+        classpath(io.spine.internal.dependency.Protobuf.GradlePlugin.lib)
+
+        classpath(io.spine.internal.dependency.JavaPoet.lib)
+        classpath(io.spine.internal.dependency.Flogger.Runtime.systemBackend)
 
         // A library for parsing Java sources.
         // Used for parsing Java sources generated from Protobuf files
         // to make their annotation more convenient.
-        classpath(deps.build.roaster.api) {
-            exclude(group = "com.google.guava")
-        }
-        classpath (deps.build.roaster.jdt) {
-            exclude(group = "com.google.guava")
+        with(io.spine.internal.dependency.Roaster) {
+            classpath(api) {
+                exclude(group = "com.google.guava")
+            }
+            classpath(jdt) {
+                exclude(group = "com.google.guava")
+            }
         }
 
         classpath(files(
@@ -77,7 +82,7 @@ plugins {
     java
     idea
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    id("com.google.protobuf").version(io.spine.gradle.internal.Deps.build.protobuf.gradlePluginVersion)
+    id("com.google.protobuf").version(io.spine.internal.Protobuf.GradlePlugin.version)
 }
 
 apply(plugin = "io.spine.tools.spine-model-compiler")

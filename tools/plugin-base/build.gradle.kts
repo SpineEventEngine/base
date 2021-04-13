@@ -27,7 +27,7 @@
 import com.google.common.io.Files
 import com.google.protobuf.gradle.generateProtoTasks
 import com.google.protobuf.gradle.protobuf
-import io.spine.gradle.internal.Deps
+import io.spine.internal.dependency.Protobuf
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -35,7 +35,7 @@ group = "io.spine.tools"
 
 dependencies {
     api(gradleApi())
-    api(Deps.build.gradlePlugins.protobuf)
+    api(Protobuf.GradlePlugin.lib)
     api(project(":tool-base"))
 
     testImplementation(project(":testlib"))

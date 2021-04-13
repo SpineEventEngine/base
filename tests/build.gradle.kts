@@ -24,8 +24,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.gradle.internal.Deps
-
 buildscript {
 
     val baseRoot = "$rootDir/.."
@@ -42,14 +40,12 @@ buildscript {
 
     val spineVersion: String by extra
 
-    @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    val deps = io.spine.gradle.internal.Deps
     dependencies {
-        classpath(deps.build.guava.lib)
-        classpath(deps.build.protobuf.gradlePlugin) {
+        classpath(io.spine.internal.dependency.Guava.lib)
+        classpath(io.spine.internal.dependency.Protobuf.GradlePlugin.lib) {
             exclude(group = "com.google.guava")
         }
-        classpath(deps.build.errorProne.gradlePlugin) {
+        classpath(io.spine.internal.dependency.ErrorProne.GradlePlugin.lib) {
             exclude(group = "com.google.guava")
         }
         classpath("io.spine.tools:spine-model-compiler:$spineVersion")
@@ -60,7 +56,7 @@ plugins {
     java
     idea
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    id("com.google.protobuf").version(io.spine.gradle.internal.Deps.build.protobuf.gradlePluginVersion)
+    id("com.google.protobuf").version(io.spine.internal.dependency.Protobuf.GradlePlugin.version)
 }
 
 val baseRoot = "$rootDir/.."

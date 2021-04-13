@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.gradle.internal.Deps
+import io.spine.internal.dependency.JavaPoet
 
 /* 
     This Smoke Tests module holds a `TestMethodFactory` that is used in
@@ -34,6 +34,6 @@ import io.spine.gradle.internal.Deps
 val spineVersion: String by extra
 
 dependencies {
-    implementation(Deps.gen.javaPoet)
+    implementation(JavaPoet.lib)
     implementation("io.spine.tools:spine-tool-base:$spineVersion")
 }

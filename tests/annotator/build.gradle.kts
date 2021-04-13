@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.gradle.internal.Deps
+import io.spine.internal.dependency.Grpc
 
 modelCompiler {
     generateAnnotations {
@@ -51,6 +51,6 @@ modelCompiler {
 }
 
 dependencies {
-    testImplementation(Deps.grpc.stub)
-    testImplementation(Deps.grpc.protobuf)
+    testImplementation(Grpc.stub)
+    testImplementation(Grpc.protobuf)
 }
