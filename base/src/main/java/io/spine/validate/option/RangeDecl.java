@@ -75,9 +75,14 @@ final class RangeDecl {
      *     <li>{@code ( .. 0)} - missing lower bound.
      * </ul>
      */
-    private static final java.util.regex.Pattern NUMBER_RANGE =
-            Pattern.compile(
-                    "([\\[(])\\s*([+\\-]?[\\d.]+)\\s*\\.\\.\\s*([+\\-]?[\\d.]+)\\s*([])])");
+    private static final Pattern NUMBER_RANGE = Pattern.compile(
+            "([\\[(])\\s*([+\\-]?[\\d.]+)\\s*\\.\\.\\s*([+\\-]?[\\d.]+)\\s*([])])"
+    );
+
+    private final boolean minInclusive;
+    private final ComparableNumber min;
+    private final ComparableNumber max;
+    private final boolean maxInclusive;
 
     /**
      * Transforms the passed range declaration into a range of numbers.
@@ -86,12 +91,6 @@ final class RangeDecl {
         RangeDecl decl = new RangeDecl(rangeOptionValue, field);
         return decl.toRange();
     }
-
-    private final boolean minInclusive;
-    private final ComparableNumber min;
-    private final ComparableNumber max;
-
-    private final boolean maxInclusive;
 
     private RangeDecl(String rangeOptionValue, FieldDeclaration field) {
         Matcher rangeMatcher = NUMBER_RANGE.matcher(rangeOptionValue.trim());
