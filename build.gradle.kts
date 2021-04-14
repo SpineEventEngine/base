@@ -108,12 +108,6 @@ allprojects {
         plugin("project-report")
     }
 
-    // Apply “legacy” dependency definitions which are not yet migrated to Kotlin.
-    // The `ext.deps` project property is used by `.gradle` scripts under `config/gradle`.
-//    apply {
-//        from("$rootDir/config/gradle/dependencies.gradle")
-//    }
-
     group = "io.spine"
     version = rootProject.extra["versionToPublish"]!!
 }
@@ -281,17 +275,17 @@ subprojects {
     project.tasks["publish"].dependsOn("${project.path}:updateGitHubPages")
 }
 
-//apply {
-//    with(Scripts) {
-//        // Aggregated coverage report across all subprojects.
-//        from(jacoco(project))
-//        // Generate a repository-wide report of 3rd-party dependencies and their licenses.
-//        from(repoLicenseReport(project))
-//        // Generate a `pom.xml` file containing first-level dependency of all projects
-//        // in the repository.
-//        from(generatePom(project))
-//    }
-//}
+apply {
+    with(Scripts) {
+        // Aggregated coverage report across all subprojects.
+        from(jacoco(project))
+        // Generate a repository-wide report of 3rd-party dependencies and their licenses.
+        from(repoLicenseReport(project))
+        // Generate a `pom.xml` file containing first-level dependency of all projects
+        // in the repository.
+        from(generatePom(project))
+    }
+}
 
 val tests by tasks.registering(RunBuild::class) {
     directory = "$rootDir/tests"
