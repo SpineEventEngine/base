@@ -57,7 +57,7 @@ buildscript {
             classpath(it)
         }
 
-        classpath(JavaX.annotations)
+        classpath(io.spine.internal.dependency.JavaX.annotations)
         classpath(io.spine.internal.dependency.Protobuf.GradlePlugin.lib)
 
         classpath(io.spine.internal.dependency.JavaPoet.lib)
@@ -89,7 +89,7 @@ plugins {
     java
     idea
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    id("com.google.protobuf").version(io.spine.internal.Protobuf.GradlePlugin.version)
+    id("com.google.protobuf").version(io.spine.internal.dependency.Protobuf.GradlePlugin.version)
 }
 
 apply(plugin = "io.spine.tools.spine-model-compiler")

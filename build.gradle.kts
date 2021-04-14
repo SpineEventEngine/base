@@ -53,6 +53,10 @@ buildscript {
     io.spine.internal.gradle.doForceVersions(configurations)
 }
 
+repositories {
+    repositories.applyStandard()
+}
+
 // Apply some plugins to make type-safe extension accessors available in this script file.
 plugins {
     `java-library`
