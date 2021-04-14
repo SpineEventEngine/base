@@ -32,7 +32,7 @@ import org.gradle.internal.os.OperatingSystem
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.Flogger
-import io.spine.internal.dependency.Checker
+import io.spine.internal.dependency.CheckerFramework
 import io.spine.internal.dependency.ErrorProne
 
 buildscript {
@@ -116,7 +116,7 @@ dependencies {
     Protobuf.libs.forEach { compileOnly(it) }
     compileOnly(Guava.lib)
     compileOnly(Flogger.lib)
-    compileOnly(Checker.annotations)
+    compileOnly(CheckerFramework.annotations)
     ErrorProne.annotations.forEach { compileOnly(it) }
     compileOnly(JavaX.annotations)
 
