@@ -24,26 +24,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.dependency.LicenseReport
-import io.spine.internal.dependency.Jackson
-
 buildscript {
     repositories {
         gradlePluginPortal()
     }
-
+    val licenseReportVersion = "1.16"
     dependencies {
-        classpath(io.spine.internal.dependency.LicenseReport.lib)
+        classpath("com.github.jk1:gradle-license-report:${licenseReportVersion}")
     }
 }
 
 plugins {
     java
     `kotlin-dsl`
-    @Suppress("RemoveRedundantQualifierName")
-    io.spine.internal.dependency.LicenseReport.GradlePlugin.apply {
-        id(id).version(version)
-    }
+    val licenseReportVersion = "1.16"
+    id("com.github.jk1.dependency-license-report").version(licenseReportVersion)
 }
 
 kotlinDslPluginOptions {
@@ -56,7 +51,10 @@ repositories {
     mavenCentral()
 }
 
+val licenseReportVersion = "1.16"
+val jacksonVersion = "2.11.0"
+
 dependencies {
-    implementation(Jackson.dataformatXml)
-    api(LicenseReport.lib)
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
+    api("com.github.jk1:gradle-license-report:${licenseReportVersion}")
 }
