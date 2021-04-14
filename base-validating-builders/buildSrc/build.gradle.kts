@@ -24,8 +24,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * This script uses three declarations of the constant [licenseReportVersion] because
+ * currently there is no way to define a constant _before_ a build script of `buildSrc`.
+ * We cannot use imports or do something else before the `buildscript` or `plugin` clauses.
+ *
+ * Therefore, when a version of [io.spine.internal.dependency.LicenseReport] changes, it should be
+ * changed in the Kotlin object _and_ in this file below thrice. 
+ */
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+    val licenseReportVersion = "1.16"
+    dependencies {
+        classpath("com.github.jk1:gradle-license-report:${licenseReportVersion}")
+    }
+}
+
 plugins {
+    java
     `kotlin-dsl`
+    val licenseReportVersion = "1.16"
+    id("com.github.jk1.dependency-license-report").version(licenseReportVersion)
 }
 
 kotlinDslPluginOptions {
@@ -34,11 +55,14 @@ kotlinDslPluginOptions {
 
 repositories {
     mavenLocal()
+    gradlePluginPortal()
     mavenCentral()
 }
 
 val jacksonVersion = "2.11.0"
+val licenseReportVersion = "1.16"
 
 dependencies {
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
+    api("com.github.jk1:gradle-license-report:${licenseReportVersion}")
 }

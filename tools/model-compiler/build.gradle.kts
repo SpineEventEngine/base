@@ -26,7 +26,9 @@
 
 import com.google.protobuf.gradle.generateProtoTasks
 import com.google.protobuf.gradle.protobuf
-import io.spine.gradle.internal.Deps
+import io.spine.internal.dependency.JavaPoet
+import io.spine.internal.dependency.Protobuf
+import io.spine.internal.dependency.Roaster
 
 group = "io.spine.tools"
 
@@ -35,18 +37,18 @@ val spineVersion: String by extra
 
 dependencies {
     implementation(project(":plugin-base"))
-    implementation(Deps.gen.javaPoet)
+    implementation(JavaPoet.lib)
 
     // A library for parsing Java sources.
     // Used for parsing Java sources generated from Protobuf files
     // to make their annotation more convenient.
-    implementation(Deps.build.roaster.api) {
+    implementation(Roaster.api) {
         exclude(group = "com.google.guava")
     }
-    implementation(Deps.build.roaster.jdt) {
+    implementation(Roaster.jdt) {
         exclude(group = "com.google.guava")
     }
-    implementation(Deps.build.gradlePlugins.protobuf)
+    implementation(Protobuf.GradlePlugin.lib)
     testImplementation(project(":testlib"))
     testImplementation(gradleTestKit())
     testImplementation(project(":plugin-testlib"))
@@ -57,9 +59,11 @@ protobuf {
         all().forEach { task ->
             val scope = task.sourceSet.name
             task.generateDescriptorSet = true
-            task.descriptorSetOptions.path = "$buildDir/descriptors/${scope}/io.spine.tools.spine-model-compiler-${scope}.desc"
-            task.descriptorSetOptions.includeImports = true
-            task.descriptorSetOptions.includeSourceInfo = true
+            with(task.descriptorSetOptions) {
+                path = "$buildDir/descriptors/${scope}/io.spine.tools.spine-model-compiler-${scope}.desc"
+                includeImports = true
+                includeSourceInfo = true
+            }
         }
     }
 }

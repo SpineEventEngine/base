@@ -24,12 +24,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.gradle.internal.Deps
+import io.spine.internal.dependency.JUnit
 
 group = "io.spine.tools"
 
 dependencies {
     implementation(project(":base"))
     implementation(project(":testlib"))
-    Deps.test.junit.api.forEach { implementation(it) }
+    JUnit.api.forEach { implementation(it) }
 }

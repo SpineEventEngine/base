@@ -26,34 +26,48 @@
 
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.protoc
-import io.spine.gradle.internal.DependencyResolution
-import io.spine.gradle.internal.Deps
-import io.spine.gradle.internal.PublishingRepos
-import io.spine.gradle.internal.RunBuild
-import io.spine.gradle.internal.spinePublishing
+import io.spine.internal.dependency.CheckerFramework
+import io.spine.internal.dependency.ErrorProne
+import io.spine.internal.dependency.Flogger
+import io.spine.internal.dependency.Guava
+import io.spine.internal.dependency.JUnit
+import io.spine.internal.dependency.JavaX
+import io.spine.internal.dependency.Protobuf
+import io.spine.internal.gradle.applyStandard
+import io.spine.internal.gradle.excludeProtobufLite
+import io.spine.internal.gradle.forceVersions
+import io.spine.internal.gradle.PublishingRepos
+import io.spine.internal.gradle.RunBuild
+import io.spine.internal.gradle.Scripts
+import io.spine.internal.gradle.spinePublishing
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+import org.gradle.api.tasks.Delete
+import org.gradle.api.tasks.bundling.Jar
+import org.gradle.api.plugins.JavaPluginExtension
+
+@Suppress("RemoveRedundantQualifierName") // Cannot use imported things here.
 buildscript {
     apply(from = "$rootDir/version.gradle.kts")
+    io.spine.internal.gradle.doApplyStandard(repositories)
+    io.spine.internal.gradle.doForceVersions(configurations)
+}
 
-    @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    io.spine.gradle.internal.DependencyResolution.apply {
-        defaultRepositories(repositories)
-        forceConfiguration(configurations)
-    }
+repositories {
+    repositories.applyStandard()
 }
 
 // Apply some plugins to make type-safe extension accessors available in this script file.
-@Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
 plugins {
     `java-library`
-    // For newer Kotlin version please visit [https://kotlinlang.org/docs/eap.html#build-details].
-    kotlin("jvm") version io.spine.gradle.internal.Kotlin.version
+    kotlin("jvm") version io.spine.internal.dependency.Kotlin.version
     idea
-    @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    io.spine.gradle.internal.Deps.build.apply {
-        id("com.google.protobuf") version protobuf.gradlePluginVersion
-        id("net.ltgt.errorprone") version errorProne.gradlePluginVersion
+
+    io.spine.internal.dependency.Protobuf.GradlePlugin.apply {
+        id(id) version version
+    }
+    io.spine.internal.dependency.ErrorProne.GradlePlugin.apply {
+        id(id) version version
     }
 }
 
@@ -94,12 +108,6 @@ allprojects {
         plugin("project-report")
     }
 
-    // Apply “legacy” dependency definitions which are not yet migrated to Kotlin.
-    // The `ext.deps` project property is used by `.gradle` scripts under `config/gradle`.
-    apply {
-        from("$rootDir/config/gradle/dependencies.gradle")
-    }
-
     group = "io.spine"
     version = rootProject.extra["versionToPublish"]!!
 }
@@ -107,13 +115,12 @@ allprojects {
 subprojects {
     buildscript {
         apply(from = "$rootDir/version.gradle.kts")
-
-        DependencyResolution.defaultRepositories(repositories)
+        repositories.applyStandard()
         dependencies {
-            classpath(Deps.build.gradlePlugins.protobuf)
-            classpath(Deps.build.gradlePlugins.errorProne)
+            classpath(Protobuf.GradlePlugin.lib)
+            classpath(ErrorProne.GradlePlugin.lib)
         }
-        DependencyResolution.forceConfiguration(configurations)
+        configurations.forceVersions()
     }
 
     apply(from = "$rootDir/version.gradle.kts")
@@ -135,7 +142,7 @@ subprojects {
     }
 
     apply {
-        with(Deps.scripts) {
+        with(Scripts) {
             from(projectLicenseReport(project))
             from(checkstyle(project))
         }
@@ -156,10 +163,11 @@ subprojects {
         kotlinOptions {
             jvmTarget = javaVersion.toString()
             useIR = true
+            freeCompilerArgs = listOf("-Xskip-prerelease-check")
         }
     }
 
-    DependencyResolution.defaultRepositories(repositories)
+    repositories.applyStandard()
 
     /**
      * These dependencies are applied to all sub-projects and do not have to
@@ -169,32 +177,27 @@ subprojects {
      * by the framework parts that depend on `base`.
      */
     dependencies {
-        Deps.build.apply {
-            errorprone(errorProne.core)
-            errorproneJavac(errorProne.javacPlugin)
+        errorprone(ErrorProne.core)
+        errorproneJavac(ErrorProne.javacPlugin)
 
-            protobuf.libs.forEach { api(it) }
-            api(flogger.lib)
-            api(guava.lib)
-            api(checker.annotations)
-            api(jsr305Annotations)
-            errorProne.annotations.forEach { api(it) }
-        }
+        Protobuf.libs.forEach { api(it) }
+        api(Flogger.lib)
+        api(Guava.lib)
+        api(CheckerFramework.annotations)
+        api(JavaX.annotations)
+        ErrorProne.annotations.forEach { api(it) }
         api(kotlin("stdlib-jdk8"))
 
-        Deps.test.apply {
-            testImplementation(guavaTestlib)
-            testImplementation(junit.runner)
-            testImplementation(junit.pioneer)
-            junit.api.forEach { testImplementation(it) }
-        }
-        runtimeOnly(Deps.runtime.flogger.systemBackend)
+        testImplementation(Guava.testLib)
+        testImplementation(JUnit.runner)
+        testImplementation(JUnit.pioneer)
+        JUnit.api.forEach { testImplementation(it) }
+
+        runtimeOnly(Flogger.Runtime.systemBackend)
     }
 
-    DependencyResolution.apply {
-        forceConfiguration(configurations)
-        excludeProtobufLite(configurations)
-    }
+    configurations.forceVersions()
+    configurations.excludeProtobufLite()
 
     sourceSets {
         main {
@@ -209,9 +212,8 @@ subprojects {
 
     protobuf {
         generatedFilesBaseDir = generatedDir
-
         protoc {
-            artifact = Deps.build.protobuf.compiler
+            artifact = Protobuf.compiler
         }
     }
 
@@ -223,7 +225,7 @@ subprojects {
     }
 
     apply {
-        with(Deps.scripts) {
+        with(Scripts) {
             from(testOutput(project))
             from(javadocOptions(project))
             from(javacArgs(project))
@@ -265,7 +267,7 @@ subprojects {
 
     ext["allowInternalJavadoc"] = true
     apply {
-        with(Deps.scripts) {
+        with(Scripts) {
             from(pmd(project))
             from(updateGitHubPages(project))
         }
@@ -274,7 +276,7 @@ subprojects {
 }
 
 apply {
-    with(Deps.scripts) {
+    with(Scripts) {
         // Aggregated coverage report across all subprojects.
         from(jacoco(project))
         // Generate a repository-wide report of 3rd-party dependencies and their licenses.

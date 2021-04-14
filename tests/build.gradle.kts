@@ -24,7 +24,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.gradle.internal.Deps
+import io.spine.internal.dependency.ErrorProne
+import io.spine.internal.dependency.Truth
+import io.spine.internal.dependency.JUnit
 
 buildscript {
 
@@ -42,14 +44,12 @@ buildscript {
 
     val spineVersion: String by extra
 
-    @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    val deps = io.spine.gradle.internal.Deps
     dependencies {
-        classpath(deps.build.guava.lib)
-        classpath(deps.build.protobuf.gradlePlugin) {
+        classpath(io.spine.internal.dependency.Guava.lib)
+        classpath(io.spine.internal.dependency.Protobuf.GradlePlugin.lib) {
             exclude(group = "com.google.guava")
         }
-        classpath(deps.build.errorProne.gradlePlugin) {
+        classpath(io.spine.internal.dependency.ErrorProne.GradlePlugin.lib) {
             exclude(group = "com.google.guava")
         }
         classpath("io.spine.tools:spine-model-compiler:$spineVersion")
@@ -60,7 +60,9 @@ plugins {
     java
     idea
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
-    id("com.google.protobuf").version(io.spine.gradle.internal.Deps.build.protobuf.gradlePluginVersion)
+    io.spine.internal.dependency.Protobuf.GradlePlugin.apply {
+        id(id).version(version)
+    }
 }
 
 val baseRoot = "$rootDir/.."
@@ -94,11 +96,11 @@ subprojects {
      * explicitly.
      */
     dependencies {
-        Deps.build.errorProne.annotations.forEach { compileOnly(it) }
+        ErrorProne.annotations.forEach { compileOnly(it) }
         implementation("io.spine:spine-base:$spineVersion")
         testImplementation("io.spine:spine-testlib:$spineVersion")
-        Deps.test.truth.libs.forEach { testImplementation(it) }
-        testRuntimeOnly(Deps.test.junit.runner)
+        Truth.libs.forEach { testImplementation(it) }
+        testRuntimeOnly(JUnit.runner)
     }
 
     idea.module {

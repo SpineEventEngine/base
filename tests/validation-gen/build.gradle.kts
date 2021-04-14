@@ -24,13 +24,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.gradle.internal.Deps
+import io.spine.internal.dependency.AutoService
 
 modelCompiler {
     generateValidation = true
 }
 
 dependencies {
-    testAnnotationProcessor(Deps.build.autoService.processor)
-    testCompileOnly(Deps.build.autoService.annotations)
+    testAnnotationProcessor(AutoService.processor)
+    testCompileOnly(AutoService.annotations)
 }
