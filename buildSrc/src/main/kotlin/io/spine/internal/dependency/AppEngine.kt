@@ -34,6 +34,6 @@ object AppEngine {
 
     object GradlePlugin {
         private const val version = "2.2.0"
-        const val lib = "com.google.cloud.tools:appengine-gradle-plugin:$version"
+        const val lib = "com.google.cloud.tools:appengine-gradle-plugin:${version}"
     }
 }
