@@ -1,6 +1,3 @@
-import io.spine.internal.dependency.JavaPoet
-import io.spine.internal.dependency.JavaX
-
 /*
  * Copyright 2021, TeamDev. All rights reserved.
  *
@@ -26,6 +23,9 @@ import io.spine.internal.dependency.JavaX
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import io.spine.internal.dependency.JavaPoet
+import io.spine.internal.dependency.JavaX
 
 group = "io.spine.tools"
 
