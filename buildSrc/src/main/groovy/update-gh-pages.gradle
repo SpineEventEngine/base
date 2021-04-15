@@ -180,7 +180,8 @@ updateGitHubPages.doLast {
     // Create SSH config file to allow pushing commits to the repository.
     final File sshConfigFile = file("${System.getProperty("user.home")}/.ssh/config")
     if (!sshConfigFile.exists()) {
-        com.google.common.Files.createParentDirs(sshConfigFile)
+        final File parentDir = sshConfigFile.getCanonicalFile().getParentFile()
+        parentDir.mkdirs()
         sshConfigFile.createNewFile()
     }
     sshConfigFile << """
