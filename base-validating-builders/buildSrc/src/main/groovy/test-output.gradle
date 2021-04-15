@@ -23,44 +23,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package dart
 
-import org.apache.tools.ant.taskdefs.condition.Os
+/*
+ * This plugin configured the test output as follows:
+ *
+ *  - the standard streams of the tests execution are logged;
+ *  - exceptions thrown in tests are logged;
+ *  - after all the tests are executed, a short test summary is logged; the summary shown the number
+ *    of tests and their results.
+ */
 
-final def GROUP = 'Dart'
-final def packageIndex = "$projectDir/.packages" as File
-final def extension = Os.isFamily(Os.FAMILY_WINDOWS) ? '.bat' : ''
-final def PUB_EXECUTABLE = 'pub' + extension
+tasks.withType(Test).each {
+    it.testLogging {
+        showStandardStreams = true
+        showExceptions = true
+        showStackTraces = true
+        showCauses = true
+        exceptionFormat = 'full'
+    }
 
-task resolveDependencies(type: Exec) {
-    group = GROUP
-    description = 'Fetches the dependencies declared via `pubspec.yaml`.'
-
-    inputs.file "$projectDir/pubspec.yaml"
-    outputs.file packageIndex
-
-    commandLine PUB_EXECUTABLE, 'get'
-
-    mustRunAfter 'cleanPackageIndex'
+    it.afterSuite { final testDescriptor, final result ->
+        // If the descriptor has no parent, then it is the root test suite, i.e. it includes the
+        // info about all the run tests.
+        if (!testDescriptor.parent) {
+            logger.lifecycle(
+                    """
+                    Test summary:
+                    >> ${result.testCount} tests
+                    >> ${result.successfulTestCount} succeeded
+                    >> ${result.failedTestCount} failed
+                    >> ${result.skippedTestCount} skipped
+                    """
+            )
+        }
+    }
 }
-
-tasks['assemble'].dependsOn 'resolveDependencies'
-
-task cleanPackageIndex(type: Delete) {
-    group = GROUP
-    description = 'Deletes the `.packages` file on this Dart module.'
-    delete = [packageIndex]
-}
-
-tasks['clean'].dependsOn 'cleanPackageIndex'
-
-task testDart(type: Exec) {
-    group = GROUP
-    description = 'Runs Dart tests declared in the `./test` directory. See `https://pub.dev/packages/test#running-tests`.'
-
-    commandLine PUB_EXECUTABLE, 'run', 'test'
-
-    dependsOn 'resolveDependencies'
-}
-
-tasks['check'].dependsOn 'testDart'

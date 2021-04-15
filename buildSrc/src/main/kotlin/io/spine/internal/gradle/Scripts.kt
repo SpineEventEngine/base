@@ -30,8 +30,7 @@ import org.gradle.api.Project
 
 @Suppress("unused")
 object Scripts {
-    @Suppress("MemberVisibilityCanBePrivate") // used externally from Groovy.
-    const val commonPath = "/buildSrc/src/main/groovy/"
+    private const val commonPath = "/config/gradle/"
 
     fun testArtifacts(p: Project)          = p.script("test-artifacts.gradle")
     fun testOutput(p: Project)             = p.script("test-output.gradle")

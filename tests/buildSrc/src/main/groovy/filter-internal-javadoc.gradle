@@ -23,44 +23,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package dart
 
-import org.apache.tools.ant.taskdefs.condition.Os
-
-final def GROUP = 'Dart'
-final def packageIndex = "$projectDir/.packages" as File
-final def extension = Os.isFamily(Os.FAMILY_WINDOWS) ? '.bat' : ''
-final def PUB_EXECUTABLE = 'pub' + extension
-
-task resolveDependencies(type: Exec) {
-    group = GROUP
-    description = 'Fetches the dependencies declared via `pubspec.yaml`.'
-
-    inputs.file "$projectDir/pubspec.yaml"
-    outputs.file packageIndex
-
-    commandLine PUB_EXECUTABLE, 'get'
-
-    mustRunAfter 'cleanPackageIndex'
+configurations {
+    excludeInternalDoclet
 }
 
-tasks['assemble'].dependsOn 'resolveDependencies'
-
-task cleanPackageIndex(type: Delete) {
-    group = GROUP
-    description = 'Deletes the `.packages` file on this Dart module.'
-    delete = [packageIndex]
+dependencies {
+    /*
+       The variable spineBaseVersion must be defined in the `ext` section of the `version.gradle`
+       file of the project which imports `config` as a sub-module.
+      */
+    excludeInternalDoclet "io.spine.tools:spine-javadoc-filter:$spineBaseVersion"
 }
 
-tasks['clean'].dependsOn 'cleanPackageIndex'
+// This task uses constants defined in `javadoc-options.gradle`.
+task noInternalJavadoc(type: Javadoc) {
+    source = sourceSets.main.allJava.filter {
+        !it.absolutePath.contains('generated')
+    }
+    classpath = javadoc.getClasspath()
 
-task testDart(type: Exec) {
-    group = GROUP
-    description = 'Runs Dart tests declared in the `./test` directory. See `https://pub.dev/packages/test#running-tests`.'
+    options {
+        tags = javadocOptions.tags
+        encoding = javadocOptions.encoding
 
-    commandLine PUB_EXECUTABLE, 'run', 'test'
+        // Doclet fully qualified name.
+        doclet = 'io.spine.tools.javadoc.ExcludeInternalDoclet'
 
-    dependsOn 'resolveDependencies'
+        // Path to the JAR containing the doclet.
+        docletpath = configurations.excludeInternalDoclet.files.asType(List)
+    }
 }
-
-tasks['check'].dependsOn 'testDart'
