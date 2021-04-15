@@ -60,11 +60,12 @@ plugins {
 }
 
 // NOTE: this file is copied from the root project in the test setup.
+val commonPath = io.spine.internal.gradle.Scripts.commonPath
 apply {
     plugin("com.google.protobuf")
     plugin("io.spine.tools.spine-model-compiler")
     from("$rootDir/test-env.gradle")
-    from("${extra["enclosingRootDir"]}/config/gradle/model-compiler.gradle")
+    from("${extra["enclosingRootDir"]}/${commonPath}/model-compiler.gradle")
 }
 
 group = "io.spine.test"

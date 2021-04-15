@@ -30,11 +30,12 @@ import io.spine.internal.dependency.JUnit
 
 buildscript {
 
-    val baseRoot = "$rootDir/.."
-    val versionGradle = "$baseRoot/version.gradle.kts"
+    val baseRoot = "${rootDir}/.."
+    val versionGradle = "${baseRoot}/version.gradle.kts"
+    val commonPath = io.spine.internal.gradle.Scripts.commonPath
 
     apply(from = versionGradle)
-    apply(from = "$baseRoot/config/gradle/dependencies.gradle")
+    apply(from = "${baseRoot}/${commonPath}/dependencies.gradle")
 
     repositories {
         gradlePluginPortal()
@@ -81,12 +82,13 @@ allprojects {
 
 subprojects {
 
+    val commonPath = io.spine.internal.gradle.Scripts.commonPath
     apply {
         plugin("com.google.protobuf")
         plugin("io.spine.tools.spine-model-compiler")
         plugin("idea")
-        from("$baseRoot/config/gradle/test-output.gradle")
-        from("$baseRoot/config/gradle/model-compiler.gradle")
+        from("${baseRoot}/${commonPath}/test-output.gradle")
+        from("${baseRoot}/${commonPath}/model-compiler.gradle")
     }
 
     val spineVersion: String by extra
@@ -139,4 +141,5 @@ subprojects {
     }
 }
 
-apply(from = "$baseRoot/config/gradle/jacoco.gradle")
+val commonPath = io.spine.internal.gradle.Scripts.commonPath
+apply(from = "${baseRoot}/${commonPath}/jacoco.gradle")
