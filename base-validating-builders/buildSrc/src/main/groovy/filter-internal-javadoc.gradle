@@ -24,24 +24,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
- *
- * This version file adheres to the contract of the
- * [publishing application](https://github.com/SpineEventEngine/publishing).
- *
- * When changing the version declarations or adding new ones, make sure to change
- * the publishing application accordingly.
- */
+configurations {
+    excludeInternalDoclet
+}
 
-/** The version of this library. */
-val base = "2.0.0-SNAPSHOT.21"
+dependencies {
+    /*
+       The variable spineBaseVersion must be defined in the `ext` section of the `version.gradle`
+       file of the project which imports `config` as a sub-module.
+      */
+    excludeInternalDoclet "io.spine.tools:spine-javadoc-filter:$spineBaseVersion"
+}
 
-project.extra.apply {
-    this["spineVersion"] = base
-    this["spineBaseVersion"] = base // Used by `filter-internal-javadoc.gradle`.
-    this["versionToPublish"] = base
+// This task uses constants defined in `javadoc-options.gradle`.
+task noInternalJavadoc(type: Javadoc) {
+    source = sourceSets.main.allJava.filter {
+        !it.absolutePath.contains('generated')
+    }
+    classpath = javadoc.getClasspath()
+
+    options {
+        tags = javadocOptions.tags
+        encoding = javadocOptions.encoding
+
+        // Doclet fully qualified name.
+        doclet = 'io.spine.tools.javadoc.ExcludeInternalDoclet'
+
+        // Path to the JAR containing the doclet.
+        docletpath = configurations.excludeInternalDoclet.files.asType(List)
+    }
 }

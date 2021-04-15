@@ -24,24 +24,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * The versions of the libraries used.
+/*
+ * This plugin configured the test output as follows:
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
- *
- * This version file adheres to the contract of the
- * [publishing application](https://github.com/SpineEventEngine/publishing).
- *
- * When changing the version declarations or adding new ones, make sure to change
- * the publishing application accordingly.
+ *  - the standard streams of the tests execution are logged;
+ *  - exceptions thrown in tests are logged;
+ *  - after all the tests are executed, a short test summary is logged; the summary shown the number
+ *    of tests and their results.
  */
 
-/** The version of this library. */
-val base = "2.0.0-SNAPSHOT.21"
+tasks.withType(Test).each {
+    it.testLogging {
+        showStandardStreams = true
+        showExceptions = true
+        showStackTraces = true
+        showCauses = true
+        exceptionFormat = 'full'
+    }
 
-project.extra.apply {
-    this["spineVersion"] = base
-    this["spineBaseVersion"] = base // Used by `filter-internal-javadoc.gradle`.
-    this["versionToPublish"] = base
+    it.afterSuite { final testDescriptor, final result ->
+        // If the descriptor has no parent, then it is the root test suite, i.e. it includes the
+        // info about all the run tests.
+        if (!testDescriptor.parent) {
+            logger.lifecycle(
+                    """
+                    Test summary:
+                    >> ${result.testCount} tests
+                    >> ${result.successfulTestCount} succeeded
+                    >> ${result.failedTestCount} failed
+                    >> ${result.skippedTestCount} skipped
+                    """
+            )
+        }
+    }
 }
