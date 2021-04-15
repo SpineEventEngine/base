@@ -141,5 +141,5 @@ subprojects {
     }
 }
 
-val commonPath = io.spine.internal.gradle.Scripts.commonPath
-apply(from = "${baseRoot}/${commonPath}/jacoco.gradle")
+val scriptsPath = io.spine.internal.gradle.Scripts.commonPath
+apply(from = "${baseRoot}/${scriptsPath}/jacoco.gradle")
