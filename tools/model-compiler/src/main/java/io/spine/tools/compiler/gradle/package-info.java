@@ -25,12 +25,11 @@
  */
 
 /**
- * Test environment classes and utilities related to the
- * {@link io.spine.tools.compiler.gradle.errorprone.ErrorProneChecksPlugin} functionality.
+ * This package contains Gradle plugins that are parts of the Spine Model Compiler.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.compiler.check.given;
+package io.spine.tools.compiler.gradle;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

@@ -24,14 +24,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.compiler.gradle;
+
+import io.spine.annotation.Beta;
+import io.spine.annotation.Experimental;
+import io.spine.annotation.Internal;
+import io.spine.annotation.SPI;
+import io.spine.code.java.ClassName;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * Test environment classes and utilities related to the
- * {@link io.spine.tools.compiler.gradle.errorprone.ErrorProneChecksPlugin} functionality.
+ * Type names of Java annotations used to mark generated code.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.check.given;
+@SuppressWarnings({"PublicField", "WeakerAccess"}) // Expose fields as a part of Gradle extension.
+public class CodeGenAnnotations {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    public String experimental = Experimental.class.getCanonicalName();
+    public String beta = Beta.class.getCanonicalName();
+    public String spi = SPI.class.getCanonicalName();
+    public String internal = Internal.class.getCanonicalName();
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    public ClassName experimentalClassName() {
+        checkNotNull(experimental);
+        return ClassName.of(experimental);
+    }
+
+    public ClassName betaClassName() {
+        checkNotNull(beta);
+        return ClassName.of(beta);
+    }
+
+    public ClassName spiClassName() {
+        checkNotNull(spi);
+        return ClassName.of(spi);
+    }
+
+    public ClassName internalClassName() {
+        checkNotNull(internal);
+        return ClassName.of(internal);
+    }
+}

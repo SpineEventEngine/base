@@ -181,7 +181,7 @@ public final class ApiOption {
     }
 
 
-    private static <T extends ExtendableMessage> boolean
+    private static <T extends ExtendableMessage<T>> boolean
     optionPresent(ExtendableMessage<T> options, GeneratedExtension<T, Boolean> option) {
         return options.hasExtension(option) && options.getExtension(option);
     }

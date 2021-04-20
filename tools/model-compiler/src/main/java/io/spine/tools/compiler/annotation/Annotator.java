@@ -30,7 +30,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.fs.java.SourceFile;
 import io.spine.code.java.ClassName;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.AnnotationSource;
@@ -157,7 +156,7 @@ public abstract class Annotator {
         String annotationFQN = annotation.value();
         AnnotationSource<?> annotation = source.getAnnotation(annotationFQN);
         if (annotation == null) {
-            AnnotationSource newAnnotation = source.addAnnotation();
+            AnnotationSource<?> newAnnotation = source.addAnnotation();
             newAnnotation.setName(annotationFQN);
         }
     }
@@ -176,7 +175,7 @@ public abstract class Annotator {
     protected class TypeDeclarationAnnotation implements SourceVisitor<JavaClassSource> {
 
         @Override
-        public void accept(@Nullable AbstractJavaSource<JavaClassSource> input) {
+        public void accept(AbstractJavaSource<JavaClassSource> input) {
             checkNotNull(input);
             addAnnotation(input);
         }

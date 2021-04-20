@@ -24,14 +24,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Test environment classes and utilities related to the
- * {@link io.spine.tools.compiler.gradle.errorprone.ErrorProneChecksPlugin} functionality.
- */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.check.given;
+package io.spine.tools.compiler.gradle;
 
-import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.annotation.Beta;
+import io.spine.annotation.Experimental;
+import io.spine.annotation.Internal;
+import io.spine.annotation.SPI;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@DisplayName("modelCompiler.generateAnnotations Gradle extension should")
+class CodeGenAnnotationsTest {
+
+    @Test
+    @DisplayName("have default values")
+    void defaults() {
+        CodeGenAnnotations annotations = new CodeGenAnnotations();
+
+        assertEquals(Experimental.class.getName(), annotations.experimentalClassName().value());
+        assertEquals(SPI.class.getName(), annotations.spiClassName().value());
+        assertEquals(Internal.class.getName(), annotations.internalClassName().value());
+        assertEquals(Beta.class.getName(), annotations.betaClassName().value());
+    }
+}

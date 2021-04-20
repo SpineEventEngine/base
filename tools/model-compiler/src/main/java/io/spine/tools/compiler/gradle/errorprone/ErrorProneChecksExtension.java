@@ -24,14 +24,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.compiler.gradle.errorprone;
+
+import org.gradle.api.Project;
+
 /**
- * Test environment classes and utilities related to the
- * {@link io.spine.tools.compiler.gradle.errorprone.ErrorProneChecksPlugin} functionality.
+ * The Error Prone Checks plugin extension.
+ *
+ * <p>Allows configuring severity for all the Spine-custom Error Prone checks applied to the
+ * project.
+ *
+ * @see Severity
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.check.given;
+@SuppressWarnings("PublicField" /* required for exposing the property in Gradle. */)
+public class ErrorProneChecksExtension {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    public Severity useValidatingBuilder;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    public static Severity getUseValidatingBuilder(Project project) {
+        ErrorProneChecksExtension extension = (ErrorProneChecksExtension)
+                project.getExtensions()
+                       .getByName(ErrorProneChecksPlugin.extensionName());
+        return extension.useValidatingBuilder;
+    }
+}

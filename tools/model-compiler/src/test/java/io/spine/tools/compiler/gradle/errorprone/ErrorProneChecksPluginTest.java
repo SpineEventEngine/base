@@ -24,14 +24,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.compiler.gradle.errorprone;
+
+import org.gradle.api.Project;
+import org.gradle.api.plugins.ExtensionContainer;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static io.spine.tools.compiler.gradle.given.ModelCompilerTestEnv.newProject;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 /**
- * Test environment classes and utilities related to the
- * {@link io.spine.tools.compiler.gradle.errorprone.ErrorProneChecksPlugin} functionality.
+ * This test contains very basic scenarios of the plugin usage.
+ *
+ * <p>For the tests of actual plugin functionality, see {@code io.spine.tools.check} test suites
+ * from this module.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.check.given;
+@DisplayName("ErrorProneChecksPlugin should")
+class ErrorProneChecksPluginTest {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    @Test
+    @DisplayName("create Spine check extension")
+    void checkExtension() {
+        Project project = newProject();
+        project.getPluginManager()
+               .apply(ErrorProneChecksPlugin.class);
+        ExtensionContainer extensions = project.getExtensions();
+        Object found = extensions.findByName(ErrorProneChecksPlugin.extensionName());
+        assertNotNull(found);
+    }
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    @Test
+    @DisplayName("apply to empty project")
+    void emptyProject() {
+        Project project = newProject();
+        project.getPluginManager()
+               .apply(ErrorProneChecksPlugin.class);
+    }
+}

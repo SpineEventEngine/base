@@ -23,15 +23,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.tools.compiler.gradle;
+
+import io.spine.tools.compiler.DirectoryCleaner;
+import io.spine.tools.gradle.GradleTask;
+import io.spine.tools.gradle.SpinePlugin;
+import org.gradle.api.Action;
+import org.gradle.api.Project;
+import org.gradle.api.Task;
+
+import static io.spine.tools.gradle.BaseTaskName.clean;
+import static io.spine.tools.gradle.ModelCompilerTaskName.preClean;
 
 /**
- * Test environment classes and utilities related to the
- * {@link io.spine.tools.compiler.gradle.errorprone.ErrorProneChecksPlugin} functionality.
+ * Plugin which performs additional cleanup of the Spine-generated folders.
+ *
+ * <p>Adds a custom `:preClean` task, which is executed before the `:clean` task.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.check.given;
+public class CleaningPlugin extends SpinePlugin {
 
-import com.google.errorprone.annotations.CheckReturnValue;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+    @Override
+    public void apply(Project project) {
+        Action<Task> preCleanAction = task -> {
+            _debug().log("Pre-clean: deleting the directories.");
+            DirectoryCleaner.deleteDirs(Extension.getDirsToClean(project));
+        };
+        GradleTask preCleanTask =
+                newTask(preClean, preCleanAction)
+                        .insertBeforeTask(clean)
+                        .applyNowTo(project);
+        _debug().log("Pre-clean phase initialized: `%s`.", preCleanTask);
+    }
+}

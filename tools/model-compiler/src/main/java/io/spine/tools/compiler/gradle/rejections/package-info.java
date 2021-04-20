@@ -25,12 +25,11 @@
  */
 
 /**
- * Test environment classes and utilities related to the
- * {@link io.spine.tools.compiler.gradle.errorprone.ErrorProneChecksPlugin} functionality.
+ * This package contains Gradle plugin for generating rejections.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.compiler.check.given;
+package io.spine.tools.compiler.gradle.rejections;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 
