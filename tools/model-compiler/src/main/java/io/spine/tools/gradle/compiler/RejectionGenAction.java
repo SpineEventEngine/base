@@ -35,13 +35,16 @@ import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.RejectionsFile;
+import io.spine.code.proto.SourceFile;
 import io.spine.code.proto.SourceProtoBelongsToModule;
 import io.spine.tools.compiler.gen.RThrowableSpec;
 import io.spine.tools.gradle.CodeGenerationAction;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
+import java.io.File;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
@@ -72,9 +75,9 @@ final class RejectionGenAction extends CodeGenerationAction {
 
     @Override
     public void execute(Task task) {
-        ImmutableSet<RejectionsFile> rejectionFiles = findModuleRejections(protoFiles().get());
-        _debug().log("Processing the file descriptors for the rejections `%s`.",
-                     rejectionFiles);
+        FileSet protoFiles = protoFiles().get();
+        ImmutableSet<RejectionsFile> rejectionFiles = findModuleRejections(protoFiles);
+        _debug().log("Processing rejection file descriptors: `%s`.", rejectionFiles);
         for (RejectionsFile source : rejectionFiles) {
             // We are sure that this is a rejections file because we got them filtered.
             generateRejections(source);
@@ -86,10 +89,12 @@ final class RejectionGenAction extends CodeGenerationAction {
      */
     private ImmutableSet<RejectionsFile> findModuleRejections(FileSet allFiles) {
         ImmutableSet<RejectionsFile> allRejections = findAll(allFiles);
-        ImmutableSet<RejectionsFile> moduleRejections = allRejections
-                .stream()
-                .filter(new SourceProtoBelongsToModule(protoSrcDir()))
-                .collect(toImmutableSet());
+        File protoDir = protoSrcDir();
+        Predicate<SourceFile> filter = new SourceProtoBelongsToModule(protoDir);
+        ImmutableSet<RejectionsFile> moduleRejections =
+                allRejections.stream()
+                             .filter(filter)
+                             .collect(toImmutableSet());
         return moduleRejections;
     }
 
@@ -99,12 +104,12 @@ final class RejectionGenAction extends CodeGenerationAction {
             return;
         }
         logGeneratingForFile(source);
-        for (RejectionType rejectionType : rejections) {
+        for (RejectionType type : rejections) {
             // The name of the generated `ThrowableMessage` will be the same
             // as for the Protobuf message.
-            _debug().log("Processing rejection `%s`.", rejectionType.simpleJavaClassName());
+            _debug().log("Processing rejection `%s`.", type.simpleJavaClassName());
 
-            TypeSpec spec = new RThrowableSpec(rejectionType);
+            TypeSpec spec = new RThrowableSpec(type);
             TypeSpecWriter writer = new TypeSpecWriter(spec, indent());
             writer.write(targetDir().toPath());
         }
