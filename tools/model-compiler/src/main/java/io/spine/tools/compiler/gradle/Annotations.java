@@ -30,22 +30,41 @@ import io.spine.annotation.Beta;
 import io.spine.annotation.Experimental;
 import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import io.spine.code.java.ClassName;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-@DisplayName("modelCompiler.generateAnnotations Gradle extension should")
-class CodeGenAnnotationsTest {
+/**
+ * Type names of Java annotations used to mark generated code.
+ *
+ * @apiNote This class exposes public fields for annotation class names so that they can
+ * be customized by the user, should such an unusual need arise.
+ */
+@SuppressWarnings({"WeakerAccess", "PublicField"}) // Expose fields as a part of Gradle extension.
+public class Annotations {
 
-    @Test
-    @DisplayName("have default values")
-    void defaults() {
-        CodeGenAnnotations annotations = new CodeGenAnnotations();
+    public String experimental = Experimental.class.getCanonicalName();
+    public String beta = Beta.class.getCanonicalName();
+    public String spi = SPI.class.getCanonicalName();
+    public String internal = Internal.class.getCanonicalName();
 
-        assertEquals(Experimental.class.getName(), annotations.experimentalClassName().value());
-        assertEquals(SPI.class.getName(), annotations.spiClassName().value());
-        assertEquals(Internal.class.getName(), annotations.internalClassName().value());
-        assertEquals(Beta.class.getName(), annotations.betaClassName().value());
+    public ClassName experimentalClassName() {
+        checkNotNull(experimental);
+        return ClassName.of(experimental);
+    }
+
+    public ClassName betaClassName() {
+        checkNotNull(beta);
+        return ClassName.of(beta);
+    }
+
+    public ClassName spiClassName() {
+        checkNotNull(spi);
+        return ClassName.of(spi);
+    }
+
+    public ClassName internalClassName() {
+        checkNotNull(internal);
+        return ClassName.of(internal);
     }
 }

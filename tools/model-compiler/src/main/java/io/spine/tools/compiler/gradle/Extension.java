@@ -173,7 +173,7 @@ public class Extension extends GradleExtension {
      */
     public Severity spineCheckSeverity;
 
-    public final CodeGenAnnotations generateAnnotations = new CodeGenAnnotations();
+    public final Annotations generateAnnotations = new Annotations();
 
     public final Interfaces interfaces = new Interfaces();
 
@@ -213,7 +213,7 @@ public class Extension extends GradleExtension {
 
     @SuppressWarnings("FloggerSplitLogStatement")
 
-    public static String getMainProtoSrcDir(Project project) {
+    public static String mainProtoSrcDirOf(Project project) {
         Extension extension = extension(project);
         _debug().log("Extension is `%s`.", extension);
         String protoDir = extension.mainProtoSrcDir;
@@ -223,81 +223,81 @@ public class Extension extends GradleExtension {
                                          .mainProto());
     }
 
-    public static String getMainTargetGenResourcesDir(Project project) {
+    public static String mainTargetGenResourcesDirOf(Project project) {
         return pathOrDefault(extension(project).mainTargetGenResourcesDir,
                              def(project).generated()
                                          .mainResources());
     }
 
-    public static String getMainGenGrpcDir(Project project) {
+    public static String mainGenGrpcDirOf(Project project) {
         return pathOrDefault(extension(project).mainGenGrpcDir,
                              def(project).generated()
                                          .mainGrpc());
     }
 
-    public static String getMainGenProtoDir(Project project) {
+    public static String mainGenProtoDirOf(Project project) {
         return pathOrDefault(extension(project).mainGenProtoDir,
                              def(project).generated()
                                          .mainJava());
     }
 
-    public static String getTestTargetGenResourcesDir(Project project) {
+    public static String testTargetGenResourcesDirOf(Project project) {
         return pathOrDefault(extension(project).testTargetGenResourcesDir,
                              def(project).generated()
                                          .testResources());
     }
 
-    public static String getTestProtoSrcDir(Project project) {
+    public static String testProtoSrcDirOf(Project project) {
         return pathOrDefault(extension(project).testProtoSrcDir,
                              def(project).src()
                                          .testProto());
     }
 
-    public static String getTestGenGrpcDir(Project project) {
+    public static String testGenGrpcDirOf(Project project) {
         return pathOrDefault(extension(project).testGenGrpcDir,
                              def(project).generated()
                                          .testGrpc());
     }
 
-    public static String getTestGenProtoDir(Project project) {
+    public static String testGenProtoDirOf(Project project) {
         return pathOrDefault(extension(project).testGenProtoDir,
                              def(project).generated()
                                          .testJava());
     }
 
-    public static File getMainDescriptorSet(Project project) {
+    public static File mainDescriptorSetOf(Project project) {
         Extension extension = extension(project);
         String path = pathOrDefault(extension.mainDescriptorSetPath,
                                     extension.defaultMainDescriptor(project));
         return new File(path);
     }
 
-    public static File getTestDescriptorSet(Project project) {
+    public static File testDescriptorSetOf(Project project) {
         Extension extension = extension(project);
         String path = pathOrDefault(extension.testDescriptorSetPath,
                                     extension.defaultTestDescriptor(project));
         return new File(path);
     }
 
-    public static String getTargetGenRejectionsRootDir(Project project) {
+    public static String targetGenRejectionsRootDirOf(Project project) {
         return pathOrDefault(extension(project).targetGenRejectionsRootDir,
                              def(project).generated()
                                          .mainSpine());
     }
 
-    public static String getTargetTestGenRejectionsRootDir(Project project) {
+    public static String targetTestGenRejectionsRootDirOf(Project project) {
         return pathOrDefault(extension(project).targetTestGenRejectionsRootDir,
                              def(project).generated()
                                          .testSpine());
     }
 
-    public static String getTargetGenColumnsRootDir(Project project) {
+    public static String targetGenColumnsRootDirOf(Project project) {
         return pathOrDefault(extension(project).targetGenColumnsRootDir,
                              def(project).generated()
                                          .mainSpine());
     }
 
-    public static String getTargetTestGenColumnsRootDir(Project project) {
+    public static String targetTestGenColumnsRootDirOf(Project project) {
         return pathOrDefault(extension(project).targetTestGenColumnsRootDir,
                              def(project).generated()
                                          .testSpine());
@@ -321,7 +321,7 @@ public class Extension extends GradleExtension {
         _debug().log("Indent has been set to %d.", indent);
     }
 
-    public static List<String> getDirsToClean(Project project) {
+    public static List<String> dirsToCleanIn(Project project) {
         List<String> dirsToClean = newLinkedList(spineDirs(project));
         _debug().log("Finding the directories to clean.");
         List<String> dirs = extension(project).dirsToClean;
@@ -355,7 +355,7 @@ public class Extension extends GradleExtension {
     }
 
     @SuppressWarnings("unused") // Configures `generateAnnotations` closure.
-    public void generateAnnotations(Action<? super CodeGenAnnotations> action) {
+    public void generateAnnotations(Action<? super Annotations> action) {
         action.execute(generateAnnotations);
     }
 
@@ -409,8 +409,8 @@ public class Extension extends GradleExtension {
         action.execute(entityQueries);
     }
 
-    public static CodeGenAnnotations getCodeGenAnnotations(Project project) {
-        CodeGenAnnotations annotations = extension(project).generateAnnotations;
+    public static Annotations getCodeGenAnnotations(Project project) {
+        Annotations annotations = extension(project).generateAnnotations;
         return annotations;
     }
 

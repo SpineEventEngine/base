@@ -48,12 +48,12 @@ import static io.spine.tools.compiler.annotation.ModuleAnnotator.translate;
 import static io.spine.tools.compiler.gradle.Extension.getCodeGenAnnotations;
 import static io.spine.tools.compiler.gradle.Extension.getInternalClassPatterns;
 import static io.spine.tools.compiler.gradle.Extension.getInternalMethodNames;
-import static io.spine.tools.compiler.gradle.Extension.getMainDescriptorSet;
-import static io.spine.tools.compiler.gradle.Extension.getMainGenGrpcDir;
-import static io.spine.tools.compiler.gradle.Extension.getMainGenProtoDir;
-import static io.spine.tools.compiler.gradle.Extension.getTestDescriptorSet;
-import static io.spine.tools.compiler.gradle.Extension.getTestGenGrpcDir;
-import static io.spine.tools.compiler.gradle.Extension.getTestGenProtoDir;
+import static io.spine.tools.compiler.gradle.Extension.mainDescriptorSetOf;
+import static io.spine.tools.compiler.gradle.Extension.mainGenGrpcDirOf;
+import static io.spine.tools.compiler.gradle.Extension.mainGenProtoDirOf;
+import static io.spine.tools.compiler.gradle.Extension.testDescriptorSetOf;
+import static io.spine.tools.compiler.gradle.Extension.testGenGrpcDirOf;
+import static io.spine.tools.compiler.gradle.Extension.testGenProtoDirOf;
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.gradle.JavaTaskName.compileTestJava;
 import static io.spine.tools.gradle.ModelCompilerTaskName.annotateProto;
@@ -248,12 +248,11 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
             Path generatedGrpcPath = Paths.get(generatedGrpcDir);
             AnnotatorFactory annotatorFactory = DefaultAnnotatorFactory
                     .newInstance(descriptorSetFile, generatedProtoPath, generatedGrpcPath);
-            CodeGenAnnotations annotations = getCodeGenAnnotations(project);
+            Annotations annotations = getCodeGenAnnotations(project);
             ClassName internalClassName = annotations.internalClassName();
             ImmutableSet<String> internalClassPatterns = getInternalClassPatterns(project);
             ImmutableSet<String> internalMethodNames = getInternalMethodNames(project);
-            return ModuleAnnotator
-                    .newBuilder()
+            return ModuleAnnotator.newBuilder()
                     .setAnnotatorFactory(annotatorFactory)
                     .add(translate(spi()).as(annotations.spiClassName()))
                     .add(translate(beta()).as(annotations.betaClassName()))
@@ -267,20 +266,20 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
 
         private File descriptorSet(Project project) {
             return productionTask
-                   ? getMainDescriptorSet(project)
-                   : getTestDescriptorSet(project);
+                   ? mainDescriptorSetOf(project)
+                   : testDescriptorSetOf(project);
         }
 
         private String generatedGrpcDir(Project project) {
             return productionTask
-                   ? getMainGenGrpcDir(project)
-                   : getTestGenGrpcDir(project);
+                   ? mainGenGrpcDirOf(project)
+                   : testGenGrpcDirOf(project);
         }
 
         private String generatedProtoDir(Project project) {
             return productionTask
-                   ? getMainGenProtoDir(project)
-                   : getTestGenProtoDir(project);
+                   ? mainGenProtoDirOf(project)
+                   : testGenProtoDirOf(project);
         }
     }
 }

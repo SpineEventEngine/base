@@ -46,7 +46,7 @@ public class CleaningPlugin extends SpinePlugin {
     public void apply(Project project) {
         Action<Task> preCleanAction = task -> {
             _debug().log("Pre-clean: deleting the directories.");
-            DirectoryCleaner.deleteDirs(Extension.getDirsToClean(project));
+            DirectoryCleaner.deleteDirs(Extension.dirsToCleanIn(project));
         };
         GradleTask preCleanTask =
                 newTask(preClean, preCleanAction)

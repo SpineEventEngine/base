@@ -37,8 +37,8 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.gradle.SourceScope.main;
 import static io.spine.tools.gradle.SourceScope.test;
-import static io.spine.tools.compiler.gradle.Extension.getTargetGenRejectionsRootDir;
-import static io.spine.tools.compiler.gradle.Extension.getTargetTestGenRejectionsRootDir;
+import static io.spine.tools.compiler.gradle.Extension.targetGenRejectionsRootDirOf;
+import static io.spine.tools.compiler.gradle.Extension.targetTestGenRejectionsRootDirOf;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -125,7 +125,7 @@ final class ProtoModule {
      *        directory is changing, the contents of the collection are mutated.
      */
     FileCollection compiledRejections() {
-        String targetDir = getTargetGenRejectionsRootDir(project);
+        String targetDir = targetGenRejectionsRootDirOf(project);
         FileCollection files = project.fileTree(targetDir);
         return files;
     }
@@ -138,7 +138,7 @@ final class ProtoModule {
      *        directory is changing, the contents of the collection are mutated.
      */
     FileCollection testCompiledRejections() {
-        String targetDir = getTargetTestGenRejectionsRootDir(project);
+        String targetDir = targetTestGenRejectionsRootDirOf(project);
         FileCollection files = project.fileTree(targetDir);
         return files;
     }
