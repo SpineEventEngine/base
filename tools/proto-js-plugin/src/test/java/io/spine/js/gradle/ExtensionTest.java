@@ -117,7 +117,7 @@ class ExtensionTest {
     @DisplayName("return the main descriptor set at the default path")
     void defaultMainDescriptorSet() {
         File file = Extension.getMainDescriptorSet(project);
-        Path mainDescriptors = defaultProject.build()
+        Path mainDescriptors = defaultProject.buildDir()
                                              .descriptors()
                                              .mainDescriptors();
         File expected = mainDescriptors
@@ -142,7 +142,7 @@ class ExtensionTest {
     @DisplayName("return the test descriptor set at the default path")
     void defaultTestDescriptorSet() {
         File file = Extension.getTestDescriptorSet(project);
-        Path testDescriptors = defaultProject.build()
+        Path testDescriptors = defaultProject.buildDir()
                                   .descriptors()
                                   .testDescriptors();
         File expected = testDescriptors

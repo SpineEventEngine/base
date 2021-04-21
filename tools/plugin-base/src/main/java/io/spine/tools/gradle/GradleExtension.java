@@ -47,7 +47,7 @@ public abstract class GradleExtension {
                 .setVersion(project.getVersion().toString())
                 .build();
         String fileName = artifact.fileSafeId() + DESC_EXTENSION;
-        Path mainDescriptor = defaultProject(project).build()
+        Path mainDescriptor = defaultProject(project).buildDir()
                                           .descriptors()
                                           .mainDescriptors()
                                           .resolve(fileName);
@@ -63,7 +63,7 @@ public abstract class GradleExtension {
                 .useTestClassifier()
                 .build();
         String fileName = artifact.fileSafeId() + DESC_EXTENSION;
-        Path testDescriptor = defaultProject(project).build()
+        Path testDescriptor = defaultProject(project).buildDir()
                                           .descriptors()
                                           .testDescriptors()
                                           .resolve(fileName);

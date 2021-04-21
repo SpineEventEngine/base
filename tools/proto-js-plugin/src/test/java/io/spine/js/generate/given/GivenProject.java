@@ -51,7 +51,7 @@ public final class GivenProject {
     }
 
     public static FileSet mainFileSet() {
-        Path mainDescriptorsDir = project().build()
+        Path mainDescriptorsDir = project().buildDir()
                                            .descriptors()
                                            .mainDescriptors();
         Path descriptorSetFile = mainDescriptorsDir.resolve(KNOWN_TYPES);

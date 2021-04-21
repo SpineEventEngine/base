@@ -26,7 +26,6 @@
 
 package io.spine.code.fs.java;
 
-import io.spine.code.AbstractDirectory;
 import io.spine.code.SourceCodeDirectory;
 import io.spine.code.fs.ArtifactSources;
 import io.spine.code.java.PackageName;

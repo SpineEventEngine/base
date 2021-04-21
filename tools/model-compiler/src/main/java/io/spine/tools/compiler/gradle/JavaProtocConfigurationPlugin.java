@@ -155,7 +155,7 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
         Generated result = javaProject.generated();
         return result.path();
     }
-
+                                                                                                
     @Override
     protected File getMainDescriptorSet(Project project) {
         return Extension.mainDescriptorSetOf(project);

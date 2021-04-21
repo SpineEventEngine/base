@@ -301,7 +301,7 @@ class ProtoAnnotatorPluginTest {
     private FileDescriptor getDescriptor(FileName fileName) {
         Path mainDescriptor = DefaultJavaProject
                 .at(testProjectDir)
-                .build()
+                .buildDir()
                 .descriptors()
                 .mainDescriptors()
                 .resolve("io.spine.test_" + testProjectDir.getName() + "_3.14.desc");

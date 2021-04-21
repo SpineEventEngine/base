@@ -53,7 +53,7 @@ public abstract class DefaultProject extends AbstractDirectory {
     /**
      * Obtains the {@code "build"} directory of this project.
      */
-    public Build build() {
+    public Build buildDir() {
         return Build.of(this);
     }
 
