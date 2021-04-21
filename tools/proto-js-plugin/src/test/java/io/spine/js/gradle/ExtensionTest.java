@@ -76,7 +76,7 @@ class ExtensionTest {
     @DisplayName("return the default directory with main generated Protobufs")
     void defaultMainGenProto() {
         Directory directory = Extension.getMainGenProto(project);
-        Directory expected = defaultProject.proto()
+        Directory expected = defaultProject.generated()
                                            .mainJs();
         assertThat(directory)
                 .isEqualTo(expected);
@@ -96,7 +96,7 @@ class ExtensionTest {
     @DisplayName("return the default directory with test generated Protobufs")
     void defaultTestGenProto() {
         Directory directory = Extension.getTestGenProtoDir(project);
-        Directory expected = defaultProject.proto()
+        Directory expected = defaultProject.generated()
                                            .testJs();
         assertThat(directory)
                 .isEqualTo(expected);
@@ -117,7 +117,7 @@ class ExtensionTest {
     @DisplayName("return the main descriptor set at the default path")
     void defaultMainDescriptorSet() {
         File file = Extension.getMainDescriptorSet(project);
-        Path mainDescriptors = defaultProject.buildRoot()
+        Path mainDescriptors = defaultProject.build()
                                              .descriptors()
                                              .mainDescriptors();
         File expected = mainDescriptors
@@ -142,7 +142,7 @@ class ExtensionTest {
     @DisplayName("return the test descriptor set at the default path")
     void defaultTestDescriptorSet() {
         File file = Extension.getTestDescriptorSet(project);
-        Path testDescriptors = defaultProject.buildRoot()
+        Path testDescriptors = defaultProject.build()
                                   .descriptors()
                                   .testDescriptors();
         File expected = testDescriptors

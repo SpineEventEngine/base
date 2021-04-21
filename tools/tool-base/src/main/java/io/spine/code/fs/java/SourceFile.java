@@ -37,9 +37,11 @@ import io.spine.code.java.SimpleClassName;
 import io.spine.type.Type;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.code.fs.java.ConversionExtensions.toDirectory;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -51,6 +53,9 @@ public final class SourceFile extends AbstractSourceFile {
         super(path);
     }
 
+    /**
+     * Obtains a source code file at the given path.
+     */
     static SourceFile of(Path path) {
         checkNotNull(path);
         SourceFile result = new SourceFile(path);
@@ -85,10 +90,9 @@ public final class SourceFile extends AbstractSourceFile {
      */
     public static SourceFile whichDeclares(ClassName javaClass) {
         checkNotNull(javaClass);
-        Directory directory = Directory.of(javaClass.packageName());
+        Directory directory = toDirectory(javaClass);
         SimpleClassName topLevelClass = javaClass.topLevelClass();
-        FileName javaFile = FileName.forType(topLevelClass.value());
-        SourceFile sourceFile = directory.resolve(javaFile);
+        SourceFile sourceFile = directory.resolve(topLevelClass);
         return sourceFile;
     }
 
@@ -101,8 +105,8 @@ public final class SourceFile extends AbstractSourceFile {
      */
     public static SourceFile forOuterClassOf(FileDescriptorProto file) {
         checkNotNull(file);
-        FileName filename = FileName.forType(SimpleClassName.outerOf(file).value());
-        SourceFile result = getGeneratedFolder(file).resolve(filename);
+        SimpleClassName outerClass = SimpleClassName.outerOf(file);
+        SourceFile result = generatedFolderOf(file).resolve(outerClass);
         return result;
     }
 
@@ -114,11 +118,10 @@ public final class SourceFile extends AbstractSourceFile {
      *         the proto file descriptor
      * @return the relative folder path
      */
-    private static Directory getGeneratedFolder(FileDescriptorProto file) {
+    private static Directory generatedFolderOf(FileDescriptorProto file) {
         checkNotNull(file);
         PackageName packageName = PackageName.resolve(file);
-        Directory result = Directory.of(packageName);
-        return result;
+        return toDirectory(packageName);
     }
 
     /**
@@ -157,15 +160,11 @@ public final class SourceFile extends AbstractSourceFile {
                                                     Function<DescriptorProto, FileName> fileName) {
         checkNotNull(file);
         checkNotNull(message);
-        String typeName = message.getName();
-        if (!file.getMessageTypeList()
-                 .contains(message)) {
-            throw invalidNestedDefinition(file.getName(), typeName);
-        }
-        if (file.getOptions()
-                .getJavaMultipleFiles()) {
+        ensureDeclares(message, file);
+        boolean multipleFiles = file.getOptions().getJavaMultipleFiles();
+        if (multipleFiles) {
             FileName filename = fileName.apply(message);
-            SourceFile result = getGeneratedFolder(file).resolve(filename);
+            SourceFile result = generatedFolderOf(file).resolve(filename);
             return result;
         } else {
             SourceFile result = forOuterClassOf(file);
@@ -174,8 +173,16 @@ public final class SourceFile extends AbstractSourceFile {
 
     }
 
-    private static IllegalStateException invalidNestedDefinition(String filename,
-                                                                 String nestedDefinitionName) {
+    private static void ensureDeclares(DescriptorProto message, FileDescriptorProto file) {
+        List<DescriptorProto> declaredMessageTypes = file.getMessageTypeList();
+        if (!declaredMessageTypes.contains(message)) {
+            String typeName = message.getName();
+            throw invalidNestedDefinition(file.getName(), typeName);
+        }
+    }
+
+    private static IllegalStateException
+    invalidNestedDefinition(String filename, String nestedDefinitionName) {
         throw newIllegalStateException("`%s` does not contain nested definition `%s`.",
                                        filename, nestedDefinitionName);
     }
@@ -192,18 +199,24 @@ public final class SourceFile extends AbstractSourceFile {
     public static SourceFile forEnum(EnumDescriptorProto enumType, FileDescriptorProto file) {
         checkNotNull(file);
         checkNotNull(enumType);
-        if (!file.getEnumTypeList()
-                 .contains(enumType)) {
-            throw invalidNestedDefinition(file.getName(), enumType.getName());
-        }
-        if (file.getOptions()
-                .getJavaMultipleFiles()) {
+        ensureDeclared(enumType, file);
+        boolean multipleFiles =
+                file.getOptions()
+                    .getJavaMultipleFiles();
+        if (multipleFiles) {
             FileName filename = FileName.forEnum(enumType);
-            SourceFile result = getGeneratedFolder(file).resolve(filename);
+            SourceFile result = generatedFolderOf(file).resolve(filename);
             return result;
         } else {
             SourceFile result = forOuterClassOf(file);
             return result;
+        }
+    }
+
+    private static void ensureDeclared(EnumDescriptorProto enumType, FileDescriptorProto file) {
+        List<EnumDescriptorProto> declaredEnums = file.getEnumTypeList();
+        if (!declaredEnums.contains(enumType)) {
+            throw invalidNestedDefinition(file.getName(), enumType.getName());
         }
     }
 
@@ -219,33 +232,26 @@ public final class SourceFile extends AbstractSourceFile {
     public static SourceFile forService(ServiceDescriptorProto service, FileDescriptorProto file) {
         checkNotNull(service);
         checkNotNull(file);
-        String serviceType = service.getName();
-        if (!file.getServiceList()
-                 .contains(service)) {
+        ensureDeclares(service, file);
+        FileName filename = FileName.forService(service);
+        SourceFile result = generatedFolderOf(file).resolve(filename);
+        return result;
+    }
+
+    private static void ensureDeclares(ServiceDescriptorProto service, FileDescriptorProto file) {
+        List<ServiceDescriptorProto> declaredServices = file.getServiceList();
+        if (!declaredServices.contains(service)) {
+            String serviceType = service.getName();
             throw invalidNestedDefinition(file.getName(), serviceType);
         }
-
-        FileName filename = FileName.forService(service);
-        SourceFile result = getGeneratedFolder(file).resolve(filename);
-        return result;
     }
 
     /**
      * Obtains a file path for the source code file of the give type in the passed package.
      */
     public static SourceFile forType(String javaPackage, String typename) {
-        PackageName packageName = PackageName.of(javaPackage);
-        SourceFile result = Directory.of(packageName)
-                                     .resolve(FileName.forType(typename));
+        Directory directory = toDirectory(javaPackage);
+        SourceFile result = directory.resolve(typename);
         return result;
-    }
-
-    /**
-     * Obtains a source file of the specified class.
-     */
-    public static SourceFile of(Class cls) {
-        PackageName packageName = PackageName.of(cls);
-        Directory directory = Directory.of(packageName);
-        return forType(directory.toString(), cls.getSimpleName());
     }
 }

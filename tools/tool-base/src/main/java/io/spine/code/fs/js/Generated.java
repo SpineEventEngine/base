@@ -24,16 +24,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.fs;
+package io.spine.code.fs.js;
 
-import io.spine.code.SourceCodeDirectory;
+import io.spine.code.fs.DefaultProject;
+import io.spine.code.fs.Src;
+
+import static io.spine.code.fs.DirectoryName.generated;
 
 /**
- * A directory which contains source code of an artifact, e.g. {@code "main"} or {@code "test"}.
+ * The root directory for the generated JS code.
  */
-public final class ArtifactSources extends SourceCodeDirectory {
+public final class Generated extends Src {
 
-    public ArtifactSources(SourceCodeDirectory parent, DirectoryName name) {
-        super(parent, name.value());
+    Generated(DefaultProject parent) {
+        super(parent, generated.value());
+    }
+
+    public Directory mainJs() {
+        return Directory.rootIn(main());
+    }
+
+    public Directory testJs() {
+        return Directory.rootIn(test());
     }
 }

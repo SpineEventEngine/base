@@ -38,6 +38,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -116,24 +117,29 @@ public final class ExternalModule {
      * <a href="https://github.com/SpineEventEngine/web">The Spine Web</a> module.
      */
     public static ExternalModule spineWeb() {
-        Set<DirectoryPattern> directories = ImmutableSet.of(
-                // Directories with handcrafted JS files.
-                DirectoryPattern.of("client/parser"),
-                // Directories with standard Protobuf files.
-                DirectoryPattern.of("proto/google/protobuf/*"),
-                // Directories with Spine Protobuf files.
-                DirectoryPattern.of("proto/spine/base/*"),
-                DirectoryPattern.of("proto/spine/change/*"),
-                DirectoryPattern.of("proto/spine/client/*"),
-                DirectoryPattern.of("proto/spine/core/*"),
-                DirectoryPattern.of("proto/spine/net/*"),
-                DirectoryPattern.of("proto/spine/people/*"),
-                DirectoryPattern.of("proto/spine/time/*"),
-                DirectoryPattern.of("proto/spine/ui/*"),
-                DirectoryPattern.of("proto/spine/validate/*"),
-                DirectoryPattern.of("proto/spine/web/*"),
-                DirectoryPattern.of("proto/spine")
-        );
+        @SuppressWarnings("DuplicateStringLiteralInspection") // also used from the test code.
+        Set<DirectoryPattern> directories = ImmutableSet
+                .of(
+                        // Directories with handcrafted JS files.
+                        "client/parser",
+                        // Directories with standard Protobuf files.
+                        "proto/google/protobuf/*",
+                        // Directories with Spine Protobuf files.
+                        "proto/spine/base/*",
+                        "proto/spine/change/*",
+                        "proto/spine/client/*",
+                        "proto/spine/core/*",
+                        "proto/spine/net/*",
+                        "proto/spine/people/*",
+                        "proto/spine/time/*",
+                        "proto/spine/ui/*",
+                        "proto/spine/validate/*",
+                        "proto/spine/web/*",
+                        "proto/spine"
+                )
+                .stream()
+                .map(DirectoryPattern::of)
+                .collect(toImmutableSet());
         return new ExternalModule("spine-web", directories);
     }
 

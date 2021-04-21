@@ -30,7 +30,7 @@ import com.google.common.base.Charsets;
 import com.google.protobuf.gradle.ExecutableLocator;
 import com.google.protobuf.gradle.GenerateProtoTask;
 import io.spine.code.fs.java.DefaultJavaProject;
-import io.spine.code.fs.java.DefaultJavaProject.GeneratedRoot;
+import io.spine.code.fs.java.Generated;
 import io.spine.code.proto.DescriptorReference;
 import io.spine.tools.gradle.Artifact;
 import io.spine.tools.gradle.GradleTask;
@@ -47,7 +47,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 
-import static io.spine.code.fs.java.DefaultJavaProject.at;
 import static io.spine.tools.compiler.gradle.ProtocPluginConfiguration.forProject;
 import static io.spine.tools.gradle.BaseTaskName.clean;
 import static io.spine.tools.gradle.JavaTaskName.processResources;
@@ -152,8 +151,8 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
 
     @Override
     protected Path generatedFilesBaseDir(Project project) {
-        DefaultJavaProject javaProject = at(project.getProjectDir());
-        GeneratedRoot result = javaProject.generated();
+        DefaultJavaProject javaProject = DefaultJavaProject.at(project.getProjectDir());
+        Generated result = javaProject.generated();
         return result.path();
     }
 

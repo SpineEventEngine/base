@@ -30,8 +30,8 @@ import io.spine.code.AbstractDirectory;
 
 import java.nio.file.Path;
 
-import static io.spine.code.fs.java.DirectoryName.main;
-import static io.spine.code.fs.java.DirectoryName.test;
+import static io.spine.code.fs.DirectoryName.main;
+import static io.spine.code.fs.DirectoryName.test;
 
 public final class Descriptors extends AbstractDirectory {
 

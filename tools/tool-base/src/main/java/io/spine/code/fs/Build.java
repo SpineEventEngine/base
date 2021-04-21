@@ -28,8 +28,8 @@ package io.spine.code.fs;
 
 import io.spine.code.AbstractDirectory;
 
-import static io.spine.code.fs.java.DirectoryName.build;
-import static io.spine.code.fs.java.DirectoryName.descriptors;
+import static io.spine.code.fs.DirectoryName.build;
+import static io.spine.code.fs.DirectoryName.descriptors;
 
 /**
  * The directory for build output.

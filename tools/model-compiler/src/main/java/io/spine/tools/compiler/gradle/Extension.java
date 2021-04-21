@@ -30,6 +30,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
 import groovy.lang.Closure;
 import io.spine.annotation.Beta;
+import io.spine.code.fs.TempArtifacts;
 import io.spine.code.fs.java.DefaultJavaProject;
 import io.spine.code.gen.Indent;
 import io.spine.tools.compiler.gradle.errorprone.ErrorProneChecksExtension;
@@ -482,10 +483,11 @@ public class Extension extends GradleExtension {
                     e, "Unable to obtain project directory `%s`.", project.getProjectDir()
             );
         }
-        File spinePath = DefaultJavaProject.at(projectDir)
-                                           .tempArtifacts();
-        if (spinePath.exists()) {
-            return Optional.of(spinePath.toString());
+        TempArtifacts artifacts =
+                DefaultJavaProject.at(projectDir)
+                                  .tempArtifacts();
+        if (artifacts.exists()) {
+            return Optional.of(artifacts.toString());
         } else {
             return Optional.empty();
         }

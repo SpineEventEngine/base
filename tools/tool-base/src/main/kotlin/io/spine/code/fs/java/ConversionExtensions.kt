@@ -24,16 +24,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.fs;
+@file:JvmName("ConversionExtensions")
 
-import io.spine.code.SourceCodeDirectory;
+package io.spine.code.fs.java
+
+import io.spine.code.java.ClassName
+import io.spine.code.java.PackageName
 
 /**
- * A directory which contains source code of an artifact, e.g. {@code "main"} or {@code "test"}.
+ * Converts this package name to corresponding directory on a file system.
  */
-public final class ArtifactSources extends SourceCodeDirectory {
+internal fun PackageName.toDirectory(): Directory =
+    Directory.of(this)
 
-    public ArtifactSources(SourceCodeDirectory parent, DirectoryName name) {
-        super(parent, name.value());
-    }
-}
+/**
+ * Converts this package name to corresponding directory on a file system.
+ */
+internal fun String.toDirectory(): Directory =
+        PackageName.of(this).toDirectory()
+
+/**
+ * Converts this class name to the directory which contains the class.
+ */
+internal fun ClassName.toDirectory(): Directory =
+        packageName().toDirectory()

@@ -68,8 +68,11 @@ class SpineProtocTest {
     @DisplayName("create spine directory")
     void create_spine_directory() {
         project.executeTask(build);
-        File spineDirPath = DefaultJavaProject.at(projectDir)
-                                              .tempArtifacts();
+        File spineDirPath =
+                DefaultJavaProject.at(projectDir)
+                                  .tempArtifacts()
+                                  .path()
+                                  .toFile();
         assertTrue(spineDirPath.exists());
     }
 }

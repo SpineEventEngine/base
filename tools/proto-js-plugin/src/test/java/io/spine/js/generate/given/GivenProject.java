@@ -51,7 +51,7 @@ public final class GivenProject {
     }
 
     public static FileSet mainFileSet() {
-        Path mainDescriptorsDir = project().buildRoot()
+        Path mainDescriptorsDir = project().build()
                                            .descriptors()
                                            .mainDescriptors();
         Path descriptorSetFile = mainDescriptorsDir.resolve(KNOWN_TYPES);
@@ -59,7 +59,7 @@ public final class GivenProject {
     }
 
     public static Directory mainProtoSources() {
-        return project().proto()
+        return project().generated()
                         .mainJs();
     }
 

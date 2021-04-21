@@ -28,20 +28,19 @@ package io.spine.code.fs.java;
 
 import io.spine.code.AbstractDirectory;
 import io.spine.code.SourceCodeDirectory;
+import io.spine.code.fs.ArtifactSources;
 import io.spine.code.java.PackageName;
+import io.spine.code.java.SimpleClassName;
 
-import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.code.fs.DirectoryName.java;
 
 /**
  * A folder with Java source files.
  */
 public final class Directory extends SourceCodeDirectory {
-
-    private static final String ROOT_NAME = "java";
 
     private Directory(Path path) {
         super(path);
@@ -50,7 +49,7 @@ public final class Directory extends SourceCodeDirectory {
     /**
      * Creates a new instance.
      */
-    static Directory at(Path path) {
+    private static Directory at(Path path) {
         checkNotNull(path);
         return new Directory(path);
     }
@@ -58,10 +57,9 @@ public final class Directory extends SourceCodeDirectory {
     /**
      * Creates an instance of the root directory named {@code "java"}.
      */
-    public static Directory rootIn(AbstractDirectory parent) {
+    public static Directory rootIn(ArtifactSources parent) {
         checkNotNull(parent);
-        Path path = parent.path()
-                          .resolve(ROOT_NAME);
+        Path path = java.under(parent.path());
         return at(path);
     }
 
@@ -76,19 +74,32 @@ public final class Directory extends SourceCodeDirectory {
      */
     public static Directory of(PackageName packageName) {
         checkNotNull(packageName);
-        String packagePath = packageName.value()
-                                        .replace(PackageName.delimiterChar(), File.separatorChar);
-        Path path = Paths.get(packagePath);
+        Path path = packageName.toPath();
         return at(path);
     }
 
     /**
      * Obtains the source code file for the passed name.
      */
-    public SourceFile resolve(FileName fileName) {
-        Path filePath = path().resolve(fileName.value());
-        SourceFile result = SourceFile.of(filePath);
-        return result;
+    public SourceFile resolve(FileName fn) {
+        Path filePath = path().resolve(fn.value());
+        return SourceFile.of(filePath);
+    }
+
+    /**
+     * Obtains the source code file for the type with the passed name.
+     */
+    public SourceFile resolve(String typeName) {
+        checkNotNull(typeName);
+        return resolve(FileName.forType(typeName));
+    }
+
+    /**
+     * Obtains the source file for the passed type.
+     */
+    public SourceFile resolve(SimpleClassName typeName) {
+        checkNotNull(typeName);
+        return resolve(typeName.value());
     }
 
     /**

@@ -31,10 +31,10 @@ import io.spine.code.AbstractDirectory;
 
 import java.nio.file.Path;
 
-import static io.spine.code.fs.java.DirectoryName.grpc;
-import static io.spine.code.fs.java.DirectoryName.java;
-import static io.spine.code.fs.java.DirectoryName.resources;
-import static io.spine.code.fs.java.DirectoryName.spine;
+import static io.spine.code.fs.DirectoryName.grpc;
+import static io.spine.code.fs.DirectoryName.java;
+import static io.spine.code.fs.DirectoryName.resources;
+import static io.spine.code.fs.DirectoryName.spine;
 
 /**
  * The generated code directory which belongs to a certain source set.

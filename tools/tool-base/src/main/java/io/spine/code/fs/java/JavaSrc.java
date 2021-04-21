@@ -24,16 +24,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.fs;
+package io.spine.code.fs.java;
 
-import io.spine.code.SourceCodeDirectory;
+import io.spine.code.fs.DefaultProject;
+import io.spine.code.fs.Src;
 
 /**
- * A directory which contains source code of an artifact, e.g. {@code "main"} or {@code "test"}.
+ * Abstract base for directories containing Java code.
  */
-public final class ArtifactSources extends SourceCodeDirectory {
+abstract class JavaSrc extends Src {
 
-    public ArtifactSources(SourceCodeDirectory parent, DirectoryName name) {
-        super(parent, name.value());
+    JavaSrc(DefaultProject parent, String name) {
+        super(parent, name);
+    }
+
+    /**
+     * A root directory for main Java code.
+     */
+    public Directory mainJava() {
+        return Directory.rootIn(main());
+    }
+
+    /**
+     * A root directory for test Java code.
+     */
+    public Directory testJava() {
+        return Directory.rootIn(test());
     }
 }

@@ -26,14 +26,16 @@
 
 package io.spine.code.fs;
 
-import io.spine.code.SourceCodeDirectory;
+import io.spine.code.AbstractDirectory;
 
 /**
- * A directory which contains source code of an artifact, e.g. {@code "main"} or {@code "test"}.
+ * A directory containing temporary artifacts of a Spine-based project.
+ *
+ * @see DirectoryName#dotSpine
  */
-public final class ArtifactSources extends SourceCodeDirectory {
+public final class TempArtifacts extends AbstractDirectory {
 
-    public ArtifactSources(SourceCodeDirectory parent, DirectoryName name) {
-        super(parent, name.value());
+    TempArtifacts(DefaultProject project) {
+        super(project, DirectoryName.dotSpine.value());
     }
 }

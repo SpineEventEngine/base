@@ -113,7 +113,7 @@ public class Extension extends GradleExtension {
         Extension extension = extension(project);
         String specifiedValue = extension.mainGenProtoDir;
         Path path = pathOrDefault(specifiedValue,
-                                  def(project).proto()
+                                  def(project).generated()
                                               .mainJs());
         return Directory.at(path);
     }
@@ -122,7 +122,7 @@ public class Extension extends GradleExtension {
         Extension extension = extension(project);
         String specifiedValue = extension.testGenProtoDir;
         Path path = pathOrDefault(specifiedValue,
-                                  def(project).proto()
+                                  def(project).generated()
                                               .testJs());
         return Directory.at(path);
     }

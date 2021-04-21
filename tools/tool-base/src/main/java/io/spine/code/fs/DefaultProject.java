@@ -28,12 +28,7 @@ package io.spine.code.fs;
 
 import io.spine.code.AbstractDirectory;
 
-import java.io.File;
 import java.nio.file.Path;
-
-import static io.spine.code.fs.java.DirectoryName.dotSpine;
-import static io.spine.code.fs.java.DirectoryName.main;
-import static io.spine.code.fs.java.DirectoryName.test;
 
 /**
  * This class represents a default directory structure for a Spine-based project of any language.
@@ -41,18 +36,24 @@ import static io.spine.code.fs.java.DirectoryName.test;
  * <p>The descendants of the class contain the language-specific project structures.
  *
  * <p>The {@code DefaultProject} helps resolving names of the directories and files under the
- * project directory. It is expected that for most projects, the default values of paths remain
- * unchanged.
+ * project directory. It is expected that for most projects, the default values of paths
+ * remain unchanged.
  */
 @SuppressWarnings("AbstractClassWithoutAbstractMethods")
 // Only stores common elements of subclasses.
 public abstract class DefaultProject extends AbstractDirectory {
 
+    /**
+     * Creates a new instance at the given path.
+     */
     protected DefaultProject(Path path) {
         super(path);
     }
 
-    public Build buildRoot() {
+    /**
+     * Obtains the {@code "build"} directory of this project.
+     */
+    public Build build() {
         return Build.of(this);
     }
 
@@ -63,9 +64,7 @@ public abstract class DefaultProject extends AbstractDirectory {
      *
      * <p>The directory is deleted on {@code :pre-clean"}.
      */
-    public File tempArtifacts() {
-        File result = new File(path().toFile(), dotSpine.value());
-        return result;
+    public TempArtifacts tempArtifacts() {
+        return new TempArtifacts(this);
     }
-
 }

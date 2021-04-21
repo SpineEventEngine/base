@@ -29,6 +29,10 @@ package io.spine.code.java;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.value.StringTypeValue;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -93,22 +97,16 @@ public final class PackageName extends StringTypeValue {
     }
 
     /**
-     * Obtains Java package delimiter as a single {@code char}.
-     */
-    public static char delimiterChar() {
-        return DELIMITER_CHAR;
-    }
-
-    /**
      * Obtains a Java package name by the passed file descriptor.
      */
     public static PackageName resolve(FileDescriptorProto file) {
         String javaPackage = resolveName(file).trim();
-        checkArgument(!javaPackage.isEmpty(),
-                      "Message classes generated from the file `%s` belong to the default package.%s"
-                    + "Use `option java_package` or `package` to specify the Java package.",
-                      file.getName(),
-                      System.lineSeparator());
+        checkArgument(
+                !javaPackage.isEmpty(),
+                "Message classes generated from the file `%s` belong to the default package.%n" +
+                        "Use `option java_package` or `package` to specify the Java package.",
+                file.getName()
+        );
         PackageName result = new PackageName(javaPackage);
         return result;
     }
@@ -120,5 +118,14 @@ public final class PackageName extends StringTypeValue {
             javaPackage = file.getPackage();
         }
         return javaPackage;
+    }
+
+    /**
+     * Converts the package name to the path on a file system.
+     */
+    public Path toPath() {
+        String packagePath = value().replace(DELIMITER_CHAR, File.separatorChar);
+        Path result = Paths.get(packagePath);
+        return result;
     }
 }

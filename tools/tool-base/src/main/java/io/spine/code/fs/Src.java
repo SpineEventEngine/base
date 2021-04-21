@@ -28,8 +28,8 @@ package io.spine.code.fs;
 
 import io.spine.code.SourceCodeDirectory;
 
-import static io.spine.code.fs.java.DirectoryName.main;
-import static io.spine.code.fs.java.DirectoryName.test;
+import static io.spine.code.fs.DirectoryName.main;
+import static io.spine.code.fs.DirectoryName.test;
 
 /**
  * A root source code directory (named usually {@code src}) in a project or a module.
@@ -40,12 +40,18 @@ public class Src extends SourceCodeDirectory {
         super(parent, name);
     }
 
-    @SuppressWarnings("ConfusingMainMethod") // We refer to the standard Maven convention here
-    protected SourceCodeDirectory main() {
-        return new ArtifactSources(this, main.value());
+    /**
+     * Obtains a sub-directory called {@link DirectoryName#main main}.
+     */
+    @SuppressWarnings("ConfusingMainMethod") // We refer to the standard Maven convention here.
+    protected ArtifactSources main() {
+        return new ArtifactSources(this, main);
     }
 
-    protected SourceCodeDirectory test() {
-        return new ArtifactSources(this, test.value());
+    /**
+     * Obtains a sub-directory called {@link DirectoryName#test test}.
+     */
+    protected ArtifactSources test() {
+        return new ArtifactSources(this, test);
     }
 }

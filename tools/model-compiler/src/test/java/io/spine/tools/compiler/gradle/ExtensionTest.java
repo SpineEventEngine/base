@@ -232,7 +232,7 @@ class ExtensionTest {
         @DisplayName("include `.spine` dir, if exists")
         void includeSpineDir() throws IOException {
             DefaultJavaProject defaultProject = DefaultJavaProject.at(projectDir);
-            File spineDir = defaultProject.tempArtifacts();
+            File spineDir = defaultProject.tempArtifacts().path().toFile();
             assertTrue(spineDir.mkdir());
             String generatedDir =
                     defaultProject.generated()

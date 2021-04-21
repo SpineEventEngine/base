@@ -28,6 +28,7 @@ package io.spine.js.gradle;
 
 import com.google.protobuf.gradle.ExecutableLocator;
 import io.spine.code.fs.js.DefaultJsProject;
+import io.spine.code.fs.js.Generated;
 import io.spine.tools.gradle.ProtocConfigurationPlugin;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
@@ -49,7 +50,7 @@ public final class JsProtocConfigurationPlugin extends ProtocConfigurationPlugin
     @Override
     protected Path generatedFilesBaseDir(Project project) {
         DefaultJsProject jsProject = DefaultJsProject.at(project.getProjectDir());
-        DefaultJsProject.GeneratedProtoRoot generatedProtoRoot = jsProject.proto();
+        Generated generatedProtoRoot = jsProject.generated();
         return generatedProtoRoot.path();
     }
 
