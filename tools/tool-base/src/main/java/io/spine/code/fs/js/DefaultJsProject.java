@@ -27,6 +27,7 @@
 package io.spine.code.fs.js;
 
 import io.spine.code.fs.DefaultProject;
+import io.spine.code.fs.Src;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -96,7 +97,7 @@ public final class DefaultJsProject extends DefaultProject {
         return new GeneratedProtoRoot(this);
     }
 
-    public static final class GeneratedProtoRoot extends SourceRoot {
+    public static final class GeneratedProtoRoot extends Src {
 
         @SuppressWarnings("DuplicateStringLiteralInspection") // Same name in different context.
         private static final String DIR_NAME = "generated";
@@ -106,11 +107,11 @@ public final class DefaultJsProject extends DefaultProject {
         }
 
         public Directory mainJs() {
-            return Directory.rootIn(getMain());
+            return Directory.rootIn(main());
         }
 
         public Directory testJs() {
-            return Directory.rootIn(getTest());
+            return Directory.rootIn(test());
         }
     }
 }

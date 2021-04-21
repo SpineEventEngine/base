@@ -35,8 +35,23 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public abstract class SourceCodeDirectory extends AbstractDirectory {
 
+    /**
+     * Creates a new instance at the given path.
+     */
     protected SourceCodeDirectory(Path path) {
         super(path);
+    }
+
+    /**
+     *
+     * Creates a sub-directory under the given parent.
+     * @param parent
+     *          the parent directory for the new one
+     * @param name
+     *          the short name of the new directory
+     */
+    protected SourceCodeDirectory(AbstractDirectory parent, String name) {
+        super(parent, name);
     }
 
     public Path resolve(SourceCodeDirectory dir) {

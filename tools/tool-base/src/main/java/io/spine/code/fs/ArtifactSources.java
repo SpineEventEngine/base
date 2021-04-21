@@ -24,29 +24,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.code.fs;
 
-import java.nio.file.Path;
+import io.spine.code.AbstractDirectory;
+import io.spine.code.SourceCodeDirectory;
 
 /**
- * A directory in a programming project.
+ * A directory which contains source code of an artifact, e.g. {@code "main"} or {@code "test"}.
  */
-public abstract class AbstractDirectory extends FsObject {
+final class ArtifactSources extends SourceCodeDirectory {
 
-    protected AbstractDirectory(Path path) {
-        super(path);
-    }
-
-    /**
-     * Creates a new instance as a child directory of the passed parent.
-     *
-     * @param parent
-     *         the directory under which the new instance will be created
-     * @param name
-     *         the short name of the source code directory
-     */
-    protected AbstractDirectory(AbstractDirectory parent, String name) {
-        this(parent.path()
-                   .resolve(name));
+    ArtifactSources(AbstractDirectory parent, String name) {
+        super(parent, name);
     }
 }

@@ -24,29 +24,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.code.fs;
 
-import java.nio.file.Path;
+import io.spine.code.SourceCodeDirectory;
+
+import static io.spine.code.fs.java.DirectoryName.main;
+import static io.spine.code.fs.java.DirectoryName.test;
 
 /**
- * A directory in a programming project.
+ * A root source code directory (named usually {@code src}) in a project or a module.
  */
-public abstract class AbstractDirectory extends FsObject {
+public class Src extends SourceCodeDirectory {
 
-    protected AbstractDirectory(Path path) {
-        super(path);
+    protected Src(DefaultProject parent, String name) {
+        super(parent, name);
     }
 
-    /**
-     * Creates a new instance as a child directory of the passed parent.
-     *
-     * @param parent
-     *         the directory under which the new instance will be created
-     * @param name
-     *         the short name of the source code directory
-     */
-    protected AbstractDirectory(AbstractDirectory parent, String name) {
-        this(parent.path()
-                   .resolve(name));
+    @SuppressWarnings("ConfusingMainMethod") // We refer to the standard Maven convention here
+    protected SourceCodeDirectory main() {
+        return new ArtifactSources(this, main.value());
+    }
+
+    protected SourceCodeDirectory test() {
+        return new ArtifactSources(this, test.value());
     }
 }

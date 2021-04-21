@@ -27,13 +27,10 @@
 package io.spine.code.fs;
 
 import io.spine.code.AbstractDirectory;
-import io.spine.code.SourceCodeDirectory;
 
 import java.io.File;
 import java.nio.file.Path;
 
-import static io.spine.code.fs.java.DirectoryName.build;
-import static io.spine.code.fs.java.DirectoryName.descriptors;
 import static io.spine.code.fs.java.DirectoryName.dotSpine;
 import static io.spine.code.fs.java.DirectoryName.main;
 import static io.spine.code.fs.java.DirectoryName.test;
@@ -55,8 +52,8 @@ public abstract class DefaultProject extends AbstractDirectory {
         super(path);
     }
 
-    public BuildRoot buildRoot() {
-        return BuildRoot.of(this);
+    public Build buildRoot() {
+        return Build.of(this);
     }
 
     /**
@@ -71,64 +68,4 @@ public abstract class DefaultProject extends AbstractDirectory {
         return result;
     }
 
-    protected static class SourceDir extends SourceCodeDirectory {
-
-        public SourceDir(AbstractDirectory parent, String name) {
-            super(parent.path()
-                        .resolve(name));
-        }
-    }
-
-    /**
-     * A root source code directory in a project or a module.
-     */
-    public static class SourceRoot extends SourceDir {
-
-        protected SourceRoot(DefaultProject parent, String name) {
-            super(parent, name);
-        }
-
-        protected SourceDir getMain() {
-            return new SourceDir(this, main.value());
-        }
-
-        protected SourceDir getTest() {
-            return new SourceDir(this, test.value());
-        }
-    }
-
-    /**
-     * The root directory for build output.
-     */
-    public static final class BuildRoot extends AbstractDirectory {
-
-        private BuildRoot(DefaultProject module) {
-            super(module.path()
-                        .resolve(build.value()));
-        }
-
-        static BuildRoot of(DefaultProject project) {
-            return new BuildRoot(project);
-        }
-
-        public DescriptorsDir descriptors() {
-            return new DescriptorsDir(this, descriptors.value());
-        }
-    }
-
-    public static final class DescriptorsDir extends AbstractDirectory {
-
-        DescriptorsDir(BuildRoot parent, String name) {
-            super(parent.path()
-                        .resolve(name));
-        }
-
-        public Path mainDescriptors() {
-            return path().resolve(main.value());
-        }
-
-        public Path testDescriptors() {
-            return path().resolve(test.value());
-        }
-    }
 }

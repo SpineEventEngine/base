@@ -24,29 +24,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.code.fs;
 
-import java.nio.file.Path;
+import io.spine.code.AbstractDirectory;
+
+import static io.spine.code.fs.java.DirectoryName.build;
+import static io.spine.code.fs.java.DirectoryName.descriptors;
 
 /**
- * A directory in a programming project.
+ * The directory for build output.
  */
-public abstract class AbstractDirectory extends FsObject {
+public final class Build extends AbstractDirectory {
 
-    protected AbstractDirectory(Path path) {
-        super(path);
+    private Build(DefaultProject module) {
+        super(module.path()
+                    .resolve(build.value()));
     }
 
-    /**
-     * Creates a new instance as a child directory of the passed parent.
-     *
-     * @param parent
-     *         the directory under which the new instance will be created
-     * @param name
-     *         the short name of the source code directory
-     */
-    protected AbstractDirectory(AbstractDirectory parent, String name) {
-        this(parent.path()
-                   .resolve(name));
+    static Build of(DefaultProject project) {
+        return new Build(project);
+    }
+
+    public Descriptors descriptors() {
+        return new Descriptors(this, descriptors.value());
     }
 }
