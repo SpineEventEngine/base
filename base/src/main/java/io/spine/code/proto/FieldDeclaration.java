@@ -281,7 +281,7 @@ public final class FieldDeclaration {
      * @return {@code true} if the field is repeated, {@code false} otherwise
      */
     public boolean isRepeated() {
-        return FieldTypes.isRepeated(field);
+        return FieldDescriptorExtensions.isRepeatedIndeed(field);
     }
 
     /**
@@ -290,7 +290,7 @@ public final class FieldDeclaration {
      * @return {@code true} if the field is a {@code map}, {@code false} otherwise
      */
     public boolean isMap() {
-        return FieldTypes.isMap(field);
+        return FieldDescriptorExtensions.isMap(field);
     }
 
     /** Obtains the Java type of the declaration. */
@@ -328,7 +328,7 @@ public final class FieldDeclaration {
 
     /** Obtains the descriptor of the value of a map. */
     public FieldDeclaration valueDeclaration() {
-        FieldDescriptor valueDescriptor = FieldTypes.valueDescriptor(field);
+        FieldDescriptor valueDescriptor = FieldDescriptorExtensions.valueDescriptor(field);
         return new FieldDeclaration(valueDescriptor);
     }
 
