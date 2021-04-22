@@ -31,7 +31,6 @@ import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.TimestampOrBuilder;
 import io.spine.base.Error;
-import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FileName;
 import io.spine.code.proto.FileSet;
 import org.junit.jupiter.api.BeforeEach;

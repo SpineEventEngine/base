@@ -28,7 +28,6 @@ package io.spine.code.proto;
 
 import com.google.common.truth.Truth8;
 import com.google.protobuf.Descriptors.Descriptor;
-import io.spine.code.proto.EntityStateOption;
 import io.spine.option.EntityOption;
 import io.spine.option.EntityOption.Kind;
 import io.spine.option.EntityOption.Visibility;

@@ -29,8 +29,6 @@ package io.spine.code.proto;
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.code.proto.ColumnOption;
-import io.spine.code.proto.FieldDeclaration;
 import io.spine.test.code.proto.CoProject;
 import io.spine.test.code.proto.CoTask;
 import io.spine.test.code.proto.CoTaskDescription;

@@ -37,7 +37,6 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.StringValue;
-import io.spine.code.proto.FieldDeclaration;
 import io.spine.net.Uri;
 import io.spine.net.Uri.Protocol;
 import io.spine.type.MessageType;

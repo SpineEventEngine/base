@@ -27,8 +27,6 @@
 package io.spine.code.proto;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.proto.CamelCase;
-import io.spine.code.proto.UnderscoredName;
 import io.spine.testing.UtilityClassTest;
 import io.spine.value.StringTypeValue;
 import org.junit.jupiter.api.DisplayName;

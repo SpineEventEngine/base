@@ -26,7 +26,6 @@
 
 package io.spine.code.proto;
 
-import io.spine.code.proto.FieldName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

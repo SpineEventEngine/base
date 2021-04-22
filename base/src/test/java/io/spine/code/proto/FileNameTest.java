@@ -28,7 +28,6 @@ package io.spine.code.proto;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
-import io.spine.code.proto.FileName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

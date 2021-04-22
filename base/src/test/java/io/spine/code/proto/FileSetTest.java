@@ -32,8 +32,6 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Empty;
-import io.spine.code.proto.FileName;
-import io.spine.code.proto.FileSet;
 import io.spine.test.code.proto.MessageDecl;
 import io.spine.type.MessageType;
 import org.checkerframework.checker.nullness.qual.NonNull;
