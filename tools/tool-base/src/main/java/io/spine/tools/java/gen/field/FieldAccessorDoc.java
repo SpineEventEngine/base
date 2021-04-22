@@ -28,7 +28,7 @@ package io.spine.tools.java.gen.field;
 
 import com.squareup.javapoet.CodeBlock;
 import io.spine.tools.java.gen.GeneratedJavadoc;
-import io.spine.tools.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldDeclaration;
 
 /**
  * The Javadoc of a method which returns a strongly-typed proto field.

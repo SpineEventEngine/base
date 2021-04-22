@@ -32,7 +32,7 @@ import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import io.spine.tools.code.proto.FieldContext;
+import io.spine.code.proto.FieldContext;
 
 import java.io.Serializable;
 import java.util.Collection;

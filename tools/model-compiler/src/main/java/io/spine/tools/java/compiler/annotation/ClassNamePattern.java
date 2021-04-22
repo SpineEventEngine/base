@@ -27,7 +27,7 @@
 package io.spine.tools.java.compiler.annotation;
 
 import com.google.common.base.Objects;
-import io.spine.tools.code.java.ClassName;
+import io.spine.code.java.ClassName;
 import org.checkerframework.checker.regex.qual.Regex;
 
 import java.util.regex.Matcher;

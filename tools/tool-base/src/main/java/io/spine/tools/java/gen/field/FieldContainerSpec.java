@@ -33,10 +33,10 @@ import com.squareup.javapoet.MethodSpec;
 import io.spine.tools.java.gen.GeneratedBy;
 import io.spine.tools.java.gen.GeneratedJavadoc;
 import io.spine.tools.java.gen.TypeSpec;
-import io.spine.tools.code.java.ClassName;
-import io.spine.tools.code.java.PackageName;
+import io.spine.code.java.ClassName;
+import io.spine.code.java.PackageName;
 import io.spine.tools.java.javadoc.JavadocText;
-import io.spine.tools.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 

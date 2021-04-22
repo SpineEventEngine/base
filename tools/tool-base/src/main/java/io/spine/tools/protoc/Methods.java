@@ -27,7 +27,7 @@
 package io.spine.tools.protoc;
 
 import io.spine.annotation.Internal;
-import io.spine.tools.code.java.ClassName;
+import io.spine.code.java.ClassName;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import static com.google.common.base.Preconditions.checkNotNull;

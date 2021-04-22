@@ -28,14 +28,14 @@ package io.spine.tools.js.generate.given;
 
 import io.spine.tools.js.fs.DefaultJsPaths;
 import io.spine.tools.js.fs.Directory;
-import io.spine.tools.code.proto.FileSet;
+import io.spine.code.proto.FileSet;
 import io.spine.tools.gradle.testing.GradleProject;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 
-import static io.spine.tools.code.proto.FileDescriptors.KNOWN_TYPES;
+import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
 import static io.spine.testing.TempDir.withPrefix;
 import static io.spine.tools.gradle.BaseTaskName.build;
 import static java.util.Collections.singletonList;

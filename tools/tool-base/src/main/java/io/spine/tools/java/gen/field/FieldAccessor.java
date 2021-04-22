@@ -32,10 +32,10 @@ import io.spine.base.SubscribableField;
 import io.spine.tools.java.gen.GeneratedJavadoc;
 import io.spine.tools.java.gen.GeneratedMethodSpec;
 import io.spine.tools.java.gen.JavaPoetName;
-import io.spine.tools.code.java.ClassName;
-import io.spine.tools.code.java.SimpleClassName;
-import io.spine.tools.code.proto.FieldDeclaration;
-import io.spine.tools.code.proto.FieldName;
+import io.spine.code.java.ClassName;
+import io.spine.code.java.SimpleClassName;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldName;
 
 import javax.lang.model.element.Modifier;
 

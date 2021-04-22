@@ -30,10 +30,10 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
-import io.spine.tools.code.AbstractSourceFile;
-import io.spine.tools.code.java.ClassName;
-import io.spine.tools.code.java.PackageName;
-import io.spine.tools.code.java.SimpleClassName;
+import io.spine.code.fs.AbstractSourceFile;
+import io.spine.code.java.ClassName;
+import io.spine.code.java.PackageName;
+import io.spine.code.java.SimpleClassName;
 import io.spine.type.Type;
 
 import java.nio.file.Path;

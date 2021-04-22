@@ -39,9 +39,9 @@ import io.spine.tools.java.gen.GeneratedBy;
 import io.spine.tools.java.gen.GeneratedJavadoc;
 import io.spine.tools.java.gen.JavaPoetName;
 import io.spine.tools.java.gen.TypeSpec;
-import io.spine.tools.code.java.PackageName;
+import io.spine.code.java.PackageName;
 import io.spine.tools.java.javadoc.JavadocText;
-import io.spine.tools.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.query.EntityColumn;
 import io.spine.type.MessageType;
 
@@ -49,7 +49,7 @@ import java.util.HashSet;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.tools.code.proto.ColumnOption.columnsOf;
+import static io.spine.code.proto.ColumnOption.columnsOf;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;

@@ -29,7 +29,7 @@ package io.spine.validate;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
-import io.spine.tools.code.proto.MessageOption;
+import io.spine.code.proto.MessageOption;
 import io.spine.option.OptionsProto;
 
 import java.util.Optional;

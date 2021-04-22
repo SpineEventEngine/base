@@ -30,7 +30,7 @@ import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.OneofDescriptor;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.Value;
-import io.spine.tools.code.proto.FieldContext;
+import io.spine.code.proto.FieldContext;
 import io.spine.testing.ClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

@@ -36,8 +36,8 @@ import io.spine.tools.java.gen.FieldName;
 import io.spine.tools.java.gen.GeneratedBy;
 import io.spine.tools.java.gen.JavaPoetName;
 import io.spine.tools.java.gen.TypeSpec;
-import io.spine.tools.code.java.PackageName;
-import io.spine.tools.code.java.SimpleClassName;
+import io.spine.code.java.PackageName;
+import io.spine.code.java.SimpleClassName;
 import io.spine.tools.java.javadoc.JavadocText;
 import io.spine.logging.Logging;
 

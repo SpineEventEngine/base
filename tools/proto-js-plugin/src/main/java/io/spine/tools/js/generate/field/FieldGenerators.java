@@ -32,10 +32,10 @@ import io.spine.tools.js.generate.field.precondition.FieldPrecondition;
 import io.spine.tools.js.generate.output.CodeLines;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.code.proto.FieldTypes.isMap;
-import static io.spine.tools.code.proto.FieldTypes.isRepeated;
-import static io.spine.tools.code.proto.FieldTypes.keyDescriptor;
-import static io.spine.tools.code.proto.FieldTypes.valueDescriptor;
+import static io.spine.code.proto.FieldTypes.isMap;
+import static io.spine.code.proto.FieldTypes.isRepeated;
+import static io.spine.code.proto.FieldTypes.keyDescriptor;
+import static io.spine.code.proto.FieldTypes.valueDescriptor;
 import static io.spine.tools.js.generate.field.parser.FieldParser.parserFor;
 import static io.spine.tools.js.generate.field.precondition.FieldPreconditions.preconditionFor;
 

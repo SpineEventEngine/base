@@ -27,7 +27,7 @@
 package io.spine.tools.archive;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
-import io.spine.tools.code.proto.FileDescriptorSets;
+import io.spine.code.proto.FileDescriptorSets;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

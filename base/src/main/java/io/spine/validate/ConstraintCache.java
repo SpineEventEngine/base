@@ -30,7 +30,7 @@ import com.google.common.base.Objects;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import io.spine.tools.code.proto.FieldContext;
+import io.spine.code.proto.FieldContext;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;

@@ -29,8 +29,8 @@ package io.spine.tools.java.compiler.annotation;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.tools.code.java.ClassName;
-import io.spine.tools.code.proto.FileSet;
+import io.spine.code.java.ClassName;
+import io.spine.code.proto.FileSet;
 
 import java.io.File;
 import java.nio.file.Path;

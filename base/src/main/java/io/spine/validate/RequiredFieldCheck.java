@@ -28,7 +28,7 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableSet;
 import io.spine.base.FieldPath;
-import io.spine.tools.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldDeclaration;
 
 import java.util.Optional;
 

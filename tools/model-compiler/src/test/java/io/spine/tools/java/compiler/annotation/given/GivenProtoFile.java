@@ -26,7 +26,7 @@
 
 package io.spine.tools.java.compiler.annotation.given;
 
-import io.spine.tools.code.proto.FileName;
+import io.spine.code.proto.FileName;
 
 /**
  * Test proto file names.

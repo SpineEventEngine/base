@@ -29,8 +29,8 @@ package io.spine.tools.java.fs;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
-import io.spine.tools.code.AbstractFileName;
-import io.spine.tools.code.java.SimpleClassName;
+import io.spine.code.fs.AbstractFileName;
+import io.spine.code.java.SimpleClassName;
 
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 

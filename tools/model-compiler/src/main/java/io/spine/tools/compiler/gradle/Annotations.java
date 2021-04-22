@@ -30,7 +30,7 @@ import io.spine.annotation.Beta;
 import io.spine.annotation.Experimental;
 import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
-import io.spine.tools.code.java.ClassName;
+import io.spine.code.java.ClassName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

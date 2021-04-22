@@ -31,12 +31,12 @@ import io.spine.base.RejectionType;
 import io.spine.tools.code.Indent;
 import io.spine.tools.java.gen.TypeSpec;
 import io.spine.tools.java.gen.TypeSpecWriter;
-import io.spine.tools.code.java.PackageName;
-import io.spine.tools.code.java.SimpleClassName;
-import io.spine.tools.code.proto.FileSet;
-import io.spine.tools.code.proto.RejectionsFile;
-import io.spine.tools.code.proto.SourceFile;
-import io.spine.tools.code.proto.SourceProtoBelongsToModule;
+import io.spine.code.java.PackageName;
+import io.spine.code.java.SimpleClassName;
+import io.spine.code.proto.FileSet;
+import io.spine.code.proto.RejectionsFile;
+import io.spine.code.proto.SourceFile;
+import io.spine.code.proto.SourceProtoBelongsToModule;
 import io.spine.tools.compiler.gradle.Extension;
 import io.spine.tools.gradle.CodeGenerationAction;
 import org.gradle.api.Project;
@@ -49,7 +49,7 @@ import java.util.function.Supplier;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.flogger.LazyArgs.lazy;
-import static io.spine.tools.code.proto.RejectionsFile.findAll;
+import static io.spine.code.proto.RejectionsFile.findAll;
 
 /**
  * Generates source code of rejections.

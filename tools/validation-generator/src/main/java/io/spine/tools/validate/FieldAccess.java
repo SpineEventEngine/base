@@ -26,8 +26,8 @@
 
 package io.spine.tools.validate;
 
-import io.spine.tools.code.proto.FieldDeclaration;
-import io.spine.tools.code.proto.FieldName;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldName;
 import io.spine.tools.validate.code.CodeExpression;
 
 import static com.google.common.base.Preconditions.checkNotNull;

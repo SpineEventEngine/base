@@ -30,7 +30,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
-import io.spine.tools.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.validate.FieldAccess;
 import io.spine.tools.validate.MessageAccess;
 import io.spine.validate.Alternative;

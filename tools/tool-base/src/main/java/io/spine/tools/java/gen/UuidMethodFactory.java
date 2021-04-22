@@ -50,7 +50,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>Creates following methods:
  * <ul>
  *     <li>{@code public static final T generate()} — generates a new instance of the
- *     {@code UuidValue} message with a random {@code uuid} value.
+ *     {@code UuidValue} message with a random {@code uuid} valxue.
  *     <li>{@code public static final T of(String uuid} — create a new instance of the
  *     {@code UuidValue} message with a supplied {@code uuid} value.
  * </ul>

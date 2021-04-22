@@ -27,7 +27,7 @@
 package io.spine.base;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.tools.code.proto.FileName;
+import io.spine.code.proto.FileName;
 
 import java.util.function.Predicate;
 

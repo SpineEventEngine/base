@@ -28,7 +28,7 @@ package io.spine.validate.option;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.code.proto.FieldContext;
+import io.spine.code.proto.FieldContext;
 import io.spine.type.MessageType;
 import io.spine.validate.Alternative;
 import io.spine.validate.Constraint;

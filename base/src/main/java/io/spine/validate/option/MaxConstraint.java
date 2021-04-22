@@ -28,7 +28,7 @@ package io.spine.validate.option;
 
 import com.google.common.collect.Range;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.MaxOption;
 import io.spine.validate.ComparableNumber;
 import io.spine.validate.ConstraintTranslator;

@@ -33,7 +33,7 @@ import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.tools.java.fs.SourceFile;
-import io.spine.tools.code.java.ClassName;
+import io.spine.code.java.ClassName;
 
 import java.nio.file.Path;
 

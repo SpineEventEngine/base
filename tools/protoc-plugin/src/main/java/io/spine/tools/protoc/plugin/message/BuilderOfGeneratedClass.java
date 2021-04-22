@@ -27,7 +27,7 @@
 package io.spine.tools.protoc.plugin.message;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.code.java.SimpleClassName;
+import io.spine.code.java.SimpleClassName;
 import io.spine.type.MessageType;
 
 import static java.lang.String.format;

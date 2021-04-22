@@ -26,7 +26,7 @@
 
 package io.spine.tools.protoc;
 
-import io.spine.tools.code.java.ClassName;
+import io.spine.code.java.ClassName;
 
 /**
  * A selector which signalizes that the configuration should be applied to all UUID messages.

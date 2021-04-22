@@ -27,7 +27,7 @@
 package io.spine.tools.gradle;
 
 import com.google.common.base.Objects;
-import io.spine.tools.code.java.ClassName;
+import io.spine.code.java.ClassName;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 

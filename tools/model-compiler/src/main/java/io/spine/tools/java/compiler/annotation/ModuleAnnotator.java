@@ -28,7 +28,7 @@ package io.spine.tools.java.compiler.annotation;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import io.spine.tools.code.java.ClassName;
+import io.spine.code.java.ClassName;
 import org.checkerframework.checker.regex.qual.Regex;
 
 import java.util.Set;

@@ -29,7 +29,7 @@ package io.spine.validate.option;
 import com.google.errorprone.annotations.Immutable;
 import com.google.errorprone.annotations.ImmutableTypeParameter;
 import com.google.protobuf.Descriptors.GenericDescriptor;
-import io.spine.tools.code.proto.Option;
+import io.spine.code.proto.Option;
 import io.spine.validate.Constraint;
 
 /**

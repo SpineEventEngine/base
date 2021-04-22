@@ -37,7 +37,7 @@ import io.spine.type.MessageType;
 
 import java.util.Objects;
 
-import static io.spine.tools.code.java.PackageName.delimiter;
+import static io.spine.code.java.PackageName.delimiter;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**

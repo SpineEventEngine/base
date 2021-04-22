@@ -32,7 +32,7 @@ import com.google.common.truth.Truth;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import io.spine.tools.code.java.ClassName;
+import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.Interfaces;
 import io.spine.tools.protoc.Methods;
 import io.spine.tools.protoc.NestedClasses;

@@ -29,7 +29,7 @@ package io.spine.tools.java.compiler.annotation.given;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import io.spine.annotation.Internal;
-import io.spine.tools.code.java.ClassName;
+import io.spine.code.java.ClassName;
 import io.spine.tools.java.compiler.annotation.Annotator;
 import io.spine.tools.java.compiler.annotation.AnnotatorFactory;
 import io.spine.tools.java.compiler.annotation.ApiOption;

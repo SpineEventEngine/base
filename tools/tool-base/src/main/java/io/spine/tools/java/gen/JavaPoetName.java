@@ -28,10 +28,10 @@ package io.spine.tools.java.gen;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
-import io.spine.tools.code.java.PackageName;
-import io.spine.tools.code.java.SimpleClassName;
-import io.spine.tools.code.proto.FieldDeclaration;
-import io.spine.tools.code.proto.ScalarType;
+import io.spine.code.java.PackageName;
+import io.spine.code.java.SimpleClassName;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.code.proto.ScalarType;
 import io.spine.type.MessageType;
 
 import java.lang.reflect.Type;
@@ -69,7 +69,7 @@ public final class JavaPoetName {
         return new JavaPoetName(value);
     }
 
-    public static JavaPoetName of(io.spine.tools.code.java.ClassName className) {
+    public static JavaPoetName of(io.spine.code.java.ClassName className) {
         checkNotNull(className);
         PackageName packageName = className.packageName();
         SimpleClassName topLevel = className.topLevelClass();
@@ -112,7 +112,7 @@ public final class JavaPoetName {
             typeName = TypeName.get(javaType);
         } else {
             String rawTypeName = field.javaTypeName();
-            io.spine.tools.code.java.ClassName className = io.spine.tools.code.java.ClassName.of(rawTypeName);
+            io.spine.code.java.ClassName className = io.spine.code.java.ClassName.of(rawTypeName);
             String packageName = className.packageName()
                                           .value();
             typeName = ClassName.get(packageName, className.withoutPackage());

@@ -33,7 +33,7 @@ import com.squareup.javapoet.TypeName;
 import io.spine.tools.java.gen.GeneratedJavadoc;
 import io.spine.tools.java.gen.GeneratedMethodSpec;
 import io.spine.tools.java.gen.JavaPoetName;
-import io.spine.tools.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.query.EntityColumn;
 import io.spine.query.EntityCriterion;
 import io.spine.query.EntityQueryBuilder;

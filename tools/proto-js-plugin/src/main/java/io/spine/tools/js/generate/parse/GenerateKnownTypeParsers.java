@@ -30,11 +30,11 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.tools.code.GooglePackage;
+import io.spine.code.proto.FileDescriptors;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.fs.FileName;
-import io.spine.tools.code.proto.FileSet;
-import io.spine.tools.code.proto.TypeSet;
+import io.spine.code.proto.FileSet;
+import io.spine.code.proto.TypeSet;
 import io.spine.tools.js.generate.GenerationTask;
 import io.spine.tools.js.generate.output.CodeLines;
 import io.spine.tools.js.generate.output.FileWriter;
@@ -91,7 +91,7 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
      * Parsers for the types are provided by the Spine Web.
      */
     public static ImmutableCollection<MessageType> targetTypes(FileDescriptor file) {
-        if (GooglePackage.isGoogle(file)) {
+        if (FileDescriptors.isGoogle(file)) {
             return ImmutableList.of();
         }
         return TypeSet.onlyMessages(file);

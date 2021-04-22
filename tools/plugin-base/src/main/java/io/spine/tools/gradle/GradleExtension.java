@@ -35,7 +35,7 @@ import java.io.File;
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.code.proto.FileDescriptors.DESC_EXTENSION;
+import static io.spine.code.proto.FileDescriptors.DESC_EXTENSION;
 import static java.util.Objects.requireNonNull;
 
 /**

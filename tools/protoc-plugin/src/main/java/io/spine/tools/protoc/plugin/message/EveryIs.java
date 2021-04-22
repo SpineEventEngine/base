@@ -27,7 +27,7 @@
 package io.spine.tools.protoc.plugin.message;
 
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.tools.code.proto.FileOption;
+import io.spine.code.proto.FileOption;
 import io.spine.option.IsOption;
 import io.spine.option.OptionsProto;
 import io.spine.type.MessageType;

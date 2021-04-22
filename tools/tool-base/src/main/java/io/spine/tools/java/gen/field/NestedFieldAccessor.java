@@ -28,8 +28,8 @@ package io.spine.tools.java.gen.field;
 
 import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.CodeBlock;
-import io.spine.tools.code.java.ClassName;
-import io.spine.tools.code.proto.FieldDeclaration;
+import io.spine.code.java.ClassName;
+import io.spine.code.proto.FieldDeclaration;
 
 import javax.lang.model.element.Modifier;
 

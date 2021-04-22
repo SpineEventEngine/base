@@ -39,7 +39,7 @@ import com.google.protobuf.Descriptors.ServiceDescriptor;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
-import io.spine.tools.code.proto.PackageName;
+import io.spine.code.proto.PackageName;
 import io.spine.option.OptionsProto;
 
 import java.io.Serializable;

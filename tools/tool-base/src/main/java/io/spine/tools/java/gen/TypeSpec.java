@@ -26,7 +26,7 @@
 
 package io.spine.tools.java.gen;
 
-import io.spine.tools.code.java.PackageName;
+import io.spine.code.java.PackageName;
 
 /**
  * A JavaPoet-based spec of a generated type.

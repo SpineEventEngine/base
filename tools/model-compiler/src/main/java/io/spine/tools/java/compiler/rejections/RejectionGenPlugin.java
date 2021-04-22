@@ -25,7 +25,7 @@
  */
 package io.spine.tools.java.compiler.rejections;
 
-import io.spine.tools.code.proto.FileSet;
+import io.spine.code.proto.FileSet;
 import io.spine.tools.compiler.gradle.Extension;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.ProtoPlugin;

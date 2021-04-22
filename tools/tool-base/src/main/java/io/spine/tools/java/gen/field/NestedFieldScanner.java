@@ -27,8 +27,8 @@
 package io.spine.tools.java.gen.field;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.code.java.SimpleClassName;
-import io.spine.tools.code.proto.FieldDeclaration;
+import io.spine.code.java.SimpleClassName;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;
 
 import java.util.List;

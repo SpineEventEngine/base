@@ -37,7 +37,7 @@ import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolStringList;
-import io.spine.tools.code.proto.ScalarType;
+import io.spine.code.proto.ScalarType;
 import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
 import io.spine.value.ValueHolder;

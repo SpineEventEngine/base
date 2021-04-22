@@ -29,7 +29,7 @@ package io.spine.tools.protoc.plugin;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
-import io.spine.tools.code.proto.OptionExtensionRegistry;
+import io.spine.code.proto.OptionExtensionRegistry;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.plugin.column.ColumnGen;
 import io.spine.tools.protoc.plugin.field.FieldGen;

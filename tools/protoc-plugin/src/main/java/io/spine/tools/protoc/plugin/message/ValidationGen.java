@@ -29,7 +29,7 @@ package io.spine.tools.protoc.plugin.message;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.compiler.PluginProtos;
 import io.spine.base.EventMessage;
-import io.spine.tools.code.java.ClassName;
+import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.plugin.CodeGenerator;
 import io.spine.tools.protoc.plugin.CompilerOutput;

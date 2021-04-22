@@ -32,7 +32,7 @@ import io.spine.base.EventMessage;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
 import io.spine.tools.java.gen.UuidMethodFactory;
-import io.spine.tools.code.java.ClassName;
+import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.Interfaces;
 import io.spine.tools.protoc.MessageSelectorFactory;
 import io.spine.tools.protoc.Methods;

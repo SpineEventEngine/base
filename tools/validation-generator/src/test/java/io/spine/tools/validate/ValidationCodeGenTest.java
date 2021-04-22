@@ -30,7 +30,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Empty;
-import io.spine.tools.code.proto.FieldContext;
+import io.spine.code.proto.FieldContext;
 import io.spine.type.MessageType;
 import io.spine.validate.ConstraintViolation;
 import io.spine.validate.CustomConstraint;

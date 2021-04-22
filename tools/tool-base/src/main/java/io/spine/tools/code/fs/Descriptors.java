@@ -26,7 +26,7 @@
 
 package io.spine.tools.code.fs;
 
-import io.spine.tools.code.AbstractDirectory;
+import io.spine.code.fs.AbstractDirectory;
 
 import java.nio.file.Path;
 

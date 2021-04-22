@@ -31,7 +31,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import io.spine.annotation.Internal;
-import io.spine.tools.code.proto.FileSet;
+import io.spine.code.proto.FileSet;
 
 /**
  * A view on a {@code FileDescriptorSet} after merging.

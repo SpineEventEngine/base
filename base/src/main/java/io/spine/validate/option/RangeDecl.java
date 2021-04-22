@@ -27,7 +27,7 @@
 package io.spine.validate.option;
 
 import com.google.common.collect.Range;
-import io.spine.tools.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.validate.ComparableNumber;
 import io.spine.validate.NumberText;
 

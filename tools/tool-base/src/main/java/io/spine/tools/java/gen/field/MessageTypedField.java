@@ -35,9 +35,9 @@ import io.spine.base.SubscribableField;
 import io.spine.tools.java.gen.GeneratedJavadoc;
 import io.spine.tools.java.gen.JavaPoetName;
 import io.spine.tools.java.gen.TypeSpec;
-import io.spine.tools.code.java.ClassName;
-import io.spine.tools.code.java.PackageName;
-import io.spine.tools.code.java.SimpleClassName;
+import io.spine.code.java.ClassName;
+import io.spine.code.java.PackageName;
+import io.spine.code.java.SimpleClassName;
 import io.spine.type.MessageType;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;

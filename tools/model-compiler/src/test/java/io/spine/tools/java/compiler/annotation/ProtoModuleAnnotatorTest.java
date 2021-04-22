@@ -28,7 +28,7 @@ package io.spine.tools.java.compiler.annotation;
 
 import com.google.common.collect.ImmutableSet;
 import io.spine.annotation.Internal;
-import io.spine.tools.code.java.ClassName;
+import io.spine.code.java.ClassName;
 import io.spine.tools.java.compiler.annotation.given.FakeAnnotator;
 import org.checkerframework.checker.regex.qual.Regex;
 import org.junit.jupiter.api.DisplayName;

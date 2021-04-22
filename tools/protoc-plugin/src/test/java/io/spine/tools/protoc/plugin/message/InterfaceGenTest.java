@@ -41,7 +41,7 @@ import io.spine.base.UuidValue;
 import io.spine.tools.java.fs.Directory;
 import io.spine.tools.java.fs.FileName;
 import io.spine.tools.java.fs.SourceFile;
-import io.spine.tools.code.java.PackageName;
+import io.spine.code.java.PackageName;
 import io.spine.tools.protoc.plugin.CodeGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.plugin.given.SpineProtocConfigGiven;

@@ -27,7 +27,7 @@
 package io.spine.tools.protoc.plugin.message;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.code.proto.MessageOption;
+import io.spine.code.proto.MessageOption;
 import io.spine.option.IsOption;
 import io.spine.option.OptionsProto;
 import io.spine.type.MessageType;

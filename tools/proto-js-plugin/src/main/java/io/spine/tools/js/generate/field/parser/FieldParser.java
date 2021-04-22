@@ -27,7 +27,7 @@
 package io.spine.tools.js.generate.field.parser;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.js.generate.output.CodeLines;
 
 import static com.google.common.base.Preconditions.checkNotNull;

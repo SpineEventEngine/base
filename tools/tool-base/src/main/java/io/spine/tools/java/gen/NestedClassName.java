@@ -28,8 +28,8 @@ package io.spine.tools.java.gen;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.code.java.ClassName;
-import io.spine.tools.code.java.SimpleClassName;
+import io.spine.code.java.ClassName;
+import io.spine.code.java.SimpleClassName;
 import io.spine.value.StringTypeValue;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;

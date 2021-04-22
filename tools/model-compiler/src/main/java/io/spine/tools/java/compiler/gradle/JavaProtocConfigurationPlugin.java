@@ -31,7 +31,7 @@ import com.google.protobuf.gradle.ExecutableLocator;
 import com.google.protobuf.gradle.GenerateProtoTask;
 import io.spine.tools.java.fs.DefaultJavaPaths;
 import io.spine.tools.java.fs.Generated;
-import io.spine.tools.code.proto.DescriptorReference;
+import io.spine.code.proto.DescriptorReference;
 import io.spine.tools.compiler.gradle.Extension;
 import io.spine.tools.compiler.gradle.ProtocPluginConfiguration;
 import io.spine.tools.gradle.Artifact;

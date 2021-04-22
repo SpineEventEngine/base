@@ -27,7 +27,7 @@
 package io.spine.tools.java.compiler.annotation;
 
 import com.google.common.flogger.FluentLogger;
-import io.spine.tools.code.java.ClassName;
+import io.spine.code.java.ClassName;
 
 /**
  * An annotation {@link Job} which covers Java sources generated from Protobuf marked with

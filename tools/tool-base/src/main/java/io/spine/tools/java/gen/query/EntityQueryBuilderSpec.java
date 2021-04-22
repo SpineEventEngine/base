@@ -36,14 +36,14 @@ import com.squareup.javapoet.TypeSpec;
 import io.spine.tools.java.gen.BuilderSpec;
 import io.spine.tools.java.gen.GeneratedBy;
 import io.spine.tools.java.gen.GeneratedJavadoc;
-import io.spine.tools.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.query.EntityQuery;
 import io.spine.query.EntityQueryBuilder;
 import io.spine.query.IdCriterion;
 import io.spine.type.MessageType;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.tools.code.proto.ColumnOption.columnsOf;
+import static io.spine.code.proto.ColumnOption.columnsOf;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PROTECTED;

@@ -28,7 +28,7 @@ package io.spine.query;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors;
-import io.spine.tools.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.test.code.proto.CoProject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

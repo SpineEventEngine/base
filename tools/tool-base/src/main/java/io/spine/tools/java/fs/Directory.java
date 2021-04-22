@@ -26,10 +26,10 @@
 
 package io.spine.tools.java.fs;
 
-import io.spine.tools.code.SourceCodeDirectory;
+import io.spine.code.fs.SourceCodeDirectory;
 import io.spine.tools.code.fs.ArtifactSources;
-import io.spine.tools.code.java.PackageName;
-import io.spine.tools.code.java.SimpleClassName;
+import io.spine.code.java.PackageName;
+import io.spine.code.java.SimpleClassName;
 
 import java.nio.file.Path;
 

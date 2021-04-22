@@ -26,8 +26,8 @@
 
 package io.spine.tools.code.fs;
 
-import io.spine.tools.code.AbstractDirectory;
-import io.spine.tools.code.SourceCodeDirectory;
+import io.spine.code.fs.AbstractDirectory;
+import io.spine.code.fs.SourceCodeDirectory;
 
 /**
  * A directory which contains source code of an artifact, e.g. {@code "main"} or {@code "test"}.

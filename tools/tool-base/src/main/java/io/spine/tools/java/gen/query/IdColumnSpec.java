@@ -33,8 +33,8 @@ import com.squareup.javapoet.TypeName;
 import io.spine.tools.java.gen.GeneratedJavadoc;
 import io.spine.tools.java.gen.GeneratedMethodSpec;
 import io.spine.tools.java.gen.JavaPoetName;
-import io.spine.tools.code.proto.EntityIdField;
-import io.spine.tools.code.proto.FieldName;
+import io.spine.code.proto.EntityIdField;
+import io.spine.code.proto.FieldName;
 import io.spine.query.IdCriterion;
 
 import static javax.lang.model.element.Modifier.PUBLIC;

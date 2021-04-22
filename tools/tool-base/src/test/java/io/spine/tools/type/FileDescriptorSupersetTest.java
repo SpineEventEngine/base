@@ -48,7 +48,7 @@ import java.util.zip.ZipOutputStream;
 
 import static com.google.common.io.Files.createParentDirs;
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.tools.code.proto.FileDescriptors.KNOWN_TYPES;
+import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static java.nio.file.Files.createFile;
 import static java.util.stream.Collectors.toList;

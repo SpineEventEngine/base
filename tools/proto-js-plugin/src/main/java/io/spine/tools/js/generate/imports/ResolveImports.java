@@ -34,7 +34,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.tools.code.fs.FileReference;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.fs.FileName;
-import io.spine.tools.code.proto.FileSet;
+import io.spine.code.proto.FileSet;
 import io.spine.tools.js.generate.GenerationTask;
 import io.spine.logging.Logging;
 import io.spine.tools.code.structure.ExternalModule;

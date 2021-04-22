@@ -30,7 +30,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Message;
-import io.spine.tools.code.proto.FieldContext;
+import io.spine.code.proto.FieldContext;
 import io.spine.test.validate.option.ATestMessage;
 import io.spine.test.validate.option.ATestMessageConstraint;
 import io.spine.test.validate.option.ATestMessageWithConstraint;

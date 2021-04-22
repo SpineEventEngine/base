@@ -40,8 +40,8 @@ class FieldNameTest {
     @DisplayName(NOT_ACCEPT_NULLS)
     void pass_null_tolerance_check() {
         new NullPointerTester()
-                .setDefault(io.spine.tools.code.proto.FieldName.class,
-                            io.spine.tools.code.proto.FieldName.of("value"))
+                .setDefault(io.spine.code.proto.FieldName.class,
+                            io.spine.code.proto.FieldName.of("value"))
                 .testStaticMethods(FieldName.class, NullPointerTester.Visibility.PACKAGE);
     }
 }

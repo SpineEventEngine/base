@@ -27,6 +27,7 @@
 package io.spine.tools.protoc.plugin.column;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.code.proto.ColumnOption;
 import io.spine.tools.java.gen.ColumnFactory;
 import io.spine.tools.protoc.plugin.ClassMember;
 import io.spine.tools.protoc.plugin.CodeGenerator;
@@ -41,7 +42,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.tools.code.proto.ColumnOption.hasColumns;
+import static io.spine.code.proto.ColumnOption.hasColumns;
 
 /**
  * A code generator which adds the strongly-typed columns to a message type.
@@ -51,7 +52,7 @@ import static io.spine.tools.code.proto.ColumnOption.hasColumns;
  *
  * <p>Generates output only for those message types that represent an
  * {@linkplain MessageType#isEntityState() entity state} with
- * {@linkplain io.spine.tools.code.proto.ColumnOption columns}.
+ * {@linkplain ColumnOption columns}.
  */
 public final class ColumnGen extends CodeGenerator {
 

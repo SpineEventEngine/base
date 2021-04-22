@@ -28,9 +28,9 @@ package io.spine.tools.js.generate;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.tools.code.GooglePackage;
+import io.spine.code.proto.FileDescriptors;
 import io.spine.tools.js.fs.Directory;
-import io.spine.tools.code.proto.FileSet;
+import io.spine.code.proto.FileSet;
 import io.spine.tools.js.generate.given.TestGenerationTask;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -84,7 +84,7 @@ class GenerationTaskTest {
         FileSet processedFiles = task.processedFileSet();
         // It is expected that standard Protobuf types won't be generated (see test build script).
         Collection<FileDescriptor> expectedFilteredFiles = passedFiles
-                .filter(GooglePackage::isGoogle)
+                .filter(FileDescriptors::isGoogle)
                 .files();
         int expectedProcessedFiles = passedFiles.size() - expectedFilteredFiles.size();
         assertThat(processedFiles.size()).isEqualTo(expectedProcessedFiles);

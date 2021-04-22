@@ -28,8 +28,8 @@
 
 package io.spine.tools.java.fs
 
-import io.spine.tools.code.java.ClassName
-import io.spine.tools.code.java.PackageName
+import io.spine.code.java.ClassName
+import io.spine.code.java.PackageName
 
 /**
  * Converts this package name to corresponding directory on a file system.

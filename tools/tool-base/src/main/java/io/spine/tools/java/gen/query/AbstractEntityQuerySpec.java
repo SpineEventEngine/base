@@ -29,9 +29,9 @@ package io.spine.tools.java.gen.query;
 import com.squareup.javapoet.TypeName;
 import io.spine.tools.java.gen.JavaPoetName;
 import io.spine.tools.java.gen.TypeSpec;
-import io.spine.tools.code.java.PackageName;
-import io.spine.tools.code.java.SimpleClassName;
-import io.spine.tools.code.proto.EntityIdField;
+import io.spine.code.java.PackageName;
+import io.spine.code.java.SimpleClassName;
+import io.spine.code.proto.EntityIdField;
 import io.spine.type.MessageType;
 
 /**

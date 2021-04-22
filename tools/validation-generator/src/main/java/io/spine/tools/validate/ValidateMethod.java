@@ -30,7 +30,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.reflect.TypeToken;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
-import io.spine.tools.code.java.SimpleClassName;
+import io.spine.code.java.SimpleClassName;
 import io.spine.type.MessageType;
 import io.spine.validate.ConstraintViolation;
 

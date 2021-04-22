@@ -34,8 +34,8 @@ import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolMessageEnum;
 import io.spine.annotation.Internal;
-import io.spine.tools.code.proto.FieldContext;
-import io.spine.tools.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldContext;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.protobuf.Messages;
 import io.spine.protobuf.TypeConverter;
 

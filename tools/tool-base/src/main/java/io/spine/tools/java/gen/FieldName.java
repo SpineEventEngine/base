@@ -26,7 +26,7 @@
 
 package io.spine.tools.java.gen;
 
-import io.spine.tools.code.AbstractFieldName;
+import io.spine.code.AbstractFieldName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.Character.toUpperCase;
@@ -46,7 +46,7 @@ public final class FieldName extends AbstractFieldName {
     /**
      * Creates Java field name that corresponds to the passed Proto field name.
      */
-    public static FieldName from(io.spine.tools.code.proto.FieldName protoField) {
+    public static FieldName from(io.spine.code.proto.FieldName protoField) {
         checkNotNull(protoField);
         String fieldName = protoField.javaCase();
         FieldName result = new FieldName(fieldName);

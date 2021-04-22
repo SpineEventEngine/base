@@ -29,7 +29,7 @@ package io.spine.tools.js.compiler.gradle;
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.js.fs.DefaultJsPaths;
 import io.spine.tools.js.fs.Directory;
-import io.spine.tools.code.proto.FileSet;
+import io.spine.code.proto.FileSet;
 import io.spine.tools.js.generate.AppendTypeUrlGetter;
 import io.spine.tools.js.generate.GenerationTask;
 import io.spine.tools.js.generate.imports.ResolveImports;

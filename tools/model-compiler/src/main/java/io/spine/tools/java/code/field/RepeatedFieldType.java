@@ -30,8 +30,8 @@ import com.google.common.collect.ImmutableSet;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
-import io.spine.tools.code.java.PrimitiveType;
-import io.spine.tools.code.proto.FieldDeclaration;
+import io.spine.code.java.PrimitiveType;
+import io.spine.code.proto.FieldDeclaration;
 
 import java.util.List;
 import java.util.Optional;
