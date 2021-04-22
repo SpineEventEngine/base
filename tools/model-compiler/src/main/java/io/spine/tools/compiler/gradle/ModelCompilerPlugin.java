@@ -71,8 +71,7 @@ public class ModelCompilerPlugin implements Plugin<Project>, Logging {
     }
 
     private void apply(SpinePlugin plugin, Project project) {
-        _debug().log("Applying `%s`.", plugin.getClass()
-                                             .getName());
+        _debug().log("Applying `%s`.", plugin.getClass().getName());
         plugin.apply(project);
     }
 }

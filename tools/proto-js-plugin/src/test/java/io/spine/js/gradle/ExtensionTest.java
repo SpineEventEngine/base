@@ -47,7 +47,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("Extension should")
+@DisplayName("`Extension` should")
 class ExtensionTest {
 
     private static final String PLUGIN_ID = "io.spine.tools.proto-js-plugin";
@@ -57,12 +57,13 @@ class ExtensionTest {
 
     private Project project;
     private DefaultJsPaths defaultProject;
+    private Extension extension;
 
     @BeforeEach
     void setUp(@TempDir Path tempDirPath) {
         project = ProjectBuilder.builder()
-                                .withProjectDir(tempDirPath.toFile())
-                                .build();
+            .withProjectDir(tempDirPath.toFile())
+            .build();
         PluginManager pluginManager = project.getPluginManager();
         pluginManager.apply("java");
         pluginManager.apply(PLUGIN_ID);
@@ -70,12 +71,14 @@ class ExtensionTest {
 
         project.setGroup(GROUP_ID);
         project.setVersion(VERSION);
+
+        extension = Extension.of(project);
     }
 
     @Test
     @DisplayName("return the default directory with main generated Protobufs")
     void defaultMainGenProto() {
-        Directory directory = Extension.getMainGenProto(project);
+        Directory directory = extension.getMainGenProto();
         Directory expected = defaultProject.generated()
                                            .mainJs();
         assertThat(directory)
@@ -86,8 +89,8 @@ class ExtensionTest {
     @DisplayName("return the set directory with main generated Protobufs")
     void customMainGenProto() {
         String customPath = "proto/main";
-        pluginExtension().mainGenProtoDir = customPath;
-        Directory directory = Extension.getMainGenProto(project);
+        extension.mainGenProtoDir = customPath;
+        Directory directory = extension.getMainGenProto();
         Directory expected = Directory.at(Paths.get(customPath));
         assertEquals(expected, directory);
     }
@@ -95,7 +98,7 @@ class ExtensionTest {
     @Test
     @DisplayName("return the default directory with test generated Protobufs")
     void defaultTestGenProto() {
-        Directory directory = Extension.getTestGenProtoDir(project);
+        Directory directory = extension.getTestGenProtoDir();
         Directory expected = defaultProject.generated()
                                            .testJs();
         assertThat(directory)
@@ -106,8 +109,8 @@ class ExtensionTest {
     @DisplayName("return the set directory with test generated Protobufs")
     void customTestGenProto() {
         String customPath = "proto/test";
-        pluginExtension().testGenProtoDir = customPath;
-        Directory directory = Extension.getTestGenProtoDir(project);
+        extension.testGenProtoDir = customPath;
+        Directory directory = extension.getTestGenProtoDir();
         Directory expected = Directory.at(Paths.get(customPath));
         assertThat(directory)
                 .isEqualTo(expected);
@@ -116,10 +119,11 @@ class ExtensionTest {
     @Test
     @DisplayName("return the main descriptor set at the default path")
     void defaultMainDescriptorSet() {
-        File file = Extension.getMainDescriptorSet(project);
-        Path mainDescriptors = defaultProject.buildDir()
-                                             .descriptors()
-                                             .mainDescriptors();
+        File file = extension.mainDescriptorSet();
+        Path mainDescriptors =
+                defaultProject.buildDir()
+                              .descriptors()
+                              .mainDescriptors();
         File expected = mainDescriptors
                 .resolve(GROUP_ID + '_' + project.getName() + '_' + VERSION + ".desc")
                 .toFile();
@@ -131,8 +135,8 @@ class ExtensionTest {
     @DisplayName("return the main descriptor set at the custom path")
     void customMainDescriptorSet() {
         String customPath = "main/types.desc";
-        pluginExtension().mainDescriptorSetPath = customPath;
-        File file = Extension.getMainDescriptorSet(project);
+        extension.mainDescriptorSetPath = customPath;
+        File file = extension.mainDescriptorSet();
         File expected = new File(customPath);
         assertThat(file)
                 .isEqualTo(expected);
@@ -141,10 +145,11 @@ class ExtensionTest {
     @Test
     @DisplayName("return the test descriptor set at the default path")
     void defaultTestDescriptorSet() {
-        File file = Extension.getTestDescriptorSet(project);
-        Path testDescriptors = defaultProject.buildDir()
-                                  .descriptors()
-                                  .testDescriptors();
+        File file = extension.getTestDescriptorSet();
+        Path testDescriptors =
+                defaultProject.buildDir()
+                              .descriptors()
+                              .testDescriptors();
         File expected = testDescriptors
                 .resolve(GROUP_ID + '_' + project.getName() + '_' + VERSION + "_test.desc")
                 .toFile();
@@ -156,8 +161,8 @@ class ExtensionTest {
     @DisplayName("return the test descriptor set at the custom path")
     void customTestDescriptorSet() {
         String customPath = "test/types.desc";
-        pluginExtension().testDescriptorSetPath = customPath;
-        File file = Extension.getTestDescriptorSet(project);
+        extension.testDescriptorSetPath = customPath;
+        File file = extension.getTestDescriptorSet();
         File expected = new File(customPath);
         assertThat(file)
                 .isEqualTo(expected);
@@ -167,14 +172,10 @@ class ExtensionTest {
     @DisplayName("add custom modules to resolve")
     void setModulesToResolve() {
         String moduleName = "foo-bar";
-        Map<String, List<String>> modulesExt = pluginExtension().modules;
+        Map<String, List<String>> modulesExt = extension.modules;
         modulesExt.put(moduleName, emptyList());
         List<ExternalModule> modules = Extension.modules(project);
         assertThat(modules)
                 .contains(new ExternalModule(moduleName, emptyList()));
-    }
-
-    private Extension pluginExtension() {
-        return Extension.extension(project);
     }
 }

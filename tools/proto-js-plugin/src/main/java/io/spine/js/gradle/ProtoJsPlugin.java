@@ -39,6 +39,7 @@ import io.spine.tools.code.structure.ExternalModule;
 import io.spine.tools.gradle.BaseTaskName;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.ProtoPlugin;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -49,6 +50,7 @@ import java.util.function.Supplier;
 
 import static io.spine.tools.gradle.BaseTaskName.build;
 import static io.spine.tools.gradle.ProtoJsTaskName.generateJsonParsers;
+import static java.util.Objects.requireNonNull;
 
 /**
  * The Gradle plugin which performs additional code generation for Protobuf types.
@@ -84,12 +86,13 @@ import static io.spine.tools.gradle.ProtoJsTaskName.generateJsonParsers;
 public class ProtoJsPlugin extends ProtoPlugin {
 
     private static final String EXTENSION_NAME = "protoJs";
+    private @MonotonicNonNull Extension extension;
 
     @Override
     public void apply(Project project) {
         JsProtocConfigurationPlugin configPlugin = new JsProtocConfigurationPlugin();
         configPlugin.apply(project);
-        Extension extension = new Extension(project, EXTENSION_NAME);
+        this.extension = new Extension(project, EXTENSION_NAME);
         extension.register();
         Action<Task> action = newAction(project);
         GradleTask newTask = newTask(generateJsonParsers, action)
@@ -120,25 +123,29 @@ public class ProtoJsPlugin extends ProtoPlugin {
         generateForTest(project);
     }
 
+    private Extension extension() {
+        return requireNonNull(extension);
+    }
+
     @Override
     protected Supplier<File> mainDescriptorFile(Project project) {
-        return () -> Extension.getMainDescriptorSet(project);
+        return () -> extension().mainDescriptorSet();
     }
 
     @Override
     protected Supplier<File> testDescriptorFile(Project project) {
-        return () -> Extension.getTestDescriptorSet(project);
+        return () -> extension().getTestDescriptorSet();
     }
 
     private void generateForMain(Project project) {
-        Directory generatedRoot = Extension.getMainGenProto(project);
+        Directory generatedRoot = extension().getMainGenProto();
         Supplier<FileSet> files = mainProtoFiles(project);
         List<ExternalModule> modules = Extension.modules(project);
         generateCode(generatedRoot, files, modules);
     }
 
     private void generateForTest(Project project) {
-        Directory generatedRoot = Extension.getTestGenProtoDir(project);
+        Directory generatedRoot = extension().getTestGenProtoDir();
         Supplier<FileSet> files = testProtoFiles(project);
         List<ExternalModule> modules = Extension.modules(project);
         generateCode(generatedRoot, files, modules);

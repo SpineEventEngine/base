@@ -27,6 +27,7 @@
 package io.spine.js.gradle;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper;
 import io.spine.code.fs.DefaultPaths;
 import io.spine.code.fs.js.DefaultJsPaths;
 import io.spine.code.fs.js.Directory;
@@ -115,40 +116,35 @@ public class Extension extends GradleExtension {
         super(project, name);
     }
 
-    public static Directory getMainGenProto(Project project) {
-        Extension extension = extension(project);
-        String specifiedValue = extension.mainGenProtoDir;
-        Path path = pathOrDefault(specifiedValue,
-                                  def(project).generated()
-                                              .mainJs());
+    @OverridingMethodsMustInvokeSuper
+    @Override
+    protected DefaultJsPaths defaultPaths() {
+        return (DefaultJsPaths) super.defaultPaths();
+    }
+
+    public Directory getMainGenProto() {
+        String specifiedValue = mainGenProtoDir;
+        Path path = pathOrDefault(specifiedValue, defaultPaths().generated() .mainJs());
         return Directory.at(path);
     }
 
-    public static Directory getTestGenProtoDir(Project project) {
-        Extension extension = extension(project);
-        String specifiedValue = extension.testGenProtoDir;
-        Path path = pathOrDefault(specifiedValue,
-                                  def(project).generated()
-                                              .testJs());
+    public Directory getTestGenProtoDir() {
+        Path path = pathOrDefault(testGenProtoDir, defaultPaths().generated().testJs());
         return Directory.at(path);
     }
 
-    public static File getMainDescriptorSet(Project project) {
-        Extension extension = extension(project);
-        Path path = pathOrDefault(extension.mainDescriptorSetPath,
-                                  extension.defaultMainDescriptor());
+    public File mainDescriptorSet() {
+        Path path = pathOrDefault(mainDescriptorSetPath, defaultMainDescriptor());
         return path.toFile();
     }
 
-    public static File getTestDescriptorSet(Project project) {
-        Extension extension = extension(project);
-        Path path = pathOrDefault(extension.testDescriptorSetPath,
-                                  extension.defaultTestDescriptor());
+    public File getTestDescriptorSet() {
+        Path path = pathOrDefault(testDescriptorSetPath, defaultTestDescriptor());
         return path.toFile();
     }
 
     public static List<ExternalModule> modules(Project project) {
-        Extension extension = extension(project);
+        Extension extension = of(project);
         Map<String, List<String>> rawModules = extension.modules;
         List<ExternalModule> modules = newArrayList();
         for (String moduleName : rawModules.keySet()) {
@@ -178,7 +174,7 @@ public class Extension extends GradleExtension {
     }
 
     @VisibleForTesting
-    static Extension extension(Project project) {
+    static Extension of(Project project) {
         Extension extension = (Extension)
                 project.getExtensions()
                        .getByName(extensionName());

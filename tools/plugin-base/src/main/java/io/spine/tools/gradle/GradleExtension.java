@@ -51,8 +51,6 @@ public abstract class GradleExtension {
 
     /**
      * The project where this extension is defined.
-     *
-     * <p>This field is {@code null} until {@link #injectProject(Project)} is called.
      */
     private final Project project;
 
@@ -69,7 +67,11 @@ public abstract class GradleExtension {
      */
     private final DefaultPaths defaultPaths;
 
-    @SuppressWarnings("AbstractMethodCallInConstructor")
+    @SuppressWarnings({
+            "AbstractMethodCallInConstructor",
+            "OverridableMethodCallDuringObjectConstruction",
+            "OverriddenMethodCallDuringObjectConstruction"
+    })
     protected GradleExtension(Project project, String name) {
         this.project = checkNotNull(project);
         this.name = name;
@@ -80,26 +82,10 @@ public abstract class GradleExtension {
      * Registers this extension in the given project.
      */
     public void register() {
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings("unchecked") // Safe as we're not downcasting.
         Class<GradleExtension> thisClass = (Class<GradleExtension>) getClass();
         project().getExtensions()
                  .add(thisClass, name, this);
-    }
-
-
-    protected final void injectProject(Project project) {
-        checkNotNull(project);
-//        if (this.project != null) {
-//            boolean sameProject = project.equals(this.project);
-//            if (sameProject) {
-//                return;
-//            }
-//            // Replacing project, which is strange.
-//            _warn().log("Injecting another project (`%s`) instead of set before (`%s`).",
-//                        project, this.project);
-//        }
-//        this.project = project;
-//        this.defaultPaths = defaultPathsIn(project);
     }
 
     /**

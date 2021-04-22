@@ -44,7 +44,7 @@ public final class JsProtocConfigurationPlugin extends ProtocConfigurationPlugin
 
     @Override
     protected File getTestDescriptorSet(Project project) {
-        return Extension.getTestDescriptorSet(project);
+        return extensionOf(project).getTestDescriptorSet();
     }
 
     @Override
@@ -56,12 +56,16 @@ public final class JsProtocConfigurationPlugin extends ProtocConfigurationPlugin
 
     @Override
     protected File getMainDescriptorSet(Project project) {
-        return Extension.getMainDescriptorSet(project);
+        return extensionOf(project).mainDescriptorSet();
+    }
+
+    private static Extension extensionOf(Project project) {
+        return Extension.of(project);
     }
 
     @Override
-    protected void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins,
-                                          Project project) {
+    protected void
+    configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins, Project project) {
         // Do nothing.
     }
 }
