@@ -47,13 +47,6 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Set;
 
-import static io.spine.tools.compiler.gradle.Extension.getEntityQueries;
-import static io.spine.tools.compiler.gradle.Extension.getFields;
-import static io.spine.tools.compiler.gradle.Extension.getInterfaces;
-import static io.spine.tools.compiler.gradle.Extension.getMethods;
-import static io.spine.tools.compiler.gradle.Extension.getNestedClasses;
-import static io.spine.tools.compiler.gradle.Extension.shouldGenerateValidatingBuilders;
-import static io.spine.tools.compiler.gradle.Extension.shouldGenerateValidation;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -96,13 +89,14 @@ final class ProtocPluginConfiguration {
     }
 
     private static SpineProtocConfig assembleSpineProtocConfig(Project project) {
-        Interfaces interfaces = getInterfaces(project);
-        Methods methods = getMethods(project);
-        NestedClasses nestedClasses = getNestedClasses(project);
-        Fields fields = getFields(project);
-        EntityQueries entityQueries = getEntityQueries(project);
-        boolean shouldGenerateVBuilders = shouldGenerateValidatingBuilders(project);
-        boolean shouldGenerateValidation = shouldGenerateValidation(project);
+        Extension extension = Extension.of(project);
+        Interfaces interfaces = extension.interfaces;
+        Methods methods = extension.methods;
+        NestedClasses nestedClasses = extension.nestedClasses;
+        Fields fields = extension.fields;
+        EntityQueries entityQueries = extension.entityQueries;
+        boolean shouldGenerateVBuilders = extension.generateValidatingBuilders;
+        boolean shouldGenerateValidation = extension.generateValidation;
         Classpath projectClasspath = projectClasspath(project);
 
         SpineProtocConfig result = SpineProtocConfig

@@ -375,54 +375,12 @@ public class Extension extends GradleExtension {
         action.execute(entityQueries);
     }
 
-    public static Annotations getCodeGenAnnotations(Project project) {
-        Annotations annotations = of(project).generateAnnotations;
-        return annotations;
+    public ImmutableSet<String> internalClassPatterns() {
+        return ImmutableSet.copyOf(internalClassPatterns);
     }
 
-    public static Interfaces getInterfaces(Project project) {
-        Interfaces interfaces = of(project).interfaces;
-        return interfaces;
-    }
-
-    public static Methods getMethods(Project project) {
-        Methods methods = of(project).methods;
-        return methods;
-    }
-
-    public static NestedClasses getNestedClasses(Project project) {
-        NestedClasses nestedClasses = of(project).nestedClasses;
-        return nestedClasses;
-    }
-
-    public static Fields getFields(Project project) {
-        Fields fields = of(project).fields;
-        return fields;
-    }
-
-    public static EntityQueries getEntityQueries(Project project) {
-        EntityQueries columns = of(project).entityQueries;
-        return columns;
-    }
-
-    public static boolean shouldGenerateValidatingBuilders(Project project) {
-        boolean shouldGenerate = of(project).generateValidatingBuilders;
-        return shouldGenerate;
-    }
-
-    public static boolean shouldGenerateValidation(Project project) {
-        boolean shouldGenerate = of(project).generateValidation;
-        return shouldGenerate;
-    }
-
-    public static ImmutableSet<String> getInternalClassPatterns(Project project) {
-        List<String> patterns = of(project).internalClassPatterns;
-        return ImmutableSet.copyOf(patterns);
-    }
-
-    public static ImmutableSet<String> getInternalMethodNames(Project project) {
-        List<String> patterns = of(project).internalMethodNames;
-        return ImmutableSet.copyOf(patterns);
+    public ImmutableSet<String> internalMethodNames() {
+        return ImmutableSet.copyOf(internalMethodNames);
     }
 
     private static Iterable<String> spineDirs(Project project) {

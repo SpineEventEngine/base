@@ -26,30 +26,14 @@
 
 package io.spine.tools.compiler.gradle.annotate;
 
-import com.google.common.collect.ImmutableSet;
-import io.spine.code.java.ClassName;
-import io.spine.tools.compiler.annotation.AnnotatorFactory;
-import io.spine.tools.compiler.annotation.DefaultAnnotatorFactory;
 import io.spine.tools.compiler.annotation.ModuleAnnotator;
-import io.spine.tools.compiler.gradle.Annotations;
-import io.spine.tools.compiler.gradle.Extension;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.compiler.annotation.ApiOption.beta;
-import static io.spine.tools.compiler.annotation.ApiOption.experimental;
-import static io.spine.tools.compiler.annotation.ApiOption.internal;
-import static io.spine.tools.compiler.annotation.ApiOption.spi;
-import static io.spine.tools.compiler.annotation.ModuleAnnotator.translate;
-import static io.spine.tools.compiler.gradle.Extension.getCodeGenAnnotations;
-import static io.spine.tools.compiler.gradle.Extension.getInternalClassPatterns;
-import static io.spine.tools.compiler.gradle.Extension.getInternalMethodNames;
 
 /**
  * A task action which performs generated code annotation.
@@ -59,70 +43,22 @@ class Annotate implements Action<Task> {
     private final ProtoAnnotatorPlugin plugin;
     private final Project project;
     private final boolean productionTask;
-    private final Extension extension;
 
     Annotate(ProtoAnnotatorPlugin plugin, Project project, boolean productionTask) {
         this.plugin = checkNotNull(plugin);
         this.project = checkNotNull(project);
         this.productionTask = productionTask;
-        this.extension = Extension.of(project);
     }
 
     @Override
     public void execute(Task task) {
-        File descriptorSetFile = descriptorSet();
-        String generatedProtoDir = generatedProtoDir();
-        String generatedGrpcDir = generatedGrpcDir();
+        ModuleAnnotatorFactory factory = new ModuleAnnotatorFactory(project, productionTask);
+        File descriptorSetFile = factory.descriptorSetFile();
         if (descriptorSetFile.exists()) {
-            ModuleAnnotator moduleAnnotator = createAnnotator(
-                    descriptorSetFile,
-                    generatedProtoDir,
-                    generatedGrpcDir);
-            moduleAnnotator.annotate();
+            ModuleAnnotator annotator = factory.createAnnotator();
+            annotator.annotate();
         } else {
             plugin.logMissingDescriptorSetFile(descriptorSetFile);
         }
-    }
-
-    private ModuleAnnotator createAnnotator(File descriptorSetFile,
-                                            String generatedProtoDir,
-                                            String generatedGrpcDir) {
-        Path generatedProtoPath = Paths.get(generatedProtoDir);
-        Path generatedGrpcPath = Paths.get(generatedGrpcDir);
-        AnnotatorFactory annotatorFactory = DefaultAnnotatorFactory
-                .newInstance(descriptorSetFile, generatedProtoPath, generatedGrpcPath);
-        Annotations annotations = getCodeGenAnnotations(project);
-        ClassName internalClassName = annotations.internalClassName();
-        ImmutableSet<String> internalClassPatterns = getInternalClassPatterns(project);
-        ImmutableSet<String> internalMethodNames = getInternalMethodNames(project);
-        return ModuleAnnotator.newBuilder()
-                .setAnnotatorFactory(annotatorFactory)
-                .add(translate(spi()).as(annotations.spiClassName()))
-                .add(translate(beta()).as(annotations.betaClassName()))
-                .add(translate(experimental()).as(annotations.experimentalClassName()))
-                .add(translate(internal()).as(internalClassName))
-                .setInternalPatterns(internalClassPatterns)
-                .setInternalMethodNames(internalMethodNames)
-                .setInternalAnnotation(internalClassName)
-                .build();
-    }
-
-    private File descriptorSet() {
-
-        return productionTask
-               ? extension.mainDescriptorSetFile()
-               : extension.testDescriptorSetFile();
-    }
-
-    private String generatedGrpcDir() {
-        return productionTask
-               ? extension.generatedMainGrpcJavaDir()
-               : extension.generatedTestGrpcJavaDir();
-    }
-
-    private String generatedProtoDir() {
-        return productionTask
-               ? extension.generatedMainJavaDir()
-               : extension.generatedTestJavaDir();
     }
 }
