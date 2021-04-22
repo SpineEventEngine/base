@@ -63,6 +63,9 @@ public enum DirectoryName {
     /** Contains program resources. */
     resources,
 
+    /** The directory with Dart and JS source code. */
+    lib,
+
     /** Spine-specific generated code. */
     spine,
 

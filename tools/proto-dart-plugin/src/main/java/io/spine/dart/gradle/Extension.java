@@ -27,6 +27,7 @@
 package io.spine.dart.gradle;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.code.fs.DirectoryName;
 import io.spine.code.fs.dart.DefaultDartPaths;
 import io.spine.tools.code.structure.DirectoryPattern;
 import io.spine.tools.code.structure.ExternalModule;
@@ -53,11 +54,6 @@ import static java.util.stream.Collectors.toList;
 public final class Extension extends GradleExtension {
 
     private static final String NAME = "protoDart";
-
-    private static final String LIB_DIRECTORY = "lib";
-    private static final String TEST_DIRECTORY = "test";
-    @SuppressWarnings("DuplicateStringLiteralInspection")
-    private static final String GENERATED_BASE_DIR = "generated";
 
     private final Property<Object> mainDescriptorSet;
     private final Property<Object> testDescriptorSet;
@@ -117,17 +113,17 @@ public final class Extension extends GradleExtension {
         Project project = project();
         libDir.convention(project.getLayout()
                                  .getProjectDirectory()
-                                 .dir(LIB_DIRECTORY));
+                                 .dir(DirectoryName.lib.value()));
         testDir.convention(project.getLayout()
                                   .getProjectDirectory()
-                                  .dir(TEST_DIRECTORY));
+                                  .dir(DirectoryName.test.value()));
         mainGeneratedDir.convention(libDir);
         testGeneratedDir.convention(testDir);
         mainDescriptorSet.convention(defaultMainDescriptor());
         testDescriptorSet.convention(defaultTestDescriptor());
         generatedDir.convention(project.getLayout()
                                        .getProjectDirectory()
-                                       .dir(GENERATED_BASE_DIR));
+                                       .dir(DirectoryName.generated.value()));
     }
 
     /**
