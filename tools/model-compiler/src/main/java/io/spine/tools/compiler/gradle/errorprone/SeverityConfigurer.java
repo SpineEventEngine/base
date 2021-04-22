@@ -38,7 +38,7 @@ import org.gradle.api.plugins.PluginContainer;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.compiler.gradle.errorprone.ProjectArguments.addArgsToJavaCompile;
 import static io.spine.tools.compiler.gradle.errorprone.ErrorProneChecksExtension.getUseValidatingBuilder;
-import static io.spine.tools.compiler.gradle.Extension.getSpineCheckSeverity;
+import static io.spine.tools.compiler.gradle.Extension.spineCheckSeverityIn;
 
 /**
  * The helper for the Spine-custom Error Prone checks configuration of the {@link Project}.
@@ -47,7 +47,7 @@ import static io.spine.tools.compiler.gradle.Extension.getSpineCheckSeverity;
  * the project.
  *
  * @see ErrorProneChecksExtension
- * @see Extension#getSpineCheckSeverity(Project)
+ * @see Extension#spineCheckSeverityIn(Project)
  */
 public final class SeverityConfigurer implements Logging {
 
@@ -92,7 +92,7 @@ public final class SeverityConfigurer implements Logging {
                                  "plugin is not applied to the project `%s`.", project.getName());
             return;
         }
-        Severity defaultSeverity = getSpineCheckSeverity(project);
+        Severity defaultSeverity = spineCheckSeverityIn(project);
         configureUseValidatingBuilder(defaultSeverity);
     }
 

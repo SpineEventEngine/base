@@ -104,7 +104,7 @@ public abstract class CodeGenerationAction implements Action<Task>, Logging {
      */
     protected final Indent indent() {
         if (indent == null) {
-            indent = getIndent(project);
+            indent = indentIn(project);
         }
         return indent;
     }
@@ -112,7 +112,7 @@ public abstract class CodeGenerationAction implements Action<Task>, Logging {
     /**
      * Obtains indentation configuration from the project.
      */
-    protected abstract Indent getIndent(Project project);
+    protected abstract Indent indentIn(Project project);
 
     /**
      * Obtains the project for which the code is generated.

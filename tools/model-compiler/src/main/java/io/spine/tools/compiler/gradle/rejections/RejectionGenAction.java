@@ -126,7 +126,8 @@ final class RejectionGenAction extends CodeGenerationAction {
     }
 
     @Override
-    protected Indent getIndent(Project project) {
-        return Extension.getIndent(project);
+    protected Indent indentIn(Project project) {
+        Extension extension = Extension.of(project);
+        return extension.indent();
     }
 }

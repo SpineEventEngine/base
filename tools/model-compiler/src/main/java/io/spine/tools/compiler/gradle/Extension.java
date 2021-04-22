@@ -54,6 +54,7 @@ import java.util.Optional;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newLinkedList;
+import static io.spine.string.Diags.backtick;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -276,16 +277,10 @@ public class Extension extends GradleExtension {
                : path;
     }
 
-    public static Indent getIndent(Project project) {
-        Indent result = of(project).indent;
+    public Indent indent() {
+        Indent result = indent;
         _debug().log("The current indent is %d.", result.getSize());
         return result;
-    }
-
-    @SuppressWarnings("unused")
-    public void setIndent(int indent) {
-        this.indent = Indent.of(indent);
-        _debug().log("Indent has been set to %d.", indent);
     }
 
     public static List<String> dirsToCleanIn(Project project) {
@@ -308,10 +303,10 @@ public class Extension extends GradleExtension {
         return ImmutableList.copyOf(dirsToClean);
     }
 
-    public static @Nullable Severity getSpineCheckSeverity(Project project) {
+    public static @Nullable Severity spineCheckSeverityIn(Project project) {
         Severity result = of(project).spineCheckSeverity;
-        _debug().log("The severity of Spine-custom Error Prone checks is `%s`.",
-                     (result == null ? "unset" : result.name()));
+        _debug().log("The severity of Spine-custom Error Prone checks is %s.",
+                     (result == null ? "not set" : backtick(result.name())));
         return result;
     }
 
