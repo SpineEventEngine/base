@@ -137,7 +137,7 @@ public class Extension extends GradleExtension {
     /**
      * The absolute path to directory to delete.
      *
-     * <p>Either this property OR {@code dirsToClean} property is used.
+     * <p>Either this property OR the {@link #dirsToClean} property is used.
      */
     public String dirToClean;
 
@@ -149,7 +149,7 @@ public class Extension extends GradleExtension {
     /**
      * The absolute paths to directories to delete.
      *
-     * <p>Either this property OR {@code dirToClean} property is used.
+     * <p>Either this property OR the {@link #dirToClean} property is used.
      */
     public List<String> dirsToClean = new ArrayList<>();
 
