@@ -79,6 +79,6 @@ class FieldTypesProtoTest extends UtilityClassTest<FieldTypesProto> {
     @Test
     @DisplayName("obtain a map entry name")
     void obtainEntryName() {
-        assertEquals("MapFieldEntry", FieldTypesProto.getEntryNameFor(mapField().toProto()));
+        assertEquals("MapFieldEntry", FieldTypesProto.entryNameFor(mapField().toProto()));
     }
 }

@@ -78,7 +78,7 @@ public final class FieldTypesProto {
             return false;
         }
         boolean result = field.getTypeName()
-                              .endsWith('.' + getEntryNameFor(field));
+                              .endsWith('.' + entryNameFor(field));
         return result;
     }
 
@@ -93,7 +93,7 @@ public final class FieldTypesProto {
      *         the field to construct entry name
      * @return the name of the map field
      */
-    public static String getEntryNameFor(FieldDescriptorProto mapField) {
+    public static String entryNameFor(FieldDescriptorProto mapField) {
         FieldName fieldName = FieldName.of(mapField);
         return fieldName.toCamelCase() + ENTRY_SUFFIX;
     }
