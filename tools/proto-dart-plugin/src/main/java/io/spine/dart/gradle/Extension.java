@@ -27,12 +27,12 @@
 package io.spine.dart.gradle;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.fs.DirectoryName;
 import io.spine.code.fs.dart.DefaultDartPaths;
 import io.spine.tools.code.structure.DirectoryPattern;
 import io.spine.tools.code.structure.ExternalModule;
 import io.spine.tools.gradle.GradleExtension;
 import org.gradle.api.Project;
+import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Property;
@@ -45,6 +45,9 @@ import java.util.Map;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Maps.newHashMap;
+import static io.spine.code.fs.DirectoryName.generated;
+import static io.spine.code.fs.DirectoryName.lib;
+import static io.spine.code.fs.DirectoryName.test;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -111,27 +114,24 @@ public final class Extension extends GradleExtension {
 
     private void initProperties() {
         Project project = project();
-        libDir.convention(project.getLayout()
-                                 .getProjectDirectory()
-                                 .dir(DirectoryName.lib.value()));
-        testDir.convention(project.getLayout()
-                                  .getProjectDirectory()
-                                  .dir(DirectoryName.test.value()));
+        Directory projectDir = project.getLayout().getProjectDirectory();
+        libDir.convention(projectDir.dir(lib.value()));
+        testDir.convention(projectDir.dir(test.value()));
         mainGeneratedDir.convention(libDir);
         testGeneratedDir.convention(testDir);
         mainDescriptorSet.convention(defaultMainDescriptor());
         testDescriptorSet.convention(defaultTestDescriptor());
-        generatedDir.convention(project.getLayout()
-                                       .getProjectDirectory()
-                                       .dir(DirectoryName.generated.value()));
+        generatedDir.convention(projectDir.dir(generated.value()));
     }
 
     /**
      * Finds an extension of this type in the given project.
      */
     static Extension findIn(Project project) {
-        Extension extension = project.getExtensions()
-                                     .getByType(Extension.class);
+        Extension extension =
+                project.getExtensions()
+                       .getByType(Extension.class);
+        extension.injectProject(project);
         return extension;
     }
 
