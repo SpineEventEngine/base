@@ -26,7 +26,7 @@
 
 package io.spine.code.fs.dart;
 
-import io.spine.code.fs.DefaultProject;
+import io.spine.code.fs.DefaultPaths;
 
 import java.nio.file.Path;
 
@@ -35,14 +35,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A default project layout for a Dart project.
  */
-public final class DefaultDartProject extends DefaultProject {
+public final class DefaultDartPaths extends DefaultPaths {
 
-    private DefaultDartProject(Path path) {
+    private DefaultDartPaths(Path path) {
         super(path);
     }
 
-    public static DefaultDartProject at(Path root) {
+    public static DefaultDartPaths at(Path root) {
         checkNotNull(root);
-        return new DefaultDartProject(root);
+        return new DefaultDartPaths(root);
     }
 }

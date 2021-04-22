@@ -26,7 +26,7 @@
 
 package io.spine.code.fs.java;
 
-import io.spine.code.fs.DefaultProject;
+import io.spine.code.fs.DefaultPaths;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -56,19 +56,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <li>{@code .spine} — temporary build artifacts directory used by the Spine Model Compiler.
  * </ul>
  */
-public final class DefaultJavaProject extends DefaultProject {
+public final class DefaultJavaPaths extends DefaultPaths {
 
-    private DefaultJavaProject(Path path) {
+    private DefaultJavaPaths(Path path) {
         super(path);
     }
 
-    public static DefaultJavaProject at(Path root) {
+    public static DefaultJavaPaths at(Path root) {
         checkNotNull(root);
-        DefaultJavaProject result = new DefaultJavaProject(root);
+        DefaultJavaPaths result = new DefaultJavaPaths(root);
         return result;
     }
 
-    public static DefaultJavaProject at(File projectDir) {
+    public static DefaultJavaPaths at(File projectDir) {
         checkNotNull(projectDir);
         return at(projectDir.toPath());
     }

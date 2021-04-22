@@ -41,12 +41,12 @@ import java.nio.file.Path;
  */
 @SuppressWarnings("AbstractClassWithoutAbstractMethods")
 // Only stores common elements of subclasses.
-public abstract class DefaultProject extends AbstractDirectory {
+public abstract class DefaultPaths extends AbstractDirectory {
 
     /**
      * Creates a new instance at the given path.
      */
-    protected DefaultProject(Path path) {
+    protected DefaultPaths(Path path) {
         super(path);
     }
 
