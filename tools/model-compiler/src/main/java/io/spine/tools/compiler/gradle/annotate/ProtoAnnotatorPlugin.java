@@ -24,36 +24,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.gradle;
+package io.spine.tools.compiler.gradle.annotate;
 
-import com.google.common.collect.ImmutableSet;
-import io.spine.code.java.ClassName;
-import io.spine.tools.compiler.annotation.AnnotatorFactory;
-import io.spine.tools.compiler.annotation.DefaultAnnotatorFactory;
-import io.spine.tools.compiler.annotation.ModuleAnnotator;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
-import static io.spine.tools.compiler.annotation.ApiOption.beta;
-import static io.spine.tools.compiler.annotation.ApiOption.experimental;
-import static io.spine.tools.compiler.annotation.ApiOption.internal;
-import static io.spine.tools.compiler.annotation.ApiOption.spi;
-import static io.spine.tools.compiler.annotation.ModuleAnnotator.translate;
-import static io.spine.tools.compiler.gradle.Extension.getCodeGenAnnotations;
-import static io.spine.tools.compiler.gradle.Extension.getInternalClassPatterns;
-import static io.spine.tools.compiler.gradle.Extension.getInternalMethodNames;
-import static io.spine.tools.compiler.gradle.Extension.mainDescriptorSetFile;
-import static io.spine.tools.compiler.gradle.Extension.generatedMainGrpcJavaDir;
-import static io.spine.tools.compiler.gradle.Extension.generatedMainJavaDir;
-import static io.spine.tools.compiler.gradle.Extension.testDescriptorSetFile;
-import static io.spine.tools.compiler.gradle.Extension.generatedTestGrpcJavaDir;
-import static io.spine.tools.compiler.gradle.Extension.generatedTestJavaDir;
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.gradle.JavaTaskName.compileTestJava;
 import static io.spine.tools.gradle.ModelCompilerTaskName.annotateProto;
@@ -62,7 +41,7 @@ import static io.spine.tools.gradle.ModelCompilerTaskName.mergeDescriptorSet;
 import static io.spine.tools.gradle.ModelCompilerTaskName.mergeTestDescriptorSet;
 
 /**
- * A plugin that annotates generated Java sources from {@code .proto} files.
+ * A plugin that annotates Java sources generated from {@code .proto} files.
  *
  * <p>Plugin annotates the Java sources depending on Protobuf option values.
  *
@@ -197,7 +176,7 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
     }
 
     private void createMainTask(Project project) {
-        Action<Task> task = new Annotate(true);
+        Action<Task> task = new Annotate(this, project, true);
         newTask(annotateProto, task)
                 .insertBeforeTask(compileJava)
                 .insertAfterTask(mergeDescriptorSet)
@@ -205,7 +184,7 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
     }
 
     private void createTestTask(Project project) {
-        Action<Task> testTask = new Annotate(false);
+        Action<Task> testTask = new Annotate(this, project, false);
         newTask(annotateTestProto, testTask)
                 .insertBeforeTask(compileTestJava)
                 .insertAfterTask(mergeTestDescriptorSet)
@@ -213,74 +192,11 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
     }
 
     /**
-     * A task action which performs generated code annotation.
+     * Opens this method to the package.
      */
-    private class Annotate implements Action<Task> {
-
-        private final boolean productionTask;
-
-        private Annotate(boolean productionTask) {
-            this.productionTask = productionTask;
-        }
-
-        @Override
-        public void execute(Task task) {
-            Project project = task.getProject();
-            File descriptorSetFile = descriptorSet(project);
-            String generatedProtoDir = generatedProtoDir(project);
-            String generatedGrpcDir = generatedGrpcDir(project);
-            if (descriptorSetFile.exists()) {
-                ModuleAnnotator moduleAnnotator = createAnnotator(project,
-                                                                  descriptorSetFile,
-                                                                  generatedProtoDir,
-                                                                  generatedGrpcDir);
-                moduleAnnotator.annotate();
-            } else {
-                logMissingDescriptorSetFile(descriptorSetFile);
-            }
-        }
-
-        private ModuleAnnotator createAnnotator(Project project,
-                                                File descriptorSetFile,
-                                                String generatedProtoDir,
-                                                String generatedGrpcDir) {
-            Path generatedProtoPath = Paths.get(generatedProtoDir);
-            Path generatedGrpcPath = Paths.get(generatedGrpcDir);
-            AnnotatorFactory annotatorFactory = DefaultAnnotatorFactory
-                    .newInstance(descriptorSetFile, generatedProtoPath, generatedGrpcPath);
-            Annotations annotations = getCodeGenAnnotations(project);
-            ClassName internalClassName = annotations.internalClassName();
-            ImmutableSet<String> internalClassPatterns = getInternalClassPatterns(project);
-            ImmutableSet<String> internalMethodNames = getInternalMethodNames(project);
-            return ModuleAnnotator.newBuilder()
-                    .setAnnotatorFactory(annotatorFactory)
-                    .add(translate(spi()).as(annotations.spiClassName()))
-                    .add(translate(beta()).as(annotations.betaClassName()))
-                    .add(translate(experimental()).as(annotations.experimentalClassName()))
-                    .add(translate(internal()).as(internalClassName))
-                    .setInternalPatterns(internalClassPatterns)
-                    .setInternalMethodNames(internalMethodNames)
-                    .setInternalAnnotation(internalClassName)
-                    .build();
-        }
-
-        private File descriptorSet(Project project) {
-            return productionTask
-                   ? mainDescriptorSetFile(project)
-                   : testDescriptorSetFile(project);
-        }
-
-        private String generatedGrpcDir(Project project) {
-            return productionTask
-                   ? generatedMainGrpcJavaDir(project)
-                   : generatedTestGrpcJavaDir(project);
-        }
-
-        private String generatedProtoDir(Project project) {
-            return productionTask
-                   ? generatedMainJavaDir(project)
-                   : generatedTestJavaDir(project);
-        }
+    @Override
+    protected void logMissingDescriptorSetFile(File setFile) {
+        super.logMissingDescriptorSetFile(setFile);
     }
 }
 

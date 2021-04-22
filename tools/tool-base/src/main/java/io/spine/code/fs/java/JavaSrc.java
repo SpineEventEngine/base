@@ -26,7 +26,7 @@
 
 package io.spine.code.fs.java;
 
-import io.spine.code.fs.DefaultProject;
+import io.spine.code.fs.DefaultPaths;
 import io.spine.code.fs.DirectoryName;
 import io.spine.code.fs.Src;
 
@@ -35,7 +35,7 @@ import io.spine.code.fs.Src;
  */
 abstract class JavaSrc extends Src {
 
-    JavaSrc(DefaultProject parent, DirectoryName name) {
+    JavaSrc(DefaultPaths parent, DirectoryName name) {
         super(parent, name);
     }
 

@@ -26,6 +26,7 @@
 package io.spine.tools.compiler.gradle;
 
 import io.spine.logging.Logging;
+import io.spine.tools.compiler.gradle.annotate.ProtoAnnotatorPlugin;
 import io.spine.tools.compiler.gradle.errorprone.ErrorProneChecksPlugin;
 import io.spine.tools.compiler.gradle.rejections.RejectionGenPlugin;
 import io.spine.tools.gradle.SpinePlugin;

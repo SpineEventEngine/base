@@ -26,7 +26,7 @@
 
 package io.spine.js.generate.given;
 
-import io.spine.code.fs.js.DefaultJsProject;
+import io.spine.code.fs.js.DefaultJsPaths;
 import io.spine.code.fs.js.Directory;
 import io.spine.code.proto.FileSet;
 import io.spine.tools.gradle.testing.GradleProject;
@@ -63,10 +63,10 @@ public final class GivenProject {
                         .mainJs();
     }
 
-    private static DefaultJsProject project() {
+    private static DefaultJsPaths project() {
         File projectDir = withPrefix("given-project");
         compileProject(projectDir);
-        DefaultJsProject project = DefaultJsProject.at(projectDir);
+        DefaultJsPaths project = DefaultJsPaths.at(projectDir);
         return project;
     }
 

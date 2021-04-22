@@ -26,7 +26,7 @@
 
 package io.spine.js.gradle;
 
-import io.spine.code.fs.js.DefaultJsProject;
+import io.spine.code.fs.js.DefaultJsPaths;
 import io.spine.code.fs.js.Directory;
 import io.spine.tools.code.structure.ExternalModule;
 import org.gradle.api.Project;
@@ -56,7 +56,7 @@ class ExtensionTest {
     private static final String VERSION = "42";
 
     private Project project;
-    private DefaultJsProject defaultProject;
+    private DefaultJsPaths defaultProject;
 
     @BeforeEach
     void setUp(@TempDir Path tempDirPath) {
@@ -66,7 +66,7 @@ class ExtensionTest {
         PluginManager pluginManager = project.getPluginManager();
         pluginManager.apply("java");
         pluginManager.apply(PLUGIN_ID);
-        defaultProject = DefaultJsProject.at(project.getProjectDir());
+        defaultProject = DefaultJsPaths.at(project.getProjectDir());
 
         project.setGroup(GROUP_ID);
         project.setVersion(VERSION);

@@ -27,8 +27,8 @@
 package io.spine.js.gradle;
 
 import com.google.common.annotations.VisibleForTesting;
-import io.spine.code.fs.DefaultProject;
-import io.spine.code.fs.js.DefaultJsProject;
+import io.spine.code.fs.DefaultPaths;
+import io.spine.code.fs.js.DefaultJsPaths;
 import io.spine.code.fs.js.Directory;
 import io.spine.tools.code.structure.DirectoryPattern;
 import io.spine.tools.code.structure.ExternalModule;
@@ -130,14 +130,14 @@ public class Extension extends GradleExtension {
     public static File getMainDescriptorSet(Project project) {
         Extension extension = extension(project);
         Path path = pathOrDefault(extension.mainDescriptorSetPath,
-                                  extension.defaultMainDescriptor(project));
+                                  extension.defaultMainDescriptor());
         return path.toFile();
     }
 
     public static File getTestDescriptorSet(Project project) {
         Extension extension = extension(project);
         Path path = pathOrDefault(extension.testDescriptorSetPath,
-                                  extension.defaultTestDescriptor(project));
+                                  extension.defaultTestDescriptor());
         return path.toFile();
     }
 
@@ -191,12 +191,12 @@ public class Extension extends GradleExtension {
         return Paths.get(pathValue);
     }
 
-    private static DefaultJsProject def(Project project) {
-        return DefaultJsProject.at(project.getProjectDir());
+    private static DefaultJsPaths def(Project project) {
+        return DefaultJsPaths.at(project.getProjectDir());
     }
 
     @Override
-    protected DefaultProject defaultProject(Project project) {
+    protected DefaultPaths defaultPathsIn(Project project) {
         return def(project);
     }
 }

@@ -26,8 +26,6 @@
 
 package io.spine.code.fs;
 
-import io.spine.code.AbstractDirectory;
-
 /**
  * A directory containing temporary artifacts of a Spine-based project.
  *
@@ -35,7 +33,7 @@ import io.spine.code.AbstractDirectory;
  */
 public final class TempArtifacts extends ProjectDir {
 
-    TempArtifacts(DefaultProject project) {
+    TempArtifacts(DefaultPaths project) {
         super(project, DirectoryName.dotSpine);
     }
 }

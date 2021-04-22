@@ -27,10 +27,10 @@ package io.spine.tools.compiler.gradle;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.flogger.FluentLogger;
 import groovy.lang.Closure;
 import io.spine.code.fs.TempArtifacts;
-import io.spine.code.fs.java.DefaultJavaProject;
+import io.spine.code.fs.java.DefaultJavaPaths;
+import io.spine.code.fs.java.Generated;
 import io.spine.code.gen.Indent;
 import io.spine.tools.compiler.gradle.errorprone.ErrorProneChecksExtension;
 import io.spine.tools.compiler.gradle.errorprone.Severity;
@@ -58,19 +58,16 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * A configuration for the {@link ModelCompilerPlugin}.
+ *
+ * @apiNote Even though this class is not planned for inheritance it cannot be made final because of
+ * the <a href="https://docs.gradle.org/current/userguide/custom_plugins.html#sec:getting_input_from_the_build">
+ * Gradle conventions</a> for project extensions.
  */
 @SuppressWarnings({
         "PublicField", "WeakerAccess" /* Expose fields as a Gradle extension */,
         "ClassWithTooManyMethods" /* The methods are needed for handing default values. */,
         "ClassWithTooManyFields", "PMD.TooManyFields" /* Gradle extensions are flat like this. */})
 public class Extension extends GradleExtension {
-
-    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
-
-    /**
-     * The absolute path to the main target generated resources directory.
-     */
-    public String generatedMainResourcesDir;
 
     /**
      * The absolute path to the Protobuf source code under the {@code main} directory.
@@ -107,6 +104,11 @@ public class Extension extends GradleExtension {
      * generated basing on Protobuf definitions.
      */
     public String generatedMainGrpcJavaDir;
+
+    /**
+     * The absolute path to the main target generated resources directory.
+     */
+    public String generatedMainResourcesDir;
 
     /**
      * The absolute path to the test target generated resources directory.
@@ -195,100 +197,77 @@ public class Extension extends GradleExtension {
         ExtensionContainer extensions = project.getExtensions();
         String extensionName = ModelCompilerPlugin.extensionName();
         Object found = extensions.getByName(extensionName);
-        return (Extension) found;
+        Extension result = (Extension) found;
+        result.injectProject(project);
+        return result;
     }
 
     @Override
-    protected DefaultJavaProject defaultProject(Project project) {
-        return def(project);
+    protected final DefaultJavaPaths defaultPathsIn(Project project) {
+        return DefaultJavaPaths.at(project.getProjectDir());
     }
 
-    private static DefaultJavaProject def(Project project) {
-        return DefaultJavaProject.at(project.getProjectDir());
-    }
-
-    @SuppressWarnings({
-            "PMD.MethodNamingConventions",
-            "FloggerSplitLogStatement" // See: https://github.com/SpineEventEngine/base/issues/612
-    })
-    private static FluentLogger.Api _debug() {
-        return logger.atFine();
+    @Override
+    protected final DefaultJavaPaths defaultPaths() {
+        return (DefaultJavaPaths) super.defaultPaths();
     }
 
     @SuppressWarnings("FloggerSplitLogStatement")
-
-    public static String mainProtoSrcDir(Project project) {
-        Extension extension = of(project);
-        _debug().log("Extension is `%s`.", extension);
-        String protoDir = extension.mainProtoDir;
+    public String mainProtoSrcDir() {
+        _debug().log("Extension is `%s`.", this);
+        String protoDir = mainProtoDir;
         _debug().log("`modelCompiler.mainProtoDir` is `%s`.", protoDir);
-        return pathOrDefault(protoDir, def(project).src().mainProto());
+        return pathOrDefault(protoDir, defaultPaths().src().mainProto());
     }
 
-    public static String generatedMainResourcesDir(Project project) {
-        return pathOrDefault(of(project).generatedMainResourcesDir,
-                             def(project).generated().mainResources());
+    public String generatedMainResourcesDir() {
+        return pathOrDefault(generatedMainResourcesDir, generated().mainResources());
     }
 
-    public static String generatedMainGrpcJavaDir(Project project) {
-        return pathOrDefault(of(project).generatedMainGrpcJavaDir,
-                             def(project).generated().mainGrpc());
+    public String generatedMainGrpcJavaDir() {
+        return pathOrDefault(generatedMainGrpcJavaDir, generated().mainGrpc());
     }
 
-    public static String generatedMainJavaDir(Project project) {
-        return pathOrDefault(of(project).generatedMainJavaDir,
-                             def(project).generated()
-                                         .mainJava());
+    public String generatedMainJavaDir() {
+        return pathOrDefault(generatedMainJavaDir, generated().mainJava());
     }
 
-    public static String generatedTestResourcesDir(Project project) {
-        return pathOrDefault(of(project).generatedTestResourcesDir,
-                             def(project).generated()
-                                         .testResources());
+    public String generatedTestResourcesDir() {
+        return pathOrDefault(generatedTestResourcesDir, generated().testResources());
     }
 
-    public static String testProtoDir(Project project) {
-        return pathOrDefault(of(project).testProtoDir,
-                             def(project).src()
-                                         .testProto());
+    public String testProtoDir() {
+        return pathOrDefault(testProtoDir, defaultPaths().src().testProto());
     }
 
-    public static String generatedTestGrpcJavaDir(Project project) {
-        return pathOrDefault(of(project).generatedTestGrpcJavaDir,
-                             def(project).generated()
-                                         .testGrpc());
+    public String generatedTestGrpcJavaDir() {
+        return pathOrDefault(generatedTestGrpcJavaDir, generated().testGrpc());
     }
 
-    public static String generatedTestJavaDir(Project project) {
-        return pathOrDefault(of(project).generatedTestJavaDir,
-                             def(project).generated()
-                                         .testJava());
+    public String generatedTestJavaDir() {
+        return pathOrDefault(generatedTestJavaDir, generated().testJava());
     }
 
-    public static File mainDescriptorSetFile(Project project) {
-        Extension extension = of(project);
-        String path = pathOrDefault(extension.mainDescriptorSetFile,
-                                    extension.defaultMainDescriptor(project));
+    public File mainDescriptorSetFile() {
+        String path = pathOrDefault(mainDescriptorSetFile, defaultMainDescriptor());
         return new File(path);
     }
 
-    public static File testDescriptorSetFile(Project project) {
-        Extension extension = of(project);
-        String path = pathOrDefault(extension.testDescriptorSetFile,
-                                    extension.defaultTestDescriptor(project));
+    public File testDescriptorSetFile() {
+        String path = pathOrDefault(testDescriptorSetFile, defaultTestDescriptor());
         return new File(path);
     }
 
-    public static String generatedMainRejectionsDir(Project project) {
-        return pathOrDefault(of(project).generatedMainRejectionsDir,
-                             def(project).generated()
-                                         .mainSpine());
+    public String generatedMainRejectionsDir() {
+        return pathOrDefault(generatedMainRejectionsDir, generated().mainSpine());
     }
 
-    public static String generatedTestRejectionsDir(Project project) {
-        return pathOrDefault(of(project).generatedTestRejectionsDir,
-                             def(project).generated()
-                                         .testSpine());
+    public String generatedTestRejectionsDir() {
+        return pathOrDefault(generatedTestRejectionsDir, generated().testSpine());
+    }
+
+    private Generated generated() {
+        return defaultPaths().generated();
     }
 
     private static String pathOrDefault(String path, Object defaultValue) {
@@ -312,18 +291,17 @@ public class Extension extends GradleExtension {
     public static List<String> dirsToCleanIn(Project project) {
         List<String> dirsToClean = newLinkedList(spineDirs(project));
         _debug().log("Finding the directories to clean.");
-        List<String> dirs = of(project).dirsToClean;
-        String singleDir = of(project).dirToClean;
+        Extension extension = of(project);
+        List<String> dirs = extension.dirsToClean;
+        String singleDir = extension.dirToClean;
         if (dirs.size() > 0) {
-            logger.atInfo()
-                  .log("Found %d directories to clean: `%s`.", dirs.size(), dirs);
+            _info().log("Found %d directories to clean: `%s`.", dirs.size(), dirs);
             dirsToClean.addAll(dirs);
         } else if (singleDir != null && !singleDir.isEmpty()) {
             _debug().log("Found directory to clean: `%s`.", singleDir);
             dirsToClean.add(singleDir);
         } else {
-            String defaultValue = def(project).generated()
-                                              .toString();
+            String defaultValue = extension.generated().toString();
             _debug().log("Default directory to clean: `%s`.", defaultValue);
             dirsToClean.add(defaultValue);
         }
@@ -471,8 +449,8 @@ public class Extension extends GradleExtension {
             );
         }
         TempArtifacts artifacts =
-                DefaultJavaProject.at(projectDir)
-                                  .tempArtifacts();
+                DefaultJavaPaths.at(projectDir)
+                                .tempArtifacts();
         if (artifacts.exists()) {
             return Optional.of(artifacts.toString());
         } else {

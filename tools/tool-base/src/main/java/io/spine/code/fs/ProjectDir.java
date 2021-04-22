@@ -33,7 +33,7 @@ import io.spine.code.AbstractDirectory;
  */
 public abstract class ProjectDir extends AbstractDirectory {
 
-    protected ProjectDir(DefaultProject project, DirectoryName name) {
+    protected ProjectDir(DefaultPaths project, DirectoryName name) {
         super(project, name.value());
     }
 }

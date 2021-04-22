@@ -78,7 +78,7 @@ public enum DirectoryName {
     /**
      * Internal directory name for storing temporary build artifacts.
      *
-     * @see io.spine.code.fs.DefaultProject#tempArtifacts()
+     * @see DefaultPaths#tempArtifacts()
      */
     @Internal
     dotSpine(".spine");

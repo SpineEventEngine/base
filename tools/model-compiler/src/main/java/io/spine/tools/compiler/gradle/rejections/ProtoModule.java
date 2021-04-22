@@ -26,6 +26,7 @@
 
 package io.spine.tools.compiler.gradle.rejections;
 
+import io.spine.tools.compiler.gradle.Extension;
 import io.spine.tools.gradle.SourceScope;
 import org.gradle.api.Project;
 import org.gradle.api.file.FileCollection;
@@ -37,8 +38,6 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.gradle.SourceScope.main;
 import static io.spine.tools.gradle.SourceScope.test;
-import static io.spine.tools.compiler.gradle.Extension.generatedMainRejectionsDir;
-import static io.spine.tools.compiler.gradle.Extension.generatedTestRejectionsDir;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -59,12 +58,14 @@ final class ProtoModule {
     private static final String PROTO_SOURCE_SET = "proto";
 
     private final Project project;
+    private final Extension extension;
 
     /**
      * Creates a new instance atop of the given Gradle project.
      */
     ProtoModule(Project project) {
         this.project = checkNotNull(project);
+        this.extension = Extension.of(project);
     }
 
     /**
@@ -125,7 +126,7 @@ final class ProtoModule {
      *        directory is changing, the contents of the collection are mutated.
      */
     FileCollection compiledRejections() {
-        String targetDir = generatedMainRejectionsDir(project);
+        String targetDir = extension.generatedMainRejectionsDir();
         FileCollection files = project.fileTree(targetDir);
         return files;
     }
@@ -138,7 +139,7 @@ final class ProtoModule {
      *        directory is changing, the contents of the collection are mutated.
      */
     FileCollection testCompiledRejections() {
-        String targetDir = generatedTestRejectionsDir(project);
+        String targetDir = extension.generatedTestRejectionsDir();
         FileCollection files = project.fileTree(targetDir);
         return files;
     }

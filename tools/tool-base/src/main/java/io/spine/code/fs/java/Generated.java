@@ -28,7 +28,7 @@ package io.spine.code.fs.java;
 
 import io.spine.code.SourceCodeDirectory;
 import io.spine.code.fs.ArtifactSources;
-import io.spine.code.fs.DefaultProject;
+import io.spine.code.fs.DefaultPaths;
 
 import static io.spine.code.fs.DirectoryName.generated;
 import static io.spine.code.fs.DirectoryName.grpc;
@@ -40,7 +40,7 @@ import static io.spine.code.fs.DirectoryName.spine;
  */
 public final class Generated extends JavaSrc {
 
-    Generated(DefaultProject parent) {
+    Generated(DefaultPaths parent) {
         super(parent, generated);
     }
 

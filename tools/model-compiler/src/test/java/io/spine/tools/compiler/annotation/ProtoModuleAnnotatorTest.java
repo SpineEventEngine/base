@@ -91,7 +91,7 @@ class ProtoModuleAnnotatorTest {
 
     private static void checkAnnotateByOption(ApiOption option) {
         FakeAnnotator.Factory factory = new FakeAnnotator.Factory();
-        ModuleAnnotator.Job optionJob = translate(option).as(ANNOTATION);
+        Job optionJob = translate(option).as(ANNOTATION);
         ModuleAnnotator annotator = ModuleAnnotator
                 .newBuilder()
                 .add(optionJob)

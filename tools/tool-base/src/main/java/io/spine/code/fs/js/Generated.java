@@ -26,7 +26,7 @@
 
 package io.spine.code.fs.js;
 
-import io.spine.code.fs.DefaultProject;
+import io.spine.code.fs.DefaultPaths;
 import io.spine.code.fs.Src;
 
 import static io.spine.code.fs.DirectoryName.generated;
@@ -36,7 +36,7 @@ import static io.spine.code.fs.DirectoryName.generated;
  */
 public final class Generated extends Src {
 
-    Generated(DefaultProject parent) {
+    Generated(DefaultPaths parent) {
         super(parent, generated);
     }
 

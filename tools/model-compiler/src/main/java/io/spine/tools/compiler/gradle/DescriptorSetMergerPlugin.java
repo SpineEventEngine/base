@@ -39,8 +39,6 @@ import org.gradle.api.artifacts.Configuration;
 
 import java.io.File;
 
-import static io.spine.tools.compiler.gradle.Extension.mainDescriptorSetFile;
-import static io.spine.tools.compiler.gradle.Extension.testDescriptorSetFile;
 import static io.spine.tools.gradle.ConfigurationName.runtimeClasspath;
 import static io.spine.tools.gradle.ConfigurationName.testRuntimeClasspath;
 import static io.spine.tools.gradle.JavaTaskName.processResources;
@@ -120,9 +118,10 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
     }
 
     private static File descriptorSet(Project project, boolean tests) {
+        Extension extension = Extension.of(project);
         File descriptor = tests
-                          ? testDescriptorSetFile(project)
-                          : mainDescriptorSetFile(project);
+                          ? extension.testDescriptorSetFile()
+                          : extension.mainDescriptorSetFile();
         return descriptor;
     }
 }

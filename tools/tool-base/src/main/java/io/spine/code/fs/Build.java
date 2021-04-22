@@ -34,11 +34,11 @@ import static io.spine.code.fs.DirectoryName.descriptors;
  */
 public final class Build extends ProjectDir {
 
-    private Build(DefaultProject module) {
+    private Build(DefaultPaths module) {
         super(module, build);
     }
 
-    static Build of(DefaultProject project) {
+    static Build of(DefaultPaths project) {
         return new Build(project);
     }
 

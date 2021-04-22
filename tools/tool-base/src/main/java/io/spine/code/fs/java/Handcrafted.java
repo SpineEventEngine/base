@@ -26,7 +26,7 @@
 
 package io.spine.code.fs.java;
 
-import io.spine.code.fs.DefaultProject;
+import io.spine.code.fs.DefaultPaths;
 
 import static io.spine.code.fs.DirectoryName.src;
 
@@ -38,7 +38,7 @@ import static io.spine.code.fs.DirectoryName.src;
  */
 public class Handcrafted extends JavaSrc {
 
-    Handcrafted(DefaultProject parent) {
+    Handcrafted(DefaultPaths parent) {
         super(parent, src);
     }
 

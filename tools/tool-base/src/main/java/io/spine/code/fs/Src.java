@@ -34,7 +34,7 @@ import static io.spine.code.fs.DirectoryName.test;
  */
 public abstract class Src extends ProjectDir {
 
-    protected Src(DefaultProject parent, DirectoryName name) {
+    protected Src(DefaultPaths parent, DirectoryName name) {
         super(parent, name);
     }
 

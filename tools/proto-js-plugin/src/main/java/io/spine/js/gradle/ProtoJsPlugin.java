@@ -27,7 +27,7 @@
 package io.spine.js.gradle;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.fs.js.DefaultJsProject;
+import io.spine.code.fs.js.DefaultJsPaths;
 import io.spine.code.fs.js.Directory;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.AppendTypeUrlGetter;
@@ -109,7 +109,7 @@ public class ProtoJsPlugin extends ProtoPlugin {
      * <p>The paths to the generated JS messages location, as well as to the descriptor set file,
      * are currently hard-coded.
      *
-     * <p>See {@link DefaultJsProject} for the expected configuration.
+     * <p>See {@link DefaultJsPaths} for the expected configuration.
      */
     private Action<Task> newAction(Project project) {
         return task -> generateJsonParsers(project);

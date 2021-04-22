@@ -25,7 +25,7 @@
  */
 package io.spine.tools.compiler.gradle;
 
-import io.spine.code.fs.java.DefaultJavaProject;
+import io.spine.code.fs.java.DefaultJavaPaths;
 import io.spine.tools.compiler.gradle.errorprone.Severity;
 import org.gradle.api.Project;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,6 +54,7 @@ class ExtensionTest {
 
     private Project project;
     private File projectDir;
+    private Extension extension;
 
     @BeforeEach
     void setUp(@TempDir Path tempDirPath) {
@@ -61,6 +62,7 @@ class ExtensionTest {
         project = newProject(projectDir);
         project.getPluginManager()
                .apply(SPINE_PROTOBUF_PLUGIN_ID);
+        extension = Extension.of(project);
     }
 
     @Nested
@@ -70,7 +72,7 @@ class ExtensionTest {
         @Test
         @DisplayName("default value, if not set")
         void defaultValue() {
-            String dir = Extension.generatedMainResourcesDir(project);
+            String dir = Extension.of(project).generatedMainResourcesDir();
 
             assertNotEmptyAndIsInProjectDir(dir);
         }
@@ -80,7 +82,7 @@ class ExtensionTest {
         void setValue() {
             spineProtobuf().generatedMainResourcesDir = randomString();
 
-            String dir = Extension.generatedMainResourcesDir(project);
+            String dir = extension.generatedMainResourcesDir();
 
             assertEquals(spineProtobuf().generatedMainResourcesDir, dir);
         }
@@ -93,7 +95,7 @@ class ExtensionTest {
         @Test
         @DisplayName("default value, if not set")
         void defaultValue() {
-            String dir = Extension.generatedTestResourcesDir(project);
+            String dir = extension.generatedTestResourcesDir();
 
             assertNotEmptyAndIsInProjectDir(dir);
         }
@@ -103,7 +105,7 @@ class ExtensionTest {
         void specifiedValue() {
             spineProtobuf().generatedTestResourcesDir = randomString();
 
-            String dir = Extension.generatedTestResourcesDir(project);
+            String dir = extension.generatedTestResourcesDir();
 
             assertEquals(spineProtobuf().generatedTestResourcesDir, dir);
         }
@@ -116,7 +118,7 @@ class ExtensionTest {
         @Test
         @DisplayName("default value, if not set")
         void defaultValue() {
-            File file = Extension.mainDescriptorSetFile(project);
+            File file = extension.mainDescriptorSetFile();
 
             assertNotEmptyAndIsInProjectDir(file.toString());
         }
@@ -126,7 +128,7 @@ class ExtensionTest {
         void specifiedValue() {
             spineProtobuf().mainDescriptorSetFile = randomString();
 
-            File file = Extension.mainDescriptorSetFile(project);
+            File file = extension.mainDescriptorSetFile();
 
             assertEquals(spineProtobuf().mainDescriptorSetFile, file.toString());
         }
@@ -139,7 +141,7 @@ class ExtensionTest {
         @Test
         @DisplayName("default value, if not set")
         void defaultValue() {
-            File file = Extension.testDescriptorSetFile(project);
+            File file = extension.testDescriptorSetFile();
 
             assertNotEmptyAndIsInProjectDir(file.toString());
         }
@@ -149,7 +151,7 @@ class ExtensionTest {
         void specifiedValue() {
             spineProtobuf().testDescriptorSetFile = randomString();
 
-            File file = Extension.testDescriptorSetFile(project);
+            File file = extension.testDescriptorSetFile();
 
             assertEquals(spineProtobuf().testDescriptorSetFile, file.toString());
         }
@@ -162,7 +164,7 @@ class ExtensionTest {
         @Test
         @DisplayName("default value, if not set")
         void defaultValue() {
-            String dir = Extension.generatedMainRejectionsDir(project);
+            String dir = extension.generatedMainRejectionsDir();
 
             assertNotEmptyAndIsInProjectDir(dir);
         }
@@ -172,7 +174,7 @@ class ExtensionTest {
         void specifiedValue() {
             spineProtobuf().generatedMainRejectionsDir = randomString();
 
-            String dir = Extension.generatedMainRejectionsDir(project);
+            String dir = extension.generatedMainRejectionsDir();
 
             assertEquals(spineProtobuf().generatedMainRejectionsDir, dir);
         }
@@ -231,7 +233,7 @@ class ExtensionTest {
         @Test
         @DisplayName("include `.spine` dir, if exists")
         void includeSpineDir() throws IOException {
-            DefaultJavaProject defaultProject = DefaultJavaProject.at(projectDir);
+            DefaultJavaPaths defaultProject = DefaultJavaPaths.at(projectDir);
             File spineDir = defaultProject.tempArtifacts().path().toFile();
             assertTrue(spineDir.mkdir());
             String generatedDir =

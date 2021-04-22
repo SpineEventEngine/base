@@ -27,7 +27,7 @@
 package io.spine.dart.gradle;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.fs.dart.DefaultDartProject;
+import io.spine.code.fs.dart.DefaultDartPaths;
 import io.spine.tools.code.structure.DirectoryPattern;
 import io.spine.tools.code.structure.ExternalModule;
 import io.spine.tools.gradle.GradleExtension;
@@ -124,8 +124,8 @@ public final class Extension extends GradleExtension {
                                   .dir(TEST_DIRECTORY));
         mainGeneratedDir.convention(libDir);
         testGeneratedDir.convention(testDir);
-        mainDescriptorSet.convention(defaultMainDescriptor(project));
-        testDescriptorSet.convention(defaultTestDescriptor(project));
+        mainDescriptorSet.convention(defaultMainDescriptor());
+        testDescriptorSet.convention(defaultTestDescriptor());
         generatedDir.convention(project.getLayout()
                                        .getProjectDirectory()
                                        .dir(GENERATED_BASE_DIR));
@@ -258,8 +258,8 @@ public final class Extension extends GradleExtension {
     }
 
     @Override
-    protected DefaultDartProject defaultProject(Project project) {
-        return DefaultDartProject.at(project.getProjectDir()
-                                            .toPath());
+    protected DefaultDartPaths defaultPathsIn(Project project) {
+        return DefaultDartPaths.at(project.getProjectDir()
+                                          .toPath());
     }
 }
