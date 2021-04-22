@@ -146,7 +146,7 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
 
     @Override
     protected File getTestDescriptorSet(Project project) {
-        return Extension.testDescriptorSetOf(project);
+        return Extension.testDescriptorSetFile(project);
     }
 
     @Override
@@ -158,7 +158,7 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
                                                                                                 
     @Override
     protected File getMainDescriptorSet(Project project) {
-        return Extension.mainDescriptorSetOf(project);
+        return Extension.mainDescriptorSetFile(project);
     }
 
     /**

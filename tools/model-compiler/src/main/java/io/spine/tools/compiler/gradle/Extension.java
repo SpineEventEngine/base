@@ -43,6 +43,7 @@ import io.spine.tools.protoc.NestedClasses;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
+import org.gradle.api.plugins.ExtensionContainer;
 import org.gradle.util.ConfigureUtil;
 
 import java.io.File;
@@ -69,70 +70,70 @@ public class Extension extends GradleExtension {
     /**
      * The absolute path to the main target generated resources directory.
      */
-    public String mainTargetGenResourcesDir;
+    public String generatedMainResourcesDir;
 
     /**
-     * The absolute path to the main Protobuf source directory.
+     * The absolute path to the Protobuf source code under the {@code main} directory.
      */
-    public String mainProtoSrcDir;
-
-    /**
-     * The absolute path to the main Java sources directory,
-     * generated basing on Protobuf definitions.
-     */
-    public String mainGenProtoDir;
-
-    /**
-     * The absolute path to the main {@code gRPC} services directory,
-     * generated basing on Protobuf definitions.
-     */
-    public String mainGenGrpcDir;
-
-    /**
-     * The absolute path to the test target generated resources directory.
-     */
-    public String testTargetGenResourcesDir;
+    public String mainProtoDir;
 
     /**
      * The absolute path to the test Protobuf source directory.
      */
-    public String testProtoSrcDir;
-
-    /**
-     * The absolute path to the test Java sources directory,
-     * generated basing on Protobuf definitions.
-     */
-    public String testGenProtoDir;
-
-    /**
-     * The absolute path to the test {@code gRPC} services directory,
-     * generated basing on Protobuf definitions.
-     */
-    public String testGenGrpcDir;
+    public String testProtoDir;
 
     /**
      * The absolute path to the main Protobuf descriptor set file.
      *
      * <p>The file must have the {@code .desc} extension.
      */
-    public String mainDescriptorSetPath;
+    public String mainDescriptorSetFile;
 
     /**
      * The absolute path to the test Protobuf descriptor set file.
      *
      * <p>The file must have the {@code .desc} extension.
      */
-    public String testDescriptorSetPath;
+    public String testDescriptorSetFile;
+
+    /**
+     * The absolute path to the main Java sources directory,
+     * generated basing on Protobuf definitions.
+     */
+    public String generatedMainJavaDir;
+
+    /**
+     * The absolute path to the main {@code gRPC} services directory,
+     * generated basing on Protobuf definitions.
+     */
+    public String generatedMainGrpcJavaDir;
+
+    /**
+     * The absolute path to the test target generated resources directory.
+     */
+    public String generatedTestResourcesDir;
+
+    /**
+     * The absolute path to the test Java sources directory,
+     * generated basing on Protobuf definitions.
+     */
+    public String generatedTestJavaDir;
+
+    /**
+     * The absolute path to the test {@code gRPC} services directory,
+     * generated basing on Protobuf definitions.
+     */
+    public String generatedTestGrpcJavaDir;
 
     /**
      * The absolute path to the main target generated rejections root directory.
      */
-    public String targetGenRejectionsRootDir;
+    public String generatedMainRejectionsDir;
 
     /**
      * The absolute path to the test target generated rejections root directory.
      */
-    public String targetTestGenRejectionsRootDir;
+    public String generatedTestRejectionsDir;
 
     /**
      * The absolute path to directory to delete.
@@ -183,6 +184,20 @@ public class Extension extends GradleExtension {
 
     public List<String> internalMethodNames = new ArrayList<>();
 
+    /**
+     * Obtains the instance of the {@linkplain ModelCompilerPlugin#extensionName() extension} in
+     * the passed project.
+     *
+     * @throws org.gradle.api.UnknownDomainObjectException
+     *         if the project does not have this extension
+     */
+    public static Extension of(Project project) {
+        ExtensionContainer extensions = project.getExtensions();
+        String extensionName = ModelCompilerPlugin.extensionName();
+        Object found = extensions.getByName(extensionName);
+        return (Extension) found;
+    }
+
     @Override
     protected DefaultJavaProject defaultProject(Project project) {
         return def(project);
@@ -203,79 +218,75 @@ public class Extension extends GradleExtension {
     @SuppressWarnings("FloggerSplitLogStatement")
 
     public static String mainProtoSrcDirOf(Project project) {
-        Extension extension = extension(project);
+        Extension extension = of(project);
         _debug().log("Extension is `%s`.", extension);
-        String protoDir = extension.mainProtoSrcDir;
+        String protoDir = extension.mainProtoDir;
         _debug().log("`modelCompiler.mainProtoSrcDir` is `%s`.", protoDir);
-        return pathOrDefault(protoDir,
-                             def(project).src()
-                                         .mainProto());
+        return pathOrDefault(protoDir, def(project).src().mainProto());
     }
 
-    public static String mainTargetGenResourcesDirOf(Project project) {
-        return pathOrDefault(extension(project).mainTargetGenResourcesDir,
-                             def(project).generated()
-                                         .mainResources());
+    public static String generatedMainResourcesDir(Project project) {
+        return pathOrDefault(of(project).generatedMainResourcesDir,
+                             def(project).generated().mainResources());
     }
 
-    public static String mainGenGrpcDirOf(Project project) {
-        return pathOrDefault(extension(project).mainGenGrpcDir,
-                             def(project).generated()
-                                         .mainGrpc());
+    public static String generatedMainGrpcJavaDir(Project project) {
+        return pathOrDefault(of(project).generatedMainGrpcJavaDir,
+                             def(project).generated().mainGrpc());
     }
 
-    public static String mainGenProtoDirOf(Project project) {
-        return pathOrDefault(extension(project).mainGenProtoDir,
+    public static String generatedMainJavaDir(Project project) {
+        return pathOrDefault(of(project).generatedMainJavaDir,
                              def(project).generated()
                                          .mainJava());
     }
 
-    public static String testTargetGenResourcesDirOf(Project project) {
-        return pathOrDefault(extension(project).testTargetGenResourcesDir,
+    public static String generatedTestResourcesDir(Project project) {
+        return pathOrDefault(of(project).generatedTestResourcesDir,
                              def(project).generated()
                                          .testResources());
     }
 
-    public static String testProtoSrcDirOf(Project project) {
-        return pathOrDefault(extension(project).testProtoSrcDir,
+    public static String testProtoDir(Project project) {
+        return pathOrDefault(of(project).testProtoDir,
                              def(project).src()
                                          .testProto());
     }
 
-    public static String testGenGrpcDirOf(Project project) {
-        return pathOrDefault(extension(project).testGenGrpcDir,
+    public static String generatedTestGrpcJavaDir(Project project) {
+        return pathOrDefault(of(project).generatedTestGrpcJavaDir,
                              def(project).generated()
                                          .testGrpc());
     }
 
-    public static String testGenProtoDirOf(Project project) {
-        return pathOrDefault(extension(project).testGenProtoDir,
+    public static String generatedTestJavaDir(Project project) {
+        return pathOrDefault(of(project).generatedTestJavaDir,
                              def(project).generated()
                                          .testJava());
     }
 
-    public static File mainDescriptorSetOf(Project project) {
-        Extension extension = extension(project);
-        String path = pathOrDefault(extension.mainDescriptorSetPath,
+    public static File mainDescriptorSetFile(Project project) {
+        Extension extension = of(project);
+        String path = pathOrDefault(extension.mainDescriptorSetFile,
                                     extension.defaultMainDescriptor(project));
         return new File(path);
     }
 
-    public static File testDescriptorSetOf(Project project) {
-        Extension extension = extension(project);
-        String path = pathOrDefault(extension.testDescriptorSetPath,
+    public static File testDescriptorSetFile(Project project) {
+        Extension extension = of(project);
+        String path = pathOrDefault(extension.testDescriptorSetFile,
                                     extension.defaultTestDescriptor(project));
         return new File(path);
     }
 
-    public static String targetGenRejectionsRootDirOf(Project project) {
-        return pathOrDefault(extension(project).targetGenRejectionsRootDir,
+    public static String generatedMainRejectionsDir(Project project) {
+        return pathOrDefault(of(project).generatedMainRejectionsDir,
                              def(project).generated()
                                          .mainSpine());
     }
 
-    public static String targetTestGenRejectionsRootDirOf(Project project) {
-        return pathOrDefault(extension(project).targetTestGenRejectionsRootDir,
+    public static String generatedTestRejectionsDir(Project project) {
+        return pathOrDefault(of(project).generatedTestRejectionsDir,
                              def(project).generated()
                                          .testSpine());
     }
@@ -287,7 +298,7 @@ public class Extension extends GradleExtension {
     }
 
     public static Indent getIndent(Project project) {
-        Indent result = extension(project).indent;
+        Indent result = of(project).indent;
         _debug().log("The current indent is %d.", result.getSize());
         return result;
     }
@@ -301,8 +312,8 @@ public class Extension extends GradleExtension {
     public static List<String> dirsToCleanIn(Project project) {
         List<String> dirsToClean = newLinkedList(spineDirs(project));
         _debug().log("Finding the directories to clean.");
-        List<String> dirs = extension(project).dirsToClean;
-        String singleDir = extension(project).dirToClean;
+        List<String> dirs = of(project).dirsToClean;
+        String singleDir = of(project).dirToClean;
         if (dirs.size() > 0) {
             logger.atInfo()
                   .log("Found %d directories to clean: `%s`.", dirs.size(), dirs);
@@ -320,7 +331,7 @@ public class Extension extends GradleExtension {
     }
 
     public static @Nullable Severity getSpineCheckSeverity(Project project) {
-        Severity result = extension(project).spineCheckSeverity;
+        Severity result = of(project).spineCheckSeverity;
         _debug().log("The severity of Spine-custom Error Prone checks is `%s`.",
                      (result == null ? "unset" : result.name()));
         return result;
@@ -387,52 +398,52 @@ public class Extension extends GradleExtension {
     }
 
     public static Annotations getCodeGenAnnotations(Project project) {
-        Annotations annotations = extension(project).generateAnnotations;
+        Annotations annotations = of(project).generateAnnotations;
         return annotations;
     }
 
     public static Interfaces getInterfaces(Project project) {
-        Interfaces interfaces = extension(project).interfaces;
+        Interfaces interfaces = of(project).interfaces;
         return interfaces;
     }
 
     public static Methods getMethods(Project project) {
-        Methods methods = extension(project).methods;
+        Methods methods = of(project).methods;
         return methods;
     }
 
     public static NestedClasses getNestedClasses(Project project) {
-        NestedClasses nestedClasses = extension(project).nestedClasses;
+        NestedClasses nestedClasses = of(project).nestedClasses;
         return nestedClasses;
     }
 
     public static Fields getFields(Project project) {
-        Fields fields = extension(project).fields;
+        Fields fields = of(project).fields;
         return fields;
     }
 
     public static EntityQueries getEntityQueries(Project project) {
-        EntityQueries columns = extension(project).entityQueries;
+        EntityQueries columns = of(project).entityQueries;
         return columns;
     }
 
     public static boolean shouldGenerateValidatingBuilders(Project project) {
-        boolean shouldGenerate = extension(project).generateValidatingBuilders;
+        boolean shouldGenerate = of(project).generateValidatingBuilders;
         return shouldGenerate;
     }
 
     public static boolean shouldGenerateValidation(Project project) {
-        boolean shouldGenerate = extension(project).generateValidation;
+        boolean shouldGenerate = of(project).generateValidation;
         return shouldGenerate;
     }
 
     public static ImmutableSet<String> getInternalClassPatterns(Project project) {
-        List<String> patterns = extension(project).internalClassPatterns;
+        List<String> patterns = of(project).internalClassPatterns;
         return ImmutableSet.copyOf(patterns);
     }
 
     public static ImmutableSet<String> getInternalMethodNames(Project project) {
-        List<String> patterns = extension(project).internalMethodNames;
+        List<String> patterns = of(project).internalMethodNames;
         return ImmutableSet.copyOf(patterns);
     }
 
@@ -467,11 +478,5 @@ public class Extension extends GradleExtension {
         } else {
             return Optional.empty();
         }
-    }
-
-    private static Extension extension(Project project) {
-        return (Extension)
-                project.getExtensions()
-                       .getByName(ModelCompilerPlugin.extensionName());
     }
 }

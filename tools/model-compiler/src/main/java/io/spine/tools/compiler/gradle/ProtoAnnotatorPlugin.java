@@ -48,12 +48,12 @@ import static io.spine.tools.compiler.annotation.ModuleAnnotator.translate;
 import static io.spine.tools.compiler.gradle.Extension.getCodeGenAnnotations;
 import static io.spine.tools.compiler.gradle.Extension.getInternalClassPatterns;
 import static io.spine.tools.compiler.gradle.Extension.getInternalMethodNames;
-import static io.spine.tools.compiler.gradle.Extension.mainDescriptorSetOf;
-import static io.spine.tools.compiler.gradle.Extension.mainGenGrpcDirOf;
-import static io.spine.tools.compiler.gradle.Extension.mainGenProtoDirOf;
-import static io.spine.tools.compiler.gradle.Extension.testDescriptorSetOf;
-import static io.spine.tools.compiler.gradle.Extension.testGenGrpcDirOf;
-import static io.spine.tools.compiler.gradle.Extension.testGenProtoDirOf;
+import static io.spine.tools.compiler.gradle.Extension.mainDescriptorSetFile;
+import static io.spine.tools.compiler.gradle.Extension.generatedMainGrpcJavaDir;
+import static io.spine.tools.compiler.gradle.Extension.generatedMainJavaDir;
+import static io.spine.tools.compiler.gradle.Extension.testDescriptorSetFile;
+import static io.spine.tools.compiler.gradle.Extension.generatedTestGrpcJavaDir;
+import static io.spine.tools.compiler.gradle.Extension.generatedTestJavaDir;
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.gradle.JavaTaskName.compileTestJava;
 import static io.spine.tools.gradle.ModelCompilerTaskName.annotateProto;
@@ -266,20 +266,20 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
 
         private File descriptorSet(Project project) {
             return productionTask
-                   ? mainDescriptorSetOf(project)
-                   : testDescriptorSetOf(project);
+                   ? mainDescriptorSetFile(project)
+                   : testDescriptorSetFile(project);
         }
 
         private String generatedGrpcDir(Project project) {
             return productionTask
-                   ? mainGenGrpcDirOf(project)
-                   : testGenGrpcDirOf(project);
+                   ? generatedMainGrpcJavaDir(project)
+                   : generatedTestGrpcJavaDir(project);
         }
 
         private String generatedProtoDir(Project project) {
             return productionTask
-                   ? mainGenProtoDirOf(project)
-                   : testGenProtoDirOf(project);
+                   ? generatedMainJavaDir(project)
+                   : generatedTestJavaDir(project);
         }
     }
 }
