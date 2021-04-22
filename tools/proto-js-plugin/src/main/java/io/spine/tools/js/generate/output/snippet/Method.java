@@ -31,6 +31,7 @@ import io.spine.tools.js.generate.Snippet;
 import io.spine.tools.js.generate.output.CodeLine;
 import io.spine.tools.js.generate.output.CodeLines;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -95,8 +96,8 @@ public class Method implements Snippet {
     public static class Builder {
 
         private final MethodReference methodReference;
-        private final List<CodeLine> body = newArrayList();
-        private List<String> parameters = newArrayList();
+        private final List<CodeLine> body = new ArrayList<>();
+        private List<String> parameters = new ArrayList<>();
 
         Builder(MethodReference methodReference) {
             checkNotNull(methodReference);

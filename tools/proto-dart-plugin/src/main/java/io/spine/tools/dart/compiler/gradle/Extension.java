@@ -27,9 +27,9 @@
 package io.spine.tools.dart.compiler.gradle;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.fs.dart.DefaultDartPaths;
 import io.spine.tools.code.structure.DirectoryPattern;
 import io.spine.tools.code.structure.ExternalModule;
+import io.spine.tools.dart.fs.DefaultDartPaths;
 import io.spine.tools.gradle.GradleExtension;
 import org.gradle.api.Project;
 import org.gradle.api.file.Directory;
@@ -40,11 +40,11 @@ import org.gradle.api.provider.Property;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static com.google.common.collect.Maps.newHashMap;
 import static io.spine.code.fs.DirectoryName.generated;
 import static io.spine.code.fs.DirectoryName.lib;
 import static io.spine.code.fs.DirectoryName.test;
@@ -94,7 +94,7 @@ public final class Extension extends GradleExtension {
      * }</pre>
      */
     @SuppressWarnings("PublicField" /* Expose fields as a Gradle extension */)
-    public final Map<String, List<String>> modules = newHashMap();
+    public final Map<String, List<String>> modules = new HashMap<>();
 
     Extension(Project project, String name) {
         super(project, name);

@@ -24,25 +24,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.fs.dart;
-
-import io.spine.code.fs.DefaultPaths;
-
-import java.nio.file.Path;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+/**
+ * This package contains tools for working with the structure of a Dart project.
+ */
 
 /**
- * A default project layout for a Dart project.
+ * This package provides classes for working with file conventions in a Dart project.
  */
-public final class DefaultDartPaths extends DefaultPaths {
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.dart.fs;
 
-    private DefaultDartPaths(Path path) {
-        super(path);
-    }
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    public static DefaultDartPaths at(Path root) {
-        checkNotNull(root);
-        return new DefaultDartPaths(root);
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

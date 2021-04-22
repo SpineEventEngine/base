@@ -31,10 +31,10 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.escape.Escaper;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newLinkedHashMap;
 
 /**
@@ -56,7 +56,7 @@ import static com.google.common.collect.Maps.newLinkedHashMap;
  *   Stringifier<Map<String, Long>> mapStringifier = registry.getStringifier(type);
  *
  *   // Convert to string.
- *   Map<String, Long> mapToConvert = newHashMap();
+ *   Map<String, Long> mapToConvert = new HashMap<>();
  *   mapToConvert.put("first", 1);
  *   mapToConvert.put("second", 2);
  *
@@ -164,7 +164,7 @@ final class MapStringifier<K, V> extends Stringifier<Map<K, V>> {
                                                   .andThen(keyStringifier.reverse());
         Converter<String, V> valueConverter = quoter.reverse()
                                                     .andThen(valueStringifier.reverse());
-        Map<K, V> resultMap = newHashMap();
+        Map<K, V> resultMap = new HashMap<>();
         try {
             for (Map.Entry<String, String> bucket : buckets.entrySet()) {
                 K convertedKey = keyConverter.convert(bucket.getKey());

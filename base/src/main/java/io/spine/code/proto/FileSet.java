@@ -40,6 +40,7 @@ import io.spine.type.Type;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -49,7 +50,6 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static com.google.common.flogger.LazyArgs.lazy;
 import static io.spine.code.proto.Linker.link;
@@ -77,11 +77,11 @@ public final class FileSet {
     private final Map<FileName, FileDescriptor> files;
 
     private FileSet(Map<FileName, FileDescriptor> files) {
-        this.files = newHashMap(files);
+        this.files = new HashMap<>(files);
     }
 
     private FileSet() {
-        this.files = newHashMap();
+        this.files = new HashMap<>();
     }
 
     /**

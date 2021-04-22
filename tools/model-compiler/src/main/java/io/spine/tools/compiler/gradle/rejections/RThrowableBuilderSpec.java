@@ -44,10 +44,10 @@ import io.spine.protobuf.Messages;
 import io.spine.tools.compiler.field.FieldType;
 import io.spine.validate.Validate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
@@ -209,7 +209,7 @@ final class RThrowableBuilderSpec implements BuilderSpec {
     }
 
     private List<MethodSpec> setters() {
-        List<MethodSpec> methods = newArrayList();
+        List<MethodSpec> methods = new ArrayList<>();
         ImmutableList<FieldDeclaration> fields = rejection.fields();
         for (FieldDeclaration field : fields) {
             FieldType fieldType = FieldType.of(field);

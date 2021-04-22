@@ -40,14 +40,14 @@ import org.gradle.api.Task;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Maps.newHashMap;
 import static io.spine.tools.js.compiler.gradle.ProtoJsPlugin.extensionName;
 import static io.spine.tools.code.structure.ExternalModule.predefinedModules;
 import static java.util.stream.Collectors.toList;
@@ -108,7 +108,7 @@ public class Extension extends GradleExtension {
      * ]
      * }</pre>
      */
-    public Map<String, List<String>> modules = newHashMap();
+    public Map<String, List<String>> modules = new HashMap<>();
 
     private Task generateParsersTask;
 
@@ -146,7 +146,7 @@ public class Extension extends GradleExtension {
     public static List<ExternalModule> modules(Project project) {
         Extension extension = of(project);
         Map<String, List<String>> rawModules = extension.modules;
-        List<ExternalModule> modules = newArrayList();
+        List<ExternalModule> modules = new ArrayList<>();
         for (String moduleName : rawModules.keySet()) {
             List<DirectoryPattern> patterns = patterns(rawModules.get(moduleName));
             ExternalModule module = new ExternalModule(moduleName, patterns);

@@ -28,8 +28,8 @@ package io.spine.tools.js.generate.index;
 
 import com.google.common.collect.Maps;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.tools.js.code.TypeName;
 import io.spine.code.proto.FileSet;
+import io.spine.tools.js.code.TypeName;
 import io.spine.tools.js.generate.Snippet;
 import io.spine.tools.js.generate.output.CodeLines;
 import io.spine.tools.js.generate.output.snippet.MapExportSnippet;
@@ -37,12 +37,12 @@ import io.spine.tools.js.generate.parse.GenerateKnownTypeParsers;
 import io.spine.type.MessageType;
 import io.spine.type.TypeUrl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -73,7 +73,7 @@ final class TypeParsersMap implements Snippet {
     }
 
     private static List<Map.Entry<String, TypeName>> mapEntries(FileSet fileSet) {
-        Collection<MessageType> typesWithParsers = newArrayList();
+        Collection<MessageType> typesWithParsers = new ArrayList<>();
         for (FileDescriptor file : fileSet.files()) {
             Collection<MessageType> typesInFile = GenerateKnownTypeParsers.targetTypes(file);
             typesWithParsers.addAll(typesInFile);

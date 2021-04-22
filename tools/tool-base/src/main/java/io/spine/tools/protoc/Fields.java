@@ -31,10 +31,10 @@ import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.query.EntityStateField;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static com.google.common.collect.Maps.newHashMap;
 
 /**
  * A configuration of strongly-typed message fields to be generated for certain message types.
@@ -44,7 +44,7 @@ import static com.google.common.collect.Maps.newHashMap;
 public final class Fields extends ModelCompilerConfiguration<AddFields> {
 
     private EntityStateConfig entityStateConfig = EntityStateConfig.getDefaultInstance();
-    private final Map<String, ClassName> byType = newHashMap();
+    private final Map<String, ClassName> byType = new HashMap<>();
 
     /**
      * Configures strongly-typed fields generation for messages that represent an entity state.

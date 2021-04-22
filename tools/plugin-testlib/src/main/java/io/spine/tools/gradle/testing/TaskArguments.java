@@ -31,6 +31,8 @@ import io.spine.tools.gradle.TaskName;
 
 import java.util.List;
 
+import static com.google.common.collect.Lists.newArrayList;
+
 /**
  * Create Gradle Runner arguments for a task.
  */
@@ -58,7 +60,7 @@ final class TaskArguments {
 
     String[] of(TaskName taskName) {
         String task = taskName.name();
-        List<String> result = Lists.newArrayList(task, STACKTRACE_CLI_OPTION);
+        List<String> result = newArrayList(task, STACKTRACE_CLI_OPTION);
         if (debug) {
             result.add(DEBUG_CLI_OPTION);
         }

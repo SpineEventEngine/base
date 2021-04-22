@@ -31,13 +31,13 @@ import com.google.common.base.Joiner;
 import io.spine.code.fs.DirectoryReference;
 import io.spine.code.fs.FileReference;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -108,7 +108,7 @@ public final class DirectoryPattern {
         checkState(firstMatchIndex.isPresent());
         List<String> missingElements = directory.elements()
                                                 .subList(0, firstMatchIndex.get());
-        List<String> resultElements = newArrayList();
+        List<String> resultElements = new ArrayList<>();
         resultElements.addAll(missingElements);
         resultElements.addAll(origin.elements());
         String result = Joiner.on(FileReference.separator())

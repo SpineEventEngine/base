@@ -31,11 +31,11 @@ import io.spine.tools.js.generate.Snippet;
 import io.spine.tools.js.generate.output.CodeLine;
 import io.spine.tools.js.generate.output.CodeLines;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.tools.js.generate.output.CodeLines.commaSeparated;
 import static java.lang.String.format;
 
@@ -81,7 +81,7 @@ public class MapExportSnippet implements Snippet {
 
         private Builder(String mapName) {
             this.mapName = mapName;
-            this.entries = newArrayList();
+            this.entries = new ArrayList<>();
         }
 
         /**

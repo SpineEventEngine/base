@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.fs.dart;
+package io.spine.tools.dart.fs;
 
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.AbstractFileName;
