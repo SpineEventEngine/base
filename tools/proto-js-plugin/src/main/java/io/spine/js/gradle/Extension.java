@@ -52,8 +52,9 @@ import static io.spine.tools.code.structure.ExternalModule.predefinedModules;
 import static java.util.stream.Collectors.toList;
 
 /**
- * An extension for the {@link ProtoJsPlugin} which allows to obtain the {@code generateJsonParsers}
- * task to configure when it will be executed during the build lifecycle.
+ * An extension for the {@link ProtoJsPlugin} which allows to obtain
+ * the {@link #generateParsersTask()} task to configure when it will be executed
+ * during the build lifecycle.
  */
 @SuppressWarnings("PublicField" /* Expose fields as a Gradle extension */)
 public class Extension extends GradleExtension {
@@ -107,7 +108,12 @@ public class Extension extends GradleExtension {
      * }</pre>
      */
     public Map<String, List<String>> modules = newHashMap();
+
     private Task generateParsersTask;
+
+    protected Extension(Project project, String name) {
+        super(project, name);
+    }
 
     public static Directory getMainGenProto(Project project) {
         Extension extension = extension(project);
@@ -176,7 +182,6 @@ public class Extension extends GradleExtension {
         Extension extension = (Extension)
                 project.getExtensions()
                        .getByName(extensionName());
-        extension.injectProject(project);
         return extension;
     }
 

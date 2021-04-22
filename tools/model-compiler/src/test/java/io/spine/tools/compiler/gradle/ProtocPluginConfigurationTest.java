@@ -58,12 +58,11 @@ class ProtocPluginConfigurationTest {
     @Test
     @DisplayName("generate configuration file")
     void generate() throws IOException {
-        Project project = ProjectBuilder
-                .builder()
+        Project project = ProjectBuilder.builder()
                 .withProjectDir(projectDir)
                 .build();
         project.apply(ImmutableMap.of(PLUGIN, "java"));
-        Extension extension = new Extension();
+        Extension extension = new Extension(project, ModelCompilerPlugin.extensionName());
         extension.generateValidatingBuilders = false;
         project.getExtensions().add(extensionName(), extension);
 

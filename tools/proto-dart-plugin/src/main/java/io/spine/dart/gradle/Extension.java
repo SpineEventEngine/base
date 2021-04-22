@@ -56,8 +56,6 @@ import static java.util.stream.Collectors.toList;
 @SuppressWarnings("UnstableApiUsage") // Gradle `Property` API.
 public final class Extension extends GradleExtension {
 
-    private static final String NAME = "protoDart";
-
     private final Property<Object> mainDescriptorSet;
     private final Property<Object> testDescriptorSet;
     private final DirectoryProperty generatedDir;
@@ -98,9 +96,8 @@ public final class Extension extends GradleExtension {
     @SuppressWarnings("PublicField" /* Expose fields as a Gradle extension */)
     public final Map<String, List<String>> modules = newHashMap();
 
-    Extension(Project project) {
-        super();
-        injectProject(project);
+    Extension(Project project, String name) {
+        super(project, name);
         ObjectFactory objects = project.getObjects();
         this.libDir = objects.directoryProperty();
         this.testDir = objects.directoryProperty();
@@ -131,16 +128,7 @@ public final class Extension extends GradleExtension {
         Extension extension =
                 project.getExtensions()
                        .getByType(Extension.class);
-        extension.injectProject(project);
         return extension;
-    }
-
-    /**
-     * Registers this extension in the given project.
-     */
-    void register() {
-        project().getExtensions()
-                 .add(Extension.class, NAME, this);
     }
 
     /**

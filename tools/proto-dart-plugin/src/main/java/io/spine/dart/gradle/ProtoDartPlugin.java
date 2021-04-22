@@ -62,9 +62,11 @@ import static org.gradle.api.Task.TASK_TYPE;
  */
 public final class ProtoDartPlugin extends SpinePlugin {
 
+    private static final String EXTENSION_NAME = "protoDart";
+
     @Override
     public void apply(Project project) {
-        Extension extension = new Extension(project);
+        Extension extension = new Extension(project, EXTENSION_NAME);
         extension.register();
 
         Plugin<Project> protocConfig = new DartProtocConfigurationPlugin();

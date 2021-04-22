@@ -26,10 +26,7 @@
 
 package io.spine.code;
 
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.code.java.ClassName;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.google.protobuf.Descriptors.FileDescriptor;
 
 /**
  * A set of utilities for working with the Google packages in Java and Protobuf.
@@ -47,23 +44,28 @@ public final class GooglePackage {
     }
 
     /**
-     * Checks that the given Protobuf file is not declared in Google package.
+     * Verifies if the passed package name belongs to Google code.
+     *
+     * <p>Handles Protobuf and Java package names.
      */
-    public static boolean notInGooglePackage(FileDescriptorProto descriptor) {
-        checkNotNull(descriptor);
-        return notInGooglePackage(descriptor.getPackage());
+    public static boolean test(String packageName) {
+        boolean result =
+                packageName.startsWith(PROTOBUF_STYLE)
+                || packageName.startsWith(JAVA_STYLE);
+        return result;
     }
 
     /**
-     * Checks that the given Java class is not declared in Google package.
+     * Verifies if the passed file declares types under the "google" package.
      */
-    public static boolean notInGooglePackage(ClassName cls) {
-        checkNotNull(cls);
-        return notInGooglePackage(cls.packageName().value());
+    public static boolean isGoogle(FileDescriptor file) {
+        return test(file.toProto().getPackage());
     }
 
-    private static boolean notInGooglePackage(String packageName) {
-        checkNotNull(packageName);
-        return !packageName.startsWith(PROTOBUF_STYLE) && !packageName.startsWith(JAVA_STYLE);
+    /**
+     * Verifies if the passed file declares types NOT under the "google" package.
+     */
+    public static boolean isNotGoogle(FileDescriptor file) {
+        return !isGoogle(file);
     }
 }

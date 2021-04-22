@@ -54,8 +54,8 @@ public class ModelCompilerPlugin implements Plugin<Project>, Logging {
     @Override
     public void apply(Project project) {
         _debug().log("Adding the extension to the project.");
-        project.getExtensions()
-               .create(extensionName(), Extension.class);
+        Extension extension = new Extension(project, EXTENSION_NAME);
+        extension.register();
 
         // Plugins that deal with Protobuf types must depend on `mergeDescriptorSet` and
         // `mergeTestDescriptorSet` tasks to be able to access every declared type

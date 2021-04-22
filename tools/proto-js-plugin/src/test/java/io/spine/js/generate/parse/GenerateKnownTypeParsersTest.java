@@ -30,10 +30,10 @@ import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.GooglePackage;
 import io.spine.code.fs.js.Directory;
 import io.spine.code.fs.js.FileName;
 import io.spine.code.gen.js.TypeName;
-import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.js.generate.TaskId;
@@ -130,7 +130,7 @@ class GenerateKnownTypeParsersTest {
         Collection<FileDescriptor> fileDescriptors = fileSet.files();
         for (FileDescriptor file : fileDescriptors) {
             List<Descriptor> messageTypes = file.getMessageTypes();
-            if (FileDescriptors.isNotGoogle(file) && !messageTypes.isEmpty()) {
+            if (GooglePackage.isNotGoogle(file) && !messageTypes.isEmpty()) {
                 checkParseCodeAdded(file);
             }
         }

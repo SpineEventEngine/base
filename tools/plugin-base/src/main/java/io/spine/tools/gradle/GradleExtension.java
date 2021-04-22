@@ -29,7 +29,6 @@ package io.spine.tools.gradle;
 import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper;
 import io.spine.code.fs.DefaultPaths;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Project;
 
 import java.io.File;
@@ -55,31 +54,52 @@ public abstract class GradleExtension {
      *
      * <p>This field is {@code null} until {@link #injectProject(Project)} is called.
      */
-    private @Nullable Project project;
+    private final Project project;
+
+    /**
+     * The name of the extension.
+     */
+    private final String name;
 
     /**
      * Provides default paths in the {@link #project}.
      *
      * <p>The paths can be explicitly re-defined via setting properties of this extension.
      * Please see fields with the names ending with {@code Dir} for details.
-     *
-     * <p>This field is {@code null} until {@link #injectProject(Project)} is called.
      */
-    private @Nullable DefaultPaths defaultPaths;
+    private final DefaultPaths defaultPaths;
+
+    @SuppressWarnings("AbstractMethodCallInConstructor")
+    protected GradleExtension(Project project, String name) {
+        this.project = checkNotNull(project);
+        this.name = name;
+        this.defaultPaths = defaultPathsIn(project);
+    }
+
+    /**
+     * Registers this extension in the given project.
+     */
+    public void register() {
+        @SuppressWarnings("unchecked")
+        Class<GradleExtension> thisClass = (Class<GradleExtension>) getClass();
+        project().getExtensions()
+                 .add(thisClass, name, this);
+    }
+
 
     protected final void injectProject(Project project) {
         checkNotNull(project);
-        if (this.project != null) {
-            boolean sameProject = project.equals(this.project);
-            if (sameProject) {
-                return;
-            }
-            // Replacing project, which is strange.
-            _warn().log("Injecting another project (`%s`) instead of set before (`%s`).",
-                        project, this.project);
-        }
-        this.project = project;
-        this.defaultPaths = defaultPathsIn(project);
+//        if (this.project != null) {
+//            boolean sameProject = project.equals(this.project);
+//            if (sameProject) {
+//                return;
+//            }
+//            // Replacing project, which is strange.
+//            _warn().log("Injecting another project (`%s`) instead of set before (`%s`).",
+//                        project, this.project);
+//        }
+//        this.project = project;
+//        this.defaultPaths = defaultPathsIn(project);
     }
 
     /**

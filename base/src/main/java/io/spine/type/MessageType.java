@@ -36,10 +36,10 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
 import io.spine.base.UuidValue;
+import io.spine.code.GooglePackage;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
-import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.LocationPath;
 import io.spine.code.proto.TypeSet;
 import io.spine.logging.Logging;
@@ -153,7 +153,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * Tells if this message is under the "google" package.
      */
     public boolean isGoogle() {
-        boolean result = FileDescriptors.isGoogle(file());
+        boolean result = GooglePackage.isGoogle(file());
         return result;
     }
 

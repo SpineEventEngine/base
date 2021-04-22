@@ -187,6 +187,10 @@ public class Extension extends GradleExtension {
 
     public List<String> internalMethodNames = new ArrayList<>();
 
+    Extension(Project project, String name) {
+        super(project, name);
+    }
+
     /**
      * Obtains the instance of the {@linkplain ModelCompilerPlugin#extensionName() extension} in
      * the passed project.
@@ -199,7 +203,6 @@ public class Extension extends GradleExtension {
         String extensionName = ModelCompilerPlugin.extensionName();
         Object found = extensions.getByName(extensionName);
         Extension result = (Extension) found;
-        result.injectProject(project);
         return result;
     }
 

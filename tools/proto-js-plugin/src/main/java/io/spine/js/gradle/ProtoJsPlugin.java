@@ -89,8 +89,8 @@ public class ProtoJsPlugin extends ProtoPlugin {
     public void apply(Project project) {
         JsProtocConfigurationPlugin configPlugin = new JsProtocConfigurationPlugin();
         configPlugin.apply(project);
-        Extension extension = project.getExtensions()
-                                     .create(EXTENSION_NAME, Extension.class);
+        Extension extension = new Extension(project, EXTENSION_NAME);
+        extension.register();
         Action<Task> action = newAction(project);
         GradleTask newTask = newTask(generateJsonParsers, action)
                 .insertBeforeTask(build)
