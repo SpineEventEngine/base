@@ -173,9 +173,11 @@ public class Extension extends GradleExtension {
 
     @VisibleForTesting
     static Extension extension(Project project) {
-        return (Extension)
+        Extension extension = (Extension)
                 project.getExtensions()
                        .getByName(extensionName());
+        extension.injectProject(project);
+        return extension;
     }
 
     private static List<DirectoryPattern> patterns(Collection<String> rawPatterns) {
