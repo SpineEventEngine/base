@@ -99,11 +99,9 @@ public final class Extension extends GradleExtension {
     @SuppressWarnings("PublicField" /* Expose fields as a Gradle extension */)
     public final Map<String, List<String>> modules = newHashMap();
 
-    private final Project project;
-
     Extension(Project project) {
         super();
-        this.project = project;
+        injectProject(project);
         ObjectFactory objects = project.getObjects();
         this.libDir = objects.directoryProperty();
         this.testDir = objects.directoryProperty();
@@ -116,6 +114,7 @@ public final class Extension extends GradleExtension {
     }
 
     private void initProperties() {
+        Project project = project();
         libDir.convention(project.getLayout()
                                  .getProjectDirectory()
                                  .dir(LIB_DIRECTORY));
@@ -144,8 +143,8 @@ public final class Extension extends GradleExtension {
      * Registers this extension in the given project.
      */
     void register() {
-        project.getExtensions()
-               .add(Extension.class, NAME, this);
+        project().getExtensions()
+                 .add(Extension.class, NAME, this);
     }
 
     /**
@@ -248,7 +247,7 @@ public final class Extension extends GradleExtension {
     }
 
     private File file(Property<Object> property) {
-        return project.file(property.get());
+        return project().file(property.get());
     }
 
     private static List<DirectoryPattern> patterns(Collection<String> rawPatterns) {
