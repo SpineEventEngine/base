@@ -45,9 +45,9 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.code.fs.DirectoryName.generated;
-import static io.spine.code.fs.DirectoryName.lib;
-import static io.spine.code.fs.DirectoryName.test;
+import static io.spine.tools.code.fs.DirectoryName.generated;
+import static io.spine.tools.code.fs.DirectoryName.lib;
+import static io.spine.tools.code.fs.DirectoryName.test;
 import static java.util.stream.Collectors.toList;
 
 /**

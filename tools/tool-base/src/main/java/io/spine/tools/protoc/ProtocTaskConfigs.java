@@ -26,7 +26,7 @@
 
 package io.spine.tools.protoc;
 
-import io.spine.code.java.ClassName;
+import io.spine.tools.code.java.ClassName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;

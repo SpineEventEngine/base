@@ -30,7 +30,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
-import io.spine.code.java.ClassName;
+import io.spine.tools.code.java.ClassName;
 
 import java.util.Map;
 

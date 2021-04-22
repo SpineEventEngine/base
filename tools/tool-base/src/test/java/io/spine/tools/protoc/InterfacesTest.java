@@ -27,7 +27,7 @@
 package io.spine.tools.protoc;
 
 import com.google.common.truth.Truth;
-import io.spine.code.java.ClassName;
+import io.spine.tools.code.java.ClassName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

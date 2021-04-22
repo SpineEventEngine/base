@@ -30,7 +30,7 @@ import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Message;
 import io.spine.base.Field;
 import io.spine.base.Time;
-import io.spine.code.proto.FieldContext;
+import io.spine.tools.code.proto.FieldContext;
 import io.spine.net.Url;
 import io.spine.people.PersonName;
 import io.spine.test.validate.Passport;

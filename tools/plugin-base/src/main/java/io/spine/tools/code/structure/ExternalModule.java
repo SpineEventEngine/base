@@ -29,8 +29,8 @@ package io.spine.tools.code.structure;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import io.spine.code.fs.DirectoryReference;
-import io.spine.code.fs.FileReference;
+import io.spine.tools.code.fs.DirectoryReference;
+import io.spine.tools.code.fs.FileReference;
 
 import java.util.Collection;
 import java.util.Objects;

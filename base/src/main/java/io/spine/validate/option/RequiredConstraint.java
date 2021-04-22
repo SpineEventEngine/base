@@ -27,8 +27,8 @@
 package io.spine.validate.option;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.code.proto.FieldContext;
-import io.spine.code.proto.FieldDeclaration;
+import io.spine.tools.code.proto.FieldContext;
+import io.spine.tools.code.proto.FieldDeclaration;
 import io.spine.option.IfMissingOption;
 import io.spine.validate.ConstraintTranslator;
 import io.spine.validate.diags.ViolationText;

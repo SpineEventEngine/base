@@ -31,9 +31,9 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.OneofDescriptor;
 import com.google.protobuf.Message;
-import io.spine.code.proto.FieldContext;
-import io.spine.code.proto.FieldDeclaration;
-import io.spine.code.proto.OneofDeclaration;
+import io.spine.tools.code.proto.FieldContext;
+import io.spine.tools.code.proto.FieldDeclaration;
+import io.spine.tools.code.proto.OneofDeclaration;
 import io.spine.type.MessageType;
 import org.checkerframework.checker.nullness.qual.Nullable;
 

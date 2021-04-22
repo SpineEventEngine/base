@@ -30,7 +30,7 @@ import com.google.common.collect.BoundType;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
 import com.google.common.collect.Sets;
-import io.spine.code.proto.FieldDeclaration;
+import io.spine.tools.code.proto.FieldDeclaration;
 import io.spine.net.Url;
 import io.spine.validate.ComparableNumber;
 import org.junit.jupiter.api.DisplayName;

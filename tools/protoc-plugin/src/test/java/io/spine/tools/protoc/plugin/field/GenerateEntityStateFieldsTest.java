@@ -29,7 +29,7 @@ package io.spine.tools.protoc.plugin.field;
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
 import io.spine.base.SubscribableField;
-import io.spine.code.gen.java.FieldFactory;
+import io.spine.tools.java.gen.FieldFactory;
 import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.tools.protoc.EntityStateConfig;
 import io.spine.tools.protoc.plugin.message.tests.ProtocProject;

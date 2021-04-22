@@ -28,7 +28,7 @@ package io.spine.tools.js.compiler.gradle;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper;
-import io.spine.code.fs.DefaultPaths;
+import io.spine.tools.code.fs.DefaultPaths;
 import io.spine.tools.js.fs.DefaultJsPaths;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.code.structure.DirectoryPattern;

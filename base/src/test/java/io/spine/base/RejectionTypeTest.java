@@ -27,7 +27,7 @@
 package io.spine.base;
 
 import com.google.protobuf.Descriptors.Descriptor;
-import io.spine.code.java.ClassName;
+import io.spine.tools.code.java.ClassName;
 import io.spine.test.base.rejections.TestRejections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

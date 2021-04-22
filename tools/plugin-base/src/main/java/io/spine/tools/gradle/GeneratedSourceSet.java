@@ -27,14 +27,14 @@
 package io.spine.tools.gradle;
 
 import com.google.common.annotations.VisibleForTesting;
-import io.spine.code.AbstractDirectory;
+import io.spine.tools.code.AbstractDirectory;
 
 import java.nio.file.Path;
 
-import static io.spine.code.fs.DirectoryName.grpc;
-import static io.spine.code.fs.DirectoryName.java;
-import static io.spine.code.fs.DirectoryName.resources;
-import static io.spine.code.fs.DirectoryName.spine;
+import static io.spine.tools.code.fs.DirectoryName.grpc;
+import static io.spine.tools.code.fs.DirectoryName.java;
+import static io.spine.tools.code.fs.DirectoryName.resources;
+import static io.spine.tools.code.fs.DirectoryName.spine;
 
 /**
  * The generated code directory which belongs to a certain source set.

@@ -29,7 +29,7 @@ package io.spine.validate;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.code.proto.FieldDeclaration;
+import io.spine.tools.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;
 
 import java.util.Collection;

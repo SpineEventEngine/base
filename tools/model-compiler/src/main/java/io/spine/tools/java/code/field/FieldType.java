@@ -28,7 +28,7 @@ package io.spine.tools.java.code.field;
 
 import com.google.common.collect.ImmutableSet;
 import com.squareup.javapoet.TypeName;
-import io.spine.code.proto.FieldDeclaration;
+import io.spine.tools.code.proto.FieldDeclaration;
 
 /**
  * The type information of a field for a code-generation.

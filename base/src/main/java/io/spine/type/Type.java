@@ -37,10 +37,10 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
-import io.spine.code.java.ClassName;
-import io.spine.code.java.PackageName;
-import io.spine.code.java.SimpleClassName;
-import io.spine.code.proto.FileName;
+import io.spine.tools.code.java.ClassName;
+import io.spine.tools.code.java.PackageName;
+import io.spine.tools.code.java.SimpleClassName;
+import io.spine.tools.code.proto.FileName;
 
 import java.util.Optional;
 

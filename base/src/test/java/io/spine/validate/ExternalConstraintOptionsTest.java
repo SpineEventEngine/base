@@ -28,7 +28,7 @@ package io.spine.validate;
 
 import com.google.common.truth.OptionalSubject;
 import com.google.protobuf.Descriptors;
-import io.spine.code.proto.FieldContext;
+import io.spine.tools.code.proto.FieldContext;
 import io.spine.option.OptionsProto;
 import io.spine.test.validation.AField;
 import io.spine.test.validation.AMessage;

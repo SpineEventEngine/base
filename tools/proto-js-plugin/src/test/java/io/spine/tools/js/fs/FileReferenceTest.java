@@ -27,8 +27,8 @@
 package io.spine.tools.js.fs;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.code.fs.DirectoryReference;
-import io.spine.code.fs.FileReference;
+import io.spine.tools.code.fs.DirectoryReference;
+import io.spine.tools.code.fs.FileReference;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

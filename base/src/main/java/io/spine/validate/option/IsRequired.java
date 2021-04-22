@@ -28,7 +28,7 @@ package io.spine.validate.option;
 
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.OneofDescriptor;
-import io.spine.code.proto.OneofDeclaration;
+import io.spine.tools.code.proto.OneofDeclaration;
 import io.spine.validate.Constraint;
 
 import java.util.Optional;

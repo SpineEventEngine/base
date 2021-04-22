@@ -28,8 +28,8 @@ package io.spine.tools.js.generate.index;
 
 import com.google.common.collect.Maps;
 import io.spine.tools.js.code.TypeName;
-import io.spine.code.proto.FileSet;
-import io.spine.code.proto.TypeSet;
+import io.spine.tools.code.proto.FileSet;
+import io.spine.tools.code.proto.TypeSet;
 import io.spine.tools.js.generate.Snippet;
 import io.spine.tools.js.generate.output.CodeLines;
 import io.spine.tools.js.generate.output.snippet.MapExportSnippet;

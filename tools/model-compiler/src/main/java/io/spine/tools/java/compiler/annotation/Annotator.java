@@ -29,7 +29,7 @@ package io.spine.tools.java.compiler.annotation;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.tools.java.fs.SourceFile;
-import io.spine.code.java.ClassName;
+import io.spine.tools.code.java.ClassName;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.AnnotationSource;

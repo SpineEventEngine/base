@@ -33,13 +33,13 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import io.spine.base.RejectionType;
-import io.spine.code.gen.java.BuilderSpec;
-import io.spine.code.gen.java.JavaPoetName;
-import io.spine.code.java.PackageName;
-import io.spine.code.java.SimpleClassName;
-import io.spine.code.javadoc.JavadocText;
-import io.spine.code.proto.FieldDeclaration;
-import io.spine.code.proto.FieldName;
+import io.spine.tools.java.gen.BuilderSpec;
+import io.spine.tools.java.gen.JavaPoetName;
+import io.spine.tools.code.java.PackageName;
+import io.spine.tools.code.java.SimpleClassName;
+import io.spine.tools.java.javadoc.JavadocText;
+import io.spine.tools.code.proto.FieldDeclaration;
+import io.spine.tools.code.proto.FieldName;
 import io.spine.protobuf.Messages;
 import io.spine.tools.java.code.field.FieldType;
 import io.spine.validate.Validate;
@@ -223,7 +223,7 @@ final class RThrowableBuilderSpec implements BuilderSpec {
         FieldName fieldName = field.name();
         String parameterName = fieldName.javaCase();
         String methodName = fieldType.primarySetterTemplate()
-                                     .format(io.spine.code.gen.java.FieldName.from(fieldName));
+                                     .format(io.spine.tools.java.gen.FieldName.from(fieldName));
         MethodSpec.Builder methodBuilder = MethodSpec
                 .methodBuilder(methodName)
                 .addModifiers(PUBLIC)

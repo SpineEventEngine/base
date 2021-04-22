@@ -28,9 +28,9 @@ package io.spine.tools.js.generate;
 
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.fs.FileName;
-import io.spine.code.proto.FileSet;
-import io.spine.code.proto.ProtoBelongsToModule;
-import io.spine.code.proto.SourceFile;
+import io.spine.tools.code.proto.FileSet;
+import io.spine.tools.code.proto.ProtoBelongsToModule;
+import io.spine.tools.code.proto.SourceFile;
 
 import java.nio.file.Path;
 

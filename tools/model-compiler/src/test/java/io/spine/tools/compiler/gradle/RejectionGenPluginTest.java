@@ -27,8 +27,8 @@
 package io.spine.tools.compiler.gradle;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.gen.java.BuilderSpec;
-import io.spine.code.java.SimpleClassName;
+import io.spine.tools.java.gen.BuilderSpec;
+import io.spine.tools.code.java.SimpleClassName;
 import io.spine.protobuf.Messages;
 import io.spine.tools.gradle.testing.GradleProject;
 import org.jboss.forge.roaster.Roaster;

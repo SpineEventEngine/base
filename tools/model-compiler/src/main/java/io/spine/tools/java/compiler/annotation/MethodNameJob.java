@@ -27,7 +27,7 @@
 package io.spine.tools.java.compiler.annotation;
 
 import com.google.common.collect.ImmutableSet;
-import io.spine.code.java.ClassName;
+import io.spine.tools.code.java.ClassName;
 
 /**
  * An annotation {@link Job} which annotates methods matching certain naming patterns.

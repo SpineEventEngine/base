@@ -26,8 +26,8 @@
 
 package io.spine.tools.type;
 
-import io.spine.code.proto.FileSet;
-import io.spine.code.proto.TypeSet;
+import io.spine.tools.code.proto.FileSet;
+import io.spine.tools.code.proto.TypeSet;
 import io.spine.type.KnownTypes;
 
 import java.io.File;

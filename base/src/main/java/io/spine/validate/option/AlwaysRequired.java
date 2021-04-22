@@ -27,7 +27,7 @@
 package io.spine.validate.option;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.code.proto.FieldContext;
+import io.spine.tools.code.proto.FieldContext;
 
 /**
  * A special case of {@code Required} option that assumes that the option is present regardless

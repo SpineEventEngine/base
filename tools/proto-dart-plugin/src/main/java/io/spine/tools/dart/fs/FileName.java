@@ -27,7 +27,7 @@
 package io.spine.tools.dart.fs;
 
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.AbstractFileName;
+import io.spine.tools.code.AbstractFileName;
 
 /**
  * Name of a Dart file generated from Protobuf.
@@ -50,7 +50,7 @@ public final class FileName extends AbstractFileName<FileName> {
      * @param file the source Protobuf file
      * @return new {@code FileName}, relative to the code generation root
      */
-    public static FileName relative(io.spine.code.proto.FileName file) {
+    public static FileName relative(io.spine.tools.code.proto.FileName file) {
         String relativePath = file.nameWithoutExtension() + GENERATED_EXTENSION;
         return new FileName(relativePath);
     }
@@ -62,7 +62,7 @@ public final class FileName extends AbstractFileName<FileName> {
      * @return new {@code FileName}, relative to the code generation root
      */
     public static FileName relative(FileDescriptor file) {
-        io.spine.code.proto.FileName protoName = io.spine.code.proto.FileName.from(file);
+        io.spine.tools.code.proto.FileName protoName = io.spine.tools.code.proto.FileName.from(file);
         return relative(protoName);
     }
 }

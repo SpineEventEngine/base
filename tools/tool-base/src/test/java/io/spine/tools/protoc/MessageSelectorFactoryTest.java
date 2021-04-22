@@ -29,7 +29,7 @@ package io.spine.tools.protoc;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.testing.NullPointerTester;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import io.spine.code.proto.FileName;
+import io.spine.tools.code.proto.FileName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

@@ -30,8 +30,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.truth.StringSubject;
 import com.google.common.truth.Truth;
-import io.spine.code.gen.Indent;
-import io.spine.code.gen.IndentLevel;
+import io.spine.tools.code.Indent;
+import io.spine.tools.code.IndentLevel;
 import io.spine.tools.js.generate.given.GivenLines;
 import io.spine.tools.js.generate.output.snippet.Comment;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,8 +41,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static io.spine.code.gen.Indent.of2;
-import static io.spine.code.gen.Indent.of4;
+import static io.spine.tools.code.Indent.of2;
+import static io.spine.tools.code.Indent.of4;
 import static io.spine.tools.js.generate.given.Generators.assertContains;
 import static io.spine.tools.js.generate.given.GivenLines.linesWithDepth;
 import static io.spine.tools.js.generate.given.GivenLines.newCodeLines;

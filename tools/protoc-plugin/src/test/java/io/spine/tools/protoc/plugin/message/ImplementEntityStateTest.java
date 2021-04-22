@@ -29,7 +29,7 @@ package io.spine.tools.protoc.plugin.message;
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
 import io.spine.base.EntityState;
-import io.spine.code.java.ClassName;
+import io.spine.tools.code.java.ClassName;
 import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.tools.protoc.EntityStateConfig;
 import io.spine.tools.protoc.plugin.message.tests.ProtocProject;

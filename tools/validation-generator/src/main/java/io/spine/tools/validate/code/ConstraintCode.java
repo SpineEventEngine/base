@@ -27,7 +27,7 @@
 package io.spine.tools.validate.code;
 
 import com.squareup.javapoet.CodeBlock;
-import io.spine.code.proto.FieldDeclaration;
+import io.spine.tools.code.proto.FieldDeclaration;
 import io.spine.logging.Logging;
 import io.spine.tools.validate.AccumulateViolations;
 import io.spine.tools.validate.FieldAccess;

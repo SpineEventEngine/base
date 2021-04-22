@@ -29,7 +29,7 @@ package io.spine.tools.protoc;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import io.spine.code.proto.FileName;
+import io.spine.tools.code.proto.FileName;
 
 import java.util.Map;
 import java.util.function.Function;

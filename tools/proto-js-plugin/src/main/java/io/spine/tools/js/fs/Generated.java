@@ -26,10 +26,10 @@
 
 package io.spine.tools.js.fs;
 
-import io.spine.code.fs.DefaultPaths;
-import io.spine.code.fs.Src;
+import io.spine.tools.code.fs.DefaultPaths;
+import io.spine.tools.code.fs.Src;
 
-import static io.spine.code.fs.DirectoryName.generated;
+import static io.spine.tools.code.fs.DirectoryName.generated;
 
 /**
  * The root directory for the generated JS code.

@@ -29,7 +29,7 @@ package io.spine.tools.protoc.plugin;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
-import io.spine.code.proto.OptionExtensionRegistry;
+import io.spine.tools.code.proto.OptionExtensionRegistry;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.plugin.column.ColumnGen;
 import io.spine.tools.protoc.plugin.field.FieldGen;
@@ -38,7 +38,7 @@ import io.spine.tools.protoc.plugin.message.InterfaceGen;
 import io.spine.tools.protoc.plugin.message.ValidationGen;
 import io.spine.tools.protoc.plugin.message.NestedClassGen;
 import io.spine.tools.protoc.plugin.method.MethodGen;
-import io.spine.tools.protoc.query.EntityQueryGen;
+import io.spine.tools.protoc.plugin.query.EntityQueryGen;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

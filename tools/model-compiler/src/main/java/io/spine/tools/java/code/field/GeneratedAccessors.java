@@ -28,7 +28,7 @@ package io.spine.tools.java.code.field;
 
 import com.google.common.collect.ImmutableSet;
 import io.spine.annotation.Internal;
-import io.spine.code.gen.java.FieldName;
+import io.spine.tools.java.gen.FieldName;
 
 import java.util.Collection;
 
@@ -60,7 +60,7 @@ public final class GeneratedAccessors {
      *         the type of the field associated with the accessors
      * @return new instance
      */
-    public static GeneratedAccessors forField(io.spine.code.proto.FieldName name,
+    public static GeneratedAccessors forField(io.spine.tools.code.proto.FieldName name,
                                               FieldType type) {
         FieldName javaFieldName = FieldName.from(name);
 

@@ -27,7 +27,7 @@
 package io.spine.validate;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.code.proto.FieldContext;
+import io.spine.tools.code.proto.FieldContext;
 import io.spine.type.MessageType;
 
 /**

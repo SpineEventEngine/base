@@ -28,8 +28,8 @@ package io.spine.tools.validate;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolMessageEnum;
-import io.spine.code.proto.FieldDeclaration;
-import io.spine.code.proto.OneofDeclaration;
+import io.spine.tools.code.proto.FieldDeclaration;
+import io.spine.tools.code.proto.OneofDeclaration;
 import io.spine.tools.validate.code.CodeExpression;
 import io.spine.tools.validate.code.Expression;
 

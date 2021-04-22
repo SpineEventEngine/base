@@ -31,8 +31,8 @@ import com.google.errorprone.annotations.ImmutableTypeParameter;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import io.spine.code.proto.FieldContext;
-import io.spine.code.proto.FieldOption;
+import io.spine.tools.code.proto.FieldContext;
+import io.spine.tools.code.proto.FieldOption;
 import io.spine.validate.ExternalConstraintOptions;
 
 import java.util.Optional;

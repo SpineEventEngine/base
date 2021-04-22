@@ -31,8 +31,8 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.AbstractFileName;
-import io.spine.code.fs.FileReference;
+import io.spine.tools.code.AbstractFileName;
+import io.spine.tools.code.fs.FileReference;
 
 import java.util.List;
 
@@ -83,7 +83,7 @@ public final class FileName extends AbstractFileName<FileName> {
      */
     public static FileName from(FileDescriptor descriptor) {
         checkNotNull(descriptor);
-        io.spine.code.proto.FileName protoFileName = io.spine.code.proto.FileName.from(descriptor);
+        io.spine.tools.code.proto.FileName protoFileName = io.spine.tools.code.proto.FileName.from(descriptor);
         String fileName = protoFileName.nameWithoutExtension() + protoEnding();
         return of(fileName);
     }

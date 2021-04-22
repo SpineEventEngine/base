@@ -28,8 +28,8 @@ package io.spine.validate.option;
 
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
-import io.spine.code.proto.FieldContext;
-import io.spine.code.proto.FieldDeclaration;
+import io.spine.tools.code.proto.FieldContext;
+import io.spine.tools.code.proto.FieldDeclaration;
 import io.spine.logging.Logging;
 import io.spine.option.GoesOption;
 import io.spine.option.OptionsProto;

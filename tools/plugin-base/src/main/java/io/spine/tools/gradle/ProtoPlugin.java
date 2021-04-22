@@ -26,7 +26,7 @@
 
 package io.spine.tools.gradle;
 
-import io.spine.code.proto.FileSet;
+import io.spine.tools.code.proto.FileSet;
 import io.spine.tools.type.FileDescriptorSuperset;
 import io.spine.tools.type.MergedDescriptorSet;
 import io.spine.tools.type.MoreKnownTypes;

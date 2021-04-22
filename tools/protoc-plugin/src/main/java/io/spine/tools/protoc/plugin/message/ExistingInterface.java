@@ -26,7 +26,7 @@
 
 package io.spine.tools.protoc.plugin.message;
 
-import io.spine.code.java.ClassName;
+import io.spine.tools.code.java.ClassName;
 
 /**
  * An interface which already exists.

@@ -28,14 +28,14 @@ package io.spine.tools.gradle;
 
 import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper;
-import io.spine.code.fs.DefaultPaths;
+import io.spine.tools.code.fs.DefaultPaths;
 import org.gradle.api.Project;
 
 import java.io.File;
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.proto.FileDescriptors.DESC_EXTENSION;
+import static io.spine.tools.code.proto.FileDescriptors.DESC_EXTENSION;
 import static java.util.Objects.requireNonNull;
 
 /**

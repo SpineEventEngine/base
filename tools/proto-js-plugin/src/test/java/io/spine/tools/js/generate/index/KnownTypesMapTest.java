@@ -31,7 +31,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.NullValue;
 import com.google.protobuf.StringValue;
 import io.spine.tools.js.code.TypeName;
-import io.spine.code.proto.FileSet;
+import io.spine.tools.code.proto.FileSet;
 import io.spine.tools.js.generate.output.CodeLines;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;

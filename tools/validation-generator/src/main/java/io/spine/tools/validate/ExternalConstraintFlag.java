@@ -29,7 +29,7 @@ package io.spine.tools.validate;
 import com.google.common.base.Objects;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
-import io.spine.code.proto.FieldDeclaration;
+import io.spine.tools.code.proto.FieldDeclaration;
 import io.spine.tools.validate.code.BooleanExpression;
 import io.spine.tools.validate.code.Expression;
 import io.spine.validate.ExternalConstraints;

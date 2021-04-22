@@ -26,7 +26,7 @@
 
 package io.spine.tools.java.compiler.annotation;
 
-import io.spine.code.java.ClassName;
+import io.spine.tools.code.java.ClassName;
 
 /**
  * An annotation {@link Job} which covers generated Java classes which have a certain naming.

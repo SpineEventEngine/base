@@ -63,7 +63,7 @@ class FileNameTest {
         assertThat(fileName.value()).isEqualTo(GENERATED_FILE);
     }
 
-    private static io.spine.code.proto.FileName protoFileName() {
-        return io.spine.code.proto.FileName.from(protoFile);
+    private static io.spine.tools.code.proto.FileName protoFileName() {
+        return io.spine.tools.code.proto.FileName.from(protoFile);
     }
 }

@@ -27,7 +27,7 @@
 package io.spine.tools.js.generate.given;
 
 import io.spine.tools.js.fs.Directory;
-import io.spine.code.proto.FileSet;
+import io.spine.tools.code.proto.FileSet;
 import io.spine.tools.js.generate.GenerationTask;
 
 import javax.annotation.Nullable;

@@ -26,8 +26,8 @@
 
 package io.spine.tools.gradle;
 
-import io.spine.code.gen.Indent;
-import io.spine.code.proto.FileSet;
+import io.spine.tools.code.Indent;
+import io.spine.tools.code.proto.FileSet;
 import io.spine.logging.Logging;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.gradle.api.Action;

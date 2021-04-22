@@ -28,8 +28,8 @@ package io.spine.tools.code.structure;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
-import io.spine.code.fs.DirectoryReference;
-import io.spine.code.fs.FileReference;
+import io.spine.tools.code.fs.DirectoryReference;
+import io.spine.tools.code.fs.FileReference;
 
 import java.util.ArrayList;
 import java.util.List;

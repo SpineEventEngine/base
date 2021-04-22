@@ -33,9 +33,9 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.google.protobuf.compiler.PluginProtos.Version;
-import io.spine.code.proto.FileName;
-import io.spine.code.proto.FileSet;
-import io.spine.code.proto.TypeSet;
+import io.spine.tools.code.proto.FileName;
+import io.spine.tools.code.proto.FileSet;
+import io.spine.tools.code.proto.TypeSet;
 import io.spine.tools.type.MoreKnownTypes;
 import io.spine.type.Type;
 

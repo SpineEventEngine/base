@@ -29,7 +29,7 @@ package io.spine.tools.js.generate.index;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.fs.FileName;
-import io.spine.code.proto.FileSet;
+import io.spine.tools.code.proto.FileSet;
 import io.spine.tools.js.generate.given.GivenProject;
 import io.spine.tools.js.generate.output.CodeLines;
 import org.junit.jupiter.api.DisplayName;

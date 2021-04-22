@@ -26,7 +26,7 @@
 
 package io.spine.tools.js.fs;
 
-import io.spine.code.fs.DirectoryReference;
+import io.spine.tools.code.fs.DirectoryReference;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
