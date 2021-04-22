@@ -28,10 +28,12 @@
  * This package provides types for working with file system conventions of a program
  * in written in (presumably) any programming language.
  */
+@Internal
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.code.fs;
 
 import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.annotation.Internal;
 
 import javax.annotation.ParametersAreNonnullByDefault;
