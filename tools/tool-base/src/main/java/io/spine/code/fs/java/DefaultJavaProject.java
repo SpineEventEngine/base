@@ -32,7 +32,6 @@ import java.io.File;
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.fs.DirectoryName.src;
 
 /**
  * A default directory structure for a Spine-based Java project.
@@ -78,7 +77,7 @@ public final class DefaultJavaProject extends DefaultProject {
      * Obtains the {@code "src"} directory with the handcrafted code.
      */
     public Handcrafted src() {
-        return new Handcrafted(this, src.value());
+        return new Handcrafted(this);
     }
 
     /**

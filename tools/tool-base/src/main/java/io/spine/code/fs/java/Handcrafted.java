@@ -28,6 +28,8 @@ package io.spine.code.fs.java;
 
 import io.spine.code.fs.DefaultProject;
 
+import static io.spine.code.fs.DirectoryName.src;
+
 /**
  * A root source code directory for manually written code.
  *
@@ -36,8 +38,8 @@ import io.spine.code.fs.DefaultProject;
  */
 public class Handcrafted extends JavaSrc {
 
-    Handcrafted(DefaultProject parent, String name) {
-        super(parent, name);
+    Handcrafted(DefaultProject parent) {
+        super(parent, src);
     }
 
     /**

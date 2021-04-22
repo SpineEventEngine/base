@@ -27,14 +27,13 @@
 package io.spine.code.fs;
 
 import io.spine.code.AbstractDirectory;
-import io.spine.code.SourceCodeDirectory;
 
 /**
- * A directory which contains source code of an artifact, e.g. {@code "main"} or {@code "test"}.
+ * Abstract base for directories under a project or a module.
  */
-public final class ArtifactSources extends SourceCodeDirectory {
+public abstract class ProjectDir extends AbstractDirectory {
 
-    public ArtifactSources(AbstractDirectory parent, DirectoryName name) {
-        super(parent, name.value());
+    protected ProjectDir(DefaultProject project, DirectoryName name) {
+        super(project, name.value());
     }
 }

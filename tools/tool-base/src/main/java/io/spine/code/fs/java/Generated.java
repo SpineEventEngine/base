@@ -41,7 +41,7 @@ import static io.spine.code.fs.DirectoryName.spine;
 public final class Generated extends JavaSrc {
 
     Generated(DefaultProject parent) {
-        super(parent, generated.value());
+        super(parent, generated);
     }
 
     /**

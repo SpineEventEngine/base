@@ -217,11 +217,11 @@ public class Extension extends GradleExtension {
 
     @SuppressWarnings("FloggerSplitLogStatement")
 
-    public static String mainProtoSrcDirOf(Project project) {
+    public static String mainProtoSrcDir(Project project) {
         Extension extension = of(project);
         _debug().log("Extension is `%s`.", extension);
         String protoDir = extension.mainProtoDir;
-        _debug().log("`modelCompiler.mainProtoSrcDir` is `%s`.", protoDir);
+        _debug().log("`modelCompiler.mainProtoDir` is `%s`.", protoDir);
         return pathOrDefault(protoDir, def(project).src().mainProto());
     }
 

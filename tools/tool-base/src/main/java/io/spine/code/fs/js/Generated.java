@@ -37,7 +37,7 @@ import static io.spine.code.fs.DirectoryName.generated;
 public final class Generated extends Src {
 
     Generated(DefaultProject parent) {
-        super(parent, generated.value());
+        super(parent, generated);
     }
 
     public Directory mainJs() {

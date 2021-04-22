@@ -26,17 +26,15 @@
 
 package io.spine.code.fs;
 
-import io.spine.code.SourceCodeDirectory;
-
 import static io.spine.code.fs.DirectoryName.main;
 import static io.spine.code.fs.DirectoryName.test;
 
 /**
  * A root source code directory (named usually {@code src}) in a project or a module.
  */
-public class Src extends SourceCodeDirectory {
+public abstract class Src extends ProjectDir {
 
-    protected Src(DefaultProject parent, String name) {
+    protected Src(DefaultProject parent, DirectoryName name) {
         super(parent, name);
     }
 

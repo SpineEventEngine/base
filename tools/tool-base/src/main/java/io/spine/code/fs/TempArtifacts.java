@@ -33,9 +33,9 @@ import io.spine.code.AbstractDirectory;
  *
  * @see DirectoryName#dotSpine
  */
-public final class TempArtifacts extends AbstractDirectory {
+public final class TempArtifacts extends ProjectDir {
 
     TempArtifacts(DefaultProject project) {
-        super(project, DirectoryName.dotSpine.value());
+        super(project, DirectoryName.dotSpine);
     }
 }

@@ -42,7 +42,7 @@ import static io.spine.tools.gradle.ModelCompilerTaskName.generateTestRejections
 import static io.spine.tools.gradle.ModelCompilerTaskName.mergeDescriptorSet;
 import static io.spine.tools.gradle.ModelCompilerTaskName.mergeTestDescriptorSet;
 import static io.spine.tools.compiler.gradle.Extension.mainDescriptorSetFile;
-import static io.spine.tools.compiler.gradle.Extension.mainProtoSrcDirOf;
+import static io.spine.tools.compiler.gradle.Extension.mainProtoSrcDir;
 import static io.spine.tools.compiler.gradle.Extension.generatedMainRejectionsDir;
 import static io.spine.tools.compiler.gradle.Extension.generatedTestRejectionsDir;
 import static io.spine.tools.compiler.gradle.Extension.testDescriptorSetFile;
@@ -72,7 +72,7 @@ public class RejectionGenPlugin extends ProtoPlugin {
                 createAction(project,
                              mainProtoFiles(project),
                              () -> generatedMainRejectionsDir(project),
-                             () -> mainProtoSrcDirOf(project));
+                             () -> mainProtoSrcDir(project));
         ProtoModule module = new ProtoModule(project);
         GradleTask mainTask =
                 newTask(generateRejections, mainScopeAction)

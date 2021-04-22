@@ -26,19 +26,16 @@
 
 package io.spine.code.fs;
 
-import io.spine.code.AbstractDirectory;
-
 import static io.spine.code.fs.DirectoryName.build;
 import static io.spine.code.fs.DirectoryName.descriptors;
 
 /**
  * The directory for build output.
  */
-public final class Build extends AbstractDirectory {
+public final class Build extends ProjectDir {
 
     private Build(DefaultProject module) {
-        super(module.path()
-                    .resolve(build.value()));
+        super(module, build);
     }
 
     static Build of(DefaultProject project) {
