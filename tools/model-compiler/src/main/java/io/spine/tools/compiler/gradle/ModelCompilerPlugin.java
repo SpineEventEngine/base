@@ -25,6 +25,8 @@
  */
 package io.spine.tools.compiler.gradle;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.logging.Logging;
 import io.spine.tools.compiler.gradle.annotate.ProtoAnnotatorPlugin;
 import io.spine.tools.compiler.gradle.errorprone.ErrorProneChecksPlugin;
@@ -54,8 +56,7 @@ public class ModelCompilerPlugin implements Plugin<Project>, Logging {
     @Override
     public void apply(Project project) {
         _debug().log("Adding the extension to the project.");
-        Extension extension = new Extension(project, EXTENSION_NAME);
-        extension.register();
+        createExtensionFor(project);
 
         // Plugins that deal with Protobuf types must depend on `mergeDescriptorSet` and
         // `mergeTestDescriptorSet` tasks to be able to access every declared type
@@ -68,6 +69,19 @@ public class ModelCompilerPlugin implements Plugin<Project>, Logging {
                   new JavaProtocConfigurationPlugin(),
                   new ErrorProneChecksPlugin())
               .forEach(plugin -> apply(plugin, project));
+    }
+
+    /**
+     * Creates and registers the extension for the passed project.
+     *
+     * @return the registered extension
+     */
+    @VisibleForTesting
+    @CanIgnoreReturnValue
+    public static Extension createExtensionFor(Project project) {
+        Extension extension = new Extension(project, EXTENSION_NAME);
+        extension.register();
+        return extension;
     }
 
     private void apply(SpinePlugin plugin, Project project) {

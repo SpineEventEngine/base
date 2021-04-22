@@ -119,10 +119,7 @@ class SeverityConfigurerTest {
     }
 
     private Extension configureModelCompilerExtension() {
-        ExtensionContainer extensions = project.getExtensions();
-        Extension extension =
-                extensions.create(ModelCompilerPlugin.extensionName(), Extension.class);
-        return extension;
+        return ModelCompilerPlugin.createExtensionFor(project);
     }
 
     private void checkSeverityConfiguredToError() {
