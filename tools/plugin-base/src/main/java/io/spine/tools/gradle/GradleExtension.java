@@ -48,7 +48,7 @@ import static java.util.Objects.requireNonNull;
 })
 public abstract class GradleExtension {
 
-    protected static final FluentLogger logger = FluentLogger.forEnclosingClass();
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     /**
      * The project where this extension is defined.
