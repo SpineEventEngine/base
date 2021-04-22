@@ -24,14 +24,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.java.fs;
+
+import io.spine.code.fs.DefaultPaths;
+import io.spine.code.fs.DirectoryName;
+import io.spine.code.fs.Src;
+
 /**
- * Test environment classes and utilities related to the
- * {@link io.spine.tools.java.compiler.gradle.errorprone.ErrorProneChecksPlugin} functionality.
+ * Abstract base for directories containing Java code.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.check.given;
+abstract class JavaSrc extends Src {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    JavaSrc(DefaultPaths parent, DirectoryName name) {
+        super(parent, name);
+    }
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    /**
+     * A root directory for main Java code.
+     */
+    public Directory mainJava() {
+        return Directory.rootIn(main());
+    }
+
+    /**
+     * A root directory for test Java code.
+     */
+    public Directory testJava() {
+        return Directory.rootIn(test());
+    }
+}

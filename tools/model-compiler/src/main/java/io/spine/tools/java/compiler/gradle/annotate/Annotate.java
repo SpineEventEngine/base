@@ -24,14 +24,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.java.compiler.gradle.annotate;
+
+import io.spine.tools.java.compiler.annotation.ModuleAnnotator;
+import org.gradle.api.Action;
+import org.gradle.api.Project;
+import org.gradle.api.Task;
+
+import java.io.File;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * Test environment classes and utilities related to the
- * {@link io.spine.tools.java.compiler.gradle.errorprone.ErrorProneChecksPlugin} functionality.
+ * A task action which performs generated code annotation.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.check.given;
+class Annotate implements Action<Task> {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    private final ProtoAnnotatorPlugin plugin;
+    private final Project project;
+    private final boolean productionTask;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    Annotate(ProtoAnnotatorPlugin plugin, Project project, boolean productionTask) {
+        this.plugin = checkNotNull(plugin);
+        this.project = checkNotNull(project);
+        this.productionTask = productionTask;
+    }
+
+    @Override
+    public void execute(Task task) {
+        ModuleAnnotatorFactory factory = new ModuleAnnotatorFactory(project, productionTask);
+        File descriptorSetFile = factory.descriptorSetFile();
+        if (descriptorSetFile.exists()) {
+            ModuleAnnotator annotator = factory.createAnnotator();
+            annotator.annotate();
+        } else {
+            plugin.logMissingDescriptorSetFile(descriptorSetFile);
+        }
+    }
+}

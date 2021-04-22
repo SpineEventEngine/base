@@ -24,14 +24,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.java.compiler.annotation;
+
+import io.spine.code.java.ClassName;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * Test environment classes and utilities related to the
- * {@link io.spine.tools.java.compiler.gradle.errorprone.ErrorProneChecksPlugin} functionality.
+ * A builder of {@link Job} instances.
+ *
+ * <p>To receive an instance of the builder, call {@code ModuleAnnotator.translate(...)}.
+ * The builder completes the {@code Job} construction DSL with the {@link #as(ClassName)}
+ * method.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.check.given;
+public final class JobBuilder {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    private final ApiOption targetOption;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    JobBuilder(ApiOption targetOption) {
+        this.targetOption = targetOption;
+    }
+
+    /**
+     * Builds an instance of {@code Job}.
+     */
+    public Job as(ClassName annotation) {
+        checkNotNull(annotation);
+        return new OptionJob(targetOption, annotation);
+    }
+}

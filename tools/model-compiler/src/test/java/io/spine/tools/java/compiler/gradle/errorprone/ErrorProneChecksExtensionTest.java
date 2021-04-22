@@ -24,12 +24,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.gradle;
+package io.spine.tools.java.compiler.gradle.errorprone;
 
-import io.spine.tools.java.fs.DefaultJavaPaths;
-import io.spine.tools.gradle.testing.GradleProject;
+import org.gradle.api.Project;
+import org.gradle.api.plugins.ExtensionContainer;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -37,42 +36,39 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.File;
 import java.nio.file.Path;
 
-import static io.spine.tools.gradle.BaseTaskName.build;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static io.spine.tools.java.compiler.gradle.errorprone.Severity.ERROR;
+import static io.spine.tools.compiler.gradle.given.ModelCompilerTestEnv.newProject;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-/**
- * Tests the {@code spine-protoc.gradle} plugin.
- */
-@DisplayName("SpineProtoc should")
-class SpineProtocTest {
+@DisplayName("ErrorProneChecksExtension should")
+class ErrorProneChecksExtensionTest {
 
-    private static final String PROJECT_NAME = "empty-project";
-
-    private GradleProject project;
-    private File projectDir;
+    private Project project;
+    private ErrorProneChecksExtension extension;
 
     @BeforeEach
     void setUp(@TempDir Path tempDirPath) {
-        projectDir = tempDirPath.toFile();
-        project = GradleProject.newBuilder()
-                               .setProjectFolder(projectDir)
-                               .setProjectName(PROJECT_NAME)
-                               .build();
+        File tempDir = tempDirPath.toFile();
+        project = newProject(tempDir);
+        ExtensionContainer extensions = project.getExtensions();
+        extension = extensions.create(ErrorProneChecksPlugin.extensionName(),
+                                      ErrorProneChecksExtension.class);
     }
 
-    @Disabled(
-            "Turned off because it tests the side effect. " +
-                    "In a project which does not have descriptor set file the directory should not be created."
-    )
     @Test
-    @DisplayName("create spine directory")
-    void create_spine_directory() {
-        project.executeTask(build);
-        File spineDirPath =
-                DefaultJavaPaths.at(projectDir)
-                                .tempArtifacts()
-                                .path()
-                                .toFile();
-        assertTrue(spineDirPath.exists());
+    @DisplayName("return use validating builder severity")
+    void return_use_validating_builder_severity() {
+        final Severity expected = ERROR;
+        extension.useValidatingBuilder = expected;
+        final Severity actual = ErrorProneChecksExtension.getUseValidatingBuilder(project);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("return null severity if not set")
+    void return_null_use_validating_builder_severity_if_not_set() {
+        final Severity severity = ErrorProneChecksExtension.getUseValidatingBuilder(project);
+        assertNull(severity);
     }
 }

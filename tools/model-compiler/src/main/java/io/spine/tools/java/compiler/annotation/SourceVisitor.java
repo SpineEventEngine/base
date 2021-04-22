@@ -24,14 +24,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.java.compiler.annotation;
+
+import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
+import org.jboss.forge.roaster.model.source.JavaSource;
+
+import java.util.function.Consumer;
+
 /**
- * Test environment classes and utilities related to the
- * {@link io.spine.tools.java.compiler.gradle.errorprone.ErrorProneChecksPlugin} functionality.
+ * A {@link AbstractJavaSource} visitor.
+ *
+ * <p>Used to perform some actions with {@link AbstractJavaSource}.
+ * A typical scenario is modification of the source or its validation.
+ *
+ * @param <T> the type of {@link JavaSource} to visit
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.check.given;
-
-import com.google.errorprone.annotations.CheckReturnValue;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+@FunctionalInterface
+interface SourceVisitor<T extends JavaSource<T>> extends Consumer<AbstractJavaSource<T>> {
+}

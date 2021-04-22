@@ -24,14 +24,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.java.code.field;
+
+import com.google.common.collect.ImmutableSet;
+import com.squareup.javapoet.TypeName;
+import io.spine.code.proto.FieldDeclaration;
+
 /**
- * Test environment classes and utilities related to the
- * {@link io.spine.tools.java.compiler.gradle.errorprone.ErrorProneChecksPlugin} functionality.
+ * The type information of a field for a code-generation.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.check.given;
+public interface FieldType {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    /**
+     * Obtains the {@link TypeName} for the field.
+     *
+     * @return the type name
+     */
+    TypeName getTypeName();
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    /**
+     * Obtains the setter prefix for the field.
+     *
+     * @return the setter prefix
+     */
+    AccessorTemplate primarySetterTemplate();
+
+    /**
+     * Obtains the templates of the generated Java accessors for a field of this type.
+     *
+     * @return the accessor templates
+     */
+    ImmutableSet<AccessorTemplate> generatedAccessorTemplates();
+
+    /**
+     * Creates a an instances basing on the type of the field.
+     */
+    static FieldType of(FieldDeclaration field) {
+        if (field.isMap()) {
+            return new MapFieldType(field);
+        } else if (field.isRepeated()) {
+            return new RepeatedFieldType(field);
+        } else {
+            return new SingularFieldType(field);
+        }
+    }
+}

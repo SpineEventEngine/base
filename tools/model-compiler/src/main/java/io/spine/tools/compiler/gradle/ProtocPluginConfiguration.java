@@ -52,7 +52,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 /**
  * A {@link SpineProtocConfig} holder.
  */
-final class ProtocPluginConfiguration {
+public final class ProtocPluginConfiguration {
 
     private final SpineProtocConfig config;
 
@@ -63,7 +63,7 @@ final class ProtocPluginConfiguration {
     /**
      * Creates a configuration holder for a supplied {@code project}.
      */
-    static ProtocPluginConfiguration forProject(Project project) {
+    public static ProtocPluginConfiguration forProject(Project project) {
         SpineProtocConfig config = assembleSpineProtocConfig(project);
         return new ProtocPluginConfiguration(config);
     }
@@ -71,7 +71,7 @@ final class ProtocPluginConfiguration {
     /**
      * Writes the configuration to the file denoted by the supplied {@code configPath}.
      */
-    void writeTo(Path configPath) {
+    public void writeTo(Path configPath) {
         Files2.ensureFile(configPath);
         try (FileOutputStream fos = new FileOutputStream(configPath.toFile())) {
             config.writeTo(fos);

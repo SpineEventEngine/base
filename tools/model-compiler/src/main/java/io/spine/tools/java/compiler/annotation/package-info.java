@@ -25,12 +25,12 @@
  */
 
 /**
- * Test environment classes and utilities related to the
- * {@link io.spine.tools.java.compiler.gradle.errorprone.ErrorProneChecksPlugin} functionality.
+ * Contains classes and interfaces for applying annotations on Java files,
+ * which are generated from Protobuf definitions.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.compiler.check.given;
+package io.spine.tools.java.compiler.annotation;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

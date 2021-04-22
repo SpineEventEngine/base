@@ -24,14 +24,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.java.compiler.annotation;
+
+import io.spine.logging.Logging;
+
 /**
- * Test environment classes and utilities related to the
- * {@link io.spine.tools.java.compiler.gradle.errorprone.ErrorProneChecksPlugin} functionality.
+ * A job of the annotator.
+ *
+ * <p>Typically, represents a piece of routine source code annotation work to perform.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.check.given;
+public interface Job extends Logging {
 
-import com.google.errorprone.annotations.CheckReturnValue;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+    /**
+     * Executes this job.
+     *
+     * @param factory
+     *         a factory of {@link Annotator} instances to use to create annotators suitable for
+     *         the job
+     */
+    void execute(AnnotatorFactory factory);
+}

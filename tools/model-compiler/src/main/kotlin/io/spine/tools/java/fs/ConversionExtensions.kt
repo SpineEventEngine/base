@@ -24,14 +24,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:JvmName("ConversionExtensions")
+
+package io.spine.code.tools.java.fs
+
+import io.spine.code.java.ClassName
+import io.spine.code.java.PackageName
+import io.spine.tools.java.fs.Directory
+
 /**
- * Test environment classes and utilities related to the
- * {@link io.spine.tools.java.compiler.gradle.errorprone.ErrorProneChecksPlugin} functionality.
+ * Converts this package name to corresponding directory on a file system.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.check.given;
+internal fun PackageName.toDirectory(): Directory =
+    Directory.of(this)
 
-import com.google.errorprone.annotations.CheckReturnValue;
+/**
+ * Converts this package name to corresponding directory on a file system.
+ */
+internal fun String.toDirectory(): Directory =
+        PackageName.of(this).toDirectory()
 
-import javax.annotation.ParametersAreNonnullByDefault;
+/**
+ * Converts this class name to the directory which contains the class.
+ */
+internal fun ClassName.toDirectory(): Directory =
+        packageName().toDirectory()

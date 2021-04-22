@@ -24,14 +24,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.java.compiler.annotation;
+
+import com.google.common.collect.ImmutableSet;
+import io.spine.code.java.ClassName;
+
 /**
- * Test environment classes and utilities related to the
- * {@link io.spine.tools.java.compiler.gradle.errorprone.ErrorProneChecksPlugin} functionality.
+ * A factory for {@linkplain Annotator Annotators}.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.check.given;
+public interface AnnotatorFactory {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    Annotator createFileAnnotator(ClassName annotation, ApiOption option);
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    Annotator createMessageAnnotator(ClassName annotation, ApiOption option);
+
+    Annotator createFieldAnnotator(ClassName annotation, ApiOption option);
+
+    Annotator createServiceAnnotator(ClassName annotation, ApiOption option);
+
+    Annotator createPatternAnnotator(ClassName annotation, ClassNamePattern pattern);
+
+    Annotator createMethodAnnotator(ClassName annotation, ImmutableSet<MethodPattern> patterns);
+}

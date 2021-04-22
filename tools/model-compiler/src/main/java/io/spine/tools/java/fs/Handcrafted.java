@@ -24,14 +24,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.java.fs;
+
+import io.spine.code.fs.DefaultPaths;
+
+import static io.spine.code.fs.DirectoryName.src;
+
 /**
- * Test environment classes and utilities related to the
- * {@link io.spine.tools.java.compiler.gradle.errorprone.ErrorProneChecksPlugin} functionality.
+ * A root source code directory for manually written code.
+ *
+ * <p>Adds a root directory for the proto code in addition to those exposed
+ * by {@code DefaultProject.SourceRoot}.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.check.given;
+public class Handcrafted extends JavaSrc {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    Handcrafted(DefaultPaths parent) {
+        super(parent, src);
+    }
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    /**
+     * A root for the main proto code.
+     */
+    public io.spine.code.fs.proto.Directory mainProto() {
+        return io.spine.code.fs.proto.Directory.rootIn(main());
+    }
+
+    /**
+     * A root for the test proto code.
+     */
+    public io.spine.code.fs.proto.Directory testProto() {
+        return io.spine.code.fs.proto.Directory.rootIn(test());
+    }
+}

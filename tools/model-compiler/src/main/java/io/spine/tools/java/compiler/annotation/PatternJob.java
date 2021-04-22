@@ -24,14 +24,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.java.compiler.annotation;
+
+import io.spine.code.java.ClassName;
+
 /**
- * Test environment classes and utilities related to the
- * {@link io.spine.tools.java.compiler.gradle.errorprone.ErrorProneChecksPlugin} functionality.
+ * An annotation {@link Job} which covers generated Java classes which have a certain naming.
+ *
+ * <p>For example, all classes ending with {@code OrBuilder}.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.check.given;
+final class PatternJob implements Job {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    private final ClassNamePattern pattern;
+    private final ClassName javaAnnotation;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    PatternJob(ClassNamePattern pattern, ClassName annotation) {
+        this.javaAnnotation = annotation;
+        this.pattern = pattern;
+    }
+
+    @Override
+    public void execute(AnnotatorFactory factory) {
+        _debug().log("Annotating classes matching `%s` with `%s`.", pattern, javaAnnotation);
+        factory.createPatternAnnotator(javaAnnotation, pattern)
+               .annotate();
+        _debug().log("Pattern `%s` processed.", pattern);
+    }
+}

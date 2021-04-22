@@ -24,14 +24,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.java.compiler.annotation;
+
+import com.google.common.collect.ImmutableSet;
+import io.spine.code.java.ClassName;
+
 /**
- * Test environment classes and utilities related to the
- * {@link io.spine.tools.java.compiler.gradle.errorprone.ErrorProneChecksPlugin} functionality.
+ * An annotation {@link Job} which annotates methods matching certain naming patterns.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.check.given;
+final class MethodNameJob implements Job {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    private final ImmutableSet<MethodPattern> patterns;
+    private final ClassName javaAnnotation;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    MethodNameJob(ImmutableSet<MethodPattern> patterns, ClassName javaAnnotation) {
+        this.patterns = patterns;
+        this.javaAnnotation = javaAnnotation;
+    }
+
+    @Override
+    public void execute(AnnotatorFactory factory) {
+        _debug().log("Annotating methods matching patterns `%s` with `%s`.",
+                     patterns, javaAnnotation);
+        factory.createMethodAnnotator(javaAnnotation, patterns)
+               .annotate();
+    }
+}

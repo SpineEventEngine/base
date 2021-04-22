@@ -24,14 +24,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.java.compiler.annotation.check;
+
+import io.spine.annotation.Internal;
+import org.jboss.forge.roaster.model.source.AnnotationSource;
+import org.jboss.forge.roaster.model.source.AnnotationTargetSource;
+
+import java.lang.annotation.Annotation;
+import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
+
 /**
- * Test environment classes and utilities related to the
- * {@link io.spine.tools.java.compiler.gradle.errorprone.ErrorProneChecksPlugin} functionality.
+ * Utilities for working with annotations in the generated code.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.check.given;
+class Annotations {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    private static final Class<? extends Annotation> ANNOTATION_CLASS = Internal.class;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    /** Prevents instantiation of this utility class. */
+    private Annotations() {
+    }
+
+    static Optional<? extends AnnotationSource<?>>
+    findInternalAnnotation(AnnotationTargetSource<?, ?> javaSource) {
+        return findAnnotation(javaSource, ANNOTATION_CLASS);
+    }
+
+    static Optional<? extends AnnotationSource<?>>
+    findAnnotation(AnnotationTargetSource<?, ?> javaSource,
+                   Class<? extends Annotation> annotationType) {
+        String annotationName = annotationType.getName();
+        AnnotationSource<?> annotation = javaSource
+                .getAnnotation(annotationName);
+        return ofNullable(annotation);
+    }
+}

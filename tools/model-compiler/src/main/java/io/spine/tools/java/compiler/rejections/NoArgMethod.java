@@ -24,14 +24,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.java.compiler.rejections;
+
+import com.google.errorprone.annotations.Immutable;
+import io.spine.tools.protoc.Method;
+
 /**
- * Test environment classes and utilities related to the
- * {@link io.spine.tools.java.compiler.gradle.errorprone.ErrorProneChecksPlugin} functionality.
+ * A reference to a method with no arguments.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.check.given;
+@Immutable
+final class NoArgMethod extends Method {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    private static final long serialVersionUID = 0L;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    NoArgMethod(String methodName) {
+        super(methodName);
+    }
+
+    public String name() {
+        return value();
+    }
+
+    String signature() {
+        return value() + "()";
+    }
+}
