@@ -25,13 +25,10 @@
  */
 
 /**
- * This package contains tools for working with the structure of a Java project.
- */
-
-/**
  * Contains classes for working with file-related conventions of Java source code.
  *
- * <p>This package belongs to the module {@code tool-base} instead of being in a language
+ * <p>This package belongs to the module {@code tool-base} because it is used
+ * by both Model Compiler Plugin and Protoc Plugin modules.
  */
 @Internal
 @CheckReturnValue
