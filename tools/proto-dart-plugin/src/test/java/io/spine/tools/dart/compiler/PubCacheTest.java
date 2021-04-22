@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart;
+package io.spine.tools.dart.compiler;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.testing.UtilityClassTest;
@@ -40,7 +40,7 @@ import java.util.List;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth8.assertThat;
-import static io.spine.dart.PubCache.BIN;
+import static io.spine.tools.dart.compiler.PubCache.BIN;
 import static org.junit.jupiter.api.condition.OS.WINDOWS;
 
 @DisplayName("`PubCache` should")

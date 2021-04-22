@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart;
+package io.spine.tools.dart.compiler;
 
 import org.apache.tools.ant.taskdefs.condition.Os;
 

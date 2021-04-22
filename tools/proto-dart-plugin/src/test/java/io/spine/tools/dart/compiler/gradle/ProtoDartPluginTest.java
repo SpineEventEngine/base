@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart.gradle;
+package io.spine.tools.dart.compiler.gradle;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.tools.gradle.TaskName;

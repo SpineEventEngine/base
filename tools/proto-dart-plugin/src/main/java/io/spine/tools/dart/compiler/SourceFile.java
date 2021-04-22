@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart;
+package io.spine.tools.dart.compiler;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.AbstractSourceFile;
@@ -43,7 +43,6 @@ import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
-import static java.nio.file.Files.isRegularFile;
 import static java.nio.file.Files.readAllLines;
 import static java.nio.file.Files.write;
 import static java.util.regex.Pattern.compile;
@@ -74,16 +73,6 @@ public final class SourceFile extends AbstractSourceFile implements Logging {
         } catch (IOException e) {
             throw new GradleException(format("Unable to read file `%s`.", path), e);
         }
-    }
-
-    public static boolean isGeneratedDart(Path file) {
-        if (!isRegularFile(file)) {
-            return false;
-        }
-        return file.endsWith(".pb.dart")
-                || file.endsWith(".pbenum.dart")
-                || file.endsWith(".pbserver.dart")
-                || file.endsWith(".pbjson.dart");
     }
 
     /**

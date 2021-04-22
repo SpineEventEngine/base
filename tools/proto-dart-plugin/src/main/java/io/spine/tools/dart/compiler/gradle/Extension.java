@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart.gradle;
+package io.spine.tools.dart.compiler.gradle;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.fs.dart.DefaultDartPaths;
