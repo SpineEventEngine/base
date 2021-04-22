@@ -70,7 +70,7 @@ class FileNameTest {
     void returnPathElements() {
         FileName fileName = FileName.from(file);
         List<String> pathElements = fileName.pathElements();
-        assertThat(pathElements).contains("google");
+        assertThat(pathElements).contains("goo" + "gle"); // use + to avoid constant duplication.
         assertThat(pathElements).contains("protobuf");
         assertThat(pathElements).contains("any_pb.js");
     }

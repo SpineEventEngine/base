@@ -29,7 +29,7 @@ package io.spine.test.options;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Extension;
 import com.google.protobuf.ExtensionRegistry;
-import io.spine.tools.code.proto.OptionExtensionRegistry;
+import io.spine.code.proto.OptionExtensionRegistry;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -28,8 +28,8 @@ package io.spine.test.tools.validate.rule;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.code.proto.FieldContext;
-import io.spine.tools.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldContext;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.validate.ConstraintTranslator;
 import io.spine.validate.ConstraintViolation;
 import io.spine.validate.CustomConstraint;

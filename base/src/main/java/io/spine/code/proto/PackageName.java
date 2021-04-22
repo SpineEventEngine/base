@@ -40,11 +40,8 @@ public final class PackageName extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
     private static final String DELIMITER = ".";
-
+    private static final String OF_GOOGLE = "google";
     private static final PackageName GOOGLE_PROTOBUF = new PackageName("google.protobuf");
-
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Used in another context.
-    public static final String OF_GOOGLE = "google";
 
     private PackageName(String value) {
         super(value);
