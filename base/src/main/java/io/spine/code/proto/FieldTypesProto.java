@@ -109,31 +109,4 @@ public final class FieldTypesProto {
         checkNotNull(fieldDescriptor);
         return fieldDescriptor.getType() == TYPE_MESSAGE;
     }
-
-    /**
-     * Removes the leading dot from the Protobuf type name passed as {@code String}.
-     *
-     * <p>If there is no leading dots, returns the unmodified parameter.
-     *
-     * @param fieldDescriptor
-     *         the field descriptor whose type name to modify
-     * @return the type name without leading dot
-     */
-    public static String trimTypeName(FieldDescriptorProto fieldDescriptor) {
-        String typeName = fieldDescriptor.getTypeName();
-        checkNotNull(typeName);
-
-        if (typeName.isEmpty()) {
-            return typeName;
-        }
-        String trimmedName = removeLeadingDot(typeName);
-        return trimmedName;
-    }
-
-    private static String removeLeadingDot(String typeName) {
-        if (typeName.charAt(0) == '.') {
-            return typeName.substring(1);
-        }
-        return typeName;
-    }
 }
