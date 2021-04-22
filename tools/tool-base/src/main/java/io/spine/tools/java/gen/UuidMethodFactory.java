@@ -60,7 +60,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Immutable
 public final class UuidMethodFactory implements MethodFactory {
 
-    @SuppressWarnings("DuplicateStringLiteralInspection")   // Duplicates in the generated code.
     private static final String INVALID_STRING_MESSAGE = "Invalid UUID string: %s";
 
     @Override

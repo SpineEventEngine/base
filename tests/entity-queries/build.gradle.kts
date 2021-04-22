@@ -39,7 +39,7 @@ modelCompiler {
     }
 
     methods {
-        applyFactory("io.spine.code.gen.java.UuidMethodFactory", messages().uuid())
+        applyFactory("io.spine.tools.java.gen.UuidMethodFactory", messages().uuid())
     }
 
     entityQueries {
