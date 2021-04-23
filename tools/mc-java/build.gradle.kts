@@ -60,7 +60,7 @@ protobuf {
             val scope = task.sourceSet.name
             task.generateDescriptorSet = true
             with(task.descriptorSetOptions) {
-                path = "$buildDir/descriptors/${scope}/io.spine.tools.spine-model-compiler-${scope}.desc"
+                path = "$buildDir/descriptors/${scope}/io.spine.tools.mc-java-${scope}.desc"
                 includeImports = true
                 includeSourceInfo = true
             }

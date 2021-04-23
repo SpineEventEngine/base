@@ -68,7 +68,7 @@ repositories {
 }
 
 dependencies {
-    protocPluginDependency = fetch "io.spine.tools:spine-protoc-plugin:$spineModelCompilerVersion@jar"
+    protocPluginDependency = fetch "io.spine.tools:spine-mc-java-protoc:$spineModelCompilerVersion@jar"
 }
 
 ext {

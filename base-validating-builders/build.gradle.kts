@@ -78,7 +78,7 @@ buildscript {
         }
 
         classpath(files(
-                "$projectDir/../tools/model-compiler/build/libs/mc-java-${spineVersion}.jar",
+                "$projectDir/../tools/mc-java/build/libs/mc-java-${spineVersion}.jar",
                 "$projectDir/../tools/plugin-base/build/libs/plugin-base-${spineVersion}.jar",
                 "$projectDir/../tools/tool-base/build/libs/tool-base-${spineVersion}.jar",
                 "$projectDir/../base/build/libs/base-${spineVersion}.jar"

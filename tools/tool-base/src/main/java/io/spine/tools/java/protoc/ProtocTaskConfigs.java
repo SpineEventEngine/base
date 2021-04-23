@@ -27,6 +27,10 @@
 package io.spine.tools.java.protoc;
 
 import io.spine.code.java.ClassName;
+import io.spine.tools.java.protoc.EntityStateConfig;
+import io.spine.tools.java.protoc.UuidConfig;
+import io.spine.tools.java.protoc.ConfigByPattern;
+import io.spine.tools.java.protoc.FilePattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;

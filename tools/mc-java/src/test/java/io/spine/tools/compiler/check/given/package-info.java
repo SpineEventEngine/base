@@ -26,7 +26,7 @@
 
 /**
  * Test environment classes and utilities related to the
- * {@link io.spine.tools.java.compiler.gradle.errorprone.ErrorProneChecksPlugin} functionality.
+ * {@link io.spine.tools.mc.java.errorprone.ErrorProneChecksPlugin} functionality.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

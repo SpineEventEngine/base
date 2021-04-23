@@ -36,7 +36,7 @@ tasks.withType(JavaCompile) {
 
 ## Spine Error Prone Checks Plugin
 Currently, the Spine-custom Error Prone checks are applied automatically to any project that uses 
-[Spine Model Compiler](../model-compiler).
+[Spine Model Compiler](../mc-java).
 
  The Error Prone Checks Plugin which is a part of the Model Compiler, performs all necessary 
  configurations and dependency updates to add the `spine-mc-java-checks` to the preprocessor 

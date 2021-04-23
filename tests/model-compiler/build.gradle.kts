@@ -24,13 +24,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.tools.protoc.MessageSelectorFactory.prefix
-import io.spine.tools.protoc.MessageSelectorFactory.regex
-import io.spine.tools.protoc.MessageSelectorFactory.suffix
+import io.spine.tools.java.protoc.MessageSelectorFactory.prefix
+import io.spine.tools.java.protoc.MessageSelectorFactory.regex
+import io.spine.tools.java.protoc.MessageSelectorFactory.suffix
 
 plugins {
     java
-    id("io.spine.tools.spine-model-compiler")
+    id("io.spine.tools.mc-java")
 }
 
 dependencies {
