@@ -23,36 +23,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        mavenCentral()
-    }
-}
 
-rootProject.name = "spine-base"
+package io.spine.tools.mc.java.code.check.vbuild;
 
-include("base")
-include("testlib")
+import com.google.errorprone.fixes.Fix;
+import com.google.errorprone.fixes.SuggestedFix;
+import com.sun.source.tree.Tree;
 
 /**
- * Includes a module and sets custom project directory to it.
+ * The alternatives to the {@code Builder.build()} method.
+ *
+ * @see io.spine.validate.ValidatingBuilder
  */
-fun toolsModule(name: String) {
-    include(name)
-    project(":$name").projectDir = File("$rootDir/tools/$name")
+enum BuildMethodAlternative {
+
+    vBuild,
+    buildPartial;
+
+    /**
+     * Creates a fix which suggests to replace the given tree element with this method.
+     */
+    public Fix replace(Tree tree) {
+        return SuggestedFix.replace(tree, name());
+    }
 }
-
-toolsModule("plugin-testlib")
-toolsModule("mute-logging")
-toolsModule("tool-base")
-toolsModule("plugin-base")
-
-toolsModule("mc-java")
-toolsModule("mc-java-doc-filter")
-toolsModule("mc-java-doc-style")
-toolsModule("mc-java-protoc")
-
-toolsModule("mc-js")
-toolsModule("mc-dart")
-

@@ -26,6 +26,8 @@
 
 import com.google.protobuf.gradle.generateProtoTasks
 import com.google.protobuf.gradle.protobuf
+import io.spine.internal.dependency.AutoService
+import io.spine.internal.dependency.ErrorProne
 import io.spine.internal.dependency.JavaPoet
 import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
@@ -39,6 +41,8 @@ val spineVersion: String by extra
 dependencies {
     implementation(JavaX.annotations)
     implementation(JavaPoet.lib)
+    annotationProcessor(AutoService.processor)
+    compileOnly(AutoService.annotations)
 
     // A library for parsing Java sources.
     // Used for parsing Java sources generated from Protobuf files
@@ -50,6 +54,10 @@ dependencies {
         exclude(group = "com.google.guava")
     }
     implementation(Protobuf.GradlePlugin.lib)
+    implementation(ErrorProne.core)
+    ErrorProne.annotations.forEach { implementation(it) }
+
+    testImplementation(ErrorProne.testHelpers)
 
     implementation(project(":base"))
     implementation(project(":tool-base"))
@@ -88,3 +96,23 @@ sourceSets {
 
 // Tests use the Protobuf plugin.
 tasks.test.configure { dependsOn(":mc-java-checks:publishToMavenLocal") }
+
+fun getResolvedArtifactFor(dependency: String): String {
+    val resolvedTestClasspath = configurations.testRuntimeClasspath.get().resolvedConfiguration
+    val javacDependency = resolvedTestClasspath.resolvedArtifacts.filter {
+        it.name == dependency
+    }
+    if (javacDependency.isEmpty()) {
+        throw MissingResourceException("The 'javac' dependency is not found among the " +
+                "resolved artifacts")
+    }
+    return javacDependency[0].file.absolutePath
+}
+
+val test: Test = tasks.test.get()
+test.dependsOn(project(":base").getTasksByName("rebuildProtobuf", false))
+
+afterEvaluate {
+    val javacPath = getResolvedArtifactFor("javac")
+    test.jvmArgs("-Xbootclasspath/p:$javacPath")
+}

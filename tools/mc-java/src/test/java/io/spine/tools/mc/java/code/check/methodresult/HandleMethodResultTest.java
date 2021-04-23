@@ -23,36 +23,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        mavenCentral()
+
+package io.spine.tools.mc.java.code.check.methodresult;
+
+import com.google.errorprone.CompilationTestHelper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static io.spine.tools.mc.java.code.check.methodresult.HandleMethodResult.SUMMARY;
+
+@DisplayName("HandleMethodResult check should")
+class HandleMethodResultTest {
+
+    private CompilationTestHelper compilationTestHelper;
+
+    @BeforeEach
+    void setUp() {
+        compilationTestHelper =
+                CompilationTestHelper.newInstance(HandleMethodResult.class, getClass());
+    }
+
+    @Test
+    @DisplayName("match positive cases")
+    void recognizePositiveCases() {
+        compilationTestHelper.expectErrorMessage(HandleMethodResult.class.getSimpleName(),
+                                                 msg -> msg.contains(SUMMARY))
+                             .addSourceFile("given/HandleMethodResultPositives.java")
+                             .doTest();
+    }
+
+    @Test
+    @DisplayName("match negative cases")
+    void recognizeNegativeCases() {
+        compilationTestHelper.addSourceFile("given/HandleMethodResultNegatives.java")
+                             .doTest();
     }
 }
-
-rootProject.name = "spine-base"
-
-include("base")
-include("testlib")
-
-/**
- * Includes a module and sets custom project directory to it.
- */
-fun toolsModule(name: String) {
-    include(name)
-    project(":$name").projectDir = File("$rootDir/tools/$name")
-}
-
-toolsModule("plugin-testlib")
-toolsModule("mute-logging")
-toolsModule("tool-base")
-toolsModule("plugin-base")
-
-toolsModule("mc-java")
-toolsModule("mc-java-doc-filter")
-toolsModule("mc-java-doc-style")
-toolsModule("mc-java-protoc")
-
-toolsModule("mc-js")
-toolsModule("mc-dart")
-

@@ -23,36 +23,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        mavenCentral()
-    }
-}
 
-rootProject.name = "spine-base"
+package io.spine.tools.mc.java.code.check.vbuild.given;
 
-include("base")
-include("testlib")
+import io.spine.base.Error;
 
 /**
- * Includes a module and sets custom project directory to it.
+ * Contains statements for which the {@link HandleMethodResult} bug pattern should return a match.
+ *
+ * <p>Comments in this file should not be modified as they serve as indicator for the
+ * {@link com.google.errorprone.CompilationTestHelper} Error Prone tool.
  */
-fun toolsModule(name: String) {
-    include(name)
-    project(":$name").projectDir = File("$rootDir/tools/$name")
+class HandleMethodResultPositives {
+
+    void callBuild() {
+
+        // BUG: Diagnostic matches: HandleMethodResult
+        Error.newBuilder().vBuild();
+    }
+
+    void callGetter() {
+
+        // BUG: Diagnostic matches: HandleMethodResult
+        Error.newBuilder().getAttributesCount();
+    }
+
+    void callAsMethodReference() {
+        Error.Builder builder = Error.newBuilder();
+
+        // BUG: Diagnostic matches: HandleMethodResult
+        Runnable faulty = builder::vBuild;
+        faulty.run();
+    }
+
+    void callNonBuilder() {
+        // BUG: Diagnostic matches: HandleMethodResult
+        checkMe();
+    }
+
+    public String checkMe() {
+        return "42";
+    }
 }
-
-toolsModule("plugin-testlib")
-toolsModule("mute-logging")
-toolsModule("tool-base")
-toolsModule("plugin-base")
-
-toolsModule("mc-java")
-toolsModule("mc-java-doc-filter")
-toolsModule("mc-java-doc-style")
-toolsModule("mc-java-protoc")
-
-toolsModule("mc-js")
-toolsModule("mc-dart")
-

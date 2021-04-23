@@ -44,22 +44,3 @@ dependencies {
     testImplementation(ErrorProne.testHelpers)
 }
 
-fun getResolvedArtifactFor(dependency: String): String {
-    val resolvedTestClasspath = configurations.testRuntimeClasspath.get().resolvedConfiguration
-    val javacDependency = resolvedTestClasspath.resolvedArtifacts.filter {
-        it.name == dependency
-    }
-    if (javacDependency.isEmpty()) {
-        throw MissingResourceException("The 'javac' dependency is not found among the " +
-                "resolved artifacts")
-    }
-    return javacDependency[0].file.absolutePath
-}
-
-val test: Test = tasks.test.get()
-test.dependsOn(project(":base").getTasksByName("rebuildProtobuf", false))
-
-afterEvaluate {
-    val javacPath = getResolvedArtifactFor("javac")
-    test.jvmArgs("-Xbootclasspath/p:$javacPath")
-}
