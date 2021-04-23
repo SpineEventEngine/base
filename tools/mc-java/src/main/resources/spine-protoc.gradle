@@ -1,0 +1,160 @@
+/*
+ * Copyright 2019, TeamDev. All rights reserved.
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+
+/**
+ * This script is a plugin applied to all the Gradle projects, to which the Spine model compiler
+ * plugin is applied.
+ *
+ * <p>This file contains a template for the script itself. On
+ * {@code model-compiler:prepareProtocConfig} the file is copied to
+ * the {@code model-compiler/src/main/resources} folder with the insertion points filled with
+ * the required data. Thus, it is OK for this file to have compilation errors.
+ */
+
+// Injected version variables. See model-compiler:prepareProtocConfig.
+final def spineModelCompilerVersion = '1.0.0-SNAPSHOT'
+final def protobufVersion = '3.6.1'
+final def gRpcVersion = '1.15.0'
+final def spineFolderName = '.spine'
+
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    ext {
+        protocPluginDependency = null
+    }
+}
+
+configurations {
+    fetch {
+        description = "Fetches the required artifacts at compile time"
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+
+    // Spine-specific Maven repositories.
+    maven {
+        url = 'https://spine.mycloudrepo.io/public/repositories/releases'
+    }
+    maven {
+        url = 'https://spine.mycloudrepo.io/public/repositories/snapshots'
+    }
+}
+
+dependencies {
+    protocPluginDependency = fetch "io.spine.tools:spine-protoc-plugin:$spineModelCompilerVersion@jar"
+}
+
+ext {
+    runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
+    spineFolder = ("$project.projectDir/$spineFolderName" as File).toPath()
+    rootSpineFolder = ("$project.rootDir/$spineFolderName" as File).toPath()
+}
+
+final def copyPluginJarAction = {
+    final def from = pluginJar()
+    final def dest = project.spineFolder.resolve(from.name)
+    final def rootDest = project.rootSpineFolder.resolve(from.name)
+    final def srcPath = from.toPath()
+    // The artifact must be present in both root and project directories to make any kind of gradle
+    // build run successfully.
+    copy(srcPath, dest)
+    copy(srcPath, rootDest)
+}
+
+/**
+ * Copies the file under the given path into the given path.
+ *
+ * <p>See {@link Files#copy Files.copy()} for more detailed behavior description.
+ *
+ * @param from the file location
+ * @param to   the file destination
+ */
+def copy(final from, final to) {
+    to.toFile().mkdirs()
+    Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING)
+}
+
+// We cannot use standard Copy task here as it resolves the `from` property not lazily.
+// Since we use use a dependency in the `from`, it may cause some issues with the Maven plugin
+// See https://discuss.gradle.org/t/right-way-to-copy-contents-from-dependency-archives/7449
+task copyPluginJar {
+    description = "Spawns the Spine Protoc plugin artifact in the project directory"
+}
+
+copyPluginJar.doLast(copyPluginJarAction)
+
+def pluginJar() {
+    return configurations.fetch.fileCollection(protocPluginDependency).singleFile
+}
+
+protobuf {
+    generatedFilesBaseDir = "$projectDir/generated"
+
+    protoc {
+        artifact = "com.google.protobuf:protoc:${protobufVersion}"
+    }
+
+    //noinspection GroovyAssignabilityCheck
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:$gRpcVersion"
+        }
+        spineProtoc {
+            final def scriptExt = runsOnWindows ? 'bat' : 'sh'
+            artifact = "io.spine.tools:spine-protoc-plugin:$spineModelCompilerVersion:script@${scriptExt}"
+        }
+    }
+
+    generateProtoTasks {
+        all().each { task ->
+            task.plugins {
+                grpc { }
+                spineProtoc {
+                    outputSubDir = 'java'
+                }
+            }
+            task.generateDescriptorSet = true
+            final def tests = task.sourceSet.name.contains("test")
+            final def extension = project.extensions.getByName("modelCompiler")
+            final def descPath = (tests ? extension.testDescriptorSetPath
+                                        : extension.mainDescriptorSetPath) ?:
+                                 "${buildDir}/descriptors/${task.sourceSet.name}/known_types.desc"
+            task.descriptorSetOptions.path = descPath
+            task.descriptorSetOptions.includeImports = true
+            task.descriptorSetOptions.includeSourceInfo = true
+
+            task.dependsOn copyPluginJar
+
+            final def sourceSet = tests ? project.sourceSets.test
+                                        : project.sourceSets.main
+            sourceSet.resources.srcDirs((descPath as File).parent)
+        }
+    }
+}
