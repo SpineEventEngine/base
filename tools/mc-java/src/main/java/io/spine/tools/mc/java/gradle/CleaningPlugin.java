@@ -39,7 +39,7 @@ import static io.spine.tools.gradle.ModelCompilerTaskName.preClean;
  *
  * <p>Adds a custom `:preClean` task, which is executed before the `:clean` task.
  */
-public class CleaningPlugin extends SpinePlugin {
+class CleaningPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {

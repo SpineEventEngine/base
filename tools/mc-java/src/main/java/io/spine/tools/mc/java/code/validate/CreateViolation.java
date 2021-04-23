@@ -24,29 +24,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.gradle;
+package io.spine.tools.mc.java.code.validate;
 
-import io.spine.annotation.Beta;
-import io.spine.annotation.Experimental;
-import io.spine.annotation.Internal;
-import io.spine.annotation.SPI;
-import io.spine.tools.mc.java.gradle.annotate.Annotations;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import io.spine.validate.ConstraintViolation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.function.Function;
 
-@DisplayName("modelCompiler.generateAnnotations Gradle extension should")
-class AnnotationsTest {
-
-    @Test
-    @DisplayName("have default values")
-    void defaults() {
-        Annotations annotations = new Annotations();
-
-        assertEquals(Experimental.class.getName(), annotations.experimentalClassName().value());
-        assertEquals(SPI.class.getName(), annotations.spiClassName().value());
-        assertEquals(Internal.class.getName(), annotations.internalClassName().value());
-        assertEquals(Beta.class.getName(), annotations.betaClassName().value());
-    }
+/**
+ * A function which accepts a field and produces an expression of a {@link ConstraintViolation}
+ * on that field.
+ */
+@FunctionalInterface
+public interface CreateViolation extends Function<FieldAccess, Expression<ConstraintViolation>> {
 }

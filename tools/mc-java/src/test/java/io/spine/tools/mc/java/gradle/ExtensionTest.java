@@ -26,7 +26,7 @@
 package io.spine.tools.mc.java.gradle;
 
 import io.spine.tools.java.fs.DefaultJavaPaths;
-import io.spine.tools.mc.java.errorprone.Severity;
+import io.spine.tools.mc.java.gradle.check.Severity;
 import org.gradle.api.Project;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

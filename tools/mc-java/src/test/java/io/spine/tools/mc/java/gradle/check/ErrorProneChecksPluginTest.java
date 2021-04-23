@@ -24,29 +24,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.gradle;
+package io.spine.tools.mc.java.gradle.check;
 
-import io.spine.annotation.Beta;
-import io.spine.annotation.Experimental;
-import io.spine.annotation.Internal;
-import io.spine.annotation.SPI;
-import io.spine.tools.mc.java.gradle.annotate.Annotations;
+import org.gradle.api.Project;
+import org.gradle.api.plugins.ExtensionContainer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newProject;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@DisplayName("modelCompiler.generateAnnotations Gradle extension should")
-class AnnotationsTest {
+/**
+ * This test contains very basic scenarios of the plugin usage.
+ *
+ * <p>For the tests of actual plugin functionality, see {@code io.spine.tools.check} test suites
+ * from this module.
+ */
+@DisplayName("ErrorProneChecksPlugin should")
+class ErrorProneChecksPluginTest {
 
     @Test
-    @DisplayName("have default values")
-    void defaults() {
-        Annotations annotations = new Annotations();
+    @DisplayName("create Spine check extension")
+    void checkExtension() {
+        Project project = newProject();
+        project.getPluginManager()
+               .apply(ErrorProneChecksPlugin.class);
+        ExtensionContainer extensions = project.getExtensions();
+        Object found = extensions.findByName(ErrorProneChecksPlugin.extensionName());
+        assertNotNull(found);
+    }
 
-        assertEquals(Experimental.class.getName(), annotations.experimentalClassName().value());
-        assertEquals(SPI.class.getName(), annotations.spiClassName().value());
-        assertEquals(Internal.class.getName(), annotations.internalClassName().value());
-        assertEquals(Beta.class.getName(), annotations.betaClassName().value());
+    @Test
+    @DisplayName("apply to empty project")
+    void emptyProject() {
+        Project project = newProject();
+        project.getPluginManager()
+               .apply(ErrorProneChecksPlugin.class);
     }
 }

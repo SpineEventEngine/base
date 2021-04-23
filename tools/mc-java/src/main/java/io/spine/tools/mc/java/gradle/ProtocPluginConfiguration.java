@@ -52,7 +52,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 /**
  * A {@link SpineProtocConfig} holder.
  */
-public final class ProtocPluginConfiguration {
+final class ProtocPluginConfiguration {
 
     private final SpineProtocConfig config;
 

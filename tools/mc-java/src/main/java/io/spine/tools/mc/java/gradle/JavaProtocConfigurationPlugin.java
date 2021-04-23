@@ -62,7 +62,7 @@ import static io.spine.tools.mc.java.gradle.ProtocPluginConfiguration.forProject
  * A Gradle plugin that performs additional {@code protoc} configurations relevant for Java
  * projects.
  */
-public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlugin {
+final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlugin {
 
     private static final String JAR_EXTENSION = "jar";
     private static final String GRPC_GROUP = "io.grpc";

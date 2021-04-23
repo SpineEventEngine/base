@@ -24,29 +24,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.gradle;
+package io.spine.tools.mc.java.code.validate;
 
-import io.spine.annotation.Beta;
-import io.spine.annotation.Experimental;
-import io.spine.annotation.Internal;
-import io.spine.annotation.SPI;
-import io.spine.tools.mc.java.gradle.annotate.Annotations;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import io.spine.validate.ConstraintViolation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.function.Function;
 
-@DisplayName("modelCompiler.generateAnnotations Gradle extension should")
-class AnnotationsTest {
-
-    @Test
-    @DisplayName("have default values")
-    void defaults() {
-        Annotations annotations = new Annotations();
-
-        assertEquals(Experimental.class.getName(), annotations.experimentalClassName().value());
-        assertEquals(SPI.class.getName(), annotations.spiClassName().value());
-        assertEquals(Internal.class.getName(), annotations.internalClassName().value());
-        assertEquals(Beta.class.getName(), annotations.betaClassName().value());
-    }
+/**
+ * A function which accepts an expression of a {@link ConstraintViolation} and transforms it into
+ * an expression of the violation being saved.
+ *
+ * <p>Typically, one accumulator is used many times for different violations.
+ *
+ * <p>For example:
+ * <pre>{@code
+ * AccumulateViolation accumulator =
+ *     (violationExpression) -> formatted("errorBuilder.addViolation(%s);", violationExpression);
+ * }</pre>
+ *
+ * <p>In the example above a function takes a {@link ConstraintViolation} expression and uses it
+ * to add the violation to a {@code ValidationError} builder.
+ */
+@FunctionalInterface
+public interface AccumulateViolations
+        extends Function<Expression<ConstraintViolation>, VoidExpression> {
 }

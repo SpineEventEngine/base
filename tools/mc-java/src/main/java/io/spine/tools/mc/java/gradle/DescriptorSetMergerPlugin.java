@@ -55,7 +55,7 @@ import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
  * <p>The merge result is used to {@linkplain
  * io.spine.tools.proto.MoreKnownTypes#extendWith(java.io.File) extend the known type registry}.
  */
-public class DescriptorSetMergerPlugin extends SpinePlugin {
+final class DescriptorSetMergerPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {

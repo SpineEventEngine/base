@@ -24,29 +24,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.gradle;
+package io.spine.tools.mc.java.code.validate;
 
-import io.spine.annotation.Beta;
-import io.spine.annotation.Experimental;
-import io.spine.annotation.Internal;
-import io.spine.annotation.SPI;
-import io.spine.tools.mc.java.gradle.annotate.Annotations;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.squareup.javapoet.TypeSpec;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+/**
+ * A member of a Java class.
+ *
+ * <p>The member can be {@linkplain #attachTo attached} to a type constructed with Java Poet.
+ */
+public interface ClassMember {
 
-@DisplayName("modelCompiler.generateAnnotations Gradle extension should")
-class AnnotationsTest {
-
-    @Test
-    @DisplayName("have default values")
-    void defaults() {
-        Annotations annotations = new Annotations();
-
-        assertEquals(Experimental.class.getName(), annotations.experimentalClassName().value());
-        assertEquals(SPI.class.getName(), annotations.spiClassName().value());
-        assertEquals(Internal.class.getName(), annotations.internalClassName().value());
-        assertEquals(Beta.class.getName(), annotations.betaClassName().value());
-    }
+    /**
+     * Adds this member to the constructed {@code type}.
+     */
+    void attachTo(TypeSpec.Builder type);
 }

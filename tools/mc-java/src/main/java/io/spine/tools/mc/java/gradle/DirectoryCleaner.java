@@ -51,7 +51,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  */
 @SuppressWarnings("RefusedBequest")
 // As we define a completely different behavior for the visitor methods.
-public final class DirectoryCleaner extends SimpleFileVisitor<Path> implements Logging {
+final class DirectoryCleaner extends SimpleFileVisitor<Path> implements Logging {
 
     private final ImmutableList<File> dirs;
 

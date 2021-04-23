@@ -24,29 +24,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.gradle;
+package io.spine.tools.mc.java.code.validate;
 
-import io.spine.annotation.Beta;
-import io.spine.annotation.Experimental;
-import io.spine.annotation.Internal;
-import io.spine.annotation.SPI;
-import io.spine.tools.mc.java.gradle.annotate.Annotations;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.common.base.Objects;
+import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.TypeSpec;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-@DisplayName("modelCompiler.generateAnnotations Gradle extension should")
-class AnnotationsTest {
+/**
+ * A field to be attached to a Java class.
+ *
+ * @implNote A {@code Field} wraps a JavaPoet {@link FieldSpec} which can be added to a JavaPoet
+ *         {@link TypeSpec} builder.
+ */
+final class Field implements ClassMember {
 
-    @Test
-    @DisplayName("have default values")
-    void defaults() {
-        Annotations annotations = new Annotations();
+    private final FieldSpec fieldSpec;
 
-        assertEquals(Experimental.class.getName(), annotations.experimentalClassName().value());
-        assertEquals(SPI.class.getName(), annotations.spiClassName().value());
-        assertEquals(Internal.class.getName(), annotations.internalClassName().value());
-        assertEquals(Beta.class.getName(), annotations.betaClassName().value());
+    Field(FieldSpec fieldSpec) {
+        this.fieldSpec = checkNotNull(fieldSpec);
+    }
+
+    @Override
+    public void attachTo(TypeSpec.Builder type) {
+        type.addField(fieldSpec);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Field)) {
+            return false;
+        }
+        Field field = (Field) o;
+        return Objects.equal(fieldSpec, field.fieldSpec);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(fieldSpec);
     }
 }

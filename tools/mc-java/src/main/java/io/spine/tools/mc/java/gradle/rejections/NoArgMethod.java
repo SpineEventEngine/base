@@ -24,29 +24,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.gradle;
+package io.spine.tools.mc.java.gradle.rejections;
 
-import io.spine.annotation.Beta;
-import io.spine.annotation.Experimental;
-import io.spine.annotation.Internal;
-import io.spine.annotation.SPI;
-import io.spine.tools.mc.java.gradle.annotate.Annotations;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.tools.java.protoc.Method;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+/**
+ * A reference to a method with no arguments.
+ */
+@Immutable
+final class NoArgMethod extends Method {
 
-@DisplayName("modelCompiler.generateAnnotations Gradle extension should")
-class AnnotationsTest {
+    private static final long serialVersionUID = 0L;
 
-    @Test
-    @DisplayName("have default values")
-    void defaults() {
-        Annotations annotations = new Annotations();
+    NoArgMethod(String methodName) {
+        super(methodName);
+    }
 
-        assertEquals(Experimental.class.getName(), annotations.experimentalClassName().value());
-        assertEquals(SPI.class.getName(), annotations.spiClassName().value());
-        assertEquals(Internal.class.getName(), annotations.internalClassName().value());
-        assertEquals(Beta.class.getName(), annotations.betaClassName().value());
+    public String name() {
+        return value();
+    }
+
+    String signature() {
+        return value() + "()";
     }
 }

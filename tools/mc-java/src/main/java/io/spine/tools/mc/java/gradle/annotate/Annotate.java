@@ -24,29 +24,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.gradle;
+package io.spine.tools.mc.java.gradle.annotate;
 
-import io.spine.annotation.Beta;
-import io.spine.annotation.Experimental;
-import io.spine.annotation.Internal;
-import io.spine.annotation.SPI;
-import io.spine.tools.mc.java.gradle.annotate.Annotations;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import io.spine.tools.mc.java.code.annotation.ModuleAnnotator;
+import org.gradle.api.Action;
+import org.gradle.api.Project;
+import org.gradle.api.Task;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.io.File;
 
-@DisplayName("modelCompiler.generateAnnotations Gradle extension should")
-class AnnotationsTest {
+import static com.google.common.base.Preconditions.checkNotNull;
 
-    @Test
-    @DisplayName("have default values")
-    void defaults() {
-        Annotations annotations = new Annotations();
+/**
+ * A task action which performs generated code annotation.
+ */
+final class Annotate implements Action<Task> {
 
-        assertEquals(Experimental.class.getName(), annotations.experimentalClassName().value());
-        assertEquals(SPI.class.getName(), annotations.spiClassName().value());
-        assertEquals(Internal.class.getName(), annotations.internalClassName().value());
-        assertEquals(Beta.class.getName(), annotations.betaClassName().value());
+    private final ProtoAnnotatorPlugin plugin;
+    private final Project project;
+    private final boolean productionTask;
+
+    Annotate(ProtoAnnotatorPlugin plugin, Project project, boolean productionTask) {
+        this.plugin = checkNotNull(plugin);
+        this.project = checkNotNull(project);
+        this.productionTask = productionTask;
+    }
+
+    @Override
+    public void execute(Task task) {
+        ModuleAnnotatorFactory factory = new ModuleAnnotatorFactory(project, productionTask);
+        File descriptorSetFile = factory.descriptorSetFile();
+        if (descriptorSetFile.exists()) {
+            ModuleAnnotator annotator = factory.createAnnotator();
+            annotator.annotate();
+        } else {
+            plugin.logMissingDescriptorSetFile(descriptorSetFile);
+        }
     }
 }

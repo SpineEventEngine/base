@@ -24,29 +24,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.gradle;
+package io.spine.tools.mc.java.code.validate;
 
-import io.spine.annotation.Beta;
-import io.spine.annotation.Experimental;
-import io.spine.annotation.Internal;
-import io.spine.annotation.SPI;
-import io.spine.tools.mc.java.gradle.annotate.Annotations;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.errorprone.annotations.FormatMethod;
+import com.google.errorprone.annotations.FormatString;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static java.lang.String.format;
 
-@DisplayName("modelCompiler.generateAnnotations Gradle extension should")
-class AnnotationsTest {
+/**
+ * An expression which does not yield a value.
+ *
+ * <p>The actual generated code might formally be non-void. In this case, by using
+ * {@code VoidExpression} we state that the value of the expression is irrelevant. Example of such
+ * an expression is {@code collection.add(element)}, which returns a {@code boolean} value, but it
+ * is not used.
+ */
+public final class VoidExpression extends CodeExpression<Void> {
 
-    @Test
-    @DisplayName("have default values")
-    void defaults() {
-        Annotations annotations = new Annotations();
+    private static final long serialVersionUID = 0L;
 
-        assertEquals(Experimental.class.getName(), annotations.experimentalClassName().value());
-        assertEquals(SPI.class.getName(), annotations.spiClassName().value());
-        assertEquals(Internal.class.getName(), annotations.internalClassName().value());
-        assertEquals(Beta.class.getName(), annotations.betaClassName().value());
+    private VoidExpression(String value) {
+        super(value);
+    }
+
+    /**
+     * Creates a {@code VoidExpression} by formatting the given template string by the rules of
+     * {@code String.format()}.
+     */
+    @FormatMethod
+    public static VoidExpression formatted(@FormatString String template, Object... args) {
+        return new VoidExpression(format(template, args));
     }
 }

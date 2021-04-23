@@ -24,29 +24,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.gradle;
+package io.spine.tools.mc.java.code.validate;
 
-import io.spine.annotation.Beta;
-import io.spine.annotation.Experimental;
-import io.spine.annotation.Internal;
-import io.spine.annotation.SPI;
-import io.spine.tools.mc.java.gradle.annotate.Annotations;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.common.base.Objects;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeSpec;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-@DisplayName("modelCompiler.generateAnnotations Gradle extension should")
-class AnnotationsTest {
+/**
+ * A method to be attached to a Java class.
+ *
+ * @implNote A {@code Method} wraps a JavaPoet {@link MethodSpec} which can be added to a JavaPoet
+ *         {@link TypeSpec} builder.
+ */
+final class Method implements ClassMember {
 
-    @Test
-    @DisplayName("have default values")
-    void defaults() {
-        Annotations annotations = new Annotations();
+    private final MethodSpec methodSpec;
 
-        assertEquals(Experimental.class.getName(), annotations.experimentalClassName().value());
-        assertEquals(SPI.class.getName(), annotations.spiClassName().value());
-        assertEquals(Internal.class.getName(), annotations.internalClassName().value());
-        assertEquals(Beta.class.getName(), annotations.betaClassName().value());
+    Method(MethodSpec methodSpec) {
+        this.methodSpec = checkNotNull(methodSpec);
+    }
+
+    @Override
+    public void attachTo(TypeSpec.Builder type) {
+        type.addMethod(methodSpec);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Method)) {
+            return false;
+        }
+        Method method = (Method) o;
+        return Objects.equal(methodSpec, method.methodSpec);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(methodSpec);
     }
 }

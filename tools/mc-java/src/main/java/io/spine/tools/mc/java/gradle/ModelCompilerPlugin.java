@@ -28,10 +28,10 @@ package io.spine.tools.mc.java.gradle;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.logging.Logging;
-import io.spine.tools.mc.java.code.annotate.ProtoAnnotatorPlugin;
-import io.spine.tools.mc.java.errorprone.ErrorProneChecksPlugin;
-import io.spine.tools.mc.java.code.rejections.RejectionGenPlugin;
+import io.spine.tools.mc.java.gradle.check.ErrorProneChecksPlugin;
+import io.spine.tools.mc.java.gradle.rejections.RejectionGenPlugin;
 import io.spine.tools.gradle.SpinePlugin;
+import io.spine.tools.mc.java.gradle.annotate.ProtoAnnotatorPlugin;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 

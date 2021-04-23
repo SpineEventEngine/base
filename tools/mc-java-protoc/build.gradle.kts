@@ -30,21 +30,22 @@ import io.spine.internal.dependency.JavaX
 group = "io.spine.tools"
 
 dependencies {
-    implementation(project(":tool-base"))
-    implementation(project(":plugin-base"))
-    implementation(project(":mc-java-validation"))
     implementation(JavaPoet.lib)
     implementation(JavaX.annotations)
 
-    testImplementation(project(":base"))
+    implementation(project(":base"))
+    implementation(project(":tool-base"))
+    implementation(project(":plugin-base"))
+    implementation(project(":mc-java"))
+
     testImplementation(project(":testlib"))
     testImplementation(project(":mute-logging"))
 }
 
 tasks.jar {
     dependsOn(
-            ":tool-base:jar",
-            ":mc-java-validation:jar"
+            ":tool-base:jar"
+        // , ":mc-java-validation:jar"
     )
 
     // See https://stackoverflow.com/questions/35704403/what-are-the-eclipsef-rsa-and-eclipsef-sf-in-a-java-jar-file

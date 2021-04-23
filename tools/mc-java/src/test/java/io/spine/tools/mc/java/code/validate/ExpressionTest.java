@@ -24,29 +24,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.gradle;
+package io.spine.tools.mc.java.code.validate;
 
-import io.spine.annotation.Beta;
-import io.spine.annotation.Experimental;
-import io.spine.annotation.Internal;
-import io.spine.annotation.SPI;
-import io.spine.tools.mc.java.gradle.annotate.Annotations;
+import com.squareup.javapoet.CodeBlock;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("modelCompiler.generateAnnotations Gradle extension should")
-class AnnotationsTest {
+@DisplayName("`Expression` should")
+class ExpressionTest {
 
     @Test
-    @DisplayName("have default values")
-    void defaults() {
-        Annotations annotations = new Annotations();
-
-        assertEquals(Experimental.class.getName(), annotations.experimentalClassName().value());
-        assertEquals(SPI.class.getName(), annotations.spiClassName().value());
-        assertEquals(Internal.class.getName(), annotations.internalClassName().value());
-        assertEquals(Beta.class.getName(), annotations.betaClassName().value());
+    @DisplayName("create formatted expressions")
+    void format() {
+        Expression<?> expression =
+                Expression.formatted("%s %s %d!", "hello", new StringBuilder("world"), 42);
+        CodeBlock code = expression.toCode();
+        assertThat(code.toString())
+                .isEqualTo("hello world 42!");
     }
 }

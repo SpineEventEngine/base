@@ -24,29 +24,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.gradle;
+package io.spine.tools.mc.java.gradle.check;
 
-import io.spine.annotation.Beta;
-import io.spine.annotation.Experimental;
-import io.spine.annotation.Internal;
-import io.spine.annotation.SPI;
-import io.spine.tools.mc.java.gradle.annotate.Annotations;
+import io.spine.testing.UtilityClassTest;
+import org.gradle.api.Project;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static io.spine.tools.mc.java.given.ProjectConfigurations.assertCompileTasksContain;
+import static io.spine.tools.mc.java.given.ProjectConfigurations.assertCompileTasksEmpty;
+import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newProject;
 
-@DisplayName("modelCompiler.generateAnnotations Gradle extension should")
-class AnnotationsTest {
+@DisplayName("ProjectArguments utility class should")
+class ProjectArgumentsTest extends UtilityClassTest<ProjectArguments> {
+
+    private final Project project = newProject();
+
+    ProjectArgumentsTest() {
+        super(ProjectArguments.class);
+    }
 
     @Test
-    @DisplayName("have default values")
-    void defaults() {
-        Annotations annotations = new Annotations();
+    @DisplayName("add arguments to Java compile tasks")
+    void addArgs() {
+        String firstArg = "firstArg";
+        String secondArg = "secondArg";
+        ProjectArguments.addArgsToJavaCompile(project, firstArg, secondArg);
+        assertCompileTasksContain(project, firstArg, secondArg);
+    }
 
-        assertEquals(Experimental.class.getName(), annotations.experimentalClassName().value());
-        assertEquals(SPI.class.getName(), annotations.spiClassName().value());
-        assertEquals(Internal.class.getName(), annotations.internalClassName().value());
-        assertEquals(Beta.class.getName(), annotations.betaClassName().value());
+    @Test
+    @DisplayName("not add arguments if none is specified")
+    void doNotAddArgs() {
+        ProjectArguments.addArgsToJavaCompile(project);
+        assertCompileTasksEmpty(project);
     }
 }

@@ -24,29 +24,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.gradle;
+package io.spine.tools.mc.java.code.validate;
 
-import io.spine.annotation.Beta;
-import io.spine.annotation.Experimental;
-import io.spine.annotation.Internal;
-import io.spine.annotation.SPI;
-import io.spine.tools.mc.java.gradle.annotate.Annotations;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import io.spine.protobuf.Messages;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static io.spine.tools.mc.java.code.validate.BooleanExpression.fromCode;
 
-@DisplayName("modelCompiler.generateAnnotations Gradle extension should")
-class AnnotationsTest {
+/**
+ * Set of utilities for working with values of container types.
+ *
+ * <p>Container types are types composed of homogeneous elements: a collection, a string, etc.
+ */
+public final class Containers {
 
-    @Test
-    @DisplayName("have default values")
-    void defaults() {
-        Annotations annotations = new Annotations();
+    /**
+     * Prevents the utility class instantiation.
+     */
+    private Containers() {
+    }
 
-        assertEquals(Experimental.class.getName(), annotations.experimentalClassName().value());
-        assertEquals(SPI.class.getName(), annotations.spiClassName().value());
-        assertEquals(Internal.class.getName(), annotations.internalClassName().value());
-        assertEquals(Beta.class.getName(), annotations.betaClassName().value());
+    /**
+     * Obtains the expression which calls {@code isEmpty()} method on the given {@code value}.
+     *
+     * @param value
+     *         an expression which yields an object which has a {@code isEmpty()} method, e.g.
+     *         a {@code String}
+     */
+    public static BooleanExpression isEmpty(Expression<?> value) {
+        return fromCode("$L.isEmpty()", value.toCode());
+    }
+
+    /**
+     * Obtains the expression which calls {@code Messages.isDefault())} method on the given
+     * {@code value}.
+     *
+     * @param value
+     *         an expression of a Protobuf message or a Protobuf enum
+     */
+    public static BooleanExpression isDefault(Expression<?> value) {
+        return fromCode("$T.isDefault($L)", Messages.class, value.toCode());
     }
 }

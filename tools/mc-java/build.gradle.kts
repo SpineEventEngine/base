@@ -27,6 +27,7 @@
 import com.google.protobuf.gradle.generateProtoTasks
 import com.google.protobuf.gradle.protobuf
 import io.spine.internal.dependency.JavaPoet
+import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Roaster
 
@@ -36,7 +37,7 @@ var protocPluginDependency: Dependency? = null
 val spineVersion: String by extra
 
 dependencies {
-    implementation(project(":plugin-base"))
+    implementation(JavaX.annotations)
     implementation(JavaPoet.lib)
 
     // A library for parsing Java sources.
@@ -49,6 +50,11 @@ dependencies {
         exclude(group = "com.google.guava")
     }
     implementation(Protobuf.GradlePlugin.lib)
+
+    implementation(project(":base"))
+    implementation(project(":tool-base"))
+    implementation(project(":plugin-base"))
+
     testImplementation(project(":testlib"))
     testImplementation(gradleTestKit())
     testImplementation(project(":plugin-testlib"))

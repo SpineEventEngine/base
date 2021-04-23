@@ -24,29 +24,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.gradle;
+package io.spine.tools.mc.java.code.validate;
 
-import io.spine.annotation.Beta;
-import io.spine.annotation.Experimental;
-import io.spine.annotation.Internal;
-import io.spine.annotation.SPI;
-import io.spine.tools.mc.java.gradle.annotate.Annotations;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.squareup.javapoet.CodeBlock;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+/**
+ * A factory of {@link CodeBlock}s.
+ */
+final class Blocks {
 
-@DisplayName("modelCompiler.generateAnnotations Gradle extension should")
-class AnnotationsTest {
+    private static final CodeBlock EMPTY = CodeBlock.of("");
 
-    @Test
-    @DisplayName("have default values")
-    void defaults() {
-        Annotations annotations = new Annotations();
+    /**
+     * Prevents the utility class instantiation.
+     */
+    private Blocks() {
+    }
 
-        assertEquals(Experimental.class.getName(), annotations.experimentalClassName().value());
-        assertEquals(SPI.class.getName(), annotations.spiClassName().value());
-        assertEquals(Internal.class.getName(), annotations.internalClassName().value());
-        assertEquals(Beta.class.getName(), annotations.betaClassName().value());
+    /**
+     * Obtains an empty code block.
+     */
+    static CodeBlock empty() {
+        return EMPTY;
     }
 }
