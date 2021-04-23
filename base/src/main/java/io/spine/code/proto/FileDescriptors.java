@@ -28,7 +28,6 @@ package io.spine.code.proto;
 import com.google.common.flogger.FluentLogger;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
-import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.io.Resource;
 
@@ -208,8 +207,7 @@ public final class FileDescriptors {
      * Verifies if the passed file declares types under the "google" package.
      */
     public static boolean isGoogle(FileDescriptor file) {
-        Descriptor descriptor = file.toProto().getDescriptorForType();
-        PackageName packageName = PackageName.of(descriptor);
+        PackageName packageName = PackageName.of(file.getPackage());
         return packageName.isGoogle();
     }
 
