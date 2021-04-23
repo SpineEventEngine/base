@@ -43,18 +43,18 @@ fun toolsModule(name: String) {
     project(":$name").projectDir = File("$rootDir/tools/$name")
 }
 
+toolsModule("plugin-testlib")
+toolsModule("mute-logging")
 toolsModule("tool-base")
 toolsModule("plugin-base")
-toolsModule("plugin-testlib")
 
-toolsModule("mute-logging")
-toolsModule("errorprone-checks")
-toolsModule("javadoc-filter")
-toolsModule("javadoc-prettifier")
-toolsModule("model-compiler")
+toolsModule("mc-java")
+toolsModule("mc-java-checks")
+toolsModule("mc-java-doc-filter")
+toolsModule("mc-java-doc-style")
+toolsModule("mc-java-validation")
+toolsModule("mc-java-protoc")
 
-toolsModule("proto-dart-plugin")
-toolsModule("proto-js-plugin")
+toolsModule("mc-js")
+toolsModule("mc-dart")
 
-toolsModule("validation-generator")
-toolsModule("protoc-plugin")

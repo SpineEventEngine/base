@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.java.protoc;
 
 import io.spine.tools.column.Project;
 import io.spine.tools.column.ProjectCreation;
@@ -37,8 +37,8 @@ import java.lang.reflect.Method;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertHasPrivateParameterlessCtor;
-import static io.spine.tools.protoc.given.ColumnsTestEnv.assertDoesNotContainMethod;
-import static io.spine.tools.protoc.given.ColumnsTestEnv.checkColumnName;
+import static io.spine.tools.java.protoc.given.ColumnsTestEnv.assertDoesNotContainMethod;
+import static io.spine.tools.java.protoc.given.ColumnsTestEnv.checkColumnName;
 
 @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
 @DisplayName("`ProtocPlugin`, when generating entity columns, should")

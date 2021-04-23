@@ -27,7 +27,7 @@
 package io.spine.tools.code.gen.java;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.tools.java.gen.FieldName;
+import io.spine.tools.java.code.FieldName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

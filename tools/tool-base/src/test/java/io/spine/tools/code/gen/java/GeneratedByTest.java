@@ -29,7 +29,7 @@ package io.spine.tools.code.gen.java;
 import com.google.common.truth.StringSubject;
 import com.squareup.javapoet.AnnotationSpec;
 import io.spine.testing.UtilityClassTest;
-import io.spine.tools.java.gen.GeneratedBy;
+import io.spine.tools.java.code.GeneratedBy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

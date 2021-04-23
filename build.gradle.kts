@@ -24,6 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:Suppress("RemoveRedundantQualifierName") // In some clases imports cannot be used.
+
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.protoc
 import io.spine.internal.dependency.CheckerFramework
@@ -46,7 +48,6 @@ import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.plugins.JavaPluginExtension
 
-@Suppress("RemoveRedundantQualifierName") // Cannot use imported things here.
 buildscript {
     apply(from = "$rootDir/version.gradle.kts")
     io.spine.internal.gradle.doApplyStandard(repositories)
@@ -79,25 +80,29 @@ spinePublishing {
             PublishingRepos.gitHub("base")
     ))
     projectsToPublish.addAll(
+        // Base artifacts
         "base",
-        "tool-base",
         "testlib",
-        "mute-logging",
-        "errorprone-checks",
 
-        // Gradle plugins
+        // Tooling base artifacts
+        "tool-base",
         "plugin-base",
-        "javadoc-filter",
-        "javadoc-prettifier",
-        "proto-dart-plugin",
-        "proto-js-plugin",
-        "model-compiler",
-
         "plugin-testlib",
+        "mute-logging",
 
-        // Protoc compiler plugin
-        "validation-generator",
-        "protoc-plugin"
+        // Model Compiler for Java
+        "mc-java",
+        "mc-java-protoc",
+        "mc-java-validation",
+        "mc-java-checks",
+        "mc-java-doc-filter",
+        "mc-java-doc-style",
+
+        // Model Compiler for JS
+        "mc-js",
+
+        // Model Compiler for Dart
+        "mc-dart"
     )
 }
 
@@ -162,7 +167,6 @@ subprojects {
     tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions {
             jvmTarget = javaVersion.toString()
-            useIR = true
             freeCompilerArgs = listOf("-Xskip-prerelease-check")
         }
     }

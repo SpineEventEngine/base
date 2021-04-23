@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.java.protoc;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
@@ -44,8 +44,8 @@ import io.spine.test.protoc.University;
 import io.spine.test.protoc.Wrapped;
 import io.spine.test.tools.protoc.Movie;
 import io.spine.test.tools.protoc.WeatherForecast;
-import io.spine.tools.protoc.test.PIUserEvent;
-import io.spine.tools.protoc.test.UserInfo;
+import io.spine.tools.java.protoc.test.PIUserEvent;
+import io.spine.tools.java.protoc.test.UserInfo;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

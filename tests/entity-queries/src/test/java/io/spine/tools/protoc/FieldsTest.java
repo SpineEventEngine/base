@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.java.protoc;
 
 import com.google.common.truth.Truth;
 import io.spine.base.EventMessageField;
@@ -34,7 +34,7 @@ import io.spine.tools.column.Project;
 import io.spine.tools.column.ProjectCreated;
 import io.spine.tools.column.ProjectName;
 import io.spine.tools.column.ProjectView;
-import io.spine.tools.protoc.given.ProjectNameField;
+import io.spine.tools.java.protoc.given.ProjectNameField;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

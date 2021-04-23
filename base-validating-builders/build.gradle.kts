@@ -24,6 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:Suppress("RemoveRedundantQualifierName") // In some places imports are not allowed.
+
 import com.google.protobuf.gradle.ProtobufConfigurator.JavaGenerateProtoTaskCollection
 import com.google.protobuf.gradle.*
 import io.spine.internal.dependency.JavaX
@@ -76,8 +78,7 @@ buildscript {
         }
 
         classpath(files(
-                "$projectDir/../tools/protoc-api/build/libs/protoc-api-${spineVersion}.jar",
-                "$projectDir/../tools/model-compiler/build/libs/model-compiler-${spineVersion}.jar",
+                "$projectDir/../tools/model-compiler/build/libs/mc-java-${spineVersion}.jar",
                 "$projectDir/../tools/plugin-base/build/libs/plugin-base-${spineVersion}.jar",
                 "$projectDir/../tools/tool-base/build/libs/tool-base-${spineVersion}.jar",
                 "$projectDir/../base/build/libs/base-${spineVersion}.jar"
@@ -88,11 +89,10 @@ buildscript {
 plugins {
     java
     idea
-    @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
     id("com.google.protobuf").version(io.spine.internal.dependency.Protobuf.GradlePlugin.version)
 }
 
-apply(plugin = "io.spine.tools.spine-model-compiler")
+apply(plugin = "io.spine.tools.spine-mc-java")
 
 extensions["modelCompiler"].withGroovyBuilder {
     setProperty("generateValidation", true)

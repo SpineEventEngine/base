@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.given;
+package io.spine.tools.java.protoc.given;
 
 import com.google.common.truth.Correspondence;
 import io.spine.query.EntityColumn;
@@ -34,7 +34,7 @@ import java.lang.reflect.Method;
 import static com.google.common.truth.Truth.assertThat;
 
 /**
- * A test environment and utilities for {@link io.spine.tools.protoc.ColumnsTest}.
+ * A test environment and utilities for {@link io.spine.tools.java.protoc.ColumnsTest}.
  */
 public final class ColumnsTestEnv {
 

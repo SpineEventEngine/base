@@ -41,6 +41,7 @@ import java.lang.annotation.Target;
  * team, as the internal APIs do not have the same stability API guarantee as public ones.
  *
  * <p>See {@link SPI} annotation if you plan to write an extension of the framework.
+ *
  * @see SPI
  */
 @Internal
