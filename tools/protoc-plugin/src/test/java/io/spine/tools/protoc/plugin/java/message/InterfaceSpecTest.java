@@ -24,43 +24,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.plugin;
+package io.spine.tools.protoc.plugin.java.message;
 
-import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import io.spine.tools.java.fs.SourceFile;
-import io.spine.tools.protoc.Method;
-import io.spine.tools.protoc.plugin.java.ClassMember;
-import io.spine.type.MessageType;
+import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.JavaFile;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static java.lang.String.format;
+import javax.annotation.Generated;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("`ClassMember` should")
-final class ClassMemberTest {
+@DisplayName("MessageInterfaceSpec should")
+final class InterfaceSpecTest {
 
-    @DisplayName("create valid compiler output")
     @Test
-    void createValidCompilerOutput() {
-        String methodBody = "public void test(){}";
-        Method method = new Method(methodBody);
-        MessageType type = new MessageType(MessageWithClassScopeInsertion.getDescriptor());
-        ClassMember result = ClassMember.method(method, type);
-        File file = result.asFile();
+    @DisplayName("generate interfaces")
+    void generateInterfaces() {
+        String packageName = "io.spine.test";
+        String interfaceName = "CustomerEvent";
+        JavaFile javaFile = new InterfaceSpec(packageName, interfaceName).toJavaCode();
 
-        assertEquals(methodBody, file.getContent());
-        assertEquals(insertionPoint(type), file.getInsertionPoint());
-        assertEquals(sourceName(type), file.getName());
-    }
+        AnnotationSpec generated = javaFile.typeSpec.annotations.get(0);
+        assertEquals(Generated.class.getName(), generated.type.toString());
 
-    private static String sourceName(MessageType type) {
-        return SourceFile.forType(type)
-                         .toString()
-                         .replace('\\', '/');
-    }
-
-    private static String insertionPoint(MessageType type) {
-        return format("class_scope:%s", type.name());
+        assertEquals(packageName, javaFile.packageName);
+        assertEquals(interfaceName, javaFile.typeSpec.name);
     }
 }

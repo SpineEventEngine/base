@@ -24,31 +24,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.js.generate;
+package io.spine.tools.protoc.plugin.java.message;
 
-import io.spine.tools.js.generate.output.CodeLines;
+import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.proto.FileOption;
+import io.spine.option.IsOption;
+import io.spine.option.OptionsProto;
+import io.spine.type.MessageType;
+
+import java.util.Optional;
 
 /**
- * The common base for JavaScript code generators which operate
- * on the {@link io.spine.tools.js.generate.output.CodeLines}.
+ * An option for a specified file which defines if marker interfaces should be generated and
+ * the Java type of the message.
+ *
+ * @see Is Is option
  */
-public abstract class JsCodeGenerator {
+final class EveryIs extends FileOption<IsOption> {
 
-    private final CodeLines jsOutput;
-
-    protected JsCodeGenerator(CodeLines jsOutput) {
-        this.jsOutput = jsOutput;
+    /** Creates a new instance of this option. */
+    private EveryIs() {
+        super(OptionsProto.everyIs);
     }
 
     /**
-     * The {@code JsOutput} which accumulates all the generated code.
+     * Obtains a value of the option declared for every type declared in the same file with
+     * the passed message type.
+     *
+     * @return the value of the option, or {@code Optional.empty()} if the option is not specified
      */
-    protected CodeLines jsOutput() {
-        return jsOutput;
+    static Optional<IsOption> of(MessageType type) {
+        FileDescriptor file = type.file();
+        Optional<IsOption> value = new EveryIs().valueFrom(file);
+        return value;
     }
-
-    /**
-     * Generate the JavaScript code and store it into the {@code JsOutput}.
-     */
-    public abstract void generate();
 }

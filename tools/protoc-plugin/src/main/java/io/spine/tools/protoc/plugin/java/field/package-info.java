@@ -24,31 +24,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.js.generate;
-
-import io.spine.tools.js.generate.output.CodeLines;
-
 /**
- * The common base for JavaScript code generators which operate
- * on the {@link io.spine.tools.js.generate.output.CodeLines}.
+ * This package contains the routines of generating the strongly-typed fields for the Protobuf
+ * messages.
  */
-public abstract class JsCodeGenerator {
 
-    private final CodeLines jsOutput;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.protoc.plugin.java.field;
 
-    protected JsCodeGenerator(CodeLines jsOutput) {
-        this.jsOutput = jsOutput;
-    }
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    /**
-     * The {@code JsOutput} which accumulates all the generated code.
-     */
-    protected CodeLines jsOutput() {
-        return jsOutput;
-    }
-
-    /**
-     * Generate the JavaScript code and store it into the {@code JsOutput}.
-     */
-    public abstract void generate();
-}
+import javax.annotation.ParametersAreNonnullByDefault;

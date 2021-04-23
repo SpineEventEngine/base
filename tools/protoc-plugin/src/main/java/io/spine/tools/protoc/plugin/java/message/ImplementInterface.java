@@ -24,31 +24,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.js.generate;
+package io.spine.tools.protoc.plugin.java.message;
 
-import io.spine.tools.js.generate.output.CodeLines;
+import com.google.common.collect.ImmutableList;
+import io.spine.code.java.ClassName;
+import io.spine.tools.protoc.plugin.CodeGenerationTask;
+import io.spine.tools.protoc.plugin.CompilerOutput;
+import io.spine.type.MessageType;
+
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * The common base for JavaScript code generators which operate
- * on the {@link io.spine.tools.js.generate.output.CodeLines}.
+ * An abstract base for the interface code generation tasks.
  */
-public abstract class JsCodeGenerator {
+public abstract class ImplementInterface implements CodeGenerationTask {
 
-    private final CodeLines jsOutput;
+    private final ClassName interfaceName;
 
-    protected JsCodeGenerator(CodeLines jsOutput) {
-        this.jsOutput = jsOutput;
+    ImplementInterface(String interfaceName) {
+        checkNotEmptyOrBlank(interfaceName);
+        this.interfaceName = ClassName.of(interfaceName);
     }
 
     /**
-     * The {@code JsOutput} which accumulates all the generated code.
+     * Obtains generic parameters of the passed type.
      */
-    protected CodeLines jsOutput() {
-        return jsOutput;
-    }
+    public abstract InterfaceParameters interfaceParameters(MessageType type);
 
     /**
-     * Generate the JavaScript code and store it into the {@code JsOutput}.
+     * Performs the actual interface code generation.
      */
-    public abstract void generate();
+    @Override
+    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
+        InterfaceParameters params = interfaceParameters(type);
+        Interface iface = new ExistingInterface(interfaceName, params);
+        Implement result = Implement.interfaceFor(type, iface);
+        return ImmutableList.of(result);
+    }
 }

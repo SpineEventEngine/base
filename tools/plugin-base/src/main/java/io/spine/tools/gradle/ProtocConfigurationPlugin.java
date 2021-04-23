@@ -72,10 +72,12 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
         Path generatedFilesBaseDir = generatedFilesBaseDir(project);
         protobuf.setGeneratedFilesBaseDir(generatedFilesBaseDir.toString());
         String version = VERSIONS.protobuf();
-        protobuf.protoc(closure((ExecutableLocator protocLocator) ->
-                                        protocLocator.setArtifact(protobufCompiler()
-                                                                          .ofVersion(version)
-                                                                          .notation())));
+        protobuf.protoc(closure(
+                (ExecutableLocator protocLocator) -> {
+                    String compilerArtifact = protobufCompiler().ofVersion(version).notation();
+                    protocLocator.setArtifact(compilerArtifact);
+                }
+        ));
         ConsumerClosure<NamedDomainObjectContainer<ExecutableLocator>> pluginConfig = closure(
                 plugins -> configureProtocPlugins(plugins, project)
         );
@@ -107,8 +109,7 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
      * @param project
      *         the target project in which the codegen occurs
      * @apiNote overriding methods must invoke super to add the {@code spineProtoc} plugin,
-     *         which
-     *         is a required plugin
+     *         which is a required plugin
      */
     protected abstract void
     configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins, Project project);

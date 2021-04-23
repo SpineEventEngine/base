@@ -24,31 +24,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.js.generate;
-
-import io.spine.tools.js.generate.output.CodeLines;
-
 /**
- * The common base for JavaScript code generators which operate
- * on the {@link io.spine.tools.js.generate.output.CodeLines}.
+ * This package contains provides types for transforming Proto definitions into Java code.
  */
-public abstract class JsCodeGenerator {
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.protoc.plugin.java;
 
-    private final CodeLines jsOutput;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    protected JsCodeGenerator(CodeLines jsOutput) {
-        this.jsOutput = jsOutput;
-    }
-
-    /**
-     * The {@code JsOutput} which accumulates all the generated code.
-     */
-    protected CodeLines jsOutput() {
-        return jsOutput;
-    }
-
-    /**
-     * Generate the JavaScript code and store it into the {@code JsOutput}.
-     */
-    public abstract void generate();
-}
+import javax.annotation.ParametersAreNonnullByDefault;

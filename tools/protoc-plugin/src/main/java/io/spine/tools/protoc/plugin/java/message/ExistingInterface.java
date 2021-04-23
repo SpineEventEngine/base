@@ -24,31 +24,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.js.generate;
+package io.spine.tools.protoc.plugin.java.message;
 
-import io.spine.tools.js.generate.output.CodeLines;
+import io.spine.code.java.ClassName;
 
 /**
- * The common base for JavaScript code generators which operate
- * on the {@link io.spine.tools.js.generate.output.CodeLines}.
+ * An interface which already exists.
  */
-public abstract class JsCodeGenerator {
+final class ExistingInterface implements Interface {
 
-    private final CodeLines jsOutput;
+    private final ClassName name;
+    private final InterfaceParameters parameters;
 
-    protected JsCodeGenerator(CodeLines jsOutput) {
-        this.jsOutput = jsOutput;
+    ExistingInterface(ClassName name, InterfaceParameters params) {
+        this.name = name;
+        this.parameters = params;
     }
 
-    /**
-     * The {@code JsOutput} which accumulates all the generated code.
-     */
-    protected CodeLines jsOutput() {
-        return jsOutput;
+    ExistingInterface(ClassName name) {
+        this(name, InterfaceParameters.empty());
     }
 
-    /**
-     * Generate the JavaScript code and store it into the {@code JsOutput}.
-     */
-    public abstract void generate();
+    @Override
+    public String name() {
+        return name.value();
+    }
+
+    @Override
+    public InterfaceParameters parameters() {
+        return parameters;
+    }
 }

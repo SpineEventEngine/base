@@ -24,31 +24,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.js.generate;
+package io.spine.tools.protoc.plugin.java.message;
 
-import io.spine.tools.js.generate.output.CodeLines;
+import com.google.common.collect.ImmutableList;
+import io.spine.tools.protoc.plugin.CompilerOutput;
+import io.spine.tools.protoc.UuidConfig;
+import io.spine.type.MessageType;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The common base for JavaScript code generators which operate
- * on the {@link io.spine.tools.js.generate.output.CodeLines}.
+ * Generates {@link io.spine.base.UuidValue UuidValue} interfaces.
  */
-public abstract class JsCodeGenerator {
+public final class ImplementUuidValue extends ImplementInterface {
 
-    private final CodeLines jsOutput;
+    ImplementUuidValue(UuidConfig config) {
+        super(config.getValue());
+    }
 
-    protected JsCodeGenerator(CodeLines jsOutput) {
-        this.jsOutput = jsOutput;
+    @Override
+    public InterfaceParameters interfaceParameters(MessageType type) {
+        return InterfaceParameters.empty();
     }
 
     /**
-     * The {@code JsOutput} which accumulates all the generated code.
+     * Makes supplied {@link io.spine.base.UuidValue UuidValue} type implement
+     * the configured interface.
      */
-    protected CodeLines jsOutput() {
-        return jsOutput;
+    @Override
+    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
+        checkNotNull(type);
+        if (!type.isUuidValue()) {
+            return ImmutableList.of();
+        }
+        return super.generateFor(type);
     }
-
-    /**
-     * Generate the JavaScript code and store it into the {@code JsOutput}.
-     */
-    public abstract void generate();
 }

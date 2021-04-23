@@ -41,6 +41,8 @@ import io.spine.tools.protoc.SuffixSelector;
 import io.spine.tools.protoc.plugin.given.TestInterface;
 import io.spine.tools.protoc.plugin.given.TestNestedClassFactory;
 import io.spine.tools.protoc.plugin.given.UuidMethodFactory;
+import io.spine.tools.protoc.plugin.java.CodeGenerator;
+import io.spine.tools.protoc.plugin.java.InsertionPoint;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 import org.junit.jupiter.api.BeforeEach;

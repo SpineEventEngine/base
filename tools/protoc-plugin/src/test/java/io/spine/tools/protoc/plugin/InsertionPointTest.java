@@ -27,6 +27,7 @@
 package io.spine.tools.protoc.plugin;
 
 import com.google.common.truth.StringSubject;
+import io.spine.tools.protoc.plugin.java.InsertionPoint;
 import io.spine.type.MessageType;
 import io.spine.type.TypeName;
 import org.junit.jupiter.api.DisplayName;

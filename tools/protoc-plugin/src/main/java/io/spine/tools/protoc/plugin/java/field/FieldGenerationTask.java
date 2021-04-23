@@ -24,43 +24,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.plugin;
+package io.spine.tools.protoc.plugin.java.field;
 
-import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import io.spine.tools.java.fs.SourceFile;
-import io.spine.tools.protoc.Method;
+import com.google.common.collect.ImmutableList;
+import io.spine.tools.java.gen.FieldFactory;
+import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.plugin.java.ClassMember;
+import io.spine.tools.protoc.plugin.CodeGenerationTask;
+import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.type.MessageType;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
-import static java.lang.String.format;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 
-@DisplayName("`ClassMember` should")
-final class ClassMemberTest {
+/**
+ * An abstract base for strongly-typed field generation tasks.
+ */
+abstract class FieldGenerationTask implements CodeGenerationTask {
 
-    @DisplayName("create valid compiler output")
-    @Test
-    void createValidCompilerOutput() {
-        String methodBody = "public void test(){}";
-        Method method = new Method(methodBody);
-        MessageType type = new MessageType(MessageWithClassScopeInsertion.getDescriptor());
-        ClassMember result = ClassMember.method(method, type);
-        File file = result.asFile();
+    private final ClassName fieldSupertype;
+    private final FieldFactory factory;
 
-        assertEquals(methodBody, file.getContent());
-        assertEquals(insertionPoint(type), file.getInsertionPoint());
-        assertEquals(sourceName(type), file.getName());
+    FieldGenerationTask(ClassName fieldSupertype, FieldFactory factory) {
+        this.fieldSupertype = fieldSupertype;
+        this.factory = factory;
     }
 
-    private static String sourceName(MessageType type) {
-        return SourceFile.forType(type)
-                         .toString()
-                         .replace('\\', '/');
-    }
-
-    private static String insertionPoint(MessageType type) {
-        return format("class_scope:%s", type.name());
+    /**
+     * Performs the actual code generation using the supplied {@linkplain #factory}.
+     */
+    ImmutableList<CompilerOutput> generateFieldsFor(MessageType type) {
+        return factory
+                .createFor(type, fieldSupertype)
+                .stream()
+                .map(classBody -> ClassMember.nestedClass(classBody, type))
+                .collect(toImmutableList());
     }
 }

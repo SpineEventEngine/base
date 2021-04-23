@@ -31,14 +31,15 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import io.spine.code.proto.OptionExtensionRegistry;
 import io.spine.tools.protoc.SpineProtocConfig;
-import io.spine.tools.protoc.plugin.column.ColumnGen;
-import io.spine.tools.protoc.plugin.field.FieldGen;
-import io.spine.tools.protoc.plugin.message.BuilderGen;
-import io.spine.tools.protoc.plugin.message.InterfaceGen;
-import io.spine.tools.protoc.plugin.message.ValidationGen;
-import io.spine.tools.protoc.plugin.message.NestedClassGen;
-import io.spine.tools.protoc.plugin.method.MethodGen;
-import io.spine.tools.protoc.plugin.query.EntityQueryGen;
+import io.spine.tools.protoc.plugin.java.CompositeGenerator;
+import io.spine.tools.protoc.plugin.java.column.ColumnGen;
+import io.spine.tools.protoc.plugin.java.field.FieldGen;
+import io.spine.tools.protoc.plugin.java.message.BuilderGen;
+import io.spine.tools.protoc.plugin.java.message.InterfaceGen;
+import io.spine.tools.protoc.plugin.java.message.ValidationGen;
+import io.spine.tools.protoc.plugin.java.message.NestedClassGen;
+import io.spine.tools.protoc.plugin.java.method.MethodGen;
+import io.spine.tools.protoc.plugin.java.query.EntityQueryGen;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -59,8 +60,8 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * into the {@code System.out}.
  *
  * <p>For the description of the plugin behavior see
- * {@link io.spine.tools.protoc.plugin.message.InterfaceGen InterfaceGen} and
- * {@link io.spine.tools.protoc.plugin.method.MethodGen MethodGen}.
+ * {@link io.spine.tools.protoc.plugin.java.message.InterfaceGen InterfaceGen} and
+ * {@link io.spine.tools.protoc.plugin.java.method.MethodGen MethodGen}.
  *
  * <p>For the plugin mechanism see <a href="SpineProtoGenerator.html#contract">
  * {@code SpineProtoGenerator}</a>.

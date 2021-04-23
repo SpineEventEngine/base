@@ -24,31 +24,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.js.generate;
+package io.spine.tools.protoc.plugin.java.message;
 
-import io.spine.tools.js.generate.output.CodeLines;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.type.MessageType;
 
 /**
- * The common base for JavaScript code generators which operate
- * on the {@link io.spine.tools.js.generate.output.CodeLines}.
+ * The message interface parameter whose value is the class itself (which is going to implement
+ * the interface).
+ *
+ * <p>So, for the {@code ProjectId} class implementing some message interface, the value of the
+ * parameter will be {@code ProjectId}.
  */
-public abstract class JsCodeGenerator {
+@Immutable
+public final class GeneratedClass implements InterfaceParameter {
 
-    private final CodeLines jsOutput;
-
-    protected JsCodeGenerator(CodeLines jsOutput) {
-        this.jsOutput = jsOutput;
+    @Override
+    public String valueFor(MessageType generatedClass) {
+        return generatedClass.simpleJavaClassName().value();
     }
-
-    /**
-     * The {@code JsOutput} which accumulates all the generated code.
-     */
-    protected CodeLines jsOutput() {
-        return jsOutput;
-    }
-
-    /**
-     * Generate the JavaScript code and store it into the {@code JsOutput}.
-     */
-    public abstract void generate();
 }

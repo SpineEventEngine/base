@@ -24,31 +24,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.js.generate;
+package io.spine.tools.protoc.plugin.java.message;
 
-import io.spine.tools.js.generate.output.CodeLines;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.code.proto.MessageOption;
+import io.spine.option.IsOption;
+import io.spine.option.OptionsProto;
+import io.spine.type.MessageType;
+
+import java.util.Optional;
 
 /**
- * The common base for JavaScript code generators which operate
- * on the {@link io.spine.tools.js.generate.output.CodeLines}.
+ * For a given message, declares if the message is of the specified Java type and
+ * the generation of marker interfaces is enabled.
  */
-public abstract class JsCodeGenerator {
+@Immutable
+@SuppressWarnings("NewClassNamingConvention")
+final class Is extends MessageOption<IsOption> {
 
-    private final CodeLines jsOutput;
-
-    protected JsCodeGenerator(CodeLines jsOutput) {
-        this.jsOutput = jsOutput;
+    private Is() {
+        super(OptionsProto.is);
     }
 
-    /**
-     * The {@code JsOutput} which accumulates all the generated code.
-     */
-    protected CodeLines jsOutput() {
-        return jsOutput;
+    static Optional<IsOption> of(MessageType type) {
+        Optional<IsOption> result = new Is().valueFrom(type.descriptor());
+        return result;
     }
-
-    /**
-     * Generate the JavaScript code and store it into the {@code JsOutput}.
-     */
-    public abstract void generate();
 }

@@ -24,31 +24,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.js.generate;
+package io.spine.tools.protoc.plugin.java;
 
-import io.spine.tools.js.generate.output.CodeLines;
+import com.google.common.collect.ImmutableSet;
+import io.spine.tools.protoc.plugin.CompilerOutput;
+import io.spine.type.Type;
 
 /**
- * The common base for JavaScript code generators which operate
- * on the {@link io.spine.tools.js.generate.output.CodeLines}.
+ * A {@link CodeGenerator} which generates no code.
  */
-public abstract class JsCodeGenerator {
+public final class NoOpGenerator extends CodeGenerator {
 
-    private final CodeLines jsOutput;
-
-    protected JsCodeGenerator(CodeLines jsOutput) {
-        this.jsOutput = jsOutput;
-    }
+    private static final CodeGenerator instance = new NoOpGenerator();
 
     /**
-     * The {@code JsOutput} which accumulates all the generated code.
+     * Prevents direct instantiation.
      */
-    protected CodeLines jsOutput() {
-        return jsOutput;
+    private NoOpGenerator() {
+        super();
     }
 
-    /**
-     * Generate the JavaScript code and store it into the {@code JsOutput}.
-     */
-    public abstract void generate();
+    public static CodeGenerator instance() {
+        return instance;
+    }
+
+    @Override
+    protected ImmutableSet<CompilerOutput> generate(Type<?, ?> type) {
+        return ImmutableSet.of();
+    }
 }

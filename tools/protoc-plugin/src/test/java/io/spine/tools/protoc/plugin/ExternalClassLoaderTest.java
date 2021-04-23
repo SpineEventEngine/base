@@ -33,6 +33,8 @@ import io.spine.testing.logging.MuteLogging;
 import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.Method;
 import io.spine.tools.protoc.MethodFactory;
+import io.spine.tools.protoc.plugin.java.ClassInstantiationException;
+import io.spine.tools.protoc.plugin.java.ExternalClassLoader;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

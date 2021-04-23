@@ -28,7 +28,7 @@
  * This package contains the basic mechanism of building the {@code protoc} plugins.
  *
  * <p>See <a href="https://developers.google.com/protocol-buffers/docs/reference/cpp/google.protobuf.compiler.plugin.pb">
- * Google documentation</a> for more info about the {@code protoc} plugins
+ * Google documentation</a> for more info about the {@code protoc} plugins.
  */
 
 @CheckReturnValue

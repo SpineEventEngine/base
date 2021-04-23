@@ -24,31 +24,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.js.generate;
+package io.spine.tools.protoc.plugin.java.message;
 
-import io.spine.tools.js.generate.output.CodeLines;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.code.java.SimpleClassName;
+import io.spine.type.MessageType;
+
+import static java.lang.String.format;
 
 /**
- * The common base for JavaScript code generators which operate
- * on the {@link io.spine.tools.js.generate.output.CodeLines}.
+ * Short class name of the builder of the generated message class.
+ *
+ * @see SimpleClassName#ofBuilder()
  */
-public abstract class JsCodeGenerator {
+@Immutable
+public final class BuilderOfGeneratedClass implements InterfaceParameter {
 
-    private final CodeLines jsOutput;
-
-    protected JsCodeGenerator(CodeLines jsOutput) {
-        this.jsOutput = jsOutput;
+    @Override
+    public String valueFor(MessageType generatedClass) {
+        String result = format(
+                "%s.%s", generatedClass.simpleJavaClassName(), SimpleClassName.ofBuilder()
+        );
+        return result;
     }
-
-    /**
-     * The {@code JsOutput} which accumulates all the generated code.
-     */
-    protected CodeLines jsOutput() {
-        return jsOutput;
-    }
-
-    /**
-     * Generate the JavaScript code and store it into the {@code JsOutput}.
-     */
-    public abstract void generate();
 }

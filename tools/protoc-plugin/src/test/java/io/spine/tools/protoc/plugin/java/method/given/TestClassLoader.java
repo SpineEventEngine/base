@@ -24,31 +24,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.js.generate;
+package io.spine.tools.protoc.plugin.java.method.given;
 
-import io.spine.tools.js.generate.output.CodeLines;
+import io.spine.tools.protoc.Classpath;
+import io.spine.tools.protoc.plugin.java.ExternalClassLoader;
+import io.spine.tools.protoc.NestedClassFactory;
 
 /**
- * The common base for JavaScript code generators which operate
- * on the {@link io.spine.tools.js.generate.output.CodeLines}.
+ * A test wrapper for the {@link ExternalClassLoader}.
  */
-public abstract class JsCodeGenerator {
+public final class TestClassLoader {
 
-    private final CodeLines jsOutput;
+    private static final ExternalClassLoader<NestedClassFactory> INSTANCE =
+            new ExternalClassLoader<>(Classpath.getDefaultInstance(), NestedClassFactory.class);
 
-    protected JsCodeGenerator(CodeLines jsOutput) {
-        this.jsOutput = jsOutput;
+    private TestClassLoader() {
     }
 
-    /**
-     * The {@code JsOutput} which accumulates all the generated code.
-     */
-    protected CodeLines jsOutput() {
-        return jsOutput;
+    public static ExternalClassLoader<NestedClassFactory> instance() {
+        return INSTANCE;
     }
-
-    /**
-     * Generate the JavaScript code and store it into the {@code JsOutput}.
-     */
-    public abstract void generate();
 }

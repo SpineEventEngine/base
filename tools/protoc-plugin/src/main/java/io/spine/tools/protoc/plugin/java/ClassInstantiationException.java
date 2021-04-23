@@ -24,31 +24,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.js.generate;
+package io.spine.tools.protoc.plugin.java;
 
-import io.spine.tools.js.generate.output.CodeLines;
+import io.spine.tools.protoc.plugin.java.ExternalClassLoader;
+
+import static java.lang.String.format;
 
 /**
- * The common base for JavaScript code generators which operate
- * on the {@link io.spine.tools.js.generate.output.CodeLines}.
+ * Exception that is thrown when a particular class cannot be instantiated by the
+ * {@link ExternalClassLoader}.
  */
-public abstract class JsCodeGenerator {
+public final class ClassInstantiationException extends RuntimeException {
 
-    private final CodeLines jsOutput;
+    private static final long serialVersionUID = 0L;
 
-    protected JsCodeGenerator(CodeLines jsOutput) {
-        this.jsOutput = jsOutput;
+    /**
+     * Creates a new instance with the class name.
+     *
+     * @param className
+     *         the class name
+     */
+    ClassInstantiationException(String className) {
+        super(makeMsg(className));
+    }
+
+    private static String makeMsg(String className) {
+        return format("Unable to instantiate class `%s`.", className);
     }
 
     /**
-     * The {@code JsOutput} which accumulates all the generated code.
+     * Creates a new instance with the class name and the cause.
+     *
+     * @param className
+     *         the class name
+     * @param cause
+     *         the exception cause
      */
-    protected CodeLines jsOutput() {
-        return jsOutput;
+    ClassInstantiationException(String className, Throwable cause) {
+        super(makeMsg(className), cause);
     }
-
-    /**
-     * Generate the JavaScript code and store it into the {@code JsOutput}.
-     */
-    public abstract void generate();
 }

@@ -24,31 +24,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.js.generate;
+package io.spine.tools.protoc.plugin.java;
 
-import io.spine.tools.js.generate.output.CodeLines;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import io.spine.tools.protoc.plugin.CompilerOutput;
+import io.spine.type.Type;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 
 /**
- * The common base for JavaScript code generators which operate
- * on the {@link io.spine.tools.js.generate.output.CodeLines}.
+ * A generator which calls other generators and merges their results.
  */
-public abstract class JsCodeGenerator {
+public final class CompositeGenerator extends CodeGenerator {
 
-    private final CodeLines jsOutput;
+    private final ImmutableList<? extends CodeGenerator> generators;
 
-    protected JsCodeGenerator(CodeLines jsOutput) {
-        this.jsOutput = jsOutput;
+    public static CompositeGenerator of(CodeGenerator... gen) {
+        checkNotNull(gen);
+        ImmutableList<CodeGenerator> generators = ImmutableList.copyOf(gen);
+        return new CompositeGenerator(generators);
     }
 
-    /**
-     * The {@code JsOutput} which accumulates all the generated code.
-     */
-    protected CodeLines jsOutput() {
-        return jsOutput;
+    private CompositeGenerator(ImmutableList<CodeGenerator> generators) {
+        super();
+        this.generators = generators;
     }
 
-    /**
-     * Generate the JavaScript code and store it into the {@code JsOutput}.
-     */
-    public abstract void generate();
+    @Override
+    protected ImmutableSet<CompilerOutput> generate(Type<?, ?> type) {
+        ImmutableSet<CompilerOutput> output =
+                generators.stream()
+                          .flatMap(gen -> gen.generate(type).stream())
+                          .collect(toImmutableSet());
+        return output;
+    }
 }

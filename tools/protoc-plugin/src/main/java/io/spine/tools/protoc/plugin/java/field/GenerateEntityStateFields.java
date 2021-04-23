@@ -24,31 +24,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.js.generate;
+package io.spine.tools.protoc.plugin.java.field;
 
-import io.spine.tools.js.generate.output.CodeLines;
+import com.google.common.collect.ImmutableList;
+import io.spine.tools.java.gen.FieldFactory;
+import io.spine.code.java.ClassName;
+import io.spine.tools.protoc.plugin.CompilerOutput;
+import io.spine.tools.protoc.EntityStateConfig;
+import io.spine.type.MessageType;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The common base for JavaScript code generators which operate
- * on the {@link io.spine.tools.js.generate.output.CodeLines}.
+ * Generates the strongly-typed fields for the passed {@link MessageType} if the type is recognized
+ * as entity state.
  */
-public abstract class JsCodeGenerator {
+final class GenerateEntityStateFields extends FieldGenerationTask {
 
-    private final CodeLines jsOutput;
-
-    protected JsCodeGenerator(CodeLines jsOutput) {
-        this.jsOutput = jsOutput;
+    GenerateEntityStateFields(EntityStateConfig config, FieldFactory factory) {
+        super(fieldSupertype(checkNotNull(config)), checkNotNull(factory));
     }
 
-    /**
-     * The {@code JsOutput} which accumulates all the generated code.
-     */
-    protected CodeLines jsOutput() {
-        return jsOutput;
+    @Override
+    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
+        checkNotNull(type);
+        if (!type.isEntityState()) {
+            return ImmutableList.of();
+        }
+        return generateFieldsFor(type);
     }
 
-    /**
-     * Generate the JavaScript code and store it into the {@code JsOutput}.
-     */
-    public abstract void generate();
+    private static ClassName fieldSupertype(EntityStateConfig config) {
+        String typeName = config.getValue();
+        return ClassName.of(typeName);
+    }
 }

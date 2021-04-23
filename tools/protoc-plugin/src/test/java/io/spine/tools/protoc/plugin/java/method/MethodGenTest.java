@@ -24,43 +24,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc.plugin;
+package io.spine.tools.protoc.plugin.java.method;
 
-import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import io.spine.tools.java.fs.SourceFile;
-import io.spine.tools.protoc.Method;
-import io.spine.tools.protoc.plugin.java.ClassMember;
+import com.google.protobuf.Descriptors;
+import io.spine.tools.protoc.plugin.CompilerOutput;
+import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
+import io.spine.type.ServiceType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static java.lang.String.format;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.Collection;
 
-@DisplayName("`ClassMember` should")
-final class ClassMemberTest {
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-    @DisplayName("create valid compiler output")
+@DisplayName("MethodGenerator should")
+final class MethodGenTest {
+
+    @DisplayName("ignore non-message types")
     @Test
-    void createValidCompilerOutput() {
-        String methodBody = "public void test(){}";
-        Method method = new Method(methodBody);
-        MessageType type = new MessageType(MessageWithClassScopeInsertion.getDescriptor());
-        ClassMember result = ClassMember.method(method, type);
-        File file = result.asFile();
-
-        assertEquals(methodBody, file.getContent());
-        assertEquals(insertionPoint(type), file.getInsertionPoint());
-        assertEquals(sourceName(type), file.getName());
+    void ignoreNonMessageTypes() {
+        MethodGen generator =
+                MethodGen.instance(SpineProtocConfig.getDefaultInstance());
+        Descriptors.ServiceDescriptor service = TestServiceProto.getDescriptor()
+                                                                .findServiceByName("MGTService");
+        ServiceType type = ServiceType.of(service);
+        Collection<CompilerOutput> result = generator.generate(type);
+        assertTrue(result.isEmpty());
     }
 
-    private static String sourceName(MessageType type) {
-        return SourceFile.forType(type)
-                         .toString()
-                         .replace('\\', '/');
-    }
-
-    private static String insertionPoint(MessageType type) {
-        return format("class_scope:%s", type.name());
+    @DisplayName("try to generate methods for message types")
+    @Test
+    void generateMethodsForMessageTypes() {
+        MessageType type = new MessageType(EnhancedMessage.getDescriptor());
+        MethodGen generator =
+                MethodGen.instance(SpineProtocConfig.getDefaultInstance());
+        Collection<CompilerOutput> result = generator.generate(type);
+        assertTrue(result.isEmpty());
     }
 }
