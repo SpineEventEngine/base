@@ -29,7 +29,7 @@ package io.spine.tools.java.javadoc;
 import io.spine.value.StringTypeValue;
 
 /**
- * A text of a Javadoc.
+ * Builds blocks of texts for Javadoc comments.
  */
 public class JavadocText extends StringTypeValue {
 
@@ -45,10 +45,16 @@ public class JavadocText extends StringTypeValue {
         super(escapedText);
     }
 
+    /**
+     * Creates a new instance taking the passed text as is.
+     */
     public static JavadocText fromEscaped(String escapedText) {
         return new JavadocText(escapedText);
     }
 
+    /**
+     * Creates a new instance escaping the passed text.
+     */
     public static JavadocText fromUnescaped(String unescapedText) {
         return new JavadocText(JavadocEscaper.escape(unescapedText));
     }
@@ -69,7 +75,7 @@ public class JavadocText extends StringTypeValue {
     }
 
     public JavadocText withNewLine() {
-        return new JavadocText(value() + LINE_SEPARATOR);
+        return new JavadocText(value() + lineSeparator());
     }
 
     public JavadocText withPTag() {

@@ -211,15 +211,18 @@ public final class FieldContainerSpec implements TypeSpec {
      * Obtains the class Javadoc.
      */
     private static GeneratedJavadoc javadoc() {
+        String newLine = JavadocText.lineSeparator();
         return GeneratedJavadoc.threeParagraph(
-                CodeBlock.of("The listing of all fields of the message type."),
-                CodeBlock.of("The fields exposed by this class can be provided to " +
-                                     "a subscription filter on creation."),
-                CodeBlock.of("Use static methods of this class to access the top-level fields " +
-                                     "of the message. The nested$L fields can be accessed using " +
-                                     "the values returned by the top-level field accessors, " +
-                                     "through$L method chaining.",
-                             JavadocText.lineSeparator(), JavadocText.lineSeparator())
+            p("The listing of all fields of the message type."),
+            p("The fields exposed by this class can be provided to " +
+                                 "a subscription filter on creation."),
+            p("Use static methods of this class to access the top-level fields of the message.$L" +
+              "The nested fields can be accessed using the values returned by the top-level$L" +
+              "field accessors, through method chaining.", newLine, newLine)
         );
+    }
+
+    private static CodeBlock p(String format, Object... args) {
+        return CodeBlock.of(format, args);
     }
 }

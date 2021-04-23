@@ -29,6 +29,8 @@ package io.spine.tools.java.gen;
 import com.squareup.javapoet.CodeBlock;
 import io.spine.tools.java.javadoc.JavadocText;
 
+import static io.spine.tools.java.javadoc.JavadocText.fromEscaped;
+
 /**
  * A JavaPoet-based spec of a generated Javadoc text.
  */
@@ -54,7 +56,7 @@ public final class GeneratedJavadoc {
      * </pre>
      */
     public static GeneratedJavadoc singleParagraph(CodeBlock paragraph) {
-        JavadocText paragraphText = JavadocText.fromEscaped(paragraph.toString())
+        JavadocText paragraphText = fromEscaped(paragraph.toString())
                                                .withNewLine();
         CodeBlock value = CodeBlock
                 .builder()
@@ -79,12 +81,14 @@ public final class GeneratedJavadoc {
      */
     public static GeneratedJavadoc twoParagraph(CodeBlock firstParagraph,
                                                 CodeBlock secondParagraph) {
-        JavadocText firstParagraphText = JavadocText.fromEscaped(firstParagraph.toString())
-                                                    .withNewLine()
-                                                    .withNewLine();
-        JavadocText secondParagraphText = JavadocText.fromEscaped(secondParagraph.toString())
-                                                     .withPTag()
-                                                     .withNewLine();
+        JavadocText firstParagraphText =
+                fromEscaped(firstParagraph.toString())
+                           .withNewLine()
+                           .withNewLine();
+        JavadocText secondParagraphText =
+                fromEscaped(secondParagraph.toString())
+                           .withPTag()
+                           .withNewLine();
         CodeBlock value = CodeBlock
                 .builder()
                 .add(firstParagraphText.value())
@@ -111,14 +115,14 @@ public final class GeneratedJavadoc {
     public static GeneratedJavadoc threeParagraph(CodeBlock firstParagraph,
                                                   CodeBlock secondParagraph,
                                                   CodeBlock thirdParagraph) {
-        JavadocText firstParagraphText = JavadocText.fromEscaped(firstParagraph.toString())
+        JavadocText firstParagraphText = fromEscaped(firstParagraph.toString())
                                                     .withNewLine()
                                                     .withNewLine();
-        JavadocText secondParagraphText = JavadocText.fromEscaped(secondParagraph.toString())
+        JavadocText secondParagraphText = fromEscaped(secondParagraph.toString())
                                                      .withPTag()
                                                      .withNewLine()
                                                      .withNewLine();
-        JavadocText thirdParagraphText = JavadocText.fromEscaped(thirdParagraph.toString())
+        JavadocText thirdParagraphText = fromEscaped(thirdParagraph.toString())
                                                     .withPTag()
                                                     .withNewLine();
         CodeBlock value = CodeBlock
