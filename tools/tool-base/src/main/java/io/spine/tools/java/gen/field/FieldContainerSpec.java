@@ -28,10 +28,9 @@ package io.spine.tools.java.gen.field;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.concurrent.LazyInit;
-import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import io.spine.tools.java.gen.GeneratedBy;
-import io.spine.tools.java.gen.GeneratedJavadoc;
+import io.spine.tools.java.gen.JavadocBlock;
 import io.spine.tools.java.gen.TypeSpec;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.PackageName;
@@ -45,6 +44,7 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.tools.java.gen.EmptyPrivateCtor.spec;
+import static io.spine.tools.java.gen.JavadocBlock.p;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
@@ -210,19 +210,15 @@ public final class FieldContainerSpec implements TypeSpec {
     /**
      * Obtains the class Javadoc.
      */
-    private static GeneratedJavadoc javadoc() {
+    private static JavadocBlock javadoc() {
         String newLine = JavadocText.lineSeparator();
-        return GeneratedJavadoc.threeParagraph(
-            p("The listing of all fields of the message type."),
-            p("The fields exposed by this class can be provided to " +
+        return JavadocBlock.threeParagraph(
+                p("The listing of all fields of the message type."),
+                p("The fields exposed by this class can be provided to " +
                                  "a subscription filter on creation."),
-            p("Use static methods of this class to access the top-level fields of the message.$L" +
+                p("Use static methods of this class to access the top-level fields of the message.$L" +
               "The nested fields can be accessed using the values returned by the top-level$L" +
               "field accessors, through method chaining.", newLine, newLine)
         );
-    }
-
-    private static CodeBlock p(String format, Object... args) {
-        return CodeBlock.of(format, args);
     }
 }

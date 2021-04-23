@@ -35,7 +35,7 @@ import static javax.lang.model.element.Modifier.PRIVATE;
 /**
  * A spec of a {@code private} parameter-less constructor.
  */
-public final class EmptyPrivateCtor implements GeneratedMethodSpec {
+public final class EmptyPrivateCtor implements MethodCodeSpec {
 
     private static final EmptyPrivateCtor INSTANCE = new EmptyPrivateCtor();
 

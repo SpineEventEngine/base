@@ -30,8 +30,8 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
-import io.spine.tools.java.gen.GeneratedJavadoc;
-import io.spine.tools.java.gen.GeneratedMethodSpec;
+import io.spine.tools.java.gen.JavadocBlock;
+import io.spine.tools.java.gen.MethodCodeSpec;
 import io.spine.tools.java.gen.JavaPoetName;
 import io.spine.code.proto.EntityIdField;
 import io.spine.code.proto.FieldName;
@@ -42,7 +42,7 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 /**
  * Generates the method which allows to restrict querying to certain entity identifiers.
  */
-public class IdColumnSpec implements GeneratedMethodSpec {
+public class IdColumnSpec implements MethodCodeSpec {
 
     private final EntityIdField idField;
     private final TypeName queryBuilderName;
@@ -76,8 +76,8 @@ public class IdColumnSpec implements GeneratedMethodSpec {
     /**
      * Returns the Javadoc for the generated method which would produce the {@link IdCriterion}.
      */
-    private static GeneratedJavadoc javadoc() {
-        return GeneratedJavadoc.singleParagraph(
+    private static JavadocBlock javadoc() {
+        return JavadocBlock.singleParagraph(
                 CodeBlock.of("Creates a criterion for the identifier of this entity."));
     }
 

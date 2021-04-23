@@ -36,7 +36,7 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.WildcardTypeName;
 import io.spine.tools.java.gen.EmptyPrivateCtor;
 import io.spine.tools.java.gen.GeneratedBy;
-import io.spine.tools.java.gen.GeneratedJavadoc;
+import io.spine.tools.java.gen.JavadocBlock;
 import io.spine.tools.java.gen.JavaPoetName;
 import io.spine.tools.java.gen.TypeSpec;
 import io.spine.code.java.PackageName;
@@ -192,8 +192,8 @@ public final class ColumnContainerSpec implements TypeSpec {
     /**
      * Obtains the class Javadoc.
      */
-    private static GeneratedJavadoc classJavadoc() {
-        return GeneratedJavadoc.twoParagraph(
+    private static JavadocBlock classJavadoc() {
+        return JavadocBlock.twoParagraph(
                 CodeBlock.of("A listing of all entity columns of the type."),
                 CodeBlock.of("Use static methods of this class to access the columns of the " +
                                      "entity$L which can then be used for query filters creation.",

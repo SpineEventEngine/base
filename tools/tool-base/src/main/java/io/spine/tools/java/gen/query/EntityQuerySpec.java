@@ -33,8 +33,8 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.tools.java.gen.GeneratedBy;
-import io.spine.tools.java.gen.GeneratedJavadoc;
-import io.spine.tools.java.gen.GeneratedMethodSpec;
+import io.spine.tools.java.gen.JavadocBlock;
+import io.spine.tools.java.gen.MethodCodeSpec;
 import io.spine.query.EntityQuery;
 import io.spine.type.MessageType;
 
@@ -49,7 +49,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  * <p>Additionally, generates the {@code query()} method, which would be a static member
  * of the Java class of the entity state.
  */
-public final class EntityQuerySpec extends AbstractEntityQuerySpec implements GeneratedMethodSpec {
+public final class EntityQuerySpec extends AbstractEntityQuerySpec implements MethodCodeSpec {
 
     /**
      * Creates the specification for the passed entity state type.
@@ -107,8 +107,8 @@ public final class EntityQuerySpec extends AbstractEntityQuerySpec implements Ge
     /**
      * Returns the Javadoc for {@code query()} method.
      */
-    private static GeneratedJavadoc queryJavadoc() {
-        return GeneratedJavadoc.singleParagraph(
+    private static JavadocBlock queryJavadoc() {
+        return JavadocBlock.singleParagraph(
                 CodeBlock.of("Creates a new instance of {@link $L}.",
                              queryBuilderType().className()
                                                .simpleName())

@@ -27,7 +27,7 @@
 package io.spine.tools.java.gen.field;
 
 import com.squareup.javapoet.CodeBlock;
-import io.spine.tools.java.gen.GeneratedJavadoc;
+import io.spine.tools.java.gen.JavadocBlock;
 import io.spine.code.proto.FieldDeclaration;
 
 /**
@@ -41,8 +41,8 @@ final class FieldAccessorDoc {
     private FieldAccessorDoc() {
     }
 
-    static GeneratedJavadoc generateFor(FieldDeclaration field) {
-        return GeneratedJavadoc.twoParagraph(
+    static JavadocBlock generateFor(FieldDeclaration field) {
+        return JavadocBlock.twoParagraph(
                 CodeBlock.of("Returns the $L$S field.", fieldKind(field), field.name()),
                 CodeBlock.of("The $L Java type is {@code $L}.", elementDescribedByType(field),
                              field.javaTypeName())

@@ -32,7 +32,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import io.spine.base.Field;
 import io.spine.base.SubscribableField;
-import io.spine.tools.java.gen.GeneratedJavadoc;
+import io.spine.tools.java.gen.JavadocBlock;
 import io.spine.tools.java.gen.JavaPoetName;
 import io.spine.tools.java.gen.TypeSpec;
 import io.spine.code.java.ClassName;
@@ -130,8 +130,8 @@ final class MessageTypedField implements TypeSpec {
     /**
      * Obtains the class Javadoc.
      */
-    private static GeneratedJavadoc javadoc() {
+    private static JavadocBlock javadoc() {
         CodeBlock text = CodeBlock.of("The listing of nested fields of the message type.");
-        return GeneratedJavadoc.singleParagraph(text);
+        return JavadocBlock.singleParagraph(text);
     }
 }

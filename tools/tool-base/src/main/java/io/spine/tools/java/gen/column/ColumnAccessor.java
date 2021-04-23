@@ -30,8 +30,8 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
-import io.spine.tools.java.gen.GeneratedJavadoc;
-import io.spine.tools.java.gen.GeneratedMethodSpec;
+import io.spine.tools.java.gen.JavadocBlock;
+import io.spine.tools.java.gen.MethodCodeSpec;
 import io.spine.tools.java.gen.JavaPoetName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
@@ -45,7 +45,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  *
  * <p>The name of the method matches the column name in {@code javaCase}.
  */
-final class ColumnAccessor implements GeneratedMethodSpec {
+final class ColumnAccessor implements MethodCodeSpec {
 
     private final FieldDeclaration column;
     private final TypeName entityStateName;
@@ -104,8 +104,8 @@ final class ColumnAccessor implements GeneratedMethodSpec {
     /**
      * Returns the method Javadoc.
      */
-    private GeneratedJavadoc javadoc() {
-        return GeneratedJavadoc.twoParagraph(
+    private JavadocBlock javadoc() {
+        return JavadocBlock.twoParagraph(
                 CodeBlock.of("Returns the $S column.", column.name()),
                 CodeBlock.of("The column Java type is {@code $L}.", column.javaTypeName())
         );

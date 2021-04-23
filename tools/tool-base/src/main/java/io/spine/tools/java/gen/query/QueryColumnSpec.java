@@ -30,8 +30,8 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
-import io.spine.tools.java.gen.GeneratedJavadoc;
-import io.spine.tools.java.gen.GeneratedMethodSpec;
+import io.spine.tools.java.gen.JavadocBlock;
+import io.spine.tools.java.gen.MethodCodeSpec;
 import io.spine.tools.java.gen.JavaPoetName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.query.EntityColumn;
@@ -44,7 +44,7 @@ import static javax.lang.model.element.Modifier.PUBLIC;
  * Generates the method which produces a column criterion for {@link EntityQueryBuilder
  * EntityQueryBuilder} to restrict the value of the column to some parameter.
  */
-final class QueryColumnSpec implements GeneratedMethodSpec {
+final class QueryColumnSpec implements MethodCodeSpec {
 
     private final FieldDeclaration column;
     private final TypeName queryBuilderName;
@@ -93,10 +93,10 @@ final class QueryColumnSpec implements GeneratedMethodSpec {
     /**
      * Returns the method Javadoc.
      */
-    private GeneratedJavadoc javadoc() {
+    private JavadocBlock javadoc() {
         String columnName = column.name()
                                   .javaCase();
-        return GeneratedJavadoc.singleParagraph(
+        return JavadocBlock.singleParagraph(
                 CodeBlock.of("Creates a criterion for the {@link Column#$L() Column.$L()} column.",
                              columnName, columnName)
         );

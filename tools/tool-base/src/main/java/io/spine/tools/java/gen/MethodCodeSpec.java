@@ -29,9 +29,14 @@ package io.spine.tools.java.gen;
 import com.squareup.javapoet.MethodSpec;
 
 /**
- * A JavaPoet-based spec of a generated method.
+ * A specification of a method to generate.
+ *
+ * <p>Wraps over {@linkplain #methodSpec() JavaPoet-based spec} of the generated method.
+ *
+ * @apiNote This interface provides for inheritance when building various kinds of methods.
+ * We need this because {@link MethodSpec} class from Java Poet is {@code final}.
  */
-public interface GeneratedMethodSpec {
+public interface MethodCodeSpec {
 
     /**
      * A JavaPoet spec of the method.

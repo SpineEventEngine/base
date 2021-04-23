@@ -35,7 +35,7 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.tools.java.gen.BuilderSpec;
 import io.spine.tools.java.gen.GeneratedBy;
-import io.spine.tools.java.gen.GeneratedJavadoc;
+import io.spine.tools.java.gen.JavadocBlock;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.query.EntityQuery;
 import io.spine.query.EntityQueryBuilder;
@@ -108,8 +108,8 @@ public final class EntityQueryBuilderSpec extends AbstractEntityQuerySpec implem
     /**
      * Returns the Javadoc for {@code build()} method.
      */
-    private static GeneratedJavadoc buildJavadoc() {
-        return GeneratedJavadoc.singleParagraph(
+    private static JavadocBlock buildJavadoc() {
+        return JavadocBlock.singleParagraph(
                 CodeBlock.of("Creates a new instance of {@link $L} on top of this {@code $L}.",
                              queryType().className()
                                         .simpleName(),

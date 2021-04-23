@@ -29,8 +29,8 @@ package io.spine.tools.java.gen.field;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import io.spine.base.SubscribableField;
-import io.spine.tools.java.gen.GeneratedJavadoc;
-import io.spine.tools.java.gen.GeneratedMethodSpec;
+import io.spine.tools.java.gen.JavadocBlock;
+import io.spine.tools.java.gen.MethodCodeSpec;
 import io.spine.tools.java.gen.JavaPoetName;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.SimpleClassName;
@@ -51,7 +51,7 @@ import static com.google.common.base.Preconditions.checkState;
  */
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Random duplication of some generated code elements.
-abstract class FieldAccessor implements GeneratedMethodSpec {
+abstract class FieldAccessor implements MethodCodeSpec {
 
     private final FieldDeclaration field;
     private final ClassName fieldSupertype;
@@ -140,7 +140,7 @@ abstract class FieldAccessor implements GeneratedMethodSpec {
     /**
      * Generates the method Javadoc.
      */
-    private GeneratedJavadoc javadoc() {
+    private JavadocBlock javadoc() {
         return FieldAccessorDoc.generateFor(this.field);
     }
 }
