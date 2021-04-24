@@ -84,5 +84,14 @@ sourceSets {
     }
 }
 
-// Tests use the Protobuf plugin.
-tasks.test.configure { dependsOn(":mc-java-check:publishToMavenLocal") }
+// Tests use the Gradle plugin of the Spine Model Compiler.
+tasks.test.configure {
+    dependsOn(
+        ":base:publishToMavenLocal",
+        ":tool-base:publishToMavenLocal",
+        ":plugin-base:publishToMavenLocal",
+        ":mc-java-protoc:publishToMavenLocal",
+        ":mc-java-check:publishToMavenLocal",
+        "publishToMavenLocal"
+    )
+}

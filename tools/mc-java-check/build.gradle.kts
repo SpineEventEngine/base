@@ -65,3 +65,10 @@ afterEvaluate {
     val javacPath = getResolvedArtifactFor("javac")
     test.jvmArgs("-Xbootclasspath/p:$javacPath")
 }
+
+// Tests use the Gradle plugin.
+tasks.test.configure {
+    dependsOn(
+        ":mc-java-check:publishToMavenLocal"
+    )
+}

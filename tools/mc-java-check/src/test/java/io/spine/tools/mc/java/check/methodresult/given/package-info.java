@@ -30,7 +30,6 @@
  * <p>See the test resources of this module.
  */
 
-
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.mc.java.check.methodresult.given;

@@ -128,7 +128,7 @@ protobuf {
         }
         spineProtoc {
             final def scriptExt = runsOnWindows ? 'bat' : 'sh'
-            artifact = "io.spine.tools:spine-protoc-plugin:$spineModelCompilerVersion:script@${scriptExt}"
+            artifact = "io.spine.tools:spine-mc-java-protoc:$spineModelCompilerVersion:script@${scriptExt}"
         }
     }
 

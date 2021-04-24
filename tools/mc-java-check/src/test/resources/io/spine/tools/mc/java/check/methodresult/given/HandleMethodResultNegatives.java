@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.check.vbuild.given;
+package io.spine.tools.mc.java.check.methodresult.given;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Struct;
@@ -35,7 +35,10 @@ import io.spine.base.FieldPath;
 /**
  * Contains statements for which the {@link HandleMethodResult} bug pattern should
  * generate no warning.
+ *
+ * @see io.spine.tools.mc.java.check.methodresult.HandleMethodResultTest
  */
+@SuppressWarnings({"unused", "AbstractClassNeverImplemented"})
 abstract class HandleMethodResultNegatives {
 
     Timestamp callSet() {
