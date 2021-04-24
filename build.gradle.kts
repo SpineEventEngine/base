@@ -93,7 +93,6 @@ spinePublishing {
         // Model Compiler for Java
         "mc-java",
         "mc-java-protoc",
-        "mc-java-checks",
         "mc-java-doc-filter",
         "mc-java-doc-style",
 
