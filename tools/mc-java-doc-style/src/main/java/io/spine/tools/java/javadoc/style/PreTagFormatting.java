@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.protodoc;
+package io.spine.tools.java.javadoc.style;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

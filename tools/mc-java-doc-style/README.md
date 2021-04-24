@@ -13,7 +13,7 @@ The plugin does the following formatting:
 The plugin may be used as follows:
 
 ```groovy
-apply plugin: "io.spine.tools.protobuf-javadoc-plugin"
+apply plugin: "io.spine.tools.mc-java-doc-style"
 ```
 
 The configuration example:

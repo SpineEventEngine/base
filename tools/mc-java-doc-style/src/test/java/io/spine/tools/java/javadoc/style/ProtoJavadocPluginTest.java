@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protodoc;
+package io.spine.tools.java.javadoc.style;
 
 import io.spine.testing.TempDir;
 import io.spine.tools.gradle.TaskName;
@@ -46,17 +46,17 @@ import static io.spine.tools.gradle.JavadocPrettifierTaskName.formatTestProtoDoc
 import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
 import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 import static io.spine.tools.gradle.TaskDependencies.dependsOn;
-import static io.spine.tools.protodoc.BacktickFormatting.BACKTICK;
-import static io.spine.tools.protodoc.PreTagFormatting.CLOSING_PRE;
-import static io.spine.tools.protodoc.PreTagFormatting.OPENING_PRE;
-import static io.spine.tools.protodoc.TestHelper.formatAndAssert;
+import static io.spine.tools.java.javadoc.style.BacktickFormatting.BACKTICK;
+import static io.spine.tools.java.javadoc.style.PreTagFormatting.CLOSING_PRE;
+import static io.spine.tools.java.javadoc.style.PreTagFormatting.OPENING_PRE;
+import static io.spine.tools.java.javadoc.style.TestHelper.formatAndAssert;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("ProtoJavadocPlugin should")
 class ProtoJavadocPluginTest {
 
-    private static final String PLUGIN_ID = "io.spine.tools.protobuf-javadoc-plugin";
+    private static final String PLUGIN_ID = "io.spine.tools.mc-java-doc-style";
 
     private File testProjectDir;
 

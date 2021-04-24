@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protodoc;
+package io.spine.tools.java.javadoc.style;
 
 import io.spine.logging.Logging;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -32,7 +32,7 @@ import org.gradle.api.Project;
 
 import java.io.File;
 
-import static io.spine.tools.protodoc.ProtoJavadocPlugin.PROTO_JAVADOC_EXTENSION_NAME;
+import static io.spine.tools.java.javadoc.style.ProtoJavadocPlugin.PROTO_JAVADOC_EXTENSION_NAME;
 import static java.lang.String.format;
 
 /**

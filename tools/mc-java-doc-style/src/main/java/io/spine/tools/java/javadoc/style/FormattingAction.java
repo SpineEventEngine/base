@@ -24,47 +24,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protodoc;
-
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
-
-import java.util.List;
-
-import static com.google.common.collect.Lists.newLinkedList;
-import static java.lang.System.lineSeparator;
+package io.spine.tools.java.javadoc.style;
 
 /**
- * A {@link FormattingAction}, that formats lines independently from each other.
+ * A formatting action, that formats a {@code String}.
  */
-abstract class LineFormatting implements FormattingAction {
+interface FormattingAction {
 
     /**
      * Obtains the formatted representation of the specified text.
      *
-     * <p>The text will be split and lines will be formatted independently from each other.
+     * <p>The specified text may contain line separators.
      *
      * @param text the text to format
      * @return the formatted text
      */
-    @Override
-    public String execute(String text) {
-        List<String> textAsLines = Splitter.on(lineSeparator())
-                                           .splitToList(text);
-        List<String> formattedLines = newLinkedList();
-        for (String line : textAsLines) {
-            String formattedLine = formatLine(line);
-            formattedLines.add(formattedLine);
-        }
-        return Joiner.on(lineSeparator())
-                     .join(formattedLines);
-    }
-
-    /**
-     * Obtains the formatted representation of the specified line.
-     *
-     * @param line the single line without line separators
-     * @return the formatted representation
-     */
-    abstract String formatLine(String line);
+    String execute(String text);
 }

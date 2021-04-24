@@ -44,7 +44,7 @@ buildscript {
 
 apply(plugin = "java")
 apply(plugin = "com.google.protobuf")
-apply(plugin = "io.spine.tools.protobuf-javadoc-plugin")
+apply(plugin = "io.spine.tools.mc-java-doc-style")
 
 extensions["protoJavadoc"].withGroovyBuilder {
     setProperty("mainGenProtoDir", "generated/main/java")

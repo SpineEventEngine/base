@@ -24,8 +24,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protodoc;
+package io.spine.tools.java.javadoc.style;
 
+import io.spine.tools.java.javadoc.style.FormattingAction;
+import io.spine.tools.java.javadoc.style.PreTagFormatting;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -24,10 +24,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protodoc;
+package io.spine.tools.java.javadoc.style;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+import io.spine.tools.java.javadoc.style.BacktickFormatting;
+import io.spine.tools.java.javadoc.style.FormattingAction;
+import io.spine.tools.java.javadoc.style.JavadocFormatter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +43,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static io.spine.tools.protodoc.BacktickFormatting.wrapWithCodeTag;
+import static io.spine.tools.java.javadoc.style.BacktickFormatting.wrapWithCodeTag;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;

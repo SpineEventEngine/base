@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.protodoc;
+package io.spine.tools.java.javadoc.style;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.gradle.SpinePlugin;
@@ -41,8 +41,8 @@ import static io.spine.tools.gradle.JavadocPrettifierTaskName.formatProtoDoc;
 import static io.spine.tools.gradle.JavadocPrettifierTaskName.formatTestProtoDoc;
 import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
 import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
-import static io.spine.tools.protodoc.Extension.getAbsoluteMainGenProtoDir;
-import static io.spine.tools.protodoc.Extension.getAbsoluteTestGenProtoDir;
+import static io.spine.tools.java.javadoc.style.Extension.getAbsoluteMainGenProtoDir;
+import static io.spine.tools.java.javadoc.style.Extension.getAbsoluteTestGenProtoDir;
 import static java.lang.String.format;
 
 /**

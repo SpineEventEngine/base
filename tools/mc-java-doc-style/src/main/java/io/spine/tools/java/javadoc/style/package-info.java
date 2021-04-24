@@ -24,20 +24,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protodoc;
-
 /**
- * A formatting action, that formats a {@code String}.
+ * This package provides the Gradle plugin for
+ * Javadocs formatting in generated Protobuf declarations.
  */
-interface FormattingAction {
 
-    /**
-     * Obtains the formatted representation of the specified text.
-     *
-     * <p>The specified text may contain line separators.
-     *
-     * @param text the text to format
-     * @return the formatted text
-     */
-    String execute(String text);
-}
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.java.javadoc.style;
+
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import javax.annotation.ParametersAreNonnullByDefault;
