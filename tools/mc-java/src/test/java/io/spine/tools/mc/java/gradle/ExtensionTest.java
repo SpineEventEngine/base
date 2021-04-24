@@ -42,7 +42,7 @@ import java.util.List;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.TestValues.randomString;
-import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.SPINE_PROTOBUF_PLUGIN_ID;
+import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.SPINE_MODEL_COMPILER_FOR_JAVA_PLUGIN_ID;
 import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newProject;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -61,7 +61,7 @@ class ExtensionTest {
         projectDir = tempDirPath.toFile();
         project = newProject(projectDir);
         project.getPluginManager()
-               .apply(SPINE_PROTOBUF_PLUGIN_ID);
+               .apply(SPINE_MODEL_COMPILER_FOR_JAVA_PLUGIN_ID);
         extension = Extension.of(project);
     }
 

@@ -23,37 +23,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        mavenCentral()
-    }
-}
-
-rootProject.name = "spine-base"
-
-include("base")
-include("testlib")
 
 /**
- * Includes a module and sets custom project directory to it.
+ * This package contains the custom Error Prone check to detect usage of ordinary {@code build()}
+ * method for the Protobuf messages and advice using the {@code vBuild()} method added by Spine.
  */
-fun toolsModule(name: String) {
-    include(name)
-    project(":$name").projectDir = File("$rootDir/tools/$name")
-}
 
-toolsModule("plugin-testlib")
-toolsModule("mute-logging")
-toolsModule("tool-base")
-toolsModule("plugin-base")
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.mc.java.check.vbuild;
 
-toolsModule("mc-java")
-toolsModule("mc-java-check")
-toolsModule("mc-java-doc-filter")
-toolsModule("mc-java-doc-style")
-toolsModule("mc-java-protoc")
+import com.google.errorprone.annotations.CheckReturnValue;
 
-toolsModule("mc-js")
-toolsModule("mc-dart")
-
+import javax.annotation.ParametersAreNonnullByDefault;

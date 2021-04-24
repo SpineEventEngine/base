@@ -23,37 +23,43 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        mavenCentral()
-    }
-}
 
-rootProject.name = "spine-base"
+package io.spine.tools.mc.java.check.vbuild.given;
 
-include("base")
-include("testlib")
+import com.google.protobuf.Message;
+import io.spine.base.Error;
+
+import java.util.function.Supplier;
 
 /**
- * Includes a module and sets custom project directory to it.
+ * Contains statements for which the {@link UseVBuild} bug pattern should return a match.
+ *
+ * <p>Comments in this file should not be modified as they serve as indicator for the
+ * {@link com.google.errorprone.CompilationTestHelper} Error Prone tool.
  */
-fun toolsModule(name: String) {
-    include(name)
-    project(":$name").projectDir = File("$rootDir/tools/$name")
+class UseVBuildPositives {
+
+    void callBuild() {
+
+        // BUG: Diagnostic matches: UseVBuild
+        Error.newBuilder().build();
+    }
+
+    void callAsMethodReference() {
+        Error.Builder builder = Error.newBuilder();
+
+        // BUG: Diagnostic matches: UseVBuild
+        Supplier<? extends Message> faultySupplier = builder::build;
+        faultySupplier.get();
+    }
+
+    void callInLambda() {
+        Error.Builder builder = Error.newBuilder();
+
+        Supplier<? extends Message> faultySupplier = () -> {
+            // BUG: Diagnostic matches: UseVBuild
+            return builder.build();
+        };
+        faultySupplier.get();
+    }
 }
-
-toolsModule("plugin-testlib")
-toolsModule("mute-logging")
-toolsModule("tool-base")
-toolsModule("plugin-base")
-
-toolsModule("mc-java")
-toolsModule("mc-java-check")
-toolsModule("mc-java-doc-filter")
-toolsModule("mc-java-doc-style")
-toolsModule("mc-java-protoc")
-
-toolsModule("mc-js")
-toolsModule("mc-dart")
-

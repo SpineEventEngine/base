@@ -51,7 +51,7 @@ buildscript {
         classpath(io.spine.internal.dependency.Protobuf.GradlePlugin.lib) {
             exclude(group = "com.google.guava")
         }
-        classpath("io.spine.tools:spine-model-compiler:${spineVersion}")
+        classpath("io.spine.tools:spine-mc-java:${spineVersion}")
     }
 }
 
@@ -63,7 +63,7 @@ plugins {
 val commonPath = io.spine.internal.gradle.Scripts.commonPath
 apply {
     plugin("com.google.protobuf")
-    plugin("io.spine.tools.spine-model-compiler")
+    plugin("io.spine.tools.mc-java")
     from("$rootDir/test-env.gradle")
     from("${extra["enclosingRootDir"]}/${commonPath}/model-compiler.gradle")
 }

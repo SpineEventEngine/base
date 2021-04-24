@@ -48,7 +48,7 @@
  *
  *
  * Be aware that the root project `buildscript` should already have a classpath
- * `io.spine.tools:spine-model-compiler:<version>` classpath dependency.
+ * `io.spine.tools:mc-java:<version>` classpath dependency.
  */
 
 modelCompiler {

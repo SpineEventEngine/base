@@ -41,7 +41,7 @@ import org.gradle.api.artifacts.Configuration;
  * {@code annotationProcessor} configuration. For the older Gradle versions (pre {@code 4.6}),
  * where there is no such configuration, the plugin creates it.
  *
- * <p>Dependency has the same version as the project's {@code spine-model-compiler} plugin
+ * <p>Dependency has the same version as the project's {@code spine-mc-java} plugin
  * dependency.
  *
  * <p>Checks severity may be configured for all checks:

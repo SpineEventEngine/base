@@ -23,37 +23,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        mavenCentral()
-    }
-}
-
-rootProject.name = "spine-base"
-
-include("base")
-include("testlib")
 
 /**
- * Includes a module and sets custom project directory to it.
+ * This package provides the custom Error Prone checks used in Spine. No code should be used
+ * directly from this package as the checks are automatically exported via the
+ * {@link com.google.auto.service.AutoService} annotation.
  */
-fun toolsModule(name: String) {
-    include(name)
-    project(":$name").projectDir = File("$rootDir/tools/$name")
-}
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.mc.java.check;
 
-toolsModule("plugin-testlib")
-toolsModule("mute-logging")
-toolsModule("tool-base")
-toolsModule("plugin-base")
+import com.google.errorprone.annotations.CheckReturnValue;
 
-toolsModule("mc-java")
-toolsModule("mc-java-check")
-toolsModule("mc-java-doc-filter")
-toolsModule("mc-java-doc-style")
-toolsModule("mc-java-protoc")
-
-toolsModule("mc-js")
-toolsModule("mc-dart")
-
+import javax.annotation.ParametersAreNonnullByDefault;

@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@file:Suppress("RemoveRedundantQualifierName") // In some clases imports cannot be used.
+@file:Suppress("RemoveRedundantQualifierName") // In some cases imports cannot be used.
 
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.protoc
@@ -92,6 +92,7 @@ spinePublishing {
 
         // Model Compiler for Java
         "mc-java",
+        "mc-java-check",
         "mc-java-protoc",
         "mc-java-doc-filter",
         "mc-java-doc-style",

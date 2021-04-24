@@ -23,37 +23,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        mavenCentral()
-    }
-}
-
-rootProject.name = "spine-base"
-
-include("base")
-include("testlib")
 
 /**
- * Includes a module and sets custom project directory to it.
+ * This package declares a number of classes which are analyzed by the check in tests.
+ *
+ * <p>See the test resources of this module.
  */
-fun toolsModule(name: String) {
-    include(name)
-    project(":$name").projectDir = File("$rootDir/tools/$name")
-}
 
-toolsModule("plugin-testlib")
-toolsModule("mute-logging")
-toolsModule("tool-base")
-toolsModule("plugin-base")
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.mc.java.check.vbuild.given;
 
-toolsModule("mc-java")
-toolsModule("mc-java-check")
-toolsModule("mc-java-doc-filter")
-toolsModule("mc-java-doc-style")
-toolsModule("mc-java-protoc")
+import com.google.errorprone.annotations.CheckReturnValue;
 
-toolsModule("mc-js")
-toolsModule("mc-dart")
-
+import javax.annotation.ParametersAreNonnullByDefault;
