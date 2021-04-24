@@ -30,6 +30,9 @@ import io.spine.validate.ValidatingBuilder;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 
+import static io.spine.tools.mc.java.gradle.check.DependencyConfig.createFor;
+import static io.spine.tools.mc.java.gradle.check.PreprocessorConfig.initFor;
+
 /**
  * A Gradle plugin which configures the project to run Spine-custom Error Prone checks during the
  * compilation stage.
@@ -71,10 +74,8 @@ import org.gradle.api.artifacts.Configuration;
  */
 public final class ErrorProneChecksPlugin extends SpinePlugin {
 
-    private static final String EXTENSION_NAME = "spineErrorProneChecks";
-
     public static String extensionName() {
-        return EXTENSION_NAME;
+        return ErrorProneChecksExtension.name();
     }
 
     /**
@@ -88,17 +89,16 @@ public final class ErrorProneChecksPlugin extends SpinePlugin {
         project.getExtensions()
                .create(extensionName(), ErrorProneChecksExtension.class);
 
-        PreprocessorConfigurer preprocessorConfigurer = PreprocessorConfigurer.initFor(project);
-        Configuration preprocessorConfig = preprocessorConfigurer.setupPreprocessorConfig();
+        PreprocessorConfig config = initFor(project);
+        Configuration preprocessorConfig = config.setupPreprocessorConfig();
 
-        DependencyConfigurer dependencyConfigurer =
-                DependencyConfigurer.createFor(preprocessorConfig);
-        boolean dependencyResolved = dependencyConfigurer.addErrorProneChecksDependency();
+        DependencyConfig dependencyConfig = createFor(preprocessorConfig);
+        boolean dependencyResolved = dependencyConfig.addErrorProneChecksDependency();
         if (!dependencyResolved) {
             return;
         }
 
-        SeverityConfigurer severityConfigurer = SeverityConfigurer.initFor(project);
-        severityConfigurer.addConfigureSeverityAction();
+        SeverityConf severityConf = SeverityConf.initFor(project);
+        severityConf.addConfigureSeverityAction();
     }
 }

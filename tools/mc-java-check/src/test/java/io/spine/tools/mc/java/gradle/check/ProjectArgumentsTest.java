@@ -26,49 +26,37 @@
 
 package io.spine.tools.mc.java.gradle.check;
 
+import io.spine.testing.UtilityClassTest;
 import org.gradle.api.Project;
-import org.gradle.api.plugins.ExtensionContainer;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
-import java.io.File;
-import java.nio.file.Path;
-
-import static io.spine.tools.mc.java.gradle.check.Severity.ERROR;
+import static io.spine.tools.mc.java.given.ProjectConfigurations.assertCompileTasksContain;
+import static io.spine.tools.mc.java.given.ProjectConfigurations.assertCompileTasksEmpty;
 import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newProject;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
-@DisplayName("ErrorProneChecksExtension should")
-class ErrorProneChecksExtensionTest {
+@DisplayName("ProjectArguments utility class should")
+class ProjectArgumentsTest extends UtilityClassTest<ProjectArguments> {
 
-    private Project project;
-    private ErrorProneChecksExtension extension;
+    private final Project project = ModelCompilerTestEnv.newProject();
 
-    @BeforeEach
-    void setUp(@TempDir Path tempDirPath) {
-        File tempDir = tempDirPath.toFile();
-        project = newProject(tempDir);
-        ExtensionContainer extensions = project.getExtensions();
-        extension = extensions.create(ErrorProneChecksPlugin.extensionName(),
-                                      ErrorProneChecksExtension.class);
+    ProjectArgumentsTest() {
+        super(ProjectArguments.class);
     }
 
     @Test
-    @DisplayName("return use validating builder severity")
-    void return_use_validating_builder_severity() {
-        final Severity expected = ERROR;
-        extension.useValidatingBuilder = expected;
-        final Severity actual = ErrorProneChecksExtension.getUseValidatingBuilder(project);
-        assertEquals(expected, actual);
+    @DisplayName("add arguments to Java compile tasks")
+    void addArgs() {
+        String firstArg = "firstArg";
+        String secondArg = "secondArg";
+        ProjectArguments.addArgsToJavaCompile(project, firstArg, secondArg);
+        ProjectConfigurations.assertCompileTasksContain(project, firstArg, secondArg);
     }
 
     @Test
-    @DisplayName("return null severity if not set")
-    void return_null_use_validating_builder_severity_if_not_set() {
-        final Severity severity = ErrorProneChecksExtension.getUseValidatingBuilder(project);
-        assertNull(severity);
+    @DisplayName("not add arguments if none is specified")
+    void doNotAddArgs() {
+        ProjectArguments.addArgsToJavaCompile(project);
+        ProjectConfigurations.assertCompileTasksEmpty(project);
     }
 }

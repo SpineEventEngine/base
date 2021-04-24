@@ -52,6 +52,7 @@ buildscript {
             exclude(group = "com.google.guava")
         }
         classpath("io.spine.tools:spine-mc-java:${spineVersion}")
+        classpath("io.spine.tools:spine-mc-java-check:${spineVersion}")
     }
 }
 

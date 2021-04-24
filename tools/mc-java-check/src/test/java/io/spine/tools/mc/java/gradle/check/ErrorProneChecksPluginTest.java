@@ -46,7 +46,7 @@ class ErrorProneChecksPluginTest {
     @Test
     @DisplayName("create Spine check extension")
     void checkExtension() {
-        Project project = newProject();
+        Project project = ModelCompilerTestEnv.newProject();
         project.getPluginManager()
                .apply(ErrorProneChecksPlugin.class);
         ExtensionContainer extensions = project.getExtensions();
@@ -57,7 +57,7 @@ class ErrorProneChecksPluginTest {
     @Test
     @DisplayName("apply to empty project")
     void emptyProject() {
-        Project project = newProject();
+        Project project = ModelCompilerTestEnv.newProject();
         project.getPluginManager()
                .apply(ErrorProneChecksPlugin.class);
     }

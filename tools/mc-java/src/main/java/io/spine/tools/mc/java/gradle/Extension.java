@@ -33,8 +33,6 @@ import io.spine.tools.java.fs.DefaultJavaPaths;
 import io.spine.tools.java.fs.Generated;
 import io.spine.tools.code.Indent;
 import io.spine.tools.mc.java.gradle.annotate.Annotations;
-import io.spine.tools.mc.java.gradle.check.ErrorProneChecksExtension;
-import io.spine.tools.mc.java.gradle.check.Severity;
 import io.spine.tools.gradle.GradleExtension;
 import io.spine.tools.java.protoc.EntityQueries;
 import io.spine.tools.java.protoc.Fields;
@@ -157,16 +155,6 @@ public class Extension extends GradleExtension {
      * <p>Either this property OR the {@link #dirToClean} property is used.
      */
     public List<String> dirsToClean = new ArrayList<>();
-
-    /**
-     * The severity of the Spine-custom Error Prone checks.
-     *
-     * <p>If this value is not set, the default severities are used, which are specific for the
-     * each check.
-     *
-     * <p>May be overridden by the values provided by the {@link ErrorProneChecksExtension}.
-     */
-    public Severity spineCheckSeverity;
 
     public final Annotations generateAnnotations = new Annotations();
 
@@ -305,13 +293,6 @@ public class Extension extends GradleExtension {
             dirsToClean.add(defaultValue);
         }
         return ImmutableList.copyOf(dirsToClean);
-    }
-
-    public static @Nullable Severity spineCheckSeverityIn(Project project) {
-        Severity result = of(project).spineCheckSeverity;
-        _debug().log("The severity of Spine-custom Error Prone checks is %s.",
-                     (result == null ? "not set" : backtick(result.name())));
-        return result;
     }
 
     @SuppressWarnings("unused") // Configures `generateAnnotations` closure.

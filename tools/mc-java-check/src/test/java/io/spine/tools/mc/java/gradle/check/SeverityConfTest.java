@@ -45,22 +45,22 @@ import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newProjec
 /**
  * Tests {@link Severity}.
  */
-@DisplayName("SeverityConfigurer should")
-class SeverityConfigurerTest {
+@DisplayName("`SeverityConfig` should")
+class SeverityConfTest {
 
     private Project project;
-    private SeverityConfigurer configurer;
+    private SeverityConf configurer;
 
     @BeforeEach
     void setUp() {
-        project = newProject();
-        configurer = SeverityConfigurer.initFor(project);
+        project = ModelCompilerTestEnv.newProject();
+        configurer = SeverityConf.initFor(project);
     }
 
     @Test
-    @DisplayName(NOT_ACCEPT_NULLS)
+    @DisplayName(DisplayNames.NOT_ACCEPT_NULLS)
     void nullCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(SeverityConfigurer.class);
+        new NullPointerTester().testAllPublicStaticMethods(SeverityConf.class);
         new NullPointerTester().testAllPublicInstanceMethods(configurer);
     }
 
@@ -123,10 +123,10 @@ class SeverityConfigurerTest {
     }
 
     private void checkSeverityConfiguredToError() {
-        assertCompileTasksContain(project, "-Xep:UseValidatingBuilder:ERROR");
+        ProjectConfigurations.assertCompileTasksContain(project, "-Xep:UseValidatingBuilder:ERROR");
     }
 
     private void checkSeverityNotConfigured() {
-        assertCompileTasksEmpty(project);
+        ProjectConfigurations.assertCompileTasksEmpty(project);
     }
 }

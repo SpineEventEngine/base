@@ -27,8 +27,8 @@
 package io.spine.tools.mc.java.gradle.check;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.flogger.FluentLogger;
 import io.spine.logging.Logging;
-import io.spine.tools.mc.java.gradle.Extension;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -36,9 +36,9 @@ import org.gradle.api.invocation.Gradle;
 import org.gradle.api.plugins.PluginContainer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.mc.java.gradle.check.ProjectArguments.addArgsToJavaCompile;
+import static io.spine.string.Diags.backtick;
 import static io.spine.tools.mc.java.gradle.check.ErrorProneChecksExtension.getUseValidatingBuilder;
-import static io.spine.tools.mc.java.gradle.Extension.spineCheckSeverityIn;
+import static io.spine.tools.mc.java.gradle.check.ProjectArguments.addArgsToJavaCompile;
 
 /**
  * The helper for the Spine-custom Error Prone checks configuration of the {@link Project}.
@@ -47,16 +47,18 @@ import static io.spine.tools.mc.java.gradle.Extension.spineCheckSeverityIn;
  * the project.
  *
  * @see ErrorProneChecksExtension
- * @see Extension#spineCheckSeverityIn(Project)
  */
-public final class SeverityConfigurer implements Logging {
+final class SeverityConf implements Logging {
+
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     private static final String ERROR_PRONE_PLUGIN_ID = "net.ltgt.errorprone";
 
     private final Project project;
+
     private @Nullable Boolean hasErrorProneChecksPlugin;
 
-    private SeverityConfigurer(Project project) {
+    private SeverityConf(Project project) {
         this.project = project;
     }
 
@@ -67,16 +69,16 @@ public final class SeverityConfigurer implements Logging {
      *         the project
      * @return the {@code SeverityConfigurer} instance
      */
-    public static SeverityConfigurer initFor(Project project) {
+    static SeverityConf initFor(Project project) {
         checkNotNull(project);
-        return new SeverityConfigurer(project);
+        return new SeverityConf(project);
     }
 
     /**
      * Adds the action configuring Spine Error Prone check severities to the
      * {@code projectEvaluated} stage of the project.
      */
-    public void addConfigureSeverityAction() {
+    void addConfigureSeverityAction() {
         Action<Gradle> configureCheckSeverity = g -> configureCheckSeverity();
         Gradle gradle = project.getGradle();
         gradle.projectsEvaluated(configureCheckSeverity);
@@ -95,6 +97,15 @@ public final class SeverityConfigurer implements Logging {
         Severity defaultSeverity = spineCheckSeverityIn(project);
         configureUseValidatingBuilder(defaultSeverity);
     }
+
+    private static @Nullable Severity spineCheckSeverityIn(Project project) {
+        Severity result = ErrorProneChecksExtension.of(project).spineCheckSeverity;
+        logger.atFine()
+              .log("The severity of Spine-custom Error Prone checks is %s.",
+                     (result == null ? "not set" : backtick(result.name())));
+        return result;
+    }
+
 
     /**
      * Checks if the project has the Error Prone plugin applied.

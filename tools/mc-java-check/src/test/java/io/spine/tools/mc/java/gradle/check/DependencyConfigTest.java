@@ -38,35 +38,35 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.tools.mc.java.gradle.check.DependencyConfigurer.SPINE_CHECKER_MODULE;
+import static io.spine.tools.mc.java.gradle.check.DependencyConfig.SPINE_CHECKER_MODULE;
 import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
 import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
 import static io.spine.tools.mc.java.gradle.given.Project.newProject;
 
 /**
- * A test for the {@link DependencyConfigurer} part of the Spine Error Prone Checks plugin.
+ * A test for the {@link DependencyConfig} part of the Spine Error Prone Checks plugin.
  *
  * @implNote This test configures the project with real dependencies and repositories which leads
  *         to a slow test execution. In future, it should be removed in favor of proper integration
  *         tests for the `spine-mc-java-checks` plugin.
  */
 @SlowTest
-@DisplayName("DependencyConfigurer should")
-class DependencyConfigurerTest {
+@DisplayName("`DependencyConfig` should")
+class DependencyConfigTest {
 
     @Test
-    @DisplayName(NOT_ACCEPT_NULLS)
+    @DisplayName(DisplayNames.NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(DependencyConfigurer.class);
-        new NullPointerTester().testAllPublicInstanceMethods(createFor(newProject().get()));
+        new NullPointerTester().testAllPublicStaticMethods(DependencyConfig.class);
+        new NullPointerTester().testAllPublicInstanceMethods(createFor(Project.newProject().get()));
     }
 
     @Test
     @DisplayName("add spine check dependency to annotation processor config")
     void addSpineCheckDependencyToAnnotationProcessorConfig() {
-        Project project = newProject()
-                .withMavenRepositories()
-                .get();
+        Project project = Project.newProject()
+                                 .withMavenRepositories()
+                                 .get();
         addDependency(project);
 
         boolean hasDependency = hasErrorProneChecksDependency(project);
@@ -76,8 +76,8 @@ class DependencyConfigurerTest {
     @Test
     @DisplayName("not add spine check dependency if it is not resolvable")
     void notAddSpineCheckDependencyIfItIsNotResolvable() {
-        Project project = newProject()
-                .get();
+        Project project = Project.newProject()
+                                 .get();
         addDependency(project);
 
         boolean hasDependency = hasErrorProneChecksDependency(project);
@@ -87,14 +87,14 @@ class DependencyConfigurerTest {
     @SuppressWarnings("CheckReturnValue")
         // We ignore boolean "success" flag which is not interesting for us in this test.
     private static void addDependency(Project project) {
-        DependencyConfigurer configurer = createFor(project);
+        DependencyConfig configurer = createFor(project);
         configurer.addErrorProneChecksDependency();
     }
 
-    private static DependencyConfigurer createFor(Project project) {
+    private static DependencyConfig createFor(Project project) {
         Configuration annotationProcessorConfig = annotationProcessorConfig(project);
-        DependencyConfigurer configurer =
-                DependencyConfigurer.createFor(annotationProcessorConfig);
+        DependencyConfig configurer =
+                DependencyConfig.createFor(annotationProcessorConfig);
         return configurer;
     }
 

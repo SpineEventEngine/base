@@ -40,24 +40,24 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @DisplayName("PreprocessorConfigurer should")
-class PreprocessorConfigurerTest {
+class PreprocessorConfigTest {
 
     private ConfigurationContainer projectConfigs;
     private Configuration preprocessorConfig;
-    private PreprocessorConfigurer configurer;
+    private PreprocessorConfig configurer;
 
     @BeforeEach
     void setUp() {
-        Project project = newProject();
+        Project project = ModelCompilerTestEnv.newProject();
         projectConfigs = project.getConfigurations();
         preprocessorConfig = projectConfigs.getByName(annotationProcessor.value());
-        configurer = PreprocessorConfigurer.initFor(project);
+        configurer = PreprocessorConfig.initFor(project);
     }
 
     @Test
     @DisplayName("pass null tolerance check")
     void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(PreprocessorConfigurer.class);
+        new NullPointerTester().testAllPublicStaticMethods(PreprocessorConfig.class);
         new NullPointerTester().testAllPublicInstanceMethods(configurer);
     }
 

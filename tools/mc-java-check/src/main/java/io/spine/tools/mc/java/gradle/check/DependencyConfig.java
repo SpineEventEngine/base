@@ -42,27 +42,27 @@ import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
 /**
  * Adds a {@code spine-mc-java-checks} dependency to the given project {@link Configuration}.
  */
-public final class DependencyConfigurer implements Logging {
+final class DependencyConfig implements Logging {
 
     @VisibleForTesting
     static final String SPINE_CHECKER_MODULE = "spine-mc-java-checks";
 
     private final Configuration configuration;
 
-    private DependencyConfigurer(Configuration configuration) {
-        this.configuration = configuration;
+    private DependencyConfig(Configuration cfg) {
+        this.configuration = cfg;
     }
 
     /**
      * Create the {@code DependencyConfigurer} for the given project {@link Configuration}.
      *
-     * @param configuration
+     * @param cfg
      *         the configuration
      * @return the {@code DependencyConfigurer} instance
      */
-    public static DependencyConfigurer createFor(Configuration configuration) {
-        checkNotNull(configuration);
-        return new DependencyConfigurer(configuration);
+    static DependencyConfig createFor(Configuration cfg) {
+        checkNotNull(cfg);
+        return new DependencyConfig(cfg);
     }
 
     /**
@@ -73,7 +73,7 @@ public final class DependencyConfigurer implements Logging {
      *
      * @return {@code true} if the dependency was resolved successfully and {@code false} otherwise
      */
-    public boolean addErrorProneChecksDependency() {
+    boolean addErrorProneChecksDependency() {
         DependencyVersions dependencyVersions = DependencyVersions.get();
         String version = dependencyVersions.spineBase();
 
