@@ -24,11 +24,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.js.compiler.gradle;
+package io.spine.tools.dart.compiler.gradle;
 
 import com.google.protobuf.gradle.ExecutableLocator;
-import io.spine.tools.js.fs.DefaultJsPaths;
-import io.spine.tools.js.fs.Generated;
+import io.spine.tools.dart.compiler.CachedDartProtocPlugin;
 import io.spine.tools.gradle.ProtocConfigurationPlugin;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
@@ -36,36 +35,33 @@ import org.gradle.api.Project;
 import java.io.File;
 import java.nio.file.Path;
 
+import static io.spine.tools.gradle.ProtocPluginName.dart;
+
 /**
- * A Gradle plugin that performs additional {@code protoc} configurations relevant for JavaScript
+ * A Gradle plugin that performs additional {@code protoc} configurations relevant for Dart
  * projects.
  */
-public final class JsProtocConfigurationPlugin extends ProtocConfigurationPlugin {
-
-    @Override
-    protected File getTestDescriptorSet(Project project) {
-        return extensionOf(project).getTestDescriptorSet();
-    }
+final class DartProtocConfig extends ProtocConfigurationPlugin {
 
     @Override
     protected Path generatedFilesBaseDir(Project project) {
-        DefaultJsPaths jsProject = DefaultJsPaths.at(project.getProjectDir());
-        Generated generatedProtoRoot = jsProject.generated();
-        return generatedProtoRoot.path();
+        return Extension.findIn(project).generatedDirPath();
     }
 
     @Override
     protected File getMainDescriptorSet(Project project) {
-        return extensionOf(project).mainDescriptorSet();
-    }
-
-    private static Extension extensionOf(Project project) {
-        return Extension.of(project);
+        return Extension.findIn(project).mainDescriptorSetFile();
     }
 
     @Override
-    protected void
-    configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins, Project project) {
-        // Do nothing.
+    protected File getTestDescriptorSet(Project project) {
+        return Extension.findIn(project).testDescriptorSetFile();
+    }
+
+    @Override
+    protected void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins,
+                                          Project project) {
+        Path executable = CachedDartProtocPlugin.locate();
+        plugins.create(dart.name(), locator -> locator.setPath(executable.toString()));
     }
 }

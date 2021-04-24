@@ -58,7 +58,7 @@ import static org.gradle.api.Task.TASK_TYPE;
  * <p>Generates mapping between Protobuf type URLs and Dart types and reflective descriptors
  * (a.k.a. {@code BuilderInfo}s).
  *
- * @see DartProtocConfigurationPlugin
+ * @see DartProtocConfig
  */
 public final class ProtoDartPlugin extends SpinePlugin {
 
@@ -69,7 +69,7 @@ public final class ProtoDartPlugin extends SpinePlugin {
         Extension extension = new Extension(project, EXTENSION_NAME);
         extension.register();
 
-        Plugin<Project> protocConfig = new DartProtocConfigurationPlugin();
+        Plugin<Project> protocConfig = new DartProtocConfig();
         protocConfig.apply(project);
 
         createMainCopyTask(project, extension);

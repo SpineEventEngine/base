@@ -28,18 +28,17 @@ package io.spine.tools.mc.java.gradle;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import groovy.lang.Closure;
+import io.spine.tools.code.Indent;
 import io.spine.tools.code.fs.TempArtifacts;
+import io.spine.tools.gradle.GradleExtension;
 import io.spine.tools.java.fs.DefaultJavaPaths;
 import io.spine.tools.java.fs.Generated;
-import io.spine.tools.code.Indent;
-import io.spine.tools.mc.java.gradle.annotate.Annotations;
-import io.spine.tools.gradle.GradleExtension;
 import io.spine.tools.java.protoc.EntityQueries;
 import io.spine.tools.java.protoc.Fields;
 import io.spine.tools.java.protoc.Interfaces;
 import io.spine.tools.java.protoc.Methods;
 import io.spine.tools.java.protoc.NestedClasses;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import io.spine.tools.mc.java.gradle.annotate.Annotations;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionContainer;
@@ -53,7 +52,6 @@ import java.util.Optional;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newLinkedList;
-import static io.spine.string.Diags.backtick;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**

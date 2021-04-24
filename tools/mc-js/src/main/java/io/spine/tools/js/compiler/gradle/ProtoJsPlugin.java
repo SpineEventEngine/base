@@ -90,7 +90,7 @@ public class ProtoJsPlugin extends ProtoPlugin {
 
     @Override
     public void apply(Project project) {
-        JsProtocConfigurationPlugin configPlugin = new JsProtocConfigurationPlugin();
+        JsProtocConfig configPlugin = new JsProtocConfig();
         configPlugin.apply(project);
         this.extension = new Extension(project, EXTENSION_NAME);
         extension.register();

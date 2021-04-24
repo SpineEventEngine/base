@@ -52,6 +52,7 @@ dependencies {
     implementation(project(":base"))
     implementation(project(":tool-base"))
     implementation(project(":plugin-base"))
+    implementation(project(":mc-java-check"))
 
     testImplementation(project(":testlib"))
     testImplementation(gradleTestKit())

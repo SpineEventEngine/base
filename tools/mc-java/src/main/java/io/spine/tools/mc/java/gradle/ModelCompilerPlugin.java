@@ -66,7 +66,7 @@ public class ModelCompilerPlugin implements Plugin<Project>, Logging {
                   new DescriptorSetMergerPlugin(),
                   new RejectionGenPlugin(),
                   new ProtoAnnotatorPlugin(),
-                  new JavaProtocConfigurationPlugin(),
+                  new JavaProtocConfig(),
                   new ErrorProneChecksPlugin())
               .forEach(plugin -> apply(plugin, project));
     }
