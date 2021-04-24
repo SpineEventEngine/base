@@ -24,43 +24,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc;
+package io.spine.tools.java.javadoc.filter;
 
-import com.sun.javadoc.AnnotationDesc;
-import com.sun.javadoc.ProgramElementDoc;
+import com.sun.javadoc.PackageDoc;
 
-import java.lang.annotation.Annotation;
+import java.io.Serializable;
+import java.util.Comparator;
 
 /**
- * {@code AnnotationAnalyst} provides methods to check accessory to the specified annotation.
- *
- * @param <C> the type of an annotation to analyze
+ * Compares two {@link PackageDoc}s by their names.
  */
-public class AnnotationAnalyst<C extends Class<? extends Annotation>> {
+final class PackageDocComparator implements Comparator<PackageDoc>, Serializable {
 
-    private final C annotationClass;
+    private static final long serialVersionUID = 1L;
 
-    AnnotationAnalyst(C annotationClass) {
-        this.annotationClass = annotationClass;
-    }
-
-    boolean hasAnnotation(ProgramElementDoc doc) {
-        return isAnnotationPresent(doc.annotations());
-    }
-
-    boolean isAnnotationPresent(AnnotationDesc[] annotations) {
-        for (AnnotationDesc annotation : annotations) {
-            if (isQualifiedAnnotation(annotation)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private boolean isQualifiedAnnotation(AnnotationDesc annotation) {
-        return annotation.annotationType()
-                         .qualifiedTypeName()
-                         .equals(annotationClass.getName());
+    @Override
+    public int compare(PackageDoc o1, PackageDoc o2) {
+        return o1.name()
+                 .compareTo(o2.name());
     }
 }

@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc;
+package io.spine.tools.java.javadoc.filter;
 
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.ProgramElementDoc;
@@ -43,7 +43,9 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Extension of {@linkplain Standard} doclet, which excludes
@@ -98,7 +100,7 @@ public class ExcludeInternalDoclet extends Standard {
      */
     @SuppressWarnings({"unused", "RedundantSuppression"}) // called by com.sun.tools.javadoc.Main
     public static boolean start(RootDoc root) {
-        ExcludePrinciple excludePrinciple = new ExcludeInternalPrinciple(root);
+        ExcludePrinciple excludePrinciple = new ExcludeInternal(root);
         ExcludeInternalDoclet doclet = new ExcludeInternalDoclet(excludePrinciple);
         return Standard.start((RootDoc) doclet.process(root, RootDoc.class));
     }
@@ -112,7 +114,7 @@ public class ExcludeInternalDoclet extends Standard {
      * @return the processed value
      */
     @Nullable
-    Object process(@Nullable Object returnValue, Class returnValueType) {
+    Object process(@Nullable Object returnValue, Class<?> returnValueType) {
         if (returnValue == null) {
             return null;
         }
@@ -120,12 +122,12 @@ public class ExcludeInternalDoclet extends Standard {
         if (returnValue.getClass()
                        .getName()
                        .startsWith("com.sun.")) {
-            Class cls = returnValue.getClass();
+            Class<?> cls = returnValue.getClass();
             return Proxy.newProxyInstance(cls.getClassLoader(),
                                           cls.getInterfaces(),
                                           new ExcludeHandler(returnValue));
         } else if (returnValue instanceof Object[] && returnValueType.getComponentType() != null) {
-            Class componentType = returnValueType.getComponentType();
+            Class<?> componentType = returnValueType.getComponentType();
             Object[] array = (Object[]) returnValue;
             List<Object> list = new ArrayList<>();
             for (Object entry : array) {
@@ -153,11 +155,15 @@ public class ExcludeInternalDoclet extends Standard {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            if (args != null && IgnoredMethod.isIgnored(method.getName())) {
+            checkNotNull(method);
+            if (args != null && isIgnored(method)) {
                 args[0] = unwrap(args[0]);
             }
             try {
-                return process(method.invoke(target, args), method.getReturnType());
+                Object returnValue = method.invoke(target, args);
+                Class<?> returnType = method.getReturnType();
+                Object result = process(returnValue, returnType);
+                return requireNonNull(result);
             } catch (InvocationTargetException e) {
                 throw illegalStateWithCauseOf(e);
             }
@@ -185,38 +191,26 @@ public class ExcludeInternalDoclet extends Standard {
      *
      * <p>Because we use proxy to filter Javadocs, we should unwrap proxy
      * of parameters passed to these methods to prevent {@code ClassCastException}.
+     *
+     * @see #isIgnored(Method)
      */
-    @SuppressWarnings({"unused", "RedundantSuppression"}) // Used in implicit form.
     private enum IgnoredMethod {
-        COMPARE_TO("compareTo"),
-        EQUALS("equals"),
-        OVERRIDES("overrides"),
-        SUBCLASS_OF("subclassOf");
+        compareTo,
+        equals,
+        overrides,
+        subclassOf;
+    }
 
-        private final String methodName;
-
-        IgnoredMethod(String methodName) {
-            this.methodName = methodName;
-        }
-
-        String getMethodName() {
-            return methodName;
-        }
-
-        /**
-         * Returns {@code true} if the passed method name is one of {@code IgnoredMethod}s.
-         *
-         * @param methodName the method name to test
-         * @return {@code true} if the method name is one of {@code IgnoredMethod}s
-         */
-        private static boolean isIgnored(String methodName) {
-            for (IgnoredMethod ignoredMethod : IgnoredMethod.values()) {
-                if (methodName.equals(ignoredMethod.getMethodName())) {
-                    return true;
-                }
+    /**
+     * Returns {@code true} if the passed method has the name of one of ignored.
+     */
+    private static boolean isIgnored(Method method) {
+        String methodName = method.getName();
+        for (IgnoredMethod m : IgnoredMethod.values()) {
+            if (methodName.equals(m.name())) {
+                return true;
             }
-
-            return false;
         }
+        return false;
     }
 }

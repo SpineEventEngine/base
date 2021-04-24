@@ -24,43 +24,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc;
+package io.spine.tools.java.javadoc.filter;
 
-import com.sun.javadoc.PackageDoc;
+import com.sun.javadoc.AnnotationDesc;
 import com.sun.javadoc.ProgramElementDoc;
-import com.sun.javadoc.RootDoc;
-import io.spine.annotation.Internal;
 
-import java.util.Collection;
+import java.lang.annotation.Annotation;
 
 /**
- * Implementation of the {@linkplain ExcludePrinciple} interface for
- * {@linkplain Internal} annotation.
+ * {@code AnnotationAnalyst} provides methods to check access to the specified annotation.
  *
- * <p>Excludes all {@linkplain Internal}-annotated program elements, packages,
- * and their subpackages.
+ * @param <C> the type of an annotation to analyze
  */
-final class ExcludeInternalPrinciple implements ExcludePrinciple {
+final class AnnotationCheck<C extends Class<? extends Annotation>> {
 
-    private final Collection<PackageDoc> exclusions;
-    private final AnnotationAnalyst<Class<Internal>> internalAnalyst =
-            new AnnotationAnalyst<>(Internal.class);
+    private final C annotationClass;
 
-    ExcludeInternalPrinciple(RootDoc root) {
-        exclusions = getExclusions(root);
+    AnnotationCheck(C annotationClass) {
+        this.annotationClass = annotationClass;
     }
 
-    @Override
-    public boolean shouldExclude(ProgramElementDoc doc) {
-        return inExclusions(doc) || internalAnalyst.hasAnnotation(doc);
+    boolean hasAnnotation(ProgramElementDoc doc) {
+        return isAnnotationPresent(doc.annotations());
     }
 
-    private boolean inExclusions(ProgramElementDoc doc) {
-        String docPackageName = doc.containingPackage()
-                                   .name();
-
-        for (PackageDoc exclusion : exclusions) {
-            if (docPackageName.startsWith(exclusion.name())) {
+    boolean isAnnotationPresent(AnnotationDesc[] annotations) {
+        for (AnnotationDesc annotation : annotations) {
+            if (isQualifiedAnnotation(annotation)) {
                 return true;
             }
         }
@@ -68,8 +58,9 @@ final class ExcludeInternalPrinciple implements ExcludePrinciple {
         return false;
     }
 
-    private Collection<PackageDoc> getExclusions(RootDoc root) {
-        PackageCollector packageCollector = new PackageCollector(internalAnalyst);
-        return packageCollector.collect(root);
+    private boolean isQualifiedAnnotation(AnnotationDesc annotation) {
+        return annotation.annotationType()
+                         .qualifiedTypeName()
+                         .equals(annotationClass.getName());
     }
 }

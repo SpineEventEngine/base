@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc;
+package io.spine.tools.java.javadoc.filter;
 
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.MethodDoc;
@@ -45,13 +45,13 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
-import static io.spine.tools.javadoc.RootDocProxyReceiver.rootDocFor;
+import static io.spine.tools.java.javadoc.filter.RootDocProxyReceiver.rootDocFor;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Tests {@link io.spine.tools.javadoc.ExcludeInternalDoclet}.
+ * Tests {@link ExcludeInternalDoclet}.
  *
  * <p>The source code used by this test suite is located under {@code resources/testsources}.
  */

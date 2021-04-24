@@ -24,41 +24,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc;
+package io.spine.tools.java.javadoc.filter;
 
-import com.sun.javadoc.RootDoc;
-import com.sun.tools.javadoc.Main;
+import com.sun.javadoc.ProgramElementDoc;
 
-public class RootDocProxyReceiver extends ExcludeInternalDoclet {
+/**
+ * Serves as a decision maker on whether to exclude the
+ * {@linkplain ProgramElementDoc} from the generated Javadoc.
+ */
+interface ExcludePrinciple {
 
-    @SuppressWarnings("StaticVariableMayNotBeInitialized") // Used only start invocation
-    private static RootDoc rootDocProxy;
-
-    @SuppressWarnings("ConstantConditions") // Is not necessary
-    public RootDocProxyReceiver(String[] args) {
-        super(null);
-        main(args);
-    }
-
-    public static void main(String[] args) {
-        String name = RootDocProxyReceiver.class.getName();
-        Main.execute(name, name, args);
-    }
-
-    @SuppressWarnings("unused") // called by com.sun.tools.javadoc.Main
-    public static boolean start(RootDoc root) {
-        ExcludePrinciple excludePrinciple = new ExcludeInternalPrinciple(root);
-        ExcludeInternalDoclet doclet = new ExcludeInternalDoclet(excludePrinciple);
-
-        // We can obtain RootDoc only here
-        rootDocProxy = (RootDoc) doclet.process(root, root.getClass());
-
-        return true;
-    }
-
-    @SuppressWarnings("StaticVariableUsedBeforeInitialization") // Initialized in start method
-    static RootDoc rootDocFor(String[] args) {
-        main(args);
-        return rootDocProxy;
-    }
+    /**
+     * Returns {@code true} if the document should be excluded.
+     *
+     * @param doc the document to analyze
+     * @return {@code true} if document should be excluded, {@code false} otherwise
+     */
+    boolean shouldExclude(ProgramElementDoc doc);
 }

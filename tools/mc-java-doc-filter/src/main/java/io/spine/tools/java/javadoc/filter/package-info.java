@@ -29,7 +29,7 @@
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.javadoc;
+package io.spine.tools.java.javadoc.filter;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

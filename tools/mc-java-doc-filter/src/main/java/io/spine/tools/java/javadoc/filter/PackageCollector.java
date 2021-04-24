@@ -24,25 +24,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc;
+package io.spine.tools.java.javadoc.filter;
 
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.RootDoc;
 
-import java.io.Serializable;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.TreeSet;
 
 /**
- * Collects {@linkplain PackageDoc}s that pass {@linkplain AnnotationAnalyst} checks.
+ * Collects {@linkplain PackageDoc}s that pass {@linkplain AnnotationCheck} checks.
  */
-class PackageCollector {
+final class PackageCollector {
 
-    private final AnnotationAnalyst analyst;
+    private final AnnotationCheck<?> analyst;
 
-    PackageCollector(AnnotationAnalyst analyst) {
+    PackageCollector(AnnotationCheck<?> analyst) {
         this.analyst = analyst;
     }
 
@@ -122,14 +120,4 @@ class PackageCollector {
         return false;
     }
 
-    private static class PackageDocComparator implements Comparator<PackageDoc>, Serializable {
-
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public int compare(PackageDoc o1, PackageDoc o2) {
-            return o1.name()
-                     .compareTo(o2.name());
-        }
-    }
 }

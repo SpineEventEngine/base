@@ -24,13 +24,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc;
+package io.spine.tools.java.javadoc.filter;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-class JavadocArgsBuilder {
+final class JavadocArgsBuilder {
 
     @SuppressWarnings("AccessOfSystemProperties") // Need to know project path
     private static final String ABSOLUTE_PROJECT_PATH = System.getProperty("user.dir");
