@@ -43,8 +43,11 @@ dependencies {
 }
 
 tasks.jar {
+    isZip64 = true
+
     dependsOn(
-            ":tool-base:jar"
+            ":tool-base:jar",
+            ":plugin-base:jar"
     )
 
     // See https://stackoverflow.com/questions/35704403/what-are-the-eclipsef-rsa-and-eclipsef-sf-in-a-java-jar-file

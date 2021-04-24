@@ -50,7 +50,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
- * A Protobuf Compiler ({@literal a.k.a.} {@code protoc}) plugin.
+ * The plugin to Protobuf Compiler ({@literal a.k.a.} {@code protoc}) plugin which extends
+ * Java code generation with Spine-specific features provided by the Model Compiler.
  *
  * <p>The program reads
  * a {@link com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest CodeGeneratorRequest}

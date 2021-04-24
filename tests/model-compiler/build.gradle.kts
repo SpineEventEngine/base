@@ -49,7 +49,7 @@ modelCompiler {
     }
 
     methods {
-        val factory = "io.spine.tools.protoc.TestMethodFactory"
+        val factory = "io.spine.tools.mc.java.protoc.given.TestMethodFactory"
         applyFactory(factory, messages().inFiles(suffix("suffix_generation_test.proto")))
         applyFactory(factory, messages().inFiles(prefix("spine/tools/protoc/prefix_generation")))
         applyFactory(factory, messages().inFiles(regex(".*regex.*test.*")))
@@ -57,7 +57,7 @@ modelCompiler {
     }
 
     nestedClasses {
-        val factory = "io.spine.tools.protoc.TestNestedClassFactory"
+        val factory = "io.spine.tools.mc.java.protoc.given.TestNestedClassFactory"
         applyFactory(factory, messages().inFiles(suffix("suffix_generation_test.proto")))
         applyFactory(factory, messages().inFiles(prefix("spine/tools/protoc/prefix_generation")))
         applyFactory(factory, messages().inFiles(regex(".*regex.*test.*")))
