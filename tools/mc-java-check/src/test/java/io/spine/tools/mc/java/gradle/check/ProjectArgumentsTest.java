@@ -28,20 +28,27 @@ package io.spine.tools.mc.java.gradle.check;
 
 import io.spine.testing.UtilityClassTest;
 import org.gradle.api.Project;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.mc.java.given.ProjectConfigurations.assertCompileTasksContain;
-import static io.spine.tools.mc.java.given.ProjectConfigurations.assertCompileTasksEmpty;
-import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newProject;
+import static io.spine.tools.gradle.testing.Project.newProject;
+import static io.spine.tools.gradle.testing.ProjectConfigurations.assertCompileTasksContain;
+import static io.spine.tools.gradle.testing.ProjectConfigurations.assertCompileTasksEmpty;
+import static io.spine.tools.mc.java.gradle.check.ProjectArguments.addArgsToJavaCompile;
 
 @DisplayName("ProjectArguments utility class should")
 class ProjectArgumentsTest extends UtilityClassTest<ProjectArguments> {
 
-    private final Project project = ModelCompilerTestEnv.newProject();
+    private Project project;
 
     ProjectArgumentsTest() {
         super(ProjectArguments.class);
+    }
+
+    @BeforeEach
+    void createProject() {
+        project = newProject(getClass()).get();
     }
 
     @Test
@@ -49,14 +56,14 @@ class ProjectArgumentsTest extends UtilityClassTest<ProjectArguments> {
     void addArgs() {
         String firstArg = "firstArg";
         String secondArg = "secondArg";
-        ProjectArguments.addArgsToJavaCompile(project, firstArg, secondArg);
-        ProjectConfigurations.assertCompileTasksContain(project, firstArg, secondArg);
+        addArgsToJavaCompile(project, firstArg, secondArg);
+        assertCompileTasksContain(project, firstArg, secondArg);
     }
 
     @Test
     @DisplayName("not add arguments if none is specified")
     void doNotAddArgs() {
-        ProjectArguments.addArgsToJavaCompile(project);
-        ProjectConfigurations.assertCompileTasksEmpty(project);
+        addArgsToJavaCompile(project);
+        assertCompileTasksEmpty(project);
     }
 }
