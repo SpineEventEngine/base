@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.java.protoc;
+package io.spine.tools.protoc;
 
 import com.google.common.truth.Truth;
 import io.spine.base.EventMessageField;
