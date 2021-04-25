@@ -31,12 +31,13 @@ import com.google.common.collect.ImmutableList;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.Files.delete;
+import static java.nio.file.Files.move;
 import static java.nio.file.Files.newBufferedReader;
 import static java.nio.file.Files.newBufferedWriter;
 
@@ -48,7 +49,11 @@ import static java.nio.file.Files.newBufferedWriter;
  */
 final class JavadocFormatter {
 
-    private static final String TEMP_FILE_NAME = "temp_file_for_formatting.java";
+    static final String JAVA_EXTENSION = ".java";
+    private static final String TEMP_FILE_NAME = "temp_file_for_formatting" + JAVA_EXTENSION;
+
+    static final String JAVADOC_START = "/**";
+    static final String JAVADOC_END = "*/";
 
     /**
      * The formatting actions to perform.
@@ -67,7 +72,7 @@ final class JavadocFormatter {
      * @param path the path to the file
      */
     void format(Path path) throws IOException {
-        if (!path.endsWith(".java")) {
+        if (!path.toString().endsWith(JAVA_EXTENSION)) {
             return;
         }
 
@@ -85,8 +90,8 @@ final class JavadocFormatter {
             }
         }
 
-        Files.delete(path);
-        Files.move(tempPath, tempPath.resolveSibling(path));
+        delete(path);
+        move(tempPath, tempPath.resolveSibling(path));
     }
 
     /**
@@ -144,10 +149,10 @@ final class JavadocFormatter {
 
     private static boolean isJavadocBeginning(String line) {
         return line.trim()
-                   .contains("/**");
+                   .contains(JAVADOC_START);
     }
 
     private static boolean containsJavadocEnding(String line) {
-        return line.contains("*/");
+        return line.contains(JAVADOC_END);
     }
 }

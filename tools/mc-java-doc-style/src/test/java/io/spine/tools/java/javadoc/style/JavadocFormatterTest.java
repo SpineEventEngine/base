@@ -26,7 +26,6 @@
 
 package io.spine.tools.java.javadoc.style;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,10 +39,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.java.javadoc.style.BacktickFormatting.wrapWithCodeTag;
-import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static java.nio.file.Files.readAllLines;
 
 @DisplayName("`JavadocFormatter` should")
 class JavadocFormatterTest {
@@ -56,7 +55,7 @@ class JavadocFormatterTest {
     private File folder;
     private final FormattingAction formatting = new BacktickFormatting();
     private final ImmutableList<FormattingAction> actions = ImmutableList.of(formatting);
-    private final JavadocFormatter backtickFormatter = new JavadocFormatter(actions);
+    private final JavadocFormatter formatter = new JavadocFormatter(actions);
 
     @BeforeEach
     void setUp(@TempDir Path tempDirPath) {
@@ -67,42 +66,51 @@ class JavadocFormatterTest {
     @DisplayName("ignore files expect `.java`")
     void ignoreNonJavaFiles() throws IOException {
         Path path = Paths.get("Non_existing_file.txt");
-        backtickFormatter.format(path);
+        formatter.format(path);
     }
 
     @Test
     @DisplayName("format Javadocs")
-    void format_Javadocs() throws Exception {
-        String javadoc = getJavadoc(TEXT_IN_BACKTICKS);
-        String expected = getJavadoc(TEXT_IN_CODE_TAG);
-        assertEquals(expected, getFormattingResult(javadoc));
+    void replaceBackticksWithCodeTag() throws Exception {
+        String javadoc = wrapWithJavadocComments(TEXT_IN_BACKTICKS);
+        Path file = prepareFile("JavadocFormatter_test_file.java", ImmutableList.of(javadoc)) ;
+
+        formatter.format(file);
+
+        List<String> lines = readAllLines(file, UTF_8);
+
+        assertThat(lines.stream().anyMatch(s -> s.contains("" + BACKTICK)))
+                .isFalse();
+
+        String expected = wrapWithJavadocComments(TEXT_IN_CODE_TAG);
+        assertThat(lines.stream().anyMatch(s -> s.contains(expected)))
+             .isTrue();
     }
 
     @Test
     @DisplayName("not format non-Javadoc text")
-    void not_format_text_which_is_not_Javadoc() throws Exception {
-        assertEquals(TEXT_IN_BACKTICKS, getFormattingResult(TEXT_IN_BACKTICKS));
+    void notTouchNonJavadoc() throws Exception {
+        String nonJavadoc = TEXT_IN_BACKTICKS;
+        // This is not a valid Java file, but it will do for the purpose of the test.
+        ImmutableList<String> content = ImmutableList.of(nonJavadoc);
+        Path file = prepareFile("NonJavaDocTest.java", content);
+
+        formatter.format(file);
+
+        List<String> lines = readAllLines(file, UTF_8);
+
+        assertThat(lines).isEqualTo(content);
     }
 
-    private static String getJavadoc(String javadocText) {
+    private static String wrapWithJavadocComments(String javadocText) {
         return "/** " + javadocText + " */";
     }
 
-    private String getFormattingResult(String content) throws IOException {
-        Path path = createJavaFile();
-        Files.write(path, ImmutableList.of(content));
-
-        backtickFormatter.format(path);
-
-        List<String> lines = Files.readAllLines(path, UTF_8);
-        return Joiner.on(lineSeparator())
-                     .join(lines);
-    }
-
-    private Path createJavaFile() throws IOException {
-        String fileName = "JavadocFormatter_test_file.java";
-        Path absoluteFilePath = Paths.get(folder.getAbsolutePath(), fileName);
-        Path filePath = Files.createFile(absoluteFilePath);
-        return filePath;
+    private Path prepareFile(String shortFileName, Iterable<? extends CharSequence> lines)
+            throws IOException {
+        Path fullPath = Paths.get(folder.getAbsolutePath(), shortFileName);
+        Files.createFile(fullPath);
+        Files.write(fullPath, lines);
+        return fullPath;
     }
 }
