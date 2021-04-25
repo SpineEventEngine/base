@@ -35,7 +35,7 @@ import io.spine.tools.mc.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.ExternalClassLoader;
 import io.spine.tools.mc.java.protoc.message.GenerateNestedClasses;
 import io.spine.tools.mc.java.protoc.method.given.TestClassLoader;
-import io.spine.tools.protoc.plugin.nested.TaskView;
+import io.spine.tools.mc.java.protoc.nested.TaskView;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

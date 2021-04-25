@@ -32,7 +32,7 @@ import io.spine.tools.java.code.FieldFactory;
 import io.spine.tools.java.protoc.ConfigByType;
 import io.spine.tools.java.protoc.TypePattern;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.protoc.plugin.nested.TaskView;
+import io.spine.tools.mc.java.protoc.nested.TaskView;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

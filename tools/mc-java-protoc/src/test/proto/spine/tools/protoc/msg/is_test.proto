@@ -32,17 +32,17 @@ import "spine/options.proto";
 option (type_url_prefix) = "type.spine.io";
 option java_multiple_files = true;
 option java_outer_classname = "IsTestProto";
-option java_package = "io.spine.tools.protoc.plugin.message.tests";
+option java_package = "io.spine.tools.mc.java.protoc.message.tests";
 
 message ProtocNameUpdated {
-    option (is).java_type = "io.spine.tools.protoc.plugin.message.tests.ProtocCustomerEvent";
+    option (is).java_type = "ProtocCustomerEvent";
 
     string uid = 1;
     Name new_name = 2;
 }
 
 message ProtocUpdateName {
-    option (is).java_type = "io.spine.tools.protoc.plugin.message.tests.ProtocCustomerCommand";
+    option (is).java_type = "ProtocCustomerCommand";
 
     string uid = 1;
     Name new_name = 2;

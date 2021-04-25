@@ -30,7 +30,7 @@ import com.google.common.collect.ImmutableList;
 import io.spine.tools.mc.java.protoc.CodeGenerationTask;
 import io.spine.tools.mc.java.protoc.CodeGenerationTasks;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.protoc.plugin.EnhancedWithCodeGeneration;
+import io.spine.tools.mc.java.protoc.EnhancedWithCodeGeneration;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

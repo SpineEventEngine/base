@@ -32,9 +32,9 @@ import "spine/options.proto";
 option (type_url_prefix) = "type.spine.io";
 option java_multiple_files = false;
 option java_outer_classname = "EveryIsInOneFileProto";
-option java_package = "io.spine.tools.protoc.plugin.message.tests";
+option java_package = "io.spine.tools.mc.java.protoc.message.tests";
 
-option (every_is).java_type = "io.spine.tools.protoc.plugin.message.tests.ProtocCustomerEvent";
+option (every_is).java_type = "ProtocCustomerEvent";
 
 message ProtocCustomerNotified {
 

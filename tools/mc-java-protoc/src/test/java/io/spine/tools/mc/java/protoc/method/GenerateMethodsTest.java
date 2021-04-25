@@ -33,7 +33,7 @@ import io.spine.tools.java.protoc.FilePatterns;
 import io.spine.tools.java.protoc.MethodFactory;
 import io.spine.tools.mc.java.protoc.ExternalClassLoader;
 import io.spine.tools.mc.java.protoc.given.TestMethodFactory;
-import io.spine.tools.protoc.plugin.method.EnhancedWithPatternBasedCodeGeneration;
+import io.spine.tools.mc.java.protoc.method.EnhancedWithPatternBasedCodeGeneration;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
