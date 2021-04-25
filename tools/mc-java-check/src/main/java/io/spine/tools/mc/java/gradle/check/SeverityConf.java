@@ -37,7 +37,7 @@ import org.gradle.api.plugins.PluginContainer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.string.Diags.backtick;
-import static io.spine.tools.mc.java.gradle.check.ErrorProneChecksExtension.getUseValidatingBuilder;
+import static io.spine.tools.mc.java.gradle.check.Extension.getUseValidatingBuilder;
 import static io.spine.tools.mc.java.gradle.check.ProjectArguments.addArgsToJavaCompile;
 
 /**
@@ -46,7 +46,7 @@ import static io.spine.tools.mc.java.gradle.check.ProjectArguments.addArgsToJava
  * <p>This class cannot configure the check severities without the Error Prone plugin applied to
  * the project.
  *
- * @see ErrorProneChecksExtension
+ * @see Extension
  */
 final class SeverityConf implements Logging {
 
@@ -90,7 +90,7 @@ final class SeverityConf implements Logging {
      */
     private void configureCheckSeverity() {
         if (!hasErrorPronePlugin()) {
-            _debug().log("Cannot configure Spine Error Prone check severity as the Error Prone " +
+            _debug().log("Cannot configure Model Checks severity as the Error Prone " +
                                  "plugin is not applied to the project `%s`.", project.getName());
             return;
         }
@@ -99,9 +99,9 @@ final class SeverityConf implements Logging {
     }
 
     private static @Nullable Severity spineCheckSeverityIn(Project project) {
-        Severity result = ErrorProneChecksExtension.of(project).spineCheckSeverity;
+        Severity result = Extension.of(project).defaultSeverity;
         logger.atFine()
-              .log("The severity of Spine-custom Error Prone checks is %s.",
+              .log("The severity of Model Checks is %s.",
                      (result == null ? "not set" : backtick(result.name())));
         return result;
     }
@@ -135,7 +135,7 @@ final class SeverityConf implements Logging {
             }
         }
         _debug().log(
-                "Setting `UseValidatingBuilder` checker severity to `%s` for the project `%s`.",
+                "Setting `UseValidatingBuilder` check severity to `%s` for the project `%s`.",
                 severity.name(), project.getName()
         );
         String severityArg = "-Xep:UseValidatingBuilder:" + severity.name();

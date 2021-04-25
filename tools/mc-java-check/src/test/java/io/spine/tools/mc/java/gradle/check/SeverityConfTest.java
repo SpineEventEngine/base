@@ -27,20 +27,19 @@
 package io.spine.tools.mc.java.gradle.check;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.tools.mc.java.gradle.Extension;
-import io.spine.tools.mc.java.gradle.ModelCompilerPlugin;
+import io.spine.testing.DisplayNames;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.tools.mc.java.given.ProjectConfigurations.assertCompileTasksContain;
-import static io.spine.tools.mc.java.given.ProjectConfigurations.assertCompileTasksEmpty;
+import static io.spine.tools.gradle.testing.ProjectConfigurations.assertCompileTasksContain;
+import static io.spine.tools.gradle.testing.ProjectConfigurations.assertCompileTasksEmpty;
 import static io.spine.tools.mc.java.gradle.check.Severity.ERROR;
 import static io.spine.tools.mc.java.gradle.check.Severity.OFF;
-import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newProject;
+import static io.spine.tools.mc.java.gradle.check.given.ChecksTestEnv.newProject;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Tests {@link Severity}.
@@ -49,84 +48,78 @@ import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newProjec
 class SeverityConfTest {
 
     private Project project;
-    private SeverityConf configurer;
+    private Extension extension;
+    private SeverityConf config;
 
     @BeforeEach
     void setUp() {
-        project = ModelCompilerTestEnv.newProject();
-        configurer = SeverityConf.initFor(project);
+        project = newProject();
+        extension = configureSpineCheckExtension();
+        config = SeverityConf.initFor(project);
     }
 
     @Test
     @DisplayName(DisplayNames.NOT_ACCEPT_NULLS)
     void nullCheck() {
         new NullPointerTester().testAllPublicStaticMethods(SeverityConf.class);
-        new NullPointerTester().testAllPublicInstanceMethods(configurer);
+        new NullPointerTester().testAllPublicInstanceMethods(config);
     }
 
-    @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
-    // We use one extension and just create the other one.
     @Test
     @DisplayName("configure check severity")
     void configureCheckSeverity() {
-        configureModelCompilerExtension();
-        ErrorProneChecksExtension extension = configureSpineCheckExtension();
         extension.useValidatingBuilder = ERROR;
-        configurer.setHasErrorProneChecksPlugin(true);
-        configurer.addConfigureSeverityAction();
+        config.setHasErrorProneChecksPlugin(true);
+        config.addConfigureSeverityAction();
         checkSeverityConfiguredToError();
     }
 
-    @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
-    // We use one extension and just create the other one.
     @Test
     @DisplayName("configure check severity for all checks")
     void configureCheckSeverityForAllChecks() {
-        Extension extension = configureModelCompilerExtension();
-        extension.spineCheckSeverity = ERROR;
-        configureSpineCheckExtension();
-        configurer.setHasErrorProneChecksPlugin(true);
-        configurer.addConfigureSeverityAction();
+        extension.defaultSeverity = ERROR;
+        config.setHasErrorProneChecksPlugin(true);
+        config.addConfigureSeverityAction();
         checkSeverityConfiguredToError();
     }
 
     @Test
     @DisplayName("override ModelCompiler extension by ErrorProne checks extension")
     void overrideModelCompilerCheck() {
-        Extension modelCompilerExtension = configureModelCompilerExtension();
-        modelCompilerExtension.spineCheckSeverity = OFF;
-        ErrorProneChecksExtension errorProneChecksExtension = configureSpineCheckExtension();
-        errorProneChecksExtension.useValidatingBuilder = ERROR;
-        configurer.setHasErrorProneChecksPlugin(true);
-        configurer.addConfigureSeverityAction();
+        extension.defaultSeverity = OFF;
+        extension.useValidatingBuilder = ERROR;
+        config.setHasErrorProneChecksPlugin(true);
+        config.addConfigureSeverityAction();
         checkSeverityConfiguredToError();
     }
 
     @Test
     @DisplayName("not add severity args if ErrorProne plugin not applied")
     void detectErrorProne() {
-        configurer.setHasErrorProneChecksPlugin(false);
-        configurer.addConfigureSeverityAction();
+        config.setHasErrorProneChecksPlugin(false);
+        config.addConfigureSeverityAction();
         checkSeverityNotConfigured();
     }
 
-    private ErrorProneChecksExtension configureSpineCheckExtension() {
+    private Extension configureSpineCheckExtension() {
         ExtensionContainer extensions = project.getExtensions();
-        ErrorProneChecksExtension extension =
-                extensions.create(ErrorProneChecksPlugin.extensionName(),
-                                  ErrorProneChecksExtension.class);
+        Extension extension =
+                extensions.create(Extension.name(),
+                                  Extension.class);
         return extension;
     }
 
-    private Extension configureModelCompilerExtension() {
-        return ModelCompilerPlugin.createExtensionFor(project);
+    @Test
+    @DisplayName("Do not set default severity level automatically")
+    void noDefaultSeverityLevel() {
+        assertNull(extension.defaultSeverity);
     }
 
     private void checkSeverityConfiguredToError() {
-        ProjectConfigurations.assertCompileTasksContain(project, "-Xep:UseValidatingBuilder:ERROR");
+        assertCompileTasksContain(project, "-Xep:UseValidatingBuilder:ERROR");
     }
 
     private void checkSeverityNotConfigured() {
-        ProjectConfigurations.assertCompileTasksEmpty(project);
+        assertCompileTasksEmpty(project);
     }
 }

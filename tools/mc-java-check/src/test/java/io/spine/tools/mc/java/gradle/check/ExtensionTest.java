@@ -37,23 +37,23 @@ import java.io.File;
 import java.nio.file.Path;
 
 import static io.spine.tools.mc.java.gradle.check.Severity.ERROR;
-import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newProject;
+import static io.spine.tools.mc.java.gradle.check.given.ChecksTestEnv.newProject;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @DisplayName("ErrorProneChecksExtension should")
-class ErrorProneChecksExtensionTest {
+class ExtensionTest {
 
     private Project project;
-    private ErrorProneChecksExtension extension;
+    private Extension extension;
 
     @BeforeEach
     void setUp(@TempDir Path tempDirPath) {
         File tempDir = tempDirPath.toFile();
-        project = ModelCompilerTestEnv.newProject(tempDir);
+        project = newProject(tempDir);
         ExtensionContainer extensions = project.getExtensions();
-        extension = extensions.create(ErrorProneChecksPlugin.extensionName(),
-                                      ErrorProneChecksExtension.class);
+        extension = extensions.create(Extension.name(),
+                                      Extension.class);
     }
 
     @Test
@@ -61,14 +61,14 @@ class ErrorProneChecksExtensionTest {
     void return_use_validating_builder_severity() {
         final Severity expected = ERROR;
         extension.useValidatingBuilder = expected;
-        final Severity actual = ErrorProneChecksExtension.getUseValidatingBuilder(project);
+        final Severity actual = Extension.getUseValidatingBuilder(project);
         assertEquals(expected, actual);
     }
 
     @Test
     @DisplayName("return null severity if not set")
     void return_null_use_validating_builder_severity_if_not_set() {
-        final Severity severity = ErrorProneChecksExtension.getUseValidatingBuilder(project);
+        final Severity severity = Extension.getUseValidatingBuilder(project);
         assertNull(severity);
     }
 }

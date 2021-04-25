@@ -43,7 +43,10 @@ dependencies {
     implementation(project(":plugin-base"))
     implementation(ErrorProne.core)
     ErrorProne.annotations.forEach { implementation(it) }
+
     testImplementation(ErrorProne.testHelpers)
+    testImplementation(project(":testlib"))
+    testImplementation(project(":plugin-testlib"))
 }
 
 fun getResolvedArtifactFor(dependency: String): String {

@@ -26,7 +26,6 @@
 package io.spine.tools.mc.java.gradle;
 
 import io.spine.tools.java.fs.DefaultJavaPaths;
-import io.spine.tools.mc.java.gradle.check.Severity;
 import org.gradle.api.Project;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,11 +41,9 @@ import java.util.List;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.TestValues.randomString;
-import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.SPINE_MODEL_COMPILER_FOR_JAVA_PLUGIN_ID;
-import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newProject;
+import static io.spine.tools.gradle.testing.Project.newProject;
+import static io.spine.tools.mc.java.gradle.Extension.dirsToCleanIn;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("`Extension` should")
@@ -59,9 +56,9 @@ class ExtensionTest {
     @BeforeEach
     void setUp(@TempDir Path tempDirPath) {
         projectDir = tempDirPath.toFile();
-        project = newProject(projectDir);
+        project = newProject(projectDir).get();
         project.getPluginManager()
-               .apply(SPINE_MODEL_COMPILER_FOR_JAVA_PLUGIN_ID);
+               .apply(ModelCompilerPlugin.id());
         extension = Extension.of(project);
     }
 
@@ -72,19 +69,18 @@ class ExtensionTest {
         @Test
         @DisplayName("default value, if not set")
         void defaultValue() {
-            String dir = Extension.of(project).generatedMainResourcesDir();
+            String dir = extension.generatedMainResourcesDir();
 
-            assertNotEmptyAndIsInProjectDir(dir);
+            assertUnderProjectDir(dir);
         }
 
         @Test
         @DisplayName("specified value, if set")
         void setValue() {
-            spineProtobuf().generatedMainResourcesDir = randomString();
+            extension.generatedMainResourcesDir = randomString();
 
-            String dir = extension.generatedMainResourcesDir();
-
-            assertEquals(spineProtobuf().generatedMainResourcesDir, dir);
+            assertThat(extension.generatedMainResourcesDir())
+                    .isEqualTo(extension.generatedMainResourcesDir);
         }
     }
 
@@ -97,17 +93,16 @@ class ExtensionTest {
         void defaultValue() {
             String dir = extension.generatedTestResourcesDir();
 
-            assertNotEmptyAndIsInProjectDir(dir);
+            assertUnderProjectDir(dir);
         }
 
         @Test
         @DisplayName("specified value, if set")
         void specifiedValue() {
-            spineProtobuf().generatedTestResourcesDir = randomString();
+            extension.generatedTestResourcesDir = randomString();
 
-            String dir = extension.generatedTestResourcesDir();
-
-            assertEquals(spineProtobuf().generatedTestResourcesDir, dir);
+            assertThat(extension.generatedTestResourcesDir())
+                    .isEqualTo(extension.generatedTestResourcesDir);
         }
     }
 
@@ -120,17 +115,16 @@ class ExtensionTest {
         void defaultValue() {
             File file = extension.mainDescriptorSetFile();
 
-            assertNotEmptyAndIsInProjectDir(file.toString());
+            assertUnderProjectDir(file.toString());
         }
 
         @Test
         @DisplayName("specified value, if set")
         void specifiedValue() {
-            spineProtobuf().mainDescriptorSetFile = randomString();
+            extension.mainDescriptorSetFile = randomString();
 
-            File file = extension.mainDescriptorSetFile();
-
-            assertEquals(spineProtobuf().mainDescriptorSetFile, file.toString());
+            assertThat(extension.mainDescriptorSetFile().toString())
+                    .isEqualTo(extension.mainDescriptorSetFile);
         }
     }
 
@@ -143,17 +137,16 @@ class ExtensionTest {
         void defaultValue() {
             File file = extension.testDescriptorSetFile();
 
-            assertNotEmptyAndIsInProjectDir(file.toString());
+            assertUnderProjectDir(file.toString());
         }
 
         @Test
         @DisplayName("specified value, if set")
         void specifiedValue() {
-            spineProtobuf().testDescriptorSetFile = randomString();
+            extension.testDescriptorSetFile = randomString();
 
-            File file = extension.testDescriptorSetFile();
-
-            assertEquals(spineProtobuf().testDescriptorSetFile, file.toString());
+            assertThat(extension.testDescriptorSetFile().toString())
+                    .isEqualTo(extension.testDescriptorSetFile);
         }
     }
 
@@ -166,17 +159,16 @@ class ExtensionTest {
         void defaultValue() {
             String dir = extension.generatedMainRejectionsDir();
 
-            assertNotEmptyAndIsInProjectDir(dir);
+            assertUnderProjectDir(dir);
         }
 
         @Test
         @DisplayName("specified value, if set")
         void specifiedValue() {
-            spineProtobuf().generatedMainRejectionsDir = randomString();
+            extension.generatedMainRejectionsDir = randomString();
 
-            String dir = extension.generatedMainRejectionsDir();
-
-            assertEquals(spineProtobuf().generatedMainRejectionsDir, dir);
+            assertThat(extension.generatedMainRejectionsDir())
+                    .isEqualTo(extension.generatedMainRejectionsDir);
         }
     }
 
@@ -191,42 +183,38 @@ class ExtensionTest {
             @Test
             @DisplayName("default value, if not set")
             void defaultValue() {
-                List<String> actualDirs = actualDirs();
+                List<String> actualDirs = dirsToCleanIn(project);
 
                 assertEquals(1, actualDirs.size());
-                assertNotEmptyAndIsInProjectDir(actualDirs.get(0));
+                assertUnderProjectDir(actualDirs.get(0));
             }
 
             @Test
             @DisplayName("single value, if set")
             void singleValue() {
-                spineProtobuf().dirToClean = randomString();
+                extension.dirToClean = randomString();
 
-                List<String> actualDirs = actualDirs();
-
-                assertEquals(1, actualDirs.size());
-                assertEquals(spineProtobuf().dirToClean, actualDirs.get(0));
+                assertThat(dirsToCleanIn(project))
+                        .containsExactly(extension.dirToClean);
             }
 
             @Test
             @DisplayName("list, if array is set")
             void list() {
-                spineProtobuf().dirsToClean = newArrayList(randomString(), randomString());
+                extension.dirsToClean = newArrayList(randomString(), randomString());
 
-                List<String> actualDirs = actualDirs();
-
-                assertEquals(spineProtobuf().dirsToClean, actualDirs);
+                assertThat(dirsToCleanIn(project))
+                        .containsExactlyElementsIn(extension.dirsToClean);
             }
 
             @Test
             @DisplayName("list, if array and single are set")
             void listIfArrayAndSingle() {
-                spineProtobuf().dirsToClean = newArrayList(randomString(), randomString());
-                spineProtobuf().dirToClean = randomString();
+                extension.dirsToClean = newArrayList(randomString(), randomString());
+                extension.dirToClean = randomString();
 
-                List<String> actualDirs = actualDirs();
-
-                assertEquals(spineProtobuf().dirsToClean, actualDirs);
+                assertThat(dirsToCleanIn(project))
+                        .containsExactlyElementsIn(extension.dirsToClean);
             }
         }
 
@@ -242,46 +230,15 @@ class ExtensionTest {
                                   .toFile()
                                   .getCanonicalPath();
 
-            List<String> dirsToClean = actualDirs();
-
-            assertThat(dirsToClean)
+            assertThat(dirsToCleanIn(project))
                  .containsAtLeast(spineDir.getCanonicalPath(), generatedDir);
         }
-
-        private List<String> actualDirs() {
-            return Extension.dirsToCleanIn(project);
-        }
     }
 
-    @Nested
-    @DisplayName("for Spine checker return")
-    class SpineChecker {
-
-        @Test
-        @DisplayName("severity, if set")
-        void specifiedValue() {
-            spineProtobuf().spineCheckSeverity = Severity.ERROR;
-            Severity actualSeverity = Extension.spineCheckSeverityIn(project);
-            assertEquals(spineProtobuf().spineCheckSeverity, actualSeverity);
-        }
-
-        @Test
-        @DisplayName("`null`, if not set")
-        void nullValue() {
-            Severity actualSeverity = Extension.spineCheckSeverityIn(project);
-            assertNull(actualSeverity);
-        }
-    }
-
-    private void assertNotEmptyAndIsInProjectDir(String path) {
-        assertFalse(path.trim()
-                        .isEmpty());
-        assertTrue(path.startsWith(project.getProjectDir()
-                                          .getAbsolutePath()));
-    }
-
-    private Extension spineProtobuf() {
-        return (Extension) project.getExtensions()
-                                  .getByName(ModelCompilerPlugin.extensionName());
+    private void assertUnderProjectDir(String path) {
+        assertThat(path)
+                .isNotEmpty();
+        assertThat(path)
+                .startsWith(project.getProjectDir().getAbsolutePath());
     }
 }

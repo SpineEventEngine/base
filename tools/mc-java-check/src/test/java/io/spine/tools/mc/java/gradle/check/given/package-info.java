@@ -25,11 +25,12 @@
  */
 
 /**
- * Classes containing logic of the {@link io.spine.tools.mc.java.gradle.check.ChecksPlugin}.
+ * This package contains test environment for the Gradle plugin part of
+ * Java checks of Model Compiler.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.mc.java.gradle.check;
+package io.spine.tools.mc.java.gradle.check.given;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

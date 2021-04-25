@@ -24,9 +24,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.gradle.given;
+package io.spine.tools.gradle.testing;
 
+import io.spine.testing.TempDir;
 import org.gradle.api.artifacts.dsl.RepositoryHandler;
+import org.gradle.testfixtures.ProjectBuilder;
+
+import java.io.File;
+
+import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
+import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 
 /**
  * A configurable Gradle project.
@@ -48,11 +55,31 @@ public final class Project {
 
     /**
      * Creates a new instance of the project.
+     *
+     * @param testSuite
+     *          the test suite class that requests the creation of the project
      */
-    public static Project newProject() {
-        return new Project(ModelCompilerTestEnv.newProject());
+    public static Project newProject(Class<?> testSuite) {
+        File projectDir = TempDir.forClass(testSuite);
+        return newProject(projectDir);
     }
 
+    /**
+     * Creates a project with all required tasks.
+     *
+     * @param projectDir
+     *          the root directory for the new project
+     */
+    public static Project newProject(File projectDir) {
+        org.gradle.api.Project project = ProjectBuilder.builder()
+                .withProjectDir(projectDir)
+                .build();
+        project.getPluginManager()
+               .apply("java");
+        project.task(generateProto.name());
+        project.task(generateTestProto.name());
+        return new Project(project);
+    }
     /**
      * Configures the project to contain the {@code mavenLocal()} and {@code mavenCentral()}
      * repositories for proper dependency resolution.

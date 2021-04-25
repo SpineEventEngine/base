@@ -72,11 +72,7 @@ import static io.spine.tools.mc.java.gradle.check.PreprocessorConfig.initFor;
  *
  * @see ValidatingBuilder
  */
-public final class ErrorProneChecksPlugin extends SpinePlugin {
-
-    public static String extensionName() {
-        return ErrorProneChecksExtension.name();
-    }
+public final class ChecksPlugin extends SpinePlugin {
 
     /**
      * Applies the plugin to the given {@code Project}.
@@ -87,7 +83,7 @@ public final class ErrorProneChecksPlugin extends SpinePlugin {
     @Override
     public void apply(Project project) {
         project.getExtensions()
-               .create(extensionName(), ErrorProneChecksExtension.class);
+               .create(Extension.name(), Extension.class);
 
         PreprocessorConfig config = initFor(project);
         Configuration preprocessorConfig = config.setupPreprocessorConfig();

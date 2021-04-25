@@ -29,6 +29,9 @@ package io.spine.tools.mc.java.check.vbuild;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.BugPattern;
+import com.google.errorprone.BugPattern.LinkType;
+import com.google.errorprone.BugPattern.SeverityLevel;
+import com.google.errorprone.BugPattern.StandardTags;
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.bugpatterns.BugChecker;
 import com.google.errorprone.bugpatterns.BugChecker.MemberReferenceTreeMatcher;
@@ -57,9 +60,9 @@ import io.spine.validate.ValidatingBuilder;
 @BugPattern(
         name = "UseVBuild",
         summary = UseVBuild.SUMMARY,
-        severity = BugPattern.SeverityLevel.WARNING,
-        linkType = BugPattern.LinkType.NONE,
-        tags = BugPattern.StandardTags.FRAGILE_CODE
+        severity = SeverityLevel.WARNING,
+        linkType = LinkType.NONE,
+        tags = StandardTags.FRAGILE_CODE
 )
 public final class UseVBuild
         extends BugChecker
@@ -68,7 +71,7 @@ public final class UseVBuild
     private static final long serialVersionUID = 0L;
 
     static final String NAME = UseVBuild.class.getSimpleName();
-    static final String SUMMARY = "Prefer using vBuild() instead of build().";
+    static final String SUMMARY = "Prefer using `vBuild()` instead of `build()`.";
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // Used in other contexts.
     static final String BUILD = "build";
@@ -89,7 +92,7 @@ public final class UseVBuild
         if (matches) {
             ImmutableList<Fix> fixes = matcher.fixes(tree);
             Description description = Description
-                    .builder(tree, UseVBuild.class.getSimpleName(), null, BugPattern.SeverityLevel.WARNING, SUMMARY)
+                    .builder(tree, UseVBuild.class.getSimpleName(), null, SeverityLevel.WARNING, SUMMARY)
                     .addAllFixes(fixes)
                     .build();
             return description;

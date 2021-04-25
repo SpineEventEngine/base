@@ -25,13 +25,13 @@
  */
 package io.spine.tools.mc.java.gradle;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.logging.Logging;
-import io.spine.tools.mc.java.gradle.check.ErrorProneChecksPlugin;
-import io.spine.tools.mc.java.gradle.rejections.RejectionGenPlugin;
+import io.spine.tools.gradle.PluginId;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.mc.java.gradle.annotate.ProtoAnnotatorPlugin;
+import io.spine.tools.mc.java.gradle.check.ChecksPlugin;
+import io.spine.tools.mc.java.gradle.rejections.RejectionGenPlugin;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 
@@ -44,10 +44,26 @@ import java.util.stream.Stream;
  */
 public class ModelCompilerPlugin implements Plugin<Project>, Logging {
 
+    /**
+     * Make sure that name of the properties file under {@code META-INF/gradle-plugins}
+     * matches this ID.
+     */
+    private static final PluginId id = new PluginId("io.spine.tools.mc-java");
+
+    /**
+     * The name of Gradle script extension.
+     */
     private static final String EXTENSION_NAME = "modelCompiler";
 
     /**
-     * Obtains the extension name of the plugin.
+     * Obtains the ID of the plugin.
+     */
+    public static String id() {
+        return id.value();
+    }
+
+    /**
+     * Obtains the name of the Gradle script extension of the plugin.
      */
     public static String extensionName() {
         return EXTENSION_NAME;
@@ -55,7 +71,7 @@ public class ModelCompilerPlugin implements Plugin<Project>, Logging {
 
     @Override
     public void apply(Project project) {
-        _debug().log("Adding the extension to the project.");
+        _debug().log("Adding the extension to the project `%s`.", project.getName());
         createExtensionFor(project);
 
         // Plugins that deal with Protobuf types must depend on `mergeDescriptorSet` and
@@ -67,7 +83,7 @@ public class ModelCompilerPlugin implements Plugin<Project>, Logging {
                   new RejectionGenPlugin(),
                   new ProtoAnnotatorPlugin(),
                   new JavaProtocConfig(),
-                  new ErrorProneChecksPlugin())
+                  new ChecksPlugin())
               .forEach(plugin -> apply(plugin, project));
     }
 
@@ -76,9 +92,8 @@ public class ModelCompilerPlugin implements Plugin<Project>, Logging {
      *
      * @return the registered extension
      */
-    @VisibleForTesting
     @CanIgnoreReturnValue
-    public static Extension createExtensionFor(Project project) {
+    private static Extension createExtensionFor(Project project) {
         Extension extension = new Extension(project, EXTENSION_NAME);
         extension.register();
         return extension;

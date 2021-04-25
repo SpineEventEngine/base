@@ -24,13 +24,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.mc.java.gradle.check.given;
+
+import io.spine.testing.TempDir;
+import org.gradle.api.Project;
+import org.gradle.testfixtures.ProjectBuilder;
+
+import java.io.File;
+
+import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
+import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
+
 /**
- * Classes containing logic of the {@link io.spine.tools.mc.java.gradle.check.ChecksPlugin}.
+ * A helper class for the test data generation.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.mc.java.gradle.check;
+public class ChecksTestEnv {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    private ChecksTestEnv() {
+    }
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    /** Creates a project with all required tasks. */
+    public static Project newProject() {
+        return newProject(TempDir.forClass(ChecksTestEnv.class));
+    }
+
+    /**
+     * Creates a project with all required tasks.
+     *
+     * <p>The project will be placed into the given directory.
+     *
+     * @param projectDir {@link Project#getProjectDir() Project.getProjectDir()} of the project
+     */
+    public static Project newProject(File projectDir) {
+        Project project = ProjectBuilder.builder()
+                .withProjectDir(projectDir)
+                .build();
+        project.getPluginManager()
+               .apply("java");
+        project.task(generateProto.name());
+        project.task(generateTestProto.name());
+        return project;
+    }
+}

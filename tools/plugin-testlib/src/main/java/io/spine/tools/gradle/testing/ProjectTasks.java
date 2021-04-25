@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.given;
+package io.spine.tools.gradle.testing;
 
 import org.gradle.BuildListener;
 import org.gradle.api.Project;

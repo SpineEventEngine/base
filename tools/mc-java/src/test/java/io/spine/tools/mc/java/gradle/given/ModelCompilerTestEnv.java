@@ -26,14 +26,7 @@
 
 package io.spine.tools.mc.java.gradle.given;
 
-import io.spine.testing.TempDir;
 import org.gradle.api.Project;
-import org.gradle.testfixtures.ProjectBuilder;
-
-import java.io.File;
-
-import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
-import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 
 /**
  * A helper class for the test data generation.
@@ -41,32 +34,12 @@ import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 @SuppressWarnings("UtilityClass")
 public class ModelCompilerTestEnv {
 
-    public static final String SPINE_MODEL_COMPILER_FOR_JAVA_PLUGIN_ID = "io.spine.tools.mc-java";
-
     /** Prevent instantiation of this utility class. */
     private ModelCompilerTestEnv() {
     }
 
     /** Creates a project with all required tasks. */
     public static Project newProject() {
-        return newProject(TempDir.forClass(ModelCompilerTestEnv.class));
-    }
-
-    /**
-     * Creates a project with all required tasks.
-     *
-     * <p>The project will be placed into the given directory.
-     *
-     * @param projectDir {@link Project#getProjectDir() Project.getProjectDir()} of the project
-     */
-    public static Project newProject(File projectDir) {
-        Project project = ProjectBuilder.builder()
-                                        .withProjectDir(projectDir)
-                                        .build();
-        project.getPluginManager()
-               .apply("java");
-        project.task(generateProto.name());
-        project.task(generateTestProto.name());
-        return project;
+        return io.spine.tools.gradle.testing.Project.newProject(ModelCompilerTestEnv.class).get();
     }
 }

@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.given;
+package io.spine.tools.gradle.testing;
 
 import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskCollection;
@@ -34,8 +34,7 @@ import java.util.List;
 
 import static com.google.common.collect.testing.Helpers.assertEmpty;
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.tools.mc.java.given.ProjectTasks.acquireJavaCompileTasks;
-import static io.spine.tools.mc.java.given.ProjectTasks.obtainCompilerArgs;
+import static io.spine.tools.gradle.testing.ProjectTasks.acquireJavaCompileTasks;
 
 /**
  * A test helper providing various {@code assert...} methods related to the {@link Project}
@@ -56,7 +55,7 @@ public class ProjectConfigurations {
     public static void assertCompileTasksEmpty(Project project) {
         TaskCollection<JavaCompile> javaCompileTasks = acquireJavaCompileTasks(project);
         for (JavaCompile task : javaCompileTasks) {
-            List<String> compilerArgs = obtainCompilerArgs(task);
+            List<String> compilerArgs = ProjectTasks.obtainCompilerArgs(task);
             assertEmpty(compilerArgs);
         }
     }
@@ -72,7 +71,7 @@ public class ProjectConfigurations {
     public static void assertCompileTasksContain(Project project, String... args) {
         TaskCollection<JavaCompile> javaCompileTasks = acquireJavaCompileTasks(project);
         for (JavaCompile task : javaCompileTasks) {
-            List<String> compilerArgs = obtainCompilerArgs(task);
+            List<String> compilerArgs = ProjectTasks.obtainCompilerArgs(task);
             assertHasAllArgs(compilerArgs, args);
         }
     }

@@ -34,7 +34,20 @@ package io.spine.tools.mc.java.gradle.check;
  */
 public enum Severity {
 
+    /** The check is turned off. */
     OFF,
+
+    /**
+     * A warning will be emitted if the check fails.
+     *
+     * @see com.google.errorprone.BugPattern.SeverityLevel#WARNING
+     */
     WARN,
+
+    /**
+     * A failing check would fail compilation.
+     *
+     * @see com.google.errorprone.BugPattern.SeverityLevel#ERROR
+     */
     ERROR
 }

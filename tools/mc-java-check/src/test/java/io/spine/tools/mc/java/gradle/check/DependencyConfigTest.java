@@ -38,10 +38,10 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.tools.mc.java.gradle.check.DependencyConfig.SPINE_CHECKER_MODULE;
 import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
 import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
-import static io.spine.tools.mc.java.gradle.given.Project.newProject;
+import static io.spine.tools.gradle.testing.Project.newProject;
+import static io.spine.tools.mc.java.gradle.check.DependencyConfig.SPINE_CHECKER_MODULE;
 
 /**
  * A test for the {@link DependencyConfig} part of the Spine Error Prone Checks plugin.
@@ -55,16 +55,18 @@ import static io.spine.tools.mc.java.gradle.given.Project.newProject;
 class DependencyConfigTest {
 
     @Test
-    @DisplayName(DisplayNames.NOT_ACCEPT_NULLS)
+    @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
         new NullPointerTester().testAllPublicStaticMethods(DependencyConfig.class);
-        new NullPointerTester().testAllPublicInstanceMethods(createFor(Project.newProject().get()));
+
+        DependencyConfig instance = createFor(newProject(getClass()).get());
+        new NullPointerTester().testAllPublicInstanceMethods(instance);
     }
 
     @Test
     @DisplayName("add spine check dependency to annotation processor config")
     void addSpineCheckDependencyToAnnotationProcessorConfig() {
-        Project project = Project.newProject()
+        Project project = newProject(getClass())
                                  .withMavenRepositories()
                                  .get();
         addDependency(project);
@@ -76,8 +78,7 @@ class DependencyConfigTest {
     @Test
     @DisplayName("not add spine check dependency if it is not resolvable")
     void notAddSpineCheckDependencyIfItIsNotResolvable() {
-        Project project = Project.newProject()
-                                 .get();
+        Project project = newProject(getClass()).get();
         addDependency(project);
 
         boolean hasDependency = hasErrorProneChecksDependency(project);

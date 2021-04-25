@@ -28,10 +28,11 @@ package io.spine.tools.mc.java.gradle.check;
 
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionContainer;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newProject;
+import static io.spine.tools.mc.java.gradle.check.given.ChecksTestEnv.newProject;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
@@ -40,25 +41,30 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * <p>For the tests of actual plugin functionality, see {@code io.spine.tools.check} test suites
  * from this module.
  */
-@DisplayName("ErrorProneChecksPlugin should")
-class ErrorProneChecksPluginTest {
+@DisplayName("`ChecksPlugin` should")
+class ChecksPluginTest {
+
+    private Project project;
+
+    @BeforeEach
+    void createProject() {
+        project = newProject();
+    }
 
     @Test
-    @DisplayName("create Spine check extension")
+    @DisplayName("create the extension")
     void checkExtension() {
-        Project project = ModelCompilerTestEnv.newProject();
         project.getPluginManager()
-               .apply(ErrorProneChecksPlugin.class);
+               .apply(ChecksPlugin.class);
         ExtensionContainer extensions = project.getExtensions();
-        Object found = extensions.findByName(ErrorProneChecksPlugin.extensionName());
+        Object found = extensions.findByName(Extension.name());
         assertNotNull(found);
     }
 
     @Test
     @DisplayName("apply to empty project")
     void emptyProject() {
-        Project project = ModelCompilerTestEnv.newProject();
         project.getPluginManager()
-               .apply(ErrorProneChecksPlugin.class);
+               .apply(ChecksPlugin.class);
     }
 }

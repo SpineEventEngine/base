@@ -34,8 +34,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
-import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newProject;
+import static io.spine.tools.mc.java.gradle.check.given.ChecksTestEnv.newProject;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -48,7 +49,7 @@ class PreprocessorConfigTest {
 
     @BeforeEach
     void setUp() {
-        Project project = ModelCompilerTestEnv.newProject();
+        Project project = newProject();
         projectConfigs = project.getConfigurations();
         preprocessorConfig = projectConfigs.getByName(annotationProcessor.value());
         configurer = PreprocessorConfig.initFor(project);
@@ -64,8 +65,8 @@ class PreprocessorConfigTest {
     @Test
     @DisplayName("return annotation processor config if it exists")
     void returnAnnotationProcessorConfigIfItExists() {
-        Configuration returnedConfig = configurer.setupPreprocessorConfig();
-        assertEquals(preprocessorConfig, returnedConfig);
+        assertThat(configurer.setupPreprocessorConfig())
+                .isEqualTo(preprocessorConfig);
     }
 
     @Test

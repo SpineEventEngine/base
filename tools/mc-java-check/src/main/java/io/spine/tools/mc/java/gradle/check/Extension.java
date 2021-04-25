@@ -37,35 +37,39 @@ import org.gradle.api.Project;
  * @see Severity
  */
 @SuppressWarnings("PublicField" /* required for exposing the property in Gradle. */)
-public class ErrorProneChecksExtension {
+public class Extension {
 
-    private static final String NAME = "spineErrorProneChecks";
+    private static final String NAME = "modelChecks";
 
     /**
-     * The severity of the Spine-custom Error Prone checks.
+     * The default severity of the model checks.
      *
-     * <p>If this value is not set, the default severities are used, which are specific for the
-     * each check.
+     * <p>If this value is not set, default severity of each check are used.
      *
-     * <p>May be overridden by the values provided by the {@link ErrorProneChecksExtension}.
+     * @see com.google.errorprone.BugPattern.SeverityLevel
      */
-    public Severity spineCheckSeverity;
+    public Severity defaultSeverity;
 
+    /**
+     * The severity of the {@code useValidatingBuilder} check.
+     *
+     * @see io.spine.tools.mc.java.check.vbuild.UseVBuild
+     */
     public Severity useValidatingBuilder;
 
-    static ErrorProneChecksExtension of(Project project) {
-        ErrorProneChecksExtension extension = (ErrorProneChecksExtension)
+    public static String name() {
+        return NAME;
+    }
+
+    static Extension of(Project project) {
+        Extension extension = (Extension)
                 project.getExtensions()
                        .getByName(name());
         return extension;
     }
 
     public static Severity getUseValidatingBuilder(Project project) {
-        ErrorProneChecksExtension extension = of(project);
+        Extension extension = of(project);
         return extension.useValidatingBuilder;
-    }
-
-    public static String name() {
-        return NAME;
     }
 }
