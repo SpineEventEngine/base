@@ -30,7 +30,7 @@ package spine.tools.protoc.method;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.tools.protoc.plugin.method";
+option java_package = "io.spine.tools.mc.java.protoc.test.method";
 option java_outer_classname = "TestServiceProto";
 
 // This file contains test service for MethodGeneratorTest.
