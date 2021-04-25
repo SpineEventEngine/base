@@ -41,7 +41,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.java.fs.ConversionExtensions.toDirectory;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**

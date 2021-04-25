@@ -26,7 +26,6 @@
 
 package io.spine.tools.gradle.testing;
 
-import com.google.common.collect.Lists;
 import io.spine.tools.gradle.TaskName;
 
 import java.util.List;
