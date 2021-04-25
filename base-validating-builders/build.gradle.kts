@@ -92,7 +92,7 @@ plugins {
     id("com.google.protobuf").version(io.spine.internal.dependency.Protobuf.GradlePlugin.version)
 }
 
-apply(plugin = "io.spine.tools.spine-mc-java")
+apply(plugin = "io.spine.tools.mc-java")
 
 extensions["modelCompiler"].withGroovyBuilder {
     setProperty("generateValidation", true)

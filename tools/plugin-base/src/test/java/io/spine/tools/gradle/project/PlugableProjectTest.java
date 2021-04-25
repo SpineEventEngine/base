@@ -32,7 +32,7 @@ import io.spine.logging.Logging;
 import io.spine.testing.TempDir;
 import io.spine.testing.logging.LogRecordSubject;
 import io.spine.testing.logging.LoggingTest;
-import io.spine.tools.gradle.GradlePlugin;
+import io.spine.tools.gradle.PluginClass;
 import io.spine.tools.gradle.PluginScript;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.JavaPlugin;
@@ -49,7 +49,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.google.common.testing.NullPointerTester.Visibility.PACKAGE;
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.tools.gradle.GradlePlugin.implementedIn;
+import static io.spine.tools.gradle.PluginClass.implementedIn;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -74,7 +74,7 @@ class PlugableProjectTest {
     @DisplayName("not accept null arguments")
     void notAcceptNulls() {
         NullPointerTester tester = new NullPointerTester()
-                .setDefault(GradlePlugin.class, implementedIn(JavaPlugin.class));
+                .setDefault(PluginClass.class, implementedIn(JavaPlugin.class));
         tester.testAllPublicInstanceMethods(plugableProject);
         tester.testConstructors(PlugableProject.class, PACKAGE);
     }
@@ -82,7 +82,7 @@ class PlugableProjectTest {
     @Test
     @DisplayName("apply a requested plugin")
     void applyPlugin() {
-        GradlePlugin<?> plugin = implementedIn(JavaPlugin.class);
+        PluginClass<?> plugin = implementedIn(JavaPlugin.class);
 
         assertTrue(plugableProject.isNotApplied(plugin));
         assertFalse(plugableProject.isApplied(plugin));
@@ -96,7 +96,7 @@ class PlugableProjectTest {
     @Nested
     class LogOnDuplicate extends LoggingTest {
 
-        private GradlePlugin<?> plugin;
+        private PluginClass<?> plugin;
 
         LogOnDuplicate() {
             super(PlugableProject.class, Logging.debugLevel());
@@ -148,7 +148,7 @@ class PlugableProjectTest {
     @Test
     @DisplayName("execute a given action if a plugin is present")
     void runIfPresent() {
-        GradlePlugin<IdeaPlugin> plugin = implementedIn(IdeaPlugin.class);
+        PluginClass<IdeaPlugin> plugin = implementedIn(IdeaPlugin.class);
         plugableProject.apply(plugin);
         AtomicBoolean run = new AtomicBoolean(false);
         plugableProject.with(plugin, idea -> {
@@ -163,7 +163,7 @@ class PlugableProjectTest {
     @Test
     @DisplayName("execute a given action after a plugin is applied")
     void runWhenPresent() {
-        GradlePlugin<IdeaPlugin> plugin = implementedIn(IdeaPlugin.class);
+        PluginClass<IdeaPlugin> plugin = implementedIn(IdeaPlugin.class);
         AtomicBoolean run = new AtomicBoolean(false);
         plugableProject.with(plugin, idea -> {
             assertThat(idea)

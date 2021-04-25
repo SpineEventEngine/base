@@ -46,7 +46,7 @@ import static io.spine.tools.gradle.ConfigurationName.testRuntimeClasspath;
  *           of creation Gradle project is not fully evaluated, and the values
  *           are not yet defined.
  */
-public abstract class ProtoPlugin extends SpinePlugin {
+public abstract class ProtoPlugin extends PluginBase {
 
     /**
      * Obtains {@linkplain #protoFiles(Supplier, Configuration) Protobuf} files for the main scope.

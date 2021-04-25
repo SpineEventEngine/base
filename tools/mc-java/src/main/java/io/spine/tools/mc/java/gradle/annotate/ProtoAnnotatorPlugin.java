@@ -26,8 +26,7 @@
 
 package io.spine.tools.mc.java.gradle.annotate;
 
-import io.spine.tools.gradle.SpinePlugin;
-import io.spine.tools.mc.java.gradle.annotate.Annotate;
+import io.spine.tools.gradle.PluginBase;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -168,7 +167,7 @@ import static io.spine.tools.gradle.ModelCompilerTaskName.mergeTestDescriptorSet
  *
  * <p>If {@code java_multiple_files = true} result of annotation will be similar.
  */
-public class ProtoAnnotatorPlugin extends SpinePlugin {
+public class ProtoAnnotatorPlugin extends PluginBase {
 
     @Override
     public void apply(Project project) {

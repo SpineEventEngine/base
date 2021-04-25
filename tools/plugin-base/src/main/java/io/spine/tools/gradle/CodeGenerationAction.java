@@ -37,7 +37,7 @@ import org.gradle.api.Task;
 import java.io.File;
 import java.util.function.Supplier;
 
-import static io.spine.tools.gradle.SpinePlugin.resolve;
+import static io.spine.tools.gradle.PluginBase.resolve;
 
 /**
  * Abstract base for code generation actions.

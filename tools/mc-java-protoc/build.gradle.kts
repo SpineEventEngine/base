@@ -36,7 +36,7 @@ dependencies {
     implementation(project(":base"))
     implementation(project(":tool-base"))
     implementation(project(":plugin-base"))
-    implementation(project(":mc-java"))
+//    implementation(project(":mc-java"))
 
     testImplementation(project(":testlib"))
     testImplementation(project(":mute-logging"))

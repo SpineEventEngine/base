@@ -27,7 +27,7 @@
 package io.spine.tools.gradle.testing;
 
 import io.spine.io.Resource;
-import io.spine.tools.gradle.GradlePlugin;
+import io.spine.tools.gradle.PluginClass;
 import io.spine.tools.gradle.PluginScript;
 import org.gradle.api.plugins.JavaPlugin;
 import org.junit.jupiter.api.DisplayName;
@@ -41,7 +41,7 @@ class MemoizingPluginRegistryTest {
     @Test
     @DisplayName("memoize the given plugin")
     void memoizePlugin() {
-        GradlePlugin<?> plugin = GradlePlugin.implementedIn(JavaPlugin.class);
+        PluginClass<?> plugin = PluginClass.implementedIn(JavaPlugin.class);
         MemoizingPluginRegistry registry = new MemoizingPluginRegistry();
         registry.apply(plugin);
         assertThat(registry.isApplied(plugin)).isTrue();

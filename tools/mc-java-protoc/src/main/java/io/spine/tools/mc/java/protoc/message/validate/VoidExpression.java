@@ -23,34 +23,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.mc.java.gradle;
 
-import io.spine.tools.gradle.GradleTask;
-import io.spine.tools.gradle.PluginBase;
-import org.gradle.api.Action;
-import org.gradle.api.Project;
-import org.gradle.api.Task;
+package io.spine.tools.mc.java.protoc.message.validate;
 
-import static io.spine.tools.gradle.BaseTaskName.clean;
-import static io.spine.tools.gradle.ModelCompilerTaskName.preClean;
+import com.google.errorprone.annotations.FormatMethod;
+import com.google.errorprone.annotations.FormatString;
+
+import static java.lang.String.format;
 
 /**
- * Plugin which performs additional cleanup of the Spine-generated folders.
+ * An expression which does not yield a value.
  *
- * <p>Adds a custom `:preClean` task, which is executed before the `:clean` task.
+ * <p>The actual generated code might formally be non-void. In this case, by using
+ * {@code VoidExpression} we state that the value of the expression is irrelevant. Example of such
+ * an expression is {@code collection.add(element)}, which returns a {@code boolean} value, but it
+ * is not used.
  */
-class CleaningPlugin extends PluginBase {
+public final class VoidExpression extends CodeExpression<Void> {
 
-    @Override
-    public void apply(Project project) {
-        Action<Task> preCleanAction = task -> {
-            _debug().log("Pre-clean: deleting the directories.");
-            DirectoryCleaner.deleteDirs(Extension.dirsToCleanIn(project));
-        };
-        GradleTask preCleanTask =
-                newTask(preClean, preCleanAction)
-                        .insertBeforeTask(clean)
-                        .applyNowTo(project);
-        _debug().log("Pre-clean phase initialized: `%s`.", preCleanTask);
+    private static final long serialVersionUID = 0L;
+
+    private VoidExpression(String value) {
+        super(value);
+    }
+
+    /**
+     * Creates a {@code VoidExpression} by formatting the given template string by the rules of
+     * {@code String.format()}.
+     */
+    @FormatMethod
+    public static VoidExpression formatted(@FormatString String template, Object... args) {
+        return new VoidExpression(format(template, args));
     }
 }

@@ -24,54 +24,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.project;
+package io.spine.tools.mc.java.protoc.message.validate;
 
-import io.spine.tools.gradle.PluginClass;
-import io.spine.tools.gradle.PluginScript;
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
-
-import java.util.function.Consumer;
+import com.squareup.javapoet.CodeBlock;
 
 /**
- * A target of Gradle plugin application.
- *
- * <p>Typically, represented by a Gradle {@link org.gradle.api.Project}.
+ * A factory of {@link CodeBlock}s.
  */
-public interface PluginTarget {
+final class Blocks {
+
+    private static final CodeBlock EMPTY = CodeBlock.of("");
 
     /**
-     * Executes the given {@code action} if the given plugin is applied.
-     *
-     * <p>If the plugin is already applied, the action is executed at once. If the plugin is NOT
-     * applied, the action is only executed when and it the plugin will be applied.
-     *
-     * @param plugin
-     *         the trigger plugin
-     * @param action
-     *         the action to execute
+     * Prevents the utility class instantiation.
      */
-    <P extends Plugin<Project>> void with(PluginClass<P> plugin, Consumer<P> action);
+    private Blocks() {
+    }
 
     /**
-     * Applies the given plugin.
+     * Obtains an empty code block.
      */
-    void apply(PluginClass<?> plugin);
-
-    /**
-     * Applies the given plugin script.
-     */
-    void apply(PluginScript pluginScript);
-
-    /**
-     * Checks if the given plugin is already applied.
-     */
-    boolean isApplied(PluginClass<?> plugin);
-
-    /**
-     * Checks if the given plugin is not applied yet.
-     */
-    default boolean isNotApplied(PluginClass<?> plugin) {
-        return !isApplied(plugin);
+    static CodeBlock empty() {
+        return EMPTY;
     }
 }

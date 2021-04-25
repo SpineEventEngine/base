@@ -28,7 +28,7 @@ package io.spine.tools.mc.java.gradle;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.logging.Logging;
 import io.spine.tools.gradle.PluginId;
-import io.spine.tools.gradle.SpinePlugin;
+import io.spine.tools.gradle.PluginBase;
 import io.spine.tools.mc.java.gradle.annotate.ProtoAnnotatorPlugin;
 import io.spine.tools.mc.java.gradle.check.ChecksPlugin;
 import io.spine.tools.mc.java.gradle.rejections.RejectionGenPlugin;
@@ -99,7 +99,7 @@ public class ModelCompilerPlugin implements Plugin<Project>, Logging {
         return extension;
     }
 
-    private void apply(SpinePlugin plugin, Project project) {
+    private void apply(PluginBase plugin, Project project) {
         _debug().log("Applying `%s`.", plugin.getClass().getName());
         plugin.apply(project);
     }

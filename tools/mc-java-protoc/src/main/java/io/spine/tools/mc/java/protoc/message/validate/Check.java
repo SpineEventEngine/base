@@ -23,34 +23,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.mc.java.gradle;
 
-import io.spine.tools.gradle.GradleTask;
-import io.spine.tools.gradle.PluginBase;
-import org.gradle.api.Action;
-import org.gradle.api.Project;
-import org.gradle.api.Task;
+package io.spine.tools.mc.java.protoc.message.validate;
 
-import static io.spine.tools.gradle.BaseTaskName.clean;
-import static io.spine.tools.gradle.ModelCompilerTaskName.preClean;
+import java.util.function.Function;
 
 /**
- * Plugin which performs additional cleanup of the Spine-generated folders.
- *
- * <p>Adds a custom `:preClean` task, which is executed before the `:clean` task.
+ * A function which accepts a field and produces an expression which checks some property of
+ * the field.
  */
-class CleaningPlugin extends PluginBase {
-
-    @Override
-    public void apply(Project project) {
-        Action<Task> preCleanAction = task -> {
-            _debug().log("Pre-clean: deleting the directories.");
-            DirectoryCleaner.deleteDirs(Extension.dirsToCleanIn(project));
-        };
-        GradleTask preCleanTask =
-                newTask(preClean, preCleanAction)
-                        .insertBeforeTask(clean)
-                        .applyNowTo(project);
-        _debug().log("Pre-clean phase initialized: `%s`.", preCleanTask);
-    }
+@FunctionalInterface
+public interface Check extends Function<FieldAccess, BooleanExpression> {
 }

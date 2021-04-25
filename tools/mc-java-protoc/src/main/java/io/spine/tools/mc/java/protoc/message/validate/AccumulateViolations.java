@@ -23,34 +23,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.mc.java.gradle;
 
-import io.spine.tools.gradle.GradleTask;
-import io.spine.tools.gradle.PluginBase;
-import org.gradle.api.Action;
-import org.gradle.api.Project;
-import org.gradle.api.Task;
+package io.spine.tools.mc.java.protoc.message.validate;
 
-import static io.spine.tools.gradle.BaseTaskName.clean;
-import static io.spine.tools.gradle.ModelCompilerTaskName.preClean;
+import io.spine.validate.ConstraintViolation;
+
+import java.util.function.Function;
 
 /**
- * Plugin which performs additional cleanup of the Spine-generated folders.
+ * A function which accepts an expression of a {@link ConstraintViolation} and transforms it into
+ * an expression of the violation being saved.
  *
- * <p>Adds a custom `:preClean` task, which is executed before the `:clean` task.
+ * <p>Typically, one accumulator is used many times for different violations.
+ *
+ * <p>For example:
+ * <pre>{@code
+ * AccumulateViolation accumulator =
+ *     (violationExpression) -> formatted("errorBuilder.addViolation(%s);", violationExpression);
+ * }</pre>
+ *
+ * <p>In the example above a function takes a {@link ConstraintViolation} expression and uses it
+ * to add the violation to a {@code ValidationError} builder.
  */
-class CleaningPlugin extends PluginBase {
-
-    @Override
-    public void apply(Project project) {
-        Action<Task> preCleanAction = task -> {
-            _debug().log("Pre-clean: deleting the directories.");
-            DirectoryCleaner.deleteDirs(Extension.dirsToCleanIn(project));
-        };
-        GradleTask preCleanTask =
-                newTask(preClean, preCleanAction)
-                        .insertBeforeTask(clean)
-                        .applyNowTo(project);
-        _debug().log("Pre-clean phase initialized: `%s`.", preCleanTask);
-    }
+@FunctionalInterface
+public interface AccumulateViolations
+        extends Function<Expression<ConstraintViolation>, VoidExpression> {
 }

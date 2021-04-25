@@ -23,34 +23,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.mc.java.gradle;
 
-import io.spine.tools.gradle.GradleTask;
-import io.spine.tools.gradle.PluginBase;
-import org.gradle.api.Action;
-import org.gradle.api.Project;
-import org.gradle.api.Task;
+package io.spine.tools.mc.java.protoc.message.validate;
 
-import static io.spine.tools.gradle.BaseTaskName.clean;
-import static io.spine.tools.gradle.ModelCompilerTaskName.preClean;
+import com.squareup.javapoet.CodeBlock;
+import io.spine.value.StringTypeValue;
 
 /**
- * Plugin which performs additional cleanup of the Spine-generated folders.
+ * A simple expression based on a fragment of source code.
  *
- * <p>Adds a custom `:preClean` task, which is executed before the `:clean` task.
+ * @param <R> the type of the expression value
  */
-class CleaningPlugin extends PluginBase {
+public class CodeExpression<R> extends StringTypeValue implements Expression<R> {
+
+    private static final long serialVersionUID = 0L;
+
+    protected CodeExpression(String value) {
+        super(value);
+    }
 
     @Override
-    public void apply(Project project) {
-        Action<Task> preCleanAction = task -> {
-            _debug().log("Pre-clean: deleting the directories.");
-            DirectoryCleaner.deleteDirs(Extension.dirsToCleanIn(project));
-        };
-        GradleTask preCleanTask =
-                newTask(preClean, preCleanAction)
-                        .insertBeforeTask(clean)
-                        .applyNowTo(project);
-        _debug().log("Pre-clean phase initialized: `%s`.", preCleanTask);
+    public CodeBlock toCode() {
+        return CodeBlock.of("$L", value());
     }
 }

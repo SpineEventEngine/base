@@ -24,54 +24,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.project;
+package io.spine.tools.mc.java.protoc.message.validate;
 
-import io.spine.tools.gradle.PluginClass;
-import io.spine.tools.gradle.PluginScript;
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
+import io.spine.protobuf.Messages;
 
-import java.util.function.Consumer;
+import static io.spine.tools.mc.java.protoc.message.validate.BooleanExpression.fromCode;
 
 /**
- * A target of Gradle plugin application.
+ * Set of utilities for working with values of container types.
  *
- * <p>Typically, represented by a Gradle {@link org.gradle.api.Project}.
+ * <p>Container types are types composed of homogeneous elements: a collection, a string, etc.
  */
-public interface PluginTarget {
+public final class Containers {
 
     /**
-     * Executes the given {@code action} if the given plugin is applied.
+     * Prevents the utility class instantiation.
+     */
+    private Containers() {
+    }
+
+    /**
+     * Obtains the expression which calls {@code isEmpty()} method on the given {@code value}.
      *
-     * <p>If the plugin is already applied, the action is executed at once. If the plugin is NOT
-     * applied, the action is only executed when and it the plugin will be applied.
+     * @param value
+     *         an expression which yields an object which has a {@code isEmpty()} method, e.g.
+     *         a {@code String}
+     */
+    public static BooleanExpression isEmpty(Expression<?> value) {
+        return fromCode("$L.isEmpty()", value.toCode());
+    }
+
+    /**
+     * Obtains the expression which calls {@code Messages.isDefault())} method on the given
+     * {@code value}.
      *
-     * @param plugin
-     *         the trigger plugin
-     * @param action
-     *         the action to execute
+     * @param value
+     *         an expression of a Protobuf message or a Protobuf enum
      */
-    <P extends Plugin<Project>> void with(PluginClass<P> plugin, Consumer<P> action);
-
-    /**
-     * Applies the given plugin.
-     */
-    void apply(PluginClass<?> plugin);
-
-    /**
-     * Applies the given plugin script.
-     */
-    void apply(PluginScript pluginScript);
-
-    /**
-     * Checks if the given plugin is already applied.
-     */
-    boolean isApplied(PluginClass<?> plugin);
-
-    /**
-     * Checks if the given plugin is not applied yet.
-     */
-    default boolean isNotApplied(PluginClass<?> plugin) {
-        return !isApplied(plugin);
+    public static BooleanExpression isDefault(Expression<?> value) {
+        return fromCode("$T.isDefault($L)", Messages.class, value.toCode());
     }
 }

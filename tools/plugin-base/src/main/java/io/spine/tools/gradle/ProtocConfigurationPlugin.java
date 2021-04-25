@@ -50,7 +50,7 @@ import static io.spine.tools.groovy.ConsumerClosure.closure;
  * <p>Any extending plugin requires {@code com.google.protobuf} plugin. If it is not applied,
  * no action is performed.
  */
-public abstract class ProtocConfigurationPlugin extends SpinePlugin {
+public abstract class ProtocConfigurationPlugin extends PluginBase {
 
     protected static final DependencyVersions VERSIONS = DependencyVersions.get();
 

@@ -26,7 +26,7 @@
 package io.spine.tools.java.javadoc.style;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.gradle.SpinePlugin;
+import io.spine.tools.gradle.PluginBase;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -66,7 +66,7 @@ import static java.lang.String.format;
  * So, if the folders contain not only the sources generated basing on Protobuf definitions,
  * they will be formatted either.
  */
-public class ProtoJavadocPlugin extends SpinePlugin {
+public class ProtoJavadocPlugin extends PluginBase {
 
     static final String PROTO_JAVADOC_EXTENSION_NAME = "protoJavadoc";
 

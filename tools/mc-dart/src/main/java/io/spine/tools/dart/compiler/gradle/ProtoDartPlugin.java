@@ -30,7 +30,7 @@ import com.google.common.collect.ImmutableMap;
 import io.spine.tools.dart.compiler.SourceFile;
 import io.spine.tools.gradle.ProtoDartTaskName;
 import io.spine.tools.gradle.SourceScope;
-import io.spine.tools.gradle.SpinePlugin;
+import io.spine.tools.gradle.PluginBase;
 import io.spine.tools.gradle.TaskName;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -60,7 +60,7 @@ import static org.gradle.api.Task.TASK_TYPE;
  *
  * @see DartProtocConfig
  */
-public final class ProtoDartPlugin extends SpinePlugin {
+public final class ProtoDartPlugin extends PluginBase {
 
     private static final String EXTENSION_NAME = "protoDart";
 

@@ -32,9 +32,6 @@ import io.spine.internal.dependency.Roaster
 
 group = "io.spine.tools"
 
-var protocPluginDependency: Dependency? = null
-val spineVersion: String by extra
-
 dependencies {
     implementation(JavaX.annotations)
     implementation(JavaPoet.lib)

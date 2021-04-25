@@ -28,7 +28,7 @@ package io.spine.tools.mc.java.gradle;
 
 import io.spine.tools.gradle.ConfigurationName;
 import io.spine.tools.gradle.GradleTask;
-import io.spine.tools.gradle.SpinePlugin;
+import io.spine.tools.gradle.PluginBase;
 import io.spine.tools.gradle.TaskName;
 import io.spine.tools.proto.FileDescriptorSuperset;
 import org.gradle.api.Action;
@@ -55,7 +55,7 @@ import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
  * <p>The merge result is used to {@linkplain
  * io.spine.tools.proto.MoreKnownTypes#extendWith(java.io.File) extend the known type registry}.
  */
-final class DescriptorSetMergerPlugin extends SpinePlugin {
+final class DescriptorSetMergerPlugin extends PluginBase {
 
     @Override
     public void apply(Project project) {

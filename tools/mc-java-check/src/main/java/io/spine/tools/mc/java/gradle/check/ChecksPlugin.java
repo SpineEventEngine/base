@@ -25,7 +25,7 @@
  */
 package io.spine.tools.mc.java.gradle.check;
 
-import io.spine.tools.gradle.SpinePlugin;
+import io.spine.tools.gradle.PluginBase;
 import io.spine.validate.ValidatingBuilder;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
@@ -72,7 +72,7 @@ import static io.spine.tools.mc.java.gradle.check.PreprocessorConfig.initFor;
  *
  * @see ValidatingBuilder
  */
-public final class ChecksPlugin extends SpinePlugin {
+public final class ChecksPlugin extends PluginBase {
 
     /**
      * Applies the plugin to the given {@code Project}.
