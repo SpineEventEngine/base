@@ -34,7 +34,7 @@ import io.spine.tools.column.Project;
 import io.spine.tools.column.ProjectCreated;
 import io.spine.tools.column.ProjectName;
 import io.spine.tools.column.ProjectView;
-import io.spine.tools.java.protoc.given.ProjectNameField;
+import io.spine.tools.protoc.given.ProjectNameField;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
