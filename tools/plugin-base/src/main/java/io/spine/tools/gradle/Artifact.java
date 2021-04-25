@@ -46,7 +46,7 @@ public final class Artifact {
     /**
      * The artifact group used for Spine tools.
      */
-    public static final String SPINE_TOOLS_GROUP = "io.spine.tools";
+    public static final String TOOLS_GROUP = "io.spine.tools";
 
     private static final char COLON = ':';
     private static final char AT = '@';
@@ -174,7 +174,7 @@ public final class Artifact {
         }
 
         public  Builder useSpineToolsGroup() {
-            return setGroup(SPINE_TOOLS_GROUP);
+            return setGroup(TOOLS_GROUP);
         }
 
         public Builder setName(String name) {

@@ -49,24 +49,12 @@ import static io.spine.tools.mc.java.gradle.check.PreprocessorConfig.initFor;
  *
  * <p>Checks severity may be configured for all checks:
  *
- * <pre>
- * {@code
- *
- *   modelCompiler {
- *      spineCheckSeverity = "OFF"
- *   }
- * }
- * </pre>
- * or for the specific ones:
- *
- * <pre>
- * {@code
- *
- *   spineErrorProneChecks {
+ * <pre>{@code
+ *   modelChecks {
+ *      defaultSeverity = "OFF"
  *      useValidatingBuilder = "ERROR"
  *   }
- * }
- * </pre>
+ * }</pre>
  *
  * <p>The latter overrides the former.
  *
@@ -97,4 +85,5 @@ public final class ChecksPlugin extends PluginBase {
         SeverityConf severityConf = SeverityConf.initFor(project);
         severityConf.addConfigureSeverityAction();
     }
+
 }

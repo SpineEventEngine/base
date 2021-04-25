@@ -28,9 +28,6 @@ package io.spine.tools.java.javadoc.style;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.java.javadoc.style.BacktickFormatting;
-import io.spine.tools.java.javadoc.style.FormattingAction;
-import io.spine.tools.java.javadoc.style.JavadocFormatter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,7 +45,7 @@ import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("JavadocFormatter should")
+@DisplayName("`JavadocFormatter` should")
 class JavadocFormatterTest {
 
     private static final char BACKTICK = '`';
@@ -67,8 +64,8 @@ class JavadocFormatterTest {
     }
 
     @Test
-    @DisplayName("ignore files expect java")
-    void ignore_files_except_java() throws IOException {
+    @DisplayName("ignore files expect `.java`")
+    void ignoreNonJavaFiles() throws IOException {
         Path path = Paths.get("Non_existing_file.txt");
         backtickFormatter.format(path);
     }

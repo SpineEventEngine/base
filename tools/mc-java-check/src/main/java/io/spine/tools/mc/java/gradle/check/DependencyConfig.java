@@ -36,7 +36,7 @@ import org.gradle.api.artifacts.ResolvedConfiguration;
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
+import static io.spine.tools.gradle.Artifact.TOOLS_GROUP;
 import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
 
 /**
@@ -45,7 +45,7 @@ import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
 final class DependencyConfig implements Logging {
 
     @VisibleForTesting
-    static final String SPINE_CHECKER_MODULE = "spine-mc-java-checks";
+    static final String MODULE_CHECK_ARTIFACT_ID = "spine-mc-java-check";
 
     private final Configuration configuration;
 
@@ -103,11 +103,11 @@ final class DependencyConfig implements Logging {
      */
     private void dependOnErrorProneChecks(String version, Configuration configuration) {
         _debug().log("Adding dependency on %s:%s:%s to the %s configuration.",
-                    SPINE_TOOLS_GROUP, SPINE_CHECKER_MODULE, version,
-                    annotationProcessor.value());
+                     TOOLS_GROUP, MODULE_CHECK_ARTIFACT_ID, version,
+                     annotationProcessor.value());
         DependencySet dependencies = configuration.getDependencies();
         Dependency dependency = new DefaultExternalModuleDependency(
-                SPINE_TOOLS_GROUP, SPINE_CHECKER_MODULE, version);
+                TOOLS_GROUP, MODULE_CHECK_ARTIFACT_ID, version);
         dependencies.add(dependency);
     }
 }

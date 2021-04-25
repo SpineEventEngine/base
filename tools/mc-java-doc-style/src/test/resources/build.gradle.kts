@@ -37,7 +37,7 @@ buildscript {
 
     val spineVersion: String by extra
     dependencies {
-        classpath("io.spine.tools:spine-javadoc-prettifier:$spineVersion")
+        classpath("io.spine.tools:spine-mc-java-doc-style:$spineVersion")
         classpath(io.spine.internal.dependency.Protobuf.GradlePlugin.lib)
     }
 }

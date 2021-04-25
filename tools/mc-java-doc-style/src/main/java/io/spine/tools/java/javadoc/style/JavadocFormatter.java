@@ -46,7 +46,7 @@ import static java.nio.file.Files.newBufferedWriter;
  * <p>The formatter executes {@linkplain FormattingAction formatting actions}
  * for the Javadoc lines in a source file.
  */
-class JavadocFormatter {
+final class JavadocFormatter {
 
     private static final String TEMP_FILE_NAME = "temp_file_for_formatting.java";
 

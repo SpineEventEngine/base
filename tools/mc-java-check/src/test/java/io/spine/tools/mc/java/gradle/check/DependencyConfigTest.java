@@ -38,10 +38,10 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
+import static io.spine.tools.gradle.Artifact.TOOLS_GROUP;
 import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
 import static io.spine.tools.gradle.testing.Project.newProject;
-import static io.spine.tools.mc.java.gradle.check.DependencyConfig.SPINE_CHECKER_MODULE;
+import static io.spine.tools.mc.java.gradle.check.DependencyConfig.MODULE_CHECK_ARTIFACT_ID;
 
 /**
  * A test for the {@link DependencyConfig} part of the Spine Error Prone Checks plugin.
@@ -103,8 +103,8 @@ class DependencyConfigTest {
         Configuration config = annotationProcessorConfig(project);
         DependencySet dependencies = config.getDependencies();
         for (Dependency dependency : dependencies) {
-            if (SPINE_TOOLS_GROUP.equals(dependency.getGroup()) &&
-                    SPINE_CHECKER_MODULE.equals(dependency.getName())) {
+            if (TOOLS_GROUP.equals(dependency.getGroup()) &&
+                    MODULE_CHECK_ARTIFACT_ID.equals(dependency.getName())) {
                 return true;
             }
         }

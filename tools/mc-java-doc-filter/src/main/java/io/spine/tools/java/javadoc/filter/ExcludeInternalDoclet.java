@@ -45,7 +45,6 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
-import static java.util.Objects.requireNonNull;
 
 /**
  * Extension of {@linkplain Standard} doclet, which excludes
@@ -154,7 +153,8 @@ public class ExcludeInternalDoclet extends Standard {
         }
 
         @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        public @Nullable Object invoke(Object proxy, Method method, Object[] args)
+                throws Throwable {
             checkNotNull(method);
             if (args != null && isIgnored(method)) {
                 args[0] = unwrap(args[0]);
@@ -163,7 +163,7 @@ public class ExcludeInternalDoclet extends Standard {
                 Object returnValue = method.invoke(target, args);
                 Class<?> returnType = method.getReturnType();
                 Object result = process(returnValue, returnType);
-                return requireNonNull(result);
+                return result;
             } catch (InvocationTargetException e) {
                 throw illegalStateWithCauseOf(e);
             }
@@ -198,7 +198,7 @@ public class ExcludeInternalDoclet extends Standard {
         compareTo,
         equals,
         overrides,
-        subclassOf;
+        subclassOf
     }
 
     /**
