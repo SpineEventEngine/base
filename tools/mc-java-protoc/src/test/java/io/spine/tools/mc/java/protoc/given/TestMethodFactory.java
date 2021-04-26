@@ -28,10 +28,12 @@ package io.spine.tools.mc.java.protoc.given;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.java.protoc.Method;
-import io.spine.tools.java.protoc.MethodFactory;
+import com.squareup.javapoet.MethodSpec;
+import io.spine.tools.java.code.Method;
+import io.spine.tools.java.code.MethodFactory;
 import io.spine.type.MessageType;
 
+import javax.lang.model.element.Modifier;
 import java.util.List;
 
 /**
@@ -40,7 +42,13 @@ import java.util.List;
 @Immutable
 public final class TestMethodFactory implements MethodFactory {
 
-    public static final Method TEST_METHOD = new Method("public void test(){}");
+    private static final MethodSpec methodSpec =
+            MethodSpec.methodBuilder("test")
+                      .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                      .returns(void.class)
+                      .build();
+
+    public static final Method TEST_METHOD = new Method(methodSpec);
 
     @Override
     public List<Method> generateMethodsFor(MessageType messageType) {

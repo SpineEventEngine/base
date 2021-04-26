@@ -28,8 +28,8 @@ package io.spine.tools.mc.java.protoc;
 
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.tools.java.fs.SourceFile;
+import io.spine.tools.java.protoc.ClassMember;
 import io.spine.tools.java.protoc.Method;
-import io.spine.tools.mc.java.protoc.MessageWithClassScopeInsertion;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

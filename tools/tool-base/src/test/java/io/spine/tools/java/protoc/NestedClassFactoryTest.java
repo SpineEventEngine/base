@@ -28,6 +28,8 @@ package io.spine.tools.java.protoc;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
+import io.spine.tools.java.code.NestedClass;
+import io.spine.tools.java.code.NestedClassFactory;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

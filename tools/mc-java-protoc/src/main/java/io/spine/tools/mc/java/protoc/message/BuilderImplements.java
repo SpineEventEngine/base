@@ -28,8 +28,8 @@ package io.spine.tools.mc.java.protoc.message;
 
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.validate.ValidatingBuilder;
-import io.spine.tools.mc.java.protoc.AbstractCompilerOutput;
-import io.spine.tools.mc.java.protoc.InsertionPoint;
+import io.spine.tools.java.protoc.AbstractCompilerOutput;
+import io.spine.tools.java.protoc.InsertionPoint;
 import io.spine.type.MessageType;
 
 import static io.spine.tools.mc.java.protoc.ProtocPluginFiles.prepareFile;

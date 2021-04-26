@@ -28,11 +28,13 @@ package io.spine.tools.mc.java.protoc.given;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.java.protoc.Method;
-import io.spine.tools.java.protoc.MethodFactory;
-import io.spine.tools.java.protoc.UuidMessage;
+import com.squareup.javapoet.MethodSpec;
+import io.spine.tools.java.code.Method;
+import io.spine.tools.java.code.MethodFactory;
+import io.spine.tools.mc.java.gradle.UuidMessage;
 import io.spine.type.MessageType;
 
+import javax.lang.model.element.Modifier;
 import java.util.List;
 
 /**
@@ -42,8 +44,14 @@ import java.util.List;
 @Immutable
 public class UuidMethodFactory implements MethodFactory {
 
-    private static final Method TEST_METHOD =
-            new Method("public static boolean isUuid(){return true;}");
+    private static final MethodSpec methodSpec =
+            MethodSpec.methodBuilder("isUuid")
+                      .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                      .returns(boolean.class)
+                      .addCode("return true;")
+                      .build();
+    
+    private static final Method TEST_METHOD = new Method(methodSpec);
 
     @Override
     public List<Method> generateMethodsFor(MessageType messageType) {

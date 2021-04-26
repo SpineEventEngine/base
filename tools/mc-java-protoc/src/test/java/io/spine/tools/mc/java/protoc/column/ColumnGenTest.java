@@ -30,7 +30,7 @@ import com.google.common.testing.NullPointerTester;
 import io.spine.tools.java.protoc.AddEntityQueries;
 import io.spine.tools.java.protoc.Classpath;
 import io.spine.tools.java.protoc.SpineProtocConfig;
-import io.spine.tools.mc.java.protoc.CompilerOutput;
+import io.spine.tools.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.nested.Task;
 import io.spine.tools.mc.java.protoc.nested.TaskView;
 import io.spine.type.EnumType;

@@ -30,7 +30,7 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.squareup.javapoet.JavaFile;
 import io.spine.option.IsOption;
 import io.spine.tools.java.fs.SourceFile;
-import io.spine.tools.mc.java.protoc.AbstractCompilerOutput;
+import io.spine.tools.java.protoc.AbstractCompilerOutput;
 import io.spine.type.MessageType;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 

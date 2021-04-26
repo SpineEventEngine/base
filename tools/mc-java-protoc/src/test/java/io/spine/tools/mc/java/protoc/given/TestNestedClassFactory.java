@@ -28,8 +28,8 @@ package io.spine.tools.mc.java.protoc.given;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.java.protoc.NestedClass;
-import io.spine.tools.java.protoc.NestedClassFactory;
+import io.spine.tools.java.code.NestedClass;
+import io.spine.tools.java.code.NestedClassFactory;
 import io.spine.type.MessageType;
 
 import java.util.List;

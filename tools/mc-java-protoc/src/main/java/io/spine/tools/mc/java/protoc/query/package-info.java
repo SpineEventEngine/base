@@ -25,7 +25,8 @@
  */
 
 /**
- * This package defines the code generator of the {@code Query} for {@code Entity} state classes.
+ * This package contains the routines performing the assembly of {@code Query}
+ * and {@code QueryBuilder} code generated for entity state types.
  */
 @Internal
 @CheckReturnValue

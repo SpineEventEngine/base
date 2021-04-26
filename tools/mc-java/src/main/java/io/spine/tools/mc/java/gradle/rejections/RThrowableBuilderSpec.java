@@ -34,14 +34,14 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import io.spine.base.RejectionType;
 import io.spine.tools.java.code.BuilderSpec;
-import io.spine.tools.java.code.JavaPoetName;
+import io.spine.tools.java.JavaPoetName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.tools.java.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 import io.spine.protobuf.Messages;
-import io.spine.tools.mc.java.code.field.FieldType;
+import io.spine.tools.java.code.field.FieldType;
 import io.spine.validate.Validate;
 
 import java.util.ArrayList;
@@ -223,7 +223,7 @@ final class RThrowableBuilderSpec implements BuilderSpec {
         FieldName fieldName = field.name();
         String parameterName = fieldName.javaCase();
         String methodName = fieldType.primarySetterTemplate()
-                                     .format(io.spine.tools.java.code.FieldName.from(fieldName));
+                                     .format(io.spine.tools.java.code.field.FieldName.from(fieldName));
         MethodSpec.Builder methodBuilder = MethodSpec
                 .methodBuilder(methodName)
                 .addModifiers(PUBLIC)

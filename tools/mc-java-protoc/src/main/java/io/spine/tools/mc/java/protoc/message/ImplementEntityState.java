@@ -30,7 +30,7 @@ import com.google.common.collect.ImmutableList;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.java.protoc.EntityStateConfig;
-import io.spine.tools.mc.java.protoc.CompilerOutput;
+import io.spine.tools.java.protoc.CompilerOutput;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;

@@ -27,9 +27,9 @@
 package io.spine.tools.mc.java.protoc;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.mc.java.protoc.CodeGenerationTask;
-import io.spine.tools.mc.java.protoc.CodeGenerationTasks;
-import io.spine.tools.mc.java.protoc.CompilerOutput;
+import io.spine.tools.java.protoc.CodeGenerationTask;
+import io.spine.tools.java.protoc.CodeGenerationTasks;
+import io.spine.tools.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.EnhancedWithCodeGeneration;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;

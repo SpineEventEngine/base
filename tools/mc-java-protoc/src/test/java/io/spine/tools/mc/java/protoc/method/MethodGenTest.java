@@ -28,7 +28,7 @@ package io.spine.tools.mc.java.protoc.method;
 
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.tools.java.protoc.SpineProtocConfig;
-import io.spine.tools.mc.java.protoc.CompilerOutput;
+import io.spine.tools.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.test.method.EnhancedMessage;
 import io.spine.tools.mc.java.protoc.test.method.TestServiceProto;
 import io.spine.type.MessageType;

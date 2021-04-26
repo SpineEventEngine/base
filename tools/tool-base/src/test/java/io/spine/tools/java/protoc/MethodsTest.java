@@ -26,6 +26,7 @@
 
 package io.spine.tools.java.protoc;
 
+import io.spine.tools.mc.java.gradle.Methods;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

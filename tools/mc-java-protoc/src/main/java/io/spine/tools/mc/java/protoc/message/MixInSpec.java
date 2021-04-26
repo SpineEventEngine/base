@@ -31,7 +31,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.option.IsOption;
-import io.spine.tools.mc.java.protoc.CompilerOutput;
+import io.spine.tools.java.protoc.CompilerOutput;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 import org.checkerframework.checker.nullness.qual.Nullable;

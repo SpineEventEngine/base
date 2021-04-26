@@ -28,7 +28,7 @@ package io.spine.tools.mc.java.protoc.method.given;
 
 import io.spine.tools.java.protoc.Classpath;
 import io.spine.tools.mc.java.protoc.ExternalClassLoader;
-import io.spine.tools.java.protoc.NestedClassFactory;
+import io.spine.tools.java.code.NestedClassFactory;
 
 /**
  * A test wrapper for the {@link ExternalClassLoader}.

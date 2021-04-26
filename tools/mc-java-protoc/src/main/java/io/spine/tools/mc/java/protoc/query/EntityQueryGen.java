@@ -27,12 +27,11 @@
 package io.spine.tools.mc.java.protoc.query;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.java.code.EntityQueryFactory;
-import io.spine.tools.mc.java.protoc.ClassMember;
-import io.spine.tools.mc.java.protoc.CodeGenerator;
-import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.java.protoc.Method;
-import io.spine.tools.java.protoc.NestedClass;
+import io.spine.tools.java.protoc.ClassMember;
+import io.spine.tools.java.protoc.CodeGenerator;
+import io.spine.tools.java.protoc.CompilerOutput;
+import io.spine.tools.java.code.Method;
+import io.spine.tools.java.code.NestedClass;
 import io.spine.tools.java.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
 import io.spine.type.Type;

@@ -27,7 +27,7 @@
 package io.spine.tools.mc.java.protoc.method;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.mc.java.protoc.CompilerOutput;
+import io.spine.tools.java.protoc.CompilerOutput;
 import io.spine.tools.java.protoc.ConfigByPattern;
 import io.spine.tools.mc.java.protoc.ExternalClassLoader;
 import io.spine.tools.mc.java.protoc.FilePatternMatcher;

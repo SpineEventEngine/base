@@ -28,9 +28,10 @@ package io.spine.tools.mc.java.protoc.field;
 
 import com.google.common.testing.NullPointerTester;
 import io.spine.base.SubscribableField;
+import io.spine.tools.java.code.field.FieldGen;
 import io.spine.tools.java.protoc.AddFields;
 import io.spine.tools.java.protoc.Classpath;
-import io.spine.tools.mc.java.protoc.CompilerOutput;
+import io.spine.tools.java.protoc.CompilerOutput;
 import io.spine.tools.java.protoc.ConfigByPattern;
 import io.spine.tools.java.protoc.FilePatterns;
 import io.spine.tools.java.protoc.SpineProtocConfig;

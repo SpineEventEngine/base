@@ -31,7 +31,7 @@ import com.google.common.testing.NullPointerTester;
 import io.spine.base.EntityState;
 import io.spine.code.java.ClassName;
 import io.spine.tools.java.protoc.EntityStateConfig;
-import io.spine.tools.mc.java.protoc.CompilerOutput;
+import io.spine.tools.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.message.tests.ProtocProject;
 import io.spine.tools.mc.java.protoc.message.tests.ProtocProjectId;
 import io.spine.tools.mc.java.protoc.message.tests.ProtocTask;
@@ -45,7 +45,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.java.protoc.ProtocTaskConfigs.entityStateConfig;
-import static io.spine.tools.mc.java.protoc.InsertionPoint.message_implements;
+import static io.spine.tools.java.protoc.InsertionPoint.message_implements;
 
 @DisplayName("`GenerateEntityStateInterfaces` task should")
 class ImplementEntityStateTest {

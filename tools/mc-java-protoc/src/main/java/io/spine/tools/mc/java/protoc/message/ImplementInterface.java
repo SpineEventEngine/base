@@ -28,8 +28,8 @@ package io.spine.tools.mc.java.protoc.message;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.java.ClassName;
-import io.spine.tools.mc.java.protoc.CodeGenerationTask;
-import io.spine.tools.mc.java.protoc.CompilerOutput;
+import io.spine.tools.java.protoc.CodeGenerationTask;
+import io.spine.tools.java.protoc.CompilerOutput;
 import io.spine.type.MessageType;
 
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;

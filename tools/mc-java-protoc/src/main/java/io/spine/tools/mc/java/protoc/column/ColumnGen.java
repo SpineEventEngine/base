@@ -28,13 +28,12 @@ package io.spine.tools.mc.java.protoc.column;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.proto.ColumnOption;
-import io.spine.tools.java.code.ColumnFactory;
-import io.spine.tools.mc.java.protoc.ClassMember;
-import io.spine.tools.mc.java.protoc.CodeGenerator;
-import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.java.protoc.NestedClass;
+import io.spine.tools.java.protoc.ClassMember;
+import io.spine.tools.java.protoc.CodeGenerator;
+import io.spine.tools.java.protoc.CompilerOutput;
+import io.spine.tools.java.code.NestedClass;
 import io.spine.tools.java.protoc.SpineProtocConfig;
-import io.spine.tools.mc.java.protoc.InsertionPoint;
+import io.spine.tools.java.protoc.InsertionPoint;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 

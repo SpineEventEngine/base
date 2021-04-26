@@ -28,10 +28,11 @@ package io.spine.tools.mc.java.protoc.field;
 
 import com.google.common.testing.NullPointerTester;
 import io.spine.base.SubscribableField;
-import io.spine.tools.java.code.FieldFactory;
+import io.spine.tools.java.code.field.FieldFactory;
+import io.spine.tools.java.code.field.GenerateFieldsByPattern;
 import io.spine.tools.java.protoc.ConfigByPattern;
 import io.spine.tools.java.protoc.FilePatterns;
-import io.spine.tools.mc.java.protoc.CompilerOutput;
+import io.spine.tools.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.nested.TaskView;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;

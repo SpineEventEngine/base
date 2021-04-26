@@ -27,9 +27,9 @@
 package io.spine.tools.mc.java.protoc.message;
 
 import com.google.common.collect.ImmutableSet;
-import io.spine.tools.mc.java.protoc.CodeGenerator;
-import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.mc.java.protoc.NoOpGenerator;
+import io.spine.tools.java.protoc.CodeGenerator;
+import io.spine.tools.java.protoc.CompilerOutput;
+import io.spine.tools.java.protoc.NoOpGenerator;
 import io.spine.tools.java.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
 import io.spine.type.Type;

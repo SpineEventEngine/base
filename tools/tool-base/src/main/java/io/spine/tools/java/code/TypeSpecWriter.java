@@ -27,8 +27,8 @@
 package io.spine.tools.java.code;
 
 import com.squareup.javapoet.JavaFile;
-import io.spine.tools.code.Indent;
 import io.spine.logging.Logging;
+import io.spine.tools.code.Indent;
 
 import java.io.IOException;
 import java.nio.file.Files;

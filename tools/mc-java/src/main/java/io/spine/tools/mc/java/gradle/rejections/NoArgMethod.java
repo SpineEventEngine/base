@@ -27,13 +27,13 @@
 package io.spine.tools.mc.java.gradle.rejections;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.java.protoc.Method;
+import io.spine.value.StringTypeValue;
 
 /**
  * A reference to a method with no arguments.
  */
 @Immutable
-final class NoArgMethod extends Method {
+final class NoArgMethod extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
 
