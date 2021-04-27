@@ -34,7 +34,7 @@ import java.lang.reflect.Method;
 import static com.google.common.truth.Truth.assertThat;
 
 /**
- * A test environment and utilities for {@link io.spine.tools.protoc.ColumnsTest}.
+ * A test environment and utilities for {@link io.spine.tools.java.protoc.ColumnsTest}.
  */
 public final class ColumnsTestEnv {
 

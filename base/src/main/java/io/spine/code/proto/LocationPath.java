@@ -120,7 +120,7 @@ public final class LocationPath {
     }
 
     @VisibleForTesting
-    List<Integer> toList() {
+    public List<Integer> toList() {
         return Collections.unmodifiableList(path);
     }
 

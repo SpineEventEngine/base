@@ -39,7 +39,7 @@ gradle-app.setting
 **/.spine/**
 
 # Spine model compiler auto-generated resources
-/tools/model-compiler/src/main/resources/spine-protoc.gradle
+/tools/mc-java/src/main/resources/spine-protoc.gradle
 
 # Interim compilation of Validating Builders
 /base-validating-builders/builders/**/*.class

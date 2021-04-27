@@ -27,9 +27,9 @@
 package io.spine.tools.gradle;
 
 import io.spine.code.proto.FileSet;
-import io.spine.tools.type.FileDescriptorSuperset;
-import io.spine.tools.type.MergedDescriptorSet;
-import io.spine.tools.type.MoreKnownTypes;
+import io.spine.tools.proto.FileDescriptorSuperset;
+import io.spine.tools.proto.MergedDescriptorSet;
+import io.spine.tools.proto.MoreKnownTypes;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 
@@ -46,7 +46,7 @@ import static io.spine.tools.gradle.ConfigurationName.testRuntimeClasspath;
  *           of creation Gradle project is not fully evaluated, and the values
  *           are not yet defined.
  */
-public abstract class ProtoPlugin extends SpinePlugin {
+public abstract class ProtoPlugin extends PluginBase {
 
     /**
      * Obtains {@linkplain #protoFiles(Supplier, Configuration) Protobuf} files for the main scope.

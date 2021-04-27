@@ -41,12 +41,12 @@ import io.spine.type.ServiceType;
 import io.spine.type.Type;
 import io.spine.type.TypeName;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static com.google.common.collect.Maps.uniqueIndex;
 import static java.lang.System.lineSeparator;
@@ -315,9 +315,9 @@ public final class TypeSet {
      */
     public static final class Builder {
 
-        private final Map<TypeName, MessageType> messageTypes = newHashMap();
-        private final Map<TypeName, EnumType> enumTypes = newHashMap();
-        private final Map<TypeName, ServiceType> serviceTypes = newHashMap();
+        private final Map<TypeName, MessageType> messageTypes = new HashMap<>();
+        private final Map<TypeName, EnumType> enumTypes = new HashMap<>();
+        private final Map<TypeName, ServiceType> serviceTypes = new HashMap<>();
 
         /**
          * Prevents direct instantiation.

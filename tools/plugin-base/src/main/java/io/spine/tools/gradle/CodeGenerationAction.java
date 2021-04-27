@@ -26,7 +26,7 @@
 
 package io.spine.tools.gradle;
 
-import io.spine.code.gen.Indent;
+import io.spine.tools.code.Indent;
 import io.spine.code.proto.FileSet;
 import io.spine.logging.Logging;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
@@ -37,7 +37,7 @@ import org.gradle.api.Task;
 import java.io.File;
 import java.util.function.Supplier;
 
-import static io.spine.tools.gradle.SpinePlugin.resolve;
+import static io.spine.tools.gradle.PluginBase.resolve;
 
 /**
  * Abstract base for code generation actions.
@@ -104,7 +104,7 @@ public abstract class CodeGenerationAction implements Action<Task>, Logging {
      */
     protected final Indent indent() {
         if (indent == null) {
-            indent = getIndent(project);
+            indent = indentIn(project);
         }
         return indent;
     }
@@ -112,7 +112,7 @@ public abstract class CodeGenerationAction implements Action<Task>, Logging {
     /**
      * Obtains indentation configuration from the project.
      */
-    protected abstract Indent getIndent(Project project);
+    protected abstract Indent indentIn(Project project);
 
     /**
      * Obtains the project for which the code is generated.

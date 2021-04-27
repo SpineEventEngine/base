@@ -31,7 +31,7 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.base.MessageFile;
-import io.spine.code.AbstractFileName;
+import io.spine.code.fs.AbstractFileName;
 
 import java.util.List;
 

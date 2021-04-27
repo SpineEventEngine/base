@@ -293,7 +293,7 @@ public class KnownTypes implements Serializable {
          *         if called from the client code
          */
         public static void extendWith(TypeSet moreKnownTypes) {
-            InvocationGuard.allowOnly("io.spine.tools.type.MoreKnownTypes");
+            InvocationGuard.allowOnly("io.spine.tools.proto.MoreKnownTypes");
             logger.atFine().log("Adding types `%s` to known types.", moreKnownTypes);
             lock.lock();
             try {

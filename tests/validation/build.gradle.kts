@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.tools.protoc.MessageSelectorFactory.suffix
+import io.spine.tools.java.protoc.MessageSelectorFactory.suffix
 
 modelCompiler {
 
@@ -37,7 +37,7 @@ modelCompiler {
     }
 
     methods {
-        applyFactory("io.spine.code.gen.java.UuidMethodFactory", messages().uuid())
+        applyFactory("io.spine.tools.java.code.UuidMethodFactory", messages().uuid())
     }
 
     entityQueries {

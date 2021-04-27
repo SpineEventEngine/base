@@ -29,7 +29,6 @@ package io.spine.code.proto;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.google.common.flogger.FluentLogger;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.DescriptorValidationException;
@@ -40,6 +39,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.protobuf.Descriptors.FileDescriptor.buildFrom;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.System.lineSeparator;
@@ -64,7 +64,7 @@ final class Linker {
 
     Linker(Iterable<FileDescriptorProto> input) {
         this.input = ImmutableList.copyOf(input);
-        this.remaining = Lists.newArrayList(input);
+        this.remaining = newArrayList(input);
         this.resolved = FileSet.newInstance();
         this.partiallyResolved = FileSet.newInstance();
         this.unresolved = FileSet.newInstance();

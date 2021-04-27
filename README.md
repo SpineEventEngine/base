@@ -9,7 +9,7 @@ This repository contains the code of foundation of the Spine Event Engine framew
 * The framework [base](base) data types and utilities.
 * [Utilities for testing](testlib).
 * Gradle plug-ins:
-  * [Spine Model Compiler](tools/model-compiler) — transforms a domain model defined in proto files 
+  * [Spine Model Compiler](tools/mc-java) — transforms a domain model defined in proto files 
     into the Java code.
   * [Spine Javadoc Prettifier](tools/javadoc-prettifier) — processes Javadocs of generated files.
 * [Protoc plugin](tools/protoc-plugin) — a plug-in for Google Protobuf compiler for generating 
@@ -18,7 +18,7 @@ This repository contains the code of foundation of the Spine Event Engine framew
   JavaScript code generation.
 * [Spine Javadoc Filter](tools/javadoc-filter) — excludes elements annotated with 
   `io.spine.Internal` from the generated doc.
-* [Spine Error Prone Checks](tools/errorprone-checks) — the custom Error Prone checks for the
+* [Spine Error Prone Checks](tools/mc-java-checks) — the custom Error Prone checks for the
   Spine projects.
 
 These components are used by [core-java](https://github.com/SpineEventEngine/core-java) and are not

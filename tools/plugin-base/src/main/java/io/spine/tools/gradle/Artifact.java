@@ -32,6 +32,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.artifacts.Dependency;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A Maven-style remote artifact specification.
@@ -45,7 +46,7 @@ public final class Artifact {
     /**
      * The artifact group used for Spine tools.
      */
-    public static final String SPINE_TOOLS_GROUP = "io.spine.tools";
+    public static final String TOOLS_GROUP = "io.spine.tools";
 
     private static final char COLON = ':';
     private static final char AT = '@';
@@ -75,9 +76,9 @@ public final class Artifact {
      */
     public static Artifact from(Dependency dependency) {
         return newBuilder()
-                .setGroup(checkNotNull(dependency.getGroup()))
-                .setName(checkNotNull(dependency.getName()))
-                .setVersion(checkNotNull(dependency.getVersion()))
+                .setGroup(requireNonNull(dependency.getGroup()))
+                .setName(requireNonNull(dependency.getName()))
+                .setVersion(requireNonNull(dependency.getVersion()))
                 .build();
     }
 
@@ -173,7 +174,7 @@ public final class Artifact {
         }
 
         public  Builder useSpineToolsGroup() {
-            return setGroup(SPINE_TOOLS_GROUP);
+            return setGroup(TOOLS_GROUP);
         }
 
         public Builder setName(String name) {
@@ -207,7 +208,6 @@ public final class Artifact {
             checkNotNull(group);
             checkNotNull(name);
             checkNotNull(version);
-
             return new Artifact(this);
         }
     }

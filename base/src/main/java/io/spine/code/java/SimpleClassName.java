@@ -29,6 +29,7 @@ package io.spine.code.java;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.proto.FileName;
 import io.spine.value.StringTypeValue;
 import org.checkerframework.checker.signature.qual.ClassGetSimpleName;
 
@@ -131,8 +132,8 @@ public final class SimpleClassName extends StringTypeValue {
             return nameDeclaredInOptions;
         }
         String className =
-                io.spine.code.proto.FileName.from(file)
-                                            .nameOnlyCamelCase();
+                FileName.from(file)
+                        .nameOnlyCamelCase();
         return className;
     }
 

@@ -26,49 +26,145 @@
 
 package io.spine.tools.gradle;
 
-import io.spine.code.fs.DefaultProject;
+import com.google.common.flogger.FluentLogger;
+import com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper;
+import io.spine.tools.code.fs.DefaultPaths;
 import org.gradle.api.Project;
 
 import java.io.File;
 import java.nio.file.Path;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.proto.FileDescriptors.DESC_EXTENSION;
+import static java.util.Objects.requireNonNull;
 
 /**
  * An abstract base for creating Gradle extensions.
  */
+@SuppressWarnings({
+        "PMD.MethodNamingConventions" /*  We use underscore for logging methods. */,
+        "FloggerSplitLogStatement" /* See: https://github.com/SpineEventEngine/base/issues/612 */
+})
 public abstract class GradleExtension {
 
-    protected final File defaultMainDescriptor(Project project) {
-        Artifact artifact = Artifact
-                .newBuilder()
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+
+    /**
+     * The project where this extension is defined.
+     */
+    private final Project project;
+
+    /**
+     * The name of the extension.
+     */
+    private final String name;
+
+    /**
+     * Provides default paths in the {@link #project}.
+     *
+     * <p>The paths can be explicitly re-defined via setting properties of this extension.
+     * Please see fields with the names ending with {@code Dir} for details.
+     */
+    private final DefaultPaths defaultPaths;
+
+    @SuppressWarnings({
+            "AbstractMethodCallInConstructor",
+            "OverridableMethodCallDuringObjectConstruction",
+            "OverriddenMethodCallDuringObjectConstruction"
+    })
+    protected GradleExtension(Project project, String name) {
+        this.project = checkNotNull(project);
+        this.name = name;
+        this.defaultPaths = defaultPathsIn(project);
+    }
+
+    /**
+     * Registers this extension in the given project.
+     */
+    public void register() {
+        @SuppressWarnings("unchecked") // Safe as we're not downcasting.
+        Class<GradleExtension> thisClass = (Class<GradleExtension>) getClass();
+        project().getExtensions()
+                 .add(thisClass, name, this);
+    }
+
+    /**
+     * Obtains non-null reference to a Gradle project in which this extension is defined.
+     */
+    protected final Project project() {
+        return requireNonNull(this.project);
+    }
+
+    /**
+     * Obtains default paths for the current project.
+     *
+     * <p>Overriding methods must only perform type casts to language-specific types they
+     * produce in {@link #defaultPathsIn(Project)}.
+     */
+    @OverridingMethodsMustInvokeSuper
+    protected DefaultPaths defaultPaths() {
+        return requireNonNull(defaultPaths);
+    }
+
+    /**
+     * Obtains the descriptor set file of the {@code "main"} artifact.
+     */
+    protected final File defaultMainDescriptor() {
+        Project project = project();
+        Artifact artifact = Artifact.newBuilder()
                 .setGroup(project.getGroup().toString())
                 .setName(project.getName())
                 .setVersion(project.getVersion().toString())
                 .build();
         String fileName = artifact.fileSafeId() + DESC_EXTENSION;
-        Path mainDescriptor = defaultProject(project).buildRoot()
-                                          .descriptors()
-                                          .mainDescriptors()
-                                          .resolve(fileName);
+        Path mainDescriptor = defaultPaths()
+                .buildDir()
+                .descriptors()
+                .mainDescriptors()
+                .resolve(fileName);
         return mainDescriptor.toFile();
     }
 
-    protected final File defaultTestDescriptor(Project project) {
-        Artifact artifact = Artifact
-                .newBuilder()
+    /**
+     * Obtains the descriptor set file of the {@code "test"} artifact.
+     */
+    protected final File defaultTestDescriptor() {
+        Project project = project();
+        Artifact artifact = Artifact.newBuilder()
                 .setGroup(project.getGroup().toString())
                 .setName(project.getName())
                 .setVersion(project.getVersion().toString())
                 .useTestClassifier()
                 .build();
         String fileName = artifact.fileSafeId() + DESC_EXTENSION;
-        Path testDescriptor = defaultProject(project).buildRoot()
-                                          .descriptors()
-                                          .testDescriptors()
-                                          .resolve(fileName);
+        Path testDescriptor = defaultPaths()
+                .buildDir()
+                .descriptors()
+                .testDescriptors()
+                .resolve(fileName);
         return testDescriptor.toFile();
     }
 
-    protected abstract DefaultProject defaultProject(Project project);
+    /**
+     * Creates an instance of a default (language-specific) project paths taking the parent paths
+     * from the passed Gradle project.
+     */
+    protected abstract DefaultPaths defaultPathsIn(Project project);
+
+    @SuppressWarnings("unused")
+    protected static FluentLogger.Api _error() {
+        return logger.atSevere();
+    }
+
+    protected static FluentLogger.Api _warn() {
+        return logger.atWarning();
+    }
+
+    protected static FluentLogger.Api _info() {
+        return logger.atInfo();
+    }
+
+    protected static FluentLogger.Api _debug() {
+        return logger.atFine();
+    }
 }

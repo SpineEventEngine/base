@@ -32,11 +32,11 @@ import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Maps.newHashMap;
 import static io.spine.reflect.Types.isEnumClass;
 import static io.spine.reflect.Types.isMessageClass;
 import static io.spine.string.Stringifiers.forBoolean;
@@ -58,7 +58,7 @@ public final class StringifierRegistry {
     private static final StringifierRegistry INSTANCE = new StringifierRegistry();
 
     private final Map<Type, Stringifier<?>> stringifiers = synchronizedMap(
-            newHashMap(
+            new HashMap<>(
                     ImmutableMap.<Type, Stringifier<?>>builder()
                             .put(Boolean.class, forBoolean())
                             .put(Integer.class, forInteger())

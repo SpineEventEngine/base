@@ -25,7 +25,7 @@
  */
 
 /**
- * This package contains language-neutral classes and interfaces for Spine tools.
+ * This package provides internal types for working with code-related conventions.
  */
 @Internal
 @CheckReturnValue

@@ -37,6 +37,7 @@ import org.gradle.api.tasks.TaskContainer;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -44,7 +45,6 @@ import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.Maps.newHashMap;
 
 /**
  * Utility wrapper around the Gradle tasks created.
@@ -235,7 +235,7 @@ public final class GradleTask {
         public Builder withInputProperty(String propertyName, @Nullable Serializable value) {
             checkNotNull(propertyName);
             if (inputProperties == null) {
-                inputProperties = newHashMap();
+                inputProperties = new HashMap<>();
             }
             inputProperties.put(propertyName, value);
             return this;

@@ -26,7 +26,7 @@
 
 package io.spine.tools.gradle.project;
 
-import io.spine.tools.gradle.GradlePlugin;
+import io.spine.tools.gradle.PluginClass;
 import io.spine.tools.gradle.PluginScript;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -51,12 +51,12 @@ public interface PluginTarget {
      * @param action
      *         the action to execute
      */
-    <P extends Plugin<Project>> void with(GradlePlugin<P> plugin, Consumer<P> action);
+    <P extends Plugin<Project>> void with(PluginClass<P> plugin, Consumer<P> action);
 
     /**
      * Applies the given plugin.
      */
-    void apply(GradlePlugin<?> plugin);
+    void apply(PluginClass<?> plugin);
 
     /**
      * Applies the given plugin script.
@@ -66,12 +66,12 @@ public interface PluginTarget {
     /**
      * Checks if the given plugin is already applied.
      */
-    boolean isApplied(GradlePlugin<?> plugin);
+    boolean isApplied(PluginClass<?> plugin);
 
     /**
      * Checks if the given plugin is not applied yet.
      */
-    default boolean isNotApplied(GradlePlugin<?> plugin) {
+    default boolean isNotApplied(PluginClass<?> plugin) {
         return !isApplied(plugin);
     }
 }

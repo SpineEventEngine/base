@@ -27,7 +27,7 @@
 package io.spine.tools.gradle.project;
 
 import io.spine.logging.Logging;
-import io.spine.tools.gradle.GradlePlugin;
+import io.spine.tools.gradle.PluginClass;
 import io.spine.tools.gradle.PluginScript;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -50,7 +50,7 @@ public final class PlugableProject implements PluginTarget, Logging {
     }
 
     @Override
-    public <P extends Plugin<Project>> void with(GradlePlugin<P> pluginType, Consumer<P> action) {
+    public <P extends Plugin<Project>> void with(PluginClass<P> pluginType, Consumer<P> action) {
         checkNotNull(pluginType);
         checkNotNull(action);
 
@@ -63,14 +63,14 @@ public final class PlugableProject implements PluginTarget, Logging {
         }
     }
 
-    private <P extends Plugin<Project>> void accept(GradlePlugin<P> pluginType, Consumer<P> action) {
+    private <P extends Plugin<Project>> void accept(PluginClass<P> pluginType, Consumer<P> action) {
         P plugin = project.getPlugins()
                           .getAt(pluginType.implementationClass());
         action.accept(plugin);
     }
 
     @Override
-    public void apply(GradlePlugin<?> plugin) {
+    public void apply(PluginClass<?> plugin) {
         checkNotNull(plugin);
 
         if (isNotApplied(plugin)) {
@@ -87,7 +87,7 @@ public final class PlugableProject implements PluginTarget, Logging {
     }
 
     @Override
-    public boolean isApplied(GradlePlugin<?> plugin) {
+    public boolean isApplied(PluginClass<?> plugin) {
         checkNotNull(plugin);
         PluginContainer plugins = project.getPlugins();
         boolean result = plugins.hasPlugin(plugin.implementationClass());

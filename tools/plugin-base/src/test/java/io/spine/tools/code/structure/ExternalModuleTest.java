@@ -27,7 +27,7 @@
 package io.spine.tools.code.structure;
 
 import com.google.common.testing.EqualsTester;
-import io.spine.code.fs.FileReference;
+import io.spine.tools.code.fs.FileReference;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
