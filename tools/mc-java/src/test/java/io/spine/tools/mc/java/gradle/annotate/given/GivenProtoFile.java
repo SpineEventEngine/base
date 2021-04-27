@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.code.annotation.given;
+package io.spine.tools.mc.java.gradle.annotate.given;
 
 import io.spine.code.proto.FileName;
 

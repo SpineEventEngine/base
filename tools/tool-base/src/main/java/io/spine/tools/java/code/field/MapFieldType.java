@@ -38,15 +38,15 @@ import java.util.AbstractMap;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static io.spine.tools.mc.java.code.field.AccessorTemplate.prefix;
-import static io.spine.tools.mc.java.code.field.AccessorTemplate.prefixAndPostfix;
-import static io.spine.tools.mc.java.code.field.AccessorTemplates.allPutter;
-import static io.spine.tools.mc.java.code.field.AccessorTemplates.clearer;
-import static io.spine.tools.mc.java.code.field.AccessorTemplates.countGetter;
-import static io.spine.tools.mc.java.code.field.AccessorTemplates.getter;
-import static io.spine.tools.mc.java.code.field.AccessorTemplates.mapGetter;
-import static io.spine.tools.mc.java.code.field.AccessorTemplates.putter;
-import static io.spine.tools.mc.java.code.field.AccessorTemplates.remover;
+import static io.spine.tools.java.code.field.Accessor.prefix;
+import static io.spine.tools.java.code.field.Accessor.prefixAndPostfix;
+import static io.spine.tools.java.code.field.Accessors.allPutter;
+import static io.spine.tools.java.code.field.Accessors.clearer;
+import static io.spine.tools.java.code.field.Accessors.countGetter;
+import static io.spine.tools.java.code.field.Accessors.getter;
+import static io.spine.tools.java.code.field.Accessors.mapGetter;
+import static io.spine.tools.java.code.field.Accessors.putter;
+import static io.spine.tools.java.code.field.Accessors.remover;
 
 /**
  * Represents map {@linkplain FieldType field type}.
@@ -55,7 +55,7 @@ final class MapFieldType implements FieldType {
 
     private static final String GET = "get";
 
-    private static final ImmutableSet<AccessorTemplate> GENERATED_ACCESSORS =
+    private static final ImmutableSet<Accessor> ACCESSORS =
             ImmutableSet.of(
                     getter(),
                     countGetter(),
@@ -97,13 +97,13 @@ final class MapFieldType implements FieldType {
      * {@inheritDoc}
      */
     @Override
-    public AccessorTemplate primarySetterTemplate() {
+    public Accessor primarySetterTemplate() {
         return allPutter();
     }
 
     @Override
-    public ImmutableSet<AccessorTemplate> generatedAccessorTemplates() {
-        return GENERATED_ACCESSORS;
+    public ImmutableSet<Accessor> generatedAccessorTemplates() {
+        return ACCESSORS;
     }
 
     private static TypeName boxIfPrimitive(TypeName typeName) {

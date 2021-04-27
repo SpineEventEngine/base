@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.code.annotation.given;
+package io.spine.tools.mc.java.gradle.annotate.given;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -41,7 +41,7 @@ import java.nio.file.Paths;
 /**
  * A test-only implementation of {@link Annotator}.
  *
- * @see io.spine.tools.mc.java.code.annotation.given.FakeAnnotator.Factory
+ * @see io.spine.tools.mc.java.gradle.annotate.given.FakeAnnotator.Factory
  */
 public final class FakeAnnotator extends Annotator {
 

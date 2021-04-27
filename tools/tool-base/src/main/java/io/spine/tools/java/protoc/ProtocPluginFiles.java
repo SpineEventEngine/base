@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.protoc;
+package io.spine.tools.java.protoc;
 
 import io.spine.tools.java.fs.SourceFile;
 import io.spine.type.Type;

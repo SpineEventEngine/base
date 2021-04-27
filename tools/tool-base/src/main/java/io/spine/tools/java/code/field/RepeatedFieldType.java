@@ -36,28 +36,28 @@ import io.spine.code.proto.FieldDeclaration;
 import java.util.List;
 import java.util.Optional;
 
-import static io.spine.tools.mc.java.code.field.AccessorTemplates.adder;
-import static io.spine.tools.mc.java.code.field.AccessorTemplates.allAdder;
-import static io.spine.tools.mc.java.code.field.AccessorTemplates.clearer;
-import static io.spine.tools.mc.java.code.field.AccessorTemplates.countGetter;
-import static io.spine.tools.mc.java.code.field.AccessorTemplates.getter;
-import static io.spine.tools.mc.java.code.field.AccessorTemplates.listGetter;
-import static io.spine.tools.mc.java.code.field.AccessorTemplates.setter;
+import static io.spine.tools.java.code.field.Accessors.adder;
+import static io.spine.tools.java.code.field.Accessors.allAdder;
+import static io.spine.tools.java.code.field.Accessors.clearer;
+import static io.spine.tools.java.code.field.Accessors.countGetter;
+import static io.spine.tools.java.code.field.Accessors.getter;
+import static io.spine.tools.java.code.field.Accessors.listGetter;
+import static io.spine.tools.java.code.field.Accessors.setter;
 
 /**
  * Represents repeated {@linkplain FieldType field type}.
  */
 final class RepeatedFieldType implements FieldType {
 
-    private static final ImmutableSet<AccessorTemplate> GENERATED_ACCESSORS =
+    private static final ImmutableSet<Accessor> ACCESSORS =
             ImmutableSet.of(
-                    AccessorTemplates.getter(),
-                    AccessorTemplates.listGetter(),
-                    AccessorTemplates.countGetter(),
-                    AccessorTemplates.setter(),
-                    AccessorTemplates.adder(),
-                    AccessorTemplates.allAdder(),
-                    AccessorTemplates.clearer()
+                    getter(),
+                    listGetter(),
+                    countGetter(),
+                    setter(),
+                    adder(),
+                    allAdder(),
+                    clearer()
             );
 
     private final TypeName typeName;
@@ -78,8 +78,8 @@ final class RepeatedFieldType implements FieldType {
     }
 
     @Override
-    public ImmutableSet<AccessorTemplate> generatedAccessorTemplates() {
-        return GENERATED_ACCESSORS;
+    public ImmutableSet<Accessor> generatedAccessorTemplates() {
+        return ACCESSORS;
     }
 
     /**
@@ -87,8 +87,8 @@ final class RepeatedFieldType implements FieldType {
      * Protobuf message builder.
      */
     @Override
-    public AccessorTemplate primarySetterTemplate() {
-        return AccessorTemplates.allAdder();
+    public Accessor primarySetterTemplate() {
+        return allAdder();
     }
 
     private static TypeName constructTypeNameFor(String componentTypeName) {

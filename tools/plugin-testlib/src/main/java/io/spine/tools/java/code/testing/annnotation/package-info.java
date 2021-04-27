@@ -25,11 +25,11 @@
  */
 
 /**
- * Test environment classes for testing generation of annotations.
+ * Checker classes for testing annotations added to the generated code.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.mc.java.code.annotation.given;
+package io.spine.tools.java.code.testing.annnotation;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

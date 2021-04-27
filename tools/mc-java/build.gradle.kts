@@ -51,8 +51,8 @@ dependencies {
     implementation(project(":plugin-base"))
     implementation(project(":mc-java-check"))
 
-    testImplementation(project(":testlib"))
     testImplementation(gradleTestKit())
+    testImplementation(project(":testlib"))
     testImplementation(project(":plugin-testlib"))
 }
 

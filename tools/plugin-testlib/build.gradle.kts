@@ -1,3 +1,5 @@
+import io.spine.internal.dependency.Roaster
+
 /*
  * Copyright 2021, TeamDev. All rights reserved.
  *
@@ -27,8 +29,14 @@
 group = "io.spine.tools"
 
 dependencies {
-    implementation(project(":plugin-base"))
-    implementation(project(":testlib"))
     implementation(gradleApi())
     implementation(gradleTestKit())
+    implementation(Roaster.api) {
+        exclude(group = "com.google.guava")
+    }
+    implementation(Roaster.jdt) {
+        exclude(group = "com.google.guava")
+    }
+    implementation(project(":plugin-base"))
+    implementation(project(":testlib"))
 }

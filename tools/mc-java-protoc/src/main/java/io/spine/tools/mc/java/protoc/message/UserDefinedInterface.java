@@ -35,7 +35,7 @@ import io.spine.type.MessageType;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.mc.java.protoc.ProtocPluginFiles.prepareFile;
+import static io.spine.tools.java.protoc.ProtocPluginFiles.prepareFile;
 import static io.spine.tools.mc.java.protoc.message.InterfaceSpec.createFor;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 

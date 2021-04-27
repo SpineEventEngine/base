@@ -31,6 +31,8 @@ import io.spine.tools.java.code.Method;
 import io.spine.tools.java.code.NestedClass;
 import io.spine.type.MessageType;
 
+import static io.spine.tools.java.protoc.ProtocPluginFiles.prepareFile;
+
 /**
  * A compiler output which alters a generated message with an additional method or nested type.
  *
@@ -74,10 +76,10 @@ public final class ClassMember extends AbstractCompilerOutput {
     private static File
     codeGeneratorResponse(String content, MessageType type) {
         String insertionPoint = InsertionPoint.class_scope.forType(type);
-        File result = ProtocPluginFiles.prepareFile(type)
-                                       .setInsertionPoint(insertionPoint)
-                                       .setContent(content)
-                                       .build();
+        File result = prepareFile(type)
+                .setInsertionPoint(insertionPoint)
+                .setContent(content)
+                .build();
         return result;
     }
 }

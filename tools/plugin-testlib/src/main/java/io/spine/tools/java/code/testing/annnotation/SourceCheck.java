@@ -24,13 +24,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.java.code.testing.annnotation;
+
+import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
+import org.jboss.forge.roaster.model.source.JavaClassSource;
+
+import java.util.function.Consumer;
+
 /**
- * Checker classes for testing annotations added to the generated code.
+ * Interface for validation of a {@link JavaClassSource}.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.mc.java.code.annotation.check;
-
-import com.google.errorprone.annotations.CheckReturnValue;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+public interface SourceCheck extends Consumer<AbstractJavaSource<JavaClassSource>> {
+}

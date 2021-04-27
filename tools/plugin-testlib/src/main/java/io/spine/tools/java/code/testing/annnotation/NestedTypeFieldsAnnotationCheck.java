@@ -24,10 +24,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.code.annotation.check;
+package io.spine.tools.java.code.testing.annnotation;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 
@@ -47,12 +46,13 @@ public class NestedTypeFieldsAnnotationCheck implements SourceCheck {
 
     @Override
     @SuppressWarnings("unchecked") // Could not determine exact type for nested declaration.
-    public void accept(@Nullable AbstractJavaSource<JavaClassSource> outerClass) {
+    public void accept(AbstractJavaSource<JavaClassSource> outerClass) {
         checkNotNull(outerClass);
-        for (FieldDescriptor fieldDescriptor : messageDescriptor.getFields()) {
-            AbstractJavaSource nestedType = (AbstractJavaSource)
+        for (FieldDescriptor field : messageDescriptor.getFields()) {
+            AbstractJavaSource<?> nestedType = (AbstractJavaSource<?>)
                     outerClass.getNestedType(messageDescriptor.getName());
-            new FieldAnnotationCheck(fieldDescriptor, shouldBeAnnotated).accept(nestedType);
+            FieldAnnotationCheck check = new FieldAnnotationCheck(field, shouldBeAnnotated);
+            check.accept((AbstractJavaSource<JavaClassSource>) nestedType);
         }
     }
 }

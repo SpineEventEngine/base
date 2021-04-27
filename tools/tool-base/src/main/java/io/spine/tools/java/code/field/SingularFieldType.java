@@ -36,11 +36,11 @@ import io.spine.code.proto.FieldDeclaration;
 import java.util.Optional;
 
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.STRING;
-import static io.spine.tools.java.code.field.AccessorTemplate.prefix;
-import static io.spine.tools.java.code.field.AccessorTemplate.prefixAndPostfix;
-import static io.spine.tools.java.code.field.AccessorTemplates.clearer;
-import static io.spine.tools.java.code.field.AccessorTemplates.getter;
-import static io.spine.tools.java.code.field.AccessorTemplates.setter;
+import static io.spine.tools.java.code.field.Accessor.prefix;
+import static io.spine.tools.java.code.field.Accessor.prefixAndPostfix;
+import static io.spine.tools.java.code.field.Accessors.clearer;
+import static io.spine.tools.java.code.field.Accessors.getter;
+import static io.spine.tools.java.code.field.Accessors.setter;
 
 /**
  * Represents singular {@linkplain FieldType field type}.
@@ -49,7 +49,7 @@ final class SingularFieldType implements FieldType {
 
     private static final String BYTES = "Bytes";
 
-    private static final ImmutableSet<AccessorTemplate> GENERATED_ACCESSORS =
+    private static final ImmutableSet<Accessor> GENERATED_ACCESSORS =
             ImmutableSet.of(
                     prefix("has"),
                     getter(),
@@ -57,7 +57,7 @@ final class SingularFieldType implements FieldType {
                     clearer()
             );
 
-    private static final ImmutableSet<AccessorTemplate> GENERATED_STRING_ACCESSORS =
+    private static final ImmutableSet<Accessor> GENERATED_STRING_ACCESSORS =
             ImmutableSet.of(
                     prefixAndPostfix("get", BYTES),
                     prefixAndPostfix("set", BYTES)
@@ -83,9 +83,9 @@ final class SingularFieldType implements FieldType {
     }
 
     @Override
-    public ImmutableSet<AccessorTemplate> generatedAccessorTemplates() {
+    public ImmutableSet<Accessor> generatedAccessorTemplates() {
         return javaType == STRING
-             ? ImmutableSet.<AccessorTemplate>builder()
+             ? ImmutableSet.<Accessor>builder()
                            .addAll(GENERATED_ACCESSORS)
                            .addAll(GENERATED_STRING_ACCESSORS)
                            .build()
@@ -99,7 +99,7 @@ final class SingularFieldType implements FieldType {
      * <p>The call should have the following structure: {@code builder.setFieldName(FieldType)}.
      */
     @Override
-    public AccessorTemplate primarySetterTemplate() {
+    public Accessor primarySetterTemplate() {
         return setter();
     }
 

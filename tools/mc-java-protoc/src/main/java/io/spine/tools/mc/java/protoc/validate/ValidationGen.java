@@ -35,7 +35,7 @@ import io.spine.tools.java.protoc.CodeGenerator;
 import io.spine.tools.java.protoc.CompilerOutput;
 import io.spine.tools.java.protoc.InsertionPoint;
 import io.spine.tools.java.protoc.NoOpGenerator;
-import io.spine.tools.mc.java.protoc.ProtocPluginFiles;
+import io.spine.tools.java.protoc.ProtocPluginFiles;
 import io.spine.tools.mc.java.protoc.message.ExistingInterface;
 import io.spine.tools.mc.java.protoc.message.Implement;
 import io.spine.type.MessageType;

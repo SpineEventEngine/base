@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.gradle;
+package io.spine.tools.mc.java.gradle.annotate;
 
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
@@ -38,11 +38,11 @@ import io.spine.tools.java.fs.DefaultJavaPaths;
 import io.spine.tools.java.fs.SourceFile;
 import io.spine.code.proto.FileName;
 import io.spine.code.proto.FileSet;
-import io.spine.tools.mc.java.code.annotation.check.FieldAnnotationCheck;
-import io.spine.tools.mc.java.code.annotation.check.MainDefinitionAnnotationCheck;
-import io.spine.tools.mc.java.code.annotation.check.NestedTypeFieldsAnnotationCheck;
-import io.spine.tools.mc.java.code.annotation.check.NestedTypesAnnotationCheck;
-import io.spine.tools.mc.java.code.annotation.check.SourceCheck;
+import io.spine.tools.java.code.testing.annotation.FieldAnnotationCheck;
+import io.spine.tools.java.code.testing.annotation.MainDefinitionAnnotationCheck;
+import io.spine.tools.java.code.testing.annotation.NestedTypeFieldsAnnotationCheck;
+import io.spine.tools.java.code.testing.annotation.NestedTypesAnnotationCheck;
+import io.spine.tools.java.code.testing.annotation.SourceCheck;
 import io.spine.tools.gradle.testing.GradleProject;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
@@ -63,17 +63,17 @@ import static com.google.common.base.Preconditions.checkState;
 import static io.spine.tools.java.fs.SourceFile.forMessage;
 import static io.spine.tools.java.fs.SourceFile.forOuterClassOf;
 import static io.spine.tools.java.fs.SourceFile.forService;
-import static io.spine.tools.mc.java.code.annotation.given.GivenProtoFile.INTERNAL_ALL;
-import static io.spine.tools.mc.java.code.annotation.given.GivenProtoFile.INTERNAL_ALL_MULTIPLE;
-import static io.spine.tools.mc.java.code.annotation.given.GivenProtoFile.INTERNAL_ALL_SERVICE;
-import static io.spine.tools.mc.java.code.annotation.given.GivenProtoFile.INTERNAL_FIELD;
-import static io.spine.tools.mc.java.code.annotation.given.GivenProtoFile.INTERNAL_FIELD_MULTIPLE;
-import static io.spine.tools.mc.java.code.annotation.given.GivenProtoFile.INTERNAL_MESSAGE;
-import static io.spine.tools.mc.java.code.annotation.given.GivenProtoFile.INTERNAL_MESSAGE_MULTIPLE;
-import static io.spine.tools.mc.java.code.annotation.given.GivenProtoFile.NO_INTERNAL_OPTIONS;
-import static io.spine.tools.mc.java.code.annotation.given.GivenProtoFile.NO_INTERNAL_OPTIONS_MULTIPLE;
-import static io.spine.tools.mc.java.code.annotation.given.GivenProtoFile.POTENTIAL_ANNOTATION_DUP;
-import static io.spine.tools.mc.java.code.annotation.given.GivenProtoFile.SPI_SERVICE;
+import static io.spine.tools.mc.java.gradle.annotate.given.GivenProtoFile.INTERNAL_ALL;
+import static io.spine.tools.mc.java.gradle.annotate.given.GivenProtoFile.INTERNAL_ALL_MULTIPLE;
+import static io.spine.tools.mc.java.gradle.annotate.given.GivenProtoFile.INTERNAL_ALL_SERVICE;
+import static io.spine.tools.mc.java.gradle.annotate.given.GivenProtoFile.INTERNAL_FIELD;
+import static io.spine.tools.mc.java.gradle.annotate.given.GivenProtoFile.INTERNAL_FIELD_MULTIPLE;
+import static io.spine.tools.mc.java.gradle.annotate.given.GivenProtoFile.INTERNAL_MESSAGE;
+import static io.spine.tools.mc.java.gradle.annotate.given.GivenProtoFile.INTERNAL_MESSAGE_MULTIPLE;
+import static io.spine.tools.mc.java.gradle.annotate.given.GivenProtoFile.NO_INTERNAL_OPTIONS;
+import static io.spine.tools.mc.java.gradle.annotate.given.GivenProtoFile.NO_INTERNAL_OPTIONS_MULTIPLE;
+import static io.spine.tools.mc.java.gradle.annotate.given.GivenProtoFile.POTENTIAL_ANNOTATION_DUP;
+import static io.spine.tools.mc.java.gradle.annotate.given.GivenProtoFile.SPI_SERVICE;
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.gradle.ModelCompilerTaskName.annotateProto;
 

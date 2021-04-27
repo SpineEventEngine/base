@@ -61,6 +61,11 @@ public final class Method implements ClassMember {
     }
 
     @Override
+    public String toString() {
+        return methodSpec.toString();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

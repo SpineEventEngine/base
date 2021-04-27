@@ -29,8 +29,6 @@ package io.spine.tools.mc.java.gradle;
 import com.google.common.collect.ImmutableList;
 import io.spine.io.Files2;
 import io.spine.tools.java.protoc.Classpath;
-import io.spine.tools.java.protoc.EntityQueries;
-import io.spine.tools.java.protoc.NestedClasses;
 import io.spine.tools.java.protoc.SpineProtocConfig;
 import org.gradle.api.Project;
 import org.gradle.api.file.FileCollection;

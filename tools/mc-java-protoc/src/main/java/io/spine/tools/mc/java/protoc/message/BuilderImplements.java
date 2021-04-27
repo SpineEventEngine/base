@@ -32,7 +32,7 @@ import io.spine.tools.java.protoc.AbstractCompilerOutput;
 import io.spine.tools.java.protoc.InsertionPoint;
 import io.spine.type.MessageType;
 
-import static io.spine.tools.mc.java.protoc.ProtocPluginFiles.prepareFile;
+import static io.spine.tools.java.protoc.ProtocPluginFiles.prepareFile;
 import static java.lang.String.format;
 
 /**

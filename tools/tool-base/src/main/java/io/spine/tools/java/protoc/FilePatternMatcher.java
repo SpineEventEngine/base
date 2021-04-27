@@ -24,9 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.protoc;
+package io.spine.tools.java.protoc;
 
-import io.spine.tools.java.protoc.FilePattern;
 import io.spine.type.MessageType;
 
 import java.util.function.Predicate;

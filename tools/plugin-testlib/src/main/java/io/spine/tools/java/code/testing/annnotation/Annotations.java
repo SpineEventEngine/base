@@ -24,15 +24,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.code.annotation.check;
+package io.spine.tools.java.code.testing.annnotation;
 
-import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
-import org.jboss.forge.roaster.model.source.JavaClassSource;
+import io.spine.annotation.Internal;
+import org.jboss.forge.roaster.model.source.AnnotationSource;
+import org.jboss.forge.roaster.model.source.AnnotationTargetSource;
 
-import java.util.function.Consumer;
+import java.lang.annotation.Annotation;
+import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
 
 /**
- * Interface for validation of a {@link JavaClassSource}.
+ * Utilities for working with annotations in the generated code.
  */
-public interface SourceCheck extends Consumer<AbstractJavaSource<JavaClassSource>> {
+class Annotations {
+
+    private static final Class<? extends Annotation> ANNOTATION_CLASS = Internal.class;
+
+    /** Prevents instantiation of this utility class. */
+    private Annotations() {
+    }
+
+    static Optional<? extends AnnotationSource<?>>
+    findInternalAnnotation(AnnotationTargetSource<?, ?> javaSource) {
+        return findAnnotation(javaSource, ANNOTATION_CLASS);
+    }
+
+    static Optional<? extends AnnotationSource<?>>
+    findAnnotation(AnnotationTargetSource<?, ?> javaSource,
+                   Class<? extends Annotation> annotationType) {
+        String annotationName = annotationType.getName();
+        AnnotationSource<?> annotation = javaSource
+                .getAnnotation(annotationName);
+        return ofNullable(annotation);
+    }
 }

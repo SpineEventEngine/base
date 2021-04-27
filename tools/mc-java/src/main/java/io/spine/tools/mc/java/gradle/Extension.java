@@ -33,7 +33,6 @@ import io.spine.tools.code.fs.TempArtifacts;
 import io.spine.tools.gradle.GradleExtension;
 import io.spine.tools.java.fs.DefaultJavaPaths;
 import io.spine.tools.java.fs.Generated;
-import io.spine.tools.java.protoc.NestedClasses;
 import io.spine.tools.mc.java.gradle.annotate.Annotations;
 import org.gradle.api.Action;
 import org.gradle.api.Project;

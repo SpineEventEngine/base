@@ -24,53 +24,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.code.annotation.check;
+package io.spine.tools.java.code.testing.annnotation;
 
-import io.spine.annotation.Internal;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
-import org.jboss.forge.roaster.model.source.AnnotationSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
+import org.jboss.forge.roaster.model.source.JavaSource;
 
-import java.lang.annotation.Annotation;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.mc.java.code.annotation.check.Annotations.findAnnotation;
+import static io.spine.tools.java.code.testing.annnotation.Annotations.findInternalAnnotation;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MainDefinitionAnnotationCheck implements SourceCheck {
+public class NestedTypesAnnotationCheck implements SourceCheck {
 
-    private final Class<? extends Annotation> annotation;
     private final boolean shouldBeAnnotated;
 
-    public MainDefinitionAnnotationCheck(boolean shouldBeAnnotated) {
-        this(Internal.class, shouldBeAnnotated);
-    }
-
-    public MainDefinitionAnnotationCheck(Class<? extends Annotation> annotation,
-                                         boolean shouldBeAnnotated) {
-        this.annotation = annotation;
+    public NestedTypesAnnotationCheck(boolean shouldBeAnnotated) {
         this.shouldBeAnnotated = shouldBeAnnotated;
     }
 
     @Override
-    public void accept(@Nullable AbstractJavaSource<JavaClassSource> source) {
-        checkNotNull(source);
-        Optional<? extends AnnotationSource<?>> annotationSource =
-                findAnnotation(source, annotation);
-        if (shouldBeAnnotated) {
-            assertTrue(annotationSource.isPresent(),
-                       format("%s should be annotated with %s.",
-                              source.getCanonicalName(),
-                              annotation.getName()));
-        } else {
-            assertFalse(annotationSource.isPresent(),
-                        format("%s should NOT be annotated with %s.",
-                               source.getCanonicalName(),
-                               annotation.getName()));
+    public void accept(@Nullable AbstractJavaSource<JavaClassSource> outerClass) {
+        checkNotNull(outerClass);
+        for (JavaSource<?> nestedType : outerClass.getNestedTypes()) {
+            Optional<?> annotation = findInternalAnnotation(nestedType);
+            if (shouldBeAnnotated) {
+                assertTrue(annotation.isPresent(),
+                           format("%s is not annotated.", nestedType.getQualifiedName()));
+            } else {
+                assertFalse(annotation.isPresent(),
+                            format("%s is annotated.", nestedType.getQualifiedName()));
+            }
         }
     }
 }

@@ -29,7 +29,7 @@ package io.spine.tools.mc.java.code.annotation;
 import com.google.common.collect.ImmutableSet;
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
-import io.spine.tools.mc.java.code.annotation.given.FakeAnnotator;
+import io.spine.tools.mc.java.gradle.annotate.given.FakeAnnotator;
 import org.checkerframework.checker.regex.qual.Regex;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
