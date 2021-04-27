@@ -30,7 +30,7 @@ package spine.tools.protoc;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.tools.mc.java.protoc";
+option java_package = "io.spine.tools.mc.java.gradle.given";
 option java_outer_classname = "TestGeneratorsProto";
 option java_multiple_files = true;
 

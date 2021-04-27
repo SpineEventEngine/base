@@ -31,18 +31,17 @@ import io.spine.base.EntityState;
 import io.spine.base.EventMessage;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
-import io.spine.tools.mc.java.code.UuidMethodFactory;
+import io.spine.tools.java.code.UuidMethodFactory;
 import io.spine.code.java.ClassName;
 import io.spine.tools.mc.java.gradle.Interfaces;
-import io.spine.tools.java.protoc.MessageSelectorFactory;
+import io.spine.tools.mc.java.gradle.selector.MessageSelectorFactory;
 import io.spine.tools.mc.java.gradle.Methods;
 import io.spine.tools.java.protoc.SpineProtocConfig;
-import io.spine.tools.mc.java.protoc.given.UuidMethodFactory;
 
 import static io.spine.base.MessageFile.COMMANDS;
 import static io.spine.base.MessageFile.EVENTS;
 import static io.spine.base.MessageFile.REJECTIONS;
-import static io.spine.tools.java.gradle.selector.MessageSelectorFactory.suffix;
+import static io.spine.tools.mc.java.gradle.selector.MessageSelectorFactory.suffix;
 
 /**
  * A helper class for {@link io.spine.tools.java.protoc.SpineProtocConfig}s creation.

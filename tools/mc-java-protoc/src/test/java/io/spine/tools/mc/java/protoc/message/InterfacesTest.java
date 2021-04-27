@@ -28,10 +28,9 @@ package io.spine.tools.mc.java.protoc.message;
 
 import io.spine.tools.java.protoc.ConfigByPattern;
 import io.spine.tools.java.protoc.FilePattern;
-import io.spine.tools.java.protoc.FilePatterns;
 import io.spine.tools.mc.java.protoc.given.TestInterface;
-import io.spine.tools.mc.java.protoc.message.tests.ProjectCreated;
 import io.spine.tools.mc.java.protoc.message.tests.OuterMessage;
+import io.spine.tools.mc.java.protoc.message.tests.ProjectCreated;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -43,6 +42,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.Assertions.assertNpe;
 import static io.spine.tools.java.protoc.FilePatterns.filePrefix;
+import static io.spine.tools.java.protoc.FilePatterns.fileRegex;
 import static io.spine.tools.java.protoc.FilePatterns.fileSuffix;
 
 @DisplayName("`GenerateInterfaces` should")
@@ -89,7 +89,7 @@ final class InterfacesTest {
         @DisplayName("does not match pattern")
         @Test
         void messageDoesNotMatchPattern() {
-            assertEmptyResult(TestInterface.class.getName(), FilePatterns.fileRegex("wrong"));
+            assertEmptyResult(TestInterface.class.getName(), fileRegex("wrong"));
         }
 
         @DisplayName("is not top level")

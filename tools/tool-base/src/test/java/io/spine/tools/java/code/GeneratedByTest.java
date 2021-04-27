@@ -24,12 +24,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.code.gen.java;
+package io.spine.tools.java.code;
 
 import com.google.common.truth.StringSubject;
 import com.squareup.javapoet.AnnotationSpec;
 import io.spine.testing.UtilityClassTest;
-import io.spine.tools.mc.java.code.GeneratedBy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

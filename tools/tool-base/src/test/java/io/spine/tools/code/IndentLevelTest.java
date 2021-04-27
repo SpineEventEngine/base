@@ -24,15 +24,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.code.gen;
+package io.spine.tools.code;
 
-import io.spine.tools.code.Indent;
-import io.spine.tools.code.IndentLevel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.code.IndentLevel.zero;
 import static io.spine.testing.Assertions.assertIllegalArgument;
+import static io.spine.tools.code.IndentLevel.zero;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("`IndentationLevel` should")

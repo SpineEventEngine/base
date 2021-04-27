@@ -36,10 +36,14 @@ dependencies {
     implementation(project(":base"))
     implementation(project(":tool-base"))
     implementation(project(":plugin-base"))
-//    implementation(project(":mc-java"))
 
     testImplementation(project(":testlib"))
     testImplementation(project(":mute-logging"))
+
+    // Add the Model Compiler as a test dependency so that we can use the classes defined
+    // in this module for composing code generation requests.
+    //
+    testImplementation(project(":mc-java"))
 }
 
 tasks.jar {

@@ -24,19 +24,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.gradle;
+package io.spine.tools.mc.java.gradle.selector;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.testing.NullPointerTester;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.code.proto.FileName;
-import io.spine.tools.mc.java.gradle.selector.EntityStateSelector;
-import io.spine.tools.mc.java.gradle.selector.MessageSelectorFactory;
-import io.spine.tools.mc.java.gradle.selector.PatternSelector;
-import io.spine.tools.mc.java.gradle.selector.PrefixSelector;
-import io.spine.tools.mc.java.gradle.selector.RegexSelector;
-import io.spine.tools.mc.java.gradle.selector.SuffixSelector;
-import io.spine.tools.mc.java.gradle.selector.UuidMessageSelector;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

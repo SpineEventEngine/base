@@ -29,9 +29,9 @@ package io.spine.tools.mc.java.protoc.given;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.compiler.PluginProtos;
 import io.spine.option.OptionsProto;
-import io.spine.tools.java.protoc.Interfaces;
+import io.spine.tools.mc.java.gradle.Interfaces;
 import io.spine.tools.mc.java.gradle.Methods;
-import io.spine.tools.java.protoc.NestedClasses;
+import io.spine.tools.mc.java.gradle.NestedClasses;
 import io.spine.tools.java.protoc.SpineProtocConfig;
 
 import java.io.File;

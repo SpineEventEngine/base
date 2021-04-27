@@ -23,38 +23,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+syntax = "proto3";
 
-package io.spine.tools.mc.java.protoc.given;
+package spine.test.code.java;
 
-import com.google.common.collect.ImmutableList;
-import com.google.errorprone.annotations.Immutable;
-import com.squareup.javapoet.MethodSpec;
-import io.spine.tools.java.code.Method;
-import io.spine.tools.java.code.MethodFactory;
-import io.spine.tools.mc.java.gradle.UuidMessage;
-import io.spine.type.MessageType;
+import "spine/options.proto";
 
-import javax.lang.model.element.Modifier;
-import java.util.List;
+option (type_url_prefix) = "type.spine.io";
+option java_package="io.spine.test.code.java";
+option java_multiple_files = true;
+option java_outer_classname = "UuidMessageProto";
 
-/**
- * A test-only implementation of a {@link MethodFactory} to be used with
- * {@link UuidMessage UuidMessage}.
- */
-@Immutable
-public class UuidMethodFactory implements MethodFactory {
+// Only for usage in `UuidMethodFactoryTest` class.
 
-    private static final MethodSpec methodSpec =
-            MethodSpec.methodBuilder("isUuid")
-                      .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                      .returns(boolean.class)
-                      .addCode("return true;")
-                      .build();
-    
-    private static final Method TEST_METHOD = new Method(methodSpec);
-
-    @Override
-    public List<Method> generateMethodsFor(MessageType messageType) {
-        return ImmutableList.of(TEST_METHOD);
-    }
+// A message with a single `uuid` field.
+message StubUuidMessage {
+    string uuid = 1;
 }

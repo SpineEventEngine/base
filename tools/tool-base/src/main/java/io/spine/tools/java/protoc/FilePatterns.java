@@ -24,8 +24,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.gradle.selector;
+package io.spine.tools.java.protoc;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.spine.tools.java.protoc.FilePattern;
 import org.checkerframework.checker.regex.qual.Regex;
 
@@ -34,7 +35,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * An utility for working with {@link FilePattern}.
  */
-final class FilePatterns {
+@VisibleForTesting
+public final class FilePatterns {
 
     /** Prevents instantiation of this utility class. */
     private FilePatterns() {
@@ -43,7 +45,7 @@ final class FilePatterns {
     /**
      * Creates a new {@link FilePattern} with a {@code suffix} field filled.
      */
-    static FilePattern fileSuffix(@Regex String suffix) {
+    public static FilePattern fileSuffix(@Regex String suffix) {
         checkNotNull(suffix);
         return FilePattern.newBuilder()
                           .setSuffix(suffix)
@@ -53,7 +55,7 @@ final class FilePatterns {
     /**
      * Creates a new {@link FilePattern} with a {@code prefix} field filled.
      */
-    static FilePattern filePrefix(@Regex String prefix) {
+    public static FilePattern filePrefix(@Regex String prefix) {
         checkNotNull(prefix);
         return FilePattern.newBuilder()
                           .setPrefix(prefix)
@@ -63,7 +65,7 @@ final class FilePatterns {
     /**
      * Creates a new {@link FilePattern} with a {@code regex} field filled.
      */
-    static FilePattern fileRegex(@Regex String regex) {
+    public static FilePattern fileRegex(@Regex String regex) {
         checkNotNull(regex);
         return FilePattern.newBuilder()
                           .setRegex(regex)

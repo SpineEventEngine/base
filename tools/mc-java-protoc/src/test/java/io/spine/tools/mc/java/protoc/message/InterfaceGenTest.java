@@ -44,6 +44,7 @@ import io.spine.tools.java.fs.SourceFile;
 import io.spine.code.java.PackageName;
 import io.spine.tools.java.protoc.CodeGenerator;
 import io.spine.tools.java.protoc.SpineProtocConfig;
+import io.spine.tools.mc.java.gradle.Interfaces;
 import io.spine.tools.mc.java.protoc.message.tests.EveryIsGeneratedProto;
 import io.spine.tools.mc.java.protoc.message.tests.EveryIsInOneFileProto;
 import io.spine.tools.mc.java.protoc.message.tests.EveryIsTestProto;
@@ -124,7 +125,7 @@ final class InterfaceGenTest {
 
     @BeforeEach
     void setUp() {
-        io.spine.tools.java.protoc.Interfaces interfaces = SpineProtocConfigGiven.defaultInterfaces();
+        Interfaces interfaces = SpineProtocConfigGiven.defaultInterfaces();
         SpineProtocConfig config = SpineProtocConfig
                 .newBuilder()
                 .setAddInterfaces(interfaces.asProtocConfig())
@@ -375,7 +376,7 @@ final class InterfaceGenTest {
 
     @Nested
     @DisplayName("generate message interfaces for")
-    class Interfaces {
+    class GenInterfaces {
 
         @Test
         @DisplayName("`(is)` if `generate = true`")

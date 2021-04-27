@@ -29,7 +29,6 @@ package io.spine.tools.java.code.annotation;
 import com.google.common.collect.ImmutableSet;
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
-import io.spine.tools.mc.java.gradle.annotate.given.FakeAnnotator;
 import org.checkerframework.checker.regex.qual.Regex;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +39,7 @@ import static io.spine.tools.java.code.annotation.ModuleAnnotator.translate;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("ModuleAnnotator should")
-class ProtoModuleAnnotatorTest {
+class ModuleAnnotatorTest {
 
     private static final ClassName ANNOTATION = ClassName.of(Internal.class);
     private static final ApiOption OPTION = ApiOption.internal();
@@ -61,23 +60,22 @@ class ProtoModuleAnnotatorTest {
     @DisplayName("annotate by class name pattern")
     void annotateByClassPattern() {
         @Regex String classNamePattern = ".+OrBuilder";
-        FakeAnnotator.Factory factory = new FakeAnnotator.Factory();
-        ModuleAnnotator annotator = ModuleAnnotator
-                .newBuilder()
+        StubAnnotator.Factory factory = new StubAnnotator.Factory();
+        ModuleAnnotator annotator = ModuleAnnotator.newBuilder()
                 .setInternalPatterns(ImmutableSet.of(classNamePattern))
                 .setAnnotatorFactory(factory)
                 .setInternalAnnotation(ANNOTATION)
                 .build();
         annotator.annotate();
-        assertEquals(ANNOTATION, factory.getAnnotationName());
-        assertEquals(compile(classNamePattern), factory.getClassNamePattern());
+        assertEquals(ANNOTATION, factory.annotationName());
+        assertEquals(compile(classNamePattern), factory.classNamePattern());
     }
 
     @Test
     @DisplayName("annotate by method name pattern")
     void annotateByMethodPattern() {
         String methodName = "setInternalValue";
-        FakeAnnotator.Factory factory = new FakeAnnotator.Factory();
+        StubAnnotator.Factory factory = new StubAnnotator.Factory();
         ModuleAnnotator annotator = ModuleAnnotator
                 .newBuilder()
                 .setInternalMethodNames(ImmutableSet.of(methodName))
@@ -85,12 +83,12 @@ class ProtoModuleAnnotatorTest {
                 .setInternalAnnotation(ANNOTATION)
                 .build();
         annotator.annotate();
-        assertEquals(ANNOTATION, factory.getAnnotationName());
-        assertEquals(ImmutableSet.of(exactly(methodName)), factory.getMethodPatterns());
+        assertEquals(ANNOTATION, factory.annotationName());
+        assertEquals(ImmutableSet.of(exactly(methodName)), factory.methodPatterns());
     }
 
     private static void checkAnnotateByOption(ApiOption option) {
-        FakeAnnotator.Factory factory = new FakeAnnotator.Factory();
+        StubAnnotator.Factory factory = new StubAnnotator.Factory();
         Job optionJob = translate(option).as(ANNOTATION);
         ModuleAnnotator annotator = ModuleAnnotator
                 .newBuilder()
@@ -99,7 +97,7 @@ class ProtoModuleAnnotatorTest {
                 .setInternalAnnotation(ANNOTATION)
                 .build();
         annotator.annotate();
-        assertEquals(ANNOTATION, factory.getAnnotationName());
-        assertEquals(option, factory.getOption());
+        assertEquals(ANNOTATION, factory.annotationName());
+        assertEquals(option, factory.option());
     }
 }

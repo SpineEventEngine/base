@@ -35,8 +35,8 @@ import io.spine.test.code.StandaloneMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import spine.test.code.InheritAllSourceFileTest.InheritAllMessage;
-import spine.test.code.InheritPackage;
+import spine.test.mc.InheritAllSourceFileTest.InheritAllMessage;
+import spine.test.mc.InheritPackage;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

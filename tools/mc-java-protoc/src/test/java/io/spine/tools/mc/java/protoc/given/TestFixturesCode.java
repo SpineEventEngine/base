@@ -23,20 +23,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-syntax = "proto3";
 
-package spine.test.code.generate.uuid;
+package io.spine.tools.mc.java.protoc.given;
 
-import "spine/options.proto";
+import com.google.protobuf.DescriptorProtos;
+import io.spine.tools.mc.java.gradle.given.EnhancedWithCodeGeneration;
+import io.spine.tools.mc.java.gradle.given.TestGeneratorsProto;
+import io.spine.type.MessageType;
 
-option (type_url_prefix) = "type.spine.io";
-option java_package="io.spine.test.code.generate.uuid";
-option java_multiple_files = true;
-option java_outer_classname = "UuidMessageProto";
+/**
+ * Constants for the code generation integration tests.
+ */
+public final class TestFixturesCode {
 
-// Only for usage in `UuidMethodFactoryTest` class.
+    public static final String test_generators = "spine/test/mc/java/test_generators.proto";
+    public static final String test_protos = "spine/tools/protoc/method/test_protos.proto";
 
-// A message with a single `uuid` field.
-message UuidMessage {
-    string uuid = 1;
+    private TestFixturesCode() {
+    }
+
+    /**
+     * The type of the message defined in the {@code test_generators.proto} file.
+     */
+    public static MessageType messageType() {
+        return new MessageType(EnhancedWithCodeGeneration.getDescriptor());
+    }
+
+    public static DescriptorProtos.FileDescriptorProto protoFile() {
+        return TestGeneratorsProto.getDescriptor().toProto();
+    }
 }

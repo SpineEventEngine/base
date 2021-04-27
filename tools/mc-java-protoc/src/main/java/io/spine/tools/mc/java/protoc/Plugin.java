@@ -26,6 +26,7 @@
 
 package io.spine.tools.mc.java.protoc;
 
+import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
@@ -95,19 +96,23 @@ public final class Plugin {
 
     private static CodeGeneratorRequest readRequest() {
         try {
-            CodeGeneratorRequest request = CodeGeneratorRequest
-                    .parseFrom(System.in, OptionExtensionRegistry.instance());
+            CodeGeneratorRequest request =
+                    CodeGeneratorRequest.parseFrom(System.in, extensionRegistry());
             return request;
         } catch (IOException e) {
             throw newIllegalStateException(e, "Unable to read Code Generator Request.");
         }
     }
 
+    private static ExtensionRegistry extensionRegistry() {
+        return OptionExtensionRegistry.instance();
+    }
+
     private static SpineProtocConfig readConfig(CodeGeneratorRequest request) {
         String configFilePath = decodeBase64(request.getParameter());
         try (FileInputStream fis = new FileInputStream(configFilePath)) {
             SpineProtocConfig config = SpineProtocConfig
-                    .parseFrom(fis, OptionExtensionRegistry.instance());
+                    .parseFrom(fis, extensionRegistry());
             return config;
         } catch (InvalidProtocolBufferException e) {
             throw newIllegalStateException(e, "Unable to decode Spine Protoc Plugin config.");

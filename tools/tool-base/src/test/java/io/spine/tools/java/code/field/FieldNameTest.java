@@ -24,10 +24,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.code.gen.java;
+package io.spine.tools.java.code.field;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.tools.java.code.field.FieldName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

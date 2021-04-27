@@ -24,23 +24,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.gradle.selector;
+package io.spine.tools.mc.java.protoc.given;
 
-import io.spine.tools.java.protoc.FilePattern;
-import io.spine.tools.java.protoc.FilePatterns;
-import org.checkerframework.checker.regex.qual.Regex;
+import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
+import com.squareup.javapoet.MethodSpec;
+import io.spine.tools.java.code.Method;
+import io.spine.tools.java.code.MethodFactory;
+import io.spine.type.MessageType;
+
+import javax.lang.model.element.Modifier;
+import java.util.List;
 
 /**
- * A selector of proto files whose names qualify the supplied regex.
+ * A test-only implementation of a {@link MethodFactory} to be used with
+ * {@link UuidMessage UuidMessage}.
  */
-public final class RegexSelector extends PatternSelector {
+@Immutable
+public class StubUuidMethodFactory implements MethodFactory {
 
-    RegexSelector(@Regex String regex) {
-        super(regex);
-    }
+    private static final MethodSpec methodSpec =
+            MethodSpec.methodBuilder("isUuid")
+                      .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                      .returns(boolean.class)
+                      .addCode("return true;")
+                      .build();
+    
+    private static final Method TEST_METHOD = new Method(methodSpec);
 
     @Override
-    public FilePattern toProto() {
-        return FilePatterns.fileRegex(getPattern());
+    public List<Method> generateMethodsFor(MessageType messageType) {
+        return ImmutableList.of(TEST_METHOD);
     }
 }

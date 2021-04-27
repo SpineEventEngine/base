@@ -24,12 +24,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.gradle;
+package io.spine.tools.java.code;
 
-import io.spine.test.code.generate.uuid.UuidMessage;
-import io.spine.tools.java.code.Method;
-import io.spine.tools.java.code.UuidMethodFactory;
+import io.spine.test.code.java.StubUuidMessage;
 import io.spine.type.MessageType;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -55,42 +54,52 @@ final class UuidMethodFactoryTest {
     @Nested
     final class CreateNew {
 
+        private final Class<?> cls = StubUuidMessage.class;
+        private MessageType uuidType;
+
+        @BeforeEach
+        void createType() {
+            uuidType = new MessageType(StubUuidMessage.getDescriptor());
+        }
+
         @DisplayName("`generate` method")
         @Test
         void generateMethod() {
-            MessageType uuidType = new MessageType(UuidMessage.getDescriptor());
             List<Method> methods = factory.generateMethodsFor(uuidType);
             Method generate = methods.get(0);
+            String expectedCode =
+                "/**\n" +
+                " * Creates a new instance with a random UUID value.\n" +
+                " * @see java.util.UUID#randomUUID\n" +
+                " */\n" +
+                "public static final " + cls.getName() + " generate() {\n" +
+                "  return newBuilder().setUuid(java.util.UUID.randomUUID().toString()).build();\n" +
+                "}\n";
             assertThat(generate.toString())
-                    .isEqualTo("/**\n" +
-                                       " * Creates a new instance with a random UUID value.\n" +
-                                       " * @see java.util.UUID#randomUUID\n" +
-                                       " */\n" +
-                                       "public static final io.spine.test.code.generate.uuid.UuidMessage generate() {\n" +
-                                       "  return newBuilder().setUuid(java.util.UUID.randomUUID().toString()).build();\n" +
-                                       "}\n");
+                    .isEqualTo(expectedCode);
         }
 
         @DisplayName("`of` method")
         @Test
         void ofMethod() {
-            MessageType uuidType = new MessageType(UuidMessage.getDescriptor());
             List<Method> methods = factory.generateMethodsFor(uuidType);
             Method of = methods.get(1);
+            String expectedCode =
+                    "/**\n" +
+                    " * Creates a new instance from the passed value.\n" +
+                    " * @throws java.lang.IllegalArgumentException if the passed value is not a valid UUID string\n" +
+                    " */\n" +
+                    "public static final " + cls.getName() + " of(java.lang.String uuid) {\n" +
+                    "  io.spine.util.Preconditions2.checkNotEmptyOrBlank(uuid);\n" +
+                    "  try {\n" +
+                    "    java.util.UUID.fromString(uuid);\n" +
+                    "  } catch(java.lang.NumberFormatException e) {\n" +
+                    "    throw io.spine.util.Exceptions.newIllegalArgumentException(e, \"Invalid UUID string: %s\", uuid);\n" +
+                    "  }\n" +
+                    "  return newBuilder().setUuid(uuid).build();\n" +
+                    "}\n";
             assertThat(of.toString())
-                    .isEqualTo("/**\n" +
-                                       " * Creates a new instance from the passed value.\n" +
-                                       " * @throws java.lang.IllegalArgumentException if the passed value is not a valid UUID string\n" +
-                                       " */\n" +
-                                       "public static final io.spine.test.code.generate.uuid.UuidMessage of(java.lang.String uuid) {\n" +
-                                       "  io.spine.util.Preconditions2.checkNotEmptyOrBlank(uuid);\n" +
-                                       "  try {\n" +
-                                       "    java.util.UUID.fromString(uuid);\n" +
-                                       "  } catch(java.lang.NumberFormatException e) {\n" +
-                                       "    throw io.spine.util.Exceptions.newIllegalArgumentException(e, \"Invalid UUID string: %s\", uuid);\n" +
-                                       "  }\n" +
-                                       "  return newBuilder().setUuid(uuid).build();\n" +
-                                       "}\n");
+                    .isEqualTo(expectedCode);
         }
     }
 }

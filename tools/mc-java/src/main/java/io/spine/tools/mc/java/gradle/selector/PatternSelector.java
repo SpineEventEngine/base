@@ -59,7 +59,7 @@ public abstract class PatternSelector extends MessageSelector {
     /**
      * Converts current selector to its Protobuf configuration counterpart.
      */
-    abstract FilePattern toProto();
+    public abstract FilePattern toProto();
 
     @Override
     public String toString() {

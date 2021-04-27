@@ -76,7 +76,7 @@ class FileSetTest {
     @DisplayName("return all declared top-level messages")
     void returnTopLevelMessages() {
         ImmutableSet<FileName> fileNames =
-                ImmutableSet.of(FileName.of("spine/test/code/proto/file_set_test.proto"));
+                ImmutableSet.of(FileName.of("spine/test/mc/proto/file_set_test.proto"));
         FileSet set = fileSet.find(fileNames);
         List<MessageType> types = set.topLevelMessages();
         assertThat(types).hasSize(1);

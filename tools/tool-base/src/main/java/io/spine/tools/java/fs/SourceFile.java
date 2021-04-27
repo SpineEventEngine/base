@@ -30,6 +30,10 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
+import com.google.protobuf.Descriptors;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FileDescriptor;
+import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.code.fs.AbstractSourceFile;
 import io.spine.code.java.ClassName;
 import io.spine.code.java.PackageName;
@@ -133,9 +137,22 @@ public final class SourceFile extends AbstractSourceFile {
      *         message type
      * @return the relative file path
      */
-    public static SourceFile forMessage(DescriptorProto message,
-                                        FileDescriptorProto file) {
+    public static SourceFile forMessage(DescriptorProto message, FileDescriptorProto file) {
         return forMessageOrInterface(message, file, FileName::forMessage);
+    }
+
+    /**
+     * Obtains the generated file for the specified message descriptor.
+     *
+     * @param message
+     *         the descriptor of the message type for which we obtain the source code file
+     * @param file
+     *         the descriptor of the proto file which contains the declaration of the
+     *         message type
+     * @return the relative file path
+     */
+    public static SourceFile forMessage(Descriptor message, FileDescriptor file) {
+        return forMessage(message.toProto(), file.toProto());
     }
 
     /**
@@ -235,6 +252,19 @@ public final class SourceFile extends AbstractSourceFile {
         FileName filename = FileName.forService(service);
         SourceFile result = generatedFolderOf(file).resolve(filename);
         return result;
+    }
+
+    /**
+     * Obtains the generated file for the specified service descriptor.
+     *
+     * @param service
+     *         the service descriptor to get the file for
+     * @param file
+     *         the file descriptor containing the enum descriptor
+     * @return the relative file path
+     */
+    public static SourceFile forService(ServiceDescriptor service, FileDescriptor file) {
+        return forService(service.toProto(), file.toProto());
     }
 
     private static void ensureDeclares(ServiceDescriptorProto service, FileDescriptorProto file) {

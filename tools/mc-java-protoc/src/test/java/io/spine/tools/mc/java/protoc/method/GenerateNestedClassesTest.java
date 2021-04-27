@@ -27,12 +27,11 @@
 package io.spine.tools.mc.java.protoc.method;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.tools.java.protoc.ConfigByPattern;
-import io.spine.tools.java.protoc.FilePatterns;
 import io.spine.tools.java.code.NestedClassFactory;
-import io.spine.tools.mc.java.protoc.given.TestNestedClassFactory;
 import io.spine.tools.java.protoc.CompilerOutput;
+import io.spine.tools.java.protoc.ConfigByPattern;
 import io.spine.tools.mc.java.protoc.ExternalClassLoader;
+import io.spine.tools.mc.java.protoc.given.TestNestedClassFactory;
 import io.spine.tools.mc.java.protoc.message.GenerateNestedClasses;
 import io.spine.tools.mc.java.protoc.method.given.TestClassLoader;
 import io.spine.tools.mc.java.protoc.nested.TaskView;
@@ -47,6 +46,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.java.protoc.FilePatterns.filePrefix;
+import static io.spine.tools.java.protoc.FilePatterns.fileSuffix;
 
 @DisplayName("`GenerateNestedClasses` should")
 class GenerateNestedClassesTest {
@@ -94,7 +94,7 @@ class GenerateNestedClassesTest {
         @DisplayName("message does not match pattern")
         void messageDoesNotMatchPattern() {
             ConfigByPattern config = newTaskConfig()
-                    .setPattern(FilePatterns.filePrefix("non-matching"))
+                    .setPattern(filePrefix("non-matching"))
                     .build();
             Collection<CompilerOutput> output = newTask(config).generateFor(testType());
             assertThat(output).isEmpty();
@@ -105,7 +105,7 @@ class GenerateNestedClassesTest {
     @DisplayName("generate nested classes if the message matches the pattern")
     void generateNewMethods() {
         ConfigByPattern config = newTaskConfig()
-                .setPattern(FilePatterns.fileSuffix("test_fields.proto"))
+                .setPattern(fileSuffix("test_fields.proto"))
                 .build();
         Collection<CompilerOutput> output = newTask(config).generateFor(testType());
         assertThat(output).isNotEmpty();
@@ -113,7 +113,7 @@ class GenerateNestedClassesTest {
 
     static GenerateNestedClasses newTask() {
         return newTask(newTaskConfig()
-                               .setPattern(FilePatterns.fileSuffix("test_columns.proto"))
+                               .setPattern(fileSuffix("test_columns.proto"))
                                .build());
     }
 

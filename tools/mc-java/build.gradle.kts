@@ -54,6 +54,9 @@ dependencies {
     testImplementation(gradleTestKit())
     testImplementation(project(":testlib"))
     testImplementation(project(":plugin-testlib"))
+
+    // For running integration tests. See `PluginTest.java` for details.
+    testImplementation(project(":mc-java-protoc"))
 }
 
 protobuf {

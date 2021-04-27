@@ -29,8 +29,7 @@ package io.spine.tools.mc.java.protoc.method;
 import io.spine.tools.java.protoc.Classpath;
 import io.spine.tools.java.protoc.ConfigByPattern;
 import io.spine.tools.java.protoc.FilePattern;
-import io.spine.tools.java.protoc.FilePatterns;
-import io.spine.tools.java.protoc.MethodFactory;
+import io.spine.tools.java.code.MethodFactory;
 import io.spine.tools.mc.java.protoc.ExternalClassLoader;
 import io.spine.tools.mc.java.protoc.given.TestMethodFactory;
 import io.spine.tools.mc.java.protoc.test.method.EnhancedWithPatternBasedCodeGeneration;
@@ -45,6 +44,8 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.Assertions.assertNpe;
 import static io.spine.tools.java.protoc.FilePatterns.filePrefix;
+import static io.spine.tools.java.protoc.FilePatterns.fileRegex;
+import static io.spine.tools.java.protoc.FilePatterns.fileSuffix;
 
 @DisplayName("`GenerateMethods` should")
 final class GenerateMethodsTest {
@@ -94,7 +95,7 @@ final class GenerateMethodsTest {
         @Test
         @DisplayName("message does not match pattern")
         void messageDoesNotMatchPattern() {
-            assertEmptyResult(TestMethodFactory.class.getName(), FilePatterns.fileRegex("wrong"));
+            assertEmptyResult(TestMethodFactory.class.getName(), fileRegex("wrong"));
         }
 
         private void assertEmptyResult(String factoryName, FilePattern filePattern) {
@@ -110,7 +111,7 @@ final class GenerateMethodsTest {
     @DisplayName("generate new methods")
     void generateNewMethods() {
         ConfigByPattern config = newTaskConfig(TestMethodFactory.class.getName())
-                .setPattern(FilePatterns.fileSuffix("test_patterns.proto"))
+                .setPattern(fileSuffix("test_patterns.proto"))
                 .build();
         assertThat(newTask(config).generateFor(testType()))
                 .isNotEmpty();

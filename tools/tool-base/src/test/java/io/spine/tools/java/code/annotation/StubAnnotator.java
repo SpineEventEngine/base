@@ -24,28 +24,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.gradle.annotate.given;
+package io.spine.tools.java.code.annotation;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
-import io.spine.tools.java.code.annotation.Annotator;
-import io.spine.tools.java.code.annotation.AnnotatorFactory;
-import io.spine.tools.java.code.annotation.ApiOption;
-import io.spine.tools.java.code.annotation.ClassNamePattern;
-import io.spine.tools.java.code.annotation.MethodPattern;
 
 import java.nio.file.Paths;
 
 /**
  * A test-only implementation of {@link Annotator}.
  *
- * @see io.spine.tools.mc.java.gradle.annotate.given.FakeAnnotator.Factory
+ * @see StubAnnotator.Factory
  */
-public final class FakeAnnotator extends Annotator {
+final class StubAnnotator extends Annotator {
 
-    private FakeAnnotator() {
+    private StubAnnotator() {
         super(ClassName.of(Internal.class), ImmutableList.of(), Paths.get("./"));
     }
 
@@ -57,9 +52,9 @@ public final class FakeAnnotator extends Annotator {
     /**
      * A test-only implementation of {@link AnnotatorFactory}.
      *
-     * <p>All the methods memoize parameter values and return a {@link FakeAnnotator}.
+     * <p>All the methods memoize parameter values and return a {@link StubAnnotator}.
      */
-    public static final class Factory implements AnnotatorFactory {
+    static final class Factory implements AnnotatorFactory {
 
         private ClassName annotationName;
         private ApiOption option;
@@ -70,35 +65,35 @@ public final class FakeAnnotator extends Annotator {
         public Annotator createFileAnnotator(ClassName annotation, ApiOption option) {
             this.annotationName = annotation;
             this.option = option;
-            return new FakeAnnotator();
+            return new StubAnnotator();
         }
 
         @Override
         public Annotator createMessageAnnotator(ClassName annotation, ApiOption option) {
             this.annotationName = annotation;
             this.option = option;
-            return new FakeAnnotator();
+            return new StubAnnotator();
         }
 
         @Override
         public Annotator createFieldAnnotator(ClassName annotation, ApiOption option) {
             this.annotationName = annotation;
             this.option = option;
-            return new FakeAnnotator();
+            return new StubAnnotator();
         }
 
         @Override
         public Annotator createServiceAnnotator(ClassName annotation, ApiOption option) {
             this.annotationName = annotation;
             this.option = option;
-            return new FakeAnnotator();
+            return new StubAnnotator();
         }
 
         @Override
         public Annotator createPatternAnnotator(ClassName annotation, ClassNamePattern pattern) {
             this.annotationName = annotation;
             this.classNamePattern = pattern;
-            return new FakeAnnotator();
+            return new StubAnnotator();
         }
 
         @Override
@@ -106,22 +101,22 @@ public final class FakeAnnotator extends Annotator {
                                                ImmutableSet<MethodPattern> patterns) {
             this.annotationName = annotation;
             this.methodPatterns = patterns;
-            return new FakeAnnotator();
+            return new StubAnnotator();
         }
 
-        public ClassName getAnnotationName() {
+        ClassName annotationName() {
             return annotationName;
         }
 
-        public ApiOption getOption() {
+        ApiOption option() {
             return option;
         }
 
-        public ClassNamePattern getClassNamePattern() {
+        ClassNamePattern classNamePattern() {
             return classNamePattern;
         }
 
-        public ImmutableSet<MethodPattern> getMethodPatterns() {
+        ImmutableSet<MethodPattern> methodPatterns() {
             return methodPatterns;
         }
     }

@@ -33,7 +33,6 @@ import io.spine.tools.java.protoc.AddFields;
 import io.spine.tools.java.protoc.Classpath;
 import io.spine.tools.java.protoc.CompilerOutput;
 import io.spine.tools.java.protoc.ConfigByPattern;
-import io.spine.tools.java.protoc.FilePatterns;
 import io.spine.tools.java.protoc.SpineProtocConfig;
 import io.spine.tools.mc.java.protoc.nested.Task;
 import io.spine.tools.mc.java.protoc.nested.TaskView;
@@ -46,6 +45,7 @@ import java.util.Collection;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static io.spine.tools.java.protoc.FilePatterns.fileSuffix;
 
 @DisplayName("`FieldGenerator` should")
 class FieldGenTest {
@@ -85,7 +85,7 @@ class FieldGenTest {
         ConfigByPattern pattern = ConfigByPattern
                 .newBuilder()
                 .setValue(SubscribableField.class.getName())
-                .setPattern(FilePatterns.fileSuffix("test_fields.proto"))
+                .setPattern(fileSuffix("test_fields.proto"))
                 .build();
         AddFields addFields = AddFields
                 .newBuilder()

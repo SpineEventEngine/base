@@ -37,14 +37,15 @@ import io.spine.tools.java.protoc.AbstractCompilerOutput;
 import io.spine.tools.java.protoc.CodeGenerator;
 import io.spine.tools.java.protoc.CompilerOutput;
 import io.spine.tools.java.protoc.InsertionPoint;
-import io.spine.tools.java.protoc.Interfaces;
+import io.spine.tools.mc.java.gradle.Interfaces;
 import io.spine.tools.mc.java.gradle.Methods;
-import io.spine.tools.java.protoc.NestedClasses;
-import io.spine.tools.java.protoc.MessageSelectorFactory;
-import io.spine.tools.java.protoc.SuffixSelector;
+import io.spine.tools.mc.java.gradle.NestedClasses;
+import io.spine.tools.mc.java.gradle.selector.MessageSelectorFactory;
+import io.spine.tools.mc.java.gradle.selector.SuffixSelector;
+import io.spine.tools.mc.java.protoc.given.StubUuidMethodFactory;
+import io.spine.tools.mc.java.protoc.given.TestFixturesCode;
 import io.spine.tools.mc.java.protoc.given.TestInterface;
 import io.spine.tools.mc.java.protoc.given.TestNestedClassFactory;
-import io.spine.tools.mc.java.protoc.given.UuidMethodFactory;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,13 +61,14 @@ import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.Assertions.assertNpe;
 import static io.spine.tools.mc.java.protoc.given.CodeGeneratorRequestGiven.protocConfig;
 import static io.spine.tools.mc.java.protoc.given.CodeGeneratorRequestGiven.requestBuilder;
+import static io.spine.tools.mc.java.protoc.given.TestFixturesCode.test_generators;
+import static io.spine.tools.mc.java.protoc.given.TestFixturesCode.messageType;
+import static io.spine.tools.mc.java.protoc.given.TestFixturesCode.protoFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 @DisplayName("`SpineProtoGenerator` should")
 final class CodeGeneratorTest {
-
-    private static final String TEST_PROTO_FILE = "spine/tools/protoc/test_generators.proto";
 
     private Path testPluginConfig;
 
@@ -82,17 +84,16 @@ final class CodeGeneratorTest {
         MessageSelectorFactory messages = interfaces.messages();
         interfaces.mark(messages.uuid(), ClassName.of(TestInterface.class));
         Methods methods = new Methods();
-        methods.applyFactory(UuidMethodFactory.class.getName(), messages.uuid());
+        methods.applyFactory(StubUuidMethodFactory.class.getName(), messages.uuid());
         NestedClasses nestedClasses = new NestedClasses();
         nestedClasses.applyFactory(TestNestedClassFactory.class.getCanonicalName(),
                                    new SuffixSelector("*file.proto"));
         CodeGeneratorRequest request = requestBuilder()
-                .addProtoFile(TestGeneratorsProto.getDescriptor()
-                                                 .toProto())
-                .addFileToGenerate(TEST_PROTO_FILE)
+                .addProtoFile(protoFile())
+                .addFileToGenerate(test_generators)
                 .setParameter(protocConfig(interfaces, methods, nestedClasses, testPluginConfig))
                 .build();
-        MessageType type = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
+        MessageType type = TestFixturesCode.messageType();
         File firstFile = File
                 .newBuilder()
                 .setName("file.proto")
@@ -118,14 +119,13 @@ final class CodeGeneratorTest {
     void concatenateGeneratedCode() {
         Methods methods = new Methods();
         MessageSelectorFactory messages = methods.messages();
-        methods.applyFactory(UuidMethodFactory.class.getName(), messages.uuid());
+        methods.applyFactory(StubUuidMethodFactory.class.getName(), messages.uuid());
         CodeGeneratorRequest request = requestBuilder()
-                .addProtoFile(TestGeneratorsProto.getDescriptor()
-                                                 .toProto())
-                .addFileToGenerate(TEST_PROTO_FILE)
+                .addProtoFile(protoFile())
+                .addFileToGenerate(test_generators)
                 .setParameter(protocConfig(methods, testPluginConfig))
                 .build();
-        MessageType type = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
+        MessageType type = messageType();
         String firstMethod = "public void test1(){}";
         String secondMethod = "public void test2(){}";
         File firstFile = File
@@ -156,14 +156,13 @@ final class CodeGeneratorTest {
     void dropCodeDuplicates() {
         Methods methods = new Methods();
         MessageSelectorFactory messages = methods.messages();
-        methods.applyFactory(UuidMethodFactory.class.getName(), messages.uuid());
+        methods.applyFactory(StubUuidMethodFactory.class.getName(), messages.uuid());
         CodeGeneratorRequest request = requestBuilder()
-                .addProtoFile(TestGeneratorsProto.getDescriptor()
-                                                 .toProto())
-                .addFileToGenerate(TEST_PROTO_FILE)
+                .addProtoFile(protoFile())
+                .addFileToGenerate(test_generators)
                 .setParameter(protocConfig(methods, testPluginConfig))
                 .build();
-        MessageType type = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
+        MessageType type =  messageType();
         String method = "public void test1(){}";
         File generated = File
                 .newBuilder()

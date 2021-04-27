@@ -48,7 +48,7 @@ import static io.spine.tools.mc.java.gradle.ProtocTaskConfigs.byPatternConfig;
  * @see Methods
  * @see NestedClasses
  */
-public abstract class ModelCompilerConfiguration<C extends Message> {
+abstract class ModelCompilerConfiguration<C extends Message> {
 
     private final Map<PatternSelector, ClassName> patterns;
 
@@ -82,14 +82,14 @@ public abstract class ModelCompilerConfiguration<C extends Message> {
     /**
      * Obtains current unique pattern configurations.
      */
-    protected ImmutableSet<Map.Entry<PatternSelector, ClassName>> patternConfigurations() {
+    ImmutableSet<Map.Entry<PatternSelector, ClassName>> patternConfigurations() {
         return ImmutableSet.copyOf(patterns.entrySet());
     }
 
     /**
      * Converts {@link PatternSelector} — {@link ClassName} pair to {@link ConfigByPattern}.
      */
-    public static ConfigByPattern toPatternConfig(Map.Entry<PatternSelector, ClassName> e) {
+    static ConfigByPattern toPatternConfig(Map.Entry<PatternSelector, ClassName> e) {
         PatternSelector patternSelector = e.getKey();
         ClassName className = e.getValue();
         return byPatternConfig(className, patternSelector.toProto());

@@ -24,9 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.code.gen;
+package io.spine.tools.code;
 
-import io.spine.tools.code.Indent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

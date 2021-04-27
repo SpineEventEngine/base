@@ -27,19 +27,20 @@
 package io.spine.tools.mc.java.gradle.selector;
 
 import io.spine.tools.java.protoc.FilePattern;
+import io.spine.tools.java.protoc.FilePatterns;
 import org.checkerframework.checker.regex.qual.Regex;
 
 /**
  * A selector of proto files whose names end with a certain postfix.
  */
-final class SuffixSelector extends PatternSelector {
+public final class SuffixSelector extends PatternSelector {
 
     public SuffixSelector(@Regex String suffix) {
         super(suffix);
     }
 
     @Override
-    FilePattern toProto() {
+    public FilePattern toProto() {
         return FilePatterns.fileSuffix(getPattern());
     }
 }

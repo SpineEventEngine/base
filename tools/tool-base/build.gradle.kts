@@ -33,6 +33,11 @@ dependencies {
     api(project(":base"))
     api(JavaPoet.lib)
     api(JavaX.annotations)
-
+    api(io.spine.internal.dependency.Roaster.api) {
+        exclude(group = "com.google.guava")
+    }
+    api(io.spine.internal.dependency.Roaster.jdt) {
+        exclude(group = "com.google.guava")
+    }
     testImplementation(project(":testlib"))
 }

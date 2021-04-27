@@ -27,7 +27,6 @@
 package io.spine.tools.mc.java.protoc;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
@@ -35,16 +34,16 @@ import io.spine.code.java.ClassName;
 import io.spine.code.proto.OptionExtensionRegistry;
 import io.spine.tools.java.fs.SourceFile;
 import io.spine.tools.java.protoc.InsertionPoint;
-import io.spine.tools.java.protoc.Interfaces;
-import io.spine.tools.java.protoc.MessageSelectorFactory;
+import io.spine.tools.mc.java.gradle.Interfaces;
 import io.spine.tools.mc.java.gradle.Methods;
-import io.spine.tools.java.protoc.NestedClasses;
-import io.spine.tools.java.protoc.PatternSelector;
+import io.spine.tools.mc.java.gradle.NestedClasses;
+import io.spine.tools.mc.java.gradle.selector.MessageSelectorFactory;
+import io.spine.tools.mc.java.gradle.selector.PatternSelector;
+import io.spine.tools.mc.java.protoc.given.StubUuidMethodFactory;
+import io.spine.tools.mc.java.protoc.given.TestFixturesCode;
 import io.spine.tools.mc.java.protoc.given.TestInterface;
 import io.spine.tools.mc.java.protoc.given.TestMethodFactory;
 import io.spine.tools.mc.java.protoc.given.TestNestedClassFactory;
-import io.spine.tools.mc.java.protoc.given.UuidMethodFactory;
-import io.spine.tools.mc.java.protoc.test.method.TestMethodProtos;
 import io.spine.type.MessageType;
 import io.spine.validate.ValidatingBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,32 +60,31 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.tools.java.protoc.MessageSelectorFactory.prefix;
-import static io.spine.tools.java.protoc.MessageSelectorFactory.regex;
-import static io.spine.tools.java.protoc.MessageSelectorFactory.suffix;
+import static com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.parseFrom;
 import static io.spine.tools.mc.java.protoc.given.CodeGeneratorRequestGiven.protocConfig;
 import static io.spine.tools.mc.java.protoc.given.CodeGeneratorRequestGiven.requestBuilder;
+import static io.spine.tools.mc.java.protoc.given.TestFixturesCode.protoFile;
+import static io.spine.tools.mc.java.protoc.given.TestFixturesCode.test_generators;
 import static io.spine.tools.mc.java.protoc.given.TestMethodFactory.TEST_METHOD;
 import static io.spine.tools.mc.java.protoc.given.TestNestedClassFactory.NESTED_CLASS;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("`Plugin` should")
-final class PluginTest {
+@DisplayName("Protoc `Plugin` should")
+final class ProtocPluginTest {
 
     private static final String TEST_PROTO_SUFFIX = "_generators.proto";
-    private static final String TEST_PROTO_PREFIX = "spine/tools/protoc/test_";
+    private static final String TEST_PROTO_PREFIX = "spine/test/mc/java/test_";
     private static final String TEST_PROTO_REGEX = ".*protoc/.*rators.pro.*";
-    private static final String TEST_PROTO_FILE = "spine/tools/protoc/test_generators.proto";
     private static final String TEST_MESSAGE_TYPE_PARAMETER = "<EnhancedWithCodeGeneration>";
     private static final String BUILDER_INTERFACE =
             ValidatingBuilder.class.getName() + TEST_MESSAGE_TYPE_PARAMETER + ',';
 
-    private Path testPluginConfig;
+    private Path configPath;
 
     @BeforeEach
     void setUp(@TempDir Path tempDirPath) {
-        testPluginConfig = tempDirPath.resolve("test-spine-protoc-plugin.pb");
+        configPath = tempDirPath.resolve("test-spine-protoc-plugin.pb");
     }
 
     @Test
@@ -94,17 +92,17 @@ final class PluginTest {
     void processSuffixPatterns() {
         Interfaces interfaces = new Interfaces();
         MessageSelectorFactory messages = interfaces.messages();
-        PatternSelector suffixSelector = messages.inFiles(suffix(TEST_PROTO_SUFFIX));
+        PatternSelector suffixSelector = messages.inFiles(
+                MessageSelectorFactory.suffix(TEST_PROTO_SUFFIX));
         interfaces.mark(suffixSelector, ClassName.of(TestInterface.class));
         Methods methods = new Methods();
         methods.applyFactory(TestMethodFactory.class.getName(), suffixSelector);
         NestedClasses nestedClasses = new NestedClasses();
         nestedClasses.applyFactory(TestNestedClassFactory.class.getName(), suffixSelector);
         CodeGeneratorRequest request = requestBuilder()
-                .addProtoFile(TestGeneratorsProto.getDescriptor()
-                                                 .toProto())
-                .addFileToGenerate(TEST_PROTO_FILE)
-                .setParameter(protocConfig(interfaces, methods, nestedClasses, testPluginConfig))
+                .addProtoFile(protoFile())
+                .addFileToGenerate(test_generators)
+                .setParameter(protocConfig(interfaces, methods, nestedClasses, configPath))
                 .build();
 
         CodeGeneratorResponse response = runPlugin(request);
@@ -116,13 +114,12 @@ final class PluginTest {
     void generateUuidMethod() {
         Methods methods = new Methods();
         MessageSelectorFactory messages = methods.messages();
-        methods.applyFactory(UuidMethodFactory.class.getName(), messages.uuid());
+        methods.applyFactory(StubUuidMethodFactory.class.getName(), messages.uuid());
 
         CodeGeneratorRequest request = requestBuilder()
-                .addProtoFile(TestMethodProtos.getDescriptor()
-                                              .toProto())
-                .addFileToGenerate("spine/tools/protoc/method/test_protos.proto")
-                .setParameter(protocConfig(methods, testPluginConfig))
+                .addProtoFile(protoFile())
+                .addFileToGenerate(TestFixturesCode.test_protos)
+                .setParameter(protocConfig(methods, configPath))
                 .build();
         CodeGeneratorResponse response = runPlugin(request);
 
@@ -136,7 +133,8 @@ final class PluginTest {
     void processPrefixPatterns() {
         Interfaces interfaces = new Interfaces();
         MessageSelectorFactory messages = interfaces.messages();
-        PatternSelector prefixSelector = messages.inFiles(prefix(TEST_PROTO_PREFIX));
+        PatternSelector prefixSelector = messages.inFiles(
+                MessageSelectorFactory.prefix(TEST_PROTO_PREFIX));
         interfaces.mark(prefixSelector, ClassName.of(TestInterface.class));
         Methods methods = new Methods();
         methods.applyFactory(TestMethodFactory.class.getName(), prefixSelector);
@@ -144,10 +142,9 @@ final class PluginTest {
         nestedClasses.applyFactory(TestNestedClassFactory.class.getName(), prefixSelector);
 
         CodeGeneratorRequest request = requestBuilder()
-                .addProtoFile(TestGeneratorsProto.getDescriptor()
-                                                 .toProto())
-                .addFileToGenerate(TEST_PROTO_FILE)
-                .setParameter(protocConfig(interfaces, methods, nestedClasses, testPluginConfig))
+                .addProtoFile(protoFile())
+                .addFileToGenerate(test_generators)
+                .setParameter(protocConfig(interfaces, methods, nestedClasses, configPath))
                 .build();
 
         CodeGeneratorResponse response = runPlugin(request);
@@ -159,7 +156,8 @@ final class PluginTest {
     void processRegexPatterns() {
         Interfaces interfaces = new Interfaces();
         MessageSelectorFactory messages = interfaces.messages();
-        PatternSelector regexSelector = messages.inFiles(regex(TEST_PROTO_REGEX));
+        PatternSelector regexSelector = messages.inFiles(
+                MessageSelectorFactory.regex(TEST_PROTO_REGEX));
         interfaces.mark(regexSelector, ClassName.of(TestInterface.class));
         Methods methods = new Methods();
         methods.applyFactory(TestMethodFactory.class.getName(), regexSelector);
@@ -167,10 +165,9 @@ final class PluginTest {
         nestedClasses.applyFactory(TestNestedClassFactory.class.getName(), regexSelector);
 
         CodeGeneratorRequest request = requestBuilder()
-                .addProtoFile(TestGeneratorsProto.getDescriptor()
-                                                 .toProto())
-                .addFileToGenerate(TEST_PROTO_FILE)
-                .setParameter(protocConfig(interfaces, methods, nestedClasses, testPluginConfig))
+                .addProtoFile(protoFile())
+                .addFileToGenerate(test_generators)
+                .setParameter(protocConfig(interfaces, methods, nestedClasses, configPath))
                 .build();
 
         CodeGeneratorResponse response = runPlugin(request);
@@ -180,19 +177,16 @@ final class PluginTest {
     @Test
     @DisplayName("mark generated message builders with the `ValidatingBuilder` interface")
     void markBuildersWithInterface() {
-        FileDescriptor testGeneratorsDescriptor = TestGeneratorsProto.getDescriptor();
-        String protocConfigPath = protocConfig(new Interfaces(),
-                                               new Methods(),
-                                               new NestedClasses(),
-                                               testPluginConfig);
+        String protocConfigPath =
+                protocConfig(new Interfaces(), new Methods(), new NestedClasses(), configPath);
         CodeGeneratorRequest request = requestBuilder()
-                .addProtoFile(testGeneratorsDescriptor.toProto())
-                .addFileToGenerate(TEST_PROTO_FILE)
+                .addProtoFile(protoFile())
+                .addFileToGenerate(test_generators)
                 .setParameter(protocConfigPath)
                 .build();
         CodeGeneratorResponse response = runPlugin(request);
 
-        MessageType type = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
+        MessageType type = TestFixturesCode.messageType();
         String expectedPointName = InsertionPoint.builder_implements.forType(type);
 
         SourceFile expectedSourceFile = SourceFile.forType(type);
@@ -228,8 +222,7 @@ final class PluginTest {
              PrintStream testOutput = new PrintStream(bos)
         ) {
             withSystemStreams(testInput, testOutput, () -> Plugin.main(new String[]{}));
-            return CodeGeneratorResponse.parseFrom(bos.toByteArray(),
-                                                   OptionExtensionRegistry.instance());
+            return parseFrom(bos.toByteArray(), OptionExtensionRegistry.instance());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

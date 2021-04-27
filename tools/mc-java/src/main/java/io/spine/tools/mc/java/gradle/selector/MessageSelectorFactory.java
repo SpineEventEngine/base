@@ -48,7 +48,7 @@ public final class MessageSelectorFactory {
     @VisibleForTesting static final String SUFFIX = "suffix";
     @VisibleForTesting static final String REGEX = "regex";
 
-    static final MessageSelectorFactory INSTANCE = new MessageSelectorFactory();
+    public static final MessageSelectorFactory INSTANCE = new MessageSelectorFactory();
 
     /** Prevents direct instantiation. **/
     private MessageSelectorFactory() {

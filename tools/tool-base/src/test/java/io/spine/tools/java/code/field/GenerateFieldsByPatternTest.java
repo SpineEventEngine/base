@@ -24,14 +24,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.protoc.field;
+package io.spine.tools.java.code.field;
 
 import com.google.common.testing.NullPointerTester;
 import io.spine.base.SubscribableField;
-import io.spine.tools.java.code.field.FieldFactory;
-import io.spine.tools.java.code.field.GenerateFieldsByPattern;
 import io.spine.tools.java.protoc.ConfigByPattern;
-import io.spine.tools.java.protoc.FilePatterns;
 import io.spine.tools.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.nested.TaskView;
 import io.spine.type.MessageType;
@@ -45,6 +42,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.java.protoc.FilePatterns.filePrefix;
+import static io.spine.tools.java.protoc.FilePatterns.fileSuffix;
 
 @DisplayName("`GenerateFieldsByPattern` task should")
 final class GenerateFieldsByPatternTest {
@@ -95,7 +93,7 @@ final class GenerateFieldsByPatternTest {
         @DisplayName("message does not match pattern")
         void messageDoesNotMatchPattern() {
             ConfigByPattern config = newTaskConfig()
-                    .setPattern(FilePatterns.filePrefix("non-matching"))
+                    .setPattern(filePrefix("non-matching"))
                     .build();
             Collection<CompilerOutput> output = newTask(config).generateFor(testType());
             assertThat(output).isEmpty();
@@ -106,7 +104,7 @@ final class GenerateFieldsByPatternTest {
     @DisplayName("generate fields if the message matches the pattern")
     void generateNewMethods() {
         ConfigByPattern config = newTaskConfig()
-                .setPattern(FilePatterns.fileSuffix("test_fields.proto"))
+                .setPattern(fileSuffix("test_fields.proto"))
                 .build();
         Collection<CompilerOutput> output = newTask(config).generateFor(testType());
         assertThat(output).isNotEmpty();
@@ -114,7 +112,7 @@ final class GenerateFieldsByPatternTest {
 
     private GenerateFieldsByPattern newTask() {
         return newTask(newTaskConfig()
-                               .setPattern(FilePatterns.fileSuffix("fields.proto"))
+                               .setPattern(fileSuffix("fields.proto"))
                                .build());
     }
 

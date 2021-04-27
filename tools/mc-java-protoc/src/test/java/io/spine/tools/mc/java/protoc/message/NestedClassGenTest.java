@@ -31,7 +31,6 @@ import io.spine.tools.java.protoc.AddNestedClasses;
 import io.spine.tools.java.protoc.Classpath;
 import io.spine.tools.java.protoc.CompilerOutput;
 import io.spine.tools.java.protoc.ConfigByPattern;
-import io.spine.tools.java.protoc.FilePatterns;
 import io.spine.tools.java.protoc.SpineProtocConfig;
 import io.spine.tools.mc.java.protoc.given.TestNestedClassFactory;
 import io.spine.tools.mc.java.protoc.nested.Task;
@@ -45,6 +44,7 @@ import java.util.Collection;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static io.spine.tools.java.protoc.FilePatterns.fileSuffix;
 
 @DisplayName("`NestedClassGenerator` should")
 class NestedClassGenTest {
@@ -84,7 +84,7 @@ class NestedClassGenTest {
         ConfigByPattern pattern = ConfigByPattern
                 .newBuilder()
                 .setValue(TestNestedClassFactory.class.getName())
-                .setPattern(FilePatterns.fileSuffix("test_fields.proto"))
+                .setPattern(fileSuffix("test_fields.proto"))
                 .build();
         AddNestedClasses addNestedClasses = AddNestedClasses
                 .newBuilder()

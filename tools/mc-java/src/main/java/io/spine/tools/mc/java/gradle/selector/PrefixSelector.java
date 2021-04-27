@@ -27,6 +27,7 @@
 package io.spine.tools.mc.java.gradle.selector;
 
 import io.spine.tools.java.protoc.FilePattern;
+import io.spine.tools.java.protoc.FilePatterns;
 import org.checkerframework.checker.regex.qual.Regex;
 
 /**
@@ -39,7 +40,7 @@ public final class PrefixSelector extends PatternSelector {
     }
 
     @Override
-    FilePattern toProto() {
+    public FilePattern toProto() {
         return FilePatterns.filePrefix(getPattern());
     }
 }
