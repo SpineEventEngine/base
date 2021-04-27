@@ -24,47 +24,65 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.java.code;
+package io.spine.tools.mc.java.gradle.selector;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.TypeSpec;
+import io.spine.tools.java.protoc.FilePattern;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * A field to be attached to a Java class.
+ * A selector which signalizes that the configuration should be applied to all messages declared in
+ * proto files matching some pattern.
  *
- * @implNote A {@code Field} wraps a JavaPoet {@link FieldSpec} which can be added to a JavaPoet
- *         {@link TypeSpec} builder.
+ * @see PrefixSelector
+ * @see RegexSelector
+ * @see SuffixSelector
  */
-public final class Field implements ClassMember {
+public abstract class PatternSelector extends MessageSelector {
 
-    private final FieldSpec fieldSpec;
+    private final String pattern;
 
-    public Field(FieldSpec fieldSpec) {
-        this.fieldSpec = checkNotNull(fieldSpec);
+    PatternSelector(String pattern) {
+        super();
+        this.pattern = checkNotEmptyOrBlank(pattern);
     }
+
+    /**
+     * Returns current file pattern.
+     */
+    String getPattern() {
+        return pattern;
+    }
+
+    /**
+     * Converts current selector to its Protobuf configuration counterpart.
+     */
+    abstract FilePattern toProto();
 
     @Override
-    public void attachTo(TypeSpec.Builder type) {
-        type.addField(fieldSpec);
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                          .add("pattern", pattern)
+                          .toString();
     }
 
+    @SuppressWarnings("EqualsGetClass") // we do want to distinguish different file patterns here
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Field)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Field field = (Field) o;
-        return Objects.equal(fieldSpec, field.fieldSpec);
+        PatternSelector selector = (PatternSelector) o;
+        return Objects.equal(getPattern(), selector.getPattern());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(fieldSpec);
+        return Objects.hashCode(getPattern());
     }
 }

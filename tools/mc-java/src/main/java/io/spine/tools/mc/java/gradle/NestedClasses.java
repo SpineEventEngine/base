@@ -29,6 +29,7 @@ package io.spine.tools.mc.java.gradle;
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.tools.java.protoc.AddNestedClasses;
+import io.spine.tools.mc.java.gradle.selector.PatternSelector;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import static com.google.common.base.Preconditions.checkNotNull;

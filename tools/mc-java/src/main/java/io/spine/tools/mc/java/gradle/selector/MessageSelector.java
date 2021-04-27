@@ -24,47 +24,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.java.code;
+package io.spine.tools.mc.java.gradle.selector;
 
-import com.google.common.base.Objects;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.TypeSpec;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import io.spine.tools.mc.java.gradle.Selector;
 
 /**
- * A field to be attached to a Java class.
- *
- * @implNote A {@code Field} wraps a JavaPoet {@link FieldSpec} which can be added to a JavaPoet
- *         {@link TypeSpec} builder.
+ * An abstract base for selectors targeting {@link com.google.protobuf.Message messages}.
  */
-public final class Field implements ClassMember {
+abstract class MessageSelector implements Selector {
 
-    private final FieldSpec fieldSpec;
+    private boolean enabled = true;
 
-    public Field(FieldSpec fieldSpec) {
-        this.fieldSpec = checkNotNull(fieldSpec);
+    @Override
+    public void disable() {
+        enabled = false;
     }
 
     @Override
-    public void attachTo(TypeSpec.Builder type) {
-        type.addField(fieldSpec);
+    public void enable() {
+        enabled = true;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Field)) {
-            return false;
-        }
-        Field field = (Field) o;
-        return Objects.equal(fieldSpec, field.fieldSpec);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(fieldSpec);
+    public boolean enabled() {
+        return enabled;
     }
 }

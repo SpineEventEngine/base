@@ -42,7 +42,7 @@ import io.spine.tools.mc.java.protoc.given.UuidMethodFactory;
 import static io.spine.base.MessageFile.COMMANDS;
 import static io.spine.base.MessageFile.EVENTS;
 import static io.spine.base.MessageFile.REJECTIONS;
-import static io.spine.tools.mc.java.gradle.MessageSelectorFactory.suffix;
+import static io.spine.tools.java.gradle.selector.MessageSelectorFactory.suffix;
 
 /**
  * A helper class for {@link io.spine.tools.java.protoc.SpineProtocConfig}s creation.

@@ -24,47 +24,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.java.code;
+package io.spine.tools.java.code.annotation;
 
-import com.google.common.base.Objects;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.TypeSpec;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.google.common.collect.ImmutableSet;
+import io.spine.code.java.ClassName;
 
 /**
- * A field to be attached to a Java class.
- *
- * @implNote A {@code Field} wraps a JavaPoet {@link FieldSpec} which can be added to a JavaPoet
- *         {@link TypeSpec} builder.
+ * A factory for {@linkplain Annotator Annotators}.
  */
-public final class Field implements ClassMember {
+public interface AnnotatorFactory {
 
-    private final FieldSpec fieldSpec;
+    Annotator createFileAnnotator(ClassName annotation, ApiOption option);
 
-    public Field(FieldSpec fieldSpec) {
-        this.fieldSpec = checkNotNull(fieldSpec);
-    }
+    Annotator createMessageAnnotator(ClassName annotation, ApiOption option);
 
-    @Override
-    public void attachTo(TypeSpec.Builder type) {
-        type.addField(fieldSpec);
-    }
+    Annotator createFieldAnnotator(ClassName annotation, ApiOption option);
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Field)) {
-            return false;
-        }
-        Field field = (Field) o;
-        return Objects.equal(fieldSpec, field.fieldSpec);
-    }
+    Annotator createServiceAnnotator(ClassName annotation, ApiOption option);
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(fieldSpec);
-    }
+    Annotator createPatternAnnotator(ClassName annotation, ClassNamePattern pattern);
+
+    Annotator createMethodAnnotator(ClassName annotation, ImmutableSet<MethodPattern> patterns);
 }

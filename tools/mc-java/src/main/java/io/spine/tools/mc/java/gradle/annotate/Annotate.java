@@ -26,7 +26,7 @@
 
 package io.spine.tools.mc.java.gradle.annotate;
 
-import io.spine.tools.mc.java.code.annotation.ModuleAnnotator;
+import io.spine.tools.java.code.annotation.ModuleAnnotator;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;

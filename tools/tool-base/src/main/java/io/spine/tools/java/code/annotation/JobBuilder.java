@@ -24,47 +24,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.java.code;
+package io.spine.tools.java.code.annotation;
 
-import com.google.common.base.Objects;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.TypeSpec;
+import io.spine.code.java.ClassName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A field to be attached to a Java class.
+ * A builder of {@link Job} instances.
  *
- * @implNote A {@code Field} wraps a JavaPoet {@link FieldSpec} which can be added to a JavaPoet
- *         {@link TypeSpec} builder.
+ * <p>To receive an instance of the builder, call {@code ModuleAnnotator.translate(...)}.
+ * The builder completes the {@code Job} construction DSL with the {@link #as(ClassName)}
+ * method.
  */
-public final class Field implements ClassMember {
+public final class JobBuilder {
 
-    private final FieldSpec fieldSpec;
+    private final ApiOption targetOption;
 
-    public Field(FieldSpec fieldSpec) {
-        this.fieldSpec = checkNotNull(fieldSpec);
+    JobBuilder(ApiOption targetOption) {
+        this.targetOption = targetOption;
     }
 
-    @Override
-    public void attachTo(TypeSpec.Builder type) {
-        type.addField(fieldSpec);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Field)) {
-            return false;
-        }
-        Field field = (Field) o;
-        return Objects.equal(fieldSpec, field.fieldSpec);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(fieldSpec);
+    /**
+     * Builds an instance of {@code Job}.
+     */
+    public Job as(ClassName annotation) {
+        checkNotNull(annotation);
+        return new OptionJob(targetOption, annotation);
     }
 }

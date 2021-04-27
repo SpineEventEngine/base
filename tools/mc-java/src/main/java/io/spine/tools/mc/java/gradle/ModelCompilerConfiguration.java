@@ -32,6 +32,8 @@ import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.tools.java.protoc.ConfigByPattern;
+import io.spine.tools.mc.java.gradle.selector.MessageSelectorFactory;
+import io.spine.tools.mc.java.gradle.selector.PatternSelector;
 
 import java.util.Map;
 

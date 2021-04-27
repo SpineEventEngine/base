@@ -35,7 +35,7 @@ import io.spine.tools.java.protoc.CodeGenerator;
 import io.spine.tools.java.protoc.CompilerOutput;
 import io.spine.tools.java.protoc.ConfigByPattern;
 import io.spine.tools.mc.java.protoc.ExternalClassLoader;
-import io.spine.tools.java.protoc.MethodFactory;
+import io.spine.tools.java.code.MethodFactory;
 import io.spine.tools.java.protoc.SpineProtocConfig;
 import io.spine.tools.java.protoc.InsertionPoint;
 import io.spine.type.MessageType;

@@ -24,47 +24,49 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.java.code;
+package io.spine.tools.mc.java.gradle.selector;
 
-import com.google.common.base.Objects;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.TypeSpec;
+import io.spine.tools.java.protoc.FilePattern;
+import org.checkerframework.checker.regex.qual.Regex;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A field to be attached to a Java class.
- *
- * @implNote A {@code Field} wraps a JavaPoet {@link FieldSpec} which can be added to a JavaPoet
- *         {@link TypeSpec} builder.
+ * An utility for working with {@link FilePattern}.
  */
-public final class Field implements ClassMember {
+final class FilePatterns {
 
-    private final FieldSpec fieldSpec;
-
-    public Field(FieldSpec fieldSpec) {
-        this.fieldSpec = checkNotNull(fieldSpec);
+    /** Prevents instantiation of this utility class. */
+    private FilePatterns() {
     }
 
-    @Override
-    public void attachTo(TypeSpec.Builder type) {
-        type.addField(fieldSpec);
+    /**
+     * Creates a new {@link FilePattern} with a {@code suffix} field filled.
+     */
+    static FilePattern fileSuffix(@Regex String suffix) {
+        checkNotNull(suffix);
+        return FilePattern.newBuilder()
+                          .setSuffix(suffix)
+                          .build();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Field)) {
-            return false;
-        }
-        Field field = (Field) o;
-        return Objects.equal(fieldSpec, field.fieldSpec);
+    /**
+     * Creates a new {@link FilePattern} with a {@code prefix} field filled.
+     */
+    static FilePattern filePrefix(@Regex String prefix) {
+        checkNotNull(prefix);
+        return FilePattern.newBuilder()
+                          .setPrefix(prefix)
+                          .build();
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(fieldSpec);
+    /**
+     * Creates a new {@link FilePattern} with a {@code regex} field filled.
+     */
+    static FilePattern fileRegex(@Regex String regex) {
+        checkNotNull(regex);
+        return FilePattern.newBuilder()
+                          .setRegex(regex)
+                          .build();
     }
 }

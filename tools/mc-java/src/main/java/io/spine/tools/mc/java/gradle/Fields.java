@@ -34,6 +34,8 @@ import io.spine.tools.java.protoc.AddFields;
 import io.spine.tools.java.protoc.ConfigByType;
 import io.spine.tools.java.protoc.EntityStateConfig;
 import io.spine.tools.java.protoc.TypePattern;
+import io.spine.tools.mc.java.gradle.selector.EntityStateSelector;
+import io.spine.tools.mc.java.gradle.selector.PatternSelector;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -24,47 +24,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.java.code;
+package io.spine.tools.java.code.annotation;
 
-import com.google.common.base.Objects;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.TypeSpec;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.google.common.collect.ImmutableSet;
+import io.spine.code.java.ClassName;
 
 /**
- * A field to be attached to a Java class.
- *
- * @implNote A {@code Field} wraps a JavaPoet {@link FieldSpec} which can be added to a JavaPoet
- *         {@link TypeSpec} builder.
+ * An annotation {@link Job} which annotates methods matching certain naming patterns.
  */
-public final class Field implements ClassMember {
+final class MethodNameJob implements Job {
 
-    private final FieldSpec fieldSpec;
+    private final ImmutableSet<MethodPattern> patterns;
+    private final ClassName javaAnnotation;
 
-    public Field(FieldSpec fieldSpec) {
-        this.fieldSpec = checkNotNull(fieldSpec);
+    MethodNameJob(ImmutableSet<MethodPattern> patterns, ClassName javaAnnotation) {
+        this.patterns = patterns;
+        this.javaAnnotation = javaAnnotation;
     }
 
     @Override
-    public void attachTo(TypeSpec.Builder type) {
-        type.addField(fieldSpec);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Field)) {
-            return false;
-        }
-        Field field = (Field) o;
-        return Objects.equal(fieldSpec, field.fieldSpec);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(fieldSpec);
+    public void execute(AnnotatorFactory factory) {
+        _debug().log("Annotating methods matching patterns `%s` with `%s`.",
+                     patterns, javaAnnotation);
+        factory.createMethodAnnotator(javaAnnotation, patterns)
+               .annotate();
     }
 }

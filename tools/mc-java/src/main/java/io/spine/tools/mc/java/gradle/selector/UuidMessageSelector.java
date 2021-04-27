@@ -24,47 +24,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.java.code;
+package io.spine.tools.mc.java.gradle.selector;
 
-import com.google.common.base.Objects;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.TypeSpec;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import io.spine.code.java.ClassName;
+import io.spine.tools.mc.java.gradle.Interfaces;
+import io.spine.tools.mc.java.gradle.Methods;
 
 /**
- * A field to be attached to a Java class.
+ * A selector which signalizes that the configuration should be applied to all UUID messages.
  *
- * @implNote A {@code Field} wraps a JavaPoet {@link FieldSpec} which can be added to a JavaPoet
- *         {@link TypeSpec} builder.
+ * <p>A UUID message is a message with a single {@code string} field named {@code uuid}.
+ *
+ * @see Interfaces#mark(UuidMessageSelector, ClassName)
+ * @see Methods#applyFactory(String, UuidMessageSelector)
  */
-public final class Field implements ClassMember {
+public final class UuidMessageSelector extends MessageSelector {
 
-    private final FieldSpec fieldSpec;
-
-    public Field(FieldSpec fieldSpec) {
-        this.fieldSpec = checkNotNull(fieldSpec);
-    }
-
-    @Override
-    public void attachTo(TypeSpec.Builder type) {
-        type.addField(fieldSpec);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Field)) {
-            return false;
-        }
-        Field field = (Field) o;
-        return Objects.equal(fieldSpec, field.fieldSpec);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(fieldSpec);
+    UuidMessageSelector() {
+        super();
     }
 }

@@ -26,10 +26,10 @@
 
 package io.spine.tools.mc.java.gradle.annotate;
 
-import io.spine.tools.mc.java.code.annotation.AnnotatorFactory;
-import io.spine.tools.mc.java.code.annotation.DefaultAnnotatorFactory;
-import io.spine.tools.mc.java.code.annotation.Job;
-import io.spine.tools.mc.java.code.annotation.ModuleAnnotator;
+import io.spine.tools.java.code.annotation.AnnotatorFactory;
+import io.spine.tools.java.code.annotation.DefaultAnnotatorFactory;
+import io.spine.tools.java.code.annotation.Job;
+import io.spine.tools.java.code.annotation.ModuleAnnotator;
 import io.spine.tools.mc.java.gradle.Extension;
 import org.gradle.api.Project;
 
@@ -37,14 +37,14 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static io.spine.tools.mc.java.code.annotation.ApiOption.beta;
-import static io.spine.tools.mc.java.code.annotation.ApiOption.experimental;
-import static io.spine.tools.mc.java.code.annotation.ApiOption.internal;
-import static io.spine.tools.mc.java.code.annotation.ApiOption.spi;
-import static io.spine.tools.mc.java.code.annotation.ModuleAnnotator.translate;
+import static io.spine.tools.java.code.annotation.ApiOption.beta;
+import static io.spine.tools.java.code.annotation.ApiOption.experimental;
+import static io.spine.tools.java.code.annotation.ApiOption.internal;
+import static io.spine.tools.java.code.annotation.ApiOption.spi;
+import static io.spine.tools.java.code.annotation.ModuleAnnotator.translate;
 
 /**
- * Creates a {@link io.spine.tools.mc.java.code.annotation.ModuleAnnotator ModuleAnnotator} for
+ * Creates a {@link io.spine.tools.java.code.annotation.ModuleAnnotator ModuleAnnotator} for
  * the passed Gradle project.
  */
 final class ModuleAnnotatorFactory {

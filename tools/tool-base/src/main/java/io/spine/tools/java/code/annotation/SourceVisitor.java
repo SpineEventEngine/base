@@ -24,47 +24,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.java.code;
+package io.spine.tools.java.code.annotation;
 
-import com.google.common.base.Objects;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.TypeSpec;
+import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
+import org.jboss.forge.roaster.model.source.JavaSource;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.function.Consumer;
 
 /**
- * A field to be attached to a Java class.
+ * A {@link AbstractJavaSource} visitor.
  *
- * @implNote A {@code Field} wraps a JavaPoet {@link FieldSpec} which can be added to a JavaPoet
- *         {@link TypeSpec} builder.
+ * <p>Used to perform some actions with {@link AbstractJavaSource}.
+ * A typical scenario is modification of the source or its validation.
+ *
+ * @param <T> the type of {@link JavaSource} to visit
  */
-public final class Field implements ClassMember {
-
-    private final FieldSpec fieldSpec;
-
-    public Field(FieldSpec fieldSpec) {
-        this.fieldSpec = checkNotNull(fieldSpec);
-    }
-
-    @Override
-    public void attachTo(TypeSpec.Builder type) {
-        type.addField(fieldSpec);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Field)) {
-            return false;
-        }
-        Field field = (Field) o;
-        return Objects.equal(fieldSpec, field.fieldSpec);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(fieldSpec);
-    }
+@FunctionalInterface
+interface SourceVisitor<T extends JavaSource<T>> extends Consumer<AbstractJavaSource<T>> {
 }

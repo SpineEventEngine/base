@@ -28,6 +28,7 @@ package io.spine.tools.mc.java.gradle;
 
 import io.spine.test.code.generate.uuid.UuidMessage;
 import io.spine.tools.java.code.Method;
+import io.spine.tools.java.code.UuidMethodFactory;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

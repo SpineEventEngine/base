@@ -24,31 +24,55 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.java.code;
+package io.spine.tools.java.code.annotation;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.TypeSpec;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * A field to be attached to a Java class.
- *
- * @implNote A {@code Field} wraps a JavaPoet {@link FieldSpec} which can be added to a JavaPoet
- *         {@link TypeSpec} builder.
+ * A pattern matching a method signature.
  */
-public final class Field implements ClassMember {
+public final class MethodPattern {
 
-    private final FieldSpec fieldSpec;
+    private final String name;
 
-    public Field(FieldSpec fieldSpec) {
-        this.fieldSpec = checkNotNull(fieldSpec);
+    private MethodPattern(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Creates a new pattern which matches method with the name exactly as specified.
+     *
+     * @param methodName
+     *         the method name
+     * @return new {@code MethodPattern}
+     */
+    static MethodPattern exactly(String methodName) {
+        checkNotNull(methodName);
+        checkNotEmptyOrBlank(methodName);
+        return new MethodPattern(methodName);
+    }
+
+    /**
+     * Tries to match the given method name against this pattern.
+     *
+     * @param methodName
+     *         the method name to match
+     * @return {@code true} if the method name matches this pattern, {@code false} otherwise
+     */
+    boolean matches(String methodName) {
+        checkNotNull(methodName);
+        return methodName.equals(name);
     }
 
     @Override
-    public void attachTo(TypeSpec.Builder type) {
-        type.addField(fieldSpec);
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                          .add("name", name)
+                          .toString();
     }
 
     @Override
@@ -56,15 +80,15 @@ public final class Field implements ClassMember {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Field)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Field field = (Field) o;
-        return Objects.equal(fieldSpec, field.fieldSpec);
+        MethodPattern pattern = (MethodPattern) o;
+        return Objects.equal(name, pattern.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(fieldSpec);
+        return Objects.hashCode(name);
     }
 }

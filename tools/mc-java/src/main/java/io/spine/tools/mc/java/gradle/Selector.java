@@ -26,6 +26,8 @@
 
 package io.spine.tools.mc.java.gradle;
 
+import io.spine.tools.mc.java.gradle.selector.UuidMessageSelector;
+
 /**
  * Represents a Protoc Spine plugin configuration selector.
  *

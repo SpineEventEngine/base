@@ -30,6 +30,8 @@ import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.tools.java.protoc.AddMethods;
 import io.spine.tools.java.protoc.UuidConfig;
+import io.spine.tools.mc.java.gradle.selector.PatternSelector;
+import io.spine.tools.mc.java.gradle.selector.UuidMessageSelector;
 import org.checkerframework.checker.signature.qual.FullyQualifiedName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
