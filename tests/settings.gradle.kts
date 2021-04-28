@@ -28,7 +28,7 @@ include("annotator")
 include("factories")
 include("entity-queries")
 include("known-types")
-include("model-compiler")
+include("mc-java")
 include("rejection")
 include("validating-options")
 include("validation")
@@ -40,10 +40,10 @@ include("validation-gen")
  * See the `includeBuild(...)` block below for more info.
  */
 val links = mapOf(
-        "io.spine:spine-base"                 to ":base",
-        "io.spine.tools:spine-tool-base"      to ":tool-base",
-        "io.spine.tools:spine-model-compiler" to ":model-compiler",
-        "io.spine:spine-testlib"              to ":testlib"
+        "io.spine:spine-base"            to ":base",
+        "io.spine.tools:spine-tool-base" to ":tool-base",
+        "io.spine.tools:spine-mc-java"   to ":mc-java",
+        "io.spine:spine-testlib"         to ":testlib"
 )
 
 /*
