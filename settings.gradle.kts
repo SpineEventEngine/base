@@ -51,7 +51,7 @@ toolsModule("mute-logging")
 toolsModule("errorprone-checks")
 toolsModule("javadoc-filter")
 toolsModule("javadoc-prettifier")
-toolsModule("model-compiler")
+toolsModule("mc-java")
 
 toolsModule("proto-dart-plugin")
 toolsModule("proto-js-plugin")
