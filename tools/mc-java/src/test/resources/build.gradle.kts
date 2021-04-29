@@ -63,7 +63,7 @@ plugins {
 val commonPath = io.spine.internal.gradle.Scripts.commonPath
 apply {
     plugin("com.google.protobuf")
-    plugin("io.spine.tools.mc-java")
+    plugin("io.spine.mc-java")
     from("$rootDir/test-env.gradle")
     from("${extra["enclosingRootDir"]}/${commonPath}/model-compiler.gradle")
 }

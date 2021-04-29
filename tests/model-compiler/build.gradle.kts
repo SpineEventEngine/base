@@ -30,7 +30,7 @@ import io.spine.tools.protoc.MessageSelectorFactory.suffix
 
 plugins {
     java
-    id("io.spine.tools.mc-java")
+    id("io.spine.mc-java")
 }
 
 dependencies {

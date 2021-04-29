@@ -20,7 +20,7 @@ To use the Spine Model Compiler plugin, use it with the
 [Protobuf Gradle plugin](https://github.com/google/protobuf-gradle-plugin):
 
 ```groovy
-apply plugin: "io.spine.tools.spine-model-compiler"
+apply plugin: "io.spine.mc-java"
 apply plugin: "com.google.protobuf"
 ```
 

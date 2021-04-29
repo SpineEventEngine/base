@@ -85,7 +85,7 @@ subprojects {
     val commonPath = io.spine.internal.gradle.Scripts.commonPath
     apply {
         plugin("com.google.protobuf")
-        plugin("io.spine.tools.mc-java")
+        plugin("io.spine.mc-java")
         plugin("idea")
         from("${baseRoot}/${commonPath}/test-output.gradle")
         from("${baseRoot}/${commonPath}/model-compiler.gradle")
