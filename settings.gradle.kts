@@ -46,9 +46,9 @@ fun toolsModule(name: String) {
 toolsModule("tool-base")
 toolsModule("plugin-base")
 toolsModule("plugin-testlib")
-
 toolsModule("mute-logging")
-toolsModule("errorprone-checks")
+
+toolsModule("mc-java-checks")
 toolsModule("javadoc-filter")
 toolsModule("javadoc-prettifier")
 toolsModule("mc-java")

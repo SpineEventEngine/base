@@ -84,16 +84,15 @@ spinePublishing {
         "base",
         "tool-base",
         "testlib",
-        "mute-logging",
-        "errorprone-checks",
-
-        // Gradle plugins
         "plugin-base",
+        "mute-logging",
+
         "javadoc-filter",
         "javadoc-prettifier",
         "proto-dart-plugin",
         "proto-js-plugin",
         "mc-java",
+        "mc-java-checks",
 
         "plugin-testlib",
 
