@@ -98,7 +98,7 @@ spinePublishing {
         "plugin-testlib",
 
         // Protoc compiler plugin
-        "validation-generator",
+        "mc-java-validation",
         "protoc-plugin"
     )
 }

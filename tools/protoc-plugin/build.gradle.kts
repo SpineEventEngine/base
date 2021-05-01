@@ -32,7 +32,7 @@ group = "io.spine.tools"
 dependencies {
     implementation(project(":tool-base"))
     implementation(project(":plugin-base"))
-    implementation(project(":validation-generator"))
+    implementation(project(":mc-java-validation"))
     implementation(JavaPoet.lib)
     implementation(JavaX.annotations)
 
@@ -44,7 +44,7 @@ dependencies {
 tasks.jar {
     dependsOn(
             ":tool-base:jar",
-            ":validation-generator:jar"
+            ":mc-java-validation:jar"
     )
 
     // See https://stackoverflow.com/questions/35704403/what-are-the-eclipsef-rsa-and-eclipsef-sf-in-a-java-jar-file

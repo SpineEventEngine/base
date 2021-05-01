@@ -56,5 +56,5 @@ toolsModule("mc-java")
 toolsModule("proto-dart-plugin")
 toolsModule("proto-js-plugin")
 
-toolsModule("validation-generator")
+toolsModule("mc-java-validation")
 toolsModule("protoc-plugin")
