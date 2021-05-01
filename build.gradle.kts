@@ -86,19 +86,18 @@ spinePublishing {
         "testlib",
         "plugin-base",
         "mute-logging",
+        "plugin-testlib",
 
         "javadoc-filter",
         "javadoc-style",
-        "proto-dart-plugin",
-        "proto-js-plugin",
+
         "mc-java",
         "mc-java-checks",
-
-        "plugin-testlib",
-
-        // Protoc compiler plugin
         "mc-java-validation",
-        "protoc-plugin"
+        "protoc-plugin",
+
+        "mc-dart",
+        "proto-js-plugin"
     )
 }
 

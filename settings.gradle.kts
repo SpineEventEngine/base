@@ -53,7 +53,7 @@ toolsModule("javadoc-filter")
 toolsModule("javadoc-style")
 toolsModule("mc-java")
 
-toolsModule("proto-dart-plugin")
+toolsModule("mc-dart")
 toolsModule("proto-js-plugin")
 
 toolsModule("mc-java-validation")
