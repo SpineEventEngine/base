@@ -24,13 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.gen.java;
+package io.spine.tools.java.code;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
+import io.spine.code.gen.java.JavaPoetName;
 import io.spine.tools.protoc.Method;
 import io.spine.tools.protoc.MethodFactory;
 import io.spine.type.MessageType;
@@ -55,12 +56,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *     {@code UuidValue} message with a supplied {@code uuid} value.
  * </ul>
  */
-@SuppressWarnings("HardcodedLineSeparator")
-// required by Java Poet. See https://github.com/square/javapoet/issues/552
 @Immutable
+@SuppressWarnings("HardcodedLineSeparator" /* required by Java Poet.
+        See https://github.com/square/javapoet/issues/552 */)
 public final class UuidMethodFactory implements MethodFactory {
 
-    @SuppressWarnings("DuplicateStringLiteralInspection")   // Duplicates in the generated code.
+    @SuppressWarnings("DuplicateStringLiteralInspection" /* Duplicates in the generated code. */)
     private static final String INVALID_STRING_MESSAGE = "Invalid UUID string: %s";
 
     @Override

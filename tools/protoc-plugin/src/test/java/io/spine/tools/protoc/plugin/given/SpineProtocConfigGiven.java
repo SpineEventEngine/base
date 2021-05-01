@@ -31,7 +31,7 @@ import io.spine.base.EntityState;
 import io.spine.base.EventMessage;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
-import io.spine.code.gen.java.UuidMethodFactory;
+import io.spine.tools.java.code.UuidMethodFactory;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.Interfaces;
 import io.spine.tools.protoc.MessageSelectorFactory;
