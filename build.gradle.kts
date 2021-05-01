@@ -94,10 +94,10 @@ spinePublishing {
         "mc-java",
         "mc-java-checks",
         "mc-java-validation",
-        "protoc-plugin",
+        "mc-java-protoc",
 
         "mc-dart",
-        "proto-js-plugin"
+        "mc-js"
     )
 }
 

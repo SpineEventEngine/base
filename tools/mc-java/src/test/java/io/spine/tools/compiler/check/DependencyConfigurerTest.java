@@ -51,7 +51,7 @@ import static io.spine.tools.gradle.compiler.given.Project.newProject;
  *         tests for the `spine-java-checks` plugin.
  */
 @SlowTest
-@DisplayName("DependencyConfigurer should")
+@DisplayName("`DependencyConfigurer` should")
 class DependencyConfigurerTest {
 
     @Test

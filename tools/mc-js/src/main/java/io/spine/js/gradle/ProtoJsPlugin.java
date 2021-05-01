@@ -53,9 +53,9 @@ import static io.spine.tools.gradle.ProtoJsTaskName.generateJsonParsers;
 /**
  * The Gradle plugin which performs additional code generation for Protobuf types.
  *
- * <p>To run the plugin, add the {@code "io.spine.tools:spine-proto-js-plugin:$spineBaseVersion"}
+ * <p>To run the plugin, add the {@code "io.spine.tools:spine-mc-js:$spineBaseVersion"}
  * to the {@code classpath} configuration and add
- * {@code apply plugin: 'io.spine.tools.proto-js-plugin'} to the module generating JS messages.
+ * {@code apply plugin: 'io.spine.mc-js'} to the module generating JS messages.
  *
  * <p>In particular, the plugin:
  * <ul>

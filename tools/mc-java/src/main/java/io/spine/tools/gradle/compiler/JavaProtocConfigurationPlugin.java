@@ -68,7 +68,7 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
     private static final String JAR_EXTENSION = "jar";
     private static final String GRPC_GROUP = "io.grpc";
     private static final String GRPC_PLUGIN_NAME = "protoc-gen-grpc-java";
-    private static final String SPINE_PLUGIN_NAME = "spine-protoc-plugin";
+    private static final String SPINE_PLUGIN_NAME = "spine-mc-java-protoc";
     private static final String EXECUTABLE_CLASSIFIER = "exe";
 
     @Override

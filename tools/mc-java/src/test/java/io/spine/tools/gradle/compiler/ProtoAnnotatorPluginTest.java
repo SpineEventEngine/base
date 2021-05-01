@@ -77,7 +77,7 @@ import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_SERVIC
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.gradle.ModelCompilerTaskName.annotateProto;
 
-@DisplayName("ProtoAnnotatorPlugin should")
+@DisplayName("`ProtoAnnotatorPlugin` should")
 class ProtoAnnotatorPluginTest {
 
     private static final String PROJECT_NAME = "annotator-plugin-test";

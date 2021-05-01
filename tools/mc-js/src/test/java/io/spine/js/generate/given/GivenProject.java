@@ -43,7 +43,7 @@ import static java.util.Collections.singletonList;
 public final class GivenProject {
 
     private static final String TASK_PROTO = "task.proto";
-    private static final String PROJECT_NAME = "proto-js-plugin-test";
+    private static final String PROJECT_NAME = "mc-js-test";
     private static final List<String> PROTO_FILES = singletonList(TASK_PROTO);
 
     /** Prevents instantiation of this utility class. */

@@ -48,13 +48,15 @@ toolsModule("plugin-base")
 toolsModule("plugin-testlib")
 toolsModule("mute-logging")
 
-toolsModule("mc-java-checks")
 toolsModule("javadoc-filter")
 toolsModule("javadoc-style")
+
+
+toolsModule("mc-java-checks")
+toolsModule("mc-java-validation")
+toolsModule("mc-java-protoc")
 toolsModule("mc-java")
 
 toolsModule("mc-dart")
-toolsModule("proto-js-plugin")
+toolsModule("mc-js")
 
-toolsModule("mc-java-validation")
-toolsModule("protoc-plugin")

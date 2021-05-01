@@ -68,7 +68,7 @@ final class CodeGeneratorTest {
 
     @BeforeEach
     void setUp(@TempDir Path tempDirPath) {
-        testPluginConfig = tempDirPath.resolve("test-spine-protoc-plugin.pb");
+        testPluginConfig = tempDirPath.resolve("test-spine-mc-java-protoc.pb");
     }
 
     @DisplayName("process valid `CodeGeneratorRequest`")

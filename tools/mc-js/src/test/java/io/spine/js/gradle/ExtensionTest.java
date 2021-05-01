@@ -50,7 +50,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DisplayName("Extension should")
 class ExtensionTest {
 
-    private static final String PLUGIN_ID = "io.spine.tools.proto-js-plugin";
+    private static final String PLUGIN_ID = "io.spine.mc-js";
 
     private static final String GROUP_ID = "my.company";
     private static final String VERSION = "42";
