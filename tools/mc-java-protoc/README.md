@@ -1,4 +1,4 @@
-# Spine Protobuf Compiler plugin
+# Spine Model Compiler plugin to `protoc`
 
 Spine uses [Google Protobuf](https://developers.google.com/protocol-buffers/) as a model definition
 language. Some of the framework features require compile-time processing of the data model. For that
@@ -83,11 +83,12 @@ configuration.
 
 ## Usage
 
-To enable the Spine `protoc` plugin, use the Spine Gradle plugin and 
-the [Protobuf Gradle plugin](https://github.com/google/protobuf-gradle-plugin):
+Add [Protobuf Gradle plugin](https://github.com/google/protobuf-gradle-plugin)
+and Spine Model Compiler for Java:
+ 
 ```groovy
-apply plugin: "io.spine.mc-java"
 apply plugin: "com.google.protobuf"
+apply plugin: "io.spine.mc-java"
 ```
 
 Make sure to use the Protobuf Gradle plugin of version `0.8.13` or later.
@@ -97,25 +98,26 @@ process performed by Protobuf Gradle plugin.
 
 ## How it works
 
-#### Assembling
+### Assembling
 
 The plugin is a self-executable JAR with the `protoc` plugin.
  
-Both the plugins are published alongside with the Spine Gradle plugin. To update the `protoc` 
-plugin, the user should update the Gradle plugin.
+Both the plugins are published alongside with the [Gradle plugin](../mc-java) of the Model Compiler.
+To update the `protoc` plugin, the user should update the Gradle plugin.
 
-The JAR contains a simple Java program, which reads from stdin and writes into stdout according to 
+The JAR contains a Java program, which reads from `stdin` and writes into `stdout` according to 
 the [Protobuf compiler contract](https://developers.google.com/protocol-buffers/docs/reference/other#plugins).
 
-#### Configuration
+### Configuration
 
-Spine Gradle plugin configures the project with the notation provided by the Protobuf Gradle plugin.
-This includes fetching the required artifacts and referencing them to the Protobuf plugin.
+Model Compiler Gradle plugin configures the project with the notation provided by
+the Protobuf Gradle plugin. This includes fetching the required artifacts and referencing them
+to the Protobuf plugin.
 
 The Protobuf Gradle plugin fetches and launches an executable JAR (a JAR with the main class
 defined in the manifest file).
 
-#### Compilation
+### Compilation
 
 `protoc` invokes our executable and passes a serialized message to it via standard I/O. 
 The JAR executable returns its output to `protoc` (also via standard I/O).
