@@ -37,14 +37,14 @@ buildscript {
 
     val spineVersion: String by extra
     dependencies {
-        classpath("io.spine.tools:spine-javadoc-prettifier:$spineVersion")
+        classpath("io.spine.tools:spine-javadoc-style:$spineVersion")
         classpath(io.spine.internal.dependency.Protobuf.GradlePlugin.lib)
     }
 }
 
 apply(plugin = "java")
 apply(plugin = "com.google.protobuf")
-apply(plugin = "io.spine.tools.protobuf-javadoc-plugin")
+apply(plugin = "io.spine.javadoc-style")
 
 extensions["protoJavadoc"].withGroovyBuilder {
     setProperty("mainGenProtoDir", "generated/main/java")

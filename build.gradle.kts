@@ -88,7 +88,7 @@ spinePublishing {
         "mute-logging",
 
         "javadoc-filter",
-        "javadoc-prettifier",
+        "javadoc-style",
         "proto-dart-plugin",
         "proto-js-plugin",
         "mc-java",

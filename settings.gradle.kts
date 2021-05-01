@@ -50,7 +50,7 @@ toolsModule("mute-logging")
 
 toolsModule("mc-java-checks")
 toolsModule("javadoc-filter")
-toolsModule("javadoc-prettifier")
+toolsModule("javadoc-style")
 toolsModule("mc-java")
 
 toolsModule("proto-dart-plugin")

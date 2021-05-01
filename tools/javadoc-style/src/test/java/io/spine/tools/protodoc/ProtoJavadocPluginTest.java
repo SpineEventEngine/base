@@ -56,7 +56,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("ProtoJavadocPlugin should")
 class ProtoJavadocPluginTest {
 
-    private static final String PLUGIN_ID = "io.spine.tools.protobuf-javadoc-plugin";
+    private static final String PLUGIN_ID = "io.spine.javadoc-style";
 
     private File testProjectDir;
 

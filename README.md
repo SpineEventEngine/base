@@ -11,7 +11,7 @@ This repository contains the code of foundation of the Spine Event Engine framew
 * Gradle plug-ins:
   * [Spine Model Compiler](tools/model-compiler) — transforms a domain model defined in proto files 
     into the Java code.
-  * [Spine Javadoc Prettifier](tools/javadoc-prettifier) — processes Javadocs of generated files.
+  * [Spine Javadoc Prettifier](tools/javadoc-style) — processes Javadocs of generated files.
 * [Protoc plugin](tools/protoc-plugin) — a plug-in for Google Protobuf compiler for generating 
   custom code for framework-specific message types.
 * [Proto JS plugin](tools/proto-js-plugin) — a plug-in that assists Protobuf JS compiler in 

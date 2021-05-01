@@ -38,7 +38,7 @@ import static java.util.regex.Matcher.quoteReplacement;
  *
  * <p>The action will replace all entries like {@code `text`} by {@code {@code text}}.
  *
- * <p>The multi-lined text is not supported, e.g a text as follows will not be handled:
+ * <p>A multi-line text is not supported, e.g a text as follows will not be handled:
  * <pre>{@code
  * `some multi
  * lined text`
