@@ -81,4 +81,10 @@ sourceSets {
 }
 
 // Tests use the Protobuf plugin.
-tasks.test.configure { dependsOn(":mc-java-checks:publishToMavenLocal") }
+tasks.test.configure {
+    dependsOn(
+        ":mc-java-checks:publishToMavenLocal",
+        ":mc-java:publishToMavenLocal",
+        ":mc-java-protoc:publishToMavenLocal"
+    )
+}
