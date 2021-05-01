@@ -18,8 +18,7 @@ This repository contains the code of foundation of the Spine Event Engine framew
   JavaScript code generation.
 * [Spine Javadoc Filter](tools/javadoc-filter) — excludes elements annotated with 
   `io.spine.Internal` from the generated doc.
-* [Spine Error Prone Checks](tools/errorprone-checks) — the custom Error Prone checks for the
-  Spine projects.
+* [Spine Jac Checks](tools/mc-java-checks) — the custom Error Prone checks for Spine-based projects.
 
 These components are used by [core-java](https://github.com/SpineEventEngine/core-java) and are not
 supposed to be used directly by the end user project.

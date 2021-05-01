@@ -40,12 +40,12 @@ import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
 import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
 
 /**
- * Adds a {@code spine-errorprone-checks} dependency to the given project {@link Configuration}.
+ * Adds a {@code spine-java-checks} dependency to the given project {@link Configuration}.
  */
 public final class DependencyConfigurer implements Logging {
 
     @VisibleForTesting
-    static final String SPINE_CHECKER_MODULE = "spine-errorprone-checks";
+    static final String SPINE_CHECKER_MODULE = "spine-java-checks";
 
     private final Configuration configuration;
 
@@ -66,7 +66,7 @@ public final class DependencyConfigurer implements Logging {
     }
 
     /**
-     * Adds the {@code io.spine.tools.spine-errorprone-checks} dependency to the project
+     * Adds the {@code io.spine.tools.spine-java-checks} dependency to the project
      * configuration.
      *
      * <p>If the dependency cannot be resolved, the method does nothing and returns {@code false}.
@@ -85,7 +85,7 @@ public final class DependencyConfigurer implements Logging {
     }
 
     /**
-     * Checks if the given {@code spine-errorprone-checks} dependency version is resolvable.
+     * Checks if the given {@code spine-java-checks} dependency version is resolvable.
      *
      * <p>Uses the configuration copy because the configuration resolution is the irreversible
      * action that can be done only once for any given {@link Configuration}.

@@ -48,7 +48,7 @@ import static io.spine.tools.gradle.compiler.given.Project.newProject;
  *
  * @implNote This test configures the project with real dependencies and repositories which leads
  *         to a slow test execution. In future, it should be removed in favor of proper integration
- *         tests for the `spine-errorprone-checks` plugin.
+ *         tests for the `spine-java-checks` plugin.
  */
 @SlowTest
 @DisplayName("DependencyConfigurer should")

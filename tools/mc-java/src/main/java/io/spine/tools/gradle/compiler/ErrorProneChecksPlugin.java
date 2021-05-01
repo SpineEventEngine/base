@@ -40,7 +40,7 @@ import org.gradle.api.artifacts.Configuration;
  * <p>To work, this plugin requires <a href="https://github.com/tbroyer/gradle-errorprone-plugin">
  * the Error Prone plugin</a> to be applied to the project.
  *
- * <p>The plugin adds a {@code spine-errorprone-checks} dependency to the project's
+ * <p>The plugin adds a {@code spine-java-checks} dependency to the project's
  * {@code annotationProcessor} configuration. For the older Gradle versions (pre {@code 4.6}),
  * where there is no such configuration, the plugin creates it.
  *
