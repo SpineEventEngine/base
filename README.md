@@ -4,39 +4,55 @@
 
 # Spine Event Engine Base
 
-This repository contains the code of foundation of the Spine Event Engine framework which includes:
+This repository contains the foundation of the Spine framework which includes the following modules:
 
-* The framework [base](base) data types and utilities.
-* [Utilities for testing](testlib).
-* Gradle plug-ins:
-  * [Spine Model Compiler](tools/model-compiler) — transforms a domain model defined in proto files 
-    into the Java code.
-  * [Spine Javadoc Prettifier](tools/javadoc-style) — processes Javadocs of generated files.
-* [Protoc plugin](tools/protoc-plugin) — a plug-in for Google Protobuf compiler for generating 
-  custom code for framework-specific message types.
-* [Proto JS plugin](tools/proto-js-plugin) — a plug-in that assists Protobuf JS compiler in 
-  JavaScript code generation.
-* [Spine Javadoc Filter](tools/javadoc-filter) — excludes elements annotated with 
+* **[`base`](base)** — the framework base data types and utilities for working with them.
+* **[`testlib`](testlib)** - utilities for testing.
+
+* **[`tools/javadoc-style`](tools/javadoc-style)** — a Gradle plugin which processes Javadocs of
+  generated Java files to make them look less ugly.
+* **[`tools/javadoc-filter`](tools/javadoc-filter)** — excludes elements annotated with
   `io.spine.Internal` from the generated doc.
-* [Spine Java Checks](tools/mc-java-checks) — the custom Error Prone checks for Spine-based projects.
+  
+  
+* **Model Compiler for Java** which consists of the following sub-modules:
+  * **[`tools/mc-java`](tools/mc-java)** — a Gradle plugin responsible for enabling Java
+    code generation.
+  * **[`tools/mc-java-protoc`](tools/mc-java-protoc)** — plugs-into Google Protobuf compiler for
+    generating framework-specific Java code.
+  * **[`tools/mc-java-protoc`](tools/mc-java-protoc)** — static code analyzers for Spine-based
+  Java projects, implemented as custom Error Prone checks.
+
+  
+* **[`tools/mc-js`](tools/mc-js)** — Model Compiler for JS, a Gradle plug-in that assists Protobuf
+  JS compiler in JavaScript code generation.
+
+* **[`tools/mc-dart`](tools/mc-dart)** — Model Compiler for Dart, a Gradle plugin for generating
+  Dart code. 
 
 These components are used by [core-java](https://github.com/SpineEventEngine/core-java) and are not
 supposed to be used directly by the end user project.
 
 The repository also contains:
 
-* Validating Builders [assembler](base-validating-builders) for `base`.
+* [`base-validating-builders`](base-validating-builders) — a helper module which generates
+  validating builders for the proto types declared in the module `base`. This module avoids circular
+  dependency because Model Compiler for Java also depends on `base`. 
+  See the [module README.md](base-validating-builders/README.md) for more details.
 * A [common base](tools/plugin-base) for Spine Gradle plugins.
 * [Test utilities](tools/plugin-testlib) for Spine plugins.
 * [Integration tests](tests) for all Spine tools.
 
 ### Notes on Coverage
 
-Currently, the coverage stats reflect the hits gathered from unit tests. However, Gradle plugins - 
-a significant part of this repository - are covered with integration tests. During each of those, a 
-standalone Gradle process is launched. The limitations of `jacoco` task API do not allow to include 
-the coverage of such tests into the repository coverage report easily. Therefore, current coverage 
-percentage shown is significantly lower than a real one.
+The coverage stats (as shown on the Codecov badge above) reflect the hits gathered from
+unit tests. However, Gradle plugins — a significant part of this repository — are covered with
+integration tests. During each of those, a standalone Gradle process is launched.
+
+The limitations of `jacoco` task API do not allow to include 
+the coverage of such tests into the repository coverage report easily.
+Therefore, the coverage percentage shown is significantly lower than a real one.
+So, don't be afraid, this code is tested as the rest of the framework.
 
 ### `pull` scripts
 
