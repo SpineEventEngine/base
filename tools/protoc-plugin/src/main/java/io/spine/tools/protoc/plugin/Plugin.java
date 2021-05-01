@@ -38,7 +38,7 @@ import io.spine.tools.protoc.plugin.message.InterfaceGen;
 import io.spine.tools.protoc.plugin.message.ValidationGen;
 import io.spine.tools.protoc.plugin.message.NestedClassGen;
 import io.spine.tools.protoc.plugin.method.MethodGen;
-import io.spine.tools.protoc.query.EntityQueryGen;
+import io.spine.tools.protoc.plugin.query.EntityQueryGen;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
