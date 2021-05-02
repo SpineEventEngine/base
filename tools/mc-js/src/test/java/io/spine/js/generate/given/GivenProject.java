@@ -33,18 +33,15 @@ import io.spine.tools.gradle.testing.GradleProject;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.List;
 
 import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
 import static io.spine.testing.TempDir.withPrefix;
 import static io.spine.tools.gradle.BaseTaskName.build;
-import static java.util.Collections.singletonList;
 
 public final class GivenProject {
 
     private static final String TASK_PROTO = "task.proto";
     private static final String PROJECT_NAME = "mc-js-test";
-    private static final List<String> PROTO_FILES = singletonList(TASK_PROTO);
 
     /** Prevents instantiation of this utility class. */
     private GivenProject() {
@@ -74,7 +71,7 @@ public final class GivenProject {
         GradleProject gradleProject = GradleProject.newBuilder()
                 .setProjectName(PROJECT_NAME)
                 .setProjectFolder(projectDir)
-                .addProtoFiles(PROTO_FILES)
+                .addProtoFile(TASK_PROTO)
                 .build();
         gradleProject.executeTask(build);
     }
