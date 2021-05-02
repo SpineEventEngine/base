@@ -31,7 +31,10 @@ import io.spine.annotation.Internal;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.artifacts.Dependency;
 
+import java.util.function.Supplier;
+
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * A Maven-style remote artifact specification.
@@ -74,11 +77,24 @@ public final class Artifact {
      * @return new instance of {@code Artifact}
      */
     public static Artifact from(Dependency dependency) {
+        String group = ensureProperty(dependency, dependency::getGroup, "group");
+        String name = ensureProperty(dependency, dependency::getName, "name");
+        String version = ensureProperty(dependency, dependency::getVersion, "version");
         return newBuilder()
-                .setGroup(checkNotNull(dependency.getGroup()))
-                .setName(checkNotNull(dependency.getName()))
-                .setVersion(checkNotNull(dependency.getVersion()))
+                .setGroup(group)
+                .setName(name)
+                .setVersion(version)
                 .build();
+    }
+
+    private static <T>
+    T ensureProperty(Dependency dependency, Supplier<T> accessor, String propertyName) {
+        @Nullable T value = accessor.get();
+        checkState(
+                value != null,
+                "The dependency `%s` does not have a %s.", dependency, propertyName
+        );
+        return value;
     }
 
     /**
