@@ -34,37 +34,36 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@DisplayName("PreprocessorConfigurer should")
-class PreprocessorConfigurerTest {
+@DisplayName("`PreprocessorConfig` should")
+class PreprocessorConfigTest {
 
+    private Project project;
     private ConfigurationContainer projectConfigs;
     private Configuration preprocessorConfig;
-    private PreprocessorConfigurer configurer;
 
     @BeforeEach
     void setUp() {
-        Project project = newProject();
+        project = newProject();
         projectConfigs = project.getConfigurations();
         preprocessorConfig = projectConfigs.getByName(annotationProcessor.value());
-        configurer = PreprocessorConfigurer.initFor(project);
     }
 
     @Test
     @DisplayName("pass null tolerance check")
     void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(PreprocessorConfigurer.class);
-        new NullPointerTester().testAllPublicInstanceMethods(configurer);
+        new NullPointerTester().testAllPublicStaticMethods(PreprocessorConfig.class);
     }
 
     @Test
     @DisplayName("return annotation processor config if it exists")
     void returnAnnotationProcessorConfigIfItExists() {
-        Configuration returnedConfig = configurer.setupPreprocessorConfig();
+        Configuration returnedConfig = PreprocessorConfig.applyTo(project);
         assertEquals(preprocessorConfig, returnedConfig);
     }
 
@@ -74,8 +73,9 @@ class PreprocessorConfigurerTest {
         projectConfigs.remove(preprocessorConfig);
         assertNull(projectConfigs.findByName(annotationProcessor.value()));
 
-        Configuration preprocessorConfig = configurer.setupPreprocessorConfig();
+        Configuration preprocessorConfig = PreprocessorConfig.applyTo(project);
         Configuration foundConfig = projectConfigs.findByName(annotationProcessor.value());
-        assertEquals(preprocessorConfig, foundConfig);
+        assertThat(preprocessorConfig)
+                .isEqualTo(foundConfig);
     }
 }

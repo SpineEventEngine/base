@@ -26,7 +26,7 @@
 package io.spine.tools.gradle.compiler;
 
 import io.spine.tools.compiler.check.ConfigDependency;
-import io.spine.tools.compiler.check.PreprocessorConfigurer;
+import io.spine.tools.compiler.check.PreprocessorConfig;
 import io.spine.tools.compiler.check.SeverityConfigurer;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.validate.ValidatingBuilder;
@@ -86,11 +86,8 @@ public final class ErrorProneChecksPlugin extends SpinePlugin {
      */
     @Override
     public void apply(Project project) {
-        project.getExtensions()
-               .create(extensionName(), ErrorProneChecksExtension.class);
-
-        PreprocessorConfigurer preprocessorConfigurer = PreprocessorConfigurer.initFor(project);
-        Configuration preprocessorConfig = preprocessorConfigurer.setupPreprocessorConfig();
+        ErrorProneChecksExtension.createIn(project);
+        Configuration preprocessorConfig = PreprocessorConfig.applyTo(project);
         boolean dependencyResolved = ConfigDependency.applyTo(preprocessorConfig);
         if (!dependencyResolved) {
             return;

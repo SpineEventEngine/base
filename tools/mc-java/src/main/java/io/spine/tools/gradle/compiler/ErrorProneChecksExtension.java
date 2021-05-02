@@ -28,6 +28,8 @@ package io.spine.tools.gradle.compiler;
 
 import org.gradle.api.Project;
 
+import static io.spine.tools.gradle.compiler.ErrorProneChecksPlugin.extensionName;
+
 /**
  * The Error Prone Checks plugin extension.
  *
@@ -41,10 +43,15 @@ public class ErrorProneChecksExtension {
 
     public Severity useValidatingBuilder;
 
+    public static void createIn(Project project) {
+        project.getExtensions()
+                .create(extensionName(), ErrorProneChecksExtension.class);
+    }
+
     public static Severity getUseValidatingBuilder(Project project) {
         ErrorProneChecksExtension extension = (ErrorProneChecksExtension)
                 project.getExtensions()
-                       .getByName(ErrorProneChecksPlugin.extensionName());
+                       .getByName(extensionName());
         return extension.useValidatingBuilder;
     }
 }

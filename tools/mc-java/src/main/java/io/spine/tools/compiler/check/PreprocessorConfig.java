@@ -37,23 +37,12 @@ import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
 /**
  * A helper that sets up and configures the preprocessor dependency for the {@link Project}.
  */
-public final class PreprocessorConfigurer {
+public final class PreprocessorConfig {
 
     private final Project project;
 
-    private PreprocessorConfigurer(Project project) {
+    private PreprocessorConfig(Project project) {
         this.project = project;
-    }
-
-    /**
-     * Create the {@code PreprocessorConfigurer} instance for the given project.
-     *
-     * @param project the project
-     * @return the {@code PreprocessorConfigurer} instance
-     */
-    public static PreprocessorConfigurer initFor(Project project) {
-        checkNotNull(project);
-        return new PreprocessorConfigurer(project);
     }
 
     /**
@@ -64,7 +53,14 @@ public final class PreprocessorConfigurer {
      *
      * @return the {@code annotationProcessor} configuration of the project
      */
-    public Configuration setupPreprocessorConfig() {
+    public static Configuration applyTo(Project project) {
+        checkNotNull(project);
+        PreprocessorConfig config = new PreprocessorConfig(project);
+        Configuration result = config.setupPreprocessorConfig();
+        return result;
+    }
+
+    private Configuration setupPreprocessorConfig() {
         ConfigurationContainer configurations = project.getConfigurations();
         ConfigurationName config = annotationProcessor;
         Configuration preprocessorConfig = configurations.findByName(config.value());
