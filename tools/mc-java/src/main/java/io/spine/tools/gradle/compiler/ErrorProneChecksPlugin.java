@@ -40,9 +40,10 @@ import org.gradle.api.artifacts.Configuration;
  * <p>To work, this plugin requires <a href="https://github.com/tbroyer/gradle-errorprone-plugin">
  * the Error Prone plugin</a> to be applied to the project.
  *
- * <p>The plugin adds a {@code spine-java-checks} dependency to the project's
- * {@code annotationProcessor} configuration. For the older Gradle versions (pre {@code 4.6}),
- * where there is no such configuration, the plugin creates it.
+ * <p>The plugin adds a {@link ConfigDependency#SPINE_MC_CHECKS_ARTIFACT spine-mc-java-checks}
+ * dependency to the {@code annotationProcessor} configuration of a Gradle project.
+ * For the older Gradle versions (pre {@code 4.6}), where there is no such configuration,
+ * the plugin creates it.
  *
  * <p>Dependency has the same version as the project's {@code spine-mc-java} plugin dependency.
  *
@@ -50,7 +51,6 @@ import org.gradle.api.artifacts.Configuration;
  *
  * <pre>
  * {@code
- *
  *   modelCompiler {
  *      spineCheckSeverity = "OFF"
  *   }
@@ -60,7 +60,6 @@ import org.gradle.api.artifacts.Configuration;
  *
  * <pre>
  * {@code
- *
  *   spineErrorProneChecks {
  *      useValidatingBuilder = "ERROR"
  *   }

@@ -45,7 +45,7 @@ import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
 public final class ConfigDependency implements Logging {
 
     @VisibleForTesting
-    static final String SPINE_MC_CHECKS_ARTIFACT = "spine-mc-java-checks";
+    public static final String SPINE_MC_CHECKS_ARTIFACT = "spine-mc-java-checks";
 
     private final Configuration configuration;
 
