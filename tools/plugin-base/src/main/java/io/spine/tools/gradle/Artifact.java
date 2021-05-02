@@ -70,16 +70,22 @@ public final class Artifact {
     }
 
     /**
-     * Creates a new {@code Artifact} from the given {@link org.gradle.api.artifacts.Dependency}
+     * Creates a new {@code Artifact} from the given {@link org.gradle.api.artifacts.Dependency
+     * Dependency}.
      *
-     * @param dependency
-     *         the Gradle dependency
+     * <p>The passed dependency must have {@code group}, {@code name}, and {@code version}
+     * defined.
+     *
+     * @param d
+     *         the Gradle dependency for which to create the artifact
      * @return new instance of {@code Artifact}
+     * @throws IllegalStateException
+     *          if either {@code group}, {@code name}, or {@code version} is not defined
      */
-    public static Artifact from(Dependency dependency) {
-        String group = ensureProperty(dependency, dependency::getGroup, "group");
-        String name = ensureProperty(dependency, dependency::getName, "name");
-        String version = ensureProperty(dependency, dependency::getVersion, "version");
+    public static Artifact from(Dependency d) {
+        String group = ensureProperty(d, d::getGroup, "group");
+        String name = ensureProperty(d, d::getName, "name");
+        String version = ensureProperty(d, d::getVersion, "version");
         return newBuilder()
                 .setGroup(group)
                 .setName(name)
