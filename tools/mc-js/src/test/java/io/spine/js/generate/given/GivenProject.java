@@ -71,8 +71,7 @@ public final class GivenProject {
     }
 
     private static void compileProject(File projectDir) {
-        GradleProject gradleProject = GradleProject
-                .newBuilder()
+        GradleProject gradleProject = GradleProject.newBuilder()
                 .setProjectName(PROJECT_NAME)
                 .setProjectFolder(projectDir)
                 .addProtoFiles(PROTO_FILES)

@@ -26,7 +26,6 @@
 
 package io.spine.tools.gradle.compiler;
 
-import com.google.common.collect.ImmutableList;
 import io.spine.code.gen.java.BuilderSpec;
 import io.spine.code.java.SimpleClassName;
 import io.spine.protobuf.Messages;
@@ -44,7 +43,6 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collection;
 
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.expectedBuilderClassComment;
@@ -68,15 +66,14 @@ class RejectionGenPluginTest {
     @Test
     @DisplayName("compile generated rejections")
     void compileGeneratedRejections() {
-        Collection<String> files = ImmutableList.of("test_rejections.proto",
-                                                    "outer_class_by_file_name_rejections.proto",
-                                                    "outer_class_set_rejections.proto",
-                                                    "deps/deps.proto");
         GradleProject project = GradleProject.newBuilder()
-                                             .setProjectName("rejections-gen-plugin-test")
-                                             .setProjectFolder(testProjectDir)
-                                             .addProtoFiles(files)
-                                             .build();
+                .setProjectName("rejections-gen-plugin-test")
+                .setProjectFolder(testProjectDir)
+                .addProtoFiles("test_rejections.proto",
+                               "outer_class_by_file_name_rejections.proto",
+                               "outer_class_set_rejections.proto",
+                               "deps/deps.proto")
+                .build();
         project.executeTask(compileJava);
     }
 
@@ -90,8 +87,7 @@ class RejectionGenPluginTest {
         JavaClassSource generatedSource = Roaster.parse(JavaClassSource.class, generatedFile);
         assertRejectionJavadoc(generatedSource);
         assertBuilderJavadoc(
-                (JavaClassSource) generatedSource.getNestedType(SimpleClassName.ofBuilder()
-                                                                               .value())
+                (JavaClassSource) generatedSource.getNestedType(SimpleClassName.ofBuilder().value())
         );
     }
 
