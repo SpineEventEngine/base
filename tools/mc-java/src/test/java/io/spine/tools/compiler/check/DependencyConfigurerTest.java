@@ -39,6 +39,7 @@ import org.junit.jupiter.api.Test;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.compiler.check.DependencyConfigurer.SPINE_CHECKER_MODULE;
+import static io.spine.tools.compiler.check.DependencyConfigurer.createFor;
 import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
 import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
 import static io.spine.tools.gradle.compiler.given.Project.newProject;
@@ -48,7 +49,7 @@ import static io.spine.tools.gradle.compiler.given.Project.newProject;
  *
  * @implNote This test configures the project with real dependencies and repositories which leads
  *         to a slow test execution. In future, it should be removed in favor of proper integration
- *         tests for the `spine-java-checks` plugin.
+ *         tests for the {@code spine-java-checks} plugin.
  */
 @SlowTest
 @DisplayName("`DependencyConfigurer` should")
@@ -58,15 +59,13 @@ class DependencyConfigurerTest {
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
         new NullPointerTester().testAllPublicStaticMethods(DependencyConfigurer.class);
-        new NullPointerTester().testAllPublicInstanceMethods(createFor(newProject().get()));
+        new NullPointerTester().testAllPublicInstanceMethods(applyTo(newProject().get()));
     }
 
     @Test
     @DisplayName("add spine check dependency to annotation processor config")
     void addSpineCheckDependencyToAnnotationProcessorConfig() {
-        Project project = newProject()
-                .withMavenRepositories()
-                .get();
+        Project project = newProject().withMavenRepositories().get();
         addDependency(project);
 
         boolean hasDependency = hasErrorProneChecksDependency(project);
@@ -76,8 +75,7 @@ class DependencyConfigurerTest {
     @Test
     @DisplayName("not add spine check dependency if it is not resolvable")
     void notAddSpineCheckDependencyIfItIsNotResolvable() {
-        Project project = newProject()
-                .get();
+        Project project = newProject().get();
         addDependency(project);
 
         boolean hasDependency = hasErrorProneChecksDependency(project);
@@ -87,14 +85,13 @@ class DependencyConfigurerTest {
     @SuppressWarnings("CheckReturnValue")
         // We ignore boolean "success" flag which is not interesting for us in this test.
     private static void addDependency(Project project) {
-        DependencyConfigurer configurer = createFor(project);
+        DependencyConfigurer configurer = applyTo(project);
         configurer.addErrorProneChecksDependency();
     }
 
-    private static DependencyConfigurer createFor(Project project) {
+    private static DependencyConfigurer applyTo(Project project) {
         Configuration annotationProcessorConfig = annotationProcessorConfig(project);
-        DependencyConfigurer configurer =
-                DependencyConfigurer.createFor(annotationProcessorConfig);
+        DependencyConfigurer configurer = createFor(annotationProcessorConfig);
         return configurer;
     }
 
