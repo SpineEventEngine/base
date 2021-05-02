@@ -40,7 +40,7 @@ import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.SPINE_PROTOBUF_PLUGIN_ID;
+import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.MC_JAVA_GRADLE_PLUGIN_ID;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newUuid;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -59,7 +59,7 @@ class ExtensionTest {
         projectDir = tempDirPath.toFile();
         project = newProject(projectDir);
         project.getPluginManager()
-               .apply(SPINE_PROTOBUF_PLUGIN_ID);
+               .apply(MC_JAVA_GRADLE_PLUGIN_ID);
     }
 
     @Nested

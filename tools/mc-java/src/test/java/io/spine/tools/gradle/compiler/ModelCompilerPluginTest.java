@@ -45,7 +45,7 @@ import static io.spine.tools.gradle.ModelCompilerTaskName.generateTestRejections
 import static io.spine.tools.gradle.ModelCompilerTaskName.mergeDescriptorSet;
 import static io.spine.tools.gradle.ModelCompilerTaskName.mergeTestDescriptorSet;
 import static io.spine.tools.gradle.ModelCompilerTaskName.preClean;
-import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.SPINE_PROTOBUF_PLUGIN_ID;
+import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.MC_JAVA_GRADLE_PLUGIN_ID;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
 import static io.spine.tools.gradle.testing.GradleTruth.assertThat;
 
@@ -58,7 +58,7 @@ class ModelCompilerPluginTest {
     void setUp() {
         Project project = newProject();
         project.getPluginManager()
-               .apply(SPINE_PROTOBUF_PLUGIN_ID);
+               .apply(MC_JAVA_GRADLE_PLUGIN_ID);
         tasks = project.getTasks();
     }
 
@@ -67,7 +67,7 @@ class ModelCompilerPluginTest {
     void apply() {
         Project project = newProject();
         project.getPluginManager()
-               .apply(SPINE_PROTOBUF_PLUGIN_ID);
+               .apply(MC_JAVA_GRADLE_PLUGIN_ID);
     }
 
     @Nested

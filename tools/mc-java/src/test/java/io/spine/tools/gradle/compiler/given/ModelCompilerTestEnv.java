@@ -42,7 +42,7 @@ import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 @SuppressWarnings("UtilityClass")
 public class ModelCompilerTestEnv {
 
-    public static final String SPINE_PROTOBUF_PLUGIN_ID = "io.spine.mc-java";
+    public static final String MC_JAVA_GRADLE_PLUGIN_ID = "io.spine.mc-java";
 
     /** Prevent instantiation of this utility class. */
     private ModelCompilerTestEnv() {
