@@ -38,14 +38,13 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.tools.compiler.check.DependencyConfigurer.SPINE_MC_CHECKS_ARTIFACT;
-import static io.spine.tools.compiler.check.DependencyConfigurer.createFor;
+import static io.spine.tools.compiler.check.ConfigDependency.SPINE_MC_CHECKS_ARTIFACT;
 import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
 import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
 import static io.spine.tools.gradle.compiler.given.Project.newProject;
 
 /**
- * A test for the {@link DependencyConfigurer} part of the Spine Error Prone Checks plugin.
+ * A test for the {@link ConfigDependency} part of the Spine Error Prone Checks plugin.
  *
  * @implNote This test configures the project with real dependencies and repositories which leads
  *         to a slow test execution. In future, it should be removed in favor of proper integration
@@ -53,13 +52,12 @@ import static io.spine.tools.gradle.compiler.given.Project.newProject;
  */
 @SlowTest
 @DisplayName("`DependencyConfigurer` should")
-class DependencyConfigurerTest {
+class ConfigDependencyTest {
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(DependencyConfigurer.class);
-        new NullPointerTester().testAllPublicInstanceMethods(applyTo(newProject().get()));
+        new NullPointerTester().testAllPublicStaticMethods(ConfigDependency.class);
     }
 
     @Test
@@ -85,15 +83,15 @@ class DependencyConfigurerTest {
     @SuppressWarnings("CheckReturnValue")
         // We ignore boolean "success" flag which is not interesting for us in this test.
     private static void addDependency(Project project) {
-        DependencyConfigurer configurer = applyTo(project);
-        configurer.addErrorProneChecksDependency();
+        Configuration annotationProcessorConfig = annotationProcessorConfig(project);
+        ConfigDependency.applyTo(annotationProcessorConfig);
     }
 
-    private static DependencyConfigurer applyTo(Project project) {
-        Configuration annotationProcessorConfig = annotationProcessorConfig(project);
-        DependencyConfigurer configurer = createFor(annotationProcessorConfig);
-        return configurer;
-    }
+//    private static ConfigDependency applyTo(Project project) {
+//        Configuration annotationProcessorConfig = annotationProcessorConfig(project);
+//        ConfigDependency configurer = ConfigDependency.applyTo(annotationProcessorConfig);
+//        return configurer;
+//    }
 
     private static boolean hasErrorProneChecksDependency(Project project) {
         Configuration config = annotationProcessorConfig(project);

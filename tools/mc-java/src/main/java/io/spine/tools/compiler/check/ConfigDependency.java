@@ -40,72 +40,73 @@ import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
 import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
 
 /**
- * Adds a {@code spine-java-checks} dependency to the given project {@link Configuration}.
+ * Adds a {@code spine-mc-java-checks} dependency to the given project {@link Configuration}.
  */
-public final class DependencyConfigurer implements Logging {
+public final class ConfigDependency implements Logging {
 
     @VisibleForTesting
     static final String SPINE_MC_CHECKS_ARTIFACT = "spine-mc-java-checks";
 
     private final Configuration configuration;
 
-    private DependencyConfigurer(Configuration configuration) {
-        this.configuration = configuration;
+    private ConfigDependency(Configuration cfg) {
+        this.configuration = cfg;
     }
 
     /**
      * Create the {@code DependencyConfigurer} for the given project {@link Configuration}.
      *
-     * @param configuration
+     * @param cfg
      *         the configuration
      * @return the {@code DependencyConfigurer} instance
      */
-    public static DependencyConfigurer createFor(Configuration configuration) {
-        checkNotNull(configuration);
-        return new DependencyConfigurer(configuration);
+    public static boolean applyTo(Configuration cfg) {
+        checkNotNull(cfg);
+        ConfigDependency dep = new ConfigDependency(cfg);
+        boolean result = dep.addDependency();
+        return result;
     }
 
     /**
-     * Adds the {@code io.spine.tools.spine-java-checks} dependency to the project
-     * configuration.
+     * Adds the dependency to the project configuration.
      *
      * <p>If the dependency cannot be resolved, the method does nothing and returns {@code false}.
      *
      * @return {@code true} if the dependency was resolved successfully and {@code false} otherwise
      */
-    public boolean addErrorProneChecksDependency() {
-        DependencyVersions dependencyVersions = DependencyVersions.get();
-        String version = dependencyVersions.spineBase();
+    private boolean addDependency() {
+        DependencyVersions versions = DependencyVersions.get();
+        String version = versions.spineBase();
 
-        boolean isResolvable = isDependencyResolvable(version);
+        boolean isResolvable = isResolvableFor(version);
         if (isResolvable) {
-            dependOnErrorProneChecks(version, configuration);
+            addDependency(configuration, version);
         }
         return isResolvable;
     }
 
     /**
-     * Checks if the given {@code spine-java-checks} dependency version is resolvable.
+     * Checks if the given dependency version is resolvable.
      *
      * <p>Uses the configuration copy because the configuration resolution is the irreversible
      * action that can be done only once for any given {@link Configuration}.
      */
-    private boolean isDependencyResolvable(String version) {
+    private boolean isResolvableFor(String version) {
         Configuration configCopy = configuration.copy();
-        dependOnErrorProneChecks(version, configCopy);
+        addDependency(configCopy, version);
         ResolvedConfiguration resolved = configCopy.getResolvedConfiguration();
         boolean isResolvable = !resolved.hasError();
         return isResolvable;
     }
 
     /**
-     * Adds the {@code spine-erroprone-checks} dependency to the project configuration.
+     * Adds the dependency to the project configuration.
      */
-    private void dependOnErrorProneChecks(String version, Configuration configuration) {
+    private void addDependency(Configuration cfg, String version) {
         _debug().log("Adding dependency on %s:%s:%s to the %s configuration.",
                      SPINE_TOOLS_GROUP, SPINE_MC_CHECKS_ARTIFACT, version,
                      annotationProcessor.value());
-        DependencySet dependencies = configuration.getDependencies();
+        DependencySet dependencies = cfg.getDependencies();
         Dependency dependency = new DefaultExternalModuleDependency(
                 SPINE_TOOLS_GROUP, SPINE_MC_CHECKS_ARTIFACT, version);
         dependencies.add(dependency);
