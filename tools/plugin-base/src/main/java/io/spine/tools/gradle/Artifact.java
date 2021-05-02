@@ -80,7 +80,8 @@ public final class Artifact {
      *         the Gradle dependency for which to create the artifact
      * @return new instance of {@code Artifact}
      * @throws IllegalStateException
-     *          if either {@code group}, {@code name}, or {@code version} is not defined
+     *          if either {@code group}, {@code name}, or {@code version} of the passed
+     *          dependency is not defined
      */
     public static Artifact from(Dependency d) {
         String group = ensureProperty(d, d::getGroup, "group");
