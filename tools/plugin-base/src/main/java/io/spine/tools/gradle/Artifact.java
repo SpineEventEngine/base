@@ -71,11 +71,11 @@ public final class Artifact {
     }
 
     /**
-     * Creates a new {@code Artifact} from the given {@link org.gradle.api.artifacts.Dependency
-     * Dependency}.
+     * Creates a new {@code Artifact} from the given
+     * {@link org.gradle.api.artifacts.Dependency Dependency}.
      *
-     * <p>The passed dependency must have {@code group}, {@code name}, and {@code version}
-     * defined.
+     * <p>The passed dependency must have {@code group}, {@code name}, and
+     * {@code version} defined.
      *
      * @param d
      *         the Gradle dependency for which to create the artifact
