@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.tools.compiler.check.DependencyConfigurer.SPINE_CHECKER_MODULE;
+import static io.spine.tools.compiler.check.DependencyConfigurer.SPINE_MC_CHECKS_ARTIFACT;
 import static io.spine.tools.compiler.check.DependencyConfigurer.createFor;
 import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
 import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
@@ -49,7 +49,7 @@ import static io.spine.tools.gradle.compiler.given.Project.newProject;
  *
  * @implNote This test configures the project with real dependencies and repositories which leads
  *         to a slow test execution. In future, it should be removed in favor of proper integration
- *         tests for the {@code spine-java-checks} plugin.
+ *         tests for the {@code mc-java-checks} plugin.
  */
 @SlowTest
 @DisplayName("`DependencyConfigurer` should")
@@ -100,7 +100,7 @@ class DependencyConfigurerTest {
         DependencySet dependencies = config.getDependencies();
         for (Dependency dependency : dependencies) {
             if (SPINE_TOOLS_GROUP.equals(dependency.getGroup()) &&
-                    SPINE_CHECKER_MODULE.equals(dependency.getName())) {
+                    SPINE_MC_CHECKS_ARTIFACT.equals(dependency.getName())) {
                 return true;
             }
         }

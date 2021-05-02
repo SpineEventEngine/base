@@ -45,7 +45,7 @@ import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
 public final class DependencyConfigurer implements Logging {
 
     @VisibleForTesting
-    static final String SPINE_CHECKER_MODULE = "spine-mc-java-checks";
+    static final String SPINE_MC_CHECKS_ARTIFACT = "spine-mc-java-checks";
 
     private final Configuration configuration;
 
@@ -103,11 +103,11 @@ public final class DependencyConfigurer implements Logging {
      */
     private void dependOnErrorProneChecks(String version, Configuration configuration) {
         _debug().log("Adding dependency on %s:%s:%s to the %s configuration.",
-                    SPINE_TOOLS_GROUP, SPINE_CHECKER_MODULE, version,
-                    annotationProcessor.value());
+                     SPINE_TOOLS_GROUP, SPINE_MC_CHECKS_ARTIFACT, version,
+                     annotationProcessor.value());
         DependencySet dependencies = configuration.getDependencies();
         Dependency dependency = new DefaultExternalModuleDependency(
-                SPINE_TOOLS_GROUP, SPINE_CHECKER_MODULE, version);
+                SPINE_TOOLS_GROUP, SPINE_MC_CHECKS_ARTIFACT, version);
         dependencies.add(dependency);
     }
 }
