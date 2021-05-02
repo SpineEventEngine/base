@@ -33,6 +33,7 @@ import org.gradle.api.artifacts.Dependency;
 
 import java.util.function.Supplier;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
@@ -79,7 +80,7 @@ public final class Artifact {
      * @param d
      *         the Gradle dependency for which to create the artifact
      * @return new instance of {@code Artifact}
-     * @throws IllegalStateException
+     * @throws IllegalArgumentException
      *          if either {@code group}, {@code name}, or {@code version} of the passed
      *          dependency is not defined
      */
@@ -97,7 +98,7 @@ public final class Artifact {
     private static <T>
     T ensureProperty(Dependency dependency, Supplier<T> accessor, String propertyName) {
         @Nullable T value = accessor.get();
-        checkState(
+        checkArgument(
                 value != null,
                 "The dependency `%s` does not have a %s.", dependency, propertyName
         );
