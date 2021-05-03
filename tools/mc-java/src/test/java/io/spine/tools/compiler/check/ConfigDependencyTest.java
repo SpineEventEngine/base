@@ -87,12 +87,6 @@ class ConfigDependencyTest {
         ConfigDependency.applyTo(annotationProcessorConfig);
     }
 
-//    private static ConfigDependency applyTo(Project project) {
-//        Configuration annotationProcessorConfig = annotationProcessorConfig(project);
-//        ConfigDependency configurer = ConfigDependency.applyTo(annotationProcessorConfig);
-//        return configurer;
-//    }
-
     private static boolean hasErrorProneChecksDependency(Project project) {
         Configuration config = annotationProcessorConfig(project);
         DependencySet dependencies = config.getDependencies();
