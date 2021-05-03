@@ -43,7 +43,6 @@ import java.util.regex.Pattern;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
-import static java.nio.file.Files.isRegularFile;
 import static java.nio.file.Files.readAllLines;
 import static java.nio.file.Files.write;
 import static java.util.regex.Pattern.compile;

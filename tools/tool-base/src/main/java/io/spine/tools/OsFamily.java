@@ -103,6 +103,10 @@ public enum OsFamily {
         return value;
     }
 
+    /**
+     * Tells if the operating system under which the code is executed belongs
+     * to this OS family.
+     */
     public boolean isCurrent() {
         boolean result = OS_NAME.contains(value());
         return result;
