@@ -29,10 +29,6 @@ package io.spine.tools.dart.fs;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.AbstractFileName;
 
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.function.Predicate;
-
 /**
  * Name of a Dart file generated from Protobuf.
  *
@@ -66,18 +62,6 @@ public final class FileName extends AbstractFileName<FileName> {
     public static FileName relative(FileDescriptor file) {
         io.spine.code.proto.FileName protoName = io.spine.code.proto.FileName.from(file);
         return relative(protoName);
-    }
-
-    /**
-     * Verifies if the passed path belongs to a Dart source code file generated from
-     * a Protobuf definition.
-     */
-    public static boolean isGenerated(Path file) {
-        Predicate<GeneratedExtension> nameHasExtension =
-                extension -> file.toString().endsWith(extension.value);
-        boolean result = Arrays.stream(GeneratedExtension.values())
-                               .anyMatch(nameHasExtension);
-        return result;
     }
 
     /**
