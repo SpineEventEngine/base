@@ -89,18 +89,17 @@ public enum OsFamily {
      */
     private static final String DARWIN = "darwin";
 
-    private final String value;
+    /** A lower-cased name of the OS family. */
+    private final String signature;
 
+    /** Creates an instance with the signature taken as a lower-cased enum item name. */
     OsFamily() {
-        this.value = name().toLowerCase(Locale.ENGLISH);
+        this.signature = name().toLowerCase(Locale.ENGLISH);
     }
 
-    OsFamily(String name) {
-        this.value = name;
-    }
-
-    private String value() {
-        return value;
+    /** Creates an instance with the passed signature value. */
+    OsFamily(String signature) {
+        this.signature = signature;
     }
 
     /**
@@ -108,7 +107,7 @@ public enum OsFamily {
      * to this OS family.
      */
     public boolean isCurrent() {
-        boolean result = OS_NAME.contains(value());
+        boolean result = OS_NAME.contains(signature);
         return result;
     }
 }
