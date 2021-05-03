@@ -20,6 +20,8 @@ This repository contains the foundation of the Spine framework which includes th
     code generation.
   * **[`tools/mc-java-protoc`](tools/mc-java-protoc)** — plugs-into Google Protobuf compiler for
     generating framework-specific Java code.
+  *  **[`tools/mc-java-validation`](tools/mc-java-validation)** — `protoc` plugins for generating
+    code for validating attributes of a data model.
   * **[`tools/mc-java-checks`](tools/mc-java-checks)** — static code analyzers for Spine-based
   Java projects, implemented as custom Error Prone checks.
 
