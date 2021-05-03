@@ -82,7 +82,7 @@ public final class ViolationText {
         for (ConstraintViolation violation : this.violation.getViolationList()) {
             builder.append(lineSeparator());
             ViolationText nested = of(violation);
-            builder.append(nested.toString());
+            builder.append(nested);
         }
         return builder.toString();
     }
