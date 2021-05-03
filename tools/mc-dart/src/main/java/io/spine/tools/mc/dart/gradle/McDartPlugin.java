@@ -24,14 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart.gradle;
+package io.spine.tools.mc.dart.gradle;
 
 import com.google.common.collect.ImmutableMap;
-import io.spine.dart.SourceFile;
 import io.spine.tools.gradle.ProtoDartTaskName;
 import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.gradle.TaskName;
+import io.spine.tools.dart.code.SourceFile;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.file.DirectoryProperty;
@@ -55,19 +55,19 @@ import static org.gradle.api.Task.TASK_TYPE;
 /**
  * A Gradle plugin which configures Protobuf Dart code generation.
  *
- * <p>Generates mapping between Protobuf type URLs and Dart types and reflective descriptors
- * (a.k.a. {@code BuilderInfo}s).
+ * <p>Generates mapping between Protobuf type URLs and Dart types and reflective
+ * descriptors (a.k.a. {@code BuilderInfo}s).
  *
- * @see DartProtocConfigurationPlugin
+ * @see ProtocConfig
  */
-public final class ProtoDartPlugin extends SpinePlugin {
+public final class McDartPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
         Extension extension = new Extension(project);
         extension.register();
 
-        Plugin<Project> protocConfig = new DartProtocConfigurationPlugin();
+        Plugin<Project> protocConfig = new ProtocConfig();
         protocConfig.apply(project);
 
         createMainCopyTask(project, extension);

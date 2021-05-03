@@ -37,7 +37,7 @@ import io.spine.code.fs.js.FileName;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.GenerationTask;
 import io.spine.logging.Logging;
-import io.spine.tools.code.structure.ExternalModule;
+import io.spine.tools.ExternalModule;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.nio.file.Path;

@@ -25,11 +25,12 @@
  */
 
 /**
- * Classes which work with source code directory structure.
+ * This package contains types for wording with Dart code.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.code.structure;
+package io.spine.tools.dart.code;
 
 import com.google.errorprone.annotations.CheckReturnValue;
+
 import javax.annotation.ParametersAreNonnullByDefault;

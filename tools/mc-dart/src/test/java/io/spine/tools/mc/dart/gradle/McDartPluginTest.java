@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart.gradle;
+package io.spine.tools.mc.dart.gradle;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.tools.gradle.TaskName;
@@ -45,7 +45,7 @@ import static io.spine.tools.gradle.ProtoDartTaskName.copyTestGeneratedDart;
 import static io.spine.tools.gradle.ProtoDartTaskName.resolveImports;
 
 @DisplayName("`ProtoDartPlugin` should")
-class ProtoDartPluginTest {
+class McDartPluginTest {
 
     private Project project;
 
@@ -53,7 +53,7 @@ class ProtoDartPluginTest {
     void setUp(@TempDir File dir) {
         project = ProjectBuilder
                 .builder()
-                .withName(ProtoDartPluginTest.class.getName())
+                .withName(McDartPluginTest.class.getName())
                 .withProjectDir(dir)
                 .build();
         project.apply(action -> action.plugin("java"));
@@ -62,7 +62,7 @@ class ProtoDartPluginTest {
     @Test
     @DisplayName("create `copyGeneratedDart` task")
     void createMainTask() {
-        ProtoDartPlugin plugin = new ProtoDartPlugin();
+        McDartPlugin plugin = new McDartPlugin();
         plugin.apply(project);
 
         Task task = findTask(copyGeneratedDart);
@@ -75,7 +75,7 @@ class ProtoDartPluginTest {
     @Test
     @DisplayName("create `copyTestGeneratedDart` task")
     void createTestTask() {
-        ProtoDartPlugin plugin = new ProtoDartPlugin();
+        McDartPlugin plugin = new McDartPlugin();
         plugin.apply(project);
 
         Task task = findTask(copyTestGeneratedDart);
@@ -88,7 +88,7 @@ class ProtoDartPluginTest {
     @Test
     @DisplayName("create `resolveImports` task")
     void createResolveTask() {
-        ProtoDartPlugin plugin = new ProtoDartPlugin();
+        McDartPlugin plugin = new McDartPlugin();
         plugin.apply(project);
 
         findTask(resolveImports);

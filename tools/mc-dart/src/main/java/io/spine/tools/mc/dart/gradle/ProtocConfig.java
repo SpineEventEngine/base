@@ -24,10 +24,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart.gradle;
+package io.spine.tools.mc.dart.gradle;
 
 import com.google.protobuf.gradle.ExecutableLocator;
-import io.spine.dart.CachedDartProtocPlugin;
+import io.spine.tools.dart.fs.ProtocPluginPath;
 import io.spine.tools.gradle.ProtocConfigurationPlugin;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
@@ -38,10 +38,10 @@ import java.nio.file.Path;
 import static io.spine.tools.gradle.ProtocPluginName.dart;
 
 /**
- * A Gradle plugin that performs additional {@code protoc} configurations relevant for Dart
- * projects.
+ * A Gradle plugin that performs additional {@code protoc} configurations
+ * relevant for Dart projects.
  */
-public final class DartProtocConfigurationPlugin extends ProtocConfigurationPlugin {
+final class ProtocConfig extends ProtocConfigurationPlugin {
 
     @Override
     protected Path generatedFilesBaseDir(Project project) {
@@ -61,7 +61,7 @@ public final class DartProtocConfigurationPlugin extends ProtocConfigurationPlug
     @Override
     protected void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins,
                                           Project project) {
-        Path executable = CachedDartProtocPlugin.locate();
+        Path executable = ProtocPluginPath.locate();
         plugins.create(dart.name(), locator -> locator.setPath(executable.toString()));
     }
 }

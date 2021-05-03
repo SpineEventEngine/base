@@ -25,12 +25,11 @@
  */
 
 /**
- * Components of the Proto Dart Gradle plugin.
+ * This package provides types for working with programming tools.
  */
-
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.dart.gradle;
+package io.spine.tools;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

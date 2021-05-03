@@ -24,15 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart;
+package io.spine.tools.dart.code;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.AbstractSourceFile;
 import io.spine.code.fs.FileReference;
 import io.spine.logging.Logging;
-import io.spine.tools.code.structure.ExternalModule;
+import io.spine.tools.ExternalModule;
 import org.checkerframework.checker.regex.qual.Regex;
-import org.gradle.api.GradleException;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -42,6 +41,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 import static java.nio.file.Files.isRegularFile;
 import static java.nio.file.Files.readAllLines;
@@ -72,7 +72,8 @@ public final class SourceFile extends AbstractSourceFile implements Logging {
             List<String> lines = readAllLines(path);
             return new SourceFile(path, lines);
         } catch (IOException e) {
-            throw new GradleException(format("Unable to read file `%s`.", path), e);
+
+            throw newIllegalStateException(e, "Unable to read file `%s`.", path);
         }
     }
 
@@ -134,7 +135,7 @@ public final class SourceFile extends AbstractSourceFile implements Logging {
         try {
             write(path, lines);
         } catch (IOException e) {
-            throw new GradleException(format("Unable to write file `%s`.", path), e);
+            throw newIllegalStateException(e, "Unable to write file `%s`.", path);
         }
     }
 }

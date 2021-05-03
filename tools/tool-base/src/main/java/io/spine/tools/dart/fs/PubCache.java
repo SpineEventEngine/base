@@ -24,18 +24,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart;
+package io.spine.tools.dart.fs;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
-import org.apache.tools.ant.taskdefs.condition.Os;
+import io.spine.tools.OsFamily;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
 import static java.nio.file.Files.exists;
-import static org.apache.tools.ant.taskdefs.condition.Os.FAMILY_WINDOWS;
 
 /**
  * A utility for working with the local Pub cache.
@@ -72,7 +71,7 @@ public final class PubCache {
      * <p>On *nix operating systems, the cache is located under the user's home directory.
      */
     private static Path defaultPath() {
-        if (Os.isFamily(FAMILY_WINDOWS)) {
+        if (OsFamily.Windows.isCurrent()) {
             Path inLocalAppData = winPathFromEnv(LOCAL_APP_DATA_ENV);
             if (exists(inLocalAppData)) {
                 return inLocalAppData;

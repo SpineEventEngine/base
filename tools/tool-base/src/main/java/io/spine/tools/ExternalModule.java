@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.code.structure;
+package io.spine.tools;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;

@@ -24,25 +24,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart;
+package io.spine.tools.dart.fs;
 
-import org.apache.tools.ant.taskdefs.condition.Os;
+import io.spine.tools.OsFamily;
 
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.nio.file.Files.exists;
-import static org.apache.tools.ant.taskdefs.condition.Os.FAMILY_WINDOWS;
 
 /**
  * Locates the Dart {@code protoc} plugin executable in the local Pub cache.
  *
- * <p>See <a href="https://dart.dev/tools/pub/cmd/pub-global#running-a-script-from-your-path">Pub
- * documentation</a>.
+ * @see <a href="https://dart.dev/tools/pub/cmd/pub-global#running-a-script-from-your-path">
+ * Pub documentation</a>.
  */
-public final class CachedDartProtocPlugin {
+public final class ProtocPluginPath {
 
-    private static final boolean WINDOWS = Os.isFamily(FAMILY_WINDOWS);
+    private static final boolean WINDOWS = OsFamily.Windows.isCurrent();
     private static final String SCRIPT_EXTENSION = WINDOWS ? ".bat" : "";
     private static final String SCRIPT_FILE_NAME = "protoc-gen-dart" + SCRIPT_EXTENSION;
 
@@ -51,12 +50,13 @@ public final class CachedDartProtocPlugin {
 
     private static Path resolved = null;
 
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private CachedDartProtocPlugin() {
+    /** Prevents the utility class instantiation. */
+    private ProtocPluginPath() {
     }
 
+    /**
+     * Obtains the path to the plugin.
+     */
     public static synchronized Path locate() {
         if (resolved == null) {
             Path pathToExecutable = PubCache.bin().resolve(SCRIPT_FILE_NAME);

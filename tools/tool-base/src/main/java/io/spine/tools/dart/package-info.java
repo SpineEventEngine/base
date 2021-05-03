@@ -30,7 +30,7 @@
 
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.dart;
+package io.spine.tools.dart;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

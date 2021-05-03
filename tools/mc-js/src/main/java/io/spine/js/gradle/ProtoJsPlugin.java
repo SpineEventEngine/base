@@ -35,7 +35,7 @@ import io.spine.js.generate.GenerationTask;
 import io.spine.js.generate.imports.ResolveImports;
 import io.spine.js.generate.index.GenerateIndexFile;
 import io.spine.js.generate.parse.GenerateKnownTypeParsers;
-import io.spine.tools.code.structure.ExternalModule;
+import io.spine.tools.ExternalModule;
 import io.spine.tools.gradle.BaseTaskName;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.ProtoPlugin;

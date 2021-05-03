@@ -24,12 +24,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dart.gradle;
+package io.spine.tools.mc.dart.gradle;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.fs.dart.DefaultDartProject;
-import io.spine.tools.code.structure.DirectoryPattern;
-import io.spine.tools.code.structure.ExternalModule;
+import io.spine.tools.dart.fs.DefaultDartProject;
+import io.spine.tools.DirectoryPattern;
+import io.spine.tools.ExternalModule;
 import io.spine.tools.gradle.GradleExtension;
 import org.gradle.api.Project;
 import org.gradle.api.file.DirectoryProperty;
@@ -44,6 +44,7 @@ import java.util.Map;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Maps.newHashMap;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -137,7 +138,7 @@ public final class Extension extends GradleExtension {
     static Extension findIn(Project project) {
         Extension extension = project.getExtensions()
                                      .getByType(Extension.class);
-        return extension;
+        return requireNonNull(extension);
     }
 
     /**
