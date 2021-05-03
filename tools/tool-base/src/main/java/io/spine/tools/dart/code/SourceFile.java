@@ -28,32 +28,23 @@ package io.spine.tools.dart.code;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.AbstractSourceFile;
-import io.spine.code.fs.FileReference;
 import io.spine.logging.Logging;
 import io.spine.tools.ExternalModule;
-import org.checkerframework.checker.regex.qual.Regex;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
-import static java.lang.String.format;
 import static java.nio.file.Files.readAllLines;
 import static java.nio.file.Files.write;
-import static java.util.regex.Pattern.compile;
 
 /**
  * A Dart source file.
  */
 public final class SourceFile extends AbstractSourceFile implements Logging {
-
-    @Regex(2)
-    private static final Pattern IMPORT_PATTERN = compile("import [\"']([^:]+)[\"'] as (.+);");
 
     private List<String> lines;
 
@@ -71,8 +62,7 @@ public final class SourceFile extends AbstractSourceFile implements Logging {
             List<String> lines = readAllLines(path);
             return new SourceFile(path, lines);
         } catch (IOException e) {
-
-            throw newIllegalStateException(e, "Unable to read file `%s`.", path);
+            throw newIllegalStateException(e, "Unable to read the file `%s`.", path);
         }
     }
 
@@ -82,38 +72,11 @@ public final class SourceFile extends AbstractSourceFile implements Logging {
     public void resolveImports(ImmutableList<ExternalModule> modules, Path libPath) {
         List<String> processedLines = new ArrayList<>();
         for (String line : lines) {
-            String processedLine = resolveImportInLine(line, modules, libPath);
+            SourceLine srcLine = new SourceLine(this, line);
+            String processedLine = srcLine.resolveImport(libPath, modules);
             processedLines.add(processedLine);
         }
         lines = processedLines;
-    }
-
-    private String resolveImportInLine(String line,
-                                       ImmutableList<ExternalModule> modules,
-                                       Path libPath) {
-        Matcher matcher = IMPORT_PATTERN.matcher(line);
-        if (matcher.matches()) {
-            _debug().log("Import found: `%s`", line);
-            String path = matcher.group(1);
-            Path absolutePath = path().getParent()
-                                      .resolve(path)
-                                      .normalize();
-            _debug().log("Resolved against this file: `%s`", absolutePath);
-            Path relativeImport = libPath.relativize(absolutePath);
-            _debug().log("Relative: `%s`", relativeImport);
-            FileReference reference = FileReference.of(relativeImport.toString());
-            for (ExternalModule module : modules) {
-                if (module.provides(reference)) {
-                    String importStatement = format("import 'package:%s/%s' as %s;",
-                                                    module.name(),
-                                                    relativeImport,
-                                                    matcher.group(2));
-                    _debug().log("Replacing with %s", importStatement);
-                    return importStatement;
-                }
-            }
-        }
-        return line;
     }
 
     /**
