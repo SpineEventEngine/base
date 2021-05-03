@@ -37,6 +37,7 @@ import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static java.util.regex.Pattern.compile;
 
@@ -45,8 +46,6 @@ import static java.util.regex.Pattern.compile;
  */
 final class SourceLine implements Logging {
 
-    private static final FluentLogger log = FluentLogger.forEnclosingClass();
-
     @Regex(2)
     private static final Pattern IMPORT_PATTERN = compile("import [\"']([^:]+)[\"'] as (.+);");
 
@@ -54,46 +53,98 @@ final class SourceLine implements Logging {
     private final SourceFile file;
     private final Matcher matcher;
 
+    /**
+     * Creates a new instance with the passed value.
+     *
+     * @param file
+     *         the file declaring the line
+     * @param line
+     *         the source code text in the line
+     */
     SourceLine(SourceFile file, String line) {
-        this.line = line;
-        this.file = file;
+        this.line = checkNotNull(line);
+        this.file = checkNotNull(file);
         this.matcher = IMPORT_PATTERN.matcher(line);
     }
 
+    /**
+     * If this line contains an import statement, converts it to a relative import statement
+     * wherever possible.
+     *
+     * <p>If this line is not an import statement, returns it as is.
+     *
+     * <p>For import statements, converts an absolute path found after
+     * {@code import} clause into a relative path, if one of the passed modules contains
+     * such a file.
+     *
+     * <p>If none of the modules have such a file, returns the source code line as is.
+     *
+     * @param libPath
+     *         the path to the {@code lib} project folder
+     * @param modules
+     *         the modules of the project to check the file referenced in
+     *         the {@code import} statement
+     */
     String resolveImport(Path libPath, ImmutableList<ExternalModule> modules) {
         if (!matcher.matches()) {
             return line;
         }
-        Path relativeImport = toRelativeImport(libPath);
-        FileReference reference = FileReference.of(relativeImport.toString());
+        Path relativePath = importRelativeTo(libPath);
+        FileReference reference = FileReference.of(relativePath);
         for (ExternalModule module : modules) {
             if (module.provides(reference)) {
-                return resolveImport(relativeImport, module);
+                return resolveImport(module, relativePath);
             }
         }
         return line;
     }
 
-    private Path toRelativeImport(Path libPath) {
+    /**
+     * Transforms the path found in the import statement to a path relative
+     * to the file of this source line.
+     */
+    private Path importRelativeTo(Path libPath) {
         FluentLogger.Api debug = _debug();
-        debug.log("Import found: `%s`.", line);
+        debug.log("Import statement found in line: `%s`.", line);
         String path = matcher.group(1);
         Path absolutePath = file.path()
                                 .getParent()
                                 .resolve(path)
                                 .normalize();
         debug.log("Resolved against this file: `%s`.", absolutePath);
-        Path relativeImport = libPath.relativize(absolutePath);
-        debug.log("Relative: `%s`.", relativeImport);
-        return relativeImport;
+        Path relativePath = libPath.relativize(absolutePath);
+        debug.log("Relative path: `%s`.", relativePath);
+        return relativePath;
     }
 
-    private String resolveImport(Path relativeImport, ExternalModule module) {
-        String importStatement = format("import 'package:%s/%s' as %s;",
-                                        module.name(),
-                                        relativeImport,
-                                        matcher.group(2));
-        log.atFine().log("Replacing with `%s`.", importStatement);
+    private String resolveImport(ExternalModule module, Path relativePath) {
+        String importStatement = format(
+                "import 'package:%s/%s' as %s;",
+                module.name(), relativePath, matcher.group(2)
+        );
+        _debug().log("Replacing with `%s`.", importStatement);
         return importStatement;
+    }
+
+    @Override
+    public String toString() {
+        return line;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SourceLine other = (SourceLine) o;
+        return line.equals(other.line) && file.equals(other.file);
+    }
+
+    @Override
+    public int hashCode() {
+        return line.hashCode();
     }
 }
