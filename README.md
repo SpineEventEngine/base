@@ -22,11 +22,13 @@ This repository contains the foundation of the Spine framework which includes th
     generating framework-specific Java code.
   * **[`tools/mc-java-checks`](tools/mc-java-checks)** — static code analyzers for Spine-based
   Java projects, implemented as custom Error Prone checks.
+
     
-* **[`tools/mc-js`](tools/mc-js)** — Model Compiler for JS, a Gradle plug-in that assists Protobuf
+* **[`tools/mc-js`](tools/mc-js)** — **Model Compiler for JS**, a Gradle plug-in that assists Protobuf
   JS compiler in JavaScript code generation.
 
-* **[`tools/mc-dart`](tools/mc-dart)** — Model Compiler for Dart, a Gradle plugin for generating
+
+* **[`tools/mc-dart`](tools/mc-dart)** — **Model Compiler for Dart**, a Gradle plugin for generating
   Dart code. 
 
 These components are used by [core-java](https://github.com/SpineEventEngine/core-java) and are not
@@ -38,8 +40,14 @@ The repository also contains:
   validating builders for the proto types declared in the module `base`. This module avoids circular
   dependency because Model Compiler for Java also depends on `base`. 
   See the [module README.md](base-validating-builders/README.md) for more details.
+  
+
 * A [common base](tools/plugin-base) for Spine Gradle plugins.
+  
+
 * [Test utilities](tools/plugin-testlib) for Spine plugins.
+  
+
 * [Integration tests](tests) for all Spine tools.
 
 ### Notes on Coverage
