@@ -77,16 +77,6 @@ public final class SourceFile extends AbstractSourceFile implements Logging {
         }
     }
 
-    public static boolean isGeneratedDart(Path file) {
-        if (!isRegularFile(file)) {
-            return false;
-        }
-        return file.endsWith(".pb.dart")
-                || file.endsWith(".pbenum.dart")
-                || file.endsWith(".pbserver.dart")
-                || file.endsWith(".pbjson.dart");
-    }
-
     /**
      * Resolves the relative imports in the file into absolute ones with the given modules.
      */

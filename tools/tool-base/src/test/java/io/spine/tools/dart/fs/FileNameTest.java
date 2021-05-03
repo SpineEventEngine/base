@@ -32,9 +32,13 @@ import com.google.protobuf.Empty;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import static com.google.common.testing.NullPointerTester.Visibility.PACKAGE;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("`FileName` should")
 class FileNameTest {
@@ -61,6 +65,24 @@ class FileNameTest {
     void returnPathElements() {
         FileName fileName = FileName.relative(protoFileName());
         assertThat(fileName.value()).isEqualTo(GENERATED_FILE);
+    }
+
+    @Test
+    @DisplayName("tell if the source code file is generated")
+    void generatedSource() {
+        Path sourceDir = Paths.get("main", "proto");
+        assertTrue(FileName.isGenerated(
+                sourceDir.resolve("msg" + FileName.GeneratedExtension.OF_MESSAGE))
+        );
+        assertTrue(FileName.isGenerated(
+                sourceDir.resolve("enum" + FileName.GeneratedExtension.OF_ENUM))
+        );
+        assertTrue(FileName.isGenerated(
+                sourceDir.resolve("srv" + FileName.GeneratedExtension.OF_SERVER))
+        );
+        assertTrue(FileName.isGenerated(
+                sourceDir.resolve("json" + FileName.GeneratedExtension.OF_JSON))
+        );
     }
 
     private static io.spine.code.proto.FileName protoFileName() {

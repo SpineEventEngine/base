@@ -29,6 +29,10 @@ package io.spine.tools.dart.fs;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.AbstractFileName;
 
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.function.Predicate;
+
 /**
  * Name of a Dart file generated from Protobuf.
  *
@@ -37,8 +41,6 @@ import io.spine.code.AbstractFileName;
 public final class FileName extends AbstractFileName<FileName> {
 
     private static final long serialVersionUID = 0L;
-
-    private static final String GENERATED_EXTENSION = ".pb.dart";
 
     private FileName(String value) {
         super(value);
@@ -51,7 +53,7 @@ public final class FileName extends AbstractFileName<FileName> {
      * @return new {@code FileName}, relative to the code generation root
      */
     public static FileName relative(io.spine.code.proto.FileName file) {
-        String relativePath = file.nameWithoutExtension() + GENERATED_EXTENSION;
+        String relativePath = file.nameWithoutExtension() + GeneratedExtension.OF_MESSAGE.value;
         return new FileName(relativePath);
     }
 
@@ -64,5 +66,38 @@ public final class FileName extends AbstractFileName<FileName> {
     public static FileName relative(FileDescriptor file) {
         io.spine.code.proto.FileName protoName = io.spine.code.proto.FileName.from(file);
         return relative(protoName);
+    }
+
+    /**
+     * Verifies if the passed path belongs to a Dart source code file generated from
+     * a Protobuf definition.
+     */
+    public static boolean isGenerated(Path file) {
+        Predicate<GeneratedExtension> nameHasExtension =
+                extension -> file.toString().endsWith(extension.value);
+        boolean result = Arrays.stream(GeneratedExtension.values())
+                               .anyMatch(nameHasExtension);
+        return result;
+    }
+
+    /**
+     * Enumerates extensions of Dart files generated from Protobuf definitions.
+     */
+    public enum GeneratedExtension {
+        OF_MESSAGE(".pb.dart"),
+        OF_ENUM(".pbenum.dart"),
+        OF_SERVER(".pbserver.dart"),
+        OF_JSON(".pbjson.dart");
+
+        private final String value;
+
+        GeneratedExtension(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
     }
 }
