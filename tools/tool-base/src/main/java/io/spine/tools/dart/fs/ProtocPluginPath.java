@@ -36,8 +36,7 @@ import static java.nio.file.Files.exists;
 /**
  * Locates the Dart {@code protoc} plugin executable in the local Pub cache.
  *
- * @see <a href="https://dart.dev/tools/pub/cmd/pub-global#running-a-script-from-your-path">
- * Pub documentation</a>.
+ * @see <a href="https://dart.dev/tools/pub/cmd/pub-global#running-a-script-from-your-path">Pub documentation</a>.
  */
 public final class ProtocPluginPath {
 
@@ -63,7 +62,7 @@ public final class ProtocPluginPath {
             checkState(exists(pathToExecutable),
                        "Protoc plugin for Dart code generation is not installed. " +
                                "`protoc_plugin` should be activated globally. " +
-                               "See %s for installation guide.",
+                               "Please see %s for installation instructions.",
                        DOC_LINK);
             resolved = pathToExecutable.toAbsolutePath()
                                        .normalize();
