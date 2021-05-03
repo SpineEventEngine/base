@@ -69,7 +69,7 @@ public enum OsFamily {
     Unix {
         @Override
         public boolean isCurrent() {
-            boolean separatorMatches = PATH_SEP.equals(":");
+            boolean separatorMatches = ":".equals(PATH_SEP);
             boolean notMac = !macOS.isCurrent()
                     || OS_NAME.endsWith("x")
                     || OS_NAME.contains(DARWIN);
