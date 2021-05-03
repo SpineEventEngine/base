@@ -36,7 +36,8 @@ import static java.nio.file.Files.exists;
 /**
  * Locates the Dart {@code protoc} plugin executable in the local Pub cache.
  *
- * @see <a href="https://dart.dev/tools/pub/cmd/pub-global#running-a-script-from-your-path">Pub documentation</a>.
+ * <p>See <a href="https://dart.dev/tools/pub/cmd/pub-global#running-a-script-from-your-path">
+ * Pub documentation</a>.
  */
 public final class ProtocPluginPath {
 
