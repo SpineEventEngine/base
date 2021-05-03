@@ -43,6 +43,9 @@ public class ErrorProneChecksExtension {
 
     public Severity useValidatingBuilder;
 
+    /**
+     * Creates an instance of the extension in the passed project.
+     */
     public static void createIn(Project project) {
         project.getExtensions()
                 .create(extensionName(), ErrorProneChecksExtension.class);
