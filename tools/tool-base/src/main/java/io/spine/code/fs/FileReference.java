@@ -33,6 +33,7 @@ import io.spine.value.StringTypeValue;
 import java.nio.file.Path;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -62,6 +63,7 @@ public final class FileReference extends StringTypeValue {
      * Creates a new instance using the passed file path.
      */
     public static FileReference of(Path path) {
+        checkNotNull(path);
         return of(path.toString());
     }
 
