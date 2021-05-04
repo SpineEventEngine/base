@@ -258,6 +258,7 @@ public final class GradleProject {
          * @see #addProtoFile(String)
          */
         public Builder addProtoFiles(String... fileNames) {
+            checkNotNull(fileNames);
             return addProtoFiles(ImmutableList.copyOf(fileNames));
         }
 
@@ -269,6 +270,7 @@ public final class GradleProject {
          *         under the one specified in {@link #setProjectName(String)}
          */
         public Builder addJavaFiles(String... fileNames) {
+            checkNotNull(fileNames);
             javaFileNames.addAll(asList(fileNames));
             return this;
         }
