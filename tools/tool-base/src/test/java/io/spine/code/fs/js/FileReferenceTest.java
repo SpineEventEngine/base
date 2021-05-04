@@ -32,6 +32,9 @@ import io.spine.code.fs.FileReference;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
@@ -75,5 +78,13 @@ class FileReferenceTest {
         DirectoryReference directory = file.directory();
         assertThat(directory.elements())
                 .containsExactly("");
+    }
+
+    @Test
+    @DisplayName("create an instance using `Path` instance")
+    void fromPath() {
+        Path path = Paths.get("./../../foo/bar/f.js");
+        assertThat(FileReference.of(path).value())
+                .contains("foo/bar");
     }
 }
