@@ -175,6 +175,9 @@ public final class GradleProject {
      */
     public static class Builder {
 
+        private final List<String> protoFileNames = new ArrayList<>();
+        private final List<String> javaFileNames = new ArrayList<>();
+
         private String name;
         private File folder;
 
@@ -187,8 +190,6 @@ public final class GradleProject {
          * This leads to a high consumption of a memory.
          */
         private boolean debug;
-        private final List<String> protoFileNames = new ArrayList<>();
-        private final List<String> javaFileNames = new ArrayList<>();
 
         /**
          * Determines whether the plugin under test classpath is defined and should be added to
