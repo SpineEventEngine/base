@@ -29,7 +29,6 @@ package io.spine.tools.java.code.field;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.base.SubscribableField;
-import io.spine.tools.java.code.field.FieldContainerSpec;
 import io.spine.code.java.ClassName;
 import io.spine.tools.protoc.NestedClass;
 import io.spine.tools.protoc.NestedClassFactory;
