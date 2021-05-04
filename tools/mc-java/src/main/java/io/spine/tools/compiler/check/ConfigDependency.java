@@ -44,6 +44,9 @@ import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
  */
 public final class ConfigDependency implements Logging {
 
+    /**
+     * The name of the Maven artifact of the Model Compiler Java Checks.
+     */
     @VisibleForTesting
     public static final String SPINE_MC_CHECKS_ARTIFACT = "spine-mc-java-checks";
 
