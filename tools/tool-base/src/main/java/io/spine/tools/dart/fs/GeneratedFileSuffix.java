@@ -26,42 +26,33 @@
 
 package io.spine.tools.dart.fs;
 
-import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.AbstractFileName;
-
 /**
- * Name of a Dart file generated from Protobuf.
- *
- * <p>Always has the {@code .pb.dart} extension.
+ * Enumerates extensions of Dart files generated from Protobuf definitions.
  */
-public final class FileName extends AbstractFileName<FileName> {
+public enum GeneratedFileSuffix {
+    OF_MESSAGE(".pb.dart"),
+    OF_ENUM(".pbenum.dart"),
+    OF_SERVER(".pbserver.dart"),
+    OF_JSON(".pbjson.dart");
 
-    private static final long serialVersionUID = 0L;
+    private final String value;
 
-    private FileName(String value) {
-        super(value);
+    GeneratedFileSuffix(String value) {
+        this.value = value;
     }
 
     /**
-     * Constructs a relative file path for a file generated from the given Protobuf file.
-     *
-     * @param file the source Protobuf file
-     * @return new {@code FileName}, relative to the code generation root
+     * Obtains the suffix of the name for this kind of files.
      */
-    public static FileName relative(io.spine.code.proto.FileName file) {
-        String relativePath = file.nameWithoutExtension() + GeneratedFileSuffix.OF_MESSAGE.value();
-        return new FileName(relativePath);
+    public String value() {
+        return value;
     }
 
     /**
-     * Constructs a relative file path for a file generated from the given Protobuf file descriptor.
-     *
-     * @param file the source Protobuf file descriptor
-     * @return new {@code FileName}, relative to the code generation root
+     * Returns the file name suffix for this time of files.
      */
-    public static FileName relative(FileDescriptor file) {
-        io.spine.code.proto.FileName protoName = io.spine.code.proto.FileName.from(file);
-        return relative(protoName);
+    @Override
+    public String toString() {
+        return value;
     }
-
 }
