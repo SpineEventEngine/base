@@ -32,7 +32,7 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.validate.ValidatingBuilder;
-import io.spine.code.fs.java.SourceFile;
+import io.spine.tools.java.fs.SourceFile;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.OptionExtensionRegistry;
 import io.spine.tools.protoc.Interfaces;

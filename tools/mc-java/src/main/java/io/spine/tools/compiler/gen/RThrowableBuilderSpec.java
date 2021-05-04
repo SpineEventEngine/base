@@ -33,11 +33,11 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import io.spine.base.RejectionType;
-import io.spine.code.gen.java.BuilderSpec;
-import io.spine.code.gen.java.JavaPoetName;
+import io.spine.tools.java.code.BuilderSpec;
+import io.spine.tools.java.code.JavaPoetName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
-import io.spine.code.javadoc.JavadocText;
+import io.spine.tools.java.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 import io.spine.protobuf.Messages;
@@ -45,10 +45,10 @@ import io.spine.tools.compiler.field.FieldType;
 import io.spine.validate.Validate;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
+import static io.spine.tools.java.javadoc.JavadocText.fromUnescaped;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -199,11 +199,12 @@ final class RThrowableBuilderSpec implements BuilderSpec {
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // Random generated code duplication.
     private FieldSpec initializedProtoBuilder() {
-        ClassName protoBuilderClass = messageClass.className()
-                                                  .nestedClass(SimpleClassName.ofBuilder()
-                                                                              .value());
+        String builder = SimpleClassName.ofBuilder().value();
+        ClassName builderClass =
+                messageClass.className()
+                            .nestedClass(builder);
         return FieldSpec
-                .builder(protoBuilderClass, BUILDER_FIELD, PRIVATE, FINAL)
+                .builder(builderClass, BUILDER_FIELD, PRIVATE, FINAL)
                 .initializer("$T.newBuilder()", messageClass.value())
                 .build();
     }
@@ -222,8 +223,9 @@ final class RThrowableBuilderSpec implements BuilderSpec {
     private MethodSpec fieldSetter(FieldDeclaration field, FieldType fieldType) {
         FieldName fieldName = field.name();
         String parameterName = fieldName.javaCase();
-        String methodName = fieldType.primarySetterTemplate()
-                                     .format(io.spine.code.gen.java.FieldName.from(fieldName));
+        String methodName =
+                fieldType.primarySetterTemplate()
+                         .format(io.spine.tools.java.code.field.FieldName.from(fieldName));
         MethodSpec.Builder methodBuilder = MethodSpec
                 .methodBuilder(methodName)
                 .addModifiers(PUBLIC)
@@ -231,12 +233,15 @@ final class RThrowableBuilderSpec implements BuilderSpec {
                 .addParameter(fieldType.getTypeName(), parameterName)
                 .addStatement("$L.$L($L)", BUILDER_FIELD, methodName, parameterName)
                 .addStatement(RETURN_STATEMENT);
-        Optional<String> comments = field.leadingComments();
-        comments.ifPresent(
-                text -> methodBuilder.addJavadoc(JavadocText.fromUnescaped(text)
-                                                            .inPreTags()
-                                                            .value()));
+        field.leadingComments()
+             .map(RThrowableBuilderSpec::wrapInPre)
+             .ifPresent(methodBuilder::addJavadoc);
         return methodBuilder.build();
+    }
+
+    private static String wrapInPre(String text) {
+        JavadocText javaDoc = fromUnescaped(text).inPreTags();
+        return javaDoc.value();
     }
 
     /**

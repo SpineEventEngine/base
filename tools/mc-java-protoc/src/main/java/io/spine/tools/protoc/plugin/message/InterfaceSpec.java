@@ -30,8 +30,8 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Message;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
-import io.spine.code.fs.java.SourceFile;
-import io.spine.code.gen.java.GeneratedBy;
+import io.spine.tools.java.fs.SourceFile;
+import io.spine.tools.java.code.GeneratedBy;
 import io.spine.option.IsOption;
 import io.spine.type.MessageType;
 

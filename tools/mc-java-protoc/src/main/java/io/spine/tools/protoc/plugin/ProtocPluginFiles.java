@@ -26,7 +26,7 @@
 
 package io.spine.tools.protoc.plugin;
 
-import io.spine.code.fs.java.SourceFile;
+import io.spine.tools.java.fs.SourceFile;
 import io.spine.type.Type;
 
 import static com.google.common.base.Preconditions.checkNotNull;

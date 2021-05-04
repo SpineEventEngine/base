@@ -28,7 +28,7 @@ package io.spine.tools.protoc;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.code.gen.java.TypeSpec;
+import io.spine.tools.java.code.TypeSpec;
 import io.spine.value.StringTypeValue;
 
 import static com.google.common.base.Preconditions.checkNotNull;

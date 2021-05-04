@@ -28,7 +28,7 @@ package io.spine.tools.compiler.field;
 
 import com.google.common.collect.ImmutableSet;
 import io.spine.annotation.Internal;
-import io.spine.code.gen.java.FieldName;
+import io.spine.tools.java.code.field.FieldName;
 
 import java.util.Collection;
 

@@ -30,14 +30,14 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
-import io.spine.code.fs.java.SourceFile;
+import io.spine.tools.java.fs.SourceFile;
 import io.spine.code.java.ClassName;
 
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.fs.java.SourceFile.forMessage;
-import static io.spine.code.fs.java.SourceFile.forMessageOrBuilder;
+import static io.spine.tools.java.fs.SourceFile.forMessage;
+import static io.spine.tools.java.fs.SourceFile.forMessageOrBuilder;
 
 /**
  * An {@link Annotator} which annotates Java sources basing on a given Protobuf option.

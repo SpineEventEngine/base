@@ -31,7 +31,6 @@ import com.google.errorprone.annotations.Immutable;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
-import io.spine.code.gen.java.JavaPoetName;
 import io.spine.tools.protoc.Method;
 import io.spine.tools.protoc.MethodFactory;
 import io.spine.type.MessageType;

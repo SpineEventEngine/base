@@ -26,7 +26,7 @@
 
 package io.spine.tools.gradle.compiler;
 
-import io.spine.code.gen.java.BuilderSpec;
+import io.spine.tools.java.code.BuilderSpec;
 import io.spine.code.java.SimpleClassName;
 import io.spine.protobuf.Messages;
 import io.spine.tools.gradle.testing.GradleProject;

@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2021, TeamDev. All rights reserved.
  *
@@ -26,7 +25,8 @@
  */
 
 /**
- * Provides classes for analyzing and generating Java source code.
+ * This package contains tools for generating Java code as well as working with
+ * already generated code.
  */
 @Internal
 @CheckReturnValue

@@ -26,7 +26,7 @@
 
 package io.spine.tools.gradle.compiler;
 
-import io.spine.code.fs.java.DefaultJavaProject;
+import io.spine.tools.java.fs.DefaultJavaProject;
 import io.spine.tools.gradle.testing.GradleProject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;

@@ -27,7 +27,7 @@
 package io.spine.tools.protoc.plugin.field;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.gen.java.FieldFactory;
+import io.spine.tools.java.code.field.FieldFactory;
 import io.spine.tools.protoc.AddFields;
 import io.spine.tools.protoc.plugin.CodeGenerationTask;
 import io.spine.tools.protoc.plugin.CodeGenerationTasks;
