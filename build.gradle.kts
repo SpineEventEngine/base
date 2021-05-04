@@ -24,6 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:Suppress("RemoveRedundantQualifierName") // Cannot use imports in some places.
+
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.protoc
 import io.spine.internal.dependency.CheckerFramework
@@ -82,22 +84,20 @@ spinePublishing {
         "base",
         "tool-base",
         "testlib",
-        "mute-logging",
-        "errorprone-checks",
-
-        // Gradle plugins
         "plugin-base",
-        "javadoc-filter",
-        "javadoc-prettifier",
-        "proto-dart-plugin",
-        "proto-js-plugin",
-        "model-compiler",
-
+        "mute-logging",
         "plugin-testlib",
 
-        // Protoc compiler plugin
-        "validation-generator",
-        "protoc-plugin"
+        "javadoc-filter",
+        "javadoc-style",
+
+        "mc-java",
+        "mc-java-checks",
+        "mc-java-validation",
+        "mc-java-protoc",
+
+        "mc-dart",
+        "mc-js"
     )
 }
 

@@ -31,6 +31,9 @@ import io.spine.annotation.Internal;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.artifacts.Dependency;
 
+import java.util.function.Supplier;
+
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -67,18 +70,38 @@ public final class Artifact {
     }
 
     /**
-     * Creates a new {@code Artifact} from the given {@link org.gradle.api.artifacts.Dependency}
+     * Creates a new {@code Artifact} from the given
+     * {@link org.gradle.api.artifacts.Dependency Dependency}.
      *
-     * @param dependency
-     *         the Gradle dependency
+     * <p>The passed dependency must have {@code group}, {@code name}, and
+     * {@code version} defined.
+     *
+     * @param d
+     *         the Gradle dependency for which to create the artifact
      * @return new instance of {@code Artifact}
+     * @throws IllegalArgumentException
+     *          if either {@code group}, {@code name}, or {@code version} of the passed
+     *          dependency is not defined
      */
-    public static Artifact from(Dependency dependency) {
+    public static Artifact from(Dependency d) {
+        String group = ensureProperty(d, d::getGroup, "group");
+        String name = ensureProperty(d, d::getName, "name");
+        String version = ensureProperty(d, d::getVersion, "version");
         return newBuilder()
-                .setGroup(checkNotNull(dependency.getGroup()))
-                .setName(checkNotNull(dependency.getName()))
-                .setVersion(checkNotNull(dependency.getVersion()))
+                .setGroup(group)
+                .setName(name)
+                .setVersion(version)
                 .build();
+    }
+
+    private static <T>
+    T ensureProperty(Dependency dependency, Supplier<T> accessor, String propertyName) {
+        @Nullable T value = accessor.get();
+        checkArgument(
+                value != null,
+                "The dependency `%s` does not have a %s.", dependency, propertyName
+        );
+        return value;
     }
 
     /**

@@ -27,6 +27,7 @@
 package io.spine.tools.gradle.testing;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.tools.gradle.TaskName;
 import org.gradle.testkit.runner.BuildResult;
@@ -35,17 +36,19 @@ import org.gradle.testkit.runner.GradleRunner;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.base.Throwables.getRootCause;
-import static com.google.common.collect.Lists.newLinkedList;
+import static com.google.common.base.Preconditions.checkState;
 import static io.spine.io.Files2.copyDir;
+import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+import static java.nio.file.Files.copy;
+import static java.nio.file.Files.createDirectories;
+import static java.nio.file.Files.write;
 import static java.util.Arrays.asList;
 
 /**
@@ -55,10 +58,9 @@ import static java.util.Arrays.asList;
  */
 public final class GradleProject {
 
-    private static final String BASE_PROTO_LOCATION = "src/main/proto/";
-    private static final String BASE_JAVA_LOCATION = "src/main/java/";
-    private static final String JAVA_PLUGIN_NAME = "java";
-    private static final String BUILD_SRC = "buildSrc";
+    private static final String mainProtoDir = "src/main/proto/";
+    private static final String mainJavaDir = "src/main/java/";
+    private static final String buildSrcDir = "buildSrc";
 
     private final String name;
     private final GradleRunner gradleRunner;
@@ -75,15 +77,15 @@ public final class GradleProject {
      * Obtains the name of the Java Gradle plugin.
      */
     public static String javaPlugin() {
-        return JAVA_PLUGIN_NAME;
+        return "java";
     }
 
     private GradleProject(Builder builder) throws IOException {
         this.name = builder.name;
         this.debug = builder.debug;
         this.gradleRunner = GradleRunner.create()
-                                        .withProjectDir(builder.folder)
-                                        .withDebug(builder.debug);
+                .withProjectDir(builder.folder)
+                .withDebug(builder.debug);
         if (builder.addPluginUnderTestClasspath) {
             gradleRunner.withPluginClasspath();
         }
@@ -94,20 +96,20 @@ public final class GradleProject {
     }
 
     private void writeGradleScripts() throws IOException {
-        BuildGradle buildGradle = new BuildGradle(testProjectRoot());
+        BuildGradle buildGradle = new BuildGradle(projectRoot());
         buildGradle.createFile();
 
         Path projectRoot = ProjectRoot.instance()
                                       .toPath();
-        TestEnvGradle testEnvGradle = new TestEnvGradle(projectRoot, testProjectRoot());
+        TestEnvGradle testEnvGradle = new TestEnvGradle(projectRoot, projectRoot());
         testEnvGradle.createFile();
     }
 
     private void writeBuildSrc() throws IOException {
         Path projectRoot = ProjectRoot.instance()
                                       .toPath();
-        Path buildSrc = projectRoot.resolve(BUILD_SRC);
-        Path target = testProjectRoot();
+        Path buildSrc = projectRoot.resolve(buildSrcDir);
+        Path target = projectRoot();
         copyDir(buildSrc, target);
     }
 
@@ -140,25 +142,30 @@ public final class GradleProject {
     }
 
     private void writeProto(String fileName) throws IOException {
-        writeFile(fileName, BASE_PROTO_LOCATION);
+        writeFile(fileName, mainProtoDir);
     }
 
     private void writeJava(String fileName) throws IOException {
-        writeFile(fileName, BASE_JAVA_LOCATION);
+        writeFile(fileName, mainJavaDir);
     }
 
     private void writeFile(String fileName, String dir) throws IOException {
         String filePath = dir + fileName;
-        Path resultingPath = testProjectRoot().resolve(filePath);
-        String fullyQualifiedPath = name + '/' + filePath;
-        InputStream fileContent = getClass().getClassLoader()
-                                            .getResourceAsStream(fullyQualifiedPath);
-        Files.createDirectories(resultingPath.getParent());
-        checkNotNull(fileContent);
-        Files.copy(fileContent, resultingPath);
+        String resourcePath = name + '/' + filePath;
+        InputStream fileContent = openResource(resourcePath);
+        Path fileSystemPath = projectRoot().resolve(filePath);
+        createDirectories(fileSystemPath.getParent());
+        copy(fileContent, fileSystemPath);
     }
 
-    private Path testProjectRoot() {
+    private InputStream openResource(String fullPath) {
+        InputStream stream = getClass().getClassLoader()
+                                       .getResourceAsStream(fullPath);
+        checkState(stream != null, "Unable to locate resource: `%s`.", fullPath);
+        return stream;
+    }
+
+    private Path projectRoot() {
         return gradleRunner.getProjectDir()
                            .toPath();
     }
@@ -167,6 +174,9 @@ public final class GradleProject {
      * A builder for new {@code GradleProject}.
      */
     public static class Builder {
+
+        private final List<String> protoFileNames = new ArrayList<>();
+        private final List<String> javaFileNames = new ArrayList<>();
 
         private String name;
         private File folder;
@@ -180,8 +190,6 @@ public final class GradleProject {
          * This leads to a high consumption of a memory.
          */
         private boolean debug;
-        private final List<String> protoFileNames = newLinkedList();
-        private final List<String> javaFileNames = newLinkedList();
 
         /**
          * Determines whether the plugin under test classpath is defined and should be added to
@@ -202,16 +210,31 @@ public final class GradleProject {
         private Builder() {
         }
 
+        /**
+         * Sets the name of the sub-directory under {@code resources} which contains files
+         * for the project to be created.
+         */
         public Builder setProjectName(String name) {
             this.name = checkNotNull(name);
             return this;
         }
 
+        /**
+         * Sets the name of the directory on the file system under which
+         * the project will be created.
+         */
         public Builder setProjectFolder(File folder) {
             this.folder = checkNotNull(folder);
             return this;
         }
 
+        /**
+         * Adds a {@code .proto} file to the project to be created.
+         *
+         * @param protoFileName
+         *         a name of the proto file relative to {@code src/main/proto} sub-directory
+         *         under the one specified in {@link #setProjectName(String)}
+         */
         public Builder addProtoFile(String protoFileName) {
             checkNotNull(protoFileName);
             checkArgument(!protoFileName.isEmpty());
@@ -219,7 +242,36 @@ public final class GradleProject {
             return this;
         }
 
+        /**
+         * Adds a collection of {@code .proto} files to the project to be created.
+         *
+         * @see #addProtoFile(String)
+         */
+        public Builder addProtoFiles(Collection<String> protoFileNames) {
+            checkNotNull(protoFileNames);
+            protoFileNames.forEach(this::addProtoFile);
+            return this;
+        }
+
+        /**
+         * Adds multiple {@code .proto} files to the project to be created.
+         *
+         * @see #addProtoFile(String)
+         */
+        public Builder addProtoFiles(String... fileNames) {
+            checkNotNull(fileNames);
+            return addProtoFiles(ImmutableList.copyOf(fileNames));
+        }
+
+        /**
+         * Adds {@code .java} files to the project to be created.
+         *
+         * @param fileNames
+         *         names of the Java files relative to {@code src/main/java} sub-directory
+         *         under the one specified in {@link #setProjectName(String)}
+         */
         public Builder addJavaFiles(String... fileNames) {
+            checkNotNull(fileNames);
             javaFileNames.addAll(asList(fileNames));
             return this;
         }
@@ -251,7 +303,7 @@ public final class GradleProject {
          * Creates a {@code .proto} source file with the given name and content.
          *
          * @param fileName
-         *         the name of the file
+         *         the name of the file relative to {@code src/main/proto} directory
          * @param lines
          *         the content of the file
          */
@@ -259,7 +311,7 @@ public final class GradleProject {
             checkNotNull(fileName);
             checkNotNull(lines);
 
-            String path = BASE_PROTO_LOCATION + fileName;
+            String path = mainProtoDir + fileName;
             return createFile(path, lines);
         }
 
@@ -267,7 +319,7 @@ public final class GradleProject {
          * Creates a file in the project directory under the given path and with the given content.
          *
          * @param path
-         *         the path to the file relative to the project dir
+         *         the path to the file relative to the project root directory
          * @param lines
          *         the content of the file
          */
@@ -278,22 +330,11 @@ public final class GradleProject {
             Path sourcePath = folder.toPath()
                                     .resolve(path);
             try {
-                Files.createDirectories(sourcePath.getParent());
-                Files.write(sourcePath, lines, Charsets.UTF_8);
+                createDirectories(sourcePath.getParent());
+                write(sourcePath, lines, Charsets.UTF_8);
             } catch (IOException e) {
                 throw illegalStateWithCauseOf(e);
             }
-            return this;
-        }
-
-        public Builder addProtoFiles(Collection<String> protoFileNames) {
-            checkNotNull(protoFileNames);
-
-            for (String protoFileName : protoFileNames) {
-                checkArgument(!isNullOrEmpty(protoFileName));
-            }
-
-            this.protoFileNames.addAll(protoFileNames);
             return this;
         }
 
@@ -306,11 +347,6 @@ public final class GradleProject {
             } catch (IOException e) {
                 throw illegalStateWithCauseOf(e);
             }
-        }
-
-        private static IllegalStateException illegalStateWithCauseOf(Throwable throwable) {
-            Throwable rootCause = getRootCause(throwable);
-            throw new IllegalStateException(rootCause);
         }
     }
 }

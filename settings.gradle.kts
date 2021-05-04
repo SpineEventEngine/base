@@ -46,15 +46,16 @@ fun toolsModule(name: String) {
 toolsModule("tool-base")
 toolsModule("plugin-base")
 toolsModule("plugin-testlib")
-
 toolsModule("mute-logging")
-toolsModule("errorprone-checks")
+
 toolsModule("javadoc-filter")
-toolsModule("javadoc-prettifier")
-toolsModule("model-compiler")
+toolsModule("javadoc-style")
 
-toolsModule("proto-dart-plugin")
-toolsModule("proto-js-plugin")
+toolsModule("mc-java-checks")
+toolsModule("mc-java-validation")
+toolsModule("mc-java-protoc")
+toolsModule("mc-java")
 
-toolsModule("validation-generator")
-toolsModule("protoc-plugin")
+toolsModule("mc-dart")
+toolsModule("mc-js")
+
