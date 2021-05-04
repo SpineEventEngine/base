@@ -38,33 +38,12 @@ public enum OsFamily {
 
     Windows,
 
-    Win9x {
-        @Override
-        public boolean isCurrent() {
-            boolean hasSuffix = OS_NAME.contains("95")
-                    || OS_NAME.contains("98")
-                    || OS_NAME.contains("me");
-            return Windows.isCurrent() && hasSuffix;
-        }
-    },
-
-    WinNT {
-        @Override
-        public boolean isCurrent() {
-            return Windows.isCurrent() && !Win9x.isCurrent();
-        }
-    },
-
-    Os2("os/2"),
-
     macOS("mac") {
         @Override
         public boolean isCurrent() {
             return super.isCurrent() || OS_NAME.contains(DARWIN);
         }
     },
-
-    OpenVms("openvms"),
 
     Unix {
         @Override
@@ -73,7 +52,7 @@ public enum OsFamily {
             boolean notMac = !macOS.isCurrent()
                     || OS_NAME.endsWith("x")
                     || OS_NAME.contains(DARWIN);
-            boolean notVms = !OpenVms.isCurrent();
+            boolean notVms = !OS_NAME.contains("openvms");
             return separatorMatches && notVms && notMac;
         }
     };
