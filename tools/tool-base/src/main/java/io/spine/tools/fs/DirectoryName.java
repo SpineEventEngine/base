@@ -27,7 +27,6 @@
 package io.spine.tools.fs;
 
 import io.spine.annotation.Internal;
-import io.spine.tools.fs.DefaultProject;
 
 /**
  * Enumerates default names for project structure directories.
