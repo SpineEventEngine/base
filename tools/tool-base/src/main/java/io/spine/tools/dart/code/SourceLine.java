@@ -28,9 +28,9 @@ package io.spine.tools.dart.code;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.flogger.FluentLogger;
-import io.spine.code.fs.FileReference;
+import io.spine.tools.fs.FileReference;
 import io.spine.logging.Logging;
-import io.spine.tools.ExternalModule;
+import io.spine.tools.fs.ExternalModule;
 import org.checkerframework.checker.regex.qual.Regex;
 
 import java.nio.file.Path;

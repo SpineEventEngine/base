@@ -24,9 +24,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.fs.java;
+package io.spine.tools.fs;
 
 import io.spine.annotation.Internal;
+import io.spine.tools.fs.DefaultProject;
 
 /**
  * Enumerates default names for project structure directories.
@@ -70,7 +71,7 @@ public enum DirectoryName {
     /**
      * Internal directory name for storing temporary build artifacts.
      *
-     * @see io.spine.code.fs.DefaultProject#tempArtifacts()
+     * @see DefaultProject#tempArtifacts()
      */
     @Internal
     dotSpine(".spine");

@@ -26,7 +26,7 @@
 
 package io.spine.code.fs.js;
 
-import io.spine.code.fs.DefaultProject;
+import io.spine.tools.fs.DefaultProject;
 
 import java.io.File;
 import java.nio.file.Path;

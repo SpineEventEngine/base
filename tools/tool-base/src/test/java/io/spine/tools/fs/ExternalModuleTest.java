@@ -24,12 +24,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools;
+package io.spine.tools.fs;
 
 import com.google.common.testing.EqualsTester;
-import io.spine.code.fs.FileReference;
-import io.spine.tools.DirectoryPattern;
-import io.spine.tools.ExternalModule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

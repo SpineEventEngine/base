@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.fs;
+package io.spine.tools.fs;
 
 import io.spine.code.AbstractDirectory;
 import io.spine.code.SourceCodeDirectory;
@@ -32,11 +32,11 @@ import io.spine.code.SourceCodeDirectory;
 import java.io.File;
 import java.nio.file.Path;
 
-import static io.spine.code.fs.java.DirectoryName.build;
-import static io.spine.code.fs.java.DirectoryName.descriptors;
-import static io.spine.code.fs.java.DirectoryName.dotSpine;
-import static io.spine.code.fs.java.DirectoryName.main;
-import static io.spine.code.fs.java.DirectoryName.test;
+import static io.spine.tools.fs.DirectoryName.build;
+import static io.spine.tools.fs.DirectoryName.descriptors;
+import static io.spine.tools.fs.DirectoryName.dotSpine;
+import static io.spine.tools.fs.DirectoryName.main;
+import static io.spine.tools.fs.DirectoryName.test;
 
 /**
  * This class represents a default directory structure for a Spine-based project of any language.

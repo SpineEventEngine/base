@@ -28,8 +28,8 @@ package io.spine.tools.mc.dart.gradle;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.dart.fs.DefaultDartProject;
-import io.spine.tools.DirectoryPattern;
-import io.spine.tools.ExternalModule;
+import io.spine.tools.fs.DirectoryPattern;
+import io.spine.tools.fs.ExternalModule;
 import io.spine.tools.gradle.GradleExtension;
 import org.gradle.api.Project;
 import org.gradle.api.file.DirectoryProperty;

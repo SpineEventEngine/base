@@ -27,17 +27,17 @@
 package io.spine.code.fs.java;
 
 import io.spine.code.SourceCodeDirectory;
-import io.spine.code.fs.DefaultProject;
+import io.spine.tools.fs.DefaultProject;
 
 import java.io.File;
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.fs.java.DirectoryName.generated;
-import static io.spine.code.fs.java.DirectoryName.grpc;
-import static io.spine.code.fs.java.DirectoryName.resources;
-import static io.spine.code.fs.java.DirectoryName.spine;
-import static io.spine.code.fs.java.DirectoryName.src;
+import static io.spine.tools.fs.DirectoryName.generated;
+import static io.spine.tools.fs.DirectoryName.grpc;
+import static io.spine.tools.fs.DirectoryName.resources;
+import static io.spine.tools.fs.DirectoryName.spine;
+import static io.spine.tools.fs.DirectoryName.src;
 
 /**
  * A default directory structure for a Spine-based Java project.

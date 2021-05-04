@@ -26,7 +26,7 @@
 
 package io.spine.js.generate.imports;
 
-import io.spine.code.fs.FileReference;
+import io.spine.tools.fs.FileReference;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
