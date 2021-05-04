@@ -44,7 +44,7 @@ import static io.spine.tools.gradle.ProtoDartTaskName.copyGeneratedDart;
 import static io.spine.tools.gradle.ProtoDartTaskName.copyTestGeneratedDart;
 import static io.spine.tools.gradle.ProtoDartTaskName.resolveImports;
 
-@DisplayName("`ProtoDartPlugin` should")
+@DisplayName("`McDartPlugin` should")
 class McDartPluginTest {
 
     private Project project;
