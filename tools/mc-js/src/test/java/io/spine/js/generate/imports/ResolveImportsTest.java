@@ -30,8 +30,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.truth.IterableSubject;
 import io.spine.code.fs.js.Directory;
 import io.spine.js.generate.given.GivenProject;
-import io.spine.tools.code.structure.DirectoryPattern;
-import io.spine.tools.code.structure.ExternalModule;
+import io.spine.tools.fs.DirectoryPattern;
+import io.spine.tools.fs.ExternalModule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

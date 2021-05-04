@@ -24,24 +24,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
- *
- * This version file adheres to the contract of the
- * [publishing application](https://github.com/SpineEventEngine/publishing).
- *
- * When changing the version declarations or adding new ones, make sure to change
- * the publishing application accordingly.
- */
+package io.spine.tools.fs;
 
-/** The version of this library. */
-val base = "2.0.0-SNAPSHOT.23"
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-project.extra.apply {
-    this["spineVersion"] = base
-    this["spineBaseVersion"] = base // Used by `filter-internal-javadoc.gradle`.
-    this["versionToPublish"] = base
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.Assertions.assertIllegalArgument;
+
+@DisplayName("`DirectoryReference` should")
+class DirectoryReferenceTest {
+
+    @Test
+    @DisplayName("not be empty")
+    void notEmpty() {
+        assertIllegalArgument(() -> DirectoryReference.of(""));
+    }
+
+    @Test
+    @DisplayName("provide names it consists from")
+    void provideDirectoryNames() {
+        DirectoryReference reference = DirectoryReference.of("a/b/c");
+        assertThat(reference.elements()).containsAtLeast("a", "b", "c");
+    }
 }

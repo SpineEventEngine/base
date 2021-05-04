@@ -24,24 +24,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.dart.fs;
+
 /**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
- *
- * This version file adheres to the contract of the
- * [publishing application](https://github.com/SpineEventEngine/publishing).
- *
- * When changing the version declarations or adding new ones, make sure to change
- * the publishing application accordingly.
+ * Enumerates extensions of Dart files generated from Protobuf definitions.
  */
+public enum GeneratedFileSuffix {
+    OF_MESSAGE(".pb.dart"),
+    OF_ENUM(".pbenum.dart"),
+    OF_SERVER(".pbserver.dart"),
+    OF_JSON(".pbjson.dart");
 
-/** The version of this library. */
-val base = "2.0.0-SNAPSHOT.23"
+    private final String value;
 
-project.extra.apply {
-    this["spineVersion"] = base
-    this["spineBaseVersion"] = base // Used by `filter-internal-javadoc.gradle`.
-    this["versionToPublish"] = base
+    GeneratedFileSuffix(String value) {
+        this.value = value;
+    }
+
+    /**
+     * Obtains the suffix of the name for this kind of files.
+     */
+    public String value() {
+        return value;
+    }
+
+    /**
+     * Returns the file name suffix for this time of files.
+     */
+    @Override
+    public String toString() {
+        return value;
+    }
 }
