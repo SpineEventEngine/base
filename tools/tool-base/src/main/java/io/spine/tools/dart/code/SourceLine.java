@@ -42,7 +42,7 @@ import static java.lang.String.format;
 import static java.util.regex.Pattern.compile;
 
 /**
- * Resolves import statements in a Dart file.
+ * A line of code in a Dart file.
  */
 final class SourceLine implements Logging {
 
