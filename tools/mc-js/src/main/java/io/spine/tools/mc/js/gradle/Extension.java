@@ -47,12 +47,12 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.tools.mc.js.gradle.ProtoJsPlugin.extensionName;
+import static io.spine.tools.mc.js.gradle.McJsPlugin.extensionName;
 import static io.spine.tools.fs.ExternalModule.predefinedModules;
 import static java.util.stream.Collectors.toList;
 
 /**
- * An extension for the {@link ProtoJsPlugin} which allows to obtain the {@code generateJsonParsers}
+ * An extension for the {@link McJsPlugin} which allows to obtain the {@code generateJsonParsers}
  * task to configure when it will be executed during the build lifecycle.
  */
 @SuppressWarnings("PublicField" /* Expose fields as a Gradle extension */)
@@ -155,7 +155,7 @@ public class Extension extends GradleExtension {
     }
 
     /**
-     * Returns the {@code generateJsonParsers} task configured by the {@link ProtoJsPlugin}.
+     * Returns the {@code generateJsonParsers} task configured by the {@link McJsPlugin}.
      */
     @SuppressWarnings("unused") // Used in project applying the plugin.
     public Task generateParsersTask() {

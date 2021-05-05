@@ -81,7 +81,7 @@ import static io.spine.tools.gradle.ProtoJsTaskName.generateJsonParsers;
  * <p>The {@code build.gradle} file located under the {@code test/resources} folder of this module
  * can be used as an example of the required project configuration.
  */
-public class ProtoJsPlugin extends ProtoPlugin {
+public class McJsPlugin extends ProtoPlugin {
 
     private static final String EXTENSION_NAME = "protoJs";
 

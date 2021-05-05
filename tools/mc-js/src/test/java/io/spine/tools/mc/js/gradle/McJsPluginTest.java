@@ -40,7 +40,7 @@ import static io.spine.tools.gradle.ProtoJsTaskName.generateJsonParsers;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DisplayName("ProtoJsPlugin should")
-class ProtoJsPluginTest {
+class McJsPluginTest {
 
     private Project project;
 
@@ -56,7 +56,7 @@ class ProtoJsPluginTest {
     @DisplayName("add task to generate code for parsing generated JS messages from JSON")
     void addTaskToGenerateCode() {
         project.getPluginManager()
-               .apply(ProtoJsPlugin.class);
+               .apply(McJsPlugin.class);
         TaskContainer tasks = project.getTasks();
         Task task = tasks.findByName(generateJsonParsers.name());
         assertNotNull(task);
