@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.gradle;
+package io.spine.tools.mc.js.gradle;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.js.fs.DefaultJsProject;

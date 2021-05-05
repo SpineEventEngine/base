@@ -24,43 +24,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.gradle;
+package io.spine.tools.mc.js.gradle;
 
-import com.google.protobuf.gradle.ExecutableLocator;
-import io.spine.tools.js.fs.DefaultJsProject;
-import io.spine.tools.gradle.ProtocConfigurationPlugin;
-import org.gradle.api.NamedDomainObjectContainer;
+import io.spine.testing.TempDir;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
+import org.gradle.api.tasks.TaskContainer;
+import org.gradle.testfixtures.ProjectBuilder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.nio.file.Path;
+import static io.spine.tools.gradle.BaseTaskName.build;
+import static io.spine.tools.gradle.ProtoJsTaskName.generateJsonParsers;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * A Gradle plugin that performs additional {@code protoc} configurations relevant for JavaScript
- * projects.
- */
-public final class JsProtocConfigurationPlugin extends ProtocConfigurationPlugin {
+@DisplayName("ProtoJsPlugin should")
+class ProtoJsPluginTest {
 
-    @Override
-    protected File getTestDescriptorSet(Project project) {
-        return Extension.getTestDescriptorSet(project);
+    private Project project;
+
+    @BeforeEach
+    void setUp() {
+        project = ProjectBuilder.builder()
+                                .withProjectDir(TempDir.withPrefix("js-plugin-test"))
+                                .build();
+        project.task(build.name());
     }
 
-    @Override
-    protected Path generatedFilesBaseDir(Project project) {
-        DefaultJsProject jsProject = DefaultJsProject.at(project.getProjectDir());
-        DefaultJsProject.GeneratedProtoRoot generatedProtoRoot = jsProject.proto();
-        return generatedProtoRoot.path();
-    }
-
-    @Override
-    protected File getMainDescriptorSet(Project project) {
-        return Extension.getMainDescriptorSet(project);
-    }
-
-    @Override
-    protected void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins,
-                                          Project project) {
-        // Do nothing.
+    @Test
+    @DisplayName("add task to generate code for parsing generated JS messages from JSON")
+    void addTaskToGenerateCode() {
+        project.getPluginManager()
+               .apply(ProtoJsPlugin.class);
+        TaskContainer tasks = project.getTasks();
+        Task task = tasks.findByName(generateJsonParsers.name());
+        assertNotNull(task);
     }
 }

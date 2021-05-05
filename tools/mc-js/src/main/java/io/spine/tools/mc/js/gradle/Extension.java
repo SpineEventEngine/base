@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.gradle;
+package io.spine.tools.mc.js.gradle;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.tools.fs.DefaultProject;
@@ -47,7 +47,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.js.gradle.ProtoJsPlugin.extensionName;
+import static io.spine.tools.mc.js.gradle.ProtoJsPlugin.extensionName;
 import static io.spine.tools.fs.ExternalModule.predefinedModules;
 import static java.util.stream.Collectors.toList;
 
