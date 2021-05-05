@@ -24,33 +24,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.gen.js;
+/**
+ * This package contains types for working file system aspects of Protobuf definitions.
+ */
 
-import com.google.common.testing.NullPointerTester;
-import com.google.protobuf.Any;
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+@Internal
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.proto.fs;
 
-import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.annotation.Internal;
 
-@DisplayName("FieldName should")
-class FieldNameTest {
-
-    @Test
-    @DisplayName(NOT_ACCEPT_NULLS)
-    void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(FieldName.class);
-    }
-
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with generated code.
-    @Test
-    @DisplayName("create CamelCase name from Protobuf field")
-    void convertToCamelCase() {
-        FieldDescriptor typeUrlDescriptor = Any.getDescriptor()
-                                               .findFieldByName("type_url");
-        FieldName fieldName = FieldName.from(typeUrlDescriptor);
-        assertEquals("TypeUrl", fieldName.value());
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

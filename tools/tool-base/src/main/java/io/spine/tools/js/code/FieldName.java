@@ -24,16 +24,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.js.code;
+
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.value.StringTypeValue;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * This package contains tools for working with the structure of a Java project.
+ * A name of the generated Protobuf message field in JavaScript.
+ *
+ * <p>Represents the {@linkplain io.spine.code.proto.FieldName proto name} converted to
+ * {@code CamelCase}.
  */
+public final class FieldName extends StringTypeValue {
 
-@Internal
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.code.fs.proto;
+    private static final long serialVersionUID = 0L;
 
-import com.google.errorprone.annotations.CheckReturnValue;
-import io.spine.annotation.Internal;
+    private FieldName(String value) {
+        super(value);
+    }
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    public static FieldName from(FieldDescriptor fieldDescriptor) {
+        checkNotNull(fieldDescriptor);
+        FieldDescriptorProto proto = fieldDescriptor.toProto();
+        String capitalizedName = io.spine.code.proto.FieldName.of(proto)
+                                                              .toCamelCase();
+        return new FieldName(capitalizedName);
+    }
+}

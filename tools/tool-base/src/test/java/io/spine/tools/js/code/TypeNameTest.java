@@ -24,30 +24,50 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.output.snippet;
+package io.spine.tools.js.code;
 
+import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
-import io.spine.tools.js.code.TypeName;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.EnumDescriptor;
+import com.google.protobuf.Syntax;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("VariableDeclaration should")
-class VariableDeclarationTest {
+@DisplayName("TypeName should")
+class TypeNameTest {
 
     @Test
-    @DisplayName("be initialized by value")
-    void initializedByValue() {
-        VariableDeclaration line = VariableDeclaration.initialized("someVariable", "someValue");
-        assertEquals("let someVariable = someValue;", line.content());
+    @DisplayName(NOT_ACCEPT_NULLS)
+    void passNullToleranceCheck() {
+        new NullPointerTester().testAllPublicStaticMethods(TypeName.class);
     }
 
     @Test
-    @DisplayName("be initialized by new instance")
-    void initializedByNewInstance() {
-        TypeName type = TypeName.from(Any.getDescriptor());
-        VariableDeclaration line = VariableDeclaration.newInstance("anyValue", type);
-        assertEquals("let anyValue = new proto.google.protobuf.Any();", line.content());
+    @DisplayName("append `proto.` prefix to message type")
+    void appendPrefixToMessage() {
+        Descriptor descriptor = Any.getDescriptor();
+        TypeName typeName = TypeName.from(descriptor);
+        String expected = "proto.google.protobuf.Any";
+        assertEquals(expected, typeName.value());
+    }
+
+    @Test
+    @DisplayName("append `proto.` prefix to enum type")
+    void appendPrefixToEnum() {
+        EnumDescriptor descriptor = Syntax.getDescriptor();
+        TypeName typeName = TypeName.from(descriptor);
+        String expected = "proto.google.protobuf.Syntax";
+        assertEquals(expected, typeName.value());
+    }
+
+    @Test
+    @DisplayName("provide a name for a message parser")
+    void messageParserName() {
+        TypeName anyParser = TypeName.ofParser(Any.getDescriptor());
+        assertEquals("proto.google.protobuf.Any.Parser", anyParser.value());
     }
 }

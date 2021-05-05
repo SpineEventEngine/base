@@ -24,50 +24,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.gen.js;
+package io.spine.tools.js.code;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
-import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.EnumDescriptor;
-import com.google.protobuf.Syntax;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("TypeName should")
-class TypeNameTest {
+@DisplayName("FieldName should")
+class FieldNameTest {
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(TypeName.class);
+        new NullPointerTester().testAllPublicStaticMethods(FieldName.class);
     }
 
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with generated code.
     @Test
-    @DisplayName("append `proto.` prefix to message type")
-    void appendPrefixToMessage() {
-        Descriptor descriptor = Any.getDescriptor();
-        TypeName typeName = TypeName.from(descriptor);
-        String expected = "proto.google.protobuf.Any";
-        assertEquals(expected, typeName.value());
-    }
-
-    @Test
-    @DisplayName("append `proto.` prefix to enum type")
-    void appendPrefixToEnum() {
-        EnumDescriptor descriptor = Syntax.getDescriptor();
-        TypeName typeName = TypeName.from(descriptor);
-        String expected = "proto.google.protobuf.Syntax";
-        assertEquals(expected, typeName.value());
-    }
-
-    @Test
-    @DisplayName("provide a name for a message parser")
-    void messageParserName() {
-        TypeName anyParser = TypeName.ofParser(Any.getDescriptor());
-        assertEquals("proto.google.protobuf.Any.Parser", anyParser.value());
+    @DisplayName("create CamelCase name from Protobuf field")
+    void convertToCamelCase() {
+        FieldDescriptor typeUrlDescriptor = Any.getDescriptor()
+                                               .findFieldByName("type_url");
+        FieldName fieldName = FieldName.from(typeUrlDescriptor);
+        assertEquals("TypeUrl", fieldName.value());
     }
 }

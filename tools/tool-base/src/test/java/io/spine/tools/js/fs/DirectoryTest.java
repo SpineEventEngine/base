@@ -24,54 +24,54 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.fs.js;
+package io.spine.tools.js.fs;
 
 import com.google.common.testing.NullPointerTester;
-import com.google.protobuf.Any;
-import com.google.protobuf.Descriptors.FileDescriptor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-import static com.google.common.truth.Truth.assertThat;
-import static io.spine.testing.Assertions.assertIllegalArgument;
+import static io.spine.tools.js.fs.LibraryFile.INDEX;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("`FileName` should")
-class FileNameTest {
+@DisplayName("Directory should")
+class DirectoryTest {
 
-    private final FileDescriptor file = Any.getDescriptor()
-                                           .getFile();
+    private static final Path DIRECTORY_PATH = Paths.get("/home/user/directory");
+
+    private Directory directory;
+
+    @BeforeEach
+    void setUp() {
+        directory = Directory.at(DIRECTORY_PATH);
+    }
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(FileName.class);
+        new NullPointerTester().testAllPublicStaticMethods(Directory.class);
+        new NullPointerTester().testAllPublicInstanceMethods(directory);
     }
 
     @Test
-    @DisplayName("not accept names without extension")
-    void notAcceptNameWithoutExtension() {
-        assertIllegalArgument(() -> FileName.of("no-extension"));
+    @DisplayName("resolve file name")
+    void resolveFileName() {
+        String rawName = "tasks_pb.js";
+        FileName fileName = FileName.of(rawName);
+        Path resolved = directory.resolve(fileName);
+        Path expected = DIRECTORY_PATH.resolve(rawName);
+        assertEquals(expected, resolved);
     }
 
     @Test
-    @DisplayName("replace `.proto` extension with predefined suffix")
-    void appendSuffix() {
-        FileName fileName = FileName.from(file);
-        String expected = "google/protobuf/any_pb.js";
-        assertEquals(expected, fileName.value());
-    }
-
-    @Test
-    @DisplayName("return path elements")
-    void returnPathElements() {
-        FileName fileName = FileName.from(file);
-        List<String> pathElements = fileName.pathElements();
-        assertThat(pathElements).contains("google");
-        assertThat(pathElements).contains("protobuf");
-        assertThat(pathElements).contains("any_pb.js");
+    @DisplayName("resolve LibraryFile")
+    void resolveCommonFileName() {
+        Path resolved = directory.resolve(INDEX);
+        Path expected = DIRECTORY_PATH.resolve(INDEX.toString());
+        assertEquals(expected, resolved);
     }
 }

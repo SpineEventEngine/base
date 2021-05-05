@@ -32,8 +32,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 
 /**
- * An utility for working with {@link UuidConfig} and {@link ConfigByPattern} code generation task
- * configurations..
+ * An utility for working with {@link UuidConfig} and {@link ConfigByPattern} code generation
+ * task configurations.
  */
 public final class ProtocTaskConfigs {
 
@@ -46,8 +46,7 @@ public final class ProtocTaskConfigs {
      */
     public static UuidConfig uuidConfig(ClassName className) {
         checkNotNull(className);
-        return UuidConfig
-                .newBuilder()
+        return UuidConfig.newBuilder()
                 .setValue(className.value())
                 .build();
     }
@@ -57,8 +56,7 @@ public final class ProtocTaskConfigs {
      */
     public static EntityStateConfig entityStateConfig(ClassName className) {
         checkNotNull(className);
-        return EntityStateConfig
-                .newBuilder()
+        return EntityStateConfig.newBuilder()
                 .setValue(className.value())
                 .build();
     }
@@ -74,8 +72,7 @@ public final class ProtocTaskConfigs {
     byPatternConfig(ClassName className, FilePattern pattern) {
         checkNotNull(className);
         checkNotDefaultArg(pattern);
-        return ConfigByPattern
-                .newBuilder()
+        return ConfigByPattern.newBuilder()
                 .setValue(className.value())
                 .setPattern(pattern)
                 .build();

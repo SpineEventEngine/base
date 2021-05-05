@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.fs.js;
+package io.spine.tools.js.fs;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;

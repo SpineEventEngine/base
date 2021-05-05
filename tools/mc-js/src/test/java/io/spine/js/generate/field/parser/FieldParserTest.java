@@ -29,7 +29,7 @@ package io.spine.js.generate.field.parser;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.code.gen.js.TypeName;
+import io.spine.tools.js.code.TypeName;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.BeforeEach;

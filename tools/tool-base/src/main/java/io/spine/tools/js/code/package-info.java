@@ -25,15 +25,14 @@
  */
 
 /**
- * This package contains tools for working with the structure of a project.
- *
- * <p>These components consider a project from the file system perspective.
+ * This package contains tools for generating Java code as well as working with already generated
+ * code.
  */
 
 @Internal
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.code.fs;
+package io.spine.tools.js.code;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 import io.spine.annotation.Internal;

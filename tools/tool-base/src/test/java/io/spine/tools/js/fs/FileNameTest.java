@@ -24,42 +24,54 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.gen.js;
+package io.spine.tools.js.fs;
 
+import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.testing.Assertions.assertIllegalArgument;
+import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("MethodReference should")
-class MethodReferenceTest {
+@DisplayName("`FileName` should")
+class FileNameTest {
 
-    private static final String METHOD_NAME = "method";
-
-    private final TypeName typeName = TypeName.from(Any.getDescriptor());
+    private final FileDescriptor file = Any.getDescriptor()
+                                           .getFile();
 
     @Test
-    @DisplayName("provide reference to an instance method")
-    void instanceMethod() {
-        MethodReference reference = MethodReference.onPrototype(typeName, METHOD_NAME);
-        String expectedName = "proto.google.protobuf.Any.prototype.method";
-        assertEquals(expectedName, reference.value());
+    @DisplayName(NOT_ACCEPT_NULLS)
+    void passNullToleranceCheck() {
+        new NullPointerTester().testAllPublicStaticMethods(FileName.class);
     }
 
     @Test
-    @DisplayName("provide reference to a static method")
-    void staticMethod() {
-        MethodReference reference = MethodReference.onType(typeName, METHOD_NAME);
-        String expectedName = "proto.google.protobuf.Any.method";
-        assertEquals(expectedName, reference.value());
+    @DisplayName("not accept names without extension")
+    void notAcceptNameWithoutExtension() {
+        assertIllegalArgument(() -> FileName.of("no-extension"));
     }
 
     @Test
-    @DisplayName("provide reference to a constructor")
-    void constructor() {
-        MethodReference reference = MethodReference.constructor(typeName);
-        String expected = "proto.google.protobuf.Any";
-        assertEquals(expected, reference.value());
+    @DisplayName("replace `.proto` extension with predefined suffix")
+    void appendSuffix() {
+        FileName fileName = FileName.from(file);
+        String expected = "google/protobuf/any_pb.js";
+        assertEquals(expected, fileName.value());
+    }
+
+    @Test
+    @DisplayName("return path elements")
+    void returnPathElements() {
+        FileName fileName = FileName.from(file);
+        List<String> pathElements = fileName.pathElements();
+        assertThat(pathElements).contains("google");
+        assertThat(pathElements).contains("protobuf");
+        assertThat(pathElements).contains("any_pb.js");
     }
 }

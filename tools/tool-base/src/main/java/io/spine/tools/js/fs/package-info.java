@@ -24,46 +24,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.gen.js;
-
-import io.spine.value.StringTypeValue;
-
-import static java.lang.String.format;
-
 /**
- * A reference to a method of a Protobuf type.
- *
- * <p>The reference allows to identify a method in code
- * since it includes a type name and a method name.
+ * This package contains tools for working with the structure of a JavaScript project.
  */
-public final class MethodReference extends StringTypeValue {
 
-    private static final long serialVersionUID = 0L;
+@Internal
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.js.fs;
 
-    private MethodReference(String value) {
-        super(value);
-    }
+import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.annotation.Internal;
 
-    /**
-     * Obtains the reference to the instance method of the specified type.
-     */
-    public static MethodReference onType(TypeName typeName, String methodName) {
-        String value = format("%s.%s", typeName, methodName);
-        return new MethodReference(value);
-    }
-
-    /**
-     * Obtains the reference to the static method of the specified type.
-     */
-    public static MethodReference onPrototype(TypeName typeName, String methodName) {
-        String value = format("%s.prototype.%s", typeName, methodName);
-        return new MethodReference(value);
-    }
-
-    /**
-     * Obtains the reference to the constructor of the specified type.
-     */
-    public static MethodReference constructor(TypeName typeName) {
-        return new MethodReference(typeName.value());
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

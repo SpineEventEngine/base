@@ -26,8 +26,8 @@
 
 package io.spine.js.generate.given;
 
-import io.spine.code.fs.js.DefaultJsProject;
-import io.spine.code.fs.js.Directory;
+import io.spine.tools.js.fs.DefaultJsProject;
+import io.spine.tools.js.fs.Directory;
 import io.spine.code.proto.FileSet;
 import io.spine.tools.gradle.testing.GradleProject;
 

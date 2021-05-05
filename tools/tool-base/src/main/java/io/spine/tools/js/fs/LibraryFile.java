@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.fs.js;
+package io.spine.tools.js.fs;
 
 /**
  * The enumeration of project files provided by the Spine framework.

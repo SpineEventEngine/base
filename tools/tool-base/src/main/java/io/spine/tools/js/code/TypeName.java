@@ -24,42 +24,50 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.fs.proto;
+package io.spine.tools.js.code;
 
-import io.spine.code.AbstractDirectory;
-import io.spine.code.SourceCodeDirectory;
-
-import java.nio.file.Path;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.GenericDescriptor;
+import io.spine.value.StringTypeValue;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A proto source code directory.
+ * The name of a type in the JavaScript code.
  */
-public final class Directory extends SourceCodeDirectory {
+public final class TypeName extends StringTypeValue {
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Same name for different directories.
-    private static final String ROOT_NAME = "proto";
+    private static final long serialVersionUID = 0L;
 
-    private Directory(Path path) {
-        super(path);
+    /**
+     * The prefix which is added to all proto types in the JS generated code.
+     */
+    private static final String PREFIX = "proto.";
+
+    private TypeName(String value) {
+        super(value);
     }
 
     /**
-     * Creates a new instance.
+     * Obtains the type name of the specified Protobuf declaration.
+     *
+     * <p>All Protobuf types in JS are prepended with {@code proto.} prefix.
      */
-    static Directory at(Path path) {
-        checkNotNull(path);
-        return new Directory(path);
+    public static TypeName from(GenericDescriptor descriptor) {
+        checkNotNull(descriptor);
+        String typeName = descriptor.getFullName();
+        String nameWithPrefix = PREFIX + typeName;
+        return new TypeName(nameWithPrefix);
     }
 
     /**
-     * Creates an instance of the root directory named {@code "proto"}.
+     * Obtains the type name of the parser of the specified message.
+     *
+     * <p>The parser is a static property on the corresponding message type.
      */
-    public static Directory rootIn(AbstractDirectory parent) {
-        checkNotNull(parent);
-        Path path = parent.path()
-                          .resolve(ROOT_NAME);
-        return at(path);
+    public static TypeName ofParser(Descriptor message) {
+        checkNotNull(message);
+        TypeName messageType = from(message);
+        return new TypeName(messageType + ".Parser");
     }
 }

@@ -24,54 +24,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.fs.js;
+package io.spine.tools.js.code;
 
-import com.google.common.testing.NullPointerTester;
-import org.junit.jupiter.api.BeforeEach;
+import com.google.protobuf.Any;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import static io.spine.code.fs.js.LibraryFile.INDEX;
-import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("Directory should")
-class DirectoryTest {
+@DisplayName("MethodReference should")
+class MethodReferenceTest {
 
-    private static final Path DIRECTORY_PATH = Paths.get("/home/user/directory");
+    private static final String METHOD_NAME = "method";
 
-    private Directory directory;
+    private final TypeName typeName = TypeName.from(Any.getDescriptor());
 
-    @BeforeEach
-    void setUp() {
-        directory = Directory.at(DIRECTORY_PATH);
+    @Test
+    @DisplayName("provide reference to an instance method")
+    void instanceMethod() {
+        MethodReference reference = MethodReference.onPrototype(typeName, METHOD_NAME);
+        String expectedName = "proto.google.protobuf.Any.prototype.method";
+        assertEquals(expectedName, reference.value());
     }
 
     @Test
-    @DisplayName(NOT_ACCEPT_NULLS)
-    void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(Directory.class);
-        new NullPointerTester().testAllPublicInstanceMethods(directory);
+    @DisplayName("provide reference to a static method")
+    void staticMethod() {
+        MethodReference reference = MethodReference.onType(typeName, METHOD_NAME);
+        String expectedName = "proto.google.protobuf.Any.method";
+        assertEquals(expectedName, reference.value());
     }
 
     @Test
-    @DisplayName("resolve file name")
-    void resolveFileName() {
-        String rawName = "tasks_pb.js";
-        FileName fileName = FileName.of(rawName);
-        Path resolved = directory.resolve(fileName);
-        Path expected = DIRECTORY_PATH.resolve(rawName);
-        assertEquals(expected, resolved);
-    }
-
-    @Test
-    @DisplayName("resolve LibraryFile")
-    void resolveCommonFileName() {
-        Path resolved = directory.resolve(INDEX);
-        Path expected = DIRECTORY_PATH.resolve(INDEX.toString());
-        assertEquals(expected, resolved);
+    @DisplayName("provide reference to a constructor")
+    void constructor() {
+        MethodReference reference = MethodReference.constructor(typeName);
+        String expected = "proto.google.protobuf.Any";
+        assertEquals(expected, reference.value());
     }
 }
