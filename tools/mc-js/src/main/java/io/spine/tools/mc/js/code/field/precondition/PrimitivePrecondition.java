@@ -24,51 +24,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.given;
+package io.spine.tools.mc.js.code.field.precondition;
 
-import io.spine.tools.code.Indent;
-import io.spine.tools.code.IndentLevel;
 import io.spine.tools.mc.js.code.output.CodeLines;
 
-public final class GivenLines {
+import static com.google.common.base.Preconditions.checkNotNull;
 
-    /** Prevents instantiation of this utility class. */
-    private GivenLines() {
-    }
+/**
+ * The precondition for the proto fields of primitive types.
+ *
+ * <p>All the proto fields which are not of the {@code message} type are handled by this
+ * precondition. This includes the {@code enum} type fields which obey the same rules as primitives
+ * in this case.
+ */
+final class PrimitivePrecondition implements FieldPrecondition {
 
-    public static CodeLines withDifferentDepth(IndentLevel initialDepth) {
-        CodeLines lines = linesWithDepth(initialDepth);
-        lines.append("{");
-        lines.increaseDepth();
-        lines.append("in the code block");
-        lines.decreaseDepth();
-        lines.append("}");
-        return lines;
-    }
+    private final CodeLines jsOutput;
 
-    public static CodeLines linesWithDepth(IndentLevel depth) {
-        CodeLines lines = new CodeLines();
-        for (int i = 0; i < depth.value(); i++) {
-            lines.increaseDepth();
-        }
-        return lines;
+    /**
+     * Creates a new {@code PrimitivePrecondition}.
+     *
+     * @param jsOutput
+     *         the {@code JsOutput} which accumulates all the generated code
+     */
+    PrimitivePrecondition(CodeLines jsOutput) {
+        this.jsOutput = jsOutput;
     }
 
     /**
-     * Obtains code lines with the specified first line.
+     * {@inheritDoc}
+     *
+     * <p>In case of the primitive field, the {@code null} values are simply not allowed.
      */
-    public static CodeLines newCodeLines(String firstLine) {
-        CodeLines lines = new CodeLines();
-        lines.append(firstLine);
-        return lines;
+    @Override
+    public void performNullCheck(String value, String mergeFieldFormat) {
+        checkNotNull(value);
+        checkNotNull(mergeFieldFormat);
+        jsOutput.ifNotNull(value);
     }
 
-    /**
-     * Obtains code lines with the specified first line.
-     */
-    public static CodeLines newCodeLines(String firstLine, Indent indent) {
-        CodeLines lines = new CodeLines(indent);
-        lines.append(firstLine);
-        return lines;
+    @Override
+    public void exitNullCheck() {
+        jsOutput.exitBlock();
     }
 }

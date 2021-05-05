@@ -24,51 +24,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.given;
+package io.spine.tools.mc.js.code;
 
-import io.spine.tools.code.Indent;
-import io.spine.tools.code.IndentLevel;
 import io.spine.tools.mc.js.code.output.CodeLines;
 
-public final class GivenLines {
-
-    /** Prevents instantiation of this utility class. */
-    private GivenLines() {
-    }
-
-    public static CodeLines withDifferentDepth(IndentLevel initialDepth) {
-        CodeLines lines = linesWithDepth(initialDepth);
-        lines.append("{");
-        lines.increaseDepth();
-        lines.append("in the code block");
-        lines.decreaseDepth();
-        lines.append("}");
-        return lines;
-    }
-
-    public static CodeLines linesWithDepth(IndentLevel depth) {
-        CodeLines lines = new CodeLines();
-        for (int i = 0; i < depth.value(); i++) {
-            lines.increaseDepth();
-        }
-        return lines;
-    }
+/**
+ * A snippet of the code.
+ */
+public interface Snippet {
 
     /**
-     * Obtains code lines with the specified first line.
+     * Obtains code lines representing this snippet.
+     *
+     * @return always returns a new {@link io.spine.tools.mc.js.code.output.CodeLines}
      */
-    public static CodeLines newCodeLines(String firstLine) {
-        CodeLines lines = new CodeLines();
-        lines.append(firstLine);
-        return lines;
-    }
-
-    /**
-     * Obtains code lines with the specified first line.
-     */
-    public static CodeLines newCodeLines(String firstLine, Indent indent) {
-        CodeLines lines = new CodeLines(indent);
-        lines.append(firstLine);
-        return lines;
-    }
+    CodeLines value();
 }

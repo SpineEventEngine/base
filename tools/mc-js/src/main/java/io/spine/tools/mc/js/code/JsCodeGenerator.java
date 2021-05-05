@@ -24,51 +24,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.given;
+package io.spine.tools.mc.js.code;
 
-import io.spine.tools.code.Indent;
-import io.spine.tools.code.IndentLevel;
 import io.spine.tools.mc.js.code.output.CodeLines;
 
-public final class GivenLines {
+/**
+ * The common base for JavaScript code generators which operate on the {@link io.spine.tools.mc.js.code.output.CodeLines}.
+ */
+public abstract class JsCodeGenerator {
 
-    /** Prevents instantiation of this utility class. */
-    private GivenLines() {
-    }
+    private final CodeLines jsOutput;
 
-    public static CodeLines withDifferentDepth(IndentLevel initialDepth) {
-        CodeLines lines = linesWithDepth(initialDepth);
-        lines.append("{");
-        lines.increaseDepth();
-        lines.append("in the code block");
-        lines.decreaseDepth();
-        lines.append("}");
-        return lines;
-    }
-
-    public static CodeLines linesWithDepth(IndentLevel depth) {
-        CodeLines lines = new CodeLines();
-        for (int i = 0; i < depth.value(); i++) {
-            lines.increaseDepth();
-        }
-        return lines;
+    protected JsCodeGenerator(CodeLines jsOutput) {
+        this.jsOutput = jsOutput;
     }
 
     /**
-     * Obtains code lines with the specified first line.
+     * The {@code JsOutput} which accumulates all the generated code.
      */
-    public static CodeLines newCodeLines(String firstLine) {
-        CodeLines lines = new CodeLines();
-        lines.append(firstLine);
-        return lines;
+    protected CodeLines jsOutput() {
+        return jsOutput;
     }
 
     /**
-     * Obtains code lines with the specified first line.
+     * Generate the JavaScript code and store it into the {@code JsOutput}.
      */
-    public static CodeLines newCodeLines(String firstLine, Indent indent) {
-        CodeLines lines = new CodeLines(indent);
-        lines.append(firstLine);
-        return lines;
-    }
+    public abstract void generate();
 }

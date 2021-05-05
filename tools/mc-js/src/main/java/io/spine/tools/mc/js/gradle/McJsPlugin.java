@@ -30,11 +30,11 @@ import com.google.common.collect.ImmutableList;
 import io.spine.tools.js.fs.DefaultJsProject;
 import io.spine.tools.js.fs.Directory;
 import io.spine.code.proto.FileSet;
-import io.spine.js.generate.AppendTypeUrlGetter;
-import io.spine.js.generate.GenerationTask;
-import io.spine.js.generate.imports.ResolveImports;
-import io.spine.js.generate.index.GenerateIndexFile;
-import io.spine.js.generate.parse.GenerateKnownTypeParsers;
+import io.spine.tools.mc.js.code.AppendTypeUrlGetter;
+import io.spine.tools.mc.js.code.GenerationTask;
+import io.spine.tools.mc.js.code.imports.ResolveImports;
+import io.spine.tools.mc.js.code.index.GenerateIndexFile;
+import io.spine.tools.mc.js.code.parse.GenerateKnownTypeParsers;
 import io.spine.tools.fs.ExternalModule;
 import io.spine.tools.gradle.BaseTaskName;
 import io.spine.tools.gradle.GradleTask;
@@ -87,7 +87,7 @@ public class McJsPlugin extends ProtoPlugin {
 
     @Override
     public void apply(Project project) {
-        JsProtocConfigurationPlugin configPlugin = new JsProtocConfigurationPlugin();
+        ProtocConfig configPlugin = new ProtocConfig();
         configPlugin.apply(project);
         Extension extension = project.getExtensions()
                                      .create(EXTENSION_NAME, Extension.class);

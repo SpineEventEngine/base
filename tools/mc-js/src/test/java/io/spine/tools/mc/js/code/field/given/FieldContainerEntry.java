@@ -24,28 +24,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.given;
-
-import io.spine.tools.mc.js.code.output.CodeLines;
-
-import static com.google.common.truth.Truth.assertThat;
+package io.spine.tools.mc.js.code.field.given;
 
 /**
- * A helper tool for working with generators output.
+ * The field of the {@code FieldContainer} type declared in {@code fields.proto}.
  */
-public final class Generators {
+enum FieldContainerEntry {
 
-    /** Prevents instantiation of this utility class. */
-    private Generators() {
+    PRIMITIVE_FIELD("primitive_field"),
+    ENUM_FIELD("enum_field"),
+    MESSAGE_FIELD("message_field"),
+    TIMESTAMP_FIELD("timestamp_field"),
+
+    SINGULAR_FIELD("singular_field"),
+    REPEATED_FIELD("repeated_field"),
+    MAP_FIELD("map_field");
+
+    private final String protoName;
+
+    FieldContainerEntry(String protoName) {
+        this.protoName = protoName;
     }
 
-    public static void assertContains(CodeLines jsOutput, CharSequence toSearch) {
-        String codeString = jsOutput.toString();
-        assertThat(codeString).contains(toSearch);
-    }
-
-    public static void assertNotContains(CodeLines jsOutput, CharSequence toSearch) {
-        String codeString = jsOutput.toString();
-        assertThat(codeString).doesNotContain(toSearch);
+    String protoName() {
+        return protoName;
     }
 }

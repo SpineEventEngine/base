@@ -24,28 +24,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.given;
+package io.spine.tools.mc.js.gradle;
 
-import io.spine.tools.mc.js.code.output.CodeLines;
+import com.google.protobuf.gradle.ExecutableLocator;
+import io.spine.tools.js.fs.DefaultJsProject;
+import io.spine.tools.gradle.ProtocConfigurationPlugin;
+import org.gradle.api.NamedDomainObjectContainer;
+import org.gradle.api.Project;
 
-import static com.google.common.truth.Truth.assertThat;
+import java.io.File;
+import java.nio.file.Path;
 
 /**
- * A helper tool for working with generators output.
+ * A Gradle plugin that performs additional {@code protoc} configurations relevant for
+ * JavaScript projects.
  */
-public final class Generators {
+final class ProtocConfig extends ProtocConfigurationPlugin {
 
-    /** Prevents instantiation of this utility class. */
-    private Generators() {
+    @Override
+    protected File getTestDescriptorSet(Project project) {
+        return Extension.getTestDescriptorSet(project);
     }
 
-    public static void assertContains(CodeLines jsOutput, CharSequence toSearch) {
-        String codeString = jsOutput.toString();
-        assertThat(codeString).contains(toSearch);
+    @Override
+    protected Path generatedFilesBaseDir(Project project) {
+        DefaultJsProject jsProject = DefaultJsProject.at(project.getProjectDir());
+        DefaultJsProject.GeneratedProtoRoot generatedProtoRoot = jsProject.proto();
+        return generatedProtoRoot.path();
     }
 
-    public static void assertNotContains(CodeLines jsOutput, CharSequence toSearch) {
-        String codeString = jsOutput.toString();
-        assertThat(codeString).doesNotContain(toSearch);
+    @Override
+    protected File getMainDescriptorSet(Project project) {
+        return Extension.getMainDescriptorSet(project);
+    }
+
+    @Override
+    protected void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins,
+                                          Project project) {
+        // Do nothing.
     }
 }

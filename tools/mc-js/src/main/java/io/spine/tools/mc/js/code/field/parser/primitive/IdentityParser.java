@@ -24,28 +24,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.given;
+package io.spine.tools.mc.js.code.field.parser.primitive;
 
-import io.spine.tools.mc.js.code.output.CodeLines;
+import io.spine.tools.mc.js.code.output.snippet.VariableDeclaration;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A helper tool for working with generators output.
+ * The generator of the code for parsing proto value from the JSON to itself.
+ *
+ * <p>The number of proto types like {@code int32}, {@code string}, {@code bool} and others are
+ * represented in JSON in the same way as in the JS.
+ *
+ * <p>The {@code IdentityParser} "parses" them by just assigning the variable to the passed value.
  */
-public final class Generators {
+final class IdentityParser extends AbstractPrimitiveParser {
 
-    /** Prevents instantiation of this utility class. */
-    private Generators() {
+    private IdentityParser(Builder builder) {
+        super(builder);
     }
 
-    public static void assertContains(CodeLines jsOutput, CharSequence toSearch) {
-        String codeString = jsOutput.toString();
-        assertThat(codeString).contains(toSearch);
+    @Override
+    public void parseIntoVariable(String value, String variable) {
+        checkNotNull(value);
+        checkNotNull(variable);
+        jsOutput().append(VariableDeclaration.initialized(variable, value));
     }
 
-    public static void assertNotContains(CodeLines jsOutput, CharSequence toSearch) {
-        String codeString = jsOutput.toString();
-        assertThat(codeString).doesNotContain(toSearch);
+    static Builder newBuilder() {
+        return new Builder();
+    }
+
+    static class Builder extends AbstractPrimitiveParser.Builder<Builder> {
+
+        @Override
+        Builder self() {
+            return this;
+        }
+
+        @Override
+        public PrimitiveParser build() {
+            return new IdentityParser(this);
+        }
     }
 }

@@ -24,28 +24,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.given;
+package io.spine.tools.mc.js.code.imports.given;
 
-import io.spine.tools.mc.js.code.output.CodeLines;
+import io.spine.tools.mc.js.code.imports.ImportStatement;
 
-import static com.google.common.truth.Truth.assertThat;
+import java.io.File;
 
-/**
- * A helper tool for working with generators output.
- */
-public final class Generators {
+import static java.lang.String.format;
+
+public class Given {
 
     /** Prevents instantiation of this utility class. */
-    private Generators() {
+    private Given() {
     }
 
-    public static void assertContains(CodeLines jsOutput, CharSequence toSearch) {
-        String codeString = jsOutput.toString();
-        assertThat(codeString).contains(toSearch);
+    public static ImportStatement importWithPath(String path, File importOrigin) {
+        String importText = format("let foo = require('%s');", path);
+        return new ImportStatement(importText, importOrigin);
     }
 
-    public static void assertNotContains(CodeLines jsOutput, CharSequence toSearch) {
-        String codeString = jsOutput.toString();
-        assertThat(codeString).doesNotContain(toSearch);
+    public static String relativeImportPath() {
+        return "../path-relative-to-parent.js";
     }
 }

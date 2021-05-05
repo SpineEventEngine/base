@@ -24,51 +24,50 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.given;
+package io.spine.tools.mc.js.code.field.parser.primitive;
 
-import io.spine.tools.js.fs.Directory;
-import io.spine.code.proto.FileSet;
-import io.spine.tools.mc.js.code.GenerationTask;
-
-import javax.annotation.Nullable;
+import io.spine.tools.mc.js.code.output.snippet.VariableDeclaration;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A test implementation of {@link GenerationTask}.
+ * The generator of the code parsing the floating point values from their JSON representation.
+ *
+ * <p>The parser uses the {@code parseFloat} operation on the value to obtain the original floating
+ * point number.
  */
-public class TestGenerationTask extends GenerationTask {
+final class FloatParser extends AbstractPrimitiveParser {
 
-    private boolean sourcesProcessed = false;
-    private boolean filesFiltered = false;
-    @Nullable
-    private FileSet processedFileSet;
-
-    public TestGenerationTask(Directory generatedRoot) {
-        super(generatedRoot);
+    private FloatParser(Builder builder) {
+        super(builder);
     }
 
     @Override
-    protected void generateFor(FileSet fileSet) {
-        sourcesProcessed = true;
-        processedFileSet = fileSet;
+    public void parseIntoVariable(String value, String variable) {
+        checkNotNull(value);
+        checkNotNull(variable);
+        jsOutput().append(parsedVariable(variable, value));
     }
 
-    @Override
-    protected FileSet filter(FileSet fileSet) {
-        filesFiltered = true;
-        return super.filter(fileSet);
+    private static VariableDeclaration parsedVariable(String name, String valueToParse) {
+        String initializer = "parseFloat(" + valueToParse + ')';
+        return VariableDeclaration.initialized(name, initializer);
     }
 
-    public boolean areSourcesProcessed() {
-        return sourcesProcessed;
+    static Builder newBuilder() {
+        return new Builder();
     }
 
-    public boolean areFilesFiltered() {
-        return filesFiltered;
-    }
+    static class Builder extends AbstractPrimitiveParser.Builder<Builder> {
 
-    public FileSet processedFileSet() {
-        return checkNotNull(processedFileSet);
+        @Override
+        Builder self() {
+            return this;
+        }
+
+        @Override
+        public PrimitiveParser build() {
+            return new FloatParser(this);
+        }
     }
 }

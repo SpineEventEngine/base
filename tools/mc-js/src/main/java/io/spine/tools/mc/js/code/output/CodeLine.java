@@ -24,51 +24,60 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.given;
+package io.spine.tools.mc.js.code.output;
 
-import io.spine.tools.code.Indent;
-import io.spine.tools.code.IndentLevel;
-import io.spine.tools.mc.js.code.output.CodeLines;
+import java.util.Objects;
 
-public final class GivenLines {
+/**
+ * A line of a JavaScript code.
+ *
+ * <p>The line is not aware of {@linkplain io.spine.tools.mc.js.code.output.IndentedLine indentation}.
+ */
+public abstract class CodeLine {
 
-    /** Prevents instantiation of this utility class. */
-    private GivenLines() {
+    /**
+     * Obtains the value of the line.
+     */
+    public abstract String content();
+
+    /**
+     * Obtains a code line with the specified content.
+     */
+    public static CodeLine of(String content) {
+        return new CodeLine() {
+            @Override
+            public String content() {
+                return content;
+            }
+        };
     }
 
-    public static CodeLines withDifferentDepth(IndentLevel initialDepth) {
-        CodeLines lines = linesWithDepth(initialDepth);
-        lines.append("{");
-        lines.increaseDepth();
-        lines.append("in the code block");
-        lines.decreaseDepth();
-        lines.append("}");
-        return lines;
+    /**
+     * Obtains an empty code line.
+     */
+    public static CodeLine emptyLine() {
+        return of("");
     }
 
-    public static CodeLines linesWithDepth(IndentLevel depth) {
-        CodeLines lines = new CodeLines();
-        for (int i = 0; i < depth.value(); i++) {
-            lines.increaseDepth();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
         }
-        return lines;
+        if (!(o instanceof CodeLine)) {
+            return false;
+        }
+        CodeLine line = (CodeLine) o;
+        return content().equals(line.content());
     }
 
-    /**
-     * Obtains code lines with the specified first line.
-     */
-    public static CodeLines newCodeLines(String firstLine) {
-        CodeLines lines = new CodeLines();
-        lines.append(firstLine);
-        return lines;
+    @Override
+    public int hashCode() {
+        return Objects.hash(content());
     }
 
-    /**
-     * Obtains code lines with the specified first line.
-     */
-    public static CodeLines newCodeLines(String firstLine, Indent indent) {
-        CodeLines lines = new CodeLines(indent);
-        lines.append(firstLine);
-        return lines;
+    @Override
+    public String toString() {
+        return content();
     }
 }

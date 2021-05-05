@@ -24,51 +24,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.given;
+package io.spine.tools.mc.js.code.field.precondition;
 
-import io.spine.tools.code.Indent;
-import io.spine.tools.code.IndentLevel;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.mc.js.code.output.CodeLines;
 
-public final class GivenLines {
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.code.proto.FieldTypes.isMessage;
+
+/**
+ * The helper which creates {@link FieldPrecondition} instances based on the field type.
+ */
+public final class FieldPreconditions {
 
     /** Prevents instantiation of this utility class. */
-    private GivenLines() {
+    private FieldPreconditions() {
     }
 
-    public static CodeLines withDifferentDepth(IndentLevel initialDepth) {
-        CodeLines lines = linesWithDepth(initialDepth);
-        lines.append("{");
-        lines.increaseDepth();
-        lines.append("in the code block");
-        lines.decreaseDepth();
-        lines.append("}");
-        return lines;
-    }
-
-    public static CodeLines linesWithDepth(IndentLevel depth) {
-        CodeLines lines = new CodeLines();
-        for (int i = 0; i < depth.value(); i++) {
-            lines.increaseDepth();
+    /**
+     * Creates a {@code FieldPrecondition} for the given {@code field}.
+     *
+     * @param field
+     *         the descriptor of the Protobuf field to create the precondition for
+     * @param jsOutput
+     *         the {@code JsOutput} which will accumulate all the generated code
+     * @return a {@code FieldPrecondition} of the appropriate type
+     */
+    public static FieldPrecondition preconditionFor(FieldDescriptor field, CodeLines jsOutput) {
+        checkNotNull(field);
+        checkNotNull(jsOutput);
+        if (isMessage(field)) {
+            return new MessagePrecondition(field, jsOutput);
         }
-        return lines;
-    }
-
-    /**
-     * Obtains code lines with the specified first line.
-     */
-    public static CodeLines newCodeLines(String firstLine) {
-        CodeLines lines = new CodeLines();
-        lines.append(firstLine);
-        return lines;
-    }
-
-    /**
-     * Obtains code lines with the specified first line.
-     */
-    public static CodeLines newCodeLines(String firstLine, Indent indent) {
-        CodeLines lines = new CodeLines(indent);
-        lines.append(firstLine);
-        return lines;
+        return new PrimitivePrecondition(jsOutput);
     }
 }

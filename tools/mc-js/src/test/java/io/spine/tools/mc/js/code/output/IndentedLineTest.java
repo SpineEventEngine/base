@@ -24,51 +24,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.given;
+package io.spine.tools.mc.js.code.output;
 
 import io.spine.tools.code.Indent;
 import io.spine.tools.code.IndentLevel;
-import io.spine.tools.mc.js.code.output.CodeLines;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-public final class GivenLines {
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-    /** Prevents instantiation of this utility class. */
-    private GivenLines() {
-    }
+@DisplayName("IndentedLine should")
+class IndentedLineTest {
 
-    public static CodeLines withDifferentDepth(IndentLevel initialDepth) {
-        CodeLines lines = linesWithDepth(initialDepth);
-        lines.append("{");
-        lines.increaseDepth();
-        lines.append("in the code block");
-        lines.decreaseDepth();
-        lines.append("}");
-        return lines;
-    }
-
-    public static CodeLines linesWithDepth(IndentLevel depth) {
-        CodeLines lines = new CodeLines();
-        for (int i = 0; i < depth.value(); i++) {
-            lines.increaseDepth();
-        }
-        return lines;
-    }
-
-    /**
-     * Obtains code lines with the specified first line.
-     */
-    public static CodeLines newCodeLines(String firstLine) {
-        CodeLines lines = new CodeLines();
-        lines.append(firstLine);
-        return lines;
-    }
-
-    /**
-     * Obtains code lines with the specified first line.
-     */
-    public static CodeLines newCodeLines(String firstLine, Indent indent) {
-        CodeLines lines = new CodeLines(indent);
-        lines.append(firstLine);
-        return lines;
+    @Test
+    @DisplayName("create indent for code based on the level of indent")
+    void createIndent() {
+        IndentLevel level = IndentLevel.of(2);
+        Indent indentPerLevel = Indent.of2();
+        IndentedLine line = IndentedLine.of("content", level, indentPerLevel);
+        String expected = "    content";
+        assertEquals(expected, line.content());
     }
 }

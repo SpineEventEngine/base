@@ -24,28 +24,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.given;
-
-import io.spine.tools.mc.js.code.output.CodeLines;
-
-import static com.google.common.truth.Truth.assertThat;
+package io.spine.tools.mc.js.code.field.precondition;
 
 /**
- * A helper tool for working with generators output.
+ * The generator of the code which performs various checks on the proto field value.
+ *
+ * @apiNote
+ * The descendants are supposed to operate on the provided {@link io.spine.tools.mc.js.code.output.CodeLines},
+ * so the interface methods are not returning any generated code.
  */
-public final class Generators {
+public interface FieldPrecondition {
 
-    /** Prevents instantiation of this utility class. */
-    private Generators() {
-    }
+    /**
+     * Generates the code which checks the given field value for {@code null}.
+     *
+     * <p>The merge field format is specified so the precondition can interact with the field
+     * itself in case the check passes/fails.
+     *
+     * @param value
+     *         the name of the variable representing the field value to check
+     * @param mergeFieldFormat
+     *         the code that sets/adds value to the field
+     */
+    void performNullCheck(String value, String mergeFieldFormat);
 
-    public static void assertContains(CodeLines jsOutput, CharSequence toSearch) {
-        String codeString = jsOutput.toString();
-        assertThat(codeString).contains(toSearch);
-    }
-
-    public static void assertNotContains(CodeLines jsOutput, CharSequence toSearch) {
-        String codeString = jsOutput.toString();
-        assertThat(codeString).doesNotContain(toSearch);
-    }
+    /**
+     * Generates the code to exit the {@code null} check block and return to the upper level.
+     */
+    void exitNullCheck();
 }

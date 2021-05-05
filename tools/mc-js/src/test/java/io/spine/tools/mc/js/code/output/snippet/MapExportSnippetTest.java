@@ -24,51 +24,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.given;
+package io.spine.tools.mc.js.code.output.snippet;
 
-import io.spine.tools.code.Indent;
-import io.spine.tools.code.IndentLevel;
 import io.spine.tools.mc.js.code.output.CodeLines;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-public final class GivenLines {
+import static com.google.common.truth.Truth.assertThat;
 
-    /** Prevents instantiation of this utility class. */
-    private GivenLines() {
-    }
+@DisplayName("MapExportSnippet should")
+class MapExportSnippetTest {
 
-    public static CodeLines withDifferentDepth(IndentLevel initialDepth) {
-        CodeLines lines = linesWithDepth(initialDepth);
-        lines.append("{");
-        lines.increaseDepth();
-        lines.append("in the code block");
-        lines.decreaseDepth();
-        lines.append("}");
-        return lines;
-    }
+    private static final String MAP_NAME = "map";
 
-    public static CodeLines linesWithDepth(IndentLevel depth) {
-        CodeLines lines = new CodeLines();
-        for (int i = 0; i < depth.value(); i++) {
-            lines.increaseDepth();
-        }
-        return lines;
-    }
-
-    /**
-     * Obtains code lines with the specified first line.
-     */
-    public static CodeLines newCodeLines(String firstLine) {
-        CodeLines lines = new CodeLines();
-        lines.append(firstLine);
-        return lines;
-    }
-
-    /**
-     * Obtains code lines with the specified first line.
-     */
-    public static CodeLines newCodeLines(String firstLine, Indent indent) {
-        CodeLines lines = new CodeLines(indent);
-        lines.append(firstLine);
-        return lines;
+    @Test
+    @DisplayName("be initialized with several entries")
+    void withSeveralEntries() {
+        MapExportSnippet map = MapExportSnippet
+                .newBuilder(MAP_NAME)
+                .withEntry("firstKey", 1)
+                .withEntry("lastKey", 999)
+                .build();
+        CodeLines lines = map.value();
+        String stringRepresentation = lines.toString();
+        assertThat(stringRepresentation).contains("module.exports.map = new Map([");
+        assertThat(stringRepresentation).contains("  ['firstKey', 1],");
+        assertThat(stringRepresentation).contains("  ['lastKey', 999]");
+        assertThat(stringRepresentation).contains("]);");
     }
 }

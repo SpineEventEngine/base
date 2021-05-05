@@ -24,28 +24,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.given;
+package io.spine.tools.mc.js.code.output.snippet;
 
-import io.spine.tools.mc.js.code.output.CodeLines;
+import com.google.protobuf.Any;
+import io.spine.tools.js.code.TypeName;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * A helper tool for working with generators output.
- */
-public final class Generators {
+@DisplayName("VariableDeclaration should")
+class VariableDeclarationTest {
 
-    /** Prevents instantiation of this utility class. */
-    private Generators() {
+    @Test
+    @DisplayName("be initialized by value")
+    void initializedByValue() {
+        VariableDeclaration line = VariableDeclaration.initialized("someVariable", "someValue");
+        assertEquals("let someVariable = someValue;", line.content());
     }
 
-    public static void assertContains(CodeLines jsOutput, CharSequence toSearch) {
-        String codeString = jsOutput.toString();
-        assertThat(codeString).contains(toSearch);
-    }
-
-    public static void assertNotContains(CodeLines jsOutput, CharSequence toSearch) {
-        String codeString = jsOutput.toString();
-        assertThat(codeString).doesNotContain(toSearch);
+    @Test
+    @DisplayName("be initialized by new instance")
+    void initializedByNewInstance() {
+        TypeName type = TypeName.from(Any.getDescriptor());
+        VariableDeclaration line = VariableDeclaration.newInstance("anyValue", type);
+        assertEquals("let anyValue = new proto.google.protobuf.Any();", line.content());
     }
 }

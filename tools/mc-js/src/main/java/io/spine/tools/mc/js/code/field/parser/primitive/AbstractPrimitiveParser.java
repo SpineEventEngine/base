@@ -24,51 +24,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.given;
+package io.spine.tools.mc.js.code.field.parser.primitive;
 
-import io.spine.tools.code.Indent;
-import io.spine.tools.code.IndentLevel;
 import io.spine.tools.mc.js.code.output.CodeLines;
 
-public final class GivenLines {
+import static com.google.common.base.Preconditions.checkNotNull;
 
-    /** Prevents instantiation of this utility class. */
-    private GivenLines() {
+/**
+ * The common base for the {@link PrimitiveParser} implementations.
+ */
+abstract class AbstractPrimitiveParser implements PrimitiveParser {
+
+    private final CodeLines jsOutput;
+
+    AbstractPrimitiveParser(Builder builder) {
+        this.jsOutput = builder.jsOutput;
     }
 
-    public static CodeLines withDifferentDepth(IndentLevel initialDepth) {
-        CodeLines lines = linesWithDepth(initialDepth);
-        lines.append("{");
-        lines.increaseDepth();
-        lines.append("in the code block");
-        lines.decreaseDepth();
-        lines.append("}");
-        return lines;
+    CodeLines jsOutput() {
+        return jsOutput;
     }
 
-    public static CodeLines linesWithDepth(IndentLevel depth) {
-        CodeLines lines = new CodeLines();
-        for (int i = 0; i < depth.value(); i++) {
-            lines.increaseDepth();
+    abstract static class Builder<B extends Builder<B>> implements PrimitiveParser.Builder<B> {
+
+        private CodeLines jsOutput;
+
+        @Override
+        public B setJsOutput(CodeLines jsOutput) {
+            this.jsOutput = checkNotNull(jsOutput);
+            return self();
         }
-        return lines;
-    }
 
-    /**
-     * Obtains code lines with the specified first line.
-     */
-    public static CodeLines newCodeLines(String firstLine) {
-        CodeLines lines = new CodeLines();
-        lines.append(firstLine);
-        return lines;
-    }
-
-    /**
-     * Obtains code lines with the specified first line.
-     */
-    public static CodeLines newCodeLines(String firstLine, Indent indent) {
-        CodeLines lines = new CodeLines(indent);
-        lines.append(firstLine);
-        return lines;
+        /**
+         * Must return {@code this} in classes-descendants.
+         */
+        abstract B self();
     }
 }

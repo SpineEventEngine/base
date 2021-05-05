@@ -24,28 +24,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.given;
+package io.spine.tools.mc.js.code.output;
 
-import io.spine.tools.mc.js.code.output.CodeLines;
+import com.google.common.truth.StringSubject;
+import com.google.common.truth.Truth;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static com.google.common.truth.Truth.assertThat;
+@DisplayName("CodeLine should")
+class CodeLineTest {
 
-/**
- * A helper tool for working with generators output.
- */
-public final class Generators {
-
-    /** Prevents instantiation of this utility class. */
-    private Generators() {
+    @Test
+    @DisplayName("provide an empty line")
+    void emptyLine() {
+        CodeLine line = CodeLine.emptyLine();
+        assertThat(line).isEqualTo("");
     }
 
-    public static void assertContains(CodeLines jsOutput, CharSequence toSearch) {
-        String codeString = jsOutput.toString();
-        assertThat(codeString).contains(toSearch);
-    }
-
-    public static void assertNotContains(CodeLines jsOutput, CharSequence toSearch) {
-        String codeString = jsOutput.toString();
-        assertThat(codeString).doesNotContain(toSearch);
+    private static StringSubject assertThat(CodeLine line) {
+        return Truth.assertThat(line.content());
     }
 }

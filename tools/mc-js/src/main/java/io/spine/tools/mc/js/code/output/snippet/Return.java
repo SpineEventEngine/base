@@ -24,51 +24,55 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.given;
+package io.spine.tools.mc.js.code.output.snippet;
 
-import io.spine.tools.code.Indent;
-import io.spine.tools.code.IndentLevel;
-import io.spine.tools.mc.js.code.output.CodeLines;
+import io.spine.tools.mc.js.code.output.CodeLine;
 
-public final class GivenLines {
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 
-    /** Prevents instantiation of this utility class. */
-    private GivenLines() {
-    }
+/**
+ * A code line representing a {@code return} statement.
+ */
+public class Return extends CodeLine {
 
-    public static CodeLines withDifferentDepth(IndentLevel initialDepth) {
-        CodeLines lines = linesWithDepth(initialDepth);
-        lines.append("{");
-        lines.increaseDepth();
-        lines.append("in the code block");
-        lines.decreaseDepth();
-        lines.append("}");
-        return lines;
-    }
+    /**
+     * The value to be returned.
+     */
+    private final Object value;
 
-    public static CodeLines linesWithDepth(IndentLevel depth) {
-        CodeLines lines = new CodeLines();
-        for (int i = 0; i < depth.value(); i++) {
-            lines.increaseDepth();
-        }
-        return lines;
+    private Return(Object returnedValue) {
+        super();
+        this.value = returnedValue;
     }
 
     /**
-     * Obtains code lines with the specified first line.
+     * Composes a statement returning the value.
      */
-    public static CodeLines newCodeLines(String firstLine) {
-        CodeLines lines = new CodeLines();
-        lines.append(firstLine);
-        return lines;
+    public static Return value(Object value) {
+        checkNotNull(value);
+        return new Return(value);
     }
 
     /**
-     * Obtains code lines with the specified first line.
+     * Composes a statement returning a string literal.
      */
-    public static CodeLines newCodeLines(String firstLine, Indent indent) {
-        CodeLines lines = new CodeLines(indent);
-        lines.append(firstLine);
-        return lines;
+    public static Return stringLiteral(String literal) {
+        checkNotNull(literal);
+        String quoted = format("'%s'", literal);
+        return new Return(quoted);
+    }
+
+    /**
+     * Composes a statement returning {@code null}.
+     */
+    public static Return nullReference() {
+        return value("null");
+    }
+
+    @Override
+    public String content() {
+        String result = format("return %s;", value);
+        return result;
     }
 }

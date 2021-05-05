@@ -24,28 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.given;
-
-import io.spine.tools.mc.js.code.output.CodeLines;
-
-import static com.google.common.truth.Truth.assertThat;
-
 /**
- * A helper tool for working with generators output.
+ * Classes for resolving JS imports.
  */
-public final class Generators {
 
-    /** Prevents instantiation of this utility class. */
-    private Generators() {
-    }
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.mc.js.code.imports;
 
-    public static void assertContains(CodeLines jsOutput, CharSequence toSearch) {
-        String codeString = jsOutput.toString();
-        assertThat(codeString).contains(toSearch);
-    }
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    public static void assertNotContains(CodeLines jsOutput, CharSequence toSearch) {
-        String codeString = jsOutput.toString();
-        assertThat(codeString).doesNotContain(toSearch);
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

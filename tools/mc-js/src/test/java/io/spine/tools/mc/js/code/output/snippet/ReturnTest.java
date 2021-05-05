@@ -24,28 +24,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.given;
+package io.spine.tools.mc.js.code.output.snippet;
 
-import io.spine.tools.mc.js.code.output.CodeLines;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * A helper tool for working with generators output.
- */
-public final class Generators {
+@DisplayName("Return")
+class ReturnTest {
 
-    /** Prevents instantiation of this utility class. */
-    private Generators() {
+    @Test
+    @DisplayName("an object")
+    void object() {
+        Return line = Return.value(5);
+        assertEquals("return 5;", line.content());
     }
 
-    public static void assertContains(CodeLines jsOutput, CharSequence toSearch) {
-        String codeString = jsOutput.toString();
-        assertThat(codeString).contains(toSearch);
+    @Test
+    @DisplayName("a string literal")
+    void stringLiteral() {
+        Return line = Return.stringLiteral("foo");
+        assertEquals("return 'foo';", line.content());
     }
 
-    public static void assertNotContains(CodeLines jsOutput, CharSequence toSearch) {
-        String codeString = jsOutput.toString();
-        assertThat(codeString).doesNotContain(toSearch);
+    @Test
+    @DisplayName("null reference")
+    void nullValue() {
+        Return nullValue = Return.nullReference();
+        assertEquals("return null;", nullValue.content());
     }
 }
