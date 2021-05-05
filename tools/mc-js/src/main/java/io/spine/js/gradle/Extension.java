@@ -28,8 +28,8 @@ package io.spine.js.gradle;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.tools.fs.DefaultProject;
-import io.spine.code.fs.js.DefaultJsProject;
-import io.spine.code.fs.js.Directory;
+import io.spine.tools.js.fs.DefaultJsProject;
+import io.spine.tools.js.fs.Directory;
 import io.spine.tools.fs.DirectoryPattern;
 import io.spine.tools.fs.ExternalModule;
 import io.spine.tools.gradle.GradleExtension;

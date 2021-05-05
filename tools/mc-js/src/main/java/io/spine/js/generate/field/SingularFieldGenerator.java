@@ -26,7 +26,7 @@
 
 package io.spine.js.generate.field;
 
-import io.spine.code.gen.js.FieldName;
+import io.spine.tools.js.code.FieldName;
 
 /**
  * The generator of the ordinary proto field (i.e. non-{@code repeated} and non-{@code map}).

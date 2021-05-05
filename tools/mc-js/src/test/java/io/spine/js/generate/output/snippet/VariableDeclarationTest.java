@@ -27,7 +27,7 @@
 package io.spine.js.generate.output.snippet;
 
 import com.google.protobuf.Any;
-import io.spine.code.gen.js.TypeName;
+import io.spine.tools.js.code.TypeName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

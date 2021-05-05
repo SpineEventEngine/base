@@ -26,9 +26,9 @@
 
 package io.spine.tools.gradle.compiler.given;
 
-import io.spine.code.fs.java.DefaultJavaProject;
-import io.spine.code.fs.java.Directory;
-import io.spine.code.fs.java.FileName;
+import io.spine.tools.java.fs.DefaultJavaProject;
+import io.spine.tools.java.fs.Directory;
+import io.spine.tools.java.fs.FileName;
 import io.spine.code.java.PackageName;
 import io.spine.code.proto.FieldName;
 import io.spine.tools.gradle.testing.GradleProject;

@@ -27,7 +27,7 @@
 package io.spine.tools.protoc.plugin.query;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.gen.java.EntityQueryFactory;
+import io.spine.tools.java.code.query.EntityQueryFactory;
 import io.spine.tools.protoc.plugin.ClassMember;
 import io.spine.tools.protoc.plugin.CodeGenerator;
 import io.spine.tools.protoc.plugin.CompilerOutput;

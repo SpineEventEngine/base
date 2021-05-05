@@ -30,7 +30,7 @@ import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.NullValue;
 import com.google.protobuf.StringValue;
-import io.spine.code.gen.js.TypeName;
+import io.spine.tools.js.code.TypeName;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.type.TypeUrl;

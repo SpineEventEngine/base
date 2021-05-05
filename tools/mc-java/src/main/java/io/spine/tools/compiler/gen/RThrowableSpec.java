@@ -32,13 +32,13 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import io.spine.base.RejectionThrowable;
 import io.spine.base.RejectionType;
-import io.spine.code.gen.java.FieldName;
-import io.spine.code.gen.java.GeneratedBy;
-import io.spine.code.gen.java.JavaPoetName;
-import io.spine.code.gen.java.TypeSpec;
+import io.spine.tools.java.code.field.FieldName;
+import io.spine.tools.java.code.GeneratedBy;
+import io.spine.tools.java.code.JavaPoetName;
+import io.spine.tools.java.code.TypeSpec;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
-import io.spine.code.javadoc.JavadocText;
+import io.spine.tools.java.javadoc.JavadocText;
 import io.spine.logging.Logging;
 
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;

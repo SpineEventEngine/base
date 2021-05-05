@@ -28,7 +28,7 @@ package io.spine.js.generate;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.fs.js.Directory;
+import io.spine.tools.js.fs.Directory;
 import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.given.TestGenerationTask;

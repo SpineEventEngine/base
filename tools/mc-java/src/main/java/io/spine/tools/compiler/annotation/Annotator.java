@@ -28,7 +28,7 @@ package io.spine.tools.compiler.annotation;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.fs.java.SourceFile;
+import io.spine.tools.java.fs.SourceFile;
 import io.spine.code.java.ClassName;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.Roaster;

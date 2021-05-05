@@ -28,7 +28,7 @@ package io.spine.js.generate.index;
 
 import com.google.common.collect.Maps;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.gen.js.TypeName;
+import io.spine.tools.js.code.TypeName;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.Snippet;
 import io.spine.js.generate.output.CodeLines;

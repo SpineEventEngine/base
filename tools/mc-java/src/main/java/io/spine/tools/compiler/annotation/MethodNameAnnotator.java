@@ -29,7 +29,7 @@ package io.spine.tools.compiler.annotation;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.fs.java.SourceFile;
+import io.spine.tools.java.fs.SourceFile;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.TypeSet;
 import io.spine.type.Type;

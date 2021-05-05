@@ -27,7 +27,7 @@
 package io.spine.tools.protoc.plugin.column;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.gen.java.ColumnFactory;
+import io.spine.tools.java.code.column.ColumnFactory;
 import io.spine.tools.protoc.plugin.ClassMember;
 import io.spine.tools.protoc.plugin.CodeGenerator;
 import io.spine.tools.protoc.plugin.CompilerOutput;

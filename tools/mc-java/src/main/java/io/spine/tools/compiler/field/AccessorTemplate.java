@@ -28,7 +28,7 @@ package io.spine.tools.compiler.field;
 
 import com.google.common.base.Objects;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.code.gen.java.FieldName;
+import io.spine.tools.java.code.field.FieldName;
 
 import java.io.Serializable;
 

@@ -25,7 +25,7 @@
  */
 package io.spine.tools.gradle.compiler;
 
-import io.spine.code.fs.java.DefaultJavaProject;
+import io.spine.tools.java.fs.DefaultJavaProject;
 import org.gradle.api.Project;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -27,8 +27,8 @@
 package io.spine.js.gradle;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.fs.js.DefaultJsProject;
-import io.spine.code.fs.js.Directory;
+import io.spine.tools.js.fs.DefaultJsProject;
+import io.spine.tools.js.fs.Directory;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.AppendTypeUrlGetter;
 import io.spine.js.generate.GenerationTask;

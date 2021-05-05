@@ -26,8 +26,8 @@
 
 package io.spine.js.generate.output;
 
-import io.spine.code.fs.js.Directory;
-import io.spine.code.fs.js.FileName;
+import io.spine.tools.js.fs.Directory;
+import io.spine.tools.js.fs.FileName;
 import io.spine.js.generate.TaskProto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

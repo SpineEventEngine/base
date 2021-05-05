@@ -28,7 +28,7 @@ package io.spine.tools.protoc.plugin.field;
 
 import com.google.common.testing.NullPointerTester;
 import io.spine.base.SubscribableField;
-import io.spine.code.gen.java.FieldFactory;
+import io.spine.tools.java.code.field.FieldFactory;
 import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.tools.protoc.ConfigByType;
 import io.spine.tools.protoc.TypePattern;

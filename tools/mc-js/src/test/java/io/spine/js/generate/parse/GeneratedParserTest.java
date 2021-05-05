@@ -29,7 +29,7 @@ package io.spine.js.generate.parse;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.code.gen.js.TypeName;
+import io.spine.tools.js.code.TypeName;
 import io.spine.js.generate.output.CodeLines;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
