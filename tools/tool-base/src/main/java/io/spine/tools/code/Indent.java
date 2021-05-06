@@ -35,7 +35,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * A positive space-based indentation of generated code.
+ * A non-negative indentation of the generated code.
  */
 @Immutable
 public final class Indent implements Serializable {
@@ -46,17 +46,21 @@ public final class Indent implements Serializable {
     private static final Indent TWO = new Indent(2, 0);
     private static final Indent FOUR = new Indent(4, 0);
 
+    /**
+     * The number of {@link #SPACE} characters are put for each {@link #level} of indentation.
+     */
     private final int size;
 
     /**
-     * A level of indentation.
+     * The level of indentation.
      *
-     * <p>If zero, the code would have {@link #size} number of {@link #SPACE} characters
-     * before the actual text.
+     * <p>This field defines a number of times the code would be shifted.
      */
     private final int level;
 
-    /** The actual text of indentation. */
+    /**
+     *  The actual text of indentation.
+     */
     private final String text;
 
     /**
@@ -120,7 +124,7 @@ public final class Indent implements Serializable {
     }
 
     /**
-     * Obtains the level of indentation.
+     * Obtains the level of the indentation.
      */
     public int level() {
         return level;
@@ -134,7 +138,7 @@ public final class Indent implements Serializable {
     }
 
     /**
-     * Obtains an instance shifted to the right by one level.
+     * Obtains an instance shifted to the left by one level.
      *
      * @throws IllegalStateException
      *          if this indentation is already at the zero column
@@ -150,6 +154,9 @@ public final class Indent implements Serializable {
      * <p>A new level of indentation must be non-negative.
      */
     Indent shifted(int delta) {
+        if (delta == 0) {
+            return this;
+        }
         int requested = level + delta;
         checkArgument(requested >= 0,
                       "Cannot indent to the left more (`%s`)." +
