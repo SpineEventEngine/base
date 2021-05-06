@@ -36,8 +36,7 @@ import static io.spine.code.proto.FieldTypes.isMap;
 import static io.spine.code.proto.FieldTypes.isRepeated;
 import static io.spine.code.proto.FieldTypes.keyDescriptor;
 import static io.spine.code.proto.FieldTypes.valueDescriptor;
-import static io.spine.tools.mc.js.code.field.parser.FieldParser.parserFor;
-import static io.spine.tools.mc.js.code.field.precondition.FieldPreconditions.preconditionFor;
+import static io.spine.tools.mc.js.code.field.precondition.FieldPrecondition.preconditionFor;
 
 /**
  * The helper class which provides the {@link FieldGenerator} implementation for the given
@@ -108,7 +107,7 @@ public final class FieldGenerators {
     private static FieldGenerator repeatedGenerator(FieldToParse field, CodeLines jsOutput) {
         FieldDescriptor descriptor = field.descriptor();
         FieldPrecondition precondition = preconditionFor(descriptor, jsOutput);
-        FieldParser parser = parserFor(descriptor, jsOutput);
+        FieldParser parser = FieldParser.createFor(descriptor, jsOutput);
 
         FieldGenerator generator = RepeatedFieldGenerator
                 .newBuilder()
@@ -126,7 +125,7 @@ public final class FieldGenerators {
     private static FieldGenerator singularGenerator(FieldToParse field, CodeLines jsOutput) {
         FieldDescriptor descriptor = field.descriptor();
         FieldPrecondition precondition = preconditionFor(descriptor, jsOutput);
-        FieldParser parser = parserFor(descriptor, jsOutput);
+        FieldParser parser = FieldParser.createFor(descriptor, jsOutput);
 
         FieldGenerator generator = SingularFieldGenerator
                 .newBuilder()
@@ -153,7 +152,7 @@ public final class FieldGenerators {
      */
     private static FieldParser mapKeyParser(FieldDescriptor field, CodeLines jsOutput) {
         FieldDescriptor keyDescriptor = keyDescriptor(field);
-        FieldParser parser = parserFor(keyDescriptor, jsOutput);
+        FieldParser parser = FieldParser.createFor(keyDescriptor, jsOutput);
         return parser;
     }
 
@@ -162,7 +161,7 @@ public final class FieldGenerators {
      */
     private static FieldParser mapValueParser(FieldDescriptor field, CodeLines jsOutput) {
         FieldDescriptor valueDescriptor = valueDescriptor(field);
-        FieldParser parser = parserFor(valueDescriptor, jsOutput);
+        FieldParser parser = FieldParser.createFor(valueDescriptor, jsOutput);
         return parser;
     }
 }

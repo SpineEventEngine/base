@@ -40,28 +40,22 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 final class PrimitiveFieldParser implements FieldParser {
 
-    @SuppressWarnings("BadImport")
+    @SuppressWarnings("BadImport") // We use `FieldDescriptor.Type` for brevity.
     private final Type fieldType;
     private final CodeLines jsOutput;
 
-    private PrimitiveFieldParser(@SuppressWarnings("BadImport") Type fieldType,
-                                 CodeLines jsOutput) {
-        this.fieldType = fieldType;
-        this.jsOutput = jsOutput;
-    }
-
     /**
-     * Creates a new {@code PrimitiveFieldParser} for the given field.
+     * Creates a new instance for the given field.
      *
      * @param field
      *         the processed field
      * @param jsOutput
-     *         the {@code JsOutput} to store the generated code
+     *         the output to store the generated code
      */
-    static PrimitiveFieldParser createFor(FieldDescriptor field, CodeLines jsOutput) {
+    PrimitiveFieldParser(FieldDescriptor field, CodeLines jsOutput) {
         checkNotNull(field);
-        checkNotNull(jsOutput);
-        return new PrimitiveFieldParser(field.getType(), jsOutput);
+        this.fieldType = field.getType();
+        this.jsOutput = checkNotNull(jsOutput);
     }
 
     /**

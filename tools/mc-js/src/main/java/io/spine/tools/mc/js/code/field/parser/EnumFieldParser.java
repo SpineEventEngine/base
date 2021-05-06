@@ -42,33 +42,27 @@ final class EnumFieldParser implements FieldParser {
     private final TypeName typeName;
     private final CodeLines jsOutput;
 
-    private EnumFieldParser(TypeName typeName, CodeLines jsOutput) {
-        this.typeName = typeName;
-        this.jsOutput = jsOutput;
-    }
-
     /**
      * Creates a new {@code EnumFieldParser} for the given field.
      *
      * @param field
      *         the processed field
      * @param jsOutput
-     *         the {@code JsOutput} to store the generated code
+     *         the output to store the generated code
      */
-    static EnumFieldParser createFor(FieldDescriptor field, CodeLines jsOutput) {
+    EnumFieldParser(FieldDescriptor field, CodeLines jsOutput) {
         checkNotNull(field);
-        checkNotNull(jsOutput);
         EnumDescriptor enumType = field.getEnumType();
-        TypeName typeName = TypeName.from(enumType);
-        return new EnumFieldParser(typeName, jsOutput);
+        this.typeName = TypeName.from(enumType);
+        this.jsOutput = checkNotNull(jsOutput);
     }
 
     /**
      * {@inheritDoc}
      *
-     * <p>The {@code enum} proto value in JSON is represented as a plain {@code string}. Thus, the
-     * parser obtains the JS enum object property using the given {@code string} as an attribute
-     * name.
+     * <p>The {@code enum} proto value in JSON is represented as a plain {@code string}.
+     * Thus, the parser obtains the JS enum object property using the given {@code string} as
+     * an attribute name.
      */
     @Override
     public void parseIntoVariable(String value, String variable) {

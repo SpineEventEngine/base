@@ -64,16 +64,16 @@ public interface FieldParser {
      *         the lines to accumulate the generated code
      * @return the {@code FieldParser} of the appropriate type
      */
-    static FieldParser parserFor(FieldDescriptor field, CodeLines jsOutput) {
+    static FieldParser createFor(FieldDescriptor field, CodeLines jsOutput) {
         checkNotNull(field);
         checkNotNull(jsOutput);
         FieldDeclaration fdecl = new FieldDeclaration(field);
         if (fdecl.isMessage()) {
-            return MessageFieldParser.createFor(field, jsOutput);
+            return new MessageFieldParser(field, jsOutput);
         }
         if (fdecl.isEnum()) {
-            return EnumFieldParser.createFor(field, jsOutput);
+            return new EnumFieldParser(field, jsOutput);
         }
-        return PrimitiveFieldParser.createFor(field, jsOutput);
+        return new PrimitiveFieldParser(field, jsOutput);
     }
 }

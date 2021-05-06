@@ -26,6 +26,12 @@
 
 package io.spine.tools.mc.js.code.field.precondition;
 
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.tools.mc.js.code.output.CodeLines;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.code.proto.FieldTypes.isMessage;
+
 /**
  * The generator of the code which performs various checks on the proto field value.
  *
@@ -52,4 +58,22 @@ public interface FieldPrecondition {
      * Generates the code to exit the {@code null} check block and return to the upper level.
      */
     void exitNullCheck();
+
+    /**
+     * Creates a new precondition for the given field.
+     *
+     * @param field
+     *         the descriptor of the Protobuf field to create the precondition for
+     * @param jsOutput
+     *         the {@code JsOutput} which will accumulate all the generated code
+     * @return a {@code FieldPrecondition} of the appropriate type
+     */
+    static FieldPrecondition preconditionFor(FieldDescriptor field, CodeLines jsOutput) {
+        checkNotNull(field);
+        checkNotNull(jsOutput);
+        if (isMessage(field)) {
+            return new MessagePrecondition(field, jsOutput);
+        }
+        return new PrimitivePrecondition(jsOutput);
+    }
 }

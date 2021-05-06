@@ -29,7 +29,6 @@ package io.spine.tools.mc.js.code.field.precondition;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.mc.js.code.output.CodeLines;
-import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,25 +37,24 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.mc.js.code.field.given.Given.messageField;
 import static io.spine.tools.mc.js.code.field.given.Given.primitiveField;
 import static io.spine.tools.mc.js.code.field.given.Given.timestampField;
-import static io.spine.tools.mc.js.code.field.precondition.FieldPreconditions.preconditionFor;
+import static io.spine.tools.mc.js.code.field.precondition.FieldPrecondition.preconditionFor;
 
-@DisplayName("FieldPreconditions utility should")
-class FieldPreconditionsTest extends UtilityClassTest<FieldPreconditions> {
+@DisplayName("`FieldPrecondition` static factory method should")
+class FieldPreconditionsTest {
 
     private CodeLines jsOutput;
-
-    FieldPreconditionsTest() {
-        super(FieldPreconditions.class);
-    }
-
-    @Override
-    protected void configure(NullPointerTester tester) {
-        tester.setDefault(FieldDescriptor.class, messageField());
-    }
 
     @BeforeEach
     void setUp() {
         jsOutput = new CodeLines();
+    }
+
+    @Test
+    @DisplayName("handle `null` args.")
+    void configure() {
+        new NullPointerTester()
+                .setDefault(FieldDescriptor.class, messageField())
+            .testAllPublicStaticMethods(FieldPrecondition.class);
     }
 
     @Test

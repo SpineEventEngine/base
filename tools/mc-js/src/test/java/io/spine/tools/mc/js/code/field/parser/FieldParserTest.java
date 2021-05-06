@@ -41,7 +41,7 @@ import static io.spine.tools.mc.js.code.field.given.Given.enumField;
 import static io.spine.tools.mc.js.code.field.given.Given.messageField;
 import static io.spine.tools.mc.js.code.field.given.Given.primitiveField;
 import static io.spine.tools.mc.js.code.field.given.Given.timestampField;
-import static io.spine.tools.mc.js.code.field.parser.FieldParser.parserFor;
+import static io.spine.tools.mc.js.code.field.parser.FieldParser.createFor;
 import static io.spine.js.generate.given.Generators.assertContains;
 import static java.lang.String.format;
 
@@ -71,35 +71,35 @@ class FieldParserTest {
     @Test
     @DisplayName("create parser for primitive field")
     void createParserForPrimitive() {
-        FieldParser parser = parserFor(primitiveField(), jsOutput);
+        FieldParser parser = createFor(primitiveField(), jsOutput);
         assertThat(parser).isInstanceOf(PrimitiveFieldParser.class);
     }
 
     @Test
     @DisplayName("create parser for enum field")
     void createParserForEnum() {
-        FieldParser parser = parserFor(enumField(), jsOutput);
+        FieldParser parser = createFor(enumField(), jsOutput);
         assertThat(parser).isInstanceOf(EnumFieldParser.class);
     }
 
     @Test
     @DisplayName("create parser for message field with custom type")
     void createParserForMessage() {
-        FieldParser parser = parserFor(messageField(), jsOutput);
+        FieldParser parser = createFor(messageField(), jsOutput);
         assertThat(parser).isInstanceOf(MessageFieldParser.class);
     }
 
     @Test
     @DisplayName("create parser for message field with standard type")
     void createParserForWellKnown() {
-        FieldParser parser = parserFor(timestampField(), jsOutput);
+        FieldParser parser = createFor(timestampField(), jsOutput);
         assertThat(parser).isInstanceOf(MessageFieldParser.class);
     }
 
     @Test
     @DisplayName("parse primitive field via predefined code")
     void parsePrimitive() {
-        FieldParser parser = parserFor(primitiveField(), jsOutput);
+        FieldParser parser = createFor(primitiveField(), jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
         String parse = "let " + VARIABLE + " = parseInt(" + VALUE + ')';
         assertContains(jsOutput, parse);
@@ -108,7 +108,7 @@ class FieldParserTest {
     @Test
     @DisplayName("parse enum field via JS enum object attribute")
     void parseEnum() {
-        FieldParser parser = parserFor(enumField(), jsOutput);
+        FieldParser parser = createFor(enumField(), jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
         EnumDescriptor enumType = enumField().getEnumType();
         TypeName typeName = TypeName.from(enumType);
@@ -119,7 +119,7 @@ class FieldParserTest {
     @Test
     @DisplayName("parse message field with custom type via recursive call to `fromObject`")
     void parseMessage() {
-        FieldParser parser = parserFor(messageField(), jsOutput);
+        FieldParser parser = createFor(messageField(), jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
 
     }
@@ -127,7 +127,7 @@ class FieldParserTest {
     @Test
     @DisplayName("parse a message field")
     void parseWellKnown() {
-        FieldParser parser = parserFor(messageField(), jsOutput);
+        FieldParser parser = createFor(messageField(), jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
         TypeUrl typeUrl = TypeUrl.from(messageField().getMessageType());
         String parserCall = format("TypeParsers.parserFor('%s').fromObject(%s);",

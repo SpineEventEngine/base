@@ -49,24 +49,18 @@ final class MessageFieldParser implements FieldParser {
     private final Descriptor message;
     private final CodeLines jsOutput;
 
-    private MessageFieldParser(Descriptor message, CodeLines jsOutput) {
-        this.message = message;
-        this.jsOutput = jsOutput;
-    }
-
     /**
      * Creates the {@code MessageFieldParser} for the given {@code field}.
      *
      * @param field
      *         the processed field
      * @param jsOutput
-     *         the {@code JsOutput} which accumulates all the generated code
+     *         the output which accumulates all the generated code
      */
-    static MessageFieldParser createFor(FieldDescriptor field, CodeLines jsOutput) {
+    MessageFieldParser(FieldDescriptor field, CodeLines jsOutput) {
         checkNotNull(field);
-        checkNotNull(jsOutput);
-        Descriptor messageType = field.getMessageType();
-        return new MessageFieldParser(messageType, jsOutput);
+        this.message = field.getMessageType();
+        this.jsOutput = checkNotNull(jsOutput);
     }
 
     @Override
