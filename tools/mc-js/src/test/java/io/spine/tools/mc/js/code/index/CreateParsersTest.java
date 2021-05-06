@@ -38,10 +38,9 @@ import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.js.generate.TaskId;
 import io.spine.js.generate.given.GivenProject;
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 import io.spine.tools.mc.js.code.imports.Import;
 import io.spine.option.OptionsProto;
-import io.spine.tools.mc.js.code.index.CreateParsers;
 import io.spine.tools.mc.js.code.text.Comment;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
@@ -81,7 +80,7 @@ class CreateParsersTest {
     @Test
     @DisplayName("generate explaining comment")
     void generateComment() {
-        CodeLines code = CreateParsers.codeFor(file);
+        CodeWriter code = CreateParsers.codeFor(file);
         Comment expectedComment = Comment.generatedBySpine();
         assertContains(code, expectedComment.content());
     }
@@ -89,7 +88,7 @@ class CreateParsersTest {
     @Test
     @DisplayName("generate imports")
     void generateImports() {
-        CodeLines code = CreateParsers.codeFor(file);
+        CodeWriter code = CreateParsers.codeFor(file);
         String importPrefix = FileName.from(file)
                                       .pathToRoot();
         String abstractParserImport =

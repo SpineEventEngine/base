@@ -29,7 +29,7 @@ package io.spine.tools.mc.js.code.field.parser;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.Type;
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 
 import java.util.Map;
 
@@ -79,7 +79,7 @@ final class PrimitiveParsers {
      *         if the parser for the specified type cannot be found
      */
     public static PrimitiveParser createFor(@SuppressWarnings("BadImport") Type fieldType,
-                                            CodeLines jsOutput) {
+                                            CodeWriter jsOutput) {
         checkNotNull(fieldType);
         checkNotNull(jsOutput);
         PrimitiveParser.Builder<?> parserBuilder = parsers.get(fieldType);

@@ -28,7 +28,7 @@ package io.spine.tools.mc.js.code.field.parser;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.Type;
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -42,7 +42,7 @@ final class PrimitiveFieldParser implements FieldParser {
 
     @SuppressWarnings("BadImport") // We use `FieldDescriptor.Type` for brevity.
     private final Type fieldType;
-    private final CodeLines jsOutput;
+    private final CodeWriter jsOutput;
 
     /**
      * Creates a new instance for the given field.
@@ -52,7 +52,7 @@ final class PrimitiveFieldParser implements FieldParser {
      * @param jsOutput
      *         the output to store the generated code
      */
-    PrimitiveFieldParser(FieldDescriptor field, CodeLines jsOutput) {
+    PrimitiveFieldParser(FieldDescriptor field, CodeWriter jsOutput) {
         checkNotNull(field);
         this.fieldType = field.getType();
         this.jsOutput = checkNotNull(jsOutput);

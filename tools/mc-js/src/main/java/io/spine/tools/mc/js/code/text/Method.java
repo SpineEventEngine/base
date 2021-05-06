@@ -27,8 +27,8 @@
 package io.spine.tools.mc.js.code.text;
 
 import io.spine.tools.js.code.MethodReference;
-import io.spine.tools.mc.js.code.CodeLine;
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.code.CodeLine;
+import io.spine.tools.mc.js.code.CodeWriter;
 import io.spine.tools.mc.js.code.Snippet;
 
 import java.util.List;
@@ -54,20 +54,19 @@ public class Method implements Snippet {
     }
 
     @Override
-    public CodeLines value() {
-        CodeLines lines = new CodeLines();
+    public CodeWriter value() {
+        CodeWriter lines = new CodeWriter();
         lines.append(declaration());
-        appendBody(lines);
+        lines.increaseDepth();
+        try {
+            for (CodeLine bodyLine : body) {
+                lines.append(bodyLine);
+            }
+        } finally {
+            lines.decreaseDepth();
+        }
         lines.append("};");
         return lines;
-    }
-
-    private void appendBody(CodeLines output) {
-        output.increaseDepth();
-        for (CodeLine bodyLine : body) {
-            output.append(bodyLine);
-        }
-        output.decreaseDepth();
     }
 
     /**
@@ -98,7 +97,7 @@ public class Method implements Snippet {
         private final List<CodeLine> body = newArrayList();
         private List<String> parameters = newArrayList();
 
-        Builder(MethodReference methodReference) {
+        private Builder(MethodReference methodReference) {
             checkNotNull(methodReference);
             this.methodReference = methodReference;
         }

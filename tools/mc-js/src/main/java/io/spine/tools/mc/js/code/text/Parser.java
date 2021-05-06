@@ -31,14 +31,14 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.js.code.MethodReference;
 import io.spine.tools.js.code.TypeName;
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 import io.spine.tools.mc.js.code.Snippet;
 import io.spine.tools.mc.js.code.field.FieldGenerator;
 import io.spine.tools.mc.js.code.field.FieldGenerators;
 import io.spine.tools.mc.js.code.field.FieldToParse;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.mc.js.code.CodeLine.emptyLine;
+import static io.spine.tools.code.CodeLine.emptyLine;
 import static java.lang.String.format;
 
 /**
@@ -96,8 +96,8 @@ public final class Parser implements Snippet {
     }
 
     @Override
-    public CodeLines value() {
-        CodeLines lines = new CodeLines();
+    public CodeWriter value() {
+        CodeWriter lines = new CodeWriter();
         lines.append(constructor());
         lines.append(initPrototype());
         lines.append(initConstructor());
@@ -155,10 +155,10 @@ public final class Parser implements Snippet {
      * <p>If the object is {@code null}, the returned value will be {@code null}.
      */
     @VisibleForTesting
-    CodeLines fromObjectMethod() {
+    CodeWriter fromObjectMethod() {
         String methodName = MethodReference.onPrototype(typeName(), PARSE_METHOD)
                                            .value();
-        CodeLines lines = new CodeLines();
+        CodeWriter lines = new CodeWriter();
         lines.enterMethod(methodName, FROM_OBJECT_ARG);
         checkParsedObject(lines);
         lines.append(emptyLine());
@@ -172,7 +172,7 @@ public final class Parser implements Snippet {
     /**
      * Adds the code checking that {@code fromObject} argument is not null.
      */
-    private static void checkParsedObject(CodeLines output) {
+    private static void checkParsedObject(CodeWriter output) {
         output.ifNull(FROM_OBJECT_ARG);
         output.append(Return.nullReference());
         output.exitBlock();
@@ -186,8 +186,8 @@ public final class Parser implements Snippet {
     /**
      * Obtains the code necessary to parse and set the message fields.
      */
-    private static CodeLines parseFields(Descriptor message) {
-        CodeLines lines = new CodeLines();
+    private static CodeWriter parseFields(Descriptor message) {
+        CodeWriter lines = new CodeWriter();
         for (FieldDescriptor field : message.getFields()) {
             lines.append(emptyLine());
             FieldToParse fieldToParse = new FieldToParse(field, FROM_OBJECT_ARG, MESSAGE);

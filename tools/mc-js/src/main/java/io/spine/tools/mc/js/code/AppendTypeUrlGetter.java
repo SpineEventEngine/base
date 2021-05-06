@@ -28,6 +28,7 @@ package io.spine.tools.mc.js.code;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.tools.code.CodeLine;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.code.MethodReference;
 import io.spine.tools.js.code.TypeName;
@@ -40,7 +41,7 @@ import io.spine.tools.mc.js.code.text.Return;
 import io.spine.type.Type;
 import io.spine.type.TypeUrl;
 
-import static io.spine.tools.mc.js.code.CodeLine.emptyLine;
+import static io.spine.tools.code.CodeLine.emptyLine;
 
 /**
  * Generates a method to obtain a {@code TypeUrl} for each type in a {@link FileSet}.
@@ -63,14 +64,14 @@ public class AppendTypeUrlGetter extends GenerationTask {
     }
 
     private void generateFor(FileDescriptor file) {
-        CodeLines typeUrlMethods = typeUrlMethods(file);
+        CodeWriter typeUrlMethods = typeUrlMethods(file);
         FileWriter writer = FileWriter.newInstance(generatedRoot(), file);
         writer.append(typeUrlMethods);
     }
 
     @VisibleForTesting
-    static CodeLines typeUrlMethods(FileDescriptor file) {
-        CodeLines output = new CodeLines();
+    static CodeWriter typeUrlMethods(FileDescriptor file) {
+        CodeWriter output = new CodeWriter();
         TypeSet types = TypeSet.from(file);
         for (Type<?, ?> type : types.messagesAndEnums()) {
             Snippet method = typeUrlMethod(type);
@@ -85,8 +86,7 @@ public class AppendTypeUrlGetter extends GenerationTask {
     static Method typeUrlMethod(Type<?, ?> type) {
         TypeName typeName = TypeName.from(type.descriptor());
         MethodReference reference = MethodReference.onType(typeName, METHOD_NAME);
-        Method method = Method
-                .newBuilder(reference)
+        Method method = Method.newBuilder(reference)
                 .appendToBody(returnTypeUrl(type))
                 .build();
         return method;

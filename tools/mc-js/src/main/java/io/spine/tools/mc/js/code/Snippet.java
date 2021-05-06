@@ -34,7 +34,7 @@ public interface Snippet {
     /**
      * Obtains code lines representing this snippet.
      *
-     * @return always returns a new {@link CodeLines}
+     * @return always returns a new {@link CodeWriter}
      */
-    CodeLines value();
+    CodeWriter value();
 }

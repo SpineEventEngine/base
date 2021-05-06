@@ -29,49 +29,17 @@ package io.spine.tools.code;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.code.IndentLevel.zero;
-import static io.spine.testing.Assertions.assertIllegalArgument;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("`IndentationLevel` should")
-class IndentLevelTest {
+@DisplayName("IndentedLine should")
+class IndentedLineTest {
 
     @Test
-    @DisplayName("not be negative")
-    void notNegative() {
-        assertIllegalArgument(() -> IndentLevel.of(-1));
-    }
-
-    @Test
-    @DisplayName("provide incremented value")
-    void provideIncremented() {
-        IndentLevel zero = IndentLevel.zero();
-        IndentLevel incremented = zero.increment();
-        assertEquals(0, zero.value());
-        assertEquals(1, incremented.value());
-    }
-
-    @Test
-    @DisplayName("provide decremented value")
-    void provideDecremented() {
-        IndentLevel five = IndentLevel.of(5);
-        IndentLevel decremented = five.decrement();
-        assertEquals(5, five.value());
-        assertEquals(4, decremented.value());
-    }
-
-    @Test
-    @DisplayName("not be decremented to a negative value")
-    void notAllowDecrementOfZero() {
-        assertIllegalArgument(() -> zero().decrement());
-    }
-
-    @Test
-    @DisplayName("provide the total indent")
-    void indentDepth() {
-        Indent indent = Indent.of4();
-        IndentLevel level = IndentLevel.of(2);
-        Indent totalIndent = level.totalIndent(indent);
-        assertEquals(8, totalIndent.size());
+    @DisplayName("create indent for code based on the level of indent")
+    void createIndent() {
+        Indent indentPerLevel = Indent.of2();
+        IndentedLine line = IndentedLine.of(indentPerLevel, "content");
+        String expected = "    content";
+        assertEquals(expected, line.content());
     }
 }

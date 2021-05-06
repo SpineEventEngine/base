@@ -29,7 +29,7 @@ package io.spine.tools.mc.js.code.field;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.mc.js.code.field.parser.FieldParser;
 import io.spine.tools.mc.js.code.field.precondition.FieldPrecondition;
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.proto.FieldTypes.isMap;
@@ -57,7 +57,7 @@ public final class FieldGenerators {
      *         the {@code JsOutput} to accumulate all the generated code
      * @return the new {@code FieldGenerator} of the appropriate type
      */
-    public static FieldGenerator createFor(FieldToParse field, CodeLines jsOutput) {
+    public static FieldGenerator createFor(FieldToParse field, CodeWriter jsOutput) {
         checkNotNull(field);
         checkNotNull(jsOutput);
         FieldDescriptor descriptor = field.descriptor();
@@ -84,7 +84,7 @@ public final class FieldGenerators {
      * always converted to a {@code string}. So we create additional {@code FieldParser} for
      * the {@code ...Entry} {@code "key"} field.
      */
-    private static FieldGenerator mapGenerator(FieldToParse field, CodeLines jsOutput) {
+    private static FieldGenerator mapGenerator(FieldToParse field, CodeWriter jsOutput) {
         FieldDescriptor descriptor = field.descriptor();
         FieldParser keyParser = mapKeyParser(descriptor, jsOutput);
         FieldParser valueParser = mapValueParser(descriptor, jsOutput);
@@ -104,7 +104,7 @@ public final class FieldGenerators {
     /**
      * Creates a {@linkplain RepeatedFieldGenerator generator} for the {@code repeated} proto field.
      */
-    private static FieldGenerator repeatedGenerator(FieldToParse field, CodeLines jsOutput) {
+    private static FieldGenerator repeatedGenerator(FieldToParse field, CodeWriter jsOutput) {
         FieldDescriptor descriptor = field.descriptor();
         FieldPrecondition precondition = preconditionFor(descriptor, jsOutput);
         FieldParser parser = FieldParser.createFor(descriptor, jsOutput);
@@ -122,7 +122,7 @@ public final class FieldGenerators {
     /**
      * Creates a {@linkplain SingularFieldGenerator generator} for the ordinary proto field.
      */
-    private static FieldGenerator singularGenerator(FieldToParse field, CodeLines jsOutput) {
+    private static FieldGenerator singularGenerator(FieldToParse field, CodeWriter jsOutput) {
         FieldDescriptor descriptor = field.descriptor();
         FieldPrecondition precondition = preconditionFor(descriptor, jsOutput);
         FieldParser parser = FieldParser.createFor(descriptor, jsOutput);
@@ -141,7 +141,7 @@ public final class FieldGenerators {
      * Creates a {@code FieldPrecondition} for the value of the map field.
      */
     private static FieldPrecondition
-    mapValuePrecondition(FieldDescriptor field, CodeLines jsOutput) {
+    mapValuePrecondition(FieldDescriptor field, CodeWriter jsOutput) {
         FieldDescriptor valueDescriptor = valueDescriptor(field);
         FieldPrecondition precondition = preconditionFor(valueDescriptor, jsOutput);
         return precondition;
@@ -150,7 +150,7 @@ public final class FieldGenerators {
     /**
      * Creates a {@code FieldParser} for the key of the map field.
      */
-    private static FieldParser mapKeyParser(FieldDescriptor field, CodeLines jsOutput) {
+    private static FieldParser mapKeyParser(FieldDescriptor field, CodeWriter jsOutput) {
         FieldDescriptor keyDescriptor = keyDescriptor(field);
         FieldParser parser = FieldParser.createFor(keyDescriptor, jsOutput);
         return parser;
@@ -159,7 +159,7 @@ public final class FieldGenerators {
     /**
      * Creates a {@code FieldParser} for the value of the map field.
      */
-    private static FieldParser mapValueParser(FieldDescriptor field, CodeLines jsOutput) {
+    private static FieldParser mapValueParser(FieldDescriptor field, CodeWriter jsOutput) {
         FieldDescriptor valueDescriptor = valueDescriptor(field);
         FieldParser parser = FieldParser.createFor(valueDescriptor, jsOutput);
         return parser;

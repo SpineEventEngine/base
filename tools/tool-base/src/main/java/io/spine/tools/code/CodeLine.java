@@ -24,25 +24,61 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code;
+package io.spine.tools.code;
 
-import io.spine.tools.code.Indent;
-import io.spine.tools.code.IndentLevel;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+/**
+ * A line of a JavaScript code.
+ *
+ * <p>The line is not aware of
+ * {@linkplain IndentedLine indentation}.
+ */
+public abstract class CodeLine {
 
-@DisplayName("IndentedLine should")
-class IndentedLineTest {
+    /**
+     * Obtains the value of the line.
+     */
+    public abstract String content();
 
-    @Test
-    @DisplayName("create indent for code based on the level of indent")
-    void createIndent() {
-        IndentLevel level = IndentLevel.of(2);
-        Indent indentPerLevel = Indent.of2();
-        IndentedLine line = IndentedLine.of("content", level, indentPerLevel);
-        String expected = "    content";
-        assertEquals(expected, line.content());
+    /**
+     * Obtains a code line with the specified content.
+     */
+    public static CodeLine of(String content) {
+        return new CodeLine() {
+            @Override
+            public String content() {
+                return content.trim();
+            }
+        };
+    }
+
+    /**
+     * Obtains an empty code line.
+     */
+    public static CodeLine emptyLine() {
+        return of("");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof CodeLine)) {
+            return false;
+        }
+        CodeLine line = (CodeLine) o;
+        return content().equals(line.content());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(content());
+    }
+
+    @Override
+    public String toString() {
+        return content();
     }
 }

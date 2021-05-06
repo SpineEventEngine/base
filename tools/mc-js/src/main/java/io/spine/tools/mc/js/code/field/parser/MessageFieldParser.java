@@ -28,7 +28,7 @@ package io.spine.tools.mc.js.code.field.parser;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 import io.spine.tools.mc.js.code.text.Let;
 import io.spine.tools.mc.js.code.text.Parser;
 import io.spine.type.TypeUrl;
@@ -47,7 +47,7 @@ final class MessageFieldParser implements FieldParser {
     private static final String PARSER_BY_URL_METHOD = "parserFor";
 
     private final Descriptor message;
-    private final CodeLines jsOutput;
+    private final CodeWriter jsOutput;
 
     /**
      * Creates the {@code MessageFieldParser} for the given {@code field}.
@@ -57,7 +57,7 @@ final class MessageFieldParser implements FieldParser {
      * @param jsOutput
      *         the output which accumulates all the generated code
      */
-    MessageFieldParser(FieldDescriptor field, CodeLines jsOutput) {
+    MessageFieldParser(FieldDescriptor field, CodeWriter jsOutput) {
         checkNotNull(field);
         this.message = field.getMessageType();
         this.jsOutput = checkNotNull(jsOutput);

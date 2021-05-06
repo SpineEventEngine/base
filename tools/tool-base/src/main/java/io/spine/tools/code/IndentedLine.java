@@ -24,12 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code;
-
-import io.spine.tools.code.Indent;
-import io.spine.tools.code.IndentLevel;
-
-import java.util.Objects;
+package io.spine.tools.code;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -41,51 +36,45 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>For example, the code inside the {@code if} block is one unit deeper than the {@code if}
  * declaration itself.
  */
-final class IndentedLine extends CodeLine {
+public final class IndentedLine extends CodeLine {
 
-    private final IndentLevel indentLevel;
-    /** The indent per a level. */
+    /** The level of indentation before the code. */
     private final Indent indent;
-    /** The line to prepend with indentation. */
-    private final CodeLine unaliagned;
 
-    private IndentedLine(CodeLine unaligned, IndentLevel indentLevel, Indent indent) {
+    /** The line of code to be executed. */
+    private final CodeLine code;
+
+    private IndentedLine(Indent indent, CodeLine code) {
         super();
-        checkNotNull(unaligned);
-        checkNotNull(indentLevel);
+        checkNotNull(code);
         checkNotNull(indent);
-        this.unaliagned = unaligned;
-        this.indentLevel = indentLevel;
+        this.code = code;
         this.indent = indent;
     }
 
     /**
      * Creates a new {@code IndentedLine}.
      *
-     * @param line
-     *         the line to be indented
-     * @param level
-     *         the indent level of the code
      * @param indent
      *         the indent per a level
+     * @param code
+ *             the source code text
      */
-    static IndentedLine of(String line, IndentLevel level, Indent indent) {
-        CodeLine rawLine = CodeLine.of(line);
-        return of(rawLine, level, indent);
+    public static IndentedLine of(Indent indent, String code) {
+        CodeLine pure = CodeLine.of(code);
+        return of(indent, pure);
     }
 
     /**
      * Creates a new {@code IndentedLine}.
      *
-     * @param line
-     *         the code line to be indented
-     * @param indentLevel
-     *         the level of the line indent
      * @param indent
-     *         the indent per a level
+     *         the indent before the code
+     * @param code
+ *         the code to be added
      */
-    static IndentedLine of(CodeLine line, IndentLevel indentLevel, Indent indent) {
-        return new IndentedLine(line, indentLevel, indent);
+    private static IndentedLine of(Indent indent, CodeLine code) {
+        return new IndentedLine(indent, code);
     }
 
     /**
@@ -93,22 +82,22 @@ final class IndentedLine extends CodeLine {
      */
     @Override
     public String content() {
-        Indent totalIndent = indentLevel.totalIndent(indent);
-        String result = totalIndent + unaliagned.content();
+        String result = indent + code.content();
         return result;
     }
 
     /**
      * Obtains a line with the indent level adjusted by the specified value.
      *
-     * @param levelChange
-     *         the value to adjust the indent level by
+     * @param shift
+     *         the offset for indentation levels. Can be negative, but the resulting indentation
+     *         should be still greater or equal to zero.
+     *
      * @return a new line with the adjusted indent level
      */
-    IndentedLine adjustLevelBy(int levelChange) {
-        int newLevelValue = indentLevel.value() + levelChange;
-        IndentLevel newLevel = IndentLevel.of(newLevelValue);
-        return new IndentedLine(unaliagned, newLevel, indent);
+    public IndentedLine adjustLevelBy(int shift) {
+        Indent newIndent = indent.shifted(shift);
+        return new IndentedLine(newIndent, code);
     }
 
     @Override
@@ -119,13 +108,13 @@ final class IndentedLine extends CodeLine {
         if (!(o instanceof IndentedLine)) {
             return false;
         }
-        IndentedLine codeLine = (IndentedLine) o;
-        return content().equals(codeLine.content()) &&
-                indentLevel.equals(codeLine.indentLevel);
+        IndentedLine other = (IndentedLine) o;
+        return code.equals(other.code)
+                && indent.equals(other.indent);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(content(), indentLevel);
+        return code.hashCode();
     }
 }

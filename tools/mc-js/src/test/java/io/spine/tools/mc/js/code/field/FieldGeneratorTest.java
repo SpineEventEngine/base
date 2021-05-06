@@ -28,7 +28,7 @@ package io.spine.tools.mc.js.code.field;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.js.code.FieldName;
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -55,7 +55,7 @@ class FieldGeneratorTest {
     private static final String MESSAGE_NAME = "messageName";
     private static final String OBJECT_NAME = "objectName";
 
-    private CodeLines jsOutput;
+    private CodeWriter jsOutput;
 
     private SingularFieldGenerator singularGenerator;
     private RepeatedFieldGenerator repeatedGenerator;
@@ -63,7 +63,7 @@ class FieldGeneratorTest {
 
     @BeforeEach
     void setUp() {
-        jsOutput = new CodeLines();
+        jsOutput = new CodeWriter();
         singularGenerator = singularGenerator();
         repeatedGenerator = repeatedGenerator();
         mapGenerator = mapGenerator();

@@ -27,7 +27,7 @@
 package io.spine.tools.mc.js.code.imports;
 
 import io.spine.tools.js.fs.FileName;
-import io.spine.tools.mc.js.code.CodeLine;
+import io.spine.tools.code.CodeLine;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;

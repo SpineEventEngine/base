@@ -27,7 +27,7 @@
 package io.spine.tools.mc.js.code.text;
 
 import com.google.common.truth.StringSubject;
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -45,7 +45,7 @@ class MapExportTest {
                 .withEntry("firstKey", 1)
                 .withEntry("lastKey", 999)
                 .build();
-        CodeLines lines = map.value();
+        CodeWriter lines = map.value();
         String stringRepresentation = lines.toString();
         StringSubject assertRepresentation = assertThat(stringRepresentation);
         assertRepresentation.contains("module.exports.map = new Map([");

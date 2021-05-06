@@ -35,7 +35,7 @@ import io.spine.tools.js.fs.FileName;
 import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 import io.spine.tools.mc.js.code.GenerationTask;
 import io.spine.tools.mc.js.code.text.Comment;
 import io.spine.tools.mc.js.code.text.Parser;
@@ -46,7 +46,7 @@ import io.spine.type.MessageType;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.mc.js.code.CodeLine.emptyLine;
+import static io.spine.tools.code.CodeLine.emptyLine;
 
 /**
  * This class writes the {@linkplain Parser code} for
@@ -85,16 +85,16 @@ public final class CreateParsers extends GenerationTask {
         if (targetTypes(file).isEmpty()) {
             return;
         }
-        CodeLines code = codeFor(file);
+        CodeWriter code = codeFor(file);
         FileWriter writer = FileWriter.newInstance(generatedRoot(), file);
         writer.append(code);
     }
 
     @VisibleForTesting
-    static CodeLines codeFor(FileDescriptor file) {
+    static CodeWriter codeFor(FileDescriptor file) {
         ImmutableCollection<MessageType> types = targetTypes(file);
         FileName fileName = FileName.from(file);
-        CodeLines lines = new CodeLines();
+        CodeWriter lines = new CodeWriter();
         lines.append(emptyLine());
         lines.append(Comment.generatedBySpine());
         lines.append(emptyLine());
@@ -109,12 +109,12 @@ public final class CreateParsers extends GenerationTask {
      * @param targetFile
      *         the file to generate imports for
      */
-    private static CodeLines imports(FileName targetFile) {
+    private static CodeWriter imports(FileName targetFile) {
         String abstractParserImport = defaultImport(Parser.OBJECT_PARSER_FILE, targetFile)
                 .namedAs(Parser.ABSTRACT_PARSER_IMPORT_NAME);
         String parsersImport = defaultImport(Parser.TYPE_PARSERS_FILE, targetFile)
                 .namedAs(Parser.TYPE_PARSERS_IMPORT_NAME);
-        CodeLines lines = new CodeLines();
+        CodeWriter lines = new CodeWriter();
         lines.append(abstractParserImport);
         lines.append(parsersImport);
         return lines;
@@ -132,8 +132,8 @@ public final class CreateParsers extends GenerationTask {
      * @param messageTypes
      *         all messages in a file to generate parser for
      */
-    private static CodeLines parses(Collection<MessageType> messageTypes) {
-        CodeLines snippet = new CodeLines();
+    private static CodeWriter parses(Collection<MessageType> messageTypes) {
+        CodeWriter snippet = new CodeWriter();
         for (MessageType message : messageTypes) {
             Parser parser = new Parser(message.descriptor());
             snippet.append(emptyLine());

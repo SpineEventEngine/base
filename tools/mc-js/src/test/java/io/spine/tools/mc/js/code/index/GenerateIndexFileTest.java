@@ -31,7 +31,7 @@ import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.fs.FileName;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.given.GivenProject;
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -60,7 +60,7 @@ class GenerateIndexFileTest {
     @Test
     @DisplayName("generate imports for known types")
     void generateImports() {
-        CodeLines generatedCode = GenerateIndexFile.codeFor(fileSet);
+        CodeWriter generatedCode = GenerateIndexFile.codeFor(fileSet);
         for (FileDescriptor file : fileSet.files()) {
             FileName fileName = FileName.from(file);
             String fileImport = "require('./" + fileName + "');";

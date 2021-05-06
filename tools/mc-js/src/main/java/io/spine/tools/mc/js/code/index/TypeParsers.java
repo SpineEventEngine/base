@@ -31,7 +31,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.tools.js.code.TypeName;
 import io.spine.code.proto.FileSet;
 import io.spine.tools.mc.js.code.Snippet;
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 import io.spine.tools.mc.js.code.text.MapExport;
 import io.spine.type.MessageType;
 import io.spine.type.TypeUrl;
@@ -62,7 +62,7 @@ final class TypeParsers implements Snippet {
     }
 
     @Override
-    public CodeLines value() {
+    public CodeWriter value() {
         List<Map.Entry<String, TypeName>> entries = mapEntries(fileSet);
         MapExport mapSnippet = MapExport.newBuilder(MAP_NAME)
                 .withEntries(entries)

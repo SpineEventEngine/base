@@ -28,13 +28,13 @@ package io.spine.tools.mc.js.code;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import io.spine.tools.code.CodeLine;
 import io.spine.tools.code.Indent;
-import io.spine.tools.code.IndentLevel;
+import io.spine.tools.code.IndentedLine;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -57,7 +57,7 @@ import static java.util.stream.Collectors.joining;
         "DuplicateStringLiteralInspection",
         "ClassWithTooManyMethods"
 })
-public final class CodeLines {
+public final class CodeWriter {
 
     @VisibleForTesting
     static final String LINE_SEPARATOR = lineSeparator();
@@ -65,37 +65,31 @@ public final class CodeLines {
     private static final Indent STANDARD_INDENTATION = Indent.of2();
 
     /**
-     * The indentation of the code, i.e. how many spaces each indent level takes.
+     * Lines of code already indented previously.
      */
-    private final Indent indentation;
+    private final List<IndentedLine> lines;
 
     /**
-     * The aggregator of the JS code.
+     * The current level of indentation.
      */
-    private final List<IndentedLine> codeLines;
+    private Indent indent;
 
     /**
-     * The current indent level of the code on which the next line will be added.
+     * Creates a new instance the {@linkplain #STANDARD_INDENTATION standard indentation}.
      */
-    private IndentLevel currentLevel;
-
-    /**
-     * Creates an instance of the {@code JsOutput} with the default indentation.
-     */
-    public CodeLines() {
+    public CodeWriter() {
         this(STANDARD_INDENTATION);
     }
 
     /**
      * Creates an instance of the {@code JsOutput} with the custom indentation.
      *
-     * @param indentation
+     * @param indent
      *         the indentation to use
      */
-    public CodeLines(Indent indentation) {
-        this.codeLines = new ArrayList<>();
-        this.currentLevel = IndentLevel.zero();
-        this.indentation = indentation;
+    public CodeWriter(Indent indent) {
+        this.lines = new ArrayList<>();
+        this.indent = indent;
     }
 
     /**
@@ -106,16 +100,21 @@ public final class CodeLines {
      *
      * <p>The indent level is adjusted by the difference of the levels.
      *
-     * @param appended
+     * @param lines
      *         the code to append
      */
-    public void append(CodeLines appended) {
-        checkArgument(indentation.equals(appended.indentation),
-                      "Cannot merge code parts with different indentation.");
-        int levelDifference = currentLevel.value() - appended.currentLevel.value();
-        for (IndentedLine line : appended.codeLines) {
+    public void append(CodeWriter lines) {
+        checkArgument(
+                indent.size() == lines.indent.size(),
+                "Cannot merge code parts with different indentation size." +
+                        " Current indentation: %s. Passed: %s.",
+                indent.size(),
+                lines.indent.size()
+        );
+        int levelDifference = indent.level() - lines.indent().level();
+        for (IndentedLine line : lines.lines) {
             IndentedLine adjusted = line.adjustLevelBy(levelDifference);
-            appendIndented(adjusted);
+            append(adjusted);
         }
     }
 
@@ -129,37 +128,33 @@ public final class CodeLines {
     /**
      * Appends the line of code on the current indent level.
      *
-     * @param codeLine
+     * @param code
      *         the code to add
      */
-    public void append(String codeLine) {
-        checkNotNull(codeLine);
-        IndentedLine indented = IndentedLine.of(codeLine, currentLevel, indentation);
-        codeLines.add(indented);
+    public void append(String code) {
+        checkNotNull(code);
+        IndentedLine indented = IndentedLine.of(indent, code);
+        append(indented);
     }
 
     /**
-     * Appends the code line and indents it to the current indent level.
+     * Appends the code line.
+     *
+     * <p>If the passed line is already indented, it is appended as is. Otherise,
+     * the indentation of this code block is applied.
      *
      * @param line
      *         the line to append
      */
     public void append(CodeLine line) {
         checkNotNull(line);
-        IndentedLine indented = IndentedLine.of(line, currentLevel, indentation);
-        appendIndented(indented);
-    }
-
-    /**
-     * Appends the code line without changing its indent level.
-     *
-     * @param codeLine
-     *         the code to add
-     */
-    @VisibleForTesting // otherwise private
-    void appendIndented(IndentedLine codeLine) {
-        checkNotNull(codeLine);
-        codeLines.add(codeLine);
+        IndentedLine indented;
+        if (line instanceof IndentedLine) {
+            indented = (IndentedLine) line;
+        } else {
+            indented = IndentedLine.of(indent, line.content());
+        }
+        lines.add(indented);
     }
 
     /**
@@ -282,25 +277,25 @@ public final class CodeLines {
     }
 
     /**
-     * Manually increases the current indent level.
+     * Increases the current indentation level.
      */
     public void increaseDepth() {
-        currentLevel = currentLevel.increment();
+        indent = indent.shiftedRight();
     }
 
     /**
      * Manually decreases the current indent level.
      */
     public void decreaseDepth() {
-        currentLevel = currentLevel.decrement();
+        indent = indent.shiftedLeft();
     }
 
     /**
      * Merges lines by addition of a comma to each line except the last one.
      */
-    public static CodeLines commaSeparated(List<CodeLine> lines) {
+    public static CodeWriter commaSeparated(List<CodeLine> lines) {
         checkNotNull(lines);
-        CodeLines code = new CodeLines();
+        CodeWriter code = new CodeWriter();
         for (Iterator<CodeLine> it = lines.iterator(); it.hasNext(); ) {
             CodeLine line = it.next();
             boolean isLast = !it.hasNext();
@@ -319,9 +314,9 @@ public final class CodeLines {
      */
     @Override
     public String toString() {
-        String result = codeLines.stream()
-                                 .map(CodeLine::toString)
-                                 .collect(joining(LINE_SEPARATOR));
+        String result = lines.stream()
+                             .map(CodeLine::toString)
+                             .collect(joining(LINE_SEPARATOR));
         return result;
     }
 
@@ -330,20 +325,20 @@ public final class CodeLines {
      */
     public ImmutableList<String> separated() {
         ImmutableList<String> result =
-                codeLines.stream()
-                         .map(l -> l + LINE_SEPARATOR)
-                         .collect(toImmutableList());
+                lines.stream()
+                     .map(l -> l + LINE_SEPARATOR)
+                     .collect(toImmutableList());
         return result;
     }
 
     @VisibleForTesting
     int currentDepth() {
-        return currentLevel.value();
+        return indent.level();
     }
 
     @VisibleForTesting
     Indent indent() {
-        return indentation;
+        return indent;
     }
 
     @Override
@@ -351,16 +346,15 @@ public final class CodeLines {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof CodeLines)) {
+        if (!(o instanceof CodeWriter)) {
             return false;
         }
-        CodeLines lines = (CodeLines) o;
-        return indentation.equals(lines.indentation) &&
-                codeLines.equals(lines.codeLines);
+        CodeWriter lines = (CodeWriter) o;
+        return this.lines.equals(lines.lines);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(indentation, codeLines);
+        return lines.hashCode();
     }
 }

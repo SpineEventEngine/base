@@ -30,7 +30,7 @@ import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.js.code.TypeName;
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -49,7 +49,7 @@ class ParserTest {
     @Test
     @DisplayName("generate `fromObject` method for message")
     void generateFromObject() {
-        CodeLines snippet = parser.fromObjectMethod();
+        CodeWriter snippet = parser.fromObjectMethod();
         String expectedName = expectedParserName(message) + ".prototype." + PARSE_METHOD;
         String methodDeclaration = expectedName + " = function(" + FROM_OBJECT_ARG;
         assertContains(snippet, methodDeclaration);
@@ -58,7 +58,7 @@ class ParserTest {
     @Test
     @DisplayName("check parsed object for null in `fromObject` method")
     void checkJsObjectForNull() {
-        CodeLines snippet = parser.fromObjectMethod();
+        CodeWriter snippet = parser.fromObjectMethod();
         String check = "if (" + FROM_OBJECT_ARG + " === null) {";
         assertContains(snippet, check);
     }
@@ -66,7 +66,7 @@ class ParserTest {
     @Test
     @DisplayName("handle message fields in `fromObject` method")
     void handleMessageFields() {
-        CodeLines lines = parser.fromObjectMethod();
+        CodeWriter lines = parser.fromObjectMethod();
         for (FieldDescriptor fieldDescriptor : message.getFields()) {
             assertContains(lines, fieldDescriptor.getJsonName());
         }
@@ -75,7 +75,7 @@ class ParserTest {
     @Test
     @DisplayName("generate whole snippet")
     void generateWholeSnippet() {
-        CodeLines lines = parser.value();
+        CodeWriter lines = parser.value();
         assertCtorDeclaration(lines, message);
         assertPrototypeInitialization(lines, message);
         assertCtorInitialization(lines, message);
@@ -90,27 +90,27 @@ class ParserTest {
         assertThat(call).isEqualTo(expected);
     }
 
-    private static void assertCtorDeclaration(CodeLines lines, Descriptor message) {
+    private static void assertCtorDeclaration(CodeWriter lines, Descriptor message) {
         String expected = expectedParserName(message) + " = function() {" + lineSeparator()
                 + "  ObjectParser.call(this);" + lineSeparator()
                 + "};";
         assertThat(lines.toString()).contains(expected);
     }
 
-    private static void assertPrototypeInitialization(CodeLines lines, Descriptor message) {
+    private static void assertPrototypeInitialization(CodeWriter lines, Descriptor message) {
         assertThat(lines.toString()).contains(
                 expectedParserName(message) + ".prototype = Object.create(ObjectParser.prototype);"
         );
     }
 
-    private static void assertCtorInitialization(CodeLines lines, Descriptor message) {
+    private static void assertCtorInitialization(CodeWriter lines, Descriptor message) {
         TypeName expectedName = expectedParserName(message);
         assertThat(lines.toString()).contains(
                 expectedName + ".prototype.constructor = " + expectedName + ';'
         );
     }
 
-    private static void assertParseMethod(CodeLines lines, Descriptor message) {
+    private static void assertParseMethod(CodeWriter lines, Descriptor message) {
         String expected = new Parser(message).fromObjectMethod()
                                              .toString();
         assertThat(lines.toString()).contains(expected);

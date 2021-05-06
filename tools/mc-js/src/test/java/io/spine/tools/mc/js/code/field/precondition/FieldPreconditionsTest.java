@@ -28,7 +28,7 @@ package io.spine.tools.mc.js.code.field.precondition;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,11 +42,11 @@ import static io.spine.tools.mc.js.code.field.precondition.FieldPrecondition.pre
 @DisplayName("`FieldPrecondition` static factory method should")
 class FieldPreconditionsTest {
 
-    private CodeLines jsOutput;
+    private CodeWriter jsOutput;
 
     @BeforeEach
     void setUp() {
-        jsOutput = new CodeLines();
+        jsOutput = new CodeWriter();
     }
 
     @Test

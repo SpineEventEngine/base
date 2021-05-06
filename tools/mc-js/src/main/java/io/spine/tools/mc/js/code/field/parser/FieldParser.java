@@ -28,7 +28,7 @@ package io.spine.tools.mc.js.code.field.parser;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -37,7 +37,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * some variable.
  *
  * @apiNote
- * The descendants are supposed to operate on the provided {@link CodeLines},
+ * The descendants are supposed to operate on the provided {@link CodeWriter},
  * so the interface method is not returning any generated code.
  */
 public interface FieldParser {
@@ -64,7 +64,7 @@ public interface FieldParser {
      *         the lines to accumulate the generated code
      * @return the {@code FieldParser} of the appropriate type
      */
-    static FieldParser createFor(FieldDescriptor field, CodeLines jsOutput) {
+    static FieldParser createFor(FieldDescriptor field, CodeWriter jsOutput) {
         checkNotNull(field);
         checkNotNull(jsOutput);
         FieldDeclaration fdecl = new FieldDeclaration(field);

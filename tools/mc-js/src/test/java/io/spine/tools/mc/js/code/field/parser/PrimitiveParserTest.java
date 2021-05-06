@@ -26,7 +26,7 @@
 
 package io.spine.tools.mc.js.code.field.parser;
 
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,11 +47,11 @@ class PrimitiveParserTest {
     private static final String VALUE = "value";
     private static final String VARIABLE = "variable";
 
-    private CodeLines jsOutput;
+    private CodeWriter jsOutput;
 
     @BeforeEach
     void setUp() {
-        jsOutput = new CodeLines();
+        jsOutput = new CodeWriter();
     }
 
     @Test

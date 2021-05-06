@@ -110,7 +110,7 @@ class AppendTypeUrlGetterTest {
         @DisplayName("for a message class")
         void forMessageClass() {
             Method method = typeUrlMethod(messageType());
-            CodeLines codeLines = method.value();
+            CodeWriter codeLines = method.value();
             checkMethodForTypePresent(codeLines, messageType());
         }
 
@@ -118,7 +118,7 @@ class AppendTypeUrlGetterTest {
         @DisplayName("for an enum class")
         void forEnumClass() {
             Method method = typeUrlMethod(enumType());
-            CodeLines codeLines = method.value();
+            CodeWriter codeLines = method.value();
             checkMethodForTypePresent(codeLines, enumType());
         }
     }
@@ -128,7 +128,7 @@ class AppendTypeUrlGetterTest {
     void skipServiceDefinitions() {
         FileDescriptor file = TaskServiceProto.getDescriptor();
         ServiceDescriptor service = file.findServiceByName("TaskService");
-        CodeLines output = typeUrlMethods(file);
+        CodeWriter output = typeUrlMethods(file);
 
         ServiceType serviceType = ServiceType.of(service);
         checkMethodForTypeNotPresent(output, serviceType);
@@ -137,7 +137,7 @@ class AppendTypeUrlGetterTest {
         checkMethodForTypePresent(output, messageType);
     }
 
-    private static void checkMethodForTypePresent(CodeLines codeLines, Type type) {
+    private static void checkMethodForTypePresent(CodeWriter codeLines, Type type) {
         String methodDeclaration = methodDeclaration(type);
         String returnStatement = format("return '%s';", type.url());
         String endOfMethod = "};";
@@ -147,7 +147,7 @@ class AppendTypeUrlGetterTest {
         assertThat(code).contains(endOfMethod);
     }
 
-    private static void checkMethodForTypeNotPresent(CodeLines codeLines, Type type) {
+    private static void checkMethodForTypeNotPresent(CodeWriter codeLines, Type type) {
         String declaration = methodDeclaration(type);
         String code = codeLines.toString();
         assertThat(code).doesNotContain(declaration);
@@ -159,7 +159,7 @@ class AppendTypeUrlGetterTest {
     }
 
     private void assertHasTypeUrl(TypeUrl typeUrl) {
-        CodeLines out = AppendTypeUrlGetter.typeUrlMethods(file);
+        CodeWriter out = AppendTypeUrlGetter.typeUrlMethods(file);
         assertThat(out.toString()).contains(typeUrl.value());
     }
 }

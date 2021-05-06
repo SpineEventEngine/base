@@ -24,20 +24,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.given;
+package io.spine.tools.mc.js.code;
 
 import io.spine.tools.code.Indent;
-import io.spine.tools.code.IndentLevel;
-import io.spine.tools.mc.js.code.CodeLines;
 
-public final class GivenLines {
+final class GivenLines {
 
     /** Prevents instantiation of this utility class. */
     private GivenLines() {
     }
 
-    public static CodeLines withDifferentDepth(IndentLevel initialDepth) {
-        CodeLines lines = linesWithDepth(initialDepth);
+    static CodeWriter withDifferentDepth(int initialDepth) {
+        CodeWriter lines = linesWithDepth(initialDepth);
         lines.append("{");
         lines.increaseDepth();
         lines.append("in the code block");
@@ -46,9 +44,9 @@ public final class GivenLines {
         return lines;
     }
 
-    public static CodeLines linesWithDepth(IndentLevel depth) {
-        CodeLines lines = new CodeLines();
-        for (int i = 0; i < depth.value(); i++) {
+    static CodeWriter linesWithDepth(int depth) {
+        CodeWriter lines = new CodeWriter();
+        for (int i = 0; i < depth; i++) {
             lines.increaseDepth();
         }
         return lines;
@@ -57,8 +55,8 @@ public final class GivenLines {
     /**
      * Obtains code lines with the specified first line.
      */
-    public static CodeLines newCodeLines(String firstLine) {
-        CodeLines lines = new CodeLines();
+    public static CodeWriter newCodeLines(String firstLine) {
+        CodeWriter lines = new CodeWriter();
         lines.append(firstLine);
         return lines;
     }
@@ -66,8 +64,8 @@ public final class GivenLines {
     /**
      * Obtains code lines with the specified first line.
      */
-    public static CodeLines newCodeLines(String firstLine, Indent indent) {
-        CodeLines lines = new CodeLines(indent);
+    public static CodeWriter newCodeLines(String firstLine, Indent indent) {
+        CodeWriter lines = new CodeWriter(indent);
         lines.append(firstLine);
         return lines;
     }

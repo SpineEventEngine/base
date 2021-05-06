@@ -30,7 +30,7 @@ import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.js.code.TypeName;
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -53,11 +53,11 @@ class FieldParserTest {
     private static final String VALUE = "value";
     private static final String VARIABLE = "variable";
 
-    private CodeLines jsOutput;
+    private CodeWriter jsOutput;
 
     @BeforeEach
     void setUp() {
-        jsOutput = new CodeLines();
+        jsOutput = new CodeWriter();
     }
 
     @Test

@@ -32,7 +32,7 @@ import com.google.protobuf.NullValue;
 import com.google.protobuf.StringValue;
 import io.spine.tools.js.code.TypeName;
 import io.spine.code.proto.FileSet;
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,7 +55,7 @@ class KnownTypesTest {
     @Test
     @DisplayName("generate known types map for several files")
     void generateKnownTypesMap() {
-        CodeLines generatedLines = generator.value();
+        CodeWriter generatedLines = generator.value();
         String expectedForAny = expectedEntry(ANY) + ',';
         String expectedForString = expectedEntry(STRING_VALUE) + ',';
         assertContains(generatedLines, expectedForAny);
@@ -65,7 +65,7 @@ class KnownTypesTest {
     @Test
     @DisplayName("include enum types")
     void includeEnums() {
-        CodeLines generatedLines = generator.value();
+        CodeWriter generatedLines = generator.value();
         TypeUrl enumTypeUrl = TypeUrl.from(NullValue.getDescriptor());
         assertContains(generatedLines, enumTypeUrl.toString());
     }

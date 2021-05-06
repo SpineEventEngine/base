@@ -28,7 +28,7 @@ package io.spine.tools.mc.js.code.field.precondition;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Value;
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -38,7 +38,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 final class MessagePrecondition implements FieldPrecondition {
 
     private final FieldDescriptor field;
-    private final CodeLines jsOutput;
+    private final CodeWriter jsOutput;
 
     /**
      * Creates a new {@code MessagePrecondition} for the given {@code field}.
@@ -48,7 +48,7 @@ final class MessagePrecondition implements FieldPrecondition {
      * @param jsOutput
      *         the {@code JsOutput} which accumulates all generated code
      */
-    MessagePrecondition(FieldDescriptor field, CodeLines jsOutput) {
+    MessagePrecondition(FieldDescriptor field, CodeWriter jsOutput) {
         this.field = field;
         this.jsOutput = jsOutput;
     }

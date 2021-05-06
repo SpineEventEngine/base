@@ -26,7 +26,7 @@
 
 package io.spine.tools.mc.js.code.field.precondition;
 
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -39,7 +39,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 final class PrimitivePrecondition implements FieldPrecondition {
 
-    private final CodeLines jsOutput;
+    private final CodeWriter jsOutput;
 
     /**
      * Creates a new {@code PrimitivePrecondition}.
@@ -47,7 +47,7 @@ final class PrimitivePrecondition implements FieldPrecondition {
      * @param jsOutput
      *         the {@code JsOutput} which accumulates all the generated code
      */
-    PrimitivePrecondition(CodeLines jsOutput) {
+    PrimitivePrecondition(CodeWriter jsOutput) {
         this.jsOutput = jsOutput;
     }
 

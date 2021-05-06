@@ -27,7 +27,7 @@
 package io.spine.tools.mc.js.code.field.parser;
 
 import io.spine.testing.UtilityClassTest;
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT64;
 @DisplayName("PrimitiveParsers utility should")
 class PrimitiveParsersTest extends UtilityClassTest<PrimitiveParsers> {
 
-    private CodeLines jsOutput;
+    private CodeWriter jsOutput;
 
     PrimitiveParsersTest() {
         super(PrimitiveParsers.class);
@@ -49,7 +49,7 @@ class PrimitiveParsersTest extends UtilityClassTest<PrimitiveParsers> {
 
     @BeforeEach
     void setUp() {
-        jsOutput = new CodeLines();
+        jsOutput = new CodeWriter();
     }
 
     @Test

@@ -29,10 +29,9 @@ package io.spine.tools.mc.js.code;
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.truth.StringSubject;
-import com.google.common.truth.Truth;
-import io.spine.js.generate.given.GivenLines;
+import io.spine.tools.code.CodeLine;
 import io.spine.tools.code.Indent;
-import io.spine.tools.code.IndentLevel;
+import io.spine.tools.code.IndentedLine;
 import io.spine.tools.mc.js.code.text.Comment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,20 +40,19 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.js.generate.given.Generators.assertContains;
-import static io.spine.js.generate.given.GivenLines.linesWithDepth;
-import static io.spine.js.generate.given.GivenLines.newCodeLines;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.code.Indent.of2;
 import static io.spine.tools.code.Indent.of4;
-import static io.spine.tools.mc.js.code.CodeLines.LINE_SEPARATOR;
+import static io.spine.tools.mc.js.code.CodeWriter.LINE_SEPARATOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("`CodeLines` should")
+@DisplayName("`CodeWriter` should")
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Generated code duplication needed to check main class.
-class CodeLinesTest {
+class CodeWriterTest {
 
     private static final String LINE = "line";
     private static final String METHOD_NAME = "func";
@@ -63,11 +61,11 @@ class CodeLinesTest {
     private static final String CONDITION = VALUE + " > 0";
     private static final String CUSTOM_BLOCK = "for (let i in values)";
 
-    private CodeLines jsOutput;
+    private CodeWriter jsOutput;
 
     @BeforeEach
     void setUp() {
-        jsOutput = new CodeLines();
+        jsOutput = new CodeWriter();
     }
 
     @Test
@@ -80,11 +78,12 @@ class CodeLinesTest {
     @DisplayName("support custom indent")
     void setIndent() {
         Indent indent = Indent.of4();
-        CodeLines jsOutput = new CodeLines(indent);
+        CodeWriter jsOutput = new CodeWriter(indent);
         jsOutput.increaseDepth();
         jsOutput.append(LINE);
-        String expected = indent + LINE;
-        assertEquals(expected, jsOutput.toString());
+        String expected = indent.at(1) + LINE;
+        assertThat(jsOutput.toString())
+                .isEqualTo(expected);
     }
 
     @Nested
@@ -160,7 +159,7 @@ class CodeLinesTest {
     }
 
     @Nested
-    @DisplayName("append CodeLines")
+    @DisplayName("append code lines")
     class AppendCodeLines {
 
         private static final String FIRST_PART = "first part";
@@ -169,71 +168,72 @@ class CodeLinesTest {
         @Test
         @DisplayName("of the same depth")
         void sameDepth() {
-            CodeLines first = newCodeLines(FIRST_PART);
-            CodeLines second = newCodeLines(SECOND_PART);
+            CodeWriter first = GivenLines.newCodeLines(FIRST_PART);
+            CodeWriter second = GivenLines.newCodeLines(SECOND_PART);
             first.append(second);
             String expected = FIRST_PART + LINE_SEPARATOR + SECOND_PART;
-            assertThat(first).isEqualTo(expected);
+            assertLines(first).isEqualTo(expected);
         }
 
         @Test
         @DisplayName("only of the same indent")
         void notAllowDifferentIndents() {
-            CodeLines first = newCodeLines(FIRST_PART, of2());
-            CodeLines second = newCodeLines(FIRST_PART, of4());
+            CodeWriter first = GivenLines.newCodeLines(FIRST_PART, of2());
+            CodeWriter second = GivenLines.newCodeLines(FIRST_PART, of4());
             assertIllegalArgument(() -> first.append(second));
         }
 
         @Test
         @DisplayName("and increase depth")
         void increaseDepth() {
-            assertMergedAndAligned(IndentLevel.of(2), IndentLevel.zero());
+            assertMergedAndAligned(2, 0);
         }
 
         @Test
         @DisplayName("and decrease depth")
         void decreaseDepth() {
-            assertMergedAndAligned(IndentLevel.zero(), IndentLevel.of(2));
+            assertMergedAndAligned(0, 2);
         }
 
         /**
-         * Asserts that two {@link CodeLines} are merged
+         * Asserts that two {@link CodeWriter} are merged
          * and the depth of the appended lines is adjusted.
          *
-         * @param firthDepth
+         * @param d1
          *         the depth of lines to append to
-         * @param secondDepth
+         * @param d2
          *         the depth of the appended lines
          */
-        private void assertMergedAndAligned(IndentLevel firthDepth, IndentLevel secondDepth) {
-            CodeLines first = linesWithDepth(firthDepth);
-            CodeLines second = GivenLines.withDifferentDepth(secondDepth);
+        private void assertMergedAndAligned(int d1, int d2) {
+            CodeWriter first = GivenLines.linesWithDepth(d1);
+            CodeWriter second = GivenLines.withDifferentDepth(d2);
             first.append(second);
-            CodeLines expected = GivenLines.withDifferentDepth(firthDepth);
-            assertEquals(expected, first);
+            CodeWriter expected = GivenLines.withDifferentDepth(d1);
+
+            assertThat(first).isEqualTo(expected);
         }
     }
 
     @Test
     @DisplayName("append an unaligned line")
     void appendUnalignedLine() {
-        CodeLines lines = new CodeLines();
+        CodeWriter lines = new CodeWriter();
         lines.increaseDepth();
         CodeLine comment = Comment.of("The field...");
         lines.append(comment);
         String expected = lines.indent() + comment.content();
-        assertThat(lines).isEqualTo(expected);
+        assertLines(lines).isEqualTo(expected);
     }
 
     @Test
     @DisplayName("append an indented line")
     void appendIndentedLine() {
-        CodeLines lines = new CodeLines();
-        IndentLevel lineDepth = IndentLevel.of(5);
-        Indent indent = lines.indent();
-        IndentedLine indentedLine = IndentedLine.of("some code line", lineDepth, indent);
-        lines.appendIndented(indentedLine);
-        assertThat(lines).isEqualTo(indentedLine.toString());
+        CodeWriter lines = new CodeWriter();
+        Indent indent = Indent.of4().shiftedRight();
+        IndentedLine indentedLine = IndentedLine.of(indent, "some code line");
+        lines.append(indentedLine);
+        assertLines(lines)
+                .isEqualTo(indentedLine.toString());
     }
 
     @Test
@@ -253,25 +253,26 @@ class CodeLinesTest {
         CodeLine second = CodeLine.of("entry2");
         CodeLine last = CodeLine.of("entry3");
         List<CodeLine> lines = ImmutableList.of(first, second, last);
-        CodeLines code = CodeLines.commaSeparated(lines);
-        assertThat(code).contains(first + ",");
-        assertThat(code).contains(second + ",");
-        assertThat(code).contains(last.content());
-        assertThat(code).doesNotContain(last + ",");
+        CodeWriter code = CodeWriter.commaSeparated(lines);
+        assertLines(code).contains(first + ",");
+        assertLines(code).contains(second + ",");
+        assertLines(code).contains(last.content());
+        assertLines(code).doesNotContain(last + ",");
     }
 
     @Test
     @DisplayName("concatenate all lines of code with correct indent in `toString`")
     void provideToString() {
-        CodeLines jsOutput = newCodeLines("line 1");
+        CodeWriter jsOutput = GivenLines.newCodeLines("line 1");
         jsOutput.increaseDepth();
         jsOutput.append("line 2");
         String output = jsOutput.toString();
         String expected = "line 1" + LINE_SEPARATOR + "  line 2";
-        assertEquals(expected, output);
+        assertThat(output)
+                .isEqualTo(expected);
     }
 
-    private static StringSubject assertThat(CodeLines lines) {
-        return Truth.assertThat(lines.toString());
+    private static StringSubject assertLines(CodeWriter lines) {
+        return assertThat(lines.toString());
     }
 }

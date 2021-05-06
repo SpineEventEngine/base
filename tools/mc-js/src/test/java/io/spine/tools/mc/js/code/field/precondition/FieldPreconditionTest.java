@@ -26,7 +26,7 @@
 
 package io.spine.tools.mc.js.code.field.precondition;
 
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,11 +45,11 @@ class FieldPreconditionTest {
     private static final String FIELD_VALUE = "value";
     private static final String SETTER_FORMAT = "set(%s)";
 
-    private CodeLines jsOutput;
+    private CodeWriter jsOutput;
 
     @BeforeEach
     void setUp() {
-        jsOutput = new CodeLines();
+        jsOutput = new CodeWriter();
     }
 
     @Test

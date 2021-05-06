@@ -26,7 +26,7 @@
 
 package io.spine.tools.mc.js.code.field.parser;
 
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -35,22 +35,22 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 abstract class AbstractPrimitiveParser implements PrimitiveParser {
 
-    private final CodeLines jsOutput;
+    private final CodeWriter jsOutput;
 
     AbstractPrimitiveParser(Builder<?> builder) {
         this.jsOutput = builder.jsOutput;
     }
 
-    CodeLines jsOutput() {
+    CodeWriter jsOutput() {
         return jsOutput;
     }
 
     abstract static class Builder<B extends Builder<B>> implements PrimitiveParser.Builder<B> {
 
-        private CodeLines jsOutput;
+        private CodeWriter jsOutput;
 
         @Override
-        public B setJsOutput(CodeLines jsOutput) {
+        public B setJsOutput(CodeWriter jsOutput) {
             this.jsOutput = checkNotNull(jsOutput);
             return self();
         }

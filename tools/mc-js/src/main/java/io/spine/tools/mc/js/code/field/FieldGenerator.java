@@ -31,7 +31,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.mc.js.code.JsCode;
 import io.spine.tools.mc.js.code.field.parser.FieldParser;
 import io.spine.tools.mc.js.code.field.precondition.FieldPrecondition;
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -143,7 +143,7 @@ public abstract class FieldGenerator extends JsCode {
         private FieldToParse field;
         private FieldPrecondition precondition;
         private FieldParser parser;
-        private CodeLines jsOutput;
+        private CodeWriter jsOutput;
 
         B setField(FieldToParse field) {
             this.field = checkNotNull(field);
@@ -160,7 +160,7 @@ public abstract class FieldGenerator extends JsCode {
             return self();
         }
 
-        B setJsOutput(CodeLines jsOutput) {
+        B setJsOutput(CodeWriter jsOutput) {
             this.jsOutput = checkNotNull(jsOutput);
             return self();
         }

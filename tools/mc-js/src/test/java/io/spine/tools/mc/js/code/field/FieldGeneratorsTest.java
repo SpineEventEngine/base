@@ -28,7 +28,7 @@ package io.spine.tools.mc.js.code.field;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,7 +42,7 @@ import static io.spine.tools.mc.js.code.field.given.Given.repeatedField;
 @DisplayName("FieldGenerators utility should")
 class FieldGeneratorsTest extends UtilityClassTest<FieldGenerators> {
 
-    private CodeLines jsOutput;
+    private CodeWriter jsOutput;
 
     FieldGeneratorsTest() {
         super(FieldGenerators.class);
@@ -55,7 +55,7 @@ class FieldGeneratorsTest extends UtilityClassTest<FieldGenerators> {
 
     @BeforeEach
     void setUp() {
-        jsOutput = new CodeLines();
+        jsOutput = new CodeWriter();
     }
 
     @Test

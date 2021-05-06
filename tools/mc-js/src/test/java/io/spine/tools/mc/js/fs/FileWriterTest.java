@@ -29,7 +29,7 @@ package io.spine.tools.mc.js.fs;
 import io.spine.js.generate.TaskProto;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.fs.FileName;
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,7 +64,7 @@ class FileWriterTest {
     @Test
     @DisplayName("write code lines to new file")
     void writeToFile() throws IOException {
-        CodeLines testLine1 = generateCode(CREATE_TASK_1);
+        CodeWriter testLine1 = generateCode(CREATE_TASK_1);
         writer.write(testLine1);
         assertFileContains(filePath, CREATE_TASK_1);
     }
@@ -72,10 +72,10 @@ class FileWriterTest {
     @Test
     @DisplayName("overwrite existing file")
     void overwriteExisting() throws IOException {
-        CodeLines line1 = generateCode(CREATE_TASK_1);
+        CodeWriter line1 = generateCode(CREATE_TASK_1);
         writer.write(line1);
 
-        CodeLines line2 = generateCode(CREATE_TASK_2);
+        CodeWriter line2 = generateCode(CREATE_TASK_2);
         writer.write(line2);
 
         assertFileNotContains(filePath, CREATE_TASK_1);
@@ -85,18 +85,18 @@ class FileWriterTest {
     @Test
     @DisplayName("append code lines to existing file")
     void appendToFile() throws IOException {
-        CodeLines line1 = generateCode(CREATE_TASK_1);
+        CodeWriter line1 = generateCode(CREATE_TASK_1);
         writer.write(line1);
 
-        CodeLines line2 = generateCode(CREATE_TASK_2);
+        CodeWriter line2 = generateCode(CREATE_TASK_2);
         writer.append(line2);
 
         assertFileContains(filePath, CREATE_TASK_1);
         assertFileContains(filePath, CREATE_TASK_2);
     }
 
-    private static CodeLines generateCode(String codeLine) {
-        CodeLines jsOutput = new CodeLines();
+    private static CodeWriter generateCode(String codeLine) {
+        CodeWriter jsOutput = new CodeWriter();
         jsOutput.append(codeLine);
         return jsOutput;
     }

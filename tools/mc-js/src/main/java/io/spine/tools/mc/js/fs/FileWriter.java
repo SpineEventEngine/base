@@ -32,7 +32,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.fs.FileName;
 import io.spine.tools.js.fs.LibraryFile;
-import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.CodeWriter;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -95,7 +95,7 @@ public final class FileWriter {
      * @throws IllegalStateException
      *         if something went wrong when writing to file
      */
-    public void write(CodeLines jsOutput) {
+    public void write(CodeWriter jsOutput) {
         checkNotNull(jsOutput);
         try {
             Files.write(path,
@@ -115,7 +115,7 @@ public final class FileWriter {
      * @throws IllegalStateException
      *         if something went wrong when writing to file
      */
-    public void append(CodeLines jsOutput) {
+    public void append(CodeWriter jsOutput) {
         checkNotNull(jsOutput);
         try {
             Files.write(path, jsOutput.separated(), Charsets.UTF_8, APPEND);

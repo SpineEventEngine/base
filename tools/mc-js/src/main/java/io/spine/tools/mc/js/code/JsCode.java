@@ -27,20 +27,20 @@
 package io.spine.tools.mc.js.code;
 
 /**
- * The common base for JavaScript code generators which operate on the {@link CodeLines}.
+ * The common base for JavaScript code generators which operate on the {@link CodeWriter}.
  */
 public abstract class JsCode {
 
-    private final CodeLines output;
+    private final CodeWriter output;
 
-    protected JsCode(CodeLines output) {
+    protected JsCode(CodeWriter output) {
         this.output = output;
     }
 
     /**
      * The {@code JsOutput} which accumulates all the generated code.
      */
-    protected CodeLines jsOutput() {
+    protected CodeWriter jsOutput() {
         return output;
     }
 
