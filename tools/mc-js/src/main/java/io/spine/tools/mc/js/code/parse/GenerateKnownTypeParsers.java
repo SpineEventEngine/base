@@ -39,7 +39,7 @@ import io.spine.tools.mc.js.code.GenerationTask;
 import io.spine.tools.mc.js.code.text.CodeLines;
 import io.spine.tools.mc.js.fs.FileWriter;
 import io.spine.tools.mc.js.code.text.Comment;
-import io.spine.tools.mc.js.code.text.Import;
+import io.spine.tools.mc.js.code.imports.Import;
 import io.spine.type.MessageType;
 
 import java.util.Collection;

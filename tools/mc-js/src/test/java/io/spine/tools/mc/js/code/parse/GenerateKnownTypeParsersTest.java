@@ -40,7 +40,7 @@ import io.spine.js.generate.TaskId;
 import io.spine.js.generate.given.GivenProject;
 import io.spine.tools.mc.js.code.text.CodeLines;
 import io.spine.tools.mc.js.code.text.Comment;
-import io.spine.tools.mc.js.code.text.Import;
+import io.spine.tools.mc.js.code.imports.Import;
 import io.spine.option.OptionsProto;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;

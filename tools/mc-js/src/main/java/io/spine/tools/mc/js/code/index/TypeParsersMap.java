@@ -65,8 +65,7 @@ final class TypeParsersMap implements Snippet {
     @Override
     public CodeLines value() {
         List<Map.Entry<String, TypeName>> entries = mapEntries(fileSet);
-        MapExport mapSnippet = MapExport
-                .newBuilder(MAP_NAME)
+        MapExport mapSnippet = MapExport.newBuilder(MAP_NAME)
                 .withEntries(entries)
                 .build();
         return mapSnippet.value();

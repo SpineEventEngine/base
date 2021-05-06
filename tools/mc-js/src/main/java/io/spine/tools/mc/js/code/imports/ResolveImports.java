@@ -28,19 +28,16 @@ package io.spine.tools.mc.js.code.imports;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.proto.FileSet;
+import io.spine.logging.Logging;
+import io.spine.tools.fs.ExternalModule;
 import io.spine.tools.fs.FileReference;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.fs.FileName;
-import io.spine.code.proto.FileSet;
 import io.spine.tools.mc.js.code.GenerationTask;
-import io.spine.logging.Logging;
-import io.spine.tools.fs.ExternalModule;
 import io.spine.tools.mc.js.fs.JsFile;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,7 +50,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.mc.js.code.imports.ImportStatement.hasImport;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static java.util.stream.Collectors.toList;
@@ -68,13 +65,15 @@ import static java.util.stream.Collectors.toList;
  */
 public final class ResolveImports extends GenerationTask implements Logging {
 
+    static final String GOOGLE_PROTOBUF_MODULE = "google-protobuf";
+
     /**
      * The relative path from the test sources directory to the main sources directory.
      *
      * <p>Depends on the structure of Spine Web project.
      */
     private static final String TEST_PROTO_RELATIVE_TO_MAIN = "../main/";
-    private static final String GOOGLE_PROTOBUF_MODULE = "google-protobuf";
+
     private static final Pattern GOOGLE_PROTOBUF_MODULE_PATTERN =
             Pattern.compile(GOOGLE_PROTOBUF_MODULE + FileReference.separator());
 
@@ -134,7 +133,7 @@ public final class ResolveImports extends GenerationTask implements Logging {
                                       java.util.function.Predicate<ImportStatement> importFilter,
                                       ProcessImport processFunction) {
         File file = jsFile.path().toFile();
-        if (ImportStatement.hasImport(line)) {
+        if (hasImport(line)) {
             ImportStatement importStatement = new ImportStatement(line, file);
             boolean matchesFilter = importFilter.test(importStatement);
             if (matchesFilter) {
@@ -216,37 +215,5 @@ public final class ResolveImports extends GenerationTask implements Logging {
         return updatedImport.importedFileExists()
                ? Optional.of(updatedImport)
                : Optional.empty();
-    }
-
-    /**
-     * A predicate to match an import of a file that cannot be found on a file system.
-     */
-    private static final class IsUnresolvedRelativeImport implements Predicate<ImportStatement> {
-
-        @CanIgnoreReturnValue
-        @Override
-        public boolean apply(@Nullable ImportStatement statement) {
-            checkNotNull(statement);
-            FileReference fileReference = statement.path();
-            return fileReference.isRelative() && !statement.importedFileExists();
-        }
-    }
-
-    /**
-     * A predicate to match an import of a standard Protobuf type
-     * ({@code google-protobuf/google/protobuf/..}).
-     */
-    private static final class IsGoogleProtobufImport implements Predicate<ImportStatement> {
-
-        private static final String STANDARD_PREFIX = GOOGLE_PROTOBUF_MODULE + "/google/protobuf/";
-
-        @CanIgnoreReturnValue
-        @Override
-        public boolean apply(@Nullable ImportStatement statement) {
-            checkNotNull(statement);
-            FileReference fileReference = statement.path();
-            return fileReference.value()
-                                .startsWith(STANDARD_PREFIX);
-        }
     }
 }

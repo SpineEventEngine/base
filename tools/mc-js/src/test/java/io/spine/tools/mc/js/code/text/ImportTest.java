@@ -28,6 +28,7 @@ package io.spine.tools.mc.js.code.text;
 
 import com.google.protobuf.Any;
 import io.spine.tools.js.fs.FileName;
+import io.spine.tools.mc.js.code.imports.Import;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

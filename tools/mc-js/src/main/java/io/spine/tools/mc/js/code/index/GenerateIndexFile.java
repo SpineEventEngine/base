@@ -35,7 +35,7 @@ import io.spine.code.proto.TypeSet;
 import io.spine.tools.mc.js.code.GenerationTask;
 import io.spine.tools.mc.js.code.text.CodeLines;
 import io.spine.tools.mc.js.fs.FileWriter;
-import io.spine.tools.mc.js.code.text.Import;
+import io.spine.tools.mc.js.code.imports.Import;
 
 import java.util.Collection;
 import java.util.Set;

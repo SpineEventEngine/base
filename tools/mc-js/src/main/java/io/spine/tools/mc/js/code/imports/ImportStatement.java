@@ -40,8 +40,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class ImportStatement implements Logging {
 
-    private static final String IMPORT_BEGIN_SIGN = "require('";
-    private static final String IMPORT_END_SIGN = "')";
+    private static final String IMPORT_START = "require('";
+    private static final String IMPORT_END = "')";
 
     private final String text;
     private final File originFile;
@@ -55,7 +55,10 @@ public class ImportStatement implements Logging {
      *         the name of the file the import belongs to
      */
     public ImportStatement(String text, File originFile) {
-        checkArgument(hasImport(text), "The text should contain an import statement.");
+        checkArgument(
+                hasImport(text),
+                "An import statement should contain: `%s ... %s`.", IMPORT_START, IMPORT_END
+        );
         checkNotNull(originFile);
         this.text = text;
         this.originFile = originFile;
@@ -64,17 +67,16 @@ public class ImportStatement implements Logging {
     /**
      * Tells whether the line contains an import statement.
      */
-    public static boolean hasImport(String line) {
-        boolean result = line.contains(IMPORT_BEGIN_SIGN);
-        return result;
+    static boolean hasImport(String line) {
+        return line.contains(IMPORT_START);
     }
 
     /**
      * Obtains the file reference used in this import.
      */
     public FileReference path() {
-        int beginIndex = text.indexOf(IMPORT_BEGIN_SIGN) + IMPORT_BEGIN_SIGN.length();
-        int endIndex = text.indexOf(IMPORT_END_SIGN, beginIndex);
+        int beginIndex = text.indexOf(IMPORT_START) + IMPORT_START.length();
+        int endIndex = text.indexOf(IMPORT_END, beginIndex);
         String importPath = text.substring(beginIndex, endIndex);
         return FileReference.of(importPath);
     }
