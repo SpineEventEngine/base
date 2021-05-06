@@ -24,61 +24,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.output;
-
-import java.util.Objects;
-
 /**
- * A line of a JavaScript code.
- *
- * <p>The line is not aware of
- * {@linkplain io.spine.tools.mc.js.code.output.IndentedLine indentation}.
+ * Types for working with file-system operations related to JavaScript code processing.
  */
-public abstract class CodeLine {
+@Internal
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.mc.js.fs;
 
-    /**
-     * Obtains the value of the line.
-     */
-    public abstract String content();
+import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.annotation.Internal;
 
-    /**
-     * Obtains a code line with the specified content.
-     */
-    public static CodeLine of(String content) {
-        return new CodeLine() {
-            @Override
-            public String content() {
-                return content;
-            }
-        };
-    }
-
-    /**
-     * Obtains an empty code line.
-     */
-    public static CodeLine emptyLine() {
-        return of("");
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof CodeLine)) {
-            return false;
-        }
-        CodeLine line = (CodeLine) o;
-        return content().equals(line.content());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(content());
-    }
-
-    @Override
-    public String toString() {
-        return content();
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

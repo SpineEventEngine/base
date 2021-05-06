@@ -27,6 +27,7 @@
 package io.spine.tools.mc.js.code.imports;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.tools.mc.js.fs.JsFile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,10 +40,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.tools.mc.js.code.imports.ResolveImports.processImports;
 import static io.spine.tools.mc.js.code.imports.given.Given.importWithPath;
 
 @DisplayName("JavaScript file should")
-class JsFileTest {
+class ImportProcessingTest {
 
     private static final String RESOLVED_IMPORT_PATH = "resolved";
 
@@ -55,7 +57,7 @@ class JsFileTest {
 
     @Test
     @DisplayName("process imports")
-    void processImports() throws IOException {
+    void prcImports() throws IOException {
         ImportStatement firstImport = importStatement("first.js");
         ImportStatement secondImport = importStatement("second.js");
         String comment = "// Just a comment";
@@ -74,8 +76,7 @@ class JsFileTest {
 
     private void resolveImports() {
         JsFile file = new JsFile(filePath);
-        file.processImports(importStatement -> true,
-                            JsFileTest::processImport);
+        processImports(file, importStatement -> true, ImportProcessingTest::processImport);
     }
 
     private void writeFile(String... lines) throws IOException {

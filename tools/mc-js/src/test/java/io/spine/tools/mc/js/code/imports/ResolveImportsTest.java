@@ -43,7 +43,7 @@ import java.util.List;
 import static com.google.common.truth.Truth.assertThat;
 import static java.util.Arrays.asList;
 
-@DisplayName("ResolveImports task should")
+@DisplayName("`ResolveImports` task should")
 class ResolveImportsTest {
 
     private final Directory generatedProtoDir = GivenProject.mainProtoSources();

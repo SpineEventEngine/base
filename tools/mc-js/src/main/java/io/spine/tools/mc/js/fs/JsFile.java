@@ -24,61 +24,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.output;
+package io.spine.tools.mc.js.fs;
 
-import java.util.Objects;
+import java.io.File;
+import java.nio.file.Path;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * A line of a JavaScript code.
- *
- * <p>The line is not aware of
- * {@linkplain io.spine.tools.mc.js.code.output.IndentedLine indentation}.
+ * A JavaScript file present on a file system.
  */
-public abstract class CodeLine {
+public final class JsFile {
 
-    /**
-     * Obtains the value of the line.
-     */
-    public abstract String content();
+    private static final String EXTENSION = ".js";
 
-    /**
-     * Obtains a code line with the specified content.
-     */
-    public static CodeLine of(String content) {
-        return new CodeLine() {
-            @Override
-            public String content() {
-                return content;
-            }
-        };
+    private final Path path;
+
+    public JsFile(Path path) {
+        String fileName = path.toString();
+        checkArgument(fileName.endsWith(EXTENSION),
+                      "A JavaScript file is expected. Passed: `%s`.", fileName);
+        File file = path.toFile();
+        checkArgument(file.exists(), "The file `%s` does not exist", path);
+        this.path = path;
     }
 
     /**
-     * Obtains an empty code line.
+     * Obtains the path to the file.
      */
-    public static CodeLine emptyLine() {
-        return of("");
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof CodeLine)) {
-            return false;
-        }
-        CodeLine line = (CodeLine) o;
-        return content().equals(line.content());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(content());
-    }
-
-    @Override
-    public String toString() {
-        return content();
+    public Path path() {
+        return path;
     }
 }

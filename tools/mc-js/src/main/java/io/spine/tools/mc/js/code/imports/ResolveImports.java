@@ -27,6 +27,7 @@
 package io.spine.tools.mc.js.code.imports;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Charsets;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
@@ -38,15 +39,24 @@ import io.spine.code.proto.FileSet;
 import io.spine.tools.mc.js.code.GenerationTask;
 import io.spine.logging.Logging;
 import io.spine.tools.fs.ExternalModule;
+import io.spine.tools.mc.js.fs.JsFile;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A task to resolve imports in generated files.
@@ -93,9 +103,55 @@ public final class ResolveImports extends GenerationTask implements Logging {
     }
 
     private void resolveRelativeImports(JsFile file) {
-        file.processImports(new IsUnresolvedRelativeImport(), this::resolveRelativeImports);
+        processImports(file, new IsUnresolvedRelativeImport(), this::resolveRelativeImports);
     }
 
+    /**
+     * Processes import statements in this file.
+     *
+     * <p>Rewrites the file using the updated imports.
+     *
+     * @param importFilter
+     *         the predicate to filter out imports to be processed
+     * @param processFunction
+     *         the function processing an import
+     */
+    public static void processImports(JsFile file,
+                                       java.util.function.Predicate<ImportStatement> importFilter,
+                                       ProcessImport processFunction) {
+        try (Stream<String> lines = Files.lines(file.path())) {
+            List<String> updatedLines = lines
+                    .map(line -> processLine(file, line, importFilter, processFunction))
+                    .collect(toList());
+            rewriteFile(file.path(), updatedLines);
+        } catch (IOException e) {
+            throw illegalStateWithCauseOf(e);
+        }
+    }
+
+    private static String processLine(JsFile jsFile,
+                                      String line,
+                                      java.util.function.Predicate<ImportStatement> importFilter,
+                                      ProcessImport processFunction) {
+        File file = jsFile.path().toFile();
+        if (ImportStatement.hasImport(line)) {
+            ImportStatement importStatement = new ImportStatement(line, file);
+            boolean matchesFilter = importFilter.test(importStatement);
+            if (matchesFilter) {
+                return processFunction.apply(importStatement)
+                                      .text();
+            }
+        }
+        return line;
+    }
+
+    private static void rewriteFile(Path path, Iterable<String> lines) {
+        try {
+            Files.write(path, lines, Charsets.UTF_8, TRUNCATE_EXISTING);
+        } catch (IOException e) {
+            throw illegalStateWithCauseOf(e);
+        }
+    }
     /**
      * Replaces all imports from {@code google-protobuf} module by relative imports.
      * Then, these imports are resolved among external modules.
@@ -110,7 +166,7 @@ public final class ResolveImports extends GenerationTask implements Logging {
      *         the file to process imports in
      */
     private void relativizeStandardProtoImports(JsFile file) {
-        file.processImports(new IsGoogleProtobufImport(), this::relativizeStandardProtoImport);
+        processImports(file, new IsGoogleProtobufImport(), this::relativizeStandardProtoImport);
     }
 
     private ImportStatement relativizeStandardProtoImport(ImportStatement original) {

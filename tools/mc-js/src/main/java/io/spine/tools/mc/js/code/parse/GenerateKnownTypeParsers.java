@@ -37,7 +37,7 @@ import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.tools.mc.js.code.GenerationTask;
 import io.spine.tools.mc.js.code.output.CodeLines;
-import io.spine.tools.mc.js.code.output.FileWriter;
+import io.spine.tools.mc.js.fs.FileWriter;
 import io.spine.tools.mc.js.code.output.snippet.Comment;
 import io.spine.tools.mc.js.code.output.snippet.Import;
 import io.spine.type.MessageType;
@@ -109,7 +109,7 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
             return;
         }
         CodeLines code = codeFor(file);
-        FileWriter writer = FileWriter.createFor(generatedRoot(), file);
+        FileWriter writer = FileWriter.newInstance(generatedRoot(), file);
         writer.append(code);
     }
 

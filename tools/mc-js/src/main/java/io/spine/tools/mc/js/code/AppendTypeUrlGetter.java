@@ -35,7 +35,7 @@ import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.tools.mc.js.code.output.CodeLine;
 import io.spine.tools.mc.js.code.output.CodeLines;
-import io.spine.tools.mc.js.code.output.FileWriter;
+import io.spine.tools.mc.js.fs.FileWriter;
 import io.spine.tools.mc.js.code.output.snippet.Comment;
 import io.spine.tools.mc.js.code.output.snippet.Method;
 import io.spine.tools.mc.js.code.output.snippet.Return;
@@ -66,7 +66,7 @@ public class AppendTypeUrlGetter extends GenerationTask {
 
     private void generateFor(FileDescriptor file) {
         CodeLines typeUrlMethods = typeUrlMethods(file);
-        FileWriter writer = FileWriter.createFor(generatedRoot(), file);
+        FileWriter writer = FileWriter.newInstance(generatedRoot(), file);
         writer.append(typeUrlMethods);
     }
 

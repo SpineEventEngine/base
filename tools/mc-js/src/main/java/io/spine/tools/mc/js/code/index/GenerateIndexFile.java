@@ -34,7 +34,7 @@ import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.tools.mc.js.code.GenerationTask;
 import io.spine.tools.mc.js.code.output.CodeLines;
-import io.spine.tools.mc.js.code.output.FileWriter;
+import io.spine.tools.mc.js.fs.FileWriter;
 import io.spine.tools.mc.js.code.output.snippet.Import;
 
 import java.util.Collection;
@@ -64,7 +64,7 @@ public final class GenerateIndexFile extends GenerationTask {
     @Override
     protected void generateFor(FileSet fileSet) {
         CodeLines code = codeFor(fileSet);
-        FileWriter writer = FileWriter.createFor(generatedRoot(), INDEX);
+        FileWriter writer = FileWriter.newInstance(generatedRoot(), INDEX);
         writer.write(code);
     }
 

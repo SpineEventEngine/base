@@ -64,7 +64,7 @@ public class ImportStatement implements Logging {
     /**
      * Tells whether the line contains an import statement.
      */
-    static boolean hasImport(String line) {
+    public static boolean hasImport(String line) {
         boolean result = line.contains(IMPORT_BEGIN_SIGN);
         return result;
     }
@@ -90,7 +90,7 @@ public class ImportStatement implements Logging {
     /**
      * Obtains the text of the import.
      */
-    String text() {
+    public String text() {
         return text;
     }
 

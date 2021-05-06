@@ -24,11 +24,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.output;
+package io.spine.tools.mc.js.fs;
 
+import io.spine.js.generate.TaskProto;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.fs.FileName;
-import io.spine.js.generate.TaskProto;
+import io.spine.tools.mc.js.code.output.CodeLines;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,6 @@ import java.nio.file.Path;
 
 import static io.spine.js.generate.given.FileWriters.assertFileContains;
 import static io.spine.js.generate.given.FileWriters.assertFileNotContains;
-import static io.spine.tools.mc.js.code.output.FileWriter.createFor;
 
 @DisplayName("FileWriter should")
 class FileWriterTest {
@@ -56,7 +56,7 @@ class FileWriterTest {
     @BeforeEach
     void setUp(@TempDir Path tempDir) throws IOException {
         Directory directory = Directory.at(tempDir);
-        writer = createFor(directory, TASKS_JS);
+        writer = FileWriter.newInstance(directory, TASKS_JS);
         filePath = directory.resolve(TASKS_JS);
         Files.createDirectories(filePath.getParent());
     }

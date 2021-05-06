@@ -24,15 +24,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.output;
+package io.spine.tools.mc.js.fs;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.fs.FileName;
 import io.spine.tools.js.fs.LibraryFile;
+import io.spine.tools.mc.js.code.output.CodeLines;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -60,8 +60,10 @@ public final class FileWriter {
         this.path = path;
     }
 
-    @VisibleForTesting
-    static FileWriter createFor(Directory directory, FileName fileName) {
+    /**
+     * Creates a new writer for the file with the specified location and the name.
+     */
+    public static FileWriter newInstance(Directory directory, FileName fileName) {
         Path filePath = directory.resolve(fileName);
         return new FileWriter(filePath);
     }
@@ -70,17 +72,17 @@ public final class FileWriter {
      * Creates a new instance which will operate on the specified library file located in
      * the specified directory.
      */
-    public static FileWriter createFor(Directory directory, LibraryFile libraryFile) {
-        return createFor(directory, libraryFile.fileName());
+    public static FileWriter newInstance(Directory directory, LibraryFile libraryFile) {
+        return newInstance(directory, libraryFile.fileName());
     }
 
     /**
      * Creates a new instance which will operate on the file pointed by the file descriptor
      * and located in the specified directory.
      */
-    public static FileWriter createFor(Directory directory, FileDescriptor file) {
+    public static FileWriter newInstance(Directory directory, FileDescriptor file) {
         FileName fileName = FileName.from(file);
-        return createFor(directory, fileName);
+        return newInstance(directory, fileName);
     }
 
     /**
