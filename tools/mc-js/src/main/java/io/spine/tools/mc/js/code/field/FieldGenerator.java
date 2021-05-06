@@ -37,11 +37,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
 /**
- * The common base for classes generating the code necessary to parse a specific Protobuf field
- * from JSON.
+ * The common base for classes generating the code necessary to parse a specific
+ * Protobuf field from JSON.
  *
- * <p>This class generates the JS code common for all kinds of field generators including inserting
- * a {@linkplain FieldPrecondition field precondition} and calling a
+ * <p>This class generates the JS code common for all kinds of field generators including
+ * inserting a {@linkplain FieldPrecondition field precondition} and calling a
  * {@linkplain FieldParser field parser}.
  */
 public abstract class FieldGenerator extends JsCodeGenerator {
@@ -78,11 +78,11 @@ public abstract class FieldGenerator extends JsCodeGenerator {
     /**
      * Generates the code necessary to merge the field value with the specified JS value.
      *
-     * <p>"Merge" implies either setting the field value in case of singular field or adding the
-     * value to the {@code repeated}/{@code map} field.
+     * <p>"Merge" implies either setting the field value in case of singular field or
+     * adding the value to the {@code repeated}/{@code map} field.
      *
-     * <p>The class descendants have to specify the desired action via overriding the
-     * {@link #mergeFormat()} method.
+     * <p>The class descendants have to specify the desired action via
+     * overriding the {@link #mergeFormat()} method.
      *
      * @param value
      *         the name of the variable containing the value to set the field to
@@ -122,8 +122,8 @@ public abstract class FieldGenerator extends JsCodeGenerator {
     }
 
     /**
-     * Returns the format of the set/add action which can be used to merge the field value from
-     * the variable.
+     * Returns the format of the set/add action which can be used to merge
+     * the field value from the variable.
      *
      * <p>The format should have exactly one placeholder - {@code %s} - where the variable name
      * will be inserted.

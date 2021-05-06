@@ -35,16 +35,6 @@ import io.spine.tools.mc.js.code.field.parser.FieldParser;
  *
  * <p>The generator expects a plain JS object as an input, treating its properties as the Protobuf
  * map entries.
- *
- * @implNote
- * This class holds the additional {@link #keyParser} which parses the map key from the JS object
- * attribute.
- *
- * <p>This is necessary as all proto {@code map} keys are converted to {@code string}s in JSON and
- * thus the object properties will also be of {@code string} type.
- *
- * <p>The {@link #precondition} and {@link #parser} from the superclass are used to process the
- * {@code map} value before adding it to the field.
  */
 final class MapFieldGenerator extends FieldGenerator {
 
@@ -55,12 +45,23 @@ final class MapFieldGenerator extends FieldGenerator {
     static final String ATTRIBUTE = "attribute";
 
     /**
-     * The variable which contains the parsed {@code map} key by which we can add the value to the
-     * field.
+     * The variable which contains the parsed {@code map} key by which we can add
+     * the value to the field.
      */
     @VisibleForTesting
     static final String MAP_KEY = "mapKey";
 
+    /**
+     * Additional parser which parses the map key from the JS object attribute.
+     *
+     * <p>This is necessary as all proto {@code map} keys are converted to {@code string}s in
+     * JSON and thus the object properties will also be of {@code string} type.
+     *
+     * <p>The {@code precondition} and {@code parser} from the superclass are used to process
+     * the {@code map} value before adding it to the field.
+     *
+     * @see #generate()
+     */
     private final FieldParser keyParser;
 
     private MapFieldGenerator(Builder builder) {
