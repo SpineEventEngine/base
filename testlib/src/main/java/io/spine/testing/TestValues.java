@@ -82,17 +82,19 @@ public final class TestValues {
     }
 
     /**
-     * Returns {@code null}.
+     * Returns {@code null} always.
      *
      * <p>Use it when it is needed to pass {@code null} to a method in tests so that no
      * warnings suppression is needed.
      *
-     * @apiNote The method doesn't take {@code Class<T>} to keep
-     *         the test API small and convenient
+     * @apiNote The method doesn't take {@code Class<T>} for the sake of brevity.
      */
-    @SuppressWarnings("TypeParameterUnusedInFormals" /* See api note. */)
+    @SuppressWarnings({
+            "TypeParameterUnusedInFormals" /* See api note. */,
+            "ConstantConditions", "ReturnOfNull" /* Returning of null is what we want here. */,
+            "RedundantSuppression" /* To handle the IDEA issue with `ReturnOfNull` suppression. */
+    })
     public static <T> T nullRef() {
-        T nullRef = null;
-        return nullRef;
+        return null;
     }
 }
