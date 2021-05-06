@@ -88,7 +88,7 @@ public final class IndentLevel {
      *         the indent per a level
      */
     public Indent totalIndent(Indent indentPerLevel) {
-        int totalSize = indentPerLevel.getSize() * value;
+        int totalSize = indentPerLevel.size() * value;
         return Indent.of(totalSize);
     }
 

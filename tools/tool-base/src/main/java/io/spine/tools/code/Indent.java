@@ -77,7 +77,7 @@ public final class Indent extends StringTypeValue {
     /**
      * Obtains the size of the indentation.
      */
-    public int getSize() {
+    public int size() {
         return size;
     }
 }

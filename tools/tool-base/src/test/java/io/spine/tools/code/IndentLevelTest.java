@@ -26,8 +26,6 @@
 
 package io.spine.tools.code;
 
-import io.spine.tools.code.Indent;
-import io.spine.tools.code.IndentLevel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -74,6 +72,6 @@ class IndentLevelTest {
         Indent indent = Indent.of4();
         IndentLevel level = IndentLevel.of(2);
         Indent totalIndent = level.totalIndent(indent);
-        assertEquals(8, totalIndent.getSize());
+        assertEquals(8, totalIndent.size());
     }
 }
