@@ -70,14 +70,14 @@ public final class IndentLevel {
     /**
      * Obtains the indent level by incrementing this value.
      */
-    public IndentLevel incremented() {
+    public IndentLevel increment() {
         return of(value + 1);
     }
 
     /**
      * Obtains the indent level by decrementing this value.
      */
-    public IndentLevel decremented() {
+    public IndentLevel decrement() {
         return of(value - 1);
     }
 

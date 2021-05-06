@@ -285,14 +285,14 @@ public final class CodeLines {
      * Manually increases the current indent level.
      */
     public void increaseDepth() {
-        currentLevel = currentLevel.incremented();
+        currentLevel = currentLevel.increment();
     }
 
     /**
      * Manually decreases the current indent level.
      */
     public void decreaseDepth() {
-        currentLevel = currentLevel.decremented();
+        currentLevel = currentLevel.decrement();
     }
 
     /**

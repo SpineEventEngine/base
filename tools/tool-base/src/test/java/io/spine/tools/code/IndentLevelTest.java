@@ -46,7 +46,7 @@ class IndentLevelTest {
     @DisplayName("provide incremented value")
     void provideIncremented() {
         IndentLevel zero = IndentLevel.zero();
-        IndentLevel incremented = zero.incremented();
+        IndentLevel incremented = zero.increment();
         assertEquals(0, zero.value());
         assertEquals(1, incremented.value());
     }
@@ -55,7 +55,7 @@ class IndentLevelTest {
     @DisplayName("provide decremented value")
     void provideDecremented() {
         IndentLevel five = IndentLevel.of(5);
-        IndentLevel decremented = five.decremented();
+        IndentLevel decremented = five.decrement();
         assertEquals(5, five.value());
         assertEquals(4, decremented.value());
     }
@@ -63,7 +63,7 @@ class IndentLevelTest {
     @Test
     @DisplayName("not be decremented to a negative value")
     void notAllowDecrementOfZero() {
-        assertIllegalArgument(() -> zero().decremented());
+        assertIllegalArgument(() -> zero().decrement());
     }
 
     @Test
