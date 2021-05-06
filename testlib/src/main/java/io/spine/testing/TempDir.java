@@ -73,8 +73,10 @@ public final class TempDir {
         File baseDir = new File(System.getProperty("java.io.tmpdir"));
         Path directory;
         try {
-             directory = Files.createTempDirectory(baseDir.toPath(), prefix, attrs);
-             return directory.toFile();
+            directory = Files.createTempDirectory(baseDir.toPath(), prefix, attrs);
+            File asFile = directory.toFile();
+            asFile.deleteOnExit();
+            return asFile;
         } catch (IOException e) {
             throw newIllegalStateException(e, "Unable to create temp dir under `%s`.", baseDir);
         }
