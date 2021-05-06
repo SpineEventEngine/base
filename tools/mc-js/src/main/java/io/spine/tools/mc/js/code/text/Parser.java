@@ -178,9 +178,9 @@ public final class Parser implements Snippet {
         output.exitBlock();
     }
 
-    private static VariableDeclaration initializedMessageInstance(Descriptor message) {
+    private static Let initializedMessageInstance(Descriptor message) {
         TypeName typeName = TypeName.from(message);
-        return VariableDeclaration.newInstance(MESSAGE, typeName);
+        return Let.newInstance(MESSAGE, typeName);
     }
 
     /**

@@ -26,7 +26,7 @@
 
 package io.spine.tools.mc.js.code.field.parser;
 
-import io.spine.tools.mc.js.code.text.VariableDeclaration;
+import io.spine.tools.mc.js.code.text.Let;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -49,9 +49,9 @@ final class FloatParser extends AbstractPrimitiveParser {
         jsOutput().append(parsedVariable(variable, value));
     }
 
-    private static VariableDeclaration parsedVariable(String name, String valueToParse) {
+    private static Let parsedVariable(String name, String valueToParse) {
         String initializer = "parseFloat(" + valueToParse + ')';
-        return VariableDeclaration.initialized(name, initializer);
+        return Let.withValue(name, initializer);
     }
 
     static Builder newBuilder() {

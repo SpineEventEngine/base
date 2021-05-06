@@ -34,12 +34,12 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("VariableDeclaration should")
-class VariableDeclarationTest {
+class LetTest {
 
     @Test
     @DisplayName("be initialized by value")
     void initializedByValue() {
-        VariableDeclaration line = VariableDeclaration.initialized("someVariable", "someValue");
+        Let line = Let.withValue("someVariable", "someValue");
         assertEquals("let someVariable = someValue;", line.content());
     }
 
@@ -47,7 +47,7 @@ class VariableDeclarationTest {
     @DisplayName("be initialized by new instance")
     void initializedByNewInstance() {
         TypeName type = TypeName.from(Any.getDescriptor());
-        VariableDeclaration line = VariableDeclaration.newInstance("anyValue", type);
+        Let line = Let.newInstance("anyValue", type);
         assertEquals("let anyValue = new proto.google.protobuf.Any();", line.content());
     }
 }

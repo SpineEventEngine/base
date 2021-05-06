@@ -26,12 +26,13 @@
 
 package io.spine.tools.mc.js.code.index;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
-import io.spine.tools.js.code.TypeName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
-import io.spine.tools.mc.js.code.Snippet;
+import io.spine.tools.js.code.TypeName;
 import io.spine.tools.mc.js.code.CodeLines;
+import io.spine.tools.mc.js.code.Snippet;
 import io.spine.tools.mc.js.code.text.MapExport;
 import io.spine.type.Type;
 import io.spine.type.TypeUrl;
@@ -40,7 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static java.util.stream.Collectors.toList;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 
 /**
  * The code of the known types {@code Map}.
@@ -72,19 +73,20 @@ final class KnownTypes implements Snippet {
     @Override
     public CodeLines value() {
         List<Map.Entry<String, TypeName>> entries = mapEntries(fileSet);
-        MapExport mapSnippet = MapExport
-                .newBuilder(MAP_NAME)
+        MapExport mapSnippet = MapExport.newBuilder(MAP_NAME)
                 .withEntries(entries)
                 .build();
         return mapSnippet.value();
     }
 
-    private static List<Map.Entry<String, TypeName>> mapEntries(FileSet fileSet) {
-        Set<Type<?, ?>> types = TypeSet.from(fileSet)
-                                       .allTypes();
-        List<Map.Entry<String, TypeName>> entries = types.stream()
-                                                         .map(KnownTypes::mapEntry)
-                                                         .collect(toList());
+    private static ImmutableList<Map.Entry<String, TypeName>> mapEntries(FileSet fileSet) {
+        Set<Type<?, ?>> allTypes =
+                TypeSet.from(fileSet)
+                       .allTypes();
+        ImmutableList<Map.Entry<String, TypeName>> entries =
+                allTypes.stream()
+                        .map(KnownTypes::mapEntry)
+                        .collect(toImmutableList());
         return entries;
     }
 

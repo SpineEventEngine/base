@@ -29,7 +29,7 @@ package io.spine.tools.mc.js.code.field.parser;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.mc.js.code.CodeLines;
-import io.spine.tools.mc.js.code.text.VariableDeclaration;
+import io.spine.tools.mc.js.code.text.Let;
 import io.spine.tools.mc.js.code.text.Parser;
 import io.spine.type.TypeUrl;
 
@@ -70,11 +70,11 @@ final class MessageFieldParser implements FieldParser {
         jsOutput.append(parsedVariable(variable, value));
     }
 
-    private VariableDeclaration parsedVariable(String name, String valueToParse) {
+    private Let parsedVariable(String name, String valueToParse) {
         TypeUrl typeUrl = TypeUrl.from(message);
         String obtainParser = format("%s.%s('%s')",
                                      TYPE_PARSERS_IMPORT_NAME, PARSER_BY_URL_METHOD, typeUrl);
         String parserCall = Parser.parseMethodCall(obtainParser, valueToParse);
-        return VariableDeclaration.initialized(name, parserCall);
+        return Let.withValue(name, parserCall);
     }
 }

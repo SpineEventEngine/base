@@ -35,19 +35,19 @@ import static java.lang.String.format;
 /**
  * A declaration of a variable.
  */
-public class VariableDeclaration extends CodeLine {
+public class Let extends CodeLine {
 
     /**
-     * The modifier which is used to create variables.
+     * The key word used to create variables.
      *
      * <p>Currently is set to ES6 {@code let}.
      */
-    private static final String VARIABLE_MODIFIER = "let";
+    private static final String KEY_WORD = "let";
 
     private final String name;
     private final String initializer;
 
-    private VariableDeclaration(String name, String initializer) {
+    private Let(String name, String initializer) {
         super();
         this.name = name;
         this.initializer = initializer;
@@ -55,26 +55,26 @@ public class VariableDeclaration extends CodeLine {
 
     @Override
     public String content() {
-        String result = format("%s %s = %s;", VARIABLE_MODIFIER, name, initializer);
+        String result = format("%s %s = %s;", KEY_WORD, name, initializer);
         return result;
     }
 
     /**
-     * Obtains the declaration with the specified name, which is initialized to the value.
+     * Creates a declaration with the specified name, initialized with the passed the value.
      */
-    public static VariableDeclaration initialized(String name, String value) {
+    public static Let withValue(String name, String value) {
         checkNotNull(name);
         checkNotNull(value);
-        return new VariableDeclaration(name, value);
+        return new Let(name, value);
     }
 
     /**
-     * Obtains the declaration of a variable initialized by instantiation of the type.
+     * Creates a declaration of a variable initialized by instantiation of the type.
      */
-    public static VariableDeclaration newInstance(String name, TypeName type) {
+    public static Let newInstance(String name, TypeName type) {
         checkNotNull(name);
         checkNotNull(type);
         String initializer = "new " + type + "()";
-        return initialized(name, initializer);
+        return withValue(name, initializer);
     }
 }

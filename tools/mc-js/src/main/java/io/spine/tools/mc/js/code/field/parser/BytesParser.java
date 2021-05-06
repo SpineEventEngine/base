@@ -28,7 +28,7 @@ package io.spine.tools.mc.js.code.field.parser;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.tools.mc.js.code.imports.Import;
-import io.spine.tools.mc.js.code.text.VariableDeclaration;
+import io.spine.tools.mc.js.code.text.Let;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -69,9 +69,9 @@ final class BytesParser extends AbstractPrimitiveParser {
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // Necessary duplication with own test.
-    private static VariableDeclaration parsedVariable(String name, String valueToParse) {
+    private static Let parsedVariable(String name, String valueToParse) {
         String initializer = BASE64_VAR + ".toByteArray(" + valueToParse + ')';
-        return VariableDeclaration.initialized(name, initializer);
+        return Let.withValue(name, initializer);
     }
 
     static Builder newBuilder() {

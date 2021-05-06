@@ -26,7 +26,7 @@
 
 package io.spine.tools.mc.js.code.field.parser;
 
-import io.spine.tools.mc.js.code.text.VariableDeclaration;
+import io.spine.tools.mc.js.code.text.Let;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -48,7 +48,7 @@ final class IdentityParser extends AbstractPrimitiveParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        jsOutput().append(VariableDeclaration.initialized(variable, value));
+        jsOutput().append(Let.withValue(variable, value));
     }
 
     static Builder newBuilder() {

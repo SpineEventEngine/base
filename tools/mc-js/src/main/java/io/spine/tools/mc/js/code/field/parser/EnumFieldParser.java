@@ -30,7 +30,7 @@ import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.js.code.TypeName;
 import io.spine.tools.mc.js.code.CodeLines;
-import io.spine.tools.mc.js.code.text.VariableDeclaration;
+import io.spine.tools.mc.js.code.text.Let;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -71,8 +71,8 @@ final class EnumFieldParser implements FieldParser {
         jsOutput.append(parsedValue(variable, value));
     }
 
-    private VariableDeclaration parsedValue(String name, String valueToParse) {
+    private Let parsedValue(String name, String valueToParse) {
         String initializer = typeName.value() + '[' + valueToParse + ']';
-        return VariableDeclaration.initialized(name, initializer);
+        return Let.withValue(name, initializer);
     }
 }
