@@ -62,6 +62,8 @@ import static java.nio.file.Files.isRegularFile;
  */
 public final class Files2 {
 
+    static final String DOES_NOT_EXIST = "The file `%s` does not exist.";
+
     /** Prevents instantiation of this utility class. */
     private Files2() {
     }
@@ -160,10 +162,25 @@ public final class Files2 {
      *         if the file is missing
      */
     @CanIgnoreReturnValue
-    public static File checkExists(File file) {
+    public static File checkExists(File file) throws IllegalStateException {
         checkNotNull(file);
-        checkState(file.exists(), "The file `%s` does not exist.", file);
+        checkState(file.exists(), DOES_NOT_EXIST, file);
         return file;
+    }
+
+    /**
+     * Ensures that the file with the passed path exists.
+     *
+     * @return the passed path if it exists
+     * @throws IllegalArgumentException
+     *         if the file does not exist
+     */
+    @CanIgnoreReturnValue
+    public static Path checkExists(Path path) throws IllegalArgumentException {
+        checkNotNull(path);
+        File file = path.toFile();
+        checkArgument(file.exists(), DOES_NOT_EXIST, file);
+        return path;
     }
 
     /**

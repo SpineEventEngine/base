@@ -26,27 +26,36 @@
 
 package io.spine.tools.mc.js.fs;
 
-import java.io.File;
+import com.google.common.annotations.VisibleForTesting;
+
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.io.Files2.checkExists;
 
 /**
  * A JavaScript file present on a file system.
  */
 public final class JsFile {
 
-    private static final String EXTENSION = ".js";
+    @VisibleForTesting
+    static final String EXTENSION = ".js";
 
     private final Path path;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param path
+     *         the path to existing JavaScript file
+     */
     public JsFile(Path path) {
+        checkNotNull(path);
         String fileName = path.toString();
         checkArgument(fileName.endsWith(EXTENSION),
                       "A JavaScript file is expected. Passed: `%s`.", fileName);
-        File file = path.toFile();
-        checkArgument(file.exists(), "The file `%s` does not exist", path);
-        this.path = path;
+        this.path = checkExists(path);
     }
 
     /**
