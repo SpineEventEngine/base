@@ -24,23 +24,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.field.parser.primitive;
+package io.spine.tools.mc.js.code.field.parser;
 
+import com.google.common.annotations.VisibleForTesting;
+import io.spine.tools.mc.js.code.output.snippet.Import;
 import io.spine.tools.mc.js.code.output.snippet.VariableDeclaration;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The generator of the code for parsing proto value from the JSON to itself.
+ * The generator of the code parsing {@code bytes} value from its JSON representation.
  *
- * <p>The number of proto types like {@code int32}, {@code string}, {@code bool} and others are
- * represented in JSON in the same way as in the JS.
+ * <p>The JSON representation of the {@code bytes} value is the base-64 encoded {@code string}.
  *
- * <p>The {@code IdentityParser} "parses" them by just assigning the variable to the passed value.
+ * <p>The parser thus imports the "base64" lib and decodes the value.
  */
-final class IdentityParser extends AbstractPrimitiveParser {
+final class BytesParser extends AbstractPrimitiveParser {
 
-    private IdentityParser(Builder builder) {
+    /**
+     * Base-64 JS lib name to import.
+     *
+     * @see <a href="https://www.npmjs.com/package/base64-js">The lib page</a>
+     */
+    @VisibleForTesting
+    static final String BASE64_LIB = "base64-js";
+
+    /**
+     * The name of the "base64-js" import.
+     */
+    @VisibleForTesting
+    static final String BASE64_VAR = "base64";
+
+    private BytesParser(Builder builder) {
         super(builder);
     }
 
@@ -48,7 +63,15 @@ final class IdentityParser extends AbstractPrimitiveParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        jsOutput().append(VariableDeclaration.initialized(variable, value));
+        Import base64Import = Import.library(BASE64_LIB);
+        jsOutput().append(base64Import.namedAs(BASE64_VAR));
+        jsOutput().append(parsedVariable(variable, value));
+    }
+
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Necessary duplication with own test.
+    private static VariableDeclaration parsedVariable(String name, String valueToParse) {
+        String initializer = BASE64_VAR + ".toByteArray(" + valueToParse + ')';
+        return VariableDeclaration.initialized(name, initializer);
     }
 
     static Builder newBuilder() {
@@ -64,7 +87,7 @@ final class IdentityParser extends AbstractPrimitiveParser {
 
         @Override
         public PrimitiveParser build() {
-            return new IdentityParser(this);
+            return new BytesParser(this);
         }
     }
 }

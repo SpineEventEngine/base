@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.field.parser.primitive;
+package io.spine.tools.mc.js.code.field.parser;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -54,7 +54,7 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.UINT64;
 /**
  * The helper class which creates a {@link PrimitiveParser} based on the passed field type.
  */
-public final class PrimitiveParsers {
+final class PrimitiveParsers {
 
     /**
      * The global map which maps the field {@linkplain FieldDescriptor#getType() type} to the

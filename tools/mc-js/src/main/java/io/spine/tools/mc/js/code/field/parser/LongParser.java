@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.field.parser.primitive;
+package io.spine.tools.mc.js.code.field.parser;
 
 import io.spine.tools.mc.js.code.output.snippet.VariableDeclaration;
 

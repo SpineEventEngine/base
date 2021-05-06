@@ -54,7 +54,6 @@ import static java.lang.String.format;
  * <p>Code provided by the class is in {@code ES5} standard
  * since Protobuf compiler generates JavaScript in {@code ES5}.
  */
-@SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different context. */)
 public final class GeneratedParser implements Snippet {
 
     /**

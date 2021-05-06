@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.field.parser.primitive;
+package io.spine.tools.mc.js.code.field.parser;
 
 import io.spine.tools.mc.js.code.output.CodeLines;
 
@@ -38,7 +38,7 @@ import io.spine.tools.mc.js.code.output.CodeLines;
  * method is not returning any generated code.
  * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#json">Protobuf JSON Mapping</a>
  */
-public interface PrimitiveParser {
+interface PrimitiveParser {
 
     /**
      * Generates the code required to parse the primitive value and assign it to the variable.

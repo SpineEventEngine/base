@@ -24,28 +24,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.field.parser.primitive;
+package io.spine.tools.mc.js.code.field.parser;
 
 import io.spine.tools.mc.js.code.output.CodeLines;
-import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.google.common.truth.Truth.assertThat;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.BYTES;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.FLOAT;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT32;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT64;
+import static io.spine.js.generate.given.Generators.assertContains;
+import static io.spine.tools.mc.js.code.field.parser.BytesParser.BASE64_LIB;
+import static io.spine.tools.mc.js.code.field.parser.BytesParser.BASE64_VAR;
 
-@DisplayName("PrimitiveParsers utility should")
-class PrimitiveParsersTest extends UtilityClassTest<PrimitiveParsers> {
+@SuppressWarnings("DuplicateStringLiteralInspection")
+// Generated code duplication needed to check main class.
+@DisplayName("PrimitiveParser should")
+class PrimitiveParserTest {
+
+    private static final String VALUE = "value";
+    private static final String VARIABLE = "variable";
 
     private CodeLines jsOutput;
-
-    PrimitiveParsersTest() {
-        super(PrimitiveParsers.class);
-    }
 
     @BeforeEach
     void setUp() {
@@ -53,30 +55,40 @@ class PrimitiveParsersTest extends UtilityClassTest<PrimitiveParsers> {
     }
 
     @Test
-    @DisplayName("create identity parser")
-    void createIdentityParser() {
+    @DisplayName("generate code for parsing value to itself")
+    void parseIdentically() {
         PrimitiveParser parser = PrimitiveParsers.createFor(INT32, jsOutput);
-        assertThat(parser).isInstanceOf(IdentityParser.class);
+        parser.parseIntoVariable(VALUE, VARIABLE);
+        String parse = "let " + VARIABLE + " = " + VALUE;
+        assertContains(jsOutput, parse);
     }
 
     @Test
-    @DisplayName("create parser for long value")
-    void createLongParser() {
+    @DisplayName("generate code for parsing long value")
+    void parseLong() {
         PrimitiveParser parser = PrimitiveParsers.createFor(INT64, jsOutput);
-        assertThat(parser).isInstanceOf(LongParser.class);
+        parser.parseIntoVariable(VALUE, VARIABLE);
+        String parse = "let " + VARIABLE + " = parseInt(" + VALUE + ')';
+        assertContains(jsOutput, parse);
     }
 
     @Test
-    @DisplayName("create parser for float value")
-    void createFloatParser() {
+    @DisplayName("generate code for parsing float value")
+    void parseFloat() {
         PrimitiveParser parser = PrimitiveParsers.createFor(FLOAT, jsOutput);
-        assertThat(parser).isInstanceOf(FloatParser.class);
+        parser.parseIntoVariable(VALUE, VARIABLE);
+        String parse = "let " + VARIABLE + " = parseFloat(" + VALUE + ')';
+        assertContains(jsOutput, parse);
     }
 
     @Test
-    @DisplayName("create parser for bytes value")
-    void createBytesParser() {
+    @DisplayName("generate code for parsing bytes value")
+    void parseBytes() {
         PrimitiveParser parser = PrimitiveParsers.createFor(BYTES, jsOutput);
-        assertThat(parser).isInstanceOf(BytesParser.class);
+        parser.parseIntoVariable(VALUE, VARIABLE);
+        String base64Import = "let " + BASE64_VAR + " = require('" + BASE64_LIB + "');";
+        assertContains(jsOutput, base64Import);
+        String parse = "let " + VARIABLE + " = " + BASE64_VAR + ".toByteArray(" + VALUE + ')';
+        assertContains(jsOutput, parse);
     }
 }

@@ -58,7 +58,7 @@ public abstract class FieldGenerator extends JsCodeGenerator {
     private final FieldPrecondition precondition;
     private final FieldParser parser;
 
-    FieldGenerator(Builder builder) {
+    FieldGenerator(Builder<?> builder) {
         super(builder.jsOutput);
         this.field = builder.field;
         this.precondition = builder.precondition;
