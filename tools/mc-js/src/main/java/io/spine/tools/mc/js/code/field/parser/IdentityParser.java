@@ -26,7 +26,7 @@
 
 package io.spine.tools.mc.js.code.field.parser;
 
-import io.spine.tools.mc.js.code.output.snippet.VariableDeclaration;
+import io.spine.tools.mc.js.code.text.VariableDeclaration;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

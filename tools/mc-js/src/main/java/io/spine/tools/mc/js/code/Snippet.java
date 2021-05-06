@@ -26,7 +26,7 @@
 
 package io.spine.tools.mc.js.code;
 
-import io.spine.tools.mc.js.code.output.CodeLines;
+import io.spine.tools.mc.js.code.text.CodeLines;
 
 /**
  * A snippet of the code.
@@ -36,7 +36,7 @@ public interface Snippet {
     /**
      * Obtains code lines representing this snippet.
      *
-     * @return always returns a new {@link io.spine.tools.mc.js.code.output.CodeLines}
+     * @return always returns a new {@link io.spine.tools.mc.js.code.text.CodeLines}
      */
     CodeLines value();
 }

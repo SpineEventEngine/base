@@ -33,15 +33,15 @@ import io.spine.tools.js.fs.FileName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.tools.mc.js.code.GenerationTask;
-import io.spine.tools.mc.js.code.output.CodeLines;
+import io.spine.tools.mc.js.code.text.CodeLines;
 import io.spine.tools.mc.js.fs.FileWriter;
-import io.spine.tools.mc.js.code.output.snippet.Import;
+import io.spine.tools.mc.js.code.text.Import;
 
 import java.util.Collection;
 import java.util.Set;
 
 import static io.spine.tools.js.fs.LibraryFile.INDEX;
-import static io.spine.tools.mc.js.code.output.CodeLine.emptyLine;
+import static io.spine.tools.mc.js.code.text.CodeLine.emptyLine;
 import static java.util.stream.Collectors.toSet;
 
 /**

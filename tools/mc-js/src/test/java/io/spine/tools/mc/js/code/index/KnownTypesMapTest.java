@@ -32,7 +32,7 @@ import com.google.protobuf.NullValue;
 import com.google.protobuf.StringValue;
 import io.spine.tools.js.code.TypeName;
 import io.spine.code.proto.FileSet;
-import io.spine.tools.mc.js.code.output.CodeLines;
+import io.spine.tools.mc.js.code.text.CodeLines;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

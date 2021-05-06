@@ -36,16 +36,16 @@ import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.tools.mc.js.code.GenerationTask;
-import io.spine.tools.mc.js.code.output.CodeLines;
+import io.spine.tools.mc.js.code.text.CodeLines;
 import io.spine.tools.mc.js.fs.FileWriter;
-import io.spine.tools.mc.js.code.output.snippet.Comment;
-import io.spine.tools.mc.js.code.output.snippet.Import;
+import io.spine.tools.mc.js.code.text.Comment;
+import io.spine.tools.mc.js.code.text.Import;
 import io.spine.type.MessageType;
 
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.mc.js.code.output.CodeLine.emptyLine;
+import static io.spine.tools.mc.js.code.text.CodeLine.emptyLine;
 
 /**
  * This class writes the {@linkplain GeneratedParser code} for

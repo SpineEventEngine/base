@@ -27,7 +27,7 @@
 package io.spine.tools.mc.js.code.field.precondition;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.mc.js.code.output.CodeLines;
+import io.spine.tools.mc.js.code.text.CodeLines;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.proto.FieldTypes.isMessage;
@@ -36,7 +36,7 @@ import static io.spine.code.proto.FieldTypes.isMessage;
  * The generator of the code which performs various checks on the proto field value.
  *
  * @apiNote
- * The descendants are supposed to operate on the provided {@link io.spine.tools.mc.js.code.output.CodeLines},
+ * The descendants are supposed to operate on the provided {@link io.spine.tools.mc.js.code.text.CodeLines},
  * so the interface methods are not returning any generated code.
  */
 public interface FieldPrecondition {

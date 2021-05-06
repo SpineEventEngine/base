@@ -24,30 +24,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code;
+package io.spine.tools.mc.js.code.text;
 
-import io.spine.tools.mc.js.code.output.CodeLines;
+import com.google.protobuf.Any;
+import io.spine.tools.js.code.TypeName;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-/**
- * The common base for JavaScript code generators which operate on the {@link io.spine.tools.mc.js.code.output.CodeLines}.
- */
-public abstract class JsCodeGenerator {
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-    private final CodeLines jsOutput;
+@DisplayName("VariableDeclaration should")
+class VariableDeclarationTest {
 
-    protected JsCodeGenerator(CodeLines jsOutput) {
-        this.jsOutput = jsOutput;
+    @Test
+    @DisplayName("be initialized by value")
+    void initializedByValue() {
+        VariableDeclaration line = VariableDeclaration.initialized("someVariable", "someValue");
+        assertEquals("let someVariable = someValue;", line.content());
     }
 
-    /**
-     * The {@code JsOutput} which accumulates all the generated code.
-     */
-    protected CodeLines jsOutput() {
-        return jsOutput;
+    @Test
+    @DisplayName("be initialized by new instance")
+    void initializedByNewInstance() {
+        TypeName type = TypeName.from(Any.getDescriptor());
+        VariableDeclaration line = VariableDeclaration.newInstance("anyValue", type);
+        assertEquals("let anyValue = new proto.google.protobuf.Any();", line.content());
     }
-
-    /**
-     * Generate the JavaScript code and store it into the {@code JsOutput}.
-     */
-    public abstract void generate();
 }

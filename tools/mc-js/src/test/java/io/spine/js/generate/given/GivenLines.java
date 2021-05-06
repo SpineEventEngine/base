@@ -28,7 +28,7 @@ package io.spine.js.generate.given;
 
 import io.spine.tools.code.Indent;
 import io.spine.tools.code.IndentLevel;
-import io.spine.tools.mc.js.code.output.CodeLines;
+import io.spine.tools.mc.js.code.text.CodeLines;
 
 public final class GivenLines {
 

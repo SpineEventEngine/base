@@ -24,9 +24,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.output;
+package io.spine.tools.mc.js.code.text;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
 import io.spine.tools.code.Indent;
 import io.spine.tools.code.IndentLevel;
 import io.spine.tools.mc.js.code.Snippet;
@@ -35,12 +36,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static java.lang.String.join;
 import static java.lang.System.lineSeparator;
+import static java.util.stream.Collectors.joining;
 
 /**
  * The aggregator of the JavaScript output.
@@ -112,8 +114,8 @@ public final class CodeLines {
         checkArgument(indentation.equals(appended.indentation),
                       "Cannot merge code parts with different indentation.");
         int levelDifference = currentLevel.value() - appended.currentLevel.value();
-        for (IndentedLine appendedLine : appended.codeLines) {
-            IndentedLine adjusted = appendedLine.adjustLevelBy(levelDifference);
+        for (IndentedLine line : appended.codeLines) {
+            IndentedLine adjusted = line.adjustLevelBy(levelDifference);
             appendIndented(adjusted);
         }
     }
@@ -320,7 +322,18 @@ public final class CodeLines {
     public String toString() {
         String result = codeLines.stream()
                                  .map(CodeLine::toString)
-                                 .collect(Collectors.joining(LINE_SEPARATOR));
+                                 .collect(joining(LINE_SEPARATOR));
+        return result;
+    }
+
+    /**
+     * Obtains these lines with {@link #LINE_SEPARATOR} at the end of each line.
+     */
+    public ImmutableList<String> separated() {
+        ImmutableList<String> result =
+                codeLines.stream()
+                         .map(l -> l + LINE_SEPARATOR)
+                         .collect(toImmutableList());
         return result;
     }
 

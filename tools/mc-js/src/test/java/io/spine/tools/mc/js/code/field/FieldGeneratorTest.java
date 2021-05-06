@@ -28,7 +28,7 @@ package io.spine.tools.mc.js.code.field;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.js.code.FieldName;
-import io.spine.tools.mc.js.code.output.CodeLines;
+import io.spine.tools.mc.js.code.text.CodeLines;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

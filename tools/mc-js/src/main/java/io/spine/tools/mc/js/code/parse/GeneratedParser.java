@@ -35,13 +35,13 @@ import io.spine.tools.mc.js.code.Snippet;
 import io.spine.tools.mc.js.code.field.FieldGenerator;
 import io.spine.tools.mc.js.code.field.FieldGenerators;
 import io.spine.tools.mc.js.code.field.FieldToParse;
-import io.spine.tools.mc.js.code.output.CodeLines;
-import io.spine.tools.mc.js.code.output.snippet.Method;
-import io.spine.tools.mc.js.code.output.snippet.Return;
-import io.spine.tools.mc.js.code.output.snippet.VariableDeclaration;
+import io.spine.tools.mc.js.code.text.CodeLines;
+import io.spine.tools.mc.js.code.text.Method;
+import io.spine.tools.mc.js.code.text.Return;
+import io.spine.tools.mc.js.code.text.VariableDeclaration;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.mc.js.code.output.CodeLine.emptyLine;
+import static io.spine.tools.mc.js.code.text.CodeLine.emptyLine;
 import static java.lang.String.format;
 
 /**
@@ -114,8 +114,7 @@ public final class GeneratedParser implements Snippet {
     private Method constructor() {
         MethodReference reference = MethodReference.constructor(typeName());
         String callSuper = format("%s.call(this);", superClass());
-        return Method
-                .newBuilder(reference)
+        return Method.newBuilder(reference)
                 .appendToBody(callSuper)
                 .build();
     }

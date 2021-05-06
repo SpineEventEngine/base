@@ -28,10 +28,10 @@ package io.spine.tools.mc.js.code.field;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.mc.js.code.JsCodeGenerator;
+import io.spine.tools.mc.js.code.JsCode;
 import io.spine.tools.mc.js.code.field.parser.FieldParser;
 import io.spine.tools.mc.js.code.field.precondition.FieldPrecondition;
-import io.spine.tools.mc.js.code.output.CodeLines;
+import io.spine.tools.mc.js.code.text.CodeLines;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -44,7 +44,7 @@ import static java.lang.String.format;
  * inserting a {@linkplain FieldPrecondition field precondition} and calling a
  * {@linkplain FieldParser field parser}.
  */
-public abstract class FieldGenerator extends JsCodeGenerator {
+public abstract class FieldGenerator extends JsCode {
 
     /**
      * The variable holding the value parsed by the {@link FieldParser} and then used to set the

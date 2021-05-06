@@ -24,55 +24,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.output.snippet;
+package io.spine.tools.mc.js.code;
 
-import io.spine.tools.mc.js.code.output.CodeLine;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.format;
+import io.spine.tools.mc.js.code.text.CodeLines;
 
 /**
- * A code line representing a {@code return} statement.
+ * The common base for JavaScript code generators which operate on the {@link io.spine.tools.mc.js.code.text.CodeLines}.
  */
-public class Return extends CodeLine {
+public abstract class JsCode {
 
-    /**
-     * The value to be returned.
-     */
-    private final Object value;
+    private final CodeLines output;
 
-    private Return(Object returnedValue) {
-        super();
-        this.value = returnedValue;
+    protected JsCode(CodeLines output) {
+        this.output = output;
     }
 
     /**
-     * Composes a statement returning the value.
+     * The {@code JsOutput} which accumulates all the generated code.
      */
-    public static Return value(Object value) {
-        checkNotNull(value);
-        return new Return(value);
+    protected CodeLines jsOutput() {
+        return output;
     }
 
     /**
-     * Composes a statement returning a string literal.
+     * Generate the JavaScript code and store it into the {@code JsOutput}.
      */
-    public static Return stringLiteral(String literal) {
-        checkNotNull(literal);
-        String quoted = format("'%s'", literal);
-        return new Return(quoted);
-    }
-
-    /**
-     * Composes a statement returning {@code null}.
-     */
-    public static Return nullReference() {
-        return value("null");
-    }
-
-    @Override
-    public String content() {
-        String result = format("return %s;", value);
-        return result;
-    }
+    public abstract void generate();
 }

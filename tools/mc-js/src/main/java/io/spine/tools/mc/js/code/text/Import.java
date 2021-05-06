@@ -24,10 +24,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.output.snippet;
+package io.spine.tools.mc.js.code.text;
 
 import io.spine.tools.js.fs.FileName;
-import io.spine.tools.mc.js.code.output.CodeLine;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;

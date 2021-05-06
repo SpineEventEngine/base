@@ -24,32 +24,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.output.snippet;
+package io.spine.tools.mc.js.code.text;
 
-import io.spine.tools.mc.js.code.output.CodeLines;
+import com.google.common.truth.StringSubject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("MapExportSnippet should")
-class MapExportSnippetTest {
+@DisplayName("`MapExport` should")
+class MapExportTest {
 
     private static final String MAP_NAME = "map";
 
     @Test
     @DisplayName("be initialized with several entries")
     void withSeveralEntries() {
-        MapExportSnippet map = MapExportSnippet
-                .newBuilder(MAP_NAME)
+        MapExport map = MapExport.newBuilder(MAP_NAME)
                 .withEntry("firstKey", 1)
                 .withEntry("lastKey", 999)
                 .build();
         CodeLines lines = map.value();
         String stringRepresentation = lines.toString();
-        assertThat(stringRepresentation).contains("module.exports.map = new Map([");
-        assertThat(stringRepresentation).contains("  ['firstKey', 1],");
-        assertThat(stringRepresentation).contains("  ['lastKey', 999]");
-        assertThat(stringRepresentation).contains("]);");
+        StringSubject assertRepresentation = assertThat(stringRepresentation);
+        assertRepresentation.contains("module.exports.map = new Map([");
+        assertRepresentation.contains("  ['firstKey', 1],");
+        assertRepresentation.contains("  ['lastKey', 999]");
+        assertRepresentation.contains("]);");
     }
 }

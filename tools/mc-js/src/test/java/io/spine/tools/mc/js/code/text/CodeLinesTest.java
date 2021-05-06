@@ -24,16 +24,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.output;
+package io.spine.tools.mc.js.code.text;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.truth.StringSubject;
 import com.google.common.truth.Truth;
+import io.spine.js.generate.given.GivenLines;
 import io.spine.tools.code.Indent;
 import io.spine.tools.code.IndentLevel;
-import io.spine.js.generate.given.GivenLines;
-import io.spine.tools.mc.js.code.output.snippet.Comment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -41,14 +40,14 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static io.spine.tools.code.Indent.of2;
-import static io.spine.tools.code.Indent.of4;
 import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.given.GivenLines.linesWithDepth;
 import static io.spine.js.generate.given.GivenLines.newCodeLines;
-import static io.spine.tools.mc.js.code.output.CodeLines.LINE_SEPARATOR;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static io.spine.tools.code.Indent.of2;
+import static io.spine.tools.code.Indent.of4;
+import static io.spine.tools.mc.js.code.text.CodeLines.LINE_SEPARATOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("`CodeLines` should")
@@ -197,7 +196,7 @@ class CodeLinesTest {
         }
 
         /**
-         * Asserts that two {@link io.spine.tools.mc.js.code.output.CodeLines} are merged
+         * Asserts that two {@link io.spine.tools.mc.js.code.text.CodeLines} are merged
          * and the depth of the appended lines is adjusted.
          *
          * @param firthDepth

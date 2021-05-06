@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.output.snippet;
+package io.spine.tools.mc.js.code.text;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -24,30 +24,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.output.snippet;
+package io.spine.tools.mc.js.code.text;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.tools.mc.js.code.Snippet;
-import io.spine.tools.mc.js.code.output.CodeLine;
-import io.spine.tools.mc.js.code.output.CodeLines;
 
 import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.tools.mc.js.code.output.CodeLines.commaSeparated;
+import static io.spine.tools.mc.js.code.text.CodeLines.commaSeparated;
 import static java.lang.String.format;
 
 /**
  * A snippet representing an export of an initialized map.
  */
-public class MapExportSnippet implements Snippet {
+public class MapExport implements Snippet {
 
     private final String mapName;
     private final List<CodeLine> entries;
 
-    private MapExportSnippet(Builder builder) {
+    private MapExport(Builder builder) {
         this.mapName = builder.mapName;
         this.entries = builder.entries;
     }
@@ -108,8 +106,8 @@ public class MapExportSnippet implements Snippet {
         /**
          * Builds an export statement from the builder.
          */
-        public MapExportSnippet build() {
-            return new MapExportSnippet(this);
+        public MapExport build() {
+            return new MapExport(this);
         }
 
         /**

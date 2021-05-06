@@ -38,9 +38,9 @@ import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.js.generate.TaskId;
 import io.spine.js.generate.given.GivenProject;
-import io.spine.tools.mc.js.code.output.CodeLines;
-import io.spine.tools.mc.js.code.output.snippet.Comment;
-import io.spine.tools.mc.js.code.output.snippet.Import;
+import io.spine.tools.mc.js.code.text.CodeLines;
+import io.spine.tools.mc.js.code.text.Comment;
+import io.spine.tools.mc.js.code.text.Import;
 import io.spine.option.OptionsProto;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
@@ -92,12 +92,14 @@ class GenerateKnownTypeParsersTest {
         CodeLines code = GenerateKnownTypeParsers.codeFor(file);
         String importPrefix = FileName.from(file)
                                       .pathToRoot();
-        String abstractParserImport = Import.library(importPrefix + OBJECT_PARSER_FILE)
-                                            .toDefault()
-                                            .namedAs(ABSTRACT_PARSER_IMPORT_NAME);
-        String typeParsersImport = Import.library(importPrefix + TYPE_PARSERS_FILE)
-                                         .toDefault()
-                                         .namedAs(TYPE_PARSERS_IMPORT_NAME);
+        String abstractParserImport =
+                Import.library(importPrefix + OBJECT_PARSER_FILE)
+                      .toDefault()
+                      .namedAs(ABSTRACT_PARSER_IMPORT_NAME);
+        String typeParsersImport =
+                Import.library(importPrefix + TYPE_PARSERS_FILE)
+                      .toDefault()
+                      .namedAs(TYPE_PARSERS_IMPORT_NAME);
         assertContains(code, abstractParserImport);
         assertContains(code, typeParsersImport);
     }

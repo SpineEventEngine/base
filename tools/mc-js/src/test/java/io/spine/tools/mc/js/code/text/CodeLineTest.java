@@ -24,25 +24,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.output;
+package io.spine.tools.mc.js.code.text;
 
-import io.spine.tools.code.Indent;
-import io.spine.tools.code.IndentLevel;
+import com.google.common.truth.StringSubject;
+import com.google.common.truth.Truth;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-@DisplayName("IndentedLine should")
-class IndentedLineTest {
+@DisplayName("CodeLine should")
+class CodeLineTest {
 
     @Test
-    @DisplayName("create indent for code based on the level of indent")
-    void createIndent() {
-        IndentLevel level = IndentLevel.of(2);
-        Indent indentPerLevel = Indent.of2();
-        IndentedLine line = IndentedLine.of("content", level, indentPerLevel);
-        String expected = "    content";
-        assertEquals(expected, line.content());
+    @DisplayName("provide an empty line")
+    void emptyLine() {
+        CodeLine line = CodeLine.emptyLine();
+        assertThat(line).isEqualTo("");
+    }
+
+    private static StringSubject assertThat(CodeLine line) {
+        return Truth.assertThat(line.content());
     }
 }

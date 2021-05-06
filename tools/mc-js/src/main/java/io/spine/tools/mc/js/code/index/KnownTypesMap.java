@@ -31,8 +31,8 @@ import io.spine.tools.js.code.TypeName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.tools.mc.js.code.Snippet;
-import io.spine.tools.mc.js.code.output.CodeLines;
-import io.spine.tools.mc.js.code.output.snippet.MapExportSnippet;
+import io.spine.tools.mc.js.code.text.CodeLines;
+import io.spine.tools.mc.js.code.text.MapExport;
 import io.spine.type.Type;
 import io.spine.type.TypeUrl;
 
@@ -72,7 +72,7 @@ final class KnownTypesMap implements Snippet {
     @Override
     public CodeLines value() {
         List<Map.Entry<String, TypeName>> entries = mapEntries(fileSet);
-        MapExportSnippet mapSnippet = MapExportSnippet
+        MapExport mapSnippet = MapExport
                 .newBuilder(MAP_NAME)
                 .withEntries(entries)
                 .build();

@@ -33,16 +33,16 @@ import io.spine.tools.js.code.MethodReference;
 import io.spine.tools.js.code.TypeName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
-import io.spine.tools.mc.js.code.output.CodeLine;
-import io.spine.tools.mc.js.code.output.CodeLines;
+import io.spine.tools.mc.js.code.text.CodeLine;
+import io.spine.tools.mc.js.code.text.CodeLines;
 import io.spine.tools.mc.js.fs.FileWriter;
-import io.spine.tools.mc.js.code.output.snippet.Comment;
-import io.spine.tools.mc.js.code.output.snippet.Method;
-import io.spine.tools.mc.js.code.output.snippet.Return;
+import io.spine.tools.mc.js.code.text.Comment;
+import io.spine.tools.mc.js.code.text.Method;
+import io.spine.tools.mc.js.code.text.Return;
 import io.spine.type.Type;
 import io.spine.type.TypeUrl;
 
-import static io.spine.tools.mc.js.code.output.CodeLine.emptyLine;
+import static io.spine.tools.mc.js.code.text.CodeLine.emptyLine;
 
 /**
  * Generates a method to obtain a {@code TypeUrl} for each type in a {@link FileSet}.
@@ -74,7 +74,7 @@ public class AppendTypeUrlGetter extends GenerationTask {
     static CodeLines typeUrlMethods(FileDescriptor file) {
         CodeLines output = new CodeLines();
         TypeSet types = TypeSet.from(file);
-        for (Type type : types.messagesAndEnums()) {
+        for (Type<?, ?> type : types.messagesAndEnums()) {
             Snippet method = typeUrlMethod(type);
             output.append(emptyLine());
             output.append(Comment.generatedBySpine());
@@ -84,7 +84,7 @@ public class AppendTypeUrlGetter extends GenerationTask {
     }
 
     @VisibleForTesting
-    static Method typeUrlMethod(Type type) {
+    static Method typeUrlMethod(Type<?, ?> type) {
         TypeName typeName = TypeName.from(type.descriptor());
         MethodReference reference = MethodReference.onType(typeName, METHOD_NAME);
         Method method = Method
@@ -94,7 +94,7 @@ public class AppendTypeUrlGetter extends GenerationTask {
         return method;
     }
 
-    private static CodeLine returnTypeUrl(Type type) {
+    private static CodeLine returnTypeUrl(Type<?, ?> type) {
         TypeUrl typeUrl = type.url();
         return Return.stringLiteral(typeUrl.value());
     }
