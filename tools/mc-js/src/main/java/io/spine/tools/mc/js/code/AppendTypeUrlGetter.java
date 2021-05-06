@@ -33,8 +33,6 @@ import io.spine.tools.js.code.MethodReference;
 import io.spine.tools.js.code.TypeName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
-import io.spine.tools.mc.js.code.text.CodeLine;
-import io.spine.tools.mc.js.code.text.CodeLines;
 import io.spine.tools.mc.js.fs.FileWriter;
 import io.spine.tools.mc.js.code.text.Comment;
 import io.spine.tools.mc.js.code.text.Method;
@@ -42,7 +40,7 @@ import io.spine.tools.mc.js.code.text.Return;
 import io.spine.type.Type;
 import io.spine.type.TypeUrl;
 
-import static io.spine.tools.mc.js.code.text.CodeLine.emptyLine;
+import static io.spine.tools.mc.js.code.CodeLine.emptyLine;
 
 /**
  * Generates a method to obtain a {@code TypeUrl} for each type in a {@link FileSet}.

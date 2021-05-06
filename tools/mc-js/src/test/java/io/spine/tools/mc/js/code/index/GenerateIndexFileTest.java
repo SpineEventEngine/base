@@ -31,7 +31,7 @@ import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.fs.FileName;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.given.GivenProject;
-import io.spine.tools.mc.js.code.text.CodeLines;
+import io.spine.tools.mc.js.code.CodeLines;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

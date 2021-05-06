@@ -26,7 +26,7 @@
 
 package io.spine.tools.mc.js.code.field.parser;
 
-import io.spine.tools.mc.js.code.text.CodeLines;
+import io.spine.tools.mc.js.code.CodeLines;
 
 /**
  * The generator of the JS code parsing some primitive value from its JSON representation.
@@ -34,7 +34,7 @@ import io.spine.tools.mc.js.code.text.CodeLines;
  * <p>The parsed value is then stored into the specified variable.
  *
  * @apiNote
- * The descendants are supposed to operate on the provided {@link io.spine.tools.mc.js.code.text.CodeLines}, so the interface
+ * The descendants are supposed to operate on the provided {@link CodeLines}, so the interface
  * method is not returning any generated code.
  * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#json">Protobuf JSON Mapping</a>
  */

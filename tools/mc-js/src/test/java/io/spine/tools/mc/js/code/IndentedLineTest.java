@@ -24,12 +24,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * The classes which generate JavaScript code for parsing of Protobuf messages.
- */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.mc.js.code.parse;
+package io.spine.tools.mc.js.code;
 
-import com.google.errorprone.annotations.CheckReturnValue;
-import javax.annotation.ParametersAreNonnullByDefault;
+import io.spine.tools.code.Indent;
+import io.spine.tools.code.IndentLevel;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@DisplayName("IndentedLine should")
+class IndentedLineTest {
+
+    @Test
+    @DisplayName("create indent for code based on the level of indent")
+    void createIndent() {
+        IndentLevel level = IndentLevel.of(2);
+        Indent indentPerLevel = Indent.of2();
+        IndentedLine line = IndentedLine.of("content", level, indentPerLevel);
+        String expected = "    content";
+        assertEquals(expected, line.content());
+    }
+}

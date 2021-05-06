@@ -31,7 +31,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.mc.js.code.JsCode;
 import io.spine.tools.mc.js.code.field.parser.FieldParser;
 import io.spine.tools.mc.js.code.field.precondition.FieldPrecondition;
-import io.spine.tools.mc.js.code.text.CodeLines;
+import io.spine.tools.mc.js.code.CodeLines;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;

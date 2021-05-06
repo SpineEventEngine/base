@@ -27,6 +27,8 @@
 package io.spine.tools.mc.js.code.text;
 
 import io.spine.tools.js.code.MethodReference;
+import io.spine.tools.mc.js.code.CodeLine;
+import io.spine.tools.mc.js.code.CodeLines;
 import io.spine.tools.mc.js.code.Snippet;
 
 import java.util.List;

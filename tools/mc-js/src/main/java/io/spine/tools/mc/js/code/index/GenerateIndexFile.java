@@ -33,7 +33,7 @@ import io.spine.tools.js.fs.FileName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.tools.mc.js.code.GenerationTask;
-import io.spine.tools.mc.js.code.text.CodeLines;
+import io.spine.tools.mc.js.code.CodeLines;
 import io.spine.tools.mc.js.fs.FileWriter;
 import io.spine.tools.mc.js.code.imports.Import;
 
@@ -41,7 +41,7 @@ import java.util.Collection;
 import java.util.Set;
 
 import static io.spine.tools.js.fs.LibraryFile.INDEX;
-import static io.spine.tools.mc.js.code.text.CodeLine.emptyLine;
+import static io.spine.tools.mc.js.code.CodeLine.emptyLine;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -73,9 +73,9 @@ public final class GenerateIndexFile extends GenerationTask {
         CodeLines lines = new CodeLines();
         lines.append(knownTypesImports(fileSet));
         lines.append(emptyLine());
-        lines.append(new KnownTypesMap(fileSet));
+        lines.append(new KnownTypes(fileSet));
         lines.append(emptyLine());
-        lines.append(new TypeParsersMap(fileSet));
+        lines.append(new TypeParsers(fileSet));
         return lines;
     }
 

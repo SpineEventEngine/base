@@ -26,6 +26,8 @@
 
 package io.spine.tools.mc.js.code.text;
 
+import io.spine.tools.mc.js.code.CodeLine;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**

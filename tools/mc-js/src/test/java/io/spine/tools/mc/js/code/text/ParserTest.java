@@ -24,27 +24,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.parse;
+package io.spine.tools.mc.js.code.text;
 
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.js.code.TypeName;
-import io.spine.tools.mc.js.code.text.CodeLines;
+import io.spine.tools.mc.js.code.CodeLines;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.js.generate.given.Generators.assertContains;
-import static io.spine.tools.mc.js.code.parse.GeneratedParser.FROM_OBJECT_ARG;
-import static io.spine.tools.mc.js.code.parse.GeneratedParser.PARSE_METHOD;
+import static io.spine.tools.mc.js.code.text.Parser.FROM_OBJECT_ARG;
+import static io.spine.tools.mc.js.code.text.Parser.PARSE_METHOD;
 import static java.lang.System.lineSeparator;
 
 @DisplayName("GeneratedParser should")
-class GeneratedParserTest {
+class ParserTest {
 
     private final Descriptor message = Any.getDescriptor();
-    private final GeneratedParser parser = new GeneratedParser(message);
+    private final Parser parser = new Parser(message);
 
     @Test
     @DisplayName("generate `fromObject` method for message")
@@ -85,7 +85,7 @@ class GeneratedParserTest {
     @Test
     @DisplayName("allow to call the parse object method")
     void callParseObjectMethod() {
-        String call = GeneratedParser.parseMethodCall("someParser", "{}");
+        String call = Parser.parseMethodCall("someParser", "{}");
         String expected = "someParser.fromObject({})";
         assertThat(call).isEqualTo(expected);
     }
@@ -111,8 +111,8 @@ class GeneratedParserTest {
     }
 
     private static void assertParseMethod(CodeLines lines, Descriptor message) {
-        String expected = new GeneratedParser(message).fromObjectMethod()
-                                                      .toString();
+        String expected = new Parser(message).fromObjectMethod()
+                                             .toString();
         assertThat(lines.toString()).contains(expected);
     }
 

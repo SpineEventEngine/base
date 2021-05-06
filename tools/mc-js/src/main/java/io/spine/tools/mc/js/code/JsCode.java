@@ -26,10 +26,8 @@
 
 package io.spine.tools.mc.js.code;
 
-import io.spine.tools.mc.js.code.text.CodeLines;
-
 /**
- * The common base for JavaScript code generators which operate on the {@link io.spine.tools.mc.js.code.text.CodeLines}.
+ * The common base for JavaScript code generators which operate on the {@link CodeLines}.
  */
 public abstract class JsCode {
 

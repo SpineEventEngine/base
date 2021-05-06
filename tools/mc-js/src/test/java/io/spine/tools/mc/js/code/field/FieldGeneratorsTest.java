@@ -28,7 +28,7 @@ package io.spine.tools.mc.js.code.field;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.mc.js.code.text.CodeLines;
+import io.spine.tools.mc.js.code.CodeLines;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

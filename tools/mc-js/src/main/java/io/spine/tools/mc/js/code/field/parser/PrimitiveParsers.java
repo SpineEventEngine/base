@@ -29,7 +29,7 @@ package io.spine.tools.mc.js.code.field.parser;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.Type;
-import io.spine.tools.mc.js.code.text.CodeLines;
+import io.spine.tools.mc.js.code.CodeLines;
 
 import java.util.Map;
 

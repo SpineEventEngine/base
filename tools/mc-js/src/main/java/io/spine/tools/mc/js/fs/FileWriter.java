@@ -32,7 +32,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.fs.FileName;
 import io.spine.tools.js.fs.LibraryFile;
-import io.spine.tools.mc.js.code.text.CodeLines;
+import io.spine.tools.mc.js.code.CodeLines;
 
 import java.io.IOException;
 import java.nio.file.Files;

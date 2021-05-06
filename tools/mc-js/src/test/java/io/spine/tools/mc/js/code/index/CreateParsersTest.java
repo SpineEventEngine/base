@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.parse;
+package io.spine.tools.mc.js.code.index;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
@@ -38,10 +38,11 @@ import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.js.generate.TaskId;
 import io.spine.js.generate.given.GivenProject;
-import io.spine.tools.mc.js.code.text.CodeLines;
-import io.spine.tools.mc.js.code.text.Comment;
+import io.spine.tools.mc.js.code.CodeLines;
 import io.spine.tools.mc.js.code.imports.Import;
 import io.spine.option.OptionsProto;
+import io.spine.tools.mc.js.code.index.CreateParsers;
+import io.spine.tools.mc.js.code.text.Comment;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,34 +55,33 @@ import java.util.List;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.js.generate.given.FileWriters.assertFileContains;
 import static io.spine.js.generate.given.Generators.assertContains;
-import static io.spine.tools.mc.js.code.parse.GenerateKnownTypeParsers.ABSTRACT_PARSER_IMPORT_NAME;
-import static io.spine.tools.mc.js.code.parse.GenerateKnownTypeParsers.OBJECT_PARSER_FILE;
-import static io.spine.tools.mc.js.code.parse.GenerateKnownTypeParsers.TYPE_PARSERS_FILE;
-import static io.spine.tools.mc.js.code.parse.GenerateKnownTypeParsers.TYPE_PARSERS_IMPORT_NAME;
-import static io.spine.tools.mc.js.code.parse.GenerateKnownTypeParsers.createFor;
+import static io.spine.tools.mc.js.code.text.Parser.ABSTRACT_PARSER_IMPORT_NAME;
+import static io.spine.tools.mc.js.code.text.Parser.OBJECT_PARSER_FILE;
+import static io.spine.tools.mc.js.code.text.Parser.TYPE_PARSERS_FILE;
+import static io.spine.tools.mc.js.code.text.Parser.TYPE_PARSERS_IMPORT_NAME;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 
 @DisplayName("GenerateKnownTypeParsers should")
-class GenerateKnownTypeParsersTest {
+class CreateParsersTest {
 
     private final FileDescriptor file = TaskId.getDescriptor()
                                               .getFile();
     private final FileSet fileSet = GivenProject.mainFileSet();
     private final Directory generatedProtoDir = GivenProject.mainProtoSources();
-    private final GenerateKnownTypeParsers writer = createFor(generatedProtoDir);
+    private final CreateParsers writer = new CreateParsers(generatedProtoDir);
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
         new NullPointerTester().setDefault(Directory.class, generatedProtoDir)
                                .setDefault(FileSet.class, fileSet)
-                               .testAllPublicStaticMethods(GenerateKnownTypeParsers.class);
+                               .testAllPublicStaticMethods(CreateParsers.class);
     }
 
     @Test
     @DisplayName("generate explaining comment")
     void generateComment() {
-        CodeLines code = GenerateKnownTypeParsers.codeFor(file);
+        CodeLines code = CreateParsers.codeFor(file);
         Comment expectedComment = Comment.generatedBySpine();
         assertContains(code, expectedComment.content());
     }
@@ -89,7 +89,7 @@ class GenerateKnownTypeParsersTest {
     @Test
     @DisplayName("generate imports")
     void generateImports() {
-        CodeLines code = GenerateKnownTypeParsers.codeFor(file);
+        CodeLines code = CreateParsers.codeFor(file);
         String importPrefix = FileName.from(file)
                                       .pathToRoot();
         String abstractParserImport =
@@ -116,15 +116,15 @@ class GenerateKnownTypeParsersTest {
     void writeOptionsParseCode() {
         FileDescriptor optionsFile = OptionsProto.getDescriptor()
                                                  .getFile();
-        Collection<MessageType> targets = GenerateKnownTypeParsers.targetTypes(optionsFile);
+        Collection<MessageType> targets = CreateParsers.targetTypes(optionsFile);
         assertThat(targets).isNotEmpty();
     }
 
     @Test
     @DisplayName("not write parsing code for standard Protobuf types")
     void skipStandard() {
-        Collection<MessageType> targets = GenerateKnownTypeParsers.targetTypes(Any.getDescriptor()
-                                                                                  .getFile());
+        Collection<MessageType> targets = CreateParsers.targetTypes(Any.getDescriptor()
+                                                                       .getFile());
         assertThat(targets).isEmpty();
     }
 

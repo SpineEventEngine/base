@@ -26,8 +26,8 @@
 
 package io.spine.tools.mc.js.code.field.parser;
 
-import io.spine.tools.mc.js.code.text.CodeLines;
 import io.spine.testing.UtilityClassTest;
+import io.spine.tools.mc.js.code.CodeLines;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

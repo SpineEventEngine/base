@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.text;
+package io.spine.tools.mc.js.code;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
@@ -33,6 +33,7 @@ import com.google.common.truth.Truth;
 import io.spine.js.generate.given.GivenLines;
 import io.spine.tools.code.Indent;
 import io.spine.tools.code.IndentLevel;
+import io.spine.tools.mc.js.code.text.Comment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -47,7 +48,7 @@ import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.code.Indent.of2;
 import static io.spine.tools.code.Indent.of4;
-import static io.spine.tools.mc.js.code.text.CodeLines.LINE_SEPARATOR;
+import static io.spine.tools.mc.js.code.CodeLines.LINE_SEPARATOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("`CodeLines` should")
@@ -196,7 +197,7 @@ class CodeLinesTest {
         }
 
         /**
-         * Asserts that two {@link io.spine.tools.mc.js.code.text.CodeLines} are merged
+         * Asserts that two {@link CodeLines} are merged
          * and the depth of the appended lines is adjusted.
          *
          * @param firthDepth

@@ -29,7 +29,7 @@ package io.spine.tools.mc.js.code.field.parser;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.js.code.TypeName;
-import io.spine.tools.mc.js.code.text.CodeLines;
+import io.spine.tools.mc.js.code.CodeLines;
 import io.spine.tools.mc.js.code.text.VariableDeclaration;
 
 import static com.google.common.base.Preconditions.checkNotNull;

@@ -30,19 +30,19 @@ import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.js.code.TypeName;
-import io.spine.tools.mc.js.code.text.CodeLines;
+import io.spine.tools.mc.js.code.CodeLines;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.tools.mc.js.code.field.given.Given.enumField;
 import static io.spine.tools.mc.js.code.field.given.Given.messageField;
 import static io.spine.tools.mc.js.code.field.given.Given.primitiveField;
 import static io.spine.tools.mc.js.code.field.given.Given.timestampField;
 import static io.spine.tools.mc.js.code.field.parser.FieldParser.createFor;
-import static io.spine.js.generate.given.Generators.assertContains;
 import static java.lang.String.format;
 
 @SuppressWarnings("DuplicateStringLiteralInspection")

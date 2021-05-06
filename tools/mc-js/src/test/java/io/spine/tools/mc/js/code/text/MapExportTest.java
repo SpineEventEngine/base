@@ -27,6 +27,7 @@
 package io.spine.tools.mc.js.code.text;
 
 import com.google.common.truth.StringSubject;
+import io.spine.tools.mc.js.code.CodeLines;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -32,7 +32,6 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.js.generate.TaskCount;
 import io.spine.js.generate.TaskServiceProto;
-import io.spine.tools.mc.js.code.text.CodeLines;
 import io.spine.tools.mc.js.code.text.Method;
 import io.spine.js.generate.typeurl.OuterMessage;
 import io.spine.js.generate.typeurl.OuterMessage.NestedEnum;

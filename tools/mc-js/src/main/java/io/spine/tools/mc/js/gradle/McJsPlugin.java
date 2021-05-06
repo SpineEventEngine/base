@@ -34,7 +34,7 @@ import io.spine.tools.mc.js.code.AppendTypeUrlGetter;
 import io.spine.tools.mc.js.code.GenerationTask;
 import io.spine.tools.mc.js.code.imports.ResolveImports;
 import io.spine.tools.mc.js.code.index.GenerateIndexFile;
-import io.spine.tools.mc.js.code.parse.GenerateKnownTypeParsers;
+import io.spine.tools.mc.js.code.index.CreateParsers;
 import io.spine.tools.fs.ExternalModule;
 import io.spine.tools.gradle.BaseTaskName;
 import io.spine.tools.gradle.GradleTask;
@@ -61,7 +61,7 @@ import static io.spine.tools.gradle.ProtoJsTaskName.generateJsonParsers;
  * <ul>
  *     <li>Generates a {@linkplain AppendTypeUrlGetter getter}
  *         to obtain a {@code TypeUrl} for each type.
- *     <li>Generates {@linkplain GenerateKnownTypeParsers parsers} for types
+ *     <li>Generates {@linkplain CreateParsers parsers} for types
  *         with standard JSON mapping.
  *     <li>{@linkplain GenerateIndexFile Exposes} all the messages and enums
  *         as well as generated parsers (to be used by the Spine Web).
@@ -148,7 +148,7 @@ public class McJsPlugin extends ProtoPlugin {
                                      Supplier<FileSet> files,
                                      List<ExternalModule> modules) {
         List<GenerationTask> tasks = ImmutableList.of(
-                GenerateKnownTypeParsers.createFor(generatedRoot),
+                new CreateParsers(generatedRoot),
                 new AppendTypeUrlGetter(generatedRoot),
                 new GenerateIndexFile(generatedRoot),
                 new ResolveImports(generatedRoot, modules)

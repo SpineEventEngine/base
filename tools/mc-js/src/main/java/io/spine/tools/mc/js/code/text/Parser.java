@@ -24,24 +24,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.parse;
+package io.spine.tools.mc.js.code.text;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.js.code.MethodReference;
 import io.spine.tools.js.code.TypeName;
+import io.spine.tools.mc.js.code.CodeLines;
 import io.spine.tools.mc.js.code.Snippet;
 import io.spine.tools.mc.js.code.field.FieldGenerator;
 import io.spine.tools.mc.js.code.field.FieldGenerators;
 import io.spine.tools.mc.js.code.field.FieldToParse;
-import io.spine.tools.mc.js.code.text.CodeLines;
-import io.spine.tools.mc.js.code.text.Method;
-import io.spine.tools.mc.js.code.text.Return;
-import io.spine.tools.mc.js.code.text.VariableDeclaration;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.mc.js.code.text.CodeLine.emptyLine;
+import static io.spine.tools.mc.js.code.CodeLine.emptyLine;
 import static java.lang.String.format;
 
 /**
@@ -54,8 +51,17 @@ import static java.lang.String.format;
  * <p>Code provided by the class is in {@code ES5} standard
  * since Protobuf compiler generates JavaScript in {@code ES5}.
  */
-public final class GeneratedParser implements Snippet {
+public final class Parser implements Snippet {
 
+    /**
+     * The name of the import of parsers registry.
+     *
+     * <p>Visible so the other generators such as a
+     * {@linkplain FieldGenerator field} can use the import.
+     */
+    public static final String TYPE_PARSERS_IMPORT_NAME = "TypeParsers";
+    /** The name of the {@code object-parser.js} import. */
+    public static final String ABSTRACT_PARSER_IMPORT_NAME = "ObjectParser";
     /**
      * The name of the {@code fromObject} method return value.
      *
@@ -69,11 +75,22 @@ public final class GeneratedParser implements Snippet {
     /** The name of the method declared on an abstract parser. */
     @VisibleForTesting
     static final String PARSE_METHOD = "fromObject";
+    /**
+     * The relative path from the Protobuf root directory to the folder
+     * containing sources related to parsing.
+     *
+     * <p>The path depends on the Spine Web layout.
+     */
+    private static final String IMPORT_PATH_PREFIX = "../client/parser/";
+
+    public static final String OBJECT_PARSER_FILE = IMPORT_PATH_PREFIX + "object-parser.js";
+
+    public static final String TYPE_PARSERS_FILE = IMPORT_PATH_PREFIX + "type-parsers.js";
 
     /** The message to generate the parser for. */
     private final Descriptor message;
 
-    GeneratedParser(Descriptor message) {
+    public Parser(Descriptor message) {
         checkNotNull(message);
         this.message = message;
     }
@@ -191,6 +208,6 @@ public final class GeneratedParser implements Snippet {
      * Obtains the name of the imported abstract parser.
      */
     private static String superClass() {
-        return GenerateKnownTypeParsers.ABSTRACT_PARSER_IMPORT_NAME;
+        return ABSTRACT_PARSER_IMPORT_NAME;
     }
 }

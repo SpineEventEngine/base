@@ -28,13 +28,13 @@ package io.spine.tools.mc.js.code.field.parser;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.mc.js.code.text.CodeLines;
+import io.spine.tools.mc.js.code.CodeLines;
 import io.spine.tools.mc.js.code.text.VariableDeclaration;
-import io.spine.tools.mc.js.code.parse.GeneratedParser;
+import io.spine.tools.mc.js.code.text.Parser;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.mc.js.code.parse.GenerateKnownTypeParsers.TYPE_PARSERS_IMPORT_NAME;
+import static io.spine.tools.mc.js.code.text.Parser.TYPE_PARSERS_IMPORT_NAME;
 import static java.lang.String.format;
 
 /**
@@ -74,7 +74,7 @@ final class MessageFieldParser implements FieldParser {
         TypeUrl typeUrl = TypeUrl.from(message);
         String obtainParser = format("%s.%s('%s')",
                                      TYPE_PARSERS_IMPORT_NAME, PARSER_BY_URL_METHOD, typeUrl);
-        String parserCall = GeneratedParser.parseMethodCall(obtainParser, valueToParse);
+        String parserCall = Parser.parseMethodCall(obtainParser, valueToParse);
         return VariableDeclaration.initialized(name, parserCall);
     }
 }

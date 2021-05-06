@@ -32,7 +32,7 @@ import com.google.protobuf.NullValue;
 import com.google.protobuf.StringValue;
 import io.spine.tools.js.code.TypeName;
 import io.spine.code.proto.FileSet;
-import io.spine.tools.mc.js.code.text.CodeLines;
+import io.spine.tools.mc.js.code.CodeLines;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test;
 import static io.spine.js.generate.given.Generators.assertContains;
 
 @DisplayName("KnownTypesMap should")
-class KnownTypesMapTest {
+class KnownTypesTest {
 
     /**
      * {@link Any} type is used for tests as we known for sure it will be present among the
@@ -50,7 +50,7 @@ class KnownTypesMapTest {
     private static final Descriptor STRING_VALUE = StringValue.getDescriptor();
 
     private final FileSet fileSet = FileSet.load();
-    private final KnownTypesMap generator = new KnownTypesMap(fileSet);
+    private final KnownTypes generator = new KnownTypes(fileSet);
 
     @Test
     @DisplayName("generate known types map for several files")

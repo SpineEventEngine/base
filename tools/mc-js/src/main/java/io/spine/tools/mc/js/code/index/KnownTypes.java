@@ -27,66 +27,74 @@
 package io.spine.tools.mc.js.code.index;
 
 import com.google.common.collect.Maps;
-import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.tools.js.code.TypeName;
 import io.spine.code.proto.FileSet;
+import io.spine.code.proto.TypeSet;
 import io.spine.tools.mc.js.code.Snippet;
-import io.spine.tools.mc.js.code.text.CodeLines;
+import io.spine.tools.mc.js.code.CodeLines;
 import io.spine.tools.mc.js.code.text.MapExport;
-import io.spine.tools.mc.js.code.parse.GenerateKnownTypeParsers;
-import io.spine.type.MessageType;
+import io.spine.type.Type;
 import io.spine.type.TypeUrl;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.toList;
 
 /**
- * The code of the known type parsers {@code Map}.
+ * The code of the known types {@code Map}.
  *
- * <p>This class generates the map with all the parsers written in the form of
- * "{@linkplain io.spine.type.TypeUrl type-url}-to-Parser-type".
+ * <p>This class generates the map with all the known types written in the form of
+ * "{@linkplain io.spine.type.TypeUrl type-url}-to-JS-type".
  */
-final class TypeParsersMap implements Snippet {
+final class KnownTypes implements Snippet {
 
-    private static final String MAP_NAME = "parsers";
+    /**
+     * The exported map name.
+     */
+    private static final String MAP_NAME = "types";
 
     private final FileSet fileSet;
 
-    TypeParsersMap(FileSet fileSet) {
-        checkNotNull(fileSet);
+    /**
+     * Creates a new {@code KnownTypesGenerator}.
+     *
+     * <p>All the known types will be acquired from the {@code fileSet}.
+     *
+     * @param fileSet
+     *         the {@code FileSet} containing all the known types
+     */
+    KnownTypes(FileSet fileSet) {
         this.fileSet = fileSet;
     }
 
     @Override
     public CodeLines value() {
         List<Map.Entry<String, TypeName>> entries = mapEntries(fileSet);
-        MapExport mapSnippet = MapExport.newBuilder(MAP_NAME)
+        MapExport mapSnippet = MapExport
+                .newBuilder(MAP_NAME)
                 .withEntries(entries)
                 .build();
         return mapSnippet.value();
     }
 
     private static List<Map.Entry<String, TypeName>> mapEntries(FileSet fileSet) {
-        Collection<MessageType> typesWithParsers = newArrayList();
-        for (FileDescriptor file : fileSet.files()) {
-            Collection<MessageType> typesInFile = GenerateKnownTypeParsers.targetTypes(file);
-            typesWithParsers.addAll(typesInFile);
-        }
-        List<Map.Entry<String, TypeName>> entries = typesWithParsers
-                .stream()
-                .map(TypeParsersMap::mapEntry)
-                .collect(toList());
+        Set<Type<?, ?>> types = TypeSet.from(fileSet)
+                                       .allTypes();
+        List<Map.Entry<String, TypeName>> entries = types.stream()
+                                                         .map(KnownTypes::mapEntry)
+                                                         .collect(toList());
         return entries;
     }
 
-    private static Map.Entry<String, TypeName> mapEntry(MessageType type) {
+    /**
+     * Obtains type URL and JS type name of the {@code message} and creates a {@code Map} entry of
+     * the "{@linkplain TypeUrl type-url}-to-JS-type" format.
+     */
+    private static Map.Entry<String, TypeName> mapEntry(Type<?, ?> type) {
         TypeUrl typeUrl = type.url();
-        TypeName typeName = TypeName.ofParser(type.descriptor());
+        TypeName typeName = TypeName.from(type.descriptor());
         return Maps.immutableEntry(typeUrl.value(), typeName);
     }
 }
