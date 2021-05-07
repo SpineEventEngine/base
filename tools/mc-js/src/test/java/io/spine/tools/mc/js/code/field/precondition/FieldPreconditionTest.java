@@ -39,7 +39,7 @@ import static java.lang.String.format;
 
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Generated code duplication needed to check main class.
-@DisplayName("FieldPrecondition should")
+@DisplayName("`FieldPrecondition` should")
 class FieldPreconditionTest {
 
     private static final String FIELD_VALUE = "value";

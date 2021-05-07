@@ -42,6 +42,9 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT64;
 class PrimitiveParsersTest extends UtilityClassTest<PrimitiveParsers> {
 
     private CodeWriter writer;
+    
+    /** The object under the test. */
+    private PrimitiveParser parser;
 
     PrimitiveParsersTest() {
         super(PrimitiveParsers.class);
@@ -52,31 +55,35 @@ class PrimitiveParsersTest extends UtilityClassTest<PrimitiveParsers> {
         writer = new CodeWriter();
     }
 
+    private void assertIsInstanceOf(Class<?> cls) {
+        assertThat(parser).isInstanceOf(cls);
+    }
+
     @Test
     @DisplayName("create identity parser")
     void createIdentityParser() {
-        PrimitiveParser parser = PrimitiveParsers.createFor(INT32, writer);
-        assertThat(parser).isInstanceOf(IdentityParser.class);
+        parser = PrimitiveParsers.createFor(INT32, writer);
+        assertIsInstanceOf(IdentityParser.class);
     }
 
     @Test
     @DisplayName("create parser for long value")
     void createLongParser() {
-        PrimitiveParser parser = PrimitiveParsers.createFor(INT64, writer);
-        assertThat(parser).isInstanceOf(LongParser.class);
+        parser = PrimitiveParsers.createFor(INT64, writer);
+        assertIsInstanceOf(LongParser.class);
     }
 
     @Test
     @DisplayName("create parser for float value")
     void createFloatParser() {
-        PrimitiveParser parser = PrimitiveParsers.createFor(FLOAT, writer);
-        assertThat(parser).isInstanceOf(FloatParser.class);
+        parser = PrimitiveParsers.createFor(FLOAT, writer);
+        assertIsInstanceOf(FloatParser.class);
     }
 
     @Test
     @DisplayName("create parser for bytes value")
     void createBytesParser() {
-        PrimitiveParser parser = PrimitiveParsers.createFor(BYTES, writer);
-        assertThat(parser).isInstanceOf(BytesParser.class);
+        parser = PrimitiveParsers.createFor(BYTES, writer);
+        assertIsInstanceOf(BytesParser.class);
     }
 }

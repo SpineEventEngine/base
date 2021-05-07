@@ -42,11 +42,14 @@ import static io.spine.tools.mc.js.code.field.precondition.FieldPrecondition.pre
 @DisplayName("`FieldPrecondition` static factory method should")
 class FieldPreconditionsTest {
 
-    private CodeWriter jsOutput;
+    private CodeWriter writer;
+
+    /** The object under the test. */
+    private FieldPrecondition precondition;
 
     @BeforeEach
     void setUp() {
-        jsOutput = new CodeWriter();
+        writer = new CodeWriter();
     }
 
     @Test
@@ -54,27 +57,31 @@ class FieldPreconditionsTest {
     void configure() {
         new NullPointerTester()
                 .setDefault(FieldDescriptor.class, messageField())
-            .testAllPublicStaticMethods(FieldPrecondition.class);
+                .testAllPublicStaticMethods(FieldPrecondition.class);
+    }
+
+    private void assertIsInstanceOf(Class<?> cls) {
+        assertThat(precondition).isInstanceOf(cls);
     }
 
     @Test
     @DisplayName("create precondition for primitive field")
     void createForPrimitive() {
-        FieldPrecondition precondition = preconditionFor(primitiveField(), jsOutput);
-        assertThat(precondition).isInstanceOf(PrimitivePrecondition.class);
+        precondition = preconditionFor(primitiveField(), writer);
+        assertIsInstanceOf(PrimitivePrecondition.class);
     }
 
     @Test
     @DisplayName("create precondition for message field")
     void createForMessage() {
-        FieldPrecondition precondition = preconditionFor(messageField(), jsOutput);
-        assertThat(precondition).isInstanceOf(MessagePrecondition.class);
+        precondition = preconditionFor(messageField(), writer);
+        assertIsInstanceOf(MessagePrecondition.class);
     }
 
     @Test
     @DisplayName("create message precondition for standard type field")
     void createForWellKnown() {
-        FieldPrecondition precondition = preconditionFor(timestampField(), jsOutput);
-        assertThat(precondition).isInstanceOf(MessagePrecondition.class);
+        precondition = preconditionFor(timestampField(), writer);
+        assertIsInstanceOf(MessagePrecondition.class);
     }
 }
