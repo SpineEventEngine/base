@@ -33,10 +33,11 @@ import io.spine.tools.mc.js.code.CodeWriter;
  *
  * <p>The parsed value is then stored into the specified variable.
  *
- * @apiNote
- * The descendants are supposed to operate on the provided {@link CodeWriter}, so the interface
- * method is not returning any generated code.
- * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#json">Protobuf JSON Mapping</a>
+ * <p>Please see <a href="https://developers.google.com/protocol-buffers/docs/proto3#json">
+ * Protobuf JSON Mapping</a> for more details.
+ *
+ * @apiNote The descendants are supposed to operate on the provided {@link CodeWriter}, so
+ *         the interface method is not returning any generated code.
  */
 interface PrimitiveParser {
 

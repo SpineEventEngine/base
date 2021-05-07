@@ -35,14 +35,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 abstract class AbstractPrimitiveParser implements PrimitiveParser {
 
-    private final CodeWriter jsOutput;
+    private final CodeWriter writer;
 
     AbstractPrimitiveParser(Builder<?> builder) {
-        this.jsOutput = builder.writer;
+        this.writer = builder.writer;
     }
 
-    CodeWriter jsOutput() {
-        return jsOutput;
+    CodeWriter writer() {
+        return writer;
     }
 
     abstract static class Builder<B extends Builder<B>> implements PrimitiveParser.Builder<B> {

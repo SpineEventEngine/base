@@ -51,7 +51,7 @@ final class LongParser extends AbstractPrimitiveParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        jsOutput().append(parsedVariable(variable, value));
+        writer().append(parsedVariable(variable, value));
     }
 
     private static Let parsedVariable(String name, String valueToParse) {

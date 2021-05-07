@@ -27,6 +27,7 @@
 package io.spine.tools.mc.js.code.field.parser;
 
 import com.google.common.annotations.VisibleForTesting;
+import io.spine.tools.mc.js.code.CodeWriter;
 import io.spine.tools.mc.js.code.imports.Import;
 import io.spine.tools.mc.js.code.snippet.Let;
 
@@ -42,9 +43,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 final class BytesParser extends AbstractPrimitiveParser {
 
     /**
-     * Base-64 JS lib name to import.
-     *
-     * @see <a href="https://www.npmjs.com/package/base64-js">The lib page</a>
+     * The name of <a href="https://www.npmjs.com/package/base64-js">Base-64 JS lib</a> to import.
      */
     @VisibleForTesting
     static final String BASE64_LIB = "base64-js";
@@ -64,8 +63,9 @@ final class BytesParser extends AbstractPrimitiveParser {
         checkNotNull(value);
         checkNotNull(variable);
         Import base64Import = Import.library(BASE64_LIB);
-        jsOutput().append(base64Import.namedAs(BASE64_VAR));
-        jsOutput().append(parsedVariable(variable, value));
+        CodeWriter writer = writer();
+        writer.append(base64Import.namedAs(BASE64_VAR));
+        writer.append(parsedVariable(variable, value));
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // Necessary duplication with own test.
