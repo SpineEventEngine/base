@@ -46,7 +46,7 @@ import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.code.Indent.of2;
 import static io.spine.tools.code.Indent.of4;
-import static io.spine.tools.mc.js.code.CodeWriter.LINE_SEPARATOR;
+import static io.spine.tools.mc.js.code.CodeWriter.lineSeparator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("`CodeWriter` should")
@@ -171,7 +171,7 @@ class CodeWriterTest {
             CodeWriter first = GivenLines.newCodeLines(FIRST_PART);
             CodeWriter second = GivenLines.newCodeLines(SECOND_PART);
             first.append(second);
-            String expected = FIRST_PART + LINE_SEPARATOR + SECOND_PART;
+            String expected = FIRST_PART + lineSeparator() + SECOND_PART;
             assertLines(first).isEqualTo(expected);
         }
 
@@ -267,7 +267,7 @@ class CodeWriterTest {
         jsOutput.increaseDepth();
         jsOutput.append("line 2");
         String output = jsOutput.toString();
-        String expected = "line 1" + LINE_SEPARATOR + "  line 2";
+        String expected = "line 1" + lineSeparator() + "  line 2";
         assertThat(output)
                 .isEqualTo(expected);
     }

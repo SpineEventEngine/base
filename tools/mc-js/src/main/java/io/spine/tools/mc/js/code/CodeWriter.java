@@ -40,7 +40,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static java.lang.String.join;
-import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.joining;
 
 /**
@@ -58,9 +57,6 @@ import static java.util.stream.Collectors.joining;
         "ClassWithTooManyMethods"
 })
 public final class CodeWriter {
-
-    @VisibleForTesting
-    static final String LINE_SEPARATOR = lineSeparator();
 
     private static final Indent STANDARD_INDENTATION = Indent.of2();
 
@@ -90,6 +86,13 @@ public final class CodeWriter {
     public CodeWriter(Indent indent) {
         this.lines = new ArrayList<>();
         this.indent = indent;
+    }
+
+    /**
+     * Obtains the string for separating code lines.
+     */
+    public static String lineSeparator() {
+        return System.lineSeparator();
     }
 
     /**
@@ -316,17 +319,17 @@ public final class CodeWriter {
     public String toString() {
         String result = lines.stream()
                              .map(CodeLine::toString)
-                             .collect(joining(LINE_SEPARATOR));
+                             .collect(joining(lineSeparator()));
         return result;
     }
 
     /**
-     * Obtains these lines with {@link #LINE_SEPARATOR} at the end of each line.
+     * Obtains these lines with {@link #lineSeparator()} at the end of each line.
      */
     public ImmutableList<String> separated() {
         ImmutableList<String> result =
                 lines.stream()
-                     .map(l -> l + LINE_SEPARATOR)
+                     .map(l -> l + lineSeparator())
                      .collect(toImmutableList());
         return result;
     }
