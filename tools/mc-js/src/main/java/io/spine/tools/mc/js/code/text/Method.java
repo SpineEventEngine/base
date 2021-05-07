@@ -54,7 +54,7 @@ public class Method implements Snippet {
     }
 
     @Override
-    public CodeWriter value() {
+    public CodeWriter code() {
         CodeWriter lines = new CodeWriter();
         lines.append(declaration());
         lines.increaseDepth();

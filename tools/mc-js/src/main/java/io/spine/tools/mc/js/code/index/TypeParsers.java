@@ -62,12 +62,12 @@ final class TypeParsers implements Snippet {
     }
 
     @Override
-    public CodeWriter value() {
+    public CodeWriter code() {
         List<Map.Entry<String, TypeName>> entries = mapEntries(fileSet);
         MapExport mapSnippet = MapExport.newBuilder(MAP_NAME)
                 .withEntries(entries)
                 .build();
-        return mapSnippet.value();
+        return mapSnippet.code();
     }
 
     private static List<Map.Entry<String, TypeName>> mapEntries(FileSet fileSet) {

@@ -53,7 +53,7 @@ public class MapExport implements Snippet {
     }
 
     @Override
-    public CodeWriter value() {
+    public CodeWriter code() {
         CodeWriter lines = new CodeWriter();
         lines.append("module.exports." + mapName + " = new Map([");
         appendEntries(lines);

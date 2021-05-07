@@ -45,7 +45,7 @@ class MapExportTest {
                 .withEntry("firstKey", 1)
                 .withEntry("lastKey", 999)
                 .build();
-        CodeWriter lines = map.value();
+        CodeWriter lines = map.code();
         String stringRepresentation = lines.toString();
         StringSubject assertRepresentation = assertThat(stringRepresentation);
         assertRepresentation.contains("module.exports.map = new Map([");

@@ -110,7 +110,7 @@ class AppendTypeUrlGetterTest {
         @DisplayName("for a message class")
         void forMessageClass() {
             Method method = typeUrlMethod(messageType());
-            CodeWriter codeLines = method.value();
+            CodeWriter codeLines = method.code();
             checkMethodForTypePresent(codeLines, messageType());
         }
 
@@ -118,7 +118,7 @@ class AppendTypeUrlGetterTest {
         @DisplayName("for an enum class")
         void forEnumClass() {
             Method method = typeUrlMethod(enumType());
-            CodeWriter codeLines = method.value();
+            CodeWriter codeLines = method.code();
             checkMethodForTypePresent(codeLines, enumType());
         }
     }

@@ -82,7 +82,7 @@ class MethodTest {
     }
 
     private static StringSubject assertThat(Method method) {
-        String rawMethod = method.value()
+        String rawMethod = method.code()
                                  .toString();
         return Truth.assertThat(rawMethod);
     }

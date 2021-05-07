@@ -55,7 +55,7 @@ class KnownTypesTest {
     @Test
     @DisplayName("generate known types map for several files")
     void generateKnownTypesMap() {
-        CodeWriter generatedLines = generator.value();
+        CodeWriter generatedLines = generator.code();
         String expectedForAny = expectedEntry(ANY) + ',';
         String expectedForString = expectedEntry(STRING_VALUE) + ',';
         assertContains(generatedLines, expectedForAny);
@@ -65,7 +65,7 @@ class KnownTypesTest {
     @Test
     @DisplayName("include enum types")
     void includeEnums() {
-        CodeWriter generatedLines = generator.value();
+        CodeWriter generatedLines = generator.code();
         TypeUrl enumTypeUrl = TypeUrl.from(NullValue.getDescriptor());
         assertContains(generatedLines, enumTypeUrl.toString());
     }

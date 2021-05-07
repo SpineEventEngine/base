@@ -125,7 +125,7 @@ public final class CodeWriter {
      * Appends the lines of the snippet.
      */
     public void append(Snippet snippet) {
-        append(snippet.value());
+        append(snippet.code());
     }
 
     /**

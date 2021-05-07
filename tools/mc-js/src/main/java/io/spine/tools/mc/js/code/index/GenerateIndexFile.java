@@ -27,21 +27,21 @@
 package io.spine.tools.mc.js.code.index;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.protobuf.Descriptors;
-import io.spine.tools.js.fs.Directory;
-import io.spine.tools.js.fs.FileName;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
-import io.spine.tools.mc.js.code.GenerationTask;
+import io.spine.tools.js.fs.Directory;
+import io.spine.tools.js.fs.FileName;
 import io.spine.tools.mc.js.code.CodeWriter;
-import io.spine.tools.mc.js.fs.FileWriter;
+import io.spine.tools.mc.js.code.GenerationTask;
 import io.spine.tools.mc.js.code.imports.Import;
+import io.spine.tools.mc.js.fs.FileWriter;
 
 import java.util.Collection;
 import java.util.Set;
 
-import static io.spine.tools.js.fs.LibraryFile.INDEX;
 import static io.spine.tools.code.CodeLine.emptyLine;
+import static io.spine.tools.js.fs.LibraryFile.INDEX;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -70,20 +70,20 @@ public final class GenerateIndexFile extends GenerationTask {
 
     @VisibleForTesting
     static CodeWriter codeFor(FileSet fileSet) {
-        CodeWriter lines = new CodeWriter();
-        lines.append(knownTypesImports(fileSet));
-        lines.append(emptyLine());
-        lines.append(new KnownTypes(fileSet).value());
-        lines.append(emptyLine());
-        lines.append(new TypeParsers(fileSet).value());
-        return lines;
+        CodeWriter code = new CodeWriter();
+        code.append(knownTypesImports(fileSet));
+        code.append(emptyLine());
+        code.append(new KnownTypes(fileSet).code());
+        code.append(emptyLine());
+        code.append(new TypeParsers(fileSet).code());
+        return code;
     }
 
     /**
      * Generates import statements for all files declaring generated messages.
      */
     private static CodeWriter knownTypesImports(FileSet fileSet) {
-        Collection<Descriptors.FileDescriptor> files = fileSet.files();
+        Collection<FileDescriptor> files = fileSet.files();
         Set<FileName> imports =
                 files.stream()
                      .filter(file -> !TypeSet.from(file).isEmpty())

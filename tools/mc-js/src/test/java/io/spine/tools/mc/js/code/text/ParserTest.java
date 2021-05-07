@@ -75,7 +75,7 @@ class ParserTest {
     @Test
     @DisplayName("generate whole snippet")
     void generateWholeSnippet() {
-        CodeWriter lines = parser.value();
+        CodeWriter lines = parser.code();
         assertCtorDeclaration(lines, message);
         assertPrototypeInitialization(lines, message);
         assertCtorInitialization(lines, message);

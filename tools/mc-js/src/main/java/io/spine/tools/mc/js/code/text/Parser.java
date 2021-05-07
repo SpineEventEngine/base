@@ -96,7 +96,7 @@ public final class Parser implements Snippet {
     }
 
     @Override
-    public CodeWriter value() {
+    public CodeWriter code() {
         CodeWriter lines = new CodeWriter();
         lines.append(constructor());
         lines.append(initPrototype());

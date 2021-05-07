@@ -36,5 +36,5 @@ public interface Snippet {
      *
      * @return always returns a new {@link CodeWriter}
      */
-    CodeWriter value();
+    CodeWriter code();
 }
