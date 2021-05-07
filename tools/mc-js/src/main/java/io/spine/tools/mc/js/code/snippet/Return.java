@@ -41,11 +41,11 @@ public final class Return extends CodeLine {
     /**
      * The value to be returned.
      */
-    private final Object value;
+    private final String value;
 
     private Return(Object returnedValue) {
         super();
-        this.value = returnedValue;
+        this.value = returnedValue.toString();
     }
 
     /**
