@@ -27,38 +27,20 @@
 package io.spine.tools.mc.js.code.snippet;
 
 import com.google.errorprone.annotations.Immutable;
+import io.spine.tools.code.LineBase;
 import io.spine.tools.js.code.TypeName;
-import io.spine.tools.code.Line;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
 /**
- * A declaration of a variable.
+ * A declaration of a variable using ES6 keyword {@code let}.
  */
 @Immutable
-public final class Let extends Line {
-
-    /**
-     * The key word used to create variables.
-     *
-     * <p>Currently is set to ES6 {@code let}.
-     */
-    private static final String KEY_WORD = "let";
-
-    private final String name;
-    private final String initializer;
+public final class Let extends LineBase {
 
     private Let(String name, String initializer) {
-        super();
-        this.name = name;
-        this.initializer = initializer;
-    }
-
-    @Override
-    public String content() {
-        String result = format("%s %s = %s;", KEY_WORD, name, initializer);
-        return result;
+        super(format("let %s = %s;", name, initializer));
     }
 
     /**

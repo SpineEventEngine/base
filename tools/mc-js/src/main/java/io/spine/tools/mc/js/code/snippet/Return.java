@@ -27,7 +27,7 @@
 package io.spine.tools.mc.js.code.snippet;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.code.Line;
+import io.spine.tools.code.LineBase;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -36,16 +36,10 @@ import static java.lang.String.format;
  * A code line representing a {@code return} statement.
  */
 @Immutable
-public final class Return extends Line {
-
-    /**
-     * The value to be returned.
-     */
-    private final String value;
+public final class Return extends LineBase {
 
     private Return(Object returnedValue) {
-        super();
-        this.value = returnedValue.toString();
+        super(format("return %s;", returnedValue));
     }
 
     /**
@@ -70,11 +64,5 @@ public final class Return extends Line {
      */
     public static Return nullReference() {
         return value("null");
-    }
-
-    @Override
-    public String content() {
-        String result = format("return %s;", value);
-        return result;
     }
 }
