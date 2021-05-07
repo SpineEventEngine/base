@@ -67,7 +67,7 @@ final class SingularFieldGenerator extends FieldGenerator {
      *         the name of the variable which holds the JS object to check
      */
     private void checkNotUndefined(String jsObject) {
-        jsOutput().ifNotUndefined(jsObject);
+        writer().ifNotUndefined(jsObject);
     }
 
     /**
@@ -76,7 +76,7 @@ final class SingularFieldGenerator extends FieldGenerator {
      * <p>Returns the cursor to the {@code fromObject} method level.
      */
     private void exitUndefinedCheck() {
-        jsOutput().exitBlock();
+        writer().exitBlock();
     }
 
     static Builder newBuilder() {

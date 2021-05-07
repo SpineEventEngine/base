@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 import static io.spine.tools.mc.js.code.field.given.Given.messageField;
 import static io.spine.tools.mc.js.code.field.given.Given.primitiveField;
 import static io.spine.tools.mc.js.code.field.precondition.FieldPrecondition.preconditionFor;
-import static io.spine.js.generate.given.Generators.assertContains;
+import static io.spine.tools.mc.js.code.given.Generators.assertContains;
 import static java.lang.String.format;
 
 @SuppressWarnings("DuplicateStringLiteralInspection")

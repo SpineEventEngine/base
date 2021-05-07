@@ -64,16 +64,16 @@ public interface FieldPrecondition {
      *
      * @param field
      *         the descriptor of the Protobuf field to create the precondition for
-     * @param jsOutput
+     * @param writer
      *         the {@code JsOutput} which will accumulate all the generated code
      * @return a {@code FieldPrecondition} of the appropriate type
      */
-    static FieldPrecondition preconditionFor(FieldDescriptor field, CodeWriter jsOutput) {
+    static FieldPrecondition preconditionFor(FieldDescriptor field, CodeWriter writer) {
         checkNotNull(field);
-        checkNotNull(jsOutput);
+        checkNotNull(writer);
         if (isMessage(field)) {
-            return new MessagePrecondition(field, jsOutput);
+            return new MessagePrecondition(field, writer);
         }
-        return new PrimitivePrecondition(jsOutput);
+        return new PrimitivePrecondition(writer);
     }
 }

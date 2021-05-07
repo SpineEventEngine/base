@@ -104,9 +104,9 @@ final class MapFieldGenerator extends FieldGenerator {
      */
     @VisibleForTesting
     String iterateOwnAttributes(String jsObject) {
-        jsOutput().ifNotNullOrUndefined(jsObject);
-        jsOutput().enterBlock("for (let " + ATTRIBUTE + " in " + jsObject + ')');
-        jsOutput().enterIfBlock(jsObject + ".hasOwnProperty(" + ATTRIBUTE + ')');
+        writer().ifNotNullOrUndefined(jsObject);
+        writer().enterBlock("for (let " + ATTRIBUTE + " in " + jsObject + ')');
+        writer().enterIfBlock(jsObject + ".hasOwnProperty(" + ATTRIBUTE + ')');
         String value = jsObject + '[' + ATTRIBUTE + ']';
         return value;
     }
@@ -117,9 +117,9 @@ final class MapFieldGenerator extends FieldGenerator {
      * <p>Returns the cursor to the {@code fromObject} method level.
      */
     private void exitOwnAttributeIteration() {
-        jsOutput().exitBlock();
-        jsOutput().exitBlock();
-        jsOutput().exitBlock();
+        writer().exitBlock();
+        writer().exitBlock();
+        writer().exitBlock();
     }
 
     /**

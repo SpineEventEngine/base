@@ -27,7 +27,6 @@
 package io.spine.tools.mc.js.fs;
 
 import com.google.common.base.Charsets;
-import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.fs.FileName;
@@ -91,7 +90,7 @@ public final class FileWriter {
      * <p>Overwrites the previous file content.
      *
      * @param jsOutput
-     *         the {@code JsOutput} to write
+     *         the JavaScript code to write to the file
      * @throws IllegalStateException
      *         if something went wrong when writing to file
      */
@@ -99,7 +98,7 @@ public final class FileWriter {
         checkNotNull(jsOutput);
         try {
             Files.write(path,
-                        ImmutableList.of(jsOutput.toString()),
+                        jsOutput.separated(),
                         Charsets.UTF_8,
                         CREATE, TRUNCATE_EXISTING);
         } catch (IOException e) {

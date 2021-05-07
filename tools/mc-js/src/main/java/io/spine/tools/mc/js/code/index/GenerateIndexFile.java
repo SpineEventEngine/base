@@ -33,7 +33,7 @@ import io.spine.code.proto.TypeSet;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.fs.FileName;
 import io.spine.tools.mc.js.code.CodeWriter;
-import io.spine.tools.mc.js.code.GenerationTask;
+import io.spine.tools.mc.js.code.task.GenerationTask;
 import io.spine.tools.mc.js.code.imports.Import;
 import io.spine.tools.mc.js.fs.FileWriter;
 
@@ -73,9 +73,9 @@ public final class GenerateIndexFile extends GenerationTask {
         CodeWriter code = new CodeWriter();
         code.append(knownTypesImports(fileSet));
         code.append(emptyLine());
-        code.append(new KnownTypes(fileSet).code());
+        code.append(new KnownTypes(fileSet).writer());
         code.append(emptyLine());
-        code.append(new TypeParsers(fileSet).code());
+        code.append(new TypeParsers(fileSet).writer());
         return code;
     }
 

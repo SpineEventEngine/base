@@ -71,7 +71,7 @@ public class Given {
 
     private static Descriptors.FieldDescriptor field(FieldContainerEntry entry) {
         String fieldName = entry.protoName();
-        Descriptors.FieldDescriptor field = io.spine.js.generate.given.Given.message().findFieldByName(fieldName);
+        Descriptors.FieldDescriptor field = io.spine.tools.mc.js.code.given.Given.message().findFieldByName(fieldName);
         return field;
     }
 }

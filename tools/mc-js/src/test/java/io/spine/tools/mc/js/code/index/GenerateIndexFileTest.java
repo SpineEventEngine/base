@@ -30,7 +30,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.fs.FileName;
 import io.spine.code.proto.FileSet;
-import io.spine.js.generate.given.GivenProject;
+import io.spine.tools.mc.js.code.given.GivenProject;
 import io.spine.tools.mc.js.code.CodeWriter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Path;
 
 import static io.spine.tools.js.fs.LibraryFile.INDEX;
-import static io.spine.js.generate.given.Generators.assertContains;
+import static io.spine.tools.mc.js.code.given.Generators.assertContains;
 import static java.nio.file.Files.exists;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

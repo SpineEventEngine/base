@@ -60,20 +60,20 @@ public interface FieldParser {
      *
      * @param field
      *         the descriptor of the field to create the parser for
-     * @param jsOutput
+     * @param writer
      *         the lines to accumulate the generated code
      * @return the {@code FieldParser} of the appropriate type
      */
-    static FieldParser createFor(FieldDescriptor field, CodeWriter jsOutput) {
+    static FieldParser createFor(FieldDescriptor field, CodeWriter writer) {
         checkNotNull(field);
-        checkNotNull(jsOutput);
+        checkNotNull(writer);
         FieldDeclaration fdecl = new FieldDeclaration(field);
         if (fdecl.isMessage()) {
-            return new MessageFieldParser(field, jsOutput);
+            return new MessageFieldParser(field, writer);
         }
         if (fdecl.isEnum()) {
-            return new EnumFieldParser(field, jsOutput);
+            return new EnumFieldParser(field, writer);
         }
-        return new PrimitiveFieldParser(field, jsOutput);
+        return new PrimitiveFieldParser(field, writer);
     }
 }

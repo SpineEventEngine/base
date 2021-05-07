@@ -42,20 +42,20 @@ final class PrimitiveFieldParser implements FieldParser {
 
     @SuppressWarnings("BadImport") // We use `FieldDescriptor.Type` for brevity.
     private final Type fieldType;
-    private final CodeWriter jsOutput;
+    private final CodeWriter writer;
 
     /**
      * Creates a new instance for the given field.
      *
      * @param field
      *         the processed field
-     * @param jsOutput
+     * @param writer
      *         the output to store the generated code
      */
-    PrimitiveFieldParser(FieldDescriptor field, CodeWriter jsOutput) {
+    PrimitiveFieldParser(FieldDescriptor field, CodeWriter writer) {
         checkNotNull(field);
         this.fieldType = field.getType();
-        this.jsOutput = checkNotNull(jsOutput);
+        this.writer = checkNotNull(writer);
     }
 
     /**
@@ -68,7 +68,7 @@ final class PrimitiveFieldParser implements FieldParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        PrimitiveParser parser = PrimitiveParsers.createFor(fieldType, jsOutput);
+        PrimitiveParser parser = PrimitiveParsers.createFor(fieldType, writer);
         parser.parseIntoVariable(value, variable);
     }
 }

@@ -36,7 +36,7 @@ import io.spine.tools.fs.ExternalModule;
 import io.spine.tools.fs.FileReference;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.fs.FileName;
-import io.spine.tools.mc.js.code.GenerationTask;
+import io.spine.tools.mc.js.code.task.GenerationTask;
 import io.spine.tools.mc.js.fs.JsFile;
 
 import java.io.File;

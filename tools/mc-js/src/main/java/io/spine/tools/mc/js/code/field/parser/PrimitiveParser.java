@@ -59,18 +59,12 @@ interface PrimitiveParser {
     interface Builder<B extends Builder<B>> {
 
         /**
-         * Sets the {@code JsOutput} which will accumulate all the generated code.
-         *
-         * @param jsOutput
-         *         the {@code JsOutput} to use
-         * @return self
+         * Sets the writer to accumulate all the generated code.
          */
-        B setJsOutput(CodeWriter jsOutput);
+        B setWriter(CodeWriter writer);
 
         /**
          * Creates the {@code PrimitiveParser} instance corresponding to this builder.
-         *
-         * @return the {@code PrimitiveParser} of the corresponding type
          */
         PrimitiveParser build();
     }

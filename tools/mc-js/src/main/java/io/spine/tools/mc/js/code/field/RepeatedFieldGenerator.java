@@ -82,10 +82,10 @@ final class RepeatedFieldGenerator extends FieldGenerator {
      */
     @VisibleForTesting
     void iterateListValues(String jsObject) {
-        jsOutput().ifNotNullOrUndefined(jsObject);
-        jsOutput().append(jsObject + ".forEach(");
-        jsOutput().increaseDepth();
-        jsOutput().enterBlock('(' + LIST_ITEM + ", index, array) =>");
+        writer().ifNotNullOrUndefined(jsObject);
+        writer().append(jsObject + ".forEach(");
+        writer().increaseDepth();
+        writer().enterBlock('(' + LIST_ITEM + ", index, array) =>");
     }
 
     /**
@@ -94,10 +94,10 @@ final class RepeatedFieldGenerator extends FieldGenerator {
      * <p>Returns the cursor to the {@code fromObject} method level.
      */
     private void exitListValueIteration() {
-        jsOutput().exitBlock();
-        jsOutput().decreaseDepth();
-        jsOutput().append(");");
-        jsOutput().exitBlock();
+        writer().exitBlock();
+        writer().decreaseDepth();
+        writer().append(");");
+        writer().exitBlock();
     }
 
     static Builder newBuilder() {

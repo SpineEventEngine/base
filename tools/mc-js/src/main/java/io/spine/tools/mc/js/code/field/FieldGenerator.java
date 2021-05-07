@@ -28,7 +28,7 @@ package io.spine.tools.mc.js.code.field;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.mc.js.code.JsCode;
+import io.spine.tools.mc.js.code.JsCodeGenerator;
 import io.spine.tools.mc.js.code.field.parser.FieldParser;
 import io.spine.tools.mc.js.code.field.precondition.FieldPrecondition;
 import io.spine.tools.mc.js.code.CodeWriter;
@@ -44,7 +44,7 @@ import static java.lang.String.format;
  * inserting a {@linkplain FieldPrecondition field precondition} and calling a
  * {@linkplain FieldParser field parser}.
  */
-public abstract class FieldGenerator extends JsCode {
+public abstract class FieldGenerator extends JsCodeGenerator {
 
     /**
      * The variable holding the value parsed by the {@link FieldParser} and then used to set the
@@ -59,7 +59,7 @@ public abstract class FieldGenerator extends JsCode {
     private final FieldParser parser;
 
     FieldGenerator(Builder<?> builder) {
-        super(builder.jsOutput);
+        super(builder.writer);
         this.field = builder.field;
         this.precondition = builder.precondition;
         this.parser = builder.parser;
@@ -118,7 +118,7 @@ public abstract class FieldGenerator extends JsCode {
     private void merge(String value) {
         String mergeFormat = mergeFormat();
         String setValue = format(mergeFormat, value);
-        jsOutput().append(setValue);
+        writer().append(setValue);
     }
 
     /**
@@ -143,7 +143,7 @@ public abstract class FieldGenerator extends JsCode {
         private FieldToParse field;
         private FieldPrecondition precondition;
         private FieldParser parser;
-        private CodeWriter jsOutput;
+        private CodeWriter writer;
 
         B setField(FieldToParse field) {
             this.field = checkNotNull(field);
@@ -160,8 +160,8 @@ public abstract class FieldGenerator extends JsCode {
             return self();
         }
 
-        B setJsOutput(CodeWriter jsOutput) {
-            this.jsOutput = checkNotNull(jsOutput);
+        B setWriter(CodeWriter writer) {
+            this.writer = checkNotNull(writer);
             return self();
         }
 

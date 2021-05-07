@@ -39,8 +39,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static io.spine.js.generate.given.FileWriters.assertFileContains;
-import static io.spine.js.generate.given.FileWriters.assertFileNotContains;
+import static io.spine.tools.mc.js.code.given.FileWriters.assertFileContains;
+import static io.spine.tools.mc.js.code.given.FileWriters.assertFileNotContains;
 
 @DisplayName("FileWriter should")
 class FileWriterTest {

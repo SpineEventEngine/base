@@ -32,7 +32,7 @@ import com.google.common.truth.StringSubject;
 import io.spine.tools.code.CodeLine;
 import io.spine.tools.code.Indent;
 import io.spine.tools.code.IndentedLine;
-import io.spine.tools.mc.js.code.text.Comment;
+import io.spine.tools.mc.js.code.snippet.Comment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.js.generate.given.Generators.assertContains;
+import static io.spine.tools.mc.js.code.given.Generators.assertContains;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.code.Indent.of2;

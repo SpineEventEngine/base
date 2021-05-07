@@ -38,19 +38,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
 final class MessagePrecondition implements FieldPrecondition {
 
     private final FieldDescriptor field;
-    private final CodeWriter jsOutput;
+    private final CodeWriter writer;
 
     /**
      * Creates a new {@code MessagePrecondition} for the given {@code field}.
      *
      * @param field
      *         the processed field
-     * @param jsOutput
-     *         the {@code JsOutput} which accumulates all generated code
+     * @param writer
+     *         the writer to accumulate the generated code
      */
-    MessagePrecondition(FieldDescriptor field, CodeWriter jsOutput) {
+    MessagePrecondition(FieldDescriptor field, CodeWriter writer) {
         this.field = field;
-        this.jsOutput = jsOutput;
+        this.writer = writer;
     }
 
     /**
@@ -71,16 +71,16 @@ final class MessagePrecondition implements FieldPrecondition {
         if (isProtobufValueType()) {
             return;
         }
-        jsOutput.ifNull(value);
+        writer.ifNull(value);
         String mergeNull = String.format(mergeFieldFormat, "null");
-        jsOutput.append(mergeNull);
-        jsOutput.enterElseBlock();
+        writer.append(mergeNull);
+        writer.enterElseBlock();
     }
 
     @Override
     public void exitNullCheck() {
         if (!isProtobufValueType()) {
-            jsOutput.exitBlock();
+            writer.exitBlock();
         }
     }
 

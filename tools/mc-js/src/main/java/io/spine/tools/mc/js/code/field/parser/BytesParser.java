@@ -28,7 +28,7 @@ package io.spine.tools.mc.js.code.field.parser;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.tools.mc.js.code.imports.Import;
-import io.spine.tools.mc.js.code.text.Let;
+import io.spine.tools.mc.js.code.snippet.Let;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

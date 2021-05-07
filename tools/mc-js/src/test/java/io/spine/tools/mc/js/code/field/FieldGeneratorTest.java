@@ -42,7 +42,7 @@ import static io.spine.tools.mc.js.code.field.RepeatedFieldGenerator.LIST_ITEM;
 import static io.spine.tools.mc.js.code.field.given.Given.mapField;
 import static io.spine.tools.mc.js.code.field.given.Given.repeatedField;
 import static io.spine.tools.mc.js.code.field.given.Given.singularField;
-import static io.spine.js.generate.given.Generators.assertContains;
+import static io.spine.tools.mc.js.code.given.Generators.assertContains;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

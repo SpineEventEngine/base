@@ -37,7 +37,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.js.generate.given.Generators.assertContains;
+import static io.spine.tools.mc.js.code.given.Generators.assertContains;
 import static io.spine.tools.mc.js.code.field.given.Given.enumField;
 import static io.spine.tools.mc.js.code.field.given.Given.messageField;
 import static io.spine.tools.mc.js.code.field.given.Given.primitiveField;

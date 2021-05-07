@@ -38,7 +38,7 @@ abstract class AbstractPrimitiveParser implements PrimitiveParser {
     private final CodeWriter jsOutput;
 
     AbstractPrimitiveParser(Builder<?> builder) {
-        this.jsOutput = builder.jsOutput;
+        this.jsOutput = builder.writer;
     }
 
     CodeWriter jsOutput() {
@@ -47,11 +47,11 @@ abstract class AbstractPrimitiveParser implements PrimitiveParser {
 
     abstract static class Builder<B extends Builder<B>> implements PrimitiveParser.Builder<B> {
 
-        private CodeWriter jsOutput;
+        private CodeWriter writer;
 
         @Override
-        public B setJsOutput(CodeWriter jsOutput) {
-            this.jsOutput = checkNotNull(jsOutput);
+        public B setWriter(CodeWriter writer) {
+            this.writer = checkNotNull(writer);
             return self();
         }
 

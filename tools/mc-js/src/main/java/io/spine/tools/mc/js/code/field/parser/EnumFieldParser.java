@@ -30,7 +30,7 @@ import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.js.code.TypeName;
 import io.spine.tools.mc.js.code.CodeWriter;
-import io.spine.tools.mc.js.code.text.Let;
+import io.spine.tools.mc.js.code.snippet.Let;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -47,14 +47,14 @@ final class EnumFieldParser implements FieldParser {
      *
      * @param field
      *         the processed field
-     * @param jsOutput
+     * @param writer
      *         the output to store the generated code
      */
-    EnumFieldParser(FieldDescriptor field, CodeWriter jsOutput) {
+    EnumFieldParser(FieldDescriptor field, CodeWriter writer) {
         checkNotNull(field);
         EnumDescriptor enumType = field.getEnumType();
         this.typeName = TypeName.from(enumType);
-        this.jsOutput = checkNotNull(jsOutput);
+        this.jsOutput = checkNotNull(writer);
     }
 
     /**

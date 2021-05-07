@@ -37,7 +37,7 @@ import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.js.generate.given.Generators.assertContains;
+import static io.spine.tools.mc.js.code.given.Generators.assertContains;
 
 @DisplayName("KnownTypesMap should")
 class KnownTypesTest {
@@ -55,7 +55,7 @@ class KnownTypesTest {
     @Test
     @DisplayName("generate known types map for several files")
     void generateKnownTypesMap() {
-        CodeWriter generatedLines = generator.code();
+        CodeWriter generatedLines = generator.writer();
         String expectedForAny = expectedEntry(ANY) + ',';
         String expectedForString = expectedEntry(STRING_VALUE) + ',';
         assertContains(generatedLines, expectedForAny);
@@ -65,7 +65,7 @@ class KnownTypesTest {
     @Test
     @DisplayName("include enum types")
     void includeEnums() {
-        CodeWriter generatedLines = generator.code();
+        CodeWriter generatedLines = generator.writer();
         TypeUrl enumTypeUrl = TypeUrl.from(NullValue.getDescriptor());
         assertContains(generatedLines, enumTypeUrl.toString());
     }

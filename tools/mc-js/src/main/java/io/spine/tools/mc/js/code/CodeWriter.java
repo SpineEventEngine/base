@@ -31,6 +31,7 @@ import com.google.common.collect.ImmutableList;
 import io.spine.tools.code.CodeLine;
 import io.spine.tools.code.Indent;
 import io.spine.tools.code.IndentedLine;
+import io.spine.tools.mc.js.code.snippet.Snippet;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -125,7 +126,7 @@ public final class CodeWriter {
      * Appends the lines of the snippet.
      */
     public void append(Snippet snippet) {
-        append(snippet.code());
+        append(snippet.writer());
     }
 
     /**

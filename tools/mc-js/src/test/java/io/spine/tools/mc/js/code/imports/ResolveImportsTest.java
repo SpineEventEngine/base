@@ -29,7 +29,7 @@ package io.spine.tools.mc.js.code.imports;
 import com.google.common.collect.ImmutableList;
 import com.google.common.truth.IterableSubject;
 import io.spine.tools.js.fs.Directory;
-import io.spine.js.generate.given.GivenProject;
+import io.spine.tools.mc.js.code.given.GivenProject;
 import io.spine.tools.fs.DirectoryPattern;
 import io.spine.tools.fs.ExternalModule;
 import org.junit.jupiter.api.DisplayName;

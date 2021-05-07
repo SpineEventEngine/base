@@ -29,12 +29,12 @@ package io.spine.tools.mc.js.code.field.parser;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.mc.js.code.CodeWriter;
-import io.spine.tools.mc.js.code.text.Let;
-import io.spine.tools.mc.js.code.text.Parser;
+import io.spine.tools.mc.js.code.snippet.Let;
+import io.spine.tools.mc.js.code.snippet.Parser;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.mc.js.code.text.Parser.TYPE_PARSERS_IMPORT_NAME;
+import static io.spine.tools.mc.js.code.snippet.Parser.TYPE_PARSERS_IMPORT_NAME;
 import static java.lang.String.format;
 
 /**
@@ -47,27 +47,27 @@ final class MessageFieldParser implements FieldParser {
     private static final String PARSER_BY_URL_METHOD = "parserFor";
 
     private final Descriptor message;
-    private final CodeWriter jsOutput;
+    private final CodeWriter writer;
 
     /**
      * Creates the {@code MessageFieldParser} for the given {@code field}.
      *
      * @param field
      *         the processed field
-     * @param jsOutput
+     * @param writer
      *         the output which accumulates all the generated code
      */
-    MessageFieldParser(FieldDescriptor field, CodeWriter jsOutput) {
+    MessageFieldParser(FieldDescriptor field, CodeWriter writer) {
         checkNotNull(field);
         this.message = field.getMessageType();
-        this.jsOutput = checkNotNull(jsOutput);
+        this.writer = checkNotNull(writer);
     }
 
     @Override
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        jsOutput.append(parsedVariable(variable, value));
+        writer.append(parsedVariable(variable, value));
     }
 
     private Let parsedVariable(String name, String valueToParse) {

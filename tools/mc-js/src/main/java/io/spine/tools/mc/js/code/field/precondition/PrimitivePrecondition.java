@@ -39,16 +39,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 final class PrimitivePrecondition implements FieldPrecondition {
 
-    private final CodeWriter jsOutput;
+    private final CodeWriter writer;
 
     /**
      * Creates a new {@code PrimitivePrecondition}.
-     *
-     * @param jsOutput
-     *         the {@code JsOutput} which accumulates all the generated code
      */
-    PrimitivePrecondition(CodeWriter jsOutput) {
-        this.jsOutput = jsOutput;
+    PrimitivePrecondition(CodeWriter writer) {
+        this.writer = writer;
     }
 
     /**
@@ -60,11 +57,11 @@ final class PrimitivePrecondition implements FieldPrecondition {
     public void performNullCheck(String value, String mergeFieldFormat) {
         checkNotNull(value);
         checkNotNull(mergeFieldFormat);
-        jsOutput.ifNotNull(value);
+        writer.ifNotNull(value);
     }
 
     @Override
     public void exitNullCheck() {
-        jsOutput.exitBlock();
+        writer.exitBlock();
     }
 }
