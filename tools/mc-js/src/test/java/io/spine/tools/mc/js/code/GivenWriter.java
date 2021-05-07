@@ -45,28 +45,28 @@ final class GivenWriter {
     }
 
     static CodeWriter withDepth(int depth) {
-        CodeWriter lines = new CodeWriter();
+        CodeWriter writer = new CodeWriter();
         for (int i = 0; i < depth; i++) {
-            lines.increaseDepth();
+            writer.increaseDepth();
         }
-        return lines;
+        return writer;
     }
 
     /**
      * Obtains code lines with the specified first line.
      */
     static CodeWriter newCodeLines(String firstLine) {
-        CodeWriter lines = new CodeWriter();
-        lines.append(firstLine);
-        return lines;
+        CodeWriter writer = new CodeWriter();
+        writer.append(firstLine);
+        return writer;
     }
 
     /**
      * Obtains code lines with the specified first line.
      */
     static CodeWriter newCodeLines(Indent indent, String firstLine) {
-        CodeWriter lines = new CodeWriter(indent);
-        lines.append(firstLine);
-        return lines;
+        CodeWriter writer = new CodeWriter(indent);
+        writer.append(firstLine);
+        return writer;
     }
 }

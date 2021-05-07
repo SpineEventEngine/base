@@ -209,7 +209,6 @@ class CodeWriterTest {
             CodeWriter second = GivenWriter.withSomeCodeIndentedAt(d2);
             first.append(second);
             CodeWriter expected = GivenWriter.withSomeCodeIndentedAt(d1);
-
             assertThat(first).isEqualTo(expected);
         }
     }
