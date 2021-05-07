@@ -36,20 +36,30 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>The line is not aware of {@linkplain IndentedLine indentation}.
  */
 @Immutable
-public abstract class Line {
+public class Line {
+
+    private final String content;
 
     /**
-     * Obtains the value of the line.
+     * Creates a new line with the passed text.
      */
-    public abstract String content();
+    protected Line(String content) {
+        this.content = checkNotNull(content);
+    }
+
+    /**
+     * Obtains the text of the line.
+     */
+    public final String content() {
+        return content;
+    }
 
     /**
      * Obtains a code line with the specified content.
      */
     public static Line of(String content) {
         checkNotNull(content);
-        return new LineBase(content) {
-        };
+        return new Line(content);
     }
 
     /**
@@ -68,18 +78,16 @@ public abstract class Line {
             return false;
         }
         Line other = (Line) o;
-        String content = content();
-        String otherContent = other.content();
-        return content.equals(otherContent);
+        return content.equals(other.content);
     }
 
     @Override
     public int hashCode() {
-        return content().hashCode();
+        return content.hashCode();
     }
 
     @Override
     public String toString() {
-        return content();
+        return content;
     }
 }

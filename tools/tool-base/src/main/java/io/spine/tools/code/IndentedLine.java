@@ -28,10 +28,8 @@ package io.spine.tools.code;
 
 import com.google.errorprone.annotations.Immutable;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
- * The JavaScript code line.
+ * The JavaScript code line as it appears in a source code file.
  *
  * <p>Consists of the code itself and the level on which the code is indented.
  *
@@ -48,18 +46,13 @@ public final class IndentedLine extends Line {
     private final Line code;
 
     private IndentedLine(Indent indent, Line code) {
-        super();
-        this.code = checkNotNull(code);
-        this.indent = checkNotNull(indent);
+        super(indent + code.content());
+        this.code = code;
+        this.indent = indent;
     }
 
     /**
-     * Creates a new {@code IndentedLine}.
-     *
-     * @param indent
-     *         the indent per a level
-     * @param code
- *             the source code text
+     * Creates a new instance with the specified indentation and code.
      */
     public static IndentedLine of(Indent indent, String code) {
         Line pure = Line.of(code);
@@ -67,24 +60,10 @@ public final class IndentedLine extends Line {
     }
 
     /**
-     * Creates a new {@code IndentedLine}.
-     *
-     * @param indent
-     *         the indent before the code
-     * @param code
- *         the code to be added
+     * Creates a new instance with the specified indentation and code.
      */
     private static IndentedLine of(Indent indent, Line code) {
         return new IndentedLine(indent, code);
-    }
-
-    /**
-     * Obtains the content of the line prepended with the indent.
-     */
-    @Override
-    public String content() {
-        String result = indent + code.content();
-        return result;
     }
 
     /**
@@ -124,6 +103,6 @@ public final class IndentedLine extends Line {
 
     @Override
     public int hashCode() {
-        return code.hashCode();
+        return code.hashCode() * 31 + indent.hashCode();
     }
 }

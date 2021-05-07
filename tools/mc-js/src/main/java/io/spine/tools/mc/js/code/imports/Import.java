@@ -27,7 +27,7 @@
 package io.spine.tools.mc.js.code.imports;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.code.LineBase;
+import io.spine.tools.code.Line;
 import io.spine.tools.js.fs.FileName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -40,7 +40,7 @@ import static java.lang.String.format;
  * into a {@linkplain #namedAs(String) named} one.
  */
 @Immutable
-public final class Import extends LineBase {
+public final class Import extends Line {
 
     private static final String DEFAULT_IMPORT_ENDING = ".default;";
 

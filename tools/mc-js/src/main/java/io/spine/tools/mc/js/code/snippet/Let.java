@@ -27,7 +27,7 @@
 package io.spine.tools.mc.js.code.snippet;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.code.LineBase;
+import io.spine.tools.code.Line;
 import io.spine.tools.js.code.TypeName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -37,7 +37,7 @@ import static java.lang.String.format;
  * A declaration of a variable using ES6 keyword {@code let}.
  */
 @Immutable
-public final class Let extends LineBase {
+public final class Let extends Line {
 
     private Let(String name, String initializer) {
         super(format("let %s = %s;", name, initializer));

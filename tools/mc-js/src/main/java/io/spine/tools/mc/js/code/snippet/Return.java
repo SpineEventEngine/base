@@ -27,7 +27,7 @@
 package io.spine.tools.mc.js.code.snippet;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.code.LineBase;
+import io.spine.tools.code.Line;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -36,7 +36,7 @@ import static java.lang.String.format;
  * A code line representing a {@code return} statement.
  */
 @Immutable
-public final class Return extends LineBase {
+public final class Return extends Line {
 
     private Return(Object returnedValue) {
         super(format("return %s;", returnedValue));
