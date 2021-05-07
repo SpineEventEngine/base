@@ -40,7 +40,7 @@ import static io.spine.tools.mc.js.code.snippet.Parser.FROM_OBJECT_ARG;
 import static io.spine.tools.mc.js.code.snippet.Parser.PARSE_METHOD;
 import static java.lang.System.lineSeparator;
 
-@DisplayName("GeneratedParser should")
+@DisplayName("`Parser` should")
 class ParserTest {
 
     private final Descriptor message = Any.getDescriptor();
