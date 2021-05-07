@@ -28,9 +28,9 @@ package io.spine.tools.mc.js.code;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.code.Line;
 import io.spine.tools.code.Indent;
 import io.spine.tools.code.IndentedLine;
+import io.spine.tools.code.Line;
 import io.spine.tools.mc.js.code.snippet.Snippet;
 
 import java.util.ArrayList;
@@ -49,8 +49,8 @@ import static java.util.stream.Collectors.joining;
  * <p>This class serves as the JS code storage as well as provides the convenience methods for
  * adding the code.
  *
- * <p>The writable representation of the output may be obtained through the {@link #toString()}
- * method.
+ * <p>The writable representation of the output may be obtained through
+ * the {@linkplain #toString() string representation}.
  */
 @SuppressWarnings({
         // The generated code duplicates the code used in test that checks it.

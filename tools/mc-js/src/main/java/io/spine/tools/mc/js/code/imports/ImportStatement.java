@@ -38,7 +38,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * An import statement extracted from a source file.
  */
-public class ImportStatement implements Logging {
+public final class ImportStatement implements Logging {
 
     private static final String IMPORT_START = "require('";
     private static final String IMPORT_END = "')";
