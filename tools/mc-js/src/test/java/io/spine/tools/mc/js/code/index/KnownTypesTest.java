@@ -39,7 +39,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.tools.mc.js.code.given.Generators.assertContains;
 
-@DisplayName("KnownTypesMap should")
+@DisplayName("`KnownTypes` should")
 class KnownTypesTest {
 
     /**
