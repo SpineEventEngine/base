@@ -253,11 +253,14 @@ class CodeWriterTest {
         CodeLine second = CodeLine.of("entry2");
         CodeLine last = CodeLine.of("entry3");
         List<CodeLine> lines = ImmutableList.of(first, second, last);
+
         CodeWriter code = CodeWriter.commaSeparated(lines);
-        assertLines(code).contains(first + ",");
-        assertLines(code).contains(second + ",");
-        assertLines(code).contains(last.content());
-        assertLines(code).doesNotContain(last + ",");
+
+        StringSubject assertCode = assertLines(code);
+        assertCode.contains(first + ",");
+        assertCode.contains(second + ",");
+        assertCode.contains(last.content());
+        assertCode.doesNotContain(last + ",");
     }
 
     @Test
