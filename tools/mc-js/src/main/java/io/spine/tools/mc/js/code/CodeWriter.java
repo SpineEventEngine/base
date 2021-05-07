@@ -162,7 +162,8 @@ public final class CodeWriter {
     }
 
     /**
-     * Declares JS method and enters its body.
+     * Declares a method and prepares the writer for adding its body
+     * by increasing the level of indentation.
      *
      * @param methodName
      *         the full method name including type name
@@ -189,7 +190,7 @@ public final class CodeWriter {
      * Enters the {@code if} block body.
      *
      * @param condition
-     *         the {@code if} clause
+     *         the text to be put into the {@code if} clause
      */
     public void enterIfBlock(String condition) {
         checkNotNull(condition);
