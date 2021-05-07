@@ -37,15 +37,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * precondition. This includes the {@code enum} type fields which obey the same rules as primitives
  * in this case.
  */
-final class PrimitivePrecondition implements FieldPrecondition {
+final class PrimitivePrecondition extends FieldPrecondition {
 
-    private final CodeWriter writer;
-
-    /**
-     * Creates a new {@code PrimitivePrecondition}.
-     */
     PrimitivePrecondition(CodeWriter writer) {
-        this.writer = writer;
+        super(writer);
     }
 
     /**
@@ -57,11 +52,11 @@ final class PrimitivePrecondition implements FieldPrecondition {
     public void performNullCheck(String value, String mergeFieldFormat) {
         checkNotNull(value);
         checkNotNull(mergeFieldFormat);
-        writer.ifNotNull(value);
+        writer().ifNotNull(value);
     }
 
     @Override
     public void exitNullCheck() {
-        writer.exitBlock();
+        writer().exitBlock();
     }
 }

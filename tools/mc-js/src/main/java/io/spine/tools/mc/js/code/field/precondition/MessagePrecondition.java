@@ -35,10 +35,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * The precondition for the proto fields of {@code message} types.
  */
-final class MessagePrecondition implements FieldPrecondition {
+final class MessagePrecondition extends FieldPrecondition {
 
     private final FieldDescriptor field;
-    private final CodeWriter writer;
 
     /**
      * Creates a new {@code MessagePrecondition} for the given {@code field}.
@@ -49,8 +48,8 @@ final class MessagePrecondition implements FieldPrecondition {
      *         the writer to accumulate the generated code
      */
     MessagePrecondition(FieldDescriptor field, CodeWriter writer) {
+        super(writer);
         this.field = field;
-        this.writer = writer;
     }
 
     /**
@@ -71,6 +70,7 @@ final class MessagePrecondition implements FieldPrecondition {
         if (isProtobufValueType()) {
             return;
         }
+        CodeWriter writer = writer();
         writer.ifNull(value);
         String mergeNull = String.format(mergeFieldFormat, "null");
         writer.append(mergeNull);
@@ -80,7 +80,7 @@ final class MessagePrecondition implements FieldPrecondition {
     @Override
     public void exitNullCheck() {
         if (!isProtobufValueType()) {
-            writer.exitBlock();
+            writer().exitBlock();
         }
     }
 

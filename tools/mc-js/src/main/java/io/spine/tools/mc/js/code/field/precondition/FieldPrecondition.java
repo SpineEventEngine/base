@@ -39,7 +39,17 @@ import static io.spine.code.proto.FieldTypes.isMessage;
  * The descendants are supposed to operate on the provided {@link CodeWriter},
  * so the interface methods are not returning any generated code.
  */
-public interface FieldPrecondition {
+public abstract class FieldPrecondition {
+
+    private final CodeWriter writer;
+
+    FieldPrecondition(CodeWriter writer) {
+        this.writer = checkNotNull(writer);
+    }
+
+    final CodeWriter writer() {
+        return writer;
+    }
 
     /**
      * Generates the code which checks the given field value for {@code null}.
@@ -52,12 +62,12 @@ public interface FieldPrecondition {
      * @param mergeFieldFormat
      *         the code that sets/adds value to the field
      */
-    void performNullCheck(String value, String mergeFieldFormat);
+    public abstract void performNullCheck(String value, String mergeFieldFormat);
 
     /**
      * Generates the code to exit the {@code null} check block and return to the upper level.
      */
-    void exitNullCheck();
+    public abstract void exitNullCheck();
 
     /**
      * Creates a new precondition for the given field.
@@ -68,7 +78,7 @@ public interface FieldPrecondition {
      *         the {@code JsOutput} which will accumulate all the generated code
      * @return a {@code FieldPrecondition} of the appropriate type
      */
-    static FieldPrecondition preconditionFor(FieldDescriptor field, CodeWriter writer) {
+    public static FieldPrecondition preconditionFor(FieldDescriptor field, CodeWriter writer) {
         checkNotNull(field);
         checkNotNull(writer);
         if (isMessage(field)) {
