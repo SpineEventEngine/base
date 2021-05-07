@@ -29,6 +29,7 @@ package io.spine.tools.code;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("IndentedLine should")
@@ -38,8 +39,12 @@ class IndentedLineTest {
     @DisplayName("create indent for code based on the level of indent")
     void createIndent() {
         Indent indentPerLevel = Indent.of2();
-        IndentedLine line = IndentedLine.of(indentPerLevel, "content");
+        IndentedLine line =
+                IndentedLine.of(indentPerLevel, "content")
+                            .adjustLevelBy(2);
         String expected = "    content";
-        assertEquals(expected, line.content());
+
+        assertThat(line.content())
+                .isEqualTo(expected);
     }
 }

@@ -26,6 +26,8 @@
 
 package io.spine.tools.code;
 
+import com.google.errorprone.annotations.Immutable;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -36,6 +38,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>For example, the code inside the {@code if} block is one unit deeper than the {@code if}
  * declaration itself.
  */
+@Immutable
 public final class IndentedLine extends CodeLine {
 
     /** The level of indentation before the code. */
@@ -87,13 +90,20 @@ public final class IndentedLine extends CodeLine {
     /**
      * Obtains a line with the indent level adjusted by the specified value.
      *
+     * <p>The passed value of shift can be negative, but the resulting indentation
+     * should be still greater or equal to zero.
+     *
+     * <p>If zero shift passed, this line is returned.
+     *
      * @param shift
-     *         the offset for indentation levels. Can be negative, but the resulting indentation
-     *         should be still greater or equal to zero.
+     *         the offset for levels of indentation
      *
      * @return a new line with the adjusted indent level
      */
     public IndentedLine adjustLevelBy(int shift) {
+        if (shift == 0) {
+            return this;
+        }
         Indent newIndent = indent.shifted(shift);
         return new IndentedLine(newIndent, code);
     }

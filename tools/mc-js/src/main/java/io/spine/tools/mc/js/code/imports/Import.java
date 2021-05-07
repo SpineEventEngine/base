@@ -26,6 +26,8 @@
 
 package io.spine.tools.mc.js.code.imports;
 
+import com.google.errorprone.annotations.Immutable;
+import io.spine.tools.code.CodeLineBase;
 import io.spine.tools.js.fs.FileName;
 import io.spine.tools.code.CodeLine;
 
@@ -38,15 +40,13 @@ import static java.lang.String.format;
  * <p>The import is anonymous, but can be transformed
  * into a {@linkplain #namedAs(String) named} one.
  */
-public class Import extends CodeLine {
+@Immutable
+public final class Import extends CodeLineBase {
 
     private static final String DEFAULT_IMPORT_ENDING = ".default;";
 
-    private final String content;
-
     private Import(String content) {
-        super();
-        this.content = checkNotNull(content);
+        super(content);
     }
 
     /**
@@ -100,17 +100,13 @@ public class Import extends CodeLine {
         return new Import(content);
     }
 
-    @Override
-    public String content() {
-        return content;
-    }
-
     /**
      * Converts the import to the default import.
      *
      * <p>Does nothing if the import is already default.
      */
     public Import toDefault() {
+        String content = content();
         if (content.endsWith(DEFAULT_IMPORT_ENDING)) {
             return this;
         }

@@ -26,6 +26,7 @@
 
 package io.spine.tools.mc.js.code.snippet;
 
+import com.google.errorprone.annotations.Immutable;
 import io.spine.tools.js.code.TypeName;
 import io.spine.tools.code.CodeLine;
 
@@ -35,7 +36,8 @@ import static java.lang.String.format;
 /**
  * A declaration of a variable.
  */
-public class Let extends CodeLine {
+@Immutable
+public final class Let extends CodeLine {
 
     /**
      * The key word used to create variables.

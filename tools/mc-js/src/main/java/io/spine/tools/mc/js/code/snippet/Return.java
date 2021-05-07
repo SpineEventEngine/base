@@ -26,6 +26,7 @@
 
 package io.spine.tools.mc.js.code.snippet;
 
+import com.google.errorprone.annotations.Immutable;
 import io.spine.tools.code.CodeLine;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -34,7 +35,8 @@ import static java.lang.String.format;
 /**
  * A code line representing a {@code return} statement.
  */
-public class Return extends CodeLine {
+@Immutable
+public final class Return extends CodeLine {
 
     /**
      * The value to be returned.
