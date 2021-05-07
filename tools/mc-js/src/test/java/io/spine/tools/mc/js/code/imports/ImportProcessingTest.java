@@ -43,7 +43,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.mc.js.code.imports.ResolveImports.processImports;
 import static io.spine.tools.mc.js.code.imports.given.Given.importWithPath;
 
-@DisplayName("JavaScript file should")
+@DisplayName("Import processing should")
 class ImportProcessingTest {
 
     private static final String RESOLVED_IMPORT_PATH = "resolved";
