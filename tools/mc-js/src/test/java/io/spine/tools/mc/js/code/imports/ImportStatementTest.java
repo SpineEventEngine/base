@@ -39,13 +39,14 @@ import static io.spine.tools.mc.js.code.imports.given.Given.importWithPath;
 import static io.spine.tools.mc.js.code.imports.given.Given.relativeImportPath;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("ImportStatement should")
+@DisplayName("`ImportStatement` should")
 class ImportStatementTest {
 
-    private final File importOrigin = Paths.get("folder/nested/some-file.js")
-                                           .toFile();
-    private final ImportStatement statement = importWithPath(relativeImportPath(),
-                                                             importOrigin);
+    private final File importOrigin =
+            Paths.get("folder/nested/some-file.js")
+                 .toFile();
+    private final ImportStatement statement =
+            importWithPath(relativeImportPath(), importOrigin);
 
     @Test
     @DisplayName("extract the import path")
@@ -67,10 +68,12 @@ class ImportStatementTest {
     @DisplayName("know about the absolute path to the imported file")
     void obtainImportedFilePath() {
         Path importedFilePath = statement.importedFilePath();
-        Path expectedRoot = importOrigin.getParentFile()
-                                        .toPath();
-        Path expectedPath = expectedRoot.resolve(relativeImportPath())
-                                        .normalize();
+        Path expectedRoot =
+                importOrigin.getParentFile()
+                            .toPath();
+        Path expectedPath =
+                expectedRoot.resolve(relativeImportPath())
+                            .normalize();
         assertEquals(expectedPath, importedFilePath);
     }
 }
