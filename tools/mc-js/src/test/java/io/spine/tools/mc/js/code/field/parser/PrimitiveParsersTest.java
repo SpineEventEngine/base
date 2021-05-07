@@ -41,7 +41,7 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT64;
 @DisplayName("PrimitiveParsers utility should")
 class PrimitiveParsersTest extends UtilityClassTest<PrimitiveParsers> {
 
-    private CodeWriter jsOutput;
+    private CodeWriter writer;
 
     PrimitiveParsersTest() {
         super(PrimitiveParsers.class);
@@ -49,34 +49,34 @@ class PrimitiveParsersTest extends UtilityClassTest<PrimitiveParsers> {
 
     @BeforeEach
     void setUp() {
-        jsOutput = new CodeWriter();
+        writer = new CodeWriter();
     }
 
     @Test
     @DisplayName("create identity parser")
     void createIdentityParser() {
-        PrimitiveParser parser = PrimitiveParsers.createFor(INT32, jsOutput);
+        PrimitiveParser parser = PrimitiveParsers.createFor(INT32, writer);
         assertThat(parser).isInstanceOf(IdentityParser.class);
     }
 
     @Test
     @DisplayName("create parser for long value")
     void createLongParser() {
-        PrimitiveParser parser = PrimitiveParsers.createFor(INT64, jsOutput);
+        PrimitiveParser parser = PrimitiveParsers.createFor(INT64, writer);
         assertThat(parser).isInstanceOf(LongParser.class);
     }
 
     @Test
     @DisplayName("create parser for float value")
     void createFloatParser() {
-        PrimitiveParser parser = PrimitiveParsers.createFor(FLOAT, jsOutput);
+        PrimitiveParser parser = PrimitiveParsers.createFor(FLOAT, writer);
         assertThat(parser).isInstanceOf(FloatParser.class);
     }
 
     @Test
     @DisplayName("create parser for bytes value")
     void createBytesParser() {
-        PrimitiveParser parser = PrimitiveParsers.createFor(BYTES, jsOutput);
+        PrimitiveParser parser = PrimitiveParsers.createFor(BYTES, writer);
         assertThat(parser).isInstanceOf(BytesParser.class);
     }
 }
