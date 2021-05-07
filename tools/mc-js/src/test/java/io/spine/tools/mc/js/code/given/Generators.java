@@ -39,8 +39,8 @@ public final class Generators {
     private Generators() {
     }
 
-    public static void assertContains(CodeWriter jsOutput, CharSequence toSearch) {
-        String codeString = jsOutput.toString();
+    public static void assertContains(CodeWriter writer, CharSequence toSearch) {
+        String codeString = writer.toString();
         assertThat(codeString).contains(toSearch);
     }
 }
