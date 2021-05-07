@@ -28,14 +28,14 @@ package io.spine.tools.mc.js.code;
 
 import io.spine.tools.code.Indent;
 
-final class GivenLines {
+final class GivenWriter {
 
     /** Prevents instantiation of this utility class. */
-    private GivenLines() {
+    private GivenWriter() {
     }
 
-    static CodeWriter withDifferentDepth(int initialDepth) {
-        CodeWriter lines = linesWithDepth(initialDepth);
+    static CodeWriter withSomeCodeIndentedAt(int depth) {
+        CodeWriter lines = withDepth(depth);
         lines.append("{");
         lines.increaseDepth();
         lines.append("in the code block");
@@ -44,7 +44,7 @@ final class GivenLines {
         return lines;
     }
 
-    static CodeWriter linesWithDepth(int depth) {
+    static CodeWriter withDepth(int depth) {
         CodeWriter lines = new CodeWriter();
         for (int i = 0; i < depth; i++) {
             lines.increaseDepth();
@@ -64,7 +64,7 @@ final class GivenLines {
     /**
      * Obtains code lines with the specified first line.
      */
-    public static CodeWriter newCodeLines(String firstLine, Indent indent) {
+    static CodeWriter newCodeLines(Indent indent, String firstLine) {
         CodeWriter lines = new CodeWriter(indent);
         lines.append(firstLine);
         return lines;

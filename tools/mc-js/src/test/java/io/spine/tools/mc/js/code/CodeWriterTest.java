@@ -168,8 +168,8 @@ class CodeWriterTest {
         @Test
         @DisplayName("of the same depth")
         void sameDepth() {
-            CodeWriter first = GivenLines.newCodeLines(FIRST_PART);
-            CodeWriter second = GivenLines.newCodeLines(SECOND_PART);
+            CodeWriter first = GivenWriter.newCodeLines(FIRST_PART);
+            CodeWriter second = GivenWriter.newCodeLines(SECOND_PART);
             first.append(second);
             String expected = FIRST_PART + lineSeparator() + SECOND_PART;
             assertLines(first).isEqualTo(expected);
@@ -178,8 +178,8 @@ class CodeWriterTest {
         @Test
         @DisplayName("only of the same indent")
         void notAllowDifferentIndents() {
-            CodeWriter first = GivenLines.newCodeLines(FIRST_PART, of2());
-            CodeWriter second = GivenLines.newCodeLines(FIRST_PART, of4());
+            CodeWriter first = GivenWriter.newCodeLines(of2(), FIRST_PART);
+            CodeWriter second = GivenWriter.newCodeLines(of4(), FIRST_PART);
             assertIllegalArgument(() -> first.append(second));
         }
 
@@ -205,10 +205,10 @@ class CodeWriterTest {
          *         the depth of the appended lines
          */
         private void assertMergedAndAligned(int d1, int d2) {
-            CodeWriter first = GivenLines.linesWithDepth(d1);
-            CodeWriter second = GivenLines.withDifferentDepth(d2);
+            CodeWriter first = GivenWriter.withDepth(d1);
+            CodeWriter second = GivenWriter.withSomeCodeIndentedAt(d2);
             first.append(second);
-            CodeWriter expected = GivenLines.withDifferentDepth(d1);
+            CodeWriter expected = GivenWriter.withSomeCodeIndentedAt(d1);
 
             assertThat(first).isEqualTo(expected);
         }
@@ -266,7 +266,7 @@ class CodeWriterTest {
     @Test
     @DisplayName("concatenate all lines of code with correct indent in `toString`")
     void provideToString() {
-        CodeWriter jsOutput = GivenLines.newCodeLines("line 1");
+        CodeWriter jsOutput = GivenWriter.newCodeLines("line 1");
         jsOutput.increaseDepth();
         jsOutput.append("line 2");
         String output = jsOutput.toString();
