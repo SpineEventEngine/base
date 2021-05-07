@@ -97,26 +97,29 @@ public final class CodeWriter {
     }
 
     /**
-     * Appends another code lines to this code.
+     * Appends code from the passed writer to this one.
      *
-     * <p>If the appended lines have different indent level, then the level
+     * <p>If the appended lines have different indent level, the level
      * of appended lines is adjusted to match the level of the current lines.
      *
      * <p>The indent level is adjusted by the difference of the levels.
      *
-     * @param lines
-     *         the code to append
+     * <p>Writing to the passed writer after this method exists will not have effect
+     * on this writer.
+     *
+     * @param writer
+     *         the code to append to this instance
      */
-    public void append(CodeWriter lines) {
+    public void append(CodeWriter writer) {
         checkArgument(
-                indent.size() == lines.indent.size(),
+                indent.size() == writer.indent.size(),
                 "Cannot merge code parts with different indentation size." +
                         " Current indentation: %s. Passed: %s.",
                 indent.size(),
-                lines.indent.size()
+                writer.indent.size()
         );
-        int levelDifference = indent.level() - lines.indent().level();
-        for (IndentedLine line : lines.lines) {
+        int levelDifference = indent.level() - writer.indent().level();
+        for (IndentedLine line : writer.lines) {
             IndentedLine adjusted = line.adjustLevelBy(levelDifference);
             append(adjusted);
         }

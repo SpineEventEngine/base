@@ -94,13 +94,13 @@ public final class CreateParsers extends GenerationTask {
     static CodeWriter codeFor(FileDescriptor file) {
         ImmutableCollection<MessageType> types = targetTypes(file);
         FileName fileName = FileName.from(file);
-        CodeWriter lines = new CodeWriter();
-        lines.append(emptyLine());
-        lines.append(Comment.generatedBySpine());
-        lines.append(emptyLine());
-        lines.append(imports(fileName));
-        lines.append(parses(types));
-        return lines;
+        CodeWriter writer = new CodeWriter();
+        writer.append(emptyLine());
+        writer.append(Comment.generatedBySpine());
+        writer.append(emptyLine());
+        writer.append(imports(fileName));
+        writer.append(parses(types));
+        return writer;
     }
 
     /**
@@ -133,12 +133,12 @@ public final class CreateParsers extends GenerationTask {
      *         all messages in a file to generate parser for
      */
     private static CodeWriter parses(Collection<MessageType> messageTypes) {
-        CodeWriter snippet = new CodeWriter();
+        CodeWriter writer = new CodeWriter();
         for (MessageType message : messageTypes) {
             Parser parser = new Parser(message.descriptor());
-            snippet.append(emptyLine());
-            snippet.append(parser);
+            writer.append(emptyLine());
+            writer.append(parser);
         }
-        return snippet;
+        return writer;
     }
 }
