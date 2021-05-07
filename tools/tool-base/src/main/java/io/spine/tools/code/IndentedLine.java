@@ -39,15 +39,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * declaration itself.
  */
 @Immutable
-public final class IndentedLine extends CodeLine {
+public final class IndentedLine extends Line {
 
     /** The level of indentation before the code. */
     private final Indent indent;
 
     /** The line of code to be executed. */
-    private final CodeLine code;
+    private final Line code;
 
-    private IndentedLine(Indent indent, CodeLine code) {
+    private IndentedLine(Indent indent, Line code) {
         super();
         this.code = checkNotNull(code);
         this.indent = checkNotNull(indent);
@@ -62,7 +62,7 @@ public final class IndentedLine extends CodeLine {
  *             the source code text
      */
     public static IndentedLine of(Indent indent, String code) {
-        CodeLine pure = CodeLine.of(code);
+        Line pure = Line.of(code);
         return of(indent, pure);
     }
 
@@ -74,7 +74,7 @@ public final class IndentedLine extends CodeLine {
      * @param code
  *         the code to be added
      */
-    private static IndentedLine of(Indent indent, CodeLine code) {
+    private static IndentedLine of(Indent indent, Line code) {
         return new IndentedLine(indent, code);
     }
 

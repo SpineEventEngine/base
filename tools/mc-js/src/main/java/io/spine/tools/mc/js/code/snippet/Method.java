@@ -27,7 +27,7 @@
 package io.spine.tools.mc.js.code.snippet;
 
 import io.spine.tools.js.code.MethodReference;
-import io.spine.tools.code.CodeLine;
+import io.spine.tools.code.Line;
 import io.spine.tools.mc.js.code.CodeWriter;
 
 import java.util.List;
@@ -44,7 +44,7 @@ public class Method implements Snippet {
     private final MethodReference reference;
     /** Names of the method parameters. */
     private final List<String> parameters;
-    private final List<CodeLine> body;
+    private final List<Line> body;
 
     private Method(Builder builder) {
         this.reference = builder.methodReference;
@@ -58,7 +58,7 @@ public class Method implements Snippet {
         lines.append(declaration());
         lines.increaseDepth();
         try {
-            for (CodeLine bodyLine : body) {
+            for (Line bodyLine : body) {
                 lines.append(bodyLine);
             }
         } finally {
@@ -93,7 +93,7 @@ public class Method implements Snippet {
     public static class Builder {
 
         private final MethodReference methodReference;
-        private final List<CodeLine> body = newArrayList();
+        private final List<Line> body = newArrayList();
         private List<String> parameters = newArrayList();
 
         private Builder(MethodReference methodReference) {
@@ -113,7 +113,7 @@ public class Method implements Snippet {
          * Appends a line to the body of the method.
          */
         public Builder appendToBody(String line) {
-            CodeLine codeLine = CodeLine.of(line);
+            Line codeLine = Line.of(line);
             body.add(codeLine);
             return this;
         }
@@ -121,7 +121,7 @@ public class Method implements Snippet {
         /**
          * Appends a line to the body of the method.
          */
-        public Builder appendToBody(CodeLine line) {
+        public Builder appendToBody(Line line) {
             checkNotNull(line);
             body.add(line);
             return this;

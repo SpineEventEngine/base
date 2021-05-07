@@ -26,22 +26,60 @@
 
 package io.spine.tools.code;
 
-import com.google.common.truth.StringSubject;
-import com.google.common.truth.Truth;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.errorprone.annotations.Immutable;
 
-@DisplayName("CodeLine should")
-class CodeLineTest {
+import static com.google.common.base.Preconditions.checkNotNull;
 
-    @Test
-    @DisplayName("provide an empty line")
-    void emptyLine() {
-        CodeLine line = CodeLine.emptyLine();
-        assertThat(line).isEqualTo("");
+/**
+ * A source code line.
+ *
+ * <p>The line is not aware of {@linkplain IndentedLine indentation}.
+ */
+@Immutable
+public abstract class Line {
+
+    /**
+     * Obtains the value of the line.
+     */
+    public abstract String content();
+
+    /**
+     * Obtains a code line with the specified content.
+     */
+    public static Line of(String content) {
+        checkNotNull(content);
+        return new LineBase(content) {
+        };
     }
 
-    private static StringSubject assertThat(CodeLine line) {
-        return Truth.assertThat(line.content());
+    /**
+     * Obtains an empty code line.
+     */
+    public static Line emptyLine() {
+        return of("");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Line)) {
+            return false;
+        }
+        Line other = (Line) o;
+        String content = content();
+        String otherContent = other.content();
+        return content.equals(otherContent);
+    }
+
+    @Override
+    public int hashCode() {
+        return content().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return content();
     }
 }

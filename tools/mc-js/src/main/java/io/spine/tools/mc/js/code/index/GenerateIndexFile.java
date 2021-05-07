@@ -40,7 +40,7 @@ import io.spine.tools.mc.js.fs.FileWriter;
 import java.util.Collection;
 import java.util.Set;
 
-import static io.spine.tools.code.CodeLine.emptyLine;
+import static io.spine.tools.code.Line.emptyLine;
 import static io.spine.tools.js.fs.LibraryFile.INDEX;
 import static java.util.stream.Collectors.toSet;
 

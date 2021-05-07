@@ -37,7 +37,7 @@ import io.spine.tools.mc.js.code.field.FieldGenerators;
 import io.spine.tools.mc.js.code.field.FieldToParse;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.code.CodeLine.emptyLine;
+import static io.spine.tools.code.Line.emptyLine;
 import static java.lang.String.format;
 
 /**

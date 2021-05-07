@@ -26,62 +26,22 @@
 
 package io.spine.tools.code;
 
-import com.google.errorprone.annotations.Immutable;
-
-import java.util.Objects;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A source code line.
- *
- * <p>The line is not aware of {@linkplain IndentedLine indentation}.
+ * An abstract base for code lines with the content known at the time of creation.
  */
-@Immutable
-public abstract class CodeLine {
+public abstract class LineBase extends Line {
 
-    /**
-     * Obtains the value of the line.
-     */
-    public abstract String content();
+    private final String content;
 
-    /**
-     * Obtains a code line with the specified content.
-     */
-    public static CodeLine of(String content) {
-        checkNotNull(content);
-        return new CodeLineBase(content) {
-        };
-    }
-
-    /**
-     * Obtains an empty code line.
-     */
-    public static CodeLine emptyLine() {
-        return of("");
+    protected LineBase(String content) {
+        super();
+        this.content = checkNotNull(content);
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof CodeLine)) {
-            return false;
-        }
-        CodeLine line = (CodeLine) o;
-        String content = content();
-        String otherContent = line.content();
-        return content.equals(otherContent);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(content());
-    }
-
-    @Override
-    public String toString() {
-        return content();
+    public final String content() {
+        return content;
     }
 }

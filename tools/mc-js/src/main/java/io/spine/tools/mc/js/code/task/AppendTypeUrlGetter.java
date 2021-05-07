@@ -28,7 +28,7 @@ package io.spine.tools.mc.js.code.task;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.tools.code.CodeLine;
+import io.spine.tools.code.Line;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.code.MethodReference;
 import io.spine.tools.js.code.TypeName;
@@ -43,7 +43,7 @@ import io.spine.tools.mc.js.code.snippet.Return;
 import io.spine.type.Type;
 import io.spine.type.TypeUrl;
 
-import static io.spine.tools.code.CodeLine.emptyLine;
+import static io.spine.tools.code.Line.emptyLine;
 
 /**
  * Generates a method to obtain a {@code TypeUrl} for each type in a {@link FileSet}.
@@ -94,7 +94,7 @@ public class AppendTypeUrlGetter extends GenerationTask {
         return method;
     }
 
-    private static CodeLine returnTypeUrl(Type<?, ?> type) {
+    private static Line returnTypeUrl(Type<?, ?> type) {
         TypeUrl typeUrl = type.url();
         return Return.stringLiteral(typeUrl.value());
     }

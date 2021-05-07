@@ -26,22 +26,22 @@
 
 package io.spine.tools.code;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.google.common.truth.StringSubject;
+import com.google.common.truth.Truth;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-/**
- * An abstract base for code lines with the content known at the time of creation.
- */
-public abstract class CodeLineBase extends CodeLine {
+@DisplayName("CodeLine should")
+class LineTest {
 
-    private final String content;
-
-    protected CodeLineBase(String content) {
-        super();
-        this.content = checkNotNull(content);
+    @Test
+    @DisplayName("provide an empty line")
+    void emptyLine() {
+        Line line = Line.emptyLine();
+        assertThat(line).isEqualTo("");
     }
 
-    @Override
-    public final String content() {
-        return content;
+    private static StringSubject assertThat(Line line) {
+        return Truth.assertThat(line.content());
     }
 }

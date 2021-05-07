@@ -29,7 +29,7 @@ package io.spine.tools.mc.js.code;
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.truth.StringSubject;
-import io.spine.tools.code.CodeLine;
+import io.spine.tools.code.Line;
 import io.spine.tools.code.Indent;
 import io.spine.tools.code.IndentedLine;
 import io.spine.tools.mc.js.code.snippet.Comment;
@@ -160,7 +160,7 @@ class CodeWriterTest {
 
     @Nested
     @DisplayName("append code lines")
-    class AppendCodeLines {
+    class AppendLines {
 
         private static final String FIRST_PART = "first part";
         private static final String SECOND_PART = "second part";
@@ -218,7 +218,7 @@ class CodeWriterTest {
     void appendUnalignedLine() {
         CodeWriter lines = new CodeWriter();
         lines.increaseDepth();
-        CodeLine comment = Comment.of("The field...");
+        Line comment = Comment.of("The field...");
         lines.append(comment);
         String expected = lines.indent() + comment.content();
         assertLines(lines).isEqualTo(expected);
@@ -248,10 +248,10 @@ class CodeWriterTest {
     @Test
     @DisplayName("join lines using comma")
     void joinLinesWithComma() {
-        CodeLine first = CodeLine.of("entry1");
-        CodeLine second = CodeLine.of("entry2");
-        CodeLine last = CodeLine.of("entry3");
-        List<CodeLine> lines = ImmutableList.of(first, second, last);
+        Line first = Line.of("entry1");
+        Line second = Line.of("entry2");
+        Line last = Line.of("entry3");
+        List<Line> lines = ImmutableList.of(first, second, last);
 
         CodeWriter code = CodeWriter.commaSeparated(lines);
 

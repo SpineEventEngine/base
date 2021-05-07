@@ -27,7 +27,7 @@
 package io.spine.tools.mc.js.code.snippet;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import io.spine.tools.code.CodeLine;
+import io.spine.tools.code.Line;
 import io.spine.tools.mc.js.code.CodeWriter;
 
 import java.util.List;
@@ -44,7 +44,7 @@ import static java.lang.String.format;
 public class MapExport implements Snippet {
 
     private final String mapName;
-    private final List<CodeLine> entries;
+    private final List<Line> entries;
 
     private MapExport(Builder builder) {
         this.mapName = builder.mapName;
@@ -76,7 +76,7 @@ public class MapExport implements Snippet {
     public static class Builder {
 
         private final String mapName;
-        private final List<CodeLine> entries;
+        private final List<Line> entries;
 
         private Builder(String mapName) {
             this.mapName = mapName;
@@ -88,7 +88,7 @@ public class MapExport implements Snippet {
          */
         @CanIgnoreReturnValue
         public Builder withEntry(String key, Object value) {
-            CodeLine entry = mapEntry(key, value);
+            Line entry = mapEntry(key, value);
             entries.add(entry);
             return this;
         }
@@ -114,11 +114,11 @@ public class MapExport implements Snippet {
         /**
          * Obtains a map entry with the string literal key.
          */
-        private static CodeLine mapEntry(String key, Object value) {
+        private static Line mapEntry(String key, Object value) {
             checkNotNull(key);
             checkNotNull(value);
             String entry = format("['%s', %s]", key, value);
-            return CodeLine.of(entry);
+            return Line.of(entry);
         }
     }
 }

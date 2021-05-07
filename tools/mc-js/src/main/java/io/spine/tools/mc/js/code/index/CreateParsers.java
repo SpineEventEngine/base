@@ -46,7 +46,7 @@ import io.spine.type.MessageType;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.code.CodeLine.emptyLine;
+import static io.spine.tools.code.Line.emptyLine;
 
 /**
  * This class writes the {@linkplain Parser code} for

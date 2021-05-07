@@ -28,7 +28,7 @@ package io.spine.tools.mc.js.code;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.code.CodeLine;
+import io.spine.tools.code.Line;
 import io.spine.tools.code.Indent;
 import io.spine.tools.code.IndentedLine;
 import io.spine.tools.mc.js.code.snippet.Snippet;
@@ -150,7 +150,7 @@ public final class CodeWriter {
      * @param line
      *         the line to append
      */
-    public void append(CodeLine line) {
+    public void append(Line line) {
         checkNotNull(line);
         IndentedLine indented;
         if (line instanceof IndentedLine) {
@@ -298,11 +298,11 @@ public final class CodeWriter {
     /**
      * Merges lines by addition of a comma to each line except the last one.
      */
-    public static CodeWriter commaSeparated(List<CodeLine> lines) {
+    public static CodeWriter commaSeparated(List<Line> lines) {
         checkNotNull(lines);
         CodeWriter code = new CodeWriter();
-        for (Iterator<CodeLine> it = lines.iterator(); it.hasNext(); ) {
-            CodeLine line = it.next();
+        for (Iterator<Line> it = lines.iterator(); it.hasNext(); ) {
+            Line line = it.next();
             boolean isLast = !it.hasNext();
             String editedLine = isLast
                                 ? line.content()
@@ -320,7 +320,7 @@ public final class CodeWriter {
     @Override
     public String toString() {
         String result = lines.stream()
-                             .map(CodeLine::toString)
+                             .map(Line::toString)
                              .collect(joining(lineSeparator()));
         return result;
     }
