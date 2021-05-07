@@ -26,22 +26,18 @@
 
 package io.spine.tools.code;
 
-import com.google.common.truth.StringSubject;
-import com.google.common.truth.Truth;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("CodeLine should")
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.tools.code.Line.emptyLine;
+
+@DisplayName("`Line` should")
 class LineTest {
 
     @Test
     @DisplayName("provide an empty line")
-    void emptyLine() {
-        Line line = Line.emptyLine();
-        assertThat(line).isEqualTo("");
-    }
-
-    private static StringSubject assertThat(Line line) {
-        return Truth.assertThat(line.content());
+    void ofEmptyLine() {
+        assertThat(emptyLine().content()).isEqualTo("");
     }
 }
