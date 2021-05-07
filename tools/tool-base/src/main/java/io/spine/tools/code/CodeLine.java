@@ -48,7 +48,7 @@ public abstract class CodeLine {
         return new CodeLine() {
             @Override
             public String content() {
-                return content.trim();
+                return content;
             }
         };
     }
