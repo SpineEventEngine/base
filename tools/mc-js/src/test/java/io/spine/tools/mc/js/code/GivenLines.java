@@ -55,7 +55,7 @@ final class GivenLines {
     /**
      * Obtains code lines with the specified first line.
      */
-    public static CodeWriter newCodeLines(String firstLine) {
+    static CodeWriter newCodeLines(String firstLine) {
         CodeWriter lines = new CodeWriter();
         lines.append(firstLine);
         return lines;

@@ -59,11 +59,6 @@ public final class Indent implements Serializable {
     private final int level;
 
     /**
-     *  The actual text of indentation.
-     */
-    private final String text;
-
-    /**
      * Creates indentation of the passed size at the given level.
      *
      * @param size
@@ -76,7 +71,6 @@ public final class Indent implements Serializable {
         checkArgument(level >= 0, "Level must be non-negative. Passed: %s.", level);
         this.size = size;
         this.level = level;
-        this.text = Strings.repeat(SPACE, size * level);
     }
 
     private Indent(int size) {
@@ -173,6 +167,30 @@ public final class Indent implements Serializable {
      */
     @Override
     public String toString() {
+        String text = Strings.repeat(SPACE, size * level);
         return text;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Indent other = (Indent) o;
+        if (size != other.size) {
+            return false;
+        }
+        return level == other.level;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = size;
+        result = 31 * result + level;
+        return result;
     }
 }

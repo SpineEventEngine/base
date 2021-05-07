@@ -29,7 +29,7 @@ package io.spine.tools.code;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The JS code line.
+ * The JavaScript code line.
  *
  * <p>Consists of the code itself and the level on which the code is indented.
  *
@@ -46,10 +46,8 @@ public final class IndentedLine extends CodeLine {
 
     private IndentedLine(Indent indent, CodeLine code) {
         super();
-        checkNotNull(code);
-        checkNotNull(indent);
-        this.code = code;
-        this.indent = indent;
+        this.code = checkNotNull(code);
+        this.indent = checkNotNull(indent);
     }
 
     /**
@@ -109,8 +107,9 @@ public final class IndentedLine extends CodeLine {
             return false;
         }
         IndentedLine other = (IndentedLine) o;
-        return code.equals(other.code)
-                && indent.equals(other.indent);
+        boolean codeEquals = code.equals(other.code);
+        boolean indentEquals = indent.equals(other.indent);
+        return codeEquals && indentEquals;
     }
 
     @Override
