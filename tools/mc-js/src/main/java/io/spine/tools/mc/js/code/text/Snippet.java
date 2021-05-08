@@ -26,12 +26,13 @@
 
 package io.spine.tools.mc.js.code.text;
 
+import io.spine.tools.code.Element;
 import io.spine.tools.mc.js.code.CodeWriter;
 
 /**
  * A snippet of the code.
  */
-public interface Snippet {
+public interface Snippet extends Element {
 
     /**
      * Obtains code lines representing this snippet.
@@ -39,4 +40,12 @@ public interface Snippet {
      * @return always returns a new {@link CodeWriter}
      */
     CodeWriter writer();
+
+    /**
+     * Obtains the text resulting from the current state of the {@link #writer()}.
+     */
+    @Override
+    default String text() {
+        return writer().toString();
+    }
 }

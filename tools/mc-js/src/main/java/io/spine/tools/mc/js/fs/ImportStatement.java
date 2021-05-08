@@ -27,6 +27,7 @@
 package io.spine.tools.mc.js.fs;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.tools.code.Element;
 import io.spine.tools.fs.ExternalModule;
 import io.spine.tools.fs.FileReference;
 import io.spine.logging.Logging;
@@ -42,7 +43,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * An import line extracted from a source file for being
  * {@linkplain #resolve(Path, ImmutableList) resolved}.
  */
-final class ImportStatement implements Logging {
+final class ImportStatement implements Element, Logging {
 
     private static final String GOOGLE_PROTOBUF_MODULE = "google-protobuf";
     private static final Pattern GOOGLE_PROTOBUF_MODULE_PATTERN =
@@ -66,23 +67,23 @@ final class ImportStatement implements Logging {
      *
      * @param file
      *         the file which declares the import statement
-     * @param text
-     *         the text of the statement
+     * @param line
+     *         the line with the statement
      */
-    ImportStatement(JsFile file, String text) {
+    ImportStatement(JsFile file, String line) {
         checkArgument(
-                declaredIn(text),
+                isDeclaredIn(line),
                 "An import statement should contain: `%s ... %s`.", IMPORT_START, IMPORT_END
         );
         checkNotNull(file);
-        this.text = text;
         this.file = file;
+        this.text = line;
     }
 
     /**
      * Tells whether the line contains an import statement.
      */
-    static boolean declaredIn(String line) {
+    static boolean isDeclaredIn(String line) {
         return line.contains(IMPORT_START);
     }
 
@@ -164,11 +165,13 @@ final class ImportStatement implements Logging {
                 sourceDirectory()
                         .relativize(generatedRoot)
                         .toString();
-        String replacement = relativePathToRoot.isEmpty()
-                             ? FileReference.currentDirectory()
-                             : relativePathToRoot.replace('\\', '/') + FileReference.separator();
-        String relativeReference = GOOGLE_PROTOBUF_MODULE_PATTERN.matcher(fileReference)
-                                                                 .replaceFirst(replacement);
+        String replacement =
+                relativePathToRoot.isEmpty()
+                ? FileReference.currentDirectory()
+                : relativePathToRoot.replace('\\', '/') + FileReference.separator();
+        String relativeReference =
+                GOOGLE_PROTOBUF_MODULE_PATTERN.matcher(fileReference)
+                                              .replaceFirst(replacement);
         return replaceRef(relativeReference);
     }
 
@@ -188,6 +191,11 @@ final class ImportStatement implements Logging {
     public ImportStatement replaceRef(CharSequence newFileRef) {
         String updatedText = text.replace(fileRef().value(), newFileRef);
         return new ImportStatement(file, updatedText);
+    }
+
+    @Override
+    public String text() {
+        return text;
     }
 
     /**

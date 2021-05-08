@@ -58,7 +58,7 @@ public final class JsFile extends FileWithImports {
 
     @Override
     protected boolean isImport(String line) {
-        return ImportStatement.declaredIn(line);
+        return ImportStatement.isDeclaredIn(line);
     }
 
     @Override
@@ -67,7 +67,6 @@ public final class JsFile extends FileWithImports {
                                    ImmutableList<ExternalModule> modules) {
         ImportStatement importLine = new ImportStatement(this, line);
         ImportStatement resolved = importLine.resolve(generatedRoot, modules);
-        String text = resolved.toString();
-        return text;
+        return resolved.text();
     }
 }

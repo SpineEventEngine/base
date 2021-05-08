@@ -29,6 +29,7 @@ package io.spine.tools.dart.fs;
 import com.google.common.collect.ImmutableList;
 import com.google.common.flogger.FluentLogger;
 import io.spine.logging.Logging;
+import io.spine.tools.code.Element;
 import io.spine.tools.fs.ExternalModule;
 import io.spine.tools.fs.FileReference;
 import org.checkerframework.checker.regex.qual.Regex;
@@ -45,7 +46,7 @@ import static java.util.regex.Pattern.compile;
 /**
  * A source code line with an import statement.
  */
-final class ImportStatement implements Logging {
+final class ImportStatement implements Element, Logging {
 
     @Regex(2)
     private static final Pattern PATTERN = compile("import [\"']([^:]+)[\"'] as (.+);");
@@ -76,7 +77,7 @@ final class ImportStatement implements Logging {
     /**
      * Tells if the passed text is an import statement.
      */
-    public static boolean declaredIn(String text) {
+    static boolean isDeclaredIn(String text) {
         checkNotNull(text);
         Matcher matcher = PATTERN.matcher(text);
         return matcher.matches();
@@ -137,6 +138,11 @@ final class ImportStatement implements Logging {
         );
         _debug().log("Replacing with `%s`.", resolved);
         return new ImportStatement(file, resolved);
+    }
+
+    @Override
+    public String text() {
+        return text;
     }
 
     @Override

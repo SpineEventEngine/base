@@ -38,7 +38,7 @@ import static com.google.common.base.Preconditions.checkState;
  * A non-negative indentation of the generated code.
  */
 @Immutable
-public final class Indent implements Serializable {
+public final class Indent implements Element, Serializable {
 
     private static final long serialVersionUID = 0L;
     private static final String SPACE = " ";
@@ -162,13 +162,18 @@ public final class Indent implements Serializable {
     }
 
     /**
-     * Obtains the string representing the total indentation for the indent
-     * with this {@link #size()} at this {@link #level()}.
+     * Obtains the text of the total indentation with this {@link #size()} at
+     * the current {@link #level()}.
      */
     @Override
-    public String toString() {
+    public String text() {
         String text = Strings.repeat(SPACE, size * level);
         return text;
+    }
+
+    @Override
+    public String toString() {
+        return text();
     }
 
     @Override

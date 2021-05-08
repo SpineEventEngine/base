@@ -55,7 +55,7 @@ public final class DartFile extends FileWithImports {
 
     @Override
     protected boolean isImport(String line) {
-        return ImportStatement.declaredIn(line);
+        return ImportStatement.isDeclaredIn(line);
     }
 
     @Override
@@ -64,6 +64,6 @@ public final class DartFile extends FileWithImports {
                                    ImmutableList<ExternalModule> modules) {
         ImportStatement statement = new ImportStatement(this, line);
         ImportStatement resolved = statement.resolve(libPath, modules);
-        return resolved.toString();
+        return resolved.text();
     }
 }

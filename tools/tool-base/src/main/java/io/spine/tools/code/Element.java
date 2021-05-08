@@ -26,69 +26,10 @@
 
 package io.spine.tools.code;
 
-import com.google.errorprone.annotations.Immutable;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
- * A source code line.
- *
- * <p>The line is not aware of {@linkplain IndentedLine indentation}.
+ * A part of source code text.
  */
-@Immutable
-public class Line implements Element{
+public interface Element {
 
-    private final String text;
-
-    /**
-     * Creates a new line with the passed text.
-     */
-    protected Line(String text) {
-        this.text = checkNotNull(text);
-    }
-
-    /**
-     * Obtains the text of the line.
-     */
-    @Override
-    public final String text() {
-        return text;
-    }
-
-    /**
-     * Obtains a code line with the specified content.
-     */
-    public static Line of(String text) {
-        checkNotNull(text);
-        return new Line(text);
-    }
-
-    /**
-     * Obtains an empty code line.
-     */
-    public static Line emptyLine() {
-        return of("");
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Line)) {
-            return false;
-        }
-        Line other = (Line) o;
-        return text.equals(other.text);
-    }
-
-    @Override
-    public int hashCode() {
-        return text.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return text;
-    }
+    String text();
 }
