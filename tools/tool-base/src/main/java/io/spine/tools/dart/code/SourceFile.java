@@ -91,7 +91,7 @@ public final class SourceFile extends AbstractSourceFile implements Logging {
         try {
             write(path, lines);
         } catch (IOException e) {
-            throw newIllegalStateException(e, "Unable to write file `%s`.", path);
+            throw newIllegalStateException(e, "Unable to write to the file `%s`.", path);
         }
     }
 }

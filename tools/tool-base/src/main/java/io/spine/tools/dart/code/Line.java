@@ -26,20 +26,9 @@
 
 package io.spine.tools.dart.code;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.flogger.FluentLogger;
-import io.spine.tools.fs.FileReference;
 import io.spine.logging.Logging;
-import io.spine.tools.fs.ExternalModule;
-import org.checkerframework.checker.regex.qual.Regex;
-
-import java.nio.file.Path;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.format;
-import static java.util.regex.Pattern.compile;
 
 /**
  * A line of code in a Dart file.
