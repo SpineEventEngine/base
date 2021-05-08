@@ -36,7 +36,8 @@ import java.util.Optional;
 import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
 
 /**
- * A factory of {@code FileDescriptorSet} instances.
+ * A factory of {@code FileDescriptorSet} instances which avoids the necessity to handle
+ * {@link InvalidProtocolBufferException} when parsing descriptors data.
  */
 public final class FileDescriptorSets {
 
@@ -73,7 +74,8 @@ public final class FileDescriptorSets {
      */
     public static Optional<FileDescriptorSet> tryParse(byte[] bytes) {
         try {
-            FileDescriptorSet descriptorSet = FileDescriptorSet.parseFrom(bytes, OptionExtensionRegistry.instance());
+            FileDescriptorSet descriptorSet =
+                    FileDescriptorSet.parseFrom(bytes, OptionExtensionRegistry.instance());
             return Optional.of(descriptorSet);
         } catch (InvalidProtocolBufferException e) {
             return Optional.empty();
