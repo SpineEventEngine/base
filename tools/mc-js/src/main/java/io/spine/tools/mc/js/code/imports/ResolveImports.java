@@ -27,33 +27,18 @@
 package io.spine.tools.mc.js.code.imports;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileSet;
 import io.spine.logging.Logging;
 import io.spine.tools.fs.ExternalModule;
-import io.spine.tools.fs.FileReference;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.fs.FileName;
 import io.spine.tools.mc.js.code.task.GenerationTask;
-import io.spine.tools.mc.js.fs.JsFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
-
-import static io.spine.tools.mc.js.code.imports.ImportStatement.hasImport;
-import static io.spine.util.Exceptions.illegalStateWithCauseOf;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
-import static java.util.stream.Collectors.toList;
 
 /**
  * A task to resolve imports in generated files.
@@ -64,18 +49,6 @@ import static java.util.stream.Collectors.toList;
  * to ensure that imports won't be modified after execution of this task.
  */
 public final class ResolveImports extends GenerationTask implements Logging {
-
-    static final String GOOGLE_PROTOBUF_MODULE = "google-protobuf";
-
-    /**
-     * The relative path from the test sources directory to the main sources directory.
-     *
-     * <p>Depends on the structure of Spine Web project.
-     */
-    private static final String TEST_PROTO_RELATIVE_TO_MAIN = "../main/";
-
-    private static final Pattern GOOGLE_PROTOBUF_MODULE_PATTERN =
-            Pattern.compile(GOOGLE_PROTOBUF_MODULE + FileReference.separator());
 
     private final Set<ExternalModule> modules;
 
@@ -97,123 +70,6 @@ public final class ResolveImports extends GenerationTask implements Logging {
     @VisibleForTesting
     void resolveInFile(Path filePath) {
         JsFile file = new JsFile(filePath);
-        relativizeStandardProtoImports(file);
-        resolveRelativeImports(file);
-    }
-
-    private void resolveRelativeImports(JsFile file) {
-        processImports(file, new IsUnresolvedRelativeImport(), this::resolveRelativeImports);
-    }
-
-    /**
-     * Processes import statements in this file.
-     *
-     * <p>Rewrites the file using the updated imports.
-     *
-     * @param importFilter
-     *         the predicate to filter out imports to be processed
-     * @param processFunction
-     *         the function processing an import
-     */
-    public static void processImports(JsFile file,
-                                       java.util.function.Predicate<ImportStatement> importFilter,
-                                       ProcessImport processFunction) {
-        try (Stream<String> lines = Files.lines(file.path())) {
-            List<String> updatedLines = lines
-                    .map(line -> processLine(file, line, importFilter, processFunction))
-                    .collect(toList());
-            rewriteFile(file.path(), updatedLines);
-        } catch (IOException e) {
-            throw illegalStateWithCauseOf(e);
-        }
-    }
-
-    private static String processLine(JsFile jsFile,
-                                      String line,
-                                      java.util.function.Predicate<ImportStatement> importFilter,
-                                      ProcessImport processFunction) {
-        File file = jsFile.path().toFile();
-        if (hasImport(line)) {
-            ImportStatement importStatement = new ImportStatement(file, line);
-            boolean matchesFilter = importFilter.test(importStatement);
-            if (matchesFilter) {
-                return processFunction.apply(importStatement)
-                                      .text();
-            }
-        }
-        return line;
-    }
-
-    private static void rewriteFile(Path path, Iterable<String> lines) {
-        try {
-            Files.write(path, lines, Charsets.UTF_8, TRUNCATE_EXISTING);
-        } catch (IOException e) {
-            throw illegalStateWithCauseOf(e);
-        }
-    }
-    /**
-     * Replaces all imports from {@code google-protobuf} module by relative imports.
-     * Then, these imports are resolved among external modules.
-     *
-     * <p>Such a replacement is required since we want to use own versions
-     * of standard types, which are additionally processed by the Protobuf JS plugin.
-     *
-     * <p>The custom versions of standard Protobuf types are provided by
-     * the {@linkplain ExternalModule#spineWeb() Spine Web}.
-     *
-     * @param file
-     *         the file to process imports in
-     */
-    private void relativizeStandardProtoImports(JsFile file) {
-        processImports(file, new IsGoogleProtobufImport(), this::relativizeStandardProtoImport);
-    }
-
-    private ImportStatement relativizeStandardProtoImport(ImportStatement original) {
-        String fileReference = original.fileRef()
-                                       .value();
-        String relativePathToRoot = original.sourceDirectory()
-                                            .relativize(generatedRoot().path())
-                                            .toString();
-        String replacement = relativePathToRoot.isEmpty()
-                             ? FileReference.currentDirectory()
-                             : relativePathToRoot.replace('\\', '/') + FileReference.separator();
-        String relativeReference = GOOGLE_PROTOBUF_MODULE_PATTERN.matcher(fileReference)
-                                                                 .replaceFirst(replacement);
-        return original.replaceRef(relativeReference);
-    }
-
-    /**
-     * Attempts to resolve a relative import.
-     */
-    private ImportStatement resolveRelativeImports(ImportStatement resolvable) {
-        Optional<ImportStatement> mainSourceImport = resolveInMainSources(resolvable);
-        if (mainSourceImport.isPresent()) {
-            return mainSourceImport.get();
-        }
-        FileReference fileReference = resolvable.fileRef();
-        for (ExternalModule module : modules) {
-            if (module.provides(fileReference)) {
-                FileReference fileInModule = module.fileInModule(fileReference);
-                return resolvable.replaceRef(fileInModule.value());
-            }
-        }
-        return resolvable;
-    }
-
-    /**
-     * Attempts to resolve a relative import among main sources.
-     */
-    private static Optional<ImportStatement> resolveInMainSources(ImportStatement resolvable) {
-        String fileReference = resolvable.fileRef()
-                                         .value();
-        String delimiter = FileReference.currentDirectory();
-        int insertionIndex = fileReference.lastIndexOf(delimiter) + delimiter.length();
-        String updatedReference = fileReference.substring(0, insertionIndex)
-                + TEST_PROTO_RELATIVE_TO_MAIN
-                + fileReference.substring(insertionIndex);
-        ImportStatement updatedImport = resolvable.replaceRef(updatedReference);
-        return updatedImport.importedFileExists()
-               ? Optional.of(updatedImport)
-               : Optional.empty();
+        file.resolveImports(modules);
     }
 }

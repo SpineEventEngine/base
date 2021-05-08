@@ -69,7 +69,7 @@ class Line implements Logging {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Line)) {
             return false;
         }
         Line other = (Line) o;

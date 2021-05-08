@@ -40,7 +40,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 final class IsGoogleProtobufImport implements Predicate<ImportStatement> {
 
     private static final String STANDARD_PREFIX =
-            ResolveImports.GOOGLE_PROTOBUF_MODULE + "/google/protobuf/";
+            JsFile.GOOGLE_PROTOBUF_MODULE + "/google/protobuf/";
 
     @CanIgnoreReturnValue
     @Override

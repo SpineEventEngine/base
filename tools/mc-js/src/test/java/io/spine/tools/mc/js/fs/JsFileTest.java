@@ -26,6 +26,7 @@
 
 package io.spine.tools.mc.js.fs;
 
+import io.spine.tools.mc.js.code.imports.JsFile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
