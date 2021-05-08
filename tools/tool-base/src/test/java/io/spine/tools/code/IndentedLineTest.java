@@ -43,7 +43,7 @@ class IndentedLineTest {
                             .adjustLevelBy(2);
         String expected = "    content";
 
-        assertThat(line.content())
+        assertThat(line.text())
                 .isEqualTo(expected);
     }
 }

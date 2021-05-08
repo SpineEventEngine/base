@@ -105,7 +105,7 @@ public final class Import extends Line {
      * <p>Does nothing if the import is already default.
      */
     public Import toDefault() {
-        String content = content();
+        String content = text();
         if (content.endsWith(DEFAULT_IMPORT_ENDING)) {
             return this;
         }
@@ -120,7 +120,7 @@ public final class Import extends Line {
      *         the name for the import
      */
     public String namedAs(String importName) {
-        String result = format("let %s = %s", importName, content());
+        String result = format("let %s = %s", importName, text());
         return result;
     }
 }

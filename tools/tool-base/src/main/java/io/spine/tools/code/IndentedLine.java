@@ -46,7 +46,7 @@ public final class IndentedLine extends Line {
     private final Line code;
 
     private IndentedLine(Indent indent, Line code) {
-        super(indent + code.content());
+        super(indent + code.text());
         this.code = code;
         this.indent = indent;
     }

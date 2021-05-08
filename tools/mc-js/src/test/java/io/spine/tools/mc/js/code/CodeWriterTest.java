@@ -220,7 +220,7 @@ class CodeWriterTest {
         lines.increaseDepth();
         Line comment = Comment.of("The field...");
         lines.append(comment);
-        String expected = lines.indent() + comment.content();
+        String expected = lines.indent() + comment.text();
         assertLines(lines).isEqualTo(expected);
     }
 
@@ -258,7 +258,7 @@ class CodeWriterTest {
         StringSubject assertCode = assertLines(code);
         assertCode.contains(first + ",");
         assertCode.contains(second + ",");
-        assertCode.contains(last.content());
+        assertCode.contains(last.text());
         assertCode.doesNotContain(last + ",");
     }
 

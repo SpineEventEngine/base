@@ -38,20 +38,20 @@ class ReturnTest {
     @DisplayName("an object")
     void object() {
         Return line = Return.value(5);
-        assertEquals("return 5;", line.content());
+        assertEquals("return 5;", line.text());
     }
 
     @Test
     @DisplayName("a string literal")
     void stringLiteral() {
         Return line = Return.stringLiteral("foo");
-        assertEquals("return 'foo';", line.content());
+        assertEquals("return 'foo';", line.text());
     }
 
     @Test
     @DisplayName("null reference")
     void nullValue() {
         Return nullValue = Return.nullReference();
-        assertEquals("return null;", nullValue.content());
+        assertEquals("return null;", nullValue.text());
     }
 }

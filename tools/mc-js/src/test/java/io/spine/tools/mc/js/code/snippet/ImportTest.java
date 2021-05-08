@@ -45,7 +45,7 @@ class ImportTest {
     void fileRelativeToCurrentDir() {
         Import importLine = Import.fileRelativeToRoot(anyFile);
         String expected = "require('./google/protobuf/any_pb.js');";
-        assertThat(importLine.content()).isEqualTo(expected);
+        assertThat(importLine.text()).isEqualTo(expected);
     }
 
     @Test
@@ -53,7 +53,7 @@ class ImportTest {
     void fileRelativeToAnotherFile() {
         Import importLine = Import.fileRelativeTo(anyFile, anyFile);
         String expected = "require('../../google/protobuf/any_pb.js');";
-        assertThat(importLine.content()).isEqualTo(expected);
+        assertThat(importLine.text()).isEqualTo(expected);
     }
 
     @Test
@@ -61,7 +61,7 @@ class ImportTest {
     void library() {
         Import importLine = Import.library("someJsLib");
         String expected = "require('someJsLib');";
-        assertThat(importLine.content()).isEqualTo(expected);
+        assertThat(importLine.text()).isEqualTo(expected);
     }
 
     @Test
@@ -70,7 +70,7 @@ class ImportTest {
         Import defaultImport = Import.library("someJsLib")
                                      .toDefault();
         String expected = "require('someJsLib').default;";
-        assertThat(defaultImport.content()).isEqualTo(expected);
+        assertThat(defaultImport.text()).isEqualTo(expected);
         assertThat(defaultImport.toDefault()).isEqualTo(defaultImport);
     }
 

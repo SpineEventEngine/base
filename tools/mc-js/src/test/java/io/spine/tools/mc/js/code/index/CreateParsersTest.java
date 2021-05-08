@@ -82,7 +82,7 @@ class CreateParsersTest {
     void generateComment() {
         CodeWriter code = CreateParsers.codeFor(file);
         Comment expectedComment = Comment.generatedBySpine();
-        assertContains(code, expectedComment.content());
+        assertContains(code, expectedComment.text());
     }
 
     @Test

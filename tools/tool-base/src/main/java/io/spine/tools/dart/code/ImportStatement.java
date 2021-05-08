@@ -28,29 +28,27 @@ package io.spine.tools.dart.code;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.flogger.FluentLogger;
-import io.spine.tools.fs.FileReference;
-import io.spine.logging.Logging;
 import io.spine.tools.fs.ExternalModule;
+import io.spine.tools.fs.FileReference;
 import org.checkerframework.checker.regex.qual.Regex;
 
 import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static java.util.regex.Pattern.compile;
 
 /**
- * A line of code in a Dart file.
+ * A source code line with an import statement.
  */
-final class SourceLine implements Logging {
+final class ImportStatement extends Line {
 
     @Regex(2)
     private static final Pattern IMPORT_PATTERN = compile("import [\"']([^:]+)[\"'] as (.+);");
 
-    private final SourceFile file;
-    private final String text;
     private final Matcher matcher;
 
     /**
@@ -59,12 +57,25 @@ final class SourceLine implements Logging {
      * @param file
      *         the file declaring the line
      * @param text
-     *         the source code text in the line
+     *         the text of the source code line with the import statement
      */
-    SourceLine(SourceFile file, String text) {
-        this.text = checkNotNull(text);
-        this.file = checkNotNull(file);
-        this.matcher = IMPORT_PATTERN.matcher(text);
+    ImportStatement(SourceFile file, String text) {
+        super(file, text);
+        Matcher matcher = IMPORT_PATTERN.matcher(text);
+        checkArgument(
+                matcher.matches(),
+                "The passed text is not recognized as an import statement (`%s`).", text
+        );
+        this.matcher = matcher;
+    }
+
+    /**
+     * Tells if the passed text is an import statement.
+     */
+    static boolean declaredIn(String text) {
+        checkNotNull(text);
+        Matcher matcher = IMPORT_PATTERN.matcher(text);
+        return matcher.matches();
     }
 
     /**
@@ -86,9 +97,6 @@ final class SourceLine implements Logging {
      *         the {@code import} statement
      */
     String resolveImport(Path libPath, ImmutableList<ExternalModule> modules) {
-        if (!matcher.matches()) {
-            return text;
-        }
         Path relativePath = importRelativeTo(libPath);
         FileReference reference = FileReference.of(relativePath);
         for (ExternalModule module : modules) {
@@ -96,7 +104,7 @@ final class SourceLine implements Logging {
                 return resolveImport(module, relativePath);
             }
         }
-        return text;
+        return text();
     }
 
     /**
@@ -105,12 +113,13 @@ final class SourceLine implements Logging {
      */
     private Path importRelativeTo(Path libPath) {
         FluentLogger.Api debug = _debug();
-        debug.log("Import statement found in line: `%s`.", text);
+        debug.log("Import statement found in line: `%s`.", text());
         String path = matcher.group(1);
-        Path absolutePath = file.path()
-                                .getParent()
-                                .resolve(path)
-                                .normalize();
+        Path absolutePath =
+                file().path()
+                      .getParent()
+                      .resolve(path)
+                      .normalize();
         debug.log("Resolved against this file: `%s`.", absolutePath);
         Path relativePath = libPath.relativize(absolutePath);
         debug.log("Relative path: `%s`.", relativePath);
@@ -124,27 +133,5 @@ final class SourceLine implements Logging {
         );
         _debug().log("Replacing with `%s`.", importStatement);
         return importStatement;
-    }
-
-    @Override
-    public String toString() {
-        return text;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        SourceLine other = (SourceLine) o;
-        return text.equals(other.text) && file.equals(other.file);
-    }
-
-    @Override
-    public int hashCode() {
-        return text.hashCode();
     }
 }

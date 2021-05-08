@@ -24,49 +24,55 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.code;
+package io.spine.tools.dart.code;
 
-import com.google.errorprone.annotations.Immutable;
+import com.google.common.collect.ImmutableList;
+import com.google.common.flogger.FluentLogger;
+import io.spine.tools.fs.FileReference;
+import io.spine.logging.Logging;
+import io.spine.tools.fs.ExternalModule;
+import org.checkerframework.checker.regex.qual.Regex;
+
+import java.nio.file.Path;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
+import static java.util.regex.Pattern.compile;
 
 /**
- * A source code line.
- *
- * <p>The line is not aware of {@linkplain IndentedLine indentation}.
+ * A line of code in a Dart file.
  */
-@Immutable
-public class Line {
+class Line implements Logging {
 
+    private final SourceFile file;
     private final String text;
 
     /**
-     * Creates a new line with the passed text.
+     * Creates a new instance with the passed value.
+     *
+     * @param file
+     *         the file declaring the line
+     * @param text
+     *         the source code text in the line
      */
-    protected Line(String text) {
+    Line(SourceFile file, String text) {
         this.text = checkNotNull(text);
+        this.file = checkNotNull(file);
     }
 
-    /**
-     * Obtains the text of the line.
-     */
-    public final String text() {
+    protected final String text() {
         return text;
     }
 
-    /**
-     * Obtains a code line with the specified content.
-     */
-    public static Line of(String text) {
-        checkNotNull(text);
-        return new Line(text);
+    protected final SourceFile file() {
+        return file;
     }
 
-    /**
-     * Obtains an empty code line.
-     */
-    public static Line emptyLine() {
-        return of("");
+   @Override
+    public String toString() {
+        return text;
     }
 
     @Override
@@ -74,20 +80,15 @@ public class Line {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Line)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
         Line other = (Line) o;
-        return text.equals(other.text);
+        return text.equals(other.text) && file.equals(other.file);
     }
 
     @Override
     public int hashCode() {
         return text.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return text;
     }
 }

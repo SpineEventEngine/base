@@ -40,7 +40,7 @@ class LetTest {
     @DisplayName("be initialized by value")
     void initializedByValue() {
         Let line = Let.withValue("someVariable", "someValue");
-        assertEquals("let someVariable = someValue;", line.content());
+        assertEquals("let someVariable = someValue;", line.text());
     }
 
     @Test
@@ -48,6 +48,6 @@ class LetTest {
     void initializedByNewInstance() {
         TypeName type = TypeName.from(Any.getDescriptor());
         Let line = Let.newInstance("anyValue", type);
-        assertEquals("let anyValue = new proto.google.protobuf.Any();", line.content());
+        assertEquals("let anyValue = new proto.google.protobuf.Any();", line.text());
     }
 }

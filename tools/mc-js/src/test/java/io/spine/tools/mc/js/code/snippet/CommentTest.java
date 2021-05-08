@@ -40,13 +40,13 @@ class CommentTest {
     void predendedWithSlashes() {
         String text = "It is a comment text.";
         Comment comment = Comment.of(text);
-        assertEquals("// " + text, comment.content());
+        assertEquals("// " + text, comment.text());
     }
 
     @Test
     @DisplayName("provide the comment about generation")
     void generatedByComment() {
         Comment generatedBy = Comment.generatedBySpine();
-        assertEquals("// " + MC_JS_SIGNATURE, generatedBy.content());
+        assertEquals("// " + MC_JS_SIGNATURE, generatedBy.text());
     }
 }

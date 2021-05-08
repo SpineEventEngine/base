@@ -159,7 +159,7 @@ public final class CodeWriter {
         if (line instanceof IndentedLine) {
             indented = (IndentedLine) line;
         } else {
-            indented = IndentedLine.of(indent, line.content());
+            indented = IndentedLine.of(indent, line.text());
         }
         lines.add(indented);
     }
@@ -308,8 +308,8 @@ public final class CodeWriter {
             Line line = it.next();
             boolean isLast = !it.hasNext();
             String editedLine = isLast
-                                ? line.content()
-                                : line.content() + ',';
+                                ? line.text()
+                                : line.text() + ',';
             code.append(editedLine);
         }
         return code;
