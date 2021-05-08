@@ -116,8 +116,7 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
      * Returns the file name without path and extension in the {@code CamelCase}.
      */
     public String nameOnlyCamelCase() {
-        String result = CamelCase.convert(this);
-        return result;
+        return toCamelCase();
     }
 
     /**

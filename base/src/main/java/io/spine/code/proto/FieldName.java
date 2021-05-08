@@ -102,14 +102,6 @@ public final class FieldName extends AbstractFieldName implements UnderscoredNam
     }
 
     /**
-     * Obtains the field name in {@code CamelCase}.
-     */
-    public String toCamelCase() {
-        String result = CamelCase.convert(this);
-        return result;
-    }
-
-    /**
      * Obtains the field name in {@code javaCase}.
      */
     public String javaCase() {

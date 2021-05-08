@@ -26,11 +26,13 @@
 
 package io.spine.code;
 
+import com.google.errorprone.annotations.Immutable;
 import io.spine.value.StringTypeValue;
 
 /**
  * A field in a programming language.
  */
+@Immutable
 public class AbstractFieldName extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;

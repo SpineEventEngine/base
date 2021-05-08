@@ -26,6 +26,7 @@
 
 package io.spine.tools.java.fs;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
@@ -39,6 +40,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * A Java file name.
  */
+@Immutable
 public final class FileName extends AbstractFileName<FileName> {
 
     private static final long serialVersionUID = 0L;

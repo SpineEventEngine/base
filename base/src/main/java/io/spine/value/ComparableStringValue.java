@@ -26,17 +26,19 @@
 
 package io.spine.value;
 
+import com.google.errorprone.annotations.Immutable;
+
 /**
  * A string-based value which can be alphabetically sorted.
  *
  * @param <T> the type of the value provided for the comparison type covariance
- * @author Alexander Yevsyukov
  */
 @SuppressWarnings(
         "ComparableImplementedButEqualsNotOverridden"
         /* Sufficient {@link StringTypeValue#equals() equals()} is provided by the parent class. */
 )
-public abstract class ComparableStringValue<T extends ComparableStringValue>
+@Immutable
+public abstract class ComparableStringValue<T extends ComparableStringValue<T>>
         extends StringTypeValue
         implements Comparable<T> {
 

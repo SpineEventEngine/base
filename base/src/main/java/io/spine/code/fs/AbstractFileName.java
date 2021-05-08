@@ -26,6 +26,7 @@
 
 package io.spine.code.fs;
 
+import com.google.errorprone.annotations.Immutable;
 import io.spine.value.ComparableStringValue;
 
 /**
@@ -33,7 +34,8 @@ import io.spine.value.ComparableStringValue;
  *
  * @param <F> the type of the file name for comparison type covariance
  */
-public abstract class AbstractFileName<F extends AbstractFileName>
+@Immutable
+public abstract class AbstractFileName<F extends AbstractFileName<F>>
         extends ComparableStringValue<F> {
 
     private static final long serialVersionUID = 0L;

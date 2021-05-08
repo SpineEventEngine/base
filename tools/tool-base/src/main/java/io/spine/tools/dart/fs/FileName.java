@@ -26,6 +26,7 @@
 
 package io.spine.tools.dart.fs;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.fs.AbstractFileName;
 
@@ -34,6 +35,7 @@ import io.spine.code.fs.AbstractFileName;
  *
  * <p>Always has the {@code .pb.dart} extension.
  */
+@Immutable
 public final class FileName extends AbstractFileName<FileName> {
 
     private static final long serialVersionUID = 0L;

@@ -26,6 +26,7 @@
 
 package io.spine.code.java;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
@@ -41,6 +42,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * A {@link Class#getSimpleName() simple name} of a class.
  */
+@Immutable
 public final class SimpleClassName extends StringTypeValue {
 
     static final String OR_BUILDER_SUFFIX = "OrBuilder";

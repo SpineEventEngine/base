@@ -30,6 +30,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.fs.AbstractFileName;
 import io.spine.tools.fs.FileReference;
@@ -44,6 +45,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  * A name of a JavaScript file, which is generated under the the root directory with compiled
  * Protobuf files.
  */
+@Immutable
 public final class FileName extends AbstractFileName<FileName> {
 
     private static final long serialVersionUID = 0L;
@@ -60,7 +62,6 @@ public final class FileName extends AbstractFileName<FileName> {
     /**
      * Creates new JavaScript file name with the passed value.
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored") // Method annotated with `@CanIgnoreReturnValue`.
     static FileName of(String value) {
         checkNotEmptyOrBlank(value);
         checkArgument(value.endsWith(EXTENSION),
