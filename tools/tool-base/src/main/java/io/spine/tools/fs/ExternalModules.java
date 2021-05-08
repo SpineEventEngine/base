@@ -28,6 +28,7 @@ package io.spine.tools.fs;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 
 import java.util.Collection;
 import java.util.List;
@@ -40,6 +41,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * A collection of {@link ExternalModule}s.
  */
+@Immutable
 public final class ExternalModules {
 
     private final ImmutableList<ExternalModule> modules;

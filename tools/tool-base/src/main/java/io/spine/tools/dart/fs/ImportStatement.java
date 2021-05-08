@@ -27,6 +27,7 @@
 package io.spine.tools.dart.fs;
 
 import com.google.common.flogger.FluentLogger;
+import com.google.errorprone.annotations.Immutable;
 import io.spine.logging.Logging;
 import io.spine.tools.code.Element;
 import io.spine.tools.fs.ExternalModule;
@@ -46,14 +47,14 @@ import static java.util.regex.Pattern.compile;
 /**
  * A source code line with an import statement.
  */
+@Immutable
 final class ImportStatement implements Element, Logging {
 
     @Regex(2)
     private static final Pattern PATTERN = compile("import [\"']([^:]+)[\"'] as (.+);");
 
-    private final DartFile file;
+    private final Path sourceDirectory;
     private final String text;
-    private final Matcher matcher;
 
     /**
      * Creates a new instance with the passed value.
@@ -64,14 +65,17 @@ final class ImportStatement implements Element, Logging {
      *         the text of the source code line with the import statement
      */
     ImportStatement(DartFile file, String text) {
+        this(file.directory(), text);
+    }
+
+    private ImportStatement(Path sourceDirectory, String text) {
+        this.sourceDirectory = sourceDirectory;
         this.text = checkNotNull(text);
-        this.file = checkNotNull(file);
         Matcher matcher = PATTERN.matcher(text);
         checkArgument(
                 matcher.matches(),
                 "The passed text is not recognized as an import statement (`%s`).", text
         );
-        this.matcher = matcher;
     }
 
     /**
@@ -119,12 +123,8 @@ final class ImportStatement implements Element, Logging {
     private Path importRelativeTo(Path libPath) {
         FluentLogger.Api debug = _debug();
         debug.log("Import statement found in line: `%s`.", text);
-        String path = matcher.group(1);
-        Path absolutePath =
-                file.path()
-                      .getParent()
-                      .resolve(path)
-                      .normalize();
+        String path = matcher().group(1);
+        Path absolutePath = sourceDirectory.resolve(path).normalize();
         debug.log("Resolved against this file: `%s`.", absolutePath);
         Path relativePath = libPath.relativize(absolutePath);
         debug.log("Relative path: `%s`.", relativePath);
@@ -134,10 +134,14 @@ final class ImportStatement implements Element, Logging {
     private ImportStatement resolve(ExternalModule module, Path relativePath) {
         String resolved = format(
                 "import 'package:%s/%s' as %s;",
-                module.name(), relativePath, matcher.group(2)
+                module.name(), relativePath, matcher().group(2)
         );
         _debug().log("Replacing with `%s`.", resolved);
-        return new ImportStatement(file, resolved);
+        return new ImportStatement(sourceDirectory, resolved);
+    }
+
+    private Matcher matcher() {
+        return PATTERN.matcher(text);
     }
 
     @Override
@@ -159,7 +163,7 @@ final class ImportStatement implements Element, Logging {
             return false;
         }
         ImportStatement other = (ImportStatement) o;
-        return text.equals(other.text) && file.equals(other.file);
+        return text.equals(other.text) && sourceDirectory.equals(other.sourceDirectory);
     }
 
     @Override

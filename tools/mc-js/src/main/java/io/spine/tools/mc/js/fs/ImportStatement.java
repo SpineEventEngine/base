@@ -26,6 +26,7 @@
 
 package io.spine.tools.mc.js.fs;
 
+import com.google.errorprone.annotations.Immutable;
 import io.spine.logging.Logging;
 import io.spine.tools.code.Element;
 import io.spine.tools.fs.ExternalModule;
@@ -43,6 +44,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * An import line extracted from a source file for being
  * {@linkplain #resolve(Path, ExternalModules) resolved}.
  */
+@Immutable
 final class ImportStatement implements Element, Logging {
 
     private static final String GOOGLE_PROTOBUF_MODULE = "google-protobuf";
@@ -59,7 +61,7 @@ final class ImportStatement implements Element, Logging {
      */
     private static final String TEST_PROTO_RELATIVE_TO_MAIN = "../main/";
 
-    private final JsFile file;
+    private final Path sourceDirectory;
     private final String text;
 
     /**
@@ -71,13 +73,20 @@ final class ImportStatement implements Element, Logging {
      *         the line with the statement
      */
     ImportStatement(JsFile file, String line) {
+        this(file.directory(), checkNotNull(line));
+    }
+
+    private ImportStatement(Path sourceDirectory, String line) {
+        this.sourceDirectory = sourceDirectory;
+        this.text = ensureImport(line);
+    }
+
+    private static String ensureImport(String line) {
         checkArgument(
                 isDeclaredIn(line),
-                "An import statement should contain: `%s ... %s`.", IMPORT_START, IMPORT_END
+                "An import statement should be like: `%s ... %s`.", IMPORT_START, IMPORT_END
         );
-        checkNotNull(file);
-        this.file = file;
-        this.text = line;
+        return line;
     }
 
     /**
@@ -161,10 +170,7 @@ final class ImportStatement implements Element, Logging {
 
     private ImportStatement relativizeStandardProtoImport(Path generatedRoot) {
         String fileReference = fileRef().value();
-        String relativePathToRoot =
-                sourceDirectory()
-                        .relativize(generatedRoot)
-                        .toString();
+        String relativePathToRoot = sourceDirectory.relativize(generatedRoot).toString();
         String replacement =
                 relativePathToRoot.isEmpty()
                 ? FileReference.currentDirectory()
@@ -190,7 +196,7 @@ final class ImportStatement implements Element, Logging {
      */
     public ImportStatement replaceRef(CharSequence newFileRef) {
         String updatedText = text.replace(fileRef().value(), newFileRef);
-        return new ImportStatement(file, updatedText);
+        return new ImportStatement(sourceDirectory, updatedText);
     }
 
     @Override
@@ -221,14 +227,7 @@ final class ImportStatement implements Element, Logging {
      * Obtains the absolute path to the imported file.
      */
     Path importedFilePath() {
-        Path filePath = sourceDirectory().resolve(fileRef().value());
+        Path filePath = sourceDirectory.resolve(fileRef().value());
         return filePath.normalize();
-    }
-
-    /**
-     * Obtains the path of the directory with the file containing this import.
-     */
-    private Path sourceDirectory() {
-        return file.directory();
     }
 }
