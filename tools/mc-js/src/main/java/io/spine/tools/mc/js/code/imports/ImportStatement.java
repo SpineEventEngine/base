@@ -56,7 +56,7 @@ final class ImportStatement implements Logging {
      */
     public ImportStatement(File file, String text) {
         checkArgument(
-                hasImport(text),
+                declaredIn(text),
                 "An import statement should contain: `%s ... %s`.", IMPORT_START, IMPORT_END
         );
         checkNotNull(file);
@@ -67,7 +67,7 @@ final class ImportStatement implements Logging {
     /**
      * Tells whether the line contains an import statement.
      */
-    static boolean hasImport(String line) {
+    static boolean declaredIn(String line) {
         return line.contains(IMPORT_START);
     }
 
