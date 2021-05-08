@@ -27,6 +27,9 @@
 /**
  * This package contains language-neutral types for working with file system objects
  * of a software project.
+ *
+ * <p>Abstract classes in this package are named with the {@code Abstract} prefix to make
+ * implementing language-specific derived types a bit easier.
  */
 @Internal
 @CheckReturnValue
