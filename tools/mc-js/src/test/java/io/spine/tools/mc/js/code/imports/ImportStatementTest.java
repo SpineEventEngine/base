@@ -51,7 +51,7 @@ class ImportStatementTest {
     @Test
     @DisplayName("extract the import path")
     void extractImportPath() {
-        FileReference fileReference = statement.path();
+        FileReference fileReference = statement.fileRef();
         assertThat(fileReference.value()).isEqualTo(relativeImportPath());
     }
 
@@ -59,8 +59,8 @@ class ImportStatementTest {
     @DisplayName("replace the import path")
     void replaceImportPath() {
         String newPath = "b";
-        ImportStatement updatedStatement = statement.replacePath(newPath);
-        FileReference updatedPath = updatedStatement.path();
+        ImportStatement updatedStatement = statement.replaceRef(newPath);
+        FileReference updatedPath = updatedStatement.fileRef();
         assertThat(updatedPath.value()).isEqualTo(newPath);
     }
 

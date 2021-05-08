@@ -49,8 +49,8 @@ final class SourceLine implements Logging {
     @Regex(2)
     private static final Pattern IMPORT_PATTERN = compile("import [\"']([^:]+)[\"'] as (.+);");
 
-    private final String line;
     private final SourceFile file;
+    private final String text;
     private final Matcher matcher;
 
     /**
@@ -58,13 +58,13 @@ final class SourceLine implements Logging {
      *
      * @param file
      *         the file declaring the line
-     * @param line
+     * @param text
      *         the source code text in the line
      */
-    SourceLine(SourceFile file, String line) {
-        this.line = checkNotNull(line);
+    SourceLine(SourceFile file, String text) {
+        this.text = checkNotNull(text);
         this.file = checkNotNull(file);
-        this.matcher = IMPORT_PATTERN.matcher(line);
+        this.matcher = IMPORT_PATTERN.matcher(text);
     }
 
     /**
@@ -87,7 +87,7 @@ final class SourceLine implements Logging {
      */
     String resolveImport(Path libPath, ImmutableList<ExternalModule> modules) {
         if (!matcher.matches()) {
-            return line;
+            return text;
         }
         Path relativePath = importRelativeTo(libPath);
         FileReference reference = FileReference.of(relativePath);
@@ -96,7 +96,7 @@ final class SourceLine implements Logging {
                 return resolveImport(module, relativePath);
             }
         }
-        return line;
+        return text;
     }
 
     /**
@@ -105,7 +105,7 @@ final class SourceLine implements Logging {
      */
     private Path importRelativeTo(Path libPath) {
         FluentLogger.Api debug = _debug();
-        debug.log("Import statement found in line: `%s`.", line);
+        debug.log("Import statement found in line: `%s`.", text);
         String path = matcher.group(1);
         Path absolutePath = file.path()
                                 .getParent()
@@ -128,7 +128,7 @@ final class SourceLine implements Logging {
 
     @Override
     public String toString() {
-        return line;
+        return text;
     }
 
     @Override
@@ -140,11 +140,11 @@ final class SourceLine implements Logging {
             return false;
         }
         SourceLine other = (SourceLine) o;
-        return line.equals(other.line) && file.equals(other.file);
+        return text.equals(other.text) && file.equals(other.file);
     }
 
     @Override
     public int hashCode() {
-        return line.hashCode();
+        return text.hashCode();
     }
 }

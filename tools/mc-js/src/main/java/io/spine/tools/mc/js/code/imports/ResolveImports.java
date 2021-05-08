@@ -134,7 +134,7 @@ public final class ResolveImports extends GenerationTask implements Logging {
                                       ProcessImport processFunction) {
         File file = jsFile.path().toFile();
         if (hasImport(line)) {
-            ImportStatement importStatement = new ImportStatement(line, file);
+            ImportStatement importStatement = new ImportStatement(file, line);
             boolean matchesFilter = importFilter.test(importStatement);
             if (matchesFilter) {
                 return processFunction.apply(importStatement)
@@ -169,7 +169,7 @@ public final class ResolveImports extends GenerationTask implements Logging {
     }
 
     private ImportStatement relativizeStandardProtoImport(ImportStatement original) {
-        String fileReference = original.path()
+        String fileReference = original.fileRef()
                                        .value();
         String relativePathToRoot = original.sourceDirectory()
                                             .relativize(generatedRoot().path())
@@ -179,7 +179,7 @@ public final class ResolveImports extends GenerationTask implements Logging {
                              : relativePathToRoot.replace('\\', '/') + FileReference.separator();
         String relativeReference = GOOGLE_PROTOBUF_MODULE_PATTERN.matcher(fileReference)
                                                                  .replaceFirst(replacement);
-        return original.replacePath(relativeReference);
+        return original.replaceRef(relativeReference);
     }
 
     /**
@@ -190,11 +190,11 @@ public final class ResolveImports extends GenerationTask implements Logging {
         if (mainSourceImport.isPresent()) {
             return mainSourceImport.get();
         }
-        FileReference fileReference = resolvable.path();
+        FileReference fileReference = resolvable.fileRef();
         for (ExternalModule module : modules) {
             if (module.provides(fileReference)) {
                 FileReference fileInModule = module.fileInModule(fileReference);
-                return resolvable.replacePath(fileInModule.value());
+                return resolvable.replaceRef(fileInModule.value());
             }
         }
         return resolvable;
@@ -204,14 +204,14 @@ public final class ResolveImports extends GenerationTask implements Logging {
      * Attempts to resolve a relative import among main sources.
      */
     private static Optional<ImportStatement> resolveInMainSources(ImportStatement resolvable) {
-        String fileReference = resolvable.path()
+        String fileReference = resolvable.fileRef()
                                          .value();
         String delimiter = FileReference.currentDirectory();
         int insertionIndex = fileReference.lastIndexOf(delimiter) + delimiter.length();
         String updatedReference = fileReference.substring(0, insertionIndex)
                 + TEST_PROTO_RELATIVE_TO_MAIN
                 + fileReference.substring(insertionIndex);
-        ImportStatement updatedImport = resolvable.replacePath(updatedReference);
+        ImportStatement updatedImport = resolvable.replaceRef(updatedReference);
         return updatedImport.importedFileExists()
                ? Optional.of(updatedImport)
                : Optional.empty();

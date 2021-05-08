@@ -40,7 +40,7 @@ public class Given {
 
     public static ImportStatement importWithPath(String path, File importOrigin) {
         String importText = format("let foo = require('%s');", path);
-        return new ImportStatement(importText, importOrigin);
+        return new ImportStatement(importOrigin, importText);
     }
 
     public static String relativeImportPath() {

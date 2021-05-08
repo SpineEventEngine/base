@@ -46,7 +46,7 @@ final class IsGoogleProtobufImport implements Predicate<ImportStatement> {
     @Override
     public boolean apply(@Nullable ImportStatement statement) {
         checkNotNull(statement);
-        FileReference fileReference = statement.path();
+        FileReference fileReference = statement.fileRef();
         return fileReference.value()
                             .startsWith(STANDARD_PREFIX);
     }

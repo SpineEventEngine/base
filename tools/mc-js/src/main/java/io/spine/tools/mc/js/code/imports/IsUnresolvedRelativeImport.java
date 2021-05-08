@@ -42,7 +42,7 @@ final class IsUnresolvedRelativeImport implements Predicate<ImportStatement> {
     @Override
     public boolean apply(@Nullable ImportStatement statement) {
         checkNotNull(statement);
-        FileReference fileReference = statement.path();
+        FileReference fileReference = statement.fileRef();
         return fileReference.isRelative() && !statement.importedFileExists();
     }
 }

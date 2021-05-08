@@ -93,6 +93,6 @@ class ImportProcessingTest {
     }
 
     private static ImportStatement processImport(ImportStatement statement) {
-        return statement.replacePath(RESOLVED_IMPORT_PATH);
+        return statement.replaceRef(RESOLVED_IMPORT_PATH);
     }
 }

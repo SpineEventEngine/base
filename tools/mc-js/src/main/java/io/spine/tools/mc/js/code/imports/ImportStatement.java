@@ -43,25 +43,25 @@ public final class ImportStatement implements Logging {
     private static final String IMPORT_START = "require('";
     private static final String IMPORT_END = "')";
 
+    private final File file;
     private final String text;
-    private final File originFile;
 
     /**
      * Creates a new instance.
      *
+     * @param file
+     *         the file which declares the import statement
      * @param text
-     *         the line with an import statement
-     * @param originFile
-     *         the name of the file the import belongs to
+     *         the text of the statement
      */
-    public ImportStatement(String text, File originFile) {
+    public ImportStatement(File file, String text) {
         checkArgument(
                 hasImport(text),
                 "An import statement should contain: `%s ... %s`.", IMPORT_START, IMPORT_END
         );
-        checkNotNull(originFile);
+        checkNotNull(file);
         this.text = text;
-        this.originFile = originFile;
+        this.file = file;
     }
 
     /**
@@ -74,7 +74,7 @@ public final class ImportStatement implements Logging {
     /**
      * Obtains the file reference used in this import.
      */
-    public FileReference path() {
+    public FileReference fileRef() {
         int beginIndex = text.indexOf(IMPORT_START) + IMPORT_START.length();
         int endIndex = text.indexOf(IMPORT_END, beginIndex);
         String importPath = text.substring(beginIndex, endIndex);
@@ -84,9 +84,9 @@ public final class ImportStatement implements Logging {
     /**
      * Obtains a new instance with the updated path in the import statement.
      */
-    public ImportStatement replacePath(CharSequence newPath) {
-        String updatedText = text.replace(path().value(), newPath);
-        return new ImportStatement(updatedText, originFile);
+    public ImportStatement replaceRef(CharSequence newFileRef) {
+        String updatedText = text.replace(fileRef().value(), newFileRef);
+        return new ImportStatement(file, updatedText);
     }
 
     /**
@@ -111,8 +111,7 @@ public final class ImportStatement implements Logging {
      * Obtains the absolute path to the imported file.
      */
     public Path importedFilePath() {
-        FileReference fileReference = path();
-        Path filePath = sourceDirectory().resolve(fileReference.value());
+        Path filePath = sourceDirectory().resolve(fileRef().value());
         return filePath.normalize();
     }
 
@@ -120,7 +119,7 @@ public final class ImportStatement implements Logging {
      * Obtains the path of the directory with the file containing this import.
      */
     public Path sourceDirectory() {
-        return originFile.getParentFile()
-                         .toPath();
+        return file.getParentFile()
+                   .toPath();
     }
 }
