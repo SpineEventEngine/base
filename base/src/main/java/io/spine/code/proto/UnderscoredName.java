@@ -38,4 +38,11 @@ public interface UnderscoredName {
     List<String> words();
 
     String value();
+
+    /**
+     * Converts this name to {@code CamelCase}.
+     */
+    default String toCamelCase() {
+        return CamelCase.convert(this);
+    }
 }

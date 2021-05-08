@@ -28,10 +28,12 @@ package io.spine.code.proto;
 
 import java.util.Iterator;
 
+import static java.lang.Character.toUpperCase;
+
 /**
  * Utilities for working with {@code CamelCapitalization}.
  */
-public final class CamelCase {
+final class CamelCase {
 
     /** Prevent instantiation of this utility class. */
     private CamelCase() {
@@ -43,19 +45,17 @@ public final class CamelCase {
      * <p>Does not force lowercase conversion so that {@code "test_HTTP_request"} would become
      * {@code "TestHTTPRequest"}.
      */
-    public static String convert(UnderscoredName name) {
+    static String convert(UnderscoredName name) {
         Iterator<String> iterator = name.words()
                                         .iterator();
-        StringBuilder builder = new StringBuilder(name.value()
-                                                      .length());
+        StringBuilder builder = new StringBuilder(name.value().length());
         while (iterator.hasNext()) {
             String word = iterator.next();
             if (!word.isEmpty()) {
-                builder.append(Character.toUpperCase(word.charAt(0)))
+                builder.append(toUpperCase(word.charAt(0)))
                        .append(word.substring(1));
             }
         }
-
         return builder.toString();
     }
 }
