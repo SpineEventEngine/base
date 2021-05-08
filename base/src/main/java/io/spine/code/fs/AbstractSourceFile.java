@@ -26,6 +26,7 @@
 
 package io.spine.code.fs;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -38,6 +39,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.nio.file.Files.readAllLines;
 import static java.nio.file.Files.write;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 /**
  * Abstract base for source code files.
@@ -74,7 +76,7 @@ public abstract class AbstractSourceFile extends FsObject {
     public void store() {
         Path path = path();
         try {
-            write(path, lines());
+            write(path, lines(), Charsets.UTF_8, TRUNCATE_EXISTING);
         } catch (IOException e) {
             throw newIllegalStateException(e, "Unable to write to the file `%s`.", path);
         }
