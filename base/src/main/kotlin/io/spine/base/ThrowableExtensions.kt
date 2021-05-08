@@ -24,6 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:JvmName("ThrowableExtensions")
+
 package io.spine.base
 
 import com.google.common.base.Throwables.getRootCause

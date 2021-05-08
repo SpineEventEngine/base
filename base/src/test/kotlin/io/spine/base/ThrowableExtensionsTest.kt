@@ -42,7 +42,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 @DisplayName("Extensions for `Throwable` should")
-internal class ThrowableExtensionsKtTest {
+internal class ThrowableExtensionsTest {
 
     @Nested
     @DisplayName("tell if it was caused by a rejection")
