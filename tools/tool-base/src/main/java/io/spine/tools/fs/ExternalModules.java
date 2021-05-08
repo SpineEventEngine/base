@@ -77,13 +77,18 @@ public final class ExternalModules {
         return list;
     }
 
-    private static List<DirectoryPattern> patterns(Collection<String> rawPatterns) {
+    private static ImmutableList<DirectoryPattern> patterns(List<String> rawPatterns) {
         return rawPatterns.stream()
+                          .sorted()
                           .map(DirectoryPattern::of)
-                          .collect(toList());
+                          .collect(toImmutableList());
     }
 
+    /**
+     * Creates a new instance combining modules of this instance with the passed ones.
+     */
     public ExternalModules with(Iterable<ExternalModule> newModules) {
+        checkNotNull(newModules);
         ImmutableList<ExternalModule> combined = ImmutableList.<ExternalModule>builder()
                 .addAll(this.modules)
                 .addAll(newModules)
