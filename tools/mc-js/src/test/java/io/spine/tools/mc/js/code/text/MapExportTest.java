@@ -24,19 +24,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.snippet;
+package io.spine.tools.mc.js.code.text;
 
+import com.google.common.truth.StringSubject;
 import io.spine.tools.mc.js.code.CodeWriter;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-/**
- * A snippet of the code.
- */
-public interface Snippet {
+import static com.google.common.truth.Truth.assertThat;
 
-    /**
-     * Obtains code lines representing this snippet.
-     *
-     * @return always returns a new {@link CodeWriter}
-     */
-    CodeWriter writer();
+@DisplayName("`MapExport` should")
+class MapExportTest {
+
+    private static final String MAP_NAME = "map";
+
+    @Test
+    @DisplayName("be initialized with several entries")
+    void withSeveralEntries() {
+        MapExport map = MapExport.newBuilder(MAP_NAME)
+                .withEntry("firstKey", 1)
+                .withEntry("lastKey", 999)
+                .build();
+        CodeWriter lines = map.writer();
+        String stringRepresentation = lines.toString();
+        StringSubject assertRepresentation = assertThat(stringRepresentation);
+        assertRepresentation.contains("module.exports.map = new Map([");
+        assertRepresentation.contains("  ['firstKey', 1],");
+        assertRepresentation.contains("  ['lastKey', 999]");
+        assertRepresentation.contains("]);");
+    }
 }

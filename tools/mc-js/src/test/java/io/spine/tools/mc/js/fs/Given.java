@@ -24,13 +24,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * This package contains types for wording with Dart code.
- */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.dart.code;
+package io.spine.tools.mc.js.fs;
 
-import com.google.errorprone.annotations.CheckReturnValue;
+import java.io.File;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import static java.lang.String.format;
+
+final class Given {
+
+    /** Prevents instantiation of this utility class. */
+    private Given() {
+    }
+
+    public static ImportStatement importWithPath(String path, File importOrigin) {
+        String importText = format("let foo = require('%s');", path);
+        JsFile file = new JsFile(importOrigin.toPath());
+        return new ImportStatement(file, importText);
+    }
+
+    public static String relativeImportPath() {
+        return "../path-relative-to-parent.js";
+    }
+}

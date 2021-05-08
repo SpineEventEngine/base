@@ -26,11 +26,17 @@
 
 /**
  * The package contains standard elements of JavaScript code such as a statement or a declaration.
+ *
+ * <p>Some elements (like {@link io.spine.tools.mc.js.code.text.Comment Comment} or
+ * {@link io.spine.tools.mc.js.code.text.Import Import} occupy one line.
+ *
+ * <p>Multi-line code fragments in this package implement
+ * the {@link io.spine.tools.mc.js.code.text.Snippet Snippet} interface.
  */
 @Internal
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.mc.js.code.snippet;
+package io.spine.tools.mc.js.code.text;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 import io.spine.annotation.Internal;

@@ -73,8 +73,9 @@ public final class ExternalModule {
     public FileReference fileInModule(FileReference fileReference) {
         Optional<DirectoryPattern> matchingDirectory = matchingDirectory(fileReference);
         checkState(matchingDirectory.isPresent());
-        DirectoryReference directory = matchingDirectory.get()
-                                                        .transform(fileReference.directory());
+        DirectoryReference directory =
+                matchingDirectory.get()
+                                 .transform(fileReference.directory());
         String fileName = fileReference.fileName();
         String path = Joiner.on(FileReference.separator())
                             .join(name, directory, fileName);
@@ -114,35 +115,33 @@ public final class ExternalModule {
      * <a href="https://github.com/SpineEventEngine/web">The Spine Web</a> module.
      */
     public static ExternalModule spineWeb() {
-        Set<DirectoryPattern> directories = ImmutableSet.of(
+        @SuppressWarnings("DuplicateStringLiteralInspection") // also in test code.
+        ImmutableList<DirectoryPattern> patterns = DirectoryPattern.listOf(
                 // Directories with handcrafted JS files.
-                DirectoryPattern.of("client/parser"),
+                "client/parser",
                 // Directories with standard Protobuf files.
-                DirectoryPattern.of("proto/google/protobuf/*"),
+                "proto/google/protobuf/*",
                 // Directories with Spine Protobuf files.
-                DirectoryPattern.of("proto/spine/base/*"),
-                DirectoryPattern.of("proto/spine/change/*"),
-                DirectoryPattern.of("proto/spine/client/*"),
-                DirectoryPattern.of("proto/spine/core/*"),
-                DirectoryPattern.of("proto/spine/net/*"),
-                DirectoryPattern.of("proto/spine/people/*"),
-                DirectoryPattern.of("proto/spine/time/*"),
-                DirectoryPattern.of("proto/spine/ui/*"),
-                DirectoryPattern.of("proto/spine/validate/*"),
-                DirectoryPattern.of("proto/spine/web/*"),
-                DirectoryPattern.of("proto/spine")
+                "proto/spine/base/*",
+                "proto/spine/change/*",
+                "proto/spine/client/*",
+                "proto/spine/core/*",
+                "proto/spine/net/*",
+                "proto/spine/people/*",
+                "proto/spine/time/*",
+                "proto/spine/ui/*",
+                "proto/spine/validate/*",
+                "proto/spine/web/*",
+                "proto/spine"
         );
-        return new ExternalModule("spine-web", directories);
+        return new ExternalModule("spine-web", patterns);
     }
 
     /**
      * <a href="https://github.com/SpineEventEngine/users">The Spine Users</a> module.
      */
     public static ExternalModule spineUsers() {
-        Set<DirectoryPattern> directories = ImmutableSet.of(
-                DirectoryPattern.of("spine/users/*")
-        );
-        return new ExternalModule("spine-users", directories);
+        return new ExternalModule("spine-users", DirectoryPattern.listOf("spine/users/*"));
     }
 
     /**

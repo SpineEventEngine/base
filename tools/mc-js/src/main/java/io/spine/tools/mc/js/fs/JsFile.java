@@ -24,51 +24,50 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.task;
+package io.spine.tools.mc.js.fs;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.proto.FileSet;
-import io.spine.logging.Logging;
 import io.spine.tools.fs.ExternalModule;
-import io.spine.tools.js.fs.Directory;
-import io.spine.tools.js.fs.FileName;
-import io.spine.tools.mc.js.fs.JsFile;
+import io.spine.tools.fs.FileWithImports;
 
 import java.nio.file.Path;
-import java.util.Collection;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * A task to resolve imports in generated files.
- *
- * <p>Supports only {@code CommonJs} imports.
- *
- * <p>The task should be performed last among {@linkplain GenerationTask generation tasks}
- * to ensure that imports won't be modified after execution of this task.
+ * A JavaScript file present on a file system.
  */
-public final class ResolveImports extends GenerationTask implements Logging {
+public final class JsFile extends FileWithImports {
 
-    private final ImmutableList<ExternalModule> modules;
+    @VisibleForTesting
+    public static final String EXTENSION = ".js";
 
-    public ResolveImports(Directory generatedRoot, Collection<ExternalModule> modules) {
-        super(generatedRoot);
-        this.modules = ImmutableList.copyOf(modules);
+    /**
+     * Creates a new instance.
+     *
+     * @param path
+     *         the path to existing JavaScript file
+     */
+    public JsFile(Path path) {
+        super(path);
+        String fileName = path.toString();
+        checkArgument(fileName.endsWith(EXTENSION),
+                      "A JavaScript file is expected. Passed: `%s`.", fileName);
     }
 
     @Override
-    protected void generateFor(FileSet fileSet) {
-        for (FileDescriptor file : fileSet.files()) {
-            FileName fileName = FileName.from(file);
-            _debug().log("Resolving imports in the file `%s`.", fileName);
-            Path filePath = generatedRoot().resolve(fileName);
-            resolveInFile(filePath);
-        }
+    protected boolean isImport(String line) {
+        return ImportStatement.declaredIn(line);
     }
 
-    @VisibleForTesting
-    void resolveInFile(Path filePath) {
-        JsFile file = new JsFile(filePath);
-        file.resolveImports(generatedRoot().path(), modules);
+    @Override
+    protected String resolveImport(String line,
+                                   Path generatedRoot,
+                                   ImmutableList<ExternalModule> modules) {
+        ImportStatement importLine = new ImportStatement(this, line);
+        ImportStatement resolved = importLine.resolve(generatedRoot, modules);
+        String text = resolved.toString();
+        return text;
     }
 }

@@ -31,7 +31,7 @@ import com.google.common.collect.ImmutableList;
 import io.spine.tools.code.Indent;
 import io.spine.tools.code.IndentedLine;
 import io.spine.tools.code.Line;
-import io.spine.tools.mc.js.code.snippet.Snippet;
+import io.spine.tools.mc.js.code.text.Snippet;
 
 import java.util.ArrayList;
 import java.util.Iterator;

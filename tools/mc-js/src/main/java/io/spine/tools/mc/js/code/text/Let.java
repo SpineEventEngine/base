@@ -24,33 +24,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.snippet;
+package io.spine.tools.mc.js.code.text;
 
-import com.google.common.truth.StringSubject;
-import io.spine.tools.mc.js.code.CodeWriter;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.tools.code.Line;
+import io.spine.tools.js.code.TypeName;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 
-@DisplayName("`MapExport` should")
-class MapExportTest {
+/**
+ * A declaration of a variable using ES6 keyword {@code let}.
+ */
+@Immutable
+public final class Let extends Line {
 
-    private static final String MAP_NAME = "map";
+    private Let(String name, String initializer) {
+        super(format("let %s = %s;", name, initializer));
+    }
 
-    @Test
-    @DisplayName("be initialized with several entries")
-    void withSeveralEntries() {
-        MapExport map = MapExport.newBuilder(MAP_NAME)
-                .withEntry("firstKey", 1)
-                .withEntry("lastKey", 999)
-                .build();
-        CodeWriter lines = map.writer();
-        String stringRepresentation = lines.toString();
-        StringSubject assertRepresentation = assertThat(stringRepresentation);
-        assertRepresentation.contains("module.exports.map = new Map([");
-        assertRepresentation.contains("  ['firstKey', 1],");
-        assertRepresentation.contains("  ['lastKey', 999]");
-        assertRepresentation.contains("]);");
+    /**
+     * Creates a declaration with the specified name, initialized with the passed the value.
+     */
+    public static Let withValue(String name, String value) {
+        checkNotNull(name);
+        checkNotNull(value);
+        return new Let(name, value);
+    }
+
+    /**
+     * Creates a declaration of a variable initialized by instantiation of the type.
+     */
+    public static Let newInstance(String name, TypeName type) {
+        checkNotNull(name);
+        checkNotNull(type);
+        String initializer = "new " + type + "()";
+        return withValue(name, initializer);
     }
 }

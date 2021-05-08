@@ -28,6 +28,7 @@ package io.spine.tools.fs;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 import java.util.Objects;
@@ -35,6 +36,7 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
@@ -78,6 +80,19 @@ public final class DirectoryPattern {
         }
         DirectoryReference reference = DirectoryReference.of(directory);
         return new DirectoryPattern(reference, includeNested);
+    }
+
+    /**
+     * Creates a list of patterns from the passed values.
+     */
+    public static ImmutableList<DirectoryPattern> listOf(String... values) {
+        checkNotNull(values);
+        ImmutableList<DirectoryPattern> result =
+                ImmutableList.copyOf(values)
+                             .stream()
+                             .map(DirectoryPattern::of)
+                             .collect(toImmutableList());
+        return result;
     }
 
     /**

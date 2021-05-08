@@ -24,12 +24,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.imports;
+package io.spine.tools.mc.js.code.text;
 
-import java.util.function.UnaryOperator;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.tools.code.Line;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 
 /**
- * A function processing an import statement.
+ * A code line representing a {@code return} statement.
  */
-public interface ProcessImport extends UnaryOperator<ImportStatement> {
+@Immutable
+public final class Return extends Line {
+
+    private Return(Object returnedValue) {
+        super(format("return %s;", returnedValue));
+    }
+
+    /**
+     * Composes a statement returning the value.
+     */
+    public static Return value(Object value) {
+        checkNotNull(value);
+        return new Return(value);
+    }
+
+    /**
+     * Composes a statement returning a string literal.
+     */
+    public static Return stringLiteral(String literal) {
+        checkNotNull(literal);
+        String quoted = format("'%s'", literal);
+        return new Return(quoted);
+    }
+
+    /**
+     * Composes a statement returning {@code null}.
+     */
+    public static Return nullReference() {
+        return value("null");
+    }
 }

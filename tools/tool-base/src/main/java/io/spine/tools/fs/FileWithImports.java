@@ -24,45 +24,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.dart.fs;
+package io.spine.tools.fs;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.fs.AbstractSourceFile;
-import io.spine.logging.Logging;
-import io.spine.tools.dart.code.ImportStatement;
-import io.spine.tools.fs.ExternalModule;
 
 import java.nio.file.Path;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
- * A Dart source file.
+ * A source code file containing import statements that may need to
+ * be {@linkplain #resolveImports(Path, ImmutableList) resolved}.
  */
-public final class SourceFile extends AbstractSourceFile implements Logging {
+public abstract class FileWithImports extends AbstractSourceFile {
 
-    private SourceFile(Path path) {
+    protected FileWithImports(Path path) {
         super(path);
-    }
-
-    /**
-     * Reads the file from the local file system.
-     */
-    public static SourceFile read(Path path) {
-        checkNotNull(path);
-        SourceFile file = new SourceFile(path);
-        file.load();
-        return file;
     }
 
     /**
      * Resolves the relative imports in the file into absolute ones with the given modules.
      */
-    public void resolveImports(Path libPath, ImmutableList<ExternalModule> modules) {
+    public void resolveImports(Path generatedRoot, ImmutableList<ExternalModule> modules) {
+        load();
         ImmutableList.Builder<String> newLines = ImmutableList.builder();
         for (String line : lines()) {
-            if (isImportStatement(line)) {
-                String resolved = resolveImportStatement(line, libPath, modules);
+            if (isImport(line)) {
+                String resolved = resolveImport(line, generatedRoot, modules);
                 newLines.add(resolved);
             } else {
                 newLines.add(line);
@@ -72,14 +59,16 @@ public final class SourceFile extends AbstractSourceFile implements Logging {
         store();
     }
 
-    private static boolean isImportStatement(String line) {
-        return ImportStatement.declaredIn(line);
-    }
+    /**
+     * Tests if the passed line contains an import statement.
+     */
+    protected abstract boolean isImport(String line);
 
-    private String
-    resolveImportStatement(String line, Path libPath, ImmutableList<ExternalModule> modules) {
-        ImportStatement statement = new ImportStatement(this, line);
-        ImportStatement resolved = statement.resolve(libPath, modules);
-        return resolved.toString();
-    }
+    /**
+     * Transforms the import statement of the passed line updating the imported file
+     * reference in relation to the passed root directory and external modules.
+     */
+    protected abstract String resolveImport(String line,
+                                            Path generatedRoot,
+                                            ImmutableList<ExternalModule> modules);
 }

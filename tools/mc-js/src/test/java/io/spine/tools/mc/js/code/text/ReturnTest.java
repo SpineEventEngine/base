@@ -24,29 +24,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.snippet;
+package io.spine.tools.mc.js.code.text;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.mc.js.code.snippet.Comment.MC_JS_SIGNATURE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("Comment should")
-class CommentTest {
+@DisplayName("Return")
+class ReturnTest {
 
     @Test
-    @DisplayName("be prepended with slashes")
-    void predendedWithSlashes() {
-        String text = "It is a comment text.";
-        Comment comment = Comment.of(text);
-        assertEquals("// " + text, comment.text());
+    @DisplayName("an object")
+    void object() {
+        Return line = Return.value(5);
+        assertEquals("return 5;", line.text());
     }
 
     @Test
-    @DisplayName("provide the comment about generation")
-    void generatedByComment() {
-        Comment generatedBy = Comment.generatedBySpine();
-        assertEquals("// " + MC_JS_SIGNATURE, generatedBy.text());
+    @DisplayName("a string literal")
+    void stringLiteral() {
+        Return line = Return.stringLiteral("foo");
+        assertEquals("return 'foo';", line.text());
+    }
+
+    @Test
+    @DisplayName("null reference")
+    void nullValue() {
+        Return nullValue = Return.nullReference();
+        assertEquals("return null;", nullValue.text());
     }
 }

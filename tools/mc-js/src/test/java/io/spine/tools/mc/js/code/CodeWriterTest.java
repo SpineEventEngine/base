@@ -32,7 +32,7 @@ import com.google.common.truth.StringSubject;
 import io.spine.tools.code.Line;
 import io.spine.tools.code.Indent;
 import io.spine.tools.code.IndentedLine;
-import io.spine.tools.mc.js.code.snippet.Comment;
+import io.spine.tools.mc.js.code.text.Comment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

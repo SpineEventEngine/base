@@ -24,30 +24,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.snippet;
+package io.spine.tools.dart.fs;
 
-import com.google.protobuf.Any;
-import io.spine.tools.js.code.TypeName;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.common.collect.ImmutableList;
+import io.spine.tools.fs.ExternalModule;
+import io.spine.tools.fs.FileWithImports;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.nio.file.Path;
 
-@DisplayName("VariableDeclaration should")
-class LetTest {
+import static com.google.common.base.Preconditions.checkNotNull;
 
-    @Test
-    @DisplayName("be initialized by value")
-    void initializedByValue() {
-        Let line = Let.withValue("someVariable", "someValue");
-        assertEquals("let someVariable = someValue;", line.text());
+/**
+ * A Dart source file.
+ */
+public final class DartFile extends FileWithImports {
+
+    private DartFile(Path path) {
+        super(path);
     }
 
-    @Test
-    @DisplayName("be initialized by new instance")
-    void initializedByNewInstance() {
-        TypeName type = TypeName.from(Any.getDescriptor());
-        Let line = Let.newInstance("anyValue", type);
-        assertEquals("let anyValue = new proto.google.protobuf.Any();", line.text());
+    /**
+     * Reads the file from the local file system.
+     */
+    public static DartFile read(Path path) {
+        checkNotNull(path);
+        DartFile file = new DartFile(path);
+        file.load();
+        return file;
+    }
+
+    @Override
+    protected boolean isImport(String line) {
+        return ImportStatement.declaredIn(line);
+    }
+
+    @Override
+    protected String resolveImport(String line,
+                                   Path libPath,
+                                   ImmutableList<ExternalModule> modules) {
+        ImportStatement statement = new ImportStatement(this, line);
+        ImportStatement resolved = statement.resolve(libPath, modules);
+        return resolved.toString();
     }
 }

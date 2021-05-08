@@ -24,14 +24,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Classes for resolving JS imports.
- */
+package io.spine.tools.mc.js.code.text;
 
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.mc.js.code.imports;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import com.google.errorprone.annotations.CheckReturnValue;
+import static io.spine.tools.mc.js.code.text.Comment.MC_JS_SIGNATURE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+@DisplayName("Comment should")
+class CommentTest {
+
+    @Test
+    @DisplayName("be prepended with slashes")
+    void predendedWithSlashes() {
+        String text = "It is a comment text.";
+        Comment comment = Comment.of(text);
+        assertEquals("// " + text, comment.text());
+    }
+
+    @Test
+    @DisplayName("provide the comment about generation")
+    void generatedByComment() {
+        Comment generatedBy = Comment.generatedBySpine();
+        assertEquals("// " + MC_JS_SIGNATURE, generatedBy.text());
+    }
+}

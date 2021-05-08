@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.snippet;
+package io.spine.tools.mc.js.code.text;
 
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -36,8 +36,8 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.mc.js.code.given.Generators.assertContains;
-import static io.spine.tools.mc.js.code.snippet.Parser.FROM_OBJECT_ARG;
-import static io.spine.tools.mc.js.code.snippet.Parser.PARSE_METHOD;
+import static io.spine.tools.mc.js.code.text.Parser.FROM_OBJECT_ARG;
+import static io.spine.tools.mc.js.code.text.Parser.PARSE_METHOD;
 import static java.lang.System.lineSeparator;
 
 @DisplayName("`Parser` should")

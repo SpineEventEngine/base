@@ -24,23 +24,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.imports;
+package io.spine.tools.mc.js.fs;
 
-import io.spine.logging.Logging;
+import com.google.common.collect.ImmutableList;
 import io.spine.tools.fs.ExternalModule;
 import io.spine.tools.fs.FileReference;
-import io.spine.tools.js.fs.Directory;
+import io.spine.logging.Logging;
 
 import java.nio.file.Path;
 import java.util.Optional;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * An import statement extracted from a source file.
+ * An import line extracted from a source file for being
+ * {@linkplain #resolve(Path, ImmutableList) resolved}.
  */
 final class ImportStatement implements Logging {
 
@@ -69,7 +69,7 @@ final class ImportStatement implements Logging {
      * @param text
      *         the text of the statement
      */
-    public ImportStatement(JsFile file, String text) {
+    ImportStatement(JsFile file, String text) {
         checkArgument(
                 declaredIn(text),
                 "An import statement should contain: `%s ... %s`.", IMPORT_START, IMPORT_END
@@ -87,17 +87,38 @@ final class ImportStatement implements Logging {
     }
 
     /**
+     * Replaces the import from {@code google-protobuf} module by a relative import.
+     * Then, the import is resolved among external modules.
+     *
+     * <p>Such a replacement is required since we want to use own versions
+     * of standard types, which are additionally processed by the Model Compiler for JS.
+     *
+     * <p>The custom versions of standard Protobuf types are provided by
+     * the {@linkplain ExternalModule#spineWeb() Spine Web}.
+     */
+    ImportStatement resolve(Path generatedRoot, ImmutableList<ExternalModule> modules) {
+        ImportStatement resolved = this;
+        if (containsGoogleProtobufType()) {
+            resolved = relativizeStandardProtoImport(generatedRoot);
+        }
+        if (resolved.isUnresolvedRelativeImport()) {
+            resolved = resolved.resolveRelativeTo(modules);
+        }
+        return resolved;
+    }
+
+    /**
      * Tells if this statement reference a standard Protobuf type
      * ({@code google-protobuf/google/protobuf/..}).
      */
-    public boolean containsGoogleProtobufType() {
+    private boolean containsGoogleProtobufType() {
         return fileRef().value().startsWith(GOOGLE_PROTOBUF_MODULE + "/google/protobuf/");
     }
 
     /**
      * Tells if this statement refers to a file which cannot be found on the file system.
      */
-    public boolean isUnresolvedRelativeImport() {
+    private boolean isUnresolvedRelativeImport() {
         boolean isRelative = fileRef().isRelative();
         boolean fileDoesNotExist = !importedFileExists();
         return isRelative && fileDoesNotExist;
@@ -106,7 +127,7 @@ final class ImportStatement implements Logging {
     /**
      * Attempts to resolve a relative import.
      */
-    ImportStatement resolveRelativeTo(Set<ExternalModule> modules) {
+    private ImportStatement resolveRelativeTo(ImmutableList<ExternalModule> modules) {
         Optional<ImportStatement> mainSourceImport = resolveInMainSources();
         if (mainSourceImport.isPresent()) {
             return mainSourceImport.get();
@@ -137,11 +158,11 @@ final class ImportStatement implements Logging {
                : Optional.empty();
     }
 
-    ImportStatement relativizeStandardProtoImport(Directory generatedRoot) {
+    private ImportStatement relativizeStandardProtoImport(Path generatedRoot) {
         String fileReference = fileRef().value();
         String relativePathToRoot =
                 sourceDirectory()
-                        .relativize(generatedRoot.path())
+                        .relativize(generatedRoot)
                         .toString();
         String replacement = relativePathToRoot.isEmpty()
                              ? FileReference.currentDirectory()
@@ -172,7 +193,8 @@ final class ImportStatement implements Logging {
     /**
      * Obtains the text of the import.
      */
-    public String text() {
+    @Override
+    public String toString() {
         return text;
     }
 

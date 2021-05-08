@@ -34,7 +34,7 @@ import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.fs.FileName;
 import io.spine.tools.mc.js.code.CodeWriter;
 import io.spine.tools.mc.js.code.task.GenerationTask;
-import io.spine.tools.mc.js.code.imports.Import;
+import io.spine.tools.mc.js.code.text.Import;
 import io.spine.tools.mc.js.fs.FileWriter;
 
 import java.util.Collection;

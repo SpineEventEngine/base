@@ -24,12 +24,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.dart.code;
+package io.spine.tools.dart.fs;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.flogger.FluentLogger;
 import io.spine.logging.Logging;
-import io.spine.tools.dart.fs.SourceFile;
 import io.spine.tools.fs.ExternalModule;
 import io.spine.tools.fs.FileReference;
 import org.checkerframework.checker.regex.qual.Regex;
@@ -46,12 +45,12 @@ import static java.util.regex.Pattern.compile;
 /**
  * A source code line with an import statement.
  */
-public final class ImportStatement implements Logging {
+final class ImportStatement implements Logging {
 
     @Regex(2)
     private static final Pattern PATTERN = compile("import [\"']([^:]+)[\"'] as (.+);");
 
-    private final SourceFile file;
+    private final DartFile file;
     private final String text;
     private final Matcher matcher;
 
@@ -63,7 +62,7 @@ public final class ImportStatement implements Logging {
      * @param text
      *         the text of the source code line with the import statement
      */
-    public ImportStatement(SourceFile file, String text) {
+    ImportStatement(DartFile file, String text) {
         this.text = checkNotNull(text);
         this.file = checkNotNull(file);
         Matcher matcher = PATTERN.matcher(text);

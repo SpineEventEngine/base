@@ -29,12 +29,12 @@ package io.spine.tools.mc.js.code.field.parser;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.mc.js.code.CodeWriter;
-import io.spine.tools.mc.js.code.snippet.Let;
-import io.spine.tools.mc.js.code.snippet.Parser;
+import io.spine.tools.mc.js.code.text.Let;
+import io.spine.tools.mc.js.code.text.Parser;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.mc.js.code.snippet.Parser.TYPE_PARSERS_IMPORT_NAME;
+import static io.spine.tools.mc.js.code.text.Parser.TYPE_PARSERS_IMPORT_NAME;
 import static java.lang.String.format;
 
 /**

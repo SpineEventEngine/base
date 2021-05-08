@@ -48,7 +48,7 @@ class ResolveImportsTest {
 
     private final Directory generatedProtoDir = GivenProject.mainProtoSources();
     private final ExternalModule module = new ExternalModule(
-            "test-module", ImmutableList.of(DirectoryPattern.of("root-dir"))
+            "test-module", DirectoryPattern.listOf("root-dir")
     );
     private final Path tempDirectory = generatedProtoDir.path();
     private final Path testFile = tempDirectory.resolve("js/with-imports.js");
