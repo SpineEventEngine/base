@@ -27,7 +27,7 @@
 package io.spine.tools.gradle;
 
 import com.google.common.annotations.VisibleForTesting;
-import io.spine.code.AbstractDirectory;
+import io.spine.code.fs.AbstractDirectory;
 
 import java.nio.file.Path;
 

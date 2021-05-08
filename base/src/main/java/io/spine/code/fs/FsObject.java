@@ -24,46 +24,58 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.code.fs;
 
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.code.java.ClassName;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A set of utilities for working with the Google packages in Java and Protobuf.
+ * Abstract base for source code objects on a file system.
  */
-public final class GooglePackage {
+public abstract class FsObject {
 
-    private static final String JAVA_STYLE = "com.google";
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Used in another context.
-    private static final String PROTOBUF_STYLE = "google";
+    private final Path path;
 
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private GooglePackage() {
+    protected FsObject(Path path) {
+        this.path = checkNotNull(path);
     }
 
     /**
-     * Checks that the given Protobuf file is not declared in Google package.
+     * Obtains the path of the source code object.
      */
-    public static boolean notInGooglePackage(FileDescriptorProto descriptor) {
-        checkNotNull(descriptor);
-        return notInGooglePackage(descriptor.getPackage());
+    public Path path() {
+        return path;
     }
 
     /**
-     * Checks that the given Java class is not declared in Google package.
+     * Checks if the object is actually present in the file system.
      */
-    public static boolean notInGooglePackage(ClassName cls) {
-        checkNotNull(cls);
-        return notInGooglePackage(cls.packageName().value());
+    public boolean exists() {
+        return Files.exists(path);
     }
 
-    private static boolean notInGooglePackage(String packageName) {
-        checkNotNull(packageName);
-        return !packageName.startsWith(PROTOBUF_STYLE) && !packageName.startsWith(JAVA_STYLE);
+    @Override
+    public String toString() {
+        return path().toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(path);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof FsObject)) {
+            return false;
+        }
+        FsObject other = (FsObject) obj;
+        return Objects.equals(this.path, other.path);
     }
 }

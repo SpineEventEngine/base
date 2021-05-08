@@ -24,30 +24,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.code.fs;
 
-import java.nio.file.Path;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.code.java.ClassName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A directory with source code files.
+ * A set of utilities for working with the Google packages in Java and Protobuf.
  */
-public abstract class SourceCodeDirectory extends AbstractDirectory {
+public final class GooglePackage {
 
-    protected SourceCodeDirectory(Path path) {
-        super(path);
+    private static final String JAVA_STYLE = "com.google";
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Used in another context.
+    private static final String PROTOBUF_STYLE = "google";
+
+    /**
+     * Prevents the utility class instantiation.
+     */
+    private GooglePackage() {
     }
 
-    public Path resolve(SourceCodeDirectory dir) {
-        checkNotNull(dir);
-        Path result = path().resolve(dir.path());
-        return result;
+    /**
+     * Checks that the given Protobuf file is not declared in Google package.
+     */
+    public static boolean notInGooglePackage(FileDescriptorProto descriptor) {
+        checkNotNull(descriptor);
+        return notInGooglePackage(descriptor.getPackage());
     }
 
-    public Path resolve(AbstractSourceFile file) {
-        checkNotNull(file);
-        Path result = path().resolve(file.path());
-        return result;
+    /**
+     * Checks that the given Java class is not declared in Google package.
+     */
+    public static boolean notInGooglePackage(ClassName cls) {
+        checkNotNull(cls);
+        return notInGooglePackage(cls.packageName().value());
+    }
+
+    private static boolean notInGooglePackage(String packageName) {
+        checkNotNull(packageName);
+        return !packageName.startsWith(PROTOBUF_STYLE) && !packageName.startsWith(JAVA_STYLE);
     }
 }

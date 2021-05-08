@@ -24,16 +24,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
-
-import java.nio.file.Path;
-
 /**
- * A directory in a programming project.
+ * This package contains language-neutral types for working with file system objects
+ * of a software project.
  */
-public abstract class AbstractDirectory extends FsObject {
+@Internal
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.code.fs;
 
-    protected AbstractDirectory(Path path) {
-        super(path);
-    }
-}
+import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.annotation.Internal;
+
+import javax.annotation.ParametersAreNonnullByDefault;

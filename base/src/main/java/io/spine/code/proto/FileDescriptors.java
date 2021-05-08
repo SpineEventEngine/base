@@ -45,7 +45,7 @@ import java.util.function.Predicate;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Sets.newHashSet;
 import static com.google.common.collect.Streams.stream;
-import static io.spine.code.GooglePackage.notInGooglePackage;
+import static io.spine.code.fs.GooglePackage.notInGooglePackage;
 import static io.spine.io.Files2.checkExists;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.util.stream.Collectors.toList;

@@ -24,21 +24,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.code.fs;
 
-import io.spine.value.ComparableStringValue;
+import java.nio.file.Path;
 
 /**
- * A name of a source code file.
- *
- * @param <F> the type of the file name for comparison type covariance
+ * Abstract base for source code files.
  */
-public abstract class AbstractFileName<F extends AbstractFileName>
-        extends ComparableStringValue<F> {
+public abstract class AbstractSourceFile extends FsObject {
 
-    private static final long serialVersionUID = 0L;
-
-    protected AbstractFileName(String value) {
-        super(value);
+    protected AbstractSourceFile(Path path) {
+        super(path);
     }
 }

@@ -31,7 +31,7 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import io.spine.base.Field;
 import io.spine.base.FieldPath;
-import io.spine.code.AbstractFieldName;
+import io.spine.code.fs.AbstractFieldName;
 
 import java.util.List;
 import java.util.regex.Pattern;

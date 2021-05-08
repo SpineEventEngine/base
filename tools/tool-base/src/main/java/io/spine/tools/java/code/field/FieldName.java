@@ -26,7 +26,7 @@
 
 package io.spine.tools.java.code.field;
 
-import io.spine.code.AbstractFieldName;
+import io.spine.code.fs.AbstractFieldName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.Character.toUpperCase;

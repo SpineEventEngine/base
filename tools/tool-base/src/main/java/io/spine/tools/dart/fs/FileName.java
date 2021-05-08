@@ -27,7 +27,7 @@
 package io.spine.tools.dart.fs;
 
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.AbstractFileName;
+import io.spine.code.fs.AbstractFileName;
 
 /**
  * Name of a Dart file generated from Protobuf.

@@ -31,7 +31,7 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.AbstractFileName;
+import io.spine.code.fs.AbstractFileName;
 import io.spine.tools.fs.FileReference;
 
 import java.util.List;

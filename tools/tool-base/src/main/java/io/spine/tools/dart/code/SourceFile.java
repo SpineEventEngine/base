@@ -27,7 +27,7 @@
 package io.spine.tools.dart.code;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.AbstractSourceFile;
+import io.spine.code.fs.AbstractSourceFile;
 import io.spine.logging.Logging;
 import io.spine.tools.fs.ExternalModule;
 

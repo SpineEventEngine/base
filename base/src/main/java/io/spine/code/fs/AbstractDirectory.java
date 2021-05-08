@@ -24,16 +24,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.code.fs;
 
 import java.nio.file.Path;
 
 /**
- * Abstract base for source code files.
+ * A directory in a programming project.
  */
-public abstract class AbstractSourceFile extends FsObject {
+public abstract class AbstractDirectory extends FsObject {
 
-    protected AbstractSourceFile(Path path) {
+    protected AbstractDirectory(Path path) {
         super(path);
     }
 }

@@ -31,7 +31,7 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.base.RejectionType;
-import io.spine.code.AbstractSourceFile;
+import io.spine.code.fs.AbstractSourceFile;
 import io.spine.code.java.SimpleClassName;
 import io.spine.logging.Logging;
 import io.spine.type.MessageType;

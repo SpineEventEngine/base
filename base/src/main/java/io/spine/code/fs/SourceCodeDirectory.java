@@ -24,58 +24,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.code.fs;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Abstract base for source code objects on a file system.
+ * A directory with source code files.
  */
-public abstract class FsObject {
+public abstract class SourceCodeDirectory extends AbstractDirectory {
 
-    private final Path path;
-
-    protected FsObject(Path path) {
-        this.path = checkNotNull(path);
+    protected SourceCodeDirectory(Path path) {
+        super(path);
     }
 
-    /**
-     * Obtains the path of the source code object.
-     */
-    public Path path() {
-        return path;
+    public Path resolve(SourceCodeDirectory dir) {
+        checkNotNull(dir);
+        Path result = path().resolve(dir.path());
+        return result;
     }
 
-    /**
-     * Checks if the object is actually present in the file system.
-     */
-    public boolean exists() {
-        return Files.exists(path);
-    }
-
-    @Override
-    public String toString() {
-        return path().toString();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(path);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof FsObject)) {
-            return false;
-        }
-        FsObject other = (FsObject) obj;
-        return Objects.equals(this.path, other.path);
+    public Path resolve(AbstractSourceFile file) {
+        checkNotNull(file);
+        Path result = path().resolve(file.path());
+        return result;
     }
 }

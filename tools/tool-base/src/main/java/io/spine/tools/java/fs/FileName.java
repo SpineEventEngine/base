@@ -29,7 +29,7 @@ package io.spine.tools.java.fs;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
-import io.spine.code.AbstractFileName;
+import io.spine.code.fs.AbstractFileName;
 import io.spine.code.java.SimpleClassName;
 
 import java.nio.file.Path;

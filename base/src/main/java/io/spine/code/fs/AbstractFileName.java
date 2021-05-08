@@ -24,18 +24,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.code.fs;
 
-import io.spine.value.StringTypeValue;
+import io.spine.value.ComparableStringValue;
 
 /**
- * A field in a programming language.
+ * A name of a source code file.
+ *
+ * @param <F> the type of the file name for comparison type covariance
  */
-public class AbstractFieldName extends StringTypeValue {
+public abstract class AbstractFileName<F extends AbstractFileName>
+        extends ComparableStringValue<F> {
 
     private static final long serialVersionUID = 0L;
 
-    protected AbstractFieldName(String value) {
+    protected AbstractFileName(String value) {
         super(value);
     }
 }

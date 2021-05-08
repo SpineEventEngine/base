@@ -24,42 +24,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.proto.fs;
+package io.spine.code.fs;
 
-import io.spine.code.fs.AbstractDirectory;
-import io.spine.code.fs.SourceCodeDirectory;
-
-import java.nio.file.Path;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import io.spine.value.StringTypeValue;
 
 /**
- * A proto source code directory.
+ * A field in a programming language.
  */
-public final class Directory extends SourceCodeDirectory {
+public class AbstractFieldName extends StringTypeValue {
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Same name for different directories.
-    private static final String ROOT_NAME = "proto";
+    private static final long serialVersionUID = 0L;
 
-    private Directory(Path path) {
-        super(path);
-    }
-
-    /**
-     * Creates a new instance.
-     */
-    static Directory at(Path path) {
-        checkNotNull(path);
-        return new Directory(path);
-    }
-
-    /**
-     * Creates an instance of the root directory named {@code "proto"}.
-     */
-    public static Directory rootIn(AbstractDirectory parent) {
-        checkNotNull(parent);
-        Path path = parent.path()
-                          .resolve(ROOT_NAME);
-        return at(path);
+    protected AbstractFieldName(String value) {
+        super(value);
     }
 }
