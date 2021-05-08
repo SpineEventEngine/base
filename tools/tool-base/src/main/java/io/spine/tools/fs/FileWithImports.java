@@ -68,7 +68,6 @@ public abstract class FileWithImports extends AbstractSourceFile {
      * Transforms the import statement of the passed line updating the imported file
      * reference in relation to the passed root directory and external modules.
      */
-    protected abstract String resolveImport(String line,
-                                            Path generatedRoot,
-                                            ExternalModules modules);
+    protected abstract
+    String resolveImport(String line, Path generatedRoot, ExternalModules modules);
 }
