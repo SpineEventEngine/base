@@ -96,6 +96,9 @@ public final class ExternalModules {
         return new ExternalModules(combined);
     }
 
+    /**
+     * Obtains the modules as a list.
+     */
     public ImmutableList<ExternalModule> asList() {
         return modules;
     }
