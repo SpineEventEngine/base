@@ -24,33 +24,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.dart.code;
+package io.spine.tools.dart.fs;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.code.fs.AbstractSourceFile;
 import io.spine.logging.Logging;
+import io.spine.tools.dart.code.ImportStatement;
 import io.spine.tools.fs.ExternalModule;
 
-import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.util.Exceptions.newIllegalStateException;
-import static java.nio.file.Files.readAllLines;
-import static java.nio.file.Files.write;
 
 /**
  * A Dart source file.
  */
 public final class SourceFile extends AbstractSourceFile implements Logging {
 
-    private ImmutableList<String> lines;
-
-    private SourceFile(Path path, List<String> lines) {
+    private SourceFile(Path path) {
         super(path);
-        checkNotNull(lines);
-        this.lines = ImmutableList.copyOf(lines);
     }
 
     /**
@@ -58,12 +50,9 @@ public final class SourceFile extends AbstractSourceFile implements Logging {
      */
     public static SourceFile read(Path path) {
         checkNotNull(path);
-        try {
-            List<String> lines = readAllLines(path);
-            return new SourceFile(path, lines);
-        } catch (IOException e) {
-            throw newIllegalStateException(e, "Unable to read the file `%s`.", path);
-        }
+        SourceFile file = new SourceFile(path);
+        file.load();
+        return file;
     }
 
     /**
@@ -71,7 +60,7 @@ public final class SourceFile extends AbstractSourceFile implements Logging {
      */
     public void resolveImports(Path libPath, ImmutableList<ExternalModule> modules) {
         ImmutableList.Builder<String> newLines = ImmutableList.builder();
-        for (String line : lines) {
+        for (String line : lines()) {
             if (ImportStatement.declaredIn(line)) {
                 ImportStatement statement = new ImportStatement(this, line);
                 ImportStatement resolved = statement.resolveImport(libPath, modules);
@@ -80,18 +69,7 @@ public final class SourceFile extends AbstractSourceFile implements Logging {
                 newLines.add(line);
             }
         }
-        lines = newLines.build();
-    }
-
-    /**
-     * Rewrites this file.
-     */
-    public void store() {
-        Path path = path();
-        try {
-            write(path, lines);
-        } catch (IOException e) {
-            throw newIllegalStateException(e, "Unable to write to the file `%s`.", path);
-        }
+        update(newLines.build());
+        store();
     }
 }

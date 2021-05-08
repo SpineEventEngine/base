@@ -46,7 +46,7 @@ public abstract class FsObject {
     /**
      * Obtains the path of the source code object.
      */
-    public Path path() {
+    public final Path path() {
         return path;
     }
 

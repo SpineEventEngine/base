@@ -31,7 +31,7 @@ import io.spine.tools.gradle.ProtoDartTaskName;
 import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.gradle.TaskName;
-import io.spine.tools.dart.code.SourceFile;
+import io.spine.tools.dart.fs.SourceFile;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -129,6 +129,5 @@ public final class McDartPlugin extends SpinePlugin {
                                 .map(File::toPath)
                                 .get();
         file.resolveImports(libPath, extension.modules());
-        file.store();
     }
 }

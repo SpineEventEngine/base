@@ -28,6 +28,7 @@ package io.spine.tools.mc.js.code.imports;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
+import io.spine.code.fs.AbstractSourceFile;
 import io.spine.tools.fs.ExternalModule;
 import io.spine.tools.fs.FileReference;
 import io.spine.tools.js.fs.Directory;
@@ -44,7 +45,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.io.Files2.checkExists;
 import static io.spine.tools.mc.js.code.imports.ImportStatement.hasImport;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
@@ -54,7 +54,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * A JavaScript file present on a file system.
  */
-public final class JsFile {
+public final class JsFile extends AbstractSourceFile {
 
     static final String GOOGLE_PROTOBUF_MODULE = "google-protobuf";
 
@@ -71,8 +71,6 @@ public final class JsFile {
     @VisibleForTesting
     public static final String EXTENSION = ".js";
 
-    private final Path path;
-
     /**
      * Creates a new instance.
      *
@@ -80,18 +78,11 @@ public final class JsFile {
      *         the path to existing JavaScript file
      */
     public JsFile(Path path) {
-        checkNotNull(path);
+        super(path);
         String fileName = path.toString();
         checkArgument(fileName.endsWith(EXTENSION),
                       "A JavaScript file is expected. Passed: `%s`.", fileName);
-        this.path = checkExists(path);
-    }
-
-    /**
-     * Obtains the path to the file.
-     */
-    public Path path() {
-        return path;
+        checkExists(path);
     }
 
     void resolveImports(Directory generatedRoot, Set<ExternalModule> modules) {

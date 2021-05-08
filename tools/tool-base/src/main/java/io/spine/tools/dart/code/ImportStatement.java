@@ -29,6 +29,7 @@ package io.spine.tools.dart.code;
 import com.google.common.collect.ImmutableList;
 import com.google.common.flogger.FluentLogger;
 import io.spine.logging.Logging;
+import io.spine.tools.dart.fs.SourceFile;
 import io.spine.tools.fs.ExternalModule;
 import io.spine.tools.fs.FileReference;
 import org.checkerframework.checker.regex.qual.Regex;
@@ -45,7 +46,7 @@ import static java.util.regex.Pattern.compile;
 /**
  * A source code line with an import statement.
  */
-final class ImportStatement implements Logging {
+public final class ImportStatement implements Logging {
 
     @Regex(2)
     private static final Pattern PATTERN = compile("import [\"']([^:]+)[\"'] as (.+);");
@@ -62,7 +63,7 @@ final class ImportStatement implements Logging {
      * @param text
      *         the text of the source code line with the import statement
      */
-    ImportStatement(SourceFile file, String text) {
+    public ImportStatement(SourceFile file, String text) {
         this.text = checkNotNull(text);
         this.file = checkNotNull(file);
         Matcher matcher = PATTERN.matcher(text);
@@ -76,7 +77,7 @@ final class ImportStatement implements Logging {
     /**
      * Tells if the passed text is an import statement.
      */
-    static boolean declaredIn(String text) {
+    public static boolean declaredIn(String text) {
         checkNotNull(text);
         Matcher matcher = PATTERN.matcher(text);
         return matcher.matches();
@@ -100,7 +101,7 @@ final class ImportStatement implements Logging {
      *         the modules of the project to check the file referenced in
      *         the {@code import} statement
      */
-    ImportStatement resolveImport(Path libPath, ImmutableList<ExternalModule> modules) {
+    public ImportStatement resolveImport(Path libPath, ImmutableList<ExternalModule> modules) {
         Path relativePath = importRelativeTo(libPath);
         FileReference reference = FileReference.of(relativePath);
         for (ExternalModule module : modules) {

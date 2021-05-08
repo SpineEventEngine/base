@@ -26,14 +26,73 @@
 
 package io.spine.code.fs;
 
+import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.newIllegalStateException;
+import static java.nio.file.Files.readAllLines;
+import static java.nio.file.Files.write;
 
 /**
  * Abstract base for source code files.
  */
 public abstract class AbstractSourceFile extends FsObject {
 
+    private @Nullable ImmutableList<String> lines;
+
+    /**
+     * Creates a file at the given path.
+     */
     protected AbstractSourceFile(Path path) {
         super(path);
+    }
+
+    /**
+     * Loads the content of the file from the file system.
+     */
+    @OverridingMethodsMustInvokeSuper
+    protected void load() {
+        Path path = path();
+        try {
+            List<String> loaded = readAllLines(path);
+            lines = ImmutableList.copyOf(loaded);
+        } catch (IOException e) {
+            throw newIllegalStateException(e, "Unable to read the file `%s`.", path);
+        }
+    }
+
+    /**
+     * Rewrites this file.
+     */
+    @OverridingMethodsMustInvokeSuper
+    public void store() {
+        Path path = path();
+        try {
+            write(path, lines());
+        } catch (IOException e) {
+            throw newIllegalStateException(e, "Unable to write to the file `%s`.", path);
+        }
+    }
+
+    /**
+     * Obtains the lines of the {@linkplain #load() loaded} file.
+     *
+     * @return the content of the file or an empty list, if the file was not loaded
+     */
+    protected final ImmutableList<String> lines() {
+        return this.lines == null
+               ? ImmutableList.of()
+               : this.lines;
+    }
+
+    protected final void update(ImmutableList<String> newLines) {
+        checkNotNull(newLines);
+        this.lines = newLines;
     }
 }
