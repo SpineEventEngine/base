@@ -61,15 +61,25 @@ public final class SourceFile extends AbstractSourceFile implements Logging {
     public void resolveImports(Path libPath, ImmutableList<ExternalModule> modules) {
         ImmutableList.Builder<String> newLines = ImmutableList.builder();
         for (String line : lines()) {
-            if (ImportStatement.declaredIn(line)) {
-                ImportStatement statement = new ImportStatement(this, line);
-                ImportStatement resolved = statement.resolveImport(libPath, modules);
-                newLines.add(resolved.toString());
+            if (isImportStatement(line)) {
+                String resolved = resolveImportStatement(line, libPath, modules);
+                newLines.add(resolved);
             } else {
                 newLines.add(line);
             }
         }
         update(newLines.build());
         store();
+    }
+
+    private static boolean isImportStatement(String line) {
+        return ImportStatement.declaredIn(line);
+    }
+
+    private String
+    resolveImportStatement(String line, Path libPath, ImmutableList<ExternalModule> modules) {
+        ImportStatement statement = new ImportStatement(this, line);
+        ImportStatement resolved = statement.resolve(libPath, modules);
+        return resolved.toString();
     }
 }

@@ -92,10 +92,4 @@ class JsFileTest {
 
         assertIllegalArgument(() -> new JsFile(path));
     }
-
-    @Test
-    @DisplayName("reject non-existing file")
-    void missingFile() {
-        assertIllegalArgument(() -> new JsFile(path));
-    }
 }

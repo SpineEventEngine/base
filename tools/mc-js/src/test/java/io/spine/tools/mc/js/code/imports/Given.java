@@ -38,7 +38,8 @@ final class Given {
 
     static ImportStatement importWithPath(String path, File importOrigin) {
         String importText = format("let foo = require('%s');", path);
-        return new ImportStatement(importOrigin, importText);
+        JsFile file = new JsFile(importOrigin.toPath());
+        return new ImportStatement(file, importText);
     }
 
     static String relativeImportPath() {

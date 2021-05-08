@@ -26,11 +26,15 @@
 
 package io.spine.tools.mc.js.code.imports;
 
-import io.spine.tools.fs.FileReference;
 import io.spine.logging.Logging;
+import io.spine.tools.fs.ExternalModule;
+import io.spine.tools.fs.FileReference;
+import io.spine.tools.js.fs.Directory;
 
-import java.io.File;
 import java.nio.file.Path;
+import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -40,10 +44,21 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 final class ImportStatement implements Logging {
 
+    private static final String GOOGLE_PROTOBUF_MODULE = "google-protobuf";
+    private static final Pattern GOOGLE_PROTOBUF_MODULE_PATTERN =
+            Pattern.compile(GOOGLE_PROTOBUF_MODULE + FileReference.separator());
+
     private static final String IMPORT_START = "require('";
     private static final String IMPORT_END = "')";
 
-    private final File file;
+    /**
+     * The relative path from the test sources directory to the main sources directory.
+     *
+     * <p>Depends on the structure of Spine Web project.
+     */
+    private static final String TEST_PROTO_RELATIVE_TO_MAIN = "../main/";
+
+    private final JsFile file;
     private final String text;
 
     /**
@@ -54,7 +69,7 @@ final class ImportStatement implements Logging {
      * @param text
      *         the text of the statement
      */
-    public ImportStatement(File file, String text) {
+    public ImportStatement(JsFile file, String text) {
         checkArgument(
                 declaredIn(text),
                 "An import statement should contain: `%s ... %s`.", IMPORT_START, IMPORT_END
@@ -69,6 +84,71 @@ final class ImportStatement implements Logging {
      */
     static boolean declaredIn(String line) {
         return line.contains(IMPORT_START);
+    }
+
+    /**
+     * Tells if this statement reference a standard Protobuf type
+     * ({@code google-protobuf/google/protobuf/..}).
+     */
+    public boolean containsGoogleProtobufType() {
+        return fileRef().value().startsWith(GOOGLE_PROTOBUF_MODULE + "/google/protobuf/");
+    }
+
+    /**
+     * Tells if this statement refers to a file which cannot be found on the file system.
+     */
+    public boolean isUnresolvedRelativeImport() {
+        boolean isRelative = fileRef().isRelative();
+        boolean fileDoesNotExist = !importedFileExists();
+        return isRelative && fileDoesNotExist;
+    }
+
+    /**
+     * Attempts to resolve a relative import.
+     */
+    ImportStatement resolveRelativeTo(Set<ExternalModule> modules) {
+        Optional<ImportStatement> mainSourceImport = resolveInMainSources();
+        if (mainSourceImport.isPresent()) {
+            return mainSourceImport.get();
+        }
+        FileReference fileReference = fileRef();
+        for (ExternalModule module : modules) {
+            if (module.provides(fileReference)) {
+                FileReference fileInModule = module.fileInModule(fileReference);
+                return replaceRef(fileInModule.value());
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Attempts to resolve a relative import among main sources.
+     */
+    private Optional<ImportStatement> resolveInMainSources() {
+        String fileReference = fileRef().value();
+        String delimiter = FileReference.currentDirectory();
+        int insertionIndex = fileReference.lastIndexOf(delimiter) + delimiter.length();
+        String updatedReference = fileReference.substring(0, insertionIndex)
+                + TEST_PROTO_RELATIVE_TO_MAIN
+                + fileReference.substring(insertionIndex);
+        ImportStatement updatedImport = replaceRef(updatedReference);
+        return updatedImport.importedFileExists()
+               ? Optional.of(updatedImport)
+               : Optional.empty();
+    }
+
+    ImportStatement relativizeStandardProtoImport(Directory generatedRoot) {
+        String fileReference = fileRef().value();
+        String relativePathToRoot =
+                sourceDirectory()
+                        .relativize(generatedRoot.path())
+                        .toString();
+        String replacement = relativePathToRoot.isEmpty()
+                             ? FileReference.currentDirectory()
+                             : relativePathToRoot.replace('\\', '/') + FileReference.separator();
+        String relativeReference = GOOGLE_PROTOBUF_MODULE_PATTERN.matcher(fileReference)
+                                                                 .replaceFirst(replacement);
+        return replaceRef(relativeReference);
     }
 
     /**
@@ -99,7 +179,7 @@ final class ImportStatement implements Logging {
     /**
      * Tells whether the imported file is present on a file system.
      */
-    public boolean importedFileExists() {
+    private boolean importedFileExists() {
         Path filePath = importedFilePath();
         boolean exists = filePath.toFile()
                                  .exists();
@@ -110,7 +190,7 @@ final class ImportStatement implements Logging {
     /**
      * Obtains the absolute path to the imported file.
      */
-    public Path importedFilePath() {
+    Path importedFilePath() {
         Path filePath = sourceDirectory().resolve(fileRef().value());
         return filePath.normalize();
     }
@@ -118,8 +198,7 @@ final class ImportStatement implements Logging {
     /**
      * Obtains the path of the directory with the file containing this import.
      */
-    public Path sourceDirectory() {
-        return file.getParentFile()
-                   .toPath();
+    private Path sourceDirectory() {
+        return file.directory();
     }
 }

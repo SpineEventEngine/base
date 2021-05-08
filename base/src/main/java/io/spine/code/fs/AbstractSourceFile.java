@@ -36,6 +36,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.io.Files2.checkExists;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.nio.file.Files.readAllLines;
 import static java.nio.file.Files.write;
@@ -61,6 +62,7 @@ public abstract class AbstractSourceFile extends FsObject {
     @OverridingMethodsMustInvokeSuper
     protected void load() {
         Path path = path();
+        checkExists(path.toFile());
         try {
             List<String> loaded = readAllLines(path);
             lines = ImmutableList.copyOf(loaded);

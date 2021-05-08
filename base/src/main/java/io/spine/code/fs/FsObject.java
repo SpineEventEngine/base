@@ -44,10 +44,17 @@ public abstract class FsObject {
     }
 
     /**
-     * Obtains the path of the source code object.
+     * Obtains the path of the file system object.
      */
     public final Path path() {
         return path;
+    }
+
+    /**
+     * Obtains the directory to which this object belongs.
+     */
+    public final Path directory() {
+        return checkNotNull(path.getParent());
     }
 
     /**

@@ -101,12 +101,12 @@ public final class ImportStatement implements Logging {
      *         the modules of the project to check the file referenced in
      *         the {@code import} statement
      */
-    public ImportStatement resolveImport(Path libPath, ImmutableList<ExternalModule> modules) {
+    public ImportStatement resolve(Path libPath, ImmutableList<ExternalModule> modules) {
         Path relativePath = importRelativeTo(libPath);
         FileReference reference = FileReference.of(relativePath);
         for (ExternalModule module : modules) {
             if (module.provides(reference)) {
-                return resolveImport(module, relativePath);
+                return resolve(module, relativePath);
             }
         }
         return this;
@@ -131,7 +131,7 @@ public final class ImportStatement implements Logging {
         return relativePath;
     }
 
-    private ImportStatement resolveImport(ExternalModule module, Path relativePath) {
+    private ImportStatement resolve(ExternalModule module, Path relativePath) {
         String resolved = format(
                 "import 'package:%s/%s' as %s;",
                 module.name(), relativePath, matcher.group(2)
