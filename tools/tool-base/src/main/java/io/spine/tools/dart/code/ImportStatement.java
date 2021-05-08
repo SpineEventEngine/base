@@ -28,6 +28,7 @@ package io.spine.tools.dart.code;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.flogger.FluentLogger;
+import io.spine.logging.Logging;
 import io.spine.tools.fs.ExternalModule;
 import io.spine.tools.fs.FileReference;
 import org.checkerframework.checker.regex.qual.Regex;
@@ -44,11 +45,13 @@ import static java.util.regex.Pattern.compile;
 /**
  * A source code line with an import statement.
  */
-final class ImportStatement extends Line {
+final class ImportStatement implements Logging {
 
     @Regex(2)
-    private static final Pattern IMPORT_PATTERN = compile("import [\"']([^:]+)[\"'] as (.+);");
+    private static final Pattern PATTERN = compile("import [\"']([^:]+)[\"'] as (.+);");
 
+    private final SourceFile file;
+    private final String text;
     private final Matcher matcher;
 
     /**
@@ -60,8 +63,9 @@ final class ImportStatement extends Line {
      *         the text of the source code line with the import statement
      */
     ImportStatement(SourceFile file, String text) {
-        super(file, text);
-        Matcher matcher = IMPORT_PATTERN.matcher(text);
+        this.text = checkNotNull(text);
+        this.file = checkNotNull(file);
+        Matcher matcher = PATTERN.matcher(text);
         checkArgument(
                 matcher.matches(),
                 "The passed text is not recognized as an import statement (`%s`).", text
@@ -74,7 +78,7 @@ final class ImportStatement extends Line {
      */
     static boolean declaredIn(String text) {
         checkNotNull(text);
-        Matcher matcher = IMPORT_PATTERN.matcher(text);
+        Matcher matcher = PATTERN.matcher(text);
         return matcher.matches();
     }
 
@@ -104,7 +108,7 @@ final class ImportStatement extends Line {
                 return resolveImport(module, relativePath);
             }
         }
-        return text();
+        return text;
     }
 
     /**
@@ -113,10 +117,10 @@ final class ImportStatement extends Line {
      */
     private Path importRelativeTo(Path libPath) {
         FluentLogger.Api debug = _debug();
-        debug.log("Import statement found in line: `%s`.", text());
+        debug.log("Import statement found in line: `%s`.", text);
         String path = matcher.group(1);
         Path absolutePath =
-                file().path()
+                file.path()
                       .getParent()
                       .resolve(path)
                       .normalize();
@@ -133,5 +137,27 @@ final class ImportStatement extends Line {
         );
         _debug().log("Replacing with `%s`.", importStatement);
         return importStatement;
+    }
+
+    @Override
+    public String toString() {
+        return text;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ImportStatement)) {
+            return false;
+        }
+        ImportStatement other = (ImportStatement) o;
+        return text.equals(other.text) && file.equals(other.file);
+    }
+
+    @Override
+    public int hashCode() {
+        return text.hashCode();
     }
 }

@@ -70,6 +70,6 @@ public final class ResolveImports extends GenerationTask implements Logging {
     @VisibleForTesting
     void resolveInFile(Path filePath) {
         JsFile file = new JsFile(filePath);
-        file.resolveImports(modules);
+        file.resolveImports(generatedRoot(), modules);
     }
 }

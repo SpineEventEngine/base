@@ -39,8 +39,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.tools.mc.js.code.imports.ResolveImports.processImports;
-import static io.spine.tools.mc.js.code.imports.given.Given.importWithPath;
+import static io.spine.tools.mc.js.code.imports.Given.importWithPath;
 
 @DisplayName("Import processing should")
 class ImportProcessingTest {
@@ -75,7 +74,7 @@ class ImportProcessingTest {
 
     private void resolveImports() {
         JsFile file = new JsFile(filePath);
-        processImports(file, importStatement -> true, ImportProcessingTest::processImport);
+        file.processImports(importStatement -> true, ImportProcessingTest::processImport);
     }
 
     private void writeFile(String... lines) throws IOException {

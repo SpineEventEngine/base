@@ -24,26 +24,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.imports.given;
-
-import io.spine.tools.mc.js.code.imports.ImportStatement;
+package io.spine.tools.mc.js.code.imports;
 
 import java.io.File;
 
 import static java.lang.String.format;
 
-public class Given {
+final class Given {
 
     /** Prevents instantiation of this utility class. */
     private Given() {
     }
 
-    public static ImportStatement importWithPath(String path, File importOrigin) {
+    static ImportStatement importWithPath(String path, File importOrigin) {
         String importText = format("let foo = require('%s');", path);
         return new ImportStatement(importOrigin, importText);
     }
 
-    public static String relativeImportPath() {
+    static String relativeImportPath() {
         return "../path-relative-to-parent.js";
     }
 }

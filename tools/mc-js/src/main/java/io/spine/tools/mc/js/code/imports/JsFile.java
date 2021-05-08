@@ -30,6 +30,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import io.spine.tools.fs.ExternalModule;
 import io.spine.tools.fs.FileReference;
+import io.spine.tools.js.fs.Directory;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +39,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -45,6 +47,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.io.Files2.checkExists;
 import static io.spine.tools.mc.js.code.imports.ImportStatement.hasImport;
+import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static java.util.stream.Collectors.toList;
 
@@ -66,7 +69,7 @@ public final class JsFile {
             Pattern.compile(GOOGLE_PROTOBUF_MODULE + FileReference.separator());
 
     @VisibleForTesting
-    static final String EXTENSION = ".js";
+    public static final String EXTENSION = ".js";
 
     private final Path path;
 
@@ -91,14 +94,14 @@ public final class JsFile {
         return path;
     }
 
-    public void resolveImports(Set<ExternalModule> modules) {
-        relativizeStandardProtoImports(this);
-        resolveRelativeImports(this, modules);
+    void resolveImports(Directory generatedRoot, Set<ExternalModule> modules) {
+        relativizeStandardProtoImports(generatedRoot);
+        resolveRelativeImports(modules);
     }
 
-    private void resolveRelativeImports(JsFile file, Set<ExternalModule> modules) {
-        processImports(file, new IsUnresolvedRelativeImport(),
-                       statement -> JsFile.resolveRelativeImports(statement, modules));
+    private void resolveRelativeImports(Set<ExternalModule> modules) {
+        processImports(new IsUnresolvedRelativeImport(),
+                       statement -> resolveRelativeImports(statement, modules));
     }
 
     /**
@@ -111,24 +114,25 @@ public final class JsFile {
      * @param processFunction
      *         the function processing an import
      */
-    public static void processImports(JsFile file,
-                                      java.util.function.Predicate<ImportStatement> importFilter,
-                                      ProcessImport processFunction) {
-        try (Stream<String> lines = Files.lines(file.path())) {
+    @VisibleForTesting
+    void processImports(Predicate<ImportStatement> importFilter,
+                                ProcessImport processFunction) {
+        try (Stream<String> lines = Files.lines(path())) {
             List<String> updatedLines = lines
-                    .map(line -> processLine(file, line, importFilter, processFunction))
+                    .map(line -> processLine(line, importFilter, processFunction))
                     .collect(toList());
-            rewriteFile(file.path(), updatedLines);
+            rewriteFile(path(), updatedLines);
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
     }
 
-    private static String processLine(JsFile jsFile,
-                                      String line,
-                                      java.util.function.Predicate<ImportStatement> importFilter,
-                                      ProcessImport processFunction) {
-        File file = jsFile.path().toFile();
+    private String processLine(
+            String line,
+            Predicate<ImportStatement> importFilter,
+            ProcessImport processFunction
+    ) {
+        File file = path().toFile();
         if (hasImport(line)) {
             ImportStatement importStatement = new ImportStatement(file, line);
             boolean matchesFilter = importFilter.test(importStatement);
@@ -157,20 +161,22 @@ public final class JsFile {
      *
      * <p>The custom versions of standard Protobuf types are provided by
      * the {@linkplain ExternalModule#spineWeb() Spine Web}.
-     *
-     * @param file
-     *         the file to process imports in
      */
-    private void relativizeStandardProtoImports(JsFile file) {
-        processImports(file, new IsGoogleProtobufImport(), this::relativizeStandardProtoImport);
+    private void relativizeStandardProtoImports(Directory generatedRoot) {
+        processImports(new IsGoogleProtobufImport(),
+                       statement -> relativizeStandardProtoImport(generatedRoot, statement));
     }
 
-    private ImportStatement relativizeStandardProtoImport(ImportStatement original) {
+    private static ImportStatement relativizeStandardProtoImport(
+            Directory generatedRoot,
+            ImportStatement original
+    ) {
         String fileReference = original.fileRef()
                                        .value();
-        String relativePathToRoot = original.sourceDirectory()
-                                            .relativize(generatedRoot().path())
-                                            .toString();
+        String relativePathToRoot =
+                original.sourceDirectory()
+                        .relativize(generatedRoot.path())
+                        .toString();
         String replacement = relativePathToRoot.isEmpty()
                              ? FileReference.currentDirectory()
                              : relativePathToRoot.replace('\\', '/') + FileReference.separator();

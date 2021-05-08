@@ -128,7 +128,7 @@ public final class McDartPlugin extends SpinePlugin {
                                 .getAsFile()
                                 .map(File::toPath)
                                 .get();
-        file.resolveImports(extension.modules(), libPath);
+        file.resolveImports(libPath, extension.modules());
         file.store();
     }
 }

@@ -33,7 +33,6 @@ import io.spine.tools.fs.ExternalModule;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -46,11 +45,12 @@ import static java.nio.file.Files.write;
  */
 public final class SourceFile extends AbstractSourceFile implements Logging {
 
-    private List<String> lines;
+    private ImmutableList<String> lines;
 
     private SourceFile(Path path, List<String> lines) {
         super(path);
-        this.lines = lines;
+        checkNotNull(lines);
+        this.lines = ImmutableList.copyOf(lines);
     }
 
     /**
@@ -69,18 +69,18 @@ public final class SourceFile extends AbstractSourceFile implements Logging {
     /**
      * Resolves the relative imports in the file into absolute ones with the given modules.
      */
-    public void resolveImports(ImmutableList<ExternalModule> modules, Path libPath) {
-        List<String> processedLines = new ArrayList<>();
+    public void resolveImports(Path libPath, ImmutableList<ExternalModule> modules) {
+        ImmutableList.Builder<String> newLines = ImmutableList.builder();
         for (String line : lines) {
-            if (!ImportStatement.declaredIn(line)) {
-                processedLines.add(line);
-            } else {
+            if (ImportStatement.declaredIn(line)) {
                 ImportStatement statement = new ImportStatement(this, line);
-                String processedLine = statement.resolveImport(libPath, modules);
-                processedLines.add(processedLine);
+                String resolved = statement.resolveImport(libPath, modules);
+                newLines.add(resolved);
+            } else {
+                newLines.add(line);
             }
         }
-        lines = processedLines;
+        lines = newLines.build();
     }
 
     /**

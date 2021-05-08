@@ -35,8 +35,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.tools.mc.js.code.imports.given.Given.importWithPath;
-import static io.spine.tools.mc.js.code.imports.given.Given.relativeImportPath;
+import static io.spine.tools.mc.js.code.imports.Given.importWithPath;
+import static io.spine.tools.mc.js.code.imports.Given.relativeImportPath;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("`ImportStatement` should")
