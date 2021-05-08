@@ -61,9 +61,7 @@ public final class JsFile extends FileWithImports {
     }
 
     @Override
-    protected String resolveImport(String line,
-                                   Path generatedRoot,
-                                   ExternalModules modules) {
+    protected String resolveImport(String line, Path generatedRoot, ExternalModules modules) {
         ImportStatement importLine = new ImportStatement(this, line);
         ImportStatement resolved = importLine.resolve(generatedRoot, modules);
         return resolved.text();
