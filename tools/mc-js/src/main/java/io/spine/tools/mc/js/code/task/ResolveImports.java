@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.imports;
+package io.spine.tools.mc.js.code.task;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
@@ -34,7 +34,7 @@ import io.spine.logging.Logging;
 import io.spine.tools.fs.ExternalModule;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.fs.FileName;
-import io.spine.tools.mc.js.code.task.GenerationTask;
+import io.spine.tools.mc.js.code.imports.JsFile;
 
 import java.nio.file.Path;
 import java.util.Collection;

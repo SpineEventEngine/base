@@ -32,7 +32,7 @@ import io.spine.tools.js.fs.Directory;
 import io.spine.code.proto.FileSet;
 import io.spine.tools.mc.js.code.task.AppendTypeUrlGetter;
 import io.spine.tools.mc.js.code.task.GenerationTask;
-import io.spine.tools.mc.js.code.imports.ResolveImports;
+import io.spine.tools.mc.js.code.task.ResolveImports;
 import io.spine.tools.mc.js.code.index.GenerateIndexFile;
 import io.spine.tools.mc.js.code.index.CreateParsers;
 import io.spine.tools.fs.ExternalModule;
