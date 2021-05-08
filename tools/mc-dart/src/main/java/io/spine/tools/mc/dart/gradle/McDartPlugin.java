@@ -32,8 +32,10 @@ import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.gradle.TaskName;
 import io.spine.tools.dart.code.SourceFile;
+import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileTree;
 import org.gradle.api.tasks.Copy;
@@ -107,11 +109,13 @@ public final class McDartPlugin extends SpinePlugin {
     }
 
     private void createResolveImportTask(Project project, Extension extension) {
-        newTask(resolveImports, task -> {
-            FileTree generatedDir = extension.getMainGeneratedDir()
-                                             .getAsFileTree();
-            generatedDir.forEach(file -> resolveImports(file, extension));
-        })
+        Action<Task> action = task -> {
+            FileTree generatedFiles =
+                    extension.getMainGeneratedDir()
+                             .getAsFileTree();
+            generatedFiles.forEach(file -> resolveImports(file, extension));
+        };
+        newTask(resolveImports, action)
                 .insertAfterTask(copyGeneratedDart)
                 .insertBeforeTask(assemble)
                 .applyNowTo(project);

@@ -131,7 +131,7 @@ class CreateParsersTest {
         Collection<FileDescriptor> fileDescriptors = fileSet.files();
         for (FileDescriptor file : fileDescriptors) {
             List<Descriptor> messageTypes = file.getMessageTypes();
-            if (FileDescriptors.isNotGoogle(file) && !messageTypes.isEmpty()) {
+            if (!FileDescriptors.isGoogle(file) && !messageTypes.isEmpty()) {
                 checkParseCodeAdded(file);
             }
         }
