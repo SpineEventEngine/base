@@ -85,4 +85,15 @@ class FileReferenceTest {
         assertThat(FileReference.of(path).value())
                 .endsWith("foo.dart");
     }
+
+    @Test
+    @DisplayName("compare")
+    void comparison() {
+        FileReference first = FileReference.of(Paths.get("./f1"));
+        FileReference second = FileReference.of(Paths.get("./f2"));
+        assertThat(first).isLessThan(second);
+        assertThat(second).isGreaterThan(first);
+        assertThat(first)
+                .isEqualTo(FileReference.of(Paths.get("./f1")));
+    }
 }

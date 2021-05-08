@@ -39,7 +39,8 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * A path to a file used in an import statement.
  */
-public final class FileReference extends StringTypeValue {
+@SuppressWarnings("ComparableImplementedButEqualsNotOverridden") // provided by parent class.
+public final class FileReference extends StringTypeValue implements Comparable<FileReference> {
 
     private static final long serialVersionUID = 0L;
     /** The path separator used in JavaScript imports. Not platform-dependant. */
@@ -146,5 +147,10 @@ public final class FileReference extends StringTypeValue {
      */
     public static String currentDirectory() {
         return CURRENT_DIR;
+    }
+
+    @Override
+    public int compareTo(FileReference o) {
+        return value().compareTo(o.value());
     }
 }
