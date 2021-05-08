@@ -100,7 +100,7 @@ final class ImportStatement implements Logging {
      *         the modules of the project to check the file referenced in
      *         the {@code import} statement
      */
-    String resolveImport(Path libPath, ImmutableList<ExternalModule> modules) {
+    ImportStatement resolveImport(Path libPath, ImmutableList<ExternalModule> modules) {
         Path relativePath = importRelativeTo(libPath);
         FileReference reference = FileReference.of(relativePath);
         for (ExternalModule module : modules) {
@@ -108,7 +108,7 @@ final class ImportStatement implements Logging {
                 return resolveImport(module, relativePath);
             }
         }
-        return text;
+        return this;
     }
 
     /**
@@ -130,13 +130,13 @@ final class ImportStatement implements Logging {
         return relativePath;
     }
 
-    private String resolveImport(ExternalModule module, Path relativePath) {
-        String importStatement = format(
+    private ImportStatement resolveImport(ExternalModule module, Path relativePath) {
+        String resolved = format(
                 "import 'package:%s/%s' as %s;",
                 module.name(), relativePath, matcher.group(2)
         );
-        _debug().log("Replacing with `%s`.", importStatement);
-        return importStatement;
+        _debug().log("Replacing with `%s`.", resolved);
+        return new ImportStatement(file, resolved);
     }
 
     @Override

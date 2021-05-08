@@ -74,8 +74,8 @@ public final class SourceFile extends AbstractSourceFile implements Logging {
         for (String line : lines) {
             if (ImportStatement.declaredIn(line)) {
                 ImportStatement statement = new ImportStatement(this, line);
-                String resolved = statement.resolveImport(libPath, modules);
-                newLines.add(resolved);
+                ImportStatement resolved = statement.resolveImport(libPath, modules);
+                newLines.add(resolved.toString());
             } else {
                 newLines.add(line);
             }
