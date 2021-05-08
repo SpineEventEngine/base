@@ -30,7 +30,6 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.value.StringTypeValue;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
