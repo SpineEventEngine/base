@@ -28,12 +28,12 @@ package io.spine.tools.fs;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Ordering;
+import com.google.errorprone.annotations.Immutable;
 
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
@@ -43,10 +43,11 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  *
  * <p>An external module is typically provided by a package manager, such as NPM or Pub.
  */
+@Immutable
 public final class ExternalModule {
 
     private final String name;
-    private final Set<DirectoryPattern> directories;
+    private final ImmutableList<DirectoryPattern> directories;
 
     /**
      * Creates a new instance.
@@ -58,25 +59,25 @@ public final class ExternalModule {
      */
     public ExternalModule(String name, Collection<DirectoryPattern> directories) {
         this.name = checkNotEmptyOrBlank(name);
-        this.directories = ImmutableSet.copyOf(directories);
+        this.directories = Ordering.natural().immutableSortedCopy(directories);
     }
 
     /**
      * Obtains the file reference within this module.
      *
-     * @param fileReference
+     * @param file
      *         the relative file reference
      * @return the file reference in this module
      * @throws IllegalStateException
      *         if the file is not provided by the module
      */
-    public FileReference fileInModule(FileReference fileReference) {
-        Optional<DirectoryPattern> matchingDirectory = matchingDirectory(fileReference);
+    public FileReference fileInModule(FileReference file) {
+        Optional<DirectoryPattern> matchingDirectory = matchingDirectory(file);
         checkState(matchingDirectory.isPresent());
         DirectoryReference directory =
                 matchingDirectory.get()
-                                 .transform(fileReference.directory());
-        String fileName = fileReference.fileName();
+                                 .transform(file.directory());
+        String fileName = file.fileName();
         String path = Joiner.on(FileReference.separator())
                             .join(name, directory, fileName);
         return FileReference.of(path);
@@ -85,12 +86,12 @@ public final class ExternalModule {
     /**
      * Checks if the module provides the referenced file.
      *
-     * @param fileReference
+     * @param file
      *         the file to check
      * @return {@code true} if the module provides the file
      */
-    public boolean provides(FileReference fileReference) {
-        boolean result = matchingDirectory(fileReference).isPresent();
+    public boolean provides(FileReference file) {
+        boolean result = matchingDirectory(file).isPresent();
         return result;
     }
 
@@ -101,8 +102,8 @@ public final class ExternalModule {
         return name;
     }
 
-    private Optional<DirectoryPattern> matchingDirectory(FileReference fileReference) {
-        DirectoryReference directory = fileReference.directory();
+    private Optional<DirectoryPattern> matchingDirectory(FileReference file) {
+        DirectoryReference directory = file.directory();
         for (DirectoryPattern pattern : directories) {
             if (pattern.matches(directory)) {
                 return Optional.of(pattern);

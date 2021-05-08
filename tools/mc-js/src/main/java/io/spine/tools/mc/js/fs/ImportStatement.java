@@ -26,11 +26,11 @@
 
 package io.spine.tools.mc.js.fs;
 
-import com.google.common.collect.ImmutableList;
+import io.spine.logging.Logging;
 import io.spine.tools.code.Element;
 import io.spine.tools.fs.ExternalModule;
+import io.spine.tools.fs.ExternalModules;
 import io.spine.tools.fs.FileReference;
-import io.spine.logging.Logging;
 
 import java.nio.file.Path;
 import java.util.Optional;
@@ -41,7 +41,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * An import line extracted from a source file for being
- * {@linkplain #resolve(Path, ImmutableList) resolved}.
+ * {@linkplain #resolve(Path, ExternalModules) resolved}.
  */
 final class ImportStatement implements Element, Logging {
 
@@ -97,7 +97,7 @@ final class ImportStatement implements Element, Logging {
      * <p>The custom versions of standard Protobuf types are provided by
      * the {@linkplain ExternalModule#spineWeb() Spine Web}.
      */
-    ImportStatement resolve(Path generatedRoot, ImmutableList<ExternalModule> modules) {
+    ImportStatement resolve(Path generatedRoot, ExternalModules modules) {
         ImportStatement resolved = this;
         if (containsGoogleProtobufType()) {
             resolved = relativizeStandardProtoImport(generatedRoot);
@@ -128,13 +128,13 @@ final class ImportStatement implements Element, Logging {
     /**
      * Attempts to resolve a relative import.
      */
-    private ImportStatement resolveRelativeTo(ImmutableList<ExternalModule> modules) {
+    private ImportStatement resolveRelativeTo(ExternalModules modules) {
         Optional<ImportStatement> mainSourceImport = resolveInMainSources();
         if (mainSourceImport.isPresent()) {
             return mainSourceImport.get();
         }
         FileReference fileReference = fileRef();
-        for (ExternalModule module : modules) {
+        for (ExternalModule module : modules.asList()) {
             if (module.provides(fileReference)) {
                 FileReference fileInModule = module.fileInModule(fileReference);
                 return replaceRef(fileInModule.value());

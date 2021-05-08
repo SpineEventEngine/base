@@ -27,18 +27,18 @@
 package io.spine.tools.mc.js.gradle;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.js.fs.DefaultJsProject;
-import io.spine.tools.js.fs.Directory;
 import io.spine.code.proto.FileSet;
-import io.spine.tools.mc.js.code.task.AppendTypeUrlGetter;
-import io.spine.tools.mc.js.code.task.GenerationTask;
-import io.spine.tools.mc.js.code.task.ResolveImports;
-import io.spine.tools.mc.js.code.index.GenerateIndexFile;
-import io.spine.tools.mc.js.code.index.CreateParsers;
-import io.spine.tools.fs.ExternalModule;
+import io.spine.tools.fs.ExternalModules;
 import io.spine.tools.gradle.BaseTaskName;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.ProtoPlugin;
+import io.spine.tools.js.fs.DefaultJsProject;
+import io.spine.tools.js.fs.Directory;
+import io.spine.tools.mc.js.code.index.CreateParsers;
+import io.spine.tools.mc.js.code.index.GenerateIndexFile;
+import io.spine.tools.mc.js.code.task.AppendTypeUrlGetter;
+import io.spine.tools.mc.js.code.task.GenerationTask;
+import io.spine.tools.mc.js.code.task.ResolveImports;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -49,6 +49,7 @@ import java.util.function.Supplier;
 
 import static io.spine.tools.gradle.BaseTaskName.build;
 import static io.spine.tools.gradle.ProtoJsTaskName.generateJsonParsers;
+import static io.spine.tools.mc.js.gradle.Extension.extension;
 
 /**
  * The Gradle plugin which performs additional code generation for Protobuf types.
@@ -133,20 +134,20 @@ public class McJsPlugin extends ProtoPlugin {
     private void generateForMain(Project project) {
         Directory generatedRoot = Extension.getMainGenProto(project);
         Supplier<FileSet> files = mainProtoFiles(project);
-        List<ExternalModule> modules = Extension.modules(project);
+        ExternalModules modules = extension(project).modules();
         generateCode(generatedRoot, files, modules);
     }
 
     private void generateForTest(Project project) {
         Directory generatedRoot = Extension.getTestGenProtoDir(project);
         Supplier<FileSet> files = testProtoFiles(project);
-        List<ExternalModule> modules = Extension.modules(project);
+        ExternalModules modules = extension(project).modules();
         generateCode(generatedRoot, files, modules);
     }
 
     private static void generateCode(Directory generatedRoot,
                                      Supplier<FileSet> files,
-                                     List<ExternalModule> modules) {
+                                     ExternalModules modules) {
         List<GenerationTask> tasks = ImmutableList.of(
                 new CreateParsers(generatedRoot),
                 new AppendTypeUrlGetter(generatedRoot),

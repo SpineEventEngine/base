@@ -26,9 +26,10 @@
 
 package io.spine.tools.mc.js.gradle;
 
+import io.spine.tools.fs.ExternalModule;
+import io.spine.tools.fs.ExternalModules;
 import io.spine.tools.js.fs.DefaultJsProject;
 import io.spine.tools.js.fs.Directory;
-import io.spine.tools.fs.ExternalModule;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.PluginManager;
 import org.gradle.testfixtures.ProjectBuilder;
@@ -44,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.tools.mc.js.gradle.Extension.extension;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -169,12 +171,12 @@ class ExtensionTest {
         String moduleName = "foo-bar";
         Map<String, List<String>> modulesExt = pluginExtension().modules;
         modulesExt.put(moduleName, emptyList());
-        List<ExternalModule> modules = Extension.modules(project);
-        assertThat(modules)
+        ExternalModules modules = pluginExtension().modules();
+        assertThat(modules.asList())
                 .contains(new ExternalModule(moduleName, emptyList()));
     }
 
     private Extension pluginExtension() {
-        return Extension.extension(project);
+        return extension(project);
     }
 }

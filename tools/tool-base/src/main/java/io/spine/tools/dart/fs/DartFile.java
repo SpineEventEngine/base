@@ -28,6 +28,7 @@ package io.spine.tools.dart.fs;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.fs.ExternalModule;
+import io.spine.tools.fs.ExternalModules;
 import io.spine.tools.fs.FileWithImports;
 
 import java.nio.file.Path;
@@ -61,7 +62,7 @@ public final class DartFile extends FileWithImports {
     @Override
     protected String resolveImport(String line,
                                    Path libPath,
-                                   ImmutableList<ExternalModule> modules) {
+                                   ExternalModules modules) {
         ImportStatement statement = new ImportStatement(this, line);
         ImportStatement resolved = statement.resolve(libPath, modules);
         return resolved.text();

@@ -27,8 +27,7 @@
 package io.spine.tools.mc.js.fs;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableList;
-import io.spine.tools.fs.ExternalModule;
+import io.spine.tools.fs.ExternalModules;
 import io.spine.tools.fs.FileWithImports;
 
 import java.nio.file.Path;
@@ -64,7 +63,7 @@ public final class JsFile extends FileWithImports {
     @Override
     protected String resolveImport(String line,
                                    Path generatedRoot,
-                                   ImmutableList<ExternalModule> modules) {
+                                   ExternalModules modules) {
         ImportStatement importLine = new ImportStatement(this, line);
         ImportStatement resolved = importLine.resolve(generatedRoot, modules);
         return resolved.text();

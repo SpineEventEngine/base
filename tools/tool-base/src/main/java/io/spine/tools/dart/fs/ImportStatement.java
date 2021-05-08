@@ -26,11 +26,11 @@
 
 package io.spine.tools.dart.fs;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.flogger.FluentLogger;
 import io.spine.logging.Logging;
 import io.spine.tools.code.Element;
 import io.spine.tools.fs.ExternalModule;
+import io.spine.tools.fs.ExternalModules;
 import io.spine.tools.fs.FileReference;
 import org.checkerframework.checker.regex.qual.Regex;
 
@@ -101,10 +101,10 @@ final class ImportStatement implements Element, Logging {
      *         the modules of the project to check the file referenced in
      *         the {@code import} statement
      */
-    public ImportStatement resolve(Path libPath, ImmutableList<ExternalModule> modules) {
+    public ImportStatement resolve(Path libPath, ExternalModules modules) {
         Path relativePath = importRelativeTo(libPath);
         FileReference reference = FileReference.of(relativePath);
-        for (ExternalModule module : modules) {
+        for (ExternalModule module : modules.asList()) {
             if (module.provides(reference)) {
                 return resolve(module, relativePath);
             }

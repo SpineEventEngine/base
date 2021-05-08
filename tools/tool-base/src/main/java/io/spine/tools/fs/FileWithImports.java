@@ -33,7 +33,7 @@ import java.nio.file.Path;
 
 /**
  * A source code file containing import statements that may need to
- * be {@linkplain #resolveImports(Path, ImmutableList) resolved}.
+ * be {@linkplain #resolveImports(Path, ExternalModules) resolved}.
  */
 public abstract class FileWithImports extends AbstractSourceFile {
 
@@ -44,7 +44,7 @@ public abstract class FileWithImports extends AbstractSourceFile {
     /**
      * Resolves the relative imports in the file into absolute ones with the given modules.
      */
-    public void resolveImports(Path generatedRoot, ImmutableList<ExternalModule> modules) {
+    public void resolveImports(Path generatedRoot, ExternalModules modules) {
         load();
         ImmutableList.Builder<String> newLines = ImmutableList.builder();
         for (String line : lines()) {
@@ -70,5 +70,5 @@ public abstract class FileWithImports extends AbstractSourceFile {
      */
     protected abstract String resolveImport(String line,
                                             Path generatedRoot,
-                                            ImmutableList<ExternalModule> modules);
+                                            ExternalModules modules);
 }

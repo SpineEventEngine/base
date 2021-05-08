@@ -26,10 +26,8 @@
 
 package io.spine.tools.mc.dart.gradle;
 
-import com.google.common.collect.ImmutableList;
 import io.spine.tools.dart.fs.DefaultDartProject;
-import io.spine.tools.fs.DirectoryPattern;
-import io.spine.tools.fs.ExternalModule;
+import io.spine.tools.fs.ExternalModules;
 import io.spine.tools.gradle.GradleExtension;
 import org.gradle.api.Project;
 import org.gradle.api.file.DirectoryProperty;
@@ -38,14 +36,11 @@ import org.gradle.api.provider.Property;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Maps.newHashMap;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
 /**
  * DSL extension for configuring Protobuf-to-Dart compilation.
@@ -240,27 +235,16 @@ public final class Extension extends GradleExtension {
         return testGeneratedDir;
     }
 
-    ImmutableList<ExternalModule> modules() {
-        return modules
-                .entrySet()
-                .stream()
-                .map(kv -> new ExternalModule(kv.getKey(), patterns(kv.getValue())))
-                .collect(toImmutableList());
+    ExternalModules modules() {
+        return new ExternalModules(modules);
     }
 
     private File file(Property<Object> property) {
         return project.file(property.get());
     }
 
-    private static List<DirectoryPattern> patterns(Collection<String> rawPatterns) {
-        return rawPatterns.stream()
-                          .map(DirectoryPattern::of)
-                          .collect(toList());
-    }
-
     @Override
     protected DefaultDartProject defaultProject(Project project) {
-        return DefaultDartProject.at(project.getProjectDir()
-                                            .toPath());
+        return DefaultDartProject.at(project.getProjectDir());
     }
 }

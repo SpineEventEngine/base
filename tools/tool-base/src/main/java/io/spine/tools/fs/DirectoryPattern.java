@@ -29,6 +29,7 @@ package io.spine.tools.fs;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 
 import java.util.List;
 import java.util.Objects;
@@ -43,7 +44,8 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * A pattern to match a directory.
  */
-public final class DirectoryPattern {
+@Immutable
+public final class DirectoryPattern implements Comparable<DirectoryPattern> {
 
     private static final String INCLUDE_NESTED_PATTERN_ENDING = "/*";
 
@@ -178,5 +180,10 @@ public final class DirectoryPattern {
     @Override
     public int hashCode() {
         return Objects.hash(directory, includeNested);
+    }
+
+    @Override
+    public int compareTo(DirectoryPattern o) {
+        return 0;
     }
 }

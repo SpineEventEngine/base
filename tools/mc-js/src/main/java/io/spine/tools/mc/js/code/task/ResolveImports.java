@@ -27,17 +27,17 @@
 package io.spine.tools.mc.js.code.task;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileSet;
 import io.spine.logging.Logging;
-import io.spine.tools.fs.ExternalModule;
+import io.spine.tools.fs.ExternalModules;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.fs.FileName;
 import io.spine.tools.mc.js.fs.JsFile;
 
 import java.nio.file.Path;
-import java.util.Collection;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A task to resolve imports in generated files.
@@ -49,11 +49,11 @@ import java.util.Collection;
  */
 public final class ResolveImports extends GenerationTask implements Logging {
 
-    private final ImmutableList<ExternalModule> modules;
+    private final ExternalModules modules;
 
-    public ResolveImports(Directory generatedRoot, Collection<ExternalModule> modules) {
+    public ResolveImports(Directory generatedRoot, ExternalModules modules) {
         super(generatedRoot);
-        this.modules = ImmutableList.copyOf(modules);
+        this.modules = checkNotNull(modules);
     }
 
     @Override
