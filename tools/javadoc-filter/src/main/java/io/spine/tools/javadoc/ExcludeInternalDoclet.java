@@ -131,7 +131,7 @@ public class ExcludeInternalDoclet extends Standard {
         List<Object> list = new ArrayList<>();
         for (Object entry : array) {
             if (!(entry instanceof ProgramElementDoc
-                    && excludePrinciple.shouldExclude((ProgramElementDoc) entry))) {
+                    && excludePrinciple.test((ProgramElementDoc) entry))) {
                 list.add(process(entry, componentType));
             }
         }
