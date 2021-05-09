@@ -50,7 +50,7 @@ public final class Time {
     }
 
     /**
-     * Obtains current time via the current {@link Time.Provider}.
+     * Obtains current time via the current {@link Provider}.
      *
      * @return current time
      * @see #setProvider(Provider)
