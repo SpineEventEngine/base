@@ -27,7 +27,6 @@
 package io.spine.base;
 
 import com.google.protobuf.Any;
-import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
