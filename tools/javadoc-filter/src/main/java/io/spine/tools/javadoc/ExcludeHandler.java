@@ -26,12 +26,43 @@
 
 package io.spine.tools.javadoc;
 
-import com.sun.javadoc.ProgramElementDoc;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
-import java.util.function.Predicate;
+import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 
 /**
- * Tells if a {@link ProgramElementDoc} should be excluded from the generated Javadoc.
+ * The {@linkplain InvocationHandler} for the "com.sun..." proxies.
  */
-interface ExcludePrinciple extends Predicate<ProgramElementDoc> {
+final class ExcludeHandler implements InvocationHandler {
+
+    private final ExcludeInternalDoclet doclet;
+    private final Object target;
+
+    ExcludeHandler(ExcludeInternalDoclet doclet, Object target) {
+        this.doclet = doclet;
+        this.target = target;
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        if (args != null && IgnoredMethod.isIgnored(method.getName())) {
+            args[0] = unwrap(args[0]);
+        }
+        try {
+            Object result = doclet.process(method.invoke(target, args), method.getReturnType());
+            return result;
+        } catch (InvocationTargetException e) {
+            throw illegalStateWithCauseOf(e);
+        }
+    }
+
+    private Object unwrap(Object proxy) {
+        if (proxy instanceof Proxy) {
+            return ((ExcludeHandler) Proxy.getInvocationHandler(proxy)).target;
+        }
+        return proxy;
+    }
 }

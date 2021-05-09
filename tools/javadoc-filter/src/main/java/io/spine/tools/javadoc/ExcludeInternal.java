@@ -26,12 +26,13 @@
 
 package io.spine.tools.javadoc;
 
+import com.google.common.collect.ImmutableSet;
 import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.ProgramElementDoc;
 import com.sun.javadoc.RootDoc;
 import io.spine.annotation.Internal;
 
-import java.util.Collection;
+import java.util.Set;
 
 /**
  * Implementation of the {@linkplain ExcludePrinciple} interface for
@@ -40,36 +41,38 @@ import java.util.Collection;
  * <p>Excludes all {@linkplain Internal}-annotated program elements, packages,
  * and their subpackages.
  */
-final class ExcludeInternalPrinciple implements ExcludePrinciple {
+final class ExcludeInternal implements ExcludePrinciple {
 
-    private final Collection<PackageDoc> exclusions;
-    private final AnnotationAnalyst<Class<Internal>> internalAnalyst =
-            new AnnotationAnalyst<>(Internal.class);
+    private final AnnotationCheck<Class<Internal>> internalAnnotation =
+            new AnnotationCheck<>(Internal.class);
 
-    ExcludeInternalPrinciple(RootDoc root) {
-        exclusions = getExclusions(root);
+    /**
+     * Packages to be excluded in the passed documentation root.
+     */
+    private final Set<PackageDoc> excludedPackages;
+
+    ExcludeInternal(RootDoc root) {
+        PackageCollector packageCollector = new PackageCollector(internalAnnotation);
+        Set<PackageDoc> collected = packageCollector.collect(root);
+        this.excludedPackages = ImmutableSet.copyOf(collected);
     }
 
     @Override
-    public boolean shouldExclude(ProgramElementDoc doc) {
-        return inExclusions(doc) || internalAnalyst.hasAnnotation(doc);
+    public boolean test(ProgramElementDoc element) {
+        return internalAnnotation.test(element) || inExclusions(element);
     }
 
-    private boolean inExclusions(ProgramElementDoc doc) {
-        String docPackageName = doc.containingPackage()
-                                   .name();
-
-        for (PackageDoc exclusion : exclusions) {
-            if (docPackageName.startsWith(exclusion.name())) {
+    /**
+     * Tells if a package of the passed element is one of the {@link #excludedPackages},
+     * or is a sub-package of one of them.
+     */
+    private boolean inExclusions(ProgramElementDoc element) {
+        String packageName = element.containingPackage().name();
+        for (PackageDoc exclusion : excludedPackages) {
+            if (packageName.startsWith(exclusion.name())) {
                 return true;
             }
         }
-
         return false;
-    }
-
-    private Collection<PackageDoc> getExclusions(RootDoc root) {
-        PackageCollector packageCollector = new PackageCollector(internalAnalyst);
-        return packageCollector.collect(root);
     }
 }

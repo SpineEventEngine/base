@@ -47,7 +47,7 @@ public class RootDocProxyReceiver extends ExcludeInternalDoclet {
 
     @SuppressWarnings("unused") // called by com.sun.tools.javadoc.Main
     public static boolean start(RootDoc root) {
-        ExcludePrinciple excludePrinciple = new ExcludeInternalPrinciple(root);
+        ExcludePrinciple excludePrinciple = new ExcludeInternal(root);
         ExcludeInternalDoclet doclet = new ExcludeInternalDoclet(excludePrinciple);
 
         // We can obtain RootDoc only here

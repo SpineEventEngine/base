@@ -26,39 +26,44 @@
 
 package io.spine.tools.javadoc;
 
+import com.google.errorprone.annotations.Immutable;
 import com.sun.javadoc.AnnotationDesc;
 import com.sun.javadoc.ProgramElementDoc;
 
 import java.lang.annotation.Annotation;
 
 /**
- * {@code AnnotationAnalyst} provides methods to check accessory to the specified annotation.
+ * Provides the methods to check if a program element has specified annotation.
  *
- * @param <C> the type of an annotation to analyze
+ * @param <C> the type of an annotation to check
  */
-public class AnnotationAnalyst<C extends Class<? extends Annotation>> {
+@Immutable
+final class AnnotationCheck<C extends Class<? extends Annotation>> {
 
     private final C annotationClass;
 
-    AnnotationAnalyst(C annotationClass) {
+    AnnotationCheck(C annotationClass) {
         this.annotationClass = annotationClass;
     }
 
-    boolean hasAnnotation(ProgramElementDoc doc) {
+    boolean test(ProgramElementDoc doc) {
         return isAnnotationPresent(doc.annotations());
     }
 
-    boolean isAnnotationPresent(AnnotationDesc[] annotations) {
-        for (AnnotationDesc annotation : annotations) {
-            if (isQualifiedAnnotation(annotation)) {
+    boolean test(com.sun.javadoc.PackageDoc doc) {
+        return isAnnotationPresent(doc.annotations());
+    }
+
+    private boolean isAnnotationPresent(AnnotationDesc[] annotations) {
+        for (AnnotationDesc ann : annotations) {
+            if (matchesName(ann)) {
                 return true;
             }
         }
-
         return false;
     }
 
-    private boolean isQualifiedAnnotation(AnnotationDesc annotation) {
+    private boolean matchesName(AnnotationDesc annotation) {
         return annotation.annotationType()
                          .qualifiedTypeName()
                          .equals(annotationClass.getName());
