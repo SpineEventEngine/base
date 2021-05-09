@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Utility class for working with {@code Stringifier}s.
@@ -84,7 +85,7 @@ public final class Stringifiers {
         checkNotNull(typeOfT);
         Stringifier<T> stringifier = StringifierRegistry.getStringifier(typeOfT);
         String result = stringifier.convert(object);
-        return result;
+        return requireNonNull(result);
     }
 
     /**
@@ -106,7 +107,7 @@ public final class Stringifiers {
         Stringifier<T> stringifier = StringifierRegistry.getStringifier(typeOfT);
         T result = stringifier.reverse()
                               .convert(str);
-        return result;
+        return requireNonNull(result);
     }
 
     /**

@@ -26,32 +26,35 @@
 
 package io.spine.string;
 
-import com.google.common.base.Converter;
-import com.google.common.primitives.Longs;
+import java.util.regex.Pattern;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.regex.Pattern.compile;
 
 /**
- * The {@code Stringifier} for the long values.
+ * The {@code Quoter} for the {@code List}.
  */
-final class LongStringifier extends StringifierWithConverter<Long> {
+final class ListQuoter extends Quoter {
 
-    private static final long serialVersionUID = 0L;
+    static final Quoter INSTANCE = new ListQuoter();
 
-    private static final LongStringifier INSTANCE = new LongStringifier();
+    private static final String BACKSLASH_PATTERN_VALUE = "\\\\\\\\";
+    private static final Pattern BACKSLASH_LIST_PATTERN = compile(BACKSLASH_PATTERN_VALUE);
+    private static final String ESCAPED_QUOTE = BACKSLASH + QUOTE_CHAR;
+    private static final String QUOTE = String.valueOf(QUOTE_CHAR);
+    private static final Pattern QUOTE_PATTERN = compile(QUOTE);
 
-    private LongStringifier() {
-        super("Stringifiers.forLong()");
-    }
-
-    static LongStringifier getInstance() {
-        return INSTANCE;
+    @Override
+    String quote(String stringToQuote) {
+        checkNotNull(stringToQuote);
+        String escaped = QUOTE_PATTERN.matcher(stringToQuote)
+                                      .replaceAll(ESCAPED_QUOTE);
+        String result = QUOTE_CHAR + escaped + QUOTE_CHAR;
+        return result;
     }
 
     @Override
-    protected Converter<String, Long> converter() {
-        return Longs.stringConverter();
-    }
-
-    private Object readResolve() {
-        return INSTANCE;
+    String unquote(String value) {
+        return unquoteValue(value, BACKSLASH_LIST_PATTERN);
     }
 }

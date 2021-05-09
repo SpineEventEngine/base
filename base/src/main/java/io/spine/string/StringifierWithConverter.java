@@ -27,31 +27,39 @@
 package io.spine.string;
 
 import com.google.common.base.Converter;
-import com.google.common.primitives.Longs;
+
+import static java.util.Objects.requireNonNull;
 
 /**
- * The {@code Stringifier} for the long values.
+ * Abstract base for stringifiers that employ a converter for its operations.
+ *
+ * @param <T> the type to stringify
  */
-final class LongStringifier extends StringifierWithConverter<Long> {
+abstract class StringifierWithConverter<T> extends SerializableStringifier<T> {
 
     private static final long serialVersionUID = 0L;
 
-    private static final LongStringifier INSTANCE = new LongStringifier();
-
-    private LongStringifier() {
-        super("Stringifiers.forLong()");
+    /**
+     * Creates a new instance with the passed identity.
+     *
+     * @param identity
+     *         the identity of the stringifier, which is used in {@link #toString()}.
+     */
+    protected StringifierWithConverter(String identity) {
+        super(identity);
     }
 
-    static LongStringifier getInstance() {
-        return INSTANCE;
+    protected abstract Converter<String, T> converter();
+
+    @Override
+    protected String toString(T obj) {
+        String result = converter().reverse().convert(obj);
+        return requireNonNull(result);
     }
 
     @Override
-    protected Converter<String, Long> converter() {
-        return Longs.stringConverter();
-    }
-
-    private Object readResolve() {
-        return INSTANCE;
+    protected T fromString(String s) {
+        T result = converter().convert(s);
+        return requireNonNull(result);
     }
 }

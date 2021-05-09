@@ -31,6 +31,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.escape.Escaper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -114,7 +115,7 @@ final class ListStringifier<T> extends Stringifier<List<T>> {
     @Override
     protected String toString(List<T> list) {
         Converter<String, String> quoter = Quoter.forLists();
-        List<String> convertedItems = newArrayList();
+        List<String> convertedItems = new ArrayList<>();
         for (T item : list) {
             String convertedItem = elementStringifier.andThen(quoter)
                                                      .convert(item);

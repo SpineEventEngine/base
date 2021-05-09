@@ -28,6 +28,7 @@ package io.spine.string;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.reflect.TypeToken;
 import com.google.common.truth.StringSubject;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
@@ -42,6 +43,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +53,7 @@ import static io.spine.string.Stringifiers.newForListOf;
 import static io.spine.string.Stringifiers.newForMapOf;
 import static io.spine.test.string.STaskStatus.DONE;
 
-@DisplayName("Stringifiers utility class should")
+@DisplayName("`Stringifiers` utility class should")
 class StringifiersTest extends UtilityClassTest<Stringifiers> {
 
     StringifiersTest() {
@@ -115,12 +117,10 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
         @Test
         @DisplayName("a Protobuf `Message`")
         void aProtobufMessage() {
-            STaskId id = STaskId
-                    .newBuilder()
+            STaskId id = STaskId.newBuilder()
                     .setUuid(newUuid())
                     .build();
-            STask message = STask
-                    .newBuilder()
+            STask message = STask.newBuilder()
                     .setId(id)
                     .setStatus(DONE)
                     .build();
@@ -136,7 +136,7 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
     }
 
     @Nested
-    @DisplayName("create Stringifier with a delimeter for")
+    @DisplayName("create `Stringifier` with a delimeter for")
     class Delimited {
 
         private static final char DELIMITER = '#';
@@ -191,6 +191,40 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
                 builder.put((long) i, t);
             }
             return builder.build();
+        }
+    }
+
+    /**
+     * This class covers only cases that are not touched by other tests that
+     * involve parsing of string values.
+     */
+    @Nested
+    @DisplayName("parse a string to")
+    class Parsing {
+
+        @Test
+        @DisplayName("`Boolean`")
+        void logical() {
+            assertThat(Stringifiers.fromString("true", Boolean.class))
+                    .isTrue();
+        }
+
+        @Test
+        @DisplayName("`Integer`")
+        void integerNumber() {
+            assertThat(Stringifiers.fromString("-100500", Integer.class))
+                    .isEqualTo(-100500);
+        }
+
+        @Test
+        @DisplayName("`List`")
+        void list() {
+            List<Integer> numbers = ImmutableList.of(100, 200, -300);
+            Stringifier<List<Integer>> stringifier = Stringifiers.newForListOf(Integer.class);
+            String numString = stringifier.toString(numbers);
+
+            List<Integer> parsed = stringifier.fromString(numString);
+            assertThat(parsed).containsExactlyElementsIn(numbers);
         }
     }
 }

@@ -30,6 +30,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -91,7 +92,7 @@ public final class StringifierRegistry {
         }
 
         if (isEnumClass(typeOfT)) {
-            @SuppressWarnings("unchecked") // OK since the type is checked above.
+            @SuppressWarnings({"unchecked", "rawtypes"}) // OK since the type is checked above.
             Stringifier<T> result = (Stringifier<T>) newForEnum((Class<Enum>) typeOfT);
             return result;
         }
@@ -144,10 +145,8 @@ public final class StringifierRegistry {
      */
     public <T> Optional<Stringifier<T>> get(Type typeOfT) {
         checkNotNull(typeOfT);
-
-        Stringifier<?> func = stringifiers.get(typeOfT);
-
-        Stringifier<T> result = cast(func);
+        @Nullable Stringifier<?> str = stringifiers.get(typeOfT);
+        @Nullable Stringifier<T> result = str != null ? cast(str) : null;
         return Optional.ofNullable(result);
     }
 }

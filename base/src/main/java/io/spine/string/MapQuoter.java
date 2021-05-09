@@ -26,32 +26,35 @@
 
 package io.spine.string;
 
-import com.google.common.base.Converter;
-import com.google.common.primitives.Longs;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.regex.Pattern.compile;
 
 /**
- * The {@code Stringifier} for the long values.
+ * The {@code Quoter} for the {@code Map}.
  */
-final class LongStringifier extends StringifierWithConverter<Long> {
+final class MapQuoter extends Quoter {
 
-    private static final long serialVersionUID = 0L;
+    static final MapQuoter INSTANCE = new MapQuoter();
 
-    private static final LongStringifier INSTANCE = new LongStringifier();
+    private static final String QUOTE_PATTERN = "((?=[^\\\\])[^\\w])";
+    private static final Pattern DOUBLE_BACKSLASH_PATTERN = compile(BACKSLASH);
 
-    private LongStringifier() {
-        super("Stringifiers.forLong()");
-    }
-
-    static LongStringifier getInstance() {
-        return INSTANCE;
+    @Override
+    String quote(String stringToQuote) {
+        checkNotNull(stringToQuote);
+        Matcher matcher = compile(QUOTE_PATTERN).matcher(stringToQuote);
+        String unslashed = matcher.find() ?
+                           matcher.replaceAll(BACKSLASH + matcher.group()) :
+                           stringToQuote;
+        String result = QUOTE_CHAR + unslashed + QUOTE_CHAR;
+        return result;
     }
 
     @Override
-    protected Converter<String, Long> converter() {
-        return Longs.stringConverter();
-    }
-
-    private Object readResolve() {
-        return INSTANCE;
+    String unquote(String value) {
+        return unquoteValue(value, DOUBLE_BACKSLASH_PATTERN);
     }
 }
