@@ -42,6 +42,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 
 /**
@@ -114,7 +115,7 @@ public final class LocationPath {
         path.addAll(checkPath(locationPath.path));
     }
 
-    void addAll(Collection<Integer> path) {
+    private void addAll(Collection<Integer> path) {
         checkNotNull(path);
         this.path.addAll(checkPath(path));
     }
@@ -137,20 +138,19 @@ public final class LocationPath {
     /**
      * Converts the instance to the {@code SourceCodeInfo.Location} instance in the given file.
      */
-    public SourceCodeInfo.Location toLocation(FileDescriptorProto file) {
+    public SourceCodeInfo.Location toLocationIn(FileDescriptorProto file) {
         List<Integer> thisPath = toList();
-        for (SourceCodeInfo.Location location : file.getSourceCodeInfo()
-                                                    .getLocationList()) {
+        List<Location> locations = file.getSourceCodeInfo().getLocationList();
+        for (SourceCodeInfo.Location location : locations) {
             if (thisPath.equals(location.getPathList())) {
                 return location;
             }
         }
-
-        String msg = format("The location with %s path should be present in \"%s\".",
-                            this, file.getName());
-        throw new IllegalStateException(msg);
+        throw newIllegalStateException(
+                "The location with the path `%s` is not found in the file \"%s\".",
+                this, file.getName()
+        );
     }
-
 
     @Override
     public boolean equals(Object o) {
