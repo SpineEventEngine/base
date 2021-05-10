@@ -43,6 +43,7 @@ import static io.spine.tools.mc.js.code.field.given.Given.messageField;
 import static io.spine.tools.mc.js.code.field.given.Given.primitiveField;
 import static io.spine.tools.mc.js.code.field.given.Given.timestampField;
 import static io.spine.tools.mc.js.code.field.parser.Parser.createFor;
+import static io.spine.tools.mc.js.code.snippet.Parser.PARSE_METHOD;
 import static java.lang.String.format;
 
 @SuppressWarnings("DuplicateStringLiteralInspection")
@@ -133,7 +134,7 @@ class ParserTest {
     void parseMessage() {
         parser = createFor(messageField(), writer);
         parser.parseIntoVariable(VALUE, VARIABLE);
-        assertContains("fromObject");
+        assertContains(PARSE_METHOD);
     }
 
     @Test

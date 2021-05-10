@@ -59,8 +59,10 @@ public final class Parser implements Snippet {
      * {@linkplain FieldGenerator field} can use the import.
      */
     public static final String TYPE_PARSERS_IMPORT_NAME = "TypeParsers";
+
     /** The name of the {@code object-parser.js} import. */
     public static final String ABSTRACT_PARSER_IMPORT_NAME = "ObjectParser";
+
     /**
      * The name of the {@code fromObject} method return value.
      *
@@ -68,12 +70,15 @@ public final class Parser implements Snippet {
      * JS object.
      */
     private static final String MESSAGE = "msg";
+
     /** The parameter name of the {@code fromObject} method. */
     @VisibleForTesting
     static final String FROM_OBJECT_ARG = "obj";
+
     /** The name of the method declared on an abstract parser. */
     @VisibleForTesting
-    static final String PARSE_METHOD = "fromObject";
+    public static final String PARSE_METHOD = "fromObject";
+
     /**
      * The relative path from the Protobuf root directory to the folder
      * containing sources related to parsing.
@@ -96,11 +101,11 @@ public final class Parser implements Snippet {
 
     @Override
     public CodeWriter writer() {
-        CodeWriter lines = new CodeWriter();
-        lines.append(constructor());
-        lines.append(initPrototype());
-        lines.append(initConstructor());
-        lines.append(fromObjectMethod());
+        CodeWriter lines = new CodeWriter()
+                .append(constructor())
+                .append(initPrototype())
+                .append(initConstructor())
+                .append(fromObjectMethod());
         return lines;
     }
 
@@ -116,14 +121,13 @@ public final class Parser implements Snippet {
      *         the object to parse
      */
     public static String parseMethodCall(String parserVariable, String valueToParse) {
-        String result = format("%s.%s(%s)", parserVariable, PARSE_METHOD, valueToParse);
-        return result;
+        return format("%s.%s(%s)", parserVariable, PARSE_METHOD, valueToParse);
     }
 
     /**
      * Obtains the type of the parser to be generated.
      */
-    TypeName typeName() {
+    private TypeName typeName() {
         return TypeName.ofParser(message);
     }
 
@@ -136,15 +140,14 @@ public final class Parser implements Snippet {
     }
 
     private String initPrototype() {
-        String result = format("%s = Object.create(%s.prototype);",
-                               prototypeReference(), superClass());
-        return result;
+        return format(
+                "%s = Object.create(%s.prototype);", prototypeReference(), superClass()
+        );
     }
 
     private String initConstructor() {
         MethodReference reference = MethodReference.onPrototype(typeName(), "constructor");
-        String result = format("%s = %s;", reference, typeName());
-        return result;
+        return format("%s = %s;", reference, typeName());
     }
 
     /**
@@ -155,26 +158,26 @@ public final class Parser implements Snippet {
      */
     @VisibleForTesting
     CodeWriter fromObjectMethod() {
-        String methodName = MethodReference.onPrototype(typeName(), PARSE_METHOD)
-                                           .value();
-        CodeWriter lines = new CodeWriter();
-        lines.enterMethod(methodName, FROM_OBJECT_ARG);
-        checkParsedObject(lines);
-        lines.append(emptyLine());
-        lines.append(initializedMessageInstance(message));
-        lines.append(parseFields(message));
-        lines.append(Return.value(MESSAGE));
-        lines.exitMethod();
+        String methodName = MethodReference.onPrototype(typeName(), PARSE_METHOD).value();
+        CodeWriter lines = new CodeWriter()
+                .enterMethod(methodName, FROM_OBJECT_ARG);
+        checkParsedObject(lines)
+                .append(emptyLine())
+                .append(initializedMessageInstance(message))
+                .append(parseFields(message))
+                .append(Return.value(MESSAGE))
+                .exitMethod();
         return lines;
     }
 
     /**
      * Adds the code checking that {@code fromObject} argument is not null.
      */
-    private static void checkParsedObject(CodeWriter writer) {
-        writer.ifNull(FROM_OBJECT_ARG);
-        writer.append(Return.nullReference());
-        writer.exitBlock();
+    private static CodeWriter checkParsedObject(CodeWriter writer) {
+        writer.ifNull(FROM_OBJECT_ARG)
+              .append(Return.nullReference())
+              .exitBlock();
+        return writer;
     }
 
     private static Let initializedMessageInstance(Descriptor message) {
