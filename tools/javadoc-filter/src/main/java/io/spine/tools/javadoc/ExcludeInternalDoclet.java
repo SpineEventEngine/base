@@ -67,11 +67,11 @@ import java.util.List;
 @SuppressWarnings("ExtendsUtilityClass")
 public class ExcludeInternalDoclet extends Standard {
 
-    private final ExcludePrinciple excludePrinciple;
+    private final Filter filter;
 
-    ExcludeInternalDoclet(ExcludePrinciple excludePrinciple) {
+    ExcludeInternalDoclet(Filter filter) {
         super();
-        this.excludePrinciple = excludePrinciple;
+        this.filter = filter;
     }
 
     /**
@@ -93,14 +93,14 @@ public class ExcludeInternalDoclet extends Standard {
      */
     @SuppressWarnings({"unused", "RedundantSuppression"}) // called by com.sun.tools.javadoc.Main
     public static boolean start(RootDoc root) {
-        ExcludePrinciple excludePrinciple = new ExcludeInternal(root);
-        ExcludeInternalDoclet doclet = new ExcludeInternalDoclet(excludePrinciple);
+        Filter filter = new ExcludeInternal(root);
+        ExcludeInternalDoclet doclet = new ExcludeInternalDoclet(filter);
         return Standard.start((RootDoc) doclet.process(root, RootDoc.class));
     }
 
     /**
      * Creates proxy of "com.sun..." interfaces and excludes
-     * {@linkplain ProgramElementDoc}s using {@linkplain #excludePrinciple}.
+     * {@linkplain ProgramElementDoc}s using {@linkplain #filter}.
      *
      * @param returnValue the value to process
      * @param returnValueType the expected type of value
@@ -131,7 +131,7 @@ public class ExcludeInternalDoclet extends Standard {
         List<Object> list = new ArrayList<>();
         for (Object entry : array) {
             if (!(entry instanceof ProgramElementDoc
-                    && excludePrinciple.test((ProgramElementDoc) entry))) {
+                    && filter.test((ProgramElementDoc) entry))) {
                 list.add(process(entry, componentType));
             }
         }

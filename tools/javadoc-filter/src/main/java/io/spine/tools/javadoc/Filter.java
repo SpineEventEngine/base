@@ -31,7 +31,7 @@ import com.sun.javadoc.ProgramElementDoc;
 import java.util.function.Predicate;
 
 /**
- * Tells if a {@link ProgramElementDoc} should be excluded from the generated Javadoc.
+ * Tells if a {@link ProgramElementDoc} matches a specified condition.
  */
-interface ExcludePrinciple extends Predicate<ProgramElementDoc> {
+interface Filter extends Predicate<ProgramElementDoc> {
 }

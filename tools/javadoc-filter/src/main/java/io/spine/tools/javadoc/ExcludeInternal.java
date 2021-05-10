@@ -35,13 +35,13 @@ import io.spine.annotation.Internal;
 import java.util.Set;
 
 /**
- * Implementation of the {@linkplain ExcludePrinciple} interface for
- * {@linkplain Internal} annotation.
+ * Implementation of the {@linkplain Filter} interface for excluding documentation of elements
+ * with {@linkplain Internal} annotation.
  *
  * <p>Excludes all {@linkplain Internal}-annotated program elements, packages,
  * and their subpackages.
  */
-final class ExcludeInternal implements ExcludePrinciple {
+final class ExcludeInternal implements Filter {
 
     private final AnnotationCheck<Class<Internal>> internalAnnotation =
             new AnnotationCheck<>(Internal.class);
