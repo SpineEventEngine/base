@@ -29,24 +29,21 @@ package io.spine.base
 import com.google.common.truth.Truth.assertThat
 import com.google.protobuf.ByteString
 import com.google.protobuf.CodedOutputStream
-import com.google.protobuf.Descriptors
+import com.google.protobuf.Descriptors.Descriptor
+import com.google.protobuf.Descriptors.FieldDescriptor
+import com.google.protobuf.Descriptors.OneofDescriptor
 import com.google.protobuf.Message
 import com.google.protobuf.Parser
 import com.google.protobuf.UnknownFieldSet
-import io.spine.base.RejectionMessage
-import io.spine.base.RejectionThrowable
 import java.io.OutputStream
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-@DisplayName("Extensions for `Throwable` should")
-internal class ThrowableExtensionsTest {
+internal class `Extensions for 'Throwable' should` {
 
     @Nested
-    @DisplayName("tell if it was caused by a rejection")
-    inner class CausedBy {
+    inner class `tell if it was caused by a rejection` {
 
         private var throwable: Throwable = RuntimeException()
 
@@ -58,14 +55,12 @@ internal class ThrowableExtensionsTest {
         @Test
         fun `if true`() {
             throwable.initCause(StubRejectionThrowable())
-
             assertThat(throwable.causedByRejection()).isTrue()
         }
 
         @Test
         fun `if false`() {
             throwable.initCause(RuntimeException())
-
             assertThat(throwable.causedByRejection()).isFalse()
         }
     }
@@ -79,96 +74,29 @@ internal class ThrowableExtensionsTest {
      * Stub type of [RejectionMessage] which serves only as a type.
      */
     private class StubRejectionMessage: RejectionMessage {
-        override fun getDefaultInstanceForType(): Message {
+        override fun getDefaultInstanceForType(): Message = notImplemented()
+        override fun isInitialized(): Boolean = notImplemented()
+        override fun writeTo(output: CodedOutputStream?): Unit = notImplemented()
+        override fun writeTo(output: OutputStream?): Unit = notImplemented()
+        override fun getSerializedSize(): Int = notImplemented()
+        override fun getParserForType(): Parser<out Message> = notImplemented()
+        override fun toByteString(): ByteString = notImplemented()
+        override fun toByteArray(): ByteArray = notImplemented()
+        override fun writeDelimitedTo(output: OutputStream?): Unit = notImplemented()
+        override fun newBuilderForType(): Message.Builder = notImplemented()
+        override fun toBuilder(): Message.Builder = notImplemented()
+        override fun findInitializationErrors(): MutableList<String> = notImplemented()
+        override fun getInitializationErrorString(): String = notImplemented()
+        override fun getDescriptorForType(): Descriptor = notImplemented()
+        override fun getAllFields(): MutableMap<FieldDescriptor, Any> = notImplemented()
+        override fun hasOneof(oneof: OneofDescriptor?): Boolean = notImplemented()
+        override fun getOneofFieldDescriptor(oneof: OneofDescriptor?): FieldDescriptor =
             notImplemented()
-        }
-
-        override fun isInitialized(): Boolean {
-            notImplemented()
-        }
-
-        override fun writeTo(output: CodedOutputStream?) {
-            notImplemented()
-        }
-
-        override fun writeTo(output: OutputStream?) {
-            notImplemented()
-        }
-
-        override fun getSerializedSize(): Int {
-            notImplemented()
-        }
-
-        override fun getParserForType(): Parser<out Message> {
-            notImplemented()
-        }
-
-        override fun toByteString(): ByteString {
-            notImplemented()
-        }
-
-        override fun toByteArray(): ByteArray {
-            notImplemented()
-        }
-
-        override fun writeDelimitedTo(output: OutputStream?) {
-            notImplemented()
-        }
-
-        override fun newBuilderForType(): Message.Builder {
-            notImplemented()
-        }
-
-        override fun toBuilder(): Message.Builder {
-            notImplemented()
-        }
-
-        override fun findInitializationErrors(): MutableList<String> {
-            notImplemented()
-        }
-
-        override fun getInitializationErrorString(): String {
-            notImplemented()
-        }
-
-        override fun getDescriptorForType(): Descriptors.Descriptor {
-            notImplemented()
-        }
-
-        override fun getAllFields(): MutableMap<Descriptors.FieldDescriptor, Any> {
-            notImplemented()
-        }
-
-        override fun hasOneof(oneof: Descriptors.OneofDescriptor?): Boolean {
-            notImplemented()
-        }
-
-        override fun getOneofFieldDescriptor(oneof: Descriptors.OneofDescriptor?): Descriptors.FieldDescriptor {
-            notImplemented()
-        }
-
-        override fun hasField(field: Descriptors.FieldDescriptor?): Boolean {
-            notImplemented()
-        }
-
-        override fun getField(field: Descriptors.FieldDescriptor?): Any {
-            notImplemented()
-        }
-
-        override fun getRepeatedFieldCount(field: Descriptors.FieldDescriptor?): Int {
-            notImplemented()
-        }
-
-        override fun getRepeatedField(field: Descriptors.FieldDescriptor?, index: Int): Any {
-            notImplemented()
-        }
-
-        override fun getUnknownFields(): UnknownFieldSet {
-            notImplemented()
-        }
-
-        private fun notImplemented(): Nothing {
-            TODO("Stub type")
-        }
+        override fun hasField(field: FieldDescriptor?): Boolean = notImplemented()
+        override fun getField(field: FieldDescriptor?): Any = notImplemented()
+        override fun getRepeatedFieldCount(field: FieldDescriptor?): Int = notImplemented()
+        override fun getRepeatedField(field: FieldDescriptor?, index: Int): Any = notImplemented()
+        override fun getUnknownFields(): UnknownFieldSet = notImplemented()
+        private fun notImplemented(): Nothing = TODO("Stub type")
     }
 }
