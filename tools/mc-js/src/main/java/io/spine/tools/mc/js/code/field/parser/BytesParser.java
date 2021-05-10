@@ -27,7 +27,6 @@
 package io.spine.tools.mc.js.code.field.parser;
 
 import com.google.common.annotations.VisibleForTesting;
-import io.spine.tools.mc.js.code.CodeWriter;
 import io.spine.tools.mc.js.code.imports.Import;
 import io.spine.tools.mc.js.code.snippet.Let;
 
@@ -63,9 +62,8 @@ final class BytesParser extends AbstractPrimitiveParser {
         checkNotNull(value);
         checkNotNull(variable);
         Import base64Import = Import.library(BASE64_LIB);
-        CodeWriter writer = writer();
-        writer.append(base64Import.namedAs(BASE64_VAR));
-        writer.append(parsedVariable(variable, value));
+        writer().append(base64Import.namedAs(BASE64_VAR))
+                .append(parsedVariable(variable, value));
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // Necessary duplication with own test.

@@ -72,21 +72,20 @@ final class PrimitiveParsers {
      *
      * @param fieldType
      *         the type of the field for which to create the parser
-     * @param jsOutput
+     * @param writer
      *         the {@code JsOutput} to accumulate the generated code
      * @return the new instance of the {@code PrimitiveParser}
      * @throws IllegalStateException
      *         if the parser for the specified type cannot be found
      */
-    public static PrimitiveParser createFor(@SuppressWarnings("BadImport") Type fieldType,
-                                            CodeWriter jsOutput) {
+    public static PrimitiveParser createFor(@SuppressWarnings("BadImport") Type fieldType, CodeWriter writer) {
         checkNotNull(fieldType);
-        checkNotNull(jsOutput);
+        checkNotNull(writer);
         PrimitiveParser.Builder<?> parserBuilder = parsers.get(fieldType);
         checkState(parsers.containsKey(fieldType),
                    "An attempt to get a parser for the unknown primitive type: `%s`.", fieldType);
         PrimitiveParser parser = parserBuilder
-                .setWriter(jsOutput)
+                .setWriter(writer)
                 .build();
         return parser;
     }

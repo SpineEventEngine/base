@@ -36,8 +36,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * The generator of the code which parses the field value from the JS object and stores it into
  * some variable.
  *
- * @apiNote
- * The descendants are supposed to operate on the provided {@link CodeWriter},
+ * @apiNote The descendants are supposed to operate on the provided {@link CodeWriter},
  * so the interface method is not returning any generated code.
  */
 public interface FieldParser {

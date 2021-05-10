@@ -90,8 +90,7 @@ public final class FieldGenerators {
         FieldParser valueParser = mapValueParser(descriptor, writer);
         FieldPrecondition valuePrecondition = mapValuePrecondition(descriptor, writer);
 
-        FieldGenerator generator = MapFieldGenerator
-                .newBuilder()
+        FieldGenerator generator = MapFieldGenerator.newBuilder()
                 .setField(field)
                 .setPrecondition(valuePrecondition)
                 .setKeyParser(keyParser)

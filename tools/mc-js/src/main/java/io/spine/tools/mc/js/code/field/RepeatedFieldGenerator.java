@@ -28,7 +28,6 @@ package io.spine.tools.mc.js.code.field;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.tools.js.code.FieldName;
-import io.spine.tools.mc.js.code.CodeWriter;
 
 /**
  * The generator for the {@code repeated} Protobuf fields.
@@ -83,11 +82,10 @@ final class RepeatedFieldGenerator extends FieldGenerator {
      */
     @VisibleForTesting
     void iterateListValues(String jsObject) {
-        CodeWriter writer = writer();
-        writer.ifNotNullOrUndefined(jsObject);
-        writer.append(jsObject + ".forEach(");
-        writer.increaseDepth();
-        writer.enterBlock('(' + LIST_ITEM + ", index, array) =>");
+        writer().ifNotNullOrUndefined(jsObject)
+                .append(jsObject + ".forEach(")
+                .increaseDepth()
+                .enterBlock('(' + LIST_ITEM + ", index, array) =>");
     }
 
     /**
@@ -96,11 +94,10 @@ final class RepeatedFieldGenerator extends FieldGenerator {
      * <p>Returns the cursor to the {@code fromObject} method level.
      */
     private void exitListValueIteration() {
-        CodeWriter writer = writer();
-        writer.exitBlock();
-        writer.decreaseDepth();
-        writer.append(");");
-        writer.exitBlock();
+        writer().exitBlock()
+                .decreaseDepth()
+                .append(");")
+                .exitBlock();
     }
 
     static Builder newBuilder() {

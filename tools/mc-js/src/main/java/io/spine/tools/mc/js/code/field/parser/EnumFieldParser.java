@@ -40,7 +40,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 final class EnumFieldParser implements FieldParser {
 
     private final TypeName typeName;
-    private final CodeWriter jsOutput;
+    private final CodeWriter writer;
 
     /**
      * Creates a new {@code EnumFieldParser} for the given field.
@@ -54,7 +54,7 @@ final class EnumFieldParser implements FieldParser {
         checkNotNull(field);
         EnumDescriptor enumType = field.getEnumType();
         this.typeName = TypeName.from(enumType);
-        this.jsOutput = checkNotNull(writer);
+        this.writer = checkNotNull(writer);
     }
 
     /**
@@ -68,7 +68,7 @@ final class EnumFieldParser implements FieldParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        jsOutput.append(parsedValue(variable, value));
+        writer.append(parsedValue(variable, value));
     }
 
     private Let parsedValue(String name, String valueToParse) {
