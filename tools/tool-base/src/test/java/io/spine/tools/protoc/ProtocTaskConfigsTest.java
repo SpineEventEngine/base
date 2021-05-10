@@ -72,7 +72,7 @@ final class ProtocTaskConfigsTest extends UtilityClassTest<ProtocTaskConfigs> {
         void configByPattern() {
             ClassName className = ClassName.of("test-value");
             FilePattern pattern = FilePatterns.filePrefix("test");
-            ConfigByPattern actual = ProtocTaskConfigs.byPatternConfig(className, pattern);
+            ConfigByPattern actual = ProtocTaskConfigs.byPatternConfig(pattern, className);
             Truth.assertThat(actual.getValue()).isEqualTo(className.value());
             Truth.assertThat(actual.getPattern()).isEqualTo(pattern);
         }

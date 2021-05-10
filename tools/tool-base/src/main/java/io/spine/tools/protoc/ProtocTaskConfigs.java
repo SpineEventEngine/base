@@ -62,18 +62,22 @@ public final class ProtocTaskConfigs {
     }
 
     /**
-     * Creates a new {@link ConfigByPattern} instance from the supplied {@code className} and
-     * {@code pattern}.
+     * Creates a new configuration pattern for making messages defined in the files matching
+     * the passed pattern, implement the interface with the passed name.
      *
+     * @param pattern
+     *          the pattern of file names where message type of interest are defined
+     * @param interfaceToImplement
+     *          the name of the interface to be implemented by the generated message classes
      * @throws IllegalArgumentException
-     *          if the pattern is empty
+     *          if the file pattern is empty
      */
     public static ConfigByPattern
-    byPatternConfig(ClassName className, FilePattern pattern) {
-        checkNotNull(className);
+    byPatternConfig(FilePattern pattern, ClassName interfaceToImplement) {
+        checkNotNull(interfaceToImplement);
         checkNotDefaultArg(pattern);
         return ConfigByPattern.newBuilder()
-                .setValue(className.value())
+                .setValue(interfaceToImplement.value())
                 .setPattern(pattern)
                 .build();
     }

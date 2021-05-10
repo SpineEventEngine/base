@@ -91,6 +91,6 @@ abstract class ModelCompilerConfiguration<C extends Message> {
     static ConfigByPattern toPatternConfig(Map.Entry<PatternSelector, ClassName> e) {
         PatternSelector patternSelector = e.getKey();
         ClassName className = e.getValue();
-        return byPatternConfig(className, patternSelector.toProto());
+        return byPatternConfig(patternSelector.toProto(), className);
     }
 }

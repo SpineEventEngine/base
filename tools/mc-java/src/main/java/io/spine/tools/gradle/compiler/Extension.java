@@ -309,7 +309,7 @@ public class Extension extends GradleExtension {
 
     public static Indent getIndent(Project project) {
         Indent result = extension(project).indent;
-        _debug().log("The current indent is %d.", result.getSize());
+        _debug().log("The current indent is %d.", result.size());
         return result;
     }
 
