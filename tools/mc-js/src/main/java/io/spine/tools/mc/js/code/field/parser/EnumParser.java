@@ -26,38 +26,52 @@
 
 package io.spine.tools.mc.js.code.field.parser;
 
+import com.google.protobuf.Descriptors.EnumDescriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.tools.js.code.TypeName;
 import io.spine.tools.mc.js.code.CodeWriter;
+import io.spine.tools.mc.js.code.text.Let;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The common base for the {@link PrimitiveParser} implementations.
+ * The value parser for the proto fields of {@code enum} type.
  */
-abstract class AbstractPrimitiveParser implements PrimitiveParser {
+final class EnumParser extends AbstractParser {
 
-    private final CodeWriter writer;
+    private final TypeName typeName;
 
-    AbstractPrimitiveParser(Builder<?> builder) {
-        this.writer = builder.writer;
+    /**
+     * Creates a new {@code EnumFieldParser} for the given field.
+     *
+     * @param field
+     *         the processed field
+     * @param writer
+     *         the output to store the generated code
+     */
+    EnumParser(FieldDescriptor field, CodeWriter writer) {
+        super(writer);
+        checkNotNull(field);
+        EnumDescriptor enumType = field.getEnumType();
+        this.typeName = TypeName.from(enumType);
     }
 
-    CodeWriter writer() {
-        return writer;
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The {@code enum} proto value in JSON is represented as a plain {@code string}.
+     * Thus, the parser obtains the JS enum object property using the given {@code string} as
+     * an attribute name.
+     */
+    @Override
+    public void parseIntoVariable(String value, String variable) {
+        checkNotNull(value);
+        checkNotNull(variable);
+        writer().append(parsedValue(variable, value));
     }
 
-    abstract static class Builder<B extends Builder<B>> implements PrimitiveParser.Builder<B> {
-
-        private CodeWriter writer;
-
-        @Override
-        public B setWriter(CodeWriter writer) {
-            this.writer = checkNotNull(writer);
-            return self();
-        }
-
-        /**
-         * Must return {@code this} in classes-descendants.
-         */
-        abstract B self();
+    private Let parsedValue(String name, String valueToParse) {
+        String initializer = typeName.value() + '[' + valueToParse + ']';
+        return Let.withValue(name, initializer);
     }
 }

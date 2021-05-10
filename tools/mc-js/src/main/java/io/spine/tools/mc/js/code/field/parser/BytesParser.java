@@ -40,7 +40,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <p>The parser thus imports the "base64" lib and decodes the value.
  */
-final class BytesParser extends AbstractPrimitiveParser {
+final class BytesParser extends AbstractParser {
 
     /**
      * The name of <a href="https://www.npmjs.com/package/base64-js">Base-64 JS lib</a> to import.
@@ -54,8 +54,8 @@ final class BytesParser extends AbstractPrimitiveParser {
     @VisibleForTesting
     static final String BASE64_VAR = "base64";
 
-    private BytesParser(Builder builder) {
-        super(builder);
+    BytesParser(CodeWriter writer) {
+        super(writer);
     }
 
     @Override
@@ -63,31 +63,13 @@ final class BytesParser extends AbstractPrimitiveParser {
         checkNotNull(value);
         checkNotNull(variable);
         Import base64Import = Import.library(BASE64_LIB);
-        CodeWriter writer = writer();
-        writer.append(base64Import.namedAs(BASE64_VAR));
-        writer.append(parsedVariable(variable, value));
+        writer().append(base64Import.namedAs(BASE64_VAR))
+                .append(parsedVariable(variable, value));
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // Necessary duplication with own test.
     private static Let parsedVariable(String name, String valueToParse) {
         String initializer = BASE64_VAR + ".toByteArray(" + valueToParse + ')';
         return Let.withValue(name, initializer);
-    }
-
-    static Builder newBuilder() {
-        return new Builder();
-    }
-
-    static class Builder extends AbstractPrimitiveParser.Builder<Builder> {
-
-        @Override
-        Builder self() {
-            return this;
-        }
-
-        @Override
-        public PrimitiveParser build() {
-            return new BytesParser(this);
-        }
     }
 }

@@ -27,7 +27,7 @@
 package io.spine.tools.mc.js.code.field;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.mc.js.code.field.parser.FieldParser;
+import io.spine.tools.mc.js.code.field.parser.Parser;
 import io.spine.tools.mc.js.code.field.precondition.FieldPrecondition;
 import io.spine.tools.mc.js.code.CodeWriter;
 
@@ -77,7 +77,7 @@ public final class FieldGenerators {
      * The creation logic is different from all other generators.
      *
      * <p>As the {@code map} field is always a {@code message} of type {@code ...Entry}, we create
-     * {@link FieldPrecondition} and {@link FieldParser} for it's field with name {@code "value"}
+     * {@link FieldPrecondition} and {@link Parser} for it's field with name {@code "value"}
      * (whose type corresponds to the {@code map} value type).
      *
      * <p>The key also has to be parsed via the separate {@code FieldParser}, as in JSON it is
@@ -86,12 +86,11 @@ public final class FieldGenerators {
      */
     private static FieldGenerator mapGenerator(FieldToParse field, CodeWriter writer) {
         FieldDescriptor descriptor = field.descriptor();
-        FieldParser keyParser = mapKeyParser(descriptor, writer);
-        FieldParser valueParser = mapValueParser(descriptor, writer);
+        Parser keyParser = mapKeyParser(descriptor, writer);
+        Parser valueParser = mapValueParser(descriptor, writer);
         FieldPrecondition valuePrecondition = mapValuePrecondition(descriptor, writer);
 
-        FieldGenerator generator = MapFieldGenerator
-                .newBuilder()
+        FieldGenerator generator = MapFieldGenerator.newBuilder()
                 .setField(field)
                 .setPrecondition(valuePrecondition)
                 .setKeyParser(keyParser)
@@ -107,7 +106,7 @@ public final class FieldGenerators {
     private static FieldGenerator repeatedGenerator(FieldToParse field, CodeWriter writer) {
         FieldDescriptor descriptor = field.descriptor();
         FieldPrecondition precondition = preconditionFor(descriptor, writer);
-        FieldParser parser = FieldParser.createFor(descriptor, writer);
+        Parser parser = Parser.createFor(descriptor, writer);
         FieldGenerator generator = RepeatedFieldGenerator.newBuilder()
                 .setField(field)
                 .setPrecondition(precondition)
@@ -123,7 +122,7 @@ public final class FieldGenerators {
     private static FieldGenerator singularGenerator(FieldToParse field, CodeWriter writer) {
         FieldDescriptor descriptor = field.descriptor();
         FieldPrecondition precondition = preconditionFor(descriptor, writer);
-        FieldParser parser = FieldParser.createFor(descriptor, writer);
+        Parser parser = Parser.createFor(descriptor, writer);
         FieldGenerator generator = SingularFieldGenerator.newBuilder()
                 .setField(field)
                 .setPrecondition(precondition)
@@ -146,18 +145,18 @@ public final class FieldGenerators {
     /**
      * Creates a {@code FieldParser} for the key of the map field.
      */
-    private static FieldParser mapKeyParser(FieldDescriptor field, CodeWriter writer) {
+    private static Parser mapKeyParser(FieldDescriptor field, CodeWriter writer) {
         FieldDescriptor keyDescriptor = keyDescriptor(field);
-        FieldParser parser = FieldParser.createFor(keyDescriptor, writer);
+        Parser parser = Parser.createFor(keyDescriptor, writer);
         return parser;
     }
 
     /**
      * Creates a {@code FieldParser} for the value of the map field.
      */
-    private static FieldParser mapValueParser(FieldDescriptor field, CodeWriter writer) {
+    private static Parser mapValueParser(FieldDescriptor field, CodeWriter writer) {
         FieldDescriptor valueDescriptor = valueDescriptor(field);
-        FieldParser parser = FieldParser.createFor(valueDescriptor, writer);
+        Parser parser = Parser.createFor(valueDescriptor, writer);
         return parser;
     }
 }

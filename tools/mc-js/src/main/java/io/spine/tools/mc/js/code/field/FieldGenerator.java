@@ -29,7 +29,7 @@ package io.spine.tools.mc.js.code.field;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.mc.js.code.JsCodeGenerator;
-import io.spine.tools.mc.js.code.field.parser.FieldParser;
+import io.spine.tools.mc.js.code.field.parser.Parser;
 import io.spine.tools.mc.js.code.field.precondition.FieldPrecondition;
 import io.spine.tools.mc.js.code.CodeWriter;
 
@@ -42,13 +42,13 @@ import static java.lang.String.format;
  *
  * <p>This class generates the JS code common for all kinds of field generators including
  * inserting a {@linkplain FieldPrecondition field precondition} and calling a
- * {@linkplain FieldParser field parser}.
+ * {@linkplain Parser parser}.
  */
 public abstract class FieldGenerator extends JsCodeGenerator {
 
     /**
-     * The variable holding the value parsed by the {@link FieldParser} and then used to set the
-     * field.
+     * The variable holding the value parsed by the {@link Parser} and then used to
+     * set the field.
      */
     @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     @VisibleForTesting
@@ -56,7 +56,7 @@ public abstract class FieldGenerator extends JsCodeGenerator {
 
     private final FieldToParse field;
     private final FieldPrecondition precondition;
-    private final FieldParser parser;
+    private final Parser parser;
 
     FieldGenerator(Builder<?> builder) {
         super(builder.writer);
@@ -109,7 +109,7 @@ public abstract class FieldGenerator extends JsCodeGenerator {
      * Generates the code which calls the field merge action on the specified value.
      *
      * <p>The value is assumed to be already {@linkplain FieldPrecondition checked} and
-     * {@linkplain FieldParser parsed}.
+     * {@linkplain Parser parsed}.
      *
      * @param value
      *         the name of the variable with the value to set
@@ -142,7 +142,7 @@ public abstract class FieldGenerator extends JsCodeGenerator {
 
         private FieldToParse field;
         private FieldPrecondition precondition;
-        private FieldParser parser;
+        private Parser parser;
         private CodeWriter writer;
 
         B setField(FieldToParse field) {
@@ -155,7 +155,7 @@ public abstract class FieldGenerator extends JsCodeGenerator {
             return self();
         }
 
-        B setParser(FieldParser parser) {
+        B setParser(Parser parser) {
             this.parser = checkNotNull(parser);
             return self();
         }

@@ -26,6 +26,7 @@
 
 package io.spine.tools.mc.js.code.field.parser;
 
+import io.spine.tools.mc.js.code.CodeWriter;
 import io.spine.tools.mc.js.code.text.Let;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -38,10 +39,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <p>The {@code IdentityParser} "parses" them by just assigning the variable to the passed value.
  */
-final class IdentityParser extends AbstractPrimitiveParser {
+final class IdentityParser extends AbstractParser {
 
-    private IdentityParser(Builder builder) {
-        super(builder);
+    IdentityParser(CodeWriter writer) {
+        super(writer);
     }
 
     @Override
@@ -49,22 +50,5 @@ final class IdentityParser extends AbstractPrimitiveParser {
         checkNotNull(value);
         checkNotNull(variable);
         writer().append(Let.withValue(variable, value));
-    }
-
-    static Builder newBuilder() {
-        return new Builder();
-    }
-
-    static class Builder extends AbstractPrimitiveParser.Builder<Builder> {
-
-        @Override
-        Builder self() {
-            return this;
-        }
-
-        @Override
-        public PrimitiveParser build() {
-            return new IdentityParser(this);
-        }
     }
 }

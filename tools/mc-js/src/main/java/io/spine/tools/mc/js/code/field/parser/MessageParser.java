@@ -35,6 +35,7 @@ import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.mc.js.code.text.Parser.TYPE_PARSERS_IMPORT_NAME;
+import static io.spine.tools.mc.js.code.text.Parser.parseMethodCall;
 import static java.lang.String.format;
 
 /**
@@ -42,12 +43,11 @@ import static java.lang.String.format;
  *
  * <p>Handles all {@code message} fields by calling {@code TypeParsers} registry.
  */
-final class MessageFieldParser implements FieldParser {
+final class MessageParser extends AbstractParser {
 
     private static final String PARSER_BY_URL_METHOD = "parserFor";
 
     private final Descriptor message;
-    private final CodeWriter writer;
 
     /**
      * Creates the {@code MessageFieldParser} for the given {@code field}.
@@ -57,24 +57,24 @@ final class MessageFieldParser implements FieldParser {
      * @param writer
      *         the output which accumulates all the generated code
      */
-    MessageFieldParser(FieldDescriptor field, CodeWriter writer) {
+    MessageParser(FieldDescriptor field, CodeWriter writer) {
+        super(writer);
         checkNotNull(field);
         this.message = field.getMessageType();
-        this.writer = checkNotNull(writer);
     }
 
     @Override
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        writer.append(parsedVariable(variable, value));
+        writer().append(parsedVariable(variable, value));
     }
 
     private Let parsedVariable(String name, String valueToParse) {
         TypeUrl typeUrl = TypeUrl.from(message);
         String obtainParser = format("%s.%s('%s')",
                                      TYPE_PARSERS_IMPORT_NAME, PARSER_BY_URL_METHOD, typeUrl);
-        String parserCall = Parser.parseMethodCall(obtainParser, valueToParse);
+        String parserCall = parseMethodCall(obtainParser, valueToParse);
         return Let.withValue(name, parserCall);
     }
 }

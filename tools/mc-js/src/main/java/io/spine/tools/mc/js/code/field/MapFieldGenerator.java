@@ -28,7 +28,7 @@ package io.spine.tools.mc.js.code.field;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.tools.js.code.FieldName;
-import io.spine.tools.mc.js.code.field.parser.FieldParser;
+import io.spine.tools.mc.js.code.field.parser.Parser;
 
 /**
  * The generator for the {@code map} Protobuf fields.
@@ -62,7 +62,7 @@ final class MapFieldGenerator extends FieldGenerator {
      *
      * @see #generate()
      */
-    private final FieldParser keyParser;
+    private final Parser keyParser;
 
     private MapFieldGenerator(Builder builder) {
         super(builder);
@@ -104,9 +104,9 @@ final class MapFieldGenerator extends FieldGenerator {
      */
     @VisibleForTesting
     String iterateOwnAttributes(String jsObject) {
-        writer().ifNotNullOrUndefined(jsObject);
-        writer().enterBlock("for (let " + ATTRIBUTE + " in " + jsObject + ')');
-        writer().enterIfBlock(jsObject + ".hasOwnProperty(" + ATTRIBUTE + ')');
+        writer().ifNotNullOrUndefined(jsObject)
+                .enterBlock("for (let " + ATTRIBUTE + " in " + jsObject + ')')
+                .enterIfBlock(jsObject + ".hasOwnProperty(" + ATTRIBUTE + ')');
         String value = jsObject + '[' + ATTRIBUTE + ']';
         return value;
     }
@@ -117,9 +117,9 @@ final class MapFieldGenerator extends FieldGenerator {
      * <p>Returns the cursor to the {@code fromObject} method level.
      */
     private void exitOwnAttributeIteration() {
-        writer().exitBlock();
-        writer().exitBlock();
-        writer().exitBlock();
+        writer().exitBlock()
+                .exitBlock()
+                .exitBlock();
     }
 
     /**
@@ -134,11 +134,14 @@ final class MapFieldGenerator extends FieldGenerator {
         return new Builder();
     }
 
+    /**
+     * Extends the builder with the {@link #setKeyParser(Parser)}.
+     */
     static class Builder extends FieldGenerator.Builder<Builder> {
 
-        private FieldParser keyParser;
+        private Parser keyParser;
 
-        Builder setKeyParser(FieldParser keyParser) {
+        Builder setKeyParser(Parser keyParser) {
             this.keyParser = keyParser;
             return self();
         }

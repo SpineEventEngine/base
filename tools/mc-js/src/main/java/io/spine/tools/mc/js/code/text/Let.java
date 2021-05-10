@@ -34,7 +34,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
 /**
- * A declaration of a variable using ES6 keyword {@code let}.
+ * A declaration of a constant using ES6 keyword {@code let}.
  */
 @Immutable
 public final class Let extends Line {

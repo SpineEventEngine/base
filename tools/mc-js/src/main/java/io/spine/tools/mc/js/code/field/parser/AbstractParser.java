@@ -28,45 +28,21 @@ package io.spine.tools.mc.js.code.field.parser;
 
 import io.spine.tools.mc.js.code.CodeWriter;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * The generator of the JS code parsing some primitive value from its JSON representation.
- *
- * <p>The parsed value is then stored into the specified variable.
- *
- * <p>Please see <a href="https://developers.google.com/protocol-buffers/docs/proto3#json">
- * Protobuf JSON Mapping</a> for more details.
- *
- * @apiNote The descendants are supposed to operate on the provided {@link CodeWriter}, so
- *         the interface method is not returning any generated code.
+ * The common base for the {@link Parser} implementations.
  */
-interface PrimitiveParser {
+abstract class AbstractParser implements Parser {
 
-    /**
-     * Generates the code required to parse the primitive value and assign it to the variable.
-     *
-     * @param value
-     *         the name of the variable holding the value to parse
-     * @param variable
-     *         the name of the variable to receive the parsed value
-     */
-    void parseIntoVariable(String value, String variable);
+    private final CodeWriter writer;
 
-    /**
-     * The generic builder for the classes-descendants.
-     *
-     * @param <B>
-     *         the class of the Builder itself
-     */
-    interface Builder<B extends Builder<B>> {
+    AbstractParser(CodeWriter writer) {
+        this.writer = checkNotNull(writer);
+    }
 
-        /**
-         * Sets the writer to accumulate all the generated code.
-         */
-        B setWriter(CodeWriter writer);
-
-        /**
-         * Creates the {@code PrimitiveParser} instance corresponding to this builder.
-         */
-        PrimitiveParser build();
+    @Override
+    public CodeWriter writer() {
+        return writer;
     }
 }

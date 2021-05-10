@@ -62,10 +62,15 @@ public final class Preconditions2 {
     public static String checkNotEmptyOrBlank(String str) {
         checkNotNull(str);
         checkArgument(
-                !str.trim().isEmpty(),
-                str, "Non-empty and non-blank string expected. Encountered: \"%s\".", str
+                isNotEmpty(str),
+                "Non-empty and non-blank string expected. Encountered: \"%s\".", str
         );
         return str;
+    }
+
+    private static boolean isNotEmpty(String str) {
+        return !str.trim()
+                   .isEmpty();
     }
 
     /**
@@ -83,7 +88,7 @@ public final class Preconditions2 {
      */
     public static String checkNotEmptyOrBlank(String str, @Nullable Object errorMessage) {
         checkNotNull(str, errorMessage);
-        checkArgument(!str.trim().isEmpty(), errorMessage);
+        checkArgument(isNotEmpty(str), errorMessage);
         return str;
     }
 
@@ -107,7 +112,7 @@ public final class Preconditions2 {
                                               @Nullable String errorMessageTemplate,
                                               @Nullable Object @Nullable ... errorMessageArgs) {
         checkNotNull(str, errorMessageTemplate, errorMessageArgs);
-        checkArgument(!str.trim().isEmpty(), errorMessageTemplate, errorMessageArgs);
+        checkArgument(isNotEmpty(str), errorMessageTemplate, errorMessageArgs);
         return str;
     }
 

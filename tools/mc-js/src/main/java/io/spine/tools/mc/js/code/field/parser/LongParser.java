@@ -26,6 +26,7 @@
 
 package io.spine.tools.mc.js.code.field.parser;
 
+import io.spine.tools.mc.js.code.CodeWriter;
 import io.spine.tools.mc.js.code.text.Let;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -41,10 +42,10 @@ import static java.lang.String.format;
  * <p>The parser thus applies the {@code parseInt} operation to the given {@code string} to obtain
  * the proto value from it.
  */
-final class LongParser extends AbstractPrimitiveParser {
+final class LongParser extends AbstractParser {
 
-    private LongParser(Builder builder) {
-        super(builder);
+    LongParser(CodeWriter writer) {
+        super(writer);
     }
 
     @Override
@@ -57,22 +58,5 @@ final class LongParser extends AbstractPrimitiveParser {
     private static Let parsedVariable(String name, String valueToParse) {
         String initializer = format("parseInt(%s)", valueToParse);
         return Let.withValue(name, initializer);
-    }
-
-    static Builder newBuilder() {
-        return new Builder();
-    }
-
-    static class Builder extends AbstractPrimitiveParser.Builder<Builder> {
-
-        @Override
-        Builder self() {
-            return this;
-        }
-
-        @Override
-        public PrimitiveParser build() {
-            return new LongParser(this);
-        }
     }
 }

@@ -27,31 +27,12 @@
 package io.spine.tools.mc.js.code.field.parser;
 
 import io.spine.tools.mc.js.code.CodeWriter;
-import io.spine.tools.mc.js.code.text.Let;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.function.Function;
 
 /**
- * The generator of the code parsing the floating point values from their JSON representation.
- *
- * <p>The parser uses the {@code parseFloat} operation on the value to obtain the original floating
- * point number.
+ * Creates a {@link Parser} associating it with {@link io.spine.tools.mc.js.code.CodeWriter}.
  */
-final class FloatParser extends AbstractParser {
-
-    FloatParser(CodeWriter writer) {
-        super(writer);
-    }
-
-    @Override
-    public void parseIntoVariable(String value, String variable) {
-        checkNotNull(value);
-        checkNotNull(variable);
-        writer().append(parsedVariable(variable, value));
-    }
-
-    private static Let parsedVariable(String name, String valueToParse) {
-        String initializer = "parseFloat(" + valueToParse + ')';
-        return Let.withValue(name, initializer);
-    }
+@FunctionalInterface
+interface ParserFactory extends Function<CodeWriter, Parser> {
 }
