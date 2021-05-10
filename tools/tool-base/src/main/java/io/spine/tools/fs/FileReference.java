@@ -26,6 +26,7 @@
 
 package io.spine.tools.fs;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import io.spine.value.StringTypeValue;
@@ -69,6 +70,20 @@ public final class FileReference extends StringTypeValue implements Comparable<F
     }
 
     /**
+     * Obtains the splitter by {@linkplain FileReference#separator() separator}.
+     */
+    public static Splitter splitter() {
+        return Splitter.on(separator());
+    }
+
+    /**
+     * Obtains a joiner on {@linkplain FileReference#separator() separator}.
+     */
+    static Joiner joiner() {
+        return Joiner.on(separator());
+    }
+
+    /**
      * Obtains the name of the imported file skipping the path to it.
      */
     public String fileName() {
@@ -103,9 +118,11 @@ public final class FileReference extends StringTypeValue implements Comparable<F
         return result;
     }
 
+    /**
+     * Obtains the elements of this file reference.
+     */
     public List<String> elements() {
-        Iterable<String> elements = Splitter.on(separator())
-                                            .split(value());
+        Iterable<String> elements = splitter().split(value());
         return ImmutableList.copyOf(elements);
     }
 
@@ -129,7 +146,7 @@ public final class FileReference extends StringTypeValue implements Comparable<F
     }
 
     /**
-     * Obtains the separator used in JavaScript imports.
+     * Obtains the separator used in JavaScript-like imports.
      */
     public static String separator() {
         return IMPORT_PATH_SEPARATOR;

@@ -27,7 +27,6 @@
 package io.spine.tools.fs;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 
@@ -39,6 +38,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Lists.newArrayList;
+import static io.spine.tools.fs.FileReference.joiner;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -121,27 +121,28 @@ public final class DirectoryPattern implements Comparable<DirectoryPattern> {
         checkState(matches(origin));
         Optional<Integer> firstMatchIndex = firstMatchIndex(origin);
         checkState(firstMatchIndex.isPresent());
-        List<String> missingElements = directory.elements()
-                                                .subList(0, firstMatchIndex.get());
+        List<String> missingElements =
+                directory.elements()
+                         .subList(0, firstMatchIndex.get());
         List<String> resultElements = newArrayList();
         resultElements.addAll(missingElements);
         resultElements.addAll(origin.elements());
-        String result = Joiner.on(FileReference.separator())
-                              .join(resultElements);
+        String result = joiner().join(resultElements);
         return DirectoryReference.of(result);
     }
 
     private boolean matches(DirectoryReference target, int fromIndex) {
         List<String> patternElements = directory.elements();
-        List<String> relevantPattern = patternElements.subList(fromIndex,
-                                                               patternElements.size());
+        List<String> relevantPattern =
+                patternElements.subList(fromIndex, patternElements.size());
         List<String> targetElements = target.elements();
         if (relevantPattern.size() > targetElements.size()) {
             return false;
         }
-        int lastRelevantTarget = includeNested
-                                 ? relevantPattern.size()
-                                 : targetElements.size();
+        int lastRelevantTarget =
+                includeNested
+                ? relevantPattern.size()
+                : targetElements.size();
         List<String> relevantTarget = targetElements.subList(0, lastRelevantTarget);
         return relevantPattern.equals(relevantTarget);
     }

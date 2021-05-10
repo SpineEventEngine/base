@@ -27,7 +27,6 @@
 package io.spine.tools.js.fs;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
@@ -39,6 +38,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.fs.FileReference.splitter;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -118,8 +118,7 @@ public final class FileName extends AbstractFileName<FileName> {
      */
     @VisibleForTesting
     List<String> pathElements() {
-        Iterable<String> elements = Splitter.on(FileReference.separator())
-                                            .split(value());
+        Iterable<String> elements = splitter().split(value());
         return ImmutableList.copyOf(elements);
     }
 

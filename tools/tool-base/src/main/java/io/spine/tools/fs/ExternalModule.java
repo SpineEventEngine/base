@@ -36,6 +36,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkState;
+import static io.spine.tools.fs.FileReference.joiner;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -78,8 +79,7 @@ public final class ExternalModule {
                 matchingDirectory.get()
                                  .transform(file.directory());
         String fileName = file.fileName();
-        String path = Joiner.on(FileReference.separator())
-                            .join(name, directory, fileName);
+        String path = joiner().join(name, directory, fileName);
         return FileReference.of(path);
     }
 
