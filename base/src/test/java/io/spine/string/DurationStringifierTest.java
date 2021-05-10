@@ -48,9 +48,8 @@ class DurationStringifierTest extends AbstractStringifierTest<Duration> {
     @Test
     @DisplayName("Convert negative duration")
     void convertNegativeDuration() {
-        Stringifier<Duration> stringifier = getStringifier();
+        Stringifier<Duration> stringifier = stringifier();
         Duration negative = hoursAndMinutes(-4, -31);
-        assertEquals(negative, stringifier.reverse()
-                                          .convert(stringifier.convert(negative)));
+        assertEquals(negative, parser().convert(stringifier.convert(negative)));
     }
 }

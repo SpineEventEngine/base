@@ -26,15 +26,19 @@
 
 package io.spine.string;
 
+import com.google.common.base.Converter;
+import com.google.common.truth.Truth;
+import com.google.common.truth.Truth8;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Modifier;
+import java.util.Optional;
 
 import static com.google.common.testing.SerializableTester.reserializeAndAssert;
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertHasPrivateParameterlessCtor;
 import static io.spine.testing.Assertions.assertIllegalArgument;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static java.lang.reflect.Modifier.isFinal;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -55,14 +59,22 @@ abstract class AbstractStringifierTest<T> {
 
     protected abstract T createObject();
 
-    Stringifier<T> getStringifier() {
+    static StringifierRegistry registry() {
+        return StringifierRegistry.instance();
+    }
+
+    final Stringifier<T> stringifier() {
         return stringifier;
+    }
+
+    final Converter<String, T> parser() {
+        return stringifier.reverse();
     }
 
     @Test
     @DisplayName("have private singleton constructor")
     void privateCtor() {
-        assertHasPrivateParameterlessCtor(getStringifier().getClass());
+        assertHasPrivateParameterlessCtor(stringifier().getClass());
     }
 
     @Test
@@ -71,37 +83,38 @@ abstract class AbstractStringifierTest<T> {
         T obj = createObject();
 
         final String str = stringifier.convert(obj);
-        final T convertedBack = stringifier.reverse()
-                                           .convert(str);
+        final T convertedBack = parser().convert(str);
 
-        assertEquals(obj, convertedBack);
+        assertThat(convertedBack).isEqualTo(obj);
     }
 
     @Test
     @DisplayName("prohibit empty string input")
     void prohibitEmptyString() {
-        assertIllegalArgument(() -> stringifier.reverse().convert(""));
+        assertIllegalArgument(() -> parser().convert(""));
     }
 
     @Test
     @DisplayName("serialize")
     void serialize() {
-        Stringifier<T> expected = getStringifier();
+        Stringifier<T> expected = stringifier();
         Stringifier<T> stringifier = reserializeAndAssert(expected);
-        assertSame(expected, stringifier);
+        assertThat(stringifier)
+                .isSameInstanceAs(expected);
     }
 
     @Test
     @DisplayName("be registered")
     void isRegistered() {
-        assertTrue(StringifierRegistry.instance()
-                                      .find(dataClass)
-                                      .isPresent());
+        Optional<Stringifier<Object>> found = registry().find(dataClass);
+        Truth8.assertThat(found).isPresent();
     }
 
     @Test
     @DisplayName("have final class")
     void isFinalClass() {
-        assertTrue(Modifier.isFinal(stringifier.getClass().getModifiers()));
+        Class<?> stringifierClass = stringifier.getClass();
+        assertThat(isFinal(stringifierClass.getModifiers()))
+                .isTrue();
     }
 }
