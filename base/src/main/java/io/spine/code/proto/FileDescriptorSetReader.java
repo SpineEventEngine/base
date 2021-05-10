@@ -27,38 +27,44 @@
 package io.spine.code.proto;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
+import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
 
+import static com.google.protobuf.DescriptorProtos.FileDescriptorSet.parseFrom;
 import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
 
 /**
- * A factory of {@code FileDescriptorSet} instances which avoids the necessity to handle
- * {@link InvalidProtocolBufferException} when parsing descriptors data.
+ * Static factory methods for creating instances of {@link FileDescriptorSet}
+ * which wrap handling of checked {@link InvalidProtocolBufferException}.
  */
-public final class FileDescriptorSets {
+public final class FileDescriptorSetReader {
 
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private FileDescriptorSets() {
+    /** Prevents instantiation of this utility class. */
+    private FileDescriptorSetReader() {
+    }
+
+    /** The extension registry used when parsing. */
+    private static ExtensionRegistry registry() {
+        return OptionExtensionRegistry.instance();
     }
 
     /**
      * Parses a descriptor set from the given byte array.
      *
      * @param bytes
-     *         raw data to parse
+     *         the data to parse
      * @return instance of {@code FileDescriptorSet} encoded in the bytes
-     * @throws java.lang.IllegalArgumentException
+     * @throws IllegalArgumentException
      *         if parsing fails
      */
     public static FileDescriptorSet parse(byte[] bytes) {
         try {
-            return FileDescriptorSet.parseFrom(bytes, OptionExtensionRegistry.instance());
+            FileDescriptorSet result = parseFrom(bytes, registry());
+            return result;
         } catch (InvalidProtocolBufferException e) {
             throw illegalArgumentWithCauseOf(e);
         }
@@ -74,9 +80,8 @@ public final class FileDescriptorSets {
      */
     public static Optional<FileDescriptorSet> tryParse(byte[] bytes) {
         try {
-            FileDescriptorSet descriptorSet =
-                    FileDescriptorSet.parseFrom(bytes, OptionExtensionRegistry.instance());
-            return Optional.of(descriptorSet);
+            FileDescriptorSet result = parseFrom(bytes, registry());
+            return Optional.of(result);
         } catch (InvalidProtocolBufferException e) {
             return Optional.empty();
         }
@@ -88,12 +93,13 @@ public final class FileDescriptorSets {
      * @param stream
      *         byte stream of data to parse
      * @return instance of {@code FileDescriptorSet} encoded in the bytes
-     * @throws java.lang.IllegalArgumentException
+     * @throws IllegalArgumentException
      *         if parsing fails or if stream cannot be read
      */
     public static FileDescriptorSet parse(InputStream stream) {
         try {
-            return FileDescriptorSet.parseFrom(stream, OptionExtensionRegistry.instance());
+            FileDescriptorSet result = parseFrom(stream, registry());
+            return result;
         } catch (IOException e) {
             throw illegalArgumentWithCauseOf(e);
         }

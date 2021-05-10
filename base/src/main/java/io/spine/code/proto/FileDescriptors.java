@@ -113,7 +113,7 @@ public final class FileDescriptors {
 
         List<FileDescriptorProto> files;
         try (FileInputStream fis = new FileInputStream(descriptorSet)) {
-            FileDescriptorSet fileSet = FileDescriptorSets.parse(fis);
+            FileDescriptorSet fileSet = FileDescriptorSetReader.parse(fis);
             files = fileSet.getFileList()
                            .stream()
                            .filter(filter)
@@ -180,7 +180,7 @@ public final class FileDescriptors {
 
     private static FileDescriptorSet doLoadFrom(Resource resource) {
         try (InputStream stream = resource.open()) {
-            FileDescriptorSet parsed = FileDescriptorSets.parse(stream);
+            FileDescriptorSet parsed = FileDescriptorSetReader.parse(stream);
             return parsed;
         } catch (IOException e) {
             throw newIllegalStateException(

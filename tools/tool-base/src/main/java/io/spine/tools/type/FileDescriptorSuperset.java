@@ -29,7 +29,7 @@ package io.spine.tools.type;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
-import io.spine.code.proto.FileDescriptorSets;
+import io.spine.code.proto.FileDescriptorSetReader;
 import io.spine.logging.Logging;
 import io.spine.tools.archive.ArchiveEntry;
 import io.spine.tools.archive.ArchiveFile;
@@ -143,7 +143,7 @@ public final class FileDescriptorSuperset implements Logging {
         _debug().log("Reading descriptors from file `%s`.", file);
         try {
             byte[] bytes = Files.readAllBytes(path);
-            return FileDescriptorSets.parse(bytes);
+            return FileDescriptorSetReader.parse(bytes);
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
