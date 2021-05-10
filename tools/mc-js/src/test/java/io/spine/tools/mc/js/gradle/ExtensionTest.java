@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.code.proto.FileDescriptors.DESC_EXTENSION;
 import static io.spine.tools.mc.js.gradle.Extension.extension;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -123,7 +124,7 @@ class ExtensionTest {
                                              .descriptors()
                                              .mainDescriptors();
         File expected = mainDescriptors
-                .resolve(GROUP_ID + '_' + project.getName() + '_' + VERSION + ".desc")
+                .resolve(GROUP_ID + '_' + project.getName() + '_' + VERSION + DESC_EXTENSION)
                 .toFile();
         assertThat(file)
                 .isEqualTo(expected);
