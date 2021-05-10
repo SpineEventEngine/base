@@ -30,7 +30,6 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.mc.js.code.CodeWriter;
 import io.spine.tools.mc.js.code.text.Let;
-import io.spine.tools.mc.js.code.text.Parser;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
