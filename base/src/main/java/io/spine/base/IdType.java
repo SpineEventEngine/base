@@ -40,9 +40,11 @@ import static io.spine.protobuf.Messages.defaultInstance;
 /**
  * Supported types of identifiers.
  */
-@SuppressWarnings(
-        {"OverlyStrongTypeCast" /* For clarity. We cannot get OrBuilder instances here. */,
-                "unchecked" /* We ensure type by matching it first. */})
+@SuppressWarnings({
+        "OverlyStrongTypeCast" /* We cast to message types instead of `OrBuilder` types for
+            the sake of clarity since `fromMessage()` methods accept only `Message` parameters. */,
+        "unchecked" /* We ensure type by matching it first. */
+})
 enum IdType {
 
     STRING {
