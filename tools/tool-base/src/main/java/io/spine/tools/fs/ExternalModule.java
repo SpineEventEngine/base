@@ -26,7 +26,6 @@
 
 package io.spine.tools.fs;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
 import com.google.errorprone.annotations.Immutable;
