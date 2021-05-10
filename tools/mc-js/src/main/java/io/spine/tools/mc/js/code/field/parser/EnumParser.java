@@ -26,55 +26,52 @@
 
 package io.spine.tools.mc.js.code.field.parser;
 
-import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.tools.js.code.TypeName;
 import io.spine.tools.mc.js.code.CodeWriter;
 import io.spine.tools.mc.js.code.snippet.Let;
-import io.spine.tools.mc.js.code.snippet.Parser;
-import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.mc.js.code.snippet.Parser.TYPE_PARSERS_IMPORT_NAME;
-import static java.lang.String.format;
 
 /**
- * The value parser for the proto fields of {@code message} type.
- *
- * <p>Handles all {@code message} fields by calling {@code TypeParsers} registry.
+ * The value parser for the proto fields of {@code enum} type.
  */
-final class MessageFieldParser implements FieldParser {
+final class EnumParser extends AbstractParser {
 
-    private static final String PARSER_BY_URL_METHOD = "parserFor";
-
-    private final Descriptor message;
-    private final CodeWriter writer;
+    private final TypeName typeName;
 
     /**
-     * Creates the {@code MessageFieldParser} for the given {@code field}.
+     * Creates a new {@code EnumFieldParser} for the given field.
      *
      * @param field
      *         the processed field
      * @param writer
-     *         the output which accumulates all the generated code
+     *         the output to store the generated code
      */
-    MessageFieldParser(FieldDescriptor field, CodeWriter writer) {
+    EnumParser(FieldDescriptor field, CodeWriter writer) {
+        super(writer);
         checkNotNull(field);
-        this.message = field.getMessageType();
-        this.writer = checkNotNull(writer);
+        EnumDescriptor enumType = field.getEnumType();
+        this.typeName = TypeName.from(enumType);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The {@code enum} proto value in JSON is represented as a plain {@code string}.
+     * Thus, the parser obtains the JS enum object property using the given {@code string} as
+     * an attribute name.
+     */
     @Override
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        writer.append(parsedVariable(variable, value));
+        writer().append(parsedValue(variable, value));
     }
 
-    private Let parsedVariable(String name, String valueToParse) {
-        TypeUrl typeUrl = TypeUrl.from(message);
-        String obtainParser = format("%s.%s('%s')",
-                                     TYPE_PARSERS_IMPORT_NAME, PARSER_BY_URL_METHOD, typeUrl);
-        String parserCall = Parser.parseMethodCall(obtainParser, valueToParse);
-        return Let.withValue(name, parserCall);
+    private Let parsedValue(String name, String valueToParse) {
+        String initializer = typeName.value() + '[' + valueToParse + ']';
+        return Let.withValue(name, initializer);
     }
 }

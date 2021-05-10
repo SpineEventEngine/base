@@ -31,8 +31,6 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.Type;
 import io.spine.tools.mc.js.code.CodeWriter;
 
-import java.util.Map;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.BOOL;
@@ -52,64 +50,83 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.UINT32;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.UINT64;
 
 /**
- * The helper class which creates a {@link PrimitiveParser} based on the passed field type.
+ * The value parser for the primitive proto fields.
+ *
+ * <p>All the fields that are not of the {@code message} or {@code enum} type are handled by this
+ * parser.
  */
-final class PrimitiveParsers {
+@SuppressWarnings("BadImport") // We use `FieldDescriptor.Type` for brevity.
+final class PrimitiveTypeParser extends AbstractParser {
 
     /**
-     * The global map which maps the field {@linkplain FieldDescriptor#getType() type} to the
-     * {@link PrimitiveParser} builder instance.
+     * Maps a field to a factory for the parser of the corresponding primitive type.
      */
-    @SuppressWarnings("BadImport")
-    private static final Map<Type, PrimitiveParser.Builder<?>> parsers = parsers();
+    private static final ImmutableMap<Type, ParserFactory> factories = factories();
 
-    /** Prevents the instantiation of this utility class. */
-    private PrimitiveParsers() {
+    /** The type of the field for which to generate the parsing code. */
+    private final Type fieldType;
+
+    /**
+     * Creates a new instance for the given field.
+     *
+     * @param field
+     *         the processed field
+     * @param writer
+     *         the output to store the generated code
+     */
+    PrimitiveTypeParser(FieldDescriptor field, CodeWriter writer) {
+        super(writer);
+        checkNotNull(field);
+        this.fieldType = field.getType();
     }
 
     /**
-     * Creates the new instance of {@code PrimitiveParser} for the given field type.
+     * Creates the new instance for the given field type.
      *
-     * @param fieldType
-     *         the type of the field for which to create the parser
-     * @param writer
-     *         the {@code JsOutput} to accumulate the generated code
-     * @return the new instance of the {@code PrimitiveParser}
      * @throws IllegalStateException
      *         if the parser for the specified type cannot be found
      */
-    public static PrimitiveParser createFor(@SuppressWarnings("BadImport") Type fieldType, CodeWriter writer) {
+    static Parser createFor(Type fieldType, CodeWriter writer) {
         checkNotNull(fieldType);
         checkNotNull(writer);
-        PrimitiveParser.Builder<?> parserBuilder = parsers.get(fieldType);
-        checkState(parsers.containsKey(fieldType),
+        checkState(factories.containsKey(fieldType),
                    "An attempt to get a parser for the unknown primitive type: `%s`.", fieldType);
-        PrimitiveParser parser = parserBuilder
-                .setWriter(writer)
-                .build();
+        ParserFactory factory = factories.get(fieldType);
+        Parser parser = factory.apply(writer);
         return parser;
     }
 
-    @SuppressWarnings("BadImport") // For `FieldDescriptor.Type`.
-    private static Map<Type, PrimitiveParser.Builder<?>> parsers() {
-        Map<Type, PrimitiveParser.Builder<?>> parsers = ImmutableMap
-                .<Type, PrimitiveParser.Builder<?>>builder()
-                .put(DOUBLE, FloatParser.newBuilder())
-                .put(FLOAT, FloatParser.newBuilder())
-                .put(INT32, IdentityParser.newBuilder())
-                .put(INT64, LongParser.newBuilder())
-                .put(UINT32, IdentityParser.newBuilder())
-                .put(UINT64, LongParser.newBuilder())
-                .put(SINT32, IdentityParser.newBuilder())
-                .put(SINT64, LongParser.newBuilder())
-                .put(FIXED32, IdentityParser.newBuilder())
-                .put(FIXED64, LongParser.newBuilder())
-                .put(SFIXED32, IdentityParser.newBuilder())
-                .put(SFIXED64, LongParser.newBuilder())
-                .put(BOOL, IdentityParser.newBuilder())
-                .put(STRING, IdentityParser.newBuilder())
-                .put(BYTES, BytesParser.newBuilder())
+    /**
+     * {@inheritDoc}
+     *
+     * <p>For the primitive field, the {@link Parser} implementation is used to convert
+     * the field value into the appropriate type.
+     */
+    @Override
+    public void parseIntoVariable(String value, String variable) {
+        checkNotNull(value);
+        checkNotNull(variable);
+        Parser parser = createFor(fieldType, writer());
+        parser.parseIntoVariable(value, variable);
+    }
+
+    private static ImmutableMap<Type, ParserFactory> factories() {
+        return ImmutableMap.<Type, ParserFactory>builder()
+                .put(BYTES, BytesParser::new)
+                .put(DOUBLE, FloatParser::new)
+                .put(FLOAT, FloatParser::new)
+                .put(INT32, IdentityParser::new)
+                .put(INT64, LongParser::new)
+                .put(UINT32, IdentityParser::new)
+                .put(UINT64, LongParser::new)
+                .put(SINT32, IdentityParser::new)
+                .put(SINT64, LongParser::new)
+                .put(FIXED32, IdentityParser::new)
+                .put(FIXED64, LongParser::new)
+                .put(SFIXED32, IdentityParser::new)
+                .put(SFIXED64, LongParser::new)
+                .put(BOOL, IdentityParser::new)
+                .put(STRING, IdentityParser::new)
                 .build();
-        return parsers;
     }
 }

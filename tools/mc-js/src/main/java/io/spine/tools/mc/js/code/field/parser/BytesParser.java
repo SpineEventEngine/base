@@ -27,6 +27,7 @@
 package io.spine.tools.mc.js.code.field.parser;
 
 import com.google.common.annotations.VisibleForTesting;
+import io.spine.tools.mc.js.code.CodeWriter;
 import io.spine.tools.mc.js.code.imports.Import;
 import io.spine.tools.mc.js.code.snippet.Let;
 
@@ -39,7 +40,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <p>The parser thus imports the "base64" lib and decodes the value.
  */
-final class BytesParser extends AbstractPrimitiveParser {
+final class BytesParser extends AbstractParser {
 
     /**
      * The name of <a href="https://www.npmjs.com/package/base64-js">Base-64 JS lib</a> to import.
@@ -53,8 +54,8 @@ final class BytesParser extends AbstractPrimitiveParser {
     @VisibleForTesting
     static final String BASE64_VAR = "base64";
 
-    private BytesParser(Builder builder) {
-        super(builder);
+    BytesParser(CodeWriter writer) {
+        super(writer);
     }
 
     @Override
@@ -70,22 +71,5 @@ final class BytesParser extends AbstractPrimitiveParser {
     private static Let parsedVariable(String name, String valueToParse) {
         String initializer = BASE64_VAR + ".toByteArray(" + valueToParse + ')';
         return Let.withValue(name, initializer);
-    }
-
-    static Builder newBuilder() {
-        return new Builder();
-    }
-
-    static class Builder extends AbstractPrimitiveParser.Builder<Builder> {
-
-        @Override
-        Builder self() {
-            return this;
-        }
-
-        @Override
-        public PrimitiveParser build() {
-            return new BytesParser(this);
-        }
     }
 }

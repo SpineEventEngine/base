@@ -26,6 +26,7 @@
 
 package io.spine.tools.mc.js.code.field.parser;
 
+import io.spine.tools.mc.js.code.CodeWriter;
 import io.spine.tools.mc.js.code.snippet.Let;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -36,10 +37,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>The parser uses the {@code parseFloat} operation on the value to obtain the original floating
  * point number.
  */
-final class FloatParser extends AbstractPrimitiveParser {
+final class FloatParser extends AbstractParser {
 
-    private FloatParser(Builder builder) {
-        super(builder);
+    FloatParser(CodeWriter writer) {
+        super(writer);
     }
 
     @Override
@@ -52,22 +53,5 @@ final class FloatParser extends AbstractPrimitiveParser {
     private static Let parsedVariable(String name, String valueToParse) {
         String initializer = "parseFloat(" + valueToParse + ')';
         return Let.withValue(name, initializer);
-    }
-
-    static Builder newBuilder() {
-        return new Builder();
-    }
-
-    static class Builder extends AbstractPrimitiveParser.Builder<Builder> {
-
-        @Override
-        Builder self() {
-            return this;
-        }
-
-        @Override
-        public PrimitiveParser build() {
-            return new FloatParser(this);
-        }
     }
 }

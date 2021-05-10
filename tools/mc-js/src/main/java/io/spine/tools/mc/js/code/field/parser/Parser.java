@@ -33,13 +33,15 @@ import io.spine.tools.mc.js.code.CodeWriter;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The generator of the code which parses the field value from the JS object and stores it into
- * some variable.
+ * The generator of the JS code parsing a value from its JSON representation.
  *
- * @apiNote The descendants are supposed to operate on the provided {@link CodeWriter},
- * so the interface method is not returning any generated code.
+ * <p>The parsed value can be either of a primitive type, or an object.
+ * The value is then stored into the specified variable.
+ *
+ * <p>Please see <a href="https://developers.google.com/protocol-buffers/docs/proto3#json">
+ * Protobuf JSON Mapping</a> for more details.
  */
-public interface FieldParser {
+public interface Parser {
 
     /**
      * Generates the code which parses the field value from some object and assigns it to the
@@ -55,6 +57,11 @@ public interface FieldParser {
     void parseIntoVariable(String value, String variable);
 
     /**
+     * The writer for the generated code.
+     */
+    CodeWriter writer();
+
+    /**
      * Creates a {@code FieldParser} for the given field.
      *
      * @param field
@@ -63,16 +70,16 @@ public interface FieldParser {
      *         the lines to accumulate the generated code
      * @return the {@code FieldParser} of the appropriate type
      */
-    static FieldParser createFor(FieldDescriptor field, CodeWriter writer) {
+    static Parser createFor(FieldDescriptor field, CodeWriter writer) {
         checkNotNull(field);
         checkNotNull(writer);
         FieldDeclaration fdecl = new FieldDeclaration(field);
         if (fdecl.isMessage()) {
-            return new MessageFieldParser(field, writer);
+            return new MessageParser(field, writer);
         }
         if (fdecl.isEnum()) {
-            return new EnumFieldParser(field, writer);
+            return new EnumParser(field, writer);
         }
-        return new PrimitiveFieldParser(field, writer);
+        return new PrimitiveTypeParser(field, writer);
     }
 }

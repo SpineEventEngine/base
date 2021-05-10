@@ -31,33 +31,17 @@ import io.spine.tools.mc.js.code.CodeWriter;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The common base for the {@link PrimitiveParser} implementations.
+ * The common base for the {@link Parser} implementations.
  */
-abstract class AbstractPrimitiveParser implements PrimitiveParser {
+abstract class AbstractParser implements Parser {
 
     private final CodeWriter writer;
 
-    AbstractPrimitiveParser(Builder<?> builder) {
-        this.writer = builder.writer;
+    AbstractParser(CodeWriter writer) {
+        this.writer = checkNotNull(writer);
     }
 
-    CodeWriter writer() {
+    public CodeWriter writer() {
         return writer;
-    }
-
-    abstract static class Builder<B extends Builder<B>> implements PrimitiveParser.Builder<B> {
-
-        private CodeWriter writer;
-
-        @Override
-        public B setWriter(CodeWriter writer) {
-            this.writer = checkNotNull(writer);
-            return self();
-        }
-
-        /**
-         * Must return {@code this} in classes-descendants.
-         */
-        abstract B self();
     }
 }
