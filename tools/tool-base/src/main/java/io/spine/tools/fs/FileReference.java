@@ -44,7 +44,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 public final class FileReference extends StringTypeValue implements Comparable<FileReference> {
 
     private static final long serialVersionUID = 0L;
-    /** The path separator used in JavaScript imports. Not platform-dependant. */
+    /** The path separator used in JavaScript-like imports. Not platform-dependant. */
     private static final String IMPORT_PATH_SEPARATOR = "/";
     private static final String PARENT_DIR = ".." + IMPORT_PATH_SEPARATOR;
     private static final String CURRENT_DIR = '.' + IMPORT_PATH_SEPARATOR;
