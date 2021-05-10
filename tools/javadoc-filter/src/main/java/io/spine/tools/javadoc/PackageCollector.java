@@ -43,10 +43,10 @@ import java.util.TreeSet;
 @Immutable
 final class PackageCollector {
 
-    private final AnnotationCheck<?> annotationCheck;
+    private final AnnotationCheck<?> check;
 
-    PackageCollector(AnnotationCheck<?> annotationCheck) {
-        this.annotationCheck = annotationCheck;
+    PackageCollector(AnnotationCheck<?> check) {
+        this.check = check;
     }
 
     /**
@@ -104,7 +104,7 @@ final class PackageCollector {
     private Set<PackageDoc> packagesOf(PackageDoc[] packages) {
         Set<PackageDoc> result = newSortedSet();
         for (PackageDoc packageDoc : packages) {
-            if (annotationCheck.test(packageDoc)) {
+            if (check.test(packageDoc)) {
                 result.add(packageDoc);
             }
         }
@@ -114,7 +114,7 @@ final class PackageCollector {
     private Set<PackageDoc> packagesOf(ClassDoc[] classes) {
         Set<PackageDoc> result = newSortedSet();
         for (ClassDoc cls : classes) {
-            if (annotationCheck.test(cls.containingPackage())) {
+            if (check.test(cls.containingPackage())) {
                 result.add(cls.containingPackage());
             }
         }
