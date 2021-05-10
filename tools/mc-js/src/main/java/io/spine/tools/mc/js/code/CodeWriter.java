@@ -259,7 +259,8 @@ public final class CodeWriter {
     @CanIgnoreReturnValue
     public CodeWriter ifNull(String value) {
         checkNotNull(value);
-        return enterIfBlock(value + " === null");
+        enterIfBlock(value + " === null");
+        return this;
     }
 
     /**
@@ -271,7 +272,8 @@ public final class CodeWriter {
     @CanIgnoreReturnValue
     public CodeWriter ifNotNull(String value) {
         checkNotNull(value);
-        return enterIfBlock(notNull(value));
+        enterIfBlock(notNull(value));
+        return this;
     }
 
     /**
@@ -283,7 +285,8 @@ public final class CodeWriter {
     @CanIgnoreReturnValue
     public CodeWriter ifNotUndefined(String value) {
         checkNotNull(value);
-        return enterIfBlock(notUndefined(value));
+        enterIfBlock(notUndefined(value));
+        return this;
     }
 
     /**
@@ -296,7 +299,8 @@ public final class CodeWriter {
     @CanIgnoreReturnValue
     public CodeWriter ifNotNullOrUndefined(String value) {
         checkNotNull(value);
-        return enterIfBlock(notUndefined(value) + " && " + notNull(value));
+        enterIfBlock(notUndefined(value) + " && " + notNull(value));
+        return this;
     }
 
     private static String notNull(String value) {
@@ -357,9 +361,10 @@ public final class CodeWriter {
      */
     @Override
     public String toString() {
-        String result = lines.stream()
-                             .map(Line::toString)
-                             .collect(joining(lineSeparator()));
+        String result =
+                lines.stream()
+                     .map(Line::toString)
+                     .collect(joining(lineSeparator()));
         return result;
     }
 
