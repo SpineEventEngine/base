@@ -42,11 +42,17 @@ public final class DefaultDartProject extends DefaultProject {
         super(path);
     }
 
+    /**
+     * Creates a new instance taking the passed project root path.
+     */
     public static DefaultDartProject at(Path root) {
         checkNotNull(root);
         return new DefaultDartProject(root);
     }
 
+    /**
+     * Creates a new instance taking the passed project root path.
+     */
     public static DefaultDartProject at(File root) {
         checkNotNull(root);
         return at(root.toPath());
