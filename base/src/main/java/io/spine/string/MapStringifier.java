@@ -98,8 +98,8 @@ final class MapStringifier<K, V> extends Stringifier<Map<K, V>> {
      */
     MapStringifier(Class<K> keyClass, Class<V> valueClass, char delimiter) {
         super();
-        this.keyStringifier = StringifierRegistry.getStringifier(keyClass);
-        this.valueStringifier = StringifierRegistry.getStringifier(valueClass);
+        this.keyStringifier = StringifierRegistry.getFor(keyClass);
+        this.valueStringifier = StringifierRegistry.getFor(valueClass);
         this.delimiter = delimiter;
         this.escaper = Stringifiers.createEscaper(delimiter);
         this.splitter = createMapSplitter(Quoter.createDelimiterPattern(delimiter),

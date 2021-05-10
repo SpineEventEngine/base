@@ -94,7 +94,7 @@ final class ListStringifier<T> extends Stringifier<List<T>> {
      */
     ListStringifier(Class<T> listGenericClass, char delimiter) {
         super();
-        this.elementStringifier = StringifierRegistry.getStringifier(listGenericClass);
+        this.elementStringifier = StringifierRegistry.getFor(listGenericClass);
         this.delimiter = delimiter;
         this.escaper = Stringifiers.createEscaper(delimiter);
         this.splitter = Splitter.onPattern(Quoter.createDelimiterPattern(delimiter));

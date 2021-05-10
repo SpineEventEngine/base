@@ -57,7 +57,7 @@ final class MessageIdToString {
         Class<? extends Message> msgClass = message.getClass();
         TypeToken<? extends Message> msgToken = TypeToken.of(msgClass);
         java.lang.reflect.Type msgType = msgToken.getType();
-        Optional<Stringifier<Object>> optional = registry.get(msgType);
+        Optional<Stringifier<Object>> optional = registry.find(msgType);
         if (optional.isPresent()) {
             Stringifier<Object> converter = optional.get();
             result = converter.convert(message);

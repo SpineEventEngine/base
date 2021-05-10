@@ -83,7 +83,7 @@ public final class Stringifiers {
     public static <T> String toString(T object, Type typeOfT) {
         checkNotNull(object);
         checkNotNull(typeOfT);
-        Stringifier<T> stringifier = StringifierRegistry.getStringifier(typeOfT);
+        Stringifier<T> stringifier = StringifierRegistry.getFor(typeOfT);
         String result = stringifier.convert(object);
         return requireNonNull(result);
     }
@@ -104,7 +104,7 @@ public final class Stringifiers {
     public static <T> T fromString(String str, Class<T> typeOfT) {
         checkNotNull(str);
         checkNotNull(typeOfT);
-        Stringifier<T> stringifier = StringifierRegistry.getStringifier(typeOfT);
+        Stringifier<T> stringifier = StringifierRegistry.getFor(typeOfT);
         T result = stringifier.reverse()
                               .convert(str);
         return requireNonNull(result);

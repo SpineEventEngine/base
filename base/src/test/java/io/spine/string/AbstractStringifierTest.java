@@ -95,7 +95,7 @@ abstract class AbstractStringifierTest<T> {
     @DisplayName("be registered")
     void isRegistered() {
         assertTrue(StringifierRegistry.instance()
-                                      .get(dataClass)
+                                      .find(dataClass)
                                       .isPresent());
     }
 

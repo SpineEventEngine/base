@@ -60,7 +60,7 @@ class NetStringifiersTest extends UtilityClassTest<NetStringifiers> {
 
     private static <T> void assertRegistered(Stringifier<T> stringifier, Class<T> cls) {
         Optional<Stringifier<T>> optional = StringifierRegistry.instance()
-                                                               .get(cls);
+                                                               .find(cls);
         Truth8.assertThat(optional).hasValue(stringifier);
     }
 
@@ -88,7 +88,7 @@ class NetStringifiersTest extends UtilityClassTest<NetStringifiers> {
 
         <T> void assertStringifier(Class<T> cls, String value) {
             Optional<Stringifier<T>> optional = StringifierRegistry.instance()
-                                                                   .get(cls);
+                                                                   .find(cls);
             Truth8.assertThat(optional).isPresent();
 
             @SuppressWarnings("OptionalGetWithoutIsPresent") // checked above.
