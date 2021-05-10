@@ -26,7 +26,7 @@
 
 package io.spine.net.string;
 
-import com.google.common.truth.Truth8;
+import com.google.common.base.Converter;
 import io.spine.net.EmailAddress;
 import io.spine.net.InternetDomain;
 import io.spine.net.Url;
@@ -40,6 +40,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth8.assertThat;
 import static io.spine.net.string.NetStringifiers.forEmailAddress;
 import static io.spine.net.string.NetStringifiers.forInternetDomain;
 import static io.spine.net.string.NetStringifiers.forUrl;
@@ -59,9 +60,8 @@ class NetStringifiersTest extends UtilityClassTest<NetStringifiers> {
     }
 
     private static <T> void assertRegistered(Stringifier<T> stringifier, Class<T> cls) {
-        Optional<Stringifier<T>> optional = StringifierRegistry.instance()
-                                                               .find(cls);
-        Truth8.assertThat(optional).hasValue(stringifier);
+        Optional<Stringifier<T>> optional = registry().find(cls);
+        assertThat(optional).hasValue(stringifier);
     }
 
     @Nested
@@ -86,18 +86,25 @@ class NetStringifiersTest extends UtilityClassTest<NetStringifiers> {
             assertStringifier(EmailAddress.class, "info@spine.io");
         }
 
-        <T> void assertStringifier(Class<T> cls, String value) {
-            Optional<Stringifier<T>> optional = StringifierRegistry.instance()
-                                                                   .find(cls);
-            Truth8.assertThat(optional).isPresent();
+        <T> void assertStringifier(Class<T> cls, String stringForm) {
+            // Check that there is a stringifier for the passed class.
+            Optional<Stringifier<T>> optional = registry().find(cls);
+            assertThat(optional).isPresent();
 
-            @SuppressWarnings("OptionalGetWithoutIsPresent") // checked above.
-                    Stringifier<T> stringifier = optional.get();
+            Stringifier<T> stringifier = optional.get();
 
-            T object = stringifier.reverse()
-                                  .convert(value);
-            assertThat(stringifier.convert(object))
-                    .isEqualTo(value);
+            // Parse the object back from the passed string representation.
+            Converter<String, T> parser = stringifier.reverse();
+            T object = parser.convert(stringForm);
+
+            // Now check that object is stringified to the passed form.
+            String stringifierForm = stringifier.convert(object);
+
+            assertThat(stringifierForm).isEqualTo(stringForm);
         }
+    }
+
+    private static StringifierRegistry registry() {
+        return StringifierRegistry.instance();
     }
 }
