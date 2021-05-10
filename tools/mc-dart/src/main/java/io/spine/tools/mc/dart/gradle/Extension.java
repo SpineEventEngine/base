@@ -30,6 +30,7 @@ import io.spine.tools.dart.fs.DefaultDartProject;
 import io.spine.tools.fs.ExternalModules;
 import io.spine.tools.gradle.GradleExtension;
 import org.gradle.api.Project;
+import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Property;
@@ -112,19 +113,14 @@ public final class Extension extends GradleExtension {
     }
 
     private void initProperties() {
-        libDir.convention(project.getLayout()
-                                 .getProjectDirectory()
-                                 .dir(LIB_DIRECTORY));
-        testDir.convention(project.getLayout()
-                                  .getProjectDirectory()
-                                  .dir(TEST_DIRECTORY));
+        Directory projectDir = project.getLayout().getProjectDirectory();
+        libDir.convention(projectDir.dir(LIB_DIRECTORY));
+        testDir.convention(projectDir.dir(TEST_DIRECTORY));
         mainGeneratedDir.convention(libDir);
         testGeneratedDir.convention(testDir);
         mainDescriptorSet.convention(defaultMainDescriptor(project));
         testDescriptorSet.convention(defaultTestDescriptor(project));
-        generatedDir.convention(project.getLayout()
-                                       .getProjectDirectory()
-                                       .dir(GENERATED_BASE_DIR));
+        generatedDir.convention(projectDir.dir(GENERATED_BASE_DIR));
     }
 
     /**
