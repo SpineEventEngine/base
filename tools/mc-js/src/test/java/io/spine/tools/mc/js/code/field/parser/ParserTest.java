@@ -43,7 +43,7 @@ import static io.spine.tools.mc.js.code.field.given.Given.messageField;
 import static io.spine.tools.mc.js.code.field.given.Given.primitiveField;
 import static io.spine.tools.mc.js.code.field.given.Given.timestampField;
 import static io.spine.tools.mc.js.code.field.parser.Parser.createFor;
-import static io.spine.tools.mc.js.code.snippet.Parser.PARSE_METHOD;
+import static io.spine.tools.mc.js.code.text.Parser.PARSE_METHOD;
 import static java.lang.String.format;
 
 @SuppressWarnings("DuplicateStringLiteralInspection")
