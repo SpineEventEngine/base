@@ -23,85 +23,51 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.code.proto
 
-package io.spine.code.proto;
-
-import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
-import com.google.protobuf.ExtensionRegistry;
-import com.google.protobuf.InvalidProtocolBufferException;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Optional;
-
-import static com.google.protobuf.DescriptorProtos.FileDescriptorSet.parseFrom;
-import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
+import com.google.protobuf.DescriptorProtos.FileDescriptorSet
+import com.google.protobuf.DescriptorProtos.FileDescriptorSet.parseFrom
+import com.google.protobuf.ExtensionRegistry
+import com.google.protobuf.InvalidProtocolBufferException
+import io.spine.util.Exceptions
+import java.io.IOException
+import java.io.InputStream
+import java.util.*
 
 /**
- * Static factory methods for creating instances of {@link FileDescriptorSet}
- * which wrap handling of checked {@link InvalidProtocolBufferException}.
+ * Static factory methods for creating instances of [FileDescriptorSet]
+ * which wrap handling of checked [InvalidProtocolBufferException].
+ *
+ * If an error occur, the methods throw [IllegalArgumentException] with the checked exception
+ * as the cause, or return empty [Optional].
  */
-public final class FileDescriptorSetReader {
+object FileDescriptorSetReader {
 
-    /** Prevents instantiation of this utility class. */
-    private FileDescriptorSetReader() {
+    /** The extension registry used when parsing.  */
+    private fun registry(): ExtensionRegistry = OptionExtensionRegistry.instance()
+
+    /** Parses a descriptor set from the given byte array. */
+    @JvmStatic
+    fun parse(bytes: ByteArray): FileDescriptorSet = try {
+        parseFrom(bytes, registry())
+    } catch (e: InvalidProtocolBufferException) {
+        throw Exceptions.illegalArgumentWithCauseOf(e)
     }
 
-    /** The extension registry used when parsing. */
-    private static ExtensionRegistry registry() {
-        return OptionExtensionRegistry.instance();
+    /** Attempts to parse a descriptor set from the given byte array. */
+    @JvmStatic
+    fun tryParse(bytes: ByteArray): Optional<FileDescriptorSet> = try {
+        val result = parseFrom(bytes, registry())
+        Optional.of(result)
+    } catch (e: InvalidProtocolBufferException) {
+        Optional.empty()
     }
 
-    /**
-     * Parses a descriptor set from the given byte array.
-     *
-     * @param bytes
-     *         the data to parse
-     * @return instance of {@code FileDescriptorSet} encoded in the bytes
-     * @throws IllegalArgumentException
-     *         if parsing fails
-     */
-    public static FileDescriptorSet parse(byte[] bytes) {
-        try {
-            FileDescriptorSet result = parseFrom(bytes, registry());
-            return result;
-        } catch (InvalidProtocolBufferException e) {
-            throw illegalArgumentWithCauseOf(e);
-        }
-    }
-
-    /**
-     * Attempts to parse a descriptor set from the given byte array.
-     *
-     * @param bytes
-     *         raw data to parse
-     * @return instance of {@code FileDescriptorSet} encoded in the bytes or
-     *         {@code Optional.empty()} if parsing fails
-     */
-    public static Optional<FileDescriptorSet> tryParse(byte[] bytes) {
-        try {
-            FileDescriptorSet result = parseFrom(bytes, registry());
-            return Optional.of(result);
-        } catch (InvalidProtocolBufferException e) {
-            return Optional.empty();
-        }
-    }
-
-    /**
-     * Parses a descriptor set from the given {@code InputStream}.
-     *
-     * @param stream
-     *         byte stream of data to parse
-     * @return instance of {@code FileDescriptorSet} encoded in the bytes
-     * @throws IllegalArgumentException
-     *         if parsing fails or if stream cannot be read
-     */
-    public static FileDescriptorSet parse(InputStream stream) {
-        try {
-            FileDescriptorSet result = parseFrom(stream, registry());
-            return result;
-        } catch (IOException e) {
-            throw illegalArgumentWithCauseOf(e);
-        }
+    /** Parses a descriptor set from the given stream. */
+    @JvmStatic
+    fun parse(stream: InputStream): FileDescriptorSet = try {
+        parseFrom(stream, registry())
+    } catch (e: IOException) {
+        throw Exceptions.illegalArgumentWithCauseOf(e)
     }
 }
