@@ -285,14 +285,22 @@ public final class CodeWriter {
     }
 
     /**
-     * Increases the current indentation level.
+     * Increases the current {@linkplain Indent#level() level} of
+     * {@linkplain Indent#size() indentation}.
+     *
+     * @see Indent#size()
+     * @see Indent#level()
      */
     public void increaseDepth() {
         indent = indent.shiftedRight();
     }
 
     /**
-     * Manually decreases the current indent level.
+     * Decreases the current {@linkplain Indent#level() level} of
+     * {@linkplain Indent#size() indentation}.
+     *
+     * @see Indent#size()
+     * @see Indent#level()
      */
     public void decreaseDepth() {
         indent = indent.shiftedLeft();
