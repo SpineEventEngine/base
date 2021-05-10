@@ -28,6 +28,7 @@ package io.spine.tools.mc.js.code;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.tools.code.Indent;
 import io.spine.tools.code.IndentedLine;
 import io.spine.tools.code.Line;
@@ -110,7 +111,8 @@ public final class CodeWriter {
      * @param writer
      *         the code to append to this instance
      */
-    public void append(CodeWriter writer) {
+    @CanIgnoreReturnValue
+    public CodeWriter append(CodeWriter writer) {
         checkArgument(
                 indent.size() == writer.indent.size(),
                 "Cannot merge code parts with different indentation size." +
@@ -123,13 +125,15 @@ public final class CodeWriter {
             IndentedLine adjusted = line.adjustLevelBy(levelDifference);
             append(adjusted);
         }
+        return this;
     }
 
     /**
      * Appends the lines of the snippet.
      */
-    public void append(Snippet snippet) {
-        append(snippet.writer());
+    @CanIgnoreReturnValue
+    public CodeWriter append(Snippet snippet) {
+        return append(snippet.writer());
     }
 
     /**
@@ -138,10 +142,11 @@ public final class CodeWriter {
      * @param code
      *         the code to add
      */
-    public void append(String code) {
+    @CanIgnoreReturnValue
+    public CodeWriter append(String code) {
         checkNotNull(code);
         IndentedLine indented = IndentedLine.of(indent, code);
-        append(indented);
+        return append(indented);
     }
 
     /**
@@ -153,7 +158,8 @@ public final class CodeWriter {
      * @param line
      *         the line to append
      */
-    public void append(Line line) {
+    @CanIgnoreReturnValue
+    public CodeWriter append(Line line) {
         checkNotNull(line);
         IndentedLine indented;
         if (line instanceof IndentedLine) {
@@ -162,6 +168,7 @@ public final class CodeWriter {
             indented = IndentedLine.of(indent, line.content());
         }
         lines.add(indented);
+        return this;
     }
 
     /**
@@ -173,20 +180,24 @@ public final class CodeWriter {
      * @param methodArgs
      *         the args to pass to the method
      */
-    public void enterMethod(String methodName, String... methodArgs) {
+    @CanIgnoreReturnValue
+    public CodeWriter enterMethod(String methodName, String... methodArgs) {
         checkNotNull(methodName);
         checkNotNull(methodArgs);
         String argString = join(", ", methodArgs);
         append(methodName + " = function(" + argString + ") {");
         increaseDepth();
+        return this;
     }
 
     /**
      * Exits method declaration.
      */
-    public void exitMethod() {
+    @CanIgnoreReturnValue
+    public CodeWriter exitMethod() {
         decreaseDepth();
         append("};");
+        return this;
     }
 
     /**
@@ -195,18 +206,22 @@ public final class CodeWriter {
      * @param condition
      *         the text to be put into the {@code if} clause
      */
-    public void enterIfBlock(String condition) {
+    @CanIgnoreReturnValue
+    public CodeWriter enterIfBlock(String condition) {
         checkNotNull(condition);
         enterBlock("if (" + condition + ')');
+        return this;
     }
 
     /**
      * Closes the current {@code if} block and enters the {@code else} block.
      */
-    public void enterElseBlock() {
+    @CanIgnoreReturnValue
+    public CodeWriter enterElseBlock() {
         decreaseDepth();
         append("} else {");
         increaseDepth();
+        return this;
     }
 
     /**
@@ -217,18 +232,22 @@ public final class CodeWriter {
      * @param blockHeader
      *         the block header
      */
-    public void enterBlock(String blockHeader) {
+    @CanIgnoreReturnValue
+    public CodeWriter enterBlock(String blockHeader) {
         checkNotNull(blockHeader);
         append(blockHeader + " {");
         increaseDepth();
+        return this;
     }
 
     /**
      * Exits the {@code if}, {@code else} or custom block.
      */
-    public void exitBlock() {
+    @CanIgnoreReturnValue
+    public CodeWriter exitBlock() {
         decreaseDepth();
         append("}");
+        return this;
     }
 
     /**
@@ -237,9 +256,10 @@ public final class CodeWriter {
      * @param value
      *         the expression to check for {@code null}
      */
-    public void ifNull(String value) {
+    @CanIgnoreReturnValue
+    public CodeWriter ifNull(String value) {
         checkNotNull(value);
-        enterIfBlock(value + " === null");
+        return enterIfBlock(value + " === null");
     }
 
     /**
@@ -248,9 +268,10 @@ public final class CodeWriter {
      * @param value
      *         the expression to check for not being {@code null}
      */
-    public void ifNotNull(String value) {
+    @CanIgnoreReturnValue
+    public CodeWriter ifNotNull(String value) {
         checkNotNull(value);
-        enterIfBlock(notNull(value));
+        return enterIfBlock(notNull(value));
     }
 
     /**
@@ -259,9 +280,10 @@ public final class CodeWriter {
      * @param value
      *         the expression to check for not being {@code undefined}
      */
-    public void ifNotUndefined(String value) {
+    @CanIgnoreReturnValue
+    public CodeWriter ifNotUndefined(String value) {
         checkNotNull(value);
-        enterIfBlock(notUndefined(value));
+        return enterIfBlock(notUndefined(value));
     }
 
     /**
@@ -271,9 +293,10 @@ public final class CodeWriter {
      * @param value
      *         the expression to check for not being {@code null} or {@code undefined}
      */
-    public void ifNotNullOrUndefined(String value) {
+    @CanIgnoreReturnValue
+    public CodeWriter ifNotNullOrUndefined(String value) {
         checkNotNull(value);
-        enterIfBlock(notUndefined(value) + " && " + notNull(value));
+        return enterIfBlock(notUndefined(value) + " && " + notNull(value));
     }
 
     private static String notNull(String value) {
@@ -291,8 +314,10 @@ public final class CodeWriter {
      * @see Indent#size()
      * @see Indent#level()
      */
-    public void increaseDepth() {
+    @CanIgnoreReturnValue
+    public CodeWriter increaseDepth() {
         indent = indent.shiftedRight();
+        return this;
     }
 
     /**
@@ -302,8 +327,10 @@ public final class CodeWriter {
      * @see Indent#size()
      * @see Indent#level()
      */
-    public void decreaseDepth() {
+    @CanIgnoreReturnValue
+    public CodeWriter decreaseDepth() {
         indent = indent.shiftedLeft();
+        return this;
     }
 
     /**
