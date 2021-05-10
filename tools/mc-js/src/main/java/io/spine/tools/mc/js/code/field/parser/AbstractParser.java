@@ -41,6 +41,7 @@ abstract class AbstractParser implements Parser {
         this.writer = checkNotNull(writer);
     }
 
+    @Override
     public CodeWriter writer() {
         return writer;
     }
