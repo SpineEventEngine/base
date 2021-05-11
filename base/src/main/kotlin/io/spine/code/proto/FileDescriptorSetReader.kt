@@ -38,7 +38,7 @@ import java.util.*
  * Static factory methods for creating instances of [FileDescriptorSet]
  * which wrap handling of checked [InvalidProtocolBufferException].
  *
- * If an error occur, the methods throw [IllegalArgumentException] with the checked exception
+ * If an error occurs, the methods throw [IllegalArgumentException] with the checked exception
  * as the cause, or return empty [Optional].
  */
 object FileDescriptorSetReader {
