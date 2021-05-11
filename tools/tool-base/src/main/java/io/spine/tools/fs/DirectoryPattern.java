@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.toImmutableList;
@@ -81,6 +82,7 @@ public final class DirectoryPattern implements Comparable<DirectoryPattern> {
      */
     public static DirectoryPattern of(String value) {
         checkNotEmptyOrBlank(value);
+        ensureNoInfix(value);
         boolean includeNested = value.endsWith(INCLUDE_NESTED);
         String directory;
         if (includeNested) {
@@ -93,6 +95,19 @@ public final class DirectoryPattern implements Comparable<DirectoryPattern> {
         }
         DirectoryReference reference = DirectoryReference.of(directory);
         return new DirectoryPattern(reference, includeNested);
+    }
+
+    /**
+     * Ensures that {@linkplain #INCLUDE_NESTED nesting} wildcard (if given) is at
+     * the end of the passed value.
+     */
+    private static void ensureNoInfix(String value) {
+        if (value.contains(INCLUDE_NESTED)) {
+            checkArgument(
+                    value.endsWith(INCLUDE_NESTED),
+                    "Infix directory patterns are not supported (`%s`).", value
+            );
+        }
     }
 
     /**

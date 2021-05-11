@@ -234,4 +234,10 @@ class DirectoryPatternTest {
             assertThat(p2.compareTo(p1)).isGreaterThan(0);
         }
     }
+
+    @Test
+    @DisplayName("prohibit infix wildcard")
+    void noInfix() {
+        assertIllegalArgument(() -> DirectoryPattern.of("something/in/*/between"));
+    }
 }
