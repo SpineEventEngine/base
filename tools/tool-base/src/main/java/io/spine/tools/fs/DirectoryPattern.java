@@ -45,14 +45,18 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * A pattern to match a directory, or the referenced directory and ones nested into it.
  *
- * <p>For the latter case, the passed value must end with {@code "/*"}.
+ * <p>For the latter case, the passed value must end with {@link #INCLUDE_NESTED "/*"}.
+ * Infix wildcard references are <em>not</em> supported.
  *
  * @see #of(String)
  */
 @Immutable
 public final class DirectoryPattern implements Comparable<DirectoryPattern> {
 
-    private static final String INCLUDE_NESTED_SUFFIX = "/*";
+    /**
+     * The suffix a pattern should have to add nested directories into the reference.
+     */
+    public static final String INCLUDE_NESTED = "/*";
 
     private final DirectoryReference directory;
     private final boolean includeNested;
@@ -77,10 +81,10 @@ public final class DirectoryPattern implements Comparable<DirectoryPattern> {
      */
     public static DirectoryPattern of(String value) {
         checkNotEmptyOrBlank(value);
-        boolean includeNested = value.endsWith(INCLUDE_NESTED_SUFFIX);
+        boolean includeNested = value.endsWith(INCLUDE_NESTED);
         String directory;
         if (includeNested) {
-            int nameEndIndex = value.length() - INCLUDE_NESTED_SUFFIX.length();
+            int nameEndIndex = value.length() - INCLUDE_NESTED.length();
             directory = value.substring(0, nameEndIndex);
         } else {
             directory = value.endsWith(separator())

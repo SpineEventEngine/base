@@ -29,13 +29,14 @@ package io.spine.tools.fs;
 import com.google.common.testing.EqualsTester;
 import com.google.common.testing.NullPointerTester;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.Assertions.assertIllegalState;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static io.spine.tools.fs.DirectoryPattern.INCLUDE_NESTED;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -64,41 +65,88 @@ class DirectoryPatternTest {
                 .testEquals();
     }
 
-    @Test
-    @DisplayName("obtain name for the non-nested format")
-    void nameForNonNested() {
-        String name = "original";
-        DirectoryPattern pattern = DirectoryPattern.of(name);
-        assertEquals(name, pattern.directoryName()
-                                  .value());
+    @Nested
+    @DisplayName("obtain a directory name for")
+    class DirName {
+
+        @Test
+        @DisplayName("non-nested format")
+        void nameForNonNested() {
+            String name = "original";
+            DirectoryPattern pattern = DirectoryPattern.of(name);
+            assertDirName(pattern, name);
+        }
+
+        @Test
+        @DisplayName("nested format")
+        void nameForNested() {
+            DirectoryPattern pattern = DirectoryPattern.of("work/*");
+            assertDirName(pattern, "work");
+        }
+
+        private void assertDirName(DirectoryPattern pattern, String expectedName) {
+            assertThat(pattern.directoryName().value()).isEqualTo(expectedName);
+        }
     }
 
-    @Test
-    @DisplayName("obtain name for the nested format")
-    void nameForNested() {
-        DirectoryPattern pattern = DirectoryPattern.of("work/*");
-        assertEquals("work", pattern.directoryName()
-                                    .value());
-    }
+    @Nested
+    @DisplayName("match")
+    class Matching {
 
-    @Test
-    @DisplayName("match the same directory")
-    void matchSame() {
-        String name = "protos";
-        DirectoryPattern pattern = DirectoryPattern.of(name);
-        boolean matches = matches(pattern, name);
-        assertTrue(matches);
-        assertTransform(pattern, name, name);
-    }
+        private void assertTransform(DirectoryPattern pattern,
+                                     String originReference,
+                                     String expectedReference) {
+            DirectoryReference origin = DirectoryReference.of(originReference);
+            DirectoryReference transformed = pattern.transform(origin);
+            assertThat(transformed.value())
+                    .isEqualTo(expectedReference);
+        }
 
-    @Test
-    @DisplayName("match nested directories if specified")
-    void matchNested() {
-        DirectoryPattern pattern = DirectoryPattern.of("foo/*");
-        String directory = "foo/bar";
-        boolean matches = matches(pattern, directory);
-        assertTrue(matches);
-        assertTransform(pattern, directory, directory);
+        @Test
+        @DisplayName("match the same directory")
+        void matchSame() {
+            String name = "protos";
+            DirectoryPattern pattern = DirectoryPattern.of(name);
+            boolean matches = matches(pattern, name);
+            assertTrue(matches);
+            assertTransform(pattern, name, name);
+        }
+
+
+        @Test
+        @DisplayName("nested directories if specified")
+        void matchNested() {
+            DirectoryPattern pattern = DirectoryPattern.of("foo/*");
+            String directory = "foo/bar";
+            boolean matches = matches(pattern, directory);
+            assertTrue(matches);
+            assertTransform(pattern, directory, directory);
+        }
+
+        @Nested
+        @DisplayName("a directory if it matches")
+        class DirIfMatches {
+
+            @Test
+            @DisplayName("a pattern ending")
+            void matchAccordingToPatternEnding() {
+                DirectoryPattern pattern = DirectoryPattern.of("base/nested");
+                String directory = "nested";
+                boolean matches = matches(pattern, directory);
+                assertTrue(matches);
+                assertTransform(pattern, directory, pattern.directoryName().value());
+            }
+
+            @Test
+            @DisplayName("a middle element of the pattern")
+            void matchAccordingToPatternMiddle() {
+                DirectoryPattern pattern = DirectoryPattern.of("base/nested" + INCLUDE_NESTED);
+                String directory = "nested/l2";
+                boolean matches = matches(pattern, directory);
+                assertTrue(matches);
+                assertTransform(pattern, directory, "base/nested/l2");
+            }
+        }
     }
 
     @Test
@@ -109,31 +157,11 @@ class DirectoryPatternTest {
         assertFalse(matches);
     }
 
-    @Test
-    @DisplayName("match directory if it matches the pattern ending")
-    void matchAccordingToPatternEnding() {
-        DirectoryPattern pattern = DirectoryPattern.of("base/nested");
-        String directory = "nested";
-        boolean matches = matches(pattern, directory);
-        assertTrue(matches);
-        assertTransform(pattern, directory, pattern.directoryName()
-                                                   .value());
-    }
-
-    @Test
-    @DisplayName("match directory if it matches the pattern middle element")
-    void matchAccordingToPatternMiddle() {
-        DirectoryPattern pattern = DirectoryPattern.of("base/nested/*");
-        String directory = "nested/l2";
-        boolean matches = matches(pattern, directory);
-        assertTrue(matches);
-        assertTransform(pattern, directory, "base/nested/l2");
-    }
 
     @Test
     @DisplayName("not match a directory only if the root is same")
     void notMatchIfOnlyRootSame() {
-        DirectoryPattern pattern = DirectoryPattern.of("proto/spine/base/*");
+        DirectoryPattern pattern = DirectoryPattern.of("proto/spine/base" + INCLUDE_NESTED);
         String directory = "spine/users";
         boolean matches = matches(pattern, directory);
         assertFalse(matches);
@@ -142,7 +170,7 @@ class DirectoryPatternTest {
     @Test
     @DisplayName("not match if pattern is longer than directory reference")
     void notMatchIfPatternIsLonger() {
-        DirectoryPattern pattern = DirectoryPattern.of("spine/foo/bar/*");
+        DirectoryPattern pattern = DirectoryPattern.of("spine/foo/bar" + INCLUDE_NESTED);
         boolean matches = matches(pattern, "spine/foo");
         assertFalse(matches);
     }
@@ -160,26 +188,50 @@ class DirectoryPatternTest {
         return pattern.matches(directory);
     }
 
-    private static void assertTransform(DirectoryPattern pattern,
-                                        String originReference,
-                                        String expectedReference) {
-        DirectoryReference origin = DirectoryReference.of(originReference);
-        DirectoryReference transformed = pattern.transform(origin);
-        assertEquals(expectedReference, transformed.value());
+    @Test
+    @DisplayName("cut the trailing separator in the directory name")
+    void cutSuffix() {
+        String pureRef = "r/e";
+        DirectoryReference dir = DirectoryPattern.of(pureRef + '/').directoryName();
+        assertThat(dir.value())
+                .isEqualTo(pureRef);
+
+        dir = DirectoryPattern.of(pureRef + INCLUDE_NESTED).directoryName();
+        assertThat(dir.value())
+                .isEqualTo(pureRef);
     }
 
-    @Test
-    @DisplayName("compare instances alphabetically")
-    void comparison() {
-        String pat1 = "a/b/";
-        DirectoryPattern p1 = DirectoryPattern.of(pat1);
-        DirectoryPattern p2 = DirectoryPattern.of("a/b/*");
+    @Nested
+    @DisplayName("compare instances")
+    class Comparison {
 
-        assertThat(p1.compareTo(p2))
-                .isLessThan(0);
-        assertThat(p2.compareTo(p1))
-                .isGreaterThan(0);
-        assertThat(p1.compareTo(DirectoryPattern.of(pat1)))
-                .isEqualTo(0);
+        private DirectoryPattern p1;
+        private DirectoryPattern p2;
+
+        @Test
+        @DisplayName("alphabetically")
+        void asText() {
+            String pat1 = "a/b/";
+            p1 = DirectoryPattern.of(pat1);
+            p2 = DirectoryPattern.of("c/d/");
+
+            assertCompareSymmetrically();
+            assertThat(p1.compareTo(DirectoryPattern.of(pat1)))
+                    .isEqualTo(0);
+        }
+
+        @Test
+        @DisplayName("taking in account suffix")
+        void withSuffix() {
+            p1 = DirectoryPattern.of("a/b/");
+            p2 = DirectoryPattern.of("a/b" + INCLUDE_NESTED);
+
+            assertCompareSymmetrically();
+        }
+
+        private void assertCompareSymmetrically() {
+            assertThat(p1.compareTo(p2)).isLessThan(0);
+            assertThat(p2.compareTo(p1)).isGreaterThan(0);
+        }
     }
 }
