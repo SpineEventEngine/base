@@ -199,7 +199,7 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
      * involve parsing of string values.
      */
     @Nested
-    @DisplayName("parse a string to")
+    @DisplayName("parse a string into")
     class Parsing {
 
         @Test
