@@ -42,7 +42,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A task to resolve imports in generated files.
  *
- * <p>Supports only {@code CommonJs} imports.
+ * <p>Supports only {@code CommonJS} imports.
  *
  * <p>The task should be performed last among {@linkplain GenerationTask generation tasks}
  * to ensure that imports won't be modified after execution of this task.
