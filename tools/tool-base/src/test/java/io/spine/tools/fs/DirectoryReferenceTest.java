@@ -47,4 +47,19 @@ class DirectoryReferenceTest {
         DirectoryReference reference = DirectoryReference.of("a/b/c");
         assertThat(reference.elements()).containsAtLeast("a", "b", "c");
     }
+
+    @Test
+    @DisplayName("compare instances alphabetically")
+    void comparison() {
+        String ref1 = "a/b1";
+        DirectoryReference r1 = DirectoryReference.of(ref1);
+        DirectoryReference r2 = DirectoryReference.of("a/b2");
+
+        assertThat(r1.compareTo(r2))
+                .isLessThan(0);
+        assertThat(r2.compareTo(r1))
+                .isGreaterThan(0);
+        assertThat(r1.compareTo(DirectoryReference.of(ref1)))
+                .isEqualTo(0);
+    }
 }

@@ -28,6 +28,7 @@ package io.spine.tools.fs;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.google.common.primitives.Booleans;
 import com.google.errorprone.annotations.Immutable;
 
 import java.util.List;
@@ -37,17 +38,21 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.tools.fs.FileReference.joiner;
+import static io.spine.tools.fs.FileReference.separator;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * A pattern to match a directory.
+ * A pattern to match a directory, or the referenced directory and ones nested into it.
+ *
+ * <p>For the latter case, the passed value must end with {@code "/*"}.
+ *
+ * @see #of(String)
  */
 @Immutable
 public final class DirectoryPattern implements Comparable<DirectoryPattern> {
 
-    private static final String INCLUDE_NESTED_PATTERN_ENDING = "/*";
+    private static final String INCLUDE_NESTED_SUFFIX = "/*";
 
     private final DirectoryReference directory;
     private final boolean includeNested;
@@ -72,13 +77,15 @@ public final class DirectoryPattern implements Comparable<DirectoryPattern> {
      */
     public static DirectoryPattern of(String value) {
         checkNotEmptyOrBlank(value);
-        boolean includeNested = value.endsWith(INCLUDE_NESTED_PATTERN_ENDING);
+        boolean includeNested = value.endsWith(INCLUDE_NESTED_SUFFIX);
         String directory;
         if (includeNested) {
-            int nameEndIndex = value.length() - INCLUDE_NESTED_PATTERN_ENDING.length();
+            int nameEndIndex = value.length() - INCLUDE_NESTED_SUFFIX.length();
             directory = value.substring(0, nameEndIndex);
         } else {
-            directory = value;
+            directory = value.endsWith(separator())
+                        ? value.substring(0, value.length() - separator().length())
+                        : value;
         }
         DirectoryReference reference = DirectoryReference.of(directory);
         return new DirectoryPattern(reference, includeNested);
@@ -124,9 +131,10 @@ public final class DirectoryPattern implements Comparable<DirectoryPattern> {
         List<String> missingElements =
                 directory.elements()
                          .subList(0, firstMatchIndex.get());
-        List<String> resultElements = newArrayList();
-        resultElements.addAll(missingElements);
-        resultElements.addAll(origin.elements());
+        List<String> resultElements = ImmutableList.<String>builder()
+                .addAll(missingElements)
+                .addAll(origin.elements())
+                .build();
         String result = joiner().join(resultElements);
         return DirectoryReference.of(result);
     }
@@ -185,6 +193,10 @@ public final class DirectoryPattern implements Comparable<DirectoryPattern> {
 
     @Override
     public int compareTo(DirectoryPattern o) {
-        return 0;
+        int dirResult = directory.compareTo(o.directory);
+        if (dirResult != 0) {
+            return dirResult;
+        }
+        return Booleans.compare(includeNested, o.includeNested);
     }
 }

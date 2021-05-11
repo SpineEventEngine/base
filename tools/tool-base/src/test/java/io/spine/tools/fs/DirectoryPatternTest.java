@@ -31,6 +31,7 @@ import com.google.common.testing.NullPointerTester;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.Assertions.assertIllegalState;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
@@ -38,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("FolderPattern should")
+@DisplayName("`DirectoryPattern` should")
 class DirectoryPatternTest {
 
     @Test
@@ -165,5 +166,20 @@ class DirectoryPatternTest {
         DirectoryReference origin = DirectoryReference.of(originReference);
         DirectoryReference transformed = pattern.transform(origin);
         assertEquals(expectedReference, transformed.value());
+    }
+
+    @Test
+    @DisplayName("compare instances alphabetically")
+    void comparison() {
+        String pat1 = "a/b/";
+        DirectoryPattern p1 = DirectoryPattern.of(pat1);
+        DirectoryPattern p2 = DirectoryPattern.of("a/b/*");
+
+        assertThat(p1.compareTo(p2))
+                .isLessThan(0);
+        assertThat(p2.compareTo(p1))
+                .isGreaterThan(0);
+        assertThat(p1.compareTo(DirectoryPattern.of(pat1)))
+                .isEqualTo(0);
     }
 }

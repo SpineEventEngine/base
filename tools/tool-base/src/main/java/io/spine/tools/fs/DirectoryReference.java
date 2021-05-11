@@ -65,6 +65,9 @@ public final class DirectoryReference
 
     /**
      * Obtains the reference to the current directory.
+     *
+     * <p>The {@linkplain #value() value} of the reference is an empty string, and
+     * not {@code "."}, as it may be expected.
      */
     public static DirectoryReference currentDir() {
         return CURRENT;
