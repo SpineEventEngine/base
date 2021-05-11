@@ -212,23 +212,52 @@ enum IdType {
         throw Identifier.unsupported(id);
     }
 
+    /**
+     * Returns {@code true} if the passed instances of {@link Object} matches this
+     * type of identifiers; {@code false} otherwise.
+     */
     abstract <I> boolean matchValue(I id);
 
+    /**
+     * Returns {@code true} if the passed instance of {@code Message} matches
+     * the type of Protobuf implementation of this type of identifier; {@code false} otherwise.
+     */
     abstract boolean matchMessage(Message message);
 
+    /**
+     * Returns {@code true} if the passed class matches the one supported by this
+     * type of identifiers; {@code false} otherwise.
+     */
     abstract <I> boolean matchClass(Class<I> idClass);
 
+    /**
+     * Verifies if the passed field definition matches this type of identifiers.
+     */
+    abstract boolean matchField(FieldDescriptor field);
+
+    /**
+     * Converts the passed Protobuf implementation instance of an identifier into
+     * an {@code Object} of the corresponding type.
+     */
+    abstract Object fromMessage(Message message);
+
+    /**
+     * Obtains the default ID value for this type of identifiers.
+     */
+    abstract <I> I defaultValue(Class<I> idClass);
+
+    /**
+     * Converts the passed ID object into the Protobuf implementation instance.
+     */
     <I> Message toMessage(I id) {
         Message message = TypeConverter.toMessage(id);
         return message;
     }
 
-    abstract Object fromMessage(Message message);
-
-    abstract <I> I defaultValue(Class<I> idClass);
-
-    abstract boolean matchField(FieldDescriptor field);
-
+    /**
+     * Converts the passed instance of the identifier into Protobuf implementation, and
+     * then packs it into {@code Any}.
+     */
     <I> Any pack(I id) {
         Message msg = toMessage(id);
         Any result = AnyPacker.pack(msg);
