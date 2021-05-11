@@ -387,11 +387,10 @@ public final class FieldDeclaration {
      * @return the field location path
      */
     private LocationPath fieldPath() {
-        LocationPath locationPath = new LocationPath();
-        locationPath.addAll(declaringMessage.path());
-        locationPath.add(FIELD_FIELD_NUMBER);
-        int fieldIndex = fieldIndex();
-        locationPath.add(fieldIndex);
+        LocationPath locationPath =
+                new LocationPath(declaringMessage.path())
+                        .append(FIELD_FIELD_NUMBER)
+                        .append(fieldIndex());
         return locationPath;
     }
 

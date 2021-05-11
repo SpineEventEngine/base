@@ -373,7 +373,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
             return Optional.empty();
         }
 
-        DescriptorProtos.SourceCodeInfo.Location location = locationPath.toLocation(file);
+        DescriptorProtos.SourceCodeInfo.Location location = locationPath.toLocationIn(file);
         return location.hasLeadingComments()
                ? Optional.of(location.getLeadingComments())
                : Optional.empty();

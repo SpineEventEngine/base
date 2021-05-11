@@ -27,22 +27,20 @@
 package io.spine.tools.mc.js.fs;
 
 import com.google.common.annotations.VisibleForTesting;
+import io.spine.tools.fs.ExternalModules;
+import io.spine.tools.fs.FileWithImports;
 
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.io.Files2.checkExists;
 
 /**
  * A JavaScript file present on a file system.
  */
-public final class JsFile {
+public final class JsFile extends FileWithImports {
 
     @VisibleForTesting
-    static final String EXTENSION = ".js";
-
-    private final Path path;
+    public static final String EXTENSION = ".js";
 
     /**
      * Creates a new instance.
@@ -51,17 +49,21 @@ public final class JsFile {
      *         the path to existing JavaScript file
      */
     public JsFile(Path path) {
-        checkNotNull(path);
+        super(path);
         String fileName = path.toString();
         checkArgument(fileName.endsWith(EXTENSION),
                       "A JavaScript file is expected. Passed: `%s`.", fileName);
-        this.path = checkExists(path);
     }
 
-    /**
-     * Obtains the path to the file.
-     */
-    public Path path() {
-        return path;
+    @Override
+    protected boolean isImport(String line) {
+        return ImportStatement.isDeclaredIn(line);
+    }
+
+    @Override
+    protected String resolveImport(String line, Path generatedRoot, ExternalModules modules) {
+        ImportStatement importLine = new ImportStatement(this, line);
+        ImportStatement resolved = importLine.resolve(generatedRoot, modules);
+        return resolved.text();
     }
 }

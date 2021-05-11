@@ -31,7 +31,7 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.base.RejectionType;
-import io.spine.code.AbstractSourceFile;
+import io.spine.code.fs.AbstractSourceFile;
 import io.spine.code.java.SimpleClassName;
 import io.spine.logging.Logging;
 import io.spine.type.MessageType;
@@ -116,10 +116,11 @@ public class SourceFile extends AbstractSourceFile implements Logging {
      * Obtains all top-level (i.e. non-nested) message types declared in this file set.
      */
     public List<MessageType> topLevelMessages() {
-        List<MessageType> result = descriptor.getMessageTypes()
-                                             .stream()
-                                             .map(MessageType::new)
-                                             .collect(toImmutableList());
+        List<MessageType> result =
+                descriptor.getMessageTypes()
+                          .stream()
+                          .map(MessageType::new)
+                          .collect(toImmutableList());
         return result;
     }
 

@@ -35,11 +35,11 @@ import io.spine.tools.js.code.TypeName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.tools.mc.js.code.CodeWriter;
-import io.spine.tools.mc.js.code.snippet.Snippet;
+import io.spine.tools.mc.js.code.text.Snippet;
 import io.spine.tools.mc.js.fs.FileWriter;
-import io.spine.tools.mc.js.code.snippet.Comment;
-import io.spine.tools.mc.js.code.snippet.Method;
-import io.spine.tools.mc.js.code.snippet.Return;
+import io.spine.tools.mc.js.code.text.Comment;
+import io.spine.tools.mc.js.code.text.Method;
+import io.spine.tools.mc.js.code.text.Return;
 import io.spine.type.Type;
 import io.spine.type.TypeUrl;
 

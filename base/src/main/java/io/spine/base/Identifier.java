@@ -29,14 +29,12 @@ package io.spine.base;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import io.spine.annotation.Internal;
 import io.spine.protobuf.AnyPacker;
-import io.spine.protobuf.TypeConverter;
 import io.spine.string.StringifierRegistry;
 import io.spine.type.TypeUrl;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -45,7 +43,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.protobuf.Messages.defaultInstance;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
@@ -68,28 +65,28 @@ public final class Identifier<I> {
     /** An empty ID string representation. */
     static final String EMPTY_ID = "EMPTY";
 
-    private final Type type;
+    private final IdType type;
     private final I value;
 
-    private Identifier(Type type, I value) {
+    private Identifier(IdType type, I value) {
         this.value = value;
         this.type = type;
     }
 
     static <I> Identifier<I> from(I value) {
         checkNotNull(value);
-        Type type = Type.getType(value);
+        IdType type = IdType.of(value);
         Identifier<I> result = create(type, value);
         return result;
     }
 
     private static Identifier<Message> fromMessage(Message value) {
         checkNotNull(value);
-        Identifier<Message> result = create(Type.MESSAGE, value);
+        Identifier<Message> result = create(IdType.MESSAGE, value);
         return result;
     }
 
-    private static <I> Identifier<I> create(Type type, I value) {
+    private static <I> Identifier<I> create(IdType type, I value) {
         return new Identifier<>(type, value);
     }
 
@@ -98,7 +95,7 @@ public final class Identifier<I> {
      */
     public static <I> I defaultValue(Class<I> idClass) {
         checkNotNull(idClass);
-        Type type = toType(idClass);
+        IdType type = toType(idClass);
         I result = type.defaultValue(idClass);
         return result;
     }
@@ -106,8 +103,8 @@ public final class Identifier<I> {
     /**
      * Converts the class of identifiers to {@code Identifier.Type}.
      */
-    public static <I> Type toType(Class<I> idClass) {
-        for (Type type : Type.values()) {
+    public static <I> IdType toType(Class<I> idClass) {
+        for (IdType type : IdType.values()) {
             if (type.matchClass(idClass)) {
                 return type;
             }
@@ -134,7 +131,7 @@ public final class Identifier<I> {
     public static <I> boolean isEmpty(I value) {
         checkNotNull(value);
         Identifier<I> id = from(value);
-        if (id.type == Type.INTEGER || id.type == Type.LONG) {
+        if (id.type == IdType.INTEGER || id.type == IdType.LONG) {
             return false;
         }
 
@@ -143,11 +140,11 @@ public final class Identifier<I> {
         return result;
     }
 
-    private static <I> IllegalArgumentException unsupported(I id) {
+    static <I> IllegalArgumentException unsupported(I id) {
         return newIllegalArgumentException("ID of unsupported type encountered: `%s`.", id);
     }
 
-    private static <I> IllegalArgumentException unsupportedClass(Class<I> idClass) {
+    static <I> IllegalArgumentException unsupportedClass(Class<I> idClass) {
         return newIllegalArgumentException("Unsupported ID class encountered: `%s`.",
                                            idClass.getName());
     }
@@ -234,14 +231,12 @@ public final class Identifier<I> {
     public static Object unpack(Any any) {
         checkNotNull(any);
         Message unpacked = AnyPacker.unpack(any);
-
-        for (Type type : Type.values()) {
+        for (IdType type : IdType.values()) {
             if (type.matchMessage(unpacked)) {
                 Object result = type.fromMessage(unpacked);
                 return result;
             }
         }
-
         throw unsupported(unpacked);
     }
 
@@ -312,19 +307,19 @@ public final class Identifier<I> {
     }
 
     boolean isString() {
-        return type == Type.STRING;
+        return type == IdType.STRING;
     }
 
     boolean isInteger() {
-        return type == Type.INTEGER;
+        return type == IdType.INTEGER;
     }
 
     boolean isLong() {
-        return type == Type.LONG;
+        return type == IdType.LONG;
     }
 
     boolean isMessage() {
-        return type == Type.MESSAGE;
+        return type == IdType.MESSAGE;
     }
 
     private Any pack() {
@@ -347,12 +342,12 @@ public final class Identifier<I> {
     public static <I> Optional<FieldDescriptor> findField(Class<I> idClass, Descriptor message) {
         checkNotNull(idClass);
         checkNotNull(message);
-        Type idType = toType(idClass);
+        IdType idType = toType(idClass);
         Optional<FieldDescriptor> found =
                 message.getFields()
                        .stream()
                        .filter(idType::matchField)
-                       .filter(f -> idType != Type.MESSAGE || sameType(idClass, f))
+                       .filter(f -> idType != IdType.MESSAGE || sameType(idClass, f))
                        .findFirst();
         return found;
     }
@@ -371,218 +366,25 @@ public final class Identifier<I> {
     @Override
     public String toString() {
         String result;
-
         switch (type) {
             case INTEGER:
             case LONG:
                 result = value.toString();
                 break;
-
             case STRING:
                 result = value.toString();
                 break;
-
             case MESSAGE:
                 result = MessageIdToString.toString((Message) value);
                 break;
             default:
-                throw newIllegalStateException("toString() is not supported for type: %s", type);
+                throw newIllegalStateException(
+                        "`toString()` is not supported for type: `%s`.", type
+                );
         }
-
         if (result.isEmpty()) {
             result = EMPTY_ID;
         }
-
         return result;
-    }
-
-    /**
-     * Supported types of identifiers.
-     */
-    @SuppressWarnings(
-            {"OverlyStrongTypeCast" /* For clarity. We cannot get OrBuilder instances here. */,
-                    "unchecked" /* We ensure type by matching it first. */})
-    public enum Type {
-        STRING {
-            @Override
-            <I> boolean matchValue(I id) {
-                return id instanceof String;
-            }
-
-            @Override
-            boolean matchMessage(Message message) {
-                return message instanceof StringValue;
-            }
-
-            @Override
-            <I> boolean matchClass(Class<I> idClass) {
-                return String.class.equals(idClass);
-            }
-
-            @Override
-            String fromMessage(Message message) {
-                return ((StringValue) message).getValue();
-            }
-
-            @Override
-            <I> I defaultValue(Class<I> idClass) {
-                return (I) "";
-            }
-
-            @Override
-            boolean matchField(FieldDescriptor field) {
-                return JavaType.STRING == field.getJavaType();
-            }
-        },
-
-        INTEGER {
-            @Override
-            <I> boolean matchValue(I id) {
-                return id instanceof Integer;
-            }
-
-            @Override
-            boolean matchMessage(Message message) {
-                return message instanceof Int32Value;
-            }
-
-            @Override
-            <I> boolean matchClass(Class<I> idClass) {
-                return Integer.class.equals(idClass);
-            }
-
-            @Override
-            Integer fromMessage(Message message) {
-                return ((Int32Value) message).getValue();
-            }
-
-            @Override
-            <I> I defaultValue(Class<I> idClass) {
-                return (I) Integer.valueOf(0);
-            }
-
-            @Override
-            boolean matchField(FieldDescriptor field) {
-                return JavaType.INT == field.getJavaType();
-            }
-        },
-
-        LONG {
-            @Override
-            <I> boolean matchValue(I id) {
-                return id instanceof Long;
-            }
-
-            @Override
-            boolean matchMessage(Message message) {
-                return message instanceof Int64Value;
-            }
-
-            @Override
-            <I> boolean matchClass(Class<I> idClass) {
-                return Long.class.equals(idClass);
-            }
-
-            @Override
-            Long fromMessage(Message message) {
-                return ((Int64Value) message).getValue();
-            }
-
-            @Override
-            <I> I defaultValue(Class<I> idClass) {
-                return (I) Long.valueOf(0);
-            }
-
-            @Override
-            boolean matchField(FieldDescriptor field) {
-                return JavaType.LONG == field.getJavaType();
-            }
-        },
-
-        MESSAGE {
-            @Override
-            <I> boolean matchValue(I id) {
-                return id instanceof Message;
-            }
-
-            /**
-             * Verifies if the passed message is not an instance of a wrapper for
-             * simple types that are used for packing simple Java types into {@code Any}.
-             *
-             * @return {@code true} if the message is neither {@code StringValue}, nor
-             *         {@code Int32Value}, nor {@code Int64Value}
-             */
-            @Override
-            boolean matchMessage(Message message) {
-                return !(message instanceof StringValue
-                        || message instanceof Int32Value
-                        || message instanceof Int64Value);
-            }
-
-            @Override
-            <I> boolean matchClass(Class<I> idClass) {
-                return Message.class.isAssignableFrom(idClass);
-            }
-
-            @Override
-            <I> Message toMessage(I id) {
-                return (Message) id;
-            }
-
-            @Override
-            Message fromMessage(Message message) {
-                return message;
-            }
-
-            @Override
-            <I> I defaultValue(Class<I> idClass) {
-                Class<? extends Message> msgClass = (Class<? extends Message>) idClass;
-                Message result = defaultInstance(msgClass);
-                return (I) result;
-            }
-
-            /**
-             * Returns {@code true} if the passed field is message.
-             *
-             * <p>It does not necessarily mean that the type of identifiers matches.
-             * Obtaining the class of the field is needed in this case.
-             */
-            @Override
-            boolean matchField(FieldDescriptor field) {
-                return JavaType.MESSAGE == field.getJavaType();
-            }
-        };
-
-        private static <I> Type getType(I id) {
-            for (Type type : values()) {
-                if (type.matchValue(id)) {
-                    return type;
-                }
-            }
-            throw unsupported(id);
-        }
-
-        abstract <I> boolean matchValue(I id);
-
-        abstract boolean matchMessage(Message message);
-
-        abstract <I> boolean matchClass(Class<I> idClass);
-
-        <I> Message toMessage(I id) {
-            Message message = TypeConverter.toMessage(id);
-            return message;
-        }
-
-        abstract Object fromMessage(Message message);
-
-        abstract <I> I defaultValue(Class<I> idClass);
-
-        abstract boolean matchField(FieldDescriptor field);
-
-        <I> Any pack(I id) {
-            Message msg = toMessage(id);
-            Any result = AnyPacker.pack(msg);
-            return result;
-        }
     }
 }

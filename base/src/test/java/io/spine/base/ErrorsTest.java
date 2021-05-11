@@ -30,14 +30,16 @@ import com.google.common.collect.ImmutableList;
 import io.spine.testing.UtilityClassTest;
 import io.spine.validate.ConstraintViolation;
 import io.spine.validate.ValidationException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.base.Errors.causeOf;
 import static io.spine.base.Errors.fromThrowable;
 import static io.spine.base.Identifier.newUuid;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static io.spine.testing.TestValues.randomString;
 
 @DisplayName("Errors utility class should")
 class ErrorsTest extends UtilityClassTest<Errors> {
@@ -46,42 +48,65 @@ class ErrorsTest extends UtilityClassTest<Errors> {
         super(Errors.class);
     }
 
-    @Test
-    @DisplayName("convert cause of throwable to Error")
-    void convertCauseOfThrowableToError() {
-        int errorCode = 404;
-        String errorMessage = newUuid();
+    @Nested
+    @DisplayName("convert cause of throwable to `Error`")
+    class GetCause {
 
-        // A Throwable with cause.
-        RuntimeException throwable = new IllegalStateException(
-                new RuntimeException(errorMessage)
-        );
+        private Throwable cause;
+        private Throwable throwable;
 
-        Error error = causeOf(throwable, errorCode);
+        @BeforeEach
+        void createExceptions() {
+            String causeMessage = randomString();
+            cause = new RuntimeException(causeMessage);
+            throwable = new IllegalStateException(cause);
+        }
 
-        assertEquals(errorCode, error.getCode());
-        assertEquals(errorMessage, error.getMessage());
+        @Test
+        @DisplayName("with error code")
+        void withCode() {
+            int errorCode = 404;
+            Error error = causeOf(throwable, errorCode);
+
+            assertHasCause(error);
+            assertThat(error.getCode())
+                    .isEqualTo(errorCode);
+        }
+
+        @Test
+        @DisplayName("without error code")
+        void withoutCode() {
+            Error error = causeOf(throwable);
+
+            assertHasCause(error);
+        }
+
+        private void assertHasCause(Error error) {
+            assertThat(error.getMessage())
+                    .isEqualTo(cause.getMessage());
+        }
     }
 
+
     @Test
-    @DisplayName("convert throwable to Error")
+    @DisplayName("convert throwable to `Error`")
     void convertThrowableToError() {
-        String errorMessage = newUuid();
-        RuntimeException throwable = new RuntimeException(errorMessage);
+        String expected = newUuid();
+        RuntimeException throwable = new RuntimeException(expected);
 
         Error error = fromThrowable(throwable);
 
-        assertEquals(errorMessage, error.getMessage());
+        assertThat(error.getMessage())
+                .isEqualTo(expected);
     }
 
     @Test
-    @DisplayName("convert ValidationException into an error with validation_error")
+    @DisplayName("convert `ValidationException` into an error with `validation_error`")
     void validation() {
-        ConstraintViolation violation = ConstraintViolation
-                .newBuilder()
-                .build();
+        ConstraintViolation violation = ConstraintViolation.newBuilder().build();
         ValidationException exception = new ValidationException(ImmutableList.of(violation));
         Error error = fromThrowable(exception);
-        assertThat(error.getValidationError()).isEqualTo(exception.asValidationError());
+        assertThat(error.getValidationError())
+                .isEqualTo(exception.asValidationError());
     }
 }

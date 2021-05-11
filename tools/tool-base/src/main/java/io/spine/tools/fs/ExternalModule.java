@@ -26,16 +26,16 @@
 
 package io.spine.tools.fs;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Ordering;
+import com.google.errorprone.annotations.Immutable;
 
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkState;
+import static io.spine.tools.fs.FileReference.joiner;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -43,10 +43,11 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  *
  * <p>An external module is typically provided by a package manager, such as NPM or Pub.
  */
+@Immutable
 public final class ExternalModule {
 
     private final String name;
-    private final Set<DirectoryPattern> directories;
+    private final ImmutableList<DirectoryPattern> directories;
 
     /**
      * Creates a new instance.
@@ -58,38 +59,38 @@ public final class ExternalModule {
      */
     public ExternalModule(String name, Collection<DirectoryPattern> directories) {
         this.name = checkNotEmptyOrBlank(name);
-        this.directories = ImmutableSet.copyOf(directories);
+        this.directories = Ordering.natural().immutableSortedCopy(directories);
     }
 
     /**
      * Obtains the file reference within this module.
      *
-     * @param fileReference
+     * @param file
      *         the relative file reference
      * @return the file reference in this module
      * @throws IllegalStateException
      *         if the file is not provided by the module
      */
-    public FileReference fileInModule(FileReference fileReference) {
-        Optional<DirectoryPattern> matchingDirectory = matchingDirectory(fileReference);
+    public FileReference fileInModule(FileReference file) {
+        Optional<DirectoryPattern> matchingDirectory = matchingDirectory(file);
         checkState(matchingDirectory.isPresent());
-        DirectoryReference directory = matchingDirectory.get()
-                                                        .transform(fileReference.directory());
-        String fileName = fileReference.fileName();
-        String path = Joiner.on(FileReference.separator())
-                            .join(name, directory, fileName);
+        DirectoryReference directory =
+                matchingDirectory.get()
+                                 .transform(file.directory());
+        String fileName = file.fileName();
+        String path = joiner().join(name, directory, fileName);
         return FileReference.of(path);
     }
 
     /**
      * Checks if the module provides the referenced file.
      *
-     * @param fileReference
+     * @param file
      *         the file to check
      * @return {@code true} if the module provides the file
      */
-    public boolean provides(FileReference fileReference) {
-        boolean result = matchingDirectory(fileReference).isPresent();
+    public boolean provides(FileReference file) {
+        boolean result = matchingDirectory(file).isPresent();
         return result;
     }
 
@@ -100,8 +101,8 @@ public final class ExternalModule {
         return name;
     }
 
-    private Optional<DirectoryPattern> matchingDirectory(FileReference fileReference) {
-        DirectoryReference directory = fileReference.directory();
+    private Optional<DirectoryPattern> matchingDirectory(FileReference file) {
+        DirectoryReference directory = file.directory();
         for (DirectoryPattern pattern : directories) {
             if (pattern.matches(directory)) {
                 return Optional.of(pattern);
@@ -114,35 +115,33 @@ public final class ExternalModule {
      * <a href="https://github.com/SpineEventEngine/web">The Spine Web</a> module.
      */
     public static ExternalModule spineWeb() {
-        Set<DirectoryPattern> directories = ImmutableSet.of(
+        @SuppressWarnings("DuplicateStringLiteralInspection") // also in test code.
+        ImmutableList<DirectoryPattern> patterns = DirectoryPattern.listOf(
                 // Directories with handcrafted JS files.
-                DirectoryPattern.of("client/parser"),
+                "client/parser",
                 // Directories with standard Protobuf files.
-                DirectoryPattern.of("proto/google/protobuf/*"),
+                "proto/google/protobuf/*",
                 // Directories with Spine Protobuf files.
-                DirectoryPattern.of("proto/spine/base/*"),
-                DirectoryPattern.of("proto/spine/change/*"),
-                DirectoryPattern.of("proto/spine/client/*"),
-                DirectoryPattern.of("proto/spine/core/*"),
-                DirectoryPattern.of("proto/spine/net/*"),
-                DirectoryPattern.of("proto/spine/people/*"),
-                DirectoryPattern.of("proto/spine/time/*"),
-                DirectoryPattern.of("proto/spine/ui/*"),
-                DirectoryPattern.of("proto/spine/validate/*"),
-                DirectoryPattern.of("proto/spine/web/*"),
-                DirectoryPattern.of("proto/spine")
+                "proto/spine/base/*",
+                "proto/spine/change/*",
+                "proto/spine/client/*",
+                "proto/spine/core/*",
+                "proto/spine/net/*",
+                "proto/spine/people/*",
+                "proto/spine/time/*",
+                "proto/spine/ui/*",
+                "proto/spine/validate/*",
+                "proto/spine/web/*",
+                "proto/spine"
         );
-        return new ExternalModule("spine-web", directories);
+        return new ExternalModule("spine-web", patterns);
     }
 
     /**
      * <a href="https://github.com/SpineEventEngine/users">The Spine Users</a> module.
      */
     public static ExternalModule spineUsers() {
-        Set<DirectoryPattern> directories = ImmutableSet.of(
-                DirectoryPattern.of("spine/users/*")
-        );
-        return new ExternalModule("spine-users", directories);
+        return new ExternalModule("spine-users", DirectoryPattern.listOf("spine/users/*"));
     }
 
     /**

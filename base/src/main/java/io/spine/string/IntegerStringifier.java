@@ -26,12 +26,13 @@
 
 package io.spine.string;
 
+import com.google.common.base.Converter;
 import com.google.common.primitives.Ints;
 
 /**
  * The {@code Stringifier} for the integer values.
  */
-final class IntegerStringifier extends SerializableStringifier<Integer> {
+final class IntegerStringifier extends StringifierWithConverter<Integer> {
 
     private static final long serialVersionUID = 0L;
 
@@ -46,16 +47,8 @@ final class IntegerStringifier extends SerializableStringifier<Integer> {
     }
 
     @Override
-    protected String toString(Integer obj) {
-        return Ints.stringConverter()
-                   .reverse()
-                   .convert(obj);
-    }
-
-    @Override
-    protected Integer fromString(String s) {
-        return Ints.stringConverter()
-                   .convert(s);
+    protected Converter<String, Integer> converter() {
+        return Ints.stringConverter();
     }
 
     private Object readResolve() {

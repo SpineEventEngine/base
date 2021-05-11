@@ -26,12 +26,13 @@
 
 package io.spine.string;
 
+import com.google.common.base.Converter;
 import com.google.common.primitives.Longs;
 
 /**
  * The {@code Stringifier} for the long values.
  */
-final class LongStringifier extends SerializableStringifier<Long> {
+final class LongStringifier extends StringifierWithConverter<Long> {
 
     private static final long serialVersionUID = 0L;
 
@@ -46,16 +47,8 @@ final class LongStringifier extends SerializableStringifier<Long> {
     }
 
     @Override
-    protected String toString(Long obj) {
-        return Longs.stringConverter()
-                    .reverse()
-                    .convert(obj);
-    }
-
-    @Override
-    protected Long fromString(String s) {
-        return Longs.stringConverter()
-                    .convert(s);
+    protected Converter<String, Long> converter() {
+        return Longs.stringConverter();
     }
 
     private Object readResolve() {

@@ -26,6 +26,7 @@
 
 package io.spine.code.java;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.value.StringTypeValue;
 
@@ -37,6 +38,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * A Java package name.
  */
+@Immutable
 public final class PackageName extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;

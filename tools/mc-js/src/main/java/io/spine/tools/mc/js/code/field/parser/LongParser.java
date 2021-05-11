@@ -27,7 +27,7 @@
 package io.spine.tools.mc.js.code.field.parser;
 
 import io.spine.tools.mc.js.code.CodeWriter;
-import io.spine.tools.mc.js.code.snippet.Let;
+import io.spine.tools.mc.js.code.text.Let;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;

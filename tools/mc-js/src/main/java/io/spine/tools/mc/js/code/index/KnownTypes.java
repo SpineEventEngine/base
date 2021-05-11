@@ -32,8 +32,8 @@ import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.tools.js.code.TypeName;
 import io.spine.tools.mc.js.code.CodeWriter;
-import io.spine.tools.mc.js.code.snippet.Snippet;
-import io.spine.tools.mc.js.code.snippet.MapExport;
+import io.spine.tools.mc.js.code.text.Snippet;
+import io.spine.tools.mc.js.code.text.MapExport;
 import io.spine.type.Type;
 import io.spine.type.TypeUrl;
 

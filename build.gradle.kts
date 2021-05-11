@@ -162,7 +162,6 @@ subprojects {
     tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions {
             jvmTarget = javaVersion.toString()
-            useIR = true
             freeCompilerArgs = listOf("-Xskip-prerelease-check")
         }
     }

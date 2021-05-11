@@ -32,7 +32,7 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.tools.code.Indent;
 import io.spine.tools.code.IndentedLine;
 import io.spine.tools.code.Line;
-import io.spine.tools.mc.js.code.snippet.Snippet;
+import io.spine.tools.mc.js.code.text.Snippet;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -165,7 +165,7 @@ public final class CodeWriter {
         if (line instanceof IndentedLine) {
             indented = (IndentedLine) line;
         } else {
-            indented = IndentedLine.of(indent, line.content());
+            indented = IndentedLine.of(indent, line.text());
         }
         lines.add(indented);
         return this;
@@ -347,8 +347,8 @@ public final class CodeWriter {
             Line line = it.next();
             boolean isLast = !it.hasNext();
             String editedLine = isLast
-                                ? line.content()
-                                : line.content() + ',';
+                                ? line.text()
+                                : line.text() + ',';
             code.append(editedLine);
         }
         return code;

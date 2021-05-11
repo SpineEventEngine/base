@@ -37,10 +37,10 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A Maven-style remote artifact specification.
+ * A Maven-style artifact specification.
  *
- * <p>An artifact must have a group, a name, and a version. Also, it may have a classifier and
- * an extension.
+ * <p>An artifact must have a group, a name, and a version.
+ * Also, it may have a classifier and an extension.
  */
 @Internal
 public final class Artifact {

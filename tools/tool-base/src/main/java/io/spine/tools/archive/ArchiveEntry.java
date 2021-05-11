@@ -27,9 +27,10 @@
 package io.spine.tools.archive;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
-import io.spine.code.proto.FileDescriptorSets;
+import io.spine.code.proto.FileDescriptorSetReader;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.code.proto.FileDescriptorSetReader.tryParse;
 
 /**
  * A snapshot of an archive entry.
@@ -54,16 +55,16 @@ public final class ArchiveEntry {
     }
 
     /**
-     * Attempts to {@linkplain FileDescriptorSets#parse parse} this entry as
+     * Attempts to {@linkplain FileDescriptorSetReader#tryParse(byte[]) parse} this entry as
      * a {@code FileDescriptorSet}.
      *
      * @return the parsed set
      * @throws java.lang.IllegalStateException if parsing fails
      */
     public FileDescriptorSet asDescriptorSet() {
-        FileDescriptorSet descriptorSet = FileDescriptorSets
-                .tryParse(bytes)
-                .orElseThrow(() -> new IllegalStateException("Failed to parse a descriptor set."));
-        return descriptorSet;
+        FileDescriptorSet result = tryParse(bytes).orElseThrow(
+                () -> new IllegalStateException("Failed to parse a descriptor set.")
+        );
+        return result;
     }
 }

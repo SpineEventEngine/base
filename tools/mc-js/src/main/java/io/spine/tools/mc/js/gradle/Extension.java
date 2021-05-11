@@ -26,30 +26,26 @@
 
 package io.spine.tools.mc.js.gradle;
 
-import com.google.common.annotations.VisibleForTesting;
 import io.spine.tools.fs.DefaultProject;
+import io.spine.tools.fs.ExternalModule;
+import io.spine.tools.fs.ExternalModules;
+import io.spine.tools.gradle.GradleExtension;
 import io.spine.tools.js.fs.DefaultJsProject;
 import io.spine.tools.js.fs.Directory;
-import io.spine.tools.fs.DirectoryPattern;
-import io.spine.tools.fs.ExternalModule;
-import io.spine.tools.gradle.GradleExtension;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.tools.mc.js.gradle.McJsPlugin.extensionName;
 import static io.spine.tools.fs.ExternalModule.predefinedModules;
-import static java.util.stream.Collectors.toList;
+import static io.spine.tools.mc.js.gradle.McJsPlugin.extensionName;
 
 /**
  * An extension for the {@link McJsPlugin} which allows to obtain the {@code generateJsonParsers}
@@ -141,17 +137,11 @@ public class Extension extends GradleExtension {
         return path.toFile();
     }
 
-    public static List<ExternalModule> modules(Project project) {
-        Extension extension = extension(project);
-        Map<String, List<String>> rawModules = extension.modules;
-        List<ExternalModule> modules = newArrayList();
-        for (String moduleName : rawModules.keySet()) {
-            List<DirectoryPattern> patterns = patterns(rawModules.get(moduleName));
-            ExternalModule module = new ExternalModule(moduleName, patterns);
-            modules.add(module);
-        }
-        modules.addAll(predefinedModules());
-        return modules;
+    ExternalModules modules() {
+        ExternalModules combined =
+                new ExternalModules(modules)
+                        .with(predefinedModules());
+        return combined;
     }
 
     /**
@@ -171,17 +161,10 @@ public class Extension extends GradleExtension {
         this.generateParsersTask = generateParsersTask;
     }
 
-    @VisibleForTesting
     static Extension extension(Project project) {
         return (Extension)
                 project.getExtensions()
                        .getByName(extensionName());
-    }
-
-    private static List<DirectoryPattern> patterns(Collection<String> rawPatterns) {
-        return rawPatterns.stream()
-                          .map(DirectoryPattern::of)
-                          .collect(toList());
     }
 
     private static Path pathOrDefault(String path, Object defaultValue) {

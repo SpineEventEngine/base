@@ -30,6 +30,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -81,9 +82,24 @@ public final class StringifierRegistry {
         return INSTANCE;
     }
 
-    static <T> Stringifier<T> getStringifier(Type typeOfT) {
+    /**
+     * Obtains a stringifier for the passed type.
+     *
+     * <p>If the passed type represents an enum, the returned instance is
+     * {@linkplain Stringifiers#newForEnum(Class) adapted} to serve the type.
+     *
+     * <p>If the passed type is a message, the returned instance is adapted to the type
+     * {@linkplain Stringifiers#newForMessage(Class) as well}.
+     *
+     * <p>This method does not serve {@code List} or {@link Map} types. In order to handle
+     * such a stringification, please call corresponding methods of the {@link Stringifiers} class.
+     *
+     * @see Stringifiers#newForListOf(Class)
+     * @see Stringifiers#newForMapOf(Class, Class)
+     */
+    static <T> Stringifier<T> getFor(Type typeOfT) {
         checkNotNull(typeOfT);
-        Optional<Stringifier<T>> optional = instance().get(typeOfT);
+        Optional<Stringifier<T>> optional = instance().find(typeOfT);
 
         if (optional.isPresent()) {
             Stringifier<T> stringifier = optional.get();
@@ -91,7 +107,7 @@ public final class StringifierRegistry {
         }
 
         if (isEnumClass(typeOfT)) {
-            @SuppressWarnings("unchecked") // OK since the type is checked above.
+            @SuppressWarnings({"unchecked", "rawtypes"}) // OK since the type is checked above.
             Stringifier<T> result = (Stringifier<T>) newForEnum((Class<Enum>) typeOfT);
             return result;
         }
@@ -142,12 +158,10 @@ public final class StringifierRegistry {
      *         the type of the values to convert
      * @return the found {@code Stringifier} or empty {@code Optional}
      */
-    public <T> Optional<Stringifier<T>> get(Type typeOfT) {
+    public <T> Optional<Stringifier<T>> find(Type typeOfT) {
         checkNotNull(typeOfT);
-
-        Stringifier<?> func = stringifiers.get(typeOfT);
-
-        Stringifier<T> result = cast(func);
+        @Nullable Stringifier<?> str = stringifiers.get(typeOfT);
+        @Nullable Stringifier<T> result = str != null ? cast(str) : null;
         return Optional.ofNullable(result);
     }
 }

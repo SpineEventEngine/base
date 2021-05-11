@@ -37,10 +37,10 @@ import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.tools.mc.js.code.CodeWriter;
 import io.spine.tools.mc.js.code.task.GenerationTask;
-import io.spine.tools.mc.js.code.snippet.Comment;
-import io.spine.tools.mc.js.code.snippet.Parser;
+import io.spine.tools.mc.js.code.text.Comment;
+import io.spine.tools.mc.js.code.text.Parser;
 import io.spine.tools.mc.js.fs.FileWriter;
-import io.spine.tools.mc.js.code.imports.Import;
+import io.spine.tools.mc.js.code.text.Import;
 import io.spine.type.MessageType;
 
 import java.util.Collection;

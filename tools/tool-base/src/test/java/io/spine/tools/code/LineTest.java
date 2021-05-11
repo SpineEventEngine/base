@@ -38,6 +38,6 @@ class LineTest {
     @Test
     @DisplayName("provide an empty line")
     void ofEmptyLine() {
-        assertThat(emptyLine().content()).isEqualTo("");
+        assertThat(emptyLine().text()).isEqualTo("");
     }
 }

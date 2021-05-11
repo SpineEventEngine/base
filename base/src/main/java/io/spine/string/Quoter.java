@@ -28,7 +28,6 @@ package io.spine.string;
 
 import com.google.common.base.Converter;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -41,8 +40,8 @@ import static java.util.regex.Pattern.compile;
 abstract class Quoter extends Converter<String, String> {
 
     private static final String BACKSLASH_QUOTE = "\\\"";
-    private static final String BACKSLASH = "\\\\";
-    private static final char QUOTE_CHAR = '"';
+    static final String BACKSLASH = "\\\\";
+    static final char QUOTE_CHAR = '"';
     private static final String DELIMITER_PATTERN_PREFIX = "(?<!" + BACKSLASH + ')' + BACKSLASH;
 
     @Override
@@ -95,62 +94,7 @@ abstract class Quoter extends Converter<String, String> {
         return ListQuoter.INSTANCE;
     }
 
-    /**
-     * The {@code Quoter} for the {@code Map}.
-     */
-    private static class MapQuoter extends Quoter {
-
-        private static final MapQuoter INSTANCE = new MapQuoter();
-
-        private static final String QUOTE_PATTERN = "((?=[^\\\\])[^\\w])";
-        private static final Pattern DOUBLE_BACKSLASH_PATTERN = compile(BACKSLASH);
-
-        @Override
-        String quote(String stringToQuote) {
-            checkNotNull(stringToQuote);
-            Matcher matcher = compile(QUOTE_PATTERN).matcher(stringToQuote);
-            String unslashed = matcher.find() ?
-                               matcher.replaceAll(BACKSLASH + matcher.group()) :
-                               stringToQuote;
-            String result = QUOTE_CHAR + unslashed + QUOTE_CHAR;
-            return result;
-        }
-
-        @Override
-        String unquote(String value) {
-            return unquoteValue(value, DOUBLE_BACKSLASH_PATTERN);
-        }
-    }
-
-    /**
-     * The {@code Quoter} for the {@code List}.
-     */
-    private static class ListQuoter extends Quoter {
-
-        private static final Quoter INSTANCE = new ListQuoter();
-
-        private static final String BACKSLASH_PATTERN_VALUE = "\\\\\\\\";
-        private static final Pattern BACKSLASH_LIST_PATTERN = compile(BACKSLASH_PATTERN_VALUE);
-        private static final String ESCAPED_QUOTE = BACKSLASH + QUOTE_CHAR;
-        private static final String QUOTE = String.valueOf(QUOTE_CHAR);
-        private static final Pattern QUOTE_PATTERN = compile(QUOTE);
-
-        @Override
-        String quote(String stringToQuote) {
-            checkNotNull(stringToQuote);
-            String escaped = QUOTE_PATTERN.matcher(stringToQuote)
-                                          .replaceAll(ESCAPED_QUOTE);
-            String result = QUOTE_CHAR + escaped + QUOTE_CHAR;
-            return result;
-        }
-
-        @Override
-        String unquote(String value) {
-            return unquoteValue(value, BACKSLASH_LIST_PATTERN);
-        }
-    }
-
-    private static String unquoteValue(String value, Pattern pattern) {
+    static String unquoteValue(String value, Pattern pattern) {
         checkQuoted(value);
         String unquoted = value.substring(2, value.length() - 2);
         String unescaped = pattern.matcher(unquoted)
@@ -164,7 +108,7 @@ abstract class Quoter extends Converter<String, String> {
     private static void checkQuoted(String str) {
         if (!(str.startsWith(BACKSLASH_QUOTE)
                 && str.endsWith(BACKSLASH_QUOTE))) {
-            throw newIllegalArgumentException("The passed string is not quoted: %s", str);
+            throw newIllegalArgumentException("The passed string is not quoted: `%s`.", str);
         }
     }
 }

@@ -26,6 +26,7 @@
 
 package io.spine.tools.javadoc;
 
+import com.google.errorprone.annotations.Immutable;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.RootDoc;
@@ -33,99 +34,104 @@ import com.sun.javadoc.RootDoc;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * Collects {@linkplain PackageDoc}s that pass {@linkplain AnnotationAnalyst} checks.
+ * Collects {@linkplain PackageDoc}s that match the specified {@linkplain AnnotationCheck}.
  */
-class PackageCollector {
+@Immutable
+final class PackageCollector {
 
-    private final AnnotationAnalyst analyst;
+    private final AnnotationCheck<?> check;
 
-    PackageCollector(AnnotationAnalyst analyst) {
-        this.analyst = analyst;
+    PackageCollector(AnnotationCheck<?> check) {
+        this.check = check;
     }
 
     /**
-     * Collects {@linkplain PackageDoc}s from {@linkplain RootDoc#specifiedPackages()}
-     * and {@linkplain RootDoc#specifiedClasses()}.
+     * Collects {@linkplain PackageDoc package documentation}s from
+     * the {@linkplain RootDoc#specifiedPackages() packages} of the passed documentation root,
+     * and packages of the {@linkplain RootDoc#specifiedClasses() classes} of this root.
      *
-     * @param root the root to collect
-     * @return collected {@linkplain PackageDoc}s
+     * @return a set sorted by the package {@linkplain PackageDoc#name() names}
      */
-    Collection<PackageDoc> collect(RootDoc root) {
-        Collection<PackageDoc> packages = new TreeSet<>(new PackageDocComparator());
-
+    Set<PackageDoc> collect(RootDoc root) {
+        Set<PackageDoc> packages = newSortedSet();
         packages.addAll(collect(root.specifiedPackages()));
         packages.addAll(collect(root.specifiedClasses()));
-
         return packages;
     }
 
-    private Collection<PackageDoc> collect(ClassDoc[] forClasses) {
-        Collection<PackageDoc> allPackages = getPackages(forClasses);
-        Collection<PackageDoc> basePackages = getPackages(forClasses);
-
-        for (ClassDoc classDoc : forClasses) {
-            if (isSubpackage(classDoc.containingPackage(), basePackages)) {
-                allPackages.add(classDoc.containingPackage());
-            }
-        }
-
-        return allPackages;
+    /**
+     * Creates a new sorted set for storing the gathered data.
+     */
+    private static Set<PackageDoc> newSortedSet() {
+        return new TreeSet<>(new PackageDocComparator());
     }
 
-    private Collection<PackageDoc> collect(PackageDoc[] forPackages) {
-        Collection<PackageDoc> allPackages = getBasePackages(forPackages);
-        Collection<PackageDoc> basePackages = getBasePackages(forPackages);
-
-        for (PackageDoc packageDoc : forPackages) {
-            if (isSubpackage(packageDoc, basePackages)) {
-                allPackages.add(packageDoc);
-            }
-        }
-
-        return allPackages;
+    /**
+     * Creates a new sorted set initialized with the passed content.
+     */
+    private static Set<PackageDoc> newSortedSet(Set<PackageDoc> content) {
+        Set<PackageDoc> result = newSortedSet();
+        result.addAll(content);
+        return result;
     }
 
-    private Collection<PackageDoc> getBasePackages(PackageDoc[] forPackages) {
-        Collection<PackageDoc> packages = new TreeSet<>(new PackageDocComparator());
-
-        for (PackageDoc packageDoc : forPackages) {
-            if (analyst.isAnnotationPresent(packageDoc.annotations())) {
-                packages.add(packageDoc);
+    private Set<PackageDoc> collect(ClassDoc[] classes) {
+        Set<PackageDoc> packages = packagesOf(classes);
+        Set<PackageDoc> allCollected = newSortedSet(packages);
+        for (ClassDoc cls : classes) {
+            if (isSubpackage(cls.containingPackage(), packages)) {
+                allCollected.add(cls.containingPackage());
             }
         }
-
-        return packages;
+        return allCollected;
     }
 
-    private Collection<PackageDoc> getPackages(ClassDoc[] forClasses) {
-        Collection<PackageDoc> packages = new TreeSet<>(new PackageDocComparator());
-
-        for (ClassDoc classDoc : forClasses) {
-            if (analyst.isAnnotationPresent(classDoc.containingPackage().annotations())) {
-                packages.add(classDoc.containingPackage());
+    private Collection<PackageDoc> collect(PackageDoc[] packages) {
+        Set<PackageDoc> basePackages = packagesOf(packages);
+        Set<PackageDoc> allCollected = newSortedSet(basePackages);
+        for (PackageDoc pckg : packages) {
+            if (isSubpackage(pckg, basePackages)) {
+                allCollected.add(pckg);
             }
         }
+        return allCollected;
+    }
 
-        return packages;
+    private Set<PackageDoc> packagesOf(PackageDoc[] packages) {
+        Set<PackageDoc> result = newSortedSet();
+        for (PackageDoc packageDoc : packages) {
+            if (check.test(packageDoc)) {
+                result.add(packageDoc);
+            }
+        }
+        return result;
+    }
+
+    private Set<PackageDoc> packagesOf(ClassDoc[] classes) {
+        Set<PackageDoc> result = newSortedSet();
+        for (ClassDoc cls : classes) {
+            if (check.test(cls.containingPackage())) {
+                result.add(cls.containingPackage());
+            }
+        }
+        return result;
     }
 
     private static boolean isSubpackage(PackageDoc target, Iterable<PackageDoc> packages) {
-        for (PackageDoc packageDoc : packages) {
-            if (target.name().startsWith(packageDoc.name())) {
+        for (PackageDoc pckg : packages) {
+            if (target.name().startsWith(pckg.name())) {
                 return true;
             }
         }
-
         return false;
     }
 
     private static class PackageDocComparator implements Comparator<PackageDoc>, Serializable {
-
         private static final long serialVersionUID = 1L;
-
         @Override
         public int compare(PackageDoc o1, PackageDoc o2) {
             return o1.name()

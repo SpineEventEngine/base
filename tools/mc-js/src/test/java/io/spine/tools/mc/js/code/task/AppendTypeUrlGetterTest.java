@@ -38,7 +38,7 @@ import io.spine.js.generate.typeurl.OuterMessage.NestedEnum;
 import io.spine.js.generate.typeurl.OuterMessage.NestedMessage;
 import io.spine.js.generate.typeurl.TopLevelEnum;
 import io.spine.tools.mc.js.code.CodeWriter;
-import io.spine.tools.mc.js.code.snippet.Method;
+import io.spine.tools.mc.js.code.text.Method;
 import io.spine.type.MessageType;
 import io.spine.type.ServiceType;
 import io.spine.type.Type;

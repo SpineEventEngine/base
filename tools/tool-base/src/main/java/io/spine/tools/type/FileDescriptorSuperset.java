@@ -29,7 +29,7 @@ package io.spine.tools.type;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
-import io.spine.code.proto.FileDescriptorSets;
+import io.spine.code.proto.FileDescriptorSetReader;
 import io.spine.logging.Logging;
 import io.spine.tools.archive.ArchiveEntry;
 import io.spine.tools.archive.ArchiveFile;
@@ -45,6 +45,7 @@ import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.collect.Sets.newHashSet;
 import static io.spine.code.proto.FileDescriptors.DESC_EXTENSION;
@@ -108,22 +109,25 @@ public final class FileDescriptorSuperset implements Logging {
         }
     }
 
-    private Collection<FileDescriptorSet> mergeDirectory(File directory) {
+    private ImmutableSet<FileDescriptorSet> mergeDirectory(File directory) {
         File[] descriptorFiles = directory.listFiles(
                 (dir, name) -> name.endsWith(DESC_EXTENSION)
         );
-        checkNotNull(descriptorFiles);
+        checkState(descriptorFiles != null,
+                   "Unable to load descriptor files from the directory: `%s`.", directory);
         if (descriptorFiles.length == 0) {
+            _debug().log("No descriptors found in the directory: `%s`.", directory);
             return ImmutableSet.of();
         } else {
-            ImmutableSet<FileDescriptorSet> descriptors = Stream.of(descriptorFiles)
-                                                                .map(this::read)
-                                                                .collect(toImmutableSet());
-            return descriptors;
+            ImmutableSet<FileDescriptorSet> result =
+                    Stream.of(descriptorFiles)
+                          .map(this::read)
+                          .collect(toImmutableSet());
+            return result;
         }
     }
 
-    private Collection<FileDescriptorSet> readFromArchive(File archiveFile) {
+    private ImmutableSet<FileDescriptorSet> readFromArchive(File archiveFile) {
         ArchiveFile archive = ArchiveFile.from(archiveFile);
         ImmutableSet<FileDescriptorSet> result =
                 archive.findByExtension(DESC_EXTENSION)
@@ -143,7 +147,7 @@ public final class FileDescriptorSuperset implements Logging {
         _debug().log("Reading descriptors from file `%s`.", file);
         try {
             byte[] bytes = Files.readAllBytes(path);
-            return FileDescriptorSets.parse(bytes);
+            return FileDescriptorSetReader.parse(bytes);
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }

@@ -39,9 +39,9 @@ import io.spine.code.proto.TypeSet;
 import io.spine.js.generate.TaskId;
 import io.spine.tools.mc.js.code.given.GivenProject;
 import io.spine.tools.mc.js.code.CodeWriter;
-import io.spine.tools.mc.js.code.imports.Import;
+import io.spine.tools.mc.js.code.text.Import;
 import io.spine.option.OptionsProto;
-import io.spine.tools.mc.js.code.snippet.Comment;
+import io.spine.tools.mc.js.code.text.Comment;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,10 +54,10 @@ import java.util.List;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.mc.js.code.given.FileWriters.assertFileContains;
 import static io.spine.tools.mc.js.code.given.Generators.assertContains;
-import static io.spine.tools.mc.js.code.snippet.Parser.ABSTRACT_PARSER_IMPORT_NAME;
-import static io.spine.tools.mc.js.code.snippet.Parser.OBJECT_PARSER_FILE;
-import static io.spine.tools.mc.js.code.snippet.Parser.TYPE_PARSERS_FILE;
-import static io.spine.tools.mc.js.code.snippet.Parser.TYPE_PARSERS_IMPORT_NAME;
+import static io.spine.tools.mc.js.code.text.Parser.ABSTRACT_PARSER_IMPORT_NAME;
+import static io.spine.tools.mc.js.code.text.Parser.OBJECT_PARSER_FILE;
+import static io.spine.tools.mc.js.code.text.Parser.TYPE_PARSERS_FILE;
+import static io.spine.tools.mc.js.code.text.Parser.TYPE_PARSERS_IMPORT_NAME;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 
 @DisplayName("GenerateKnownTypeParsers should")
@@ -82,7 +82,7 @@ class CreateParsersTest {
     void generateComment() {
         CodeWriter code = CreateParsers.codeFor(file);
         Comment expectedComment = Comment.generatedBySpine();
-        assertContains(code, expectedComment.content());
+        assertContains(code, expectedComment.text());
     }
 
     @Test
@@ -131,7 +131,7 @@ class CreateParsersTest {
         Collection<FileDescriptor> fileDescriptors = fileSet.files();
         for (FileDescriptor file : fileDescriptors) {
             List<Descriptor> messageTypes = file.getMessageTypes();
-            if (FileDescriptors.isNotGoogle(file) && !messageTypes.isEmpty()) {
+            if (!FileDescriptors.isGoogle(file) && !messageTypes.isEmpty()) {
                 checkParseCodeAdded(file);
             }
         }

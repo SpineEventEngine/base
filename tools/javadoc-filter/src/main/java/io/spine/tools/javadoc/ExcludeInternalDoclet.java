@@ -26,24 +26,19 @@
 
 package io.spine.tools.javadoc;
 
-import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.ProgramElementDoc;
 import com.sun.javadoc.RootDoc;
 import com.sun.tools.doclets.standard.Standard;
 import com.sun.tools.javadoc.Main;
-import com.sun.tools.javadoc.MethodDocImpl;
 import io.spine.annotation.Internal;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
-
-import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 
 /**
  * Extension of {@linkplain Standard} doclet, which excludes
@@ -72,11 +67,11 @@ import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 @SuppressWarnings("ExtendsUtilityClass")
 public class ExcludeInternalDoclet extends Standard {
 
-    private final ExcludePrinciple excludePrinciple;
+    private final Filter filter;
 
-    ExcludeInternalDoclet(ExcludePrinciple excludePrinciple) {
+    ExcludeInternalDoclet(Filter filter) {
         super();
-        this.excludePrinciple = excludePrinciple;
+        this.filter = filter;
     }
 
     /**
@@ -98,125 +93,59 @@ public class ExcludeInternalDoclet extends Standard {
      */
     @SuppressWarnings({"unused", "RedundantSuppression"}) // called by com.sun.tools.javadoc.Main
     public static boolean start(RootDoc root) {
-        ExcludePrinciple excludePrinciple = new ExcludeInternalPrinciple(root);
-        ExcludeInternalDoclet doclet = new ExcludeInternalDoclet(excludePrinciple);
+        Filter filter = new ExcludeInternal(root);
+        ExcludeInternalDoclet doclet = new ExcludeInternalDoclet(filter);
         return Standard.start((RootDoc) doclet.process(root, RootDoc.class));
     }
 
     /**
      * Creates proxy of "com.sun..." interfaces and excludes
-     * {@linkplain ProgramElementDoc}s using {@linkplain #excludePrinciple}.
+     * {@linkplain ProgramElementDoc}s using {@linkplain #filter}.
      *
      * @param returnValue the value to process
      * @param returnValueType the expected type of value
      * @return the processed value
      */
     @Nullable
-    Object process(@Nullable Object returnValue, Class returnValueType) {
+    Object process(@Nullable Object returnValue, Class<?> returnValueType) {
         if (returnValue == null) {
             return null;
         }
-
-        if (returnValue.getClass()
-                       .getName()
-                       .startsWith("com.sun.")) {
-            Class cls = returnValue.getClass();
-            return Proxy.newProxyInstance(cls.getClassLoader(),
-                                          cls.getInterfaces(),
-                                          new ExcludeHandler(returnValue));
+        boolean belongsToComSun =
+                returnValue.getClass()
+                           .getName()
+                           .startsWith("com.sun.");
+        if (belongsToComSun) {
+            return createProxy(returnValue);
         } else if (returnValue instanceof Object[] && returnValueType.getComponentType() != null) {
-            Class componentType = returnValueType.getComponentType();
-            Object[] array = (Object[]) returnValue;
-            List<Object> list = new ArrayList<>();
-            for (Object entry : array) {
-                if (!(entry instanceof ProgramElementDoc && excludePrinciple.shouldExclude(
-                        (ProgramElementDoc) entry))) {
-                    list.add(process(entry, componentType));
-                }
-            }
-            return list.toArray((Object[]) Array.newInstance(componentType, list.size()));
+            return createArray((Object[]) returnValue, returnValueType);
         } else {
             return returnValue;
         }
     }
 
-    /**
-     * The {@linkplain InvocationHandler} for the "com.sun..." proxies.
-     */
-    private class ExcludeHandler implements InvocationHandler {
-
-        private final Object target;
-
-        private ExcludeHandler(Object target) {
-            this.target = target;
-        }
-
-        @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            if (args != null && IgnoredMethod.isIgnored(method.getName())) {
-                args[0] = unwrap(args[0]);
-            }
-            try {
-                return process(method.invoke(target, args), method.getReturnType());
-            } catch (InvocationTargetException e) {
-                throw illegalStateWithCauseOf(e);
+    @NonNull
+    private Object[] createArray(Object[] returnValue, Class<?> returnValueType) {
+        Class<?> componentType = returnValueType.getComponentType();
+        Object[] array = returnValue;
+        List<Object> list = new ArrayList<>();
+        for (Object entry : array) {
+            if (!(entry instanceof ProgramElementDoc
+                    && filter.test((ProgramElementDoc) entry))) {
+                list.add(process(entry, componentType));
             }
         }
-
-        private Object unwrap(Object proxy) {
-            if (proxy instanceof Proxy) {
-                return ((ExcludeHandler) Proxy.getInvocationHandler(proxy)).target;
-            }
-            return proxy;
-        }
+        Object[] arr = list.toArray((Object[]) Array.newInstance(componentType, list.size()));
+        return arr;
     }
 
-    /**
-     * Enumeration of method names used in {@linkplain Standard} doclet implementation,
-     * that cast parameter represented by interface to concrete implementation type.
-     *
-     * <p>For example {@linkplain MethodDocImpl#overrides(MethodDoc)}:
-     * <pre> {@code
-     *   public boolean overrides(MethodDoc meth) {
-     *       MethodSymbol overridee = ((MethodDocImpl) meth).sym;
-     *       // Remaining part omitted.
-     *   }
-     * }</pre>
-     *
-     * <p>Because we use proxy to filter Javadocs, we should unwrap proxy
-     * of parameters passed to these methods to prevent {@code ClassCastException}.
-     */
-    @SuppressWarnings({"unused", "RedundantSuppression"}) // Used in implicit form.
-    private enum IgnoredMethod {
-        COMPARE_TO("compareTo"),
-        EQUALS("equals"),
-        OVERRIDES("overrides"),
-        SUBCLASS_OF("subclassOf");
-
-        private final String methodName;
-
-        IgnoredMethod(String methodName) {
-            this.methodName = methodName;
-        }
-
-        String getMethodName() {
-            return methodName;
-        }
-
-        /**
-         * Returns {@code true} if the passed method name is one of {@code IgnoredMethod}s.
-         *
-         * @param methodName the method name to test
-         * @return {@code true} if the method name is one of {@code IgnoredMethod}s
-         */
-        private static boolean isIgnored(String methodName) {
-            for (IgnoredMethod ignoredMethod : IgnoredMethod.values()) {
-                if (methodName.equals(ignoredMethod.getMethodName())) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
+    @NonNull
+    private Object createProxy(@NonNull Object returnValue) {
+        Class<?> cls = returnValue.getClass();
+        InvocationHandler handler = new ExcludeHandler(this, returnValue);
+        Object proxy = Proxy.newProxyInstance(
+                cls.getClassLoader(), cls.getInterfaces(), handler
+        );
+        return proxy;
     }
 }

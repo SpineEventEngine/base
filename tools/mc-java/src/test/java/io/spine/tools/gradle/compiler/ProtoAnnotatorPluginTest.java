@@ -60,6 +60,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkState;
+import static io.spine.code.proto.FileDescriptors.DESC_EXTENSION;
 import static io.spine.tools.java.fs.SourceFile.forMessage;
 import static io.spine.tools.java.fs.SourceFile.forOuterClassOf;
 import static io.spine.tools.java.fs.SourceFile.forService;
@@ -304,10 +305,10 @@ class ProtoAnnotatorPluginTest {
                 .buildRoot()
                 .descriptors()
                 .mainDescriptors()
-                .resolve("io.spine.test_" + testProjectDir.getName() + "_3.14.desc");
+                .resolve("io.spine.test_" + testProjectDir.getName() + "_3.14" + DESC_EXTENSION);
         FileSet fileSet = FileSet.parse(mainDescriptor.toFile());
         Optional<FileDescriptor> file = fileSet.tryFind(fileName);
-        checkState(file.isPresent(), "Unable to get file descriptor for %s", fileName);
+        checkState(file.isPresent(), "Unable to get file descriptor for `%s`.", fileName);
         return file.get();
     }
 }

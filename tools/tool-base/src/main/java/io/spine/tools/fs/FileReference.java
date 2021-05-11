@@ -26,6 +26,7 @@
 
 package io.spine.tools.fs;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import io.spine.value.StringTypeValue;
@@ -39,10 +40,11 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * A path to a file used in an import statement.
  */
-public final class FileReference extends StringTypeValue {
+@SuppressWarnings("ComparableImplementedButEqualsNotOverridden") // provided by parent class.
+public final class FileReference extends StringTypeValue implements Comparable<FileReference> {
 
     private static final long serialVersionUID = 0L;
-    /** The path separator used in JavaScript imports. Not platform-dependant. */
+    /** The path separator used in JavaScript-like imports. Not platform-dependant. */
     private static final String IMPORT_PATH_SEPARATOR = "/";
     private static final String PARENT_DIR = ".." + IMPORT_PATH_SEPARATOR;
     private static final String CURRENT_DIR = '.' + IMPORT_PATH_SEPARATOR;
@@ -65,6 +67,20 @@ public final class FileReference extends StringTypeValue {
     public static FileReference of(Path path) {
         checkNotNull(path);
         return of(path.toString());
+    }
+
+    /**
+     * Obtains the splitter by {@linkplain FileReference#separator() separator}.
+     */
+    public static Splitter splitter() {
+        return Splitter.on(separator());
+    }
+
+    /**
+     * Obtains a joiner on {@linkplain FileReference#separator() separator}.
+     */
+    static Joiner joiner() {
+        return Joiner.on(separator());
     }
 
     /**
@@ -102,9 +118,11 @@ public final class FileReference extends StringTypeValue {
         return result;
     }
 
+    /**
+     * Obtains the elements of this file reference.
+     */
     public List<String> elements() {
-        Iterable<String> elements = Splitter.on(separator())
-                                            .split(value());
+        Iterable<String> elements = splitter().split(value());
         return ImmutableList.copyOf(elements);
     }
 
@@ -128,7 +146,7 @@ public final class FileReference extends StringTypeValue {
     }
 
     /**
-     * Obtains the separator used in JavaScript imports.
+     * Obtains the separator used in JavaScript-like imports.
      */
     public static String separator() {
         return IMPORT_PATH_SEPARATOR;
@@ -146,5 +164,10 @@ public final class FileReference extends StringTypeValue {
      */
     public static String currentDirectory() {
         return CURRENT_DIR;
+    }
+
+    @Override
+    public int compareTo(FileReference o) {
+        return value().compareTo(o.value());
     }
 }

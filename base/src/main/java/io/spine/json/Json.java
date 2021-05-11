@@ -59,16 +59,20 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  */
 public final class Json {
 
-    private static final TypeRegistry typeRegistry = KnownTypes.instance()
-                                                               .typeRegistry();
-    private static final Printer PRINTER = printer().usingTypeRegistry(typeRegistry);
-    private static final Printer COMPACT_PRINTER = PRINTER.omittingInsignificantWhitespace();
-    private static final Parser PARSER = parser().ignoringUnknownFields()
-                                                 .usingTypeRegistry(typeRegistry);
+    /** The type registry for all Proto types known in this class path. */
+    private static final TypeRegistry typeRegistry = KnownTypes.instance().typeRegistry();
 
-    /**
-     * Prevents the utility class instantiation.
-     */
+    /** The printer for JSON output which knows about the types. */
+    private static final Printer printer = printer().usingTypeRegistry(typeRegistry);
+
+    /** The compact version of the printer. */
+    private static final Printer compactPrinter = printer.omittingInsignificantWhitespace();
+
+    /** The parser which knows about all types. */
+    private static final Parser parser =
+            parser().ignoringUnknownFields().usingTypeRegistry(typeRegistry);
+
+    /** Prevents instantiation of this utility class. */
     private Json() {
     }
 
@@ -80,7 +84,8 @@ public final class Json {
      * @return JSON string
      */
     public static String toJson(Message message) {
-        String result = toJson(message, PRINTER);
+        checkNotNull(message);
+        String result = toJson(message, printer);
         return result;
     }
 
@@ -94,12 +99,12 @@ public final class Json {
      * @return the converted message to JSON
      */
     public static String toCompactJson(Message message) {
-        String result = toJson(message, COMPACT_PRINTER);
+        checkNotNull(message);
+        String result = toJson(message, compactPrinter);
         return result;
     }
 
     private static String toJson(Message message, Printer printer) {
-        checkNotNull(message);
         String result;
         try {
             result = printer.print(message);
@@ -114,15 +119,18 @@ public final class Json {
     @SuppressWarnings("unchecked") // It is OK as the builder is obtained by the specified class.
     public static <T extends Message> T fromJson(String json, Class<T> messageClass) {
         checkNotNull(json);
+        checkNotNull(messageClass);
         try {
             Message.Builder messageBuilder = builderFor(messageClass);
-            PARSER.merge(json, messageBuilder);
+            parser.merge(json, messageBuilder);
             T result = (T) messageBuilder.build();
             return result;
         } catch (InvalidProtocolBufferException e) {
-            throw newIllegalArgumentException(e,
-                                              "%s cannot be parsed to the %s class.",
-                                              json, messageClass);
+            throw newIllegalArgumentException(
+                    e,
+                    "The JSON text (`%s`) cannot be parsed to an instance of the class `%s`.",
+                    json, messageClass.getName()
+            );
         }
     }
 

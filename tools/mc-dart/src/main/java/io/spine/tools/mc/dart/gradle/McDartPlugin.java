@@ -31,9 +31,11 @@ import io.spine.tools.gradle.ProtoDartTaskName;
 import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.gradle.TaskName;
-import io.spine.tools.dart.code.SourceFile;
+import io.spine.tools.dart.fs.DartFile;
+import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileTree;
 import org.gradle.api.tasks.Copy;
@@ -107,11 +109,13 @@ public final class McDartPlugin extends SpinePlugin {
     }
 
     private void createResolveImportTask(Project project, Extension extension) {
-        newTask(resolveImports, task -> {
-            FileTree generatedDir = extension.getMainGeneratedDir()
-                                             .getAsFileTree();
-            generatedDir.forEach(file -> resolveImports(file, extension));
-        })
+        Action<Task> action = task -> {
+            FileTree generatedFiles =
+                    extension.getMainGeneratedDir()
+                             .getAsFileTree();
+            generatedFiles.forEach(file -> resolveImports(file, extension));
+        };
+        newTask(resolveImports, action)
                 .insertAfterTask(copyGeneratedDart)
                 .insertBeforeTask(assemble)
                 .applyNowTo(project);
@@ -119,12 +123,11 @@ public final class McDartPlugin extends SpinePlugin {
 
     private void resolveImports(File sourceFile, Extension extension) {
         _debug().log("Resolving imports in file %s", sourceFile);
-        SourceFile file = SourceFile.read(sourceFile.toPath());
+        DartFile file = DartFile.read(sourceFile.toPath());
         Path libPath = extension.getLibDir()
                                 .getAsFile()
                                 .map(File::toPath)
                                 .get();
-        file.resolveImports(extension.modules(), libPath);
-        file.store();
+        file.resolveImports(libPath, extension.modules());
     }
 }

@@ -26,7 +26,7 @@
 
 package io.spine.tools.java.fs;
 
-import io.spine.code.SourceCodeDirectory;
+import io.spine.code.fs.SourceCodeDirectory;
 import io.spine.tools.fs.DefaultProject;
 
 import java.io.File;

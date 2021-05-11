@@ -27,23 +27,37 @@
 package io.spine.tools.fs;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
+import com.google.common.primitives.Booleans;
+import com.google.errorprone.annotations.Immutable;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.tools.fs.FileReference.joiner;
+import static io.spine.tools.fs.FileReference.separator;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * A pattern to match a directory.
+ * A pattern to match a directory, or the referenced directory and ones nested into it.
+ *
+ * <p>For the latter case, the passed value must end with {@link #INCLUDE_NESTED "/*"}.
+ * Infix wildcard references are <em>not</em> supported.
+ *
+ * @see #of(String)
  */
-public final class DirectoryPattern {
+@Immutable
+public final class DirectoryPattern implements Comparable<DirectoryPattern> {
 
-    private static final String INCLUDE_NESTED_PATTERN_ENDING = "/*";
+    /**
+     * The suffix a pattern should have to add nested directories into the reference.
+     */
+    public static final String INCLUDE_NESTED = "/*";
 
     private final DirectoryReference directory;
     private final boolean includeNested;
@@ -68,16 +82,45 @@ public final class DirectoryPattern {
      */
     public static DirectoryPattern of(String value) {
         checkNotEmptyOrBlank(value);
-        boolean includeNested = value.endsWith(INCLUDE_NESTED_PATTERN_ENDING);
+        ensureNoInfix(value);
+        boolean includeNested = value.endsWith(INCLUDE_NESTED);
         String directory;
         if (includeNested) {
-            int nameEndIndex = value.length() - INCLUDE_NESTED_PATTERN_ENDING.length();
+            int nameEndIndex = value.length() - INCLUDE_NESTED.length();
             directory = value.substring(0, nameEndIndex);
         } else {
-            directory = value;
+            directory = value.endsWith(separator())
+                        ? value.substring(0, value.length() - separator().length())
+                        : value;
         }
         DirectoryReference reference = DirectoryReference.of(directory);
         return new DirectoryPattern(reference, includeNested);
+    }
+
+    /**
+     * Ensures that {@linkplain #INCLUDE_NESTED nesting} wildcard (if given) is at
+     * the end of the passed value.
+     */
+    private static void ensureNoInfix(String value) {
+        if (value.contains(INCLUDE_NESTED)) {
+            checkArgument(
+                    value.endsWith(INCLUDE_NESTED),
+                    "Infix directory patterns are not supported (`%s`).", value
+            );
+        }
+    }
+
+    /**
+     * Creates a list of patterns from the passed values.
+     */
+    public static ImmutableList<DirectoryPattern> listOf(String... values) {
+        checkNotNull(values);
+        ImmutableList<DirectoryPattern> result =
+                ImmutableList.copyOf(values)
+                             .stream()
+                             .map(DirectoryPattern::of)
+                             .collect(toImmutableList());
+        return result;
     }
 
     /**
@@ -104,27 +147,29 @@ public final class DirectoryPattern {
         checkState(matches(origin));
         Optional<Integer> firstMatchIndex = firstMatchIndex(origin);
         checkState(firstMatchIndex.isPresent());
-        List<String> missingElements = directory.elements()
-                                                .subList(0, firstMatchIndex.get());
-        List<String> resultElements = newArrayList();
-        resultElements.addAll(missingElements);
-        resultElements.addAll(origin.elements());
-        String result = Joiner.on(FileReference.separator())
-                              .join(resultElements);
+        List<String> missingElements =
+                directory.elements()
+                         .subList(0, firstMatchIndex.get());
+        List<String> resultElements = ImmutableList.<String>builder()
+                .addAll(missingElements)
+                .addAll(origin.elements())
+                .build();
+        String result = joiner().join(resultElements);
         return DirectoryReference.of(result);
     }
 
     private boolean matches(DirectoryReference target, int fromIndex) {
         List<String> patternElements = directory.elements();
-        List<String> relevantPattern = patternElements.subList(fromIndex,
-                                                               patternElements.size());
+        List<String> relevantPattern =
+                patternElements.subList(fromIndex, patternElements.size());
         List<String> targetElements = target.elements();
         if (relevantPattern.size() > targetElements.size()) {
             return false;
         }
-        int lastRelevantTarget = includeNested
-                                 ? relevantPattern.size()
-                                 : targetElements.size();
+        int lastRelevantTarget =
+                includeNested
+                ? relevantPattern.size()
+                : targetElements.size();
         List<String> relevantTarget = targetElements.subList(0, lastRelevantTarget);
         return relevantPattern.equals(relevantTarget);
     }
@@ -163,5 +208,14 @@ public final class DirectoryPattern {
     @Override
     public int hashCode() {
         return Objects.hash(directory, includeNested);
+    }
+
+    @Override
+    public int compareTo(DirectoryPattern o) {
+        int dirResult = directory.compareTo(o.directory);
+        if (dirResult != 0) {
+            return dirResult;
+        }
+        return Booleans.compare(includeNested, o.includeNested);
     }
 }

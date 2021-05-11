@@ -32,7 +32,7 @@ import com.google.common.truth.StringSubject;
 import io.spine.tools.code.Line;
 import io.spine.tools.code.Indent;
 import io.spine.tools.code.IndentedLine;
-import io.spine.tools.mc.js.code.snippet.Comment;
+import io.spine.tools.mc.js.code.text.Comment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -220,7 +220,7 @@ class CodeWriterTest {
         lines.increaseDepth();
         Line comment = Comment.of("The field...");
         lines.append(comment);
-        String expected = lines.indent() + comment.content();
+        String expected = lines.indent() + comment.text();
         assertLines(lines).isEqualTo(expected);
     }
 
@@ -258,7 +258,7 @@ class CodeWriterTest {
         StringSubject assertCode = assertLines(code);
         assertCode.contains(first + ",");
         assertCode.contains(second + ",");
-        assertCode.contains(last.content());
+        assertCode.contains(last.text());
         assertCode.doesNotContain(last + ",");
     }
 

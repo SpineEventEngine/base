@@ -38,7 +38,6 @@ import java.nio.file.Path;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertIllegalArgument;
-import static io.spine.testing.Assertions.assertIllegalState;
 import static io.spine.testing.TestValues.randomString;
 
 @DisplayName("`JsFile` should")
@@ -90,12 +89,6 @@ class JsFileTest {
         setFileName(randomString() + ".blah");
         createFile();
 
-        assertIllegalArgument(() -> new JsFile(path));
-    }
-
-    @Test
-    @DisplayName("reject non-existing file")
-    void missingFile() {
         assertIllegalArgument(() -> new JsFile(path));
     }
 }

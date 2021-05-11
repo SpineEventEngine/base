@@ -26,8 +26,8 @@
 
 package io.spine.tools.fs;
 
-import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 import io.spine.value.StringTypeValue;
 
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
@@ -38,10 +38,13 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  * <p>May include parent directories separated by {@linkplain FileReference#separator() slashes},
  * e.g. {@code root/sub}.
  */
-public final class DirectoryReference extends StringTypeValue {
+@SuppressWarnings("ComparableImplementedButEqualsNotOverridden") // provided by the parent class.
+@Immutable
+public final class DirectoryReference
+        extends StringTypeValue
+        implements Comparable<DirectoryReference> {
 
     private static final long serialVersionUID = 0L;
-
     private static final DirectoryReference CURRENT = new DirectoryReference("");
 
     private DirectoryReference(String value) {
@@ -62,6 +65,9 @@ public final class DirectoryReference extends StringTypeValue {
 
     /**
      * Obtains the reference to the current directory.
+     *
+     * <p>The {@linkplain #value() value} of the reference is an empty string, and
+     * not {@code "."}, as it may be expected.
      */
     public static DirectoryReference currentDir() {
         return CURRENT;
@@ -71,8 +77,12 @@ public final class DirectoryReference extends StringTypeValue {
      * Obtains all directory names composing this reference.
      */
     public ImmutableList<String> elements() {
-        Iterable<String> elements = Splitter.on(FileReference.separator())
-                                            .split(value());
+        Iterable<String> elements = FileReference.splitter().split(value());
         return ImmutableList.copyOf(elements);
+    }
+
+    @Override
+    public int compareTo(DirectoryReference o) {
+        return value().compareTo(o.value());
     }
 }
