@@ -31,7 +31,7 @@ import com.google.common.base.Converter;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Abstract base for stringifiers that employ a converter for its operations.
+ * Abstract base for stringifiers that employ a converter for their operations.
  *
  * @param <T> the type to stringify
  */
