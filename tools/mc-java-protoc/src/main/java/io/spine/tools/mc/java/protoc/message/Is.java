@@ -24,43 +24,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.dependency.JavaPoet
-import io.spine.internal.dependency.JavaX
+package io.spine.tools.mc.java.protoc.message;
 
-group = "io.spine.tools"
+import com.google.errorprone.annotations.Immutable;
+import io.spine.code.proto.MessageOption;
+import io.spine.option.IsOption;
+import io.spine.option.OptionsProto;
+import io.spine.type.MessageType;
 
-dependencies {
-    implementation(project(":tool-base"))
-    implementation(project(":plugin-base"))
-    implementation(project(":mc-java-validation"))
-    implementation(JavaPoet.lib)
-    implementation(JavaX.annotations)
+import java.util.Optional;
 
-    testImplementation(project(":base"))
-    testImplementation(project(":testlib"))
-    testImplementation(project(":mute-logging"))
-}
+/**
+ * For a given message, declares if the message is of the specified Java type and
+ * the generation of marker interfaces is enabled.
+ */
+@Immutable
+@SuppressWarnings("NewClassNamingConvention")
+final class Is extends MessageOption<IsOption> {
 
-tasks.jar {
-    dependsOn(
-            ":tool-base:jar",
-            ":mc-java-validation:jar"
-    )
-
-    // See https://stackoverflow.com/questions/35704403/what-are-the-eclipsef-rsa-and-eclipsef-sf-in-a-java-jar-file
-    exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
-
-    manifest {
-        attributes(mapOf("Main-Class" to "io.spine.tools.mc.java.protoc.Plugin"))
+    private Is() {
+        super(OptionsProto.is);
     }
-    // Assemble "Fat-JAR" artifact containing all the dependencies.
-    from(configurations.runtimeClasspath.get().map {
-        when {
-            it.isDirectory -> it
-            else -> zipTree(it)
-        }
-    })
-    // We should provide a classifier or else Protobuf Gradle plugin will substitute it with
-    // an OS-specific one.
-    archiveClassifier.set("exe")
+
+    static Optional<IsOption> of(MessageType type) {
+        Optional<IsOption> result = new Is().valueFrom(type.descriptor());
+        return result;
+    }
 }

@@ -24,43 +24,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.dependency.JavaPoet
-import io.spine.internal.dependency.JavaX
+package io.spine.tools.mc.java.protoc.message;
 
-group = "io.spine.tools"
+import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.proto.FileOption;
+import io.spine.option.IsOption;
+import io.spine.option.OptionsProto;
+import io.spine.type.MessageType;
 
-dependencies {
-    implementation(project(":tool-base"))
-    implementation(project(":plugin-base"))
-    implementation(project(":mc-java-validation"))
-    implementation(JavaPoet.lib)
-    implementation(JavaX.annotations)
+import java.util.Optional;
 
-    testImplementation(project(":base"))
-    testImplementation(project(":testlib"))
-    testImplementation(project(":mute-logging"))
-}
+/**
+ * An option for a specified file which defines if marker interfaces should be generated and
+ * the Java type of the message.
+ *
+ * @see Is Is option
+ */
+final class EveryIs extends FileOption<IsOption> {
 
-tasks.jar {
-    dependsOn(
-            ":tool-base:jar",
-            ":mc-java-validation:jar"
-    )
-
-    // See https://stackoverflow.com/questions/35704403/what-are-the-eclipsef-rsa-and-eclipsef-sf-in-a-java-jar-file
-    exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
-
-    manifest {
-        attributes(mapOf("Main-Class" to "io.spine.tools.mc.java.protoc.Plugin"))
+    /** Creates a new instance of this option. */
+    private EveryIs() {
+        super(OptionsProto.everyIs);
     }
-    // Assemble "Fat-JAR" artifact containing all the dependencies.
-    from(configurations.runtimeClasspath.get().map {
-        when {
-            it.isDirectory -> it
-            else -> zipTree(it)
-        }
-    })
-    // We should provide a classifier or else Protobuf Gradle plugin will substitute it with
-    // an OS-specific one.
-    archiveClassifier.set("exe")
+
+    /**
+     * Obtains a value of the option declared for every type declared in the same file with
+     * the passed message type.
+     *
+     * @return the value of the option, or {@code Optional.empty()} if the option is not specified
+     */
+    static Optional<IsOption> of(MessageType type) {
+        FileDescriptor file = type.file();
+        Optional<IsOption> value = new EveryIs().valueFrom(file);
+        return value;
+    }
 }

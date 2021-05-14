@@ -24,43 +24,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.dependency.JavaPoet
-import io.spine.internal.dependency.JavaX
+package io.spine.tools.mc.java.protoc;
 
-group = "io.spine.tools"
+import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
+import io.spine.testing.UtilityClassTest;
+import io.spine.tools.protoc.plugin.EnhancedWithCodeGeneration;
+import io.spine.type.MessageType;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-dependencies {
-    implementation(project(":tool-base"))
-    implementation(project(":plugin-base"))
-    implementation(project(":mc-java-validation"))
-    implementation(JavaPoet.lib)
-    implementation(JavaX.annotations)
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-    testImplementation(project(":base"))
-    testImplementation(project(":testlib"))
-    testImplementation(project(":mute-logging"))
-}
+@DisplayName("ProtocPluginFiles should")
+final class ProtocPluginFilesTest extends UtilityClassTest<ProtocPluginFiles> {
 
-tasks.jar {
-    dependsOn(
-            ":tool-base:jar",
-            ":mc-java-validation:jar"
-    )
-
-    // See https://stackoverflow.com/questions/35704403/what-are-the-eclipsef-rsa-and-eclipsef-sf-in-a-java-jar-file
-    exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
-
-    manifest {
-        attributes(mapOf("Main-Class" to "io.spine.tools.mc.java.protoc.Plugin"))
+    ProtocPluginFilesTest() {
+        super(ProtocPluginFiles.class);
     }
-    // Assemble "Fat-JAR" artifact containing all the dependencies.
-    from(configurations.runtimeClasspath.get().map {
-        when {
-            it.isDirectory -> it
-            else -> zipTree(it)
-        }
-    })
-    // We should provide a classifier or else Protobuf Gradle plugin will substitute it with
-    // an OS-specific one.
-    archiveClassifier.set("exe")
+
+    @DisplayName("prepare File builder for supplied Type")
+    @Test
+    void prepareFileBuilderForType() {
+        MessageType type = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
+        File.Builder result = ProtocPluginFiles.prepareFile(type);
+
+        assertEquals("io/spine/tools/protoc/plugin/EnhancedWithCodeGeneration.java", result.getName());
+    }
 }

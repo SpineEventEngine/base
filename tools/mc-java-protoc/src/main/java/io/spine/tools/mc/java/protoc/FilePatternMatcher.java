@@ -24,43 +24,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.dependency.JavaPoet
-import io.spine.internal.dependency.JavaX
+package io.spine.tools.mc.java.protoc;
 
-group = "io.spine.tools"
+import io.spine.tools.protoc.FilePattern;
+import io.spine.type.MessageType;
 
-dependencies {
-    implementation(project(":tool-base"))
-    implementation(project(":plugin-base"))
-    implementation(project(":mc-java-validation"))
-    implementation(JavaPoet.lib)
-    implementation(JavaX.annotations)
+import java.util.function.Predicate;
 
-    testImplementation(project(":base"))
-    testImplementation(project(":testlib"))
-    testImplementation(project(":mute-logging"))
-}
+import static com.google.common.base.Preconditions.checkNotNull;
 
-tasks.jar {
-    dependsOn(
-            ":tool-base:jar",
-            ":mc-java-validation:jar"
-    )
+/**
+ * {@link FilePattern} predicate that returns {@code true} if supplied Protobuf
+ * {@link MessageType type} matches pattern's value.
+ */
+public final class FilePatternMatcher implements Predicate<MessageType> {
 
-    // See https://stackoverflow.com/questions/35704403/what-are-the-eclipsef-rsa-and-eclipsef-sf-in-a-java-jar-file
-    exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
+    private final FilePattern pattern;
 
-    manifest {
-        attributes(mapOf("Main-Class" to "io.spine.tools.mc.java.protoc.Plugin"))
+    public FilePatternMatcher(FilePattern filePattern) {
+        checkNotNull(filePattern);
+        this.pattern = filePattern;
     }
-    // Assemble "Fat-JAR" artifact containing all the dependencies.
-    from(configurations.runtimeClasspath.get().map {
-        when {
-            it.isDirectory -> it
-            else -> zipTree(it)
+
+    @Override
+    public boolean test(MessageType type) {
+        checkNotNull(type);
+        String protoFileName = type.declaringFileName()
+                                   .value();
+        switch (pattern.getValueCase()) {
+            case SUFFIX:
+                return protoFileName.endsWith(pattern.getSuffix());
+            case PREFIX:
+                return protoFileName.startsWith(pattern.getPrefix());
+            case REGEX:
+                return protoFileName.matches(pattern.getRegex());
+            case VALUE_NOT_SET:
+            default:
+                return false;
         }
-    })
-    // We should provide a classifier or else Protobuf Gradle plugin will substitute it with
-    // an OS-specific one.
-    archiveClassifier.set("exe")
+    }
 }

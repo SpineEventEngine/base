@@ -24,43 +24,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.dependency.JavaPoet
-import io.spine.internal.dependency.JavaX
+package io.spine.tools.mc.java.protoc;
 
-group = "io.spine.tools"
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import io.spine.type.Type;
 
-dependencies {
-    implementation(project(":tool-base"))
-    implementation(project(":plugin-base"))
-    implementation(project(":mc-java-validation"))
-    implementation(JavaPoet.lib)
-    implementation(JavaX.annotations)
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 
-    testImplementation(project(":base"))
-    testImplementation(project(":testlib"))
-    testImplementation(project(":mute-logging"))
-}
+/**
+ * A generator which calls other generators and merges their results.
+ */
+public final class CompositeGenerator extends CodeGenerator {
 
-tasks.jar {
-    dependsOn(
-            ":tool-base:jar",
-            ":mc-java-validation:jar"
-    )
+    private final ImmutableList<? extends CodeGenerator> generators;
 
-    // See https://stackoverflow.com/questions/35704403/what-are-the-eclipsef-rsa-and-eclipsef-sf-in-a-java-jar-file
-    exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
-
-    manifest {
-        attributes(mapOf("Main-Class" to "io.spine.tools.mc.java.protoc.Plugin"))
+    public static CompositeGenerator of(CodeGenerator... gen) {
+        checkNotNull(gen);
+        ImmutableList<CodeGenerator> generators = ImmutableList.copyOf(gen);
+        return new CompositeGenerator(generators);
     }
-    // Assemble "Fat-JAR" artifact containing all the dependencies.
-    from(configurations.runtimeClasspath.get().map {
-        when {
-            it.isDirectory -> it
-            else -> zipTree(it)
-        }
-    })
-    // We should provide a classifier or else Protobuf Gradle plugin will substitute it with
-    // an OS-specific one.
-    archiveClassifier.set("exe")
+
+    private CompositeGenerator(ImmutableList<CodeGenerator> generators) {
+        super();
+        this.generators = generators;
+    }
+
+    @Override
+    protected ImmutableSet<CompilerOutput> generate(Type<?, ?> type) {
+        ImmutableSet<CompilerOutput> output =
+                generators.stream()
+                          .flatMap(gen -> gen.generate(type).stream())
+                          .collect(toImmutableSet());
+        return output;
+    }
 }

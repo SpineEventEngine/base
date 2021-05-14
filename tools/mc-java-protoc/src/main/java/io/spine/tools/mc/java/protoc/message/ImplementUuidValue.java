@@ -24,43 +24,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.dependency.JavaPoet
-import io.spine.internal.dependency.JavaX
+package io.spine.tools.mc.java.protoc.message;
 
-group = "io.spine.tools"
+import com.google.common.collect.ImmutableList;
+import io.spine.tools.mc.java.protoc.CompilerOutput;
+import io.spine.tools.protoc.UuidConfig;
+import io.spine.type.MessageType;
 
-dependencies {
-    implementation(project(":tool-base"))
-    implementation(project(":plugin-base"))
-    implementation(project(":mc-java-validation"))
-    implementation(JavaPoet.lib)
-    implementation(JavaX.annotations)
+import static com.google.common.base.Preconditions.checkNotNull;
 
-    testImplementation(project(":base"))
-    testImplementation(project(":testlib"))
-    testImplementation(project(":mute-logging"))
-}
+/**
+ * Generates {@link io.spine.base.UuidValue UuidValue} interfaces.
+ */
+public final class ImplementUuidValue extends ImplementInterface {
 
-tasks.jar {
-    dependsOn(
-            ":tool-base:jar",
-            ":mc-java-validation:jar"
-    )
-
-    // See https://stackoverflow.com/questions/35704403/what-are-the-eclipsef-rsa-and-eclipsef-sf-in-a-java-jar-file
-    exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
-
-    manifest {
-        attributes(mapOf("Main-Class" to "io.spine.tools.mc.java.protoc.Plugin"))
+    ImplementUuidValue(UuidConfig config) {
+        super(config.getValue());
     }
-    // Assemble "Fat-JAR" artifact containing all the dependencies.
-    from(configurations.runtimeClasspath.get().map {
-        when {
-            it.isDirectory -> it
-            else -> zipTree(it)
+
+    @Override
+    public InterfaceParameters interfaceParameters(MessageType type) {
+        return InterfaceParameters.empty();
+    }
+
+    /**
+     * Makes supplied {@link io.spine.base.UuidValue UuidValue} type implement
+     * the configured interface.
+     */
+    @Override
+    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
+        checkNotNull(type);
+        if (!type.isUuidValue()) {
+            return ImmutableList.of();
         }
-    })
-    // We should provide a classifier or else Protobuf Gradle plugin will substitute it with
-    // an OS-specific one.
-    archiveClassifier.set("exe")
+        return super.generateFor(type);
+    }
 }

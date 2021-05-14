@@ -24,43 +24,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.dependency.JavaPoet
-import io.spine.internal.dependency.JavaX
+package io.spine.tools.mc.java.protoc.method;
 
-group = "io.spine.tools"
+import com.google.common.collect.ImmutableList;
+import io.spine.tools.mc.java.protoc.CompilerOutput;
+import io.spine.tools.mc.java.protoc.ExternalClassLoader;
+import io.spine.tools.protoc.MethodFactory;
+import io.spine.tools.protoc.UuidConfig;
+import io.spine.type.MessageType;
 
-dependencies {
-    implementation(project(":tool-base"))
-    implementation(project(":plugin-base"))
-    implementation(project(":mc-java-validation"))
-    implementation(JavaPoet.lib)
-    implementation(JavaX.annotations)
+import static com.google.common.base.Preconditions.checkNotNull;
 
-    testImplementation(project(":base"))
-    testImplementation(project(":testlib"))
-    testImplementation(project(":mute-logging"))
-}
+/**
+ * Generates methods for supplied UUID value type based on {@link UuidConfig uuid configuration}.
+ */
+final class GenerateUuidMethods extends MethodGenerationTask {
 
-tasks.jar {
-    dependsOn(
-            ":tool-base:jar",
-            ":mc-java-validation:jar"
-    )
-
-    // See https://stackoverflow.com/questions/35704403/what-are-the-eclipsef-rsa-and-eclipsef-sf-in-a-java-jar-file
-    exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
-
-    manifest {
-        attributes(mapOf("Main-Class" to "io.spine.tools.mc.java.protoc.Plugin"))
+    GenerateUuidMethods(ExternalClassLoader<MethodFactory> classLoader, UuidConfig config) {
+        super(classLoader, config.getValue());
     }
-    // Assemble "Fat-JAR" artifact containing all the dependencies.
-    from(configurations.runtimeClasspath.get().map {
-        when {
-            it.isDirectory -> it
-            else -> zipTree(it)
+
+    /**
+     * Generates new methods for supplied {@link io.spine.base.UuidValue UuidValue} Protobuf
+     * {@code type}.
+     */
+    @Override
+    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
+        checkNotNull(type);
+        if (!type.isUuidValue()) {
+            return ImmutableList.of();
         }
-    })
-    // We should provide a classifier or else Protobuf Gradle plugin will substitute it with
-    // an OS-specific one.
-    archiveClassifier.set("exe")
+        return generateMethodsFor(type);
+    }
 }

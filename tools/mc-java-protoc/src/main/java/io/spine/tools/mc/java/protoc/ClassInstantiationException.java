@@ -24,43 +24,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.dependency.JavaPoet
-import io.spine.internal.dependency.JavaX
+package io.spine.tools.mc.java.protoc;
 
-group = "io.spine.tools"
+import static java.lang.String.format;
 
-dependencies {
-    implementation(project(":tool-base"))
-    implementation(project(":plugin-base"))
-    implementation(project(":mc-java-validation"))
-    implementation(JavaPoet.lib)
-    implementation(JavaX.annotations)
+/**
+ * Exception that is thrown when a particular class cannot be instantiated by the
+ * {@link ExternalClassLoader}.
+ */
+public final class ClassInstantiationException extends RuntimeException {
 
-    testImplementation(project(":base"))
-    testImplementation(project(":testlib"))
-    testImplementation(project(":mute-logging"))
-}
+    private static final long serialVersionUID = 0L;
 
-tasks.jar {
-    dependsOn(
-            ":tool-base:jar",
-            ":mc-java-validation:jar"
-    )
-
-    // See https://stackoverflow.com/questions/35704403/what-are-the-eclipsef-rsa-and-eclipsef-sf-in-a-java-jar-file
-    exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
-
-    manifest {
-        attributes(mapOf("Main-Class" to "io.spine.tools.mc.java.protoc.Plugin"))
+    /**
+     * Creates a new instance with the class name.
+     *
+     * @param className
+     *         the class name
+     */
+    ClassInstantiationException(String className) {
+        super(makeMsg(className));
     }
-    // Assemble "Fat-JAR" artifact containing all the dependencies.
-    from(configurations.runtimeClasspath.get().map {
-        when {
-            it.isDirectory -> it
-            else -> zipTree(it)
-        }
-    })
-    // We should provide a classifier or else Protobuf Gradle plugin will substitute it with
-    // an OS-specific one.
-    archiveClassifier.set("exe")
+
+    private static String makeMsg(String className) {
+        return format("Unable to instantiate class `%s`.", className);
+    }
+
+    /**
+     * Creates a new instance with the class name and the cause.
+     *
+     * @param className
+     *         the class name
+     * @param cause
+     *         the exception cause
+     */
+    ClassInstantiationException(String className, Throwable cause) {
+        super(makeMsg(className), cause);
+    }
 }
