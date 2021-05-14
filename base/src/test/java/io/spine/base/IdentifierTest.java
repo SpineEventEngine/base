@@ -97,29 +97,30 @@ class IdentifierTest {
         @Test
         @DisplayName("`String`")
         void ofString() {
-            assertTrue(Identifier.from("")
-                                 .isString());
+            assertTypeOf("", STRING);
         }
 
         @Test
         @DisplayName("`Integer`")
         void ofInteger() {
-            assertTrue(Identifier.from(0)
-                                 .isInteger());
+            assertTypeOf(0, INTEGER);
         }
 
         @Test
         @DisplayName("`Long`")
         void ofLong() {
-            assertTrue(Identifier.from(0L)
-                                 .isLong());
+            assertTypeOf(0L, LONG);
         }
 
         @Test
         @DisplayName("`Message`")
         void ofMessage() {
-            assertTrue(Identifier.from(toMessage(300))
-                                 .isMessage());
+            assertTypeOf(toMessage(300), MESSAGE);
+        }
+
+        private void assertTypeOf(Object id, IdType expectedType) {
+            Identifier<?> identifier = Identifier.from(id);
+            assertThat(identifier.type()).isEqualTo(expectedType);
         }
     }
 
@@ -342,8 +343,7 @@ class IdentifierTest {
         @DisplayName("`Message` with nested `Message`")
         void ofNestedMessage() {
             StringValue value = StringValue.of(TEST_ID);
-            NestedMessageId idToConvert = NestedMessageId
-                    .newBuilder()
+            NestedMessageId idToConvert = NestedMessageId.newBuilder()
                     .setId(value)
                     .build();
 
@@ -372,8 +372,7 @@ class IdentifierTest {
         int number = 256;
 
         StringValue nestedMessageString = StringValue.of(nestedString);
-        SeveralFieldsId idToConvert = SeveralFieldsId
-                .newBuilder()
+        SeveralFieldsId idToConvert = SeveralFieldsId.newBuilder()
                 .setString(outerString)
                 .setNumber(number)
                 .setMessage(nestedMessageString)
@@ -509,12 +508,6 @@ class IdentifierTest {
     @DisplayName("return `NULL_ID` when converting null")
     void nullId() {
         assertEquals(NULL_ID, Identifier.toString(null));
-    }
-
-    @Test
-    @DisplayName("declare `ID_PROPERTY_SUFFIX`")
-    void idPropSuffix() {
-        assertThat(Identifier.ID_PROPERTY_SUFFIX).isEqualTo("id");
     }
 
     @Nested
