@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate;
+package io.spine.tools.mc.java.validate;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.squareup.javapoet.MethodSpec;
@@ -32,6 +32,7 @@ import com.squareup.javapoet.TypeSpec;
 import io.spine.test.tools.validate.NotValidator;
 import io.spine.test.tools.validate.Validator;
 import io.spine.test.tools.validate.avocado.Greenhouse;
+import io.spine.tools.mc.java.validate.ValidateSpecs;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

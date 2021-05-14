@@ -24,35 +24,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate.code;
+package io.spine.tools.mc.java.validate;
 
-import com.google.errorprone.annotations.FormatMethod;
-import com.google.errorprone.annotations.FormatString;
+import com.google.common.base.Objects;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeSpec;
 
-import static java.lang.String.format;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * An expression which does not yield a value.
+ * A method to be attached to a Java class.
  *
- * <p>The actual generated code might formally be non-void. In this case, by using
- * {@code VoidExpression} we state that the value of the expression is irrelevant. Example of such
- * an expression is {@code collection.add(element)}, which returns a {@code boolean} value, but it
- * is not used.
+ * @implNote A {@code Method} wraps a JavaPoet {@link MethodSpec} which can be added to a JavaPoet
+ *         {@link TypeSpec} builder.
  */
-public final class VoidExpression extends CodeExpression<Void> {
+final class Method implements ClassMember {
 
-    private static final long serialVersionUID = 0L;
+    private final MethodSpec methodSpec;
 
-    private VoidExpression(String value) {
-        super(value);
+    Method(MethodSpec methodSpec) {
+        this.methodSpec = checkNotNull(methodSpec);
     }
 
-    /**
-     * Creates a {@code VoidExpression} by formatting the given template string by the rules of
-     * {@code String.format()}.
-     */
-    @FormatMethod
-    public static VoidExpression formatted(@FormatString String template, Object... args) {
-        return new VoidExpression(format(template, args));
+    @Override
+    public void attachTo(TypeSpec.Builder type) {
+        type.addMethod(methodSpec);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Method)) {
+            return false;
+        }
+        Method method = (Method) o;
+        return Objects.equal(methodSpec, method.methodSpec);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(methodSpec);
     }
 }

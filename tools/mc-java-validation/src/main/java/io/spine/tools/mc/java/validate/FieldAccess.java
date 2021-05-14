@@ -24,11 +24,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate;
+package io.spine.tools.mc.java.validate;
 
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
-import io.spine.tools.validate.code.CodeExpression;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -36,7 +35,7 @@ import static java.lang.String.format;
 /**
  * A language expression which obtains a field from a Protobuf message.
  */
-public final class FieldAccess extends CodeExpression<Object> {
+final class FieldAccess extends CodeExpression<Object> {
 
     private static final long serialVersionUID = 0L;
 

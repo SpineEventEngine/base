@@ -24,23 +24,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate;
+package io.spine.tools.mc.java.validate;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolMessageEnum;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.OneofDeclaration;
-import io.spine.tools.validate.code.CodeExpression;
-import io.spine.tools.validate.code.Expression;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.validate.FieldAccess.fieldOfMessage;
-import static io.spine.tools.validate.code.Expression.formatted;
+import static io.spine.tools.mc.java.validate.FieldAccess.fieldOfMessage;
+import static io.spine.tools.mc.java.validate.Expression.formatted;
 
 /**
  * An expression which yields a message.
  */
-public final class MessageAccess extends CodeExpression<Message> {
+final class MessageAccess extends CodeExpression<Message> {
 
     private static final long serialVersionUID = 0L;
 

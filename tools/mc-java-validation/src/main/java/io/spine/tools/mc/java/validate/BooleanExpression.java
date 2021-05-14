@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate.code;
+package io.spine.tools.mc.java.validate;
 
 import com.squareup.javapoet.CodeBlock;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -35,7 +35,7 @@ import static com.google.common.base.Preconditions.checkState;
 /**
  * An expression which yields a {@code boolean} value.
  */
-public final class BooleanExpression extends CodeExpression<Boolean> {
+final class BooleanExpression extends CodeExpression<Boolean> {
 
     private static final long serialVersionUID = 0L;
 

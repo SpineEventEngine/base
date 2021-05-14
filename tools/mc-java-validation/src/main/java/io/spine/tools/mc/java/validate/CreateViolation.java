@@ -24,9 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate.code;
+package io.spine.tools.mc.java.validate;
 
-import io.spine.tools.validate.FieldAccess;
 import io.spine.validate.ConstraintViolation;
 
 import java.util.function.Function;
@@ -36,5 +35,5 @@ import java.util.function.Function;
  * on that field.
  */
 @FunctionalInterface
-public interface CreateViolation extends Function<FieldAccess, Expression<ConstraintViolation>> {
+interface CreateViolation extends Function<FieldAccess, Expression<ConstraintViolation>> {
 }

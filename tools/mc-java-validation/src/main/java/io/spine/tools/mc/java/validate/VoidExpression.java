@@ -24,14 +24,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.mc.java.validate;
+
+import com.google.errorprone.annotations.FormatMethod;
+import com.google.errorprone.annotations.FormatString;
+
+import static java.lang.String.format;
+
 /**
- * Contains the utilities generating the Java code used for message validation.
+ * An expression which does not yield a value.
+ *
+ * <p>The actual generated code might formally be non-void. In this case, by using
+ * {@code VoidExpression} we state that the value of the expression is irrelevant. Example of such
+ * an expression is {@code collection.add(element)}, which returns a {@code boolean} value, but it
+ * is not used.
  */
+final class VoidExpression extends CodeExpression<Void> {
 
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.validate;
+    private static final long serialVersionUID = 0L;
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    private VoidExpression(String value) {
+        super(value);
+    }
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    /**
+     * Creates a {@code VoidExpression} by formatting the given template string by the rules of
+     * {@code String.format()}.
+     */
+    @FormatMethod
+    public static VoidExpression formatted(@FormatString String template, Object... args) {
+        return new VoidExpression(format(template, args));
+    }
+}

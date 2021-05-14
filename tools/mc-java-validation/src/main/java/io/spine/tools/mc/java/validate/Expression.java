@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate.code;
+package io.spine.tools.mc.java.validate;
 
 import com.google.errorprone.annotations.FormatMethod;
 import com.google.errorprone.annotations.FormatString;
@@ -52,7 +52,7 @@ import static java.lang.System.lineSeparator;
  *         for clarification purposes only
  */
 @SuppressWarnings("unused") // Unused type param <R>.
-public interface Expression<R> {
+interface Expression<R> {
 
     /**
      * Prints this expression as a {@link CodeBlock}.

@@ -24,14 +24,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate;
+package io.spine.tools.mc.java.validate;
 
 import com.google.common.base.Objects;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.tools.validate.code.BooleanExpression;
-import io.spine.tools.validate.code.Expression;
 import io.spine.validate.ExternalConstraints;
 
 import static com.google.common.base.Preconditions.checkNotNull;

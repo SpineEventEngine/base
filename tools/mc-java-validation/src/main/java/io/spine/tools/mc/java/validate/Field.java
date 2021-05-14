@@ -24,14 +24,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.mc.java.validate;
+
+import com.google.common.base.Objects;
+import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.TypeSpec;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * Contains types which allow constructing Java code.
+ * A field to be attached to a Java class.
+ *
+ * @implNote A {@code Field} wraps a JavaPoet {@link FieldSpec} which can be added to a JavaPoet
+ *         {@link TypeSpec} builder.
  */
+final class Field implements ClassMember {
 
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.validate.code;
+    private final FieldSpec fieldSpec;
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    Field(FieldSpec fieldSpec) {
+        this.fieldSpec = checkNotNull(fieldSpec);
+    }
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    @Override
+    public void attachTo(TypeSpec.Builder type) {
+        type.addField(fieldSpec);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Field)) {
+            return false;
+        }
+        Field field = (Field) o;
+        return Objects.equal(fieldSpec, field.fieldSpec);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(fieldSpec);
+    }
+}

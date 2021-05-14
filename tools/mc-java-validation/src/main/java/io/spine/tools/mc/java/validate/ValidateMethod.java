@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate;
+package io.spine.tools.mc.java.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.reflect.TypeToken;

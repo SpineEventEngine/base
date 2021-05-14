@@ -24,30 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate;
-
-import io.spine.tools.validate.code.Expression;
-import io.spine.tools.validate.code.VoidExpression;
-import io.spine.validate.ConstraintViolation;
+package io.spine.tools.mc.java.validate;
 
 import java.util.function.Function;
 
 /**
- * A function which accepts an expression of a {@link ConstraintViolation} and transforms it into
- * an expression of the violation being saved.
- *
- * <p>Typically, one accumulator is used many times for different violations.
- *
- * <p>For example:
- * <pre>{@code
- * AccumulateViolation accumulator =
- *     (violationExpression) -> formatted("errorBuilder.addViolation(%s);", violationExpression);
- * }</pre>
- *
- * <p>In the example above a function takes a {@link ConstraintViolation} expression and uses it
- * to add the violation to a {@code ValidationError} builder.
+ * A function which accepts a field and produces an expression which checks some property of
+ * the field.
  */
 @FunctionalInterface
-public interface AccumulateViolations
-        extends Function<Expression<ConstraintViolation>, VoidExpression> {
+interface Check extends Function<FieldAccess, BooleanExpression> {
 }

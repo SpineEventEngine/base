@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate;
+package io.spine.tools.mc.java.validate;
 
 import com.squareup.javapoet.TypeSpec;
 
@@ -33,7 +33,7 @@ import com.squareup.javapoet.TypeSpec;
  *
  * <p>The member can be {@linkplain #attachTo attached} to a type constructed with Java Poet.
  */
-public interface ClassMember {
+interface ClassMember {
 
     /**
      * Adds this member to the constructed {@code type}.

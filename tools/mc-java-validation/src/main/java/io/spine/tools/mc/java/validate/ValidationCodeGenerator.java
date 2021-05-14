@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate;
+package io.spine.tools.mc.java.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -38,13 +38,6 @@ import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.GoesOption;
 import io.spine.option.IfInvalidOption;
 import io.spine.protobuf.AnyPacker;
-import io.spine.tools.validate.code.BooleanExpression;
-import io.spine.tools.validate.code.Check;
-import io.spine.tools.validate.code.ConstraintCode;
-import io.spine.tools.validate.code.CreateViolation;
-import io.spine.tools.validate.code.Expression;
-import io.spine.tools.validate.code.IsSet;
-import io.spine.tools.validate.code.NewViolation;
 import io.spine.type.MessageType;
 import io.spine.util.Duplicates;
 import io.spine.validate.Alternative;
@@ -74,11 +67,11 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.validate.ValidateMethod.VIOLATIONS;
-import static io.spine.tools.validate.code.BooleanExpression.fromCode;
-import static io.spine.tools.validate.code.Containers.isEmpty;
-import static io.spine.tools.validate.code.IsSet.alternativeIsSet;
-import static io.spine.tools.validate.code.VoidExpression.formatted;
+import static io.spine.tools.mc.java.validate.ValidateMethod.VIOLATIONS;
+import static io.spine.tools.mc.java.validate.BooleanExpression.fromCode;
+import static io.spine.tools.mc.java.validate.Containers.isEmpty;
+import static io.spine.tools.mc.java.validate.IsSet.alternativeIsSet;
+import static io.spine.tools.mc.java.validate.VoidExpression.formatted;
 import static io.spine.util.Exceptions.unsupported;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static io.spine.validate.diags.ViolationText.errorMessage;

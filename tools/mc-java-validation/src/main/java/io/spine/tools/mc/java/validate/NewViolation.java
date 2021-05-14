@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate.code;
+package io.spine.tools.mc.java.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.CodeBlock;
@@ -32,7 +32,6 @@ import io.spine.base.FieldPath;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.protobuf.TypeConverter;
-import io.spine.tools.validate.FieldAccess;
 import io.spine.type.MessageType;
 import io.spine.validate.ConstraintViolation;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -46,7 +45,7 @@ import static java.util.Arrays.asList;
 /**
  * An {@link Expression} which creates a new {@link ConstraintViolation}.
  */
-public final class NewViolation implements Expression<ConstraintViolation> {
+final class NewViolation implements Expression<ConstraintViolation> {
 
     private final String message;
     private final ImmutableList<String> params;

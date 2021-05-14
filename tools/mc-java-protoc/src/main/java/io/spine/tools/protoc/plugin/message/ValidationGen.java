@@ -36,7 +36,7 @@ import io.spine.tools.protoc.plugin.CompilerOutput;
 import io.spine.tools.protoc.plugin.InsertionPoint;
 import io.spine.tools.protoc.plugin.NoOpGenerator;
 import io.spine.tools.protoc.plugin.ProtocPluginFiles;
-import io.spine.tools.validate.ValidateSpecs;
+import io.spine.tools.mc.java.validate.ValidateSpecs;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 import io.spine.validate.MessageWithConstraints;

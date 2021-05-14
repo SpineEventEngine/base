@@ -24,47 +24,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate;
+package io.spine.tools.mc.java.validate;
 
-import com.google.common.base.Objects;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.TypeSpec;
+import io.spine.protobuf.Messages;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.mc.java.validate.BooleanExpression.fromCode;
 
 /**
- * A field to be attached to a Java class.
+ * Set of utilities for working with values of container types.
  *
- * @implNote A {@code Field} wraps a JavaPoet {@link FieldSpec} which can be added to a JavaPoet
- *         {@link TypeSpec} builder.
+ * <p>Container types are types composed of homogeneous elements: a collection, a string, etc.
  */
-final class Field implements ClassMember {
+final class Containers {
 
-    private final FieldSpec fieldSpec;
-
-    Field(FieldSpec fieldSpec) {
-        this.fieldSpec = checkNotNull(fieldSpec);
+    /**
+     * Prevents the utility class instantiation.
+     */
+    private Containers() {
     }
 
-    @Override
-    public void attachTo(TypeSpec.Builder type) {
-        type.addField(fieldSpec);
+    /**
+     * Obtains the expression which calls {@code isEmpty()} method on the given {@code value}.
+     *
+     * @param value
+     *         an expression which yields an object which has a {@code isEmpty()} method, e.g.
+     *         a {@code String}
+     */
+    public static BooleanExpression isEmpty(Expression<?> value) {
+        return fromCode("$L.isEmpty()", value.toCode());
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Field)) {
-            return false;
-        }
-        Field field = (Field) o;
-        return Objects.equal(fieldSpec, field.fieldSpec);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(fieldSpec);
+    /**
+     * Obtains the expression which calls {@code Messages.isDefault())} method on the given
+     * {@code value}.
+     *
+     * @param value
+     *         an expression of a Protobuf message or a Protobuf enum
+     */
+    public static BooleanExpression isDefault(Expression<?> value) {
+        return fromCode("$T.isDefault($L)", Messages.class, value.toCode());
     }
 }

@@ -24,22 +24,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate.code;
+package io.spine.tools.mc.java.validate;
 
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.tools.validate.FieldAccess;
-import io.spine.tools.validate.MessageAccess;
 import io.spine.validate.Alternative;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.squareup.javapoet.ClassName.bestGuess;
-import static io.spine.tools.validate.code.BooleanExpression.falseLiteral;
-import static io.spine.tools.validate.code.BooleanExpression.trueLiteral;
+import static io.spine.tools.mc.java.validate.BooleanExpression.falseLiteral;
+import static io.spine.tools.mc.java.validate.BooleanExpression.trueLiteral;
 import static java.lang.String.format;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.STATIC;
@@ -47,7 +45,7 @@ import static javax.lang.model.element.Modifier.STATIC;
 /**
  * A factory of code which check is a given field is set.
  */
-public final class IsSet {
+final class IsSet {
 
     private static final String MESSAGE = "msg";
 

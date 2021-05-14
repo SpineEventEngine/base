@@ -24,16 +24,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate.code;
-
-import io.spine.tools.validate.FieldAccess;
-
-import java.util.function.Function;
-
 /**
- * A function which accepts a field and produces an expression which checks some property of
- * the field.
+ * This package provides the types for generating validation code in accordance to
+ * validation attributes define in options of proto types.
  */
-@FunctionalInterface
-public interface Check extends Function<FieldAccess, BooleanExpression> {
-}
+
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.mc.java.validate;
+
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import javax.annotation.ParametersAreNonnullByDefault;

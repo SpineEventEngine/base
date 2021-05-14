@@ -24,47 +24,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate;
+package io.spine.tools.mc.java.validate;
 
-import com.google.common.base.Objects;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeSpec;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.squareup.javapoet.CodeBlock;
+import io.spine.value.StringTypeValue;
 
 /**
- * A method to be attached to a Java class.
+ * A simple expression based on a fragment of source code.
  *
- * @implNote A {@code Method} wraps a JavaPoet {@link MethodSpec} which can be added to a JavaPoet
- *         {@link TypeSpec} builder.
+ * @param <R> the type of the expression value
  */
-final class Method implements ClassMember {
+class CodeExpression<R> extends StringTypeValue implements Expression<R> {
 
-    private final MethodSpec methodSpec;
+    private static final long serialVersionUID = 0L;
 
-    Method(MethodSpec methodSpec) {
-        this.methodSpec = checkNotNull(methodSpec);
+    CodeExpression(String value) {
+        super(value);
     }
 
     @Override
-    public void attachTo(TypeSpec.Builder type) {
-        type.addMethod(methodSpec);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Method)) {
-            return false;
-        }
-        Method method = (Method) o;
-        return Objects.equal(methodSpec, method.methodSpec);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(methodSpec);
+    public CodeBlock toCode() {
+        return CodeBlock.of("$L", value());
     }
 }

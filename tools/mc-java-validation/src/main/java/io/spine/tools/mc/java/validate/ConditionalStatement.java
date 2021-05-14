@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate.code;
+package io.spine.tools.mc.java.validate;
 
 import com.squareup.javapoet.CodeBlock;
 
@@ -38,7 +38,7 @@ import static java.lang.System.lineSeparator;
  * <p>An instance of {@code ConditionalStatement} is not reusable. See {@link #toCode()} doc for
  * the details.
  */
-public final class ConditionalStatement {
+final class ConditionalStatement {
 
     private final CodeBlock.Builder code;
     private boolean complete = false;

@@ -24,13 +24,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate;
+package io.spine.tools.mc.java.validate;
 
 import com.google.common.collect.Range;
-import io.spine.tools.validate.code.BooleanExpression;
 
 import static com.google.common.collect.BoundType.OPEN;
-import static io.spine.tools.validate.code.BooleanExpression.fromCode;
+import static io.spine.tools.mc.java.validate.BooleanExpression.fromCode;
 
 /**
  * A bound of a comparable field value.
@@ -53,6 +52,7 @@ enum Bound {
             return range.lowerEndpoint();
         }
     },
+
     UPPER("<") {
         @Override
         boolean exists(Range<?> range) {

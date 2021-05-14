@@ -24,26 +24,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate.code;
+package io.spine.tools.mc.java.validate;
 
-import com.squareup.javapoet.CodeBlock;
-import io.spine.value.StringTypeValue;
+import io.spine.validate.ConstraintViolation;
+
+import java.util.function.Function;
 
 /**
- * A simple expression based on a fragment of source code.
+ * A function which accepts an expression of a {@link ConstraintViolation} and transforms it into
+ * an expression of the violation being saved.
  *
- * @param <R> the type of the expression value
+ * <p>Typically, one accumulator is used many times for different violations.
+ *
+ * <p>For example:
+ * <pre>{@code
+ * AccumulateViolation accumulator =
+ *     (violationExpression) -> formatted("errorBuilder.addViolation(%s);", violationExpression);
+ * }</pre>
+ *
+ * <p>In the example above a function takes a {@link ConstraintViolation} expression and uses it
+ * to add the violation to a {@code ValidationError} builder.
  */
-public class CodeExpression<R> extends StringTypeValue implements Expression<R> {
-
-    private static final long serialVersionUID = 0L;
-
-    protected CodeExpression(String value) {
-        super(value);
-    }
-
-    @Override
-    public CodeBlock toCode() {
-        return CodeBlock.of("$L", value());
-    }
+@FunctionalInterface
+interface AccumulateViolations extends Function<Expression<ConstraintViolation>, VoidExpression> {
 }

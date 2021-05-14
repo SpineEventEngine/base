@@ -24,44 +24,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate.code;
+package io.spine.tools.mc.java.validate;
 
-import io.spine.protobuf.Messages;
+import com.squareup.javapoet.CodeBlock;
+import io.spine.tools.mc.java.validate.Expression;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.validate.code.BooleanExpression.fromCode;
+import static com.google.common.truth.Truth.assertThat;
 
-/**
- * Set of utilities for working with values of container types.
- *
- * <p>Container types are types composed of homogeneous elements: a collection, a string, etc.
- */
-public final class Containers {
+@DisplayName("`Expression` should")
+class ExpressionTest {
 
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private Containers() {
-    }
-
-    /**
-     * Obtains the expression which calls {@code isEmpty()} method on the given {@code value}.
-     *
-     * @param value
-     *         an expression which yields an object which has a {@code isEmpty()} method, e.g.
-     *         a {@code String}
-     */
-    public static BooleanExpression isEmpty(Expression<?> value) {
-        return fromCode("$L.isEmpty()", value.toCode());
-    }
-
-    /**
-     * Obtains the expression which calls {@code Messages.isDefault())} method on the given
-     * {@code value}.
-     *
-     * @param value
-     *         an expression of a Protobuf message or a Protobuf enum
-     */
-    public static BooleanExpression isDefault(Expression<?> value) {
-        return fromCode("$T.isDefault($L)", Messages.class, value.toCode());
+    @Test
+    @DisplayName("create formatted expressions")
+    void format() {
+        Expression<?> expression =
+                Expression.formatted("%s %s %d!", "hello", new StringBuilder("world"), 42);
+        CodeBlock code = expression.toCode();
+        assertThat(code.toString())
+                .isEqualTo("hello world 42!");
     }
 }

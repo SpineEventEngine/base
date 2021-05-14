@@ -24,27 +24,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate.code;
+package io.spine.tools.mc.java.validate;
 
 import com.squareup.javapoet.CodeBlock;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.logging.Logging;
-import io.spine.tools.validate.AccumulateViolations;
-import io.spine.tools.validate.FieldAccess;
-import io.spine.tools.validate.MessageAccess;
 
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.validate.FieldAccess.element;
-import static io.spine.tools.validate.code.Blocks.empty;
+import static io.spine.tools.mc.java.validate.FieldAccess.element;
 import static java.lang.System.lineSeparator;
 
 /**
  * Conditional code which checks a validation constraint.
  */
-public final class ConstraintCode implements Logging {
+final class ConstraintCode implements Logging {
 
+    private static final CodeBlock EMPTY = CodeBlock.of("");
     private final Function<FieldAccess, CodeBlock> declarations;
     private final Check conditionCheck;
     private final CreateViolation createViolation;
@@ -63,6 +60,13 @@ public final class ConstraintCode implements Logging {
         this.onViolation = builder.onViolation;
         this.onlyIfSet = builder.onlyIfSet;
         this.field = builder.field;
+    }
+
+    /**
+     * Obtains an empty code block.
+     */
+    private static CodeBlock empty() {
+        return EMPTY;
     }
 
     /**

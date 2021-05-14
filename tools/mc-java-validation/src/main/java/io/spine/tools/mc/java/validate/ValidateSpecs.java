@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.validate;
+package io.spine.tools.mc.java.validate;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
@@ -45,7 +45,7 @@ import javax.annotation.Generated;
 import java.util.Set;
 
 import static com.squareup.javapoet.ClassName.bestGuess;
-import static io.spine.tools.validate.ValidateMethod.immutableListOfViolations;
+import static io.spine.tools.mc.java.validate.ValidateMethod.immutableListOfViolations;
 import static java.lang.System.lineSeparator;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
