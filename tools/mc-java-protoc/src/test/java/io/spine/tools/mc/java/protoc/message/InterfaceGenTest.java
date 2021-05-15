@@ -88,8 +88,12 @@ final class InterfaceGenTest {
     private static final String PROTO_PACKAGE = "spine.tools.protoc.msg";
     private static final String PROTO_DIR = PROTO_PACKAGE.replace('.', '/');
 
+    /**
+     * The package and directory name of the test data, as declared in proto files under
+     * the {@code proto/spine/tools/protoc/msg} directory.
+     */
     private static final PackageName JAVA_PACKAGE =
-            PackageName.of(InterfaceGenTest.class).nested("tests");
+            PackageName.of("io.spine.tools.protoc.plugin.message.tests");
     private static final String JAVA_DIR = JAVA_PACKAGE.value().replace('.', '/');
 
     private static final Pattern CUSTOMER_EVENT_INTERFACE_PATTERN =
