@@ -89,19 +89,32 @@ final class InterfaceGenTest {
     private static final String PROTO_DIR = PROTO_PACKAGE.replace('.', '/');
 
     /**
-     * The package and directory name of the test data, as declared in proto files under
+     * The package name of the test data, as declared in proto files under
      * the {@code proto/spine/tools/protoc/msg} directory.
      */
     private static final PackageName JAVA_PACKAGE =
             PackageName.of("io.spine.tools.protoc.plugin.message.tests");
+
+    /**
+     * The directory name containing the code generated from proto test data from
+     * the {@code proto/spine/tools/protoc/msg} directory.
+     *
+     * @see JAVA_PACKAGE
+     */
     private static final String JAVA_DIR = JAVA_PACKAGE.value().replace('.', '/');
 
+    /**
+     * The pattern for the detecting {@linkplain #JAVA_PACKAGE test data package}.
+     */
+    @SuppressWarnings("DynamicRegexReplaceableByCompiledPattern")
+    private static final String PACKAGE_PATTERN =
+            "^\\s*" + JAVA_PACKAGE.value().replace(".", "\\.");
+
     private static final Pattern CUSTOMER_EVENT_INTERFACE_PATTERN =
-            compile("^\\s*io\\.spine\\.tools\\.protoc\\.plugin\\.message\\.tests" +
-                            "\\.ProtocCustomerEvent\\s*,\\s*$");
+            compile(PACKAGE_PATTERN + "\\.ProtocCustomerEvent\\s*,\\s*$");
+
     private static final Pattern PROJECT_EVENT_INTERFACE_PATTERN =
-            compile("^\\s*io\\.spine\\.tools\\.protoc\\.plugin\\.message\\.tests" +
-                            "\\.ProtocProjectEvent\\s*,\\s*$");
+            compile(PACKAGE_PATTERN + "\\.ProtocProjectEvent\\s*,\\s*$");
 
     private static final Pattern PROJECT_EVENT_INTERFACE_DECL_PATTERN =
             compile("public\\s+interface\\s+ProtocProjectEvent\\s*extends\\s+Message\\s*\\{\\s*}");
