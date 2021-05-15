@@ -23,40 +23,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.tools.mc.java.gradle;
 
-package io.spine.tools.compiler.check;
-
-import io.spine.testing.UtilityClassTest;
+import io.spine.tools.compiler.DirectoryCleaner;
+import io.spine.tools.gradle.GradleTask;
+import io.spine.tools.gradle.SpinePlugin;
+import org.gradle.api.Action;
 import org.gradle.api.Project;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.gradle.api.Task;
 
-import static io.spine.tools.compiler.check.given.ProjectConfigurations.assertCompileTasksContain;
-import static io.spine.tools.compiler.check.given.ProjectConfigurations.assertCompileTasksEmpty;
-import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newProject;
+import static io.spine.tools.gradle.BaseTaskName.clean;
+import static io.spine.tools.gradle.ModelCompilerTaskName.preClean;
 
-@DisplayName("ProjectArguments utility class should")
-class ProjectArgumentsTest extends UtilityClassTest<ProjectArguments> {
+/**
+ * Plugin which performs additional cleanup of the Spine-generated folders.
+ *
+ * <p>Adds a custom `:preClean` task, which is executed before the `:clean` task.
+ */
+public class CleaningPlugin extends SpinePlugin {
 
-    private final Project project = newProject();
-
-    ProjectArgumentsTest() {
-        super(ProjectArguments.class);
-    }
-
-    @Test
-    @DisplayName("add arguments to Java compile tasks")
-    void add_args_to_java_compile_tasks_of_project() {
-        String firstArg = "firstArg";
-        String secondArg = "secondArg";
-        ProjectArguments.addArgsToJavaCompile(project, firstArg, secondArg);
-        assertCompileTasksContain(project, firstArg, secondArg);
-    }
-
-    @Test
-    @DisplayName("not add arguments if none is specified")
-    void add_no_args_if_none_specified() {
-        ProjectArguments.addArgsToJavaCompile(project);
-        assertCompileTasksEmpty(project);
+    @Override
+    public void apply(Project project) {
+        Action<Task> preCleanAction = task -> {
+            _debug().log("Pre-clean: deleting the directories.");
+            DirectoryCleaner.deleteDirs(Extension.getDirsToClean(project));
+        };
+        GradleTask preCleanTask =
+                newTask(preClean, preCleanAction)
+                        .insertBeforeTask(clean)
+                        .applyNowTo(project);
+        _debug().log("Pre-clean phase initialized: `%s`.", preCleanTask);
     }
 }

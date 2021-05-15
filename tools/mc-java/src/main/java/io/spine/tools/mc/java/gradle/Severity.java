@@ -24,13 +24,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.mc.java.gradle;
+
 /**
- * Classes for turning in Model Compiler for Java Checks in a Gradle project.
+ * The severity of the Spine Error Prone Checks.
+ *
+ * <p>Values of this enum correspond to the possible Error Prone severity command line flags.
+ * See <a href="http://errorprone.info/docs/flags">the flags specification</a>.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.check;
+public enum Severity {
 
-import com.google.errorprone.annotations.CheckReturnValue;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+    OFF,
+    WARN,
+    ERROR
+}

@@ -27,10 +27,10 @@
 package io.spine.tools.compiler.check;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.tools.gradle.compiler.ErrorProneChecksExtension;
-import io.spine.tools.gradle.compiler.ErrorProneChecksPlugin;
-import io.spine.tools.gradle.compiler.Extension;
-import io.spine.tools.gradle.compiler.ModelCompilerPlugin;
+import io.spine.tools.mc.java.gradle.ErrorProneChecksExtension;
+import io.spine.tools.mc.java.gradle.ErrorProneChecksPlugin;
+import io.spine.tools.mc.java.gradle.Extension;
+import io.spine.tools.mc.java.gradle.ModelCompilerPlugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionContainer;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,9 +40,9 @@ import org.junit.jupiter.api.Test;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.compiler.check.given.ProjectConfigurations.assertCompileTasksContain;
 import static io.spine.tools.compiler.check.given.ProjectConfigurations.assertCompileTasksEmpty;
-import static io.spine.tools.gradle.compiler.Severity.ERROR;
-import static io.spine.tools.gradle.compiler.Severity.OFF;
-import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
+import static io.spine.tools.mc.java.gradle.Severity.ERROR;
+import static io.spine.tools.mc.java.gradle.Severity.OFF;
+import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newProject;
 
 /**
  * Tests {@link io.spine.tools.gradle.compiler.Severity}.

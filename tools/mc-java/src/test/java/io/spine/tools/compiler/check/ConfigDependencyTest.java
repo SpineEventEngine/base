@@ -41,7 +41,7 @@ import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.compiler.check.ConfigDependency.SPINE_MC_CHECKS_ARTIFACT;
 import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
 import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
-import static io.spine.tools.gradle.compiler.given.Project.newProject;
+import static io.spine.tools.mc.java.gradle.given.Project.newProject;
 
 /**
  * A test for the {@link ConfigDependency} part of the Spine Error Prone Checks plugin.

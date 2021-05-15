@@ -24,39 +24,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.check;
+package io.spine.tools.mc.java.gradle;
 
-import io.spine.testing.UtilityClassTest;
 import org.gradle.api.Project;
+import org.gradle.api.plugins.ExtensionContainer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.compiler.check.given.ProjectConfigurations.assertCompileTasksContain;
-import static io.spine.tools.compiler.check.given.ProjectConfigurations.assertCompileTasksEmpty;
 import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newProject;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@DisplayName("ProjectArguments utility class should")
-class ProjectArgumentsTest extends UtilityClassTest<ProjectArguments> {
+/**
+ * This test contains very basic scenarios of the plugin usage.
+ *
+ * <p>For the tests of actual plugin functionality, see {@code io.spine.tools.check} test suites
+ * from this module.
+ */
+@DisplayName("ErrorProneChecksPlugin should")
+class ErrorProneChecksPluginTest {
 
-    private final Project project = newProject();
-
-    ProjectArgumentsTest() {
-        super(ProjectArguments.class);
+    @Test
+    @DisplayName("create Spine check extension")
+    void create_spine_check_extension() {
+        Project project = newProject();
+        project.getPluginManager()
+               .apply(ErrorProneChecksPlugin.class);
+        ExtensionContainer extensions = project.getExtensions();
+        Object found = extensions.findByName(ErrorProneChecksPlugin.extensionName());
+        assertNotNull(found);
     }
 
     @Test
-    @DisplayName("add arguments to Java compile tasks")
-    void add_args_to_java_compile_tasks_of_project() {
-        String firstArg = "firstArg";
-        String secondArg = "secondArg";
-        ProjectArguments.addArgsToJavaCompile(project, firstArg, secondArg);
-        assertCompileTasksContain(project, firstArg, secondArg);
-    }
-
-    @Test
-    @DisplayName("not add arguments if none is specified")
-    void add_no_args_if_none_specified() {
-        ProjectArguments.addArgsToJavaCompile(project);
-        assertCompileTasksEmpty(project);
+    @DisplayName("apply to empty project")
+    void apply_to_empty_project_without_exceptions() {
+        Project project = newProject();
+        project.getPluginManager()
+               .apply(ErrorProneChecksPlugin.class);
     }
 }

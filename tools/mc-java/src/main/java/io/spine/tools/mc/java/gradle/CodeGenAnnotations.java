@@ -24,39 +24,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.check;
+package io.spine.tools.mc.java.gradle;
 
-import io.spine.testing.UtilityClassTest;
-import org.gradle.api.Project;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import io.spine.annotation.Beta;
+import io.spine.annotation.Experimental;
+import io.spine.annotation.Internal;
+import io.spine.annotation.SPI;
+import io.spine.code.java.ClassName;
 
-import static io.spine.tools.compiler.check.given.ProjectConfigurations.assertCompileTasksContain;
-import static io.spine.tools.compiler.check.given.ProjectConfigurations.assertCompileTasksEmpty;
-import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newProject;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-@DisplayName("ProjectArguments utility class should")
-class ProjectArgumentsTest extends UtilityClassTest<ProjectArguments> {
+/**
+ * Type names of Java annotations used to mark generated code.
+ */
+@SuppressWarnings({"PublicField", "WeakerAccess"}) // Expose fields as a part of Gradle extension.
+public class CodeGenAnnotations {
 
-    private final Project project = newProject();
+    public String experimental = Experimental.class.getCanonicalName();
+    public String beta = Beta.class.getCanonicalName();
+    public String spi = SPI.class.getCanonicalName();
+    public String internal = Internal.class.getCanonicalName();
 
-    ProjectArgumentsTest() {
-        super(ProjectArguments.class);
+    public ClassName experimentalClassName() {
+        checkNotNull(experimental);
+        return ClassName.of(experimental);
     }
 
-    @Test
-    @DisplayName("add arguments to Java compile tasks")
-    void add_args_to_java_compile_tasks_of_project() {
-        String firstArg = "firstArg";
-        String secondArg = "secondArg";
-        ProjectArguments.addArgsToJavaCompile(project, firstArg, secondArg);
-        assertCompileTasksContain(project, firstArg, secondArg);
+    public ClassName betaClassName() {
+        checkNotNull(beta);
+        return ClassName.of(beta);
     }
 
-    @Test
-    @DisplayName("not add arguments if none is specified")
-    void add_no_args_if_none_specified() {
-        ProjectArguments.addArgsToJavaCompile(project);
-        assertCompileTasksEmpty(project);
+    public ClassName spiClassName() {
+        checkNotNull(spi);
+        return ClassName.of(spi);
+    }
+
+    public ClassName internalClassName() {
+        checkNotNull(internal);
+        return ClassName.of(internal);
     }
 }

@@ -25,11 +25,11 @@
  */
 
 /**
- * Classes for turning in Model Compiler for Java Checks in a Gradle project.
+ * Test environment classes related to the Model Compiler and its plugins.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.compiler.check;
+package io.spine.tools.mc.java.gradle.given;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

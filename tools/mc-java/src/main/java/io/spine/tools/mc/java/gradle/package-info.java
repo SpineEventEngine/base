@@ -25,11 +25,11 @@
  */
 
 /**
- * Classes for turning in Model Compiler for Java Checks in a Gradle project.
+ * Spine Gradle plugins for code generation and build-time Protobuf model validation.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.compiler.check;
+package io.spine.tools.mc.java.gradle;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

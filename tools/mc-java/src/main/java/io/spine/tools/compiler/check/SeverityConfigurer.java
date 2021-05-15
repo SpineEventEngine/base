@@ -28,7 +28,7 @@ package io.spine.tools.compiler.check;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.logging.Logging;
-import io.spine.tools.gradle.compiler.Severity;
+import io.spine.tools.mc.java.gradle.Severity;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -37,8 +37,8 @@ import org.gradle.api.plugins.PluginContainer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.compiler.check.ProjectArguments.addArgsToJavaCompile;
-import static io.spine.tools.gradle.compiler.ErrorProneChecksExtension.getUseValidatingBuilder;
-import static io.spine.tools.gradle.compiler.Extension.getSpineCheckSeverity;
+import static io.spine.tools.mc.java.gradle.ErrorProneChecksExtension.getUseValidatingBuilder;
+import static io.spine.tools.mc.java.gradle.Extension.getSpineCheckSeverity;
 
 /**
  * The helper for the Spine-custom Error Prone checks configuration of the {@link Project}.
@@ -46,8 +46,8 @@ import static io.spine.tools.gradle.compiler.Extension.getSpineCheckSeverity;
  * <p>This class cannot configure the check severities without the Error Prone plugin applied to
  * the project.
  *
- * @see io.spine.tools.gradle.compiler.ErrorProneChecksExtension
- * @see io.spine.tools.gradle.compiler.Extension#getSpineCheckSeverity(Project)
+ * @see io.spine.tools.mc.java.gradle.ErrorProneChecksExtension
+ * @see io.spine.tools.mc.java.gradle.Extension#getSpineCheckSeverity(Project)
  */
 public final class SeverityConfigurer implements Logging {
 
