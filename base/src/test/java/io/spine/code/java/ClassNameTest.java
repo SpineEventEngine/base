@@ -24,14 +24,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.type;
+package io.spine.code.java;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.StringValue;
-import io.spine.code.java.ClassName;
-import io.spine.code.java.PackageName;
-import io.spine.code.java.SimpleClassName;
 import io.spine.net.Uri;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -78,5 +75,12 @@ class ClassNameTest {
     void throwOnInvalid() {
         ClassName className = ClassName.of("NotQualifiedName");
         assertIllegalState(className::packageName);
+    }
+
+    @Test
+    @DisplayName("obtain a package of a class")
+    void gettingPackage() {
+        assertThat(ClassName.of(String.class).packageName())
+                .isEqualTo(PackageName.of(String.class));
     }
 }
