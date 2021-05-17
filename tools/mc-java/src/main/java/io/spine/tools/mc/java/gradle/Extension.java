@@ -29,7 +29,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
 import groovy.lang.Closure;
-import io.spine.annotation.Beta;
 import io.spine.tools.java.fs.DefaultJavaProject;
 import io.spine.tools.code.Indent;
 import io.spine.tools.gradle.GradleExtension;
