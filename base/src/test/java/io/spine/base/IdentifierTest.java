@@ -31,10 +31,14 @@ import com.google.common.truth.BooleanSubject;
 import com.google.common.truth.OptionalSubject;
 import com.google.common.truth.Truth8;
 import com.google.protobuf.Any;
+import com.google.protobuf.BoolValue;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.Empty;
+import com.google.protobuf.FloatValue;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
+import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.Struct;
 import com.google.protobuf.Timestamp;
@@ -591,5 +595,14 @@ class IdentifierTest {
         private <I> OptionalSubject assertField(Class<I> idClass, Descriptor message) {
             return Truth8.assertThat(findField(idClass, message));
         }
+    }
+
+    @Test
+    @DisplayName("allow event `Empty` as a `Message`-based ID")
+    void throwOnUnpacking() {
+        Any packedEmpty = AnyPacker.pack(Empty.getDefaultInstance());
+
+        assertThat(Identifier.unpack(packedEmpty))
+                .isEqualTo(Empty.getDefaultInstance());
     }
 }

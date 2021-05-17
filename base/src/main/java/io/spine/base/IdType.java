@@ -155,6 +155,7 @@ enum IdType {
          *
          * @return {@code true} if the message is neither {@code StringValue}, nor
          *         {@code Int32Value}, nor {@code Int64Value}
+         * @see Identifier#unpack(Any)
          */
         @Override
         boolean matchMessage(Message message) {
