@@ -28,7 +28,6 @@ package io.spine.tools.mc.java.gradle;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.logging.Logging;
-import io.spine.tools.mc.java.gradle.Severity;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
