@@ -23,35 +23,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.mc.java.gradle;
 
-import io.spine.tools.mc.java.fs.DirectoryCleaner;
-import io.spine.tools.gradle.GradleTask;
-import io.spine.tools.gradle.SpinePlugin;
-import org.gradle.api.Action;
-import org.gradle.api.Project;
-import org.gradle.api.Task;
+package io.spine.tools.mc.java.annotation.check;
 
-import static io.spine.tools.gradle.BaseTaskName.clean;
-import static io.spine.tools.gradle.ModelCompilerTaskName.preClean;
+import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
+import org.jboss.forge.roaster.model.source.JavaClassSource;
+
+import java.util.function.Consumer;
 
 /**
- * Plugin which performs additional cleanup of the Spine-generated folders.
- *
- * <p>Adds a custom `:preClean` task, which is executed before the `:clean` task.
+ * Interface for validation of a {@link JavaClassSource}.
  */
-public class CleaningPlugin extends SpinePlugin {
-
-    @Override
-    public void apply(Project project) {
-        Action<Task> preCleanAction = task -> {
-            _debug().log("Pre-clean: deleting the directories.");
-            DirectoryCleaner.deleteDirs(Extension.getDirsToClean(project));
-        };
-        GradleTask preCleanTask =
-                newTask(preClean, preCleanAction)
-                        .insertBeforeTask(clean)
-                        .applyNowTo(project);
-        _debug().log("Pre-clean phase initialized: `%s`.", preCleanTask);
-    }
+public interface SourceCheck extends Consumer<AbstractJavaSource<JavaClassSource>> {
 }

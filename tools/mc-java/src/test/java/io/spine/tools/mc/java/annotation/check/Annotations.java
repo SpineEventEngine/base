@@ -23,35 +23,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.mc.java.gradle;
 
-import io.spine.tools.mc.java.fs.DirectoryCleaner;
-import io.spine.tools.gradle.GradleTask;
-import io.spine.tools.gradle.SpinePlugin;
-import org.gradle.api.Action;
-import org.gradle.api.Project;
-import org.gradle.api.Task;
+package io.spine.tools.mc.java.annotation.check;
 
-import static io.spine.tools.gradle.BaseTaskName.clean;
-import static io.spine.tools.gradle.ModelCompilerTaskName.preClean;
+import io.spine.annotation.Internal;
+import org.jboss.forge.roaster.model.source.AnnotationSource;
+import org.jboss.forge.roaster.model.source.AnnotationTargetSource;
+
+import java.lang.annotation.Annotation;
+import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
 
 /**
- * Plugin which performs additional cleanup of the Spine-generated folders.
- *
- * <p>Adds a custom `:preClean` task, which is executed before the `:clean` task.
+ * Utilities for working with annotations in the generated code.
  */
-public class CleaningPlugin extends SpinePlugin {
+class Annotations {
 
-    @Override
-    public void apply(Project project) {
-        Action<Task> preCleanAction = task -> {
-            _debug().log("Pre-clean: deleting the directories.");
-            DirectoryCleaner.deleteDirs(Extension.getDirsToClean(project));
-        };
-        GradleTask preCleanTask =
-                newTask(preClean, preCleanAction)
-                        .insertBeforeTask(clean)
-                        .applyNowTo(project);
-        _debug().log("Pre-clean phase initialized: `%s`.", preCleanTask);
+    private static final Class<? extends Annotation> ANNOTATION_CLASS = Internal.class;
+
+    /** Prevents instantiation of this utility class. */
+    private Annotations() {
+    }
+
+    static Optional<? extends AnnotationSource<?>>
+    findInternalAnnotation(AnnotationTargetSource<?, ?> javaSource) {
+        return findAnnotation(javaSource, ANNOTATION_CLASS);
+    }
+
+    static Optional<? extends AnnotationSource<?>>
+    findAnnotation(AnnotationTargetSource<?, ?> javaSource,
+                   Class<? extends Annotation> annotationType) {
+        String annotationName = annotationType.getName();
+        AnnotationSource<?> annotation = javaSource
+                .getAnnotation(annotationName);
+        return ofNullable(annotation);
     }
 }

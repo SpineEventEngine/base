@@ -23,35 +23,49 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.mc.java.gradle;
 
-import io.spine.tools.mc.java.fs.DirectoryCleaner;
-import io.spine.tools.gradle.GradleTask;
-import io.spine.tools.gradle.SpinePlugin;
-import org.gradle.api.Action;
-import org.gradle.api.Project;
-import org.gradle.api.Task;
+package io.spine.tools.mc.java.field;
 
-import static io.spine.tools.gradle.BaseTaskName.clean;
-import static io.spine.tools.gradle.ModelCompilerTaskName.preClean;
+import com.google.common.collect.ImmutableSet;
+import com.squareup.javapoet.TypeName;
+import io.spine.code.proto.FieldDeclaration;
 
 /**
- * Plugin which performs additional cleanup of the Spine-generated folders.
- *
- * <p>Adds a custom `:preClean` task, which is executed before the `:clean` task.
+ * The type information of a field for a code-generation.
  */
-public class CleaningPlugin extends SpinePlugin {
+public interface FieldType {
 
-    @Override
-    public void apply(Project project) {
-        Action<Task> preCleanAction = task -> {
-            _debug().log("Pre-clean: deleting the directories.");
-            DirectoryCleaner.deleteDirs(Extension.getDirsToClean(project));
-        };
-        GradleTask preCleanTask =
-                newTask(preClean, preCleanAction)
-                        .insertBeforeTask(clean)
-                        .applyNowTo(project);
-        _debug().log("Pre-clean phase initialized: `%s`.", preCleanTask);
+    /**
+     * Obtains the {@link TypeName} for the field.
+     *
+     * @return the type name
+     */
+    TypeName getTypeName();
+
+    /**
+     * Obtains the setter prefix for the field.
+     *
+     * @return the setter prefix
+     */
+    AccessorTemplate primarySetterTemplate();
+
+    /**
+     * Obtains the templates of the generated Java accessors for a field of this type.
+     *
+     * @return the accessor templates
+     */
+    ImmutableSet<AccessorTemplate> generatedAccessorTemplates();
+
+    /**
+     * Creates a an instances basing on the type of the field.
+     */
+    static FieldType of(FieldDeclaration field) {
+        if (field.isMap()) {
+            return new MapFieldType(field);
+        } else if (field.isRepeated()) {
+            return new RepeatedFieldType(field);
+        } else {
+            return new SingularFieldType(field);
+        }
     }
 }

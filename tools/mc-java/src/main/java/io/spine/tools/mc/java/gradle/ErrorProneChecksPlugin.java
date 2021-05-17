@@ -25,9 +25,6 @@
  */
 package io.spine.tools.mc.java.gradle;
 
-import io.spine.tools.compiler.check.ConfigDependency;
-import io.spine.tools.compiler.check.PreprocessorConfig;
-import io.spine.tools.compiler.check.SeverityConfigurer;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.validate.ValidatingBuilder;
 import org.gradle.api.Project;
