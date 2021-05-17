@@ -185,8 +185,7 @@ public class Extension extends GradleExtension {
 
     public boolean generateValidatingBuilders = true;
 
-    @Beta
-    public boolean generateValidation = false;
+    public boolean generateValidation = true;
 
     public List<String> internalClassPatterns = new ArrayList<>();
 
