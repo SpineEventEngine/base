@@ -26,7 +26,7 @@
 
 /**
  * This package provides the types for generating validation code in accordance to
- * validation attributes define in options of proto types.
+ * validation attributes defined in options of proto types.
  */
 
 @CheckReturnValue
