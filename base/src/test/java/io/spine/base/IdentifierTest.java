@@ -33,6 +33,7 @@ import com.google.common.truth.Truth8;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.Empty;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.StringValue;
@@ -49,12 +50,12 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.base.Identifier.EMPTY_ID;
-import static io.spine.base.Identifier.NULL_ID;
 import static io.spine.base.IdType.INTEGER;
 import static io.spine.base.IdType.LONG;
 import static io.spine.base.IdType.MESSAGE;
 import static io.spine.base.IdType.STRING;
+import static io.spine.base.Identifier.EMPTY_ID;
+import static io.spine.base.Identifier.NULL_ID;
 import static io.spine.base.Identifier.checkSupported;
 import static io.spine.base.Identifier.findField;
 import static io.spine.base.Identifier.newUuid;
@@ -97,29 +98,30 @@ class IdentifierTest {
         @Test
         @DisplayName("`String`")
         void ofString() {
-            assertTrue(Identifier.from("")
-                                 .isString());
+            assertTypeOf("", STRING);
         }
 
         @Test
         @DisplayName("`Integer`")
         void ofInteger() {
-            assertTrue(Identifier.from(0)
-                                 .isInteger());
+            assertTypeOf(0, INTEGER);
         }
 
         @Test
         @DisplayName("`Long`")
         void ofLong() {
-            assertTrue(Identifier.from(0L)
-                                 .isLong());
+            assertTypeOf(0L, LONG);
         }
 
         @Test
         @DisplayName("`Message`")
         void ofMessage() {
-            assertTrue(Identifier.from(toMessage(300))
-                                 .isMessage());
+            assertTypeOf(toMessage(300), MESSAGE);
+        }
+
+        private void assertTypeOf(Object id, IdType expectedType) {
+            Identifier<?> identifier = Identifier.from(id);
+            assertThat(identifier.type()).isEqualTo(expectedType);
         }
     }
 
@@ -342,8 +344,7 @@ class IdentifierTest {
         @DisplayName("`Message` with nested `Message`")
         void ofNestedMessage() {
             StringValue value = StringValue.of(TEST_ID);
-            NestedMessageId idToConvert = NestedMessageId
-                    .newBuilder()
+            NestedMessageId idToConvert = NestedMessageId.newBuilder()
                     .setId(value)
                     .build();
 
@@ -372,8 +373,7 @@ class IdentifierTest {
         int number = 256;
 
         StringValue nestedMessageString = StringValue.of(nestedString);
-        SeveralFieldsId idToConvert = SeveralFieldsId
-                .newBuilder()
+        SeveralFieldsId idToConvert = SeveralFieldsId.newBuilder()
                 .setString(outerString)
                 .setNumber(number)
                 .setMessage(nestedMessageString)
@@ -511,12 +511,6 @@ class IdentifierTest {
         assertEquals(NULL_ID, Identifier.toString(null));
     }
 
-    @Test
-    @DisplayName("declare `ID_PROPERTY_SUFFIX`")
-    void idPropSuffix() {
-        assertThat(Identifier.ID_PROPERTY_SUFFIX).isEqualTo("id");
-    }
-
     @Nested
     @DisplayName("recognize field descriptor")
     @SuppressWarnings("BadImport") // OK to static-import `Identifier.Type` for brefity.
@@ -598,5 +592,14 @@ class IdentifierTest {
         private <I> OptionalSubject assertField(Class<I> idClass, Descriptor message) {
             return Truth8.assertThat(findField(idClass, message));
         }
+    }
+
+    @Test
+    @DisplayName("allow event `Empty` as a `Message`-based ID")
+    void throwOnUnpacking() {
+        Any packedEmpty = AnyPacker.pack(Empty.getDefaultInstance());
+
+        assertThat(Identifier.unpack(packedEmpty))
+                .isEqualTo(Empty.getDefaultInstance());
     }
 }

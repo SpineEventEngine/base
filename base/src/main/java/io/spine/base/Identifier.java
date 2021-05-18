@@ -26,6 +26,7 @@
 
 package io.spine.base;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -52,12 +53,8 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * @param <I>
  *         type of the ID
  */
-@SuppressWarnings("ClassWithTooManyMethods")
 @Internal
 public final class Identifier<I> {
-
-    /** The suffix of ID fields. */
-    public static final String ID_PROPERTY_SUFFIX = "id";
 
     /** A {@code null} ID string representation. */
     public static final String NULL_ID = "NULL";
@@ -80,14 +77,14 @@ public final class Identifier<I> {
         return result;
     }
 
+    private static <I> Identifier<I> create(IdType type, I value) {
+        return new Identifier<>(type, value);
+    }
+
     private static Identifier<Message> fromMessage(Message value) {
         checkNotNull(value);
         Identifier<Message> result = create(IdType.MESSAGE, value);
         return result;
-    }
-
-    private static <I> Identifier<I> create(IdType type, I value) {
-        return new Identifier<>(type, value);
     }
 
     /**
@@ -98,6 +95,14 @@ public final class Identifier<I> {
         IdType type = toType(idClass);
         I result = type.defaultValue(idClass);
         return result;
+    }
+
+    /**
+     * Obtains the type of this identifier.
+     */
+    @VisibleForTesting
+    IdType type() {
+        return type;
     }
 
     /**
@@ -144,7 +149,7 @@ public final class Identifier<I> {
         return newIllegalArgumentException("ID of unsupported type encountered: `%s`.", id);
     }
 
-    static <I> IllegalArgumentException unsupportedClass(Class<I> idClass) {
+    private static <I> IllegalArgumentException unsupportedClass(Class<I> idClass) {
         return newIllegalArgumentException("Unsupported ID class encountered: `%s`.",
                                            idClass.getName());
     }
@@ -181,8 +186,10 @@ public final class Identifier<I> {
     public static <I> void checkSupported(Class<I> idClass) {
         checkNotNull(idClass);
         // Even through `getType()` can never return null, we use its return value here
-        // instead of allowing ignoring just because of this one usage.
-        checkNotNull(toType(idClass));
+        // instead of annotating the method so that the returned value can be ignored
+        // just because of this one usage.
+        IdType type = toType(idClass);
+        checkNotNull(type);
     }
 
     /**
@@ -237,6 +244,18 @@ public final class Identifier<I> {
                 return result;
             }
         }
+        /*
+            This branch is highly unlikely because of the following:
+             1) `StringValue`, `Int32Value`, `Int64Value` are covered by `IdType.STRING`,
+                `IdType.INTEGER`, and `IdType.LONG` correspondingly. They would “intercept” an
+                unpacked value in the `for` loop above.
+             2) The `IdType.MESSAGE` accepts (!) all the types but `StringValue`, `Int32Value`,
+                or `Int64Value`. It does so because it does not “intercept” the message-based value
+                of another “primitive” type of identifiers. That's why anything like `BooleanValue`,
+                or event `Empty` would be recognized as valid `Message`-based identifier. And we
+                want to keep it this way for flexibility. E.g. someone may want to arrange
+                a singleton `ProcessManager` having `Empty` as an identifier. So be it!
+        */
         throw unsupported(unpacked);
     }
 
@@ -304,22 +323,6 @@ public final class Identifier<I> {
 
         String result = identifier.toString();
         return result;
-    }
-
-    boolean isString() {
-        return type == IdType.STRING;
-    }
-
-    boolean isInteger() {
-        return type == IdType.INTEGER;
-    }
-
-    boolean isLong() {
-        return type == IdType.LONG;
-    }
-
-    boolean isMessage() {
-        return type == IdType.MESSAGE;
     }
 
     private Any pack() {

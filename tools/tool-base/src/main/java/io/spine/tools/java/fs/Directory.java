@@ -76,8 +76,9 @@ public final class Directory extends SourceCodeDirectory {
      */
     public static Directory of(PackageName packageName) {
         checkNotNull(packageName);
-        String packagePath = packageName.value()
-                                        .replace(PackageName.delimiterChar(), File.separatorChar);
+        String packagePath =
+                packageName.value()
+                           .replace(PackageName.delimiterChar(), File.separatorChar);
         Path path = Paths.get(packagePath);
         return at(path);
     }

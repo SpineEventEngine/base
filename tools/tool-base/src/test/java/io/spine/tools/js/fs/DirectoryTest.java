@@ -38,7 +38,7 @@ import static io.spine.tools.js.fs.LibraryFile.INDEX;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("Directory should")
+@DisplayName("`js.fs.Directory` should")
 class DirectoryTest {
 
     private static final Path DIRECTORY_PATH = Paths.get("/home/user/directory");

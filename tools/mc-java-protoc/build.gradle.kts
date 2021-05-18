@@ -51,7 +51,7 @@ tasks.jar {
     exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
 
     manifest {
-        attributes(mapOf("Main-Class" to "io.spine.tools.protoc.plugin.Plugin"))
+        attributes(mapOf("Main-Class" to "io.spine.tools.mc.java.protoc.Plugin"))
     }
     // Assemble "Fat-JAR" artifact containing all the dependencies.
     from(configurations.runtimeClasspath.get().map {
