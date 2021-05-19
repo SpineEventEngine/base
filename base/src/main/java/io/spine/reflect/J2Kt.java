@@ -58,7 +58,7 @@ public final class J2Kt {
     }
 
     /**
-     * Ties to find a Kotlin {@code KCallable} which represents the same method as the given
+     * Tries to find a Kotlin {@code KCallable} which represents the same method as the given
      * Java {@code Method}.
      *
      * @param javaMethod the method to look up
