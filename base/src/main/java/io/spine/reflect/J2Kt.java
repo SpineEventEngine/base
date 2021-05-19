@@ -90,6 +90,13 @@ public final class J2Kt {
                           .findFirst();
     }
 
+    /**
+     * Obtains either the given object class or the companion of the given class.
+     *
+     * @return the {@code kotlinClass} if it represents an object type, otherwise the class of
+     *         the companion object of {@code kotlinClass} or {@code Optional.empty()} if the class
+     *         has no companion object
+     */
     private static Optional<KClass<?>> objectOrCompanion(KClass<?> kotlinClass) {
         if (kotlinClass.getObjectInstance() != null) {
             return Optional.of(kotlinClass);
