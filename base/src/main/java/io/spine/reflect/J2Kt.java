@@ -36,13 +36,12 @@ import kotlin.reflect.KParameter;
 import kotlin.reflect.KType;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
@@ -73,11 +72,32 @@ public final class J2Kt {
             return Optional.empty();
         }
         KClass<?> kotlinClass = Reflection.getOrCreateKotlinClass(javaClass);
-        Optional<KCallable<?>> result = kotlinClass.getMembers()
-                                                   .stream()
-                                                   .filter(new SameMethod(javaMethod))
-                                                   .findFirst();
+        if (isStatic(javaMethod.getModifiers())) {
+            Optional<KClass<?>> companion = objectOrCompanion(kotlinClass);
+            if (!companion.isPresent()) {
+                return Optional.empty();
+            }
+            kotlinClass = companion.get();
+        }
+        Optional<KCallable<?>> result = tryMatch(javaMethod, kotlinClass);
         return result;
+    }
+
+    private static Optional<KCallable<?>> tryMatch(Method javaMethod, KClass<?> kotlinClass) {
+        return kotlinClass.getMembers()
+                          .stream()
+                          .filter(new SameMethod(javaMethod))
+                          .findFirst();
+    }
+
+    private static Optional<KClass<?>> objectOrCompanion(KClass<?> kotlinClass) {
+        if (kotlinClass.getObjectInstance() != null) {
+            return Optional.of(kotlinClass);
+        }
+        return kotlinClass.getNestedClasses()
+                          .stream()
+                          .filter(KClass::isCompanion)
+                          .findAny();
     }
 
     /**
@@ -103,27 +123,29 @@ public final class J2Kt {
 
         private final String name;
         private final List<KType> javaParamTypes;
-        private final boolean hasReceiver;
 
         private SameMethod(Method javaMethod) {
             this.name = deObscureName(javaMethod.getName());
             this.javaParamTypes = stream(javaMethod.getParameterTypes())
                     .map(Reflection::typeOf)
                     .collect(toList());
-            this.hasReceiver = Modifier.isStatic(javaMethod.getModifiers());
         }
 
         @Override
         public boolean test(KCallable<?> method) {
-            return name.equals(method.getName()) && paramTypes(method).equals(javaParamTypes);
+            boolean nameMatches = name.equals(method.getName());
+            if (!nameMatches) {
+                return false;
+            }
+            boolean paramsMatch = paramTypesOf(method).equals(javaParamTypes);
+            return paramsMatch;
         }
 
-        private List<KType> paramTypes(KCallable<?> method) {
-            Stream<KParameter> params = method.getParameters().stream();
-            if (hasReceiver) {
-                params = params.skip(1); // `this` instance as the first parameter.
-            }
-            return params.map(KParameter::getType)
+        private static List<KType> paramTypesOf(KCallable<?> method) {
+            List<KParameter> params = method.getParameters();
+            return params.stream()
+                         .skip(1) // `this` instance as the first parameter.
+                         .map(KParameter::getType)
                          .collect(toList());
         }
 
