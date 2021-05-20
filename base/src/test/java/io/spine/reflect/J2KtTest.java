@@ -29,10 +29,12 @@ package io.spine.reflect;
 import io.spine.reflect.given.MethodHolder;
 import io.spine.reflect.given.ObjMethodHolder;
 import kotlin.reflect.KCallable;
+import kotlin.reflect.KParameter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -54,11 +56,12 @@ class J2KtTest {
         KCallable<?> ktMethod = found.get();
         assertThat(ktMethod.getName())
                 .isEqualTo(name);
-        assertThat(ktMethod.getParameters())
+        List<KParameter> params = ktMethod.getParameters();
+        assertThat(params)
                 .hasSize(2);
-        assertThat(ktMethod.getParameters().get(0).getKind())
+        assertThat(params.get(0).getKind())
                 .isEqualTo(INSTANCE);
-        assertThat(ktMethod.getParameters().get(1).getKind())
+        assertThat(params.get(1).getKind())
                 .isEqualTo(VALUE);
     }
 
@@ -73,11 +76,12 @@ class J2KtTest {
         KCallable<?> ktMethod = found.get();
         assertThat(ktMethod.getName())
                 .isEqualTo(name);
-        assertThat(ktMethod.getParameters())
+        List<KParameter> params = ktMethod.getParameters();
+        assertThat(params)
                 .hasSize(2);
-        assertThat(ktMethod.getParameters().get(0).getKind())
+        assertThat(params.get(0).getKind())
                 .isEqualTo(INSTANCE);
-        assertThat(ktMethod.getParameters().get(1).getKind())
+        assertThat(params.get(1).getKind())
                 .isEqualTo(VALUE);
     }
 
@@ -92,9 +96,10 @@ class J2KtTest {
         KCallable<?> ktMethod = found.get();
         assertThat(ktMethod.getName())
                 .isEqualTo(name);
-        assertThat(ktMethod.getParameters())
+        List<KParameter> params = ktMethod.getParameters();
+        assertThat(params)
                 .hasSize(1);
-        assertThat(ktMethod.getParameters().get(0).getKind())
+        assertThat(params.get(0).getKind())
                 .isEqualTo(INSTANCE);
     }
 
@@ -109,9 +114,10 @@ class J2KtTest {
         KCallable<?> ktMethod = found.get();
         assertThat(ktMethod.getName())
                 .isEqualTo(name);
-        assertThat(ktMethod.getParameters())
+        List<KParameter> params = ktMethod.getParameters();
+        assertThat(params)
                 .hasSize(1);
-        assertThat(ktMethod.getParameters().get(0).getKind())
+        assertThat(params.get(0).getKind())
                 .isEqualTo(INSTANCE);
     }
 
@@ -126,9 +132,10 @@ class J2KtTest {
         KCallable<?> ktMethod = found.get();
         assertThat(ktMethod.getName())
                 .isEqualTo(name);
-        assertThat(ktMethod.getParameters())
+        List<KParameter> params = ktMethod.getParameters();
+        assertThat(params)
                 .hasSize(1);
-        assertThat(ktMethod.getParameters().get(0).getKind())
+        assertThat(params.get(0).getKind())
                 .isEqualTo(INSTANCE);
     }
 }
