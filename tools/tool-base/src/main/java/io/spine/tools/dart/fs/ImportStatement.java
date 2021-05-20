@@ -55,27 +55,31 @@ final class ImportStatement implements Element, Logging {
 
     private final Path sourceDirectory;
     private final String text;
+    private final String importPathAsDeclared;
+    private final String importAlias;
 
     /**
      * Creates a new instance with the passed value.
      *
-     * @param file
-     *         the file declaring the line
+     * @param sourceFile
+     *         the file containing the code line
      * @param text
      *         the text of the source code line with the import statement
      */
-    ImportStatement(DartFile file, String text) {
-        this(file.directory(), text);
+    ImportStatement(DartFile sourceFile, String text) {
+        this(sourceFile.directory(), text);
     }
 
     private ImportStatement(Path sourceDirectory, String text) {
-        this.sourceDirectory = sourceDirectory;
         this.text = checkNotNull(text);
+        this.sourceDirectory = sourceDirectory;
         Matcher matcher = PATTERN.matcher(text);
         checkArgument(
                 matcher.matches(),
                 "The passed text is not recognized as an import statement (`%s`).", text
         );
+        this.importPathAsDeclared = matcher.group(1);
+        this.importAlias = matcher.group(2);
     }
 
     /**
@@ -123,8 +127,7 @@ final class ImportStatement implements Element, Logging {
     private Path importRelativeTo(Path libPath) {
         FluentLogger.Api debug = _debug();
         debug.log("Import statement found in line: `%s`.", text);
-        String path = matcher().group(1);
-        Path absolutePath = sourceDirectory.resolve(path).normalize();
+        Path absolutePath = sourceDirectory.resolve(importPathAsDeclared).normalize();
         debug.log("Resolved against this file: `%s`.", absolutePath);
         Path relativePath = libPath.relativize(absolutePath);
         debug.log("Relative path: `%s`.", relativePath);
@@ -134,14 +137,10 @@ final class ImportStatement implements Element, Logging {
     private ImportStatement resolve(ExternalModule module, Path relativePath) {
         String resolved = format(
                 "import 'package:%s/%s' as %s;",
-                module.name(), relativePath, matcher().group(2)
+                module.name(), relativePath, importAlias
         );
         _debug().log("Replacing with `%s`.", resolved);
         return new ImportStatement(sourceDirectory, resolved);
-    }
-
-    private Matcher matcher() {
-        return PATTERN.matcher(text);
     }
 
     @Override
