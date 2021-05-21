@@ -31,7 +31,7 @@ import com.squareup.javapoet.TypeName;
 import io.spine.code.proto.FieldDeclaration;
 
 /**
- * The type information of a field for a code-generation.
+ * Field type information for the needs of code generation.
  */
 public interface FieldType {
 
@@ -40,24 +40,20 @@ public interface FieldType {
      *
      * @return the type name
      */
-    TypeName getTypeName();
+    TypeName name();
 
     /**
-     * Obtains the setter prefix for the field.
-     *
-     * @return the setter prefix
+     * Obtains the setter accessor for the field.
      */
-    Accessor primarySetterTemplate();
+    Accessor primarySetter();
 
     /**
-     * Obtains the templates of the generated Java accessors for a field of this type.
-     *
-     * @return the accessor templates
+     * Obtains the accessors for a field of this type.
      */
     ImmutableSet<Accessor> accessors();
 
     /**
-     * Creates a an instances basing on the type of the field.
+     * Creates an instance for the passed field declaration.
      */
     static FieldType of(FieldDeclaration field) {
         if (field.isMap()) {

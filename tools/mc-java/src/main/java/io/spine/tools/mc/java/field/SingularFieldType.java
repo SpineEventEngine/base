@@ -78,7 +78,7 @@ final class SingularFieldType implements FieldType {
     }
 
     @Override
-    public TypeName getTypeName() {
+    public TypeName name() {
         return typeName;
     }
 
@@ -99,7 +99,7 @@ final class SingularFieldType implements FieldType {
      * <p>The call should have the following structure: {@code builder.setFieldName(FieldType)}.
      */
     @Override
-    public Accessor primarySetterTemplate() {
+    public Accessor primarySetter() {
         return set();
     }
 

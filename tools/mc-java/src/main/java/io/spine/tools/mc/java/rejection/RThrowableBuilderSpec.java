@@ -224,13 +224,13 @@ final class RThrowableBuilderSpec implements BuilderSpec {
         FieldName fieldName = field.name();
         String parameterName = fieldName.javaCase();
         String methodName =
-                fieldType.primarySetterTemplate()
+                fieldType.primarySetter()
                          .format(io.spine.tools.java.code.field.FieldName.from(fieldName));
         MethodSpec.Builder methodBuilder = MethodSpec
                 .methodBuilder(methodName)
                 .addModifiers(PUBLIC)
                 .returns(thisType())
-                .addParameter(fieldType.getTypeName(), parameterName)
+                .addParameter(fieldType.name(), parameterName)
                 .addStatement("$L.$L($L)", BUILDER_FIELD, methodName, parameterName)
                 .addStatement(RETURN_STATEMENT);
         field.leadingComments()

@@ -73,7 +73,7 @@ final class RepeatedFieldType implements FieldType {
     }
 
     @Override
-    public TypeName getTypeName() {
+    public TypeName name() {
         return typeName;
     }
 
@@ -87,7 +87,7 @@ final class RepeatedFieldType implements FieldType {
      * Protobuf message builder.
      */
     @Override
-    public Accessor primarySetterTemplate() {
+    public Accessor primarySetter() {
         return addAll();
     }
 

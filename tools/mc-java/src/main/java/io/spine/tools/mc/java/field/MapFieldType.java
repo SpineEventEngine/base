@@ -81,7 +81,7 @@ final class MapFieldType implements FieldType {
     }
 
     @Override
-    public TypeName getTypeName() {
+    public TypeName name() {
         return typeName;
     }
 
@@ -94,7 +94,7 @@ final class MapFieldType implements FieldType {
      * {@inheritDoc}
      */
     @Override
-    public Accessor primarySetterTemplate() {
+    public Accessor primarySetter() {
         return putAll();
     }
 
@@ -134,6 +134,6 @@ final class MapFieldType implements FieldType {
 
     private static TypeName typeNameOf(FieldDescriptor descr) {
         FieldDeclaration decl = new FieldDeclaration(descr);
-        return FieldType.of(decl).getTypeName();
+        return FieldType.of(decl).name();
     }
 }
