@@ -37,7 +37,7 @@ import io.spine.code.java.ClassName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.mc.java.field.FieldType;
-import io.spine.tools.mc.java.field.GeneratedAccessors;
+import io.spine.tools.mc.java.field.Accessors;
 import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
@@ -213,8 +213,8 @@ final class FieldAnnotator extends OptionAnnotator<FieldDescriptor> {
      */
     private void annotateAccessors(JavaClassSource javaSource,
                                    FieldDeclaration field) {
-        ImmutableSet<String> names = GeneratedAccessors.forField(field.name(), FieldType.of(field))
-                                                       .names();
+        ImmutableSet<String> names = Accessors.forField(field.name(), FieldType.of(field))
+                                              .names();
         javaSource.getMethods()
                   .stream()
                   .filter(MethodSource::isPublic)

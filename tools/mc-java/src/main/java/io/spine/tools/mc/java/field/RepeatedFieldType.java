@@ -78,7 +78,7 @@ final class RepeatedFieldType implements FieldType {
     }
 
     @Override
-    public ImmutableSet<Accessor> generatedAccessorTemplates() {
+    public ImmutableSet<Accessor> accessors() {
         return GENERATED_ACCESSORS;
     }
 

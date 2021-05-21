@@ -83,7 +83,7 @@ final class SingularFieldType implements FieldType {
     }
 
     @Override
-    public ImmutableSet<Accessor> generatedAccessorTemplates() {
+    public ImmutableSet<Accessor> accessors() {
         return javaType == STRING
              ? ImmutableSet.<Accessor>builder()
                            .addAll(GENERATED_ACCESSORS)

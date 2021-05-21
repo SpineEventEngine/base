@@ -54,7 +54,7 @@ public interface FieldType {
      *
      * @return the accessor templates
      */
-    ImmutableSet<Accessor> generatedAccessorTemplates();
+    ImmutableSet<Accessor> accessors();
 
     /**
      * Creates a an instances basing on the type of the field.
