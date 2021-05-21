@@ -30,7 +30,7 @@ import static io.spine.tools.mc.java.field.Accessor.prefix;
 import static io.spine.tools.mc.java.field.Accessor.prefixAndPostfix;
 
 /**
- * A factory of commonly used {@link Accessor} instances.
+ * Commonly used {@link Accessor} instances.
  */
 final class Accessors {
 
@@ -56,57 +56,57 @@ final class Accessors {
     }
 
     /** Obtains {@code get...} template. */
-    public static Accessor getter() {
+    static Accessor getter() {
         return GET;
     }
 
     /** Obtains {@code get...List} template. */
-    public static Accessor listGetter() {
+    static Accessor listGetter() {
         return GET_LIST;
     }
 
     /** Obtains {@code get...Map} template. */
-    public static Accessor mapGetter() {
+    static Accessor mapGetter() {
         return GET_MAP;
     }
 
     /** Obtains {@code get...Count} template. */
-    public static Accessor countGetter() {
+    static Accessor countGetter() {
         return GET_COUNT;
     }
 
     /** Obtains {@code set...} template. */
-    public static Accessor setter() {
+    static Accessor setter() {
         return SET;
     }
 
     /** Obtains {@code add...} template. */
-    public static Accessor adder() {
+    static Accessor adder() {
         return ADD;
     }
 
     /** Obtains {@code addAll...} template. */
-    public static Accessor allAdder() {
+    static Accessor allAdder() {
         return ADD_ALL;
     }
 
     /** Obtains {@code put...} template. */
-    public static Accessor putter() {
+    static Accessor putter() {
         return PUT;
     }
 
     /** Obtains {@code putAll...} template. */
-    public static Accessor allPutter() {
+    static Accessor allPutter() {
         return PUT_ALL;
     }
 
     /** Obtains {@code remove...} template. */
-    public static Accessor remover() {
+    static Accessor remover() {
         return REMOVE;
     }
 
     /** Obtains {@code clear...} template. */
-    public static Accessor clearer() {
+    static Accessor clearer() {
         return CLEAR;
     }
 }
