@@ -77,11 +77,11 @@ class ExtensionTest {
         @Test
         @DisplayName("specified value, if set")
         void setValue() {
-            spineProtobuf().mainTargetGenResourcesDir = newUuid();
+            spineProtobuf().generatedMainResourcesDir = newUuid();
 
             String dir = Extension.getMainTargetGenResourcesDir(project);
 
-            assertEquals(spineProtobuf().mainTargetGenResourcesDir, dir);
+            assertEquals(spineProtobuf().generatedMainResourcesDir, dir);
         }
     }
 
@@ -100,11 +100,11 @@ class ExtensionTest {
         @Test
         @DisplayName("specified value, if set")
         void specifiedValue() {
-            spineProtobuf().testTargetGenResourcesDir = newUuid();
+            spineProtobuf().generatedTestResourcesDir = newUuid();
 
             String dir = Extension.getTestTargetGenResourcesDir(project);
 
-            assertEquals(spineProtobuf().testTargetGenResourcesDir, dir);
+            assertEquals(spineProtobuf().generatedTestResourcesDir, dir);
         }
     }
 
@@ -123,11 +123,11 @@ class ExtensionTest {
         @Test
         @DisplayName("specified value, if set")
         void specifiedValue() {
-            spineProtobuf().mainDescriptorSetPath = newUuid();
+            spineProtobuf().mainDescriptorSetFile = newUuid();
 
             File file = Extension.getMainDescriptorSet(project);
 
-            assertEquals(spineProtobuf().mainDescriptorSetPath, file.toString());
+            assertEquals(spineProtobuf().mainDescriptorSetFile, file.toString());
         }
     }
 
@@ -146,11 +146,11 @@ class ExtensionTest {
         @Test
         @DisplayName("specified value, if set")
         void specifiedValue() {
-            spineProtobuf().testDescriptorSetPath = newUuid();
+            spineProtobuf().testDescriptorSetFile = newUuid();
 
             File file = Extension.getTestDescriptorSet(project);
 
-            assertEquals(spineProtobuf().testDescriptorSetPath, file.toString());
+            assertEquals(spineProtobuf().testDescriptorSetFile, file.toString());
         }
     }
 
@@ -169,11 +169,11 @@ class ExtensionTest {
         @Test
         @DisplayName("specified value, if set")
         void specifiedValue() {
-            spineProtobuf().targetGenRejectionsRootDir = newUuid();
+            spineProtobuf().generatedMainRejectionsDir = newUuid();
 
             String dir = Extension.getTargetGenRejectionsRootDir(project);
 
-            assertEquals(spineProtobuf().targetGenRejectionsRootDir, dir);
+            assertEquals(spineProtobuf().generatedMainRejectionsDir, dir);
         }
     }
 
