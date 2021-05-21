@@ -32,7 +32,7 @@ import io.spine.tools.fs.ExternalModules;
 import io.spine.tools.gradle.BaseTaskName;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.ProtoPlugin;
-import io.spine.tools.js.fs.DefaultJsProject;
+import io.spine.tools.js.fs.DefaultJsPaths;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.mc.js.code.index.CreateParsers;
 import io.spine.tools.mc.js.code.index.GenerateIndexFile;
@@ -110,7 +110,7 @@ public class McJsPlugin extends ProtoPlugin {
      * <p>The paths to the generated JS messages location, as well as to the descriptor set file,
      * are currently hard-coded.
      *
-     * <p>See {@link DefaultJsProject} for the expected configuration.
+     * <p>See {@link DefaultJsPaths} for the expected configuration.
      */
     private Action<Task> newAction(Project project) {
         return task -> generateJsonParsers(project);

@@ -26,7 +26,7 @@
 
 package io.spine.tools.mc.dart.gradle;
 
-import io.spine.tools.dart.fs.DefaultDartProject;
+import io.spine.tools.dart.fs.DefaultDartPaths;
 import io.spine.tools.fs.ExternalModules;
 import io.spine.tools.gradle.GradleExtension;
 import org.gradle.api.Project;
@@ -240,7 +240,7 @@ public final class Extension extends GradleExtension {
     }
 
     @Override
-    protected DefaultDartProject defaultProject(Project project) {
-        return DefaultDartProject.at(project.getProjectDir());
+    protected DefaultDartPaths defaultProject(Project project) {
+        return DefaultDartPaths.at(project.getProjectDir());
     }
 }

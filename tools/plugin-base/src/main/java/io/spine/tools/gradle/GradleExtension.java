@@ -26,7 +26,7 @@
 
 package io.spine.tools.gradle;
 
-import io.spine.tools.fs.DefaultProject;
+import io.spine.tools.fs.DefaultPaths;
 import org.gradle.api.Project;
 
 import java.io.File;
@@ -70,5 +70,5 @@ public abstract class GradleExtension {
         return testDescriptor.toFile();
     }
 
-    protected abstract DefaultProject defaultProject(Project project);
+    protected abstract DefaultPaths defaultProject(Project project);
 }

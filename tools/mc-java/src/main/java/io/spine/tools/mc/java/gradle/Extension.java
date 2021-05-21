@@ -29,7 +29,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
 import groovy.lang.Closure;
-import io.spine.tools.java.fs.DefaultJavaProject;
+import io.spine.tools.java.fs.DefaultJavaPaths;
 import io.spine.tools.code.Indent;
 import io.spine.tools.gradle.GradleExtension;
 import io.spine.tools.protoc.EntityQueries;
@@ -191,12 +191,12 @@ public class Extension extends GradleExtension {
     public List<String> internalMethodNames = new ArrayList<>();
 
     @Override
-    protected DefaultJavaProject defaultProject(Project project) {
+    protected DefaultJavaPaths defaultProject(Project project) {
         return def(project);
     }
 
-    private static DefaultJavaProject def(Project project) {
-        return DefaultJavaProject.at(project.getProjectDir());
+    private static DefaultJavaPaths def(Project project) {
+        return DefaultJavaPaths.at(project.getProjectDir());
     }
 
     @SuppressWarnings({
@@ -478,8 +478,8 @@ public class Extension extends GradleExtension {
                     e, "Unable to obtain project directory `%s`.", project.getProjectDir()
             );
         }
-        File spinePath = DefaultJavaProject.at(projectDir)
-                                           .tempArtifacts();
+        File spinePath = DefaultJavaPaths.at(projectDir)
+                                         .tempArtifacts();
         if (spinePath.exists()) {
             return Optional.of(spinePath.toString());
         } else {

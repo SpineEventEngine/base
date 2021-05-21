@@ -34,7 +34,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
-import io.spine.tools.java.fs.DefaultJavaProject;
+import io.spine.tools.java.fs.DefaultJavaPaths;
 import io.spine.tools.java.fs.SourceFile;
 import io.spine.code.proto.FileName;
 import io.spine.code.proto.FileSet;
@@ -258,10 +258,10 @@ class ProtoAnnotatorPluginTest {
     }
 
     private void check(Path sourcePath, SourceCheck check) throws IOException {
-        Path filePath = DefaultJavaProject.at(testProjectDir)
-                                          .generated()
-                                          .mainJava()
-                                          .resolve(sourcePath);
+        Path filePath = DefaultJavaPaths.at(testProjectDir)
+                                        .generated()
+                                        .mainJava()
+                                        .resolve(sourcePath);
         @SuppressWarnings("unchecked")
         AbstractJavaSource<JavaClassSource> javaSource =
                 Roaster.parse(AbstractJavaSource.class, filePath.toFile());
@@ -270,10 +270,10 @@ class ProtoAnnotatorPluginTest {
 
     private void checkGrpcService(SourceFile serviceFile, SourceCheck check)
             throws IOException {
-        Path fullPath = DefaultJavaProject.at(testProjectDir)
-                                          .generated()
-                                          .mainGrpc()
-                                          .resolve(serviceFile);
+        Path fullPath = DefaultJavaPaths.at(testProjectDir)
+                                        .generated()
+                                        .mainGrpc()
+                                        .resolve(serviceFile);
         @SuppressWarnings("unchecked")
         AbstractJavaSource<JavaClassSource> javaSource =
                 Roaster.parse(AbstractJavaSource.class, fullPath.toFile());
@@ -300,7 +300,7 @@ class ProtoAnnotatorPluginTest {
     }
 
     private FileDescriptor getDescriptor(FileName fileName) {
-        Path mainDescriptor = DefaultJavaProject
+        Path mainDescriptor = DefaultJavaPaths
                 .at(testProjectDir)
                 .buildRoot()
                 .descriptors()
