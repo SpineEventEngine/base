@@ -36,20 +36,20 @@ import io.spine.code.proto.FieldDeclaration;
 import java.util.List;
 import java.util.Optional;
 
-import static io.spine.tools.mc.java.field.AccessorTemplates.adder;
-import static io.spine.tools.mc.java.field.AccessorTemplates.allAdder;
-import static io.spine.tools.mc.java.field.AccessorTemplates.clearer;
-import static io.spine.tools.mc.java.field.AccessorTemplates.countGetter;
-import static io.spine.tools.mc.java.field.AccessorTemplates.getter;
-import static io.spine.tools.mc.java.field.AccessorTemplates.listGetter;
-import static io.spine.tools.mc.java.field.AccessorTemplates.setter;
+import static io.spine.tools.mc.java.field.Accessors.adder;
+import static io.spine.tools.mc.java.field.Accessors.allAdder;
+import static io.spine.tools.mc.java.field.Accessors.clearer;
+import static io.spine.tools.mc.java.field.Accessors.countGetter;
+import static io.spine.tools.mc.java.field.Accessors.getter;
+import static io.spine.tools.mc.java.field.Accessors.listGetter;
+import static io.spine.tools.mc.java.field.Accessors.setter;
 
 /**
  * Represents repeated {@linkplain FieldType field type}.
  */
 final class RepeatedFieldType implements FieldType {
 
-    private static final ImmutableSet<AccessorTemplate> GENERATED_ACCESSORS =
+    private static final ImmutableSet<Accessor> GENERATED_ACCESSORS =
             ImmutableSet.of(
                     getter(),
                     listGetter(),
@@ -78,7 +78,7 @@ final class RepeatedFieldType implements FieldType {
     }
 
     @Override
-    public ImmutableSet<AccessorTemplate> generatedAccessorTemplates() {
+    public ImmutableSet<Accessor> generatedAccessorTemplates() {
         return GENERATED_ACCESSORS;
     }
 
@@ -87,7 +87,7 @@ final class RepeatedFieldType implements FieldType {
      * Protobuf message builder.
      */
     @Override
-    public AccessorTemplate primarySetterTemplate() {
+    public Accessor primarySetterTemplate() {
         return allAdder();
     }
 

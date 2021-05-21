@@ -47,14 +47,14 @@ public interface FieldType {
      *
      * @return the setter prefix
      */
-    AccessorTemplate primarySetterTemplate();
+    Accessor primarySetterTemplate();
 
     /**
      * Obtains the templates of the generated Java accessors for a field of this type.
      *
      * @return the accessor templates
      */
-    ImmutableSet<AccessorTemplate> generatedAccessorTemplates();
+    ImmutableSet<Accessor> generatedAccessorTemplates();
 
     /**
      * Creates a an instances basing on the type of the field.

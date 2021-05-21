@@ -26,87 +26,87 @@
 
 package io.spine.tools.mc.java.field;
 
-import static io.spine.tools.mc.java.field.AccessorTemplate.prefix;
-import static io.spine.tools.mc.java.field.AccessorTemplate.prefixAndPostfix;
+import static io.spine.tools.mc.java.field.Accessor.prefix;
+import static io.spine.tools.mc.java.field.Accessor.prefixAndPostfix;
 
 /**
- * A factory of commonly used {@link AccessorTemplate} instances.
+ * A factory of commonly used {@link Accessor} instances.
  */
-final class AccessorTemplates {
+final class Accessors {
 
     private static final String GET_PREFIX = "get";
 
-    private static final AccessorTemplate GET = prefix(GET_PREFIX);
-    private static final AccessorTemplate GET_LIST = prefixAndPostfix(GET_PREFIX, "List");
-    private static final AccessorTemplate GET_MAP = prefixAndPostfix(GET_PREFIX, "Map");
-    private static final AccessorTemplate GET_COUNT = prefixAndPostfix(GET_PREFIX, "Count");
+    private static final Accessor GET = prefix(GET_PREFIX);
+    private static final Accessor GET_LIST = prefixAndPostfix(GET_PREFIX, "List");
+    private static final Accessor GET_MAP = prefixAndPostfix(GET_PREFIX, "Map");
+    private static final Accessor GET_COUNT = prefixAndPostfix(GET_PREFIX, "Count");
 
-    private static final AccessorTemplate SET = prefix("set");
-    private static final AccessorTemplate ADD = prefix("add");
-    private static final AccessorTemplate PUT = prefix("put");
-    private static final AccessorTemplate REMOVE = prefix("remove");
-    private static final AccessorTemplate ADD_ALL = prefix("addAll");
-    private static final AccessorTemplate PUT_ALL = prefix("putAll");
-    private static final AccessorTemplate CLEAR = prefix("clear");
+    private static final Accessor SET = prefix("set");
+    private static final Accessor ADD = prefix("add");
+    private static final Accessor PUT = prefix("put");
+    private static final Accessor REMOVE = prefix("remove");
+    private static final Accessor ADD_ALL = prefix("addAll");
+    private static final Accessor PUT_ALL = prefix("putAll");
+    private static final Accessor CLEAR = prefix("clear");
 
     /**
      * Prevents the utility class instantiation.
      */
-    private AccessorTemplates() {
+    private Accessors() {
     }
 
     /** Obtains {@code get...} template. */
-    public static AccessorTemplate getter() {
+    public static Accessor getter() {
         return GET;
     }
 
     /** Obtains {@code get...List} template. */
-    public static AccessorTemplate listGetter() {
+    public static Accessor listGetter() {
         return GET_LIST;
     }
 
     /** Obtains {@code get...Map} template. */
-    public static AccessorTemplate mapGetter() {
+    public static Accessor mapGetter() {
         return GET_MAP;
     }
 
     /** Obtains {@code get...Count} template. */
-    public static AccessorTemplate countGetter() {
+    public static Accessor countGetter() {
         return GET_COUNT;
     }
 
     /** Obtains {@code set...} template. */
-    public static AccessorTemplate setter() {
+    public static Accessor setter() {
         return SET;
     }
 
     /** Obtains {@code add...} template. */
-    public static AccessorTemplate adder() {
+    public static Accessor adder() {
         return ADD;
     }
 
     /** Obtains {@code addAll...} template. */
-    public static AccessorTemplate allAdder() {
+    public static Accessor allAdder() {
         return ADD_ALL;
     }
 
     /** Obtains {@code put...} template. */
-    public static AccessorTemplate putter() {
+    public static Accessor putter() {
         return PUT;
     }
 
     /** Obtains {@code putAll...} template. */
-    public static AccessorTemplate allPutter() {
+    public static Accessor allPutter() {
         return PUT_ALL;
     }
 
     /** Obtains {@code remove...} template. */
-    public static AccessorTemplate remover() {
+    public static Accessor remover() {
         return REMOVE;
     }
 
     /** Obtains {@code clear...} template. */
-    public static AccessorTemplate clearer() {
+    public static Accessor clearer() {
         return CLEAR;
     }
 }

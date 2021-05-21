@@ -38,15 +38,15 @@ import java.util.AbstractMap;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static io.spine.tools.mc.java.field.AccessorTemplate.prefix;
-import static io.spine.tools.mc.java.field.AccessorTemplate.prefixAndPostfix;
-import static io.spine.tools.mc.java.field.AccessorTemplates.allPutter;
-import static io.spine.tools.mc.java.field.AccessorTemplates.clearer;
-import static io.spine.tools.mc.java.field.AccessorTemplates.countGetter;
-import static io.spine.tools.mc.java.field.AccessorTemplates.getter;
-import static io.spine.tools.mc.java.field.AccessorTemplates.mapGetter;
-import static io.spine.tools.mc.java.field.AccessorTemplates.putter;
-import static io.spine.tools.mc.java.field.AccessorTemplates.remover;
+import static io.spine.tools.mc.java.field.Accessor.prefix;
+import static io.spine.tools.mc.java.field.Accessor.prefixAndPostfix;
+import static io.spine.tools.mc.java.field.Accessors.allPutter;
+import static io.spine.tools.mc.java.field.Accessors.clearer;
+import static io.spine.tools.mc.java.field.Accessors.countGetter;
+import static io.spine.tools.mc.java.field.Accessors.getter;
+import static io.spine.tools.mc.java.field.Accessors.mapGetter;
+import static io.spine.tools.mc.java.field.Accessors.putter;
+import static io.spine.tools.mc.java.field.Accessors.remover;
 
 /**
  * Represents map {@linkplain FieldType field type}.
@@ -55,7 +55,7 @@ final class MapFieldType implements FieldType {
 
     private static final String GET = "get";
 
-    private static final ImmutableSet<AccessorTemplate> GENERATED_ACCESSORS =
+    private static final ImmutableSet<Accessor> GENERATED_ACCESSORS =
             ImmutableSet.of(
                     getter(),
                     countGetter(),
@@ -97,12 +97,12 @@ final class MapFieldType implements FieldType {
      * {@inheritDoc}
      */
     @Override
-    public AccessorTemplate primarySetterTemplate() {
+    public Accessor primarySetterTemplate() {
         return allPutter();
     }
 
     @Override
-    public ImmutableSet<AccessorTemplate> generatedAccessorTemplates() {
+    public ImmutableSet<Accessor> generatedAccessorTemplates() {
         return GENERATED_ACCESSORS;
     }
 

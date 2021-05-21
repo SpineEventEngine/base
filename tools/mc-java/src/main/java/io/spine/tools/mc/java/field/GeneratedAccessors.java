@@ -78,7 +78,7 @@ public final class GeneratedAccessors {
         return names;
     }
 
-    private ImmutableSet<String> names(Collection<AccessorTemplate> templates) {
+    private ImmutableSet<String> names(Collection<Accessor> templates) {
         return templates.stream()
                         .map(template -> template.format(propertyName))
                         .collect(toImmutableSet());
