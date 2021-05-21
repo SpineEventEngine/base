@@ -59,7 +59,7 @@ class ExtensionTest {
     private static final String VERSION = "42";
 
     private Project project;
-    private DefaultJsPaths defaultProject;
+    private DefaultJsPaths defaultPaths;
 
     @BeforeEach
     void setUp(@TempDir Path tempDirPath) {
@@ -69,7 +69,7 @@ class ExtensionTest {
         PluginManager pluginManager = project.getPluginManager();
         pluginManager.apply("java");
         pluginManager.apply(PLUGIN_ID);
-        defaultProject = DefaultJsPaths.at(project.getProjectDir());
+        defaultPaths = DefaultJsPaths.at(project.getProjectDir());
 
         project.setGroup(GROUP_ID);
         project.setVersion(VERSION);
@@ -79,8 +79,8 @@ class ExtensionTest {
     @DisplayName("return the default directory with main generated Protobufs")
     void defaultMainGenProto() {
         Directory directory = Extension.getMainGenProto(project);
-        Directory expected = defaultProject.proto()
-                                           .mainJs();
+        Directory expected = defaultPaths.proto()
+                                         .mainJs();
         assertThat(directory)
                 .isEqualTo(expected);
     }
@@ -99,8 +99,8 @@ class ExtensionTest {
     @DisplayName("return the default directory with test generated Protobufs")
     void defaultTestGenProto() {
         Directory directory = Extension.getTestGenProtoDir(project);
-        Directory expected = defaultProject.proto()
-                                           .testJs();
+        Directory expected = defaultPaths.proto()
+                                         .testJs();
         assertThat(directory)
                 .isEqualTo(expected);
     }
@@ -120,9 +120,9 @@ class ExtensionTest {
     @DisplayName("return the main descriptor set at the default path")
     void defaultMainDescriptorSet() {
         File file = Extension.getMainDescriptorSet(project);
-        Path mainDescriptors = defaultProject.buildRoot()
-                                             .descriptors()
-                                             .mainDescriptors();
+        Path mainDescriptors = defaultPaths.buildRoot()
+                                           .descriptors()
+                                           .mainDescriptors();
         File expected = mainDescriptors
                 .resolve(GROUP_ID + '_' + project.getName() + '_' + VERSION + DESC_EXTENSION)
                 .toFile();
@@ -145,9 +145,9 @@ class ExtensionTest {
     @DisplayName("return the test descriptor set at the default path")
     void defaultTestDescriptorSet() {
         File file = Extension.getTestDescriptorSet(project);
-        Path testDescriptors = defaultProject.buildRoot()
-                                  .descriptors()
-                                  .testDescriptors();
+        Path testDescriptors = defaultPaths.buildRoot()
+                                           .descriptors()
+                                           .testDescriptors();
         File expected = testDescriptors
                 .resolve(GROUP_ID + '_' + project.getName() + '_' + VERSION + "_test.desc")
                 .toFile();
