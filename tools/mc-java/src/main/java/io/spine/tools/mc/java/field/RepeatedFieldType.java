@@ -27,6 +27,7 @@
 package io.spine.tools.mc.java.field;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.Immutable;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
@@ -47,19 +48,20 @@ import static io.spine.tools.mc.java.field.StandardAccessor.set;
 /**
  * Represents repeated {@linkplain FieldType field type}.
  */
+@Immutable
 final class RepeatedFieldType implements FieldType {
 
-    private static final ImmutableSet<Accessor> GENERATED_ACCESSORS =
-            ImmutableSet.of(
-                    get(),
-                    getList(),
-                    getCount(),
-                    set(),
-                    add(),
-                    addAll(),
-                    clear()
-            );
+    private static final ImmutableSet<Accessor> ACCESSORS = ImmutableSet.of(
+            get(),
+            getList(),
+            getCount(),
+            set(),
+            add(),
+            addAll(),
+            clear()
+    );
 
+    @SuppressWarnings("Immutable") // effectively
     private final TypeName typeName;
 
     /**
@@ -69,7 +71,7 @@ final class RepeatedFieldType implements FieldType {
      *         the declaration of the field
      */
     RepeatedFieldType(FieldDeclaration declaration) {
-        this.typeName = constructTypeNameFor(declaration.javaTypeName());
+        this.typeName = typeNameFor(declaration.javaTypeName());
     }
 
     @Override
@@ -79,7 +81,7 @@ final class RepeatedFieldType implements FieldType {
 
     @Override
     public ImmutableSet<Accessor> accessors() {
-        return GENERATED_ACCESSORS;
+        return ACCESSORS;
     }
 
     /**
@@ -91,15 +93,14 @@ final class RepeatedFieldType implements FieldType {
         return addAll();
     }
 
-    private static TypeName constructTypeNameFor(String componentTypeName) {
-        Optional<? extends Class<?>> wrapperClass =
-                PrimitiveType.getWrapperClass(componentTypeName);
-
-        TypeName componentType = wrapperClass.isPresent()
-                                 ? TypeName.get(wrapperClass.get())
-                                 : ClassName.bestGuess(componentTypeName);
-        ParameterizedTypeName result =
-                ParameterizedTypeName.get(ClassName.get(List.class), componentType);
+    private static TypeName typeNameFor(String componentTypeName) {
+        Optional<? extends Class<?>> wrapper = PrimitiveType.getWrapperClass(componentTypeName);
+        TypeName componentType =
+                wrapper.isPresent()
+                ? TypeName.get(wrapper.get())
+                : ClassName.bestGuess(componentTypeName);
+        ClassName listClass = ClassName.get(List.class);
+        ParameterizedTypeName result = ParameterizedTypeName.get(listClass, componentType);
         return result;
     }
 

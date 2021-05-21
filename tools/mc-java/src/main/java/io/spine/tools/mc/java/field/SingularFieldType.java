@@ -27,6 +27,7 @@
 package io.spine.tools.mc.java.field;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
@@ -45,32 +46,29 @@ import static io.spine.tools.mc.java.field.StandardAccessor.set;
 /**
  * Represents singular {@linkplain FieldType field type}.
  */
+@Immutable
 final class SingularFieldType implements FieldType {
 
     private static final String BYTES = "Bytes";
 
-    private static final ImmutableSet<Accessor> GENERATED_ACCESSORS =
-            ImmutableSet.of(
-                    prefix("has"),
-                    get(),
-                    set(),
-                    clear()
-            );
+    private static final ImmutableSet<Accessor> ACCESSORS = ImmutableSet.of(
+            prefix("has"),
+            get(),
+            set(),
+            clear()
+    );
 
-    private static final ImmutableSet<Accessor> GENERATED_STRING_ACCESSORS =
-            ImmutableSet.of(
-                    prefixAndPostfix("get", BYTES),
-                    prefixAndPostfix("set", BYTES)
-            );
+    private static final ImmutableSet<Accessor> STRING_ACCESSORS = ImmutableSet.of(
+            prefixAndPostfix("get", BYTES),
+            prefixAndPostfix("set", BYTES)
+    );
 
+    @SuppressWarnings("Immutable") // effectively
     private final TypeName typeName;
     private final JavaType javaType;
 
     /**
      * Creates a new instance based on field type name.
-     *
-     * @param declaration
-     *         the field declaration
      */
     SingularFieldType(FieldDeclaration declaration) {
         this.typeName = constructTypeNameFor(declaration.javaTypeName());
@@ -86,10 +84,10 @@ final class SingularFieldType implements FieldType {
     public ImmutableSet<Accessor> accessors() {
         return javaType == STRING
              ? ImmutableSet.<Accessor>builder()
-                           .addAll(GENERATED_ACCESSORS)
-                           .addAll(GENERATED_STRING_ACCESSORS)
+                           .addAll(ACCESSORS)
+                           .addAll(STRING_ACCESSORS)
                            .build()
-             : GENERATED_ACCESSORS;
+             : ACCESSORS;
     }
 
     /**

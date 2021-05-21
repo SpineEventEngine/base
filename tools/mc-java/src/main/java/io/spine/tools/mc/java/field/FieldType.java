@@ -27,12 +27,14 @@
 package io.spine.tools.mc.java.field;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.Immutable;
 import com.squareup.javapoet.TypeName;
 import io.spine.code.proto.FieldDeclaration;
 
 /**
  * Field type information for the needs of code generation.
  */
+@Immutable
 public interface FieldType {
 
     /**

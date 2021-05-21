@@ -27,6 +27,7 @@
 package io.spine.tools.mc.java.field;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
@@ -52,6 +53,7 @@ import static io.spine.tools.mc.java.field.StandardAccessor.remove;
 /**
  * Represents map {@linkplain FieldType field type}.
  */
+@Immutable
 final class MapFieldType implements FieldType {
 
     private static final String GET = "get";
@@ -69,7 +71,9 @@ final class MapFieldType implements FieldType {
             putAll()
     );
 
+    @SuppressWarnings("Immutable") // effectively
     private final TypeName typeName;
+
     /**
      * Constructs the new instance based on the key and the value type names.
      */
