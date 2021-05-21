@@ -31,8 +31,12 @@ import static io.spine.tools.mc.java.field.Accessor.prefixAndPostfix;
 
 /**
  * Commonly used {@link Accessor} instances.
+ *
+ * @apiNote This class mimics an enum. The current approach selected in order to keep
+ * the keep {@link Accessor} open enough for extensions (and being a class rather than
+ * an interface), while having the quasi-enumeration provided by this class.
  */
-final class Accessors {
+final class StandardAccessor {
 
     private static final String GET_PREFIX = "get";
 
@@ -52,61 +56,61 @@ final class Accessors {
     /**
      * Prevents the utility class instantiation.
      */
-    private Accessors() {
+    private StandardAccessor() {
     }
 
     /** Obtains {@code get...} template. */
-    static Accessor getter() {
+    static Accessor get() {
         return GET;
     }
 
     /** Obtains {@code get...List} template. */
-    static Accessor listGetter() {
+    static Accessor getList() {
         return GET_LIST;
     }
 
     /** Obtains {@code get...Map} template. */
-    static Accessor mapGetter() {
+    static Accessor getMap() {
         return GET_MAP;
     }
 
     /** Obtains {@code get...Count} template. */
-    static Accessor countGetter() {
+    static Accessor getCount() {
         return GET_COUNT;
     }
 
     /** Obtains {@code set...} template. */
-    static Accessor setter() {
+    static Accessor set() {
         return SET;
     }
 
     /** Obtains {@code add...} template. */
-    static Accessor adder() {
+    static Accessor add() {
         return ADD;
     }
 
     /** Obtains {@code addAll...} template. */
-    static Accessor allAdder() {
+    static Accessor addAll() {
         return ADD_ALL;
     }
 
     /** Obtains {@code put...} template. */
-    static Accessor putter() {
+    static Accessor put() {
         return PUT;
     }
 
     /** Obtains {@code putAll...} template. */
-    static Accessor allPutter() {
+    static Accessor putAll() {
         return PUT_ALL;
     }
 
     /** Obtains {@code remove...} template. */
-    static Accessor remover() {
+    static Accessor remove() {
         return REMOVE;
     }
 
     /** Obtains {@code clear...} template. */
-    static Accessor clearer() {
+    static Accessor clear() {
         return CLEAR;
     }
 }

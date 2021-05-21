@@ -40,13 +40,13 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.checkArgument;
 import static io.spine.tools.mc.java.field.Accessor.prefix;
 import static io.spine.tools.mc.java.field.Accessor.prefixAndPostfix;
-import static io.spine.tools.mc.java.field.Accessors.allPutter;
-import static io.spine.tools.mc.java.field.Accessors.clearer;
-import static io.spine.tools.mc.java.field.Accessors.countGetter;
-import static io.spine.tools.mc.java.field.Accessors.getter;
-import static io.spine.tools.mc.java.field.Accessors.mapGetter;
-import static io.spine.tools.mc.java.field.Accessors.putter;
-import static io.spine.tools.mc.java.field.Accessors.remover;
+import static io.spine.tools.mc.java.field.StandardAccessor.putAll;
+import static io.spine.tools.mc.java.field.StandardAccessor.clear;
+import static io.spine.tools.mc.java.field.StandardAccessor.getCount;
+import static io.spine.tools.mc.java.field.StandardAccessor.get;
+import static io.spine.tools.mc.java.field.StandardAccessor.getMap;
+import static io.spine.tools.mc.java.field.StandardAccessor.put;
+import static io.spine.tools.mc.java.field.StandardAccessor.remove;
 
 /**
  * Represents map {@linkplain FieldType field type}.
@@ -57,16 +57,16 @@ final class MapFieldType implements FieldType {
 
     private static final ImmutableSet<Accessor> GENERATED_ACCESSORS =
             ImmutableSet.of(
-                    getter(),
-                    countGetter(),
-                    mapGetter(),
+                    get(),
+                    getCount(),
+                    getMap(),
                     prefixAndPostfix(GET, "OrDefault"),
                     prefixAndPostfix(GET, "OrThrow"),
                     prefix("contains"),
-                    clearer(),
-                    putter(),
-                    remover(),
-                    allPutter()
+                    clear(),
+                    put(),
+                    remove(),
+                    putAll()
             );
 
     private final TypeName typeName;
@@ -98,7 +98,7 @@ final class MapFieldType implements FieldType {
      */
     @Override
     public Accessor primarySetterTemplate() {
-        return allPutter();
+        return putAll();
     }
 
     @Override

@@ -38,9 +38,9 @@ import java.util.Optional;
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.STRING;
 import static io.spine.tools.mc.java.field.Accessor.prefix;
 import static io.spine.tools.mc.java.field.Accessor.prefixAndPostfix;
-import static io.spine.tools.mc.java.field.Accessors.clearer;
-import static io.spine.tools.mc.java.field.Accessors.getter;
-import static io.spine.tools.mc.java.field.Accessors.setter;
+import static io.spine.tools.mc.java.field.StandardAccessor.clear;
+import static io.spine.tools.mc.java.field.StandardAccessor.get;
+import static io.spine.tools.mc.java.field.StandardAccessor.set;
 
 /**
  * Represents singular {@linkplain FieldType field type}.
@@ -52,9 +52,9 @@ final class SingularFieldType implements FieldType {
     private static final ImmutableSet<Accessor> GENERATED_ACCESSORS =
             ImmutableSet.of(
                     prefix("has"),
-                    getter(),
-                    setter(),
-                    clearer()
+                    get(),
+                    set(),
+                    clear()
             );
 
     private static final ImmutableSet<Accessor> GENERATED_STRING_ACCESSORS =
@@ -100,7 +100,7 @@ final class SingularFieldType implements FieldType {
      */
     @Override
     public Accessor primarySetterTemplate() {
-        return setter();
+        return set();
     }
 
     private static TypeName constructTypeNameFor(String name) {

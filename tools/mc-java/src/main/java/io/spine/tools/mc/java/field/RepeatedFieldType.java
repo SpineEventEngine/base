@@ -36,13 +36,13 @@ import io.spine.code.proto.FieldDeclaration;
 import java.util.List;
 import java.util.Optional;
 
-import static io.spine.tools.mc.java.field.Accessors.adder;
-import static io.spine.tools.mc.java.field.Accessors.allAdder;
-import static io.spine.tools.mc.java.field.Accessors.clearer;
-import static io.spine.tools.mc.java.field.Accessors.countGetter;
-import static io.spine.tools.mc.java.field.Accessors.getter;
-import static io.spine.tools.mc.java.field.Accessors.listGetter;
-import static io.spine.tools.mc.java.field.Accessors.setter;
+import static io.spine.tools.mc.java.field.StandardAccessor.add;
+import static io.spine.tools.mc.java.field.StandardAccessor.addAll;
+import static io.spine.tools.mc.java.field.StandardAccessor.clear;
+import static io.spine.tools.mc.java.field.StandardAccessor.getCount;
+import static io.spine.tools.mc.java.field.StandardAccessor.get;
+import static io.spine.tools.mc.java.field.StandardAccessor.getList;
+import static io.spine.tools.mc.java.field.StandardAccessor.set;
 
 /**
  * Represents repeated {@linkplain FieldType field type}.
@@ -51,13 +51,13 @@ final class RepeatedFieldType implements FieldType {
 
     private static final ImmutableSet<Accessor> GENERATED_ACCESSORS =
             ImmutableSet.of(
-                    getter(),
-                    listGetter(),
-                    countGetter(),
-                    setter(),
-                    adder(),
-                    allAdder(),
-                    clearer()
+                    get(),
+                    getList(),
+                    getCount(),
+                    set(),
+                    add(),
+                    addAll(),
+                    clear()
             );
 
     private final TypeName typeName;
@@ -88,7 +88,7 @@ final class RepeatedFieldType implements FieldType {
      */
     @Override
     public Accessor primarySetterTemplate() {
-        return allAdder();
+        return addAll();
     }
 
     private static TypeName constructTypeNameFor(String componentTypeName) {
