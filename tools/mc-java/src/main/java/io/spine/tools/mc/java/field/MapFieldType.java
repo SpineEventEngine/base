@@ -35,6 +35,7 @@ import com.squareup.javapoet.TypeName;
 import io.spine.code.proto.FieldDeclaration;
 
 import java.util.AbstractMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -55,32 +56,28 @@ final class MapFieldType implements FieldType {
 
     private static final String GET = "get";
 
-    private static final ImmutableSet<Accessor> GENERATED_ACCESSORS =
-            ImmutableSet.of(
-                    get(),
-                    getCount(),
-                    getMap(),
-                    prefixAndPostfix(GET, "OrDefault"),
-                    prefixAndPostfix(GET, "OrThrow"),
-                    prefix("contains"),
-                    clear(),
-                    put(),
-                    remove(),
-                    putAll()
-            );
+    private static final ImmutableSet<Accessor> ACCESSORS = ImmutableSet.of(
+            get(),
+            getCount(),
+            getMap(),
+            prefixAndPostfix(GET, "OrDefault"),
+            prefixAndPostfix(GET, "OrThrow"),
+            prefix("contains"),
+            clear(),
+            put(),
+            remove(),
+            putAll()
+    );
 
     private final TypeName typeName;
     /**
      * Constructs the new instance based on the key and the value type names.
      */
     MapFieldType(FieldDeclaration field) {
-        Map.Entry<TypeName, TypeName> entryTypeNames = getEntryTypeNames(field);
-
-        TypeName keyTypeName = boxIfPrimitive(entryTypeNames.getKey());
-        TypeName valueTypeName = boxIfPrimitive(entryTypeNames.getValue());
-        this.typeName = ParameterizedTypeName.get(ClassName.get(Map.class),
-                                                  keyTypeName,
-                                                  valueTypeName);
+        Map.Entry<TypeName, TypeName> entryTypeNames = entryTypeNames(field);
+        TypeName keyType = boxIfPrimitive(entryTypeNames.getKey());
+        TypeName valueType = boxIfPrimitive(entryTypeNames.getValue());
+        this.typeName = ParameterizedTypeName.get(ClassName.get(Map.class), keyType, valueType);
     }
 
     @Override
@@ -103,14 +100,13 @@ final class MapFieldType implements FieldType {
 
     @Override
     public ImmutableSet<Accessor> accessors() {
-        return GENERATED_ACCESSORS;
+        return ACCESSORS;
     }
 
     private static TypeName boxIfPrimitive(TypeName typeName) {
         if (typeName.isPrimitive()) {
             return typeName.box();
         }
-
         return typeName;
     }
 
@@ -123,25 +119,21 @@ final class MapFieldType implements FieldType {
      * Returns the key and the value type names for the map field
      * based on the passed nested types.
      */
-    private static Map.Entry<TypeName, TypeName> getEntryTypeNames(FieldDeclaration mapField) {
+    private static Map.Entry<TypeName, TypeName> entryTypeNames(FieldDeclaration mapField) {
         checkArgument(mapField.isMap());
-
         int keyFieldIndex = 0;
         int valueFieldIndex = 1;
-
-        Descriptor mapEntry = mapField.descriptor()
-                                      .getMessageType();
-
-        FieldDescriptor keyField = mapEntry.getFields()
-                                           .get(keyFieldIndex);
-        FieldDescriptor valueField = mapEntry.getFields()
-                                             .get(valueFieldIndex);
-
-        TypeName keyTypeName = FieldType.of(new FieldDeclaration(keyField))
-                                        .getTypeName();
-        TypeName valueTypeName = FieldType.of(new FieldDeclaration(valueField))
-                                          .getTypeName();
-
+        Descriptor mapEntry = mapField.descriptor().getMessageType();
+        List<FieldDescriptor> fields = mapEntry.getFields();
+        FieldDescriptor keyField = fields.get(keyFieldIndex);
+        FieldDescriptor valueField = fields.get(valueFieldIndex);
+        TypeName keyTypeName = typeNameOf(keyField);
+        TypeName valueTypeName = typeNameOf(valueField);
         return new AbstractMap.SimpleEntry<>(keyTypeName, valueTypeName);
+    }
+
+    private static TypeName typeNameOf(FieldDescriptor descr) {
+        FieldDeclaration decl = new FieldDeclaration(descr);
+        return FieldType.of(decl).getTypeName();
     }
 }
