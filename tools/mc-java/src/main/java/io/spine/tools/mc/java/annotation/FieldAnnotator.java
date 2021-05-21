@@ -84,10 +84,10 @@ final class FieldAnnotator extends OptionAnnotator<FieldDescriptor> {
 
     @Override
     protected void annotateMultipleFiles(FileDescriptor file) {
-        for (Descriptor messageType : file.getMessageTypes()) {
-            if (shouldAnnotate(messageType)) {
-                SourceVisitor<JavaClassSource> annotation = new MessageFieldAnnotation(messageType);
-                SourceFile filePath = SourceFile.forMessage(messageType.toProto(), file.toProto());
+        for (Descriptor type : file.getMessageTypes()) {
+            if (shouldAnnotate(type)) {
+                SourceVisitor<JavaClassSource> annotation = new MessageFieldAnnotation(type);
+                SourceFile filePath = SourceFile.forMessage(type.toProto(), file.toProto());
                 rewriteSource(filePath, annotation);
             }
         }
@@ -152,7 +152,7 @@ final class FieldAnnotator extends OptionAnnotator<FieldDescriptor> {
     /**
      * An annotation function for a {@link #message}.
      */
-    class MessageFieldAnnotation implements SourceVisitor<JavaClassSource> {
+    final class MessageFieldAnnotation implements SourceVisitor<JavaClassSource> {
 
         /**
          * A message descriptor for a file descriptor,
@@ -198,8 +198,8 @@ final class FieldAnnotator extends OptionAnnotator<FieldDescriptor> {
     }
 
     private static JavaClassSource builderOf(JavaClassSource messageSource) {
-        JavaSource<?> builderSource = messageSource.getNestedType(SimpleClassName.ofBuilder()
-                                                                                 .value());
+        String builderName = SimpleClassName.ofBuilder().value();
+        JavaSource<?> builderSource = messageSource.getNestedType(builderName);
         return castToClass(builderSource);
     }
 
@@ -211,10 +211,10 @@ final class FieldAnnotator extends OptionAnnotator<FieldDescriptor> {
      * @param field
      *        the declaration of the field to be annotated
      */
-    private void annotateAccessors(JavaClassSource javaSource,
-                                   FieldDeclaration field) {
-        ImmutableSet<String> names = Accessors.forField(field.name(), FieldType.of(field))
-                                              .names();
+    private void annotateAccessors(JavaClassSource javaSource, FieldDeclaration field) {
+        ImmutableSet<String> names =
+                Accessors.forField(field.name(), FieldType.of(field))
+                         .names();
         javaSource.getMethods()
                   .stream()
                   .filter(MethodSource::isPublic)
