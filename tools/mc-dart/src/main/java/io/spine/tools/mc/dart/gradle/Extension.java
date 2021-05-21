@@ -240,7 +240,7 @@ public final class Extension extends GradleExtension {
     }
 
     @Override
-    protected DefaultDartPaths defaultProject(Project project) {
+    protected DefaultDartPaths defaultPaths(Project project) {
         return DefaultDartPaths.at(project.getProjectDir());
     }
 }

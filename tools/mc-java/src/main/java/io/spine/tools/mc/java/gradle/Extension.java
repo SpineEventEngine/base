@@ -191,7 +191,7 @@ public class Extension extends GradleExtension {
     public List<String> internalMethodNames = new ArrayList<>();
 
     @Override
-    protected DefaultJavaPaths defaultProject(Project project) {
+    protected DefaultJavaPaths defaultPaths(Project project) {
         return def(project);
     }
 

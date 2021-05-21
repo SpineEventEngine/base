@@ -179,7 +179,7 @@ public class Extension extends GradleExtension {
     }
 
     @Override
-    protected DefaultPaths defaultProject(Project project) {
+    protected DefaultPaths defaultPaths(Project project) {
         return def(project);
     }
 }
