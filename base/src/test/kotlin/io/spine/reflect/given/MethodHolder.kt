@@ -24,24 +24,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
- *
- * This version file adheres to the contract of the
- * [publishing application](https://github.com/SpineEventEngine/publishing).
- *
- * When changing the version declarations or adding new ones, make sure to change
- * the publishing application accordingly.
- */
+package io.spine.reflect.given
 
-/** The version of this library. */
-val base = "2.0.0-SNAPSHOT.28"
+@Suppress("unused")
+class MethodHolder {
 
-project.extra.apply {
-    this["spineVersion"] = base
-    this["spineBaseVersion"] = base // Used by `filter-internal-javadoc.gradle`.
-    this["versionToPublish"] = base
+    companion object {
+
+        @JvmStatic
+        fun staticMethod(@Suppress("UNUSED_PARAMETER") arg: Int) {
+            // Do nothing.
+        }
+    }
+
+    fun instanceMethod(@Suppress("UNUSED_PARAMETER") arg: String) {
+        // Do nothing.
+    }
+
+    fun noParamMethod() {
+        // Do nothing.
+    }
+}
+
+object ObjMethodHolder {
+
+    @JvmStatic
+    fun staticObjMethod() {
+        // Do nothing.
+    }
+
+    fun instanceObjMethod() {
+        // Do nothing.
+    }
 }
