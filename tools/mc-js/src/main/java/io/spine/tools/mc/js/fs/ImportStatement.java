@@ -26,6 +26,7 @@
 
 package io.spine.tools.mc.js.fs;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.logging.Logging;
 import io.spine.tools.code.Element;
@@ -63,6 +64,7 @@ final class ImportStatement implements Element, Logging {
 
     private final Path sourceDirectory;
     private final String text;
+    private final FileReference importRef;
 
     /**
      * Creates a new instance.
@@ -79,6 +81,7 @@ final class ImportStatement implements Element, Logging {
     private ImportStatement(Path sourceDirectory, String line) {
         this.sourceDirectory = sourceDirectory;
         this.text = ensureImport(line);
+        this.importRef = fileRefValue(line);
     }
 
     private static String ensureImport(String line) {
@@ -122,14 +125,14 @@ final class ImportStatement implements Element, Logging {
      * ({@code google-protobuf/google/protobuf/..}).
      */
     private boolean containsGoogleProtobufType() {
-        return fileRef().value().startsWith(GOOGLE_PROTOBUF_MODULE + "/google/protobuf/");
+        return importRef.value().startsWith(GOOGLE_PROTOBUF_MODULE + "/google/protobuf/");
     }
 
     /**
      * Tells if this statement refers to a file which cannot be found on the file system.
      */
     private boolean isUnresolvedRelativeImport() {
-        boolean isRelative = fileRef().isRelative();
+        boolean isRelative = importRef.isRelative();
         boolean fileDoesNotExist = !importedFileExists();
         return isRelative && fileDoesNotExist;
     }
@@ -142,10 +145,9 @@ final class ImportStatement implements Element, Logging {
         if (mainSourceImport.isPresent()) {
             return mainSourceImport.get();
         }
-        FileReference fileReference = fileRef();
         for (ExternalModule module : modules.asList()) {
-            if (module.provides(fileReference)) {
-                FileReference fileInModule = module.fileInModule(fileReference);
+            if (module.provides(importRef)) {
+                FileReference fileInModule = module.fileInModule(importRef);
                 return replaceRef(fileInModule.value());
             }
         }
@@ -156,7 +158,7 @@ final class ImportStatement implements Element, Logging {
      * Attempts to resolve a relative import among main sources.
      */
     private Optional<ImportStatement> resolveInMainSources() {
-        String fileReference = fileRef().value();
+        String fileReference = importRef.value();
         String delimiter = FileReference.currentDirectory();
         int insertionIndex = fileReference.lastIndexOf(delimiter) + delimiter.length();
         String updatedReference = fileReference.substring(0, insertionIndex)
@@ -169,7 +171,7 @@ final class ImportStatement implements Element, Logging {
     }
 
     private ImportStatement relativizeStandardProtoImport(Path generatedRoot) {
-        String fileReference = fileRef().value();
+        String fileReference = importRef.value();
         String relativePathToRoot = sourceDirectory.relativize(generatedRoot).toString();
         String replacement =
                 relativePathToRoot.isEmpty()
@@ -184,7 +186,12 @@ final class ImportStatement implements Element, Logging {
     /**
      * Obtains the file reference used in this import.
      */
-    public FileReference fileRef() {
+    @VisibleForTesting
+    FileReference fileRef() {
+        return importRef;
+    }
+
+    private static FileReference fileRefValue(String text) {
         int beginIndex = text.indexOf(IMPORT_START) + IMPORT_START.length();
         int endIndex = text.indexOf(IMPORT_END, beginIndex);
         String importPath = text.substring(beginIndex, endIndex);
@@ -195,7 +202,7 @@ final class ImportStatement implements Element, Logging {
      * Obtains a new instance with the updated path in the import statement.
      */
     public ImportStatement replaceRef(CharSequence newFileRef) {
-        String updatedText = text.replace(fileRef().value(), newFileRef);
+        String updatedText = text.replace(importRef.value(), newFileRef);
         return new ImportStatement(sourceDirectory, updatedText);
     }
 
@@ -227,7 +234,7 @@ final class ImportStatement implements Element, Logging {
      * Obtains the absolute path to the imported file.
      */
     Path importedFilePath() {
-        Path filePath = sourceDirectory.resolve(fileRef().value());
+        Path filePath = sourceDirectory.resolve(importRef.value());
         return filePath.normalize();
     }
 }

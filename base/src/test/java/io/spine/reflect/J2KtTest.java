@@ -30,6 +30,7 @@ import io.spine.reflect.given.MethodHolder;
 import io.spine.reflect.given.ObjMethodHolder;
 import kotlin.reflect.KCallable;
 import kotlin.reflect.KParameter;
+import kotlin.reflect.KParameter.Kind;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -39,8 +40,6 @@ import java.util.Optional;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth8.assertThat;
-import static kotlin.reflect.KParameter.Kind.INSTANCE;
-import static kotlin.reflect.KParameter.Kind.VALUE;
 
 @DisplayName("`J2Kt` should")
 class J2KtTest {
@@ -60,9 +59,9 @@ class J2KtTest {
         assertThat(params)
                 .hasSize(2);
         assertThat(params.get(0).getKind())
-                .isEqualTo(INSTANCE);
+                .isEqualTo(Kind.INSTANCE);
         assertThat(params.get(1).getKind())
-                .isEqualTo(VALUE);
+                .isEqualTo(Kind.VALUE);
     }
 
     @Test
@@ -80,9 +79,9 @@ class J2KtTest {
         assertThat(params)
                 .hasSize(2);
         assertThat(params.get(0).getKind())
-                .isEqualTo(INSTANCE);
+                .isEqualTo(Kind.INSTANCE);
         assertThat(params.get(1).getKind())
-                .isEqualTo(VALUE);
+                .isEqualTo(Kind.VALUE);
     }
 
     @Test
@@ -100,7 +99,7 @@ class J2KtTest {
         assertThat(params)
                 .hasSize(1);
         assertThat(params.get(0).getKind())
-                .isEqualTo(INSTANCE);
+                .isEqualTo(Kind.INSTANCE);
     }
 
     @Test
@@ -118,7 +117,7 @@ class J2KtTest {
         assertThat(params)
                 .hasSize(1);
         assertThat(params.get(0).getKind())
-                .isEqualTo(INSTANCE);
+                .isEqualTo(Kind.INSTANCE);
     }
 
     @Test
@@ -136,6 +135,6 @@ class J2KtTest {
         assertThat(params)
                 .hasSize(1);
         assertThat(params.get(0).getKind())
-                .isEqualTo(INSTANCE);
+                .isEqualTo(Kind.INSTANCE);
     }
 }
