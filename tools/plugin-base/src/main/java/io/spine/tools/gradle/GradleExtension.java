@@ -26,7 +26,7 @@
 
 package io.spine.tools.gradle;
 
-import io.spine.tools.fs.DefaultProject;
+import io.spine.tools.fs.DefaultPaths;
 import org.gradle.api.Project;
 
 import java.io.File;
@@ -40,35 +40,35 @@ import static io.spine.code.proto.FileDescriptors.DESC_EXTENSION;
 public abstract class GradleExtension {
 
     protected final File defaultMainDescriptor(Project project) {
-        Artifact artifact = Artifact
-                .newBuilder()
-                .setGroup(project.getGroup().toString())
-                .setName(project.getName())
-                .setVersion(project.getVersion().toString())
-                .build();
+        Artifact artifact = newBuilderFrom(project).build();
         String fileName = artifact.fileSafeId() + DESC_EXTENSION;
-        Path mainDescriptor = defaultProject(project).buildRoot()
-                                          .descriptors()
-                                          .mainDescriptors()
-                                          .resolve(fileName);
+        Path mainDescriptor = defaultPaths(project)
+                .buildRoot()
+                .descriptors()
+                .mainDescriptors()
+                .resolve(fileName);
         return mainDescriptor.toFile();
     }
 
     protected final File defaultTestDescriptor(Project project) {
-        Artifact artifact = Artifact
-                .newBuilder()
-                .setGroup(project.getGroup().toString())
-                .setName(project.getName())
-                .setVersion(project.getVersion().toString())
+        Artifact artifact = newBuilderFrom(project)
                 .useTestClassifier()
                 .build();
         String fileName = artifact.fileSafeId() + DESC_EXTENSION;
-        Path testDescriptor = defaultProject(project).buildRoot()
-                                          .descriptors()
-                                          .testDescriptors()
-                                          .resolve(fileName);
+        Path testDescriptor = defaultPaths(project)
+                .buildRoot()
+                .descriptors()
+                .testDescriptors()
+                .resolve(fileName);
         return testDescriptor.toFile();
     }
 
-    protected abstract DefaultProject defaultProject(Project project);
+    private static Artifact.Builder newBuilderFrom(Project project) {
+        return Artifact.newBuilder()
+                .setGroup(project.getGroup().toString())
+                .setName(project.getName())
+                .setVersion(project.getVersion().toString());
+    }
+
+    protected abstract DefaultPaths defaultPaths(Project project);
 }

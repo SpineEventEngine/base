@@ -24,32 +24,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.groovy;
+package io.spine.tools.dart.fs;
 
-import groovy.lang.GString;
+import io.spine.tools.fs.DefaultPaths;
+
+import java.io.File;
+import java.nio.file.Path;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A factory of Groovy strings.
- *
- * @deprecated Since the latest changes in the Protobuf Gradle plugin, usage of Groovy strings
- * in Java or Kotlin becomes obsolete. This factory will be removed in a future release.
+ * A default project layout for a Dart project.
  */
-@Deprecated
-public final class GStrings {
+public final class DefaultDartPaths extends DefaultPaths {
 
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private GStrings() {
+    private DefaultDartPaths(Path path) {
+        super(path);
     }
 
     /**
-     * Creates a new {@code GString} equivalent to the given Java string.
-     *
-     * @param javaString the plain Java string to convert into a Groovy string
-     * @return new {@code GString}
+     * Creates a new instance taking the passed project root path.
      */
-    public static GString fromPlain(String javaString) {
-        return GString.EMPTY.plus(javaString);
+    public static DefaultDartPaths at(Path root) {
+        checkNotNull(root);
+        return new DefaultDartPaths(root);
+    }
+
+    /**
+     * Creates a new instance taking the passed project root path.
+     */
+    public static DefaultDartPaths at(File root) {
+        checkNotNull(root);
+        return at(root.toPath());
     }
 }

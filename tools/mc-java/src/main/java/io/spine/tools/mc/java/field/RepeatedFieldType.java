@@ -27,6 +27,7 @@
 package io.spine.tools.mc.java.field;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.Immutable;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
@@ -36,30 +37,31 @@ import io.spine.code.proto.FieldDeclaration;
 import java.util.List;
 import java.util.Optional;
 
-import static io.spine.tools.mc.java.field.AccessorTemplates.adder;
-import static io.spine.tools.mc.java.field.AccessorTemplates.allAdder;
-import static io.spine.tools.mc.java.field.AccessorTemplates.clearer;
-import static io.spine.tools.mc.java.field.AccessorTemplates.countGetter;
-import static io.spine.tools.mc.java.field.AccessorTemplates.getter;
-import static io.spine.tools.mc.java.field.AccessorTemplates.listGetter;
-import static io.spine.tools.mc.java.field.AccessorTemplates.setter;
+import static io.spine.tools.mc.java.field.StandardAccessor.add;
+import static io.spine.tools.mc.java.field.StandardAccessor.addAll;
+import static io.spine.tools.mc.java.field.StandardAccessor.clear;
+import static io.spine.tools.mc.java.field.StandardAccessor.getCount;
+import static io.spine.tools.mc.java.field.StandardAccessor.get;
+import static io.spine.tools.mc.java.field.StandardAccessor.getList;
+import static io.spine.tools.mc.java.field.StandardAccessor.set;
 
 /**
  * Represents repeated {@linkplain FieldType field type}.
  */
+@Immutable
 final class RepeatedFieldType implements FieldType {
 
-    private static final ImmutableSet<AccessorTemplate> GENERATED_ACCESSORS =
-            ImmutableSet.of(
-                    getter(),
-                    listGetter(),
-                    countGetter(),
-                    setter(),
-                    adder(),
-                    allAdder(),
-                    clearer()
-            );
+    private static final ImmutableSet<Accessor> ACCESSORS = ImmutableSet.of(
+            get(),
+            getList(),
+            getCount(),
+            set(),
+            add(),
+            addAll(),
+            clear()
+    );
 
+    @SuppressWarnings("Immutable") // effectively
     private final TypeName typeName;
 
     /**
@@ -69,17 +71,17 @@ final class RepeatedFieldType implements FieldType {
      *         the declaration of the field
      */
     RepeatedFieldType(FieldDeclaration declaration) {
-        this.typeName = constructTypeNameFor(declaration.javaTypeName());
+        this.typeName = typeNameFor(declaration.javaTypeName());
     }
 
     @Override
-    public TypeName getTypeName() {
+    public TypeName name() {
         return typeName;
     }
 
     @Override
-    public ImmutableSet<AccessorTemplate> generatedAccessorTemplates() {
-        return GENERATED_ACCESSORS;
+    public ImmutableSet<Accessor> accessors() {
+        return ACCESSORS;
     }
 
     /**
@@ -87,19 +89,18 @@ final class RepeatedFieldType implements FieldType {
      * Protobuf message builder.
      */
     @Override
-    public AccessorTemplate primarySetterTemplate() {
-        return allAdder();
+    public Accessor primarySetter() {
+        return addAll();
     }
 
-    private static TypeName constructTypeNameFor(String componentTypeName) {
-        Optional<? extends Class<?>> wrapperClass =
-                PrimitiveType.getWrapperClass(componentTypeName);
-
-        TypeName componentType = wrapperClass.isPresent()
-                                 ? TypeName.get(wrapperClass.get())
-                                 : ClassName.bestGuess(componentTypeName);
-        ParameterizedTypeName result =
-                ParameterizedTypeName.get(ClassName.get(List.class), componentType);
+    private static TypeName typeNameFor(String componentTypeName) {
+        Optional<? extends Class<?>> wrapper = PrimitiveType.getWrapperClass(componentTypeName);
+        TypeName componentType =
+                wrapper.isPresent()
+                ? TypeName.get(wrapper.get())
+                : ClassName.bestGuess(componentTypeName);
+        ClassName listClass = ClassName.get(List.class);
+        ParameterizedTypeName result = ParameterizedTypeName.get(listClass, componentType);
         return result;
     }
 

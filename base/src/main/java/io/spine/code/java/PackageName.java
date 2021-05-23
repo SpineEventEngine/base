@@ -106,11 +106,12 @@ public final class PackageName extends StringTypeValue {
      */
     public static PackageName resolve(FileDescriptorProto file) {
         String javaPackage = resolveName(file).trim();
-        checkArgument(!javaPackage.isEmpty(),
-                      "Message classes generated from the file `%s` belong to the default package.%s"
-                    + "Use `option java_package` or `package` to specify the Java package.",
-                      file.getName(),
-                      System.lineSeparator());
+        checkArgument(
+                !javaPackage.isEmpty(),
+                "Message classes generated from the file `%s` belong to the default package.%n"
+                        + "Please use `option java_package` or `package`"
+                        + " to specify a Java package for these types.", file.getName()
+        );
         PackageName result = new PackageName(javaPackage);
         return result;
     }

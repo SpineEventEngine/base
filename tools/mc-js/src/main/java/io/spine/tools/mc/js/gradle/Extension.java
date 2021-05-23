@@ -26,11 +26,11 @@
 
 package io.spine.tools.mc.js.gradle;
 
-import io.spine.tools.fs.DefaultProject;
+import io.spine.tools.fs.DefaultPaths;
 import io.spine.tools.fs.ExternalModule;
 import io.spine.tools.fs.ExternalModules;
 import io.spine.tools.gradle.GradleExtension;
-import io.spine.tools.js.fs.DefaultJsProject;
+import io.spine.tools.js.fs.DefaultJsPaths;
 import io.spine.tools.js.fs.Directory;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -174,12 +174,12 @@ public class Extension extends GradleExtension {
         return Paths.get(pathValue);
     }
 
-    private static DefaultJsProject def(Project project) {
-        return DefaultJsProject.at(project.getProjectDir());
+    private static DefaultJsPaths def(Project project) {
+        return DefaultJsPaths.at(project.getProjectDir());
     }
 
     @Override
-    protected DefaultProject defaultProject(Project project) {
+    protected DefaultPaths defaultPaths(Project project) {
         return def(project);
     }
 }

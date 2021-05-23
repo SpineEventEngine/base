@@ -26,87 +26,91 @@
 
 package io.spine.tools.mc.java.field;
 
-import static io.spine.tools.mc.java.field.AccessorTemplate.prefix;
-import static io.spine.tools.mc.java.field.AccessorTemplate.prefixAndPostfix;
+import static io.spine.tools.mc.java.field.Accessor.prefix;
+import static io.spine.tools.mc.java.field.Accessor.prefixAndPostfix;
 
 /**
- * A factory of commonly used {@link AccessorTemplate} instances.
+ * Commonly used {@link Accessor} instances.
+ *
+ * @apiNote This class mimics an enum. The current approach selected in order to keep
+ * the keep {@link Accessor} open enough for extensions (and being a class rather than
+ * an interface), while having the quasi-enumeration provided by this class.
  */
-final class AccessorTemplates {
+final class StandardAccessor {
 
     private static final String GET_PREFIX = "get";
 
-    private static final AccessorTemplate GET = prefix(GET_PREFIX);
-    private static final AccessorTemplate GET_LIST = prefixAndPostfix(GET_PREFIX, "List");
-    private static final AccessorTemplate GET_MAP = prefixAndPostfix(GET_PREFIX, "Map");
-    private static final AccessorTemplate GET_COUNT = prefixAndPostfix(GET_PREFIX, "Count");
+    private static final Accessor GET = prefix(GET_PREFIX);
+    private static final Accessor GET_LIST = prefixAndPostfix(GET_PREFIX, "List");
+    private static final Accessor GET_MAP = prefixAndPostfix(GET_PREFIX, "Map");
+    private static final Accessor GET_COUNT = prefixAndPostfix(GET_PREFIX, "Count");
 
-    private static final AccessorTemplate SET = prefix("set");
-    private static final AccessorTemplate ADD = prefix("add");
-    private static final AccessorTemplate PUT = prefix("put");
-    private static final AccessorTemplate REMOVE = prefix("remove");
-    private static final AccessorTemplate ADD_ALL = prefix("addAll");
-    private static final AccessorTemplate PUT_ALL = prefix("putAll");
-    private static final AccessorTemplate CLEAR = prefix("clear");
+    private static final Accessor SET = prefix("set");
+    private static final Accessor ADD = prefix("add");
+    private static final Accessor PUT = prefix("put");
+    private static final Accessor REMOVE = prefix("remove");
+    private static final Accessor ADD_ALL = prefix("addAll");
+    private static final Accessor PUT_ALL = prefix("putAll");
+    private static final Accessor CLEAR = prefix("clear");
 
     /**
      * Prevents the utility class instantiation.
      */
-    private AccessorTemplates() {
+    private StandardAccessor() {
     }
 
     /** Obtains {@code get...} template. */
-    public static AccessorTemplate getter() {
+    static Accessor get() {
         return GET;
     }
 
     /** Obtains {@code get...List} template. */
-    public static AccessorTemplate listGetter() {
+    static Accessor getList() {
         return GET_LIST;
     }
 
     /** Obtains {@code get...Map} template. */
-    public static AccessorTemplate mapGetter() {
+    static Accessor getMap() {
         return GET_MAP;
     }
 
     /** Obtains {@code get...Count} template. */
-    public static AccessorTemplate countGetter() {
+    static Accessor getCount() {
         return GET_COUNT;
     }
 
     /** Obtains {@code set...} template. */
-    public static AccessorTemplate setter() {
+    static Accessor set() {
         return SET;
     }
 
     /** Obtains {@code add...} template. */
-    public static AccessorTemplate adder() {
+    static Accessor add() {
         return ADD;
     }
 
     /** Obtains {@code addAll...} template. */
-    public static AccessorTemplate allAdder() {
+    static Accessor addAll() {
         return ADD_ALL;
     }
 
     /** Obtains {@code put...} template. */
-    public static AccessorTemplate putter() {
+    static Accessor put() {
         return PUT;
     }
 
     /** Obtains {@code putAll...} template. */
-    public static AccessorTemplate allPutter() {
+    static Accessor putAll() {
         return PUT_ALL;
     }
 
     /** Obtains {@code remove...} template. */
-    public static AccessorTemplate remover() {
+    static Accessor remove() {
         return REMOVE;
     }
 
     /** Obtains {@code clear...} template. */
-    public static AccessorTemplate clearer() {
+    static Accessor clear() {
         return CLEAR;
     }
 }

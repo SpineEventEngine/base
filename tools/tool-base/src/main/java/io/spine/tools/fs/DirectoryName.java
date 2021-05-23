@@ -70,7 +70,7 @@ public enum DirectoryName {
     /**
      * Internal directory name for storing temporary build artifacts.
      *
-     * @see DefaultProject#tempArtifacts()
+     * @see DefaultPaths#tempArtifacts()
      */
     @Internal
     dotSpine(".spine");

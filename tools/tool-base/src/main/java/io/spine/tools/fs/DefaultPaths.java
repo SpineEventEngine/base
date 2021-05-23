@@ -49,9 +49,9 @@ import static io.spine.tools.fs.DirectoryName.test;
  */
 @SuppressWarnings("AbstractClassWithoutAbstractMethods")
 // Only stores common elements of subclasses.
-public abstract class DefaultProject extends AbstractDirectory {
+public abstract class DefaultPaths extends AbstractDirectory {
 
-    protected DefaultProject(Path path) {
+    protected DefaultPaths(Path path) {
         super(path);
     }
 
@@ -84,7 +84,7 @@ public abstract class DefaultProject extends AbstractDirectory {
      */
     public static class SourceRoot extends SourceDir {
 
-        protected SourceRoot(DefaultProject parent, String name) {
+        protected SourceRoot(DefaultPaths parent, String name) {
             super(parent, name);
         }
 
@@ -102,12 +102,12 @@ public abstract class DefaultProject extends AbstractDirectory {
      */
     public static final class BuildRoot extends AbstractDirectory {
 
-        private BuildRoot(DefaultProject module) {
+        private BuildRoot(DefaultPaths module) {
             super(module.path()
                         .resolve(build.value()));
         }
 
-        static BuildRoot of(DefaultProject project) {
+        static BuildRoot of(DefaultPaths project) {
             return new BuildRoot(project);
         }
 

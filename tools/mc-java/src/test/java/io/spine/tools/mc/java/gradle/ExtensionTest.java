@@ -25,7 +25,7 @@
  */
 package io.spine.tools.mc.java.gradle;
 
-import io.spine.tools.java.fs.DefaultJavaProject;
+import io.spine.tools.java.fs.DefaultJavaPaths;
 import org.gradle.api.Project;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -230,7 +230,7 @@ class ExtensionTest {
         @Test
         @DisplayName("include `.spine` dir, if exists")
         void includeSpineDir() throws IOException {
-            DefaultJavaProject defaultProject = DefaultJavaProject.at(projectDir);
+            DefaultJavaPaths defaultProject = DefaultJavaPaths.at(projectDir);
             File spineDir = defaultProject.tempArtifacts();
             assertTrue(spineDir.mkdir());
             String generatedDir =

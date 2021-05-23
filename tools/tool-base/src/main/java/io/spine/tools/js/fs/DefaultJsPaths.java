@@ -26,7 +26,7 @@
 
 package io.spine.tools.js.fs;
 
-import io.spine.tools.fs.DefaultProject;
+import io.spine.tools.fs.DefaultPaths;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -72,19 +72,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>Other directories (like source code directory) may also be present in the project, but their
  * location is currently not standardized and thus is not described by this class.
  */
-public final class DefaultJsProject extends DefaultProject {
+public final class DefaultJsPaths extends DefaultPaths {
 
-    private DefaultJsProject(Path path) {
+    private DefaultJsPaths(Path path) {
         super(path);
     }
 
-    public static DefaultJsProject at(Path root) {
+    public static DefaultJsPaths at(Path root) {
         checkNotNull(root);
-        DefaultJsProject result = new DefaultJsProject(root);
+        DefaultJsPaths result = new DefaultJsPaths(root);
         return result;
     }
 
-    public static DefaultJsProject at(File projectDir) {
+    public static DefaultJsPaths at(File projectDir) {
         checkNotNull(projectDir);
         return at(projectDir.toPath());
     }
@@ -101,7 +101,7 @@ public final class DefaultJsProject extends DefaultProject {
         @SuppressWarnings("DuplicateStringLiteralInspection") // Same name in different context.
         private static final String DIR_NAME = "generated";
 
-        private GeneratedProtoRoot(DefaultProject parent) {
+        private GeneratedProtoRoot(DefaultPaths parent) {
             super(parent, DIR_NAME);
         }
 

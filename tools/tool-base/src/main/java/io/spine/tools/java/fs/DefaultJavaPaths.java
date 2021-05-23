@@ -27,7 +27,7 @@
 package io.spine.tools.java.fs;
 
 import io.spine.code.fs.SourceCodeDirectory;
-import io.spine.tools.fs.DefaultProject;
+import io.spine.tools.fs.DefaultPaths;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -62,19 +62,19 @@ import static io.spine.tools.fs.DirectoryName.src;
  * <li>{@code .spine} — temporary build artifacts directory used by the Spine Model Compiler.
  * </ul>
  */
-public final class DefaultJavaProject extends DefaultProject {
+public final class DefaultJavaPaths extends DefaultPaths {
 
-    private DefaultJavaProject(Path path) {
+    private DefaultJavaPaths(Path path) {
         super(path);
     }
 
-    public static DefaultJavaProject at(Path root) {
+    public static DefaultJavaPaths at(Path root) {
         checkNotNull(root);
-        DefaultJavaProject result = new DefaultJavaProject(root);
+        DefaultJavaPaths result = new DefaultJavaPaths(root);
         return result;
     }
 
-    public static DefaultJavaProject at(File projectDir) {
+    public static DefaultJavaPaths at(File projectDir) {
         checkNotNull(projectDir);
         return at(projectDir.toPath());
     }
@@ -89,7 +89,7 @@ public final class DefaultJavaProject extends DefaultProject {
 
     private static class JavaCodeRoot extends SourceRoot {
 
-        private JavaCodeRoot(DefaultProject parent, String name) {
+        private JavaCodeRoot(DefaultPaths parent, String name) {
             super(parent, name);
         }
 
@@ -116,7 +116,7 @@ public final class DefaultJavaProject extends DefaultProject {
      */
     public static class HandmadeCodeRoot extends JavaCodeRoot {
 
-        private HandmadeCodeRoot(DefaultProject parent, String name) {
+        private HandmadeCodeRoot(DefaultPaths parent, String name) {
             super(parent, name);
         }
 
@@ -144,7 +144,7 @@ public final class DefaultJavaProject extends DefaultProject {
         private static final String GRPC_DIR = grpc.value();
         private static final String RESOURCES_DIR = resources.value();
 
-        private GeneratedRoot(DefaultProject parent) {
+        private GeneratedRoot(DefaultPaths parent) {
             super(parent, generated.value());
         }
 

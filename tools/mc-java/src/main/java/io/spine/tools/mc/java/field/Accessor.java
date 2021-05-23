@@ -41,14 +41,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * (e.g. {@code ...Count}).
  */
 @Immutable
-public final class AccessorTemplate implements Serializable {
+public final class Accessor implements Serializable {
 
     private static final long serialVersionUID = 0L;
 
     private final String prefix;
     private final String postfix;
 
-    private AccessorTemplate(String prefix, String postfix) {
+    private Accessor(String prefix, String postfix) {
         this.prefix = prefix;
         this.postfix = postfix;
     }
@@ -56,18 +56,18 @@ public final class AccessorTemplate implements Serializable {
     /**
      * Creates a new template with the given prefix and an empty postfix.
      */
-    public static AccessorTemplate prefix(String prefix) {
+    public static Accessor prefix(String prefix) {
         checkNotNull(prefix);
-        return new AccessorTemplate(prefix, "");
+        return new Accessor(prefix, "");
     }
 
     /**
      * Creates a new template with the given prefix and postfix.
      */
-    public static AccessorTemplate prefixAndPostfix(String prefix, String suffix) {
+    public static Accessor prefixAndPostfix(String prefix, String suffix) {
         checkNotNull(prefix);
         checkNotNull(suffix);
-        return new AccessorTemplate(prefix, suffix);
+        return new Accessor(prefix, suffix);
     }
 
     /**
@@ -94,7 +94,7 @@ public final class AccessorTemplate implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        AccessorTemplate template = (AccessorTemplate) o;
+        Accessor template = (Accessor) o;
         return Objects.equal(template(), template.template());
     }
 

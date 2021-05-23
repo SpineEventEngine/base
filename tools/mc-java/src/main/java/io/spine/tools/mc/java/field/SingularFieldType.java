@@ -27,6 +27,7 @@
 package io.spine.tools.mc.java.field;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
@@ -36,41 +37,38 @@ import io.spine.code.proto.FieldDeclaration;
 import java.util.Optional;
 
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType.STRING;
-import static io.spine.tools.mc.java.field.AccessorTemplate.prefix;
-import static io.spine.tools.mc.java.field.AccessorTemplate.prefixAndPostfix;
-import static io.spine.tools.mc.java.field.AccessorTemplates.clearer;
-import static io.spine.tools.mc.java.field.AccessorTemplates.getter;
-import static io.spine.tools.mc.java.field.AccessorTemplates.setter;
+import static io.spine.tools.mc.java.field.Accessor.prefix;
+import static io.spine.tools.mc.java.field.Accessor.prefixAndPostfix;
+import static io.spine.tools.mc.java.field.StandardAccessor.clear;
+import static io.spine.tools.mc.java.field.StandardAccessor.get;
+import static io.spine.tools.mc.java.field.StandardAccessor.set;
 
 /**
  * Represents singular {@linkplain FieldType field type}.
  */
+@Immutable
 final class SingularFieldType implements FieldType {
 
     private static final String BYTES = "Bytes";
 
-    private static final ImmutableSet<AccessorTemplate> GENERATED_ACCESSORS =
-            ImmutableSet.of(
-                    prefix("has"),
-                    getter(),
-                    setter(),
-                    clearer()
-            );
+    private static final ImmutableSet<Accessor> ACCESSORS = ImmutableSet.of(
+            prefix("has"),
+            get(),
+            set(),
+            clear()
+    );
 
-    private static final ImmutableSet<AccessorTemplate> GENERATED_STRING_ACCESSORS =
-            ImmutableSet.of(
-                    prefixAndPostfix("get", BYTES),
-                    prefixAndPostfix("set", BYTES)
-            );
+    private static final ImmutableSet<Accessor> STRING_ACCESSORS = ImmutableSet.of(
+            prefixAndPostfix("get", BYTES),
+            prefixAndPostfix("set", BYTES)
+    );
 
+    @SuppressWarnings("Immutable") // effectively
     private final TypeName typeName;
     private final JavaType javaType;
 
     /**
      * Creates a new instance based on field type name.
-     *
-     * @param declaration
-     *         the field declaration
      */
     SingularFieldType(FieldDeclaration declaration) {
         this.typeName = constructTypeNameFor(declaration.javaTypeName());
@@ -78,18 +76,18 @@ final class SingularFieldType implements FieldType {
     }
 
     @Override
-    public TypeName getTypeName() {
+    public TypeName name() {
         return typeName;
     }
 
     @Override
-    public ImmutableSet<AccessorTemplate> generatedAccessorTemplates() {
+    public ImmutableSet<Accessor> accessors() {
         return javaType == STRING
-             ? ImmutableSet.<AccessorTemplate>builder()
-                           .addAll(GENERATED_ACCESSORS)
-                           .addAll(GENERATED_STRING_ACCESSORS)
+             ? ImmutableSet.<Accessor>builder()
+                           .addAll(ACCESSORS)
+                           .addAll(STRING_ACCESSORS)
                            .build()
-             : GENERATED_ACCESSORS;
+             : ACCESSORS;
     }
 
     /**
@@ -99,8 +97,8 @@ final class SingularFieldType implements FieldType {
      * <p>The call should have the following structure: {@code builder.setFieldName(FieldType)}.
      */
     @Override
-    public AccessorTemplate primarySetterTemplate() {
-        return setter();
+    public Accessor primarySetter() {
+        return set();
     }
 
     private static TypeName constructTypeNameFor(String name) {
