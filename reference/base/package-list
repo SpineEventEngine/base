@@ -1,10 +1,8 @@
 io.spine.annotation
 io.spine.base
 io.spine.code
-io.spine.code.fs
 io.spine.code.java
 io.spine.code.proto
-io.spine.environment
 io.spine.io
 io.spine.json
 io.spine.logging
@@ -13,7 +11,6 @@ io.spine.net.string
 io.spine.option
 io.spine.people
 io.spine.protobuf
-io.spine.query
 io.spine.reflect
 io.spine.security
 io.spine.string
