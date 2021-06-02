@@ -65,6 +65,9 @@ final class AndExpression<R> extends Expression<R, AndExpression<R>> {
 
     /**
      * Builder of {@code AndExpression}.
+     *
+     * @param <R>
+     *         the type of records, around which the expression is built
      */
     static final class AndBuilder<R> extends Builder<R, AndExpression<R>, AndBuilder<R>> {
 

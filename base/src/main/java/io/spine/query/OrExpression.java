@@ -76,6 +76,9 @@ final class OrExpression<R> extends Expression<R, OrExpression<R>> {
 
     /**
      * Builder of {@code OrExpression}.
+     *
+     * @param <R>
+     *         the type of records, around which the expression is built
      */
     static final class OrBuilder<R> extends Builder<R, OrExpression<R>, OrBuilder<R>> {
 
