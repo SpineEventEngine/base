@@ -36,7 +36,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -51,13 +50,14 @@ import static io.spine.query.LogicalOperator.AND;
 import static io.spine.query.LogicalOperator.OR;
 import static io.spine.query.given.RecordQueryBuilderTestEnv.ManufacturerColumns.is_traded;
 import static io.spine.query.given.RecordQueryBuilderTestEnv.ManufacturerColumns.isin;
+import static io.spine.query.given.RecordQueryBuilderTestEnv.ManufacturerColumns.stock_count;
 import static io.spine.query.given.RecordQueryBuilderTestEnv.ManufacturerColumns.when_founded;
 import static io.spine.query.given.RecordQueryBuilderTestEnv.assertHasParamValue;
 import static io.spine.query.given.RecordQueryBuilderTestEnv.fieldMaskWith;
 import static io.spine.query.given.RecordQueryBuilderTestEnv.generateIds;
 import static io.spine.query.given.RecordQueryBuilderTestEnv.manufacturerId;
 import static io.spine.query.given.RecordQueryBuilderTestEnv.queryManufacturer;
-import static io.spine.query.given.RecordQueryBuilderTestEnv.subjectWithNoPredicates;
+import static io.spine.query.given.RecordQueryBuilderTestEnv.subjectWithNoParameters;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`RecordQueryBuilder` should")
@@ -76,7 +76,7 @@ class RecordQueryBuilderTest {
         @DisplayName("with no parameters")
         void empty() {
             RecordQuery<ManufacturerId, Manufacturer> actual = queryManufacturer().build();
-            Subject<ManufacturerId, Manufacturer> subject = subjectWithNoPredicates(actual);
+            Subject<ManufacturerId, Manufacturer> subject = subjectWithNoParameters(actual);
             assertThat(subject.id()
                               .values()).isEmpty();
             RecordQueryBuilderTestEnv.assertNoSortingMaskLimit(actual);
@@ -99,7 +99,7 @@ class RecordQueryBuilderTest {
                     queryManufacturer()
                             .id().is(expectedId)
                             .build();
-            Subject<ManufacturerId, Manufacturer> subject = subjectWithNoPredicates(query);
+            Subject<ManufacturerId, Manufacturer> subject = subjectWithNoParameters(query);
 
             IdParameter<ManufacturerId> actualIdParam = subject.id();
             assertThat(actualIdParam.values()).containsExactly(expectedId);
@@ -113,7 +113,7 @@ class RecordQueryBuilderTest {
                     queryManufacturer()
                             .id().in(expectedValues)
                             .build();
-            Subject<ManufacturerId, Manufacturer> subject = subjectWithNoPredicates(query);
+            Subject<ManufacturerId, Manufacturer> subject = subjectWithNoParameters(query);
 
             IdParameter<ManufacturerId> actualIdParam = subject.id();
             assertThat(actualIdParam.values()).isEqualTo(expectedValues);
@@ -130,17 +130,18 @@ class RecordQueryBuilderTest {
                                        .where(is_traded).is(stocksAreTraded)
                                        .build();
 
-            ImmutableList<QueryPredicate<Manufacturer>> predicates = query.subject()
-                                                                          .predicates();
-            assertThat(predicates).hasSize(1);
-            QueryPredicate<Manufacturer> predicate = predicates.get(0);
-            assertThat(predicate.operator()).isEqualTo(AND);
+            QueryPredicate<Manufacturer> rootPredicate = query.subject()
+                                                           .predicate();
+            assertThat(rootPredicate.operator()).isEqualTo(AND);
+            assertThat(rootPredicate.children()).isEmpty();
+            assertThat(rootPredicate.customParameters()).isEmpty();
 
-            ImmutableList<SubjectParameter<Manufacturer, ?, ?>> params = predicate.parameters();
+            ImmutableList<SubjectParameter<Manufacturer, ?, ?>> params = rootPredicate.parameters();
             assertThat(params).hasSize(3);
             assertHasParamValue(params, isin, EQUALS, isinValue);
             assertHasParamValue(params, when_founded, LESS_OR_EQUALS, THURSDAY);
             assertHasParamValue(params, is_traded, EQUALS, stocksAreTraded);
+
         }
 
         @Test
@@ -154,22 +155,41 @@ class RecordQueryBuilderTest {
                             .either((r) -> r.where(isin).is(isinValue),
                                     (r) -> r.where(is_traded).is(stocksAreTraded))
                             .build();
-            ImmutableList<QueryPredicate<Manufacturer>> predicates = query.subject()
-                                                                          .predicates();
-            assertThat(predicates).hasSize(2);
+            QueryPredicate<Manufacturer> rootPredicate = query.subject().predicate();
+            assertThat(rootPredicate.operator()).isEqualTo(AND);
 
-            QueryPredicate<Manufacturer> actualAnd = predicates.get(0);
-            assertThat(actualAnd.operator()).isEqualTo(AND);
-            List<SubjectParameter<Manufacturer, ?, ?>> andParams = actualAnd.parameters();
-            assertThat(andParams).hasSize(1);
-            assertHasParamValue(andParams, when_founded, LESS_THAN, THURSDAY);
+            ImmutableList<SubjectParameter<Manufacturer, ?, ?>> parameters =
+                    rootPredicate.parameters();
+            assertThat(parameters.size()).isEqualTo(1);
+            assertHasParamValue(parameters, when_founded, LESS_THAN, THURSDAY);
 
-            QueryPredicate<Manufacturer> actualEither = predicates.get(1);
-            assertThat(actualEither.operator()).isEqualTo(OR);
-            List<SubjectParameter<Manufacturer, ?, ?>> orParams = actualEither.parameters();
-            assertThat(orParams).hasSize(2);
-            assertHasParamValue(orParams, isin, EQUALS, isinValue);
-            assertHasParamValue(orParams, is_traded, EQUALS, stocksAreTraded);
+            ImmutableList<QueryPredicate<Manufacturer>> children = rootPredicate.children();
+            assertThat(children.size()).isEqualTo(1);
+            QueryPredicate<Manufacturer> either = children.get(0);
+            assertThat(either.operator()).isEqualTo(OR);
+            assertThat(either.customParameters()).hasSize(0);
+            ImmutableList<SubjectParameter<Manufacturer, ?, ?>> params = either.parameters();
+            assertThat(params).hasSize(2);
+
+            assertHasParamValue(params, isin, EQUALS, isinValue);
+            assertHasParamValue(params, is_traded, EQUALS, stocksAreTraded);
+        }
+
+        @Test
+        @DisplayName("removing unnecessary top-level `AND` predicate, " +
+                "if there is just a single `OR` child predicate.")
+        void removeUnnecessaryTopLevelAnd() {
+            RecordQuery<ManufacturerId, Manufacturer> query =
+                    queryManufacturer()
+                            .either(r -> r.where(stock_count).is(42)
+                                          .where(isin).is("some value"),
+                                    r -> r.where(stock_count).is(7)
+                                          .where(isin).is("another value"))
+                            .build();
+            LogicalOperator topLevelOperator = query.subject()
+                                                    .predicate()
+                                                    .operator();
+            assertThat(topLevelOperator).isEqualTo(OR);
         }
 
         @Test
@@ -284,12 +304,11 @@ class RecordQueryBuilderTest {
         @DisplayName("of parameters")
         void ofParameterValues() {
             String isinValue = "JP 3496600002";
-            List<QueryPredicate<Manufacturer>> predicates =
+            QueryPredicate<Manufacturer> predicate =
                     queryManufacturer().where(isin).is(isinValue)
                                        .where(when_founded).isGreaterOrEqualTo(THURSDAY)
-                                       .predicates();
-            assertThat(predicates).hasSize(1);
-            QueryPredicate<Manufacturer> predicate = predicates.get(0);
+                                       .predicate();
+            assertThat(predicate.children()).isEmpty();
             assertThat(predicate.operator()).isEqualTo(AND);
 
             ImmutableList<SubjectParameter<Manufacturer, ?, ?>> parameters = predicate.parameters();
@@ -335,7 +354,8 @@ class RecordQueryBuilderTest {
         int predicateSize = queryManufacturer()
                 .where(is_traded).is(false)
                 .build((q) -> q.subject()
-                               .predicates()
+                               .predicate()
+                               .parameters()
                                .size());
         assertThat(predicateSize).isEqualTo(1);
     }

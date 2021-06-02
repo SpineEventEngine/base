@@ -26,6 +26,7 @@
 
 package io.spine.query;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Message;
@@ -120,6 +121,16 @@ abstract class AbstractQuery<I, R extends Message, P extends SubjectParameter<R,
     @Override
     public FieldMask mask() {
         return mask;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                          .add("subject", subject)
+                          .add("sorting", sorting)
+                          .add("limit", limit)
+                          .add("mask", mask)
+                          .toString();
     }
 
     @Override

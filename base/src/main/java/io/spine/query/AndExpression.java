@@ -26,21 +26,56 @@
 
 package io.spine.query;
 
+import static io.spine.query.LogicalOperator.AND;
+
 /**
- * Logical operators used in {@linkplain AbstractQuery querying}.
+ * Conjunctive expression.
+ *
+ * @param <R>
+ *         the type of records, which parameters are a part of this expression
  */
-public enum LogicalOperator {
-    AND,
-    OR;
+final class AndExpression<R> extends Expression<R, AndExpression<R>> {
+
+    private AndExpression(AndBuilder<R> builder) {
+        super(AND, builder);
+    }
 
     /**
-     * Returns the counterpart for this operator.
+     * Creates a new instance of builder for this expression.
      *
-     * <p>If this one is {@code AND}, returns {@code OR}.
-     *
-     * <p>If this one is {@code OR}, returns {@code AND}.
+     * @param <R>
+     *         the type of records, which parameters are a part of this expression
      */
-    public LogicalOperator counterpart() {
-        return this == AND ? OR : AND;
+    static <R> AndBuilder<R> newBuilder() {
+        return new AndBuilder<>();
+    }
+
+    /**
+     * Attempts to cast the passed expression to {@code AndExpression}.
+     */
+    @SuppressWarnings("unchecked")
+    static <R> AndExpression<R> asAnd(Expression<R, ?> expression) {
+        return (AndExpression<R>) expression;
+    }
+
+    @Override
+    Builder<R, AndExpression<R>, ?> createBuilder() {
+        return newBuilder();
+    }
+
+    /**
+     * Builder of {@code AndExpression}.
+     */
+    static final class AndBuilder<R> extends Builder<R, AndExpression<R>, AndBuilder<R>> {
+
+        @Override
+        AndBuilder<R> thisRef() {
+            return this;
+        }
+
+        @Override
+        AndExpression<R> build() {
+            return new AndExpression<>(this);
+        }
     }
 }

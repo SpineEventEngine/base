@@ -26,7 +26,7 @@
 
 package io.spine.query;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.base.MoreObjects;
 import com.google.protobuf.Message;
 
 import java.util.Objects;
@@ -59,20 +59,20 @@ public final class Subject<I, R extends Message> {
     private final IdParameter<I> id;
 
     /**
-     * Predicates, being the group of the parameters, against which the actual values
+     * Predicate, grouping the conditions, against which the actual values
      * of target record fields are compared when querying.
      *
-     * <p>The evaluation is done in a conjunction mode. I.e. a record matches the subject
-     * if it matches each predicate.
+     * <p>The evaluation is done in according to the {@linkplain QueryPredicate#operator()
+     * predicate's logical operator}.
      */
-    private final ImmutableList<QueryPredicate<R>> predicates;
+    private final QueryPredicate<R> predicate;
 
     Subject(QueryBuilder<I, R, ?, ?, ?> builder) {
         checkNotNull(builder);
         this.id = checkNotNull(builder.whichIds());
         this.idType = checkNotNull(builder.whichIdType());
         this.recordType = checkNotNull(builder.whichRecordType());
-        this.predicates = checkNotNull(builder.predicates());
+        this.predicate = checkNotNull(builder.predicate());
     }
 
     /**
@@ -99,8 +99,18 @@ public final class Subject<I, R extends Message> {
     /**
      * Returns the predicates for the fields of matched record.
      */
-    public ImmutableList<QueryPredicate<R>> predicates() {
-        return predicates;
+    public QueryPredicate<R> predicate() {
+        return predicate;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                          .add("recordType", recordType)
+                          .add("idType", idType)
+                          .add("id", id)
+                          .add("predicate", predicate)
+                          .toString();
     }
 
     @Override
@@ -114,11 +124,11 @@ public final class Subject<I, R extends Message> {
         Subject<?, ?> subject = (Subject<?, ?>) o;
         return id.equals(subject.id) &&
                 recordType.equals(subject.recordType) &&
-                predicates.equals(subject.predicates);
+                predicate.equals(subject.predicate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, recordType, predicates);
+        return Objects.hash(id, recordType, predicate);
     }
 }

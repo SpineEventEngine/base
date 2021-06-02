@@ -26,7 +26,6 @@
 
 package io.spine.query;
 
-import com.google.common.collect.ImmutableList;
 import com.google.protobuf.FieldMask;
 import io.spine.base.EntityState;
 
@@ -91,7 +90,7 @@ public abstract class EntityQuery<I,
      */
     private void doCopyTo(AbstractQueryBuilder<I, S, ?, ?, ?> destination) {
         copyIdParameter(destination);
-        copyPredicates(destination);
+        copyPredicate(destination);
         copySorting(destination);
         copyLimit(destination);
         copyMask(destination);
@@ -105,13 +104,11 @@ public abstract class EntityQuery<I,
     }
 
     /**
-     * Copies the record field predicates from the current instance to the destination builder.
+     * Copies the top-level predicate from the current query instance to the destination builder.
      */
-    private void copyPredicates(AbstractQueryBuilder<I, S, ?, ?, ?> destination) {
-        ImmutableList<QueryPredicate<S>> predicates = subject().predicates();
-        for (QueryPredicate<S> sourcePredicate : predicates) {
-            destination.addPredicate(sourcePredicate);
-        }
+    private void copyPredicate(AbstractQueryBuilder<I, S, ?, ?, ?> destination) {
+        QueryPredicate<S> predicate = subject().predicate();
+        destination.replacePredicate(predicate);
     }
 
     /**

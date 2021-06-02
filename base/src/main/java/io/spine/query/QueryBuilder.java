@@ -77,9 +77,9 @@ public interface QueryBuilder<I,
     IdParameter<I> whichIds();
 
     /**
-     * Returns the predicates for the record fields.
+     * Returns the top-level predicate for the record fields.
      */
-    ImmutableList<QueryPredicate<R>> predicates();
+    QueryPredicate<R> predicate();
 
     /**
      * Returns the sorting directives to be applied to the resulting dataset.

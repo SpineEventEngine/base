@@ -20,10 +20,13 @@
 
 package io.spine.query.given;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.FieldMask;
 import io.spine.query.Column;
 import io.spine.query.ComparisonOperator;
+import io.spine.query.CustomSubjectParameter;
+import io.spine.query.QueryPredicate;
 import io.spine.query.RecordColumn;
 import io.spine.query.Subject;
 import io.spine.query.SubjectParameter;
@@ -35,6 +38,7 @@ import java.util.stream.IntStream;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.query.LogicalOperator.AND;
 import static io.spine.testing.TestValues.nullRef;
 
 /**
@@ -65,10 +69,10 @@ public final class EntityQueryBuilderTestEnv {
      * Checks that the query is not {@code null} as well as has no predicates and returns it.
      */
     public static Subject<ProjectId, ProjectView>
-    subjectWithNoPredicates(ProjectView.Query query) {
+    subjectWithNoParameters(ProjectView.Query query) {
         assertThat(query).isNotNull();
         Subject<ProjectId, ProjectView> subject = query.subject();
-        assertThat(subject.predicates()).isEmpty();
+        assertThat(subject.predicate().children()).isEmpty();
         return subject;
     }
 
@@ -96,6 +100,8 @@ public final class EntityQueryBuilderTestEnv {
      *
      * <p>In case there are several parameters for the same column, this method checks them all.
      *
+     * <p>This method does NOT check the custom parameters.
+     *
      * @param list
      *         the list of all parameters
      * @param column
@@ -103,7 +109,7 @@ public final class EntityQueryBuilderTestEnv {
      * @param operator
      *         the operator of the asserted parameter
      * @param value
-     *         value of the paramater
+     *         value of the parameter
      */
     public static void assertHasParamValue(List<SubjectParameter<ProjectView, ?, ?>> list,
                                            Column<?, ?> column,
@@ -115,6 +121,47 @@ public final class EntityQueryBuilderTestEnv {
                          .equals(column)) {
                 ComparisonOperator actualOperator = parameter.operator();
                 Object actualValue = parameter.value();
+                if (actualOperator == operator && value.equals(actualValue)) {
+                    parameterFound = true;
+                }
+            }
+        }
+        assertThat(parameterFound).isTrue();
+    }
+
+    /**
+     * Asserts the given predicate has exactly one parameter which compares the values
+     * of specific column to the specified value with a certain comparison operator.
+     *
+     * <p>The predicate is also checked for being conjunctive.
+     *
+     * <p>In case there are several parameters for the same column, this method checks them all.
+     *
+     * <p>Unlike {@link #assertHasParamValue(List, Column, ComparisonOperator, Object)
+     * assertHasParamValue(..)}, this method checks the custom parameters as well.
+     *
+     * @param list
+     *         the list of all parameters
+     * @param column
+     *         the column for which the parameter value is asserted
+     * @param operator
+     *         the operator of the asserted parameter
+     * @param value
+     *         value of the parameter
+     */
+    public static void assertOnlyParamWithAnd(QueryPredicate<ProjectView> predicate,
+                                              Column<?, ?> column,
+                                              ComparisonOperator operator,
+                                              Object value) {
+        ImmutableList<SubjectParameter<?, ?, ?>> allParams = predicate.allParams();
+        assertThat(allParams).hasSize(1);
+
+        boolean parameterFound = false;
+        for (SubjectParameter<?, ?, ?> param : allParams) {
+            if (param.column()
+                         .equals(column)) {
+                ComparisonOperator actualOperator = param.operator();
+                Object actualValue = param.value();
                 if (actualOperator == operator && value.equals(actualValue)) {
                     parameterFound = true;
                 }
