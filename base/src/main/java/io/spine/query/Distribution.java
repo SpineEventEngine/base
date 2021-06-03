@@ -120,13 +120,13 @@ final class Distribution {
     private static <R> void
     distributeCustomParams(AndExpression<R> and,
                            List<CustomSubjectParameter<?, ?>> customParams,
-                           OrExpression.OrBuilder<R> destination) {
+                           OrExpression.OrBuilder<R> result) {
         for (CustomSubjectParameter<?, ?> param : customParams) {
             AndExpression.AndBuilder<R> childBuilder = AndExpression.newBuilder();
             and.copyTo(childBuilder);
             childBuilder.addCustomParam(param);
             AndExpression<R> childAnd = childBuilder.build();
-            destination.addExpression(childAnd);
+            result.addExpression(childAnd);
         }
     }
 
@@ -145,13 +145,13 @@ final class Distribution {
      */
     private static <R> void distributeSimpleParams(AndExpression<R> and,
                                                    List<SubjectParameter<R, ?, ?>> disjunctiveParams,
-                                                   OrExpression.OrBuilder<R> destination) {
+                                                   OrExpression.OrBuilder<R> result) {
         for (SubjectParameter<R, ?, ?> param : disjunctiveParams) {
             AndExpression.AndBuilder<R> childBuilder = AndExpression.newBuilder();
             and.copyTo(childBuilder);
             childBuilder.addParam(param);
             AndExpression<R> childAnd = childBuilder.build();
-            destination.addExpression(childAnd);
+            result.addExpression(childAnd);
         }
     }
 
