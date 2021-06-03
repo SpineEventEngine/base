@@ -32,7 +32,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 import java.util.Queue;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.query.LogicalOperator.AND;
@@ -59,7 +59,7 @@ import static io.spine.query.LogicalOperator.OR;
  * @see <a href="https://en.wikipedia.org/wiki/Disjunctive_normal_form">Disjunctive normal
  *         form</a>
  */
-final class TransformToDnf<R> implements Function<QueryPredicate<R>, QueryPredicate<R>> {
+final class TransformToDnf<R> implements UnaryOperator<QueryPredicate<R>> {
 
     @Override
     public QueryPredicate<R> apply(QueryPredicate<R> source) {
