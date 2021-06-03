@@ -44,7 +44,6 @@ import static io.spine.query.LogicalOperator.AND;
 import static io.spine.query.LogicalOperator.OR;
 import static io.spine.query.given.EntityQueryBuilderTestEnv.assertHasParamValue;
 import static io.spine.query.given.EntityQueryBuilderTestEnv.assertNoSortingMaskLimit;
-import static io.spine.query.given.EntityQueryBuilderTestEnv.assertOnlyParamWithAnd;
 import static io.spine.query.given.EntityQueryBuilderTestEnv.fieldMaskWith;
 import static io.spine.query.given.EntityQueryBuilderTestEnv.generateIds;
 import static io.spine.query.given.EntityQueryBuilderTestEnv.projectId;
@@ -125,11 +124,10 @@ class EntityQueryBuilderTest {
 
             ImmutableList<QueryPredicate<ProjectView>> children = rootPredicate.children();
             assertThat(children).hasSize(0);
+            assertThat(rootPredicate.parameters()).hasSize(2);
 
-            ImmutableList<SubjectParameter<ProjectView, ?, ?>> params = rootPredicate.parameters();
-            assertThat(params).hasSize(2);
-            assertHasParamValue(params, status(), EQUALS, statusValue);
-            assertHasParamValue(params, daysSinceStarted(), LESS_THAN, daysSinceStarted);
+            assertHasParamValue(rootPredicate, status(), EQUALS, statusValue);
+            assertHasParamValue(rootPredicate, daysSinceStarted(), LESS_THAN, daysSinceStarted);
         }
 
         @Test
@@ -153,71 +151,13 @@ class EntityQueryBuilderTest {
             QueryPredicate<ProjectView> rootPredicate = query.subject()
                                                           .predicate();
             ImmutableList<QueryPredicate<ProjectView>> predicates = rootPredicate.children();
-            assertThat(predicates).hasSize(1);
-            QueryPredicate<ProjectView> either = predicates.get(0);
-            assertThat(either.operator()).isEqualTo(OR);
-            assertThat(either.parameters()).isEmpty();
+            assertThat(predicates).hasSize(0);
+            assertThat(rootPredicate.operator()).isEqualTo(OR);
+            assertThat(rootPredicate.allParams()).hasSize(3);
 
-            ImmutableList<QueryPredicate<ProjectView>> children = either.children();
-            assertThat(children).hasSize(3);
-
-            assertOnlyParamWithAnd(children.get(0),
-                                   daysSinceStarted(), GREATER_THAN, daysSinceStarted);
-
-            assertOnlyParamWithAnd(children.get(1),
-                                   status(), EQUALS, statusValue);
-
-            assertOnlyParamWithAnd(children.get(2),
-                                   DELETED.column(), EQUALS, deletedValue);
-        }
-
-        @Test
-        @DisplayName("by the value of either of the entity columns")
-        void byComplexEitherExpressions() {
-            int daysSinceStarted = 10;
-
-            Either<ProjectView.QueryBuilder> quicklyCompleted =
-                    project -> project.daysSinceStarted().isLessThan(daysSinceStarted)
-                                      .status().is(DONE);
-
-            Either<ProjectView.QueryBuilder> justCreated =
-                    project -> project.daysSinceStarted().is(0)
-                                      .status().is(CREATED);
-            ProjectView.Query query =
-                    ProjectView.query()
-                               .either(quicklyCompleted, justCreated)
-                               .build();
-
-            QueryPredicate<ProjectView> rootPredicate = query.subject().predicate();
-            assertThat(rootPredicate).isNotNull();
-
-            ImmutableList<QueryPredicate<ProjectView>> predicates = rootPredicate.children();
-            assertThat(predicates).hasSize(1);
-            QueryPredicate<ProjectView> either = predicates.get(0);
-            assertThat(either.operator()).isEqualTo(OR);
-
-            ImmutableList<SubjectParameter<ProjectView, ?, ?>> params = either.parameters();
-            assertThat(params).hasSize(0);
-            ImmutableList<QueryPredicate<ProjectView>> childPredicates = either.children();
-            assertThat(childPredicates).hasSize(2);
-
-            QueryPredicate<ProjectView> firstPredicate = childPredicates.get(0);
-            assertThat(firstPredicate.operator()).isEqualTo(AND);
-            ImmutableList<SubjectParameter<ProjectView, ?, ?>> firstParams =
-                    firstPredicate.parameters();
-            assertThat(firstParams).hasSize(2);
-
-            assertHasParamValue(firstParams, daysSinceStarted(), LESS_THAN, daysSinceStarted);
-            assertHasParamValue(firstParams, status(), EQUALS, DONE);
-
-            QueryPredicate<ProjectView> secondPredicate = childPredicates.get(1);
-            assertThat(firstPredicate.operator()).isEqualTo(AND);
-            ImmutableList<SubjectParameter<ProjectView, ?, ?>> secondParams =
-                    secondPredicate.parameters();
-            assertThat(secondParams).hasSize(2);
-
-            assertHasParamValue(secondParams, daysSinceStarted(), EQUALS, 0);
-            assertHasParamValue(secondParams, status(), EQUALS, CREATED);
+            assertHasParamValue(rootPredicate, daysSinceStarted(), GREATER_THAN, daysSinceStarted);
+            assertHasParamValue(rootPredicate, status(), EQUALS, statusValue);
+            assertHasParamValue(rootPredicate, DELETED.column(), EQUALS, deletedValue);
         }
 
         @Test
@@ -355,7 +295,6 @@ class EntityQueryBuilderTest {
         @Test
         @DisplayName("of the column parameters")
         void ofParameterValues() {
-
             Project.Status statusValue = CREATED;
             int daysSinceStarted = 1;
             ProjectView.Query query = ProjectView.query()
@@ -366,9 +305,8 @@ class EntityQueryBuilderTest {
                                                              .predicate();
             assertThat(rootPredicate.operator()).isEqualTo(AND);
 
-            ImmutableList<SubjectParameter<ProjectView, ?, ?>> params = rootPredicate.parameters();
-            assertHasParamValue(params, status(), EQUALS, statusValue);
-            assertHasParamValue(params, daysSinceStarted(), GREATER_THAN, daysSinceStarted);
+            assertHasParamValue(rootPredicate, status(), EQUALS, statusValue);
+            assertHasParamValue(rootPredicate, daysSinceStarted(), GREATER_THAN, daysSinceStarted);
         }
 
         @Test
