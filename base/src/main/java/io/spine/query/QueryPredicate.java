@@ -449,7 +449,7 @@ public final class QueryPredicate<R> {
          * Appends this predicate to its parent.
          *
          * <p>In case the predicate has only one part (i.e. a single parameter, just one custom
-         * parameter or a child predicate), only this item is appended to the parent.
+         * parameter, or a child predicate), only this item is appended to the parent.
          * Otherwise, the whole predicate is appended to the parent one as its child predicates.
          */
         private void appendToParent(QueryPredicate<R> result) {
