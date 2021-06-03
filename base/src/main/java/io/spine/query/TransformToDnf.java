@@ -116,7 +116,6 @@ final class TransformToDnf<R> implements Function<QueryPredicate<R>, QueryPredic
         }
         Expression<R, ?> flattened;
         if (expression.operator() == AND) {
-
             flattened = handleAnd(expression);
         } else {
             flattened = handleOr(expression);
