@@ -28,6 +28,7 @@ package io.spine.tools.gradle.testing;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.tools.gradle.TaskName;
 import org.gradle.testkit.runner.BuildResult;
@@ -39,7 +40,9 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -65,6 +68,7 @@ public final class GradleProject {
     private final String name;
     private final GradleRunner gradleRunner;
     private final boolean debug;
+    private final ImmutableMap<String, String> gradleProperties;
 
     /**
      * Creates new builder for the project.
@@ -89,6 +93,7 @@ public final class GradleProject {
         if (builder.addPluginUnderTestClasspath) {
             gradleRunner.withPluginClasspath();
         }
+        this.gradleProperties = ImmutableMap.copyOf(builder.gradleProperties);
         writeGradleScripts();
         writeBuildSrc();
         writeProtoFiles(builder.protoFileNames);
@@ -136,8 +141,7 @@ public final class GradleProject {
     }
 
     private GradleRunner prepareRun(TaskName taskName) {
-        String[] args = TaskArguments.mode(debug)
-                                     .of(taskName);
+        String[] args = TaskArguments.mode(debug).of(taskName, gradleProperties);
         return gradleRunner.withArguments(args);
     }
 
@@ -177,6 +181,7 @@ public final class GradleProject {
 
         private final List<String> protoFileNames = new ArrayList<>();
         private final List<String> javaFileNames = new ArrayList<>();
+        private final Map<String, String> gradleProperties = new HashMap<>();
 
         private String name;
         private File folder;
@@ -296,6 +301,13 @@ public final class GradleProject {
         @SuppressWarnings("unused") // Used in downstream repositories.
         public Builder withPluginClasspath() {
             this.addPluginUnderTestClasspath = true;
+            return this;
+        }
+
+        public Builder withProperty(String name, String value) {
+            checkNotNull(name);
+            checkNotNull(value);
+            this.gradleProperties.put(name, value);
             return this;
         }
 

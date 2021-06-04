@@ -27,47 +27,43 @@
 package io.spine.tools.gradle.testing;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import io.spine.tools.gradle.TaskName;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.tools.gradle.JavaTaskName.compileJava;
 
-import static java.lang.String.format;
+@DisplayName("`TaskArguments` should")
+class TaskArgumentsTest {
 
-/**
- * Create Gradle Runner arguments for a task.
- */
-final class TaskArguments {
-
-    /** Gradle command line argument to turn stacktrace output. */
-    private static final String STACKTRACE_CLI_OPTION = "--stacktrace";
-
-    /** Gradle command line argument to turn debug level of logging. */
-    private static final String DEBUG_CLI_OPTION = "--debug";
-
-    /** Provides type information for list-to-array conversion. */
-    private static final String[] OF_STRING = new String[0];
-
-    /** If true debug level of logging will be turned for a task. */
-    private final boolean debug;
-
-    static TaskArguments mode(boolean debug) {
-        return new TaskArguments(debug);
+    @Test
+    @DisplayName("print task name")
+    void task() {
+        String[] args = TaskArguments.mode(false)
+                                     .of(compileJava, ImmutableMap.of());
+        assertThat(args).asList()
+                        .containsExactly(compileJava.name());
     }
 
-    private TaskArguments(boolean debug) {
-        this.debug = debug;
+
+    @SuppressWarnings("DuplicateStringLiteralInspection")
+    @Test
+    @DisplayName("print debug flag")
+    void debug() {
+        String[] args = TaskArguments.mode(true)
+                                     .of(compileJava, ImmutableMap.of());
+        assertThat(args).asList()
+                        .containsExactly(compileJava.name(), "--debug");
     }
 
-    String[] of(TaskName taskName, ImmutableMap<String, String> gradleProperties) {
-        String task = taskName.name();
-        List<String> result = Lists.newArrayList(task, STACKTRACE_CLI_OPTION);
-        if (debug) {
-            result.add(DEBUG_CLI_OPTION);
-        }
-        gradleProperties.forEach((name, property) -> {
-            result.add(format("-P%s=\"%s\"", name, property));
-        });
-        return result.toArray(OF_STRING);
+    @Test
+    @DisplayName("print Gradle properties")
+    void properties() {
+        String[] args = TaskArguments.mode(false).of(compileJava, ImmutableMap.of(
+                "foo1", "bar1",
+                "foo2", "bar2"
+        ));
+        assertThat(args).asList()
+                        .containsExactly(compileJava.name(), "-Pfoo1=\"bar1\"", "-Pfoo2=\"bar2\"");
     }
 }
