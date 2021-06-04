@@ -257,9 +257,9 @@ class ExtensionTest {
         @Test
         @DisplayName("severity, if set")
         void specifiedValue() {
-            spineProtobuf().spineCheckSeverity = Severity.ERROR;
+            spineProtobuf().defaultCheckSeverity = Severity.ERROR;
             Severity actualSeverity = Extension.getSpineCheckSeverity(project);
-            assertEquals(spineProtobuf().spineCheckSeverity, actualSeverity);
+            assertEquals(spineProtobuf().defaultCheckSeverity, actualSeverity);
         }
 
         @Test

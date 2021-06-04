@@ -57,8 +57,8 @@ import org.gradle.api.artifacts.Configuration;
  *
  * <pre>
  * {@code
- *   spineErrorProneChecks {
- *      useValidatingBuilder = "ERROR"
+ *   modelChecks {
+ *      useValidatingBuilderSeverity = "ERROR"
  *   }
  * }
  * </pre>
@@ -67,9 +67,9 @@ import org.gradle.api.artifacts.Configuration;
  *
  * @see ValidatingBuilder
  */
-public final class ErrorProneChecksPlugin extends SpinePlugin {
+public final class ModelChecksPlugin extends SpinePlugin {
 
-    private static final String EXTENSION_NAME = "spineErrorProneChecks";
+    private static final String EXTENSION_NAME = "modelChecks";
 
     public static String extensionName() {
         return EXTENSION_NAME;
@@ -83,7 +83,7 @@ public final class ErrorProneChecksPlugin extends SpinePlugin {
      */
     @Override
     public void apply(Project project) {
-        ErrorProneChecksExtension.createIn(project);
+        ModelChecksExtension.createIn(project);
         Configuration preprocessorConfig = PreprocessorConfig.applyTo(project);
         boolean dependencyResolved = ConfigDependency.applyTo(preprocessorConfig);
         if (!dependencyResolved) {

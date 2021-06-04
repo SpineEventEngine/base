@@ -63,7 +63,7 @@ public class ModelCompilerPlugin implements Plugin<Project>, Logging {
                   new RejectionGenPlugin(),
                   new ProtoAnnotatorPlugin(),
                   new JavaProtocConfigurationPlugin(),
-                  new ErrorProneChecksPlugin())
+                  new ModelChecksPlugin())
               .forEach(plugin -> apply(plugin, project));
     }
 

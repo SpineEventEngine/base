@@ -36,7 +36,7 @@ import org.gradle.api.plugins.PluginContainer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.mc.java.gradle.ProjectArguments.addArgsToJavaCompile;
-import static io.spine.tools.mc.java.gradle.ErrorProneChecksExtension.getUseValidatingBuilder;
+import static io.spine.tools.mc.java.gradle.ModelChecksExtension.getUseValidatingBuilderSeverity;
 import static io.spine.tools.mc.java.gradle.Extension.getSpineCheckSeverity;
 
 /**
@@ -45,7 +45,7 @@ import static io.spine.tools.mc.java.gradle.Extension.getSpineCheckSeverity;
  * <p>This class cannot configure the check severities without the Error Prone plugin applied to
  * the project.
  *
- * @see io.spine.tools.mc.java.gradle.ErrorProneChecksExtension
+ * @see ModelChecksExtension
  * @see io.spine.tools.mc.java.gradle.Extension#getSpineCheckSeverity(Project)
  */
 public final class SeverityConfigurer implements Logging {
@@ -53,7 +53,7 @@ public final class SeverityConfigurer implements Logging {
     private static final String ERROR_PRONE_PLUGIN_ID = "net.ltgt.errorprone";
 
     private final Project project;
-    private @Nullable Boolean hasErrorProneChecksPlugin;
+    private @Nullable Boolean hasModelChecksPlugin;
 
     private SeverityConfigurer(Project project) {
         this.project = project;
@@ -99,11 +99,11 @@ public final class SeverityConfigurer implements Logging {
      * Checks if the project has the Error Prone plugin applied.
      */
     private boolean hasErrorPronePlugin() {
-        if (hasErrorProneChecksPlugin == null) {
+        if (hasModelChecksPlugin == null) {
             PluginContainer appliedPlugins = project.getPlugins();
-            hasErrorProneChecksPlugin = appliedPlugins.hasPlugin(ERROR_PRONE_PLUGIN_ID);
+            hasModelChecksPlugin = appliedPlugins.hasPlugin(ERROR_PRONE_PLUGIN_ID);
         }
-        return hasErrorProneChecksPlugin;
+        return hasModelChecksPlugin;
     }
 
     /**
@@ -111,10 +111,10 @@ public final class SeverityConfigurer implements Logging {
      * the project.
      *
      * <p>Uses default severity set in the {@code modelCompiler} extension if set and not
-     * overridden by the more specific {@code spineErrorProneChecks} extension.
+     * overridden by the more specific {@code modelChecks} extension.
      */
     private void configureUseValidatingBuilder(@Nullable Severity defaultSeverity) {
-        Severity severity = getUseValidatingBuilder(project);
+        Severity severity = getUseValidatingBuilderSeverity(project);
         if (severity == null) {
             if (defaultSeverity == null) {
                 return;
@@ -135,7 +135,7 @@ public final class SeverityConfigurer implements Logging {
      * actually applying the plugin.
      */
     @VisibleForTesting
-    void setHasErrorProneChecksPlugin(boolean hasErrorProneChecksPlugin) {
-        this.hasErrorProneChecksPlugin = hasErrorProneChecksPlugin;
+    void setHasModelChecksPlugin(boolean value) {
+        this.hasModelChecksPlugin = value;
     }
 }

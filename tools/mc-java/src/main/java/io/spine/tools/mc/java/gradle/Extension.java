@@ -156,9 +156,9 @@ public class Extension extends GradleExtension {
      * <p>If this value is not set, the default severities are used, which are specific for the
      * each check.
      *
-     * <p>May be overridden by the values provided by the {@link ErrorProneChecksExtension}.
+     * <p>May be overridden by the values provided by the {@link ModelChecksExtension}.
      */
-    public Severity spineCheckSeverity;
+    public Severity defaultCheckSeverity;
 
     public final CodeGenAnnotations generateAnnotations = new CodeGenAnnotations();
 
@@ -317,7 +317,7 @@ public class Extension extends GradleExtension {
     }
 
     public static @Nullable Severity getSpineCheckSeverity(Project project) {
-        Severity result = extension(project).spineCheckSeverity;
+        Severity result = extension(project).defaultCheckSeverity;
         _debug().log("The severity of Spine-custom Error Prone checks is `%s`.",
                      (result == null ? "unset" : result.name()));
         return result;
