@@ -66,7 +66,7 @@ class TaskArgumentsTest {
                 "foo2", "bar2"
         ));
         assertThat(args).asList().containsExactly(
-                compileJava.name(), STACKTRACE_CLI_OPTION, "-Pfoo1=\"bar1\"", "-Pfoo2=\"bar2\""
+                compileJava.name(), STACKTRACE_CLI_OPTION, "-Pfoo1=bar1", "-Pfoo2=bar2"
         );
     }
 }
