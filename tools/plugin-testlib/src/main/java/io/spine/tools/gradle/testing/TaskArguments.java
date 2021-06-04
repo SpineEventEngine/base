@@ -26,10 +26,14 @@
 
 package io.spine.tools.gradle.testing;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import io.spine.tools.gradle.TaskName;
 
 import java.util.List;
+
+import static java.lang.String.format;
 
 /**
  * Create Gradle Runner arguments for a task.
@@ -37,10 +41,12 @@ import java.util.List;
 final class TaskArguments {
 
     /** Gradle command line argument to turn stacktrace output. */
-    private static final String STACKTRACE_CLI_OPTION = "--stacktrace";
+    @VisibleForTesting
+    static final String STACKTRACE_CLI_OPTION = "--stacktrace";
 
     /** Gradle command line argument to turn debug level of logging. */
-    private static final String DEBUG_CLI_OPTION = "--debug";
+    @VisibleForTesting
+    static final String DEBUG_CLI_OPTION = "--debug";
 
     /** Provides type information for list-to-array conversion. */
     private static final String[] OF_STRING = new String[0];
@@ -56,12 +62,15 @@ final class TaskArguments {
         this.debug = debug;
     }
 
-    String[] of(TaskName taskName) {
+    String[] of(TaskName taskName, ImmutableMap<String, String> gradleProperties) {
         String task = taskName.name();
         List<String> result = Lists.newArrayList(task, STACKTRACE_CLI_OPTION);
         if (debug) {
             result.add(DEBUG_CLI_OPTION);
         }
+        gradleProperties.forEach((name, property) -> {
+            result.add(format("-P%s=\"%s\"", name, property));
+        });
         return result.toArray(OF_STRING);
     }
 }
