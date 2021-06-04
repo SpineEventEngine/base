@@ -41,12 +41,12 @@ import static io.spine.tools.gradle.ModelCompilerTaskName.generateRejections;
 import static io.spine.tools.gradle.ModelCompilerTaskName.generateTestRejections;
 import static io.spine.tools.gradle.ModelCompilerTaskName.mergeDescriptorSet;
 import static io.spine.tools.gradle.ModelCompilerTaskName.mergeTestDescriptorSet;
-import static io.spine.tools.mc.java.gradle.Extension.getMainDescriptorSet;
-import static io.spine.tools.mc.java.gradle.Extension.getMainProtoSrcDir;
-import static io.spine.tools.mc.java.gradle.Extension.getTargetGenRejectionsRootDir;
-import static io.spine.tools.mc.java.gradle.Extension.getTargetTestGenRejectionsRootDir;
-import static io.spine.tools.mc.java.gradle.Extension.getTestDescriptorSet;
-import static io.spine.tools.mc.java.gradle.Extension.getTestProtoSrcDir;
+import static io.spine.tools.mc.java.gradle.Extension.getMainDescriptorSetFile;
+import static io.spine.tools.mc.java.gradle.Extension.getMainProtoDir;
+import static io.spine.tools.mc.java.gradle.Extension.getGeneratedMainRejectionsDir;
+import static io.spine.tools.mc.java.gradle.Extension.getGeneratedTestRejectionsDir;
+import static io.spine.tools.mc.java.gradle.Extension.getTestDescriptorSetFile;
+import static io.spine.tools.mc.java.gradle.Extension.getTestProtoDir;
 
 /**
  * Plugin which generates Rejections declared in {@code rejections.proto} files.
@@ -71,8 +71,8 @@ public class RejectionGenPlugin extends ProtoPlugin {
         Action<Task> mainScopeAction =
                 createAction(project,
                              mainProtoFiles(project),
-                             () -> getTargetGenRejectionsRootDir(project),
-                             () -> getMainProtoSrcDir(project));
+                             () -> getGeneratedMainRejectionsDir(project),
+                             () -> getMainProtoDir(project));
         ProtoModule module = new ProtoModule(project);
         GradleTask mainTask =
                 newTask(generateRejections, mainScopeAction)
@@ -84,8 +84,8 @@ public class RejectionGenPlugin extends ProtoPlugin {
         Action<Task> testScopeAction =
                 createAction(project,
                              testProtoFiles(project),
-                             () -> getTargetTestGenRejectionsRootDir(project),
-                             () -> getTestProtoSrcDir(project));
+                             () -> getGeneratedTestRejectionsDir(project),
+                             () -> getTestProtoDir(project));
 
         GradleTask testTask =
                 newTask(generateTestRejections, testScopeAction)
@@ -110,11 +110,11 @@ public class RejectionGenPlugin extends ProtoPlugin {
 
     @Override
     protected Supplier<File> mainDescriptorFile(Project project) {
-        return () -> getMainDescriptorSet(project);
+        return () -> getMainDescriptorSetFile(project);
     }
 
     @Override
     protected Supplier<File> testDescriptorFile(Project project) {
-        return () -> getTestDescriptorSet(project);
+        return () -> getTestDescriptorSetFile(project);
     }
 }

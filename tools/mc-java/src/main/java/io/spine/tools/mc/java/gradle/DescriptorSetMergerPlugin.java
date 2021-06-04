@@ -47,8 +47,8 @@ import static io.spine.tools.gradle.ModelCompilerTaskName.mergeDescriptorSet;
 import static io.spine.tools.gradle.ModelCompilerTaskName.mergeTestDescriptorSet;
 import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
 import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
-import static io.spine.tools.mc.java.gradle.Extension.getMainDescriptorSet;
-import static io.spine.tools.mc.java.gradle.Extension.getTestDescriptorSet;
+import static io.spine.tools.mc.java.gradle.Extension.getMainDescriptorSetFile;
+import static io.spine.tools.mc.java.gradle.Extension.getTestDescriptorSetFile;
 
 /**
  * A Gradle plugin which merges the descriptor file with all the descriptor files from
@@ -121,8 +121,8 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
 
     private static File descriptorSet(Project project, boolean tests) {
         File descriptor = tests
-                          ? getTestDescriptorSet(project)
-                          : getMainDescriptorSet(project);
+                          ? getTestDescriptorSetFile(project)
+                          : getMainDescriptorSetFile(project);
         return descriptor;
     }
 }
