@@ -32,6 +32,8 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
+import static io.spine.tools.gradle.testing.TaskArguments.DEBUG_CLI_OPTION;
+import static io.spine.tools.gradle.testing.TaskArguments.STACKTRACE_CLI_OPTION;
 
 @DisplayName("`TaskArguments` should")
 class TaskArgumentsTest {
@@ -42,18 +44,18 @@ class TaskArgumentsTest {
         String[] args = TaskArguments.mode(false)
                                      .of(compileJava, ImmutableMap.of());
         assertThat(args).asList()
-                        .containsExactly(compileJava.name());
+                        .containsExactly(compileJava.name(), STACKTRACE_CLI_OPTION);
     }
 
 
-    @SuppressWarnings("DuplicateStringLiteralInspection")
     @Test
     @DisplayName("print debug flag")
     void debug() {
         String[] args = TaskArguments.mode(true)
                                      .of(compileJava, ImmutableMap.of());
-        assertThat(args).asList()
-                        .containsExactly(compileJava.name(), "--debug");
+        assertThat(args)
+                .asList()
+                .containsExactly(compileJava.name(), STACKTRACE_CLI_OPTION, DEBUG_CLI_OPTION);
     }
 
     @Test
@@ -63,7 +65,8 @@ class TaskArgumentsTest {
                 "foo1", "bar1",
                 "foo2", "bar2"
         ));
-        assertThat(args).asList()
-                        .containsExactly(compileJava.name(), "-Pfoo1=\"bar1\"", "-Pfoo2=\"bar2\"");
+        assertThat(args).asList().containsExactly(
+                compileJava.name(), STACKTRACE_CLI_OPTION, "-Pfoo1=\"bar1\"", "-Pfoo2=\"bar2\""
+        );
     }
 }

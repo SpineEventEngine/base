@@ -26,6 +26,7 @@
 
 package io.spine.tools.gradle.testing;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import io.spine.tools.gradle.TaskName;
@@ -40,10 +41,12 @@ import static java.lang.String.format;
 final class TaskArguments {
 
     /** Gradle command line argument to turn stacktrace output. */
-    private static final String STACKTRACE_CLI_OPTION = "--stacktrace";
+    @VisibleForTesting
+    static final String STACKTRACE_CLI_OPTION = "--stacktrace";
 
     /** Gradle command line argument to turn debug level of logging. */
-    private static final String DEBUG_CLI_OPTION = "--debug";
+    @VisibleForTesting
+    static final String DEBUG_CLI_OPTION = "--debug";
 
     /** Provides type information for list-to-array conversion. */
     private static final String[] OF_STRING = new String[0];
