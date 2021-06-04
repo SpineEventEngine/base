@@ -309,6 +309,14 @@ public final class GradleProject {
             return this;
         }
 
+        /**
+         * Adds a Gradle property to be passed to the Gradle build.
+         *
+         * @param name
+         *         name of the property
+         * @param value
+         *         value of the property
+         */
         public Builder withProperty(String name, String value) {
             checkNotNull(name);
             checkNotNull(value);
