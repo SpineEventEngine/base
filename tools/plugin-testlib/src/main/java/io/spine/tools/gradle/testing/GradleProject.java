@@ -31,6 +31,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.tools.gradle.TaskName;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
 
@@ -92,6 +93,9 @@ public final class GradleProject {
                 .withDebug(builder.debug);
         if (builder.addPluginUnderTestClasspath) {
             gradleRunner.withPluginClasspath();
+        }
+        if (builder.environment != null) {
+            gradleRunner.withEnvironment(builder.environment);
         }
         this.gradleProperties = ImmutableMap.copyOf(builder.gradleProperties);
         writeGradleScripts();
@@ -183,6 +187,7 @@ public final class GradleProject {
         private final List<String> javaFileNames = new ArrayList<>();
         private final Map<String, String> gradleProperties = new HashMap<>();
 
+        private @Nullable ImmutableMap<String, String> environment;
         private String name;
         private File folder;
 
@@ -304,10 +309,29 @@ public final class GradleProject {
             return this;
         }
 
+        /**
+         * Adds a Gradle property to be passed to the Gradle build.
+         *
+         * @param name
+         *         name of the property
+         * @param value
+         *         value of the property
+         */
         public Builder withProperty(String name, String value) {
             checkNotNull(name);
             checkNotNull(value);
             this.gradleProperties.put(name, value);
+            return this;
+        }
+
+        /**
+         * Configures the environment variables available to the build.
+         *
+         * <p>If not set, the variables are inherited.
+         */
+        public Builder withEnvironment(ImmutableMap<String, String> environment) {
+            checkNotNull(environment);
+            this.environment = environment;
             return this;
         }
 

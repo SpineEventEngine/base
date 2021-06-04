@@ -69,7 +69,7 @@ final class TaskArguments {
             result.add(DEBUG_CLI_OPTION);
         }
         gradleProperties.forEach((name, property) -> {
-            result.add(format("-P%s=\"%s\"", name, property));
+            result.add(format("-P%s=%s", name, property));
         });
         return result.toArray(OF_STRING);
     }
