@@ -31,7 +31,7 @@ import java.util.List;
 import static io.spine.query.LogicalOperator.AND;
 
 /**
- * Utilities helping to apply the Distributive law of Boolean algebra to {@link Expression}s.
+ * Utilities helping to apply the Distributive Law of Boolean Algebra to {@link Expression}s.
  */
 final class Distribution {
 
