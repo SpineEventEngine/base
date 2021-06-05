@@ -156,7 +156,7 @@ public class Extension extends GradleExtension {
      * <p>If this value is not set, the default severities are used, which are specific for the
      * each check.
      *
-     * <p>May be overridden by the values provided by the {@link ModelChecksExtension}.
+     * <p>May be overridden by the values provided by the {@link ErrorProneChecksExtension}.
      */
     public Severity defaultCheckSeverity;
 

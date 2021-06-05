@@ -27,38 +27,34 @@
 package io.spine.tools.mc.java.gradle;
 
 import org.gradle.api.Project;
-import org.gradle.api.plugins.ExtensionContainer;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newProject;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static io.spine.tools.mc.java.gradle.ErrorProneChecksPlugin.extensionName;
 
 /**
- * This test contains very basic scenarios of the plugin usage.
+ * The Error Prone Checks plugin extension.
  *
- * <p>For the tests of actual plugin functionality, see {@code io.spine.tools.check} test suites
- * from this module.
+ * <p>Allows configuring severity for all the Spine-custom Error Prone checks applied to the
+ * project.
+ *
+ * @see Severity
  */
-@DisplayName("ErrorProneChecksPlugin should")
-class ModelChecksPluginTest {
+@SuppressWarnings("PublicField" /* required for exposing the property in Gradle. */)
+public class ErrorProneChecksExtension {
 
-    @Test
-    @DisplayName("create Spine check extension")
-    void create_spine_check_extension() {
-        Project project = newProject();
-        project.getPluginManager()
-               .apply(ModelChecksPlugin.class);
-        ExtensionContainer extensions = project.getExtensions();
-        Object found = extensions.findByName(ModelChecksPlugin.extensionName());
-        assertNotNull(found);
+    public Severity useValidatingBuilderSeverity;
+
+    /**
+     * Creates an instance of the extension in the passed project.
+     */
+    public static void createIn(Project project) {
+        project.getExtensions()
+                .create(extensionName(), ErrorProneChecksExtension.class);
     }
 
-    @Test
-    @DisplayName("apply to empty project")
-    void apply_to_empty_project_without_exceptions() {
-        Project project = newProject();
-        project.getPluginManager()
-               .apply(ModelChecksPlugin.class);
+    public static Severity getUseValidatingBuilderSeverity(Project project) {
+        ErrorProneChecksExtension extension = (ErrorProneChecksExtension)
+                project.getExtensions()
+                       .getByName(extensionName());
+        return extension.useValidatingBuilderSeverity;
     }
 }

@@ -36,7 +36,7 @@ import org.gradle.api.plugins.PluginContainer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.mc.java.gradle.ProjectArguments.addArgsToJavaCompile;
-import static io.spine.tools.mc.java.gradle.ModelChecksExtension.getUseValidatingBuilderSeverity;
+import static io.spine.tools.mc.java.gradle.ErrorProneChecksExtension.getUseValidatingBuilderSeverity;
 import static io.spine.tools.mc.java.gradle.Extension.getSpineCheckSeverity;
 
 /**
@@ -45,7 +45,7 @@ import static io.spine.tools.mc.java.gradle.Extension.getSpineCheckSeverity;
  * <p>This class cannot configure the check severities without the Error Prone plugin applied to
  * the project.
  *
- * @see ModelChecksExtension
+ * @see ErrorProneChecksExtension
  * @see io.spine.tools.mc.java.gradle.Extension#getSpineCheckSeverity(Project)
  */
 public final class SeverityConfigurer implements Logging {

@@ -68,7 +68,7 @@ class SeverityConfigurerTest {
     @DisplayName("configure check severity")
     void configureCheckSeverity() {
         configureModelCompilerExtension();
-        ModelChecksExtension extension = configureSpineCheckExtension();
+        ErrorProneChecksExtension extension = configureSpineCheckExtension();
         extension.useValidatingBuilderSeverity = ERROR;
         configurer.setHasModelChecksPlugin(true);
         configurer.addConfigureSeverityAction();
@@ -93,7 +93,7 @@ class SeverityConfigurerTest {
     void overrideModelCompilerCheck() {
         Extension modelCompilerExtension = configureModelCompilerExtension();
         modelCompilerExtension.defaultCheckSeverity = OFF;
-        ModelChecksExtension modelChecksExtension = configureSpineCheckExtension();
+        ErrorProneChecksExtension modelChecksExtension = configureSpineCheckExtension();
         modelChecksExtension.useValidatingBuilderSeverity = ERROR;
         configurer.setHasModelChecksPlugin(true);
         configurer.addConfigureSeverityAction();
@@ -108,11 +108,11 @@ class SeverityConfigurerTest {
         checkSeverityNotConfigured();
     }
 
-    private ModelChecksExtension configureSpineCheckExtension() {
+    private ErrorProneChecksExtension configureSpineCheckExtension() {
         ExtensionContainer extensions = project.getExtensions();
-        ModelChecksExtension extension =
-                extensions.create(ModelChecksPlugin.extensionName(),
-                                  ModelChecksExtension.class);
+        ErrorProneChecksExtension extension =
+                extensions.create(ErrorProneChecksPlugin.extensionName(),
+                                  ErrorProneChecksExtension.class);
         return extension;
     }
 

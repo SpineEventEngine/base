@@ -67,7 +67,7 @@ import org.gradle.api.artifacts.Configuration;
  *
  * @see ValidatingBuilder
  */
-public final class ModelChecksPlugin extends SpinePlugin {
+public final class ErrorProneChecksPlugin extends SpinePlugin {
 
     private static final String EXTENSION_NAME = "modelChecks";
 
@@ -83,7 +83,7 @@ public final class ModelChecksPlugin extends SpinePlugin {
      */
     @Override
     public void apply(Project project) {
-        ModelChecksExtension.createIn(project);
+        ErrorProneChecksExtension.createIn(project);
         Configuration preprocessorConfig = PreprocessorConfig.applyTo(project);
         boolean dependencyResolved = ConfigDependency.applyTo(preprocessorConfig);
         if (!dependencyResolved) {
