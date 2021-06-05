@@ -54,12 +54,12 @@ import static io.spine.tools.gradle.ModelCompilerTaskName.mergeTestDescriptorSet
 import static io.spine.tools.mc.java.gradle.Extension.getCodeGenAnnotations;
 import static io.spine.tools.mc.java.gradle.Extension.getInternalClassPatterns;
 import static io.spine.tools.mc.java.gradle.Extension.getInternalMethodNames;
-import static io.spine.tools.mc.java.gradle.Extension.getMainDescriptorSet;
-import static io.spine.tools.mc.java.gradle.Extension.getMainGenGrpcDir;
-import static io.spine.tools.mc.java.gradle.Extension.getMainGenProtoDir;
-import static io.spine.tools.mc.java.gradle.Extension.getTestDescriptorSet;
-import static io.spine.tools.mc.java.gradle.Extension.getTestGenGrpcDir;
-import static io.spine.tools.mc.java.gradle.Extension.getTestGenProtoDir;
+import static io.spine.tools.mc.java.gradle.Extension.getMainDescriptorSetFile;
+import static io.spine.tools.mc.java.gradle.Extension.getGeneratedMainGrpcDir;
+import static io.spine.tools.mc.java.gradle.Extension.getGeneratedMainJavaDir;
+import static io.spine.tools.mc.java.gradle.Extension.getTestDescriptorSetFile;
+import static io.spine.tools.mc.java.gradle.Extension.getGeneratedTestGrpcDir;
+import static io.spine.tools.mc.java.gradle.Extension.getGeneratedTestJavaDir;
 
 /**
  * A plugin that annotates generated Java sources from {@code .proto} files.
@@ -267,20 +267,20 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
 
         private File descriptorSet(Project project) {
             return productionTask
-                   ? getMainDescriptorSet(project)
-                   : getTestDescriptorSet(project);
+                   ? getMainDescriptorSetFile(project)
+                   : getTestDescriptorSetFile(project);
         }
 
         private String generatedGrpcDir(Project project) {
             return productionTask
-                   ? getMainGenGrpcDir(project)
-                   : getTestGenGrpcDir(project);
+                   ? getGeneratedMainGrpcDir(project)
+                   : getGeneratedTestGrpcDir(project);
         }
 
         private String generatedProtoDir(Project project) {
             return productionTask
-                   ? getMainGenProtoDir(project)
-                   : getTestGenProtoDir(project);
+                   ? getGeneratedMainJavaDir(project)
+                   : getGeneratedTestJavaDir(project);
         }
     }
 }

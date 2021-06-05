@@ -64,82 +64,72 @@ public class Extension extends GradleExtension {
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     /**
-     * The absolute path to the main target generated resources directory.
+     * The absolute path to the Protobuf source code under the {@code main} directory.
      */
-    public String mainTargetGenResourcesDir;
-
-    /**
-     * The absolute path to the main Protobuf source directory.
-     */
-    public String mainProtoSrcDir;
-
-    /**
-     * The absolute path to the main Java sources directory,
-     * generated basing on Protobuf definitions.
-     */
-    public String mainGenProtoDir;
-
-    /**
-     * The absolute path to the main {@code gRPC} services directory,
-     * generated basing on Protobuf definitions.
-     */
-    public String mainGenGrpcDir;
-
-    /**
-     * The absolute path to the test target generated resources directory.
-     */
-    public String testTargetGenResourcesDir;
+    public String mainProtoDir;
 
     /**
      * The absolute path to the test Protobuf source directory.
      */
-    public String testProtoSrcDir;
-
-    /**
-     * The absolute path to the test Java sources directory,
-     * generated basing on Protobuf definitions.
-     */
-    public String testGenProtoDir;
-
-    /**
-     * The absolute path to the test {@code gRPC} services directory,
-     * generated basing on Protobuf definitions.
-     */
-    public String testGenGrpcDir;
+    public String testProtoDir;
 
     /**
      * The absolute path to the main Protobuf descriptor set file.
      *
      * <p>The file must have the {@code .desc} extension.
      */
-    public String mainDescriptorSetPath;
+    public String mainDescriptorSetFile;
 
     /**
      * The absolute path to the test Protobuf descriptor set file.
      *
      * <p>The file must have the {@code .desc} extension.
      */
-    public String testDescriptorSetPath;
+    public String testDescriptorSetFile;
+
+    /**
+     * The absolute path to the main Java sources directory,
+     * generated basing on Protobuf definitions.
+     */
+    public String generatedMainJavaDir;
+
+    /**
+     * The absolute path to the main {@code gRPC} services directory,
+     * generated basing on Protobuf definitions.
+     */
+    public String generatedMainGrpcJavaDir;
+
+    /**
+     * The absolute path to the main target generated resources directory.
+     */
+    public String generatedMainResourcesDir;
+
+    /**
+     * The absolute path to the test Java sources directory,
+     * generated basing on Protobuf definitions.
+     */
+    public String generatedTestJavaDir;
+
+    /**
+     * The absolute path to the test target generated resources directory.
+     */
+    public String generatedTestResourcesDir;
+
+    /**
+     * The absolute path to the test {@code gRPC} services directory,
+     * generated basing on Protobuf definitions.
+     */
+    public String generatedTestGrpcDir;
 
     /**
      * The absolute path to the main target generated rejections root directory.
      */
-    public String targetGenRejectionsRootDir;
+    public String generatedMainRejectionsDir;
 
     /**
      * The absolute path to the test target generated rejections root directory.
      */
-    public String targetTestGenRejectionsRootDir;
-
-    /**
-     * The absolute path to the main target generated columns root directory.
-     */
-    public String targetGenColumnsRootDir;
-
-    /**
-     * The absolute path to the test target generated columns root directory.
-     */
-    public String targetTestGenColumnsRootDir;
+    public String generatedTestRejectionsDir;
 
     /**
      * The absolute path to directory to delete.
@@ -168,7 +158,7 @@ public class Extension extends GradleExtension {
      *
      * <p>May be overridden by the values provided by the {@link ErrorProneChecksExtension}.
      */
-    public Severity spineCheckSeverity;
+    public Severity defaultCheckSeverity;
 
     public final CodeGenAnnotations generateAnnotations = new CodeGenAnnotations();
 
@@ -209,92 +199,80 @@ public class Extension extends GradleExtension {
 
     @SuppressWarnings("FloggerSplitLogStatement")
 
-    public static String getMainProtoSrcDir(Project project) {
+    public static String getMainProtoDir(Project project) {
         Extension extension = extension(project);
         _debug().log("Extension is `%s`.", extension);
-        String protoDir = extension.mainProtoSrcDir;
+        String protoDir = extension.mainProtoDir;
         _debug().log("`modelCompiler.mainProtoSrcDir` is `%s`.", protoDir);
         return pathOrDefault(protoDir,
                              def(project).src()
                                          .mainProto());
     }
 
-    public static String getMainTargetGenResourcesDir(Project project) {
-        return pathOrDefault(extension(project).mainTargetGenResourcesDir,
-                             def(project).generated()
-                                         .mainResources());
-    }
-
-    public static String getMainGenGrpcDir(Project project) {
-        return pathOrDefault(extension(project).mainGenGrpcDir,
-                             def(project).generated()
-                                         .mainGrpc());
-    }
-
-    public static String getMainGenProtoDir(Project project) {
-        return pathOrDefault(extension(project).mainGenProtoDir,
-                             def(project).generated()
-                                         .mainJava());
-    }
-
-    public static String getTestTargetGenResourcesDir(Project project) {
-        return pathOrDefault(extension(project).testTargetGenResourcesDir,
-                             def(project).generated()
-                                         .testResources());
-    }
-
-    public static String getTestProtoSrcDir(Project project) {
-        return pathOrDefault(extension(project).testProtoSrcDir,
+    public static String getTestProtoDir(Project project) {
+        return pathOrDefault(extension(project).testProtoDir,
                              def(project).src()
                                          .testProto());
     }
 
-    public static String getTestGenGrpcDir(Project project) {
-        return pathOrDefault(extension(project).testGenGrpcDir,
-                             def(project).generated()
-                                         .testGrpc());
-    }
-
-    public static String getTestGenProtoDir(Project project) {
-        return pathOrDefault(extension(project).testGenProtoDir,
-                             def(project).generated()
-                                         .testJava());
-    }
-
-    public static File getMainDescriptorSet(Project project) {
+    public static File getMainDescriptorSetFile(Project project) {
         Extension extension = extension(project);
-        String path = pathOrDefault(extension.mainDescriptorSetPath,
+        String path = pathOrDefault(extension.mainDescriptorSetFile,
                                     extension.defaultMainDescriptor(project));
         return new File(path);
     }
 
-    public static File getTestDescriptorSet(Project project) {
+    public static File getTestDescriptorSetFile(Project project) {
         Extension extension = extension(project);
-        String path = pathOrDefault(extension.testDescriptorSetPath,
+        String path = pathOrDefault(extension.testDescriptorSetFile,
                                     extension.defaultTestDescriptor(project));
         return new File(path);
     }
 
-    public static String getTargetGenRejectionsRootDir(Project project) {
-        return pathOrDefault(extension(project).targetGenRejectionsRootDir,
+    public static String getGeneratedMainJavaDir(Project project) {
+        return pathOrDefault(extension(project).generatedMainJavaDir,
+                             def(project).generated()
+                                         .mainJava());
+    }
+
+    public static String getGeneratedMainGrpcDir(Project project) {
+        return pathOrDefault(extension(project).generatedMainGrpcJavaDir,
+                             def(project).generated()
+                                         .mainGrpc());
+    }
+
+    public static String getGeneratedMainResourcesDir(Project project) {
+        return pathOrDefault(extension(project).generatedMainResourcesDir,
+                             def(project).generated()
+                                         .mainResources());
+    }
+
+    public static String getGeneratedTestJavaDir(Project project) {
+        return pathOrDefault(extension(project).generatedTestJavaDir,
+                             def(project).generated()
+                                         .testJava());
+    }
+
+    public static String getGeneratedTestResourcesDir(Project project) {
+        return pathOrDefault(extension(project).generatedTestResourcesDir,
+                             def(project).generated()
+                                         .testResources());
+    }
+
+    public static String getGeneratedTestGrpcDir(Project project) {
+        return pathOrDefault(extension(project).generatedTestGrpcDir,
+                             def(project).generated()
+                                         .testGrpc());
+    }
+
+    public static String getGeneratedMainRejectionsDir(Project project) {
+        return pathOrDefault(extension(project).generatedMainRejectionsDir,
                              def(project).generated()
                                          .mainSpine());
     }
 
-    public static String getTargetTestGenRejectionsRootDir(Project project) {
-        return pathOrDefault(extension(project).targetTestGenRejectionsRootDir,
-                             def(project).generated()
-                                         .testSpine());
-    }
-
-    public static String getTargetGenColumnsRootDir(Project project) {
-        return pathOrDefault(extension(project).targetGenColumnsRootDir,
-                             def(project).generated()
-                                         .mainSpine());
-    }
-
-    public static String getTargetTestGenColumnsRootDir(Project project) {
-        return pathOrDefault(extension(project).targetTestGenColumnsRootDir,
+    public static String getGeneratedTestRejectionsDir(Project project) {
+        return pathOrDefault(extension(project).generatedTestRejectionsDir,
                              def(project).generated()
                                          .testSpine());
     }
@@ -339,7 +317,7 @@ public class Extension extends GradleExtension {
     }
 
     public static @Nullable Severity getSpineCheckSeverity(Project project) {
-        Severity result = extension(project).spineCheckSeverity;
+        Severity result = extension(project).defaultCheckSeverity;
         _debug().log("The severity of Spine-custom Error Prone checks is `%s`.",
                      (result == null ? "unset" : result.name()));
         return result;

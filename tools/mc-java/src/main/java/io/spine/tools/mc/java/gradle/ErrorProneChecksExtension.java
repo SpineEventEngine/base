@@ -41,7 +41,7 @@ import static io.spine.tools.mc.java.gradle.ErrorProneChecksPlugin.extensionName
 @SuppressWarnings("PublicField" /* required for exposing the property in Gradle. */)
 public class ErrorProneChecksExtension {
 
-    public Severity useValidatingBuilder;
+    public Severity useValidatingBuilderSeverity;
 
     /**
      * Creates an instance of the extension in the passed project.
@@ -51,10 +51,10 @@ public class ErrorProneChecksExtension {
                 .create(extensionName(), ErrorProneChecksExtension.class);
     }
 
-    public static Severity getUseValidatingBuilder(Project project) {
+    public static Severity getUseValidatingBuilderSeverity(Project project) {
         ErrorProneChecksExtension extension = (ErrorProneChecksExtension)
                 project.getExtensions()
                        .getByName(extensionName());
-        return extension.useValidatingBuilder;
+        return extension.useValidatingBuilderSeverity;
     }
 }

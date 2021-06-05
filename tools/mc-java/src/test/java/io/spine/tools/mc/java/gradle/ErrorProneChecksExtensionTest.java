@@ -60,15 +60,15 @@ class ErrorProneChecksExtensionTest {
     @DisplayName("return use validating builder severity")
     void return_use_validating_builder_severity() {
         final Severity expected = ERROR;
-        extension.useValidatingBuilder = expected;
-        final Severity actual = ErrorProneChecksExtension.getUseValidatingBuilder(project);
+        extension.useValidatingBuilderSeverity = expected;
+        final Severity actual = ErrorProneChecksExtension.getUseValidatingBuilderSeverity(project);
         assertEquals(expected, actual);
     }
 
     @Test
     @DisplayName("return null severity if not set")
     void return_null_use_validating_builder_severity_if_not_set() {
-        final Severity severity = ErrorProneChecksExtension.getUseValidatingBuilder(project);
+        final Severity severity = ErrorProneChecksExtension.getUseValidatingBuilderSeverity(project);
         assertNull(severity);
     }
 }
