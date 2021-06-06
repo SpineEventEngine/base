@@ -55,8 +55,8 @@ import static io.spine.code.proto.RejectionsFile.findAll;
  * rejection type which extends {@link io.spine.base.RejectionThrowable RejectionThrowable} and
  * encloses an instance of the corresponding proto message.
  *
- * <p>The {@link Extension#targetGenRejectionsRootDir} and
- * {@link Extension#targetTestGenRejectionsRootDir} options allow to customize the target root
+ * <p>The {@link Extension#generatedMainRejectionsDir} and
+ * {@link Extension#generatedTestRejectionsDir} options allow to customize the target root
  * directory for code generation.
  *
  * <p>The {@link Extension#indent} option sets the indentation of the generated source files.

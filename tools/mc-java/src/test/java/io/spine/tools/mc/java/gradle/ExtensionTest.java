@@ -69,7 +69,7 @@ class ExtensionTest {
         @Test
         @DisplayName("default value, if not set")
         void defaultValue() {
-            String dir = Extension.getMainTargetGenResourcesDir(project);
+            String dir = Extension.getGeneratedMainResourcesDir(project);
 
             assertNotEmptyAndIsInProjectDir(dir);
         }
@@ -77,11 +77,11 @@ class ExtensionTest {
         @Test
         @DisplayName("specified value, if set")
         void setValue() {
-            spineProtobuf().mainTargetGenResourcesDir = newUuid();
+            spineProtobuf().generatedMainResourcesDir = newUuid();
 
-            String dir = Extension.getMainTargetGenResourcesDir(project);
+            String dir = Extension.getGeneratedMainResourcesDir(project);
 
-            assertEquals(spineProtobuf().mainTargetGenResourcesDir, dir);
+            assertEquals(spineProtobuf().generatedMainResourcesDir, dir);
         }
     }
 
@@ -92,7 +92,7 @@ class ExtensionTest {
         @Test
         @DisplayName("default value, if not set")
         void defaultValue() {
-            String dir = Extension.getTestTargetGenResourcesDir(project);
+            String dir = Extension.getGeneratedTestResourcesDir(project);
 
             assertNotEmptyAndIsInProjectDir(dir);
         }
@@ -100,11 +100,11 @@ class ExtensionTest {
         @Test
         @DisplayName("specified value, if set")
         void specifiedValue() {
-            spineProtobuf().testTargetGenResourcesDir = newUuid();
+            spineProtobuf().generatedTestResourcesDir = newUuid();
 
-            String dir = Extension.getTestTargetGenResourcesDir(project);
+            String dir = Extension.getGeneratedTestResourcesDir(project);
 
-            assertEquals(spineProtobuf().testTargetGenResourcesDir, dir);
+            assertEquals(spineProtobuf().generatedTestResourcesDir, dir);
         }
     }
 
@@ -115,7 +115,7 @@ class ExtensionTest {
         @Test
         @DisplayName("default value, if not set")
         void defaultValue() {
-            File file = Extension.getMainDescriptorSet(project);
+            File file = Extension.getMainDescriptorSetFile(project);
 
             assertNotEmptyAndIsInProjectDir(file.toString());
         }
@@ -123,11 +123,11 @@ class ExtensionTest {
         @Test
         @DisplayName("specified value, if set")
         void specifiedValue() {
-            spineProtobuf().mainDescriptorSetPath = newUuid();
+            spineProtobuf().mainDescriptorSetFile = newUuid();
 
-            File file = Extension.getMainDescriptorSet(project);
+            File file = Extension.getMainDescriptorSetFile(project);
 
-            assertEquals(spineProtobuf().mainDescriptorSetPath, file.toString());
+            assertEquals(spineProtobuf().mainDescriptorSetFile, file.toString());
         }
     }
 
@@ -138,7 +138,7 @@ class ExtensionTest {
         @Test
         @DisplayName("default value, if not set")
         void defaultValue() {
-            File file = Extension.getTestDescriptorSet(project);
+            File file = Extension.getTestDescriptorSetFile(project);
 
             assertNotEmptyAndIsInProjectDir(file.toString());
         }
@@ -146,11 +146,11 @@ class ExtensionTest {
         @Test
         @DisplayName("specified value, if set")
         void specifiedValue() {
-            spineProtobuf().testDescriptorSetPath = newUuid();
+            spineProtobuf().testDescriptorSetFile = newUuid();
 
-            File file = Extension.getTestDescriptorSet(project);
+            File file = Extension.getTestDescriptorSetFile(project);
 
-            assertEquals(spineProtobuf().testDescriptorSetPath, file.toString());
+            assertEquals(spineProtobuf().testDescriptorSetFile, file.toString());
         }
     }
 
@@ -161,7 +161,7 @@ class ExtensionTest {
         @Test
         @DisplayName("default value, if not set")
         void defaultValue() {
-            String dir = Extension.getTargetGenRejectionsRootDir(project);
+            String dir = Extension.getGeneratedMainRejectionsDir(project);
 
             assertNotEmptyAndIsInProjectDir(dir);
         }
@@ -169,11 +169,11 @@ class ExtensionTest {
         @Test
         @DisplayName("specified value, if set")
         void specifiedValue() {
-            spineProtobuf().targetGenRejectionsRootDir = newUuid();
+            spineProtobuf().generatedMainRejectionsDir = newUuid();
 
-            String dir = Extension.getTargetGenRejectionsRootDir(project);
+            String dir = Extension.getGeneratedMainRejectionsDir(project);
 
-            assertEquals(spineProtobuf().targetGenRejectionsRootDir, dir);
+            assertEquals(spineProtobuf().generatedMainRejectionsDir, dir);
         }
     }
 
@@ -257,9 +257,9 @@ class ExtensionTest {
         @Test
         @DisplayName("severity, if set")
         void specifiedValue() {
-            spineProtobuf().spineCheckSeverity = Severity.ERROR;
+            spineProtobuf().defaultCheckSeverity = Severity.ERROR;
             Severity actualSeverity = Extension.getSpineCheckSeverity(project);
-            assertEquals(spineProtobuf().spineCheckSeverity, actualSeverity);
+            assertEquals(spineProtobuf().defaultCheckSeverity, actualSeverity);
         }
 
         @Test
