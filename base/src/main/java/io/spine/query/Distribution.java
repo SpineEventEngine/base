@@ -26,8 +26,13 @@
 
 package io.spine.query;
 
+import io.spine.query.AndExpression.AndBuilder;
+
 import java.util.List;
 
+import static io.spine.query.CartesianProducts.cartesianChildren;
+import static io.spine.query.CartesianProducts.cartesianCustomParams;
+import static io.spine.query.CartesianProducts.cartesianSimpleParams;
 import static io.spine.query.LogicalOperator.AND;
 
 /**
@@ -91,7 +96,7 @@ final class Distribution {
                                                List<Expression<R, ?>> orChildren,
                                                OrExpression.OrBuilder<R> result) {
         for (Expression<R, ?> child : orChildren) {
-            AndExpression.AndBuilder<R> childBuilder = AndExpression.newBuilder();
+            AndBuilder<R> childBuilder = AndExpression.newBuilder();
             and.copyTo(childBuilder);
             if (child.operator() == AND) {
                 AndExpression.asAnd(child)
@@ -122,7 +127,7 @@ final class Distribution {
                            List<CustomSubjectParameter<?, ?>> customParams,
                            OrExpression.OrBuilder<R> result) {
         for (CustomSubjectParameter<?, ?> param : customParams) {
-            AndExpression.AndBuilder<R> childBuilder = AndExpression.newBuilder();
+            AndBuilder<R> childBuilder = AndExpression.newBuilder();
             and.copyTo(childBuilder);
             childBuilder.addCustomParam(param);
             AndExpression<R> childAnd = childBuilder.build();
@@ -147,7 +152,7 @@ final class Distribution {
                                                    List<SubjectParameter<R, ?, ?>> disjunctiveParams,
                                                    OrExpression.OrBuilder<R> result) {
         for (SubjectParameter<R, ?, ?> param : disjunctiveParams) {
-            AndExpression.AndBuilder<R> childBuilder = AndExpression.newBuilder();
+            AndBuilder<R> childBuilder = AndExpression.newBuilder();
             and.copyTo(childBuilder);
             childBuilder.addParam(param);
             AndExpression<R> childAnd = childBuilder.build();
@@ -187,121 +192,10 @@ final class Distribution {
         List<CustomSubjectParameter<?, ?>> firstCustomParams = first.customParams();
         List<Expression<R, ?>> firstChildren = first.children();
 
-        // Params of the `first` are distributed over every part of the `second`.
         cartesianSimpleParams(firstParams, second, result);
-        // Custom params of the `first` are distributed over every part of the `second`.
         cartesianCustomParams(firstCustomParams, second, result);
-        // Children of the `first` are distributed over every part of the `second`.
         cartesianChildren(firstChildren, second, result);
 
         return result.build();
-    }
-
-    @SuppressWarnings("MethodWithMultipleLoops")    /* Avoiding multiple similar methods. */
-    private static <R>
-    void cartesianChildren(List<Expression<R, ?>> childrenOfFirst,
-                           OrExpression<R> second,
-                           OrExpression.OrBuilder<R> result) {
-        for (Expression<R, ?> firstChild : childrenOfFirst) {
-            for (SubjectParameter<R, ?, ?> secondParam : second.params()) {
-                AndExpression.AndBuilder<R> childBuilder = AndExpression.newBuilder();
-                addChild(firstChild, childBuilder);
-                AndExpression<R> childAnd = childBuilder.addParam(secondParam)
-                                                        .build();
-                result.addExpression(childAnd);
-            }
-
-            for (CustomSubjectParameter<?, ?> secondCustom : second.customParams()) {
-                AndExpression.AndBuilder<R> childBuilder = AndExpression.newBuilder();
-                addChild(firstChild, childBuilder);
-                AndExpression<R> childAnd = childBuilder.addCustomParam(secondCustom)
-                                                        .build();
-                result.addExpression(childAnd);
-            }
-
-            for (Expression<R, ?> secondChild : second.children()) {
-                AndExpression.AndBuilder<R> childBuilder = AndExpression.newBuilder();
-                addChild(firstChild, childBuilder);
-                addChild(secondChild, childBuilder);
-                AndExpression<R> childAnd = childBuilder.build();
-                result.addExpression(childAnd);
-            }
-        }
-    }
-
-    @SuppressWarnings("MethodWithMultipleLoops")    /* Avoiding multiple similar methods. */
-    private static <R>
-    void cartesianCustomParams(List<CustomSubjectParameter<?, ?>> customOfFirst,
-                               OrExpression<R> second,
-                               OrExpression.OrBuilder<R> result) {
-        for (CustomSubjectParameter<?, ?> firstCustom : customOfFirst) {
-
-            for (SubjectParameter<R, ?, ?> secondParam : second.params()) {
-                AndExpression.AndBuilder<R> childBuilder = AndExpression.newBuilder();
-                AndExpression<R> childAnd = childBuilder.addCustomParam(firstCustom)
-                                                        .addParam(secondParam)
-                                                        .build();
-                result.addExpression(childAnd);
-            }
-
-            for (CustomSubjectParameter<?, ?> secondCustom : second.customParams()) {
-                AndExpression.AndBuilder<R> childBuilder = AndExpression.newBuilder();
-                AndExpression<R> childAnd = childBuilder.addCustomParam(firstCustom)
-                                                        .addCustomParam(secondCustom)
-                                                        .build();
-                result.addExpression(childAnd);
-            }
-
-            for (Expression<R, ?> secondChild : second.children()) {
-                AndExpression.AndBuilder<R> childBuilder = AndExpression.newBuilder();
-                addChild(secondChild, childBuilder);
-                AndExpression<R> childAnd = childBuilder.addCustomParam(firstCustom)
-                                                        .build();
-                result.addExpression(childAnd);
-            }
-        }
-    }
-
-    @SuppressWarnings("MethodWithMultipleLoops")    /* Avoiding multiple similar methods. */
-    private static <R>
-    void cartesianSimpleParams(List<SubjectParameter<R, ?, ?>> paramsOfFirst,
-                               OrExpression<R> second,
-                               OrExpression.OrBuilder<R> result) {
-        for (SubjectParameter<R, ?, ?> firstParam : paramsOfFirst) {
-
-            for (SubjectParameter<R, ?, ?> secondParam : second.params()) {
-                AndExpression.AndBuilder<R> childBuilder = AndExpression.newBuilder();
-                AndExpression<R> childAnd = childBuilder.addParam(firstParam)
-                                                        .addParam(secondParam)
-                                                        .build();
-                result.addExpression(childAnd);
-            }
-
-            for (CustomSubjectParameter<?, ?> secondCustom : second.customParams()) {
-                AndExpression.AndBuilder<R> childBuilder = AndExpression.newBuilder();
-                AndExpression<R> childAnd = childBuilder.addParam(firstParam)
-                                                        .addCustomParam(secondCustom)
-                                                        .build();
-                result.addExpression(childAnd);
-            }
-
-            for (Expression<R, ?> secondChild : second.children()) {
-                AndExpression.AndBuilder<R> childBuilder = AndExpression.newBuilder();
-                addChild(secondChild, childBuilder);
-                AndExpression<R> childAnd = childBuilder.addParam(firstParam)
-                                                        .build();
-                result.addExpression(childAnd);
-            }
-        }
-    }
-
-    private static <R> void addChild(Expression<R, ?> child,
-                                     AndExpression.AndBuilder<R> destination) {
-        if (child.operator() == AND) {
-            AndExpression.asAnd(child)
-                         .copyTo(destination);
-        } else {
-            destination.addExpression(child);
-        }
     }
 }

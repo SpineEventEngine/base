@@ -256,7 +256,7 @@ abstract class Expression<R, E extends Expression<R, E>> {
          * Adds multiple child expression to this {@code Builder}.
          */
         @CanIgnoreReturnValue
-        private B addExpressions(Collection<Expression<R, ?>> children) {
+        B addExpressions(Collection<? extends Expression<R, ?>> children) {
             checkNotNull(children);
             for (Expression<R, ?> child : children) {
                 addExpression(child);
