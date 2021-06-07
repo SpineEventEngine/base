@@ -26,8 +26,11 @@
 
 package io.spine.query;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.Immutable;
+
+import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -52,6 +55,30 @@ public final class IdParameter<I> {
      */
     public ImmutableSet<I> values() {
         return values;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                          .add("values", values)
+                          .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof IdParameter)) {
+            return false;
+        }
+        IdParameter<?> parameter = (IdParameter<?>) o;
+        return Objects.equals(values, parameter.values);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(values);
     }
 
     /**

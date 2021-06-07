@@ -20,17 +20,18 @@
 
 package io.spine.query.given;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.FieldMask;
 import io.spine.query.Column;
 import io.spine.query.ComparisonOperator;
+import io.spine.query.QueryPredicate;
 import io.spine.query.RecordColumn;
 import io.spine.query.Subject;
 import io.spine.query.SubjectParameter;
 import io.spine.tools.query.ProjectId;
 import io.spine.tools.query.ProjectView;
 
-import java.util.List;
 import java.util.stream.IntStream;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
@@ -65,10 +66,11 @@ public final class EntityQueryBuilderTestEnv {
      * Checks that the query is not {@code null} as well as has no predicates and returns it.
      */
     public static Subject<ProjectId, ProjectView>
-    subjectWithNoPredicates(ProjectView.Query query) {
+    subjectWithNoParameters(ProjectView.Query query) {
         assertThat(query).isNotNull();
         Subject<ProjectId, ProjectView> subject = query.subject();
-        assertThat(subject.predicates()).isEmpty();
+        assertThat(subject.predicate()
+                          .children()).isEmpty();
         return subject;
     }
 
@@ -86,31 +88,31 @@ public final class EntityQueryBuilderTestEnv {
      */
     public static FieldMask fieldMaskWith(RecordColumn<ProjectView, ?> column) {
         return FieldMask.newBuilder()
-                        .addPaths(column.name()
-                                        .value())
-                        .build();
+                .addPaths(column.name()
+                                .value())
+                .build();
     }
 
     /**
-     * Asserts the given list of the subject parameters has the parameter with the given properties.
+     * Asserts the list of the predicate parameters has the value with the given properties.
      *
      * <p>In case there are several parameters for the same column, this method checks them all.
      *
-     * @param list
-     *         the list of all parameters
+     * @param predicate
+     *         the predicate which list of parameters to inspect
      * @param column
      *         the column for which the parameter value is asserted
      * @param operator
      *         the operator of the asserted parameter
      * @param value
-     *         value of the paramater
+     *         value of the parameter
      */
-    public static void assertHasParamValue(List<SubjectParameter<ProjectView, ?, ?>> list,
+    public static void assertHasParamValue(QueryPredicate<ProjectView> predicate,
                                            Column<?, ?> column,
                                            ComparisonOperator operator,
                                            Object value) {
         boolean parameterFound = false;
-        for (SubjectParameter<ProjectView, ?, ?> parameter : list) {
+        for (SubjectParameter<?, ?, ?> parameter : predicate.allParams()) {
             if (parameter.column()
                          .equals(column)) {
                 ComparisonOperator actualOperator = parameter.operator();
@@ -121,5 +123,27 @@ public final class EntityQueryBuilderTestEnv {
             }
         }
         assertThat(parameterFound).isTrue();
+    }
+
+    /**
+     * Asserts the given predicate has exactly one parameter which compares the values
+     * of specific column to the specified value with a certain comparison operator.
+     *
+     * @param predicate
+     *         the predicate under assertion
+     * @param column
+     *         the column for which the parameter value is asserted
+     * @param operator
+     *         the operator of the asserted parameter
+     * @param value
+     *         value of the parameter
+     */
+    public static void assertOnlyParamWithAnd(QueryPredicate<ProjectView> predicate,
+                                              Column<?, ?> column,
+                                              ComparisonOperator operator,
+                                              Object value) {
+        ImmutableList<SubjectParameter<?, ?, ?>> allParams = predicate.allParams();
+        assertThat(allParams).hasSize(1);
+        assertHasParamValue(predicate, column, operator, value);
     }
 }

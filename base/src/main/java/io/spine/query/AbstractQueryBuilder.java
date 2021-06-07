@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.protobuf.util.FieldMaskUtil.fromStringList;
 import static io.spine.query.Direction.ASC;
@@ -77,9 +78,9 @@ abstract class AbstractQueryBuilder<I,
 
     private IdParameter<I> id = IdParameter.empty();
 
-    private final List<QueryPredicate<R>> predicates = new ArrayList<>();
+    private QueryPredicate.Builder<R> rootBuilder = QueryPredicate.newBuilder(AND);
 
-    private QueryPredicate.Builder<R> currentPredicate = QueryPredicate.newBuilder(AND);
+    private QueryPredicate.Builder<R> currentPredicate = rootBuilder;
 
     private final List<SortBy<?, R>> sorting = new ArrayList<>();
 
@@ -115,14 +116,9 @@ abstract class AbstractQueryBuilder<I,
     }
 
     @Override
-    public ImmutableList<QueryPredicate<R>> predicates() {
-        ImmutableList.Builder<QueryPredicate<R>> result =
-                ImmutableList.<QueryPredicate<R>>builder().addAll(predicates);
-        if (currentPredicate.hasParams()) {
-            QueryPredicate<R> currentOne = currentPredicate.build();
-            result.add(currentOne);
-        }
-        return result.build();
+    public QueryPredicate<R> predicate() {
+        QueryPredicate<R> result = rootBuilder.build();
+        return result;
     }
 
     @Override
@@ -143,6 +139,7 @@ abstract class AbstractQueryBuilder<I,
     @Override
     @CanIgnoreReturnValue
     public final B limit(int numberOfRecords) {
+        ensureTopLevel("Limit of Query results");
         checkPositive(numberOfRecords,
                       "Query limit expected to be positive, but got `%s`.", numberOfRecords);
         this.limit = numberOfRecords;
@@ -152,6 +149,7 @@ abstract class AbstractQueryBuilder<I,
     @Override
     @CanIgnoreReturnValue
     public final B withMask(FieldMask mask) {
+        ensureTopLevel("Field masks");
         this.mask = checkNotNull(mask);
         return thisRef();
     }
@@ -205,20 +203,27 @@ abstract class AbstractQueryBuilder<I,
 
     @Override
     @SafeVarargs
-    @SuppressWarnings("ReturnValueIgnored")     // `Either` values are applied independently.
+    @SuppressWarnings("OverloadedVarargsMethod")    /* For convenience. */
     public final B either(Either<B>... parameters) {
-        if (currentPredicate.hasParams()) {
-            predicates.add(currentPredicate.build());
-        }
+        List<Either<B>> asList = Arrays.asList(parameters);
+        return either(asList);
+    }
 
-        currentPredicate = QueryPredicate.newBuilder(OR);
+    @Internal
+    @SuppressWarnings("ReturnValueIgnored")     /* `Either` values applied one by one. */
+    public final B either(Iterable<Either<B>> parameters) {
+        QueryPredicate.Builder<R> previous = currentPredicate;
+
+        QueryPredicate.Builder<R> either = QueryPredicate.newBuilder(currentPredicate, OR);
         for (Either<B> parameter : parameters) {
+            QueryPredicate.Builder<R> and = QueryPredicate.newBuilder(either, AND);
+            currentPredicate = and;
             parameter.apply(thisRef());
+
+            currentPredicate.build();
         }
-        if (currentPredicate.hasParams()) {
-            predicates.add(currentPredicate.build());
-        }
-        currentPredicate = QueryPredicate.newBuilder(AND);
+        either.build();
+        currentPredicate = previous;
         return thisRef();
     }
 
@@ -255,19 +260,35 @@ abstract class AbstractQueryBuilder<I,
      */
     @Internal
     protected final B setIdParameter(IdParameter<I> value) {
+        ensureTopLevel("Conditions for IDs");
         id = checkNotNull(value);
         return thisRef();
     }
 
     /**
-     * Adds the predicate.
+     * Replaces the contents of this builder with the contents of the passed predicate.
      *
      * @return this instance of query builder, for chaining
      */
     @Internal
-    protected final B addPredicate(QueryPredicate<R> value) {
+    @CanIgnoreReturnValue
+    protected final B replacePredicate(QueryPredicate<R> value) {
         checkNotNull(value);
-        predicates.add(value);
+        QueryPredicate.Builder<R> asBuilder = value.toBuilder();
+        return replacePredicate(asBuilder);
+    }
+
+    /**
+     * Replaces the contents of this builder with the passed predicate builder.
+     *
+     * @return this instance of query builder, for chaining
+     */
+    @Internal
+    @CanIgnoreReturnValue
+    protected final B replacePredicate(QueryPredicate.Builder<R> value) {
+        checkNotNull(value);
+        rootBuilder = value;
+        currentPredicate = rootBuilder;
         return thisRef();
     }
 
@@ -277,8 +298,13 @@ abstract class AbstractQueryBuilder<I,
      * @return this instance of query builder, for chaining
      */
     protected final B addSorting(SortBy<?, R> value) {
-        checkNotNull(value);
-        sorting.add(value);
+        ensureTopLevel("Sorting");
+        sorting.add(checkNotNull(value));
         return thisRef();
+    }
+
+    private void ensureTopLevel(String action) {
+        checkState(currentPredicate.isTopLevel(),
+                   "%s may only be set on the top level of a Query DSL-expression.", action);
     }
 }

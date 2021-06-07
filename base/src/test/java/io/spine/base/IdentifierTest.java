@@ -354,7 +354,7 @@ class IdentifierTest {
         }
 
         @Test
-        @DisplayName("Any")
+        @DisplayName("`Any`")
         void ofAny() {
             StringValue messageToWrap = StringValue.of(TEST_ID);
             Any any = AnyPacker.pack(messageToWrap);

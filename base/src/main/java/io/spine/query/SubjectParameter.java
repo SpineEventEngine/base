@@ -76,6 +76,11 @@ public abstract class SubjectParameter<R, C extends Column<R, V>, V> {
     }
 
     @Override
+    public String toString() {
+        return column.name().value() + ' ' + operator + ' ' + value;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

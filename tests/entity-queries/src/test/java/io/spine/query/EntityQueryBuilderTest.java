@@ -47,7 +47,7 @@ import static io.spine.query.given.EntityQueryBuilderTestEnv.assertNoSortingMask
 import static io.spine.query.given.EntityQueryBuilderTestEnv.fieldMaskWith;
 import static io.spine.query.given.EntityQueryBuilderTestEnv.generateIds;
 import static io.spine.query.given.EntityQueryBuilderTestEnv.projectId;
-import static io.spine.query.given.EntityQueryBuilderTestEnv.subjectWithNoPredicates;
+import static io.spine.query.given.EntityQueryBuilderTestEnv.subjectWithNoParameters;
 import static io.spine.query.given.Lifecycle.DELETED;
 import static io.spine.tools.query.Project.Status.CREATED;
 import static io.spine.tools.query.Project.Status.DONE;
@@ -70,7 +70,7 @@ class EntityQueryBuilderTest {
         void empty() {
             ProjectView.Query query = ProjectView.query()
                                                  .build();
-            Subject<ProjectId, ProjectView> subject = subjectWithNoPredicates(query);
+            Subject<ProjectId, ProjectView> subject = subjectWithNoParameters(query);
             assertThat(subject.id()
                               .values()).isEmpty();
             assertNoSortingMaskLimit(query);
@@ -93,7 +93,7 @@ class EntityQueryBuilderTest {
             ProjectView.Query query = ProjectView.query()
                                                  .projectId().is(expectedId)
                                                  .build();
-            Subject<ProjectId, ProjectView> subject = subjectWithNoPredicates(query);
+            Subject<ProjectId, ProjectView> subject = subjectWithNoParameters(query);
             IdParameter<ProjectId> actualIdParam = subject.id();
             assertThat(actualIdParam.values()).containsExactly(expectedId);
         }
@@ -105,7 +105,7 @@ class EntityQueryBuilderTest {
             ProjectView.Query query = ProjectView.query()
                                                  .projectId().in(expectedValues)
                                                  .build();
-            Subject<ProjectId, ProjectView> subject = subjectWithNoPredicates(query);
+            Subject<ProjectId, ProjectView> subject = subjectWithNoParameters(query);
             IdParameter<ProjectId> actualIdParam = subject.id();
             assertThat(actualIdParam.values()).isEqualTo(expectedValues);
         }
@@ -119,16 +119,15 @@ class EntityQueryBuilderTest {
                     .status().is(statusValue)
                     .daysSinceStarted().isLessThan(daysSinceStarted)
                     .build();
-            ImmutableList<QueryPredicate<ProjectView>> predicates = query.subject()
-                                                                         .predicates();
-            assertThat(predicates).hasSize(1);
-            QueryPredicate<ProjectView> predicate = predicates.get(0);
-            assertThat(predicate.operator()).isEqualTo(AND);
+            QueryPredicate<ProjectView> rootPredicate = query.subject().predicate();
+            assertThat(rootPredicate.operator()).isEqualTo(AND);
 
-            ImmutableList<SubjectParameter<ProjectView, ?, ?>> params = predicate.parameters();
-            assertThat(params).hasSize(2);
-            assertHasParamValue(params, status(), EQUALS, statusValue);
-            assertHasParamValue(params, daysSinceStarted(), LESS_THAN, daysSinceStarted);
+            ImmutableList<QueryPredicate<ProjectView>> children = rootPredicate.children();
+            assertThat(children).hasSize(0);
+            assertThat(rootPredicate.parameters()).hasSize(2);
+
+            assertHasParamValue(rootPredicate, status(), EQUALS, statusValue);
+            assertHasParamValue(rootPredicate, daysSinceStarted(), LESS_THAN, daysSinceStarted);
         }
 
         @Test
@@ -149,23 +148,16 @@ class EntityQueryBuilderTest {
                                .either(startedMoreThanMonthAgo, isDone, isDeleted)
                                .build();
 
-            ImmutableList<QueryPredicate<ProjectView>> predicates = query.subject()
-                                                                         .predicates();
-            assertThat(predicates).hasSize(1);
-            QueryPredicate<ProjectView> predicate = predicates.get(0);
-            assertThat(predicate.operator()).isEqualTo(OR);
+            QueryPredicate<ProjectView> rootPredicate = query.subject()
+                                                          .predicate();
+            ImmutableList<QueryPredicate<ProjectView>> predicates = rootPredicate.children();
+            assertThat(predicates).hasSize(0);
+            assertThat(rootPredicate.operator()).isEqualTo(OR);
+            assertThat(rootPredicate.allParams()).hasSize(3);
 
-            ImmutableList<SubjectParameter<ProjectView, ?, ?>> params = predicate.parameters();
-            assertThat(params).hasSize(2);
-            assertHasParamValue(params, status(), EQUALS, statusValue);
-            assertHasParamValue(params, daysSinceStarted(), GREATER_THAN, daysSinceStarted);
-
-            ImmutableList<CustomSubjectParameter<?, ?>> customParams = predicate.customParameters();
-            assertThat(customParams).hasSize(1);
-            CustomSubjectParameter<?, ?> customParam = customParams.get(0);
-            assertThat(customParam.column()).isEqualTo(DELETED.column());
-            assertThat(customParam.operator()).isEqualTo(EQUALS);
-            assertThat(customParam.value()).isEqualTo(deletedValue);
+            assertHasParamValue(rootPredicate, daysSinceStarted(), GREATER_THAN, daysSinceStarted);
+            assertHasParamValue(rootPredicate, status(), EQUALS, statusValue);
+            assertHasParamValue(rootPredicate, DELETED.column(), EQUALS, deletedValue);
         }
 
         @Test
@@ -303,22 +295,18 @@ class EntityQueryBuilderTest {
         @Test
         @DisplayName("of the column parameters")
         void ofParameterValues() {
-
             Project.Status statusValue = CREATED;
             int daysSinceStarted = 1;
             ProjectView.Query query = ProjectView.query()
                     .status().is(statusValue)
                     .daysSinceStarted().isGreaterThan(daysSinceStarted)
                     .build();
-            ImmutableList<QueryPredicate<ProjectView>> predicates = query.subject()
-                                                                         .predicates();
-            assertThat(predicates).hasSize(1);
-            QueryPredicate<ProjectView> predicate = predicates.get(0);
-            assertThat(predicate.operator()).isEqualTo(AND);
+            QueryPredicate<ProjectView> rootPredicate = query.subject()
+                                                             .predicate();
+            assertThat(rootPredicate.operator()).isEqualTo(AND);
 
-            ImmutableList<SubjectParameter<ProjectView, ?, ?>> parameters = predicate.parameters();
-            assertHasParamValue(parameters, status(), EQUALS, statusValue);
-            assertHasParamValue(parameters, daysSinceStarted(), GREATER_THAN, daysSinceStarted);
+            assertHasParamValue(rootPredicate, status(), EQUALS, statusValue);
+            assertHasParamValue(rootPredicate, daysSinceStarted(), GREATER_THAN, daysSinceStarted);
         }
 
         @Test
@@ -363,7 +351,8 @@ class EntityQueryBuilderTest {
         int predicateSize = ProjectView.query()
                 .status().is(CREATED)
                 .build((q) -> q.subject()
-                               .predicates()
+                               .predicate()
+                               .allParams()
                                .size());
         assertThat(predicateSize).isEqualTo(1);
     }

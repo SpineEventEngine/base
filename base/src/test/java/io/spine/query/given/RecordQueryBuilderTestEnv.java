@@ -94,10 +94,10 @@ public final class RecordQueryBuilderTestEnv {
      * Checks that the query is not {@code null} as well as has no predicates and returns it.
      */
     public static Subject<ManufacturerId, Manufacturer>
-    subjectWithNoPredicates(RecordQuery<ManufacturerId, Manufacturer> query) {
+    subjectWithNoParameters(RecordQuery<ManufacturerId, Manufacturer> query) {
         assertThat(query).isNotNull();
         Subject<ManufacturerId, Manufacturer> subject = query.subject();
-        assertThat(subject.predicates()).isEmpty();
+        assertThat(subject.predicate().parameters()).isEmpty();
         return subject;
     }
 
@@ -160,6 +160,10 @@ public final class RecordQueryBuilderTestEnv {
         public static final RecordColumn<Manufacturer, Boolean> is_traded =
                 create("is_traded", Boolean.class, (r) -> !r.getStockSymbolList()
                                                             .isEmpty());
+
+        public static final RecordColumn<Manufacturer, Integer> stock_count =
+                create("stock_count", Integer.class, (r) -> r.getStockSymbolList()
+                                                             .size());
 
         private ManufacturerColumns() {
         }

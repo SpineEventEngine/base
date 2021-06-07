@@ -26,21 +26,20 @@
 
 package io.spine.query;
 
-/**
- * Logical operators used in {@linkplain AbstractQuery querying}.
- */
-public enum LogicalOperator {
-    AND,
-    OR;
+import com.google.protobuf.Message;
 
-    /**
-     * Returns the counterpart for this operator.
-     *
-     * <p>If this one is {@code AND}, returns {@code OR}.
-     *
-     * <p>If this one is {@code OR}, returns {@code AND}.
-     */
-    public LogicalOperator counterpart() {
-        return this == AND ? OR : AND;
-    }
+import java.util.function.UnaryOperator;
+
+/**
+ * A lambda expression which groups additional query predicates to join
+ * to some existing {@link RecordQuery}.
+ *
+ * @param <I>
+ *         the type of identifiers of queried records
+ * @param <R>
+ *         the type of queried records
+ */
+public interface RecordPredicates<I, R extends Message>
+        extends UnaryOperator<RecordQueryBuilder<I, R>> {
+
 }

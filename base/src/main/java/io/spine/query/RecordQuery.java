@@ -30,6 +30,8 @@ import com.google.protobuf.Message;
 import io.spine.annotation.SPI;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.query.LogicalOperator.AND;
+import static io.spine.query.LogicalOperator.OR;
 
 /**
  * A query for the records each being a stored Protobuf message.
@@ -83,5 +85,48 @@ public final class RecordQuery<I, R extends Message>
      */
     public final RecordQueryBuilder<I, R> toBuilder() {
         return builder;
+    }
+
+    /**
+     * Appends a series of record column predicates to this query treating them in conjunction
+     * with those predicates which are already set for querying.
+     *
+     * <p>This method only processes the column predicates. Additional identifier conditions,
+     * field masks, sorting, or limit are ignored.
+     */
+    public final RecordQuery<I, R> and(RecordPredicates<I, R> builder) {
+        RecordQuery<I, R> result = joinToRootPredicate(builder, AND);
+        return result;
+    }
+
+    /**
+     * Appends a series of records column predicates to this query treating them in disjunction
+     * with those predicates which are already set for querying.
+     *
+     * <p>This method only processes the column predicates. Additional identifier conditions,
+     * field masks, sorting, or limit are ignored.
+     */
+    public final RecordQuery<I, R> either(RecordPredicates<I, R> predicates) {
+        RecordQuery<I, R> result = joinToRootPredicate(predicates, OR);
+        return result;
+    }
+
+    @SuppressWarnings({"ReturnValueIgnored", "ResultOfMethodCallIgnored"}) /* Adjusting builders. */
+    private RecordQuery<I, R> joinToRootPredicate(RecordPredicates<I, R> predicates,
+                                                  LogicalOperator operator) {
+        QueryPredicate<R> sourcePredicate = subject().predicate();
+        RecordQueryBuilder<I, R> originBuilder = toBuilder();
+        if(sourcePredicate.operator() == operator.counterpart()) {
+            QueryPredicate.Builder<R> newRoot = QueryPredicate.newBuilder(operator);
+            newRoot.addPredicate(sourcePredicate);
+            originBuilder.replacePredicate(newRoot);
+        }
+        if(operator == AND) {
+            predicates.apply(originBuilder);
+        } else {
+            originBuilder.either(predicates::apply);
+        }
+        RecordQuery<I, R> result = originBuilder.build();
+        return result;
     }
 }

@@ -26,8 +26,10 @@
 
 package io.spine.query;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +47,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class QueryPredicate<R> {
 
     /**
-     * Defines whether the parameters are evaluated in conjunction or disjunction with each other.
+     * Defines whether the parameters and child predicates are evaluated
+     * in conjunction or disjunction with each other.
      */
     private final LogicalOperator operator;
 
@@ -60,6 +63,11 @@ public final class QueryPredicate<R> {
     private final ImmutableList<CustomSubjectParameter<?, ?>> customParameters;
 
     /**
+     * The list of child predicates.
+     */
+    private final ImmutableList<QueryPredicate<R>> children;
+
+    /**
      * Creates a new {@code Predicate}.
      */
     private QueryPredicate(Builder<R> builder) {
@@ -68,16 +76,39 @@ public final class QueryPredicate<R> {
         this.parameters = ImmutableList.copyOf(builder.parameters);
         checkNotNull(builder.customParameters);
         this.customParameters = ImmutableList.copyOf(builder.customParameters);
+        checkNotNull(builder.children);
+        this.children = ImmutableList.copyOf(builder.children);
     }
 
     /**
-     * Creates a new instance the predicate builder for a specified logical operator.
+     * Creates a new instance of builder for the top-level predicate
+     * with the specified logical operator.
      *
+     * @param operator
+     *         the operator to apply to child elements during predicate evaluation
      * @param <R>
      *         the type of the record which is stored for subject
      */
     static <R> Builder<R> newBuilder(LogicalOperator operator) {
+        checkNotNull(operator);
         return new Builder<>(operator);
+    }
+
+    /**
+     * Creates a new instance of builder for the child query predicate
+     * with the specified logical operator and the selected parent.
+     *
+     * @param parent
+     *         the builder of parent predicate
+     * @param operator
+     *         the operator to apply to child elements during predicate evaluation
+     * @param <R>
+     *         the type of the record which is stored for subject
+     */
+    static <R> Builder<R> newBuilder(QueryPredicate.Builder<R> parent, LogicalOperator operator) {
+        checkNotNull(parent);
+        checkNotNull(operator);
+        return new Builder<>(parent, operator);
     }
 
     /**
@@ -116,6 +147,105 @@ public final class QueryPredicate<R> {
                 .build();
     }
 
+    /**
+     * Returns the list of child predicates.
+     */
+    public ImmutableList<QueryPredicate<R>> children() {
+        return children;
+    }
+
+    /**
+     * Converts this predicate along with its children into its disjunctive normal form.
+     *
+     * <p>This may be required in order to split a complex query several queries, each using only
+     * conjunction in its definitions.
+     *
+     * <p>Therefore if a predicate does not have "parent {@code AND}"-"child {@code OR}" predicate
+     * combinations throughout the predicate tree, it is returned as-is.
+     *
+     * @see <a href="https://en.wikipedia.org/wiki/Disjunctive_normal_form">Disjunctive normal form</a>
+     */
+    public QueryPredicate<R> toDnf() {
+        QueryPredicate<R> result = new TransformToDnf<R>().apply(this);
+        return result;
+    }
+
+    /**
+     * Creates a new {@code Builder} instance from the contents of this predicate.
+     */
+    public Builder<R> toBuilder() {
+        Builder<R> builder = newBuilder(operator);
+        copyParams(this, builder);
+        copyCustomParams(this, builder);
+        copyChildren(this, builder);
+        return builder;
+    }
+
+    /**
+     * Tells whether this predicate has any parameters or children.
+     *
+     * @return {@code true} if no parameters or children are specified for this predicate,
+     *         {@code false} otherwise
+     */
+    public boolean isEmpty() {
+        return children().isEmpty() && allParams().isEmpty();
+    }
+
+    private static <R> void copyChildren(QueryPredicate<R> predicate, Builder<R> builder) {
+        for (QueryPredicate<R> child : predicate.children) {
+            builder.addPredicate(child);
+        }
+    }
+
+    private static <R> void copyCustomParams(QueryPredicate<R> predicate, Builder<R> builder) {
+        for (CustomSubjectParameter<?, ?> customParam : predicate.customParameters) {
+            builder.addCustom(customParam);
+        }
+    }
+
+    private static <R> void copyParams(QueryPredicate<R> predicate, Builder<R> builder) {
+        for (SubjectParameter<R, ?, ?> parameter : predicate.parameters) {
+            builder.add(parameter);
+        }
+    }
+
+    /**
+     * Merges several predicates into a single predicate.
+     *
+     * @param predicates
+     *         predicates to merge
+     * @param operator
+     *         operator to use for the merge
+     * @param <R>
+     *         the type of queried records
+     * @return a merge result consisting of parameter-predicate trees of the merged predicates
+     */
+    public static <R> QueryPredicate<R>
+    merge(Iterable<QueryPredicate<R>> predicates, LogicalOperator operator) {
+        checkNotNull(predicates);
+        checkNotNull(operator);
+
+        Builder<R> builder = newBuilder(operator);
+        for (QueryPredicate<R> predicate : predicates) {
+            copyParams(predicate, builder);
+            copyCustomParams(predicate, builder);
+            copyChildren(predicate, builder);
+        }
+        QueryPredicate<R> result = builder.build();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                          .add("operator", operator)
+                          .add("parameters", parameters)
+                          .add("customParameters", customParameters)
+                          .add("children", children)
+                          .toString();
+    }
+
+    @SuppressWarnings("OverlyComplexBooleanExpression")     /* That's fine for a predicate tree. */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -126,13 +256,14 @@ public final class QueryPredicate<R> {
         }
         QueryPredicate<?> predicate = (QueryPredicate<?>) o;
         return operator == predicate.operator &&
-                parameters.equals(predicate.parameters) &&
-                customParameters.equals(predicate.customParameters);
+                Objects.equals(parameters, predicate.parameters) &&
+                Objects.equals(customParameters, predicate.customParameters) &&
+                Objects.equals(children, predicate.children);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(operator, parameters, customParameters);
+        return Objects.hash(operator, parameters, customParameters, children);
     }
 
     /**
@@ -143,12 +274,18 @@ public final class QueryPredicate<R> {
      */
     static final class Builder<R> {
 
-        private final LogicalOperator operator;
+        private LogicalOperator operator;
+        private final QueryPredicate.@Nullable Builder<R> parent;
         private final List<SubjectParameter<R, ?, ?>> parameters = new ArrayList<>();
         private final List<CustomSubjectParameter<?, ?>> customParameters = new ArrayList<>();
+        private final List<QueryPredicate<R>> children = new ArrayList<>();
+
 
         /**
-         * Does not allow to instantiate this class directly.
+         * Creates a new instance of this {@code Builder}.
+         *
+         * <p>The created builder assumes that the predicate built has no parent
+         * (i.e. is a top-level one).
          *
          * @param operator
          *         the operator which defines whether the parameters are evaluated
@@ -156,16 +293,50 @@ public final class QueryPredicate<R> {
          * @see QueryPredicate#newBuilder(LogicalOperator)
          */
         private Builder(LogicalOperator operator) {
+            this.parent = null;
             this.operator = operator;
         }
 
         /**
-         * Adds a parameter for the own column declared by the queried records.
+         * Creates a new instance of this {@code Builder}.
+         *
+         * @param parent the builder of parent predicate
+         * @param operator
+         *         the operator which defines whether the parameters are evaluated
+         *         in conjunction or disjunction with each other
+         * @see QueryPredicate#newBuilder(LogicalOperator)
+         */
+        private Builder(QueryPredicate.Builder<R> parent, LogicalOperator operator) {
+            this.parent = parent;
+            this.operator = operator;
+        }
+
+        /**
+         * Returns the logical operator of this builder.
+         */
+        LogicalOperator operator() {
+            return operator;
+        }
+
+        /**
+         * Adds a parameter for own column declared by the queried records.
          */
         @CanIgnoreReturnValue
         Builder<R> add(SubjectParameter<R, ?, ?> parameter) {
             checkNotNull(parameter);
             this.parameters.add(parameter);
+            return this;
+        }
+
+        /**
+         * Adds multiple parameters for own columns declared by the queried records.
+         */
+        @CanIgnoreReturnValue
+        Builder<R> addParams(Iterable<SubjectParameter<R, ?, ?>> parameters) {
+            checkNotNull(parameters);
+            for (SubjectParameter<R, ?, ?> parameter : parameters) {
+                add(parameter);
+            }
             return this;
         }
 
@@ -181,17 +352,134 @@ public final class QueryPredicate<R> {
         }
 
         /**
-         * Tells if there is at least one parameter added.
+         * Adds multiple parameters, which address the {@linkplain CustomColumn custom column}s
+         * of the queried records.
          */
-        boolean hasParams() {
-            return !parameters.isEmpty() || !customParameters.isEmpty();
+        @CanIgnoreReturnValue
+        Builder<R> addCustomParams(Iterable<CustomSubjectParameter<?, ?>> parameters) {
+            checkNotNull(parameters);
+            for (CustomSubjectParameter<?, ?> parameter : parameters) {
+                addCustom(parameter);
+            }
+            return this;
+        }
+
+        /**
+         * Adds a child predicate.
+         */
+        @CanIgnoreReturnValue
+        Builder<R> addPredicate(QueryPredicate<R> child) {
+            checkNotNull(child);
+            children.add(child);
+            return this;
+        }
+
+        /**
+         * Tells whether the predicate built by this {@code Builder} is a top-level predicate.
+         */
+        boolean isTopLevel() {
+            return parent == null;
         }
 
         /**
          * Builds a new instance of a predicate based on the data in this builder.
          */
+        @CanIgnoreReturnValue
         QueryPredicate<R> build() {
-            return new QueryPredicate<>(this);
+            optimizeForOnlyChild();
+            flattenSimilarChildren();
+            QueryPredicate<R> result = new QueryPredicate<>(this);
+            appendToParent(result);
+            return result;
+        }
+
+        /**
+         * Optimizes the structure of this predicate in a special case.
+         *
+         * <p>If the following conditions are met:
+         *
+         * <ul>
+         *     <li>the predicate being built is a top-level predicate,
+         *
+         *     <li>this builder has neither parameters nor custom parameters,
+         *
+         *     <li>there is only one child predicate,
+         * </ul>
+         *
+         * <p>then the contents of this builder are replaced by the contents of the only child.
+         */
+        private void optimizeForOnlyChild() {
+            if(isTopLevel() && hasNoParams() && children.size() == 1) {
+                QueryPredicate<R> onlyChild = children.get(0);
+                this.operator = onlyChild.operator();
+                addParams(onlyChild.parameters());
+                addCustomParams(onlyChild.customParameters());
+                children.clear();
+                ImmutableList<QueryPredicate<R>> grandChildren = onlyChild.children;
+                for (QueryPredicate<R> grandChild : grandChildren) {
+                    addPredicate(grandChild);
+                }
+            }
+        }
+
+        /**
+         * Moves the content of each child to this builder, if each child is built around
+         * the same logical operator as this builder.
+         */
+        private void flattenSimilarChildren() {
+                long differentChildrenCount =
+                        children.stream()
+                                .filter(c -> c.operator != operator())
+                                .count();
+                if(differentChildrenCount == 0) {
+                    for (QueryPredicate<R> child : children) {
+                        copyParams(child, this);
+                        copyCustomParams(child, this);
+                        copyChildren(child, this);
+                    }
+                    children.clear();
+                }
+        }
+
+        private boolean hasNoParams() {
+            return parameters.isEmpty() && customParameters.isEmpty();
+        }
+
+        /**
+         * Appends this predicate to its parent.
+         *
+         * <p>In case the predicate has only one part (i.e. a single parameter, just one custom
+         * parameter, or a child predicate), only this item is appended to the parent.
+         * Otherwise, the whole predicate is appended to the parent one as its child predicates.
+         */
+        private void appendToParent(QueryPredicate<R> result) {
+            if(parent != null) {
+                boolean simplified = false;
+
+                int childrenSize = children.size();
+                int paramCount = parameters.size();
+                int customCount = customParameters.size();
+
+                if(operator() == parent.operator()) {
+                    copyParams(result, parent);
+                    copyCustomParams(result, parent);
+                    copyChildren(result, parent);
+                    simplified = true;
+                } else if (childrenSize + paramCount + customCount == 1) {
+                    if (paramCount > 0) {
+                        parent.add(parameters.get(0));
+                    } else if (customCount > 0) {
+                        parent.addCustom(customParameters.get(0));
+                    } else {
+                        parent.addPredicate(children.get(0));
+                    }
+                    simplified = true;
+                }
+
+                if (!simplified) {
+                    parent.addPredicate(result);
+                }
+            }
         }
     }
 }

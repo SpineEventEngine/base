@@ -60,6 +60,11 @@ public enum ComparisonOperator {
         public boolean eval(@Nullable Object left, @Nullable Object right) {
             return Objects.equals(left, right);
         }
+
+        @Override
+        public String toString() {
+            return "==";
+        }
     },
 
     /**
@@ -69,6 +74,11 @@ public enum ComparisonOperator {
         @Override
         public boolean eval(@Nullable Object left, @Nullable Object right) {
             return GREATER_THAN.eval(right, left);
+        }
+
+        @Override
+        public String toString() {
+            return "<";
         }
     },
 
@@ -80,6 +90,11 @@ public enum ComparisonOperator {
         public boolean eval(@Nullable Object left, @Nullable Object right) {
             return LESS_THAN.eval(left, right)
                     || EQUALS.eval(left, right);
+        }
+
+        @Override
+        public String toString() {
+            return "<=";
         }
     },
 
@@ -119,6 +134,11 @@ public enum ComparisonOperator {
                         .getCanonicalName())
             );
         }
+
+        @Override
+        public String toString() {
+            return ">";
+        }
     },
 
     /**
@@ -129,6 +149,11 @@ public enum ComparisonOperator {
         public boolean eval(@Nullable Object left, @Nullable Object right) {
             return GREATER_THAN.eval(left, right)
                     || EQUALS.eval(left, right);
+        }
+
+        @Override
+        public String toString() {
+            return ">=";
         }
     };
 
