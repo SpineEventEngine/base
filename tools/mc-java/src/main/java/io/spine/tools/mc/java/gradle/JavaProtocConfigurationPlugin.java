@@ -74,14 +74,12 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
     @Override
     protected void
     configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins, Project project) {
-        Artifact gRpcPlugin = Artifact
-                .newBuilder()
+        Artifact gRpcPlugin = Artifact.newBuilder()
                 .setGroup(GRPC_GROUP)
                 .setName(GRPC_PLUGIN_NAME)
                 .setVersion(VERSIONS.grpc())
                 .build();
-        Artifact spinePlugin = Artifact
-                .newBuilder()
+        Artifact spinePlugin = Artifact.newBuilder()
                 .useSpineToolsGroup()
                 .setName(SPINE_PLUGIN_NAME)
                 .setVersion(VERSIONS.spineBase())

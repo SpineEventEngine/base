@@ -46,7 +46,7 @@ import static io.spine.tools.mc.java.gradle.Extension.getSpineCheckSeverity;
  * the project.
  *
  * @see ErrorProneChecksExtension
- * @see io.spine.tools.mc.java.gradle.Extension#getSpineCheckSeverity(Project)
+ * @see Extension#getSpineCheckSeverity(Project)
  */
 public final class SeverityConfigurer implements Logging {
 
