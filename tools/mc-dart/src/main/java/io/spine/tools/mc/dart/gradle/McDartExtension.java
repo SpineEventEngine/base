@@ -93,7 +93,7 @@ public final class McDartExtension extends GradleExtension {
      * ]
      * }</pre>
      */
-    @SuppressWarnings("PublicField" /* Expose fields as a Gradle extension */)
+    @SuppressWarnings({"PublicField", "WeakerAccess" /* Expose fields as a Gradle extension */ })
     public final Map<String, List<String>> modules = newHashMap();
 
     private final Project project;
@@ -127,9 +127,10 @@ public final class McDartExtension extends GradleExtension {
      * Finds an extension of this type in the given project.
      */
     static McDartExtension findIn(Project project) {
-        McDartExtension extension = project.getExtensions()
-                                           .getByType(McDartExtension.class);
-        return requireNonNull(extension);
+        McDartExtension result =
+                project.getExtensions()
+                       .getByType(McDartExtension.class);
+        return result;
     }
 
     /**

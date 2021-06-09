@@ -25,7 +25,6 @@
  */
 package io.spine.tools.javadoc.style;
 
-import com.google.common.collect.ImmutableList;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -37,12 +36,12 @@ import java.nio.file.Files;
 
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.gradle.JavaTaskName.compileTestJava;
-import static io.spine.tools.javadoc.style.JavadocStyleTaskName.formatProtoDoc;
-import static io.spine.tools.javadoc.style.JavadocStyleTaskName.formatTestProtoDoc;
 import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
 import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 import static io.spine.tools.javadoc.style.JavadocStyleExtension.getAbsoluteMainGenProtoDir;
 import static io.spine.tools.javadoc.style.JavadocStyleExtension.getAbsoluteTestGenProtoDir;
+import static io.spine.tools.javadoc.style.JavadocStyleTaskName.formatProtoDoc;
+import static io.spine.tools.javadoc.style.JavadocStyleTaskName.formatTestProtoDoc;
 import static java.lang.String.format;
 
 /**
@@ -68,13 +67,10 @@ import static java.lang.String.format;
  */
 public class JavadocStylePlugin extends SpinePlugin {
 
-    static final String PROTO_JAVADOC_EXTENSION_NAME = "protoJavadoc";
-
     @Override
     public void apply(Project project) {
         _debug().log("Adding the ProtoJavadocPlugin extension to the project.");
-        project.getExtensions()
-               .create(PROTO_JAVADOC_EXTENSION_NAME, JavadocStyleExtension.class);
+        JavadocStyleExtension.createIn(project);
 
         Action<Task> mainAction = createAction(project, TaskType.MAIN);
         newTask(formatProtoDoc, mainAction)

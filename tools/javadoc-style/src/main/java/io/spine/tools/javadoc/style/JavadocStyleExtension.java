@@ -32,7 +32,6 @@ import org.gradle.api.Project;
 
 import java.io.File;
 
-import static io.spine.tools.javadoc.style.JavadocStylePlugin.PROTO_JAVADOC_EXTENSION_NAME;
 import static java.lang.String.format;
 
 /**
@@ -40,6 +39,8 @@ import static java.lang.String.format;
  */
 @SuppressWarnings("unused") // Implicitly used during a Gradle build.
 public class JavadocStyleExtension implements Logging {
+
+    private static final String PROTO_JAVADOC_EXTENSION_NAME = "protoJavadoc";
 
     /**
      * The path to the main Java sources directory, generated basing on Protobuf definitions.
@@ -56,13 +57,21 @@ public class JavadocStyleExtension implements Logging {
     private String testGenProtoDir;
 
     /**
+     * Creates the extension in the given project.
+     */
+    static void createIn(Project project) {
+        project.getExtensions()
+                .create(PROTO_JAVADOC_EXTENSION_NAME, JavadocStyleExtension.class);
+    }
+
+    /**
      * Obtains absolute path to the {@link #mainGenProtoDir}.
      *
      * @param project the project to get the {@code mainGenProtoDir}
      * @return the absolute path to the main directory
      */
     static String getAbsoluteMainGenProtoDir(Project project) {
-        String mainGenProtoDir = getExtension(project).mainGenProtoDir;
+        String mainGenProtoDir = findIn(project).mainGenProtoDir;
         checkExtensionField(mainGenProtoDir, "mainGenProtoDir");
         return rootPath(project) + File.separator + mainGenProtoDir;
     }
@@ -74,19 +83,19 @@ public class JavadocStyleExtension implements Logging {
      * @return the absolute path to the test directory
      */
     static String getAbsoluteTestGenProtoDir(Project project) {
-        String testGenProtoDir = getExtension(project).testGenProtoDir;
+        String testGenProtoDir = findIn(project).testGenProtoDir;
         checkExtensionField(testGenProtoDir, "testGenProtoDir");
         return rootPath(project) + File.separator + testGenProtoDir;
     }
 
     void setMainGenProtoDir(String mainGenProtoDir) {
         this.mainGenProtoDir = mainGenProtoDir;
-        _debug().log("Path to main generated Protobufs set up to `%s`.", mainGenProtoDir);
+        _debug().log("Path to main generated Protobufs set to `%s`.", mainGenProtoDir);
     }
 
     void setTestGenProtoDir(String testGenProtoDir) {
         this.testGenProtoDir = testGenProtoDir;
-        _debug().log("Path to test generated Protobufs set up to `%s`.", testGenProtoDir);
+        _debug().log("Path to test generated Protobufs set to `%s`.", testGenProtoDir);
     }
 
     private static void checkExtensionField(@Nullable String value, String name) {
@@ -101,8 +110,10 @@ public class JavadocStyleExtension implements Logging {
                       .getAbsolutePath();
     }
 
-    private static JavadocStyleExtension getExtension(Project project) {
-        return (JavadocStyleExtension) project.getExtensions()
-                                              .getByName(PROTO_JAVADOC_EXTENSION_NAME);
+    private static JavadocStyleExtension findIn(Project project) {
+        JavadocStyleExtension result =
+                project.getExtensions()
+                       .getByType(JavadocStyleExtension.class);
+        return result;
     }
 }
