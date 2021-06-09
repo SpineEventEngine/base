@@ -27,6 +27,7 @@
 package io.spine.tools.gradle;
 
 import io.spine.tools.gradle.testing.NoOp;
+import io.spine.tools.mc.java.gradle.McJavaTaskName;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.file.FileCollection;
@@ -45,9 +46,9 @@ import static io.spine.tools.gradle.BaseTaskName.clean;
 import static io.spine.tools.gradle.GradleTask.Builder;
 import static io.spine.tools.gradle.JavaTaskName.classes;
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
-import static io.spine.tools.gradle.ModelCompilerTaskName.annotateProto;
-import static io.spine.tools.gradle.ModelCompilerTaskName.preClean;
-import static io.spine.tools.gradle.ModelVerifierTaskName.verifyModel;
+import static io.spine.tools.mc.java.gradle.McJavaTaskName.annotateProto;
+import static io.spine.tools.mc.java.gradle.McJavaTaskName.preClean;
+import static io.spine.tools.mc.java.gradle.ModelVerifierTaskName.verifyModel;
 import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
 import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 import static io.spine.tools.gradle.testing.GradleProject.javaPlugin;
@@ -57,8 +58,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("SpinePluginBuilder should")
-class SpinePluginBuilderTest {
+/**
+ * Tests {@link SpinePlugin}.
+ *
+ * @apiNote This test suite is placed under the {@code mc-java} module, while the class
+ * it tests ({@link SpinePlugin} is under {@code }) because the test suite uses
+ * {@link McJavaTaskName}. Presumably, this test suite should be updated using
+ * stub task names (which would be language-neutral) and returned back to the
+ */
+@DisplayName("`SpinePlugin` should")
+class SpinePluginTest {
 
     private Project project;
 

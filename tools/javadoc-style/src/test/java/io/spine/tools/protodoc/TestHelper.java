@@ -36,7 +36,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import static io.spine.tools.gradle.JavadocPrettifierTaskName.formatProtoDoc;
+import static io.spine.tools.protodoc.JavadocPrettifierTaskName.formatProtoDoc;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;

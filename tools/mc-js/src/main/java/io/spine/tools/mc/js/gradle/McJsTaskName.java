@@ -24,23 +24,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle;
+package io.spine.tools.mc.js.gradle;
 
 import io.spine.annotation.Internal;
+import io.spine.tools.gradle.TaskName;
 
 /**
- * Names of Gradle tasks defined by the Javadoc Prettifier plugin.
+ * Names of Gradle tasks defined by the Spine Protobuf JS plugin.
  */
 @Internal
-public enum JavadocPrettifierTaskName implements TaskName {
+public enum McJsTaskName implements TaskName {
 
     /**
-     * Formats the Javadoc in sources generated from {@code .proto} files in the {@code main} scope.
+     * Generates JSON-parsing code for the JavaScript messages compiled from Protobuf in both
+     * {@code main} and {@code test} scopes.
      */
-    formatProtoDoc,
-
-    /**
-     * Formats the Javadoc in sources generated from {@code .proto} files in the {@code test} scope.
-     */
-    formatTestProtoDoc
+    generateJsonParsers
 }

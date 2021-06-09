@@ -37,7 +37,7 @@ import java.util.stream.Stream;
  *
  * <p>Applies dependent plugins
  */
-public class ModelCompilerPlugin implements Plugin<Project>, Logging {
+public class McJavaPlugin implements Plugin<Project>, Logging {
 
     private static final String EXTENSION_NAME = "modelCompiler";
 
@@ -52,7 +52,7 @@ public class ModelCompilerPlugin implements Plugin<Project>, Logging {
     public void apply(Project project) {
         _debug().log("Adding the extension to the project.");
         project.getExtensions()
-               .create(extensionName(), Extension.class);
+               .create(extensionName(), McJavaExtension.class);
 
         // Plugins that deal with Protobuf types must depend on `mergeDescriptorSet` and
         // `mergeTestDescriptorSet` tasks to be able to access every declared type

@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("`Extension` should")
-class ExtensionTest {
+class McJavaExtensionTest {
 
     private Project project;
     private File projectDir;
@@ -69,7 +69,7 @@ class ExtensionTest {
         @Test
         @DisplayName("default value, if not set")
         void defaultValue() {
-            String dir = Extension.getGeneratedMainResourcesDir(project);
+            String dir = McJavaExtension.getGeneratedMainResourcesDir(project);
 
             assertNotEmptyAndIsInProjectDir(dir);
         }
@@ -79,7 +79,7 @@ class ExtensionTest {
         void setValue() {
             spineProtobuf().generatedMainResourcesDir = newUuid();
 
-            String dir = Extension.getGeneratedMainResourcesDir(project);
+            String dir = McJavaExtension.getGeneratedMainResourcesDir(project);
 
             assertEquals(spineProtobuf().generatedMainResourcesDir, dir);
         }
@@ -92,7 +92,7 @@ class ExtensionTest {
         @Test
         @DisplayName("default value, if not set")
         void defaultValue() {
-            String dir = Extension.getGeneratedTestResourcesDir(project);
+            String dir = McJavaExtension.getGeneratedTestResourcesDir(project);
 
             assertNotEmptyAndIsInProjectDir(dir);
         }
@@ -102,7 +102,7 @@ class ExtensionTest {
         void specifiedValue() {
             spineProtobuf().generatedTestResourcesDir = newUuid();
 
-            String dir = Extension.getGeneratedTestResourcesDir(project);
+            String dir = McJavaExtension.getGeneratedTestResourcesDir(project);
 
             assertEquals(spineProtobuf().generatedTestResourcesDir, dir);
         }
@@ -115,7 +115,7 @@ class ExtensionTest {
         @Test
         @DisplayName("default value, if not set")
         void defaultValue() {
-            File file = Extension.getMainDescriptorSetFile(project);
+            File file = McJavaExtension.getMainDescriptorSetFile(project);
 
             assertNotEmptyAndIsInProjectDir(file.toString());
         }
@@ -125,7 +125,7 @@ class ExtensionTest {
         void specifiedValue() {
             spineProtobuf().mainDescriptorSetFile = newUuid();
 
-            File file = Extension.getMainDescriptorSetFile(project);
+            File file = McJavaExtension.getMainDescriptorSetFile(project);
 
             assertEquals(spineProtobuf().mainDescriptorSetFile, file.toString());
         }
@@ -138,7 +138,7 @@ class ExtensionTest {
         @Test
         @DisplayName("default value, if not set")
         void defaultValue() {
-            File file = Extension.getTestDescriptorSetFile(project);
+            File file = McJavaExtension.getTestDescriptorSetFile(project);
 
             assertNotEmptyAndIsInProjectDir(file.toString());
         }
@@ -148,7 +148,7 @@ class ExtensionTest {
         void specifiedValue() {
             spineProtobuf().testDescriptorSetFile = newUuid();
 
-            File file = Extension.getTestDescriptorSetFile(project);
+            File file = McJavaExtension.getTestDescriptorSetFile(project);
 
             assertEquals(spineProtobuf().testDescriptorSetFile, file.toString());
         }
@@ -161,7 +161,7 @@ class ExtensionTest {
         @Test
         @DisplayName("default value, if not set")
         void defaultValue() {
-            String dir = Extension.getGeneratedMainRejectionsDir(project);
+            String dir = McJavaExtension.getGeneratedMainRejectionsDir(project);
 
             assertNotEmptyAndIsInProjectDir(dir);
         }
@@ -171,7 +171,7 @@ class ExtensionTest {
         void specifiedValue() {
             spineProtobuf().generatedMainRejectionsDir = newUuid();
 
-            String dir = Extension.getGeneratedMainRejectionsDir(project);
+            String dir = McJavaExtension.getGeneratedMainRejectionsDir(project);
 
             assertEquals(spineProtobuf().generatedMainRejectionsDir, dir);
         }
@@ -246,7 +246,7 @@ class ExtensionTest {
         }
 
         private List<String> actualDirs() {
-            return Extension.getDirsToClean(project);
+            return McJavaExtension.getDirsToClean(project);
         }
     }
 
@@ -258,14 +258,14 @@ class ExtensionTest {
         @DisplayName("severity, if set")
         void specifiedValue() {
             spineProtobuf().defaultCheckSeverity = Severity.ERROR;
-            Severity actualSeverity = Extension.getSpineCheckSeverity(project);
+            Severity actualSeverity = McJavaExtension.getSpineCheckSeverity(project);
             assertEquals(spineProtobuf().defaultCheckSeverity, actualSeverity);
         }
 
         @Test
         @DisplayName("`null`, if not set")
         void nullValue() {
-            Severity actualSeverity = Extension.getSpineCheckSeverity(project);
+            Severity actualSeverity = McJavaExtension.getSpineCheckSeverity(project);
             assertNull(actualSeverity);
         }
     }
@@ -277,8 +277,8 @@ class ExtensionTest {
                                           .getAbsolutePath()));
     }
 
-    private Extension spineProtobuf() {
-        return (Extension) project.getExtensions()
-                                  .getByName(ModelCompilerPlugin.extensionName());
+    private McJavaExtension spineProtobuf() {
+        return (McJavaExtension) project.getExtensions()
+                                        .getByName(McJavaPlugin.extensionName());
     }
 }

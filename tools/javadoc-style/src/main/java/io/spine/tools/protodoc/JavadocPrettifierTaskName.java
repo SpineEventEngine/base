@@ -24,50 +24,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle;
+package io.spine.tools.protodoc;
 
 import io.spine.annotation.Internal;
+import io.spine.tools.gradle.TaskName;
 
 /**
- * Names of Gradle tasks defined by the Spine Protobuf Dart plugin.
+ * Names of Gradle tasks defined by the Javadoc Prettifier plugin.
  */
 @Internal
-public enum ProtoDartTaskName implements TaskName {
+public enum JavadocPrettifierTaskName implements TaskName {
 
     /**
-     * Creates the {@code types.dart} file which contains type mapping for all the production
-     * Protobuf types defined in this project.
-     *
-     * <p>Works only with the {@code main} scope types.
+     * Formats the Javadoc in sources generated from {@code .proto} files in the {@code main} scope.
      */
-    generateDartTypeRegistry,
+    formatProtoDoc,
 
     /**
-     * Creates the {@code types.dart} file which contains type mapping for all the test Protobuf
-     * types defined in this project.
-     *
-     * <p>Works only with the {@code test} scope types.
+     * Formats the Javadoc in sources generated from {@code .proto} files in the {@code test} scope.
      */
-    generateDartTestTypeRegistry,
-
-    /**
-     * Copies the Dart code generated from Protobuf from its temporary location to the {@code lib}
-     * directory.
-     *
-     * <p>Works only with the {@code main} scope files.
-     */
-    copyGeneratedDart,
-
-    /**
-     * Copies the Dart code generated from Protobuf from its temporary location to the {@code test}
-     * directory.
-     *
-     * <p>Works only with the {@code test} scope files.
-     */
-    copyTestGeneratedDart,
-
-    /**
-     * Rewrites the Dart source files generated from Protobuf with the resolved absolute imports.
-     */
-    resolveImports
+    formatTestProtoDoc
 }

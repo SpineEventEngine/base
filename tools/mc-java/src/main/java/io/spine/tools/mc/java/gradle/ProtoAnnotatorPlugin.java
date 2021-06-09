@@ -47,19 +47,19 @@ import static io.spine.tools.mc.java.annotation.ApiOption.spi;
 import static io.spine.tools.mc.java.annotation.ModuleAnnotator.translate;
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.gradle.JavaTaskName.compileTestJava;
-import static io.spine.tools.gradle.ModelCompilerTaskName.annotateProto;
-import static io.spine.tools.gradle.ModelCompilerTaskName.annotateTestProto;
-import static io.spine.tools.gradle.ModelCompilerTaskName.mergeDescriptorSet;
-import static io.spine.tools.gradle.ModelCompilerTaskName.mergeTestDescriptorSet;
-import static io.spine.tools.mc.java.gradle.Extension.getCodeGenAnnotations;
-import static io.spine.tools.mc.java.gradle.Extension.getInternalClassPatterns;
-import static io.spine.tools.mc.java.gradle.Extension.getInternalMethodNames;
-import static io.spine.tools.mc.java.gradle.Extension.getMainDescriptorSetFile;
-import static io.spine.tools.mc.java.gradle.Extension.getGeneratedMainGrpcDir;
-import static io.spine.tools.mc.java.gradle.Extension.getGeneratedMainJavaDir;
-import static io.spine.tools.mc.java.gradle.Extension.getTestDescriptorSetFile;
-import static io.spine.tools.mc.java.gradle.Extension.getGeneratedTestGrpcDir;
-import static io.spine.tools.mc.java.gradle.Extension.getGeneratedTestJavaDir;
+import static io.spine.tools.mc.java.gradle.McJavaTaskName.annotateProto;
+import static io.spine.tools.mc.java.gradle.McJavaTaskName.annotateTestProto;
+import static io.spine.tools.mc.java.gradle.McJavaTaskName.mergeDescriptorSet;
+import static io.spine.tools.mc.java.gradle.McJavaTaskName.mergeTestDescriptorSet;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getCodeGenAnnotations;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getInternalClassPatterns;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getInternalMethodNames;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getMainDescriptorSetFile;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getGeneratedMainGrpcDir;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getGeneratedMainJavaDir;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getTestDescriptorSetFile;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getGeneratedTestGrpcDir;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getGeneratedTestJavaDir;
 
 /**
  * A plugin that annotates generated Java sources from {@code .proto} files.

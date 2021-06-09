@@ -37,8 +37,8 @@ import java.nio.file.Files;
 
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.gradle.JavaTaskName.compileTestJava;
-import static io.spine.tools.gradle.JavadocPrettifierTaskName.formatProtoDoc;
-import static io.spine.tools.gradle.JavadocPrettifierTaskName.formatTestProtoDoc;
+import static io.spine.tools.protodoc.JavadocPrettifierTaskName.formatProtoDoc;
+import static io.spine.tools.protodoc.JavadocPrettifierTaskName.formatTestProtoDoc;
 import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
 import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 import static io.spine.tools.protodoc.Extension.getAbsoluteMainGenProtoDir;

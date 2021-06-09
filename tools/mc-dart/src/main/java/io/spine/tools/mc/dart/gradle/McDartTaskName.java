@@ -24,19 +24,51 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle;
+package io.spine.tools.mc.dart.gradle;
 
 import io.spine.annotation.Internal;
+import io.spine.tools.gradle.TaskName;
 
 /**
- * Names of Gradle tasks defined by the Spine Protobuf JS plugin.
+ * Names of Gradle tasks defined by the Spine Protobuf Dart plugin.
  */
 @Internal
-public enum ProtoJsTaskName implements TaskName {
+public enum McDartTaskName implements TaskName {
 
     /**
-     * Generates JSON-parsing code for the JavaScript messages compiled from Protobuf in both
-     * {@code main} and {@code test} scopes.
+     * Creates the {@code types.dart} file which contains type mapping for all the production
+     * Protobuf types defined in this project.
+     *
+     * <p>Works only with the {@code main} scope types.
      */
-    generateJsonParsers
+    generateDartTypeRegistry,
+
+    /**
+     * Creates the {@code types.dart} file which contains type mapping for all the test Protobuf
+     * types defined in this project.
+     *
+     * <p>Works only with the {@code test} scope types.
+     */
+    generateDartTestTypeRegistry,
+
+    /**
+     * Copies the Dart code generated from Protobuf from its temporary location to the {@code lib}
+     * directory.
+     *
+     * <p>Works only with the {@code main} scope files.
+     */
+    copyGeneratedDart,
+
+    /**
+     * Copies the Dart code generated from Protobuf from its temporary location to the {@code test}
+     * directory.
+     *
+     * <p>Works only with the {@code test} scope files.
+     */
+    copyTestGeneratedDart,
+
+    /**
+     * Rewrites the Dart source files generated from Protobuf with the resolved absolute imports.
+     */
+    resolveImports
 }

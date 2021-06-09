@@ -47,7 +47,7 @@ import static java.util.Objects.requireNonNull;
  * DSL extension for configuring Protobuf-to-Dart compilation.
  */
 @SuppressWarnings("UnstableApiUsage") // Gradle `Property` API.
-public final class Extension extends GradleExtension {
+public final class McDartExtension extends GradleExtension {
 
     private static final String NAME = "protoDart";
 
@@ -98,7 +98,7 @@ public final class Extension extends GradleExtension {
 
     private final Project project;
 
-    Extension(Project project) {
+    McDartExtension(Project project) {
         super();
         this.project = project;
         ObjectFactory objects = project.getObjects();
@@ -126,9 +126,9 @@ public final class Extension extends GradleExtension {
     /**
      * Finds an extension of this type in the given project.
      */
-    static Extension findIn(Project project) {
-        Extension extension = project.getExtensions()
-                                     .getByType(Extension.class);
+    static McDartExtension findIn(Project project) {
+        McDartExtension extension = project.getExtensions()
+                                           .getByType(McDartExtension.class);
         return requireNonNull(extension);
     }
 
@@ -137,7 +137,7 @@ public final class Extension extends GradleExtension {
      */
     void register() {
         project.getExtensions()
-               .add(Extension.class, NAME, this);
+               .add(McDartExtension.class, NAME, this);
     }
 
     /**

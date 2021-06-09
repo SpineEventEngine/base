@@ -24,9 +24,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle;
+package io.spine.tools.mc.java.gradle;
 
 import io.spine.annotation.Internal;
+import io.spine.tools.gradle.TaskName;
 
 /**
  * Names of Gradle tasks defined by the Spine Model Verifier plugin.

@@ -48,8 +48,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static io.spine.tools.gradle.BaseTaskName.build;
-import static io.spine.tools.gradle.ProtoJsTaskName.generateJsonParsers;
-import static io.spine.tools.mc.js.gradle.Extension.extension;
+import static io.spine.tools.mc.js.gradle.McJsTaskName.generateJsonParsers;
+import static io.spine.tools.mc.js.gradle.McJsExtension.extension;
 
 /**
  * The Gradle plugin which performs additional code generation for Protobuf types.
@@ -69,7 +69,7 @@ import static io.spine.tools.mc.js.gradle.Extension.extension;
  * </ul>
  *
  * <p>The main plugin action may be retrieved and configured as necessary via the
- * {@linkplain Extension "protoJs" extension}. By default, the action is a dependency of the
+ * {@linkplain McJsExtension "protoJs" extension}. By default, the action is a dependency of the
  * {@linkplain BaseTaskName#build build} task.
  *
  * <p>This plugin currently relies on the set of the hard-coded Gradle settings which have to be
@@ -90,8 +90,8 @@ public class McJsPlugin extends ProtoPlugin {
     public void apply(Project project) {
         ProtocConfig configPlugin = new ProtocConfig();
         configPlugin.apply(project);
-        Extension extension = project.getExtensions()
-                                     .create(EXTENSION_NAME, Extension.class);
+        McJsExtension extension = project.getExtensions()
+                                     .create(EXTENSION_NAME, McJsExtension.class);
         Action<Task> action = newAction(project);
         GradleTask newTask = newTask(generateJsonParsers, action)
                 .insertBeforeTask(build)
@@ -123,23 +123,23 @@ public class McJsPlugin extends ProtoPlugin {
 
     @Override
     protected Supplier<File> mainDescriptorFile(Project project) {
-        return () -> Extension.getMainDescriptorSet(project);
+        return () -> McJsExtension.getMainDescriptorSet(project);
     }
 
     @Override
     protected Supplier<File> testDescriptorFile(Project project) {
-        return () -> Extension.getTestDescriptorSet(project);
+        return () -> McJsExtension.getTestDescriptorSet(project);
     }
 
     private void generateForMain(Project project) {
-        Directory generatedRoot = Extension.getMainGenProto(project);
+        Directory generatedRoot = McJsExtension.getMainGenProto(project);
         Supplier<FileSet> files = mainProtoFiles(project);
         ExternalModules modules = extension(project).modules();
         generateCode(generatedRoot, files, modules);
     }
 
     private void generateForTest(Project project) {
-        Directory generatedRoot = Extension.getTestGenProtoDir(project);
+        Directory generatedRoot = McJsExtension.getTestGenProtoDir(project);
         Supplier<FileSet> files = testProtoFiles(project);
         ExternalModules modules = extension(project).modules();
         generateCode(generatedRoot, files, modules);

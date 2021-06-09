@@ -30,16 +30,6 @@ import io.spine.annotation.Internal;
 
 /**
  * A name of a Gradle task.
- *
- * @see BaseTaskName
- * @see JavaTaskName
- * @see ProtobufTaskName
- * @see ModelCompilerTaskName
- * @see JavadocPrettifierTaskName
- * @see ModelVerifierTaskName
- * @see ProtoJsTaskName
- * @see ProtoDartTaskName
- * @see DynamicTaskName
  */
 @Internal
 public interface TaskName {

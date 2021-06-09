@@ -45,17 +45,17 @@ final class ProtocConfig extends ProtocConfigurationPlugin {
 
     @Override
     protected Path generatedFilesBaseDir(Project project) {
-        return Extension.findIn(project).generatedDirPath();
+        return McDartExtension.findIn(project).generatedDirPath();
     }
 
     @Override
     protected File getMainDescriptorSet(Project project) {
-        return Extension.findIn(project).mainDescriptorSetFile();
+        return McDartExtension.findIn(project).mainDescriptorSetFile();
     }
 
     @Override
     protected File getTestDescriptorSet(Project project) {
-        return Extension.findIn(project).testDescriptorSetFile();
+        return McDartExtension.findIn(project).testDescriptorSetFile();
     }
 
     @Override

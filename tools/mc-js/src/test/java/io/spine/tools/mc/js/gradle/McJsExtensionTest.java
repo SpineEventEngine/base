@@ -46,12 +46,12 @@ import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.code.proto.FileDescriptors.DESC_EXTENSION;
-import static io.spine.tools.mc.js.gradle.Extension.extension;
+import static io.spine.tools.mc.js.gradle.McJsExtension.extension;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Extension should")
-class ExtensionTest {
+class McJsExtensionTest {
 
     private static final String PLUGIN_ID = "io.spine.mc-js";
 
@@ -78,7 +78,7 @@ class ExtensionTest {
     @Test
     @DisplayName("return the default directory with main generated Protobufs")
     void defaultMainGenProto() {
-        Directory directory = Extension.getMainGenProto(project);
+        Directory directory = McJsExtension.getMainGenProto(project);
         Directory expected = defaultPaths.proto()
                                          .mainJs();
         assertThat(directory)
@@ -90,7 +90,7 @@ class ExtensionTest {
     void customMainGenProto() {
         String customPath = "proto/main";
         pluginExtension().mainGenProtoDir = customPath;
-        Directory directory = Extension.getMainGenProto(project);
+        Directory directory = McJsExtension.getMainGenProto(project);
         Directory expected = Directory.at(Paths.get(customPath));
         assertEquals(expected, directory);
     }
@@ -98,7 +98,7 @@ class ExtensionTest {
     @Test
     @DisplayName("return the default directory with test generated Protobufs")
     void defaultTestGenProto() {
-        Directory directory = Extension.getTestGenProtoDir(project);
+        Directory directory = McJsExtension.getTestGenProtoDir(project);
         Directory expected = defaultPaths.proto()
                                          .testJs();
         assertThat(directory)
@@ -110,7 +110,7 @@ class ExtensionTest {
     void customTestGenProto() {
         String customPath = "proto/test";
         pluginExtension().testGenProtoDir = customPath;
-        Directory directory = Extension.getTestGenProtoDir(project);
+        Directory directory = McJsExtension.getTestGenProtoDir(project);
         Directory expected = Directory.at(Paths.get(customPath));
         assertThat(directory)
                 .isEqualTo(expected);
@@ -119,7 +119,7 @@ class ExtensionTest {
     @Test
     @DisplayName("return the main descriptor set at the default path")
     void defaultMainDescriptorSet() {
-        File file = Extension.getMainDescriptorSet(project);
+        File file = McJsExtension.getMainDescriptorSet(project);
         Path mainDescriptors = defaultPaths.buildRoot()
                                            .descriptors()
                                            .mainDescriptors();
@@ -135,7 +135,7 @@ class ExtensionTest {
     void customMainDescriptorSet() {
         String customPath = "main/types.desc";
         pluginExtension().mainDescriptorSetPath = customPath;
-        File file = Extension.getMainDescriptorSet(project);
+        File file = McJsExtension.getMainDescriptorSet(project);
         File expected = new File(customPath);
         assertThat(file)
                 .isEqualTo(expected);
@@ -144,7 +144,7 @@ class ExtensionTest {
     @Test
     @DisplayName("return the test descriptor set at the default path")
     void defaultTestDescriptorSet() {
-        File file = Extension.getTestDescriptorSet(project);
+        File file = McJsExtension.getTestDescriptorSet(project);
         Path testDescriptors = defaultPaths.buildRoot()
                                            .descriptors()
                                            .testDescriptors();
@@ -160,7 +160,7 @@ class ExtensionTest {
     void customTestDescriptorSet() {
         String customPath = "test/types.desc";
         pluginExtension().testDescriptorSetPath = customPath;
-        File file = Extension.getTestDescriptorSet(project);
+        File file = McJsExtension.getTestDescriptorSet(project);
         File expected = new File(customPath);
         assertThat(file)
                 .isEqualTo(expected);
@@ -177,7 +177,7 @@ class ExtensionTest {
                 .contains(new ExternalModule(moduleName, emptyList()));
     }
 
-    private Extension pluginExtension() {
+    private McJsExtension pluginExtension() {
         return extension(project);
     }
 }
