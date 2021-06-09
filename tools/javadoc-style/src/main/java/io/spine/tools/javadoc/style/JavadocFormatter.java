@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protodoc;
+package io.spine.tools.javadoc.style;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.java.fs.FileName;
@@ -32,12 +32,13 @@ import io.spine.tools.java.fs.FileName;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.Files.delete;
+import static java.nio.file.Files.move;
 import static java.nio.file.Files.newBufferedReader;
 import static java.nio.file.Files.newBufferedWriter;
 
@@ -56,8 +57,12 @@ final class JavadocFormatter {
      */
     private final ImmutableList<FormattingAction> actions;
 
-    JavadocFormatter(ImmutableList<FormattingAction> actions) {
+    private JavadocFormatter(ImmutableList<FormattingAction> actions) {
         this.actions = actions;
+    }
+
+    JavadocFormatter(FormattingAction... actions) {
+        this(ImmutableList.copyOf(actions));
     }
 
     /**
@@ -65,18 +70,17 @@ final class JavadocFormatter {
      *
      * <p>If the file is not a {@code .java} source, does noting.
      *
-     * @param path the path to the file
+     * @param file the path to the file
      */
-    void format(Path path) throws IOException {
-        if (!FileName.isJava(path)) {
+    void format(Path file) throws IOException {
+        if (!FileName.isJava(file)) {
             return;
         }
 
-        Path folder = path.getParent();
-        Path tempPath = folder.resolve(TEMP_FILE_NAME);
-
-        try (BufferedReader reader = newBufferedReader(path, UTF_8);
-             BufferedWriter writer = newBufferedWriter(tempPath, UTF_8)) {
+        Path folder = file.getParent();
+        Path tempFile = folder.resolve(TEMP_FILE_NAME);
+        try (BufferedReader reader = newBufferedReader(file, UTF_8);
+             BufferedWriter writer = newBufferedWriter(tempFile, UTF_8)) {
 
             Optional<String> resultPart = getNextPart(reader);
             while (resultPart.isPresent()) {
@@ -86,8 +90,8 @@ final class JavadocFormatter {
             }
         }
 
-        Files.delete(path);
-        Files.move(tempPath, tempPath.resolveSibling(path));
+        delete(file);
+        move(tempFile, tempFile.resolveSibling(file));
     }
 
     /**

@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protodoc;
+package io.spine.tools.javadoc.style;
 
 import io.spine.testing.TempDir;
 import io.spine.tools.gradle.TaskName;
@@ -41,20 +41,20 @@ import java.io.IOException;
 
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.gradle.JavaTaskName.compileTestJava;
-import static io.spine.tools.protodoc.JavadocPrettifierTaskName.formatProtoDoc;
-import static io.spine.tools.protodoc.JavadocPrettifierTaskName.formatTestProtoDoc;
+import static io.spine.tools.javadoc.style.JavadocStyleTaskName.formatProtoDoc;
+import static io.spine.tools.javadoc.style.JavadocStyleTaskName.formatTestProtoDoc;
 import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
 import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 import static io.spine.tools.gradle.TaskDependencies.dependsOn;
-import static io.spine.tools.protodoc.BacktickFormatting.BACKTICK;
-import static io.spine.tools.protodoc.PreTagFormatting.CLOSING_PRE;
-import static io.spine.tools.protodoc.PreTagFormatting.OPENING_PRE;
-import static io.spine.tools.protodoc.TestHelper.formatAndAssert;
+import static io.spine.tools.javadoc.style.BacktickFormatting.BACKTICK;
+import static io.spine.tools.javadoc.style.PreTagFormatting.CLOSING_PRE;
+import static io.spine.tools.javadoc.style.PreTagFormatting.OPENING_PRE;
+import static io.spine.tools.javadoc.style.TestHelper.formatAndAssert;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("ProtoJavadocPlugin should")
-class ProtoJavadocPluginTest {
+class JavadocStylePluginTest {
 
     private static final String PLUGIN_ID = "io.spine.javadoc-style";
 
@@ -80,8 +80,8 @@ class ProtoJavadocPluginTest {
     @Test
     @DisplayName("have extension")
     void haveExtension() {
-        Extension extension = project.getExtensions()
-                                     .getByType(Extension.class);
+        JavadocStyleExtension extension = project.getExtensions()
+                                                 .getByType(JavadocStyleExtension.class);
         assertNotNull(extension);
     }
 

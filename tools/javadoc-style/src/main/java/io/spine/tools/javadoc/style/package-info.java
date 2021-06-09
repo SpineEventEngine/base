@@ -24,39 +24,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protodoc;
-
-import io.spine.logging.Logging;
-
-import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-
 /**
- * A {@code FileVisitor} for formatting files.
+ * This package provides the Gradle plugin for
+ * Javadocs formatting in generated Protobuf declarations.
  */
-final class FormattingFileVisitor extends SimpleFileVisitor<Path> implements Logging {
 
-    private final JavadocFormatter formatter;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.javadoc.style;
 
-    FormattingFileVisitor(JavadocFormatter formatter) {
-        super();
-        this.formatter = formatter;
-    }
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    @Override
-    public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
-        _debug().log("Performing formatting for the file: `%s`.", path);
-        formatter.format(path);
-        return FileVisitResult.CONTINUE;
-    }
-
-    @Override
-    public FileVisitResult visitFileFailed(Path file, IOException exc) {
-        _error().withCause(exc)
-                .log("Error walking down the file tree for file: `%s`.", file);
-        return FileVisitResult.TERMINATE;
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

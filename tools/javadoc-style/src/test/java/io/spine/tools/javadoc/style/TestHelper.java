@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protodoc;
+package io.spine.tools.javadoc.style;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
@@ -36,13 +36,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import static io.spine.tools.protodoc.JavadocPrettifierTaskName.formatProtoDoc;
+import static io.spine.tools.javadoc.style.JavadocStyleTaskName.formatProtoDoc;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * A helper class for the {@link ProtoJavadocPlugin} testing.
+ * A helper class for the {@link JavadocStylePlugin} testing.
  */
 final class TestHelper {
 

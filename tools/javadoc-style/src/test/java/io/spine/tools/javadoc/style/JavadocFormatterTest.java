@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protodoc;
+package io.spine.tools.javadoc.style;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
@@ -40,12 +40,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static io.spine.tools.protodoc.BacktickFormatting.wrapWithCodeTag;
+import static io.spine.tools.javadoc.style.BacktickFormatting.wrapWithCodeTag;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.Files.readAllLines;
+import static java.nio.file.Files.write;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("JavadocFormatter should")
+@DisplayName("`JavadocFormatter` should")
 class JavadocFormatterTest {
 
     private static final char BACKTICK = '`';
@@ -54,9 +56,9 @@ class JavadocFormatterTest {
     private static final String TEXT_IN_BACKTICKS = BACKTICK + TEXT + BACKTICK;
 
     private File folder;
-    private final FormattingAction formatting = new BacktickFormatting();
-    private final ImmutableList<FormattingAction> actions = ImmutableList.of(formatting);
-    private final JavadocFormatter backtickFormatter = new JavadocFormatter(actions);
+    private final JavadocFormatter backtickFormatter = new JavadocFormatter(
+            new BacktickFormatting()
+    );
 
     @BeforeEach
     void setUp(@TempDir Path tempDirPath) {
@@ -65,36 +67,36 @@ class JavadocFormatterTest {
 
     @Test
     @DisplayName("ignore files expect java")
-    void ignore_files_except_java() throws IOException {
+    void processOnlyJava() throws IOException {
         Path path = Paths.get("Non_existing_file.txt");
         backtickFormatter.format(path);
     }
 
     @Test
     @DisplayName("format Javadocs")
-    void format_Javadocs() throws Exception {
-        String javadoc = getJavadoc(TEXT_IN_BACKTICKS);
-        String expected = getJavadoc(TEXT_IN_CODE_TAG);
-        assertEquals(expected, getFormattingResult(javadoc));
+    void formatJavadocs() throws Exception {
+        String javadoc = wrapAsJavadoc(TEXT_IN_BACKTICKS);
+        String expected = wrapAsJavadoc(TEXT_IN_CODE_TAG);
+        assertEquals(expected, applyFormatting(javadoc));
     }
 
     @Test
     @DisplayName("not format non-Javadoc text")
-    void not_format_text_which_is_not_Javadoc() throws Exception {
-        assertEquals(TEXT_IN_BACKTICKS, getFormattingResult(TEXT_IN_BACKTICKS));
+    void notFormatNonJavadoc() throws Exception {
+        assertEquals(TEXT_IN_BACKTICKS, applyFormatting(TEXT_IN_BACKTICKS));
     }
 
-    private static String getJavadoc(String javadocText) {
+    private static String wrapAsJavadoc(String javadocText) {
         return "/** " + javadocText + " */";
     }
 
-    private String getFormattingResult(String content) throws IOException {
+    private String applyFormatting(String content) throws IOException {
         Path path = createJavaFile();
-        Files.write(path, ImmutableList.of(content));
+        write(path, ImmutableList.of(content));
 
         backtickFormatter.format(path);
 
-        List<String> lines = Files.readAllLines(path, UTF_8);
+        List<String> lines = readAllLines(path, UTF_8);
         return Joiner.on(lineSeparator())
                      .join(lines);
     }

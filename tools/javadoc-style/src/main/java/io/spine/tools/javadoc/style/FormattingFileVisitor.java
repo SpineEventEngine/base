@@ -24,38 +24,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protodoc;
+package io.spine.tools.javadoc.style;
 
-import com.google.common.base.Joiner;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import io.spine.logging.Logging;
 
-import java.util.Collections;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 
-import static java.lang.System.lineSeparator;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+/**
+ * A {@code FileVisitor} for formatting files.
+ */
+final class FormattingFileVisitor extends SimpleFileVisitor<Path> implements Logging {
 
-@DisplayName("LineFormatting should")
-class LineFormattingTest {
+    private final JavadocFormatter formatter;
 
-    private final FormattingAction formatting = new ALineFormatting();
-
-    @Test
-    @DisplayName("merge lines")
-    void merge_lines_correctly() {
-        String lineText = "a text in a single line";
-        int lineCount = 5;
-        Iterable<String> lines = Collections.nCopies(lineCount, lineText);
-        String linesAsString = Joiner.on(lineSeparator())
-                                     .join(lines);
-        assertEquals(linesAsString, formatting.execute(linesAsString));
+    FormattingFileVisitor(JavadocFormatter formatter) {
+        super();
+        this.formatter = formatter;
     }
 
-    private static class ALineFormatting extends LineFormatting {
+    @Override
+    public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
+        _debug().log("Performing formatting for the file: `%s`.", path);
+        formatter.format(path);
+        return FileVisitResult.CONTINUE;
+    }
 
-        @Override
-        String formatLine(String line) {
-            return line;
-        }
+    @Override
+    public FileVisitResult visitFileFailed(Path file, IOException exc) {
+        _error().withCause(exc)
+                .log("Error walking down the file tree for file: `%s`.", file);
+        return FileVisitResult.TERMINATE;
     }
 }

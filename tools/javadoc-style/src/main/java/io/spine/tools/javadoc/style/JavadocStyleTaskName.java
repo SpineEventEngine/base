@@ -24,15 +24,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.javadoc.style;
+
+import io.spine.annotation.Internal;
+import io.spine.tools.gradle.TaskName;
+
 /**
- * This package provides the Gradle plugin for
- * Javadocs formatting in generated Protobuf declarations.
+ * Names of Gradle tasks defined by the Javadoc Prettifier plugin.
  */
+@Internal
+public enum JavadocStyleTaskName implements TaskName {
 
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.protodoc;
+    /**
+     * Formats the Javadoc in sources generated from {@code .proto} files in the {@code main} scope.
+     */
+    formatProtoDoc,
 
-import com.google.errorprone.annotations.CheckReturnValue;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+    /**
+     * Formats the Javadoc in sources generated from {@code .proto} files in the {@code test} scope.
+     */
+    formatTestProtoDoc
+}

@@ -23,7 +23,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.protodoc;
+package io.spine.tools.javadoc.style;
+
+import com.google.common.annotations.VisibleForTesting;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,12 +37,15 @@ import static java.util.regex.Pattern.compile;
  * A formatting action, which handles {@code <pre>} tags.
  *
  * <p>The action removes the tags inserted by the Protobuf compiler,
- * i.e. the first opening tag and the last closing tag.
+ * i.e., the first opening tag and the last closing tag.
  */
 class PreTagFormatting implements FormattingAction {
 
-    static final String CLOSING_PRE = "</pre>";
+    @VisibleForTesting
     static final String OPENING_PRE = "<pre>";
+    @VisibleForTesting
+    static final String CLOSING_PRE = "</pre>";
+
     private static final Pattern PATTERN_OPENING_PRE = compile(OPENING_PRE);
     private static final Pattern NOT_FORMATTED_DOC_PATTERN =
             compile("^/\\*\\*[\\s*]*<pre>.*</pre>[\\s*]+.*[\\s*]*\\*/$", DOTALL);
@@ -56,7 +61,6 @@ class PreTagFormatting implements FormattingAction {
         if (!shouldFormat(javadoc)) {
             return javadoc;
         }
-
         Matcher matcher = PATTERN_OPENING_PRE.matcher(javadoc);
         String withoutOpeningPre = matcher.replaceFirst("");
         return removeLastClosingPre(withoutOpeningPre);

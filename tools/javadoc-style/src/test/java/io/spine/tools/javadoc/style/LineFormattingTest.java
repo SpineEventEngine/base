@@ -24,20 +24,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protodoc;
+package io.spine.tools.javadoc.style;
 
-/**
- * A formatting action, that formats a {@code String}.
- */
-interface FormattingAction {
+import com.google.common.base.Joiner;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-    /**
-     * Obtains the formatted representation of the specified text.
-     *
-     * <p>The specified text may contain line separators.
-     *
-     * @param text the text to format
-     * @return the formatted text
-     */
-    String execute(String text);
+import java.util.Collections;
+
+import static java.lang.System.lineSeparator;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@DisplayName("LineFormatting should")
+class LineFormattingTest {
+
+    private final FormattingAction formatting = new ALineFormatting();
+
+    @Test
+    @DisplayName("merge lines")
+    void merge_lines_correctly() {
+        String lineText = "a text in a single line";
+        int lineCount = 5;
+        Iterable<String> lines = Collections.nCopies(lineCount, lineText);
+        String linesAsString = Joiner.on(lineSeparator())
+                                     .join(lines);
+        assertEquals(linesAsString, formatting.execute(linesAsString));
+    }
+
+    private static class ALineFormatting extends LineFormatting {
+
+        @Override
+        String formatLine(String line) {
+            return line;
+        }
+    }
 }

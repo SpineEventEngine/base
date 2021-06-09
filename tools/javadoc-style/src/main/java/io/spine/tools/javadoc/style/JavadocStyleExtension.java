@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protodoc;
+package io.spine.tools.javadoc.style;
 
 import io.spine.logging.Logging;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -32,14 +32,14 @@ import org.gradle.api.Project;
 
 import java.io.File;
 
-import static io.spine.tools.protodoc.ProtoJavadocPlugin.PROTO_JAVADOC_EXTENSION_NAME;
+import static io.spine.tools.javadoc.style.JavadocStylePlugin.PROTO_JAVADOC_EXTENSION_NAME;
 import static java.lang.String.format;
 
 /**
- * The extension for {@link ProtoJavadocPlugin}.
+ * The extension for {@link JavadocStylePlugin}.
  */
 @SuppressWarnings("unused") // Implicitly used during a Gradle build.
-public class Extension implements Logging {
+public class JavadocStyleExtension implements Logging {
 
     /**
      * The path to the main Java sources directory, generated basing on Protobuf definitions.
@@ -101,8 +101,8 @@ public class Extension implements Logging {
                       .getAbsolutePath();
     }
 
-    private static Extension getExtension(Project project) {
-        return (Extension) project.getExtensions()
-                                  .getByName(PROTO_JAVADOC_EXTENSION_NAME);
+    private static JavadocStyleExtension getExtension(Project project) {
+        return (JavadocStyleExtension) project.getExtensions()
+                                              .getByName(PROTO_JAVADOC_EXTENSION_NAME);
     }
 }
