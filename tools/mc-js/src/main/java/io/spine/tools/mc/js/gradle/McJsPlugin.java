@@ -84,14 +84,11 @@ import static io.spine.tools.mc.js.gradle.McJsExtension.extension;
  */
 public class McJsPlugin extends ProtoPlugin {
 
-    private static final String EXTENSION_NAME = "protoJs";
-
     @Override
     public void apply(Project project) {
         ProtocConfig configPlugin = new ProtocConfig();
         configPlugin.apply(project);
-        McJsExtension extension = project.getExtensions()
-                                     .create(EXTENSION_NAME, McJsExtension.class);
+        McJsExtension extension = McJsExtension.createIn(project);
         Action<Task> action = newAction(project);
         GradleTask newTask = newTask(generateJsonParsers, action)
                 .insertBeforeTask(build)
@@ -164,6 +161,6 @@ public class McJsPlugin extends ProtoPlugin {
      * Obtains the extension name of the plugin.
      */
     static String extensionName() {
-        return EXTENSION_NAME;
+        return McJsExtension.NAME;
     }
 }

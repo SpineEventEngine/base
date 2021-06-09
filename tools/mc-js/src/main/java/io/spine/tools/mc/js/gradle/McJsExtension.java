@@ -55,6 +55,11 @@ import static io.spine.tools.mc.js.gradle.McJsPlugin.extensionName;
 public class McJsExtension extends GradleExtension {
 
     /**
+     * The name of the extension as it appears in a Gradle script.
+     */
+    static final String NAME = "protoJs";
+
+    /**
      * The absolute path to the main Protobuf descriptor set file.
      */
     public String mainDescriptorSetPath;
@@ -103,7 +108,18 @@ public class McJsExtension extends GradleExtension {
      * }</pre>
      */
     public Map<String, List<String>> modules = newHashMap();
+
     private Task generateParsersTask;
+
+    /**
+     * Creates the extension in the given project.
+     */
+    static McJsExtension createIn(Project project) {
+        McJsExtension extension =
+                project.getExtensions()
+                        .create(NAME, McJsExtension.class);
+        return extension;
+    }
 
     public static Directory getMainGenProto(Project project) {
         McJsExtension extension = extension(project);
