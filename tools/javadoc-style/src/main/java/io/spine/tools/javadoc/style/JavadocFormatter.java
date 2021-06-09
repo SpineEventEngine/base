@@ -28,12 +28,12 @@ package io.spine.tools.javadoc.style;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.java.fs.FileName;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Optional;
 
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -52,17 +52,14 @@ final class JavadocFormatter {
 
     private static final String TEMP_FILE_NAME = "temp_file_for_formatting.java";
 
-    /**
-     * The formatting actions to perform.
-     */
+    /** Formatting actions to perform. */
     private final ImmutableList<FormattingAction> actions;
 
-    private JavadocFormatter(ImmutableList<FormattingAction> actions) {
-        this.actions = actions;
-    }
-
+    /**
+     * Creates an instance with the passed formatting actions.
+     */
     JavadocFormatter(FormattingAction... actions) {
-        this(ImmutableList.copyOf(actions));
+        this.actions = ImmutableList.copyOf(actions);
     }
 
     /**
@@ -76,22 +73,29 @@ final class JavadocFormatter {
         if (!FileName.isJava(file)) {
             return;
         }
+        Path tempFile = formatIntoTempFileFrom(file);
+        delete(file);
+        // Rename temp. file after the passed file.
+        move(tempFile, tempFile.resolveSibling(file));
+    }
 
+    /**
+     * Formats the content of the passed file, creating a temp file returned by this method.
+     */
+    private Path formatIntoTempFileFrom(Path file) throws IOException {
         Path folder = file.getParent();
         Path tempFile = folder.resolve(TEMP_FILE_NAME);
         try (BufferedReader reader = newBufferedReader(file, UTF_8);
              BufferedWriter writer = newBufferedWriter(tempFile, UTF_8)) {
 
-            Optional<String> resultPart = getNextPart(reader);
-            while (resultPart.isPresent()) {
-                writer.write(resultPart.get());
+            @Nullable String part = readNextPart(reader);
+            while (part != null) {
+                writer.write(part);
                 writer.newLine();
-                resultPart = getNextPart(reader);
+                part = readNextPart(reader);
             }
         }
-
-        delete(file);
-        move(tempFile, tempFile.resolveSibling(file));
+        return tempFile;
     }
 
     /**
@@ -104,55 +108,59 @@ final class JavadocFormatter {
      *         or {@code Optional.empty()} if if the end of the stream has been reached
      * @throws IOException if an I/O error occurred during reading
      */
-    private Optional<String> getNextPart(BufferedReader reader) throws IOException {
+    private @Nullable String readNextPart(BufferedReader reader) throws IOException {
         String firstLine = reader.readLine();
         if (firstLine == null) {
-            return Optional.empty();
+            return null;
         }
-
         if (!isJavadocBeginning(firstLine)) {
-            return Optional.of(firstLine);
+            return firstLine;
         }
-
-        String javadoc = getJavadoc(firstLine, reader);
-        String formattedJavadoc = formatText(javadoc);
-        return Optional.of(formattedJavadoc);
+        String javadoc = readJavadoc(firstLine, reader);
+        String formattedJavadoc = applyActions(javadoc);
+        return formattedJavadoc;
     }
 
-    private static String getJavadoc(String firstLine,
-                                     BufferedReader reader) throws IOException {
+    /**
+     * Reads the Javadoc block from the passed reader.
+     *
+     * @param firstLine
+     *          the first line of the Javadoc, already obtained from the reader
+     * @param reader
+     *          the reader with the continuation of the Javadoc text
+     * @return the Javadoc text
+     * @throws IOException
+     *          if the passed reader fails during the reading operations
+     */
+    private static String readJavadoc(String firstLine, BufferedReader reader)
+            throws IOException {
         StringBuilder javadoc = new StringBuilder();
-
         String currentLine = firstLine;
         while (!containsJavadocEnding(currentLine)) {
             javadoc.append(currentLine)
                    .append(lineSeparator());
             currentLine = reader.readLine();
         }
-        return javadoc.append(currentLine)
-                      .toString();
+        javadoc.append(currentLine);
+        return javadoc.toString();
+    }
+
+    private static boolean isJavadocBeginning(String line) {
+        return line.contains("/**");
+    }
+
+    private static boolean containsJavadocEnding(String line) {
+        return line.contains("*/");
     }
 
     /**
-     * Obtains formatted representation of the specified text.
-     *
-     * @param text the text to format
-     * @return the formatted representation
+     * Applies formatting actions to the passed Javadoc text.
      */
-    private String formatText(String text) {
+    private String applyActions(String text) {
         String currentState = text;
         for (FormattingAction formatting : actions) {
             currentState = formatting.execute(currentState);
         }
         return currentState;
-    }
-
-    private static boolean isJavadocBeginning(String line) {
-        return line.trim()
-                   .contains("/**");
-    }
-
-    private static boolean containsJavadocEnding(String line) {
-        return line.contains("*/");
     }
 }
