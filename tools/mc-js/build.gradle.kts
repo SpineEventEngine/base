@@ -27,8 +27,7 @@
 group = "io.spine.tools"
 
 dependencies {
-    implementation(project(":base"))
-    implementation(project(":plugin-base"))
+    api(project(":plugin-base"))
     testImplementation(project(":testlib"))
     testImplementation(project(":plugin-testlib"))
     testImplementation(gradleTestKit())
