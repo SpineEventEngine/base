@@ -34,7 +34,7 @@ import io.spine.code.java.ClassName;
  *
  * @see Interfaces#mark(EntityState, ClassName)
  */
-final class EntityState extends MessageSelector {
+public final class EntityState extends MessageSelector {
 
     EntityState() {
         super();
