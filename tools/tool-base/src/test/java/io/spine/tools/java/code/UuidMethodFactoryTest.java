@@ -66,7 +66,7 @@ final class UuidMethodFactoryTest {
                                        " * Creates a new instance with a random UUID value.\n" +
                                        " * @see java.util.UUID#randomUUID\n" +
                                        " */\n" +
-                                       "public static final io.spine.test.code.generate.uuid.IsUuidMessage generate() {\n" +
+                                       "public static final io.spine.test.code.generate.uuid.UuidMessage generate() {\n" +
                                        "  return newBuilder().setUuid(java.util.UUID.randomUUID().toString()).build();\n" +
                                        "}\n");
         }
@@ -82,7 +82,7 @@ final class UuidMethodFactoryTest {
                                        " * Creates a new instance from the passed value.\n" +
                                        " * @throws java.lang.IllegalArgumentException if the passed value is not a valid UUID string\n" +
                                        " */\n" +
-                                       "public static final io.spine.test.code.generate.uuid.IsUuidMessage of(java.lang.String uuid) {\n" +
+                                       "public static final io.spine.test.code.generate.uuid.UuidMessage of(java.lang.String uuid) {\n" +
                                        "  io.spine.util.Preconditions2.checkNotEmptyOrBlank(uuid);\n" +
                                        "  try {\n" +
                                        "    java.util.UUID.fromString(uuid);\n" +
