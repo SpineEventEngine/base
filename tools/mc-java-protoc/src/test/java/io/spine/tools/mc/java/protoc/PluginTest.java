@@ -38,11 +38,11 @@ import io.spine.tools.mc.java.protoc.given.TestInterface;
 import io.spine.tools.mc.java.protoc.given.TestMethodFactory;
 import io.spine.tools.mc.java.protoc.given.TestNestedClassFactory;
 import io.spine.tools.mc.java.protoc.given.UuidMethodFactory;
+import io.spine.tools.protoc.ByPattern;
 import io.spine.tools.protoc.Interfaces;
 import io.spine.tools.protoc.MessageSelectorFactory;
 import io.spine.tools.protoc.Methods;
 import io.spine.tools.protoc.NestedClasses;
-import io.spine.tools.protoc.PatternSelector;
 import io.spine.tools.protoc.plugin.EnhancedWithCodeGeneration;
 import io.spine.tools.protoc.plugin.TestGeneratorsProto;
 import io.spine.tools.protoc.plugin.method.TestMethodProtos;
@@ -93,7 +93,7 @@ final class PluginTest {
     void processSuffixPatterns() {
         Interfaces interfaces = new Interfaces();
         MessageSelectorFactory messages = interfaces.messages();
-        PatternSelector suffixSelector = messages.inFiles(suffix(TEST_PROTO_SUFFIX));
+        ByPattern suffixSelector = messages.inFiles(suffix(TEST_PROTO_SUFFIX));
         interfaces.mark(suffixSelector, ClassName.of(TestInterface.class));
         Methods methods = new Methods();
         methods.applyFactory(TestMethodFactory.class.getName(), suffixSelector);
@@ -135,7 +135,7 @@ final class PluginTest {
     void processPrefixPatterns() {
         Interfaces interfaces = new Interfaces();
         MessageSelectorFactory messages = interfaces.messages();
-        PatternSelector prefixSelector = messages.inFiles(prefix(TEST_PROTO_PREFIX));
+        ByPattern prefixSelector = messages.inFiles(prefix(TEST_PROTO_PREFIX));
         interfaces.mark(prefixSelector, ClassName.of(TestInterface.class));
         Methods methods = new Methods();
         methods.applyFactory(TestMethodFactory.class.getName(), prefixSelector);
@@ -158,7 +158,7 @@ final class PluginTest {
     void processRegexPatterns() {
         Interfaces interfaces = new Interfaces();
         MessageSelectorFactory messages = interfaces.messages();
-        PatternSelector regexSelector = messages.inFiles(regex(TEST_PROTO_REGEX));
+        ByPattern regexSelector = messages.inFiles(regex(TEST_PROTO_REGEX));
         interfaces.mark(regexSelector, ClassName.of(TestInterface.class));
         Methods methods = new Methods();
         methods.applyFactory(TestMethodFactory.class.getName(), regexSelector);
@@ -258,9 +258,9 @@ final class PluginTest {
         );
         ImmutableList<String> possibleInsertions = ImmutableList.of(
                 TestMethodFactory.TEST_METHOD.toString()
-                        + TestNestedClassFactory.NESTED_CLASS.toString(),
+                        + TestNestedClassFactory.NESTED_CLASS,
                 TestNestedClassFactory.NESTED_CLASS.toString()
-                        + TestMethodFactory.TEST_METHOD.toString()
+                        + TestMethodFactory.TEST_METHOD
         );
         assertThat(fileContents).containsAnyIn(possibleInsertions);
     }

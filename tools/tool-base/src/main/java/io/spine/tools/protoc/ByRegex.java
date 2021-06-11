@@ -29,16 +29,16 @@ package io.spine.tools.protoc;
 import org.checkerframework.checker.regex.qual.Regex;
 
 /**
- * A selector of proto files whose names start with a certain prefix.
+ * A selector of proto files whose names qualify the supplied regex.
  */
-public final class PrefixSelector extends PatternSelector {
+public final class ByRegex extends ByPattern {
 
-    PrefixSelector(@Regex String prefix) {
-        super(prefix);
+    ByRegex(@Regex String regex) {
+        super(regex);
     }
 
     @Override
     FilePattern toProto() {
-        return FilePatterns.filePrefix(getPattern());
+        return FilePatterns.fileRegex(getPattern());
     }
 }

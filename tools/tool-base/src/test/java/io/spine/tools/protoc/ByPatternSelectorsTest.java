@@ -26,18 +26,30 @@
 
 package io.spine.tools.protoc;
 
-import org.junit.jupiter.api.Assertions;
+import com.google.common.truth.Subject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("PrefixPattern should")
-final class PrefixPatternTest {
+import static com.google.common.truth.Truth.assertThat;
 
-    @DisplayName("translate itself to Protobuf counterpart")
+@DisplayName("`ByPattern` implementations should")
+final class ByPatternSelectorsTest {
+
     @Test
-    void convertToProtobufCounterpart() {
-        String prefix = "io/spine/test_";
-        FilePattern pattern = new PrefixSelector(prefix).toProto();
-        Assertions.assertEquals(prefix, pattern.getPrefix());
+    @DisplayName("be different from each other")
+    void implementationsDiffer() {
+        String pattern = "testPattern";
+
+        Subject prefix = assertThat(new WithPrefix(pattern));
+        prefix.isNotEqualTo(new WithSuffix(pattern));
+        prefix.isNotEqualTo(new ByRegex(pattern));
+
+        Subject suffix = assertThat(new WithSuffix(pattern));
+        suffix.isNotEqualTo(new WithPrefix(pattern));
+        suffix.isNotEqualTo(new ByRegex(pattern));
+
+        Subject regex = assertThat(new ByRegex(pattern));
+        regex.isNotEqualTo(new WithSuffix(pattern));
+        regex.isNotEqualTo(new WithPrefix(pattern));
     }
 }

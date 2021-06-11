@@ -49,7 +49,7 @@ import static io.spine.tools.protoc.ProtocTaskConfigs.byPatternConfig;
  */
 abstract class ModelCompilerConfiguration<C extends Message> {
 
-    private final Map<PatternSelector, ClassName> patterns;
+    private final Map<ByPattern, ClassName> patterns;
 
     ModelCompilerConfiguration() {
         this.patterns = Maps.newConcurrentMap();
@@ -69,27 +69,27 @@ abstract class ModelCompilerConfiguration<C extends Message> {
     public abstract C asProtocConfig();
 
     /**
-     * Adds a new {@link PatternSelector} configuration with a supplied {@link ClassName}.
+     * Adds a new {@link ByPattern} configuration with a supplied {@link ClassName}.
      *
      * <p>The {@code className} can represent a fully-qualified name of an interface, method
      * factory, nested class factory or field type.
      */
-    void addPattern(PatternSelector pattern, ClassName className) {
+    void addPattern(ByPattern pattern, ClassName className) {
         patterns.put(pattern, className);
     }
 
     /**
      * Obtains current unique pattern configurations.
      */
-    ImmutableSet<Map.Entry<PatternSelector, ClassName>> patternConfigurations() {
+    ImmutableSet<Map.Entry<ByPattern, ClassName>> patternConfigurations() {
         return ImmutableSet.copyOf(patterns.entrySet());
     }
 
     /**
-     * Converts {@link PatternSelector} — {@link ClassName} pair to {@link ConfigByPattern}.
+     * Converts {@link ByPattern} — {@link ClassName} pair to {@link ConfigByPattern}.
      */
-    static ConfigByPattern toPatternConfig(Map.Entry<PatternSelector, ClassName> e) {
-        PatternSelector patternSelector = e.getKey();
+    static ConfigByPattern toPatternConfig(Map.Entry<ByPattern, ClassName> e) {
+        ByPattern patternSelector = e.getKey();
         ClassName className = e.getValue();
         return byPatternConfig(patternSelector.toProto(), className);
     }

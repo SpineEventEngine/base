@@ -36,7 +36,7 @@ package io.spine.tools.protoc;
  * <pre>
  *     mark messages().uuid(), asType("my.custom.Identifier")
  * </pre>
- * where {@code messages().uuid()} is a {@linkplain UuidMessage selector} for the UUID messages
+ * where {@code messages().uuid()} is a {@linkplain IsUuidMessage selector} for the UUID messages
  * configuration and the rest of the expression are the additional params provided for the
  * configuration.
  */

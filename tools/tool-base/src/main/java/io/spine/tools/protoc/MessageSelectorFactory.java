@@ -32,21 +32,26 @@ import com.google.common.collect.Maps;
 import io.spine.code.proto.FileName;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * Creates {@link MessageSelector} selectors.
+ * Creates {@linkplain MessageSelector message selectors}.
  */
 public final class MessageSelectorFactory {
 
-    @VisibleForTesting static final String PREFIX = "prefix";
-    @VisibleForTesting static final String SUFFIX = "suffix";
-    @VisibleForTesting static final String REGEX = "regex";
+    @VisibleForTesting
+    static final String PREFIX = "prefix";
+    @VisibleForTesting
+    static final String SUFFIX = "suffix";
+    @VisibleForTesting
+    static final String REGEX = "regex";
 
     static final MessageSelectorFactory INSTANCE = new MessageSelectorFactory();
 
@@ -55,42 +60,42 @@ public final class MessageSelectorFactory {
     }
 
     /**
-     * Creates a new {@link UuidMessage} selector.
+     * Creates a new {@code IsUuidMessage} selector.
      */
-    public UuidMessage uuid() {
-        return new UuidMessage();
+    public IsUuidMessage uuid() {
+        return new IsUuidMessage();
     }
 
     /**
-     * Creates a new {@link EntityState} selector.
+     * Creates a new {@code IsEntityState} selector.
      */
-    public EntityState entityState() {
-        return new EntityState();
+    public IsEntityState entityState() {
+        return new IsEntityState();
     }
 
     /**
-     * Creates a {@link PatternSelector} out of the supplied configuration.
+     * Creates a {@code ByPattern} out of the supplied configuration.
      *
      * <p>The supported configuration parameters are:
      * <ul>
-     *     <li>{@code suffix} — for the {@link SuffixSelector};
-     *     <li>{@code prefix} — for the {@link PrefixSelector};
-     *     <li>{@code regex} — for the {@link RegexSelector}.
+     *     <li>{@code suffix} — for the {@link WithSuffix};
+     *     <li>{@code prefix} — for the {@link WithPrefix};
+     *     <li>{@code regex} — for the {@link ByRegex}.
      * </ul>
      */
-    public PatternSelector inFiles(Map<String, String> conf) {
+    public ByPattern inFiles(Map<String, String> conf) {
         checkNotNull(conf);
         Parser parser = new Parser();
         return parser.fileSelector(conf);
     }
 
     /**
-     * Creates a {@link SuffixSelector} selector that matches {@code all} Protobuf files.
+     * Creates a {@code WithSuffix} selector that matches {@code all} Protobuf files.
      *
      * <p>It is expected that a Protobuf file ends with {@link FileName#EXTENSION .proto} extension.
      */
-    public PatternSelector all() {
-        SuffixSelector result = new SuffixSelector(FileName.EXTENSION);
+    public ByPattern all() {
+        WithSuffix result = new WithSuffix(FileName.EXTENSION);
         return result;
     }
 
@@ -98,21 +103,24 @@ public final class MessageSelectorFactory {
      * Creates {@code inFiles} {@code prefix} configuration.
      */
     public static ImmutableMap<String, String> prefix(String prefix) {
-        return ImmutableMap.of(PREFIX, checkNotNull(prefix));
+        checkNotEmptyOrBlank(prefix);
+        return ImmutableMap.of(PREFIX, prefix);
     }
 
     /**
      * Creates {@code inFiles} {@code suffix} configuration.
      */
     public static ImmutableMap<String, String> suffix(String suffix) {
-        return ImmutableMap.of(SUFFIX, checkNotNull(suffix));
+        checkNotEmptyOrBlank(suffix);
+        return ImmutableMap.of(SUFFIX, suffix);
     }
 
     /**
      * Creates {@code inFiles} {@code regex} configuration.
      */
     public static ImmutableMap<String, String> regex(String regex) {
-        return ImmutableMap.of(REGEX, checkNotNull(regex));
+        checkNotEmptyOrBlank(regex);
+        return ImmutableMap.of(REGEX, regex);
     }
 
     /**
@@ -120,30 +128,32 @@ public final class MessageSelectorFactory {
      */
     private static class Parser {
 
-        private final Map<String, Function<String, PatternSelector>> configurations;
+        private final Map<String, Function<String, ByPattern>> configurations;
 
         private Parser() {
             configurations = Maps.newConcurrentMap();
-            configurations.put(SUFFIX, SuffixSelector::new);
-            configurations.put(PREFIX, PrefixSelector::new);
-            configurations.put(REGEX, RegexSelector::new);
+            configurations.put(SUFFIX, WithSuffix::new);
+            configurations.put(PREFIX, WithPrefix::new);
+            configurations.put(REGEX, ByRegex::new);
         }
 
-        private PatternSelector fileSelector(Map<String, String> conf) {
-            checkArgument(conf.size() == 1,
-                          "File selector should have a single value, but had: '%s'",
-                          conf);
-            for (Map.Entry<String, Function<String, PatternSelector>> configEntry :
-                    configurations.entrySet()) {
-                String filePattern = conf.get(configEntry.getKey());
+        private ByPattern fileSelector(Map<String, String> conf) {
+            checkArgument(
+                    conf.size() == 1,
+                    "File selector should have a single value, but had: '%s'",
+                    conf
+            );
+            Set<String> filePatterns = configurations.keySet();
+            for (String filePattern : filePatterns) {
                 if (!isNullOrEmpty(filePattern)) {
-                    return configEntry.getValue()
-                                      .apply(filePattern);
+                    Function<String, ByPattern> factory = configurations.get(filePattern);
+                    return factory.apply(filePattern);
                 }
             }
             throw newIllegalArgumentException(
                     "Unsupported parameter `%s` supplied. Supported parameters are: `%s`.",
-                    conf, configurations.keySet());
+                    conf, filePatterns
+            );
         }
     }
 }

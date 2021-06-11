@@ -26,17 +26,19 @@
 
 package io.spine.tools.protoc;
 
-import io.spine.code.java.ClassName;
+import org.checkerframework.checker.regex.qual.Regex;
 
 /**
- * A selector which signalizes that the configuration should be applied to all messages that
- * represent an entity state.
- *
- * @see Interfaces#mark(EntityState, ClassName)
+ * A selector of proto files whose names start with a certain prefix.
  */
-public final class EntityState extends MessageSelector {
+public final class WithPrefix extends ByPattern {
 
-    EntityState() {
-        super();
+    WithPrefix(@Regex String prefix) {
+        super(prefix);
+    }
+
+    @Override
+    FilePattern toProto() {
+        return FilePatterns.filePrefix(getPattern());
     }
 }

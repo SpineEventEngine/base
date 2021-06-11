@@ -27,9 +27,10 @@
 package io.spine.tools.protoc;
 
 /**
- * An abstract base for selectors targeting {@link com.google.protobuf.Message messages}.
+ * An abstract base for selectors targeting {@linkplain com.google.protobuf.Message messages}.
  */
-class MessageSelector implements Selector {
+@SuppressWarnings("AbstractClassWithoutAbstractMethods") // is abstract by design
+abstract class MessageSelector implements Selector {
 
     private boolean enabled = true;
 

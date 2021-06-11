@@ -26,18 +26,20 @@
 
 package io.spine.tools.protoc;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("RegexPattern should")
+import static com.google.common.truth.Truth.assertThat;
+
+@DisplayName("`ByRegex` pattern should")
 final class RegexPatternTest {
 
-    @DisplayName("translate itself to Protobuf counterpart")
     @Test
+    @DisplayName("translate itself to Protobuf counterpart")
     void convertToProtobufCounterpart() {
         String regex = ".*/spine/.*";
-        FilePattern pattern = new RegexSelector(regex).toProto();
-        Assertions.assertEquals(regex, pattern.getRegex());
+        FilePattern pattern = new ByRegex(regex).toProto();
+        assertThat(pattern.getRegex())
+                .isEqualTo(regex);
     }
 }

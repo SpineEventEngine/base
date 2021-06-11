@@ -26,18 +26,17 @@
 
 package io.spine.tools.protoc;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import io.spine.code.java.ClassName;
 
-@DisplayName("SuffixPattern should")
-final class SuffixPatternTest {
+/**
+ * A selector which signalizes that the configuration should be applied to all messages that
+ * represent an entity state.
+ *
+ * @see Interfaces#mark(IsEntityState, ClassName)
+ */
+public final class IsEntityState extends MessageSelector {
 
-    @DisplayName("translate itself to Protobuf counterpart")
-    @Test
-    void convertToProtobufCounterpart() {
-        String suffix = "test.proto";
-        FilePattern pattern = new SuffixSelector(suffix).toProto();
-        Assertions.assertEquals(suffix, pattern.getSuffix());
+    IsEntityState() {
+        super();
     }
 }

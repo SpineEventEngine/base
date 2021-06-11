@@ -49,7 +49,7 @@ import static io.spine.tools.protoc.ProtocTaskConfigs.uuidConfig;
  * }
  * </pre>
  *
- * @see #mark(PatternSelector, ClassName)
+ * @see #mark(ByPattern, ClassName)
  */
 public final class Interfaces extends ModelCompilerConfiguration<AddInterfaces> {
 
@@ -104,7 +104,7 @@ public final class Interfaces extends ModelCompilerConfiguration<AddInterfaces> 
      * {@link EventMessage io.spine.base.EventMessage} and thus it is safe to mark all events with
      * this interface instead of the default one.
      */
-    public final void mark(PatternSelector selector, ClassName interfaceName) {
+    public final void mark(ByPattern selector, ClassName interfaceName) {
         checkNotNull(selector);
         checkNotNull(interfaceName);
         addPattern(selector, interfaceName);
@@ -114,7 +114,7 @@ public final class Interfaces extends ModelCompilerConfiguration<AddInterfaces> 
      * Configures an interface generation for messages with a single {@code string} field called
      * {@code uuid}.
      *
-     * <p>This method functions similarly to the {@link #mark(PatternSelector, ClassName)} except
+     * <p>This method functions similarly to the {@link #mark(ByPattern, ClassName)} except
      * for several differences:
      * <ul>
      *     <li>the file in which the message type is defined does not matter;
@@ -126,7 +126,7 @@ public final class Interfaces extends ModelCompilerConfiguration<AddInterfaces> 
      * mark messages().uuid(), asType("my.custom.Identifier")
      * </pre>
      */
-    public final void mark(UuidMessage uuidMessage, ClassName interfaceName) {
+    public final void mark(IsUuidMessage uuidMessage, ClassName interfaceName) {
         checkNotNull(uuidMessage);
         uuidInterface = uuidConfig(interfaceName);
     }
@@ -139,14 +139,14 @@ public final class Interfaces extends ModelCompilerConfiguration<AddInterfaces> 
      *
      * <p>Sample usage is as follows:
      * <pre>
-     * mark messages().entityState(), asType("my.custom.EntityState")
+     * mark messages().entityState(), asType("my.custom.IsEntityState")
      * </pre>
      *
      * <p>Note that it is required for the provided interface to extend the
      * {@link io.spine.base.EntityState} interface, otherwise the inner Spine routines will work
      * incorrectly.
      */
-    public final void mark(EntityState entityState, ClassName interfaceName) {
+    public final void mark(IsEntityState entityState, ClassName interfaceName) {
         checkNotNull(entityState);
         entityStateInterface = entityStateConfig(interfaceName);
     }
