@@ -143,16 +143,17 @@ public final class MessageSelectorFactory {
                     "File selector should have a single value, but had: '%s'",
                     conf
             );
-            Set<String> filePatterns = configurations.keySet();
-            for (String filePattern : filePatterns) {
+            Set<String> patternTypes = configurations.keySet();
+            for (String patternType : patternTypes) {
+                String filePattern = conf.get(patternType);
                 if (!isNullOrEmpty(filePattern)) {
-                    Function<String, ByPattern> factory = configurations.get(filePattern);
+                    Function<String, ByPattern> factory = configurations.get(patternType);
                     return factory.apply(filePattern);
                 }
             }
             throw newIllegalArgumentException(
                     "Unsupported parameter `%s` supplied. Supported parameters are: `%s`.",
-                    conf, filePatterns
+                    conf, patternTypes
             );
         }
     }

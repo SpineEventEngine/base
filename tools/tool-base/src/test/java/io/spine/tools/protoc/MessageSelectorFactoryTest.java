@@ -82,30 +82,42 @@ final class MessageSelectorFactoryTest {
 
     @Nested
     @DisplayName("create `ByPattern` out of")
-    final class CreatePatternSelector {
+    final class CreateByPatternSelector {
 
         @Test
         @DisplayName(MessageSelectorFactory.SUFFIX)
         void suffix() {
             String suffix = "_documents.proto";
-            assertThat(inFiles(MessageSelectorFactory.suffix(suffix)))
+            ByPattern withSuffix = inFiles(MessageSelectorFactory.suffix(suffix));
+            assertThat(withSuffix)
                     .isInstanceOf(WithSuffix.class);
+            FilePattern filePattern = withSuffix.toProto();
+            assertThat(filePattern.getSuffix())
+                    .isEqualTo(suffix);
         }
 
         @Test
         @DisplayName(MessageSelectorFactory.PREFIX)
         void prefix() {
             String prefix = "io/spine/test/orders_";
-            assertThat(inFiles(MessageSelectorFactory.prefix(prefix)))
+            ByPattern withPrefix = inFiles(MessageSelectorFactory.prefix(prefix));
+            assertThat(withPrefix)
                     .isInstanceOf(WithPrefix.class);
+            FilePattern filePattern = withPrefix.toProto();
+            assertThat(filePattern.getPrefix())
+                    .isEqualTo(prefix);
         }
 
         @Test
         @DisplayName(MessageSelectorFactory.REGEX)
         void regex() {
             String regex = ".*test.*";
-            assertThat(inFiles(MessageSelectorFactory.regex(regex)))
+            ByPattern byRegex = inFiles(MessageSelectorFactory.regex(regex));
+            assertThat(byRegex)
                     .isInstanceOf(ByRegex.class);
+            FilePattern filePattern = byRegex.toProto();
+            assertThat(filePattern.getRegex())
+                    .isEqualTo(regex);
         }
     }
 
