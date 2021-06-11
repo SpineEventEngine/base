@@ -139,7 +139,7 @@ public final class Interfaces extends ModelCompilerConfiguration<AddInterfaces> 
      *
      * <p>Sample usage is as follows:
      * <pre>
-     * mark messages().entityState(), asType("my.custom.IsEntityState")
+     * mark messages().entityState(), asType("my.custom.EntityState")
      * </pre>
      *
      * <p>Note that it is required for the provided interface to extend the
