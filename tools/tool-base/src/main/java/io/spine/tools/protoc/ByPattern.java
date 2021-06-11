@@ -35,15 +35,15 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  * A selector which signalizes that the configuration should be applied to all messages declared in
  * proto files matching some pattern.
  *
- * @see PrefixSelector
- * @see RegexSelector
- * @see SuffixSelector
+ * @see WithPrefix
+ * @see ByRegex
+ * @see WithSuffix
  */
-public abstract class PatternSelector extends MessageSelector {
+public abstract class ByPattern extends MessageSelector {
 
     private final String pattern;
 
-    PatternSelector(String pattern) {
+    ByPattern(String pattern) {
         super();
         this.pattern = checkNotEmptyOrBlank(pattern);
     }
@@ -62,9 +62,10 @@ public abstract class PatternSelector extends MessageSelector {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                          .add("pattern", pattern)
-                          .toString();
+        return MoreObjects
+                .toStringHelper(this)
+                .add("pattern", pattern)
+                .toString();
     }
 
     @SuppressWarnings("EqualsGetClass") // we do want to distinguish different file patterns here
@@ -76,7 +77,7 @@ public abstract class PatternSelector extends MessageSelector {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        PatternSelector selector = (PatternSelector) o;
+        ByPattern selector = (ByPattern) o;
         return Objects.equal(getPattern(), selector.getPattern());
     }
 

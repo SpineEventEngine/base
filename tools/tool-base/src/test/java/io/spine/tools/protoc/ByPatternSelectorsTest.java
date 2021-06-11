@@ -26,17 +26,30 @@
 
 package io.spine.tools.protoc;
 
-import io.spine.code.java.ClassName;
+import com.google.common.truth.Subject;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-/**
- * A selector which signalizes that the configuration should be applied to all messages that
- * represent an entity state.
- *
- * @see Interfaces#mark(EntityState, ClassName)
- */
-final class EntityState extends MessageSelector {
+import static com.google.common.truth.Truth.assertThat;
 
-    EntityState() {
-        super();
+@DisplayName("`ByPattern` implementations should")
+final class ByPatternSelectorsTest {
+
+    @Test
+    @DisplayName("be different from each other")
+    void implementationsDiffer() {
+        String pattern = "testPattern";
+
+        Subject prefix = assertThat(new WithPrefix(pattern));
+        prefix.isNotEqualTo(new WithSuffix(pattern));
+        prefix.isNotEqualTo(new ByRegex(pattern));
+
+        Subject suffix = assertThat(new WithSuffix(pattern));
+        suffix.isNotEqualTo(new WithPrefix(pattern));
+        suffix.isNotEqualTo(new ByRegex(pattern));
+
+        Subject regex = assertThat(new ByRegex(pattern));
+        regex.isNotEqualTo(new WithSuffix(pattern));
+        regex.isNotEqualTo(new WithPrefix(pattern));
     }
 }

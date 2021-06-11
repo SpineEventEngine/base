@@ -27,7 +27,6 @@
 package io.spine.tools.java.code;
 
 import io.spine.test.code.generate.uuid.UuidMessage;
-import io.spine.tools.java.code.UuidMethodFactory;
 import io.spine.tools.protoc.Method;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
@@ -38,25 +37,26 @@ import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertNpe;
+import static io.spine.testing.TestValues.nullRef;
 
 @DisplayName("`UuidMethodFactory` should")
 final class UuidMethodFactoryTest {
 
     private final UuidMethodFactory factory = new UuidMethodFactory();
 
-    @DisplayName("not allow null values")
     @Test
+    @DisplayName("not allow null values")
     void notAllowNulls() {
-        assertNpe(() -> factory.generateMethodsFor(null));
+        assertNpe(() -> factory.generateMethodsFor(nullRef()));
     }
 
     @SuppressWarnings("HardcodedLineSeparator")
-    @DisplayName("create new")
     @Nested
+    @DisplayName("create new")
     final class CreateNew {
 
-        @DisplayName("`generate` method")
         @Test
+        @DisplayName("`generate` method")
         void generateMethod() {
             MessageType uuidType = new MessageType(UuidMessage.getDescriptor());
             List<Method> methods = factory.generateMethodsFor(uuidType);
@@ -71,8 +71,8 @@ final class UuidMethodFactoryTest {
                                        "}\n");
         }
 
-        @DisplayName("`of` method")
         @Test
+        @DisplayName("`of` method")
         void ofMethod() {
             MessageType uuidType = new MessageType(UuidMessage.getDescriptor());
             List<Method> methods = factory.generateMethodsFor(uuidType);

@@ -26,18 +26,19 @@
 
 package io.spine.tools.protoc;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.checkerframework.checker.regex.qual.Regex;
 
-@DisplayName("PrefixPattern should")
-final class PrefixPatternTest {
+/**
+ * A selector of proto files whose names start with a certain prefix.
+ */
+public final class WithPrefix extends ByPattern {
 
-    @DisplayName("translate itself to Protobuf counterpart")
-    @Test
-    void convertToProtobufCounterpart() {
-        String prefix = "io/spine/test_";
-        FilePattern pattern = new PrefixSelector(prefix).toProto();
-        Assertions.assertEquals(prefix, pattern.getPrefix());
+    WithPrefix(@Regex String prefix) {
+        super(prefix);
+    }
+
+    @Override
+    FilePattern toProto() {
+        return FilePatterns.filePrefix(getPattern());
     }
 }

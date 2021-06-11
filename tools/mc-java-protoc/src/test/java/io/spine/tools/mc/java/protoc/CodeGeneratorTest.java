@@ -40,7 +40,7 @@ import io.spine.tools.protoc.Interfaces;
 import io.spine.tools.protoc.MessageSelectorFactory;
 import io.spine.tools.protoc.Methods;
 import io.spine.tools.protoc.NestedClasses;
-import io.spine.tools.protoc.SuffixSelector;
+import io.spine.tools.protoc.WithSuffix;
 import io.spine.tools.protoc.plugin.EnhancedWithCodeGeneration;
 import io.spine.tools.protoc.plugin.TestGeneratorsProto;
 import io.spine.type.MessageType;
@@ -83,7 +83,7 @@ final class CodeGeneratorTest {
         methods.applyFactory(UuidMethodFactory.class.getName(), messages.uuid());
         NestedClasses nestedClasses = new NestedClasses();
         nestedClasses.applyFactory(TestNestedClassFactory.class.getCanonicalName(),
-                                   new SuffixSelector("*file.proto"));
+                                   new WithSuffix("*file.proto"));
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())

@@ -26,29 +26,19 @@
 
 package io.spine.tools.protoc;
 
-import com.google.common.truth.Subject;
-import com.google.common.truth.Truth;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.checkerframework.checker.regex.qual.Regex;
 
-@DisplayName("`PatternSelector` implementations should")
-final class PatternSelectorsTest {
+/**
+ * A selector of proto files whose names end with a certain postfix.
+ */
+public final class WithSuffix extends ByPattern {
 
-    @DisplayName("be different from each other")
-    @Test
-    void implementationsDiffer() {
-        String pattern = "testPattern";
+    public WithSuffix(@Regex String suffix) {
+        super(suffix);
+    }
 
-        Subject prefix = Truth.assertThat(new PrefixSelector(pattern));
-        prefix.isNotEqualTo(new SuffixSelector(pattern));
-        prefix.isNotEqualTo(new RegexSelector(pattern));
-
-        Subject suffix = Truth.assertThat(new SuffixSelector(pattern));
-        suffix.isNotEqualTo(new PrefixSelector(pattern));
-        suffix.isNotEqualTo(new RegexSelector(pattern));
-
-        Subject regex = Truth.assertThat(new RegexSelector(pattern));
-        regex.isNotEqualTo(new SuffixSelector(pattern));
-        regex.isNotEqualTo(new PrefixSelector(pattern));
+    @Override
+    FilePattern toProto() {
+        return FilePatterns.fileSuffix(getPattern());
     }
 }

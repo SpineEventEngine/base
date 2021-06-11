@@ -26,19 +26,20 @@
 
 package io.spine.tools.protoc;
 
-import io.spine.code.java.ClassName;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-/**
- * A selector which signalizes that the configuration should be applied to all UUID messages.
- *
- * <p>A UUID message is a message with a single {@code string} field named {@code uuid}.
- *
- * @see Interfaces#mark(UuidMessage, ClassName)
- * @see Methods#applyFactory(String, UuidMessage)
- */
-public final class UuidMessage extends MessageSelector {
+import static com.google.common.truth.Truth.assertThat;
 
-    UuidMessage() {
-        super();
+@DisplayName("`WithSuffix` pattern should")
+final class WithSuffixTest {
+
+    @Test
+    @DisplayName("translate itself to Protobuf counterpart")
+    void convertToProtobufCounterpart() {
+        String suffix = "test.proto";
+        FilePattern pattern = new WithSuffix(suffix).toProto();
+        assertThat(pattern.getSuffix())
+                .isEqualTo(suffix);
     }
 }

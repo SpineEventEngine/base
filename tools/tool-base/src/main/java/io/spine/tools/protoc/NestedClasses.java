@@ -55,7 +55,7 @@ public final class NestedClasses extends ModelCompilerConfiguration<AddNestedCla
      *        provided implementation of {@code NestedClassFactory} should be {@code public} and
      *        have a {@code public} no-argument constructor.
      */
-    public final void applyFactory(@FullyQualifiedName String factory, PatternSelector selector) {
+    public final void applyFactory(@FullyQualifiedName String factory, ByPattern selector) {
         checkNotNull(factory);
         checkNotNull(selector);
         addPattern(selector, ClassName.of(factory));

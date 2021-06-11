@@ -36,7 +36,7 @@ repositories {
 
 dependencies {
     annotationProcessor(AutoService.processor)
-    compileOnly(AutoService.annotations)
+    compileOnlyApi(AutoService.annotations)
     implementation(project(":base"))
     implementation(project(":plugin-base"))
     implementation(ErrorProne.core)
