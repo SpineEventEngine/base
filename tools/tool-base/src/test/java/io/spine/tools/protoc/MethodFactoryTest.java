@@ -43,10 +43,11 @@ import static io.spine.testing.TestValues.nullRef;
 @DisplayName("`MethodFactory` should")
 final class MethodFactoryTest {
 
-    @DisplayName("obey the defined contract")
     @Test
+    @DisplayName("obey the defined contract")
     void obeyTheContract() {
-        assertThat(new TestMethodFactory().generateMethodsFor(nullRef())).isEmpty();
+        assertThat(new TestMethodFactory().generateMethodsFor(nullRef()))
+                .isEmpty();
     }
 
     @Immutable

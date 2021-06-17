@@ -63,7 +63,7 @@ public final class Fields extends ModelCompilerConfiguration<AddFields> {
      * argument.
      */
     @SuppressWarnings("unused") // Gradle DSL.
-    public final void generateFor(EntityState entityState, ClassName markAs) {
+    public final void generateFor(IsEntityState entityState, ClassName markAs) {
         entityStateConfig = EntityStateConfig
                 .newBuilder()
                 .setValue(markAs.value())
@@ -95,7 +95,7 @@ public final class Fields extends ModelCompilerConfiguration<AddFields> {
      * <p>The configuration may be applied multiple times to enable code generation for multiple
      * file patterns.
      */
-    public final void generateFor(PatternSelector pattern, ClassName markAs) {
+    public final void generateFor(ByPattern pattern, ClassName markAs) {
         addPattern(pattern, markAs);
     }
 

@@ -36,7 +36,7 @@ var protocPluginDependency: Dependency? = null
 val spineVersion: String by extra
 
 dependencies {
-    implementation(project(":plugin-base"))
+    api(project(":plugin-base"))
     implementation(JavaPoet.lib)
 
     // A library for parsing Java sources.

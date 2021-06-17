@@ -26,19 +26,19 @@
 
 package io.spine.tools.protoc;
 
-import org.checkerframework.checker.regex.qual.Regex;
+import io.spine.code.java.ClassName;
 
 /**
- * A selector of proto files whose names qualify the supplied regex.
+ * A selector which signalizes that the configuration should be applied to all UUID messages.
+ *
+ * <p>A UUID message is a message with a single {@code string} field named {@code uuid}.
+ *
+ * @see Interfaces#mark(IsUuidMessage, ClassName)
+ * @see Methods#applyFactory(String, IsUuidMessage)
  */
-public final class RegexSelector extends PatternSelector {
+public final class IsUuidMessage extends MessageSelector {
 
-    RegexSelector(@Regex String regex) {
-        super(regex);
-    }
-
-    @Override
-    FilePattern toProto() {
-        return FilePatterns.fileRegex(getPattern());
+    IsUuidMessage() {
+        super();
     }
 }

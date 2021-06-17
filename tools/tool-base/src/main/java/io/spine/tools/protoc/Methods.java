@@ -89,7 +89,7 @@ public final class Methods extends ModelCompilerConfiguration<AddMethods> {
      *        provided implementation of {@code MethodFactory} should be {@code public} and have
      *        a {@code public} no-argument constructor.
      */
-    public final void applyFactory(@FullyQualifiedName String factory, PatternSelector selector) {
+    public final void applyFactory(@FullyQualifiedName String factory, ByPattern selector) {
         checkNotNull(factory);
         checkNotNull(selector);
         addPattern(selector, ClassName.of(factory));
@@ -99,7 +99,7 @@ public final class Methods extends ModelCompilerConfiguration<AddMethods> {
      * Configures method generation for messages with a single {@code string} field called
      * {@code uuid}.
      *
-     * <p>This method functions similarly to the {@link #applyFactory(String, PatternSelector)}
+     * <p>This method functions similarly to the {@link #applyFactory(String, ByPattern)}
      * except the file in which the message type is defined does not matter.
      *
      * <p>Example:
@@ -112,7 +112,7 @@ public final class Methods extends ModelCompilerConfiguration<AddMethods> {
      *        provided implementation of {@code MethodFactory} should be {@code public} and have
      *        a {@code public} no-argument constructor.
      */
-    public final void applyFactory(@FullyQualifiedName String factory, UuidMessage selector) {
+    public final void applyFactory(@FullyQualifiedName String factory, IsUuidMessage selector) {
         checkNotNull(selector);
         uuidFactoryConfig = uuidConfig(ClassName.of(factory));
     }

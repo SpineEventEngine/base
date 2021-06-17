@@ -44,7 +44,7 @@ final class MessageSelectorFactoryTest {
     private final MessageSelectorFactory factory = MessageSelectorFactory.INSTANCE;
 
     @CanIgnoreReturnValue
-    private PatternSelector inFiles(ImmutableMap<String, String> conf) {
+    private ByPattern inFiles(ImmutableMap<String, String> conf) {
         return factory.inFiles(conf);
     }
 
@@ -57,51 +57,67 @@ final class MessageSelectorFactoryTest {
     }
 
     @Test
-    @DisplayName("create `UuidMessage` selector")
+    @DisplayName("create `IsUuidMessage` selector")
     void createUuidSelector() {
-        assertThat(factory.uuid()).isInstanceOf(UuidMessage.class);
+        assertThat(factory.uuid())
+                .isInstanceOf(IsUuidMessage.class);
     }
 
     @Test
-    @DisplayName("create `EntityState` selector")
+    @DisplayName("create `IsEntityState` selector")
     void createEntityStateSelector() {
-        assertThat(factory.entityState()).isInstanceOf(EntityState.class);
+        assertThat(factory.entityState())
+                .isInstanceOf(IsEntityState.class);
     }
 
     @Test
     @DisplayName("create all messages selector")
     void createAllSelector() {
-        PatternSelector allSelector = factory.all();
-        assertThat(allSelector).isInstanceOf(SuffixSelector.class);
-        assertThat(allSelector.getPattern()).isEqualTo(FileName.EXTENSION);
+        ByPattern allSelector = factory.all();
+        assertThat(allSelector)
+                .isInstanceOf(WithSuffix.class);
+        assertThat(allSelector.getPattern())
+                .isEqualTo(FileName.EXTENSION);
     }
 
     @Nested
-    @DisplayName("create `PatternSelector` out of")
-    final class CreatePatternSelector {
+    @DisplayName("create `ByPattern` out of")
+    final class CreateByPatternSelector {
 
         @Test
         @DisplayName(MessageSelectorFactory.SUFFIX)
         void suffix() {
             String suffix = "_documents.proto";
-            assertThat(inFiles(MessageSelectorFactory.suffix(suffix)))
-                 .isInstanceOf(SuffixSelector.class);
+            ByPattern withSuffix = inFiles(MessageSelectorFactory.suffix(suffix));
+            assertThat(withSuffix)
+                    .isInstanceOf(WithSuffix.class);
+            FilePattern filePattern = withSuffix.toProto();
+            assertThat(filePattern.getSuffix())
+                    .isEqualTo(suffix);
         }
 
         @Test
         @DisplayName(MessageSelectorFactory.PREFIX)
         void prefix() {
             String prefix = "io/spine/test/orders_";
-            assertThat(inFiles(MessageSelectorFactory.prefix(prefix)))
-                 .isInstanceOf(PrefixSelector.class);
+            ByPattern withPrefix = inFiles(MessageSelectorFactory.prefix(prefix));
+            assertThat(withPrefix)
+                    .isInstanceOf(WithPrefix.class);
+            FilePattern filePattern = withPrefix.toProto();
+            assertThat(filePattern.getPrefix())
+                    .isEqualTo(prefix);
         }
 
         @Test
         @DisplayName(MessageSelectorFactory.REGEX)
         void regex() {
             String regex = ".*test.*";
-            assertThat(inFiles(MessageSelectorFactory.regex(regex)))
-                 .isInstanceOf(RegexSelector.class);
+            ByPattern byRegex = inFiles(MessageSelectorFactory.regex(regex));
+            assertThat(byRegex)
+                    .isInstanceOf(ByRegex.class);
+            FilePattern filePattern = byRegex.toProto();
+            assertThat(filePattern.getRegex())
+                    .isEqualTo(regex);
         }
     }
 

@@ -26,26 +26,36 @@
 
 package io.spine.tools.protoc;
 
-import com.google.common.truth.Truth;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("MessageSelector should")
+import static com.google.common.truth.Truth.assertThat;
+
+@DisplayName("`MessageSelector` should")
 final class MessageSelectorTest {
 
-    @DisplayName("be enabled by default")
     @Test
+    @DisplayName("be enabled by default")
     void beEnabledByDefault() {
-        Truth.assertThat(new MessageSelector().enabled()).isTrue();
+        assertThat(new DefaultSelector().enabled())
+                .isTrue();
     }
 
-    @DisplayName("allow disabling and enabling itself")
     @Test
+    @DisplayName("allow disabling and enabling itself")
     void allowDisablingAndEnablingItself() {
-        MessageSelector selector = new MessageSelector();
+        MessageSelector selector = new DefaultSelector();
         selector.disable();
-        Truth.assertThat(selector.enabled()).isFalse();
+        assertThat(selector.enabled())
+                .isFalse();
         selector.enable();
-        Truth.assertThat(selector.enabled()).isTrue();
+        assertThat(selector.enabled())
+                .isTrue();
+    }
+
+    /**
+     * A test implementation of a {@code MessageSelector}.
+     */
+    private static class DefaultSelector extends MessageSelector {
     }
 }

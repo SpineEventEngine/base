@@ -26,19 +26,20 @@
 
 package io.spine.tools.protoc;
 
-import org.checkerframework.checker.regex.qual.Regex;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-/**
- * A selector of proto files whose names end with a certain postfix.
- */
-public final class SuffixSelector extends PatternSelector {
+import static com.google.common.truth.Truth.assertThat;
 
-    public SuffixSelector(@Regex String suffix) {
-        super(suffix);
-    }
+@DisplayName("`WithPrefix` pattern should")
+final class WithPrefixTest {
 
-    @Override
-    FilePattern toProto() {
-        return FilePatterns.fileSuffix(getPattern());
+    @Test
+    @DisplayName("translate itself to Protobuf counterpart")
+    void convertToProtobufCounterpart() {
+        String prefix = "io/spine/test_";
+        FilePattern pattern = new WithPrefix(prefix).toProto();
+        assertThat(pattern.getPrefix())
+                .isEqualTo(prefix);
     }
 }
