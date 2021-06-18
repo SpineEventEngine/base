@@ -26,32 +26,20 @@
 
 package io.spine.tools.mc.dart.gradle;
 
-import com.google.common.collect.ImmutableMap;
-import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.SpinePlugin;
-import io.spine.tools.gradle.TaskName;
 import io.spine.tools.dart.fs.DartFile;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileTree;
-import org.gradle.api.tasks.Copy;
 
 import java.io.File;
 import java.nio.file.Path;
 
 import static io.spine.tools.gradle.BaseTaskName.assemble;
 import static io.spine.tools.mc.dart.gradle.McDartTaskName.copyGeneratedDart;
-import static io.spine.tools.mc.dart.gradle.McDartTaskName.copyTestGeneratedDart;
 import static io.spine.tools.mc.dart.gradle.McDartTaskName.resolveImports;
-import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
-import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
-import static io.spine.tools.gradle.ProtocPluginName.dart;
-import static io.spine.tools.gradle.SourceScope.main;
-import static io.spine.tools.gradle.SourceScope.test;
-import static org.gradle.api.Task.TASK_TYPE;
 
 /**
  * A Gradle plugin which configures Protobuf Dart code generation.
@@ -71,40 +59,9 @@ public final class McDartPlugin extends SpinePlugin {
         Plugin<Project> protocConfig = new ProtocConfig();
         protocConfig.apply(project);
 
-        createMainCopyTask(project, extension);
-        createTestCopyTask(project, extension);
+        extension.createMainCopyTaskIn(project);
+        extension.createTestCopyTaskIn(project);
         createResolveImportTask(project, extension);
-    }
-
-    private static void createMainCopyTask(Project project, McDartExtension extension) {
-        createCopyTask(project, extension, main);
-    }
-
-    private static void createTestCopyTask(Project project, McDartExtension extension) {
-        createCopyTask(project, extension, test);
-    }
-
-    private static void createCopyTask(Project project, McDartExtension extension, SourceScope scope) {
-        McDartTaskName taskName;
-        DirectoryProperty targetDir;
-        TaskName runAfter;
-        if (scope == main) {
-            taskName = copyGeneratedDart;
-            targetDir = extension.getLibDir();
-            runAfter = generateProto;
-        } else {
-            taskName = copyTestGeneratedDart;
-            targetDir = extension.getTestDir();
-            runAfter = generateTestProto;
-        }
-        Copy task = (Copy) project.task(ImmutableMap.of(TASK_TYPE, Copy.class), taskName.name());
-        task.from(extension.getGeneratedBaseDir()
-                           .dir(scope.name() + File.separator + dart.name()));
-        task.into(targetDir);
-        task.dependsOn(runAfter.name());
-        project.getTasks()
-               .getByName(assemble.name())
-               .dependsOn(taskName.name());
     }
 
     private void createResolveImportTask(Project project, McDartExtension extension) {
@@ -121,7 +78,7 @@ public final class McDartPlugin extends SpinePlugin {
     }
 
     private void resolveImports(File sourceFile, McDartExtension extension) {
-        _debug().log("Resolving imports in file %s", sourceFile);
+        _debug().log("Resolving imports in the file `%s`.", sourceFile);
         DartFile file = DartFile.read(sourceFile.toPath());
         Path libPath = extension.getLibDir()
                                 .getAsFile()

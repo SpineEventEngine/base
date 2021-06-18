@@ -29,9 +29,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
 import groovy.lang.Closure;
-import io.spine.tools.java.fs.DefaultJavaPaths;
 import io.spine.tools.code.Indent;
 import io.spine.tools.gradle.GradleExtension;
+import io.spine.tools.java.fs.DefaultJavaPaths;
 import io.spine.tools.protoc.EntityQueries;
 import io.spine.tools.protoc.Fields;
 import io.spine.tools.protoc.Interfaces;
@@ -153,8 +153,8 @@ public class McJavaExtension extends GradleExtension {
     /**
      * The severity of the Spine-custom Error Prone checks.
      *
-     * <p>If this value is not set, the default severities are used, which are specific for the
-     * each check.
+     * <p>If this value is not set, the default severities are used,
+     * which are specific for each check.
      *
      * <p>May be overridden by the values provided by the {@link ErrorProneChecksExtension}.
      */
@@ -195,6 +195,14 @@ public class McJavaExtension extends GradleExtension {
     })
     private static FluentLogger.Api _debug() {
         return logger.atFine();
+    }
+
+    @SuppressWarnings({
+            "PMD.MethodNamingConventions",
+            "FloggerSplitLogStatement" // See: https://github.com/SpineEventEngine/base/issues/612
+    })
+    private static FluentLogger.Api _info() {
+        return logger.atInfo();
     }
 
     @SuppressWarnings("FloggerSplitLogStatement")
@@ -301,8 +309,7 @@ public class McJavaExtension extends GradleExtension {
         List<String> dirs = extension(project).dirsToClean;
         String singleDir = extension(project).dirToClean;
         if (dirs.size() > 0) {
-            logger.atInfo()
-                  .log("Found %d directories to clean: `%s`.", dirs.size(), dirs);
+            _info().log("Found %d directories to clean: `%s`.", dirs.size(), dirs);
             dirsToClean.addAll(dirs);
         } else if (singleDir != null && !singleDir.isEmpty()) {
             _debug().log("Found directory to clean: `%s`.", singleDir);
