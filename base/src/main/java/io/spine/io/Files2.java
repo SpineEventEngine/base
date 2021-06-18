@@ -62,7 +62,7 @@ import static java.nio.file.Files.isRegularFile;
  */
 public final class Files2 {
 
-    static final String DOES_NOT_EXIST = "The file `%s` does not exist.";
+    private static final String DOES_NOT_EXIST = "The file `%s` does not exist.";
 
     /** Prevents instantiation of this utility class. */
     private Files2() {
@@ -109,7 +109,7 @@ public final class Files2 {
 
     private static void ensureNotFolder(File file) {
         if (file.exists() && file.isDirectory()) {
-            throw newIllegalArgumentException("File expected, but a folder found %s",
+            throw newIllegalArgumentException("File expected, but a folder found: `%s`.",
                                               file.getAbsolutePath());
         }
     }
@@ -218,5 +218,15 @@ public final class Files2 {
                 copy(file, newPath);
             }
         }
+    }
+
+    /**
+     * Normalizes and transforms the passed path to an absolute file reference.
+     */
+    public static File toAbsolute(String path) {
+        File file = new File(path);
+        Path normalized = file.toPath().normalize();
+        File result = normalized.toAbsolutePath().toFile();
+        return result;
     }
 }
