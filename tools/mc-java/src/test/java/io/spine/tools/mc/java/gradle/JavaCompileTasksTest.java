@@ -26,7 +26,6 @@
 
 package io.spine.tools.mc.java.gradle;
 
-import io.spine.testing.UtilityClassTest;
 import org.gradle.api.Project;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,28 +34,24 @@ import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newProjec
 import static io.spine.tools.mc.java.gradle.given.ProjectConfigurations.assertCompileTasksContain;
 import static io.spine.tools.mc.java.gradle.given.ProjectConfigurations.assertCompileTasksEmpty;
 
-@DisplayName("ProjectArguments utility class should")
-class ProjectArgumentsTest extends UtilityClassTest<ProjectArguments> {
+@DisplayName("`JavaCompileTasks` should")
+class JavaCompileTasksTest {
 
     private final Project project = newProject();
 
-    ProjectArgumentsTest() {
-        super(ProjectArguments.class);
-    }
-
     @Test
     @DisplayName("add arguments to Java compile tasks")
-    void add_args_to_java_compile_tasks_of_project() {
+    void someArgs() {
         String firstArg = "firstArg";
         String secondArg = "secondArg";
-        ProjectArguments.addArgsToJavaCompile(project, firstArg, secondArg);
+        JavaCompileTasks.of(project).addArgs(firstArg, secondArg);
         assertCompileTasksContain(project, firstArg, secondArg);
     }
 
     @Test
     @DisplayName("not add arguments if none is specified")
-    void add_no_args_if_none_specified() {
-        ProjectArguments.addArgsToJavaCompile(project);
+    void noArgs() {
+        JavaCompileTasks.of(project).addArgs();
         assertCompileTasksEmpty(project);
     }
 }

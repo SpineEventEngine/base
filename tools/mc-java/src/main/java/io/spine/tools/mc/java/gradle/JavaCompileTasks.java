@@ -38,29 +38,30 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The modification tool for the {@link Project} {@link org.gradle.api.Task} arguments.
- *
- * <p>Allows adding new arguments to all the project's task of a certain type.
+ * Utilities for working with {@link JavaCompile} tasks.
  */
-final class ProjectArguments {
+final class JavaCompileTasks {
 
-    /** Prevents instantiation of this utility class. */
-    private ProjectArguments() {
+    private final TaskCollection<JavaCompile> tasks;
+
+    private JavaCompileTasks(Project project) {
+        TaskContainer allTasks = project.getTasks();
+        this.tasks = allTasks.withType(JavaCompile.class);
+    }
+
+    /**
+     * Creates a new instance for the passed projects.
+     */
+    static JavaCompileTasks of(Project project) {
+        return new JavaCompileTasks(project);
     }
 
     /**
      * Adds specified arguments to all {@code JavaCompile} tasks of the project.
-     *
-     * @param project   the project whose tasks are to be modified
-     * @param arguments the arguments to add to the tasks
      */
-    static void addArgsToJavaCompile(Project project, String... arguments) {
-        checkNotNull(project);
+    void addArgs(String... arguments) {
         checkNotNull(arguments);
-
-        TaskContainer tasks = project.getTasks();
-        TaskCollection<JavaCompile> javaCompileTasks = tasks.withType(JavaCompile.class);
-        for (JavaCompile task : javaCompileTasks) {
+        for (JavaCompile task : tasks) {
             CompileOptions taskOptions = task.getOptions();
             List<String> compilerArgs = taskOptions.getCompilerArgs();
             compilerArgs.addAll(Arrays.asList(arguments));

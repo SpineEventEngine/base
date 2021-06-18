@@ -35,7 +35,6 @@ import org.gradle.api.invocation.Gradle;
 import org.gradle.api.plugins.PluginContainer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.mc.java.gradle.ProjectArguments.addArgsToJavaCompile;
 import static io.spine.tools.mc.java.gradle.ErrorProneChecksExtension.getUseValidatingBuilderSeverity;
 import static io.spine.tools.mc.java.gradle.McJavaExtension.getSpineCheckSeverity;
 
@@ -127,7 +126,7 @@ public final class SeverityConfigurer implements Logging {
                 severity.name(), project.getName()
         );
         String severityArg = "-Xep:UseValidatingBuilder:" + severity.name();
-        addArgsToJavaCompile(project, severityArg);
+        JavaCompileTasks.of(project).addArgs(severityArg);
     }
 
     /**
