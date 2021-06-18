@@ -26,7 +26,6 @@
 
 package io.spine.tools.mc.js.code.task;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.truth.IterableSubject;
 import io.spine.tools.fs.DirectoryPattern;
 import io.spine.tools.fs.ExternalModule;
