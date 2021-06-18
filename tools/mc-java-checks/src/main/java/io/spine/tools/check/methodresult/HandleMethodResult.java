@@ -70,6 +70,6 @@ public final class HandleMethodResult extends CheckReturnValue {
     }
 
     private static Matcher<ExpressionTree> builderSetter() {
-        return ValidatingBuilderWhich.callsSetterMethod();
+        return MessageBuilderWhich.callsSetterMethod();
     }
 }

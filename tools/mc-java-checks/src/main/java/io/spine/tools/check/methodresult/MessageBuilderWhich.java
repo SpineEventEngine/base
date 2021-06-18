@@ -39,11 +39,11 @@ import static com.google.errorprone.matchers.method.MethodMatchers.instanceMetho
 import static com.google.errorprone.predicates.TypePredicates.isDescendantOf;
 
 /**
- * A predicate which matches builders Protobuf messages.
+ * A predicate which matches builders of Protobuf messages.
  *
  * <p>Any Java class which descends from {@link Message.Builder} matches this predicate.
  */
-final class ValidatingBuilderWhich implements TypePredicate {
+final class MessageBuilderWhich implements TypePredicate {
 
     private static final long serialVersionUID = 0L;
 
@@ -56,7 +56,7 @@ final class ValidatingBuilderWhich implements TypePredicate {
     /**
      * Prevents direct instantiation.
      */
-    private ValidatingBuilderWhich() {
+    private MessageBuilderWhich() {
     }
 
     /**
@@ -66,7 +66,7 @@ final class ValidatingBuilderWhich implements TypePredicate {
      */
     static Matcher<ExpressionTree> callsSetterMethod() {
         return instanceMethod()
-                .onClass(new ValidatingBuilderWhich())
+                .onClass(new MessageBuilderWhich())
                 .withNameMatching(SIDE_EFFECT_METHOD_NAME);
     }
 

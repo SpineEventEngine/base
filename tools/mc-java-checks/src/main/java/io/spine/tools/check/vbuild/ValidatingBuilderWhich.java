@@ -39,7 +39,7 @@ import static com.google.errorprone.predicates.TypePredicates.isDescendantOf;
 /**
  * A predicate which matches builders of custom (i.e. non-Google) Protobuf messages.
  */
-final class GeneratedValidatingBuilderWhich implements TypePredicate {
+final class ValidatingBuilderWhich implements TypePredicate {
 
     private static final long serialVersionUID = 0L;
 
@@ -49,7 +49,7 @@ final class GeneratedValidatingBuilderWhich implements TypePredicate {
     /**
      * Prevents direct instantiation.
      */
-    private GeneratedValidatingBuilderWhich() {
+    private ValidatingBuilderWhich() {
     }
 
     /**
@@ -61,7 +61,7 @@ final class GeneratedValidatingBuilderWhich implements TypePredicate {
      */
     static Matcher<ExpressionTree> callsInstanceMethod(String methodName) {
         return instanceMethod()
-                .onClass(new GeneratedValidatingBuilderWhich())
+                .onClass(new ValidatingBuilderWhich())
                 .named(methodName);
     }
 
