@@ -71,7 +71,7 @@ public abstract class GenerationTask {
      *
      * @param fileSet
      *         the files to filter
-     * @return the files to perform the taks for
+     * @return the files to perform the tasks for
      */
     protected FileSet filter(FileSet fileSet) {
         ProtoBelongsToModule predicate = new CompiledProtoBelongsToModule(generatedRoot);

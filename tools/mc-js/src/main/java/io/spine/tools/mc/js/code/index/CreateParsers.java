@@ -40,13 +40,14 @@ import io.spine.tools.mc.js.code.task.GenerationTask;
 import io.spine.tools.mc.js.code.text.Comment;
 import io.spine.tools.mc.js.code.text.Parser;
 import io.spine.tools.mc.js.fs.FileWriter;
-import io.spine.tools.mc.js.code.text.Import;
 import io.spine.type.MessageType;
 
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.code.Line.emptyLine;
+import static io.spine.tools.mc.js.code.text.Parser.importObjectParserIn;
+import static io.spine.tools.mc.js.code.text.Parser.importTypeParsersIn;
 
 /**
  * This class writes the {@linkplain Parser code} for
@@ -61,7 +62,7 @@ public final class CreateParsers extends GenerationTask {
     }
 
     /**
-     * Obtains types, which require parsers to be generated.
+     * Obtains message types that require parsers to be generated.
      *
      * <p>The types with the <a href="https://developers.google.com/protocol-buffers/docs/proto3#json">
      * special JSON mapping</a> should be skipped.
@@ -95,11 +96,11 @@ public final class CreateParsers extends GenerationTask {
         ImmutableCollection<MessageType> types = targetTypes(file);
         FileName fileName = FileName.from(file);
         CodeWriter writer = new CodeWriter();
-        writer.append(emptyLine());
-        writer.append(Comment.generatedBySpine());
-        writer.append(emptyLine());
-        writer.append(imports(fileName));
-        writer.append(parses(types));
+        writer.append(emptyLine())
+              .append(Comment.generatedBySpine())
+              .append(emptyLine())
+              .append(imports(fileName))
+              .append(parses(types));
         return writer;
     }
 
@@ -110,20 +111,12 @@ public final class CreateParsers extends GenerationTask {
      *         the file to generate imports for
      */
     private static CodeWriter imports(FileName targetFile) {
-        String abstractParserImport = defaultImport(Parser.OBJECT_PARSER_FILE, targetFile)
-                .namedAs(Parser.ABSTRACT_PARSER_IMPORT_NAME);
-        String parsersImport = defaultImport(Parser.TYPE_PARSERS_FILE, targetFile)
-                .namedAs(Parser.TYPE_PARSERS_IMPORT_NAME);
+        String objectParserImport = importObjectParserIn(targetFile);
+        String typeParsersImport = importTypeParsersIn(targetFile);
         CodeWriter lines = new CodeWriter();
-        lines.append(abstractParserImport);
-        lines.append(parsersImport);
+        lines.append(objectParserImport)
+             .append(typeParsersImport);
         return lines;
-    }
-
-    private static Import defaultImport(String importedFile, FileName targetFile) {
-        String pathRelativeToTarget = targetFile.pathToRoot() + importedFile;
-        return Import.library(pathRelativeToTarget)
-                     .toDefault();
     }
 
     /**
@@ -136,8 +129,8 @@ public final class CreateParsers extends GenerationTask {
         CodeWriter writer = new CodeWriter();
         for (MessageType message : messageTypes) {
             Parser parser = new Parser(message.descriptor());
-            writer.append(emptyLine());
-            writer.append(parser);
+            writer.append(emptyLine())
+                  .append(parser);
         }
         return writer;
     }
