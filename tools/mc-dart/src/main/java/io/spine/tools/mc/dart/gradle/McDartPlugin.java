@@ -32,6 +32,7 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileTree;
 
 import java.io.File;
@@ -61,14 +62,25 @@ public final class McDartPlugin extends SpinePlugin {
 
         extension.createMainCopyTaskIn(project);
         extension.createTestCopyTaskIn(project);
-        createResolveImportTask(project, extension);
+        createMainResolveImportTask(project, extension);
+        createTestResolveImportTask(project, extension);
     }
 
-    private void createResolveImportTask(Project project, McDartExtension extension) {
+    private void createMainResolveImportTask(Project project, McDartExtension extension) {
+        DirectoryProperty rootDir = extension.getMainGeneratedDir();
+        doCreateResolveImportsTask(project, extension, rootDir);
+    }
+
+    private void createTestResolveImportTask(Project project, McDartExtension extension) {
+        DirectoryProperty rootDir = extension.getTestGeneratedDir();
+        doCreateResolveImportsTask(project, extension, rootDir);
+    }
+
+    private void doCreateResolveImportsTask(Project project,
+                                            McDartExtension extension,
+                                            DirectoryProperty rootDir) {
         Action<Task> action = task -> {
-            FileTree generatedFiles =
-                    extension.getMainGeneratedDir()
-                             .getAsFileTree();
+            FileTree generatedFiles = rootDir.getAsFileTree();
             generatedFiles.forEach(file -> resolveImports(file, extension));
         };
         newTask(resolveImports, action)
