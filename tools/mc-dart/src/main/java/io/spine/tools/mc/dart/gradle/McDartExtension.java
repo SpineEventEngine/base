@@ -41,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static java.util.Objects.requireNonNull;
 
 /**
  * DSL extension for configuring Protobuf-to-Dart compilation.
