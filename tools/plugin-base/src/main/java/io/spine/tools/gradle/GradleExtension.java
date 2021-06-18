@@ -41,7 +41,7 @@ public abstract class GradleExtension {
 
     protected final File defaultMainDescriptor(Project project) {
         Artifact artifact = newBuilderFrom(project).build();
-        String fileName = artifact.fileSafeId() + DESC_EXTENSION;
+        String fileName = descriptorSetFileOf(artifact);
         Path mainDescriptor = defaultPaths(project)
                 .buildRoot()
                 .descriptors()
@@ -54,13 +54,21 @@ public abstract class GradleExtension {
         Artifact artifact = newBuilderFrom(project)
                 .useTestClassifier()
                 .build();
-        String fileName = artifact.fileSafeId() + DESC_EXTENSION;
+        String fileName = descriptorSetFileOf(artifact);
         Path testDescriptor = defaultPaths(project)
                 .buildRoot()
                 .descriptors()
                 .testDescriptors()
                 .resolve(fileName);
         return testDescriptor.toFile();
+    }
+
+    /**
+     * Obtains a name of a descriptor set file for the passed artifact.
+     */
+    private static String descriptorSetFileOf(Artifact artifact) {
+        String artifactId = artifact.fileSafeId();
+        return artifactId + DESC_EXTENSION;
     }
 
     private static Artifact.Builder newBuilderFrom(Project project) {

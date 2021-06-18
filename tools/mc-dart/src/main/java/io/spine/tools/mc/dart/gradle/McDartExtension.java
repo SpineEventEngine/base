@@ -41,10 +41,10 @@ import org.gradle.api.tasks.Copy;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.google.common.collect.Maps.newHashMap;
 import static io.spine.tools.gradle.BaseTaskName.assemble;
 import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
 import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
@@ -106,7 +106,7 @@ public final class McDartExtension extends GradleExtension {
      * }</pre>
      */
     @SuppressWarnings({"PublicField", "WeakerAccess" /* Expose fields as a Gradle extension */ })
-    public final Map<String, List<String>> modules = newHashMap();
+    public final Map<String, List<String>> modules = new HashMap<>();
 
     private final Project project;
 
