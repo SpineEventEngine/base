@@ -36,6 +36,8 @@ option java_multiple_files = true;
 
 option (internal_all) = true;
 
+import "google/protobuf/empty.proto";
+
 // Configuration of the Spine Protoc Plugin.
 //
 // The configuration is passed to the plugin as the single option.
@@ -43,111 +45,95 @@ option (internal_all) = true;
 //
 message SpineProtocConfig {
 
-    // Interfaces generation tasks.
-    AddInterfaces add_interfaces = 1;
+    Validation validation = 1;
 
-    // Methods generation tasks.
-    AddMethods add_methods = 2;
+    ForEntities entities = 2;
 
-    // Determines if the generation of `ValidatingBuilder` should be skipped.
-    //
-    // If set to `true`, message builder classes will NOT implement
-    // `io.spine.protobuf.ValidatingBuilder`.
-    // Default value is `false`, i.e. the message classes
-    // should implement the `ValidatingBuilder` interface.
-    //
-    bool skip_validating_builders = 3;
+    ForSignals commands = 3;
 
-    // Determines if the validation code should be generated for the message types.
-    //
-    // The benefit of the generated validation code is performance.
-    // It is not required to assemble metadata over all the combinations of fields and
-    // options at the program runtime.
-    //
-    bool generate_validation = 4;
+    ForSignals events = 4;
 
-    // Nested classes generation tasks.
-    AddNestedClasses add_nested_classes = 5;
+    ForSignals rejections = 5;
 
-    // Reserved for the deleted `add_columns` option.
-    //
-    // Please use `add_entity_queries` instead.
-    //
-    reserved 6;
-    reserved "add_columns";
+    ForMessages messages = 6;
 
-    // Field generation tasks.
-    AddFields add_fields = 7;
-
-    // Configures the generation of the entity columns and queries.
-    AddEntityQueries add_entity_queries = 8;
+    ForUuids uuids = 7;
 
     // The classpath used to lookup types by their fully-qualified names.
-    Classpath classpath = 9;
+    Classpath classpath = 8;
 }
 
-// Configures the generation of interfaces for the classes of certain messages.
-message AddInterfaces {
+message Validation {
 
-    // An interface for the messages holding UUID value.
-    UuidConfig uuid_interface = 1;
+    bool skip_builders = 1;
 
-    // Interfaces to be generated according to the messages residing in files-by-pattern.
-    repeated ConfigByPattern interface_by_pattern = 2;
-
-    // An interface for the messages representing an entity state.
-    EntityStateConfig entity_state_interface = 3;
+    bool skip_validation = 2;
 }
 
-// Configures the generation of the methods.
-message AddMethods {
+message ForSignals {
 
-    // A factory for the messages holding UUID value.
-    UuidConfig uuid_factory = 1;
+    repeated FilePattern pattern = 1;
 
-    // Factories for the messages declared in files according to a certain pattern.
-    repeated ConfigByPattern factory_by_pattern = 2;
+    repeated JavaClassName interface_name = 2;
 
-    // Field number and name reservation due to a deleted field.
-    reserved 3;
-    reserved "factory_classpath";
+    GenerateFields generate_fields = 4;
 }
 
-// Configures the generation of the nested classes.
-message AddNestedClasses {
+message ForEntities {
 
-    // Factories for the messages declared in files satisfying a certain pattern.
-    repeated ConfigByPattern factory_by_pattern = 1;
+    repeated FilePattern pattern = 1;
+
+    repeated ProtoOption option = 2;
+
+    repeated JavaClassName interface_name = 3;
+
+    GenerateFields generate_fields = 4;
 }
 
-// Configures the generation of the strongly-typed fields.
-message AddFields {
+message GenerateFields {
 
-    // Enables strongly-typed field generation for messages that represent entity states.
-    EntityStateConfig entity_state_config = 1;
+    oneof action {
 
-    // Enables strongly-typed field generation by file pattern.
-    repeated ConfigByPattern config_by_pattern = 2;
+        google.protobuf.Empty skip = 1;
 
-    // Enables strongly-typed field generation for specific types.
-    repeated ConfigByType config_by_type = 3;
+        google.protobuf.Empty generate = 2;
+
+        JavaClassName generate_with_superclass = 3;
+    }
 }
 
-// DSL for building `Entity`-specific queries.
-message AddEntityQueries {
+message ForMessages {
 
-    // The flag which allows to enable and disable the generation of entity columns and queries.
-    bool generate = 1;
+    FilePattern pattern = 1;
+
+    repeated AddInterface add_interface = 2;
+
+    repeated GenerateMethods generate_methods = 3;
+
+    repeated GenerateNestedClasses generate_nested_classes = 4;
+}
+
+message AddInterface {
+
+    JavaClassName name = 1;
+}
+
+message GenerateMethods {
+
+    MethodFactory factory = 1;
+}
+
+message GenerateNestedClasses {
+
+    NestedClassFactory factory = 1;
 }
 
 // Configures the code generation for the messages holding a UUID value.
-message UuidConfig {
+message ForUuids {
 
-    // A fully-qualified name of the target.
-    //
-    // Currently interface name or method factory name is expected.
-    //
-    string value = 1;
+    JavaClassName interface_name = 1;
+
+    MethodFactory method_factory = 2;
 }
 
 // Configures the code generation for the messages representing an entity state.
@@ -160,32 +146,21 @@ message EntityStateConfig {
     string value = 1;
 }
 
-// Tells what should be applied to the messages of files which satisfy a certain pattern.
-message ConfigByPattern {
+message NestedClassFactory {
 
-
-    // A fully-qualified name of the target.
-    //
-    // Currently interface name, method factory name, nested class factory name or
-    // field type name is expected.
-    //
-    string value = 1;
-
-    // A file pattern that defines for which message types code should be generated.
-    FilePattern pattern = 2;
+    // io.spine.tools.protoc.NestedClassFactory
+    JavaClassName class_name = 1;
 }
 
-// Adds a configuration to the messages which satisfy a certain type pattern.
-message ConfigByType {
+message MethodFactory {
 
-    // A fully-qualified name of the target.
-    //
-    // Currently, only the field type name is expected.
-    //
+    // // io.spine.tools.protoc.MethodFactory
+    JavaClassName class_name = 1;
+}
+
+message FieldName {
+
     string value = 1;
-
-    // A pattern for the type name.
-    TypePattern pattern = 2;
 }
 
 // File pattern used to filter messages residing in files.
@@ -219,9 +194,29 @@ message FilePattern {
 // A type name pattern.
 message TypePattern {
 
-    // A pattern which is used to check for a strict match between the type name and
-    // the specified expected type.
-    string expected_type = 1;
+    oneof value {
+
+        // A pattern which is used to check for a strict match between the type name and
+        // the specified expected type.
+        ProtoTypeName expected_type = 1;
+
+        string regex = 2;
+    }
+}
+
+message ProtoTypeName {
+
+    string value = 1;
+}
+
+message JavaClassName {
+
+    string canonical = 1;
+}
+
+message ProtoOption {
+
+    string name = 1;
 }
 
 // A container for the java classpath items.
