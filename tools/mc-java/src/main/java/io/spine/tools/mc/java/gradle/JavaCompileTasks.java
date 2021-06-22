@@ -53,6 +53,7 @@ final class JavaCompileTasks {
      * Creates a new instance for the passed projects.
      */
     static JavaCompileTasks of(Project project) {
+        checkNotNull(project);
         return new JavaCompileTasks(project);
     }
 
