@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.task;
+package io.spine.tools.mc.js.code.step;
 
 import com.google.common.truth.StringSubject;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -38,7 +38,6 @@ import io.spine.js.generate.typeurl.OuterMessage.NestedEnum;
 import io.spine.js.generate.typeurl.OuterMessage.NestedMessage;
 import io.spine.js.generate.typeurl.TopLevelEnum;
 import io.spine.tools.mc.js.code.CodeWriter;
-import io.spine.tools.mc.js.code.step.AppendTypeUrlGetter;
 import io.spine.tools.mc.js.code.text.Method;
 import io.spine.type.MessageType;
 import io.spine.type.ServiceType;
