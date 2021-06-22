@@ -44,7 +44,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <p>Supports only {@code CommonJS} imports.
  *
- * <p>The task should be performed last among {@linkplain CodeGenStep generation tasks}
+ * <p>This step should be performed last among {@linkplain CodeGenStep code generation steps}
  * to ensure that imports won't be modified after execution of this task.
  */
 public final class ResolveImports extends CodeGenStep implements Logging {
