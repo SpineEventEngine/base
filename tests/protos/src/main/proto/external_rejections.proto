@@ -23,43 +23,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+syntax = "proto3";
 
-include("annotator")
-include("factories")
-include("entity-queries")
-include("known-types")
-include("mc-java")
-include("rejection")
-include("validating-options")
-include("validation")
-include("validation-gen")
-include("protos")
+package spine.tools.rejections;
 
-/*
- * Dependency links established with the Gradle included build.
- *
- * See the `includeBuild(...)` block below for more info.
- */
-val links = mapOf(
-        "io.spine:spine-base"            to ":base",
-        "io.spine.tools:spine-tool-base" to ":tool-base",
-        "io.spine.tools:spine-mc-java"   to ":mc-java",
-        "io.spine:spine-testlib"         to ":testlib"
-)
+import "spine/options.proto";
 
-/*
- * Include the `base` build into the `tests` project build.
- *
- * Integration tests are built separately in order to be able to test the current
- * version of the Gradle plugins.
- *
- * See the Gradle manual for more info:
- * https://docs.gradle.org/current/userguide/composite_builds.html
- */
-includeBuild("$rootDir/../") {
-    dependencySubstitution {
-        links.forEach { (id, projectPath) ->
-            substitute(module(id)).with(project(projectPath))
-        }
-    }
+option (type_url_prefix) = "type.spine.io";
+option (SPI_all) = true;
+option java_package = "io.spine.tools.external.rejections";
+// Keep all the rejections under the same outer class called `Rejections`.
+
+message CannotGenerateCode {
+
+    string error = 1 [(required) = true];
 }

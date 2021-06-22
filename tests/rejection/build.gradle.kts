@@ -26,6 +26,10 @@
 
 import io.spine.tools.protoc.MessageSelectorFactory.suffix
 
+dependencies {
+    protobuf(project(":protos"))
+}
+
 modelCompiler {
 
     generateValidation = true
