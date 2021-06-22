@@ -64,7 +64,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @apiNote This test suite is placed under the {@code mc-java} module, while the class
  * it tests ({@link SpinePlugin} is under {@code }) because the test suite uses
  * {@link McJavaTaskName}. Presumably, this test suite should be updated using
- * stub task names (which would be language-neutral) and returned back to the
+ * stub task names (which would be language-neutral), and then returned back to
+ * the {@code plugin-base} module.
  */
 @DisplayName("`SpinePlugin` should")
 class SpinePluginTest {
