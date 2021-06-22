@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.task;
+package io.spine.tools.mc.js.code.step;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FileDescriptor;
@@ -50,7 +50,7 @@ import static io.spine.tools.code.Line.emptyLine;
  *
  * <p>The class handles messages and enums of any nesting level.
  */
-public class AppendTypeUrlGetter extends GenerationTask {
+public class AppendTypeUrlGetter extends CodeGenStep {
 
     private static final String METHOD_NAME = "typeUrl";
 

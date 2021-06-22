@@ -28,23 +28,23 @@ package io.spine.tools.mc.js.code.given;
 
 import io.spine.tools.js.fs.Directory;
 import io.spine.code.proto.FileSet;
-import io.spine.tools.mc.js.code.task.GenerationTask;
+import io.spine.tools.mc.js.code.step.CodeGenStep;
 
 import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A test implementation of {@link GenerationTask}.
+ * A test implementation of {@link CodeGenStep}.
  */
-public class TestGenerationTask extends GenerationTask {
+public class TestCodeGenStep extends CodeGenStep {
 
     private boolean sourcesProcessed = false;
     private boolean filesFiltered = false;
     @Nullable
     private FileSet processedFileSet;
 
-    public TestGenerationTask(Directory generatedRoot) {
+    public TestCodeGenStep(Directory generatedRoot) {
         super(generatedRoot);
     }
 

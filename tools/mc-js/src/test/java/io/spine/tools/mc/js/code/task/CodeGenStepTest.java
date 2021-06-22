@@ -31,7 +31,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.tools.js.fs.Directory;
 import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.FileSet;
-import io.spine.tools.mc.js.code.given.TestGenerationTask;
+import io.spine.tools.mc.js.code.given.TestCodeGenStep;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -48,14 +48,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("GenerationTask should")
-class GenerationTaskTest {
+class CodeGenStepTest {
 
     private static final String MISSING_PATH = "non-existent";
 
     @Test
     @DisplayName("check if there are files to process")
     void checkFilesToProcess() {
-        TestGenerationTask task = new TestGenerationTask(mainProtoSources());
+        TestCodeGenStep task = new TestCodeGenStep(mainProtoSources());
         assertPerformed(task, mainFileSet());
     }
 
@@ -63,7 +63,7 @@ class GenerationTaskTest {
     @DisplayName("recognize there are no generated files to process")
     void recognizeThereAreNoFiles() {
         Directory nonExistentRoot = Directory.at(Paths.get(MISSING_PATH));
-        TestGenerationTask task = new TestGenerationTask(nonExistentRoot);
+        TestCodeGenStep task = new TestCodeGenStep(nonExistentRoot);
         assertNotPerformed(task, mainFileSet());
     }
 
@@ -71,14 +71,14 @@ class GenerationTaskTest {
     @DisplayName("recognize there are no known types to process")
     void recognizeThereAreNoTypes() {
         FileSet emptyFileSet = FileSet.of(ImmutableSet.of());
-        TestGenerationTask task = new TestGenerationTask(mainProtoSources());
+        TestCodeGenStep task = new TestCodeGenStep(mainProtoSources());
         assertNotPerformed(task, emptyFileSet);
     }
 
     @Test
     @DisplayName("process files compiled to JavaScript")
     void processCompiledJsFiles() {
-        TestGenerationTask task = new TestGenerationTask(mainProtoSources());
+        TestCodeGenStep task = new TestCodeGenStep(mainProtoSources());
         FileSet passedFiles = mainFileSet();
         task.performFor(passedFiles);
         FileSet processedFiles = task.processedFileSet();
@@ -94,7 +94,7 @@ class GenerationTaskTest {
     @DisplayName("skip files not compiled to JavaScript")
     void skipNotCompiledJsFiles(@TempDir Path tempDir) {
         Directory emptyDirectory = Directory.at(tempDir);
-        TestGenerationTask task = new TestGenerationTask(emptyDirectory);
+        TestCodeGenStep task = new TestCodeGenStep(emptyDirectory);
         FileSet passedFiles = mainFileSet();
         // Check the file set is originally not empty.
         assertFalse(passedFiles.isEmpty());
@@ -103,15 +103,15 @@ class GenerationTaskTest {
         assertTrue(task.areFilesFiltered());
     }
 
-    private static void assertPerformed(TestGenerationTask task, FileSet fileSet) {
+    private static void assertPerformed(TestCodeGenStep task, FileSet fileSet) {
         assertPerformed(task, fileSet, true);
     }
 
-    private static void assertNotPerformed(TestGenerationTask task, FileSet fileSet) {
+    private static void assertNotPerformed(TestCodeGenStep task, FileSet fileSet) {
         assertPerformed(task, fileSet, false);
     }
 
-    private static void assertPerformed(TestGenerationTask task,
+    private static void assertPerformed(TestCodeGenStep task,
                                         FileSet fileSet,
                                         boolean expectedToBePerformed) {
         task.performFor(fileSet);

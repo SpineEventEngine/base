@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.task;
+package io.spine.tools.mc.js.code.step;
 
 import io.spine.tools.js.fs.Directory;
 import io.spine.code.proto.FileSet;
@@ -38,11 +38,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>The class operates on the provided set of Protobuf files
  * and enhances their JavaScript counterparts by generating additional code.
  */
-public abstract class GenerationTask {
+public abstract class CodeGenStep {
 
     private final Directory generatedRoot;
 
-    protected GenerationTask(Directory generatedRoot) {
+    protected CodeGenStep(Directory generatedRoot) {
         this.generatedRoot = checkNotNull(generatedRoot);
     }
 

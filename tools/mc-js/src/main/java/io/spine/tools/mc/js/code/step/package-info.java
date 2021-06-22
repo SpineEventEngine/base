@@ -29,7 +29,7 @@
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.mc.js.code.task;
+package io.spine.tools.mc.js.code.step;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

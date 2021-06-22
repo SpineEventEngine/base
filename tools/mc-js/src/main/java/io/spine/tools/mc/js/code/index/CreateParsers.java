@@ -36,7 +36,7 @@ import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.tools.mc.js.code.CodeWriter;
-import io.spine.tools.mc.js.code.task.GenerationTask;
+import io.spine.tools.mc.js.code.step.CodeGenStep;
 import io.spine.tools.mc.js.code.text.Comment;
 import io.spine.tools.mc.js.code.text.Parser;
 import io.spine.tools.mc.js.fs.FileWriter;
@@ -55,7 +55,7 @@ import static io.spine.tools.mc.js.code.text.Parser.importTypeParsersIn;
  *
  * @see KnownTypes
  */
-public final class CreateParsers extends GenerationTask {
+public final class CreateParsers extends CodeGenStep {
 
     public CreateParsers(Directory generatedRoot) {
         super(checkNotNull(generatedRoot));

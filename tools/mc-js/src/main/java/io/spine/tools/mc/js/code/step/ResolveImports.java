@@ -24,41 +24,51 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.code.task;
+package io.spine.tools.mc.js.code.step;
 
-import io.spine.code.proto.ProtoBelongsToModule;
-import io.spine.code.proto.SourceFile;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.proto.FileSet;
+import io.spine.logging.Logging;
+import io.spine.tools.fs.ExternalModules;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.fs.FileName;
+import io.spine.tools.mc.js.fs.JsFile;
 
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A predicate determining if the given Protobuf file was compiled to JavaScript
- * and belongs to the specified module.
+ * A task to resolve imports in generated files.
+ *
+ * <p>Supports only {@code CommonJS} imports.
+ *
+ * <p>The task should be performed last among {@linkplain CodeGenStep generation tasks}
+ * to ensure that imports won't be modified after execution of this task.
  */
-final class CompiledProtoBelongsToModule extends ProtoBelongsToModule {
+public final class ResolveImports extends CodeGenStep implements Logging {
 
-    private final Directory generatedRoot;
+    private final ExternalModules modules;
 
-    /**
-     * Creates a new instance.
-     *
-     * @param generatedRoot
-     *         the root directory for generated Protobufs
-     */
-    CompiledProtoBelongsToModule(Directory generatedRoot) {
-        super();
-        checkNotNull(generatedRoot);
-        this.generatedRoot = generatedRoot;
+    public ResolveImports(Directory generatedRoot, ExternalModules modules) {
+        super(generatedRoot);
+        this.modules = checkNotNull(modules);
     }
 
     @Override
-    protected Path resolve(SourceFile file) {
-        FileName fileName = FileName.from(file.descriptor());
-        Path filePath = generatedRoot.resolve(fileName);
-        return filePath;
+    protected void generateFor(FileSet fileSet) {
+        for (FileDescriptor file : fileSet.files()) {
+            FileName fileName = FileName.from(file);
+            _debug().log("Resolving imports in the file `%s`.", fileName);
+            Path filePath = generatedRoot().resolve(fileName);
+            resolveInFile(filePath);
+        }
+    }
+
+    @VisibleForTesting
+    void resolveInFile(Path filePath) {
+        JsFile file = new JsFile(filePath);
+        file.resolveImports(generatedRoot().path(), modules);
     }
 }

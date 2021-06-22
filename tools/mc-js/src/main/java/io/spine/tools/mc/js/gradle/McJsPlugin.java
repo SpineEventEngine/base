@@ -36,9 +36,9 @@ import io.spine.tools.js.fs.DefaultJsPaths;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.mc.js.code.index.CreateParsers;
 import io.spine.tools.mc.js.code.index.GenerateIndexFile;
-import io.spine.tools.mc.js.code.task.AppendTypeUrlGetter;
-import io.spine.tools.mc.js.code.task.GenerationTask;
-import io.spine.tools.mc.js.code.task.ResolveImports;
+import io.spine.tools.mc.js.code.step.AppendTypeUrlGetter;
+import io.spine.tools.mc.js.code.step.CodeGenStep;
+import io.spine.tools.mc.js.code.step.ResolveImports;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -145,15 +145,15 @@ public class McJsPlugin extends ProtoPlugin {
     private static void generateCode(Directory generatedRoot,
                                      Supplier<FileSet> files,
                                      ExternalModules modules) {
-        List<GenerationTask> tasks = ImmutableList.of(
+        List<CodeGenStep> steps = ImmutableList.of(
                 new CreateParsers(generatedRoot),
                 new AppendTypeUrlGetter(generatedRoot),
                 new GenerateIndexFile(generatedRoot),
                 new ResolveImports(generatedRoot, modules)
         );
         FileSet suppliedFiles = files.get();
-        for (GenerationTask task : tasks) {
-            task.performFor(suppliedFiles);
+        for (CodeGenStep step : steps) {
+            step.performFor(suppliedFiles);
         }
     }
 

@@ -38,6 +38,7 @@ import io.spine.js.generate.typeurl.OuterMessage.NestedEnum;
 import io.spine.js.generate.typeurl.OuterMessage.NestedMessage;
 import io.spine.js.generate.typeurl.TopLevelEnum;
 import io.spine.tools.mc.js.code.CodeWriter;
+import io.spine.tools.mc.js.code.step.AppendTypeUrlGetter;
 import io.spine.tools.mc.js.code.text.Method;
 import io.spine.type.MessageType;
 import io.spine.type.ServiceType;
@@ -50,8 +51,8 @@ import org.junit.jupiter.api.Test;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.mc.js.code.given.Given.enumType;
 import static io.spine.tools.mc.js.code.given.Given.messageType;
-import static io.spine.tools.mc.js.code.task.AppendTypeUrlGetter.typeUrlMethod;
-import static io.spine.tools.mc.js.code.task.AppendTypeUrlGetter.typeUrlMethods;
+import static io.spine.tools.mc.js.code.step.AppendTypeUrlGetter.typeUrlMethod;
+import static io.spine.tools.mc.js.code.step.AppendTypeUrlGetter.typeUrlMethods;
 import static java.lang.String.format;
 
 @DisplayName("AppendTypeUrlGetter should")
