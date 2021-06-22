@@ -70,7 +70,7 @@ class BacktickFormattingTest {
     }
 
     /**
-     * Tests that formatting correctly handles lines containing the dollar sign.
+     * Tests that the formatter handles lines containing the dollar sign correctly.
      *
      * @see java.util.regex.Matcher#quoteReplacement(String)
      */
