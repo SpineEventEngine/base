@@ -40,7 +40,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.tools.mc.java.gradle.ModelCompilerPlugin.extensionName;
+import static io.spine.tools.mc.java.gradle.McJavaPlugin.extensionName;
 
 @DisplayName("`ProtocPluginConfiguration` should")
 class ProtocPluginConfigurationTest {
@@ -63,7 +63,7 @@ class ProtocPluginConfigurationTest {
                 .withProjectDir(projectDir)
                 .build();
         project.apply(ImmutableMap.of(PLUGIN, "java"));
-        Extension extension = new Extension();
+        McJavaExtension extension = new McJavaExtension();
         extension.generateValidatingBuilders = false;
         project.getExtensions().add(extensionName(), extension);
 

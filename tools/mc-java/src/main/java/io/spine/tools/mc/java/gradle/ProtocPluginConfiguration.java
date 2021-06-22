@@ -47,13 +47,13 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Set;
 
-import static io.spine.tools.mc.java.gradle.Extension.getEntityQueries;
-import static io.spine.tools.mc.java.gradle.Extension.getFields;
-import static io.spine.tools.mc.java.gradle.Extension.getInterfaces;
-import static io.spine.tools.mc.java.gradle.Extension.getMethods;
-import static io.spine.tools.mc.java.gradle.Extension.getNestedClasses;
-import static io.spine.tools.mc.java.gradle.Extension.shouldGenerateValidatingBuilders;
-import static io.spine.tools.mc.java.gradle.Extension.shouldGenerateValidation;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getEntityQueries;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getFields;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getInterfaces;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getMethods;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getNestedClasses;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.shouldGenerateValidatingBuilders;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.shouldGenerateValidation;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**

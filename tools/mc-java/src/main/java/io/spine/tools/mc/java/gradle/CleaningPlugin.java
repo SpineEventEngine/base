@@ -33,7 +33,7 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 import static io.spine.tools.gradle.BaseTaskName.clean;
-import static io.spine.tools.gradle.ModelCompilerTaskName.preClean;
+import static io.spine.tools.mc.java.gradle.McJavaTaskName.preClean;
 
 /**
  * Plugin which performs additional cleanup of the Spine-generated folders.
@@ -46,7 +46,7 @@ public class CleaningPlugin extends SpinePlugin {
     public void apply(Project project) {
         Action<Task> preCleanAction = task -> {
             _debug().log("Pre-clean: deleting the directories.");
-            DirectoryCleaner.deleteDirs(Extension.getDirsToClean(project));
+            DirectoryCleaner.deleteDirs(McJavaExtension.getDirsToClean(project));
         };
         GradleTask preCleanTask =
                 newTask(preClean, preCleanAction)

@@ -33,7 +33,7 @@ import io.spine.code.proto.TypeSet;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.fs.FileName;
 import io.spine.tools.mc.js.code.CodeWriter;
-import io.spine.tools.mc.js.code.task.GenerationTask;
+import io.spine.tools.mc.js.code.step.CodeGenStep;
 import io.spine.tools.mc.js.code.text.Import;
 import io.spine.tools.mc.js.fs.FileWriter;
 
@@ -55,7 +55,7 @@ import static java.util.stream.Collectors.toSet;
  *     <li>The map of parsers for known types.
  * </ul>
  */
-public final class GenerateIndexFile extends GenerationTask {
+public final class GenerateIndexFile extends CodeGenStep {
 
     public GenerateIndexFile(Directory generatedRoot) {
         super(generatedRoot);

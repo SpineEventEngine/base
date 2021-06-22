@@ -31,6 +31,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.js.code.MethodReference;
 import io.spine.tools.js.code.TypeName;
+import io.spine.tools.js.fs.FileName;
 import io.spine.tools.mc.js.code.CodeWriter;
 import io.spine.tools.mc.js.code.field.FieldGenerator;
 import io.spine.tools.mc.js.code.field.FieldGenerators;
@@ -61,7 +62,7 @@ public final class Parser implements Snippet {
     public static final String TYPE_PARSERS_IMPORT_NAME = "TypeParsers";
 
     /** The name of the {@code object-parser.js} import. */
-    public static final String ABSTRACT_PARSER_IMPORT_NAME = "ObjectParser";
+    public static final String OBJECT_PARSER_IMPORT_NAME = "ObjectParser";
 
     /**
      * The name of the {@code fromObject} method return value.
@@ -112,7 +113,7 @@ public final class Parser implements Snippet {
     /**
      * Obtains the string representing a call to a method parsing an object into a message.
      *
-     * <p>The method can be used to reference the a call to a handcrafted parser as well
+     * <p>The method can be used to reference a call to a handcrafted parser as well
      * as for a generated parser.
      *
      * @param parserVariable
@@ -210,6 +211,26 @@ public final class Parser implements Snippet {
      * Obtains the name of the imported abstract parser.
      */
     private static String superClass() {
-        return ABSTRACT_PARSER_IMPORT_NAME;
+        return OBJECT_PARSER_IMPORT_NAME;
+    }
+
+    /**
+     * Creates an import statement of {@link #OBJECT_PARSER_FILE} relative to the target file.
+     */
+    public static String importObjectParserIn(FileName targetFile) {
+        return defaultImport(OBJECT_PARSER_FILE, targetFile).namedAs(OBJECT_PARSER_IMPORT_NAME);
+    }
+
+    /**
+     * Creates an import statement of {@link #TYPE_PARSERS_FILE} relative to the target file.
+     */
+    public static String importTypeParsersIn(FileName targetFile) {
+        return defaultImport(TYPE_PARSERS_FILE, targetFile).namedAs(TYPE_PARSERS_IMPORT_NAME);
+    }
+
+    private static Import defaultImport(String importedFile, FileName targetFile) {
+        String pathRelativeToTarget = targetFile.pathToRoot() + importedFile;
+        return Import.library(pathRelativeToTarget)
+                     .toDefault();
     }
 }

@@ -54,7 +54,7 @@ import java.util.List;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.mc.js.code.given.FileWriters.assertFileContains;
 import static io.spine.tools.mc.js.code.given.Generators.assertContains;
-import static io.spine.tools.mc.js.code.text.Parser.ABSTRACT_PARSER_IMPORT_NAME;
+import static io.spine.tools.mc.js.code.text.Parser.OBJECT_PARSER_IMPORT_NAME;
 import static io.spine.tools.mc.js.code.text.Parser.OBJECT_PARSER_FILE;
 import static io.spine.tools.mc.js.code.text.Parser.TYPE_PARSERS_FILE;
 import static io.spine.tools.mc.js.code.text.Parser.TYPE_PARSERS_IMPORT_NAME;
@@ -94,7 +94,7 @@ class CreateParsersTest {
         String abstractParserImport =
                 Import.library(importPrefix + OBJECT_PARSER_FILE)
                       .toDefault()
-                      .namedAs(ABSTRACT_PARSER_IMPORT_NAME);
+                      .namedAs(OBJECT_PARSER_IMPORT_NAME);
         String typeParsersImport =
                 Import.library(importPrefix + TYPE_PARSERS_FILE)
                       .toDefault()

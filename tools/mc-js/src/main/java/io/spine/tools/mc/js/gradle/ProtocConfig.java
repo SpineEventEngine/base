@@ -43,7 +43,7 @@ final class ProtocConfig extends ProtocConfigurationPlugin {
 
     @Override
     protected File getTestDescriptorSet(Project project) {
-        return Extension.getTestDescriptorSet(project);
+        return McJsExtension.getTestDescriptorSet(project);
     }
 
     @Override
@@ -55,7 +55,7 @@ final class ProtocConfig extends ProtocConfigurationPlugin {
 
     @Override
     protected File getMainDescriptorSet(Project project) {
-        return Extension.getMainDescriptorSet(project);
+        return McJsExtension.getMainDescriptorSet(project);
     }
 
     @Override
