@@ -67,7 +67,6 @@ public class RejectionGenPlugin extends ProtoPlugin {
      */
     @Override
     public void apply(Project project) {
-
         Action<Task> mainScopeAction =
                 createAction(project,
                              mainProtoFiles(project),

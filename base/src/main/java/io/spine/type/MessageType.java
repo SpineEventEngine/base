@@ -391,5 +391,6 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         FieldName uuid = FieldName.of("uuid");
         boolean nameMatches = uuid.equals(theField.name());
         boolean typeMatches = theField.isString();
-        return nameMatches && typeMatches;    }
+        return nameMatches && typeMatches;
+    }
 }
