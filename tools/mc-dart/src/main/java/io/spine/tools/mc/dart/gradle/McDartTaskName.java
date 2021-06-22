@@ -52,23 +52,30 @@ public enum McDartTaskName implements TaskName {
     generateDartTestTypeRegistry,
 
     /**
-     * Copies the Dart code generated from Protobuf from its temporary location to the {@code lib}
-     * directory.
+     * Copies the Dart code generated from Protobuf from its temporary location to
+     * the {@code lib} directory.
      *
      * <p>Works only with the {@code main} scope files.
      */
     copyGeneratedDart,
 
     /**
-     * Copies the Dart code generated from Protobuf from its temporary location to the {@code test}
-     * directory.
+     * Copies the Dart code generated from Protobuf from its temporary location to
+     * the {@code test} directory.
      *
      * <p>Works only with the {@code test} scope files.
      */
     copyTestGeneratedDart,
 
     /**
-     * Rewrites the Dart source files generated from Protobuf with the resolved absolute imports.
+     * Rewrites the Dart source files generated from Protobuf with
+     * the resolved absolute imports.
      */
-    resolveImports
+    resolveImports,
+
+    /**
+     * Rewrites the Dart test source files of the generated from Protobuf with
+     * the resolved absolute imports.
+     */
+    resolveTestImports
 }

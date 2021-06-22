@@ -41,6 +41,7 @@ import java.nio.file.Path;
 import static io.spine.tools.gradle.BaseTaskName.assemble;
 import static io.spine.tools.mc.dart.gradle.McDartTaskName.copyGeneratedDart;
 import static io.spine.tools.mc.dart.gradle.McDartTaskName.resolveImports;
+import static io.spine.tools.mc.dart.gradle.McDartTaskName.resolveTestImports;
 
 /**
  * A Gradle plugin which configures Protobuf Dart code generation.
@@ -68,22 +69,23 @@ public final class McDartPlugin extends SpinePlugin {
 
     private void createMainResolveImportTask(Project project, McDartExtension extension) {
         DirectoryProperty rootDir = extension.getMainGeneratedDir();
-        doCreateResolveImportsTask(project, extension, rootDir);
+        doCreateResolveImportsTask(project, extension, rootDir, false);
     }
 
     private void createTestResolveImportTask(Project project, McDartExtension extension) {
         DirectoryProperty rootDir = extension.getTestGeneratedDir();
-        doCreateResolveImportsTask(project, extension, rootDir);
+        doCreateResolveImportsTask(project, extension, rootDir, true);
     }
 
     private void doCreateResolveImportsTask(Project project,
                                             McDartExtension extension,
-                                            DirectoryProperty rootDir) {
+                                            DirectoryProperty rootDir,
+                                            boolean tests) {
         Action<Task> action = task -> {
             FileTree generatedFiles = rootDir.getAsFileTree();
             generatedFiles.forEach(file -> resolveImports(file, extension));
         };
-        newTask(resolveImports, action)
+        newTask(tests ? resolveTestImports : resolveImports, action)
                 .insertAfterTask(copyGeneratedDart)
                 .insertBeforeTask(assemble)
                 .applyNowTo(project);
