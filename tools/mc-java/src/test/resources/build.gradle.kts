@@ -65,7 +65,6 @@ apply {
     plugin("com.google.protobuf")
     plugin("io.spine.mc-java")
     from("$rootDir/test-env.gradle")
-    from("${extra["enclosingRootDir"]}/${commonPath}/model-compiler.gradle")
 }
 
 group = "io.spine.test"
@@ -81,10 +80,6 @@ repositories {
 val spineVersion: String by extra
 dependencies {
     implementation("io.spine:spine-base:$spineVersion")
-}
-
-extensions["modelCompiler"].withGroovyBuilder {
-    setProperty("generateValidation", true)
 }
 
 sourceSets {

@@ -88,7 +88,6 @@ subprojects {
         plugin("io.spine.mc-java")
         plugin("idea")
         from("${baseRoot}/${commonPath}/test-output.gradle")
-        from("${baseRoot}/${commonPath}/model-compiler.gradle")
     }
 
     val spineVersion: String by extra
