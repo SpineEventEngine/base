@@ -40,6 +40,7 @@ import java.nio.file.Path;
 
 import static io.spine.tools.gradle.BaseTaskName.assemble;
 import static io.spine.tools.mc.dart.gradle.McDartTaskName.copyGeneratedDart;
+import static io.spine.tools.mc.dart.gradle.McDartTaskName.copyTestGeneratedDart;
 import static io.spine.tools.mc.dart.gradle.McDartTaskName.resolveImports;
 import static io.spine.tools.mc.dart.gradle.McDartTaskName.resolveTestImports;
 
@@ -86,7 +87,7 @@ public final class McDartPlugin extends SpinePlugin {
             generatedFiles.forEach(file -> resolveImports(file, extension));
         };
         newTask(tests ? resolveTestImports : resolveImports, action)
-                .insertAfterTask(copyGeneratedDart)
+                .insertAfterTask(tests ? copyTestGeneratedDart : copyGeneratedDart)
                 .insertBeforeTask(assemble)
                 .applyNowTo(project);
     }
