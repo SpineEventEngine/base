@@ -36,6 +36,7 @@ import org.jboss.forge.roaster.model.source.JavaDocCapableSource;
 import org.jboss.forge.roaster.model.source.JavaDocSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -53,6 +54,7 @@ import static io.spine.tools.mc.java.gradle.given.RejectionTestEnv.newProjectWit
 import static io.spine.tools.mc.java.gradle.given.RejectionTestEnv.rejectionsJavadocThrowableSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Disabled("while Protoc plugin is not functional")
 @DisplayName("`RejectionGenPlugin` should")
 class RejectionGenPluginTest {
 

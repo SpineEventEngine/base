@@ -33,8 +33,6 @@ import io.spine.tools.mc.java.protoc.CompilerOutput;
 import io.spine.tools.protoc.JavaClassName;
 import io.spine.type.MessageType;
 
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
-
 /**
  * An abstract base for the interface code generation tasks.
  */

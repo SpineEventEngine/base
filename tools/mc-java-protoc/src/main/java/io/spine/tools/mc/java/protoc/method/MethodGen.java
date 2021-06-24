@@ -31,10 +31,7 @@ import io.spine.tools.mc.java.protoc.CodeGenerationTask;
 import io.spine.tools.mc.java.protoc.CodeGenerationTasks;
 import io.spine.tools.mc.java.protoc.CodeGenerator;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.mc.java.protoc.ExternalClassLoader;
 import io.spine.tools.mc.java.protoc.InsertionPoint;
-import io.spine.tools.protoc.Classpath;
-import io.spine.tools.protoc.MethodFactory;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
@@ -64,9 +61,9 @@ public final class MethodGen extends CodeGenerator {
      */
     public static MethodGen instance(SpineProtocConfig spineProtocConfig) {
         checkNotNull(spineProtocConfig);
-        Classpath classpath = spineProtocConfig.getClasspath();
-        ExternalClassLoader<MethodFactory> classLoader =
-                new ExternalClassLoader<>(classpath, MethodFactory.class);
+//        Classpath classpath = spineProtocConfig.getClasspath();
+//        ExternalClassLoader<MethodFactory> classLoader =
+//                new ExternalClassLoader<>(classpath, MethodFactory.class);
 //        AddMethods config = spineProtocConfig.getAddMethods();
         ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();
 //        if (isNotDefault(config.getUuidFactory())) {

@@ -29,9 +29,7 @@ package io.spine.tools.mc.java.protoc.message;
 import com.google.common.collect.ImmutableList;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.tools.protoc.EntityStateConfig;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.protoc.ForEntities;
 import io.spine.tools.protoc.JavaClassName;
 import io.spine.type.MessageType;
 

@@ -38,7 +38,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * An abstract base for the method code generation tasks.
