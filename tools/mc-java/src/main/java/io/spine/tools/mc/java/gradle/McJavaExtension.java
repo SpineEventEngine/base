@@ -32,7 +32,6 @@ import groovy.lang.Closure;
 import io.spine.tools.code.Indent;
 import io.spine.tools.gradle.GradleExtension;
 import io.spine.tools.java.fs.DefaultJavaPaths;
-import io.spine.tools.java.fs.DefaultJavaPaths;
 import io.spine.tools.mc.java.codegen.Codegen;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
@@ -166,7 +165,7 @@ public class McJavaExtension extends GradleExtension {
 
     public List<String> internalMethodNames = new ArrayList<>();
 
-    public Extension(Project project) {
+    public McJavaExtension(Project project) {
         super();
         checkNotNull(project);
         this.codegen = new Codegen(project);
