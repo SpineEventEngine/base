@@ -36,6 +36,7 @@ import org.gradle.api.tasks.TaskAction;
 import java.io.File;
 import java.nio.file.Path;
 
+@SuppressWarnings("AbstractClassNeverImplemented" /* by Gradle contract */)
 public abstract class ResolveImports extends DefaultTask {
 
     /** The directory containing the generated source code. */
