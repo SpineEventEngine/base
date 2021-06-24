@@ -32,7 +32,7 @@ import groovy.lang.Closure;
 import io.spine.tools.code.Indent;
 import io.spine.tools.gradle.GradleExtension;
 import io.spine.tools.java.fs.DefaultJavaPaths;
-import io.spine.tools.mc.java.config.Codegen;
+import io.spine.tools.mc.java.codegen.Codegen;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;

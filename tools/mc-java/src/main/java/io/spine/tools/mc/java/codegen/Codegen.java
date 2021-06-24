@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.config;
+package io.spine.tools.mc.java.codegen;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.base.CommandMessage;
@@ -36,7 +36,6 @@ import io.spine.base.UuidValue;
 import io.spine.option.OptionsProto;
 import io.spine.query.EntityStateField;
 import io.spine.tools.java.code.UuidMethodFactory;
-import io.spine.tools.protoc.ByPattern;
 import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.ForMessages;

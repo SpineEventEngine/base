@@ -24,33 +24,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.config;
+package io.spine.tools.mc.java.codegen;
 
-import io.spine.tools.protoc.Validation;
-import org.gradle.api.Project;
-import org.gradle.api.provider.Property;
+import io.spine.code.java.ClassName;
 
-public final class ValidationConfig extends Config<Validation> {
+/**
+ * A selector which signalizes that the configuration should be applied to all messages that
+ * represent an entity state.
+ *
+ * @see Interfaces#mark(IsEntityState, ClassName)
+ */
+public final class IsEntityState extends MessageSelector {
 
-    public final Property<Boolean> skipValidatingBuilders;
-    public final Property<Boolean> skipValidation;
-
-    ValidationConfig(Project p) {
+    IsEntityState() {
         super();
-        skipValidatingBuilders = p.getObjects().property(Boolean.class);
-        skipValidation = p.getObjects().property(Boolean.class);
-    }
-
-    void enableAllByConvention() {
-        skipValidatingBuilders.convention(false);
-        skipValidation.convention(false);
-    }
-
-    @Override
-    Validation toProto() {
-        return Validation.newBuilder()
-                .setSkipBuilders(skipValidatingBuilders.get())
-                .setSkipValidation(skipValidation.get())
-                .build();
     }
 }

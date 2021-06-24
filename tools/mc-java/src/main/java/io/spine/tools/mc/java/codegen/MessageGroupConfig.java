@@ -24,21 +24,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.mc.java.codegen;
 
-import org.checkerframework.checker.regex.qual.Regex;
+import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.Message;
+import io.spine.tools.protoc.FilePattern;
+import org.gradle.api.Project;
+import org.gradle.api.provider.SetProperty;
 
-/**
- * A selector of proto files whose names qualify the supplied regex.
- */
-public final class ByRegex extends ByPattern {
+import java.util.Set;
 
-    ByRegex(@Regex String regex) {
-        super(regex);
+abstract class MessageGroupConfig<P extends Message> extends ConfigWithFields<P> {
+
+    private final SetProperty<FilePattern> file;
+
+    MessageGroupConfig(Project p) {
+        super(p);
+        this.file = p.getObjects().setProperty(FilePattern.class);
     }
 
-    @Override
-    public FilePattern toProto() {
-        return FilePatterns.fileRegex(getPattern());
+    void convention(FilePattern pattern) {
+        file.convention(ImmutableSet.of(pattern));
+    }
+
+    Set<FilePattern> patterns() {
+        return file.get();
+    }
+
+    public void inFiles(ByPattern pattern) {
+        this.file.add(pattern.toProto());
     }
 }

@@ -24,36 +24,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.mc.java.codegen;
 
-/**
- * Represents a Protoc Spine plugin configuration selector.
- *
- * <p>Is used as a marker for selecting the required protoc configuration when creating the
- * {@link ModelCompilerConfiguration}.
- *
- * <p>An example of using selector in Gradle:
- * <pre>
- *     mark messages().uuid(), asType("my.custom.Identifier")
- * </pre>
- * where {@code messages().uuid()} is a {@linkplain IsUuidMessage selector} for the UUID messages
- * configuration and the rest of the expression are the additional params provided for the
- * configuration.
- */
-public interface Selector {
+import com.google.common.truth.Subject;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-    /**
-     * Disables current selector.
-     */
-    void disable();
+import static com.google.common.truth.Truth.assertThat;
 
-    /**
-     * Enables current selector.
-     */
-    void enable();
+@DisplayName("`ByPattern` implementations should")
+final class ByPatternSelectorsTest {
 
-    /**
-     * Determines if the current selector is enabled.
-     */
-    boolean enabled();
+    @Test
+    @DisplayName("be different from each other")
+    void implementationsDiffer() {
+        String pattern = "testPattern";
+
+        Subject prefix = assertThat(new WithPrefix(pattern));
+        prefix.isNotEqualTo(new WithSuffix(pattern));
+        prefix.isNotEqualTo(new ByRegex(pattern));
+
+        Subject suffix = assertThat(new WithSuffix(pattern));
+        suffix.isNotEqualTo(new WithPrefix(pattern));
+        suffix.isNotEqualTo(new ByRegex(pattern));
+
+        Subject regex = assertThat(new ByRegex(pattern));
+        regex.isNotEqualTo(new WithSuffix(pattern));
+        regex.isNotEqualTo(new WithPrefix(pattern));
+    }
 }

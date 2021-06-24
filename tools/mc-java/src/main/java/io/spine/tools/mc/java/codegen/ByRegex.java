@@ -24,19 +24,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.mc.java.codegen;
 
-import io.spine.code.java.ClassName;
+import io.spine.tools.protoc.FilePattern;
+import org.checkerframework.checker.regex.qual.Regex;
 
 /**
- * A selector which signalizes that the configuration should be applied to all messages that
- * represent an entity state.
- *
- * @see Interfaces#mark(IsEntityState, ClassName)
+ * A selector of proto files whose names qualify the supplied regex.
  */
-public final class IsEntityState extends MessageSelector {
+public final class ByRegex extends ByPattern {
 
-    IsEntityState() {
-        super();
+    ByRegex(@Regex String regex) {
+        super(regex);
+    }
+
+    @Override
+    public FilePattern toProto() {
+        return FilePatterns.fileRegex(getPattern());
     }
 }

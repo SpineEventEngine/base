@@ -24,21 +24,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.mc.java.codegen;
 
-import org.checkerframework.checker.regex.qual.Regex;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-/**
- * A selector of proto files whose names end with a certain postfix.
- */
-public final class WithSuffix extends ByPattern {
-
-    public WithSuffix(@Regex String suffix) {
-        super(suffix);
-    }
-
-    @Override
-    public FilePattern toProto() {
-        return FilePatterns.fileSuffix(getPattern());
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

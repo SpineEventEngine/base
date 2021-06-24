@@ -24,35 +24,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.config;
+package io.spine.tools.mc.java.codegen;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Message;
-import io.spine.tools.protoc.ByPattern;
-import io.spine.tools.protoc.FilePattern;
-import org.gradle.api.Project;
-import org.gradle.api.provider.SetProperty;
+import io.spine.tools.protoc.JavaClassName;
 
-import java.util.Set;
+abstract class Config<P extends Message> {
 
-abstract class MessageGroupConfig<P extends Message> extends ConfigWithFields<P> {
+    abstract P toProto();
 
-    private final SetProperty<FilePattern> file;
-
-    MessageGroupConfig(Project p) {
-        super(p);
-        this.file = p.getObjects().setProperty(FilePattern.class);
-    }
-
-    void convention(FilePattern pattern) {
-        file.convention(ImmutableSet.of(pattern));
-    }
-
-    Set<FilePattern> patterns() {
-        return file.get();
-    }
-
-    public void inFiles(ByPattern pattern) {
-        this.file.add(pattern.toProto());
+    static JavaClassName className(String canonical) {
+        return JavaClassName
+                .newBuilder()
+                .setCanonical(canonical)
+                .build();
     }
 }

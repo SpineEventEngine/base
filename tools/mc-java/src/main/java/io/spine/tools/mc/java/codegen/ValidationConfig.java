@@ -24,19 +24,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.config;
+package io.spine.tools.mc.java.codegen;
 
-import com.google.protobuf.Message;
-import io.spine.tools.protoc.JavaClassName;
+import io.spine.tools.protoc.Validation;
+import org.gradle.api.Project;
+import org.gradle.api.provider.Property;
 
-abstract class Config<P extends Message> {
+public final class ValidationConfig extends Config<Validation> {
 
-    abstract P toProto();
+    public final Property<Boolean> skipValidatingBuilders;
+    public final Property<Boolean> skipValidation;
 
-    static JavaClassName className(String canonical) {
-        return JavaClassName
-                .newBuilder()
-                .setCanonical(canonical)
+    ValidationConfig(Project p) {
+        super();
+        skipValidatingBuilders = p.getObjects().property(Boolean.class);
+        skipValidation = p.getObjects().property(Boolean.class);
+    }
+
+    void enableAllByConvention() {
+        skipValidatingBuilders.convention(false);
+        skipValidation.convention(false);
+    }
+
+    @Override
+    Validation toProto() {
+        return Validation.newBuilder()
+                .setSkipBuilders(skipValidatingBuilders.get())
+                .setSkipValidation(skipValidation.get())
                 .build();
     }
 }

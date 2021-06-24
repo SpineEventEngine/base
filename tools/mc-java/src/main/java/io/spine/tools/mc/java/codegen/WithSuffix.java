@@ -24,22 +24,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.mc.java.codegen;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import io.spine.tools.protoc.FilePattern;
+import org.checkerframework.checker.regex.qual.Regex;
 
-import static com.google.common.truth.Truth.assertThat;
+/**
+ * A selector of proto files whose names end with a certain postfix.
+ */
+public final class WithSuffix extends ByPattern {
 
-@DisplayName("`WithSuffix` pattern should")
-final class WithSuffixTest {
+    public WithSuffix(@Regex String suffix) {
+        super(suffix);
+    }
 
-    @Test
-    @DisplayName("translate itself to Protobuf counterpart")
-    void convertToProtobufCounterpart() {
-        String suffix = "test.proto";
-        FilePattern pattern = new WithSuffix(suffix).toProto();
-        assertThat(pattern.getSuffix())
-                .isEqualTo(suffix);
+    @Override
+    public FilePattern toProto() {
+        return FilePatterns.fileSuffix(getPattern());
     }
 }

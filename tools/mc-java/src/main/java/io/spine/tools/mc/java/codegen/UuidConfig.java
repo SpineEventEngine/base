@@ -24,10 +24,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.config;
+package io.spine.tools.mc.java.codegen;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Message;
-import io.spine.tools.protoc.AddInterface;
+import io.spine.tools.protoc.ForUuids;
+import io.spine.tools.protoc.MethodFactory;
+import io.spine.tools.protoc.MethodFactoryName;
 import org.gradle.api.Project;
 import org.gradle.api.provider.SetProperty;
 
@@ -35,37 +38,37 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-abstract class ConfigWithInterfaces<P extends Message> extends Config<P> {
+public final class UuidConfig extends ConfigWithInterfaces<ForUuids> {
 
-    private final SetProperty<String> interfaceNames;
+    public final SetProperty<String> methodFactories;
 
-    ConfigWithInterfaces(Project p) {
-        super();
-        this.interfaceNames = p.getObjects().setProperty(String.class);
+    UuidConfig(Project p) {
+        super(p);
+        methodFactories = p.getObjects()
+                           .setProperty(String.class);
     }
 
-    public final void markAs(String interfaceName) {
-        interfaceNames.add(interfaceName);
+    void convention(Class<? extends MethodFactory> methodFactory,
+                    Class<? extends Message> markerInterface) {
+        methodFactories.convention(ImmutableSet.of(methodFactory.getCanonicalName()));
+        interfaceNames().convention(ImmutableSet.of(markerInterface.getCanonicalName()));
     }
 
-    public final void markAs(String firstInterface, String secondInterface, String... otherInterfaces) {
-        interfaceNames.add(firstInterface);
-        interfaceNames.add(secondInterface);
-        interfaceNames.addAll(otherInterfaces);
+    @Override
+    ForUuids toProto() {
+        return ForUuids.newBuilder()
+                .addAllMethodFactory(factories())
+                .addAllAddInterface(interfaces())
+                .build();
     }
 
-    final List<AddInterface> interfaces() {
-        return interfaceNames
-                .get()
-                .stream()
-                .map(Config::className)
-                .map(name -> AddInterface.newBuilder()
-                        .setName(name)
-                        .build())
-                .collect(toList());
-    }
-
-    final SetProperty<String> interfaceNames() {
-        return interfaceNames;
+    private List<MethodFactoryName> factories() {
+        return methodFactories.get()
+                              .stream()
+                              .map(Config::className)
+                              .map(name -> MethodFactoryName.newBuilder()
+                                      .setClassName(name)
+                                      .build())
+                              .collect(toList());
     }
 }

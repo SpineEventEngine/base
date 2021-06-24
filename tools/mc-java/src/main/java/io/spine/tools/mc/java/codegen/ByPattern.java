@@ -24,10 +24,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.mc.java.codegen;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import io.spine.tools.protoc.FilePattern;
 
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 

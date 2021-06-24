@@ -24,21 +24,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
-
-import org.checkerframework.checker.regex.qual.Regex;
+package io.spine.tools.mc.java.codegen;
 
 /**
- * A selector of proto files whose names start with a certain prefix.
+ * An abstract base for selectors targeting {@linkplain com.google.protobuf.Message messages}.
  */
-public final class WithPrefix extends ByPattern {
+@SuppressWarnings("AbstractClassWithoutAbstractMethods") // is abstract by design
+public abstract class MessageSelector implements Selector {
 
-    WithPrefix(@Regex String prefix) {
-        super(prefix);
+    private boolean enabled = true;
+
+    @Override
+    public void disable() {
+        enabled = false;
     }
 
     @Override
-    public FilePattern toProto() {
-        return FilePatterns.filePrefix(getPattern());
+    public void enable() {
+        enabled = true;
+    }
+
+    @Override
+    public boolean enabled() {
+        return enabled;
     }
 }

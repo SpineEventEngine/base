@@ -24,32 +24,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.mc.java.codegen;
 
-import com.google.common.truth.Subject;
+import io.spine.tools.protoc.FilePattern;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("`ByPattern` implementations should")
-final class ByPatternSelectorsTest {
+@DisplayName("`WithSuffix` pattern should")
+final class WithSuffixTest {
 
     @Test
-    @DisplayName("be different from each other")
-    void implementationsDiffer() {
-        String pattern = "testPattern";
-
-        Subject prefix = assertThat(new WithPrefix(pattern));
-        prefix.isNotEqualTo(new WithSuffix(pattern));
-        prefix.isNotEqualTo(new ByRegex(pattern));
-
-        Subject suffix = assertThat(new WithSuffix(pattern));
-        suffix.isNotEqualTo(new WithPrefix(pattern));
-        suffix.isNotEqualTo(new ByRegex(pattern));
-
-        Subject regex = assertThat(new ByRegex(pattern));
-        regex.isNotEqualTo(new WithSuffix(pattern));
-        regex.isNotEqualTo(new WithPrefix(pattern));
+    @DisplayName("translate itself to Protobuf counterpart")
+    void convertToProtobufCounterpart() {
+        String suffix = "test.proto";
+        FilePattern pattern = new WithSuffix(suffix).toProto();
+        assertThat(pattern.getSuffix())
+                .isEqualTo(suffix);
     }
 }

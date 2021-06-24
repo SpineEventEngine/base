@@ -24,45 +24,58 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.config;
+package io.spine.tools.mc.java.codegen;
 
 import com.google.common.collect.ImmutableSet;
-import io.spine.base.MessageFile;
-import io.spine.base.SignalMessage;
+import com.google.protobuf.GeneratedMessage;
+import com.google.protobuf.Message;
 import io.spine.tools.protoc.FilePattern;
-import io.spine.tools.protoc.ForSignals;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import io.spine.tools.protoc.ForEntities;
+import io.spine.tools.protoc.ProtoOption;
 import org.gradle.api.Project;
+import org.gradle.api.provider.SetProperty;
 
-public final class SignalConfig extends MessageGroupConfig<ForSignals> {
+import java.util.List;
 
-    SignalConfig(Project p) {
+import static java.util.stream.Collectors.toList;
+
+public final class EntityConfig extends MessageGroupConfig<ForEntities> {
+
+    private final SetProperty<String> options;
+
+    EntityConfig(Project p) {
         super(p);
+        options = p.getObjects().setProperty(String.class);
     }
 
-    void convention(MessageFile file, Class<? extends SignalMessage> interfaceClass) {
-        convention(file, interfaceClass, null);
+    void convention(GeneratedMessage.GeneratedExtension<?, ?> option,
+                    Class<? extends Message> markerInterface,
+                    Class<?> fieldSuperclass) {
+        convention(FilePattern.getDefaultInstance());
+        convention(true, fieldSuperclass);
+        options.convention(ImmutableSet.of(option.getDescriptor().getName()));
+        interfaceNames().convention(ImmutableSet.of(markerInterface.getCanonicalName()));
     }
 
-    void convention(MessageFile file,
-                    Class<? extends SignalMessage> interfaceClass,
-                    @Nullable Class<?> fieldSuperclass) {
-        FilePattern pattern = FilePattern
-                .newBuilder()
-                .setSuffix(file.suffix())
-                .build();
-        convention(pattern);
-        this.interfaceNames().convention(ImmutableSet.of(interfaceClass.getCanonicalName()));
-        boolean shouldGenerateFields = fieldSuperclass != null;
-        convention(shouldGenerateFields, fieldSuperclass);
+    public SetProperty<String> getOptions() {
+        return options;
     }
 
     @Override
-    ForSignals toProto() {
-        return ForSignals.newBuilder()
+    ForEntities toProto() {
+        return ForEntities.newBuilder()
                 .addAllAddInterface(interfaces())
-                .setGenerateFields(generateFields())
+                .addAllOption(options())
                 .addAllPattern(patterns())
                 .build();
+    }
+
+    private List<ProtoOption> options() {
+        return options.get()
+                      .stream()
+                      .map(name -> ProtoOption.newBuilder()
+                              .setName(name)
+                              .build())
+                      .collect(toList());
     }
 }

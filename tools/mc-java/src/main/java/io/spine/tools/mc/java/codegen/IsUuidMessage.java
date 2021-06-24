@@ -24,10 +24,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.mc.java.config;
+package io.spine.tools.mc.java.codegen;
 
-import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.code.java.ClassName;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+/**
+ * A selector which signalizes that the configuration should be applied to all UUID messages.
+ *
+ * <p>A UUID message is a message with a single {@code string} field named {@code uuid}.
+ *
+ * @see Interfaces#mark(IsUuidMessage, ClassName)
+ * @see Methods#applyFactory(String, IsUuidMessage)
+ */
+public final class IsUuidMessage extends MessageSelector {
+
+    IsUuidMessage() {
+        super();
+    }
+}

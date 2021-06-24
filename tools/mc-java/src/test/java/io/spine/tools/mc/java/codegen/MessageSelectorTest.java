@@ -24,22 +24,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.mc.java.codegen;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("`ByRegex` pattern should")
-final class RegexPatternTest {
+@DisplayName("`MessageSelector` should")
+final class MessageSelectorTest {
 
     @Test
-    @DisplayName("translate itself to Protobuf counterpart")
-    void convertToProtobufCounterpart() {
-        String regex = ".*/spine/.*";
-        FilePattern pattern = new ByRegex(regex).toProto();
-        assertThat(pattern.getRegex())
-                .isEqualTo(regex);
+    @DisplayName("be enabled by default")
+    void beEnabledByDefault() {
+        assertThat(new DefaultSelector().enabled())
+                .isTrue();
+    }
+
+    @Test
+    @DisplayName("allow disabling and enabling itself")
+    void allowDisablingAndEnablingItself() {
+        MessageSelector selector = new DefaultSelector();
+        selector.disable();
+        assertThat(selector.enabled())
+                .isFalse();
+        selector.enable();
+        assertThat(selector.enabled())
+                .isTrue();
+    }
+
+    /**
+     * A test implementation of a {@code MessageSelector}.
+     */
+    private static class DefaultSelector extends MessageSelector {
     }
 }

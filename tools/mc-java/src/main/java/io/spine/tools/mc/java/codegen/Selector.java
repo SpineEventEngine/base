@@ -24,21 +24,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
-
-import io.spine.code.java.ClassName;
+package io.spine.tools.mc.java.codegen;
 
 /**
- * A selector which signalizes that the configuration should be applied to all UUID messages.
+ * Represents a Protoc Spine plugin configuration selector.
  *
- * <p>A UUID message is a message with a single {@code string} field named {@code uuid}.
+ * <p>Is used as a marker for selecting the required protoc configuration when creating the
+ * {@link ModelCompilerConfiguration}.
  *
- * @see Interfaces#mark(IsUuidMessage, ClassName)
- * @see Methods#applyFactory(String, IsUuidMessage)
+ * <p>An example of using selector in Gradle:
+ * <pre>
+ *     mark messages().uuid(), asType("my.custom.Identifier")
+ * </pre>
+ * where {@code messages().uuid()} is a {@linkplain IsUuidMessage selector} for the UUID messages
+ * configuration and the rest of the expression are the additional params provided for the
+ * configuration.
  */
-public final class IsUuidMessage extends MessageSelector {
+public interface Selector {
 
-    IsUuidMessage() {
-        super();
-    }
+    /**
+     * Disables current selector.
+     */
+    void disable();
+
+    /**
+     * Enables current selector.
+     */
+    void enable();
+
+    /**
+     * Determines if the current selector is enabled.
+     */
+    boolean enabled();
 }
