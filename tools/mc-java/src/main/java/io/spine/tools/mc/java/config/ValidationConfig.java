@@ -24,40 +24,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.protoc.message;
+package io.spine.tools.mc.java.config;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.protoc.AddInterface;
-import io.spine.tools.protoc.ForUuids;
-import io.spine.type.MessageType;
+import io.spine.tools.protoc.Validation;
+import org.gradle.api.Project;
+import org.gradle.api.provider.Property;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+public final class ValidationConfig extends Config<Validation> {
 
-/**
- * Generates {@link io.spine.base.UuidValue UuidValue} interfaces.
- */
-public final class ImplementUuidValue extends ImplementInterface {
+    public final Property<Boolean> skipValidatingBuilders;
+    public final Property<Boolean> skipValidation;
 
-    ImplementUuidValue(AddInterface config) {
-        super(config.getName());
+    ValidationConfig(Project p) {
+        super();
+        skipValidatingBuilders = p.getObjects().property(Boolean.class);
+        skipValidation = p.getObjects().property(Boolean.class);
+    }
+
+    void enableAllByConvention() {
+        skipValidatingBuilders.convention(false);
+        skipValidation.convention(false);
     }
 
     @Override
-    public InterfaceParameters interfaceParameters(MessageType type) {
-        return InterfaceParameters.empty();
-    }
-
-    /**
-     * Makes supplied {@link io.spine.base.UuidValue UuidValue} type implement
-     * the configured interface.
-     */
-    @Override
-    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
-        checkNotNull(type);
-        if (!type.isUuidValue()) {
-            return ImmutableList.of();
-        }
-        return super.generateFor(type);
+    Validation toProto() {
+        return Validation.newBuilder()
+                .setSkipBuilders(skipValidatingBuilders.get())
+                .setSkipValidation(skipValidation.get())
+                .build();
     }
 }

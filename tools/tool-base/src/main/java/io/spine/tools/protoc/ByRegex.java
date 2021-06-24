@@ -38,7 +38,7 @@ public final class ByRegex extends ByPattern {
     }
 
     @Override
-    FilePattern toProto() {
+    public FilePattern toProto() {
         return FilePatterns.fileRegex(getPattern());
     }
 }

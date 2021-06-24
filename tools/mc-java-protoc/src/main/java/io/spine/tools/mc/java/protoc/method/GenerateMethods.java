@@ -28,14 +28,14 @@ package io.spine.tools.mc.java.protoc.method;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.mc.java.protoc.ExternalClassLoader;
 import io.spine.tools.mc.java.protoc.FilePatternMatcher;
+import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.MethodFactory;
+import io.spine.tools.protoc.MethodFactoryName;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.util.Preconditions2.checkNotDefaultArg;
 
 /**
  * Generates methods for the supplied type based on {@link ConfigByPattern pattern configuration}.
@@ -44,10 +44,11 @@ final class GenerateMethods extends MethodGenerationTask {
 
     private final FilePatternMatcher patternMatcher;
 
-    GenerateMethods(ExternalClassLoader<MethodFactory> classLoader, ConfigByPattern config) {
-        super(classLoader, config.getValue());
-        checkNotDefaultArg(config.getPattern());
-        this.patternMatcher = new FilePatternMatcher(config.getPattern());
+    GenerateMethods(ExternalClassLoader<MethodFactory> classLoader,
+                    MethodFactoryName config,
+                    FilePattern pattern) {
+        super(classLoader, config);
+        this.patternMatcher = new FilePatternMatcher(pattern);
     }
 
     /**

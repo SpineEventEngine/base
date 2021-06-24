@@ -30,15 +30,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Message;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import io.spine.tools.protoc.AddInterfaces;
 import io.spine.tools.mc.java.protoc.CodeGenerationTask;
 import io.spine.tools.mc.java.protoc.CodeGenerationTasks;
 import io.spine.tools.mc.java.protoc.CodeGenerator;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.protoc.EntityStateConfig;
 import io.spine.tools.protoc.SpineProtocConfig;
-import io.spine.tools.protoc.UuidConfig;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 
@@ -76,19 +73,19 @@ public final class InterfaceGen extends CodeGenerator {
      */
     public static CodeGenerator instance(SpineProtocConfig spineProtocConfig) {
         checkNotNull(spineProtocConfig);
-        AddInterfaces config = spineProtocConfig.getAddInterfaces();
+//        AddInterfaces config = spineProtocConfig.getAddInterfaces();
         ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();
-        UuidConfig uuidConfig = config.getUuidInterface();
-        if (generate(uuidConfig)) {
-            tasks.add(new ImplementUuidValue(uuidConfig));
-        }
-        for (ConfigByPattern byPattern : config.getInterfaceByPatternList()) {
-            tasks.add(new ImplementByPattern(byPattern));
-        }
-        EntityStateConfig esConfig = config.getEntityStateInterface();
-        if (generate(esConfig)) {
-            tasks.add(new ImplementEntityState(esConfig));
-        }
+//        UuidConfig uuidConfig = config.getUuidInterface();
+//        if (generate(uuidConfig)) {
+//            tasks.add(new ImplementUuidValue(uuidConfig));
+//        }
+//        for (ConfigByPattern byPattern : config.getInterfaceByPatternList()) {
+//            tasks.add(new ImplementByPattern(byPattern));
+//        }
+//        EntityStateConfig esConfig = config.ger;
+//        if (generate(esConfig)) {
+//            tasks.add(new ImplementEntityState(esConfig));
+//        }
         return new InterfaceGen(tasks.build());
     }
 

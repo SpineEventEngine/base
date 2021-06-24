@@ -32,6 +32,7 @@ import io.spine.tools.mc.java.protoc.CodeGenerationTask;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.ExternalClassLoader;
 import io.spine.tools.protoc.MethodFactory;
+import io.spine.tools.protoc.MethodFactoryName;
 import io.spine.type.MessageType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -45,11 +46,11 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 abstract class MethodGenerationTask implements CodeGenerationTask {
 
     private final ExternalClassLoader<MethodFactory> classLoader;
-    private final String factoryName;
+    private final MethodFactoryName factoryName;
 
-    MethodGenerationTask(ExternalClassLoader<MethodFactory> classLoader, String factoryName) {
+    MethodGenerationTask(ExternalClassLoader<MethodFactory> classLoader, MethodFactoryName factoryName) {
         this.classLoader = checkNotNull(classLoader);
-        this.factoryName = checkNotEmptyOrBlank(factoryName);
+        this.factoryName = checkNotNull(factoryName);
     }
 
     /**
@@ -57,7 +58,7 @@ abstract class MethodGenerationTask implements CodeGenerationTask {
      * {@linkplain #factoryName factory}.
      */
     ImmutableList<CompilerOutput> generateMethodsFor(@NonNull MessageType type) {
-        MethodFactory factory = classLoader.newInstance(factoryName);
+        MethodFactory factory = classLoader.newInstance(factoryName.getClassName().getCanonical());
         return factory
                 .generateMethodsFor(type)
                 .stream()

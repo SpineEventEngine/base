@@ -24,40 +24,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.protoc.message;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.mc.java.config;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.protoc.AddInterface;
-import io.spine.tools.protoc.ForUuids;
-import io.spine.type.MessageType;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-/**
- * Generates {@link io.spine.base.UuidValue UuidValue} interfaces.
- */
-public final class ImplementUuidValue extends ImplementInterface {
-
-    ImplementUuidValue(AddInterface config) {
-        super(config.getName());
-    }
-
-    @Override
-    public InterfaceParameters interfaceParameters(MessageType type) {
-        return InterfaceParameters.empty();
-    }
-
-    /**
-     * Makes supplied {@link io.spine.base.UuidValue UuidValue} type implement
-     * the configured interface.
-     */
-    @Override
-    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
-        checkNotNull(type);
-        if (!type.isUuidValue()) {
-            return ImmutableList.of();
-        }
-        return super.generateFor(type);
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

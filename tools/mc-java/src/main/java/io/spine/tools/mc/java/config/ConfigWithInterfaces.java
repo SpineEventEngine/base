@@ -24,40 +24,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.protoc.message;
+package io.spine.tools.mc.java.config;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.tools.mc.java.protoc.CompilerOutput;
+import com.google.protobuf.Message;
 import io.spine.tools.protoc.AddInterface;
-import io.spine.tools.protoc.ForUuids;
-import io.spine.type.MessageType;
+import org.gradle.api.Project;
+import org.gradle.api.provider.SetProperty;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.List;
 
-/**
- * Generates {@link io.spine.base.UuidValue UuidValue} interfaces.
- */
-public final class ImplementUuidValue extends ImplementInterface {
+import static java.util.stream.Collectors.toList;
 
-    ImplementUuidValue(AddInterface config) {
-        super(config.getName());
+abstract class ConfigWithInterfaces<P extends Message> extends Config<P> {
+
+    private final SetProperty<String> interfaceNames;
+
+    ConfigWithInterfaces(Project p) {
+        super();
+        this.interfaceNames = p.getObjects().setProperty(String.class);
     }
 
-    @Override
-    public InterfaceParameters interfaceParameters(MessageType type) {
-        return InterfaceParameters.empty();
+    public final void markAs(String interfaceName) {
+        interfaceNames.add(interfaceName);
     }
 
-    /**
-     * Makes supplied {@link io.spine.base.UuidValue UuidValue} type implement
-     * the configured interface.
-     */
-    @Override
-    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
-        checkNotNull(type);
-        if (!type.isUuidValue()) {
-            return ImmutableList.of();
-        }
-        return super.generateFor(type);
+    public final void markAs(String firstInterface, String secondInterface, String... otherInterfaces) {
+        interfaceNames.add(firstInterface);
+        interfaceNames.add(secondInterface);
+        interfaceNames.addAll(otherInterfaces);
+    }
+
+    final List<AddInterface> interfaces() {
+        return interfaceNames
+                .get()
+                .stream()
+                .map(Config::className)
+                .map(name -> AddInterface.newBuilder()
+                        .setName(name)
+                        .build())
+                .collect(toList());
+    }
+
+    final SetProperty<String> interfaceNames() {
+        return interfaceNames;
     }
 }

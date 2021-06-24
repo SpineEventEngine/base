@@ -72,9 +72,9 @@ public final class ColumnGen extends CodeGenerator {
      */
     public static ColumnGen instance(SpineProtocConfig config) {
         checkNotNull(config);
-        boolean generate = config.getAddEntityQueries()
-                                 .getGenerate();
-        return new ColumnGen(generate);
+//        boolean generate = config.getAddEntityQueries()
+//                                 .getGenerate();
+        return new ColumnGen(true);
     }
 
     @Override

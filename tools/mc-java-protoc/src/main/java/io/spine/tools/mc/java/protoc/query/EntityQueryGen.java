@@ -98,9 +98,9 @@ public class EntityQueryGen extends CodeGenerator {
      */
     public static EntityQueryGen instance(SpineProtocConfig config) {
         checkNotNull(config);
-        boolean enabled = config.getAddEntityQueries()
-                                .getGenerate();
-        return new EntityQueryGen(enabled);
+//        boolean enabled = config.getAddEntityQueries()
+//                                .getGenerate();
+        return new EntityQueryGen(true);
     }
 
     @Override

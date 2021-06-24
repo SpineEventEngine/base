@@ -28,16 +28,11 @@ package io.spine.tools.mc.java.protoc.field;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.java.code.field.FieldFactory;
-import io.spine.tools.mc.java.protoc.InsertionPoint;
-import io.spine.tools.protoc.AddFields;
 import io.spine.tools.mc.java.protoc.CodeGenerationTask;
 import io.spine.tools.mc.java.protoc.CodeGenerationTasks;
 import io.spine.tools.mc.java.protoc.CodeGenerator;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.protoc.ConfigByPattern;
-import io.spine.tools.protoc.ConfigByType;
-import io.spine.tools.protoc.EntityStateConfig;
-import io.spine.tools.protoc.Fields;
+import io.spine.tools.mc.java.protoc.InsertionPoint;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
@@ -45,7 +40,6 @@ import io.spine.type.Type;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.protobuf.Messages.isNotDefault;
 
 /**
  * A code generator which adds the strongly-typed fields to a message type.
@@ -61,7 +55,7 @@ public final class FieldGen extends CodeGenerator {
     /**
      * The factory used for code generation.
      */
-    private static final FieldFactory factory = new FieldFactory();
+//    private static final FieldFactory factory = new FieldFactory();
 
     private final CodeGenerationTasks codeGenerationTasks;
 
@@ -76,19 +70,19 @@ public final class FieldGen extends CodeGenerator {
     @SuppressWarnings("MethodWithMultipleLoops") // Required to configure code generation tasks.
     public static FieldGen instance(SpineProtocConfig spineProtocConfig) {
         checkNotNull(spineProtocConfig);
-        AddFields config = spineProtocConfig.getAddFields();
+//        AddFields config = spineProtocConfig.getAddFields();
 
         ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();
-        EntityStateConfig entityStateConfig = config.getEntityStateConfig();
-        if (isNotDefault(entityStateConfig)) {
-            tasks.add(new GenerateEntityStateFields(entityStateConfig, factory));
-        }
-        for (ConfigByPattern byPattern : config.getConfigByPatternList()) {
-            tasks.add(new GenerateFieldsByPattern(byPattern, factory));
-        }
-        for (ConfigByType byType : config.getConfigByTypeList()) {
-            tasks.add(new GenerateFieldsByType(byType, factory));
-        }
+//        EntityStateConfig entityStateConfig = config.getEntityStateConfig();
+//        if (isNotDefault(entityStateConfig)) {
+//            tasks.add(new GenerateEntityStateFields(entityStateConfig, factory));
+//        }
+//        for (ConfigByPattern byPattern : config.getConfigByPatternList()) {
+//            tasks.add(new GenerateFieldsByPattern(byPattern, factory));
+//        }
+//        for (ConfigByType byType : config.getConfigByTypeList()) {
+//            tasks.add(new GenerateFieldsByType(byType, factory));
+//        }
         return new FieldGen(tasks.build());
     }
 

@@ -26,38 +26,38 @@
 
 package io.spine.tools.mc.java.protoc.message;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.protoc.AddInterface;
-import io.spine.tools.protoc.ForUuids;
+import io.spine.tools.mc.java.protoc.given.TestInterface;
+import io.spine.tools.protoc.FilePattern;
+import io.spine.tools.protoc.JavaClassName;
+import io.spine.tools.protoc.plugin.message.tests.ProjectCreated;
 import io.spine.type.MessageType;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.tools.protoc.FilePatterns.fileSuffix;
 
-/**
- * Generates {@link io.spine.base.UuidValue UuidValue} interfaces.
- */
-public final class ImplementUuidValue extends ImplementInterface {
+@DisplayName("`GenerateInterfaces` should")
+final class InterfacesTest {
 
-    ImplementUuidValue(AddInterface config) {
-        super(config.getName());
+    @DisplayName("implement interface")
+    @Test
+    void implementInterface() {
+        FilePattern pattern = fileSuffix("test_events.proto");
+        JavaClassName className = className(TestInterface.class.getName());
+        ImplementByPattern implementByPattern = newTask(className, pattern);
+        MessageType targetType = new MessageType(ProjectCreated.getDescriptor());
+        assertThat(implementByPattern.generateFor(targetType))
+                .isNotEmpty();
     }
 
-    @Override
-    public InterfaceParameters interfaceParameters(MessageType type) {
-        return InterfaceParameters.empty();
+    private static ImplementByPattern newTask(JavaClassName className, FilePattern pattern) {
+        return new ImplementByPattern(className, pattern);
     }
 
-    /**
-     * Makes supplied {@link io.spine.base.UuidValue UuidValue} type implement
-     * the configured interface.
-     */
-    @Override
-    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
-        checkNotNull(type);
-        if (!type.isUuidValue()) {
-            return ImmutableList.of();
-        }
-        return super.generateFor(type);
+    private static JavaClassName className(String value) {
+        return JavaClassName.newBuilder()
+                .setCanonical(value)
+                .build();
     }
 }

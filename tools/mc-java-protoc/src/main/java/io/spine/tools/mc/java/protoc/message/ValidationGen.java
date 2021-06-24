@@ -63,11 +63,11 @@ public final class ValidationGen extends CodeGenerator {
      */
     public static CodeGenerator instance(SpineProtocConfig config) {
         checkNotNull(config);
-        boolean skipBuilders = config.getSkipValidatingBuilders();
-        boolean doNotGenerate = !config.getGenerateValidation();
-        return skipBuilders || doNotGenerate
-               ? NoOpGenerator.instance()
-               : new ValidationGen();
+//        boolean skipBuilders = config.getSkipValidatingBuilders();
+//        boolean doNotGenerate = !config.getGenerateValidation();
+//        return ?skipBuilders || doNotGenerate
+                return NoOpGenerator.instance();
+//               : new ValidationGen();
     }
 
     @Override

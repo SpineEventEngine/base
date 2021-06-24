@@ -53,9 +53,9 @@ public final class BuilderGen extends CodeGenerator {
      * Creates a new instance of the generator.
      */
     public static CodeGenerator instance(SpineProtocConfig config) {
-        return config.getSkipValidatingBuilders()
-               ? NoOpGenerator.instance()
-               : new BuilderGen();
+//        return config.getSkipValidatingBuilders()
+               return NoOpGenerator.instance();
+//               : new BuilderGen();
     }
 
     @Override

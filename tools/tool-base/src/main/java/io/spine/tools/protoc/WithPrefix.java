@@ -38,7 +38,7 @@ public final class WithPrefix extends ByPattern {
     }
 
     @Override
-    FilePattern toProto() {
+    public FilePattern toProto() {
         return FilePatterns.filePrefix(getPattern());
     }
 }

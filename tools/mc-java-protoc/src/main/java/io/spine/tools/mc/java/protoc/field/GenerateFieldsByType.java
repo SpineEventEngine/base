@@ -28,44 +28,47 @@ package io.spine.tools.mc.java.protoc.field;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.java.code.field.FieldFactory;
-import io.spine.code.java.ClassName;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.protoc.ConfigByType;
+import io.spine.tools.protoc.JavaClassName;
+import io.spine.tools.protoc.TypePattern;
 import io.spine.type.MessageType;
 import io.spine.type.TypeName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.util.Preconditions2.checkNotDefaultArg;
 
 /**
  * Generates the strongly-typed fields for the type with the specified {@linkplain TypeName name}.
  */
 final class GenerateFieldsByType extends FieldGenerationTask {
 
-    private final TypeName expectedType;
+    private final TypePattern pattern;
 
-    GenerateFieldsByType(ConfigByType config, FieldFactory factory) {
-        super(fieldSupertype(checkNotNull(config)), checkNotNull(factory));
-        checkNotDefaultArg(config.getPattern());
-        this.expectedType = expectedType(config);
+    GenerateFieldsByType(JavaClassName fieldSupertype, TypePattern pattern, FieldFactory factory) {
+        super(checkNotNull(fieldSupertype), checkNotNull(factory));
+        this.pattern = checkNotNull(pattern);
     }
 
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
-        boolean isExpectedType = expectedType.equals(type.name());
+        boolean isExpectedType = matches(type);
         if (!isExpectedType) {
             return ImmutableList.of();
         }
         return generateFieldsFor(type);
     }
 
-    private static ClassName fieldSupertype(ConfigByType config) {
-        String typeName = config.getValue();
-        return ClassName.of(typeName);
-    }
-
-    private static TypeName expectedType(ConfigByType config) {
-        return TypeName.of(config.getPattern().getExpectedType());
+    private boolean matches(MessageType type) {
+        String actual = type.name().value();
+        switch (pattern.getValueCase()) {
+            case EXPECTED_TYPE:
+                String expected = pattern.getExpectedType().getValue();
+                return actual.equals(expected);
+            case REGEX:
+                return actual.matches(pattern.getRegex());
+            case VALUE_NOT_SET:
+            default:
+                throw new IllegalStateException("Empty type pattern.");
+        }
     }
 }

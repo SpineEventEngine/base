@@ -29,6 +29,7 @@ package io.spine.tools.mc.java.gradle;
 import com.google.common.base.Charsets;
 import com.google.protobuf.gradle.ExecutableLocator;
 import com.google.protobuf.gradle.GenerateProtoTask;
+import io.spine.io.Files2;
 import io.spine.tools.java.fs.DefaultJavaPaths;
 import io.spine.tools.java.fs.DefaultJavaPaths.GeneratedRoot;
 import io.spine.code.proto.DescriptorReference;
@@ -37,12 +38,16 @@ import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.ProtocConfigurationPlugin;
 import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.TaskName;
+import io.spine.tools.protoc.SpineProtocConfig;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.plugins.JavaPluginConvention;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
@@ -57,7 +62,7 @@ import static io.spine.tools.gradle.ModelCompilerTaskName.writeTestDescriptorRef
 import static io.spine.tools.gradle.ModelCompilerTaskName.writeTestPluginConfiguration;
 import static io.spine.tools.gradle.ProtocPluginName.grpc;
 import static io.spine.tools.gradle.ProtocPluginName.spineProtoc;
-import static io.spine.tools.mc.java.gradle.ProtocPluginConfiguration.forProject;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * A Gradle plugin that performs additional {@code protoc} configurations relevant for Java
@@ -176,8 +181,24 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
     }
 
     private static void writePluginConfig(Task protocTask, Path configPath) {
-        ProtocPluginConfiguration configuration = forProject(protocTask.getProject());
-        configuration.writeTo(configPath);
+        Project project = protocTask.getProject();
+        Extension extension = project.getExtensions().getByType(Extension.class);
+        SpineProtocConfig config = extension.codegen.toProto();
+
+        Files2.ensureFile(configPath);
+        try (FileOutputStream fos = new FileOutputStream(configPath.toFile())) {
+            config.writeTo(fos);
+        } catch (FileNotFoundException e) {
+            throw newIllegalStateException(
+                    e,
+                    "Unable to create Spine Protoc Plugin configuration file at: `%s`.",
+                    configPath);
+        } catch (IOException e) {
+            throw newIllegalStateException(
+                    e,
+                    "Unable store Spine Protoc Plugin configuration file at: `%s`.",
+                    configPath);
+        }
     }
 
     private static String base64Encoded(String value) {

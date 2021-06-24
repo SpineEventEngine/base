@@ -30,7 +30,7 @@ import com.google.common.collect.ImmutableList;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.ExternalClassLoader;
 import io.spine.tools.protoc.MethodFactory;
-import io.spine.tools.protoc.UuidConfig;
+import io.spine.tools.protoc.MethodFactoryName;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -40,8 +40,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 final class GenerateUuidMethods extends MethodGenerationTask {
 
-    GenerateUuidMethods(ExternalClassLoader<MethodFactory> classLoader, UuidConfig config) {
-        super(classLoader, config.getValue());
+    GenerateUuidMethods(ExternalClassLoader<MethodFactory> classLoader, MethodFactoryName factory) {
+        super(classLoader, factory);
     }
 
     /**

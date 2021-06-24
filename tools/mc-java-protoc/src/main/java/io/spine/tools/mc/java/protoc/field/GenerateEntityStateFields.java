@@ -28,12 +28,14 @@ package io.spine.tools.mc.java.protoc.field;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.java.code.field.FieldFactory;
-import io.spine.code.java.ClassName;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.protoc.EntityStateConfig;
+import io.spine.tools.protoc.ForEntities;
+import io.spine.tools.protoc.GenerateFields;
+import io.spine.tools.protoc.JavaClassName;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * Generates the strongly-typed fields for the passed {@link MessageType} if the type is recognized
@@ -41,7 +43,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 final class GenerateEntityStateFields extends FieldGenerationTask {
 
-    GenerateEntityStateFields(EntityStateConfig config, FieldFactory factory) {
+    GenerateEntityStateFields(ForEntities config, FieldFactory factory) {
         super(fieldSupertype(checkNotNull(config)), checkNotNull(factory));
     }
 
@@ -54,8 +56,13 @@ final class GenerateEntityStateFields extends FieldGenerationTask {
         return generateFieldsFor(type);
     }
 
-    private static ClassName fieldSupertype(EntityStateConfig config) {
-        String typeName = config.getValue();
-        return ClassName.of(typeName);
+    private static JavaClassName fieldSupertype(ForEntities config) {
+        GenerateFields generateFields = config.getGenerateFields();
+        if (!generateFields.hasGenerateWithSuperclass()) {
+            throw newIllegalStateException(
+                    "Expected a field class supertype, but got: `%s`.", config
+            );
+        }
+        return generateFields.getGenerateWithSuperclass();
     }
 }

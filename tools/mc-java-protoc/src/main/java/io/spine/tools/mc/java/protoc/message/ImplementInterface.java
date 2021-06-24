@@ -30,6 +30,7 @@ import com.google.common.collect.ImmutableList;
 import io.spine.code.java.ClassName;
 import io.spine.tools.mc.java.protoc.CodeGenerationTask;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
+import io.spine.tools.protoc.JavaClassName;
 import io.spine.type.MessageType;
 
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
@@ -41,9 +42,8 @@ public abstract class ImplementInterface implements CodeGenerationTask {
 
     private final ClassName interfaceName;
 
-    ImplementInterface(String interfaceName) {
-        checkNotEmptyOrBlank(interfaceName);
-        this.interfaceName = ClassName.of(interfaceName);
+    ImplementInterface(JavaClassName interfaceName) {
+        this.interfaceName = ClassName.of(interfaceName.getCanonical());
     }
 
     /**

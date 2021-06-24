@@ -24,40 +24,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.protoc.message;
+package io.spine.tools.mc.java.config;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.protoc.AddInterface;
-import io.spine.tools.protoc.ForUuids;
-import io.spine.type.MessageType;
+import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.Message;
+import io.spine.tools.protoc.ByPattern;
+import io.spine.tools.protoc.FilePattern;
+import org.gradle.api.Project;
+import org.gradle.api.provider.SetProperty;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.Set;
 
-/**
- * Generates {@link io.spine.base.UuidValue UuidValue} interfaces.
- */
-public final class ImplementUuidValue extends ImplementInterface {
+abstract class MessageGroupConfig<P extends Message> extends ConfigWithFields<P> {
 
-    ImplementUuidValue(AddInterface config) {
-        super(config.getName());
+    private final SetProperty<FilePattern> file;
+
+    MessageGroupConfig(Project p) {
+        super(p);
+        this.file = p.getObjects().setProperty(FilePattern.class);
     }
 
-    @Override
-    public InterfaceParameters interfaceParameters(MessageType type) {
-        return InterfaceParameters.empty();
+    void convention(FilePattern pattern) {
+        file.convention(ImmutableSet.of(pattern));
     }
 
-    /**
-     * Makes supplied {@link io.spine.base.UuidValue UuidValue} type implement
-     * the configured interface.
-     */
-    @Override
-    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
-        checkNotNull(type);
-        if (!type.isUuidValue()) {
-            return ImmutableList.of();
-        }
-        return super.generateFor(type);
+    Set<FilePattern> patterns() {
+        return file.get();
+    }
+
+    public void inFiles(ByPattern pattern) {
+        this.file.add(pattern.toProto());
     }
 }

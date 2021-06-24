@@ -38,7 +38,7 @@ public final class WithSuffix extends ByPattern {
     }
 
     @Override
-    FilePattern toProto() {
+    public FilePattern toProto() {
         return FilePatterns.fileSuffix(getPattern());
     }
 }

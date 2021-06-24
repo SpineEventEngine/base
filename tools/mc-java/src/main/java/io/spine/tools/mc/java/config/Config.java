@@ -24,40 +24,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.protoc.message;
+package io.spine.tools.mc.java.config;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.protoc.AddInterface;
-import io.spine.tools.protoc.ForUuids;
-import io.spine.type.MessageType;
+import com.google.protobuf.Message;
+import io.spine.tools.protoc.JavaClassName;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+abstract class Config<P extends Message> {
 
-/**
- * Generates {@link io.spine.base.UuidValue UuidValue} interfaces.
- */
-public final class ImplementUuidValue extends ImplementInterface {
+    abstract P toProto();
 
-    ImplementUuidValue(AddInterface config) {
-        super(config.getName());
-    }
-
-    @Override
-    public InterfaceParameters interfaceParameters(MessageType type) {
-        return InterfaceParameters.empty();
-    }
-
-    /**
-     * Makes supplied {@link io.spine.base.UuidValue UuidValue} type implement
-     * the configured interface.
-     */
-    @Override
-    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
-        checkNotNull(type);
-        if (!type.isUuidValue()) {
-            return ImmutableList.of();
-        }
-        return super.generateFor(type);
+    static JavaClassName className(String canonical) {
+        return JavaClassName
+                .newBuilder()
+                .setCanonical(canonical)
+                .build();
     }
 }

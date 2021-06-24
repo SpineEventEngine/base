@@ -55,7 +55,7 @@ message SpineProtocConfig {
 
     ForSignals rejections = 5;
 
-    ForMessages messages = 6;
+    repeated ForMessages messages = 6;
 
     ForUuids uuids = 7;
 
@@ -74,7 +74,7 @@ message ForSignals {
 
     repeated FilePattern pattern = 1;
 
-    repeated JavaClassName interface_name = 2;
+    repeated AddInterface add_interface = 2;
 
     GenerateFields generate_fields = 4;
 }
@@ -85,7 +85,7 @@ message ForEntities {
 
     repeated ProtoOption option = 2;
 
-    repeated JavaClassName interface_name = 3;
+    repeated AddInterface add_interface = 3;
 
     GenerateFields generate_fields = 4;
 }
@@ -104,13 +104,23 @@ message GenerateFields {
 
 message ForMessages {
 
-    FilePattern pattern = 1;
+    Pattern pattern = 1;
 
     repeated AddInterface add_interface = 2;
 
     repeated GenerateMethods generate_methods = 3;
 
     repeated GenerateNestedClasses generate_nested_classes = 4;
+}
+
+message Pattern {
+
+    oneof kind {
+
+        FilePattern file = 1;
+
+        TypePattern type = 2;
+    }
 }
 
 message AddInterface {
@@ -120,20 +130,20 @@ message AddInterface {
 
 message GenerateMethods {
 
-    MethodFactory factory = 1;
+    MethodFactoryName factory = 1;
 }
 
 message GenerateNestedClasses {
 
-    NestedClassFactory factory = 1;
+    NestedClassFactoryName factory = 1;
 }
 
 // Configures the code generation for the messages holding a UUID value.
 message ForUuids {
 
-    JavaClassName interface_name = 1;
+    repeated AddInterface add_interface = 1;
 
-    MethodFactory method_factory = 2;
+    repeated MethodFactoryName method_factory = 2;
 }
 
 // Configures the code generation for the messages representing an entity state.
@@ -146,13 +156,13 @@ message EntityStateConfig {
     string value = 1;
 }
 
-message NestedClassFactory {
+message NestedClassFactoryName {
 
     // io.spine.tools.protoc.NestedClassFactory
     JavaClassName class_name = 1;
 }
 
-message MethodFactory {
+message MethodFactoryName {
 
     // // io.spine.tools.protoc.MethodFactory
     JavaClassName class_name = 1;

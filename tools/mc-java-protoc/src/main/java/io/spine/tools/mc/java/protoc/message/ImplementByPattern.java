@@ -27,10 +27,10 @@
 package io.spine.tools.mc.java.protoc.message;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.protoc.ConfigByPattern;
-import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.FilePatternMatcher;
+import io.spine.tools.protoc.FilePattern;
+import io.spine.tools.protoc.JavaClassName;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -44,11 +44,10 @@ final class ImplementByPattern extends ImplementInterface {
 
     private final FilePatternMatcher matcher;
 
-    ImplementByPattern(ConfigByPattern config) {
-        super(config.getValue());
-        FilePattern filePattern = config.getPattern();
-        checkNotDefaultArg(filePattern);
-        this.matcher = new FilePatternMatcher(filePattern);
+    ImplementByPattern(JavaClassName config, FilePattern pattern) {
+        super(config);
+        checkNotDefaultArg(pattern);
+        this.matcher = new FilePatternMatcher(pattern);
     }
 
     @Override
