@@ -32,11 +32,12 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.function.Supplier;
 
+import static io.spine.io.Files2.toAbsolute;
+
 /**
- * Abstract base for Spine plugins.
+ * Abstract base for Gradle plugins introduced by Spine Event Engine framework.
  *
  * <p>Brings helper functionality to operate the Gradle build lifecycle.
  */
@@ -63,14 +64,11 @@ public abstract class SpinePlugin implements Plugin<Project>, Logging {
      */
     public static File resolve(Supplier<String> path) {
         String pathname = path.get();
-        Path normalized = new File(pathname).toPath()
-                                            .normalize();
-        File result = normalized.toAbsolutePath()
-                                .toFile();
+        File result = toAbsolute(pathname);
         return result;
     }
 
-    protected void logMissingDescriptorSetFile(File setFile) {
+    protected final void logMissingDescriptorSetFile(File setFile) {
         _debug().log(
                 "Missing descriptor set file `%s`.%n" +
                         "Please enable descriptor set generation.%n" +

@@ -36,7 +36,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.tools.gradle.BaseTaskName.build;
-import static io.spine.tools.gradle.ProtoJsTaskName.generateJsonParsers;
+import static io.spine.tools.mc.js.gradle.McJsTaskName.generateJsonParsers;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DisplayName("ProtoJsPlugin should")

@@ -43,12 +43,12 @@ import static io.spine.tools.gradle.ConfigurationName.runtimeClasspath;
 import static io.spine.tools.gradle.ConfigurationName.testRuntimeClasspath;
 import static io.spine.tools.gradle.JavaTaskName.processResources;
 import static io.spine.tools.gradle.JavaTaskName.processTestResources;
-import static io.spine.tools.gradle.ModelCompilerTaskName.mergeDescriptorSet;
-import static io.spine.tools.gradle.ModelCompilerTaskName.mergeTestDescriptorSet;
+import static io.spine.tools.mc.java.gradle.McJavaTaskName.mergeDescriptorSet;
+import static io.spine.tools.mc.java.gradle.McJavaTaskName.mergeTestDescriptorSet;
 import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
 import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
-import static io.spine.tools.mc.java.gradle.Extension.getMainDescriptorSetFile;
-import static io.spine.tools.mc.java.gradle.Extension.getTestDescriptorSetFile;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getMainDescriptorSetFile;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getTestDescriptorSetFile;
 
 /**
  * A Gradle plugin which merges the descriptor file with all the descriptor files from

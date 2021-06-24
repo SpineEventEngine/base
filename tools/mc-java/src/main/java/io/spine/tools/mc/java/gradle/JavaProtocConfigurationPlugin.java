@@ -56,17 +56,17 @@ import static io.spine.tools.java.fs.DefaultJavaPaths.at;
 import static io.spine.tools.gradle.BaseTaskName.clean;
 import static io.spine.tools.gradle.JavaTaskName.processResources;
 import static io.spine.tools.gradle.JavaTaskName.processTestResources;
-import static io.spine.tools.gradle.ModelCompilerTaskName.writeDescriptorReference;
-import static io.spine.tools.gradle.ModelCompilerTaskName.writePluginConfiguration;
-import static io.spine.tools.gradle.ModelCompilerTaskName.writeTestDescriptorReference;
-import static io.spine.tools.gradle.ModelCompilerTaskName.writeTestPluginConfiguration;
+import static io.spine.tools.mc.java.gradle.McJavaTaskName.writeDescriptorReference;
+import static io.spine.tools.mc.java.gradle.McJavaTaskName.writePluginConfiguration;
+import static io.spine.tools.mc.java.gradle.McJavaTaskName.writeTestDescriptorReference;
+import static io.spine.tools.mc.java.gradle.McJavaTaskName.writeTestPluginConfiguration;
 import static io.spine.tools.gradle.ProtocPluginName.grpc;
 import static io.spine.tools.gradle.ProtocPluginName.spineProtoc;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
- * A Gradle plugin that performs additional {@code protoc} configurations relevant for Java
- * projects.
+ * A Gradle plugin that performs additional {@code protoc} configurations relevant
+ * for Java projects.
  */
 public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlugin {
 
@@ -79,14 +79,12 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
     @Override
     protected void
     configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins, Project project) {
-        Artifact gRpcPlugin = Artifact
-                .newBuilder()
+        Artifact gRpcPlugin = Artifact.newBuilder()
                 .setGroup(GRPC_GROUP)
                 .setName(GRPC_PLUGIN_NAME)
                 .setVersion(VERSIONS.grpc())
                 .build();
-        Artifact spinePlugin = Artifact
-                .newBuilder()
+        Artifact spinePlugin = Artifact.newBuilder()
                 .useSpineToolsGroup()
                 .setName(SPINE_PLUGIN_NAME)
                 .setVersion(VERSIONS.spineBase())
@@ -152,7 +150,7 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
 
     @Override
     protected File getTestDescriptorSet(Project project) {
-        return Extension.getTestDescriptorSetFile(project);
+        return McJavaExtension.getTestDescriptorSetFile(project);
     }
 
     @Override
@@ -164,7 +162,7 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
 
     @Override
     protected File getMainDescriptorSet(Project project) {
-        return Extension.getMainDescriptorSetFile(project);
+        return McJavaExtension.getMainDescriptorSetFile(project);
     }
 
     /**

@@ -37,8 +37,8 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.gradle.SourceScope.main;
 import static io.spine.tools.gradle.SourceScope.test;
-import static io.spine.tools.mc.java.gradle.Extension.getGeneratedMainRejectionsDir;
-import static io.spine.tools.mc.java.gradle.Extension.getGeneratedTestRejectionsDir;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getGeneratedMainRejectionsDir;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getGeneratedTestRejectionsDir;
 import static java.util.Objects.requireNonNull;
 
 /**

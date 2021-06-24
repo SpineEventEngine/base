@@ -25,10 +25,7 @@
  */
 
 /**
- * Contains classes working with the Gradle {@code Project}.
- *
- * <p>These classes wrap a {@code Project} and provide a high-level API for working with a certain
- * aspect of the {@code Project}.
+ * This package provides classes for working with a Gradle projects and source sets.
  */
 
 @CheckReturnValue

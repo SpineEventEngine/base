@@ -60,7 +60,7 @@ public final class ProjectHierarchy {
         checkNotNull(rootProject);
         checkNotNull(action);
         checkArgument(rootProject.equals(rootProject.getRootProject()),
-                      "Passed project %s is not the root project. ",
+                      "The passed project `%s` is not a root project.",
                       rootProject.getPath());
         action.execute(rootProject);
         Deque<Project> subprojects = newLinkedList(directChildren(rootProject));

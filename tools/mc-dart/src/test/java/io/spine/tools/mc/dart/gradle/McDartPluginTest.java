@@ -40,9 +40,9 @@ import java.io.File;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.gradle.BaseTaskName.assemble;
-import static io.spine.tools.gradle.ProtoDartTaskName.copyGeneratedDart;
-import static io.spine.tools.gradle.ProtoDartTaskName.copyTestGeneratedDart;
-import static io.spine.tools.gradle.ProtoDartTaskName.resolveImports;
+import static io.spine.tools.mc.dart.gradle.McDartTaskName.copyGeneratedDart;
+import static io.spine.tools.mc.dart.gradle.McDartTaskName.copyTestGeneratedDart;
+import static io.spine.tools.mc.dart.gradle.McDartTaskName.resolveImports;
 
 @DisplayName("`McDartPlugin` should")
 class McDartPluginTest {

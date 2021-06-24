@@ -36,9 +36,9 @@ import io.spine.tools.js.fs.DefaultJsPaths;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.mc.js.code.index.CreateParsers;
 import io.spine.tools.mc.js.code.index.GenerateIndexFile;
-import io.spine.tools.mc.js.code.task.AppendTypeUrlGetter;
-import io.spine.tools.mc.js.code.task.GenerationTask;
-import io.spine.tools.mc.js.code.task.ResolveImports;
+import io.spine.tools.mc.js.code.step.AppendTypeUrlGetter;
+import io.spine.tools.mc.js.code.step.CodeGenStep;
+import io.spine.tools.mc.js.code.step.ResolveImports;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -48,8 +48,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static io.spine.tools.gradle.BaseTaskName.build;
-import static io.spine.tools.gradle.ProtoJsTaskName.generateJsonParsers;
-import static io.spine.tools.mc.js.gradle.Extension.extension;
+import static io.spine.tools.mc.js.gradle.McJsTaskName.generateJsonParsers;
+import static io.spine.tools.mc.js.gradle.McJsExtension.extension;
 
 /**
  * The Gradle plugin which performs additional code generation for Protobuf types.
@@ -69,7 +69,7 @@ import static io.spine.tools.mc.js.gradle.Extension.extension;
  * </ul>
  *
  * <p>The main plugin action may be retrieved and configured as necessary via the
- * {@linkplain Extension "protoJs" extension}. By default, the action is a dependency of the
+ * {@linkplain McJsExtension "protoJs" extension}. By default, the action is a dependency of the
  * {@linkplain BaseTaskName#build build} task.
  *
  * <p>This plugin currently relies on the set of the hard-coded Gradle settings which have to be
@@ -84,14 +84,11 @@ import static io.spine.tools.mc.js.gradle.Extension.extension;
  */
 public class McJsPlugin extends ProtoPlugin {
 
-    private static final String EXTENSION_NAME = "protoJs";
-
     @Override
     public void apply(Project project) {
         ProtocConfig configPlugin = new ProtocConfig();
         configPlugin.apply(project);
-        Extension extension = project.getExtensions()
-                                     .create(EXTENSION_NAME, Extension.class);
+        McJsExtension extension = McJsExtension.createIn(project);
         Action<Task> action = newAction(project);
         GradleTask newTask = newTask(generateJsonParsers, action)
                 .insertBeforeTask(build)
@@ -123,23 +120,23 @@ public class McJsPlugin extends ProtoPlugin {
 
     @Override
     protected Supplier<File> mainDescriptorFile(Project project) {
-        return () -> Extension.getMainDescriptorSet(project);
+        return () -> McJsExtension.getMainDescriptorSet(project);
     }
 
     @Override
     protected Supplier<File> testDescriptorFile(Project project) {
-        return () -> Extension.getTestDescriptorSet(project);
+        return () -> McJsExtension.getTestDescriptorSet(project);
     }
 
     private void generateForMain(Project project) {
-        Directory generatedRoot = Extension.getMainGenProto(project);
+        Directory generatedRoot = McJsExtension.getMainGenProto(project);
         Supplier<FileSet> files = mainProtoFiles(project);
         ExternalModules modules = extension(project).modules();
         generateCode(generatedRoot, files, modules);
     }
 
     private void generateForTest(Project project) {
-        Directory generatedRoot = Extension.getTestGenProtoDir(project);
+        Directory generatedRoot = McJsExtension.getTestGenProtoDir(project);
         Supplier<FileSet> files = testProtoFiles(project);
         ExternalModules modules = extension(project).modules();
         generateCode(generatedRoot, files, modules);
@@ -148,15 +145,15 @@ public class McJsPlugin extends ProtoPlugin {
     private static void generateCode(Directory generatedRoot,
                                      Supplier<FileSet> files,
                                      ExternalModules modules) {
-        List<GenerationTask> tasks = ImmutableList.of(
+        List<CodeGenStep> steps = ImmutableList.of(
                 new CreateParsers(generatedRoot),
                 new AppendTypeUrlGetter(generatedRoot),
                 new GenerateIndexFile(generatedRoot),
                 new ResolveImports(generatedRoot, modules)
         );
         FileSet suppliedFiles = files.get();
-        for (GenerationTask task : tasks) {
-            task.performFor(suppliedFiles);
+        for (CodeGenStep step : steps) {
+            step.performFor(suppliedFiles);
         }
     }
 
@@ -164,6 +161,6 @@ public class McJsPlugin extends ProtoPlugin {
      * Obtains the extension name of the plugin.
      */
     static String extensionName() {
-        return EXTENSION_NAME;
+        return McJsExtension.NAME;
     }
 }
