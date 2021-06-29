@@ -52,7 +52,7 @@ public class McJavaPlugin implements Plugin<Project>, Logging {
     public void apply(Project project) {
         _debug().log("Adding the extension to the project.");
         project.getExtensions()
-                .create(extensionName(), McJavaExtension.class, project);
+               .create(extensionName(), McJavaExtension.class, project);
 
         // Plugins that deal with Protobuf types must depend on `mergeDescriptorSet` and
         // `mergeTestDescriptorSet` tasks to be able to access every declared type
