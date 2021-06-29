@@ -37,6 +37,7 @@ import io.spine.tools.mc.java.protoc.InsertionPoint;
 import io.spine.tools.mc.java.protoc.NoOpGenerator;
 import io.spine.tools.mc.java.protoc.ProtocPluginFiles;
 import io.spine.tools.mc.java.validate.ValidateSpecs;
+import io.spine.tools.protoc.Validation;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 import io.spine.validate.MessageWithConstraints;
@@ -63,11 +64,12 @@ public final class ValidationGen extends CodeGenerator {
      */
     public static CodeGenerator instance(SpineProtocConfig config) {
         checkNotNull(config);
-//        boolean skipBuilders = config.getSkipValidatingBuilders();
-//        boolean doNotGenerate = !config.getGenerateValidation();
-//        return ?skipBuilders || doNotGenerate
-                return NoOpGenerator.instance();
-//               : new ValidationGen();
+        Validation validation = config.getValidation();
+        boolean skipBuilders = validation.getSkipBuilders();
+        boolean skipValidation = validation.getSkipValidation();
+        return skipBuilders || skipValidation
+               ? NoOpGenerator.instance()
+               : new ValidationGen();
     }
 
     @Override

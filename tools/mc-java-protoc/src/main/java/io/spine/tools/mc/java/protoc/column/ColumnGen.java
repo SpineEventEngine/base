@@ -31,7 +31,10 @@ import io.spine.tools.java.code.column.ColumnFactory;
 import io.spine.tools.mc.java.protoc.ClassMember;
 import io.spine.tools.mc.java.protoc.CodeGenerator;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
+import io.spine.tools.mc.java.protoc.EntityMatcher;
 import io.spine.tools.mc.java.protoc.InsertionPoint;
+import io.spine.tools.mc.java.protoc.NoOpGenerator;
+import io.spine.tools.protoc.ForEntities;
 import io.spine.tools.protoc.NestedClass;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
@@ -39,6 +42,7 @@ import io.spine.type.Type;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
@@ -60,27 +64,30 @@ public final class ColumnGen extends CodeGenerator {
      * The factory which is used for code generation.
      */
     private final ColumnFactory factory = new ColumnFactory();
-    private final boolean generate;
 
-    private ColumnGen(boolean generate) {
+    private final Predicate<MessageType> entityMatcher;
+
+    private ColumnGen(ForEntities config) {
         super();
-        this.generate = generate;
+        this.entityMatcher = new EntityMatcher(config);
     }
 
     /**
      * Creates a new instance based on the passed Protoc config.
      */
-    public static ColumnGen instance(SpineProtocConfig config) {
+    public static CodeGenerator instance(SpineProtocConfig config) {
         checkNotNull(config);
-//        boolean generate = config.getAddEntityQueries()
-//                                 .getGenerate();
-        return new ColumnGen(true);
+        ForEntities entities = config.getEntities();
+        boolean generate = entities.getGenerateQueries();
+        return generate
+               ? new ColumnGen(entities)
+               : NoOpGenerator.instance();
     }
 
     @Override
     public Collection<CompilerOutput> generate(Type<?, ?> type) {
         checkNotNull(type);
-        if (!generate || !isEntityStateWithColumns(type)) {
+        if (!isEntityStateWithColumns(type)) {
             return ImmutableList.of();
         }
         return generateFor((MessageType) type);
@@ -95,11 +102,11 @@ public final class ColumnGen extends CodeGenerator {
         return result;
     }
 
-    private static boolean isEntityStateWithColumns(Type<?, ?> type) {
+    private boolean isEntityStateWithColumns(Type<?, ?> type) {
         if (!(type instanceof MessageType)) {
             return false;
         }
         MessageType messageType = (MessageType) type;
-        return messageType.isEntityState() && hasColumns(messageType);
+        return entityMatcher.test(messageType) && hasColumns(messageType);
     }
 }

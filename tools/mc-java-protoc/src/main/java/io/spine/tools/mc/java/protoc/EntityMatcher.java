@@ -24,46 +24,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.codegen;
+package io.spine.tools.mc.java.protoc;
 
-import com.google.common.collect.ImmutableSet;
-import io.spine.base.MessageFile;
-import io.spine.base.SignalMessage;
 import io.spine.tools.protoc.FilePattern;
-import io.spine.tools.protoc.ForSignals;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.gradle.api.Project;
+import io.spine.tools.protoc.ForEntities;
+import io.spine.tools.protoc.ProtoOption;
+import io.spine.type.MessageType;
 
-public final class SignalConfig extends MessageGroupConfig<ForSignals> {
+import java.util.List;
+import java.util.function.Predicate;
 
-    SignalConfig(Project p) {
-        super(p);
-    }
+import static com.google.common.base.Preconditions.checkNotNull;
 
-    void convention(MessageFile file, Class<? extends SignalMessage> interfaceClass) {
-        convention(file, interfaceClass, null);
-    }
+public final class EntityMatcher implements Predicate<MessageType> {
 
-    void convention(MessageFile file,
-                    Class<? extends SignalMessage> interfaceClass,
-                    @Nullable Class<?> fieldSuperclass) {
-        FilePattern pattern = FilePattern
-                .newBuilder()
-                .setSuffix(file.suffix())
-                .build();
-        convention(pattern);
-        this.interfaceNames().convention(ImmutableSet.of(interfaceClass.getCanonicalName()));
-        if (fieldSuperclass != null) {
-            convention(fieldSuperclass);
-        }
+    private final ForEntities entities;
+
+    public EntityMatcher(ForEntities entities) {
+        this.entities = checkNotNull(entities);
     }
 
     @Override
-    ForSignals toProto() {
-        return ForSignals.newBuilder()
-                .addAllAddInterface(interfaces())
-                .setGenerateFields(generateFields())
-                .addAllPattern(patterns())
-                .build();
+    public boolean test(MessageType type) {
+        List<ProtoOption> options = entities.getOptionList();
+        boolean match = options.stream()
+                               .map(OptionMatcher::new)
+                               .anyMatch(matcher -> matcher.test(type));
+        if (match) {
+            return true;
+        }
+        List<FilePattern> patterns = entities.getPatternList();
+        return patterns.stream()
+                       .map(FilePatternMatcher::new)
+                       .anyMatch(matcher -> matcher.test(type));
     }
 }

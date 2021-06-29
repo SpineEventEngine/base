@@ -28,21 +28,27 @@ package io.spine.tools.mc.java.protoc.message;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.Message;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.tools.mc.java.protoc.CodeGenerationTask;
 import io.spine.tools.mc.java.protoc.CodeGenerationTasks;
 import io.spine.tools.mc.java.protoc.CodeGenerator;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.protoc.EntityStateConfig;
+import io.spine.tools.protoc.AddInterface;
+import io.spine.tools.protoc.FilePattern;
+import io.spine.tools.protoc.ForEntities;
+import io.spine.tools.protoc.ForMessages;
+import io.spine.tools.protoc.ForSignals;
+import io.spine.tools.protoc.ForUuids;
+import io.spine.tools.protoc.Pattern;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 
 import java.util.Collection;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.protobuf.Messages.isNotDefault;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 
 /**
  * The {@link CodeGenerator} implementation generating the specific interfaces implemented by
@@ -73,28 +79,53 @@ public final class InterfaceGen extends CodeGenerator {
      */
     public static CodeGenerator instance(SpineProtocConfig spineProtocConfig) {
         checkNotNull(spineProtocConfig);
-//        AddInterfaces config = spineProtocConfig.getAddInterfaces();
         ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();
-//        UuidConfig uuidConfig = config.getUuidInterface();
-//        if (generate(uuidConfig)) {
-//            tasks.add(new ImplementUuidValue(uuidConfig));
-//        }
-//        for (ConfigByPattern byPattern : config.getInterfaceByPatternList()) {
-//            tasks.add(new ImplementByPattern(byPattern));
-//        }
-//        EntityStateConfig esConfig = config.ger;
-//        if (generate(esConfig)) {
-//            tasks.add(new ImplementEntityState(esConfig));
-//        }
+
+        if (spineProtocConfig.hasCommands()) {
+            tasks.addAll(tasksFor(spineProtocConfig.getCommands()));
+        }
+        if (spineProtocConfig.hasEvents()) {
+            tasks.addAll(tasksFor(spineProtocConfig.getEvents()));
+        }
+        if (spineProtocConfig.hasRejections()) {
+            tasks.addAll(tasksFor(spineProtocConfig.getRejections()));
+        }
+        if (spineProtocConfig.hasUuids()) {
+            ForUuids uuids = spineProtocConfig.getUuids();
+            List<AddInterface> addInterfaces = uuids.getAddInterfaceList();
+            addInterfaces.stream()
+                         .map(ImplementUuidValue::new)
+                         .forEach(tasks::add);
+        }
+        if (spineProtocConfig.hasEntities()) {
+            tasks.addAll(tasksFor(spineProtocConfig.getEntities()));
+        }
+        for (ForMessages messages : spineProtocConfig.getMessagesList()) {
+            Pattern pattern = messages.getPattern();
+
+            for (AddInterface ai : messages.getAddInterfaceList()) {
+                tasks.add(new ImplementByPattern(ai.getName(), pattern));
+            }
+        }
         return new InterfaceGen(tasks.build());
     }
 
-    /**
-     * This is a DSL method for checking if a passed Model Compiler configuration setting
-     * (such as {@link UuidConfig} or {@link EntityStateConfig}) is turned on.
-     */
-    private static boolean generate(Message config) {
-        return isNotDefault(config);
+    private static ImmutableList<ImplementInterface> tasksFor(ForSignals forSignals) {
+        ImmutableList.Builder<ImplementInterface> tasks = ImmutableList.builder();
+        List<AddInterface> addInterfaces = forSignals.getAddInterfaceList();
+        for (FilePattern pattern : forSignals.getPatternList()) {
+            addInterfaces.stream()
+                         .map(ai -> new ImplementByPattern(ai.getName(), pattern))
+                         .forEach(tasks::add);
+        }
+        return tasks.build();
+    }
+
+    private static ImmutableList<ImplementInterface> tasksFor(ForEntities entities) {
+        List<AddInterface> interfaces = entities.getAddInterfaceList();
+        return interfaces.stream()
+                         .map(ai -> new ImplementEntityState(ai.getName(), entities))
+                         .collect(toImmutableList());
     }
 
     /**

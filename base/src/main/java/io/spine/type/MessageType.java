@@ -31,6 +31,7 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
@@ -48,6 +49,7 @@ import io.spine.option.OptionsProto;
 
 import java.util.Deque;
 import java.util.List;
+import java.util.Set;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -392,5 +394,12 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         boolean nameMatches = uuid.equals(theField.name());
         boolean typeMatches = theField.isString();
         return nameMatches && typeMatches;
+    }
+
+    public boolean hasOption(String optionName) {
+        MessageOptions options = descriptor().getOptions();
+        Set<FieldDescriptor> presentOptions = options.getAllFields().keySet();
+        return presentOptions.stream()
+                             .anyMatch(op -> op.getName().equals(optionName));
     }
 }

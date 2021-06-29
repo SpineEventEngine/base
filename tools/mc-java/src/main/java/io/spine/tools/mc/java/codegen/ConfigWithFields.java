@@ -26,7 +26,6 @@
 
 package io.spine.tools.mc.java.codegen;
 
-import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.spine.tools.protoc.GenerateFields;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -35,24 +34,17 @@ import org.gradle.api.provider.Property;
 
 abstract class ConfigWithFields<P extends Message> extends ConfigWithInterfaces<P> {
 
-    private final Property<Boolean> generateFields;
     private final Property<String> markFieldsAs;
 
     ConfigWithFields(Project p) {
         super(p);
-        generateFields = p.getObjects().property(Boolean.class);
         markFieldsAs = p.getObjects().property(String.class);
     }
 
-    final void convention(boolean generateFields, @Nullable Class<?> fieldSuperclass) {
-        this.generateFields.convention(generateFields);
+    final void convention(@Nullable Class<?> fieldSuperclass) {
         if (fieldSuperclass != null) {
             markFieldsAs.convention(fieldSuperclass.getCanonicalName());
         }
-    }
-
-    public final void setGenerateFields(boolean shouldGenerate) {
-        generateFields.set(shouldGenerate);
     }
 
     public final void markFieldsAs(String className) {
@@ -61,18 +53,12 @@ abstract class ConfigWithFields<P extends Message> extends ConfigWithInterfaces<
 
     final GenerateFields generateFields() {
         GenerateFields generateFields;
-        if (!this.generateFields.get()) {
-            generateFields = GenerateFields.newBuilder()
-                    .setSkip(Empty.getDefaultInstance())
-                    .build();
-        } else if (markFieldsAs.isPresent()) {
-            String superclass = markFieldsAs.get();
-            generateFields = GenerateFields.newBuilder()
-                    .setGenerateWithSuperclass(className(superclass))
-                    .build();
+        String superclassName = markFieldsAs.getOrElse("");
+        if (superclassName.isEmpty()) {
+            generateFields = GenerateFields.getDefaultInstance();
         } else {
             generateFields = GenerateFields.newBuilder()
-                    .setGenerate(Empty.getDefaultInstance())
+                    .setSuperclass(className(superclassName))
                     .build();
         }
         return generateFields;

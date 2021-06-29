@@ -27,11 +27,15 @@
 package io.spine.tools.mc.java.protoc.field;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.tools.java.code.field.FieldFactory;
 import io.spine.tools.mc.java.protoc.CodeGenerationTask;
 import io.spine.tools.mc.java.protoc.CodeGenerationTasks;
 import io.spine.tools.mc.java.protoc.CodeGenerator;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.InsertionPoint;
+import io.spine.tools.protoc.ForEntities;
+import io.spine.tools.protoc.ForSignals;
+import io.spine.tools.protoc.GenerateFields;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
@@ -39,22 +43,20 @@ import io.spine.type.Type;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 
 /**
  * A code generator which adds the strongly-typed fields to a message type.
  *
  * <p>The generator produces {@link CompilerOutput compiler output} that fits into the message's
  * {@link InsertionPoint#class_scope class_scope} insertion point.
- *
- * <p>Generates output based on the passed
- * {@linkplain Fields Protoc config}.
  */
 public final class FieldGen extends CodeGenerator {
 
     /**
      * The factory used for code generation.
      */
-//    private static final FieldFactory factory = new FieldFactory();
+    private static final FieldFactory factory = new FieldFactory();
 
     private final CodeGenerationTasks codeGenerationTasks;
 
@@ -66,23 +68,42 @@ public final class FieldGen extends CodeGenerator {
     /**
      * Creates a new instance based on the passed Protoc config.
      */
-    @SuppressWarnings("MethodWithMultipleLoops") // Required to configure code generation tasks.
     public static FieldGen instance(SpineProtocConfig spineProtocConfig) {
         checkNotNull(spineProtocConfig);
-//        AddFields config = spineProtocConfig.getAddFields();
-
         ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();
-//        EntityStateConfig entityStateConfig = config.getEntityStateConfig();
-//        if (isNotDefault(entityStateConfig)) {
-//            tasks.add(new GenerateEntityStateFields(entityStateConfig, factory));
-//        }
-//        for (ConfigByPattern byPattern : config.getConfigByPatternList()) {
-//            tasks.add(new GenerateFieldsByPattern(byPattern, factory));
-//        }
-//        for (ConfigByType byType : config.getConfigByTypeList()) {
-//            tasks.add(new GenerateFieldsByType(byType, factory));
-//        }
+
+        if (spineProtocConfig.hasEntities()) {
+            ForEntities entities = spineProtocConfig.getEntities();
+            GenerateFields fields = entities.getGenerateFields();
+            if (fields.hasSuperclass()) {
+                tasks.add(new GenerateEntityStateFields(entities, factory));
+            }
+        }
+        if (spineProtocConfig.hasCommands()) {
+            ForSignals signals = spineProtocConfig.getCommands();
+            tasks.addAll(tasksFor(signals));
+        }
+        if (spineProtocConfig.hasEvents()) {
+            ForSignals signals = spineProtocConfig.getEvents();
+            tasks.addAll(tasksFor(signals));
+        }
+        if (spineProtocConfig.hasRejections()) {
+            ForSignals signals = spineProtocConfig.getRejections();
+            tasks.addAll(tasksFor(signals));
+        }
         return new FieldGen(tasks.build());
+    }
+
+    private static ImmutableList<GenerateFieldsByPattern> tasksFor(ForSignals forSignals) {
+        GenerateFields generateFields = forSignals.getGenerateFields();
+        if (!generateFields.hasSuperclass()) {
+            return ImmutableList.of();
+        }
+        return forSignals.getPatternList()
+                         .stream()
+                         .map(pattern -> new GenerateFieldsByPattern(
+                                 generateFields.getSuperclass(), pattern, factory
+                         )).collect(toImmutableList());
     }
 
     @Override

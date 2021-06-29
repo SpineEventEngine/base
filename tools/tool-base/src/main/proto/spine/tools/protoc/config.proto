@@ -88,18 +88,13 @@ message ForEntities {
     repeated AddInterface add_interface = 3;
 
     GenerateFields generate_fields = 4;
+
+    bool generate_queries = 5;
 }
 
 message GenerateFields {
 
-    oneof action {
-
-        google.protobuf.Empty skip = 1;
-
-        google.protobuf.Empty generate = 2;
-
-        JavaClassName generate_with_superclass = 3;
-    }
+    JavaClassName superclass = 1;
 }
 
 message ForMessages {

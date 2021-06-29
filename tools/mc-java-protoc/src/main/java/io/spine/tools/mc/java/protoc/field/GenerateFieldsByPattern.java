@@ -29,46 +29,37 @@ package io.spine.tools.mc.java.protoc.field;
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.java.code.field.FieldFactory;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
+import io.spine.tools.mc.java.protoc.FilePatternMatcher;
+import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.JavaClassName;
-import io.spine.tools.protoc.TypePattern;
 import io.spine.type.MessageType;
 import io.spine.type.TypeName;
+
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Generates the strongly-typed fields for the type with the specified {@linkplain TypeName name}.
  */
-final class GenerateFieldsByType extends FieldGenerationTask {
+final class GenerateFieldsByPattern extends FieldGenerationTask {
 
-    private final TypePattern pattern;
+    private final Predicate<MessageType> matcher;
 
-    GenerateFieldsByType(JavaClassName fieldSupertype, TypePattern pattern, FieldFactory factory) {
+    GenerateFieldsByPattern(JavaClassName fieldSupertype,
+                            FilePattern pattern,
+                            FieldFactory factory) {
         super(checkNotNull(fieldSupertype), checkNotNull(factory));
-        this.pattern = checkNotNull(pattern);
+        checkNotNull(pattern);
+        this.matcher = new FilePatternMatcher(pattern);
     }
 
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
-        boolean isExpectedType = matches(type);
-        if (!isExpectedType) {
-            return ImmutableList.of();
+        if (matcher.test(type)) {
+            return generateFieldsFor(type);
         }
-        return generateFieldsFor(type);
-    }
-
-    private boolean matches(MessageType type) {
-        String actual = type.name().value();
-        switch (pattern.getValueCase()) {
-            case EXPECTED_TYPE:
-                String expected = pattern.getExpectedType().getValue();
-                return actual.equals(expected);
-            case REGEX:
-                return actual.matches(pattern.getRegex());
-            case VALUE_NOT_SET:
-            default:
-                throw new IllegalStateException("Empty type pattern.");
-        }
+        return ImmutableList.of();
     }
 }

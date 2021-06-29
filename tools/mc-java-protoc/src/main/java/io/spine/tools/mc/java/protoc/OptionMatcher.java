@@ -24,47 +24,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.protoc.method;
+package io.spine.tools.mc.java.protoc;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.mc.java.protoc.ExternalClassLoader;
-import io.spine.tools.mc.java.protoc.PatternMatcher;
-import io.spine.tools.protoc.MethodFactory;
-import io.spine.tools.protoc.MethodFactoryName;
-import io.spine.tools.protoc.Pattern;
+import io.spine.tools.protoc.ProtoOption;
 import io.spine.type.MessageType;
 
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * Generates methods for the supplied type based on {@link ConfigByPattern pattern configuration}.
- */
-final class GenerateMethods extends MethodGenerationTask {
+public final class OptionMatcher implements Predicate<MessageType> {
 
-    private final Predicate<MessageType> patternMatcher;
+    private final ProtoOption option;
 
-    GenerateMethods(ExternalClassLoader<MethodFactory> classLoader,
-                    MethodFactoryName config,
-                    Pattern pattern) {
-        super(classLoader, config);
-        patternMatcher = new PatternMatcher(pattern);
+    public OptionMatcher(ProtoOption option) {
+        this.option = checkNotNull(option);
     }
 
-    /**
-     * Generates new method for supplied {@code type}.
-     *
-     * <p>No methods are generated if the type file name does not match supplied
-     * {@link io.spine.tools.protoc.FilePattern pattern}.
-     */
     @Override
-    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
-        checkNotNull(type);
-        if (!patternMatcher.test(type)) {
-            return ImmutableList.of();
-        }
-        return generateMethodsFor(type);
+    public boolean test(MessageType type) {
+        return type.hasOption(option.getName());
     }
 }

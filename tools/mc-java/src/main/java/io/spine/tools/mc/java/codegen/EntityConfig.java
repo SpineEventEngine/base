@@ -33,6 +33,7 @@ import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.ForEntities;
 import io.spine.tools.protoc.ProtoOption;
 import org.gradle.api.Project;
+import org.gradle.api.provider.Property;
 import org.gradle.api.provider.SetProperty;
 
 import java.util.List;
@@ -42,23 +43,34 @@ import static java.util.stream.Collectors.toList;
 public final class EntityConfig extends MessageGroupConfig<ForEntities> {
 
     private final SetProperty<String> options;
+    private final Property<Boolean> generateQueries;
 
     EntityConfig(Project p) {
         super(p);
         options = p.getObjects().setProperty(String.class);
+        generateQueries = p.getObjects().property(Boolean.class);
     }
 
     void convention(GeneratedMessage.GeneratedExtension<?, ?> option,
                     Class<? extends Message> markerInterface,
                     Class<?> fieldSuperclass) {
         convention(FilePattern.getDefaultInstance());
-        convention(true, fieldSuperclass);
+        convention(fieldSuperclass);
         options.convention(ImmutableSet.of(option.getDescriptor().getName()));
         interfaceNames().convention(ImmutableSet.of(markerInterface.getCanonicalName()));
+        generateQueries.convention(true);
     }
 
     public SetProperty<String> getOptions() {
         return options;
+    }
+
+    public void generateQueries() {
+        generateQueries.set(true);
+    }
+
+    public void skipQueries() {
+        generateQueries.set(false);
     }
 
     @Override
@@ -67,6 +79,7 @@ public final class EntityConfig extends MessageGroupConfig<ForEntities> {
                 .addAllAddInterface(interfaces())
                 .addAllOption(options())
                 .addAllPattern(patterns())
+                .setGenerateQueries(generateQueries.get())
                 .build();
     }
 

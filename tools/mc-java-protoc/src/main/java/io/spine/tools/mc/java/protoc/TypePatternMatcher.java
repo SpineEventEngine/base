@@ -24,47 +24,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.protoc.method;
+package io.spine.tools.mc.java.protoc;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.mc.java.protoc.ExternalClassLoader;
-import io.spine.tools.mc.java.protoc.PatternMatcher;
-import io.spine.tools.protoc.MethodFactory;
-import io.spine.tools.protoc.MethodFactoryName;
-import io.spine.tools.protoc.Pattern;
+import io.spine.tools.protoc.TypePattern;
 import io.spine.type.MessageType;
 
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * Generates methods for the supplied type based on {@link ConfigByPattern pattern configuration}.
- */
-final class GenerateMethods extends MethodGenerationTask {
+public final class TypePatternMatcher implements Predicate<MessageType> {
 
-    private final Predicate<MessageType> patternMatcher;
+    private final TypePattern pattern;
 
-    GenerateMethods(ExternalClassLoader<MethodFactory> classLoader,
-                    MethodFactoryName config,
-                    Pattern pattern) {
-        super(classLoader, config);
-        patternMatcher = new PatternMatcher(pattern);
+    public TypePatternMatcher(TypePattern pattern) {
+        this.pattern = checkNotNull(pattern);
     }
 
-    /**
-     * Generates new method for supplied {@code type}.
-     *
-     * <p>No methods are generated if the type file name does not match supplied
-     * {@link io.spine.tools.protoc.FilePattern pattern}.
-     */
     @Override
-    public ImmutableList<CompilerOutput> generateFor(MessageType type) {
-        checkNotNull(type);
-        if (!patternMatcher.test(type)) {
-            return ImmutableList.of();
+    public boolean test(MessageType type) {
+        String typeName = type.name().value();
+        switch (pattern.getValueCase()) {
+            case EXPECTED_TYPE:
+                String expectedType = pattern.getExpectedType().getValue();
+                return expectedType.equals(typeName);
+            case REGEX:
+                return typeName.matches(pattern.getRegex());
+            case VALUE_NOT_SET:
+            default:
+                throw new IllegalStateException("Type pattern must not be empty.");
         }
-        return generateMethodsFor(type);
     }
 }

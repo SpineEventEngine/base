@@ -27,6 +27,7 @@
 import io.spine.internal.dependency.ErrorProne
 import io.spine.internal.dependency.Truth
 import io.spine.internal.dependency.JUnit
+import io.spine.internal.gradle.Scripts
 
 buildscript {
 
@@ -82,7 +83,7 @@ allprojects {
 
 subprojects {
 
-    val commonPath = io.spine.internal.gradle.Scripts.commonPath
+    val commonPath = Scripts.commonPath
     apply {
         plugin("com.google.protobuf")
         plugin("io.spine.mc-java")
@@ -140,5 +141,5 @@ subprojects {
     }
 }
 
-val scriptsPath = io.spine.internal.gradle.Scripts.commonPath
+val scriptsPath = Scripts.commonPath
 apply(from = "${baseRoot}/${scriptsPath}/jacoco.gradle")
