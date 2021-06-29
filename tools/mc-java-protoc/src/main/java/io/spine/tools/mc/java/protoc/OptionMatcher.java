@@ -26,6 +26,7 @@
 
 package io.spine.tools.mc.java.protoc;
 
+import com.google.protobuf.DescriptorProtos;
 import io.spine.tools.protoc.ProtoOption;
 import io.spine.type.MessageType;
 
@@ -33,6 +34,14 @@ import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * A {@link MessageType} predicate which checks if the type has a given option.
+ *
+ * <p>If the option is declared on the type, the predicate is {@code true}.
+ *
+ * <p>The option must be known at runtime, i.e. not be an
+ * {@linkplain DescriptorProtos.MessageOptions#getUninterpretedOptionList() uninterpreted option}.
+ */
 public final class OptionMatcher implements Predicate<MessageType> {
 
     private final ProtoOption option;

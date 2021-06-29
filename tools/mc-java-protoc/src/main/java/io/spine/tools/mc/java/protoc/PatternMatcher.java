@@ -33,6 +33,12 @@ import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * A {@link MessageType} predicate which checks if the type matches a given {@link Pattern}.
+ *
+ * <p>If the type matches the pattern, by the file name or by the type name, the predicate
+ * is {@code true}.
+ */
 public final class PatternMatcher implements Predicate<MessageType> {
 
     private final Predicate<MessageType> delegate;
