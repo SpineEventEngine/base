@@ -27,14 +27,14 @@
 package io.spine.tools.mc.java.protoc.method;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.protoc.Classpath;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.ExternalClassLoader;
+import io.spine.tools.mc.java.protoc.given.TestMethodFactory;
+import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.ForUuids;
 import io.spine.tools.protoc.JavaClassName;
 import io.spine.tools.protoc.MethodFactory;
 import io.spine.tools.protoc.MethodFactoryName;
-import io.spine.tools.protoc.UuidConfig;
 import io.spine.tools.protoc.plugin.method.NonEnhancedMessage;
 import io.spine.tools.protoc.plugin.method.TestUuidValue;
 import io.spine.type.MessageType;
@@ -43,8 +43,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import io.spine.tools.mc.java.protoc.given.TestMethodFactory;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertIllegalArgument;
@@ -60,7 +58,7 @@ final class GenerateUuidMethodsTest {
         @Test
         @DisplayName("is created with `null` arguments")
         void isCreatedWithNullArguments() {
-            assertNpe(() -> new GenerateUuidMethods(null, ForUuids.getDefaultInstance()));
+            assertNpe(() -> new GenerateUuidMethods(null, MethodFactoryName.getDefaultInstance()));
             assertNpe(() -> new GenerateUuidMethods(testClassLoader(), null));
         }
 
@@ -68,7 +66,7 @@ final class GenerateUuidMethodsTest {
         @DisplayName("`null` `MessageType` is supplied")
         void nullMessageTypeIsSupplied() {
             ForUuids config = newTaskConfig("test");
-            GenerateUuidMethods task = new GenerateUuidMethods(testClassLoader(), config);
+            GenerateUuidMethods task = newTask(config);
             assertNpe(() -> task.generateFor(null));
         }
     }
@@ -78,7 +76,7 @@ final class GenerateUuidMethodsTest {
     @DisplayName("throw `IllegalArgumentException` if factory name is ")
     void throwIllegalArgumentException(String factoryName) {
         ForUuids config = newTaskConfig(factoryName);
-        assertIllegalArgument(() -> new GenerateUuidMethods(testClassLoader(), config));
+        assertIllegalArgument(() -> newTask(config));
     }
 
     @Nested
@@ -115,12 +113,12 @@ final class GenerateUuidMethodsTest {
                 .setClassName(factoryClass)
                 .build();
         return ForUuids.newBuilder()
-                .setMethodFactory(name)
+                .addMethodFactory(name)
                 .build();
     }
 
     private static GenerateUuidMethods newTask(ForUuids config) {
-        return new GenerateUuidMethods(testClassLoader(), config);
+        return new GenerateUuidMethods(testClassLoader(), config.getMethodFactory(0));
     }
 
     private static ExternalClassLoader<MethodFactory> testClassLoader() {

@@ -125,7 +125,7 @@ public final class FieldGen extends CodeGenerator {
     }
 
     @Override
-    public Collection<CompilerOutput> generate(Type<?, ?> type) {
+    protected Collection<CompilerOutput> generate(Type<?, ?> type) {
         if (!(type instanceof MessageType)) {
             return ImmutableList.of();
         }

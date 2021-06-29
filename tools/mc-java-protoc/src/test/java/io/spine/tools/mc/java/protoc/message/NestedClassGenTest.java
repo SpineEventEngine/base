@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, TeamDev. All rights reserved.
+ * Copyright 2021, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.protoc.column;
+package io.spine.tools.mc.java.protoc.message;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.tools.protoc.AddEntityQueries;
-import io.spine.tools.protoc.Classpath;
+import io.spine.tools.mc.java.codegen.FilePatterns;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
+import io.spine.tools.mc.java.protoc.given.TestNestedClassFactory;
+import io.spine.tools.protoc.ForMessages;
+import io.spine.tools.protoc.GenerateNestedClasses;
+import io.spine.tools.protoc.JavaClassName;
+import io.spine.tools.protoc.NestedClassFactoryName;
+import io.spine.tools.protoc.Pattern;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.plugin.nested.Task;
 import io.spine.tools.protoc.plugin.nested.TaskView;
@@ -43,14 +48,14 @@ import java.util.Collection;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 
-@DisplayName("`ColumnGenerator` should")
-class ColumnGenTest {
+@DisplayName("`NestedClassGenerator` should")
+class NestedClassGenTest {
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
         new NullPointerTester()
-                .testAllPublicStaticMethods(ColumnGen.class);
+                .testAllPublicStaticMethods(NestedClassGen.class);
     }
 
     @Test
@@ -58,7 +63,7 @@ class ColumnGenTest {
     void generateCodeForMessages() {
         SpineProtocConfig config = newConfig();
 
-        ColumnGen generator = ColumnGen.instance(config);
+        NestedClassGen generator = NestedClassGen.instance(config);
         MessageType type = new MessageType(TaskView.getDescriptor());
         Collection<CompilerOutput> output = generator.generate(type);
 
@@ -70,7 +75,7 @@ class ColumnGenTest {
     void ignoreNonMessageTypes() {
         SpineProtocConfig config = newConfig();
 
-        ColumnGen generator = ColumnGen.instance(config);
+        NestedClassGen generator = NestedClassGen.instance(config);
         EnumType enumType = EnumType.create(Task.Priority.getDescriptor());
         Collection<CompilerOutput> output = generator.generate(enumType);
 
@@ -78,6 +83,26 @@ class ColumnGenTest {
     }
 
     private static SpineProtocConfig newConfig() {
-        return SpineProtocConfig.getDefaultInstance();
+        JavaClassName name = JavaClassName.newBuilder()
+                .setCanonical(TestNestedClassFactory.class.getCanonicalName())
+                .build();
+        NestedClassFactoryName factoryName = NestedClassFactoryName.newBuilder()
+                .setClassName(name)
+                .build();
+        GenerateNestedClasses generate = GenerateNestedClasses.newBuilder()
+                .setFactory(factoryName)
+                .build();
+        Pattern pattern = Pattern.newBuilder()
+                .setFile(FilePatterns.fileSuffix("test_fields.proto"))
+                .build();
+        ForMessages messages = ForMessages.newBuilder()
+                .setPattern(pattern)
+                .addGenerateNestedClasses(generate)
+                .build();
+        SpineProtocConfig result = SpineProtocConfig
+                .newBuilder()
+                .addMessages(messages)
+                .build();
+        return result;
     }
 }

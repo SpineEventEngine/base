@@ -27,12 +27,7 @@
 package io.spine.tools.mc.java.protoc.field;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.base.SubscribableField;
-import io.spine.tools.protoc.AddFields;
-import io.spine.tools.protoc.Classpath;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.protoc.ConfigByPattern;
-import io.spine.tools.protoc.FilePatterns;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.plugin.nested.Task;
 import io.spine.tools.protoc.plugin.nested.TaskView;

@@ -24,15 +24,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.mc.java.protoc;
+
+import io.spine.type.Type;
+
+import java.util.Collection;
+
 /**
- * Test environment for the tests related to the nested classes generation in scope of Spine Protoc
- * plugin.
+ * Exposes package-private API of {@link CodeGenerator} to test case classes outside the package.
  */
+public final class Generators {
 
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.mc.java.protoc.method.given;
+    /**
+     * Prevents the utility class instantiation.
+     */
+    private Generators() {
+    }
 
-import com.google.errorprone.annotations.CheckReturnValue;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+    /**
+     * Feeds the given {@code type} to the given {@code generator} and returns
+     * the resulting generated code.
+     */
+    public static Collection<CompilerOutput> generate(CodeGenerator generator, Type<?, ?> type) {
+        return generator.generate(type);
+    }
+}

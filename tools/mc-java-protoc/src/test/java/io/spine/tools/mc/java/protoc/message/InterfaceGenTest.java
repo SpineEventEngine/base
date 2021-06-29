@@ -38,13 +38,12 @@ import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
+import io.spine.code.java.PackageName;
 import io.spine.tools.java.fs.Directory;
 import io.spine.tools.java.fs.FileName;
 import io.spine.tools.java.fs.SourceFile;
-import io.spine.code.java.PackageName;
 import io.spine.tools.mc.java.protoc.CodeGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
-import io.spine.tools.mc.java.protoc.given.SpineProtocConfigGiven;
 import io.spine.tools.protoc.plugin.message.tests.EveryIsGeneratedProto;
 import io.spine.tools.protoc.plugin.message.tests.EveryIsInOneFileProto;
 import io.spine.tools.protoc.plugin.message.tests.EveryIsTestProto;
@@ -99,7 +98,7 @@ final class InterfaceGenTest {
      * The directory name containing the code generated from proto test data from
      * the {@code proto/spine/tools/protoc/msg} directory.
      *
-     * @see JAVA_PACKAGE
+     * @see #JAVA_PACKAGE
      */
     private static final String JAVA_DIR = JAVA_PACKAGE.value().replace('.', '/');
 
@@ -142,10 +141,9 @@ final class InterfaceGenTest {
 
     @BeforeEach
     void setUp() {
-        io.spine.tools.protoc.Interfaces interfaces = SpineProtocConfigGiven.defaultInterfaces();
+        // TODO:2021-06-29:dmytro.dashenkov: Add interfaces.
         SpineProtocConfig config = SpineProtocConfig
                 .newBuilder()
-                .setAddInterfaces(interfaces.asProtocConfig())
                 .build();
         codeGenerator = InterfaceGen.instance(config);
     }

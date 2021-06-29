@@ -85,7 +85,7 @@ public final class ColumnGen extends CodeGenerator {
     }
 
     @Override
-    public Collection<CompilerOutput> generate(Type<?, ?> type) {
+    protected Collection<CompilerOutput> generate(Type<?, ?> type) {
         checkNotNull(type);
         if (!isEntityStateWithColumns(type)) {
             return ImmutableList.of();

@@ -143,16 +143,6 @@ message ForUuids {
     repeated MethodFactoryName method_factory = 2;
 }
 
-// Configures the code generation for the messages representing an entity state.
-message EntityStateConfig {
-
-    // A fully-qualified name of the target.
-    //
-    // Currently, the interface name or field type name is expected.
-    //
-    string value = 1;
-}
-
 message NestedClassFactoryName {
 
     // io.spine.tools.protoc.NestedClassFactory

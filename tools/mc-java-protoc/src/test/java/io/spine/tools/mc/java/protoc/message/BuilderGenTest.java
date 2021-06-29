@@ -66,12 +66,9 @@ class BuilderGenTest {
     @Test
     @DisplayName("do nothing if configured to skip validating builders")
     void ignoreIfConfigured() {
-        SpineProtocConfig config = SpineProtocConfig
-                .newBuilder()
-                .setSkipValidatingBuilders(true)
-                .build();
-        CodeGenerator generator =
-                BuilderGen.instance(config);
+        SpineProtocConfig.Builder config = SpineProtocConfig.newBuilder();
+        config.getValidationBuilder().setSkipBuilders(true);
+        CodeGenerator generator = BuilderGen.instance(config.build());
         assertThat(generator).isInstanceOf(NoOpGenerator.class);
     }
 }
