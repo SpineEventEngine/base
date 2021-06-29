@@ -29,16 +29,17 @@ package io.spine.tools.mc.java.codegen;
 /**
  * Represents a Protoc Spine plugin configuration selector.
  *
- * <p>Is used as a marker for selecting the required protoc configuration when creating the
- * {@link ModelCompilerConfiguration}.
+ * <p>Is used as a marker for selecting the required protoc configuration when
+ * configuring Model Compiler.
  *
  * <p>An example of using selector in Gradle:
  * <pre>
- *     mark messages().uuid(), asType("my.custom.Identifier")
+ *     forMessages(inFiles(withSuffix("identifiers.proto"))) {
+ *         // Configure code generation.
+ *     }
  * </pre>
- * where {@code messages().uuid()} is a {@linkplain IsUuidMessage selector} for the UUID messages
- * configuration and the rest of the expression are the additional params provided for the
- * configuration.
+ *
+ * @see MessageSelectorFactory
  */
 public interface Selector {
 

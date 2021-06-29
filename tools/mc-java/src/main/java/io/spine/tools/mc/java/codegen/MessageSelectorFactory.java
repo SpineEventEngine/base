@@ -67,13 +67,6 @@ public final class MessageSelectorFactory {
     }
 
     /**
-     * Creates a new {@code IsEntityState} selector.
-     */
-    public IsEntityState entityState() {
-        return new IsEntityState();
-    }
-
-    /**
      * Creates a {@code ByPattern} out of the supplied configuration.
      *
      * <p>The supported configuration parameters are:

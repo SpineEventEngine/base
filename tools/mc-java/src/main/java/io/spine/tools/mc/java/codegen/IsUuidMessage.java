@@ -26,15 +26,10 @@
 
 package io.spine.tools.mc.java.codegen;
 
-import io.spine.code.java.ClassName;
-
 /**
  * A selector which signalizes that the configuration should be applied to all UUID messages.
  *
  * <p>A UUID message is a message with a single {@code string} field named {@code uuid}.
- *
- * @see Interfaces#mark(IsUuidMessage, ClassName)
- * @see Methods#applyFactory(String, IsUuidMessage)
  */
 public final class IsUuidMessage extends MessageSelector {
 

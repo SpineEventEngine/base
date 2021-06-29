@@ -65,13 +65,6 @@ final class MessageSelectorFactoryTest {
     }
 
     @Test
-    @DisplayName("create `IsEntityState` selector")
-    void createEntityStateSelector() {
-        assertThat(factory.entityState())
-                .isInstanceOf(IsEntityState.class);
-    }
-
-    @Test
     @DisplayName("create all messages selector")
     void createAllSelector() {
         ByPattern allSelector = factory.all();
