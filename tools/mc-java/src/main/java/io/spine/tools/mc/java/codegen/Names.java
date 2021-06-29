@@ -24,13 +24,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.protoc;
+package io.spine.tools.mc.java.codegen;
 
+import io.spine.annotation.Internal;
 import io.spine.tools.protoc.JavaClassName;
 
 /**
  * A test factory of {@code JavaClassName}s.
  */
+@Internal
 public final class Names {
 
     /**

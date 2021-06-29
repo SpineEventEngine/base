@@ -39,6 +39,7 @@ import org.gradle.api.provider.SetProperty;
 
 import java.util.Set;
 
+import static io.spine.tools.mc.java.codegen.Names.className;
 import static java.util.stream.Collectors.toSet;
 
 public final class MessagesConfig extends ConfigWithFields<ForMessages> {

@@ -47,7 +47,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.Assertions.assertNpe;
-import static io.spine.tools.mc.java.protoc.Names.className;
+import static io.spine.tools.mc.java.codegen.Names.className;
 
 @DisplayName("`GenerateUuidMethods` should")
 final class GenerateUuidMethodsTest {

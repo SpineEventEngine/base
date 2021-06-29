@@ -32,13 +32,25 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Project;
 import org.gradle.api.provider.Property;
 
+import static io.spine.tools.mc.java.codegen.Names.className;
+
+/**
+ * A configuration which includes field generation.
+ *
+ * <p>Model Compiler generates type-safe API for filtering messages by fields in queries
+ * and subscriptions.
+ *
+ * @param <P>
+ *         Protobuf type which serializes this configuration
+ */
 abstract class ConfigWithFields<P extends Message> extends ConfigWithInterfaces<P> {
 
     private final Property<String> markFieldsAs;
 
     ConfigWithFields(Project p) {
         super(p);
-        markFieldsAs = p.getObjects().property(String.class);
+        markFieldsAs = p.getObjects()
+                        .property(String.class);
     }
 
     final void convention(@Nullable Class<?> fieldSuperclass) {
@@ -47,6 +59,11 @@ abstract class ConfigWithFields<P extends Message> extends ConfigWithInterfaces<
         }
     }
 
+    /**
+     * Provides a superclass for the field type.
+     *
+     * <p>{@code className} must represent an existing Java class.
+     */
     public final void markFieldsAs(String className) {
         markFieldsAs.set(className);
     }

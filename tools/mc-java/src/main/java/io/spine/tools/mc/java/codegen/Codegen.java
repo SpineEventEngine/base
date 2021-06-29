@@ -27,6 +27,7 @@
 package io.spine.tools.mc.java.codegen;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.annotation.Internal;
 import io.spine.base.CommandMessage;
 import io.spine.base.EntityState;
 import io.spine.base.EventMessage;
@@ -58,6 +59,10 @@ import static io.spine.base.MessageFile.COMMANDS;
 import static io.spine.base.MessageFile.EVENTS;
 import static io.spine.base.MessageFile.REJECTIONS;
 
+/**
+ * A configuration for the Model Compiler code generation.
+ */
+@SuppressWarnings("OverlyCoupledClass") // OK for a Gradle config.
 public final class Codegen extends Config<SpineProtocConfig> {
 
     private final SignalConfig forCommands;
@@ -69,6 +74,7 @@ public final class Codegen extends Config<SpineProtocConfig> {
     private final Set<ForMessages> forMessagesConfigs = new HashSet<>();
     private final Project project;
 
+    @Internal
     public Codegen(Project project) {
         super();
         this.project = checkNotNull(project);
@@ -90,30 +96,53 @@ public final class Codegen extends Config<SpineProtocConfig> {
         validation.enableAllByConvention();
     }
 
+    /**
+     * Configures code generation for command messages.
+     */
     public void forCommands(Action<SignalConfig> action) {
         action.execute(forCommands);
     }
 
+    /**
+     * Configures code generation for event messages.
+     */
     public void forEvents(Action<SignalConfig> action) {
         action.execute(forEvents);
     }
 
+    /**
+     * Configures code generation for rejection messages.
+     */
     public void forRejections(Action<SignalConfig> action) {
         action.execute(forRejections);
     }
 
+    /**
+     * Configures code generation for entity state messages.
+     */
     public void forEntities(Action<EntityConfig> action) {
         action.execute(forEntities);
     }
 
+    /**
+     * Configures code generation for UUID messages.
+     */
     public void forUuids(Action<UuidConfig> action) {
         action.execute(forUuids);
     }
 
+    /**
+     * Configures code generation for validation messages.
+     */
     public void validation(Action<ValidationConfig> action) {
         action.execute(validation);
     }
 
+    /**
+     * Configures code generation for a group messages.
+     *
+     * <p>The group is defined by a file-based selector.
+     */
     public void forMessages(ByPattern selector, Action<MessagesConfig> action) {
         FilePattern filePattern = selector.toProto();
         Pattern pattern = Pattern
@@ -125,9 +154,12 @@ public final class Codegen extends Config<SpineProtocConfig> {
         forMessagesConfigs.add(config.toProto());
     }
 
-    public void forMessage(String protoType, Action<MessagesConfig> action) {
+    /**
+     * Configures code generation for particular message.
+     */
+    public void forMessage(String protoTypeName, Action<MessagesConfig> action) {
         ProtoTypeName name = ProtoTypeName.newBuilder()
-                .setValue(protoType)
+                .setValue(protoTypeName)
                 .build();
         Pattern pattern = Pattern.newBuilder()
                 .setType(TypePattern.newBuilder().setExpectedType(name))
@@ -139,7 +171,7 @@ public final class Codegen extends Config<SpineProtocConfig> {
     }
 
     @Override
-    public SpineProtocConfig toProto() {
+    SpineProtocConfig toProto() {
         SpineProtocConfig.Builder builder = SpineProtocConfig.newBuilder()
                 .setCommands(forCommands.toProto())
                 .setEvents(forEvents.toProto())

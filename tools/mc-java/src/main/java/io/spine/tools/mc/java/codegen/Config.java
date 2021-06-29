@@ -27,16 +27,17 @@
 package io.spine.tools.mc.java.codegen;
 
 import com.google.protobuf.Message;
-import io.spine.tools.protoc.JavaClassName;
 
+/**
+ * A Gradle configuration of a certain aspect of Model Compiler code generation.
+ *
+ * @param <P>
+ *         Protobuf type which serializes this configuration
+ */
 abstract class Config<P extends Message> {
 
+    /**
+     * Converts this configuration into a Proto message.
+     */
     abstract P toProto();
-
-    static JavaClassName className(String canonical) {
-        return JavaClassName
-                .newBuilder()
-                .setCanonical(canonical)
-                .build();
-    }
 }

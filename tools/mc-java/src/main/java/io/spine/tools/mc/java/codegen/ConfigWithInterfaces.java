@@ -26,45 +26,60 @@
 
 package io.spine.tools.mc.java.codegen;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Message;
 import io.spine.tools.protoc.AddInterface;
 import org.gradle.api.Project;
 import org.gradle.api.provider.SetProperty;
 
-import java.util.List;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 
-import static java.util.stream.Collectors.toList;
-
+/**
+ * A config for messages which can implement certain Java interfaces.
+ *
+ * @param <P>
+ *         Protobuf type which serializes this configuration
+ */
 abstract class ConfigWithInterfaces<P extends Message> extends Config<P> {
 
     private final SetProperty<String> interfaceNames;
 
     ConfigWithInterfaces(Project p) {
         super();
-        this.interfaceNames = p.getObjects().setProperty(String.class);
+        this.interfaceNames = p.getObjects()
+                               .setProperty(String.class);
     }
 
+    /**
+     * Configures the associated messages to implement a Java interface with the given name.
+     *
+     * <p>The interface must exist. The declaration of the interface will not be generated.
+     *
+     * @param interfaceName
+     *         interface canonical name
+     */
     public final void markAs(String interfaceName) {
         interfaceNames.add(interfaceName);
     }
 
-    public final void markAs(String firstInterface, String secondInterface, String... otherInterfaces) {
-        interfaceNames.add(firstInterface);
-        interfaceNames.add(secondInterface);
-        interfaceNames.addAll(otherInterfaces);
-    }
-
-    final List<AddInterface> interfaces() {
+    /**
+     * Obtains the set of {@link AddInterface}s which define which interfaces to add
+     * to the associated messages.
+     */
+    final ImmutableSet<AddInterface> interfaces() {
         return interfaceNames
                 .get()
                 .stream()
-                .map(Config::className)
+                .map(Names::className)
                 .map(name -> AddInterface.newBuilder()
                         .setName(name)
                         .build())
-                .collect(toList());
+                .collect(toImmutableSet());
     }
 
+    /**
+     * Obtains the Gradle property containing the set of Java interface names.
+     */
     final SetProperty<String> interfaceNames() {
         return interfaceNames;
     }

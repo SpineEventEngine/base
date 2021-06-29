@@ -65,7 +65,7 @@ public final class UuidConfig extends ConfigWithInterfaces<ForUuids> {
     private List<MethodFactoryName> factories() {
         return methodFactories.get()
                               .stream()
-                              .map(Config::className)
+                              .map(Names::className)
                               .map(name -> MethodFactoryName.newBuilder()
                                       .setClassName(name)
                                       .build())
