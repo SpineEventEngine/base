@@ -36,6 +36,7 @@ import io.spine.tools.protoc.JavaClassName;
 import io.spine.type.MessageType;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * An abstract base for strongly-typed field generation tasks.
@@ -48,6 +49,7 @@ abstract class FieldGenerationTask implements CodeGenerationTask {
     FieldGenerationTask(JavaClassName fieldSupertype, FieldFactory factory) {
         this.fieldSupertype = fieldSupertype;
         this.factory = factory;
+        checkNotEmptyOrBlank(fieldSupertype.getCanonical());
     }
 
     /**
