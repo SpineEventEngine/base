@@ -27,21 +27,15 @@
 package io.spine.tools.mc.java.protoc;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.type.Type;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
 import java.util.Collection;
-
-import static io.spine.testing.Assertions.assertIllegalArgument;
-import static io.spine.testing.Assertions.assertNpe;
-import static io.spine.tools.mc.java.protoc.given.CodeGeneratorRequestGiven.requestBuilder;
 
 @DisplayName("`SpineProtoGenerator` should")
 final class CodeGeneratorTest {
@@ -163,40 +157,40 @@ final class CodeGeneratorTest {
 //        fileContent.isEqualTo(method);
     }
 
-    @Nested
-    @DisplayName("not process invalid `CodeGeneratorRequest` if passed")
-    class Arguments {
+//    @Nested
+//    @DisplayName("not process invalid `CodeGeneratorRequest` if passed")
+//    class Arguments {
+//
+//        @Test
+//        @DisplayName("`null`")
+//        void nullArg() {
+//            assertNpe(() -> process(null));
+//        }
+//
+//        @Test
+//        @DisplayName("unsupported version")
+//        void notProcessInvalidRequests() {
+//            assertIllegalArgument(() -> process(requestWithUnsupportedVersion()));
+//        }
+//
+//        @Test
+//        @DisplayName("empty request")
+//        void emptyRequest() {
+//            assertIllegalArgument(() -> process(requestBuilder().build()));
+//        }
+//
+//        private void process(CodeGeneratorRequest request) {
+//            new TestGenerator().process(request);
+//        }
+//    }
 
-        @Test
-        @DisplayName("`null`")
-        void nullArg() {
-            assertNpe(() -> process(null));
-        }
-
-        @Test
-        @DisplayName("unsupported version")
-        void notProcessInvalidRequests() {
-            assertIllegalArgument(() -> process(requestWithUnsupportedVersion()));
-        }
-
-        @Test
-        @DisplayName("empty request")
-        void emptyRequest() {
-            assertIllegalArgument(() -> process(requestBuilder().build()));
-        }
-
-        private void process(CodeGeneratorRequest request) {
-            new TestGenerator().process(request);
-        }
-    }
-
-    private static CodeGeneratorRequest requestWithUnsupportedVersion() {
-        CodeGeneratorRequest.Builder result = requestBuilder();
-        result.setCompilerVersion(result.getCompilerVersionBuilder()
-                                        .setMajor(2));
-        return result.build();
-
-    }
+//    private static CodeGeneratorRequest requestWithUnsupportedVersion() {
+//        CodeGeneratorRequest.Builder result = requestBuilder();
+//        result.setCompilerVersion(result.getCompilerVersionBuilder()
+//                                        .setMajor(2));
+//        return result.build();
+//
+//    }
 
     private static class TestGenerator extends CodeGenerator {
 
