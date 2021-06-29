@@ -41,126 +41,220 @@ import "google/protobuf/empty.proto";
 // Configuration of the Spine Protoc Plugin.
 //
 // The configuration is passed to the plugin as the single option.
-// The passed value is serialized and base-64 encoded.
+// The passed value is serialized and passed via a file.
 //
 message SpineProtocConfig {
 
+    // The configuration related to validation code.
     Validation validation = 1;
 
+    // The configuration related to entity states.
     ForEntities entities = 2;
 
+    // The configuration related to command messages.
     ForSignals commands = 3;
 
+    // The configuration related to event messages.
     ForSignals events = 4;
 
+    // The configuration related to rejection messages.
     ForSignals rejections = 5;
 
+    // The code generation config for a group of messages selected by a file pattern.
     repeated ForMessages messages = 6;
 
+    // The configuration related to UUID messages.
     ForUuids uuids = 7;
 
     // The classpath used to lookup types by their fully-qualified names.
     Classpath classpath = 8;
 }
 
+// Configuration related to validation code.
+//
 message Validation {
 
+    // If `true`, validating builders should not be generated.
+    //
+    // Validating builders may be generated without validation code. See `skip_validation`.
+    //
     bool skip_builders = 1;
 
+    // If `true`, validation code, based on the Spine validation runles, should not be generated.
     bool skip_validation = 2;
 }
 
+// Code generation config for a group of signal messages.
+//
 message ForSignals {
 
+    // The patterns which define the group.
+    //
+    // It is recommended that Spine users define events in files ending with "events.proto",
+    // rejections — with "rejections.proto", and commands — with "commands.proto". However, users
+    // can override this convention by changing these patterns.
+    //
+    // Note. Code generators do not presume any conventions. File patterns described above must
+    // be added to `pattern` explicitly.
+    //
     repeated FilePattern pattern = 1;
 
+    // Java interfaces to be added to all the messages defined by this group.
     repeated AddInterface add_interface = 2;
 
+    // Configuration for type-safe field API generation for all the messages in this group.
     GenerateFields generate_fields = 4;
 }
 
+// Code generation config for entity state messages.
+//
 message ForEntities {
 
+    // The patterns which define which messages are entity state messages.
+    //
+    // The users may choose to define file patterns which always contain entity state definitions.
+    //
+    // These patterns are complementary to `option`, i.e. if both are set, both apply, so that
+    // messages which match the given patterns and messages which are marked with given options
+    // are considered to be entity states.
+    //
     repeated FilePattern pattern = 1;
 
+    // Protobuf options which may mark an entity state definition.
+    //
+    // By default, we recommend marking entity states with the `(entity)` option. Users may override
+    // this behaviour by submitting their custom options.
+    //
+    // These options are complementary to `pattern`, i.e. if both are set, both apply, so that
+    // messages which match the given patterns and messages which are marked with given options
+    // are considered to be entity states.
+    //
     repeated ProtoOption option = 2;
 
+    // Java interfaces to be added to all entity states.
+    //
+    // Unlike any other interfaces, entity state interfaces receive the entity ID as
+    // a type argument. If an interface does not declare a single non-bounded type parameter,
+    // a Java compilation error may occur.
+    //
     repeated AddInterface add_interface = 3;
 
+    // Configuration for type-safe field API generation for entity states.
     GenerateFields generate_fields = 4;
 
+    // Whether or not query type-safe query API should be generated for all the entity states.
+    //
+    // It's recommended, if in doubt, to generate query API.
+    //
     bool generate_queries = 5;
 }
 
+// Code generation config for type-safe field API.
+//
+// An empty instance of this message indicates that fields should not be generated.
+//
 message GenerateFields {
 
+    // The name of the superclass of the fields class.
+    //
+    // It's recommended that the class extends `io.spine.base.SubscribableField`.
+    //
     JavaClassName superclass = 1;
 }
 
+// Code generation config for an arbitrary group of messages.
+//
+// The group is defined by a file or a type pattern. For example, messages may be declared in files
+// with the same suffix, have a common part in the type name, etc.
+//
+// A group may consist of just one message defined by its full name.
+//
 message ForMessages {
 
+    // The pattern defining the group.
     Pattern pattern = 1;
 
+    // Java interfaces to be added to all the messages in this group.
     repeated AddInterface add_interface = 2;
 
+    // Java method generation config for messages in this group.
     repeated GenerateMethods generate_methods = 3;
 
+    // Java nested class generation config for messages in this group.
     repeated GenerateNestedClasses generate_nested_classes = 4;
 
+    // Java type-safe field API generation config for messages in this group.
     GenerateFields generate_fields = 5;
 }
 
+// Code generation config for the messages holding a UUID value.
+//
+// Messages which only have one `string` field called `uuid` are known as UUID messages.
+//
+message ForUuids {
+
+    // Java interfaces to be added to all the UUID messages.
+    repeated AddInterface add_interface = 1;
+
+    // Java method generation config for UUID messages.
+    repeated MethodFactoryName method_factory = 2;
+}
+
+// A pattern which matches one or multiple messages.
+//
 message Pattern {
 
     oneof kind {
 
+        // File name pattern.
         FilePattern file = 1;
 
+        // Type name pattern.
         TypePattern type = 2;
     }
 }
 
+// Configuration for adding a Java interface to a generated class.
+//
 message AddInterface {
 
     JavaClassName name = 1;
 }
 
+// Configuration for adding Java methods into a generated class.
+//
 message GenerateMethods {
 
     MethodFactoryName factory = 1;
 }
 
+// Configuration for adding nested classes into a generated class.
+//
 message GenerateNestedClasses {
 
     NestedClassFactoryName factory = 1;
 }
 
-// Configures the code generation for the messages holding a UUID value.
-message ForUuids {
-
-    repeated AddInterface add_interface = 1;
-
-    repeated MethodFactoryName method_factory = 2;
-}
-
+// A Java class name of a nested class factory.
+//
+// The class must implement `io.spine.tools.protoc.NestedClassFactory`.
+//
 message NestedClassFactoryName {
 
-    // io.spine.tools.protoc.NestedClassFactory
     JavaClassName class_name = 1;
 }
 
+// A Java class name of a method factory.
+//
+// The class must implement `io.spine.tools.protoc.MethodFactory`.
+//
 message MethodFactoryName {
 
-    // // io.spine.tools.protoc.MethodFactory
     JavaClassName class_name = 1;
-}
-
-message FieldName {
-
-    string value = 1;
 }
 
 // File pattern used to filter messages residing in files.
+//
 message FilePattern {
 
     oneof value {
@@ -189,28 +283,35 @@ message FilePattern {
 }
 
 // A type name pattern.
+//
 message TypePattern {
 
     oneof value {
 
-        // A pattern which is used to check for a strict match between the type name and
-        // the specified expected type.
+        // The exact value of the expected type name.
         ProtoTypeName expected_type = 1;
 
+        // A regular expression to match a type name.
         string regex = 2;
     }
 }
 
+// Full name of a Protobuf message type.
+//
 message ProtoTypeName {
 
     string value = 1;
 }
 
+// Full name of a Java class.
+//
 message JavaClassName {
 
     string canonical = 1;
 }
 
+// Full name of a Protobuf option.
+//
 message ProtoOption {
 
     string name = 1;
