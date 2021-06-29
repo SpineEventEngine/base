@@ -27,8 +27,11 @@
 package io.spine.tools.mc.java.protoc.column;
 
 import com.google.common.testing.NullPointerTester;
+import io.spine.option.OptionsProto;
 import io.spine.tools.mc.java.protoc.CodeGenerator;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
+import io.spine.tools.protoc.ForEntities;
+import io.spine.tools.protoc.ProtoOption;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.plugin.nested.Task;
 import io.spine.tools.protoc.plugin.nested.TaskView;
@@ -62,7 +65,8 @@ class ColumnGenTest {
         MessageType type = new MessageType(TaskView.getDescriptor());
         Collection<CompilerOutput> output = generate(generator, type);
 
-        assertThat(output).isNotEmpty();
+        assertThat(output)
+                .isNotEmpty();
     }
 
     @Test
@@ -74,10 +78,17 @@ class ColumnGenTest {
         EnumType enumType = EnumType.create(Task.Priority.getDescriptor());
         Collection<CompilerOutput> output = generate(generator, enumType);
 
-        assertThat(output).isEmpty();
+        assertThat(output)
+                .isEmpty();
     }
 
     private static SpineProtocConfig newConfig() {
-        return SpineProtocConfig.getDefaultInstance();
+        SpineProtocConfig.Builder config = SpineProtocConfig.newBuilder();
+        ForEntities.Builder entities = config.getEntitiesBuilder();
+        entities.setGenerateQueries(true);
+        entities.addOption(ProtoOption
+                                   .newBuilder()
+                                   .setName(OptionsProto.entity.getDescriptor().getName()));
+        return config.build();
     }
 }
