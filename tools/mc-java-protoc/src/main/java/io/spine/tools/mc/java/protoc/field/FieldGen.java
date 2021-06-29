@@ -34,13 +34,16 @@ import io.spine.tools.mc.java.protoc.CodeGenerator;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.InsertionPoint;
 import io.spine.tools.protoc.ForEntities;
+import io.spine.tools.protoc.ForMessages;
 import io.spine.tools.protoc.ForSignals;
 import io.spine.tools.protoc.GenerateFields;
+import io.spine.tools.protoc.Pattern;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
@@ -91,6 +94,9 @@ public final class FieldGen extends CodeGenerator {
             ForSignals signals = spineProtocConfig.getRejections();
             tasks.addAll(tasksFor(signals));
         }
+        for (ForMessages group : spineProtocConfig.getMessagesList()) {
+            taskFor(group).ifPresent(tasks::add);
+        }
         return new FieldGen(tasks.build());
     }
 
@@ -104,6 +110,18 @@ public final class FieldGen extends CodeGenerator {
                          .map(pattern -> new GenerateFieldsByPattern(
                                  generateFields.getSuperclass(), pattern, factory
                          )).collect(toImmutableList());
+    }
+
+    private static Optional<GenerateFieldsByPattern> taskFor(ForMessages forMessages) {
+        GenerateFields generateFields = forMessages.getGenerateFields();
+        if (!generateFields.hasSuperclass()) {
+            return Optional.empty();
+        }
+        Pattern pattern = forMessages.getPattern();
+        GenerateFieldsByPattern task = new GenerateFieldsByPattern(
+                generateFields.getSuperclass(), pattern, factory
+        );
+        return Optional.of(task);
     }
 
     @Override

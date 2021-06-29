@@ -106,6 +106,8 @@ message ForMessages {
     repeated GenerateMethods generate_methods = 3;
 
     repeated GenerateNestedClasses generate_nested_classes = 4;
+
+    GenerateFields generate_fields = 5;
 }
 
 message Pattern {

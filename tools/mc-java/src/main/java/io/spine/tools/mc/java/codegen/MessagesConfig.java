@@ -41,7 +41,7 @@ import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
 
-public final class MessagesConfig extends ConfigWithInterfaces<ForMessages> {
+public final class MessagesConfig extends ConfigWithFields<ForMessages> {
 
     private final Pattern pattern;
     private final SetProperty<String> methodFactories;
@@ -79,6 +79,7 @@ public final class MessagesConfig extends ConfigWithInterfaces<ForMessages> {
                 .addAllAddInterface(interfaces())
                 .addAllGenerateMethods(generateMethods())
                 .addAllGenerateNestedClasses(generateNestedClasses())
+                .setGenerateFields(generateFields())
                 .build();
     }
 

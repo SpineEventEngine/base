@@ -30,8 +30,10 @@ import com.google.common.collect.ImmutableList;
 import io.spine.tools.java.code.field.FieldFactory;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.FilePatternMatcher;
+import io.spine.tools.mc.java.protoc.PatternMatcher;
 import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.JavaClassName;
+import io.spine.tools.protoc.Pattern;
 import io.spine.type.MessageType;
 import io.spine.type.TypeName;
 
@@ -45,6 +47,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
 final class GenerateFieldsByPattern extends FieldGenerationTask {
 
     private final Predicate<MessageType> matcher;
+
+    GenerateFieldsByPattern(JavaClassName fieldSupertype,
+                            Pattern pattern,
+                            FieldFactory factory) {
+        super(checkNotNull(fieldSupertype), checkNotNull(factory));
+        checkNotNull(pattern);
+        this.matcher = new PatternMatcher(pattern);
+    }
 
     GenerateFieldsByPattern(JavaClassName fieldSupertype,
                             FilePattern pattern,
