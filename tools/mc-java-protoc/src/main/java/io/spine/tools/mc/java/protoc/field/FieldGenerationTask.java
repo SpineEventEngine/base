@@ -27,8 +27,8 @@
 package io.spine.tools.mc.java.protoc.field;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.java.code.field.FieldFactory;
 import io.spine.code.java.ClassName;
+import io.spine.tools.java.code.field.FieldFactory;
 import io.spine.tools.mc.java.protoc.ClassMember;
 import io.spine.tools.mc.java.protoc.CodeGenerationTask;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
