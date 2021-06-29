@@ -55,7 +55,9 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 @SuppressWarnings({
         "PublicField", "WeakerAccess" /* Expose fields as a Gradle extension */,
         "ClassWithTooManyMethods" /* The methods are needed for handing default values. */,
-        "ClassWithTooManyFields", "PMD.TooManyFields" /* Gradle extensions are flat like this. */})
+        "ClassWithTooManyFields", "PMD.TooManyFields" /* Gradle extensions are flat like this. */,
+        "RedundantSuppression" /* "ClassWithTooManyFields" is sometimes not recognized by IDEA. */
+})
 public class McJavaExtension extends GradleExtension {
 
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
