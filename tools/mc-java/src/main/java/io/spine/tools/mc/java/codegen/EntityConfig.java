@@ -80,6 +80,7 @@ public final class EntityConfig extends MessageGroupConfig<ForEntities> {
                 .addAllOption(options())
                 .addAllPattern(patterns())
                 .setGenerateQueries(generateQueries.get())
+                .setGenerateFields(generateFields())
                 .build();
     }
 
