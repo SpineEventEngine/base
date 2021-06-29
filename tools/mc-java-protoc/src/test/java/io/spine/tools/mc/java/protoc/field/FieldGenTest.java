@@ -27,7 +27,12 @@
 package io.spine.tools.mc.java.protoc.field;
 
 import com.google.common.testing.NullPointerTester;
+import io.spine.base.SubscribableField;
+import io.spine.tools.mc.java.codegen.FilePatterns;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
+import io.spine.tools.protoc.ForMessages;
+import io.spine.tools.protoc.GenerateFields;
+import io.spine.tools.protoc.Pattern;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.plugin.nested.Task;
 import io.spine.tools.protoc.plugin.nested.TaskView;
@@ -40,6 +45,7 @@ import java.util.Collection;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static io.spine.tools.mc.java.protoc.Names.className;
 
 @DisplayName("`FieldGenerator` should")
 class FieldGenTest {
@@ -60,7 +66,8 @@ class FieldGenTest {
         MessageType type = new MessageType(TaskView.getDescriptor());
         Collection<CompilerOutput> output = generator.generate(type);
 
-        assertThat(output).isNotEmpty();
+        assertThat(output)
+                .isNotEmpty();
     }
 
     @Test
@@ -72,10 +79,37 @@ class FieldGenTest {
         EnumType enumType = EnumType.create(Task.Priority.getDescriptor());
         Collection<CompilerOutput> output = generator.generate(enumType);
 
-        assertThat(output).isEmpty();
+        assertThat(output)
+                .isEmpty();
     }
 
     private static SpineProtocConfig newConfig() {
-        return SpineProtocConfig.getDefaultInstance();
+        /*
+        ConfigByPattern pattern = ConfigByPattern
+                .newBuilder()
+                .setValue(SubscribableField.class.getName())
+                .setPattern(FilePatterns.fileSuffix("test_fields.proto"))
+                .build();
+        AddFields addFields = AddFields
+                .newBuilder()
+                .addConfigByPattern(pattern)
+                .build();
+        SpineProtocConfig result = SpineProtocConfig
+                .newBuilder()
+                .setAddFields(addFields)
+                .setClasspath(Classpath.getDefaultInstance())
+                .build();
+        return result;
+        */
+        ForMessages.Builder messages = ForMessages.newBuilder();
+        messages.setPattern(
+                Pattern.newBuilder().setFile(FilePatterns.fileSuffix("test_fields.proto")));
+        GenerateFields generateFields = GenerateFields.newBuilder()
+                .setSuperclass(className(SubscribableField.class))
+                .build();
+        messages.setGenerateFields(generateFields);
+        return SpineProtocConfig.newBuilder()
+                .addMessages(messages)
+                .build();
     }
 }

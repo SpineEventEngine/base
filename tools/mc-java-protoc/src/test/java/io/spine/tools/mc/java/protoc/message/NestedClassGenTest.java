@@ -47,6 +47,7 @@ import java.util.Collection;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static io.spine.tools.mc.java.protoc.Names.className;
 
 @DisplayName("`NestedClassGenerator` should")
 class NestedClassGenTest {
@@ -83,9 +84,7 @@ class NestedClassGenTest {
     }
 
     private static SpineProtocConfig newConfig() {
-        JavaClassName name = JavaClassName.newBuilder()
-                .setCanonical(TestNestedClassFactory.class.getCanonicalName())
-                .build();
+        JavaClassName name = className(TestNestedClassFactory.class);
         NestedClassFactoryName factoryName = NestedClassFactoryName.newBuilder()
                 .setClassName(name)
                 .build();

@@ -24,35 +24,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.protoc.message;
+package io.spine.tools.mc.java.protoc;
 
-import io.spine.tools.mc.java.protoc.given.TestInterface;
-import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.JavaClassName;
-import io.spine.tools.protoc.plugin.message.tests.ProjectCreated;
-import io.spine.type.MessageType;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
-import static com.google.common.truth.Truth.assertThat;
-import static io.spine.tools.mc.java.codegen.FilePatterns.fileSuffix;
-import static io.spine.tools.mc.java.protoc.Names.className;
+/**
+ * A test factory of {@code JavaClassName}s.
+ */
+public final class Names {
 
-@DisplayName("`GenerateInterfaces` should")
-final class InterfacesTest {
-
-    @DisplayName("implement interface")
-    @Test
-    void implementInterface() {
-        FilePattern pattern = fileSuffix("test_events.proto");
-        JavaClassName className = className(TestInterface.class);
-        ImplementByPattern implementByPattern = newTask(className, pattern);
-        MessageType targetType = new MessageType(ProjectCreated.getDescriptor());
-        assertThat(implementByPattern.generateFor(targetType))
-                .isNotEmpty();
+    /**
+     * Prevents the utility class instantiation.
+     */
+    private Names() {
     }
 
-    private static ImplementByPattern newTask(JavaClassName className, FilePattern pattern) {
-        return new ImplementByPattern(className, pattern);
+    /**
+     * Obtains a {@code JavaClassName} with the given value.
+     */
+    public static JavaClassName className(String name) {
+        return JavaClassName
+                .newBuilder()
+                .setCanonical(name)
+                .build();
+    }
+
+    /**
+     * Obtains a {@code JavaClassName} for the given class.
+     */
+    public static JavaClassName className(Class<?> cls) {
+        return className(cls.getCanonicalName());
     }
 }

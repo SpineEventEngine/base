@@ -48,6 +48,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.mc.java.protoc.InsertionPoint.class_scope;
+import static io.spine.tools.mc.java.protoc.Names.className;
 
 @DisplayName("`GenerateEntityStateFields` task should")
 final class GenerateEntityStateFieldsTest {
@@ -119,9 +120,7 @@ final class GenerateEntityStateFieldsTest {
     }
 
     private static ForEntities config(String fieldType) {
-        JavaClassName name = JavaClassName.newBuilder()
-                .setCanonical(fieldType)
-                .build();
+        JavaClassName name = className(fieldType);
         GenerateFields generate = GenerateFields.newBuilder()
                 .setSuperclass(name)
                 .build();

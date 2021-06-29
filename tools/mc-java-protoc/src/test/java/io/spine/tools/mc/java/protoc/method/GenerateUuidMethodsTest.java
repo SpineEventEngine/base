@@ -47,6 +47,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.Assertions.assertNpe;
+import static io.spine.tools.mc.java.protoc.Names.className;
 
 @DisplayName("`GenerateUuidMethods` should")
 final class GenerateUuidMethodsTest {
@@ -106,9 +107,7 @@ final class GenerateUuidMethodsTest {
     }
 
     private static ForUuids newTaskConfig(String factoryName) {
-        JavaClassName factoryClass = JavaClassName.newBuilder()
-                .setCanonical(factoryName)
-                .build();
+        JavaClassName factoryClass = className(factoryName);
         MethodFactoryName name = MethodFactoryName.newBuilder()
                 .setClassName(factoryClass)
                 .build();
