@@ -45,7 +45,6 @@ modelCompiler {
 
         forMessages(suffix("documents.proto")) {
             markAs("io.spine.tools.protoc.DocumentMessage")
-
         }
         forMessages(prefix("spine/tools/protoc/prefix_generation")) {
             markAs("io.spine.tools.protoc.PrefixedMessage")
