@@ -37,7 +37,6 @@ import io.spine.tools.protoc.JavaClassName;
 import io.spine.tools.protoc.ProtoOption;
 import io.spine.tools.protoc.plugin.message.tests.ProtocProject;
 import io.spine.tools.protoc.plugin.message.tests.ProtocProjectId;
-import io.spine.tools.protoc.plugin.message.tests.ProtocTask;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -98,25 +97,12 @@ class ImplementEntityStateTest {
         assertThat(insertionPoint).startsWith(message_implements.name());
     }
 
-    @Nested
-    @DisplayName("return empty output")
-    class ReturnEmptyOutput {
-
-        @Test
-        @DisplayName("if the message is not marked with `(entity)`")
-        void forNonEntity() {
-            MessageType nonEntityType = new MessageType(ProtocProjectId.getDescriptor());
-            ImmutableList<CompilerOutput> output = task.generateFor(nonEntityType);
-            assertThat(output).isEmpty();
-        }
-
-        @Test
-        @DisplayName("if the message does not have the valid `(entity)` kind")
-        void forEntityOfInvalidKind() {
-            MessageType entityOfInvalidKind = new MessageType(ProtocTask.getDescriptor());
-            ImmutableList<CompilerOutput> output = task.generateFor(entityOfInvalidKind);
-            assertThat(output).isEmpty();
-        }
+    @Test
+    @DisplayName("return empty output if the message is not marked with `(entity)`")
+    void forNonEntity() {
+        MessageType nonEntityType = new MessageType(ProtocProjectId.getDescriptor());
+        ImmutableList<CompilerOutput> output = task.generateFor(nonEntityType);
+        assertThat(output).isEmpty();
     }
 
     private static ImplementEntityState markEntityStatesAs(String className) {
