@@ -42,6 +42,7 @@ import io.spine.code.java.PackageName;
 import io.spine.tools.java.fs.Directory;
 import io.spine.tools.java.fs.FileName;
 import io.spine.tools.java.fs.SourceFile;
+import io.spine.tools.mc.java.codegen.Codegen;
 import io.spine.tools.mc.java.protoc.CodeGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.plugin.message.tests.EveryIsGeneratedProto;
@@ -57,6 +58,9 @@ import io.spine.tools.protoc.plugin.message.tests.TestEventsProto;
 import io.spine.tools.protoc.plugin.message.tests.UserNameProto;
 import io.spine.tools.protoc.plugin.message.tests.UserProto;
 import io.spine.tools.protoc.plugin.message.tests.UuidValues;
+import org.gradle.api.Project;
+import org.gradle.testfixtures.ProjectBuilder;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -139,12 +143,17 @@ final class InterfaceGenTest {
                       .build();
     }
 
+    private static SpineProtocConfig config = SpineProtocConfig.getDefaultInstance();
+
+    @BeforeAll
+    static void setUpConfig() {
+        Project project = ProjectBuilder.builder().build();
+        Codegen codegen = new Codegen(project);
+        config = codegen.toProto();
+    }
+
     @BeforeEach
     void setUp() {
-        // TODO:2021-06-29:dmytro.dashenkov: Add interfaces.
-        SpineProtocConfig config = SpineProtocConfig
-                .newBuilder()
-                .build();
         codeGenerator = InterfaceGen.instance(config);
     }
 
