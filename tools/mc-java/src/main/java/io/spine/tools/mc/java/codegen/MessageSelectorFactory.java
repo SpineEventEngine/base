@@ -60,13 +60,6 @@ public final class MessageSelectorFactory {
     }
 
     /**
-     * Creates a new {@code IsUuidMessage} selector.
-     */
-    public IsUuidMessage uuid() {
-        return new IsUuidMessage();
-    }
-
-    /**
      * Creates a {@code ByPattern} out of the supplied configuration.
      *
      * <p>The supported configuration parameters are:

@@ -58,13 +58,6 @@ final class MessageSelectorFactoryTest {
     }
 
     @Test
-    @DisplayName("create `IsUuidMessage` selector")
-    void createUuidSelector() {
-        assertThat(factory.uuid())
-                .isInstanceOf(IsUuidMessage.class);
-    }
-
-    @Test
     @DisplayName("create all messages selector")
     void createAllSelector() {
         ByPattern allSelector = factory.all();
