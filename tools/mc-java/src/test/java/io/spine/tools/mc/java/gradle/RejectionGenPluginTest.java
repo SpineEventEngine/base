@@ -54,7 +54,6 @@ import static io.spine.tools.mc.java.gradle.given.RejectionTestEnv.newProjectWit
 import static io.spine.tools.mc.java.gradle.given.RejectionTestEnv.rejectionsJavadocThrowableSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Disabled("while Protoc plugin is not functional")
 @DisplayName("`RejectionGenPlugin` should")
 class RejectionGenPluginTest {
 

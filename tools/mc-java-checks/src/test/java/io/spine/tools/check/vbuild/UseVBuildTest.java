@@ -35,7 +35,6 @@ import org.junit.jupiter.api.Test;
 import static io.spine.tools.check.vbuild.UseVBuild.NAME;
 import static io.spine.tools.check.vbuild.UseVBuild.SUMMARY;
 
-@Disabled
 @DisplayName("UseVBuild check should")
 class UseVBuildTest {
 
