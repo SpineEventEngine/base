@@ -36,7 +36,6 @@ import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
-import com.google.protobuf.ProtocolStringList;
 import io.spine.code.proto.ScalarType;
 import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
@@ -180,8 +179,8 @@ public final class Field extends ValueHolder<FieldPath> {
      */
     public Field nested(Field other) {
         checkNotNull(other);
-        ProtocolStringList fieldNames = other.path()
-                                             .getFieldNameList();
+        List<String> fieldNames = other.path()
+                                       .getFieldNameList();
         FieldPath newPath = path().toBuilder()
                                   .addAllFieldName(fieldNames)
                                   .build();
