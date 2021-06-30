@@ -171,7 +171,7 @@ public final class Codegen extends Config<SpineProtocConfig> {
     }
 
     @Override
-    SpineProtocConfig toProto() {
+    public SpineProtocConfig toProto() {
         SpineProtocConfig.Builder builder = SpineProtocConfig.newBuilder()
                 .setCommands(forCommands.toProto())
                 .setEvents(forEvents.toProto())
