@@ -222,7 +222,7 @@ public abstract class CodeGenerator {
 
     private static File concatContent(File left, File right) {
         return left.toBuilder()
-                   .setContent(left.getContent() + right.getContent())
+                   .setContent(left.getContent() + System.lineSeparator() + right.getContent())
                    .build();
     }
 }
