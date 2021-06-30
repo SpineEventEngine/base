@@ -81,6 +81,9 @@ public final class CodeGeneratorRequestGiven {
                                    .build();
     }
 
+    /**
+     * Creates a builder for {@code SpineProtocConfig} with all the validation features turned off.
+     */
     public static SpineProtocConfig.Builder configWithoutValidation() {
         SpineProtocConfig.Builder builder = SpineProtocConfig.newBuilder();
         builder.getValidationBuilder()
@@ -89,6 +92,9 @@ public final class CodeGeneratorRequestGiven {
         return builder;
     }
 
+    /**
+     * Creates a {@link GenerateNestedClasses} config with the given factory class.
+     */
     public static GenerateNestedClasses generateNested(Class<?> cls) {
         return GenerateNestedClasses
                 .newBuilder()
@@ -103,6 +109,9 @@ public final class CodeGeneratorRequestGiven {
                 .build();
     }
 
+    /**
+     * Creates a {@link GenerateMethods} config with the given factory class.
+     */
     public static GenerateMethods generateMethods(Class<?> factory) {
         MethodFactoryName factoryName = methodFactory(factory);
         return GenerateMethods
@@ -118,6 +127,9 @@ public final class CodeGeneratorRequestGiven {
                 .build();
     }
 
+    /**
+     * Creates a {@link AddInterface} config with the given interface.
+     */
     public static AddInterface addInterface(Class<?> iface) {
         return AddInterface
                 .newBuilder()
@@ -125,6 +137,9 @@ public final class CodeGeneratorRequestGiven {
                 .build();
     }
 
+    /**
+     * Creates a {@link Pattern} wrapping the given file pattern.
+     */
     public static Pattern pattern(FilePattern filePattern) {
         return Pattern
                 .newBuilder()
@@ -132,13 +147,18 @@ public final class CodeGeneratorRequestGiven {
                 .build();
     }
 
-    public static String protocConfig(SpineProtocConfig config, Path configPath) {
-        try (FileOutputStream fos = new FileOutputStream(configPath.toFile())) {
+    /**
+     * Writes the given Protoc config into the given file and obtains the Protoc plugin argument.
+     *
+     * @return the path to the serialized config, encoded in base 64
+     */
+    public static String protocConfig(SpineProtocConfig config, Path configFile) {
+        try (FileOutputStream fos = new FileOutputStream(configFile.toFile())) {
             config.writeTo(fos);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
-        return base64Encoded(configPath.toAbsolutePath().toString());
+        return base64Encoded(configFile.toAbsolutePath().toString());
     }
 
     private static String base64Encoded(String value) {

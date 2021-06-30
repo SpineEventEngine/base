@@ -105,6 +105,8 @@ public final class Codegen extends Config<SpineProtocConfig> {
 
     /**
      * Configures code generation for event messages.
+     *
+     * <p>Configuration applied to events does not automatically apply to rejections as well.
      */
     public void forEvents(Action<SignalConfig> action) {
         action.execute(forEvents);
@@ -112,6 +114,8 @@ public final class Codegen extends Config<SpineProtocConfig> {
 
     /**
      * Configures code generation for rejection messages.
+     *
+     * <p>Configuration applied to events does not automatically apply to rejections as well.
      */
     public void forRejections(Action<SignalConfig> action) {
         action.execute(forRejections);

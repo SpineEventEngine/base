@@ -38,9 +38,15 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
+/**
+ * Configuration for code generation for UUID messages.
+ *
+ * <p>A UUID message is a message which the only {@code string} field called "uuid".
+ * Such messages may represent randomized typed identifiers for entities.
+ */
 public final class UuidConfig extends ConfigWithInterfaces<ForUuids> {
 
-    public final SetProperty<String> methodFactories;
+    private final SetProperty<String> methodFactories;
 
     UuidConfig(Project p) {
         super(p);
@@ -60,6 +66,19 @@ public final class UuidConfig extends ConfigWithInterfaces<ForUuids> {
                 .addAllMethodFactory(factories())
                 .addAllAddInterface(interfaces())
                 .build();
+    }
+
+    /**
+     * Specifies a {@link io.spine.tools.protoc.MethodFactory} to generate methods for
+     * the UUID message classes.
+     *
+     * <p>Calling this method multiple times will add provide factories for code generation.
+     *
+     * @param factoryClassName
+     *         the canonical class name of the method factory
+     */
+    public void generateMethodsWith(String factoryClassName) {
+        methodFactories.add(factoryClassName);
     }
 
     private List<MethodFactoryName> factories() {

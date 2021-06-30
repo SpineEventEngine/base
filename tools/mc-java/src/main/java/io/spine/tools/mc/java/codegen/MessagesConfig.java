@@ -76,7 +76,8 @@ public final class MessagesConfig extends ConfigWithFields<ForMessages> {
      *
      * <p>Calling this method multiple times will add provide factories for code generation.
      *
-     * @param factoryClassName the canonical class name of the method factory
+     * @param factoryClassName
+     *         the canonical class name of the method factory
      */
     public void generateMethodsWith(String factoryClassName) {
         methodFactories.add(factoryClassName);

@@ -30,10 +30,13 @@ import io.spine.tools.protoc.Validation;
 import org.gradle.api.Project;
 import org.gradle.api.provider.Property;
 
+/**
+ * Configuration for validation code generation.
+ */
 public final class ValidationConfig extends Config<Validation> {
 
-    public final Property<Boolean> skipValidatingBuilders;
-    public final Property<Boolean> skipValidation;
+    private final Property<Boolean> skipValidatingBuilders;
+    private final Property<Boolean> skipValidation;
 
     ValidationConfig(Project p) {
         super();
@@ -44,6 +47,38 @@ public final class ValidationConfig extends Config<Validation> {
     void enableAllByConvention() {
         skipValidatingBuilders.convention(false);
         skipValidation.convention(false);
+    }
+
+    /**
+     * Makes the code generation skip generating the validation code.
+     */
+    public void skipValidation() {
+        skipValidation.set(true);
+    }
+
+    /**
+     * Ensures that validation code will be generated.
+     *
+     * <p>This is the default behaviour.
+     */
+    public void generateValidation() {
+        skipValidation.set(false);
+    }
+
+    /**
+     * Makes the code generation skip generating the validating builders.
+     */
+    public void skipBuilders() {
+        skipValidatingBuilders.set(true);
+    }
+
+    /**
+     * Ensures that validating builders will be generated.
+     *
+     * <p>This is the default behaviour.
+     */
+    public void generateBuilders() {
+        skipValidatingBuilders.set(false);
     }
 
     @Override
