@@ -84,23 +84,6 @@ class FieldGenTest {
     }
 
     private static SpineProtocConfig newConfig() {
-        /*
-        ConfigByPattern pattern = ConfigByPattern
-                .newBuilder()
-                .setValue(SubscribableField.class.getName())
-                .setPattern(FilePatterns.fileSuffix("test_fields.proto"))
-                .build();
-        AddFields addFields = AddFields
-                .newBuilder()
-                .addConfigByPattern(pattern)
-                .build();
-        SpineProtocConfig result = SpineProtocConfig
-                .newBuilder()
-                .setAddFields(addFields)
-                .setClasspath(Classpath.getDefaultInstance())
-                .build();
-        return result;
-        */
         ForMessages.Builder messages = ForMessages.newBuilder();
         messages.setPattern(
                 Pattern.newBuilder().setFile(FilePatterns.fileSuffix("test_fields.proto")));
