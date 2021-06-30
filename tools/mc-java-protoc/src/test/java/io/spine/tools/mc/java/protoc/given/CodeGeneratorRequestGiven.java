@@ -30,9 +30,12 @@ import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.compiler.PluginProtos;
 import io.spine.option.OptionsProto;
 import io.spine.tools.protoc.AddInterface;
+import io.spine.tools.protoc.FilePattern;
+import io.spine.tools.protoc.GenerateMethods;
 import io.spine.tools.protoc.GenerateNestedClasses;
 import io.spine.tools.protoc.MethodFactoryName;
 import io.spine.tools.protoc.NestedClassFactoryName;
+import io.spine.tools.protoc.Pattern;
 import io.spine.tools.protoc.SpineProtocConfig;
 
 import java.io.FileOutputStream;
@@ -78,6 +81,14 @@ public final class CodeGeneratorRequestGiven {
                                    .build();
     }
 
+    public static SpineProtocConfig.Builder configWithoutValidation() {
+        SpineProtocConfig.Builder builder = SpineProtocConfig.newBuilder();
+        builder.getValidationBuilder()
+               .setSkipBuilders(true)
+               .setSkipValidation(true);
+        return builder;
+    }
+
     public static GenerateNestedClasses generateNested(Class<?> cls) {
         return GenerateNestedClasses
                 .newBuilder()
@@ -92,6 +103,14 @@ public final class CodeGeneratorRequestGiven {
                 .build();
     }
 
+    public static GenerateMethods generateMethods(Class<?> factory) {
+        MethodFactoryName factoryName = methodFactory(factory);
+        return GenerateMethods
+                .newBuilder()
+                .setFactory(factoryName)
+                .build();
+    }
+
     public static MethodFactoryName methodFactory(Class<?> cls) {
         return MethodFactoryName
                 .newBuilder()
@@ -103,6 +122,13 @@ public final class CodeGeneratorRequestGiven {
         return AddInterface
                 .newBuilder()
                 .setName(className(iface))
+                .build();
+    }
+
+    public static Pattern pattern(FilePattern filePattern) {
+        return Pattern
+                .newBuilder()
+                .setFile(filePattern)
                 .build();
     }
 

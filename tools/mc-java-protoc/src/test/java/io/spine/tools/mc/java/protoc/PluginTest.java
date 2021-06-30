@@ -26,206 +26,252 @@
 
 package io.spine.tools.mc.java.protoc;
 
+import com.google.common.truth.StringSubject;
+import com.google.protobuf.Descriptors.FileDescriptor;
+import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
+import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
+import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
+import io.spine.code.proto.OptionExtensionRegistry;
+import io.spine.tools.java.fs.SourceFile;
+import io.spine.tools.mc.java.protoc.given.TestInterface;
+import io.spine.tools.mc.java.protoc.given.TestMethodFactory;
+import io.spine.tools.mc.java.protoc.given.TestNestedClassFactory;
+import io.spine.tools.mc.java.protoc.given.UuidMethodFactory;
+import io.spine.tools.protoc.ForMessages;
+import io.spine.tools.protoc.ForUuids;
+import io.spine.tools.protoc.SpineProtocConfig;
+import io.spine.tools.protoc.plugin.EnhancedWithCodeGeneration;
+import io.spine.tools.protoc.plugin.TestGeneratorsProto;
+import io.spine.tools.protoc.plugin.method.TestMethodProtos;
+import io.spine.type.MessageType;
+import io.spine.validate.ValidatingBuilder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.nio.file.Path;
+import java.util.List;
+
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.tools.mc.java.codegen.FilePatterns.filePrefix;
+import static io.spine.tools.mc.java.codegen.FilePatterns.fileRegex;
+import static io.spine.tools.mc.java.codegen.FilePatterns.fileSuffix;
+import static io.spine.tools.mc.java.protoc.given.CodeGeneratorRequestGiven.addInterface;
+import static io.spine.tools.mc.java.protoc.given.CodeGeneratorRequestGiven.configWithoutValidation;
+import static io.spine.tools.mc.java.protoc.given.CodeGeneratorRequestGiven.generateMethods;
+import static io.spine.tools.mc.java.protoc.given.CodeGeneratorRequestGiven.generateNested;
+import static io.spine.tools.mc.java.protoc.given.CodeGeneratorRequestGiven.methodFactory;
+import static io.spine.tools.mc.java.protoc.given.CodeGeneratorRequestGiven.pattern;
+import static io.spine.tools.mc.java.protoc.given.CodeGeneratorRequestGiven.protocConfig;
+import static io.spine.tools.mc.java.protoc.given.CodeGeneratorRequestGiven.requestBuilder;
+import static io.spine.tools.mc.java.protoc.given.TestMethodFactory.TEST_METHOD;
+import static io.spine.tools.mc.java.protoc.given.TestNestedClassFactory.NESTED_CLASS;
+import static java.util.stream.Collectors.toList;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @DisplayName("`Plugin` should")
 final class PluginTest {
 
-//    private static final String TEST_PROTO_SUFFIX = "_generators.proto";
-//    private static final String TEST_PROTO_PREFIX = "spine/tools/protoc/test_";
-//    private static final String TEST_PROTO_REGEX = ".*protoc/.*rators.pro.*";
-//    private static final String TEST_PROTO_FILE = "spine/tools/protoc/test_generators.proto";
-//    private static final String TEST_MESSAGE_TYPE_PARAMETER = "<EnhancedWithCodeGeneration>";
-//    private static final String BUILDER_INTERFACE =
-//            ValidatingBuilder.class.getName() + TEST_MESSAGE_TYPE_PARAMETER + ',';
-//
-//    private Path testPluginConfig;
-//
-//    @BeforeEach
-//    void setUp(@TempDir Path tempDirPath) {
-//        testPluginConfig = tempDirPath.resolve("test-spine-mc-java-protoc.pb");
-//    }
-//
-//    @Test
-//    @DisplayName("process suffix patterns")
-//    void processSuffixPatterns() {
-//        Interfaces interfaces = new Interfaces();
-//        MessageSelectorFactory messages = interfaces.messages();
-//        ByPattern suffixSelector = messages.inFiles(suffix(TEST_PROTO_SUFFIX));
-//        interfaces.mark(suffixSelector, ClassName.of(TestInterface.class));
-//        Methods methods = new Methods();
-//        methods.applyFactory(TestMethodFactory.class.getName(), suffixSelector);
-//        NestedClasses nestedClasses = new NestedClasses();
-//        nestedClasses.applyFactory(TestNestedClassFactory.class.getName(), suffixSelector);
-//        CodeGeneratorRequest request = requestBuilder()
-//                .addProtoFile(TestGeneratorsProto.getDescriptor()
-//                                                 .toProto())
-//                .addFileToGenerate(TEST_PROTO_FILE)
-//                .setParameter(protocConfig(interfaces, methods, nestedClasses, testPluginConfig))
-//                .build();
-//
-//        CodeGeneratorResponse response = runPlugin(request);
-//        checkGenerated(response);
-//    }
-//
-//    @Test
-//    @DisplayName("generate UUID message")
-//    void generateUuidMethod() {
-//        Methods methods = new Methods();
-//        MessageSelectorFactory messages = methods.messages();
-//        methods.applyFactory(UuidMethodFactory.class.getName(), messages.uuid());
-//
-//        CodeGeneratorRequest request = requestBuilder()
-//                .addProtoFile(TestMethodProtos.getDescriptor()
-//                                              .toProto())
-//                .addFileToGenerate("spine/tools/protoc/method/test_protos.proto")
-//                .setParameter(protocConfig(methods, testPluginConfig))
-//                .build();
-//        CodeGeneratorResponse response = runPlugin(request);
-//
-//        List<File> messageMethods =
-//                filterFiles(response, InsertionPoint.class_scope);
-//        assertEquals(1, messageMethods.size());
-//    }
-//
-//    @Test
-//    @DisplayName("process prefix patterns")
-//    void processPrefixPatterns() {
-//        Interfaces interfaces = new Interfaces();
-//        MessageSelectorFactory messages = interfaces.messages();
-//        ByPattern prefixSelector = messages.inFiles(prefix(TEST_PROTO_PREFIX));
-//        interfaces.mark(prefixSelector, ClassName.of(TestInterface.class));
-//        Methods methods = new Methods();
-//        methods.applyFactory(TestMethodFactory.class.getName(), prefixSelector);
-//        NestedClasses nestedClasses = new NestedClasses();
-//        nestedClasses.applyFactory(TestNestedClassFactory.class.getName(), prefixSelector);
-//
-//        CodeGeneratorRequest request = requestBuilder()
-//                .addProtoFile(TestGeneratorsProto.getDescriptor()
-//                                                 .toProto())
-//                .addFileToGenerate(TEST_PROTO_FILE)
-//                .setParameter(protocConfig(interfaces, methods, nestedClasses, testPluginConfig))
-//                .build();
-//
-//        CodeGeneratorResponse response = runPlugin(request);
-//        checkGenerated(response);
-//    }
-//
-//    @Test
-//    @DisplayName("process regex patterns")
-//    void processRegexPatterns() {
-//        Interfaces interfaces = new Interfaces();
-//        MessageSelectorFactory messages = interfaces.messages();
-//        ByPattern regexSelector = messages.inFiles(regex(TEST_PROTO_REGEX));
-//        interfaces.mark(regexSelector, ClassName.of(TestInterface.class));
-//        Methods methods = new Methods();
-//        methods.applyFactory(TestMethodFactory.class.getName(), regexSelector);
-//        NestedClasses nestedClasses = new NestedClasses();
-//        nestedClasses.applyFactory(TestNestedClassFactory.class.getName(), regexSelector);
-//
-//        CodeGeneratorRequest request = requestBuilder()
-//                .addProtoFile(TestGeneratorsProto.getDescriptor()
-//                                                 .toProto())
-//                .addFileToGenerate(TEST_PROTO_FILE)
-//                .setParameter(protocConfig(interfaces, methods, nestedClasses, testPluginConfig))
-//                .build();
-//
-//        CodeGeneratorResponse response = runPlugin(request);
-//        checkGenerated(response);
-//    }
-//
-//    @Test
-//    @DisplayName("mark generated message builders with the `ValidatingBuilder` interface")
-//    void markBuildersWithInterface() {
-//        FileDescriptor testGeneratorsDescriptor = TestGeneratorsProto.getDescriptor();
-//        String protocConfigPath = protocConfig(new Interfaces(),
-//                                               new Methods(),
-//                                               new NestedClasses(),
-//                                               testPluginConfig);
-//        CodeGeneratorRequest request = requestBuilder()
-//                .addProtoFile(testGeneratorsDescriptor.toProto())
-//                .addFileToGenerate(TEST_PROTO_FILE)
-//                .setParameter(protocConfigPath)
-//                .build();
-//        CodeGeneratorResponse response = runPlugin(request);
-//
-//        MessageType type = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
-//        String expectedPointName = InsertionPoint.builder_implements.forType(type);
-//
-//        SourceFile expectedSourceFile = SourceFile.forType(type);
-//        @SuppressWarnings("DynamicRegexReplaceableByCompiledPattern")
-//        String expectedFileName = expectedSourceFile.toString()
-//                                                    .replaceAll("\\\\", "/");
-//        File expectedFile = File
-//                .newBuilder()
-//                .setName(expectedFileName)
-//                .setInsertionPoint(expectedPointName)
-//                .setContent(BUILDER_INTERFACE)
-//                .build();
-//        assertThat(response.getFileList()).contains(expectedFile);
-//    }
-//
-//    /**
-//     * Selects all files from the given response which contain the specified insertion point.
-//     */
-//    private static List<File> filterFiles(CodeGeneratorResponse response,
-//                                          InsertionPoint insertionPoint) {
-//        return response
-//                .getFileList()
-//                .stream()
-//                .filter(file -> file.getInsertionPoint()
-//                                    .contains(insertionPoint.getDefinition()))
-//                .collect(toList());
-//    }
-//
-//    @SuppressWarnings("ZeroLengthArrayAllocation")
-//    private static CodeGeneratorResponse runPlugin(CodeGeneratorRequest request) {
-//        try (InputStream testInput = new ByteArrayInputStream(request.toByteArray());
-//             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//             PrintStream testOutput = new PrintStream(bos)
-//        ) {
-//            withSystemStreams(testInput, testOutput, () -> Plugin.main(new String[]{}));
-//            return CodeGeneratorResponse.parseFrom(bos.toByteArray(),
-//                                                   OptionExtensionRegistry.instance());
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-//
-//    @SuppressWarnings("UseOfSystemOutOrSystemErr") // Required by the protoc API.
-//    private static void withSystemStreams(InputStream in, PrintStream os, Runnable action) {
-//        InputStream oldIn = System.in;
-//        PrintStream oldOut = System.out;
-//        try {
-//            System.setIn(in);
-//            System.setOut(os);
-//            action.run();
-//        } finally {
-//            System.setIn(oldIn);
-//            System.setOut(oldOut);
-//        }
-//    }
-//
-//    private static void checkGenerated(CodeGeneratorResponse response) {
-//        List<File> responseFiles = response.getFileList();
-//        assertThat(responseFiles.size()).isAtLeast(3);
-//        List<String> fileContents = contentsOf(responseFiles);
-//        assertThat(fileContents).containsAtLeast(
-//                TestInterface.class.getName() + ',',
-//                BUILDER_INTERFACE
-//        );
-//        ImmutableList<String> possibleInsertions = ImmutableList.of(
-//                TestMethodFactory.TEST_METHOD.toString()
-//                        + TestNestedClassFactory.NESTED_CLASS,
-//                TestNestedClassFactory.NESTED_CLASS.toString()
-//                        + TestMethodFactory.TEST_METHOD
-//        );
-//        assertThat(fileContents).containsAnyIn(possibleInsertions);
-//    }
-//
-//    private static List<String> contentsOf(List<File> files) {
-//        return files.stream()
-//                    .map(File::getContent)
-//                    .collect(toList());
-//    }
+    private static final String TEST_PROTO_SUFFIX = "_generators.proto";
+    private static final String TEST_PROTO_PREFIX = "spine/tools/protoc/test_";
+    private static final String TEST_PROTO_REGEX = ".*protoc/.*rators.pro.*";
+    private static final String TEST_PROTO_FILE = "spine/tools/protoc/test_generators.proto";
+    private static final String TEST_MESSAGE_TYPE_PARAMETER = "<EnhancedWithCodeGeneration>";
+    private static final String BUILDER_INTERFACE =
+            ValidatingBuilder.class.getName() + TEST_MESSAGE_TYPE_PARAMETER + ',';
+
+    private Path testPluginConfig;
+
+    @BeforeEach
+    void setUp(@TempDir Path tempDirPath) {
+        testPluginConfig = tempDirPath.resolve("test-spine-mc-java-protoc.pb");
+    }
+
+    @Test
+    @DisplayName("generate UUID message")
+    void generateUuidMethod() {
+        ForUuids uuids = ForUuids.newBuilder()
+                .addMethodFactory(methodFactory(UuidMethodFactory.class))
+                .build();
+        SpineProtocConfig config = configWithoutValidation()
+                .setUuids(uuids)
+                .build();
+        CodeGeneratorRequest request = requestBuilder()
+                .addProtoFile(TestMethodProtos.getDescriptor().toProto())
+                .addFileToGenerate("spine/tools/protoc/method/test_protos.proto")
+                .setParameter(protocConfig(config, testPluginConfig))
+                .build();
+
+        CodeGeneratorResponse response = runPlugin(request);
+        List<File> messageMethods =
+                filterFiles(response, InsertionPoint.class_scope);
+        assertThat(messageMethods)
+                .hasSize(1);
+    }
+
+    @Test
+    @DisplayName("process suffix patterns")
+    void processSuffixPatterns() {
+        ForMessages messages = ForMessages.newBuilder()
+                .setPattern(pattern(fileSuffix(TEST_PROTO_SUFFIX)))
+                .addAddInterface(addInterface(TestInterface.class))
+                .addGenerateMethods(generateMethods(TestMethodFactory.class))
+                .addGenerateNestedClasses(generateNested(TestNestedClassFactory.class))
+                .build();
+        SpineProtocConfig config = configWithoutValidation()
+                .addMessages(messages)
+                .build();
+        CodeGeneratorRequest request = requestBuilder()
+                .addProtoFile(TestGeneratorsProto.getDescriptor()
+                                                 .toProto())
+                .addFileToGenerate(TEST_PROTO_FILE)
+                .setParameter(protocConfig(config, testPluginConfig))
+                .build();
+
+        CodeGeneratorResponse response = runPlugin(request);
+        checkGenerated(response);
+    }
+
+    @Test
+    @DisplayName("process prefix patterns")
+    void processPrefixPatterns() {
+        ForMessages messages = ForMessages.newBuilder()
+                .setPattern(pattern(filePrefix(TEST_PROTO_PREFIX)))
+                .addAddInterface(addInterface(TestInterface.class))
+                .addGenerateMethods(generateMethods(TestMethodFactory.class))
+                .addGenerateNestedClasses(generateNested(TestNestedClassFactory.class))
+                .build();
+        SpineProtocConfig config = configWithoutValidation()
+                .addMessages(messages)
+                .build();
+        CodeGeneratorRequest request = requestBuilder()
+                .addProtoFile(TestGeneratorsProto.getDescriptor().toProto())
+                .addFileToGenerate(TEST_PROTO_FILE)
+                .setParameter(protocConfig(config, testPluginConfig))
+                .build();
+
+        CodeGeneratorResponse response = runPlugin(request);
+        checkGenerated(response);
+    }
+
+    @Test
+    @DisplayName("process regex patterns")
+    void processRegexPatterns() {
+        ForMessages messages = ForMessages.newBuilder()
+                .setPattern(pattern(fileRegex(TEST_PROTO_REGEX)))
+                .addAddInterface(addInterface(TestInterface.class))
+                .addGenerateMethods(generateMethods(TestMethodFactory.class))
+                .addGenerateNestedClasses(generateNested(TestNestedClassFactory.class))
+                .build();
+        SpineProtocConfig config = configWithoutValidation()
+                .addMessages(messages)
+                .build();
+        CodeGeneratorRequest request = requestBuilder()
+                .addProtoFile(TestGeneratorsProto.getDescriptor().toProto())
+                .addFileToGenerate(TEST_PROTO_FILE)
+                .setParameter(protocConfig(config, testPluginConfig))
+                .build();
+
+        CodeGeneratorResponse response = runPlugin(request);
+        checkGenerated(response);
+    }
+
+    @Test
+    @DisplayName("mark generated message builders with the `ValidatingBuilder` interface")
+    void markBuildersWithInterface() {
+        FileDescriptor testGeneratorsDescriptor = TestGeneratorsProto.getDescriptor();
+        SpineProtocConfig config = SpineProtocConfig.getDefaultInstance();
+        String protocConfigPath = protocConfig(config, testPluginConfig);
+        CodeGeneratorRequest request = requestBuilder()
+                .addProtoFile(testGeneratorsDescriptor.toProto())
+                .addFileToGenerate(TEST_PROTO_FILE)
+                .setParameter(protocConfigPath)
+                .build();
+        CodeGeneratorResponse response = runPlugin(request);
+
+        MessageType type = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
+        String expectedPointName = InsertionPoint.builder_implements.forType(type);
+
+        SourceFile expectedSourceFile = SourceFile.forType(type);
+        @SuppressWarnings("DynamicRegexReplaceableByCompiledPattern")
+        String expectedFileName = expectedSourceFile.toString()
+                                                    .replaceAll("\\\\", "/");
+        File expectedFile = File
+                .newBuilder()
+                .setName(expectedFileName)
+                .setInsertionPoint(expectedPointName)
+                .setContent(BUILDER_INTERFACE)
+                .build();
+        assertThat(response.getFileList()).contains(expectedFile);
+    }
+
+    /**
+     * Selects all files from the given response which contain the specified insertion point.
+     */
+    private static List<File> filterFiles(CodeGeneratorResponse response,
+                                          InsertionPoint insertionPoint) {
+        return response
+                .getFileList()
+                .stream()
+                .filter(file -> file.getInsertionPoint()
+                                    .contains(insertionPoint.getDefinition()))
+                .collect(toList());
+    }
+
+    @SuppressWarnings("ZeroLengthArrayAllocation")
+    private static CodeGeneratorResponse runPlugin(CodeGeneratorRequest request) {
+        try (InputStream testInput = new ByteArrayInputStream(request.toByteArray());
+             ByteArrayOutputStream bos = new ByteArrayOutputStream();
+             PrintStream testOutput = new PrintStream(bos)
+        ) {
+            withSystemStreams(testInput, testOutput, () -> Plugin.main(new String[]{}));
+            return CodeGeneratorResponse.parseFrom(bos.toByteArray(),
+                                                   OptionExtensionRegistry.instance());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @SuppressWarnings("UseOfSystemOutOrSystemErr") // Required by the protoc API.
+    private static void withSystemStreams(InputStream in, PrintStream os, Runnable action) {
+        InputStream oldIn = System.in;
+        PrintStream oldOut = System.out;
+        try {
+            System.setIn(in);
+            System.setOut(os);
+            action.run();
+        } finally {
+            System.setIn(oldIn);
+            System.setOut(oldOut);
+        }
+    }
+
+    private static void checkGenerated(CodeGeneratorResponse response) {
+        List<File> responseFiles = response.getFileList();
+        assertThat(responseFiles)
+                .hasSize(2);
+        File interfaceFile = responseFiles
+                .stream()
+                .filter(file -> file.getInsertionPoint().contains("implements"))
+                .findFirst()
+                .orElseGet(() -> fail("Expected an interface insertion point."));
+        File classScopeFile = responseFiles
+                .stream()
+                .filter(file -> file.getInsertionPoint().contains("class_scope"))
+                .findFirst()
+                .orElseGet(() -> fail("Expected a class scope insertion point."));
+        assertThat(interfaceFile.getContent())
+                .contains(TestInterface.class.getName());
+        StringSubject assertClassScope = assertThat(classScopeFile.getContent());
+        assertClassScope
+                .contains(TEST_METHOD.toString());
+        assertClassScope
+                .contains(NESTED_CLASS.toString());
+    }
 }
