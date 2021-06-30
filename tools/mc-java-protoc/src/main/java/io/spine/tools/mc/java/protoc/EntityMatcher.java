@@ -36,6 +36,11 @@ import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * A predicate which checks if a {@link MessageType} represents an entity state type.
+ *
+ * <p>An entity state type may be marked by a Protobuf option or be matched by a file pattern.
+ */
 public final class EntityMatcher implements Predicate<MessageType> {
 
     private final ForEntities entities;
