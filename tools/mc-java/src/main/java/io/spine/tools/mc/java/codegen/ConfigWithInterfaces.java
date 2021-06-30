@@ -56,7 +56,7 @@ abstract class ConfigWithInterfaces<P extends Message> extends Config<P> {
      * <p>The interface must exist. The declaration of the interface will not be generated.
      *
      * @param interfaceName
-     *         interface canonical name
+     *         the canonical name of the interface
      */
     public final void markAs(String interfaceName) {
         interfaceNames.add(interfaceName);

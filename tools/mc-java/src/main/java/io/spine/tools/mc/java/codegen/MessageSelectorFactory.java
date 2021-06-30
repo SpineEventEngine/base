@@ -86,7 +86,7 @@ public final class MessageSelectorFactory {
     }
 
     /**
-     * Creates {@code inFiles} {@code prefix} configuration.
+     * Creates {@code includeFiles} {@code prefix} configuration.
      */
     public static ImmutableMap<String, String> prefix(String prefix) {
         checkNotEmptyOrBlank(prefix);
@@ -94,7 +94,7 @@ public final class MessageSelectorFactory {
     }
 
     /**
-     * Creates {@code inFiles} {@code suffix} configuration.
+     * Creates {@code includeFiles} {@code suffix} configuration.
      */
     public static ImmutableMap<String, String> suffix(String suffix) {
         checkNotEmptyOrBlank(suffix);
@@ -102,7 +102,7 @@ public final class MessageSelectorFactory {
     }
 
     /**
-     * Creates {@code inFiles} {@code regex} configuration.
+     * Creates {@code includeFiles} {@code regex} configuration.
      */
     public static ImmutableMap<String, String> regex(String regex) {
         checkNotEmptyOrBlank(regex);
@@ -110,7 +110,7 @@ public final class MessageSelectorFactory {
     }
 
     /**
-     * {@code inFiles} configuration parser.
+     * {@code includeFiles} configuration parser.
      */
     private static class Parser {
 

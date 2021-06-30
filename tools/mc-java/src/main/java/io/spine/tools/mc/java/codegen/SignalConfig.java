@@ -34,6 +34,13 @@ import io.spine.tools.protoc.ForSignals;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Project;
 
+/**
+ * Code generation config for a type of signal messages.
+ *
+ * <p>May configure all the events, all the rejections, or all the commands.
+ *
+ * <p>The configuration applied to events does not automatically apply to rejections.
+ */
 public final class SignalConfig extends MessageGroupConfig<ForSignals> {
 
     SignalConfig(Project p) {

@@ -34,13 +34,20 @@ import org.gradle.api.provider.SetProperty;
 
 import java.util.Set;
 
+/**
+ * A configuration for code generation for a certain group of messages joined by a file pattern.
+ *
+ * @param <P>
+ *         Protobuf type which serializes this configuration
+ */
 abstract class MessageGroupConfig<P extends Message> extends ConfigWithFields<P> {
 
     private final SetProperty<FilePattern> file;
 
     MessageGroupConfig(Project p) {
         super(p);
-        this.file = p.getObjects().setProperty(FilePattern.class);
+        this.file = p.getObjects()
+                     .setProperty(FilePattern.class);
     }
 
     void convention(FilePattern pattern) {
@@ -51,7 +58,33 @@ abstract class MessageGroupConfig<P extends Message> extends ConfigWithFields<P>
         return file.get();
     }
 
-    public void inFiles(ByPattern pattern) {
+    /**
+     * Specifies a file pattern for this group of messages.
+     *
+     * <p>Calling this method many times will extend the group to include more types. If a type is
+     * declared in a file which matches al least one of the patterns, the type is included in
+     * the group.
+     *
+     * <p>In the example below, all messages declared in files which either end with "ids.proto" or
+     * contain the word "identifiers" will be included into the group.
+     *
+     * <pre>
+     *     includeFiles(by().suffix("ids.proto"))
+     *     includeFiles(by().regex(".*identifiers.*"))
+     * </pre>
+     *
+     * @see #by() for creating file patterns
+     */
+    public void includeFiles(ByPattern pattern) {
         this.file.add(pattern.toProto());
+    }
+
+    /**
+     * Obtains a factory of file patterns for selecting Protobuf files.
+     *
+     * @see #includeFiles(ByPattern)
+     */
+    public MessageSelectorFactory by() {
+        return MessageSelectorFactory.INSTANCE;
     }
 }

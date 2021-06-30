@@ -29,9 +29,11 @@ package io.spine.tools.mc.java.codegen;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.Message;
+import io.spine.annotation.Internal;
 import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.ForEntities;
 import io.spine.tools.protoc.ProtoOption;
+import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.SetProperty;
@@ -40,6 +42,17 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
+/**
+ * Configuration for entity state types' code generation.
+ *
+ * <p id="disclaimer">Note. This configuration allows to change the Protobuf types which are
+ * recognized as entities by changing the {@code options} and/or submitting a custom
+ * {@linkplain #includeFiles(ByPattern) file pattern}. These are superuser options. Changing the default
+ * values may lead to runtime errors or unexpected behaviour in the Spine Event Engine framework.
+ * Proceed by caution.
+ *
+ * @see Codegen#forEntities(Action)
+ */
 public final class EntityConfig extends MessageGroupConfig<ForEntities> {
 
     private final SetProperty<String> options;
@@ -61,14 +74,44 @@ public final class EntityConfig extends MessageGroupConfig<ForEntities> {
         generateQueries.convention(true);
     }
 
+    /**
+     * The Protobuf options which mark entity states.
+     *
+     * <p>By default, the {@code (entity)} option is used.
+     *
+     * <p>Note. This is a part of the advanced level API.
+     * See the <a href="#disclaimer">disclaimer</a> above.
+     */
+    @Internal
     public SetProperty<String> getOptions() {
         return options;
     }
 
+    /**
+     * Specifies a file pattern which matches entity state types.
+     *
+     * <p>Submitting many patterns will cause all of the messages which match at least one of them
+     * to be considered entity states for code generation purposes.
+     *
+     * <p>Note. This is a part of the advanced level API.
+     * See the <a href="#disclaimer">disclaimer</a> above.
+     */
+    @Internal
+    @Override
+    public void includeFiles(ByPattern pattern) {
+        super.includeFiles(pattern);
+    }
+
+    /**
+     * Enables type-safe query API generation for entity states.
+     */
     public void generateQueries() {
         generateQueries.set(true);
     }
 
+    /**
+     * Disables type-safe query API generation for entity states.
+     */
     public void skipQueries() {
         generateQueries.set(false);
     }

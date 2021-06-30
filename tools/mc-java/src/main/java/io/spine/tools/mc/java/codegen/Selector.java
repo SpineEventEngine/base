@@ -34,7 +34,7 @@ package io.spine.tools.mc.java.codegen;
  *
  * <p>An example of using selector in Gradle:
  * <pre>
- *     forMessages(inFiles(withSuffix("identifiers.proto"))) {
+ *     forMessages(includeFiles(by().suffix("identifiers.proto"))) {
  *         // Configure code generation.
  *     }
  * </pre>

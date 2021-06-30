@@ -42,6 +42,11 @@ import java.util.Set;
 import static io.spine.tools.mc.java.codegen.Names.className;
 import static java.util.stream.Collectors.toSet;
 
+/**
+ * A codegen configuration for messages which match a certain pattern.
+ *
+ * @see Codegen#forMessages
+ */
 public final class MessagesConfig extends ConfigWithFields<ForMessages> {
 
     private final Pattern pattern;
@@ -65,10 +70,26 @@ public final class MessagesConfig extends ConfigWithFields<ForMessages> {
         nestedClassFactories.convention(ImmutableSet.of());
     }
 
+    /**
+     * Specifies a {@link io.spine.tools.protoc.MethodFactory} to generate methods for
+     * the message classes.
+     *
+     * <p>Calling this method multiple times will add provide factories for code generation.
+     *
+     * @param factoryClassName the canonical class name of the method factory
+     */
     public void generateMethodsWith(String factoryClassName) {
         methodFactories.add(factoryClassName);
     }
 
+    /**
+     * Specifies a {@link io.spine.tools.protoc.NestedClassFactory} to generate nested classes
+     * inside the message classes.
+     *
+     * <p>Calling this method multiple times will add provide factories for code generation.
+     *
+     * @param factoryClassName the canonical class name of the method factory
+     */
     public void generateNestedClassesWith(String factoryClassName) {
         nestedClassFactories.add(factoryClassName);
     }
