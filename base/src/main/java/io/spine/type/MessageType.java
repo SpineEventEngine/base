@@ -49,8 +49,8 @@ import io.spine.option.OptionsProto;
 
 import java.util.Deque;
 import java.util.List;
-import java.util.Set;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -396,6 +396,16 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         return nameMatches && typeMatches;
     }
 
+    /**
+     * Checks if the message has the given option.
+     *
+     * <p>The option must be known at runtime. An uninterpreted option cannot be found this way.
+     *
+     * @param optionName
+     *         name of the option
+     * @return {@code true} if this type is marked with an option with the given name,
+     *         {@code false} otherwise
+     */
     public boolean hasOption(String optionName) {
         MessageOptions options = descriptor().getOptions();
         Set<FieldDescriptor> presentOptions = options.getAllFields().keySet();

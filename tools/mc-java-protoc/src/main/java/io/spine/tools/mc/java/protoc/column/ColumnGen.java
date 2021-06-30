@@ -54,8 +54,7 @@ import static io.spine.code.proto.ColumnOption.hasColumns;
  * <p>The generator produces {@link CompilerOutput compiler output} that fits into the message's
  * {@link InsertionPoint#class_scope class_scope} insertion point.
  *
- * <p>Generates output only for those message types that represent an
- * {@linkplain MessageType#isEntityState() entity state} with
+ * <p>Generates output only for those message types that represent an entity state with
  * {@linkplain io.spine.code.proto.ColumnOption columns}.
  */
 public final class ColumnGen extends CodeGenerator {
