@@ -34,7 +34,6 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.tools.check.methodresult.HandleMethodResult.SUMMARY;
 
-@Disabled
 @DisplayName("HandleMethodResult check should")
 class HandleMethodResultTest {
 
