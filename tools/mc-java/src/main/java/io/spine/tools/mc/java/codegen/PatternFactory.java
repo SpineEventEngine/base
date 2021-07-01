@@ -29,6 +29,11 @@ package io.spine.tools.mc.java.codegen;
 import io.spine.tools.protoc.FilePattern;
 import org.checkerframework.checker.regex.qual.Regex;
 
+import static io.spine.tools.mc.java.codegen.FilePatterns.filePrefix;
+import static io.spine.tools.mc.java.codegen.FilePatterns.fileRegex;
+import static io.spine.tools.mc.java.codegen.FilePatterns.fileSuffix;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+
 /**
  * A factory of file patterns.
  */
@@ -53,10 +58,8 @@ public final class PatternFactory {
      *         the suffix value
      */
     public FilePattern suffix(String value) {
-        return FilePattern
-                .newBuilder()
-                .setSuffix(value)
-                .build();
+        checkNotEmptyOrBlank(value);
+        return fileSuffix(value);
     }
 
     /**
@@ -66,10 +69,8 @@ public final class PatternFactory {
      *         the prefix value
      */
     public FilePattern prefix(String value) {
-        return FilePattern
-                .newBuilder()
-                .setPrefix(value)
-                .build();
+        checkNotEmptyOrBlank(value);
+        return filePrefix(value);
     }
 
     /**
@@ -79,9 +80,7 @@ public final class PatternFactory {
      *         the regex value
      */
     public FilePattern regex(@Regex String value) {
-        return FilePattern
-                .newBuilder()
-                .setRegex(value)
-                .build();
+        checkNotEmptyOrBlank(value);
+        return fileRegex(value);
     }
 }
