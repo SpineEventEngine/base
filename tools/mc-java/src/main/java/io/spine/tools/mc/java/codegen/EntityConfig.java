@@ -47,9 +47,9 @@ import static java.util.stream.Collectors.toList;
  *
  * <p id="disclaimer">Note. This configuration allows to change the Protobuf types which are
  * recognized as entities by changing the {@code options} and/or submitting a custom
- * {@linkplain #includeFiles(ByPattern) file pattern}. These are superuser options. Changing the
- * default values may lead to runtime errors or unexpected behaviour in
- * the Spine Event Engine framework. Proceed by caution.
+ * {@linkplain #includeFiles file pattern}. These are superuser options. Changing the default values
+ * may lead to runtime errors or unexpected behaviour in the Spine Event Engine framework.
+ * Proceed by caution.
  *
  * @see Codegen#forEntities(Action)
  */
