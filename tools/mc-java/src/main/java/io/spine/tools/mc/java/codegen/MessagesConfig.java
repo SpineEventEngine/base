@@ -28,7 +28,6 @@ package io.spine.tools.mc.java.codegen;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import io.spine.protobuf.Messages;
 import io.spine.tools.protoc.ForMessages;
 import io.spine.tools.protoc.GenerateFields;
 import io.spine.tools.protoc.GenerateMethods;
