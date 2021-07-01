@@ -26,17 +26,16 @@
 
 package io.spine.tools.mc.java.gradle;
 
-import io.spine.tools.java.code.BuilderSpec;
 import io.spine.code.java.SimpleClassName;
 import io.spine.protobuf.Messages;
 import io.spine.tools.gradle.testing.GradleProject;
+import io.spine.tools.java.code.BuilderSpec;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaDocCapableSource;
 import org.jboss.forge.roaster.model.source.JavaDocSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
