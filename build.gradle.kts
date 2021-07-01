@@ -216,11 +216,10 @@ subprojects {
         }
     }
 
-    tasks.test.configure {
+    tasks.test {
         useJUnitPlatform {
             includeEngines("junit-jupiter")
         }
-        include("**/*Test.class")
     }
 
     apply {

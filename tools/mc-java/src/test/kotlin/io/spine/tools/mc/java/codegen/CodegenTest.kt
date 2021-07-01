@@ -29,7 +29,6 @@ import com.google.common.truth.Truth.assertThat
 import io.spine.tools.mc.java.gradle.McJavaExtension
 import io.spine.tools.mc.java.gradle.McJavaPlugin
 import org.gradle.testfixtures.ProjectBuilder
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -42,7 +41,10 @@ class `'codegen { }' block should` {
     @BeforeEach
     fun prepareExtension() {
         val project = ProjectBuilder.builder().build()
-        project.apply { it.plugin(McJavaPlugin::class.java) }
+        project.apply {
+            it.plugin("java")
+            it.plugin(McJavaPlugin::class.java)
+        }
         extension = project.extensions.getByType(McJavaExtension::class.java)
     }
 
@@ -71,9 +73,6 @@ class `'codegen { }' block should` {
 
         @Test
         fun commands() {
-            Assertions.fail<Nothing>("Boo ha ha")
-
-
             val firstInterface = "test.iface.Command"
             val secondInterface = "test.iface.TestCommand"
             val fieldSuperclass = "test.cmd.Field"
@@ -95,6 +94,30 @@ class `'codegen { }' block should` {
             assertThat(commands.addInterfaceList.map { it.name.canonical })
                 .containsExactly(firstInterface, secondInterface)
             assertThat(commands.generateFields.superclass.canonical)
+                .isEqualTo(fieldSuperclass)
+        }
+
+        @Test
+        fun events() {
+            val iface = "test.iface.Event"
+            val fieldSuperclass = "test.cmd.Field"
+            val prefix = "my_"
+            extension.codegen { config: Codegen ->
+                config.forEvents { events: SignalConfig ->
+                    events.includeFiles(events.by().prefix(prefix))
+                    events.markAs(iface)
+                    events.markFieldsAs(fieldSuperclass)
+                }
+            }
+            val config = extension.codegen.toProto()
+            val events = config.events
+            assertThat(events.patternList)
+                .hasSize(1)
+            assertThat(events.patternList[0].prefix)
+                .isEqualTo(prefix)
+            assertThat(events.addInterfaceList.map { it.name.canonical })
+                .containsExactly(iface)
+            assertThat(events.generateFields.superclass.canonical)
                 .isEqualTo(fieldSuperclass)
         }
     }
