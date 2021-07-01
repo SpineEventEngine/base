@@ -34,6 +34,8 @@ import org.gradle.api.provider.SetProperty;
 
 import java.util.Set;
 
+import static io.spine.protobuf.Messages.isDefault;
+
 /**
  * A configuration for code generation for a certain group of messages joined by a file pattern.
  *
@@ -51,7 +53,13 @@ abstract class MessageGroupConfig<P extends Message> extends ConfigWithFields<P>
     }
 
     void convention(FilePattern pattern) {
-        file.convention(ImmutableSet.of(pattern));
+        ImmutableSet<FilePattern> defaultValue;
+        if (isDefault(pattern)) {
+            defaultValue = ImmutableSet.of();
+        } else {
+            defaultValue = ImmutableSet.of(pattern);
+        }
+        file.convention(defaultValue);
     }
 
     Set<FilePattern> patterns() {

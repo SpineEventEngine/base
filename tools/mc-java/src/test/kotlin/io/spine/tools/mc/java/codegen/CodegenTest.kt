@@ -26,8 +26,26 @@
 package io.spine.tools.mc.java.codegen
 
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.ProtoTruth.assertThat
+import io.spine.base.CommandMessage
+import io.spine.base.EntityState
+import io.spine.base.EventMessage
+import io.spine.base.EventMessageField
+import io.spine.base.MessageFile
+import io.spine.base.MessageFile.COMMANDS
+import io.spine.base.MessageFile.EVENTS
+import io.spine.base.RejectionMessage
+import io.spine.base.UuidValue
+import io.spine.option.OptionsProto
+import io.spine.query.EntityStateField
+import io.spine.tools.java.code.UuidMethodFactory
 import io.spine.tools.mc.java.gradle.McJavaExtension
 import io.spine.tools.mc.java.gradle.McJavaPlugin
+import io.spine.tools.protoc.ForMessages
+import io.spine.tools.protoc.GenerateFields
+import io.spine.tools.protoc.Pattern
+import io.spine.tools.protoc.ProtoTypeName
+import io.spine.tools.protoc.TypePattern
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -220,7 +238,7 @@ class `'codegen { }' block should` {
         }
 
         @Test
-        fun `an arbitrary message groups`() {
+        fun `arbitrary message groups`() {
             val firstInterface = "com.acme.Foo"
             val secondInterface = "com.acme.Bar"
             val methodFactory = "custom.MethodFactory"
@@ -241,7 +259,16 @@ class `'codegen { }' block should` {
             val configs = extension.codegen.toProto().messagesList
             assertThat(configs)
                 .hasSize(2)
-            val (first, second) = configs
+            var (first, second) = configs
+
+            // Restore ordering. When generating code, it does not matter which group goes
+            // after which.
+            if (second.pattern.hasType()) {
+                val t = second
+                second = first
+                first = t
+            }
+
             assertThat(first.pattern.type.expectedType.value)
                 .isEqualTo(firstMessageType)
             assertThat(first.addInterfaceList.first().name.canonical)
@@ -259,6 +286,129 @@ class `'codegen { }' block should` {
                 .isEqualTo(secondInterface)
             assertThat(second.generateMethodsList.first().factory.className.canonical)
                 .isEqualTo(methodFactory)
+        }
+
+        @Test
+        fun validation() {
+            extension.codegen { config ->
+                config.validation {
+                    it.skipBuilders()
+                    it.skipValidation()
+                }
+            }
+            val validation = extension.codegen.toProto().validation
+            assertThat(validation.skipBuilders)
+                .isTrue()
+            assertThat(validation.skipValidation)
+                .isTrue()
+        }
+    }
+
+    @Nested
+    inner class `provide reasonable defaults for` {
+
+        @Test
+        fun commands() {
+            val config = extension.codegen.toProto()
+            val commands = config.commands
+            assertThat(commands.patternList)
+                .hasSize(1)
+            assertThat(commands.patternList[0].suffix)
+                .isEqualTo(COMMANDS.suffix())
+            assertThat(commands.addInterfaceList.map { it.name.canonical })
+                .containsExactly(CommandMessage::class.qualifiedName)
+            assertThat(commands.generateFields)
+                .isEqualTo(GenerateFields.getDefaultInstance())
+        }
+
+        @Test
+        fun events() {
+            val config = extension.codegen.toProto()
+            val events = config.events
+            assertThat(events.patternList)
+                .hasSize(1)
+            assertThat(events.patternList[0].suffix)
+                .isEqualTo(EVENTS.suffix())
+            assertThat(events.addInterfaceList.map { it.name.canonical })
+                .containsExactly(EventMessage::class.qualifiedName)
+            assertThat(events.generateFields.superclass.canonical)
+                .isEqualTo(EventMessageField::class.qualifiedName)
+        }
+
+        @Test
+        fun rejections() {
+            val config = extension.codegen.toProto()
+            val events = config.rejections
+            assertThat(events.patternList)
+                .hasSize(1)
+            assertThat(events.patternList[0].suffix)
+                .isEqualTo(MessageFile.REJECTIONS.suffix())
+            assertThat(events.addInterfaceList.map { it.name.canonical })
+                .containsExactly(RejectionMessage::class.qualifiedName)
+            assertThat(events.generateFields.superclass.canonical)
+                .isEqualTo(EventMessageField::class.qualifiedName)
+        }
+
+        @Test
+        fun entities() {
+            val config = extension.codegen.toProto().entities
+            assertThat(config.addInterfaceList.map { it.name.canonical })
+                .containsExactly(EntityState::class.qualifiedName)
+            assertThat(config.generateFields.superclass.canonical)
+                .isEqualTo(EntityStateField::class.qualifiedName)
+            assertThat(config.patternList)
+                .isEmpty()
+            assertThat(config.optionList)
+                .hasSize(1)
+            assertThat(config.optionList.first().name)
+                .isEqualTo(OptionsProto.entity.descriptor.name)
+        }
+
+        @Test
+        fun `UUID messages`() {
+            val config = extension.codegen.toProto().uuids
+            assertThat(config.addInterfaceList.map { it.name.canonical })
+                .containsExactly(UuidValue::class.qualifiedName)
+            assertThat(config.methodFactoryList)
+                .hasSize(1)
+            assertThat(config.methodFactoryList.first().className.canonical)
+                .isEqualTo(UuidMethodFactory::class.qualifiedName)
+        }
+
+        @Test
+        fun `arbitrary message groups`() {
+            val config = extension.codegen.toProto()
+            assertThat(config.messagesList)
+                .isEmpty()
+
+            val type = "test.Message"
+            extension.codegen {
+                it.forMessage(type) { /* Do nothing. */ }
+            }
+            val updatedConfig = extension.codegen.toProto()
+            assertThat(updatedConfig.messagesList)
+                .hasSize(1)
+            val typeName = ProtoTypeName.newBuilder().setValue(type)
+            val typePattern = TypePattern
+                .newBuilder()
+                .setExpectedType(typeName)
+            val pattern = Pattern
+                .newBuilder()
+                .setType(typePattern)
+            assertThat(updatedConfig.messagesList.first())
+                .isEqualTo(ForMessages.newBuilder()
+                    .setPattern(pattern)
+                    .buildPartial()
+                )
+        }
+
+        @Test
+        fun validation() {
+            val validation = extension.codegen.toProto().validation
+            assertThat(validation.skipBuilders)
+                .isFalse()
+            assertThat(validation.skipValidation)
+                .isFalse()
         }
     }
 }

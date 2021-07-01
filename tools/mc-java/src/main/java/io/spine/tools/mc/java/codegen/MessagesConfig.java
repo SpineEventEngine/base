@@ -28,7 +28,9 @@ package io.spine.tools.mc.java.codegen;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import io.spine.protobuf.Messages;
 import io.spine.tools.protoc.ForMessages;
+import io.spine.tools.protoc.GenerateFields;
 import io.spine.tools.protoc.GenerateMethods;
 import io.spine.tools.protoc.GenerateNestedClasses;
 import io.spine.tools.protoc.MethodFactoryName;
@@ -39,6 +41,7 @@ import org.gradle.api.provider.SetProperty;
 
 import java.util.Set;
 
+import static io.spine.protobuf.Messages.isNotDefault;
 import static io.spine.tools.mc.java.codegen.Names.className;
 import static java.util.stream.Collectors.toSet;
 
@@ -97,13 +100,16 @@ public final class MessagesConfig extends ConfigWithFields<ForMessages> {
 
     @Override
     ForMessages toProto() {
-        return ForMessages.newBuilder()
+        ForMessages.Builder result = ForMessages.newBuilder()
                 .setPattern(pattern)
                 .addAllAddInterface(interfaces())
                 .addAllGenerateMethods(generateMethods())
-                .addAllGenerateNestedClasses(generateNestedClasses())
-                .setGenerateFields(generateFields())
-                .build();
+                .addAllGenerateNestedClasses(generateNestedClasses());
+        GenerateFields generateFields = generateFields();
+        if (isNotDefault(generateFields)) {
+            result.setGenerateFields(generateFields);
+        }
+        return result.build();
     }
 
     private Set<GenerateMethods> generateMethods() {
