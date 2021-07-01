@@ -69,7 +69,7 @@ class `'codegen { }' block should` {
     }
 
     @Nested
-    inner class configure {
+    inner class `configure generation of` {
 
         @Test
         fun commands() {
@@ -100,7 +100,7 @@ class `'codegen { }' block should` {
         @Test
         fun events() {
             val iface = "test.iface.Event"
-            val fieldSuperclass = "test.cmd.Field"
+            val fieldSuperclass = "test.event.Field"
             val prefix = "my_"
             extension.codegen { config: Codegen ->
                 config.forEvents { events: SignalConfig ->
@@ -119,6 +119,146 @@ class `'codegen { }' block should` {
                 .containsExactly(iface)
             assertThat(events.generateFields.superclass.canonical)
                 .isEqualTo(fieldSuperclass)
+        }
+
+        @Test
+        fun rejections() {
+            val iface = "test.iface.RejectionMessage"
+            val fieldSuperclass = "test.rejection.Field"
+            val regex = ".*rejection.*"
+            extension.codegen { config: Codegen ->
+                config.forEvents { events: SignalConfig ->
+                    events.includeFiles(events.by().regex(regex))
+                    events.markAs(iface)
+                    events.markFieldsAs(fieldSuperclass)
+                }
+            }
+            val config = extension.codegen.toProto()
+            val events = config.events
+            assertThat(events.patternList)
+                .hasSize(1)
+            assertThat(events.patternList[0].regex)
+                .isEqualTo(regex)
+            assertThat(events.addInterfaceList.map { it.name.canonical })
+                .containsExactly(iface)
+            assertThat(events.generateFields.superclass.canonical)
+                .isEqualTo(fieldSuperclass)
+        }
+
+        @Test
+        fun `rejections separately from events`() {
+            val eventInterface = "test.iface.EventMsg"
+            val rejectionInterface = "test.iface.RejectionMsg"
+            extension.codegen { config ->
+                config.forEvents {
+                    it.markAs(eventInterface)
+                }
+                config.forRejections {
+                    it.markAs(rejectionInterface)
+                }
+            }
+            val config = extension.codegen.toProto()
+            val eventInterfaces = config.events.addInterfaceList
+            val rejectionInterfaces = config.rejections.addInterfaceList
+            assertThat(eventInterfaces)
+                .hasSize(1)
+            assertThat(rejectionInterfaces)
+                .hasSize(1)
+            assertThat(eventInterfaces.first().name.canonical)
+                .isEqualTo(eventInterface)
+            assertThat(rejectionInterfaces.first().name.canonical)
+                .isEqualTo(rejectionInterface)
+        }
+
+        @Test
+        fun entities() {
+            val iface = "custom.EntityMessage"
+            val fieldSupertype = "custom.FieldSupertype"
+            val suffix = "view.proto"
+            val option = "view"
+            extension.codegen { config ->
+                config.forEntities {
+                    it.options.add(option)
+                    it.includeFiles(it.by().suffix(suffix))
+                    it.skipQueries()
+                    it.markAs(iface)
+                    it.markFieldsAs(fieldSupertype)
+                }
+            }
+            val config = extension.codegen.toProto().entities
+            assertThat(config.addInterfaceList.map { it.name.canonical })
+                .containsExactly(iface)
+            assertThat(config.generateFields.superclass.canonical)
+                .isEqualTo(fieldSupertype)
+            assertThat(config.patternList)
+                .hasSize(1)
+            assertThat(config.patternList.first().suffix)
+                .isEqualTo(suffix)
+            assertThat(config.optionList)
+                .hasSize(1)
+            assertThat(config.optionList.first().name)
+                .isEqualTo(option)
+        }
+
+        @Test
+        fun `UUID messages`() {
+            val iface = "custom.RandomizedId"
+            val methodFactory = "custom.MethodFactory"
+            extension.codegen { config ->
+                config.forUuids {
+                    it.markAs(iface)
+                    it.generateMethodsWith(methodFactory)
+                }
+            }
+            val config = extension.codegen.toProto().uuids
+            assertThat(config.addInterfaceList.map { it.name.canonical })
+                .containsExactly(iface)
+            assertThat(config.methodFactoryList)
+                .hasSize(1)
+            assertThat(config.methodFactoryList.first().className.canonical)
+                .isEqualTo(methodFactory)
+        }
+
+        @Test
+        fun `an arbitrary message groups`() {
+            val firstInterface = "com.acme.Foo"
+            val secondInterface = "com.acme.Bar"
+            val methodFactory = "custom.MethodFactory"
+            val classFactory = "custom.NestedClassFactory"
+            val fieldSuperclass = "acme.Searchable"
+            val firstMessageType = "acme.small.yellow.Bird"
+            extension.codegen { config ->
+                config.forMessage(firstMessageType) {
+                    it.markAs(firstInterface)
+                    it.markFieldsAs(fieldSuperclass)
+                    it.generateNestedClassesWith(classFactory)
+                }
+                config.forMessages(config.by().regex(".+_.+")) {
+                    it.markAs(secondInterface)
+                    it.generateMethodsWith(methodFactory)
+                }
+            }
+            val configs = extension.codegen.toProto().messagesList
+            assertThat(configs)
+                .hasSize(2)
+            val (first, second) = configs
+            assertThat(first.pattern.type.expectedType.value)
+                .isEqualTo(firstMessageType)
+            assertThat(first.addInterfaceList.first().name.canonical)
+                .isEqualTo(firstInterface)
+            assertThat(first.generateFields.superclass.canonical)
+                .isEqualTo(fieldSuperclass)
+            assertThat(first.generateNestedClassesList)
+                .hasSize(1)
+            assertThat(first.generateNestedClassesList.first().factory.className.canonical)
+                .isEqualTo(classFactory)
+
+            assertThat(second.pattern.file.hasRegex())
+                .isTrue()
+            assertThat(second.addInterfaceList.first().name.canonical)
+                .isEqualTo(secondInterface)
+            assertThat(second.generateMethodsList.first().factory.className.canonical)
+                .isEqualTo(methodFactory)
         }
     }
 }

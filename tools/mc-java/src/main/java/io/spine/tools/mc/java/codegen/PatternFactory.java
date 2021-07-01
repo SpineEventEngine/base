@@ -27,6 +27,7 @@
 package io.spine.tools.mc.java.codegen;
 
 import io.spine.tools.protoc.FilePattern;
+import org.checkerframework.checker.regex.qual.Regex;
 
 /**
  * A factory of file patterns.
@@ -77,7 +78,7 @@ public final class PatternFactory {
      * @param value
      *         the regex value
      */
-    public FilePattern regex(String value) {
+    public FilePattern regex(@Regex String value) {
         return FilePattern
                 .newBuilder()
                 .setRegex(value)

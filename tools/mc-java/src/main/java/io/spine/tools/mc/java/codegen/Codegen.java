@@ -146,9 +146,10 @@ public final class Codegen extends Config<SpineProtocConfig> {
      * Configures code generation for a group messages.
      *
      * <p>The group is defined by a file-based selector.
+     *
+     * @see #by() for creating a file pattern for selecting messages
      */
-    public void forMessages(ByPattern selector, Action<MessagesConfig> action) {
-        FilePattern filePattern = selector.toProto();
+    public void forMessages(FilePattern filePattern, Action<MessagesConfig> action) {
         Pattern pattern = Pattern
                 .newBuilder()
                 .setFile(filePattern)
@@ -156,6 +157,15 @@ public final class Codegen extends Config<SpineProtocConfig> {
         MessagesConfig config = new MessagesConfig(project, pattern);
         action.execute(config);
         forMessagesConfigs.add(config.toProto());
+    }
+
+    /**
+     * Obtains an instance of {@link PatternFactory} which creates file patterns.
+     *
+     * @see #forMessages
+     */
+    public PatternFactory by() {
+        return PatternFactory.instance();
     }
 
     /**
