@@ -161,6 +161,11 @@ public class McJavaExtension extends GradleExtension {
 
     public final CodeGenAnnotations generateAnnotations = new CodeGenAnnotations();
 
+    /**
+     * Code generation configuration.
+     *
+     * @see #codegen(Action)
+     */
     public final Codegen codegen;
 
     public List<String> internalClassPatterns = new ArrayList<>();
@@ -173,6 +178,9 @@ public class McJavaExtension extends GradleExtension {
         this.codegen = new Codegen(project);
     }
 
+    /**
+     * Configures the Model Compilation code generation by applying the given action.
+     */
     public void codegen(Action<Codegen> action) {
         action.execute(codegen);
     }

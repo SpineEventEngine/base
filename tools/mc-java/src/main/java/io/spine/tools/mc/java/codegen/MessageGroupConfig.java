@@ -75,16 +75,16 @@ abstract class MessageGroupConfig<P extends Message> extends ConfigWithFields<P>
      *
      * @see #by() for creating file patterns
      */
-    public void includeFiles(ByPattern pattern) {
-        this.file.add(pattern.toProto());
+    public void includeFiles(FilePattern pattern) {
+        this.file.add(pattern);
     }
 
     /**
      * Obtains a factory of file patterns for selecting Protobuf files.
      *
-     * @see #includeFiles(ByPattern)
+     * @see #includeFiles
      */
-    public MessageSelectorFactory by() {
-        return MessageSelectorFactory.INSTANCE;
+    public PatternFactory by() {
+        return PatternFactory.instance();
     }
 }

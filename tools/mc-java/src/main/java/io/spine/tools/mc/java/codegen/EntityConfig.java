@@ -98,7 +98,7 @@ public final class EntityConfig extends MessageGroupConfig<ForEntities> {
      */
     @Internal
     @Override
-    public void includeFiles(ByPattern pattern) {
+    public void includeFiles(FilePattern pattern) {
         super.includeFiles(pattern);
     }
 
