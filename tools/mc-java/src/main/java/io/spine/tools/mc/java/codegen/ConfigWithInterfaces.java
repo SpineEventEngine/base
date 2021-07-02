@@ -53,7 +53,8 @@ abstract class ConfigWithInterfaces<P extends Message> extends Config<P> {
     /**
      * Configures the associated messages to implement a Java interface with the given name.
      *
-     * <p>The interface must exist. The declaration of the interface will not be generated.
+     * <p>The declaration of the interface in Java must exist. It will not be generated. Providing
+     * a non-existent interface may lead to a compiler error.
      *
      * @param interfaceName
      *         the canonical name of the interface

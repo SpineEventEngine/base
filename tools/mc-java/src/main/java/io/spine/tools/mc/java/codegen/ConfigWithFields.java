@@ -60,7 +60,7 @@ abstract class ConfigWithFields<P extends Message> extends ConfigWithInterfaces<
     }
 
     /**
-     * Provides a superclass for the field type.
+     * Equips the field type with a superclass.
      *
      * @param className
      *         the canonical class name of an existing Java class

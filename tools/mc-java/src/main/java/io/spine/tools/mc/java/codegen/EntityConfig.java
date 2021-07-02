@@ -49,7 +49,7 @@ import static java.util.stream.Collectors.toList;
  * recognized as entities by changing the {@code options} and/or submitting a custom
  * {@linkplain #includeFiles file pattern}. These are superuser options. Changing the default values
  * may lead to runtime errors or unexpected behaviour in the Spine Event Engine framework.
- * Proceed by caution.
+ * Proceed with caution.
  *
  * @see Codegen#forEntities(Action)
  */
