@@ -26,12 +26,11 @@
 
 package io.spine.tools.mc.java.protoc;
 
-import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.ForEntities;
-import io.spine.tools.protoc.ProtoOption;
 import io.spine.type.MessageType;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -43,24 +42,23 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class EntityMatcher implements Predicate<MessageType> {
 
-    private final ForEntities entities;
+    private final Predicate<MessageType> matcher;
 
     public EntityMatcher(ForEntities entities) {
-        this.entities = checkNotNull(entities);
+        checkNotNull(entities);
+        matcher = matchBy(entities.getOptionList(), OptionMatcher::new)
+                .or(matchBy(entities.getPatternList(), FilePatternMatcher::new));
     }
 
     @Override
     public boolean test(MessageType type) {
-        List<ProtoOption> options = entities.getOptionList();
-        boolean match = options.stream()
-                               .map(OptionMatcher::new)
+        return matcher.test(type);
+    }
+
+    private static <T> Predicate<MessageType>
+    matchBy(List<T> criteria, Function<T, Predicate<MessageType>> newMatcher) {
+        return type -> criteria.stream()
+                               .map(newMatcher)
                                .anyMatch(matcher -> matcher.test(type));
-        if (match) {
-            return true;
-        }
-        List<FilePattern> patterns = entities.getPatternList();
-        return patterns.stream()
-                       .map(FilePatternMatcher::new)
-                       .anyMatch(matcher -> matcher.test(type));
     }
 }
