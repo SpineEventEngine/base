@@ -33,8 +33,8 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.tools.mc.java.protoc.given.TestInterface;
-import io.spine.tools.protoc.ForUuids;
 import io.spine.tools.protoc.SpineProtocConfig;
+import io.spine.tools.protoc.Uuids;
 import io.spine.tools.protoc.plugin.EnhancedWithCodeGeneration;
 import io.spine.tools.protoc.plugin.TestGeneratorsProto;
 import io.spine.type.MessageType;
@@ -70,7 +70,7 @@ final class CodeGeneratorTest {
     @DisplayName("process valid `CodeGeneratorRequest`")
     @Test
     void processValidRequest() {
-        ForUuids uuids = ForUuids.newBuilder()
+        Uuids uuids = Uuids.newBuilder()
                 .addAddInterface(addInterface(TestInterface.class))
                 .build();
         SpineProtocConfig config = SpineProtocConfig.newBuilder()

@@ -32,7 +32,7 @@ import io.spine.base.SubscribableField;
 import io.spine.option.OptionsProto;
 import io.spine.tools.java.code.field.FieldFactory;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.protoc.ForEntities;
+import io.spine.tools.protoc.Entities;
 import io.spine.tools.protoc.GenerateFields;
 import io.spine.tools.protoc.JavaClassName;
 import io.spine.tools.protoc.ProtoOption;
@@ -111,15 +111,15 @@ final class GenerateEntityStateFieldsTest {
         return newTask(config());
     }
 
-    private GenerateEntityStateFields newTask(ForEntities config) {
+    private GenerateEntityStateFields newTask(Entities config) {
         return new GenerateEntityStateFields(config, factory);
     }
 
-    private static ForEntities config() {
+    private static Entities config() {
         return config(SubscribableField.class.getCanonicalName());
     }
 
-    private static ForEntities config(String fieldType) {
+    private static Entities config(String fieldType) {
         JavaClassName name = className(fieldType);
         GenerateFields generate = GenerateFields.newBuilder()
                 .setSuperclass(name)
@@ -127,7 +127,7 @@ final class GenerateEntityStateFieldsTest {
         ProtoOption option = ProtoOption.newBuilder()
                 .setName(OptionsProto.entity.getDescriptor().getName())
                 .build();
-        ForEntities result = ForEntities.newBuilder()
+        Entities result = Entities.newBuilder()
                 .addOption(option)
                 .setGenerateFields(generate)
                 .build();

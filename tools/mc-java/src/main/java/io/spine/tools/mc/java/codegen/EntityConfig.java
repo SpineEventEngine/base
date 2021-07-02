@@ -30,8 +30,8 @@ import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
+import io.spine.tools.protoc.Entities;
 import io.spine.tools.protoc.FilePattern;
-import io.spine.tools.protoc.ForEntities;
 import io.spine.tools.protoc.ProtoOption;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -53,7 +53,7 @@ import static java.util.stream.Collectors.toList;
  *
  * @see JavaCodegenConfig#forEntities(Action)
  */
-public final class EntityConfig extends MessageGroupConfig<ForEntities> {
+public final class EntityConfig extends MessageGroupConfig<Entities> {
 
     private final SetProperty<String> options;
     private final Property<Boolean> generateQueries;
@@ -117,8 +117,8 @@ public final class EntityConfig extends MessageGroupConfig<ForEntities> {
     }
 
     @Override
-    ForEntities toProto() {
-        return ForEntities.newBuilder()
+    Entities toProto() {
+        return Entities.newBuilder()
                 .addAllAddInterface(interfaces())
                 .addAllOption(options())
                 .addAllPattern(patterns())

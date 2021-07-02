@@ -49,22 +49,22 @@ message SpineProtocConfig {
     Validation validation = 1;
 
     // The configuration related to entity states.
-    ForEntities entities = 2;
+    Entities entities = 2;
 
     // The configuration related to command messages.
-    ForSignals commands = 3;
+    Signals commands = 3;
 
     // The configuration related to event messages.
-    ForSignals events = 4;
+    Signals events = 4;
 
     // The configuration related to rejection messages.
-    ForSignals rejections = 5;
+    Signals rejections = 5;
 
     // The code generation config for a group of messages selected by a file pattern.
-    repeated ForMessages messages = 6;
+    repeated Messages messages = 6;
 
     // The configuration related to UUID messages.
-    ForUuids uuids = 7;
+    Uuids uuids = 7;
 
     // The classpath used to lookup types by their fully-qualified names.
     Classpath classpath = 8;
@@ -86,7 +86,7 @@ message Validation {
 
 // Code generation config for a group of signal messages.
 //
-message ForSignals {
+message Signals {
 
     // The patterns which define the group.
     //
@@ -108,7 +108,7 @@ message ForSignals {
 
 // Code generation config for entity state messages.
 //
-message ForEntities {
+message Entities {
 
     // The patterns which define which messages are entity state messages.
     //
@@ -169,7 +169,7 @@ message GenerateFields {
 //
 // A group may consist of just one message defined by its full name.
 //
-message ForMessages {
+message Messages {
 
     // The pattern defining the group.
     Pattern pattern = 1;
@@ -191,7 +191,7 @@ message ForMessages {
 //
 // Messages which only have one `string` field called `uuid` are known as UUID messages.
 //
-message ForUuids {
+message Uuids {
 
     // Java interfaces to be added to all the UUID messages.
     repeated AddInterface add_interface = 1;

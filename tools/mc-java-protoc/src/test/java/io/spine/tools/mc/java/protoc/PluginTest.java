@@ -37,9 +37,9 @@ import io.spine.tools.mc.java.protoc.given.TestInterface;
 import io.spine.tools.mc.java.protoc.given.TestMethodFactory;
 import io.spine.tools.mc.java.protoc.given.TestNestedClassFactory;
 import io.spine.tools.mc.java.protoc.given.UuidMethodFactory;
-import io.spine.tools.protoc.ForMessages;
-import io.spine.tools.protoc.ForUuids;
+import io.spine.tools.protoc.Messages;
 import io.spine.tools.protoc.SpineProtocConfig;
+import io.spine.tools.protoc.Uuids;
 import io.spine.tools.protoc.plugin.EnhancedWithCodeGeneration;
 import io.spine.tools.protoc.plugin.TestGeneratorsProto;
 import io.spine.tools.protoc.plugin.method.TestMethodProtos;
@@ -96,7 +96,7 @@ final class PluginTest {
     @Test
     @DisplayName("generate UUID message")
     void generateUuidMethod() {
-        ForUuids uuids = ForUuids.newBuilder()
+        Uuids uuids = Uuids.newBuilder()
                 .addMethodFactory(methodFactory(UuidMethodFactory.class))
                 .build();
         SpineProtocConfig config = configWithoutValidation()
@@ -118,7 +118,7 @@ final class PluginTest {
     @Test
     @DisplayName("process suffix patterns")
     void processSuffixPatterns() {
-        ForMessages messages = ForMessages.newBuilder()
+        Messages messages = Messages.newBuilder()
                 .setPattern(pattern(fileSuffix(TEST_PROTO_SUFFIX)))
                 .addAddInterface(addInterface(TestInterface.class))
                 .addGenerateMethods(generateMethods(TestMethodFactory.class))
@@ -141,7 +141,7 @@ final class PluginTest {
     @Test
     @DisplayName("process prefix patterns")
     void processPrefixPatterns() {
-        ForMessages messages = ForMessages.newBuilder()
+        Messages messages = Messages.newBuilder()
                 .setPattern(pattern(filePrefix(TEST_PROTO_PREFIX)))
                 .addAddInterface(addInterface(TestInterface.class))
                 .addGenerateMethods(generateMethods(TestMethodFactory.class))
@@ -163,7 +163,7 @@ final class PluginTest {
     @Test
     @DisplayName("process regex patterns")
     void processRegexPatterns() {
-        ForMessages messages = ForMessages.newBuilder()
+        Messages messages = Messages.newBuilder()
                 .setPattern(pattern(fileRegex(TEST_PROTO_REGEX)))
                 .addAddInterface(addInterface(TestInterface.class))
                 .addGenerateMethods(generateMethods(TestMethodFactory.class))

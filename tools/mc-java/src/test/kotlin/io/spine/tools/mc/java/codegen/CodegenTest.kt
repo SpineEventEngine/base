@@ -41,8 +41,8 @@ import io.spine.query.EntityStateField
 import io.spine.tools.java.code.UuidMethodFactory
 import io.spine.tools.mc.java.gradle.McJavaExtension
 import io.spine.tools.mc.java.gradle.McJavaPlugin
-import io.spine.tools.protoc.ForMessages
 import io.spine.tools.protoc.GenerateFields
+import io.spine.tools.protoc.Messages
 import io.spine.tools.protoc.Pattern
 import io.spine.tools.protoc.ProtoTypeName
 import io.spine.tools.protoc.TypePattern
@@ -396,7 +396,8 @@ class `'java { }' block should` {
                 .newBuilder()
                 .setType(typePattern)
             assertThat(updatedConfig.messagesList.first())
-                .isEqualTo(ForMessages.newBuilder()
+                .isEqualTo(
+                    Messages.newBuilder()
                     .setPattern(pattern)
                     .buildPartial()
                 )

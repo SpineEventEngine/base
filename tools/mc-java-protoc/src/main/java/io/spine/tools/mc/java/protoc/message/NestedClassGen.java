@@ -34,7 +34,7 @@ import io.spine.tools.mc.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.ExternalClassLoader;
 import io.spine.tools.mc.java.protoc.InsertionPoint;
 import io.spine.tools.protoc.Classpath;
-import io.spine.tools.protoc.ForMessages;
+import io.spine.tools.protoc.Messages;
 import io.spine.tools.protoc.NestedClassFactory;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
@@ -69,7 +69,7 @@ public final class NestedClassGen extends CodeGenerator {
         ExternalClassLoader<NestedClassFactory> classLoader =
                 new ExternalClassLoader<>(classpath, NestedClassFactory.class);
         ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();
-        for (ForMessages messages : spineProtocConfig.getMessagesList()) {
+        for (Messages messages : spineProtocConfig.getMessagesList()) {
             messages.getGenerateNestedClassesList()
                     .stream()
                     .map(generate -> new GenerateNestedClasses(

@@ -32,7 +32,7 @@ import io.spine.base.EntityState;
 import io.spine.option.OptionsProto;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
 import io.spine.tools.protoc.AddInterface;
-import io.spine.tools.protoc.ForEntities;
+import io.spine.tools.protoc.Entities;
 import io.spine.tools.protoc.JavaClassName;
 import io.spine.tools.protoc.ProtoOption;
 import io.spine.tools.protoc.plugin.message.tests.ProtocProject;
@@ -124,7 +124,7 @@ class ImplementEntityStateTest {
         ProtoOption option = ProtoOption.newBuilder()
                 .setName(OptionsProto.entity.getDescriptor().getName())
                 .build();
-        ForEntities config = ForEntities
+        Entities config = Entities
                 .newBuilder()
                 .addAddInterface(iface)
                 .addOption(option)

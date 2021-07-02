@@ -31,7 +31,7 @@ import io.spine.code.java.ClassName;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.EntityMatcher;
-import io.spine.tools.protoc.ForEntities;
+import io.spine.tools.protoc.Entities;
 import io.spine.tools.protoc.JavaClassName;
 import io.spine.type.MessageType;
 
@@ -48,7 +48,7 @@ final class ImplementEntityState extends ImplementInterface {
 
     private final Predicate<MessageType> matcher;
 
-    ImplementEntityState(JavaClassName interfaceName, ForEntities config) {
+    ImplementEntityState(JavaClassName interfaceName, Entities config) {
         super(interfaceName);
         this.matcher = new EntityMatcher(config);
     }

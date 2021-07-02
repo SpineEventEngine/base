@@ -34,13 +34,13 @@ import io.spine.tools.mc.java.protoc.CodeGenerationTasks;
 import io.spine.tools.mc.java.protoc.CodeGenerator;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
 import io.spine.tools.protoc.AddInterface;
+import io.spine.tools.protoc.Entities;
 import io.spine.tools.protoc.FilePattern;
-import io.spine.tools.protoc.ForEntities;
-import io.spine.tools.protoc.ForMessages;
-import io.spine.tools.protoc.ForSignals;
-import io.spine.tools.protoc.ForUuids;
+import io.spine.tools.protoc.Messages;
 import io.spine.tools.protoc.Pattern;
+import io.spine.tools.protoc.Signals;
 import io.spine.tools.protoc.SpineProtocConfig;
+import io.spine.tools.protoc.Uuids;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 
@@ -91,7 +91,7 @@ public final class InterfaceGen extends CodeGenerator {
             tasks.addAll(tasksFor(spineProtocConfig.getRejections()));
         }
         if (spineProtocConfig.hasUuids()) {
-            ForUuids uuids = spineProtocConfig.getUuids();
+            Uuids uuids = spineProtocConfig.getUuids();
             List<AddInterface> addInterfaces = uuids.getAddInterfaceList();
             addInterfaces.stream()
                          .map(ImplementUuidValue::new)
@@ -100,7 +100,7 @@ public final class InterfaceGen extends CodeGenerator {
         if (spineProtocConfig.hasEntities()) {
             tasks.addAll(tasksFor(spineProtocConfig.getEntities()));
         }
-        for (ForMessages messages : spineProtocConfig.getMessagesList()) {
+        for (Messages messages : spineProtocConfig.getMessagesList()) {
             Pattern pattern = messages.getPattern();
 
             for (AddInterface ai : messages.getAddInterfaceList()) {
@@ -110,10 +110,10 @@ public final class InterfaceGen extends CodeGenerator {
         return new InterfaceGen(tasks.build());
     }
 
-    private static ImmutableList<ImplementInterface> tasksFor(ForSignals forSignals) {
+    private static ImmutableList<ImplementInterface> tasksFor(Signals signals) {
         ImmutableList.Builder<ImplementInterface> tasks = ImmutableList.builder();
-        List<AddInterface> addInterfaces = forSignals.getAddInterfaceList();
-        for (FilePattern pattern : forSignals.getPatternList()) {
+        List<AddInterface> addInterfaces = signals.getAddInterfaceList();
+        for (FilePattern pattern : signals.getPatternList()) {
             addInterfaces.stream()
                          .map(ai -> new ImplementByPattern(ai.getName(), pattern))
                          .forEach(tasks::add);
@@ -121,7 +121,7 @@ public final class InterfaceGen extends CodeGenerator {
         return tasks.build();
     }
 
-    private static ImmutableList<ImplementInterface> tasksFor(ForEntities entities) {
+    private static ImmutableList<ImplementInterface> tasksFor(Entities entities) {
         List<AddInterface> interfaces = entities.getAddInterfaceList();
         return interfaces.stream()
                          .map(ai -> new ImplementEntityState(ai.getName(), entities))

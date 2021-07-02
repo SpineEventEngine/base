@@ -31,10 +31,10 @@ import io.spine.tools.mc.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.ExternalClassLoader;
 import io.spine.tools.mc.java.protoc.given.TestMethodFactory;
 import io.spine.tools.protoc.Classpath;
-import io.spine.tools.protoc.ForUuids;
 import io.spine.tools.protoc.JavaClassName;
 import io.spine.tools.protoc.MethodFactory;
 import io.spine.tools.protoc.MethodFactoryName;
+import io.spine.tools.protoc.Uuids;
 import io.spine.tools.protoc.plugin.method.NonEnhancedMessage;
 import io.spine.tools.protoc.plugin.method.TestUuidValue;
 import io.spine.type.MessageType;
@@ -65,7 +65,7 @@ final class GenerateUuidMethodsTest {
         @Test
         @DisplayName("`null` `MessageType` is supplied")
         void nullMessageTypeIsSupplied() {
-            ForUuids config = newTaskConfig("test");
+            Uuids config = newTaskConfig("test");
             GenerateUuidMethods task = newTask(config);
             assertNpe(() -> task.generateFor(null));
         }
@@ -75,7 +75,7 @@ final class GenerateUuidMethodsTest {
     @ValueSource(strings = {"", "  "})
     @DisplayName("throw `IllegalArgumentException` if factory name is ")
     void throwIllegalArgumentException(String factoryName) {
-        ForUuids config = newTaskConfig(factoryName);
+        Uuids config = newTaskConfig(factoryName);
         assertIllegalArgument(() -> newTask(config));
     }
 
@@ -90,7 +90,7 @@ final class GenerateUuidMethodsTest {
         }
 
         private void assertEmptyResult(String factoryName) {
-            ForUuids config = newTaskConfig(factoryName);
+            Uuids config = newTaskConfig(factoryName);
             ImmutableList<CompilerOutput> result = newTask(config)
                     .generateFor(new MessageType(NonEnhancedMessage.getDescriptor()));
             assertThat(result).isEmpty();
@@ -100,24 +100,24 @@ final class GenerateUuidMethodsTest {
     @Test
     @DisplayName("generate new methods")
     void generateNewMethods() {
-        ForUuids config = newTaskConfig(TestMethodFactory.class.getName());
+        Uuids config = newTaskConfig(TestMethodFactory.class.getName());
         assertThat(newTask(config).generateFor(testType()))
                 .isNotEmpty();
     }
 
-    private static ForUuids newTaskConfig(String factoryName) {
+    private static Uuids newTaskConfig(String factoryName) {
         JavaClassName factoryClass = JavaClassName.newBuilder()
                 .setCanonical(factoryName)
                 .build();
         MethodFactoryName name = MethodFactoryName.newBuilder()
                 .setClassName(factoryClass)
                 .build();
-        return ForUuids.newBuilder()
+        return Uuids.newBuilder()
                 .addMethodFactory(name)
                 .build();
     }
 
-    private static GenerateUuidMethods newTask(ForUuids config) {
+    private static GenerateUuidMethods newTask(Uuids config) {
         return new GenerateUuidMethods(testClassLoader(), config.getMethodFactory(0));
     }
 

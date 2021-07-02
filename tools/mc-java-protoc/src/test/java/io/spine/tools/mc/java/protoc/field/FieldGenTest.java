@@ -30,8 +30,8 @@ import com.google.common.testing.NullPointerTester;
 import io.spine.base.SubscribableField;
 import io.spine.tools.mc.java.codegen.FilePatterns;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.protoc.ForMessages;
 import io.spine.tools.protoc.GenerateFields;
+import io.spine.tools.protoc.Messages;
 import io.spine.tools.protoc.Pattern;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.plugin.nested.Task;
@@ -84,7 +84,7 @@ class FieldGenTest {
     }
 
     private static SpineProtocConfig newConfig() {
-        ForMessages.Builder messages = ForMessages.newBuilder();
+        Messages.Builder messages = Messages.newBuilder();
         messages.setPattern(
                 Pattern.newBuilder().setFile(FilePatterns.fileSuffix("test_fields.proto")));
         GenerateFields generateFields = GenerateFields.newBuilder()

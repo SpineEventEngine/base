@@ -39,7 +39,7 @@ import io.spine.query.EntityStateField;
 import io.spine.tools.java.code.UuidMethodFactory;
 import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.FilePattern;
-import io.spine.tools.protoc.ForMessages;
+import io.spine.tools.protoc.Messages;
 import io.spine.tools.protoc.Pattern;
 import io.spine.tools.protoc.ProtoTypeName;
 import io.spine.tools.protoc.SpineProtocConfig;
@@ -65,24 +65,24 @@ import static io.spine.base.MessageFile.REJECTIONS;
 @SuppressWarnings("OverlyCoupledClass") // OK for a Gradle config.
 public final class JavaCodegenConfig extends Config<SpineProtocConfig> {
 
-    private final SignalConfig forCommands;
-    private final SignalConfig forEvents;
-    private final SignalConfig forRejections;
-    private final EntityConfig forEntities;
-    private final UuidConfig forUuids;
+    private final SignalConfig commands;
+    private final SignalConfig events;
+    private final SignalConfig rejections;
+    private final EntityConfig entities;
+    private final UuidConfig uuids;
     private final ValidationConfig validation;
-    private final Set<ForMessages> forMessagesConfigs = new HashSet<>();
+    private final Set<Messages> messagesConfigs = new HashSet<>();
     private final Project project;
 
     @Internal
     public JavaCodegenConfig(Project project) {
         super();
         this.project = checkNotNull(project);
-        this.forCommands = new SignalConfig(project);
-        this.forEvents = new SignalConfig(project);
-        this.forRejections = new SignalConfig(project);
-        this.forEntities = new EntityConfig(project);
-        this.forUuids = new UuidConfig(project);
+        this.commands = new SignalConfig(project);
+        this.events = new SignalConfig(project);
+        this.rejections = new SignalConfig(project);
+        this.entities = new EntityConfig(project);
+        this.uuids = new UuidConfig(project);
         this.validation = new ValidationConfig(project);
         prepareConvention();
     }
@@ -95,11 +95,11 @@ public final class JavaCodegenConfig extends Config<SpineProtocConfig> {
      * a name related to appending, e.g. {@code add()}.
      */
     private void prepareConvention() {
-        forCommands.convention(COMMANDS, CommandMessage.class);
-        forEvents.convention(EVENTS, EventMessage.class, EventMessageField.class);
-        forRejections.convention(REJECTIONS, RejectionMessage.class, EventMessageField.class);
-        forEntities.convention(OptionsProto.entity, EntityState.class, EntityStateField.class);
-        forUuids.convention(UuidMethodFactory.class, UuidValue.class);
+        commands.convention(COMMANDS, CommandMessage.class);
+        events.convention(EVENTS, EventMessage.class, EventMessageField.class);
+        rejections.convention(REJECTIONS, RejectionMessage.class, EventMessageField.class);
+        entities.convention(OptionsProto.entity, EntityState.class, EntityStateField.class);
+        uuids.convention(UuidMethodFactory.class, UuidValue.class);
         validation.enableAllByConvention();
     }
 
@@ -107,7 +107,7 @@ public final class JavaCodegenConfig extends Config<SpineProtocConfig> {
      * Configures code generation for command messages.
      */
     public void forCommands(Action<SignalConfig> action) {
-        action.execute(forCommands);
+        action.execute(commands);
     }
 
     /**
@@ -116,7 +116,7 @@ public final class JavaCodegenConfig extends Config<SpineProtocConfig> {
      * <p>Configuration applied to events does not automatically apply to rejections as well.
      */
     public void forEvents(Action<SignalConfig> action) {
-        action.execute(forEvents);
+        action.execute(events);
     }
 
     /**
@@ -125,21 +125,21 @@ public final class JavaCodegenConfig extends Config<SpineProtocConfig> {
      * <p>Configuration applied to events does not automatically apply to rejections as well.
      */
     public void forRejections(Action<SignalConfig> action) {
-        action.execute(forRejections);
+        action.execute(rejections);
     }
 
     /**
      * Configures code generation for entity state messages.
      */
     public void forEntities(Action<EntityConfig> action) {
-        action.execute(forEntities);
+        action.execute(entities);
     }
 
     /**
      * Configures code generation for UUID messages.
      */
     public void forUuids(Action<UuidConfig> action) {
-        action.execute(forUuids);
+        action.execute(uuids);
     }
 
     /**
@@ -163,7 +163,7 @@ public final class JavaCodegenConfig extends Config<SpineProtocConfig> {
                 .build();
         MessagesConfig config = new MessagesConfig(project, pattern);
         action.execute(config);
-        forMessagesConfigs.add(config.toProto());
+        messagesConfigs.add(config.toProto());
     }
 
     /**
@@ -188,21 +188,21 @@ public final class JavaCodegenConfig extends Config<SpineProtocConfig> {
         MessagesConfig config = new MessagesConfig(project, pattern);
         config.emptyByConvention();
         action.execute(config);
-        forMessagesConfigs.add(config.toProto());
+        messagesConfigs.add(config.toProto());
     }
 
     @Override
     public SpineProtocConfig toProto() {
         SpineProtocConfig.Builder builder = SpineProtocConfig.newBuilder()
-                .setCommands(forCommands.toProto())
-                .setEvents(forEvents.toProto())
-                .setRejections(forRejections.toProto())
-                .setEntities(forEntities.toProto())
+                .setCommands(commands.toProto())
+                .setEvents(events.toProto())
+                .setRejections(rejections.toProto())
+                .setEntities(entities.toProto())
                 .setValidation(validation.toProto())
-                .setUuids(forUuids.toProto())
+                .setUuids(uuids.toProto())
                 .setClasspath(buildClasspath());
-        for (ForMessages forMessages : forMessagesConfigs) {
-            builder.addMessages(forMessages);
+        for (Messages messages : messagesConfigs) {
+            builder.addMessages(messages);
         }
         return builder.build();
     }

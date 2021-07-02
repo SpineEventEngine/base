@@ -26,7 +26,7 @@
 
 package io.spine.tools.mc.java.protoc;
 
-import io.spine.tools.protoc.ForEntities;
+import io.spine.tools.protoc.Entities;
 import io.spine.type.MessageType;
 
 import java.util.List;
@@ -44,7 +44,7 @@ public final class EntityMatcher implements Predicate<MessageType> {
 
     private final Predicate<MessageType> matcher;
 
-    public EntityMatcher(ForEntities entities) {
+    public EntityMatcher(Entities entities) {
         checkNotNull(entities);
         matcher = matchAgainst(entities.getOptionList(), OptionMatcher::new)
                 .or(matchAgainst(entities.getPatternList(), FilePatternMatcher::new));

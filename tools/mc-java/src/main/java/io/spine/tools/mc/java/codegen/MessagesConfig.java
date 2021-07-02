@@ -28,10 +28,10 @@ package io.spine.tools.mc.java.codegen;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import io.spine.tools.protoc.ForMessages;
 import io.spine.tools.protoc.GenerateFields;
 import io.spine.tools.protoc.GenerateMethods;
 import io.spine.tools.protoc.GenerateNestedClasses;
+import io.spine.tools.protoc.Messages;
 import io.spine.tools.protoc.MethodFactoryName;
 import io.spine.tools.protoc.NestedClassFactoryName;
 import io.spine.tools.protoc.Pattern;
@@ -49,7 +49,7 @@ import static java.util.stream.Collectors.toSet;
  *
  * @see JavaCodegenConfig#forMessages
  */
-public final class MessagesConfig extends ConfigWithFields<ForMessages> {
+public final class MessagesConfig extends ConfigWithFields<Messages> {
 
     private final Pattern pattern;
     private final SetProperty<String> methodFactories;
@@ -99,8 +99,8 @@ public final class MessagesConfig extends ConfigWithFields<ForMessages> {
     }
 
     @Override
-    ForMessages toProto() {
-        ForMessages.Builder result = ForMessages.newBuilder()
+    Messages toProto() {
+        Messages.Builder result = Messages.newBuilder()
                 .setPattern(pattern)
                 .addAllAddInterface(interfaces())
                 .addAllGenerateMethods(generateMethods())

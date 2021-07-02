@@ -30,7 +30,7 @@ import com.google.common.collect.ImmutableList;
 import io.spine.tools.java.code.field.FieldFactory;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.EntityMatcher;
-import io.spine.tools.protoc.ForEntities;
+import io.spine.tools.protoc.Entities;
 import io.spine.tools.protoc.GenerateFields;
 import io.spine.tools.protoc.JavaClassName;
 import io.spine.type.MessageType;
@@ -48,7 +48,7 @@ final class GenerateEntityStateFields extends FieldGenerationTask {
 
     private final Predicate<MessageType> matcher;
 
-    GenerateEntityStateFields(ForEntities config, FieldFactory factory) {
+    GenerateEntityStateFields(Entities config, FieldFactory factory) {
         super(fieldSupertype(checkNotNull(config)), checkNotNull(factory));
         this.matcher = new EntityMatcher(config);
     }
@@ -62,7 +62,7 @@ final class GenerateEntityStateFields extends FieldGenerationTask {
         return ImmutableList.of();
     }
 
-    private static JavaClassName fieldSupertype(ForEntities config) {
+    private static JavaClassName fieldSupertype(Entities config) {
         GenerateFields generateFields = config.getGenerateFields();
         if (!generateFields.hasSuperclass()) {
             throw newIllegalStateException(

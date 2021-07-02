@@ -33,7 +33,7 @@ import io.spine.tools.mc.java.protoc.CodeGenerator;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.EntityMatcher;
 import io.spine.tools.mc.java.protoc.NoOpGenerator;
-import io.spine.tools.protoc.ForEntities;
+import io.spine.tools.protoc.Entities;
 import io.spine.tools.protoc.Method;
 import io.spine.tools.protoc.NestedClass;
 import io.spine.tools.protoc.SpineProtocConfig;
@@ -93,9 +93,9 @@ public class EntityQueryGen extends CodeGenerator {
 
     private final Predicate<MessageType> matcher;
 
-    private EntityQueryGen(ForEntities forEntities) {
+    private EntityQueryGen(Entities entities) {
         super();
-        this.matcher = new EntityMatcher(forEntities);
+        this.matcher = new EntityMatcher(entities);
     }
 
     /**
@@ -103,7 +103,7 @@ public class EntityQueryGen extends CodeGenerator {
      */
     public static CodeGenerator instance(SpineProtocConfig config) {
         checkNotNull(config);
-        ForEntities entities = config.getEntities();
+        Entities entities = config.getEntities();
         boolean enabled = entities.getGenerateQueries();
         return enabled
                ? new EntityQueryGen(entities)

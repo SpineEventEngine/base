@@ -34,7 +34,7 @@ import io.spine.tools.mc.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.ExternalClassLoader;
 import io.spine.tools.mc.java.protoc.InsertionPoint;
 import io.spine.tools.protoc.Classpath;
-import io.spine.tools.protoc.ForMessages;
+import io.spine.tools.protoc.Messages;
 import io.spine.tools.protoc.MethodFactory;
 import io.spine.tools.protoc.MethodFactoryName;
 import io.spine.tools.protoc.Pattern;
@@ -80,11 +80,11 @@ public final class MethodGen extends CodeGenerator {
                     .map(name -> new GenerateUuidMethods(classLoader, name))
                     .forEach(tasks::add);
         }
-        for (ForMessages forMessages : spineProtocConfig.getMessagesList()) {
-            Pattern pattern = forMessages.getPattern();
-            forMessages.getGenerateMethodsList()
-                       .stream()
-                       .map(generate -> new GenerateMethods(
+        for (Messages messages : spineProtocConfig.getMessagesList()) {
+            Pattern pattern = messages.getPattern();
+            messages.getGenerateMethodsList()
+                    .stream()
+                    .map(generate -> new GenerateMethods(
                                classLoader, generate.getFactory(), pattern
                        )).forEach(tasks::add);
 

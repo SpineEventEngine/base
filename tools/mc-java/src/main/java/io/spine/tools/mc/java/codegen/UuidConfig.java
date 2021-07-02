@@ -28,9 +28,9 @@ package io.spine.tools.mc.java.codegen;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Message;
-import io.spine.tools.protoc.ForUuids;
 import io.spine.tools.protoc.MethodFactory;
 import io.spine.tools.protoc.MethodFactoryName;
+import io.spine.tools.protoc.Uuids;
 import org.gradle.api.Project;
 import org.gradle.api.provider.SetProperty;
 
@@ -44,7 +44,7 @@ import static java.util.stream.Collectors.toList;
  * <p>A UUID message is a message which the only {@code string} field called "uuid".
  * Such messages may represent randomized typed identifiers for entities.
  */
-public final class UuidConfig extends ConfigWithInterfaces<ForUuids> {
+public final class UuidConfig extends ConfigWithInterfaces<Uuids> {
 
     private final SetProperty<String> methodFactories;
 
@@ -61,8 +61,8 @@ public final class UuidConfig extends ConfigWithInterfaces<ForUuids> {
     }
 
     @Override
-    ForUuids toProto() {
-        return ForUuids.newBuilder()
+    Uuids toProto() {
+        return Uuids.newBuilder()
                 .addAllMethodFactory(factories())
                 .addAllAddInterface(interfaces())
                 .build();

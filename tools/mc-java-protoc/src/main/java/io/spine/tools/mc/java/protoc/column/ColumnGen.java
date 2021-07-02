@@ -34,7 +34,7 @@ import io.spine.tools.mc.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.EntityMatcher;
 import io.spine.tools.mc.java.protoc.InsertionPoint;
 import io.spine.tools.mc.java.protoc.NoOpGenerator;
-import io.spine.tools.protoc.ForEntities;
+import io.spine.tools.protoc.Entities;
 import io.spine.tools.protoc.NestedClass;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
@@ -66,7 +66,7 @@ public final class ColumnGen extends CodeGenerator {
 
     private final Predicate<MessageType> entityMatcher;
 
-    private ColumnGen(ForEntities config) {
+    private ColumnGen(Entities config) {
         super();
         this.entityMatcher = new EntityMatcher(config);
     }
@@ -76,7 +76,7 @@ public final class ColumnGen extends CodeGenerator {
      */
     public static CodeGenerator instance(SpineProtocConfig config) {
         checkNotNull(config);
-        ForEntities entities = config.getEntities();
+        Entities entities = config.getEntities();
         boolean generate = entities.getGenerateQueries();
         return generate
                ? new ColumnGen(entities)

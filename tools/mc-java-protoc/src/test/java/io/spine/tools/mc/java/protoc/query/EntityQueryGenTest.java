@@ -31,7 +31,7 @@ import io.spine.option.OptionsProto;
 import io.spine.tools.mc.java.protoc.CodeGenerator;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.NoOpGenerator;
-import io.spine.tools.protoc.ForEntities;
+import io.spine.tools.protoc.Entities;
 import io.spine.tools.protoc.ProtoOption;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.plugin.nested.Task;
@@ -102,7 +102,7 @@ class EntityQueryGenTest {
     }
 
     private static SpineProtocConfig newConfig(boolean generate) {
-        ForEntities.Builder entities = ForEntities.newBuilder();
+        Entities.Builder entities = Entities.newBuilder();
         entities.addOption(ProtoOption.newBuilder()
                 .setName(OptionsProto.entity.getDescriptor().getName())
         );

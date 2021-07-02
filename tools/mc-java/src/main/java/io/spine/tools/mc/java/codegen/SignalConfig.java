@@ -30,7 +30,7 @@ import com.google.common.collect.ImmutableSet;
 import io.spine.base.MessageFile;
 import io.spine.base.SignalMessage;
 import io.spine.tools.protoc.FilePattern;
-import io.spine.tools.protoc.ForSignals;
+import io.spine.tools.protoc.Signals;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Project;
 
@@ -41,7 +41,7 @@ import org.gradle.api.Project;
  *
  * <p>The configuration applied to events does not automatically apply to rejections.
  */
-public final class SignalConfig extends MessageGroupConfig<ForSignals> {
+public final class SignalConfig extends MessageGroupConfig<Signals> {
 
     SignalConfig(Project p) {
         super(p);
@@ -90,8 +90,8 @@ public final class SignalConfig extends MessageGroupConfig<ForSignals> {
     }
 
     @Override
-    ForSignals toProto() {
-        return ForSignals.newBuilder()
+    Signals toProto() {
+        return Signals.newBuilder()
                 .addAllAddInterface(interfaces())
                 .setGenerateFields(generateFields())
                 .addAllPattern(patterns())

@@ -30,9 +30,9 @@ import com.google.common.testing.NullPointerTester;
 import io.spine.tools.mc.java.codegen.FilePatterns;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.given.TestNestedClassFactory;
-import io.spine.tools.protoc.ForMessages;
 import io.spine.tools.protoc.GenerateNestedClasses;
 import io.spine.tools.protoc.JavaClassName;
+import io.spine.tools.protoc.Messages;
 import io.spine.tools.protoc.NestedClassFactoryName;
 import io.spine.tools.protoc.Pattern;
 import io.spine.tools.protoc.SpineProtocConfig;
@@ -94,7 +94,7 @@ class NestedClassGenTest {
         Pattern pattern = Pattern.newBuilder()
                 .setFile(FilePatterns.fileSuffix("test_fields.proto"))
                 .build();
-        ForMessages messages = ForMessages.newBuilder()
+        Messages messages = Messages.newBuilder()
                 .setPattern(pattern)
                 .addGenerateNestedClasses(generate)
                 .build();
