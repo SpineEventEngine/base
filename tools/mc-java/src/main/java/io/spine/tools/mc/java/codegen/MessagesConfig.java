@@ -114,24 +114,34 @@ public final class MessagesConfig extends ConfigWithFields<ForMessages> {
     private Set<GenerateMethods> generateMethods() {
         return methodFactories.get()
                               .stream()
-                              .map(name -> MethodFactoryName.newBuilder()
-                                      .setClassName(className(name))
-                                      .build())
-                              .map(name -> GenerateMethods.newBuilder()
-                                      .setFactory(name)
-                                      .build())
+                              .map(MessagesConfig::methodFactoryConfig)
                               .collect(toSet());
+    }
+
+    private static GenerateMethods methodFactoryConfig(String methodFactoryClass) {
+        MethodFactoryName factoryName = MethodFactoryName.newBuilder()
+                .setClassName(className(methodFactoryClass))
+                .build();
+        GenerateMethods config = GenerateMethods.newBuilder()
+                .setFactory(factoryName)
+                .build();
+        return config;
     }
 
     private Set<GenerateNestedClasses> generateNestedClasses() {
         return nestedClassFactories.get()
                                    .stream()
-                                   .map(name -> NestedClassFactoryName.newBuilder()
-                                           .setClassName(className(name))
-                                           .build())
-                                   .map(name -> GenerateNestedClasses.newBuilder()
-                                           .setFactory(name)
-                                           .build())
+                                   .map(MessagesConfig::nestedClassFactoryConfig)
                                    .collect(toSet());
+    }
+
+    private static GenerateNestedClasses nestedClassFactoryConfig(String methodFactoryClass) {
+        NestedClassFactoryName factoryName = NestedClassFactoryName.newBuilder()
+                .setClassName(className(methodFactoryClass))
+                .build();
+        GenerateNestedClasses config = GenerateNestedClasses.newBuilder()
+                .setFactory(factoryName)
+                .build();
+        return config;
     }
 }
