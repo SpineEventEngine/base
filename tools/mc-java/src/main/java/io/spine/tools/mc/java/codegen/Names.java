@@ -29,6 +29,9 @@ package io.spine.tools.mc.java.codegen;
 import io.spine.annotation.Internal;
 import io.spine.tools.protoc.JavaClassName;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+
 /**
  * A test factory of {@code JavaClassName}s.
  */
@@ -45,6 +48,7 @@ public final class Names {
      * Obtains a {@code JavaClassName} with the given value.
      */
     public static JavaClassName className(String name) {
+        checkNotEmptyOrBlank(name, "Class name must not be null or empty.");
         return JavaClassName
                 .newBuilder()
                 .setCanonical(name)
@@ -55,6 +59,7 @@ public final class Names {
      * Obtains a {@code JavaClassName} for the given class.
      */
     public static JavaClassName className(Class<?> cls) {
+        checkNotNull(cls, "Class must not be null.");
         return className(cls.getCanonicalName());
     }
 }
