@@ -102,6 +102,9 @@ public final class CodeGeneratorRequestGiven {
                 .build();
     }
 
+    /**
+     * Creates a {@link NestedClassFactoryName} with the name of the given class.
+     */
     private static NestedClassFactoryName nestedClassFactory(Class<?> cls) {
         return NestedClassFactoryName
                 .newBuilder()
@@ -120,6 +123,9 @@ public final class CodeGeneratorRequestGiven {
                 .build();
     }
 
+    /**
+     * Creates a {@link MethodFactoryName} with the name of the given class.
+     */
     public static MethodFactoryName methodFactory(Class<?> cls) {
         return MethodFactoryName
                 .newBuilder()
