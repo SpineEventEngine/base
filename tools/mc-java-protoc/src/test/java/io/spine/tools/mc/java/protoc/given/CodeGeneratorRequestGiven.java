@@ -156,7 +156,7 @@ public final class CodeGeneratorRequestGiven {
     /**
      * Writes the given Protoc config into the given file and obtains the Protoc plugin argument.
      *
-     * @return the path to the serialized config, encoded in base 64
+     * @return the path to the serialized config, encoded in Base64
      */
     public static String protocConfig(SpineProtocConfig config, Path configFile) {
         try (FileOutputStream fos = new FileOutputStream(configFile.toFile())) {
