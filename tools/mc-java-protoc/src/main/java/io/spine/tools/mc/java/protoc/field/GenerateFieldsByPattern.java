@@ -32,7 +32,7 @@ import io.spine.tools.mc.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.FilePatternMatcher;
 import io.spine.tools.mc.java.protoc.PatternMatcher;
 import io.spine.tools.protoc.FilePattern;
-import io.spine.tools.protoc.JavaClassName;
+import io.spine.tools.protoc.GenerateFields;
 import io.spine.tools.protoc.Pattern;
 import io.spine.type.MessageType;
 import io.spine.type.TypeName;
@@ -48,20 +48,23 @@ final class GenerateFieldsByPattern extends FieldGenerationTask {
 
     private final Predicate<MessageType> matcher;
 
-    GenerateFieldsByPattern(JavaClassName fieldSupertype,
-                            Pattern pattern,
-                            FieldFactory factory) {
-        super(checkNotNull(fieldSupertype), checkNotNull(factory));
-        checkNotNull(pattern);
-        this.matcher = new PatternMatcher(pattern);
+    private GenerateFieldsByPattern(GenerateFields generateFields,
+                                    FieldFactory factory,
+                                    Predicate<MessageType> matcher) {
+        super(generateFields.getSuperclass(), checkNotNull(factory));
+        this.matcher = matcher;
     }
 
-    GenerateFieldsByPattern(JavaClassName fieldSupertype,
+    GenerateFieldsByPattern(GenerateFields generateFields,
+                            Pattern pattern,
+                            FieldFactory factory) {
+        this(generateFields, factory, new PatternMatcher(pattern));
+    }
+
+    GenerateFieldsByPattern(GenerateFields generateFields,
                             FilePattern pattern,
                             FieldFactory factory) {
-        super(checkNotNull(fieldSupertype), checkNotNull(factory));
-        checkNotNull(pattern);
-        this.matcher = new FilePatternMatcher(pattern);
+        this(generateFields, factory, new FilePatternMatcher(pattern));
     }
 
     @Override

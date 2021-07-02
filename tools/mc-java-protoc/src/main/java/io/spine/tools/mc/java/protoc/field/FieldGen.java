@@ -107,8 +107,8 @@ public final class FieldGen extends CodeGenerator {
         }
         return forSignals.getPatternList()
                          .stream()
-                         .map(pattern -> new GenerateFieldsByPattern(
-                                 generateFields.getSuperclass(), pattern, factory
+                         .map(filePattern -> new GenerateFieldsByPattern(
+                                 generateFields, filePattern, factory
                          )).collect(toImmutableList());
     }
 
@@ -119,7 +119,7 @@ public final class FieldGen extends CodeGenerator {
         }
         Pattern pattern = forMessages.getPattern();
         GenerateFieldsByPattern task = new GenerateFieldsByPattern(
-                generateFields.getSuperclass(), pattern, factory
+                generateFields, pattern, factory
         );
         return Optional.of(task);
     }
