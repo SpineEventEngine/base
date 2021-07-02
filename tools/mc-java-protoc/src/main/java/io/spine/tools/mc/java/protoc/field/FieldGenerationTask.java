@@ -47,9 +47,9 @@ abstract class FieldGenerationTask implements CodeGenerationTask {
     private final FieldFactory factory;
 
     FieldGenerationTask(JavaClassName fieldSupertype, FieldFactory factory) {
+        checkNotEmptyOrBlank(fieldSupertype.getCanonical());
         this.fieldSupertype = fieldSupertype;
         this.factory = factory;
-        checkNotEmptyOrBlank(fieldSupertype.getCanonical());
     }
 
     /**
