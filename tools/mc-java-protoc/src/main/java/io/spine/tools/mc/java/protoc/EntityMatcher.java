@@ -46,12 +46,12 @@ public final class EntityMatcher implements Predicate<MessageType> {
 
     public EntityMatcher(ForEntities entities) {
         checkNotNull(entities);
-        matcher = matchBy(entities.getOptionList(), OptionMatcher::new)
-                .or(matchBy(entities.getPatternList(), FilePatternMatcher::new));
+        matcher = matchAgainst(entities.getOptionList(), OptionMatcher::new)
+                .or(matchAgainst(entities.getPatternList(), FilePatternMatcher::new));
     }
 
     private static <T> Predicate<MessageType>
-    matchBy(List<T> criteria, Function<T, Predicate<MessageType>> newMatcher) {
+    matchAgainst(List<T> criteria, Function<T, Predicate<MessageType>> newMatcher) {
         return type -> criteria.stream()
                                .map(newMatcher)
                                .anyMatch(matcher -> matcher.test(type));
