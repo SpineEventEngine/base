@@ -412,6 +412,6 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         MessageOptions options = descriptor().getOptions();
         Set<FieldDescriptor> presentOptions = options.getAllFields().keySet();
         return presentOptions.stream()
-                             .anyMatch(op -> op.getName().equals(optionName));
+                             .anyMatch(op -> optionName.equals(op.getName()));
     }
 }
