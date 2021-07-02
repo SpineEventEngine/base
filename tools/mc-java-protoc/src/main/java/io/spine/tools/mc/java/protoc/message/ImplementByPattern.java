@@ -41,8 +41,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 
 /**
- * Generates interfaces for Protobuf messages that match supplied
- * {@link io.spine.tools.protoc.FilePattern pattern}.
+ * Generates interfaces for Protobuf messages that match supplied pattern.
+ *
+ * <p>The message class implements an interface if:
+ * <ul>
+ *     <li>the message is a {@link MessageType#isTopLevel() top level} declaration;
+ *     <li>either the type matches the type pattern or the file where the type is declared matches
+ *         the file pattern.
+ * </ul>
  */
 final class ImplementByPattern extends ImplementInterface {
 
@@ -65,16 +71,6 @@ final class ImplementByPattern extends ImplementInterface {
         return InterfaceParameters.empty();
     }
 
-    /**
-     * Makes supplied type implement configured interface.
-     *
-     * <p>The type does not implement an interface if:
-     * <ul>
-     *     <li>the type is not {@link MessageType#isTopLevel() top level};
-     *     <li>the type file name does not match supplied
-     *     {@link io.spine.tools.protoc.FilePattern pattern}.
-     * </ul>
-     */
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
