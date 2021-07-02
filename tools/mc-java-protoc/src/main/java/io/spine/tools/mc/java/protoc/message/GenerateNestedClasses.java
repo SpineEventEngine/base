@@ -42,8 +42,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 
 /**
- * Generates nested classes for the supplied type based on a
- * {@link FilePattern pattern} configuration.
+ * Generates nested classes for the supplied type based on
+ * a {@link FilePattern pattern} configuration.
  */
 public final class GenerateNestedClasses extends NestedClassGenerationTask {
 
