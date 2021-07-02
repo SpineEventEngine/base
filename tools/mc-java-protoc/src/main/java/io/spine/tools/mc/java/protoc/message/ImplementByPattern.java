@@ -78,9 +78,9 @@ final class ImplementByPattern extends ImplementInterface {
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
-        if (!type.isTopLevel() || !matcher.test(type)) {
-            return ImmutableList.of();
+        if (type.isTopLevel() && matcher.test(type)) {
+            return super.generateFor(type);
         }
-        return super.generateFor(type);
+        return ImmutableList.of();
     }
 }
