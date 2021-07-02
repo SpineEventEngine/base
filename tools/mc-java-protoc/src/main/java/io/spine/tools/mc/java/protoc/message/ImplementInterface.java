@@ -36,7 +36,7 @@ import io.spine.type.MessageType;
 /**
  * An abstract base for the interface code generation tasks.
  */
-public abstract class ImplementInterface implements CodeGenerationTask {
+abstract class ImplementInterface implements CodeGenerationTask {
 
     private final ClassName interfaceName;
 
@@ -47,7 +47,7 @@ public abstract class ImplementInterface implements CodeGenerationTask {
     /**
      * Obtains generic parameters of the passed type.
      */
-    public abstract InterfaceParameters interfaceParameters(MessageType type);
+    abstract InterfaceParameters interfaceParameters(MessageType type);
 
     /**
      * Performs the actual interface code generation.

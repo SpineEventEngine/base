@@ -36,7 +36,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Generates {@link io.spine.base.UuidValue UuidValue} interfaces.
  */
-public final class ImplementUuidValue extends ImplementInterface {
+final class ImplementUuidValue extends ImplementInterface {
 
     ImplementUuidValue(AddInterface config) {
         super(config.getName());
