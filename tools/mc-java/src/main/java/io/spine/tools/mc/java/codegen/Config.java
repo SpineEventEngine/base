@@ -32,7 +32,7 @@ import com.google.protobuf.Message;
  * A Gradle configuration of a certain aspect of Model Compiler code generation.
  *
  * @param <P>
- *         Protobuf type which serializes this configuration
+ *         Protobuf type reflecting a snapshot of this configuration
  */
 abstract class Config<P extends Message> {
 

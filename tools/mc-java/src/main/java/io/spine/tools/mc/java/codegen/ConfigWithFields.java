@@ -41,7 +41,7 @@ import static io.spine.tools.mc.java.codegen.Names.className;
  * and subscriptions.
  *
  * @param <P>
- *         Protobuf type which serializes this configuration
+ *         Protobuf type reflecting a snapshot of this configuration
  */
 abstract class ConfigWithFields<P extends Message> extends ConfigWithInterfaces<P> {
 

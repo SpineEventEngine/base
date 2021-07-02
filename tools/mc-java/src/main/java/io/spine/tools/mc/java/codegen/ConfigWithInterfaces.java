@@ -38,7 +38,7 @@ import static com.google.common.collect.ImmutableSet.toImmutableSet;
  * A config for messages which can implement certain Java interfaces.
  *
  * @param <P>
- *         Protobuf type which serializes this configuration
+ *         Protobuf type reflecting a snapshot of this configuration
  */
 abstract class ConfigWithInterfaces<P extends Message> extends Config<P> {
 

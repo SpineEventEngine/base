@@ -40,7 +40,7 @@ import static io.spine.protobuf.Messages.isDefault;
  * A configuration for code generation for a certain group of messages joined by a file pattern.
  *
  * @param <P>
- *         Protobuf type which serializes this configuration
+ *         Protobuf type reflecting a snapshot of this configuration
  */
 abstract class MessageGroupConfig<P extends Message> extends ConfigWithFields<P> {
 
