@@ -63,6 +63,7 @@ import static io.spine.code.proto.EntityStateOption.entityKindOf;
 import static io.spine.code.proto.FileDescriptors.sameFiles;
 import static io.spine.option.EntityOption.Kind.KIND_UNKNOWN;
 import static io.spine.option.EntityOption.Kind.UNRECOGNIZED;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A message type as declared in a proto file.
@@ -407,6 +408,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      *         {@code false} otherwise
      */
     public boolean hasOption(String optionName) {
+        checkNotEmptyOrBlank(optionName,"Option name must not be null empty.");
         MessageOptions options = descriptor().getOptions();
         Set<FieldDescriptor> presentOptions = options.getAllFields().keySet();
         return presentOptions.stream()
