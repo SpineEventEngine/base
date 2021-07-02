@@ -42,7 +42,7 @@ import io.spine.code.java.PackageName;
 import io.spine.tools.java.fs.Directory;
 import io.spine.tools.java.fs.FileName;
 import io.spine.tools.java.fs.SourceFile;
-import io.spine.tools.mc.java.codegen.Codegen;
+import io.spine.tools.mc.java.codegen.JavaCodegenConfig;
 import io.spine.tools.mc.java.protoc.CodeGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.plugin.message.tests.EveryIsGeneratedProto;
@@ -148,7 +148,7 @@ final class InterfaceGenTest {
     @BeforeAll
     static void setUpConfig() {
         Project project = ProjectBuilder.builder().build();
-        Codegen codegen = new Codegen(project);
+        JavaCodegenConfig codegen = new JavaCodegenConfig(project);
         config = codegen.toProto();
     }
 

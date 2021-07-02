@@ -39,7 +39,7 @@ dependencies {
 
 modelCompiler {
 
-    codegen {
+    java {
         val methodFactory = "io.spine.tools.protoc.TestMethodFactory"
         val nestedClassFactory = "io.spine.tools.protoc.TestNestedClassFactory"
 

@@ -32,7 +32,7 @@ import groovy.lang.Closure;
 import io.spine.tools.code.Indent;
 import io.spine.tools.gradle.GradleExtension;
 import io.spine.tools.java.fs.DefaultJavaPaths;
-import io.spine.tools.mc.java.codegen.Codegen;
+import io.spine.tools.mc.java.codegen.JavaCodegenConfig;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -164,9 +164,9 @@ public class McJavaExtension extends GradleExtension {
     /**
      * Code generation configuration.
      *
-     * @see #codegen(Action)
+     * @see #java(Action)
      */
-    public final Codegen codegen;
+    public final JavaCodegenConfig java;
 
     public List<String> internalClassPatterns = new ArrayList<>();
 
@@ -175,14 +175,14 @@ public class McJavaExtension extends GradleExtension {
     public McJavaExtension(Project project) {
         super();
         checkNotNull(project);
-        this.codegen = new Codegen(project);
+        this.java = new JavaCodegenConfig(project);
     }
 
     /**
      * Configures the Model Compilation code generation by applying the given action.
      */
-    public void codegen(Action<Codegen> action) {
-        action.execute(codegen);
+    public void java(Action<JavaCodegenConfig> action) {
+        action.execute(java);
     }
 
     @Override

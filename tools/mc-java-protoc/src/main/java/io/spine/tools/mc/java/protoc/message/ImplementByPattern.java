@@ -54,14 +54,25 @@ final class ImplementByPattern extends ImplementInterface {
 
     private final Predicate<MessageType> matcher;
 
-    ImplementByPattern(JavaClassName config, FilePattern pattern) {
-        super(config);
+    /**
+     * Creates a new {@code ImplementByPattern} with the given interface name and file pattern.
+     *
+     * <p>Top-level messages declared in files which match this pattern will implement
+     * the given interface.
+     */
+    ImplementByPattern(JavaClassName interfaceName, FilePattern pattern) {
+        super(interfaceName);
         checkNotDefaultArg(pattern);
         this.matcher = new FilePatternMatcher(pattern);
     }
 
-    ImplementByPattern(JavaClassName config, Pattern pattern) {
-        super(config);
+    /**
+     * Creates a new {@code ImplementByPattern} with the given interface name and pattern.
+     *
+     * <p>Top-level messages matching this pattern will implement the given interface.
+     */
+    ImplementByPattern(JavaClassName interfaceName, Pattern pattern) {
+        super(interfaceName);
         checkNotDefaultArg(pattern);
         this.matcher = new PatternMatcher(pattern);
     }

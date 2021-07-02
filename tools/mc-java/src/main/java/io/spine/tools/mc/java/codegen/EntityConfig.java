@@ -51,7 +51,7 @@ import static java.util.stream.Collectors.toList;
  * may lead to runtime errors or unexpected behaviour in the Spine Event Engine framework.
  * Proceed with caution.
  *
- * @see Codegen#forEntities(Action)
+ * @see JavaCodegenConfig#forEntities(Action)
  */
 public final class EntityConfig extends MessageGroupConfig<ForEntities> {
 

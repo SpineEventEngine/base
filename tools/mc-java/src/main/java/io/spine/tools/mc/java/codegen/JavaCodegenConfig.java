@@ -63,7 +63,7 @@ import static io.spine.base.MessageFile.REJECTIONS;
  * A configuration for the Model Compiler code generation.
  */
 @SuppressWarnings("OverlyCoupledClass") // OK for a Gradle config.
-public final class Codegen extends Config<SpineProtocConfig> {
+public final class JavaCodegenConfig extends Config<SpineProtocConfig> {
 
     private final SignalConfig forCommands;
     private final SignalConfig forEvents;
@@ -75,7 +75,7 @@ public final class Codegen extends Config<SpineProtocConfig> {
     private final Project project;
 
     @Internal
-    public Codegen(Project project) {
+    public JavaCodegenConfig(Project project) {
         super();
         this.project = checkNotNull(project);
         this.forCommands = new SignalConfig(project);

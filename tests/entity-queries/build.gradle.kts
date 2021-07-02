@@ -25,7 +25,7 @@
  */
 
 modelCompiler {
-    codegen {
+    java {
         forMessage("spine.tools.column.ProjectName") {
             markFieldsAs("io.spine.tools.protoc.given.ProjectNameField")
         }

@@ -29,15 +29,15 @@ package io.spine.tools.mc.java.gradle;
 import com.google.common.base.Charsets;
 import com.google.protobuf.gradle.ExecutableLocator;
 import com.google.protobuf.gradle.GenerateProtoTask;
-import io.spine.io.Files2;
-import io.spine.tools.java.fs.DefaultJavaPaths;
-import io.spine.tools.java.fs.DefaultJavaPaths.GeneratedRoot;
 import io.spine.code.proto.DescriptorReference;
+import io.spine.io.Files2;
 import io.spine.tools.gradle.Artifact;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.ProtocConfigurationPlugin;
 import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.TaskName;
+import io.spine.tools.java.fs.DefaultJavaPaths;
+import io.spine.tools.java.fs.DefaultJavaPaths.GeneratedRoot;
 import io.spine.tools.protoc.SpineProtocConfig;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
@@ -52,16 +52,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 
-import static io.spine.tools.java.fs.DefaultJavaPaths.at;
 import static io.spine.tools.gradle.BaseTaskName.clean;
 import static io.spine.tools.gradle.JavaTaskName.processResources;
 import static io.spine.tools.gradle.JavaTaskName.processTestResources;
+import static io.spine.tools.gradle.ProtocPluginName.grpc;
+import static io.spine.tools.gradle.ProtocPluginName.spineProtoc;
+import static io.spine.tools.java.fs.DefaultJavaPaths.at;
 import static io.spine.tools.mc.java.gradle.McJavaTaskName.writeDescriptorReference;
 import static io.spine.tools.mc.java.gradle.McJavaTaskName.writePluginConfiguration;
 import static io.spine.tools.mc.java.gradle.McJavaTaskName.writeTestDescriptorReference;
 import static io.spine.tools.mc.java.gradle.McJavaTaskName.writeTestPluginConfiguration;
-import static io.spine.tools.gradle.ProtocPluginName.grpc;
-import static io.spine.tools.gradle.ProtocPluginName.spineProtoc;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -181,7 +181,7 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
     private static void writePluginConfig(Task protocTask, Path configPath) {
         Project project = protocTask.getProject();
         McJavaExtension extension = project.getExtensions().getByType(McJavaExtension.class);
-        SpineProtocConfig config = extension.codegen.toProto();
+        SpineProtocConfig config = extension.java.toProto();
 
         Files2.ensureFile(configPath);
         try (FileOutputStream fos = new FileOutputStream(configPath.toFile())) {
