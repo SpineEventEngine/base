@@ -50,15 +50,15 @@ public final class EntityMatcher implements Predicate<MessageType> {
                 .or(matchBy(entities.getPatternList(), FilePatternMatcher::new));
     }
 
-    @Override
-    public boolean test(MessageType type) {
-        return matcher.test(type);
-    }
-
     private static <T> Predicate<MessageType>
     matchBy(List<T> criteria, Function<T, Predicate<MessageType>> newMatcher) {
         return type -> criteria.stream()
                                .map(newMatcher)
                                .anyMatch(matcher -> matcher.test(type));
+    }
+
+    @Override
+    public boolean test(MessageType type) {
+        return matcher.test(type);
     }
 }
