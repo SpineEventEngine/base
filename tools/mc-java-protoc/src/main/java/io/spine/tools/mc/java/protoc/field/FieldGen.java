@@ -74,7 +74,47 @@ public final class FieldGen extends CodeGenerator {
     public static FieldGen instance(SpineProtocConfig spineProtocConfig) {
         checkNotNull(spineProtocConfig);
         ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();
+        addFromEntities(tasks, spineProtocConfig);
+        addFromCommands(tasks, spineProtocConfig);
+        addFromEvents(tasks, spineProtocConfig);
+        addFromRejections(tasks, spineProtocConfig);
+        addFromMessages(tasks, spineProtocConfig);
+        return new FieldGen(tasks.build());
+    }
 
+    private static void addFromMessages(ImmutableList.Builder<CodeGenerationTask> tasks,
+                                        SpineProtocConfig spineProtocConfig) {
+        for (ForMessages group : spineProtocConfig.getMessagesList()) {
+            taskFor(group).ifPresent(tasks::add);
+        }
+    }
+
+    private static void addFromRejections(ImmutableList.Builder<CodeGenerationTask> tasks,
+                                          SpineProtocConfig spineProtocConfig) {
+        if (spineProtocConfig.hasRejections()) {
+            ForSignals signals = spineProtocConfig.getRejections();
+            tasks.addAll(tasksFor(signals));
+        }
+    }
+
+    private static void addFromEvents(ImmutableList.Builder<CodeGenerationTask> tasks,
+                                      SpineProtocConfig spineProtocConfig) {
+        if (spineProtocConfig.hasEvents()) {
+            ForSignals signals = spineProtocConfig.getEvents();
+            tasks.addAll(tasksFor(signals));
+        }
+    }
+
+    private static void addFromCommands(ImmutableList.Builder<CodeGenerationTask> tasks,
+                                        SpineProtocConfig spineProtocConfig) {
+        if (spineProtocConfig.hasCommands()) {
+            ForSignals signals = spineProtocConfig.getCommands();
+            tasks.addAll(tasksFor(signals));
+        }
+    }
+
+    private static void addFromEntities(ImmutableList.Builder<CodeGenerationTask> tasks,
+                                        SpineProtocConfig spineProtocConfig) {
         if (spineProtocConfig.hasEntities()) {
             ForEntities entities = spineProtocConfig.getEntities();
             GenerateFields fields = entities.getGenerateFields();
@@ -82,22 +122,6 @@ public final class FieldGen extends CodeGenerator {
                 tasks.add(new GenerateEntityStateFields(entities, factory));
             }
         }
-        if (spineProtocConfig.hasCommands()) {
-            ForSignals signals = spineProtocConfig.getCommands();
-            tasks.addAll(tasksFor(signals));
-        }
-        if (spineProtocConfig.hasEvents()) {
-            ForSignals signals = spineProtocConfig.getEvents();
-            tasks.addAll(tasksFor(signals));
-        }
-        if (spineProtocConfig.hasRejections()) {
-            ForSignals signals = spineProtocConfig.getRejections();
-            tasks.addAll(tasksFor(signals));
-        }
-        for (ForMessages group : spineProtocConfig.getMessagesList()) {
-            taskFor(group).ifPresent(tasks::add);
-        }
-        return new FieldGen(tasks.build());
     }
 
     private static ImmutableList<GenerateFieldsByPattern> tasksFor(ForSignals forSignals) {
