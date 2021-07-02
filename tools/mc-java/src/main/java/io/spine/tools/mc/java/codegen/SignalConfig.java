@@ -47,10 +47,33 @@ public final class SignalConfig extends MessageGroupConfig<ForSignals> {
         super(p);
     }
 
+    /**
+     * Sets up default values for the properties of this config.
+     *
+     * <p>By default, the nested {@code Field} class will not be generated for this type of signals.
+     *
+     * @param file
+     *         the type of files associated with this config; used to derive the default
+     *         file pattern
+     * @param interfaceClass
+     *         the default marker interface
+     */
     void convention(MessageFile file, Class<? extends SignalMessage> interfaceClass) {
         convention(file, interfaceClass, null);
     }
 
+    /**
+     * Sets up default values for the properties of this config.
+     *
+     * @param file
+     *         the type of files associated with this config; used to derive the default
+     *         file pattern
+     * @param interfaceClass
+     *         the default marker interface
+     * @param fieldSuperclass
+     *         the default superclass for the nested {@code Field} class; {@code null} denotes
+     *         not generating a {@code Field} class at all
+     */
     void convention(MessageFile file,
                     Class<? extends SignalMessage> interfaceClass,
                     @Nullable Class<?> fieldSuperclass) {
@@ -59,7 +82,8 @@ public final class SignalConfig extends MessageGroupConfig<ForSignals> {
                 .setSuffix(file.suffix())
                 .build();
         convention(pattern);
-        this.interfaceNames().convention(ImmutableSet.of(interfaceClass.getCanonicalName()));
+        this.interfaceNames()
+            .convention(ImmutableSet.of(interfaceClass.getCanonicalName()));
         if (fieldSuperclass != null) {
             convention(fieldSuperclass);
         }

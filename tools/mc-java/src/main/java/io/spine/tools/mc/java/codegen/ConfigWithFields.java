@@ -53,6 +53,15 @@ abstract class ConfigWithFields<P extends Message> extends ConfigWithInterfaces<
                         .property(String.class);
     }
 
+    /**
+     * Sets up the default state for the {@code Field} class generation config.
+     *
+     * <p>If a class is provided, the {@code Field} class will be generated with the given class
+     * as a supertype.
+     *
+     * <p>If the {@code fieldSuperclass} is {@code null}, the {@code Field} class will not be
+     * generated.
+     */
     final void convention(@Nullable Class<?> fieldSuperclass) {
         if (fieldSuperclass != null) {
             markFieldsAs.convention(fieldSuperclass.getCanonicalName());
@@ -69,6 +78,9 @@ abstract class ConfigWithFields<P extends Message> extends ConfigWithInterfaces<
         markFieldsAs.set(className);
     }
 
+    /**
+     * Obtains the {@link GenerateFields} config.
+     */
     final GenerateFields generateFields() {
         GenerateFields generateFields;
         String superclassName = markFieldsAs.getOrElse("");

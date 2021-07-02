@@ -87,6 +87,13 @@ public final class Codegen extends Config<SpineProtocConfig> {
         prepareConvention();
     }
 
+    /**
+     * Sets up default values for the configuration.
+     *
+     * <p>Default values are based on the Gradle conventions principle. If the user changes
+     * the value, the default is completely overridden, even if the used invokes a method which has
+     * a name related to appending, e.g. {@code add()}.
+     */
     private void prepareConvention() {
         forCommands.convention(COMMANDS, CommandMessage.class);
         forEvents.convention(EVENTS, EventMessage.class, EventMessageField.class);

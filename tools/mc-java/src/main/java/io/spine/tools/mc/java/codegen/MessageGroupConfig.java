@@ -52,6 +52,12 @@ abstract class MessageGroupConfig<P extends Message> extends ConfigWithFields<P>
                      .setProperty(FilePattern.class);
     }
 
+    /**
+     * Sets up the default value for the file pattern.
+     *
+     * @param pattern
+     *         the default value for the pattern
+     */
     void convention(FilePattern pattern) {
         ImmutableSet<FilePattern> defaultValue;
         if (isDefault(pattern)) {
@@ -62,7 +68,10 @@ abstract class MessageGroupConfig<P extends Message> extends ConfigWithFields<P>
         file.convention(defaultValue);
     }
 
-    Set<FilePattern> patterns() {
+    /**
+     * Obtains the Gradle set property with the file pattern which match messages in this group.
+     */
+    final Set<FilePattern> patterns() {
         return file.get();
     }
 
