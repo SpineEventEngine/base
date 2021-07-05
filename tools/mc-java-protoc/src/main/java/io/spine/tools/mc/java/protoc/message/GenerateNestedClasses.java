@@ -28,28 +28,33 @@ package io.spine.tools.mc.java.protoc.message;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.mc.java.protoc.ExternalClassLoader;
-import io.spine.tools.mc.java.protoc.FilePatternMatcher;
+import io.spine.tools.mc.java.protoc.PatternMatcher;
+import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.protoc.NestedClassFactory;
+import io.spine.tools.protoc.NestedClassFactoryName;
+import io.spine.tools.protoc.Pattern;
 import io.spine.type.MessageType;
+
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 
 /**
  * Generates nested classes for the supplied type based on
- * {@link ConfigByPattern pattern configuration}.
+ * a {@link FilePattern pattern} configuration.
  */
 public final class GenerateNestedClasses extends NestedClassGenerationTask {
 
-    private final FilePatternMatcher patternMatcher;
+    private final Predicate<MessageType> patternMatcher;
 
     public GenerateNestedClasses(ExternalClassLoader<NestedClassFactory> classLoader,
-                          ConfigByPattern config) {
-        super(classLoader, config.getValue());
-        checkNotDefaultArg(config.getPattern());
-        this.patternMatcher = new FilePatternMatcher(config.getPattern());
+                                 NestedClassFactoryName factoryName,
+                                 Pattern pattern) {
+        super(classLoader, factoryName);
+        checkNotDefaultArg(pattern);
+        this.patternMatcher = new PatternMatcher(pattern);
     }
 
     /**

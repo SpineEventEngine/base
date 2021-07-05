@@ -23,33 +23,3 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-import io.spine.tools.protoc.MessageSelectorFactory.suffix
-
-modelCompiler {
-
-    generateValidation = true
-
-    fields {
-        generateFor(messages().inFiles(suffix("events.proto")), markAs("io.spine.base.EventMessageField"))
-        generateFor(messages().inFiles(suffix("rejections.proto")), markAs("io.spine.base.EventMessageField"))
-        generateFor(messages().entityState(), markAs("io.spine.query.EntityStateField"))
-    }
-
-    methods {
-        applyFactory("io.spine.tools.java.code.UuidMethodFactory", messages().uuid())
-    }
-
-    entityQueries {
-        generate(true)
-    }
-
-    interfaces {
-        mark(messages().inFiles(suffix("commands.proto")), asType("io.spine.base.CommandMessage"))
-        mark(messages().inFiles(suffix("events.proto")), asType("io.spine.base.EventMessage"))
-        mark(messages().inFiles(suffix("rejections.proto")), asType("io.spine.base.RejectionMessage"))
-        mark(messages().uuid(), asType("io.spine.base.UuidValue"))
-        mark(messages().entityState(), asType("io.spine.base.EntityState"))
-    }
-}
-

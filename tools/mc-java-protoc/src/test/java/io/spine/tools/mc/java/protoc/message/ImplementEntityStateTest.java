@@ -29,12 +29,14 @@ package io.spine.tools.mc.java.protoc.message;
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
 import io.spine.base.EntityState;
-import io.spine.code.java.ClassName;
+import io.spine.option.OptionsProto;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.protoc.EntityStateConfig;
+import io.spine.tools.protoc.AddInterface;
+import io.spine.tools.protoc.Entities;
+import io.spine.tools.protoc.JavaClassName;
+import io.spine.tools.protoc.ProtoOption;
 import io.spine.tools.protoc.plugin.message.tests.ProtocProject;
 import io.spine.tools.protoc.plugin.message.tests.ProtocProjectId;
-import io.spine.tools.protoc.plugin.message.tests.ProtocTask;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,8 +46,8 @@ import org.junit.jupiter.api.Test;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static io.spine.tools.mc.java.codegen.Names.className;
 import static io.spine.tools.mc.java.protoc.InsertionPoint.message_implements;
-import static io.spine.tools.protoc.ProtocTaskConfigs.entityStateConfig;
 
 @DisplayName("`GenerateEntityStateInterfaces` task should")
 class ImplementEntityStateTest {
@@ -96,39 +98,37 @@ class ImplementEntityStateTest {
         assertThat(insertionPoint).startsWith(message_implements.name());
     }
 
-    @Nested
-    @DisplayName("return empty output")
-    class ReturnEmptyOutput {
-
-        @Test
-        @DisplayName("if the message is not marked with `(entity)`")
-        void forNonEntity() {
-            MessageType nonEntityType = new MessageType(ProtocProjectId.getDescriptor());
-            ImmutableList<CompilerOutput> output = task.generateFor(nonEntityType);
-            assertThat(output).isEmpty();
-        }
-
-        @Test
-        @DisplayName("if the message does not have the valid `(entity)` kind")
-        void forEntityOfInvalidKind() {
-            MessageType entityOfInvalidKind = new MessageType(ProtocTask.getDescriptor());
-            ImmutableList<CompilerOutput> output = task.generateFor(entityOfInvalidKind);
-            assertThat(output).isEmpty();
-        }
+    @Test
+    @DisplayName("return empty output if the message is not marked with `(entity)`")
+    void forNonEntity() {
+        MessageType nonEntityType = new MessageType(ProtocProjectId.getDescriptor());
+        ImmutableList<CompilerOutput> output = task.generateFor(nonEntityType);
+        assertThat(output).isEmpty();
     }
 
     private static ImplementEntityState markEntityStatesAs(String className) {
-        return markEntityStatesAs(ClassName.of(className));
+        JavaClassName name = className(className);
+        return markEntityStatesAs(name);
     }
 
     @SuppressWarnings("rawtypes")   // due to the nature of {@code Some.class} in Java.
     private static ImplementEntityState
     markEntityStatesAs(Class<? extends EntityState> clazz) {
-        return markEntityStatesAs(ClassName.of(clazz));
+        return markEntityStatesAs(clazz.getCanonicalName());
     }
 
-    private static ImplementEntityState markEntityStatesAs(ClassName className) {
-        EntityStateConfig config = entityStateConfig(className);
-        return new ImplementEntityState(config);
+    private static ImplementEntityState markEntityStatesAs(JavaClassName className) {
+        AddInterface iface = AddInterface.newBuilder()
+                .setName(className)
+                .build();
+        ProtoOption option = ProtoOption.newBuilder()
+                .setName(OptionsProto.entity.getDescriptor().getName())
+                .build();
+        Entities config = Entities
+                .newBuilder()
+                .addAddInterface(iface)
+                .addOption(option)
+                .build();
+        return new ImplementEntityState(className, config);
     }
 }

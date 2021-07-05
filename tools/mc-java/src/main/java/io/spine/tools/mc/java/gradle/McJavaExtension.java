@@ -32,11 +32,7 @@ import groovy.lang.Closure;
 import io.spine.tools.code.Indent;
 import io.spine.tools.gradle.GradleExtension;
 import io.spine.tools.java.fs.DefaultJavaPaths;
-import io.spine.tools.protoc.EntityQueries;
-import io.spine.tools.protoc.Fields;
-import io.spine.tools.protoc.Interfaces;
-import io.spine.tools.protoc.Methods;
-import io.spine.tools.protoc.NestedClasses;
+import io.spine.tools.mc.java.codegen.JavaCodegenConfig;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -48,6 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.util.Exceptions.newIllegalStateException;
@@ -58,7 +55,9 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 @SuppressWarnings({
         "PublicField", "WeakerAccess" /* Expose fields as a Gradle extension */,
         "ClassWithTooManyMethods" /* The methods are needed for handing default values. */,
-        "ClassWithTooManyFields", "PMD.TooManyFields" /* Gradle extensions are flat like this. */})
+        "ClassWithTooManyFields", "PMD.TooManyFields" /* Gradle extensions are flat like this. */,
+        "RedundantSuppression" /* "ClassWithTooManyFields" is sometimes not recognized by IDEA. */
+})
 public class McJavaExtension extends GradleExtension {
 
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
@@ -162,23 +161,29 @@ public class McJavaExtension extends GradleExtension {
 
     public final CodeGenAnnotations generateAnnotations = new CodeGenAnnotations();
 
-    public final Interfaces interfaces = new Interfaces();
-
-    public final Methods methods = new Methods();
-
-    public final NestedClasses nestedClasses = new NestedClasses();
-
-    public final Fields fields = new Fields();
-
-    public final EntityQueries entityQueries = new EntityQueries();
-
-    public boolean generateValidatingBuilders = true;
-
-    public boolean generateValidation = true;
+    /**
+     * Code generation configuration.
+     *
+     * @see #java(Action)
+     */
+    public final JavaCodegenConfig java;
 
     public List<String> internalClassPatterns = new ArrayList<>();
 
     public List<String> internalMethodNames = new ArrayList<>();
+
+    public McJavaExtension(Project project) {
+        super();
+        checkNotNull(project);
+        this.java = new JavaCodegenConfig(project);
+    }
+
+    /**
+     * Configures the Model Compilation code generation by applying the given action.
+     */
+    public void java(Action<JavaCodegenConfig> action) {
+        action.execute(java);
+    }
 
     @Override
     protected DefaultJavaPaths defaultPaths(Project project) {
@@ -340,94 +345,9 @@ public class McJavaExtension extends GradleExtension {
         action.execute(generateAnnotations);
     }
 
-    @SuppressWarnings("unused") // Configures `interfaces` closure.
-    public void interfaces(Closure<?> closure) {
-        ConfigureUtil.configure(closure, interfaces);
-    }
-
-    @SuppressWarnings("unused") // Configures `interfaces` closure.
-    public void interfaces(Action<? super Interfaces> action) {
-        action.execute(interfaces);
-    }
-
-    @SuppressWarnings("unused") // Configures `methods` closure.
-    public void methods(Closure<?> closure) {
-        ConfigureUtil.configure(closure, methods);
-    }
-
-    @SuppressWarnings("unused") // Configures `methods` closure.
-    public void methods(Action<? super Methods> action) {
-        action.execute(methods);
-    }
-
-    @SuppressWarnings("unused") // Configures `nestedClasses` closure.
-    public void nestedClasses(Closure<?> closure) {
-        ConfigureUtil.configure(closure, nestedClasses);
-    }
-
-    @SuppressWarnings("unused") // Configures `nestedClasses` closure.
-    public void nestedClasses(Action<? super NestedClasses> action) {
-        action.execute(nestedClasses);
-    }
-
-    @SuppressWarnings("unused") // Configures `fields` closure.
-    public void fields(Closure<?> closure) {
-        ConfigureUtil.configure(closure, fields);
-    }
-
-    @SuppressWarnings("unused") // Configures `fields` closure.
-    public void fields(Action<? super Fields> action) {
-        action.execute(fields);
-    }
-
-    @SuppressWarnings("unused") // Configures `entityQueries` closure.
-    public void entityQueries(Closure<?> closure) {
-        ConfigureUtil.configure(closure, entityQueries);
-    }
-
-    @SuppressWarnings("unused") // Configures `entityQueries` closure.
-    public void entityQueries(Action<? super EntityQueries> action) {
-        action.execute(entityQueries);
-    }
-
     public static CodeGenAnnotations getCodeGenAnnotations(Project project) {
         CodeGenAnnotations annotations = extension(project).generateAnnotations;
         return annotations;
-    }
-
-    public static Interfaces getInterfaces(Project project) {
-        Interfaces interfaces = extension(project).interfaces;
-        return interfaces;
-    }
-
-    public static Methods getMethods(Project project) {
-        Methods methods = extension(project).methods;
-        return methods;
-    }
-
-    public static NestedClasses getNestedClasses(Project project) {
-        NestedClasses nestedClasses = extension(project).nestedClasses;
-        return nestedClasses;
-    }
-
-    public static Fields getFields(Project project) {
-        Fields fields = extension(project).fields;
-        return fields;
-    }
-
-    public static EntityQueries getEntityQueries(Project project) {
-        EntityQueries columns = extension(project).entityQueries;
-        return columns;
-    }
-
-    public static boolean shouldGenerateValidatingBuilders(Project project) {
-        boolean shouldGenerate = extension(project).generateValidatingBuilders;
-        return shouldGenerate;
-    }
-
-    public static boolean shouldGenerateValidation(Project project) {
-        boolean shouldGenerate = extension(project).generateValidation;
-        return shouldGenerate;
     }
 
     public static ImmutableSet<String> getInternalClassPatterns(Project project) {

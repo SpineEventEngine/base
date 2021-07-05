@@ -32,12 +32,13 @@ import io.spine.tools.mc.java.protoc.CodeGenerationTask;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.ExternalClassLoader;
 import io.spine.tools.protoc.NestedClassFactory;
+import io.spine.tools.protoc.NestedClassFactoryName;
 import io.spine.type.MessageType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+import static io.spine.util.Preconditions2.checkNotDefaultArg;
 
 /**
  * An abstract base for the nested classes generation tasks.
@@ -45,19 +46,20 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 abstract class NestedClassGenerationTask implements CodeGenerationTask {
 
     private final ExternalClassLoader<NestedClassFactory> classLoader;
-    private final String factoryName;
+    private final NestedClassFactoryName factoryName;
 
     NestedClassGenerationTask(ExternalClassLoader<NestedClassFactory> classLoader,
-                              String factoryName) {
+                              NestedClassFactoryName factoryName) {
         this.classLoader = checkNotNull(classLoader);
-        this.factoryName = checkNotEmptyOrBlank(factoryName);
+        this.factoryName = checkNotDefaultArg(factoryName);
     }
 
     /**
      * Performs the actual code generation using the supplied {@linkplain #factoryName factory}.
      */
     ImmutableList<CompilerOutput> generateNestedClassesFor(@NonNull MessageType type) {
-        NestedClassFactory factory = classLoader.newInstance(factoryName);
+        String className = factoryName.getClassName().getCanonical();
+        NestedClassFactory factory = classLoader.newInstance(className);
         return factory
                 .generateClassesFor(type)
                 .stream()

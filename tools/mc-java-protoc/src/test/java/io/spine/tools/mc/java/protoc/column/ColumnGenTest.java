@@ -27,9 +27,11 @@
 package io.spine.tools.mc.java.protoc.column;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.tools.protoc.AddEntityQueries;
-import io.spine.tools.protoc.Classpath;
+import io.spine.option.OptionsProto;
+import io.spine.tools.mc.java.protoc.CodeGenerator;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
+import io.spine.tools.protoc.Entities;
+import io.spine.tools.protoc.ProtoOption;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.plugin.nested.Task;
 import io.spine.tools.protoc.plugin.nested.TaskView;
@@ -42,6 +44,7 @@ import java.util.Collection;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static io.spine.tools.mc.java.protoc.Generators.generate;
 
 @DisplayName("`ColumnGenerator` should")
 class ColumnGenTest {
@@ -58,11 +61,12 @@ class ColumnGenTest {
     void generateCodeForMessages() {
         SpineProtocConfig config = newConfig();
 
-        ColumnGen generator = ColumnGen.instance(config);
+        CodeGenerator generator = ColumnGen.instance(config);
         MessageType type = new MessageType(TaskView.getDescriptor());
-        Collection<CompilerOutput> output = generator.generate(type);
+        Collection<CompilerOutput> output = generate(generator, type);
 
-        assertThat(output).isNotEmpty();
+        assertThat(output)
+                .isNotEmpty();
     }
 
     @Test
@@ -70,23 +74,21 @@ class ColumnGenTest {
     void ignoreNonMessageTypes() {
         SpineProtocConfig config = newConfig();
 
-        ColumnGen generator = ColumnGen.instance(config);
+        CodeGenerator generator = ColumnGen.instance(config);
         EnumType enumType = EnumType.create(Task.Priority.getDescriptor());
-        Collection<CompilerOutput> output = generator.generate(enumType);
+        Collection<CompilerOutput> output = generate(generator, enumType);
 
-        assertThat(output).isEmpty();
+        assertThat(output)
+                .isEmpty();
     }
 
     private static SpineProtocConfig newConfig() {
-        AddEntityQueries addQueries = AddEntityQueries
-                .newBuilder()
-                .setGenerate(true)
-                .build();
-        SpineProtocConfig result = SpineProtocConfig
-                .newBuilder()
-                .setAddEntityQueries(addQueries)
-                .setClasspath(Classpath.getDefaultInstance())
-                .build();
-        return result;
+        SpineProtocConfig.Builder config = SpineProtocConfig.newBuilder();
+        Entities.Builder entities = config.getEntitiesBuilder();
+        entities.setGenerateQueries(true);
+        entities.addOption(ProtoOption
+                                   .newBuilder()
+                                   .setName(OptionsProto.entity.getDescriptor().getName()));
+        return config.build();
     }
 }

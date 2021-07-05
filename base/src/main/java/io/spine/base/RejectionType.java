@@ -46,6 +46,7 @@ public final class RejectionType extends MessageType {
     /**
      * The suffix for the outer class name for the generated rejection messages.
      */
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Unrelated duplicate in generated code.
     private static final String OUTER_CLASS_NAME_SUFFIX = "Rejections";
 
     private final SimpleClassName outerJavaClass;

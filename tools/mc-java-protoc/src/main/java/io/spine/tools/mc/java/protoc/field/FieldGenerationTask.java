@@ -27,24 +27,27 @@
 package io.spine.tools.mc.java.protoc.field;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.java.code.field.FieldFactory;
 import io.spine.code.java.ClassName;
+import io.spine.tools.java.code.field.FieldFactory;
 import io.spine.tools.mc.java.protoc.ClassMember;
 import io.spine.tools.mc.java.protoc.CodeGenerationTask;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
+import io.spine.tools.protoc.JavaClassName;
 import io.spine.type.MessageType;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * An abstract base for strongly-typed field generation tasks.
  */
 abstract class FieldGenerationTask implements CodeGenerationTask {
 
-    private final ClassName fieldSupertype;
+    private final JavaClassName fieldSupertype;
     private final FieldFactory factory;
 
-    FieldGenerationTask(ClassName fieldSupertype, FieldFactory factory) {
+    FieldGenerationTask(JavaClassName fieldSupertype, FieldFactory factory) {
+        checkNotEmptyOrBlank(fieldSupertype.getCanonical());
         this.fieldSupertype = fieldSupertype;
         this.factory = factory;
     }
@@ -53,8 +56,9 @@ abstract class FieldGenerationTask implements CodeGenerationTask {
      * Performs the actual code generation using the supplied {@linkplain #factory}.
      */
     ImmutableList<CompilerOutput> generateFieldsFor(MessageType type) {
+        ClassName className = ClassName.of(fieldSupertype.getCanonical());
         return factory
-                .createFor(type, fieldSupertype)
+                .createFor(type, className)
                 .stream()
                 .map(classBody -> ClassMember.nestedClass(classBody, type))
                 .collect(toImmutableList());

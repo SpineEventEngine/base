@@ -280,7 +280,6 @@ public final class QueryPredicate<R> {
         private final List<CustomSubjectParameter<?, ?>> customParameters = new ArrayList<>();
         private final List<QueryPredicate<R>> children = new ArrayList<>();
 
-
         /**
          * Creates a new instance of this {@code Builder}.
          *
@@ -300,7 +299,8 @@ public final class QueryPredicate<R> {
         /**
          * Creates a new instance of this {@code Builder}.
          *
-         * @param parent the builder of parent predicate
+         * @param parent
+         *         the builder of parent predicate
          * @param operator
          *         the operator which defines whether the parameters are evaluated
          *         in conjunction or disjunction with each other
@@ -409,7 +409,7 @@ public final class QueryPredicate<R> {
          * <p>then the contents of this builder are replaced by the contents of the only child.
          */
         private void optimizeForOnlyChild() {
-            if(isTopLevel() && hasNoParams() && children.size() == 1) {
+            if (isTopLevel() && hasNoParams() && children.size() == 1) {
                 QueryPredicate<R> onlyChild = children.get(0);
                 this.operator = onlyChild.operator();
                 addParams(onlyChild.parameters());
@@ -427,18 +427,18 @@ public final class QueryPredicate<R> {
          * the same logical operator as this builder.
          */
         private void flattenSimilarChildren() {
-                long differentChildrenCount =
-                        children.stream()
-                                .filter(c -> c.operator != operator())
-                                .count();
-                if(differentChildrenCount == 0) {
-                    for (QueryPredicate<R> child : children) {
-                        copyParams(child, this);
-                        copyCustomParams(child, this);
-                        copyChildren(child, this);
-                    }
-                    children.clear();
+            long differentChildrenCount =
+                    children.stream()
+                            .filter(c -> c.operator != operator())
+                            .count();
+            if (differentChildrenCount == 0) {
+                for (QueryPredicate<R> child : children) {
+                    copyParams(child, this);
+                    copyCustomParams(child, this);
+                    copyChildren(child, this);
                 }
+                children.clear();
+            }
         }
 
         private boolean hasNoParams() {
@@ -453,14 +453,14 @@ public final class QueryPredicate<R> {
          * Otherwise, the whole predicate is appended to the parent one as its child predicates.
          */
         private void appendToParent(QueryPredicate<R> result) {
-            if(parent != null) {
+            if (parent != null) {
                 boolean simplified = false;
 
                 int childrenSize = children.size();
                 int paramCount = parameters.size();
                 int customCount = customParameters.size();
 
-                if(operator() == parent.operator()) {
+                if (operator() == parent.operator()) {
                     copyParams(result, parent);
                     copyCustomParams(result, parent);
                     copyChildren(result, parent);

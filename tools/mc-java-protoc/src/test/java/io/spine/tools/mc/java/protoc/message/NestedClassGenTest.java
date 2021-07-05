@@ -27,13 +27,15 @@
 package io.spine.tools.mc.java.protoc.message;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.tools.protoc.AddNestedClasses;
-import io.spine.tools.protoc.Classpath;
+import io.spine.tools.mc.java.codegen.FilePatterns;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.protoc.ConfigByPattern;
-import io.spine.tools.protoc.FilePatterns;
-import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.mc.java.protoc.given.TestNestedClassFactory;
+import io.spine.tools.protoc.GenerateNestedClasses;
+import io.spine.tools.protoc.JavaClassName;
+import io.spine.tools.protoc.Messages;
+import io.spine.tools.protoc.NestedClassFactoryName;
+import io.spine.tools.protoc.Pattern;
+import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.tools.protoc.plugin.nested.Task;
 import io.spine.tools.protoc.plugin.nested.TaskView;
 import io.spine.type.EnumType;
@@ -45,6 +47,7 @@ import java.util.Collection;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static io.spine.tools.mc.java.codegen.Names.className;
 
 @DisplayName("`NestedClassGenerator` should")
 class NestedClassGenTest {
@@ -81,19 +84,23 @@ class NestedClassGenTest {
     }
 
     private static SpineProtocConfig newConfig() {
-        ConfigByPattern pattern = ConfigByPattern
-                .newBuilder()
-                .setValue(TestNestedClassFactory.class.getName())
-                .setPattern(FilePatterns.fileSuffix("test_fields.proto"))
+        JavaClassName name = className(TestNestedClassFactory.class);
+        NestedClassFactoryName factoryName = NestedClassFactoryName.newBuilder()
+                .setClassName(name)
                 .build();
-        AddNestedClasses addNestedClasses = AddNestedClasses
-                .newBuilder()
-                .addFactoryByPattern(pattern)
+        GenerateNestedClasses generate = GenerateNestedClasses.newBuilder()
+                .setFactory(factoryName)
+                .build();
+        Pattern pattern = Pattern.newBuilder()
+                .setFile(FilePatterns.fileSuffix("test_fields.proto"))
+                .build();
+        Messages messages = Messages.newBuilder()
+                .setPattern(pattern)
+                .addGenerateNestedClasses(generate)
                 .build();
         SpineProtocConfig result = SpineProtocConfig
                 .newBuilder()
-                .setAddNestedClasses(addNestedClasses)
-                .setClasspath(Classpath.getDefaultInstance())
+                .addMessages(messages)
                 .build();
         return result;
     }

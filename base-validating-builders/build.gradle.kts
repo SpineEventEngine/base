@@ -94,10 +94,6 @@ plugins {
 
 apply(plugin = "io.spine.mc-java")
 
-extensions["modelCompiler"].withGroovyBuilder {
-    setProperty("generateValidation", true)
-}
-
 repositories {
     // This defines the `libs` directory of upstream projects as a local repository.
     // See `dependencies` section below for definition of the dependency on the JAR produced by

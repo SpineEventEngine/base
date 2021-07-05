@@ -27,15 +27,14 @@
 package io.spine.tools.mc.java.protoc.message;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.mc.java.protoc.InsertionPoint;
-import io.spine.tools.protoc.AddNestedClasses;
-import io.spine.tools.protoc.Classpath;
 import io.spine.tools.mc.java.protoc.CodeGenerationTask;
 import io.spine.tools.mc.java.protoc.CodeGenerationTasks;
 import io.spine.tools.mc.java.protoc.CodeGenerator;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.mc.java.protoc.ExternalClassLoader;
+import io.spine.tools.mc.java.protoc.InsertionPoint;
+import io.spine.tools.protoc.Classpath;
+import io.spine.tools.protoc.Messages;
 import io.spine.tools.protoc.NestedClassFactory;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
@@ -69,10 +68,13 @@ public final class NestedClassGen extends CodeGenerator {
         Classpath classpath = spineProtocConfig.getClasspath();
         ExternalClassLoader<NestedClassFactory> classLoader =
                 new ExternalClassLoader<>(classpath, NestedClassFactory.class);
-        AddNestedClasses config = spineProtocConfig.getAddNestedClasses();
         ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();
-        for (ConfigByPattern byPattern : config.getFactoryByPatternList()) {
-            tasks.add(new GenerateNestedClasses(classLoader, byPattern));
+        for (Messages messages : spineProtocConfig.getMessagesList()) {
+            messages.getGenerateNestedClassesList()
+                    .stream()
+                    .map(generate -> new GenerateNestedClasses(
+                            classLoader, generate.getFactory(), messages.getPattern()
+                    )).forEach(tasks::add);
         }
         return new NestedClassGen(tasks.build());
     }

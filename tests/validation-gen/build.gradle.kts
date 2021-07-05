@@ -26,10 +26,6 @@
 
 import io.spine.internal.dependency.AutoService
 
-modelCompiler {
-    generateValidation = true
-}
-
 dependencies {
     testAnnotationProcessor(AutoService.processor)
     testCompileOnly(AutoService.annotations)

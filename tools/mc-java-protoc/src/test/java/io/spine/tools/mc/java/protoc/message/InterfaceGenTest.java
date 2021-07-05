@@ -38,13 +38,13 @@ import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UuidValue;
+import io.spine.code.java.PackageName;
 import io.spine.tools.java.fs.Directory;
 import io.spine.tools.java.fs.FileName;
 import io.spine.tools.java.fs.SourceFile;
-import io.spine.code.java.PackageName;
+import io.spine.tools.mc.java.codegen.JavaCodegenConfig;
 import io.spine.tools.mc.java.protoc.CodeGenerator;
 import io.spine.tools.protoc.SpineProtocConfig;
-import io.spine.tools.mc.java.protoc.given.SpineProtocConfigGiven;
 import io.spine.tools.protoc.plugin.message.tests.EveryIsGeneratedProto;
 import io.spine.tools.protoc.plugin.message.tests.EveryIsInOneFileProto;
 import io.spine.tools.protoc.plugin.message.tests.EveryIsTestProto;
@@ -58,6 +58,9 @@ import io.spine.tools.protoc.plugin.message.tests.TestEventsProto;
 import io.spine.tools.protoc.plugin.message.tests.UserNameProto;
 import io.spine.tools.protoc.plugin.message.tests.UserProto;
 import io.spine.tools.protoc.plugin.message.tests.UuidValues;
+import org.gradle.api.Project;
+import org.gradle.testfixtures.ProjectBuilder;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -99,7 +102,7 @@ final class InterfaceGenTest {
      * The directory name containing the code generated from proto test data from
      * the {@code proto/spine/tools/protoc/msg} directory.
      *
-     * @see JAVA_PACKAGE
+     * @see #JAVA_PACKAGE
      */
     private static final String JAVA_DIR = JAVA_PACKAGE.value().replace('.', '/');
 
@@ -140,13 +143,17 @@ final class InterfaceGenTest {
                       .build();
     }
 
+    private static SpineProtocConfig config = SpineProtocConfig.getDefaultInstance();
+
+    @BeforeAll
+    static void setUpConfig() {
+        Project project = ProjectBuilder.builder().build();
+        JavaCodegenConfig codegen = new JavaCodegenConfig(project);
+        config = codegen.toProto();
+    }
+
     @BeforeEach
     void setUp() {
-        io.spine.tools.protoc.Interfaces interfaces = SpineProtocConfigGiven.defaultInterfaces();
-        SpineProtocConfig config = SpineProtocConfig
-                .newBuilder()
-                .setAddInterfaces(interfaces.asProtocConfig())
-                .build();
         codeGenerator = InterfaceGen.instance(config);
     }
 

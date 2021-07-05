@@ -29,18 +29,22 @@ package io.spine.tools.mc.java.protoc.given;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.compiler.PluginProtos;
 import io.spine.option.OptionsProto;
-import io.spine.tools.protoc.Interfaces;
-import io.spine.tools.protoc.Methods;
-import io.spine.tools.protoc.NestedClasses;
+import io.spine.tools.protoc.AddInterface;
+import io.spine.tools.protoc.FilePattern;
+import io.spine.tools.protoc.GenerateMethods;
+import io.spine.tools.protoc.GenerateNestedClasses;
+import io.spine.tools.protoc.MethodFactoryName;
+import io.spine.tools.protoc.NestedClassFactoryName;
+import io.spine.tools.protoc.Pattern;
 import io.spine.tools.protoc.SpineProtocConfig;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Base64;
 
 import static com.google.common.base.Charsets.UTF_8;
+import static io.spine.tools.mc.java.codegen.Names.className;
 
 /**
  * A helper class for {@link com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest
@@ -78,63 +82,89 @@ public final class CodeGeneratorRequestGiven {
     }
 
     /**
-     * Creates a {@link SpineProtocConfig} out of the supplied {@code GeneratedMethods} and
-     * a default instance of {@code GeneratedInterfaces} and stores it in the supplied {@code path}.
-     *
-     * @return base64 encoded path to the plugin configuration
-     * @see #protocConfig(Interfaces, Methods, File)
+     * Creates a builder for {@code SpineProtocConfig} with all the validation features turned off.
      */
-    public static String protocConfig(Methods methods, Path configPath) {
-        return protocConfig(new Interfaces(),
-                            methods,
-                            new NestedClasses(),
-                            configPath);
-    }
-
-    public static String protocConfig(NestedClasses nestedClasses, Path configPath) {
-        return protocConfig(new Interfaces(),
-                            new Methods(),
-                            nestedClasses,
-                            configPath);
+    public static SpineProtocConfig.Builder configWithoutValidation() {
+        SpineProtocConfig.Builder builder = SpineProtocConfig.newBuilder();
+        builder.getValidationBuilder()
+               .setSkipBuilders(true)
+               .setSkipValidation(true);
+        return builder;
     }
 
     /**
-     * Creates a {@link SpineProtocConfig} out of the supplied {@code GeneratedInterfaces} and
-     * a default instance of {@code GeneratedMethods} and stores it in the supplied {@code path}.
-     *
-     * @return base64 encoded path to the plugin configuration
-     * @see #protocConfig(Interfaces, Methods, File)
+     * Creates a {@link GenerateNestedClasses} config with the given factory class.
      */
-    public static String protocConfig(Interfaces interfaces, Path configPath) {
-        return protocConfig(interfaces,
-                            new Methods(),
-                            new NestedClasses(),
-                            configPath);
-    }
-
-    /**
-     * Creates a {@link SpineProtocConfig} out of the supplied {@code GeneratedInterfaces} and
-     * {@code GeneratedMethods} and stores it in the supplied {@code path}.
-     *
-     * @return base64 encoded path to the plugin configuration
-     */
-    public static String protocConfig(Interfaces interfaces,
-                                      Methods methods,
-                                      NestedClasses nestedClasses,
-                                      Path configPath) {
-        SpineProtocConfig config = SpineProtocConfig
+    public static GenerateNestedClasses generateNested(Class<?> cls) {
+        return GenerateNestedClasses
                 .newBuilder()
-                .setAddInterfaces(interfaces.asProtocConfig())
-                .setAddMethods(methods.asProtocConfig())
-                .setAddNestedClasses(nestedClasses.asProtocConfig())
+                .setFactory(nestedClassFactory(cls))
                 .build();
-        try (FileOutputStream fos = new FileOutputStream(configPath.toFile())) {
+    }
+
+    /**
+     * Creates a {@link NestedClassFactoryName} with the name of the given class.
+     */
+    private static NestedClassFactoryName nestedClassFactory(Class<?> cls) {
+        return NestedClassFactoryName
+                .newBuilder()
+                .setClassName(className(cls))
+                .build();
+    }
+
+    /**
+     * Creates a {@link GenerateMethods} config with the given factory class.
+     */
+    public static GenerateMethods generateMethods(Class<?> factory) {
+        MethodFactoryName factoryName = methodFactory(factory);
+        return GenerateMethods
+                .newBuilder()
+                .setFactory(factoryName)
+                .build();
+    }
+
+    /**
+     * Creates a {@link MethodFactoryName} with the name of the given class.
+     */
+    public static MethodFactoryName methodFactory(Class<?> cls) {
+        return MethodFactoryName
+                .newBuilder()
+                .setClassName(className(cls))
+                .build();
+    }
+
+    /**
+     * Creates a {@link AddInterface} config with the given interface.
+     */
+    public static AddInterface addInterface(Class<?> iface) {
+        return AddInterface
+                .newBuilder()
+                .setName(className(iface))
+                .build();
+    }
+
+    /**
+     * Creates a {@link Pattern} wrapping the given file pattern.
+     */
+    public static Pattern pattern(FilePattern filePattern) {
+        return Pattern
+                .newBuilder()
+                .setFile(filePattern)
+                .build();
+    }
+
+    /**
+     * Writes the given Protoc config into the given file and obtains the Protoc plugin argument.
+     *
+     * @return the path to the serialized config, encoded in Base64
+     */
+    public static String protocConfig(SpineProtocConfig config, Path configFile) {
+        try (FileOutputStream fos = new FileOutputStream(configFile.toFile())) {
             config.writeTo(fos);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
-        return base64Encoded(configPath.toAbsolutePath()
-                                       .toString());
+        return base64Encoded(configFile.toAbsolutePath().toString());
     }
 
     private static String base64Encoded(String value) {

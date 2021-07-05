@@ -119,7 +119,7 @@ class SeverityConfigurerTest {
     private McJavaExtension configureModelCompilerExtension() {
         ExtensionContainer extensions = project.getExtensions();
         McJavaExtension extension =
-                extensions.create(McJavaPlugin.extensionName(), McJavaExtension.class);
+                extensions.create(McJavaPlugin.extensionName(), McJavaExtension.class, project);
         return extension;
     }
 

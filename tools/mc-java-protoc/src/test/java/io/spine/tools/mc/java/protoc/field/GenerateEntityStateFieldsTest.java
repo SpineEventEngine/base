@@ -29,12 +29,15 @@ package io.spine.tools.mc.java.protoc.field;
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
 import io.spine.base.SubscribableField;
+import io.spine.option.OptionsProto;
 import io.spine.tools.java.code.field.FieldFactory;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.protoc.EntityStateConfig;
+import io.spine.tools.protoc.Entities;
+import io.spine.tools.protoc.GenerateFields;
+import io.spine.tools.protoc.JavaClassName;
+import io.spine.tools.protoc.ProtoOption;
 import io.spine.tools.protoc.plugin.message.tests.ProtocProject;
 import io.spine.tools.protoc.plugin.message.tests.ProtocProjectId;
-import io.spine.tools.protoc.plugin.message.tests.ProtocTask;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,6 +47,7 @@ import org.junit.jupiter.api.Test;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static io.spine.tools.mc.java.codegen.Names.className;
 import static io.spine.tools.mc.java.protoc.InsertionPoint.class_scope;
 
 @DisplayName("`GenerateEntityStateFields` task should")
@@ -95,43 +99,37 @@ final class GenerateEntityStateFieldsTest {
         assertThat(insertionPoint).startsWith(class_scope.name());
     }
 
-    @Nested
-    @DisplayName("return empty output")
-    class ReturnEmptyOutput {
-
-        @Test
-        @DisplayName("if the message is not marked with `(entity)`")
-        void forNonEntity() {
-            MessageType nonEntityType = new MessageType(ProtocProjectId.getDescriptor());
-            ImmutableList<CompilerOutput> output = task.generateFor(nonEntityType);
-            assertThat(output).isEmpty();
-        }
-
-        @Test
-        @DisplayName("if the message does not have the valid `(entity)` kind")
-        void forEntityOfInvalidKind() {
-            MessageType entityOfInvalidKind = new MessageType(ProtocTask.getDescriptor());
-            ImmutableList<CompilerOutput> output = task.generateFor(entityOfInvalidKind);
-            assertThat(output).isEmpty();
-        }
+    @Test
+    @DisplayName("return empty output if the message is not marked with `(entity)`")
+    void forNonEntity() {
+        MessageType nonEntityType = new MessageType(ProtocProjectId.getDescriptor());
+        ImmutableList<CompilerOutput> output = task.generateFor(nonEntityType);
+        assertThat(output).isEmpty();
     }
 
     private GenerateEntityStateFields newTask() {
         return newTask(config());
     }
 
-    private GenerateEntityStateFields newTask(EntityStateConfig config) {
+    private GenerateEntityStateFields newTask(Entities config) {
         return new GenerateEntityStateFields(config, factory);
     }
 
-    private static EntityStateConfig config() {
+    private static Entities config() {
         return config(SubscribableField.class.getCanonicalName());
     }
 
-    private static EntityStateConfig config(String fieldType) {
-        EntityStateConfig result = EntityStateConfig
-                .newBuilder()
-                .setValue(fieldType)
+    private static Entities config(String fieldType) {
+        JavaClassName name = className(fieldType);
+        GenerateFields generate = GenerateFields.newBuilder()
+                .setSuperclass(name)
+                .build();
+        ProtoOption option = ProtoOption.newBuilder()
+                .setName(OptionsProto.entity.getDescriptor().getName())
+                .build();
+        Entities result = Entities.newBuilder()
+                .addOption(option)
+                .setGenerateFields(generate)
                 .build();
         return result;
     }

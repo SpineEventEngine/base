@@ -211,8 +211,7 @@ public abstract class CodeGenerator {
         File emptyFile = File.getDefaultInstance();
         List<File> merged = insertionPoints
                 .stream()
-                .collect(groupingBy(File::getInsertionPoint,
-                                    reducing(CodeGenerator::concatContent)))
+                .collect(groupingBy(File::getInsertionPoint, reducing(CodeGenerator::joinContent)))
                 .values()
                 .stream()
                 .map(file -> file.orElse(emptyFile))
@@ -220,9 +219,16 @@ public abstract class CodeGenerator {
         return merged;
     }
 
-    private static File concatContent(File left, File right) {
+    /**
+     * Reduces two {@code File}s to one by joining their content.
+     *
+     * <p>The resulting file is the copy of the first ({@code left}) file, except that its content
+     * is appended with the content of the second ({@code right}) file. There is a new line symbol
+     * between the contents of the {@code left} and the {@code right} file.
+     */
+    private static File joinContent(File left, File right) {
         return left.toBuilder()
-                   .setContent(left.getContent() + right.getContent())
+                   .setContent(left.getContent() + System.lineSeparator() + right.getContent())
                    .build();
     }
 }

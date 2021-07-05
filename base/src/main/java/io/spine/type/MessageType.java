@@ -31,6 +31,7 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
@@ -49,6 +50,7 @@ import io.spine.option.OptionsProto;
 import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -61,6 +63,7 @@ import static io.spine.code.proto.EntityStateOption.entityKindOf;
 import static io.spine.code.proto.FileDescriptors.sameFiles;
 import static io.spine.option.EntityOption.Kind.KIND_UNKNOWN;
 import static io.spine.option.EntityOption.Kind.UNRECOGNIZED;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A message type as declared in a proto file.
@@ -391,5 +394,24 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         FieldName uuid = FieldName.of("uuid");
         boolean nameMatches = uuid.equals(theField.name());
         boolean typeMatches = theField.isString();
-        return nameMatches && typeMatches;    }
+        return nameMatches && typeMatches;
+    }
+
+    /**
+     * Checks if the message has the given option.
+     *
+     * <p>The option must be known at runtime. An uninterpreted option cannot be found this way.
+     *
+     * @param optionName
+     *         name of the option
+     * @return {@code true} if this type is marked with an option with the given name,
+     *         {@code false} otherwise
+     */
+    public boolean hasOption(String optionName) {
+        checkNotEmptyOrBlank(optionName,"Option name must not be null empty.");
+        MessageOptions options = descriptor().getOptions();
+        Set<FieldDescriptor> presentOptions = options.getAllFields().keySet();
+        return presentOptions.stream()
+                             .anyMatch(op -> optionName.equals(op.getName()));
+    }
 }

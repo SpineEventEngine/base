@@ -27,28 +27,54 @@
 package io.spine.tools.mc.java.protoc.message;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.protoc.ConfigByPattern;
-import io.spine.tools.protoc.FilePattern;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
 import io.spine.tools.mc.java.protoc.FilePatternMatcher;
+import io.spine.tools.mc.java.protoc.PatternMatcher;
+import io.spine.tools.protoc.FilePattern;
+import io.spine.tools.protoc.JavaClassName;
+import io.spine.tools.protoc.Pattern;
 import io.spine.type.MessageType;
+
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 
 /**
- * Generates interfaces for Protobuf messages that match supplied
- * {@link io.spine.tools.protoc.FilePattern pattern}.
+ * Generates interfaces for Protobuf messages that match supplied pattern.
+ *
+ * <p>The message class implements an interface if:
+ * <ul>
+ *     <li>the message is a {@link MessageType#isTopLevel() top level} declaration;
+ *     <li>either the type matches the type pattern or the file where the type is declared matches
+ *         the file pattern.
+ * </ul>
  */
 final class ImplementByPattern extends ImplementInterface {
 
-    private final FilePatternMatcher matcher;
+    private final Predicate<MessageType> matcher;
 
-    ImplementByPattern(ConfigByPattern config) {
-        super(config.getValue());
-        FilePattern filePattern = config.getPattern();
-        checkNotDefaultArg(filePattern);
-        this.matcher = new FilePatternMatcher(filePattern);
+    /**
+     * Creates a new {@code ImplementByPattern} with the given interface name and file pattern.
+     *
+     * <p>Top-level messages declared in files which match this pattern will implement
+     * the given interface.
+     */
+    ImplementByPattern(JavaClassName interfaceName, FilePattern pattern) {
+        super(interfaceName);
+        checkNotDefaultArg(pattern);
+        this.matcher = new FilePatternMatcher(pattern);
+    }
+
+    /**
+     * Creates a new {@code ImplementByPattern} with the given interface name and pattern.
+     *
+     * <p>Top-level messages matching this pattern will implement the given interface.
+     */
+    ImplementByPattern(JavaClassName interfaceName, Pattern pattern) {
+        super(interfaceName);
+        checkNotDefaultArg(pattern);
+        this.matcher = new PatternMatcher(pattern);
     }
 
     @Override
@@ -56,22 +82,12 @@ final class ImplementByPattern extends ImplementInterface {
         return InterfaceParameters.empty();
     }
 
-    /**
-     * Makes supplied type implement configured interface.
-     *
-     * <p>The type does not implement an interface if:
-     * <ul>
-     *     <li>the type is not {@link MessageType#isTopLevel() top level};
-     *     <li>the type file name does not match supplied
-     *     {@link io.spine.tools.protoc.FilePattern pattern}.
-     * </ul>
-     */
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
-        if (!type.isTopLevel() || !matcher.test(type)) {
-            return ImmutableList.of();
+        if (type.isTopLevel() && matcher.test(type)) {
+            return super.generateFor(type);
         }
-        return super.generateFor(type);
+        return ImmutableList.of();
     }
 }

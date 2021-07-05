@@ -29,9 +29,13 @@ package io.spine.tools.mc.java.protoc.message;
 import com.google.common.collect.ImmutableList;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.tools.protoc.EntityStateConfig;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
+import io.spine.tools.mc.java.protoc.EntityMatcher;
+import io.spine.tools.protoc.Entities;
+import io.spine.tools.protoc.JavaClassName;
 import io.spine.type.MessageType;
+
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -42,24 +46,24 @@ import static com.google.common.base.Preconditions.checkState;
  */
 final class ImplementEntityState extends ImplementInterface {
 
-    ImplementEntityState(EntityStateConfig config) {
-        super(config.getValue());
+    private final Predicate<MessageType> matcher;
+
+    ImplementEntityState(JavaClassName interfaceName, Entities config) {
+        super(interfaceName);
+        this.matcher = new EntityMatcher(config);
     }
 
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
-        if (!type.isEntityState()) {
-            return ImmutableList.of();
+        if (matcher.test(type)) {
+            return super.generateFor(type);
         }
-        return super.generateFor(type);
+        return ImmutableList.of();
     }
 
     @Override
     public InterfaceParameters interfaceParameters(MessageType type) {
-        if (!type.isEntityState()) {
-            return InterfaceParameters.empty();
-        }
         InterfaceParameter idType = firstFieldOf(type);
         return InterfaceParameters.of(idType);
     }

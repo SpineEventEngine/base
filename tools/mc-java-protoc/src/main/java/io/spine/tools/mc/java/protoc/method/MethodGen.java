@@ -27,24 +27,25 @@
 package io.spine.tools.mc.java.protoc.method;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.mc.java.protoc.InsertionPoint;
-import io.spine.tools.protoc.AddMethods;
-import io.spine.tools.protoc.Classpath;
 import io.spine.tools.mc.java.protoc.CodeGenerationTask;
 import io.spine.tools.mc.java.protoc.CodeGenerationTasks;
 import io.spine.tools.mc.java.protoc.CodeGenerator;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.mc.java.protoc.ExternalClassLoader;
+import io.spine.tools.mc.java.protoc.InsertionPoint;
+import io.spine.tools.protoc.Classpath;
+import io.spine.tools.protoc.Messages;
 import io.spine.tools.protoc.MethodFactory;
+import io.spine.tools.protoc.MethodFactoryName;
+import io.spine.tools.protoc.Pattern;
 import io.spine.tools.protoc.SpineProtocConfig;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
 
 import java.util.Collection;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.protobuf.Messages.isNotDefault;
 
 /**
  * The {@link CodeGenerator} implementation generating additional message methods.
@@ -70,13 +71,23 @@ public final class MethodGen extends CodeGenerator {
         Classpath classpath = spineProtocConfig.getClasspath();
         ExternalClassLoader<MethodFactory> classLoader =
                 new ExternalClassLoader<>(classpath, MethodFactory.class);
-        AddMethods config = spineProtocConfig.getAddMethods();
         ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();
-        if (isNotDefault(config.getUuidFactory())) {
-            tasks.add(new GenerateUuidMethods(classLoader, config.getUuidFactory()));
+        if (spineProtocConfig.hasUuids()) {
+            List<MethodFactoryName> methodFactoryNames = spineProtocConfig.getUuids()
+                                                                          .getMethodFactoryList();
+            methodFactoryNames
+                    .stream()
+                    .map(name -> new GenerateUuidMethods(classLoader, name))
+                    .forEach(tasks::add);
         }
-        for (ConfigByPattern byPattern : config.getFactoryByPatternList()) {
-            tasks.add(new GenerateMethods(classLoader, byPattern));
+        for (Messages messages : spineProtocConfig.getMessagesList()) {
+            Pattern pattern = messages.getPattern();
+            messages.getGenerateMethodsList()
+                    .stream()
+                    .map(generate -> new GenerateMethods(
+                               classLoader, generate.getFactory(), pattern
+                       )).forEach(tasks::add);
+
         }
         return new MethodGen(tasks.build());
     }

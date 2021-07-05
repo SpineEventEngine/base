@@ -27,20 +27,14 @@
 package io.spine.tools.mc.java.protoc;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.truth.IterableSubject;
 import com.google.common.truth.StringSubject;
-import com.google.common.truth.Truth;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import io.spine.code.java.ClassName;
 import io.spine.tools.mc.java.protoc.given.TestInterface;
-import io.spine.tools.mc.java.protoc.given.TestNestedClassFactory;
-import io.spine.tools.mc.java.protoc.given.UuidMethodFactory;
-import io.spine.tools.protoc.Interfaces;
-import io.spine.tools.protoc.MessageSelectorFactory;
-import io.spine.tools.protoc.Methods;
-import io.spine.tools.protoc.NestedClasses;
-import io.spine.tools.protoc.WithSuffix;
+import io.spine.tools.protoc.SpineProtocConfig;
+import io.spine.tools.protoc.Uuids;
 import io.spine.tools.protoc.plugin.EnhancedWithCodeGeneration;
 import io.spine.tools.protoc.plugin.TestGeneratorsProto;
 import io.spine.type.MessageType;
@@ -54,12 +48,12 @@ import org.junit.jupiter.api.io.TempDir;
 import java.nio.file.Path;
 import java.util.Collection;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.Assertions.assertNpe;
+import static io.spine.tools.mc.java.protoc.given.CodeGeneratorRequestGiven.addInterface;
 import static io.spine.tools.mc.java.protoc.given.CodeGeneratorRequestGiven.protocConfig;
 import static io.spine.tools.mc.java.protoc.given.CodeGeneratorRequestGiven.requestBuilder;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
 
 @DisplayName("`SpineProtoGenerator` should")
 final class CodeGeneratorTest {
@@ -76,19 +70,17 @@ final class CodeGeneratorTest {
     @DisplayName("process valid `CodeGeneratorRequest`")
     @Test
     void processValidRequest() {
-        Interfaces interfaces = new Interfaces();
-        MessageSelectorFactory messages = interfaces.messages();
-        interfaces.mark(messages.uuid(), ClassName.of(TestInterface.class));
-        Methods methods = new Methods();
-        methods.applyFactory(UuidMethodFactory.class.getName(), messages.uuid());
-        NestedClasses nestedClasses = new NestedClasses();
-        nestedClasses.applyFactory(TestNestedClassFactory.class.getCanonicalName(),
-                                   new WithSuffix("*file.proto"));
+        Uuids uuids = Uuids.newBuilder()
+                .addAddInterface(addInterface(TestInterface.class))
+                .build();
+        SpineProtocConfig config = SpineProtocConfig.newBuilder()
+                .setUuids(uuids)
+                .build();
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())
                 .addFileToGenerate(TEST_PROTO_FILE)
-                .setParameter(protocConfig(interfaces, methods, nestedClasses, testPluginConfig))
+                .setParameter(protocConfig(config, testPluginConfig))
                 .build();
         MessageType type = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
         File firstFile = File
@@ -106,22 +98,23 @@ final class CodeGeneratorTest {
         TestGenerator firstGenerator = new TestGenerator(new TestCompilerOutput(firstFile),
                                                          new TestCompilerOutput(secondFile));
         CodeGeneratorResponse result = firstGenerator.process(request);
-        assertEquals(2, result.getFileCount());
-        assertSame(firstFile, result.getFile(0));
-        assertSame(secondFile, result.getFile(1));
+
+        IterableSubject assertFiles = assertThat(result.getFileList());
+        assertFiles
+                .hasSize(2);
+        assertFiles
+                .containsExactly(firstFile, secondFile);
     }
 
     @DisplayName("concatenate code generated for the same insertion point")
     @Test
     void concatenateGeneratedCode() {
-        Methods methods = new Methods();
-        MessageSelectorFactory messages = methods.messages();
-        methods.applyFactory(UuidMethodFactory.class.getName(), messages.uuid());
+        SpineProtocConfig config = SpineProtocConfig.getDefaultInstance();
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())
                 .addFileToGenerate(TEST_PROTO_FILE)
-                .setParameter(protocConfig(methods, testPluginConfig))
+                .setParameter(protocConfig(config, testPluginConfig))
                 .build();
         MessageType type = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
         String firstMethod = "public void test1(){}";
@@ -142,24 +135,25 @@ final class CodeGeneratorTest {
         TestGenerator generator = new TestGenerator(compilerOutputs);
 
         CodeGeneratorResponse result = generator.process(request);
-        assertEquals(1, result.getFileCount());
+        assertThat(result.getFileList())
+                .hasSize(1);
         File file = result.getFile(0);
-        StringSubject fileContent = Truth.assertThat(file.getContent());
-        fileContent.contains(firstMethod);
-        fileContent.contains(secondMethod);
+        StringSubject assertFileContent = assertThat(file.getContent());
+        assertFileContent
+                .contains(firstMethod);
+        assertFileContent
+                .contains(secondMethod);
     }
 
     @DisplayName("drop duplicates in generated code for the same insertion point")
     @Test
     void dropCodeDuplicates() {
-        Methods methods = new Methods();
-        MessageSelectorFactory messages = methods.messages();
-        methods.applyFactory(UuidMethodFactory.class.getName(), messages.uuid());
+        SpineProtocConfig config = SpineProtocConfig.getDefaultInstance();
         CodeGeneratorRequest request = requestBuilder()
                 .addProtoFile(TestGeneratorsProto.getDescriptor()
                                                  .toProto())
                 .addFileToGenerate(TEST_PROTO_FILE)
-                .setParameter(protocConfig(methods, testPluginConfig))
+                .setParameter(protocConfig(config, testPluginConfig))
                 .build();
         MessageType type = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
         String method = "public void test1(){}";
@@ -175,10 +169,12 @@ final class CodeGeneratorTest {
         TestGenerator generator = new TestGenerator(compilerOutputs);
 
         CodeGeneratorResponse result = generator.process(request);
-        assertEquals(1, result.getFileCount());
+        assertThat(result.getFileList())
+                .hasSize(1);
         File file = result.getFile(0);
-        StringSubject fileContent = Truth.assertThat(file.getContent());
-        fileContent.isEqualTo(method);
+        StringSubject fileContent = assertThat(file.getContent());
+        fileContent
+                .isEqualTo(method);
     }
 
     @Nested

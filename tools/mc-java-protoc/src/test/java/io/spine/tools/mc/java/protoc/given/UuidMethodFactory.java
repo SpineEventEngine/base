@@ -30,13 +30,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.tools.protoc.Method;
 import io.spine.tools.protoc.MethodFactory;
-import io.spine.tools.protoc.IsUuidMessage;
 import io.spine.type.MessageType;
 
 import java.util.List;
 
 /**
- * A test-only implementation of a {@link MethodFactory} to be used with {@link IsUuidMessage}.
+ * A test-only implementation of a {@link MethodFactory} to be used for UUID messages.
  */
 @Immutable
 public class UuidMethodFactory implements MethodFactory {

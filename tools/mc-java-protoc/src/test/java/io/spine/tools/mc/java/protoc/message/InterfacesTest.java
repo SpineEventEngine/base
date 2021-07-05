@@ -26,111 +26,33 @@
 
 package io.spine.tools.mc.java.protoc.message;
 
-import io.spine.tools.protoc.ConfigByPattern;
-import io.spine.tools.protoc.FilePattern;
-import io.spine.tools.protoc.FilePatterns;
 import io.spine.tools.mc.java.protoc.given.TestInterface;
-import io.spine.tools.protoc.plugin.message.tests.OuterMessage;
+import io.spine.tools.protoc.FilePattern;
+import io.spine.tools.protoc.JavaClassName;
 import io.spine.tools.protoc.plugin.message.tests.ProjectCreated;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.testing.Assertions.assertIllegalArgument;
-import static io.spine.testing.Assertions.assertNpe;
-import static io.spine.tools.protoc.FilePatterns.filePrefix;
-import static io.spine.tools.protoc.FilePatterns.fileSuffix;
+import static io.spine.tools.mc.java.codegen.FilePatterns.fileSuffix;
+import static io.spine.tools.mc.java.codegen.Names.className;
 
 @DisplayName("`GenerateInterfaces` should")
 final class InterfacesTest {
 
-    @DisplayName("throw `NullPointerException` if")
-    @Nested
-    class ThrowNpe {
-
-        @DisplayName("is created with `null` arguments")
-        @Test
-        void isCreatedWithNullArguments() {
-            assertNpe(() -> new ImplementByPattern(null));
-        }
-
-        @DisplayName("`null` `MessageType` is supplied")
-        @Test
-        void nullMessageTypeIsSupplied() {
-            ConfigByPattern config = newTaskConfig("test")
-                    .setPattern(filePrefix("non-default"))
-                    .build();
-            ImplementByPattern generateMethods = new ImplementByPattern(config);
-            assertNpe(() -> generateMethods.generateFor(null));
-        }
-    }
-
-    @DisplayName("reject empty `FilePattern`")
-    @Test
-    void rejectingEmptyFilePattern() {
-        assertIllegalArgument(() -> newTask(newTaskConfig("not-empty-name").build()));
-    }
-
-    @DisplayName("throw `IllegalArgumentException` if interface name is")
-    @ParameterizedTest(name = "\"{0}\"")
-    @ValueSource(strings = {"", "  "})
-    void throwIllegalArgumentException(String interfaceName) {
-        assertIllegalArgument(() -> newTask(newTaskConfig(interfaceName).build()));
-    }
-
-    @DisplayName("generate empty result if a `Message`")
-    @Nested
-    class GenerateEmptyResult {
-
-        @DisplayName("does not match pattern")
-        @Test
-        void messageDoesNotMatchPattern() {
-            assertEmptyResult(TestInterface.class.getName(), FilePatterns.fileRegex("wrong"));
-        }
-
-        @DisplayName("is not top level")
-        @Test
-        void messageIsNotTopLevel() {
-            assertEmptyResult(TestInterface.class.getName(),
-                              fileSuffix("inner_messages.proto"),
-                              new MessageType(OuterMessage.InnerMessage.getDescriptor()));
-        }
-
-        private void assertEmptyResult(String interfaceName, FilePattern filePattern) {
-            assertEmptyResult(interfaceName, filePattern,
-                              new MessageType(ProjectCreated.getDescriptor()));
-        }
-
-        private void
-        assertEmptyResult(String interfaceName, FilePattern filePattern, MessageType type) {
-            ConfigByPattern config = newTaskConfig(interfaceName)
-                    .setPattern(filePattern)
-                    .build();
-            assertThat(newTask(config).generateFor(type))
-                    .isEmpty();
-        }
-    }
-
     @DisplayName("implement interface")
     @Test
     void implementInterface() {
-        ConfigByPattern config = newTaskConfig(TestInterface.class.getName())
-                .setPattern(fileSuffix("test_events.proto"))
-                .build();
-        assertThat(newTask(config).generateFor(new MessageType(ProjectCreated.getDescriptor())))
+        FilePattern pattern = fileSuffix("test_events.proto");
+        JavaClassName className = className(TestInterface.class);
+        ImplementByPattern implementByPattern = newTask(className, pattern);
+        MessageType targetType = new MessageType(ProjectCreated.getDescriptor());
+        assertThat(implementByPattern.generateFor(targetType))
                 .isNotEmpty();
     }
 
-    private static ImplementByPattern newTask(ConfigByPattern config) {
-        return new ImplementByPattern(config);
-    }
-
-    private static ConfigByPattern.Builder newTaskConfig(String interfaceName) {
-        return ConfigByPattern.newBuilder()
-                              .setValue(interfaceName);
+    private static ImplementByPattern newTask(JavaClassName className, FilePattern pattern) {
+        return new ImplementByPattern(className, pattern);
     }
 }

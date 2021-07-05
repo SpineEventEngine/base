@@ -28,7 +28,6 @@
  * This package contains the routines of manipulating the Protoc Insertion Point to alter the
  * generated Protobuf messages.
  */
-
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.mc.java.protoc.message;

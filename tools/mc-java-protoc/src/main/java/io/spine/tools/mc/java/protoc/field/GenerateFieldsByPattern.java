@@ -28,42 +28,51 @@ package io.spine.tools.mc.java.protoc.field;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.java.code.field.FieldFactory;
-import io.spine.code.java.ClassName;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
-import io.spine.tools.protoc.ConfigByPattern;
 import io.spine.tools.mc.java.protoc.FilePatternMatcher;
+import io.spine.tools.mc.java.protoc.PatternMatcher;
+import io.spine.tools.protoc.FilePattern;
+import io.spine.tools.protoc.GenerateFields;
+import io.spine.tools.protoc.Pattern;
 import io.spine.type.MessageType;
+import io.spine.type.TypeName;
+
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.util.Preconditions2.checkNotDefaultArg;
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * Generates the strongly-typed fields for the passed {@link MessageType} if the type is declared
- * in a file that matches the provided {@linkplain io.spine.tools.protoc.FilePattern pattern}.
+ * Generates the strongly-typed fields for the type with the specified {@linkplain TypeName name}.
  */
 final class GenerateFieldsByPattern extends FieldGenerationTask {
 
-    private final FilePatternMatcher patternMatcher;
+    private final Predicate<MessageType> matcher;
 
-    GenerateFieldsByPattern(ConfigByPattern config, FieldFactory factory) {
-        super(fieldSupertype(checkNotNull(config)), checkNotNull(factory));
-        checkNotDefaultArg(config.getPattern());
-        this.patternMatcher = new FilePatternMatcher(config.getPattern());
+    private GenerateFieldsByPattern(GenerateFields generateFields,
+                                    FieldFactory factory,
+                                    Predicate<MessageType> matcher) {
+        super(generateFields.getSuperclass(), checkNotNull(factory));
+        this.matcher = matcher;
+    }
+
+    GenerateFieldsByPattern(GenerateFields generateFields,
+                            Pattern pattern,
+                            FieldFactory factory) {
+        this(generateFields, factory, new PatternMatcher(pattern));
+    }
+
+    GenerateFieldsByPattern(GenerateFields generateFields,
+                            FilePattern pattern,
+                            FieldFactory factory) {
+        this(generateFields, factory, new FilePatternMatcher(pattern));
     }
 
     @Override
     public ImmutableList<CompilerOutput> generateFor(MessageType type) {
         checkNotNull(type);
-        if (!patternMatcher.test(type)) {
-            return ImmutableList.of();
+        if (matcher.test(type)) {
+            return generateFieldsFor(type);
         }
-        return generateFieldsFor(type);
-    }
-
-    private static ClassName fieldSupertype(ConfigByPattern config) {
-        String typeName = config.getValue();
-        checkNotEmptyOrBlank(typeName);
-        return ClassName.of(typeName);
+        return ImmutableList.of();
     }
 }

@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Generated code duplication needed to check main class.
-@DisplayName("FieldGenerator should")
+@DisplayName("`FieldGenerator` should")
 class FieldGeneratorTest {
 
     private static final String JS_OBJECT = "jsObject";

@@ -31,6 +31,9 @@ import io.spine.tools.java.code.query.EntityQueryFactory;
 import io.spine.tools.mc.java.protoc.ClassMember;
 import io.spine.tools.mc.java.protoc.CodeGenerator;
 import io.spine.tools.mc.java.protoc.CompilerOutput;
+import io.spine.tools.mc.java.protoc.EntityMatcher;
+import io.spine.tools.mc.java.protoc.NoOpGenerator;
+import io.spine.tools.protoc.Entities;
 import io.spine.tools.protoc.Method;
 import io.spine.tools.protoc.NestedClass;
 import io.spine.tools.protoc.SpineProtocConfig;
@@ -39,6 +42,7 @@ import io.spine.type.Type;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
@@ -86,27 +90,30 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 public class EntityQueryGen extends CodeGenerator {
 
     private final EntityQueryFactory factory = new EntityQueryFactory();
-    private final boolean enabled;
 
-    private EntityQueryGen(boolean enabled) {
+    private final Predicate<MessageType> matcher;
+
+    private EntityQueryGen(Entities entities) {
         super();
-        this.enabled = enabled;
+        this.matcher = new EntityMatcher(entities);
     }
 
     /**
      * Creates a new instance based on the passed Protoc config.
      */
-    public static EntityQueryGen instance(SpineProtocConfig config) {
+    public static CodeGenerator instance(SpineProtocConfig config) {
         checkNotNull(config);
-        boolean enabled = config.getAddEntityQueries()
-                                .getGenerate();
-        return new EntityQueryGen(enabled);
+        Entities entities = config.getEntities();
+        boolean enabled = entities.getGenerateQueries();
+        return enabled
+               ? new EntityQueryGen(entities)
+               : NoOpGenerator.instance();
     }
 
     @Override
     protected Collection<CompilerOutput> generate(Type<?, ?> type) {
         checkNotNull(type);
-        if (enabled && isEntityState(type)) {
+        if (isEntityState(type)) {
             return generateFor((MessageType) type);
         }
         return ImmutableList.of();
@@ -139,8 +146,7 @@ public class EntityQueryGen extends CodeGenerator {
         }
     }
 
-    private static boolean isEntityState(Type<?, ?> type) {
-        return type instanceof MessageType
-                && ((MessageType) type).isEntityState();
+    private boolean isEntityState(Type<?, ?> type) {
+        return type instanceof MessageType && matcher.test((MessageType) type);
     }
 }
