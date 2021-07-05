@@ -28,15 +28,15 @@ package io.spine.tools.mc.java.codegen;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Message;
+import io.spine.tools.gradle.UsefulSetProperty;
 import io.spine.tools.protoc.MethodFactory;
 import io.spine.tools.protoc.MethodFactoryName;
 import io.spine.tools.protoc.Uuids;
 import org.gradle.api.Project;
-import org.gradle.api.provider.SetProperty;
 
-import java.util.List;
+import java.util.Set;
 
-import static java.util.stream.Collectors.toList;
+import static io.spine.tools.mc.java.codegen.Names.className;
 
 /**
  * Configuration for code generation for UUID messages.
@@ -46,12 +46,11 @@ import static java.util.stream.Collectors.toList;
  */
 public final class UuidConfig extends ConfigWithInterfaces<Uuids> {
 
-    private final SetProperty<String> methodFactories;
+    private final UsefulSetProperty<String> methodFactories;
 
     UuidConfig(Project p) {
         super(p);
-        methodFactories = p.getObjects()
-                           .setProperty(String.class);
+        methodFactories = new UsefulSetProperty<>(p, String.class);
     }
 
     void convention(Class<? extends MethodFactory> methodFactory,
@@ -81,13 +80,9 @@ public final class UuidConfig extends ConfigWithInterfaces<Uuids> {
         methodFactories.add(factoryClassName);
     }
 
-    private List<MethodFactoryName> factories() {
-        return methodFactories.get()
-                              .stream()
-                              .map(Names::className)
-                              .map(name -> MethodFactoryName.newBuilder()
-                                      .setClassName(name)
-                                      .build())
-                              .collect(toList());
+    private Set<MethodFactoryName> factories() {
+        return methodFactories.transform(name -> MethodFactoryName.newBuilder()
+                .setClassName(className(name))
+                .build());
     }
 }

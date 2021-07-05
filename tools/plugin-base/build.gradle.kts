@@ -27,12 +27,13 @@
 import com.google.common.io.Files
 import com.google.protobuf.gradle.generateProtoTasks
 import com.google.protobuf.gradle.protobuf
-import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Grpc
+import io.spine.internal.dependency.Protobuf
 import java.util.*
-import kotlin.collections.HashMap
 
 group = "io.spine.tools"
+
+kotlin { explicitApi() }
 
 dependencies {
     api(gradleApi())

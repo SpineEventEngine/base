@@ -28,6 +28,7 @@ package io.spine.tools.mc.java.codegen;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import io.spine.tools.gradle.UsefulSetProperty;
 import io.spine.tools.protoc.GenerateFields;
 import io.spine.tools.protoc.GenerateMethods;
 import io.spine.tools.protoc.GenerateNestedClasses;
@@ -36,7 +37,6 @@ import io.spine.tools.protoc.MethodFactoryName;
 import io.spine.tools.protoc.NestedClassFactoryName;
 import io.spine.tools.protoc.Pattern;
 import org.gradle.api.Project;
-import org.gradle.api.provider.SetProperty;
 
 import java.util.Set;
 
@@ -52,18 +52,16 @@ import static java.util.stream.Collectors.toSet;
 public final class MessagesConfig extends ConfigWithFields<Messages> {
 
     private final Pattern pattern;
-    private final SetProperty<String> methodFactories;
-    private final SetProperty<String> nestedClassFactories;
+    private final UsefulSetProperty<String> methodFactories;
+    private final UsefulSetProperty<String> nestedClassFactories;
 
     MessagesConfig(Project p, Pattern pattern) {
         super(p);
         this.pattern = pattern;
-        methodFactories = p.getObjects()
-                           .setProperty(String.class)
-                           .convention(ImmutableList.of());
-        nestedClassFactories = p.getObjects()
-                                .setProperty(String.class)
-                                .convention(ImmutableList.of());
+        methodFactories = new UsefulSetProperty<>(p, String.class);
+        methodFactories.convention(ImmutableList.of());
+        nestedClassFactories = new UsefulSetProperty<>(p, String.class);
+        nestedClassFactories.convention(ImmutableList.of());
     }
 
     void emptyByConvention() {

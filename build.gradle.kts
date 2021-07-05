@@ -35,18 +35,14 @@ import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
-import io.spine.internal.gradle.applyStandard
-import io.spine.internal.gradle.excludeProtobufLite
-import io.spine.internal.gradle.forceVersions
 import io.spine.internal.gradle.PublishingRepos
 import io.spine.internal.gradle.RunBuild
 import io.spine.internal.gradle.Scripts
+import io.spine.internal.gradle.applyStandard
+import io.spine.internal.gradle.excludeProtobufLite
+import io.spine.internal.gradle.forceVersions
 import io.spine.internal.gradle.spinePublishing
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
-import org.gradle.api.tasks.Delete
-import org.gradle.api.tasks.bundling.Jar
-import org.gradle.api.plugins.JavaPluginExtension
 
 @Suppress("RemoveRedundantQualifierName") // Cannot use imported things here.
 buildscript {
@@ -71,6 +67,7 @@ plugins {
     io.spine.internal.dependency.ErrorProne.GradlePlugin.apply {
         id(id) version version
     }
+    `force-jacoco`
 }
 
 apply(from = "$rootDir/version.gradle.kts")

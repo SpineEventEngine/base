@@ -28,11 +28,12 @@ package io.spine.tools.mc.java.codegen;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Message;
+import io.spine.tools.gradle.UsefulSetProperty;
 import io.spine.tools.protoc.AddInterface;
 import org.gradle.api.Project;
 import org.gradle.api.provider.SetProperty;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static io.spine.tools.mc.java.codegen.Names.className;
 
 /**
  * A config for messages which can implement certain Java interfaces.
@@ -42,12 +43,11 @@ import static com.google.common.collect.ImmutableSet.toImmutableSet;
  */
 abstract class ConfigWithInterfaces<P extends Message> extends Config<P> {
 
-    private final SetProperty<String> interfaceNames;
+    private final UsefulSetProperty<String> interfaceNames;
 
     ConfigWithInterfaces(Project p) {
         super();
-        this.interfaceNames = p.getObjects()
-                               .setProperty(String.class);
+        this.interfaceNames = new UsefulSetProperty<>(p, String.class);
     }
 
     /**
@@ -68,14 +68,9 @@ abstract class ConfigWithInterfaces<P extends Message> extends Config<P> {
      * to the associated messages.
      */
     final ImmutableSet<AddInterface> interfaces() {
-        return interfaceNames
-                .get()
-                .stream()
-                .map(Names::className)
-                .map(name -> AddInterface.newBuilder()
-                        .setName(name)
-                        .build())
-                .collect(toImmutableSet());
+        return interfaceNames.transform(name -> AddInterface.newBuilder()
+                .setName(className(name))
+                .build());
     }
 
     /**
