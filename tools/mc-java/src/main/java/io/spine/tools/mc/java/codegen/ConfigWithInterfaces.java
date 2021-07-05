@@ -28,7 +28,7 @@ package io.spine.tools.mc.java.codegen;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Message;
-import io.spine.tools.gradle.UsefulSetProperty;
+import io.spine.tools.gradle.Multiple;
 import io.spine.tools.protoc.AddInterface;
 import org.gradle.api.Project;
 import org.gradle.api.provider.SetProperty;
@@ -43,11 +43,11 @@ import static io.spine.tools.mc.java.codegen.Names.className;
  */
 abstract class ConfigWithInterfaces<P extends Message> extends Config<P> {
 
-    private final UsefulSetProperty<String> interfaceNames;
+    private final Multiple<String> interfaceNames;
 
     ConfigWithInterfaces(Project p) {
         super();
-        this.interfaceNames = new UsefulSetProperty<>(p, String.class);
+        this.interfaceNames = new Multiple<>(p, String.class);
     }
 
     /**

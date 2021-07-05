@@ -28,7 +28,7 @@ package io.spine.tools.mc.java.codegen;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Message;
-import io.spine.tools.gradle.UsefulSetProperty;
+import io.spine.tools.gradle.Multiple;
 import io.spine.tools.protoc.MethodFactory;
 import io.spine.tools.protoc.MethodFactoryName;
 import io.spine.tools.protoc.Uuids;
@@ -46,11 +46,11 @@ import static io.spine.tools.mc.java.codegen.Names.className;
  */
 public final class UuidConfig extends ConfigWithInterfaces<Uuids> {
 
-    private final UsefulSetProperty<String> methodFactories;
+    private final Multiple<String> methodFactories;
 
     UuidConfig(Project p) {
         super(p);
-        methodFactories = new UsefulSetProperty<>(p, String.class);
+        methodFactories = new Multiple<>(p, String.class);
     }
 
     void convention(Class<? extends MethodFactory> methodFactory,

@@ -28,7 +28,7 @@ package io.spine.tools.mc.java.codegen;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Message;
-import io.spine.tools.gradle.UsefulSetProperty;
+import io.spine.tools.gradle.Multiple;
 import io.spine.tools.protoc.FilePattern;
 import org.gradle.api.Project;
 
@@ -44,11 +44,11 @@ import static io.spine.protobuf.Messages.isDefault;
  */
 abstract class MessageGroupConfig<P extends Message> extends ConfigWithFields<P> {
 
-    private final UsefulSetProperty<FilePattern> file;
+    private final Multiple<FilePattern> file;
 
     MessageGroupConfig(Project p) {
         super(p);
-        this.file = new UsefulSetProperty<>(p, FilePattern.class);
+        this.file = new Multiple<>(p, FilePattern.class);
     }
 
     /**

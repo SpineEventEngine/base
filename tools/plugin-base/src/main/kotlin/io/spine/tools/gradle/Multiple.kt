@@ -34,10 +34,10 @@ import org.gradle.api.provider.SetProperty
 /**
  * A Gradle `SetProperty` which has useful utility methods.
  */
-public class UsefulSetProperty<T : Any>
+public class Multiple<E : Any>
 
 /**
- * Creates a new `UsefulSetProperty`.
+ * Creates a new `Multiple`.
  *
  * @param project
  *          the project which provides an object factory for creating Gradle properties
@@ -45,11 +45,11 @@ public class UsefulSetProperty<T : Any>
  *          type of the elements of the set
  */
 constructor(
-    project: Project, klass: KClass<T>
-) : SetProperty<T> by project.objects.setProperty(klass.java) {
+    project: Project, klass: KClass<E>
+) : SetProperty<E> by project.objects.setProperty(klass.java) {
 
     /**
-     * Creates a new `UsefulSetProperty`.
+     * Creates a new `Multiple`.
      *
      * This is a Java-friendly constructor. Use the primary constructor in Kotlin.
      *
@@ -58,13 +58,15 @@ constructor(
      * @param cls
      *          Java class of the elements of the set
      */
-    public constructor(project: Project, cls: Class<T>) : this(project, cls.kotlin)
+    public constructor(project: Project, cls: Class<E>) : this(project, cls.kotlin)
 
     /**
      * Obtains the value of this property and applies the given mapping function to each element.
+     *
+     * @param T target type of the transformation
      */
-    public fun <O> transform(mapper: (T) -> O): ImmutableSet<O> =
-        get().map(mapper).toImmutableSet()
+    public fun <T> transform(transformer: (E) -> T): ImmutableSet<T> =
+        get().map(transformer).toImmutableSet()
 }
 
 private fun <T> Iterable<T>.toImmutableSet(): ImmutableSet<T> =
