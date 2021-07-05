@@ -51,7 +51,7 @@ constructor(
     /**
      * Creates a new `UsefulSetProperty`.
      *
-     * This is a Java-friendly constructor. Use []
+     * This is a Java-friendly constructor. Use the primary constructor in Kotlin.
      *
      * @param project
      *          the project which provides an object factory for creating Gradle properties
