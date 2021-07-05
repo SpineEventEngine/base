@@ -27,13 +27,17 @@
 package io.spine.tools.gradle
 
 import com.google.common.collect.ImmutableSet
+import io.spine.annotation.Internal
 import kotlin.reflect.KClass
 import org.gradle.api.Project
 import org.gradle.api.provider.SetProperty
 
 /**
  * A Gradle `SetProperty` which has useful utility methods.
+ *
+ * @param E type of the elements in the set
  */
+@Internal
 public class Multiple<E : Any>
 
 /**
@@ -42,7 +46,7 @@ public class Multiple<E : Any>
  * @param project
  *          the project which provides an object factory for creating Gradle properties
  * @param klass
- *          type of the elements of the set
+ *          class of the elements of the set
  */
 constructor(
     project: Project, klass: KClass<E>
