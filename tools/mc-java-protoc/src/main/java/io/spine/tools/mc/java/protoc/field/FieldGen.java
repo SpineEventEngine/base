@@ -63,9 +63,9 @@ public final class FieldGen extends CodeGenerator {
 
     private final CodeGenerationTasks codeGenerationTasks;
 
-    private FieldGen(ImmutableList<CodeGenerationTask> tasks) {
+    private FieldGen(Builder builder) {
         super();
-        this.codeGenerationTasks = new CodeGenerationTasks(tasks);
+        this.codeGenerationTasks = new CodeGenerationTasks(builder.tasks());
     }
 
     /**
@@ -73,79 +73,9 @@ public final class FieldGen extends CodeGenerator {
      */
     public static FieldGen instance(SpineProtocConfig spineProtocConfig) {
         checkNotNull(spineProtocConfig);
-        ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();
-        addFromEntities(tasks, spineProtocConfig);
-        addFromCommands(tasks, spineProtocConfig);
-        addFromEvents(tasks, spineProtocConfig);
-        addFromRejections(tasks, spineProtocConfig);
-        addFromMessages(tasks, spineProtocConfig);
-        return new FieldGen(tasks.build());
-    }
-
-    private static void addFromMessages(ImmutableList.Builder<CodeGenerationTask> tasks,
-                                        SpineProtocConfig spineProtocConfig) {
-        for (Messages group : spineProtocConfig.getMessagesList()) {
-            taskFor(group).ifPresent(tasks::add);
-        }
-    }
-
-    private static void addFromRejections(ImmutableList.Builder<CodeGenerationTask> tasks,
-                                          SpineProtocConfig spineProtocConfig) {
-        if (spineProtocConfig.hasRejections()) {
-            Signals signals = spineProtocConfig.getRejections();
-            tasks.addAll(tasksFor(signals));
-        }
-    }
-
-    private static void addFromEvents(ImmutableList.Builder<CodeGenerationTask> tasks,
-                                      SpineProtocConfig spineProtocConfig) {
-        if (spineProtocConfig.hasEvents()) {
-            Signals signals = spineProtocConfig.getEvents();
-            tasks.addAll(tasksFor(signals));
-        }
-    }
-
-    private static void addFromCommands(ImmutableList.Builder<CodeGenerationTask> tasks,
-                                        SpineProtocConfig spineProtocConfig) {
-        if (spineProtocConfig.hasCommands()) {
-            Signals signals = spineProtocConfig.getCommands();
-            tasks.addAll(tasksFor(signals));
-        }
-    }
-
-    private static void addFromEntities(ImmutableList.Builder<CodeGenerationTask> tasks,
-                                        SpineProtocConfig spineProtocConfig) {
-        if (spineProtocConfig.hasEntities()) {
-            Entities entities = spineProtocConfig.getEntities();
-            GenerateFields fields = entities.getGenerateFields();
-            if (fields.hasSuperclass()) {
-                tasks.add(new GenerateEntityStateFields(entities, factory));
-            }
-        }
-    }
-
-    private static ImmutableList<GenerateFieldsByPattern> tasksFor(Signals signals) {
-        GenerateFields generateFields = signals.getGenerateFields();
-        if (!generateFields.hasSuperclass()) {
-            return ImmutableList.of();
-        }
-        return signals.getPatternList()
-                      .stream()
-                      .map(filePattern -> new GenerateFieldsByPattern(
-                                 generateFields, filePattern, factory
-                         )).collect(toImmutableList());
-    }
-
-    private static Optional<GenerateFieldsByPattern> taskFor(Messages messages) {
-        GenerateFields generateFields = messages.getGenerateFields();
-        if (!generateFields.hasSuperclass()) {
-            return Optional.empty();
-        }
-        Pattern pattern = messages.getPattern();
-        GenerateFieldsByPattern task = new GenerateFieldsByPattern(
-                generateFields, pattern, factory
-        );
-        return Optional.of(task);
+        Builder builder = new Builder(spineProtocConfig);
+        builder.addFromAll();
+        return builder.build();
     }
 
     @Override
@@ -156,5 +86,103 @@ public final class FieldGen extends CodeGenerator {
         MessageType messageType = (MessageType) type;
         ImmutableList<CompilerOutput> result = codeGenerationTasks.generateFor(messageType);
         return result;
+    }
+
+    /**
+     * A builder for the {@code FieldGen} instances.
+     */
+    private static final class Builder {
+
+        private final SpineProtocConfig config;
+        private final ImmutableList.Builder<CodeGenerationTask> tasks = ImmutableList.builder();
+
+        /**
+         * Prevents direct instantiation.
+         */
+        private Builder(SpineProtocConfig config) {
+            this.config = config;
+        }
+
+        private ImmutableList<CodeGenerationTask> tasks() {
+            return tasks.build();
+        }
+
+        /**
+         * Creates a new instance of {@code FieldGen}.
+         *
+         * @return new instance of {@code FieldGen}
+         */
+        private FieldGen build() {
+            return new FieldGen(this);
+        }
+
+        private void addFromAll() {
+            addFromCommands();
+            addFromEvents();
+            addFromRejections();
+            addFromEntities();
+            addFromMessages();
+        }
+
+        private void addFromMessages() {
+            for (Messages group : config.getMessagesList()) {
+                taskFor(group).ifPresent(tasks::add);
+            }
+        }
+
+        private void addFromRejections() {
+            if (config.hasRejections()) {
+                Signals signals = config.getRejections();
+                tasks.addAll(tasksFor(signals));
+            }
+        }
+
+        private void addFromEvents() {
+            if (config.hasEvents()) {
+                Signals signals = config.getEvents();
+                tasks.addAll(tasksFor(signals));
+            }
+        }
+
+        private void addFromCommands() {
+            if (config.hasCommands()) {
+                Signals signals = config.getCommands();
+                tasks.addAll(tasksFor(signals));
+            }
+        }
+
+        private void addFromEntities() {
+            if (config.hasEntities()) {
+                Entities entities = config.getEntities();
+                GenerateFields fields = entities.getGenerateFields();
+                if (fields.hasSuperclass()) {
+                    tasks.add(new GenerateEntityStateFields(entities, factory));
+                }
+            }
+        }
+
+        private static ImmutableList<GenerateFieldsByPattern> tasksFor(Signals signals) {
+            GenerateFields generateFields = signals.getGenerateFields();
+            if (!generateFields.hasSuperclass()) {
+                return ImmutableList.of();
+            }
+            return signals.getPatternList()
+                          .stream()
+                          .map(filePattern -> new GenerateFieldsByPattern(
+                                  generateFields, filePattern, factory
+                          )).collect(toImmutableList());
+        }
+
+        private static Optional<GenerateFieldsByPattern> taskFor(Messages messages) {
+            GenerateFields generateFields = messages.getGenerateFields();
+            if (!generateFields.hasSuperclass()) {
+                return Optional.empty();
+            }
+            Pattern pattern = messages.getPattern();
+            GenerateFieldsByPattern task = new GenerateFieldsByPattern(
+                    generateFields, pattern, factory
+            );
+            return Optional.of(task);
+        }
     }
 }
