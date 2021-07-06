@@ -30,3 +30,5 @@ dependencies {
     api(project(":plugin-base"))
     testImplementation(project(":testlib"))
 }
+
+tasks.processResources.get().duplicatesStrategy = DuplicatesStrategy.WARN

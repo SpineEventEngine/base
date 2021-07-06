@@ -41,7 +41,12 @@ dependencies {
 // We need to include module dependencies to JAR.
 // In particular, we need @Internal Spine annotation.
 tasks.jar.configure {
-    from(configurations.runtime.get().map {
+    from(configurations.runtimeClasspath.get().map {
             if(it.isDirectory()) it else zipTree(it)
     })
+    duplicatesStrategy = DuplicatesStrategy.WARN
 }
+
+tasks.processResources.get().duplicatesStrategy = DuplicatesStrategy.WARN
+tasks.processTestResources.get().duplicatesStrategy = DuplicatesStrategy.WARN
+

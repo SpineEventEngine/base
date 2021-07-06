@@ -88,3 +88,7 @@ tasks.test {
         ":mc-java-protoc:publishToMavenLocal"
     )
 }
+
+tasks.processResources.get().duplicatesStrategy = DuplicatesStrategy.WARN
+tasks.processTestResources.get().duplicatesStrategy = DuplicatesStrategy.WARN
+tasks.sourceJar.get().duplicatesStrategy = DuplicatesStrategy.WARN

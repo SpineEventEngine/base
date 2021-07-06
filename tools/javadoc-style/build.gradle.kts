@@ -40,3 +40,7 @@ tasks.test.configure {
               ":tool-base:publishToMavenLocal",
               ":plugin-base:publishToMavenLocal")
 }
+
+tasks.processResources.get().duplicatesStrategy = DuplicatesStrategy.WARN
+tasks.processTestResources.get().duplicatesStrategy = DuplicatesStrategy.WARN
+tasks.sourceJar.get().duplicatesStrategy = DuplicatesStrategy.WARN
