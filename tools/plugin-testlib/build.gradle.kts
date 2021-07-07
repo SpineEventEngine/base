@@ -32,3 +32,6 @@ dependencies {
     implementation(gradleApi())
     implementation(gradleTestKit())
 }
+
+tasks.processTestResources.get().duplicatesStrategy = DuplicatesStrategy.WARN
+tasks.sourceJar.get().duplicatesStrategy = DuplicatesStrategy.WARN
