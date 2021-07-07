@@ -34,3 +34,5 @@ dependencies {
 }
 
 tasks.processResources.get().duplicatesStrategy = DuplicatesStrategy.WARN
+tasks.processTestResources.get().duplicatesStrategy = DuplicatesStrategy.WARN
+tasks.sourceJar.get().duplicatesStrategy = DuplicatesStrategy.WARN

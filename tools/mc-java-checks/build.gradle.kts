@@ -59,6 +59,7 @@ fun getResolvedArtifactFor(dependency: String): String {
 val test: Test = tasks.test.get()
 test.dependsOn(project(":base").getTasksByName("rebuildProtobuf", false))
 
+tasks.processTestResources.get().duplicatesStrategy = DuplicatesStrategy.WARN
 tasks.sourceJar.get().duplicatesStrategy = DuplicatesStrategy.WARN
 
 afterEvaluate {
