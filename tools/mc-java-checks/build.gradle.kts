@@ -59,6 +59,8 @@ fun getResolvedArtifactFor(dependency: String): String {
 val test: Test = tasks.test.get()
 test.dependsOn(project(":base").getTasksByName("rebuildProtobuf", false))
 
+tasks.sourceJar.get().duplicatesStrategy = DuplicatesStrategy.WARN
+
 afterEvaluate {
     val javacPath = getResolvedArtifactFor("javac")
     test.jvmArgs("-Xbootclasspath/p:$javacPath")

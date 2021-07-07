@@ -32,3 +32,5 @@ dependencies {
     testImplementation(project(":plugin-testlib"))
     testImplementation(gradleTestKit())
 }
+
+tasks.processResources.get().duplicatesStrategy = DuplicatesStrategy.WARN

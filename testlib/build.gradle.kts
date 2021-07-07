@@ -42,3 +42,5 @@ dependencies {
     api(Guava.testLib)
     implementation(project(":base"))
 }
+
+tasks.sourceJar.get().duplicatesStrategy = DuplicatesStrategy.WARN

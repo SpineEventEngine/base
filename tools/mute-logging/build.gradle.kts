@@ -33,3 +33,5 @@ dependencies {
     implementation(project(":testlib"))
     JUnit.api.forEach { implementation(it) }
 }
+
+tasks.sourceJar.get().duplicatesStrategy = DuplicatesStrategy.WARN
