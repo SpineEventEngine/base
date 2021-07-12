@@ -110,6 +110,7 @@ tasks.build.get().finalizedBy(rebuildProtobuf)
 tasks.processResources.get().duplicatesStrategy = DuplicatesStrategy.WARN
 tasks.processTestResources.get().duplicatesStrategy = DuplicatesStrategy.WARN
 tasks.sourceJar.get().duplicatesStrategy = DuplicatesStrategy.WARN
+tasks.jar.get().duplicatesStrategy = DuplicatesStrategy.WARN
 
 val compiledProtoRoot = "$projectDir/generated"
 val googlePackagePrefix = "com/google"
