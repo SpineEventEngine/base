@@ -33,6 +33,7 @@ import org.gradle.api.plugins.PluginContainer;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -62,88 +63,95 @@ class JavadocStylePluginTest {
 
     @BeforeEach
     void setUp() {
-        project = newProject();
+        project = ProjectBuilder.builder()
+                .build();
+        project.task(compileJava.name());
+        project.task(compileTestJava.name());
+        project.task(generateProto.name());
+        project.task(generateTestProto.name());
         project.getPluginManager()
                .apply(PLUGIN_ID);
     }
 
     @Test
-    @DisplayName("apply to project")
+    @DisplayName("apply to a project")
     void applyToProject() {
         PluginContainer plugins = project.getPlugins();
         assertTrue(plugins.hasPlugin(PLUGIN_ID));
     }
 
     @Test
-    @DisplayName("have extension")
+    @DisplayName("add its extension to a project")
     void haveExtension() {
-        JavadocStyleExtension extension = project.getExtensions()
-                                                 .getByType(JavadocStyleExtension.class);
+        JavadocStyleExtension extension =
+                project.getExtensions()
+                       .getByType(JavadocStyleExtension.class);
         assertNotNull(extension);
     }
 
-    @Test
-    @DisplayName("add formatProtoDoc task")
-    void addTaskFormatProtoDoc() {
-        Task task = task(formatProtoDoc);
-        assertNotNull(task);
-        assertTrue(dependsOn(task, generateProto));
-        assertTrue(dependsOn(task(compileJava), task));
+    @Nested
+    @DisplayName("add custom task to a project")
+    class Tasks {
+
+        @Test
+        @DisplayName("add `formatProtoDoc` task")
+        void addTaskFormatProtoDoc() {
+            Task task = task(formatProtoDoc);
+            assertNotNull(task);
+            assertTrue(dependsOn(task, generateProto));
+            assertTrue(dependsOn(task(compileJava), task));
+        }
+
+        @Test
+        @DisplayName("add `formatTestProtoDoc` task")
+        void addTaskFormatTestProtoDoc() {
+            Task task = task(formatTestProtoDoc);
+            assertNotNull(task);
+            assertTrue(dependsOn(task, generateTestProto));
+            assertTrue(dependsOn(task(compileTestJava), task));
+        }
+
+        private Task task(TaskName taskName) {
+            return project.getTasks()
+                          .getByName(taskName.name());
+        }
     }
 
-    @Test
-    @DisplayName("add formatTestProtoDoc task")
-    void addTaskFormatTestProtoDoc() {
-        Task task = task(formatTestProtoDoc);
-        assertNotNull(task);
-        assertTrue(dependsOn(task, generateTestProto));
-        assertTrue(dependsOn(task(compileTestJava), task));
-    }
+    @Nested
+    @DisplayName("format generated Javadoc sources with")
+    class FormattingCode {
 
-    @Test
-    @DisplayName("format generated java sources")
-    void formatGeneratedJavaSources(@TempDir Path testProjectDir) throws IOException {
-        String text = "javadoc text";
-        String generatedFieldDescription = " <code>field description</code>";
-        String textInPreTags = OPENING_PRE + text + CLOSING_PRE + generatedFieldDescription;
-        String expected = getJavadoc(text + generatedFieldDescription);
-        String javadocToFormat = getJavadoc(textInPreTags);
-        formatAndAssert(expected, javadocToFormat, testProjectDir.toFile());
-    }
+        @Test
+        @DisplayName("single-line code snippet")
+        void formatGeneratedJavaSources(@TempDir Path testProjectDir) throws IOException {
+            String text = "javadoc text";
+            String generatedFieldDescription = " <code>field description</code>";
+            String textInPreTags = OPENING_PRE + text + CLOSING_PRE + generatedFieldDescription;
+            String expected = singleLineJavadoc(text + generatedFieldDescription);
+            String javadocToFormat = singleLineJavadoc(textInPreTags);
+            formatAndAssert(expected, javadocToFormat, testProjectDir.toFile());
+        }
 
-    @Test
-    @DisplayName("handle multiline code snippets")
-    void handleMultilineCodeSnippetsProperly(@TempDir Path testProjectDir) throws IOException {
-        String protoDoc = multilineJavadoc(BACKTICK, BACKTICK);
-        String javadoc = multilineJavadoc("{@code ", "}");
+        @Test
+        @DisplayName("multi-line code snippet")
+        void handleMultilineCodeSnippetsProperly(@TempDir Path testProjectDir) throws IOException {
+            String protoDoc = multilineJavadoc(BACKTICK, BACKTICK);
+            String javadoc = multilineJavadoc("{@code ", "}");
 
-        formatAndAssert(javadoc, protoDoc, testProjectDir.toFile());
-    }
+            formatAndAssert(javadoc, protoDoc, testProjectDir.toFile());
+        }
 
-    private static String multilineJavadoc(String codeOpening, String codeClosing) {
-        return String.format("/**%n" +
-                "Javadoc header%n" +
-                "<pre>%s" + "java snippet" + "%s</pre>%n" +
-                "Javadoc footer" +
-                "*/", codeOpening, codeClosing);
-    }
+        private String singleLineJavadoc(String javadocText) {
+            return "/** " + javadocText + " */";
+        }
 
-    private static String getJavadoc(String javadocText) {
-        return "/** " + javadocText + " */";
-    }
-
-    private Task task(TaskName taskName) {
-        return project.getTasks()
-                      .getByName(taskName.name());
-    }
-
-    private static Project newProject() {
-        Project project = ProjectBuilder.builder()
-                                        .build();
-        project.task(compileJava.name());
-        project.task(compileTestJava.name());
-        project.task(generateProto.name());
-        project.task(generateTestProto.name());
-        return project;
+        private String multilineJavadoc(String codeStartTag, String codeEndTag) {
+            return String.format(
+                    "/**%nJavadoc header%n" +
+                            "<pre>%s" + "java snippet" + "%s</pre>%n" +
+                            "Javadoc footer" +
+                            "*/",
+                    codeStartTag, codeEndTag);
+        }
     }
 }
