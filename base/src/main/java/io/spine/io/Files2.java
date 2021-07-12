@@ -205,19 +205,27 @@ public final class Files2 {
         checkArgument(isDirectory(target));
 
         Path oldParent = dir.getParent();
-        ImmutableList<Path> files;
-        try (Stream<Path> paths = Files.walk(dir)) {
-            files = paths.collect(toImmutableList());
-        }
-        for (Path file : files) {
-            Path relative = oldParent.relativize(file);
+        ImmutableList<Path> paths = contentOf(dir);
+        for (Path path : paths) {
+            Path relative = oldParent.relativize(path);
             Path newPath = target.resolve(relative);
-            if (isDirectory(file)) {
+            if (isDirectory(path)) {
                 createDirectory(newPath);
-            } else if (isRegularFile(file)) {
-                copy(file, newPath);
+            } else if (isRegularFile(path)) {
+                copy(path, newPath);
             }
         }
+    }
+
+    /**
+     * Obtains all sub-directories and files enclosed the passed directory.
+     */
+    private static ImmutableList<Path> contentOf(Path dir) throws IOException {
+        ImmutableList<Path> paths;
+        try (Stream<Path> all = Files.walk(dir)) {
+            paths = all.collect(toImmutableList());
+        }
+        return paths;
     }
 
     /**
