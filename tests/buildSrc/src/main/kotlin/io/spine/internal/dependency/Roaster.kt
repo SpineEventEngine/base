@@ -28,7 +28,7 @@ package io.spine.internal.dependency
 
 // https://github.com/forge/roaster
 object Roaster {
-    private const val version = "2.22.3.Final"
+    private const val version = "2.22.2.Final"
     const val api = "org.jboss.forge.roaster:roaster-api:${version}"
     const val jdt = "org.jboss.forge.roaster:roaster-jdt:${version}"
 }
