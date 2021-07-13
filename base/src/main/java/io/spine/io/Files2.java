@@ -199,10 +199,8 @@ public final class Files2 {
      *         the new parent directory
      */
     public static void copyDir(Path dir, Path target) throws IOException {
-        checkNotNull(dir);
-        checkNotNull(target);
-        checkArgument(isDirectory(dir));
-        checkArgument(isDirectory(target));
+        checkIsDirectory(dir);
+        checkIsDirectory(target);
 
         Path oldParent = dir.getParent();
         ImmutableList<Path> paths = contentOf(dir);
@@ -215,6 +213,11 @@ public final class Files2 {
                 copy(path, newPath);
             }
         }
+    }
+
+    private static void checkIsDirectory(Path dir) {
+        checkNotNull(dir);
+        checkArgument(isDirectory(dir), "The path `%s` is not a directory", dir);
     }
 
     /**
@@ -232,6 +235,7 @@ public final class Files2 {
      * Normalizes and transforms the passed path to an absolute file reference.
      */
     public static File toAbsolute(String path) {
+        checkNotNull(path);
         File file = new File(path);
         Path normalized = file.toPath().normalize();
         File result = normalized.toAbsolutePath().toFile();
