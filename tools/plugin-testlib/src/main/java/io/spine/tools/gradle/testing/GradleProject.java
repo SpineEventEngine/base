@@ -133,10 +133,12 @@ public final class GradleProject {
         @Override
         public boolean test(Path path) {
             String str = path.toString();
-            // Use leading slash to accept `.gradle` files.
-            boolean isGradleCache = str.contains("/.gradle");
-            // Use two slashes to accept `build.gradle.kts`.
-            boolean isBuildDir = str.contains("/build/");
+            String slash = File.separator;
+            // Use leading slash to accept `.gradle` files, but filter out the Gradle cache dir.
+            boolean isGradleCache = str.contains(slash + ".gradle");
+            // Use two slashes to accept `build.gradle.kts`, but filter out the `build` dir.
+            @SuppressWarnings("DuplicateStringLiteralInspection")
+            boolean isBuildDir = str.contains(slash + "build" + slash);
             return !isGradleCache && !isBuildDir;
         }
     }
