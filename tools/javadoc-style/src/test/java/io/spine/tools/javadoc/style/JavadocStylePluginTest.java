@@ -73,28 +73,33 @@ class JavadocStylePluginTest {
                .apply(PLUGIN_ID);
     }
 
-    @Test
-    @DisplayName("apply to a project")
-    void applyToProject() {
-        PluginContainer plugins = project.getPlugins();
-        assertTrue(plugins.hasPlugin(PLUGIN_ID));
-    }
+    @Nested
+    @DisplayName("apply plugin to a project")
+    class Applying {
 
-    @Test
-    @DisplayName("add its extension to a project")
-    void haveExtension() {
-        JavadocStyleExtension extension =
-                project.getExtensions()
-                       .getByType(JavadocStyleExtension.class);
-        assertNotNull(extension);
+        @Test
+        @DisplayName("by the plugin ID")
+        void applyToProject() {
+            PluginContainer plugins = project.getPlugins();
+            assertTrue(plugins.hasPlugin(PLUGIN_ID));
+        }
+
+        @Test
+        @DisplayName("add its extension to a project")
+        void haveExtension() {
+            JavadocStyleExtension extension =
+                    project.getExtensions()
+                           .getByType(JavadocStyleExtension.class);
+            assertNotNull(extension);
+        }
     }
 
     @Nested
-    @DisplayName("add custom task to a project")
+    @DisplayName("add a custom task to a project")
     class Tasks {
 
         @Test
-        @DisplayName("add `formatProtoDoc` task")
+        @DisplayName("called `formatProtoDoc`")
         void addTaskFormatProtoDoc() {
             Task task = task(formatProtoDoc);
             assertNotNull(task);
@@ -103,7 +108,7 @@ class JavadocStylePluginTest {
         }
 
         @Test
-        @DisplayName("add `formatTestProtoDoc` task")
+        @DisplayName("called `formatTestProtoDoc`")
         void addTaskFormatTestProtoDoc() {
             Task task = task(formatTestProtoDoc);
             assertNotNull(task);
