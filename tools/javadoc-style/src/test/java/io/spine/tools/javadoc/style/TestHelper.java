@@ -36,6 +36,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.javadoc.style.JavadocStyleTaskName.formatProtoDoc;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -63,7 +64,8 @@ final class TestHelper {
         List<String> formattedLines = Files.readAllLines(formattedFilePath, UTF_8);
         String mergedLines = Joiner.on(lineSeparator())
                                    .join(formattedLines);
-        assertEquals(expectedContent, mergedLines);
+        assertThat(mergedLines)
+                .isEqualTo(expectedContent);
     }
 
     private static Path format(String fileContent, File folder) {
@@ -77,8 +79,7 @@ final class TestHelper {
     }
 
     private static void executeTask(String filePath, File folder, String fileContent) {
-        GradleProject project = GradleProject
-                .newBuilder()
+        GradleProject project = GradleProject.newBuilder()
                 .setProjectName("proto-javadoc-test")
                 .setProjectFolder(folder)
                 .createFile(filePath, ImmutableList.of(fileContent))
