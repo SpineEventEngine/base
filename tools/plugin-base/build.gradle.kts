@@ -80,6 +80,9 @@ val prepareProtocConfigVersions by tasks.registering {
 
 tasks.processResources.get().dependsOn(prepareProtocConfigVersions)
 
+tasks.processTestResources.get().duplicatesStrategy = DuplicatesStrategy.WARN
+tasks.sourceJar.get().duplicatesStrategy = DuplicatesStrategy.WARN
+
 sourceSets.test {
     resources.srcDir("$projectDir/src/test/resources")
 }

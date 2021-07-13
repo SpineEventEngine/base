@@ -36,3 +36,5 @@ dependencies {
 
     testImplementation(project(":testlib"))
 }
+
+tasks.sourceJar.get().duplicatesStrategy = DuplicatesStrategy.WARN

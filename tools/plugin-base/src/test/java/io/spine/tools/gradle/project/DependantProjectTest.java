@@ -52,15 +52,14 @@ import java.util.Set;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.tools.gradle.ConfigurationName.compile;
 import static io.spine.tools.gradle.ConfigurationName.implementation;
 import static io.spine.tools.gradle.ConfigurationName.runtimeClasspath;
 import static io.spine.tools.gradle.ConfigurationName.testRuntimeClasspath;
 import static java.lang.String.format;
 
 @SuppressWarnings("DuplicateStringLiteralInspection") // Test display names duplication.
-@DisplayName("DependantProject should")
-class ProjectDependantTest {
+@DisplayName("`DependantProject` should")
+class DependantProjectTest {
 
     private Project project;
 
@@ -92,17 +91,6 @@ class ProjectDependantTest {
         container.implementation(dependency.notation());
 
         checkDependency(implementation, dependency);
-    }
-
-    @SuppressWarnings("deprecation") // `compile` configuration.
-    @Test
-    @DisplayName("add a compile dependency")
-    void compile() {
-        DependantProject container = DependantProject.from(project);
-        Artifact dependency = artifact();
-        container.compile(dependency);
-
-        checkDependency(compile, dependency);
     }
 
     @Test
@@ -201,7 +189,7 @@ class ProjectDependantTest {
 
         private void checkNotForced() {
             project.getConfigurations()
-                   .forEach(ProjectDependantTest::checkForcedModulesEmpty);
+                   .forEach(DependantProjectTest::checkForcedModulesEmpty);
         }
     }
 

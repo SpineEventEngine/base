@@ -64,4 +64,8 @@ tasks.jar {
     // We should provide a classifier or else Protobuf Gradle plugin will substitute it with
     // an OS-specific one.
     archiveClassifier.set("exe")
+
+    duplicatesStrategy = DuplicatesStrategy.WARN
 }
+
+tasks.sourceJar.get().duplicatesStrategy = DuplicatesStrategy.WARN

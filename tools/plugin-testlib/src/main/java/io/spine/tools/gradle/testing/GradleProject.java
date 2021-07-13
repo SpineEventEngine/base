@@ -44,6 +44,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -108,18 +109,38 @@ public final class GradleProject {
         BuildGradle buildGradle = new BuildGradle(projectRoot());
         buildGradle.createFile();
 
-        Path projectRoot = ProjectRoot.instance()
-                                      .toPath();
+        Path projectRoot = ProjectRoot.instance().toPath();
         TestEnvGradle testEnvGradle = new TestEnvGradle(projectRoot, projectRoot());
         testEnvGradle.createFile();
     }
 
     private void writeBuildSrc() throws IOException {
-        Path projectRoot = ProjectRoot.instance()
-                                      .toPath();
+        Path projectRoot = ProjectRoot.instance().toPath();
         Path buildSrc = projectRoot.resolve(buildSrcDir);
         Path target = projectRoot();
-        copyDir(buildSrc, target);
+        copyDir(buildSrc, target, new SkipNonSrcDirs());
+    }
+
+    /**
+     * The predicate to prevent copying Gradle cache directory, and build results.
+     *
+     * <p>The predicate 1) saves on unnecessary copying, 2) prevents file locking issue
+     * under Windows, which fails the build because locked under the {@code .gradle}
+     * directory could not be copied.
+     */
+    private static class SkipNonSrcDirs implements Predicate<Path> {
+
+        @Override
+        public boolean test(Path path) {
+            String str = path.toString();
+            String slash = File.separator;
+            // Use leading slash to accept `.gradle` files, but filter out the Gradle cache dir.
+            boolean isGradleCache = str.contains(slash + ".gradle");
+//            // Use two slashes to accept `build.gradle.kts`, but filter out the `build` dir.
+//            @SuppressWarnings("DuplicateStringLiteralInspection")
+//            boolean isBuildDir = str.contains(slash + "build" + slash);
+            return !isGradleCache /*&& !isBuildDir*/;
+        }
     }
 
     private void writeProtoFiles(Iterable<String> fileNames) throws IOException {
@@ -145,7 +166,8 @@ public final class GradleProject {
     }
 
     private GradleRunner prepareRun(TaskName taskName) {
-        String[] args = TaskArguments.mode(debug).of(taskName, gradleProperties);
+        String[] args = TaskArguments.mode(debug)
+                                     .of(taskName, gradleProperties);
         return gradleRunner.withArguments(args);
     }
 
