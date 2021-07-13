@@ -40,7 +40,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.javadoc.style.JavadocStyleTaskName.formatProtoDoc;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * A helper class for the {@link JavadocStylePlugin} testing.

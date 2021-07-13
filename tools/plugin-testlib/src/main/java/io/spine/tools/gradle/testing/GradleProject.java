@@ -166,7 +166,8 @@ public final class GradleProject {
     }
 
     private GradleRunner prepareRun(TaskName taskName) {
-        String[] args = TaskArguments.mode(debug).of(taskName, gradleProperties);
+        String[] args = TaskArguments.mode(debug)
+                                     .of(taskName, gradleProperties);
         return gradleRunner.withArguments(args);
     }
 
