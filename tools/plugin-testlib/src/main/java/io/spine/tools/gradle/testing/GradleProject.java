@@ -182,10 +182,11 @@ public final class GradleProject {
     private void writeFile(String fileName, String dir) throws IOException {
         String filePath = dir + fileName;
         String resourcePath = name + '/' + filePath;
-        InputStream fileContent = openResource(resourcePath);
-        Path fileSystemPath = projectRoot().resolve(filePath);
-        createDirectories(fileSystemPath.getParent());
-        copy(fileContent, fileSystemPath);
+        try (InputStream fileContent = openResource(resourcePath)) {
+            Path fileSystemPath = projectRoot().resolve(filePath);
+            createDirectories(fileSystemPath.getParent());
+            copy(fileContent, fileSystemPath);
+        }
     }
 
     private InputStream openResource(String fullPath) {
