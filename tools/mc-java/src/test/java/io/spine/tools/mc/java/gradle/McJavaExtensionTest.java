@@ -81,7 +81,8 @@ class McJavaExtensionTest {
 
             String dir = McJavaExtension.getGeneratedMainResourcesDir(project);
 
-            assertEquals(spineProtobuf().generatedMainResourcesDir, dir);
+            assertThat(dir)
+                    .isEqualTo(spineProtobuf().generatedMainResourcesDir);
         }
     }
 
@@ -104,7 +105,8 @@ class McJavaExtensionTest {
 
             String dir = McJavaExtension.getGeneratedTestResourcesDir(project);
 
-            assertEquals(spineProtobuf().generatedTestResourcesDir, dir);
+            assertThat(dir)
+                    .isEqualTo(spineProtobuf().generatedTestResourcesDir);
         }
     }
 
@@ -127,7 +129,8 @@ class McJavaExtensionTest {
 
             File file = McJavaExtension.getMainDescriptorSetFile(project);
 
-            assertEquals(spineProtobuf().mainDescriptorSetFile, file.toString());
+            assertThat(file.toString())
+                    .isEqualTo(spineProtobuf().mainDescriptorSetFile);
         }
     }
 
@@ -150,7 +153,8 @@ class McJavaExtensionTest {
 
             File file = McJavaExtension.getTestDescriptorSetFile(project);
 
-            assertEquals(spineProtobuf().testDescriptorSetFile, file.toString());
+            assertThat(file.toString())
+                    .isEqualTo(spineProtobuf().testDescriptorSetFile);
         }
     }
 
@@ -173,7 +177,8 @@ class McJavaExtensionTest {
 
             String dir = McJavaExtension.getGeneratedMainRejectionsDir(project);
 
-            assertEquals(spineProtobuf().generatedMainRejectionsDir, dir);
+            assertThat(dir)
+                    .isEqualTo(spineProtobuf().generatedMainRejectionsDir);
         }
     }
 
@@ -190,7 +195,7 @@ class McJavaExtensionTest {
             void defaultValue() {
                 List<String> actualDirs = actualDirs();
 
-                assertEquals(1, actualDirs.size());
+                assertThat(actualDirs).hasSize(1);
                 assertNotEmptyAndIsInProjectDir(actualDirs.get(0));
             }
 
@@ -201,8 +206,9 @@ class McJavaExtensionTest {
 
                 List<String> actualDirs = actualDirs();
 
-                assertEquals(1, actualDirs.size());
-                assertEquals(spineProtobuf().dirToClean, actualDirs.get(0));
+                assertThat(actualDirs).hasSize(1);
+                assertThat(actualDirs.get(0))
+                        .isEqualTo(spineProtobuf().dirToClean);
             }
 
             @Test
@@ -212,7 +218,8 @@ class McJavaExtensionTest {
 
                 List<String> actualDirs = actualDirs();
 
-                assertEquals(spineProtobuf().dirsToClean, actualDirs);
+                assertThat(actualDirs)
+                        .isEqualTo(spineProtobuf().dirsToClean);
             }
 
             @Test
@@ -223,7 +230,8 @@ class McJavaExtensionTest {
 
                 List<String> actualDirs = actualDirs();
 
-                assertEquals(spineProtobuf().dirsToClean, actualDirs);
+                assertThat(actualDirs)
+                        .isEqualTo(spineProtobuf().dirsToClean);
             }
         }
 
