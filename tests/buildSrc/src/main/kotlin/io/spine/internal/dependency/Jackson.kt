@@ -35,4 +35,6 @@ object Jackson {
     const val dataformatXml = "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${version}"
     // https://github.com/FasterXML/jackson-dataformats-text/releases
     const val dataformatYaml = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${version}"
+    // https://github.com/FasterXML/jackson-module-kotlin/releases
+    const val moduleKotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:${version}"
 }
