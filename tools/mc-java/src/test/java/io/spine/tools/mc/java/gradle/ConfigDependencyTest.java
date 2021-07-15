@@ -51,7 +51,7 @@ import static io.spine.tools.mc.java.gradle.given.Project.newProject;
  *         tests for the {@code mc-java-checks} plugin.
  */
 @SlowTest
-@DisplayName("`DependencyConfigurer` should")
+@DisplayName("`ConfigDependency` should")
 class ConfigDependencyTest {
 
     @Test
