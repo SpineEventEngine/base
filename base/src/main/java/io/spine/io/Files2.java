@@ -58,8 +58,8 @@ import static java.nio.file.Files.isRegularFile;
  *
  * <p>For more file-related utilities, please see:
  * <ul>
- *     <li>{@link Files Files} from NIO
- *     <li>{@link Paths Paths} from NIO2
+ *     <li>{@link java.nio.file.Files Files} from NIO
+ *     <li>{@link java.nio.file.Paths Paths} from NIO2
  *     <li>{@link com.google.common.io.Files Files from Guava}
  * </ul>
  */
