@@ -122,7 +122,8 @@ public final class GradleProject {
     }
 
     /**
-     * The predicate to prevent copying Gradle cache directory, and build results.
+     * The predicate to prevent copying unnecessary files when {@linkplain #writeBuildSrc() copying}
+     * the {@code buildSrc} directory.
      *
      * <p>The predicate 1) saves on unnecessary copying, 2) prevents file locking issue
      * under Windows, which fails the build because locked under the {@code .gradle}
@@ -136,6 +137,17 @@ public final class GradleProject {
             String slash = File.separator;
             // Use leading slash to accept `.gradle` files, but filter out the Gradle cache dir.
             boolean isGradleCache = str.contains(slash + ".gradle");
+
+            /**
+             * The following block is commented out because not copying the `build`
+             * makes dependencies defined as Kotlin objects (see
+             * `buildSrc/src/main/kotlin/io/spine/internal/dependency`) unresolvable in
+             * Groovy-based Gradle scripts in tests.
+             *
+             * Uncomment the below block and the associated boolean operation in the `return`
+             * statement when resolving
+             * the [associated issue][https://github.com/SpineEventEngine/base/issues/655].
+             */
 //            // Use two slashes to accept `build.gradle.kts`, but filter out the `build` dir.
 //            @SuppressWarnings("DuplicateStringLiteralInspection")
 //            boolean isBuildDir = str.contains(slash + "build" + slash);
