@@ -25,13 +25,14 @@
  */
 package io.spine.tools.mc.java.gradle;
 
+import io.spine.testing.TempDir;
 import io.spine.tools.java.fs.DefaultJavaPaths;
 import org.gradle.api.Project;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+//import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,15 +49,15 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("`Extension` should")
+@DisplayName("`McJavaExtension` should")
 class McJavaExtensionTest {
 
     private Project project;
     private File projectDir;
 
     @BeforeEach
-    void setUp(@TempDir Path tempDirPath) {
-        projectDir = tempDirPath.toFile();
+    void setUp() {
+        projectDir = TempDir.forClass(getClass());
         project = newProject(projectDir);
         project.getPluginManager()
                .apply(MC_JAVA_GRADLE_PLUGIN_ID);
