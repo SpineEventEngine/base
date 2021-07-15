@@ -20,9 +20,9 @@ install:
   - chmod +x config/scripts/register-ssh-key.sh
 
 script:
-  - ./gradlew build --stacktrace --no-daemon
+  - ./gradlew build --stacktrace
   - cd ./tests
-  - ./gradlew build --stacktrace --no-daemon
+  - ./gradlew build --stacktrace
   - cd ..
 
   # Decrypt and unarchive Maven and Google Cloud Storage credentials.
