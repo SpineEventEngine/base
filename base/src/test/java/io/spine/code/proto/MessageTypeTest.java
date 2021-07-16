@@ -52,7 +52,7 @@ import java.util.function.Predicate;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("MessageType should")
+@DisplayName("`MessageType` should")
 final class MessageTypeTest {
 
     /**

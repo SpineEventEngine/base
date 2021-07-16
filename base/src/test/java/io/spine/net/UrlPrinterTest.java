@@ -40,7 +40,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.net.UrlPrinter.printToString;
 
 @SuppressWarnings("CheckReturnValue") // Calling builder methods.
-@DisplayName("UrlPrinter should")
+@DisplayName("`UrlPrinter` should")
 class UrlPrinterTest extends UtilityClassTest<UrlPrinter> {
 
     private static final String HOST = "spine.io";
