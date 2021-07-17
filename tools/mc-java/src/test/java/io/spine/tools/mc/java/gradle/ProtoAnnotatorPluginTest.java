@@ -34,6 +34,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
+import io.spine.testing.TempDir;
 import io.spine.tools.java.fs.DefaultJavaPaths;
 import io.spine.tools.java.fs.SourceFile;
 import io.spine.code.proto.FileName;
@@ -49,8 +50,8 @@ import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
@@ -86,106 +87,114 @@ class ProtoAnnotatorPluginTest {
     private File testProjectDir;
 
     @BeforeEach
-    void setUp(@TempDir Path tempDirPath) {
-        testProjectDir = tempDirPath.toFile();
+    void createTempDir() {
+        testProjectDir = TempDir.forClass(getClass());
     }
 
-    @Test
-    @DisplayName("annotate if file option is true")
-    void annotateIfFileOptionIsTrue() throws IOException {
-        assertNestedTypesAnnotations(INTERNAL_ALL, true);
+    @Nested
+    @DisplayName("annotate")
+    class Annotating {
+
+        @Test
+        @DisplayName("if file option is true")
+        void annotateIfFileOptionIsTrue() throws IOException {
+            assertNestedTypesAnnotations(INTERNAL_ALL, true);
+        }
+
+        @Test
+        @DisplayName("service if file option if true")
+        void annotateServiceIfFileOptionIsTrue() throws IOException {
+            assertServiceAnnotations(INTERNAL_ALL_SERVICE, true);
+        }
+
+        @Test
+        @DisplayName("multiple files if file option is true")
+        void annotateMultipleFilesIfFileOptionIsTrue() throws IOException {
+            assertMainDefinitionAnnotations(INTERNAL_ALL_MULTIPLE, true);
+        }
+
+        @Test
+        @DisplayName("if message option is true")
+        void annotateIfMessageOptionIsTrue() throws IOException {
+            assertNestedTypesAnnotations(INTERNAL_MESSAGE, true);
+        }
+
+        @Test
+        @DisplayName("multiple files if message option is true")
+        void annotateMultipleFilesIfMessageOptionIsTrue() throws IOException {
+            assertMainDefinitionAnnotations(INTERNAL_MESSAGE_MULTIPLE, true);
+        }
+        @Test
+        @DisplayName("accessors if field option is true")
+        void annotateAccessorsIfFieldOptionIsTrue() throws IOException {
+            assertFieldAnnotations(INTERNAL_FIELD, true);
+        }
+
+        @Test
+        @DisplayName("accessors in multiple files if field option is true")
+        void annotateAccessorsInMultipleFilesIfFieldOptionIsTrue() throws IOException {
+            assertFieldAnnotationsMultiple(INTERNAL_FIELD_MULTIPLE, true);
+        }
+
+        @Test
+        @DisplayName("GRPC services if service option is true")
+        void annotateGrpcServicesIfServiceOptionIsTrue() throws IOException {
+            assertServiceAnnotations(SPI_SERVICE, SPI.class, true);
+        }
     }
 
-    @Test
-    @DisplayName("annotate service if file option if true")
-    void annotateServiceIfFileOptionIsTrue() throws IOException {
-        assertServiceAnnotations(INTERNAL_ALL_SERVICE, true);
-    }
+    @Nested
+    @DisplayName("not annotate")
+    class NotAnnotating {
 
-    @Test
-    @DisplayName("not annotate if file option if false")
-    void notAnnotateIfFileOptionIfFalse() throws IOException {
-        assertNestedTypesAnnotations(NO_INTERNAL_OPTIONS, false);
-    }
+        @Test
+        @DisplayName("if file option if false")
+        void notAnnotateIfFileOptionIfFalse() throws IOException {
+            assertNestedTypesAnnotations(NO_INTERNAL_OPTIONS, false);
+        }
 
-    @Test
-    @DisplayName("not annotate service if file option is false")
-    void notAnnotateServiceIfFileOptionIfFalse() throws IOException {
-        assertNestedTypesAnnotations(NO_INTERNAL_OPTIONS, false);
-    }
+        @Test
+        @DisplayName("service if file option is false")
+        void notAnnotateServiceIfFileOptionIfFalse() throws IOException {
+            assertNestedTypesAnnotations(NO_INTERNAL_OPTIONS, false);
+        }
 
-    @Test
-    @DisplayName("annotate multiple files if file option is true")
-    void annotateMultipleFilesIfFileOptionIsTrue() throws IOException {
-        assertMainDefinitionAnnotations(INTERNAL_ALL_MULTIPLE, true);
-    }
+        @Test
+        @DisplayName("multiple files if file option is false")
+        void notAnnotateMultipleFilesIfFileOptionIsFalse() throws IOException {
+            assertMainDefinitionAnnotations(NO_INTERNAL_OPTIONS_MULTIPLE, false);
+        }
 
-    @Test
-    @DisplayName("not annotate multiple files if file option is false")
-    void notAnnotateMultipleFilesIfFileOptionIsFalse() throws IOException {
-        assertMainDefinitionAnnotations(NO_INTERNAL_OPTIONS_MULTIPLE, false);
-    }
+        @Test
+        @DisplayName("if message option is false")
+        void notAnnotateIfMessageOptionIsFalse() throws IOException {
+            assertNestedTypesAnnotations(NO_INTERNAL_OPTIONS, false);
+        }
 
-    @Test
-    @DisplayName("annotate if message option is true")
-    void annotateIfMessageOptionIsTrue() throws IOException {
-        assertNestedTypesAnnotations(INTERNAL_MESSAGE, true);
-    }
+        @Test
+        @DisplayName("multiple files if message option is false")
+        void notAnnotateMultipleFilesIfMessageOptionIsFalse() throws IOException {
+            assertMainDefinitionAnnotations(NO_INTERNAL_OPTIONS_MULTIPLE, false);
+        }
 
-    @Test
-    @DisplayName("not annotate if message option is false")
-    void notAnnotateIfMessageOptionIsFalse() throws IOException {
-        assertNestedTypesAnnotations(NO_INTERNAL_OPTIONS, false);
-    }
+        @Test
+        @DisplayName("accessors if field option is false")
+        void notAnnotateAccessorsIfFieldOptionIsFalse() throws IOException {
+            assertFieldAnnotations(NO_INTERNAL_OPTIONS, false);
+        }
 
-    @Test
-    @DisplayName("annotate multiple files if message option is true")
-    void annotateMultipleFilesIfMessageOptionIsTrue() throws IOException {
-        assertMainDefinitionAnnotations(INTERNAL_MESSAGE_MULTIPLE, true);
-    }
+        @Test
+        @DisplayName("accessors in multiple files if field option is false")
+        void notAnnotateAccessorsInMultipleFilesIfFieldOptionIsFalse()
+                throws IOException {
+            assertFieldAnnotationsMultiple(NO_INTERNAL_OPTIONS_MULTIPLE, false);
+        }
 
-    @Test
-    @DisplayName("not annotate multiple files if message option is false")
-    void notAnnotateMultipleFilesIfMessageOptionIsFalse() throws IOException {
-        assertMainDefinitionAnnotations(NO_INTERNAL_OPTIONS_MULTIPLE, false);
-    }
-
-    @Test
-    @DisplayName("annotate accessors if field option is true")
-    void annotateAccessorsIfFieldOptionIsTrue() throws IOException {
-        assertFieldAnnotations(INTERNAL_FIELD, true);
-    }
-
-    @Test
-    @DisplayName("not annotate accessors if field option is false")
-    void notAnnotateAccessorsIfFieldOptionIsFalse() throws IOException {
-        assertFieldAnnotations(NO_INTERNAL_OPTIONS, false);
-    }
-
-    @Test
-    @DisplayName("annotate accessors in multiple files if field option is true")
-    void annotateAccessorsInMultipleFilesIfFieldOptionIsTrue()
-            throws IOException {
-        assertFieldAnnotationsMultiple(INTERNAL_FIELD_MULTIPLE, true);
-    }
-
-    @Test
-    @DisplayName("not annotate accessors in multiple files if field option is false")
-    void notAnnotateAccessorsInMultipleFilesIfFieldOptionIsFalse()
-            throws IOException {
-        assertFieldAnnotationsMultiple(NO_INTERNAL_OPTIONS_MULTIPLE, false);
-    }
-
-    @Test
-    @DisplayName("annotate GRPC services if section option is true")
-    void annotateGrpcServicesIfServiceOptionIsTrue() throws IOException {
-        assertServiceAnnotations(SPI_SERVICE, SPI.class, true);
-    }
-
-    @Test
-    @DisplayName("not annotate GRPC services if service option is false")
-    void notAnnotateGrpcServicesIfServiceOptionIsFalse() throws IOException {
-        assertServiceAnnotations(NO_INTERNAL_OPTIONS, false);
+        @Test
+        @DisplayName("GRPC services if service option is false")
+        void notAnnotateGrpcServicesIfServiceOptionIsFalse() throws IOException {
+            assertServiceAnnotations(NO_INTERNAL_OPTIONS, false);
+        }
     }
 
     @Test
