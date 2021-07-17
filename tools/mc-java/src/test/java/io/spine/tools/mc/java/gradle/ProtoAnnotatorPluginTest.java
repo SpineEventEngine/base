@@ -97,48 +97,49 @@ class ProtoAnnotatorPluginTest {
 
         @Test
         @DisplayName("if file option is true")
-        void annotateIfFileOptionIsTrue() throws IOException {
+        void ifFileOptionSet() throws IOException {
             assertNestedTypesAnnotations(INTERNAL_ALL, true);
         }
 
         @Test
         @DisplayName("service if file option if true")
-        void annotateServiceIfFileOptionIsTrue() throws IOException {
+        void serviceIfFileOptionSet() throws IOException {
             assertServiceAnnotations(INTERNAL_ALL_SERVICE, true);
         }
 
         @Test
         @DisplayName("multiple files if file option is true")
-        void annotateMultipleFilesIfFileOptionIsTrue() throws IOException {
+        void multipleFilesIfFileOptionSet() throws IOException {
             assertMainDefinitionAnnotations(INTERNAL_ALL_MULTIPLE, true);
         }
 
         @Test
         @DisplayName("if message option is true")
-        void annotateIfMessageOptionIsTrue() throws IOException {
+        void ifMessageOptionSet() throws IOException {
             assertNestedTypesAnnotations(INTERNAL_MESSAGE, true);
         }
 
         @Test
         @DisplayName("multiple files if message option is true")
-        void annotateMultipleFilesIfMessageOptionIsTrue() throws IOException {
+        void multipleFiles() throws IOException {
             assertMainDefinitionAnnotations(INTERNAL_MESSAGE_MULTIPLE, true);
         }
+
         @Test
         @DisplayName("accessors if field option is true")
-        void annotateAccessorsIfFieldOptionIsTrue() throws IOException {
+        void accessors() throws IOException {
             assertFieldAnnotations(INTERNAL_FIELD, true);
         }
 
         @Test
         @DisplayName("accessors in multiple files if field option is true")
-        void annotateAccessorsInMultipleFilesIfFieldOptionIsTrue() throws IOException {
+        void accessorsInMultipleFiles() throws IOException {
             assertFieldAnnotationsMultiple(INTERNAL_FIELD_MULTIPLE, true);
         }
 
         @Test
         @DisplayName("GRPC services if service option is true")
-        void annotateGrpcServicesIfServiceOptionIsTrue() throws IOException {
+        void grpcServices() throws IOException {
             assertServiceAnnotations(SPI_SERVICE, SPI.class, true);
         }
     }
@@ -149,57 +150,56 @@ class ProtoAnnotatorPluginTest {
 
         @Test
         @DisplayName("if file option if false")
-        void notAnnotateIfFileOptionIfFalse() throws IOException {
+        void ifFileOption() throws IOException {
             assertNestedTypesAnnotations(NO_INTERNAL_OPTIONS, false);
         }
 
         @Test
         @DisplayName("service if file option is false")
-        void notAnnotateServiceIfFileOptionIfFalse() throws IOException {
+        void serviceIfFileOption() throws IOException {
             assertNestedTypesAnnotations(NO_INTERNAL_OPTIONS, false);
         }
 
         @Test
         @DisplayName("multiple files if file option is false")
-        void notAnnotateMultipleFilesIfFileOptionIsFalse() throws IOException {
+        void multipleFilesIfFileOption() throws IOException {
             assertMainDefinitionAnnotations(NO_INTERNAL_OPTIONS_MULTIPLE, false);
         }
 
         @Test
         @DisplayName("if message option is false")
-        void notAnnotateIfMessageOptionIsFalse() throws IOException {
+        void ifMessageOption() throws IOException {
             assertNestedTypesAnnotations(NO_INTERNAL_OPTIONS, false);
         }
 
         @Test
         @DisplayName("multiple files if message option is false")
-        void notAnnotateMultipleFilesIfMessageOptionIsFalse() throws IOException {
+        void multipleFiles() throws IOException {
             assertMainDefinitionAnnotations(NO_INTERNAL_OPTIONS_MULTIPLE, false);
         }
 
         @Test
         @DisplayName("accessors if field option is false")
-        void notAnnotateAccessorsIfFieldOptionIsFalse() throws IOException {
+        void accessors() throws IOException {
             assertFieldAnnotations(NO_INTERNAL_OPTIONS, false);
         }
 
         @Test
         @DisplayName("accessors in multiple files if field option is false")
-        void notAnnotateAccessorsInMultipleFilesIfFieldOptionIsFalse()
-                throws IOException {
+        void accessorsInMultipleFiles() throws IOException {
             assertFieldAnnotationsMultiple(NO_INTERNAL_OPTIONS_MULTIPLE, false);
         }
 
         @Test
         @DisplayName("GRPC services if service option is false")
-        void notAnnotateGrpcServicesIfServiceOptionIsFalse() throws IOException {
+        void gprcServices() throws IOException {
             assertServiceAnnotations(NO_INTERNAL_OPTIONS, false);
         }
     }
 
     @Test
     @DisplayName("compile generated source with potential annotation duplication")
-    void compileGeneratedSourcesWithPotentialAnnotationDuplication() {
+    void compilingSources() {
         newProjectWithFile(POTENTIAL_ANNOTATION_DUP).executeTask(compileJava);
     }
 
