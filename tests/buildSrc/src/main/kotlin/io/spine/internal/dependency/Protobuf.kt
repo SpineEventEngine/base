@@ -38,7 +38,7 @@ object Protobuf {
 
     // https://github.com/google/protobuf-gradle-plugin/releases
     object GradlePlugin {
-        const val version = "0.8.16"
+        const val version = "0.8.17"
         const val id = "com.google.protobuf"
         const val lib = "com.google.protobuf:protobuf-gradle-plugin:${version}"
     }
