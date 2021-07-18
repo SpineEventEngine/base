@@ -19,8 +19,8 @@ jobs:
 
       - name: Run tests with Gradle
         shell: cmd
-        run: gradlew.bat build --no-daemon
+        run: gradlew.bat build
 
       - name: Run smoke tests with Gradle
         shell: cmd
-        run: cd tests & gradlew.bat build --stacktrace --no-daemon
+        run: cd tests & gradlew.bat build --stacktrace
