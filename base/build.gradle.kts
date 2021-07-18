@@ -34,9 +34,7 @@ import io.spine.internal.gradle.RunBuild
 import io.spine.internal.gradle.Scripts
 import io.spine.internal.gradle.excludeProtobufLite
 import java.nio.file.Files.isSameFile
-import org.gradle.api.Task
-import org.gradle.api.tasks.Delete
-import org.gradle.api.tasks.bundling.Jar
+import java.time.Duration
 
 plugins {
     `java-library`
@@ -101,11 +99,14 @@ apply(from = Scripts.publishProto(project))
 
 val rebuildProtobuf by tasks.registering(RunBuild::class) {
     directory = "$rootDir/base-validating-builders"
+    // Set the timeout to fail a stalled build automatically under Windows.
+    timeout.set(Duration.ofMinutes(30))
     dependsOn(rootProject.subprojects.map { p -> p.tasks["publishToMavenLocal"] })
+    mustRunAfter(tasks.build)
 }
 
-tasks.publish.get().dependsOn(rebuildProtobuf)
 tasks.build.get().finalizedBy(rebuildProtobuf)
+tasks.publish.get().dependsOn(rebuildProtobuf)
 
 tasks.processResources.get().duplicatesStrategy = DuplicatesStrategy.WARN
 tasks.processTestResources.get().duplicatesStrategy = DuplicatesStrategy.WARN
