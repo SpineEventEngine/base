@@ -27,6 +27,7 @@
 package io.spine.internal.gradle
 
 import java.io.File
+import java.util.concurrent.TimeUnit
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.Internal
