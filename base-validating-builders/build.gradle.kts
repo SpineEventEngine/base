@@ -24,16 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.ProtobufConfigurator.JavaGenerateProtoTaskCollection
 import com.google.protobuf.gradle.*
-import io.spine.internal.dependency.JavaX
-import org.gradle.internal.os.OperatingSystem
-
-import io.spine.internal.dependency.Protobuf
-import io.spine.internal.dependency.Guava
-import io.spine.internal.dependency.Flogger
 import io.spine.internal.dependency.CheckerFramework
 import io.spine.internal.dependency.ErrorProne
+import io.spine.internal.dependency.Flogger
+import io.spine.internal.dependency.Guava
+import io.spine.internal.dependency.JavaX
+import io.spine.internal.dependency.Protobuf
+import org.gradle.internal.os.OperatingSystem
 
 buildscript {
     apply(from = "$projectDir/../version.gradle.kts")
@@ -167,7 +165,7 @@ tasks.build {
                 .command("$directory/$script", ":base:cleanJar", ":base:jar", "--console=plain")
                 .directory(file(directory))
                 .start()
-        if (process.waitFor() != 0) {
+        if (!process.waitFor(5, TimeUnit.SECONDS)) {
             throw GradleException("Unable to rebuild JAR for :base.")
         }
     }

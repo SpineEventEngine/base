@@ -39,7 +39,7 @@ configure(project.rootProject) {
          * 
          * @param directory the project root directory in which to execute the build
          */
-        runBuild = { final GString directory ->
+        runBuild = { final String directory ->
             final boolean shouldClean = gradle.getTaskGraph().hasTask(':clean')
             final def command = []
             final def runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
@@ -69,7 +69,7 @@ configure(project.rootProject) {
                     .redirectError(errorOut)
                     .redirectOutput(debugOut)
                     .start()
-            if (process.waitFor() != 0) {
+            if (!process.waitFor(5, TimeUnit.SECONDS)) {
                 throw new GradleException("Build FAILED. See $errorOut for details.")
             }
         }

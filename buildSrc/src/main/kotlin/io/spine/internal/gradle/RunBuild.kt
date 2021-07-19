@@ -27,6 +27,7 @@
 package io.spine.internal.gradle
 
 import java.io.File
+import java.util.concurrent.TimeUnit
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.Internal
@@ -79,7 +80,7 @@ open class RunBuild : DefaultTask() {
         val debugOut = File(buildDir, "debug-out.txt")
 
         val process = startProcess(command, errorOut, debugOut)
-        if (process.waitFor() != 0) {
+        if (!process.waitFor(5, TimeUnit.SECONDS)) {
             if (errorOut.exists()) {
                 logger.error(errorOut.readText())
             }

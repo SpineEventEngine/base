@@ -69,7 +69,7 @@ configure(project.rootProject) {
                     .redirectError(errorOut)
                     .redirectOutput(debugOut)
                     .start()
-            if (process.waitFor() != 0) {
+            if (!process.waitFor(5, TimeUnit.SECONDS)) {
                 throw new GradleException("Build FAILED. See $errorOut for details.")
             }
         }
