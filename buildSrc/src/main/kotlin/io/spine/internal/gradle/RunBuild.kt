@@ -80,7 +80,7 @@ open class RunBuild : DefaultTask() {
         val debugOut = File(buildDir, "debug-out.txt")
 
         val process = startProcess(command, errorOut, debugOut)
-        if (!process.waitFor(5, TimeUnit.SECONDS)) {
+        if (!process.waitFor(10, TimeUnit.MINUTES)) {
             if (errorOut.exists()) {
                 logger.error(errorOut.readText())
             }

@@ -165,7 +165,7 @@ tasks.build {
                 .command("$directory/$script", ":base:cleanJar", ":base:jar", "--console=plain")
                 .directory(file(directory))
                 .start()
-        if (!process.waitFor(5, TimeUnit.SECONDS)) {
+        if (!process.waitFor(10, TimeUnit.MINUTES)) {
             throw GradleException("Unable to rebuild JAR for :base.")
         }
     }
