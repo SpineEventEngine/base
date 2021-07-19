@@ -78,7 +78,7 @@ open class RunBuild : DefaultTask() {
         val errorOut = File(buildDir, "error-out.txt")
         val debugOut = File(buildDir, "debug-out.txt")
 
-        val process = buildProcess(command, errorOut, debugOut)
+        val process = startProcess(command, errorOut, debugOut)
         if (process.waitFor() != 0) {
             if (errorOut.exists()) {
                 logger.error(errorOut.readText())
@@ -108,7 +108,7 @@ open class RunBuild : DefaultTask() {
         return command
     }
 
-    private fun buildProcess(command: List<String>, errorOut: File, debugOut: File) =
+    private fun startProcess(command: List<String>, errorOut: File, debugOut: File) =
         ProcessBuilder()
             .command(command)
             .directory(project.file(directory))
