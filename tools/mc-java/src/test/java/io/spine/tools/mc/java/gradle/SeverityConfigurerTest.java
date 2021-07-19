@@ -111,7 +111,7 @@ class SeverityConfigurerTest {
     private ErrorProneChecksExtension configureSpineCheckExtension() {
         ExtensionContainer extensions = project.getExtensions();
         ErrorProneChecksExtension extension =
-                extensions.create(ErrorProneChecksPlugin.extensionName(),
+                extensions.create(McJavaChecksPlugin.extensionName(),
                                   ErrorProneChecksExtension.class);
         return extension;
     }

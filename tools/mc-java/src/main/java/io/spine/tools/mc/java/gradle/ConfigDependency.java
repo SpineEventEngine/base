@@ -27,13 +27,19 @@
 package io.spine.tools.mc.java.gradle;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.flogger.FluentLogger;
 import io.spine.logging.Logging;
 import io.spine.tools.gradle.DependencyVersions;
+import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.DependencySet;
+import org.gradle.api.artifacts.LenientConfiguration;
 import org.gradle.api.artifacts.ResolvedConfiguration;
+import org.gradle.api.artifacts.UnresolvedDependency;
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency;
+
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
@@ -48,24 +54,33 @@ public final class ConfigDependency implements Logging {
      * The name of the Maven artifact of the Model Compiler Java Checks.
      */
     @VisibleForTesting
-    public static final String SPINE_MC_CHECKS_ARTIFACT = "spine-mc-java-checks";
+    public static final String SPINE_MC_JAVA_CHECKS_ARTIFACT = "spine-mc-java-checks";
 
+    /** The configuration to be extended. */
     private final Configuration configuration;
 
-    private ConfigDependency(Configuration cfg) {
+    /** If true, the extended configuration will be checked for errors by downloading its files. */
+    private final boolean forceDownload;
+
+    private ConfigDependency(Configuration cfg, boolean forceDownload) {
         this.configuration = cfg;
+        this.forceDownload = forceDownload;
     }
 
     /**
-     * Create the {@code DependencyConfigurer} for the given project {@link Configuration}.
+     * Adds the dependency of the Spine Model Checks to the given configuration.
      *
-     * @param cfg
-     *         the configuration
-     * @return the {@code DependencyConfigurer} instance
+     * @param project
+     *         the project to which apply the dependency
+     * @param forceDownload
+     *          forces the download of the files which make up the given configuration before
+     *          this method finishes
+     * @return true if the configuration was applied
      */
-    public static boolean applyTo(Configuration cfg) {
-        checkNotNull(cfg);
-        ConfigDependency dep = new ConfigDependency(cfg);
+    public static boolean applyTo(Project project, boolean forceDownload) {
+        checkNotNull(project);
+        Configuration preprocessorConfig = PreprocessorConfig.applyTo(project);
+        ConfigDependency dep = new ConfigDependency(preprocessorConfig, forceDownload);
         boolean result = dep.addDependency();
         return result;
     }
@@ -73,33 +88,52 @@ public final class ConfigDependency implements Logging {
     /**
      * Adds the dependency to the project configuration.
      *
-     * <p>If the dependency cannot be resolved, the method does nothing and returns {@code false}.
-     *
-     * @return {@code true} if the dependency was resolved successfully and {@code false} otherwise
+     * @return {@code true} if the operation was successful, {@code false} otherwise
+     * @see #forceDownload
      */
     private boolean addDependency() {
         DependencyVersions versions = DependencyVersions.get();
         String version = versions.spineBase();
 
-        boolean isResolvable = isResolvableFor(version);
-        if (isResolvable) {
-            addDependency(configuration, version);
+        Configuration configCopy = addDependency(version);
+
+        if (forceDownload) {
+            boolean isResolvable = isResolvable(configCopy);
+            return isResolvable;
         }
-        return isResolvable;
+        return true;
+    }
+
+    private Configuration addDependency(String version) {
+        Configuration configCopy = configuration.copy();
+        addDependency(configCopy, version);
+        return configCopy;
     }
 
     /**
-     * Checks if the given dependency version is resolvable.
+     * Checks if the given configuration is resolvable.
      *
      * <p>Uses the configuration copy because the configuration resolution is the irreversible
      * action that can be done only once for any given {@link Configuration}.
      */
-    private boolean isResolvableFor(String version) {
-        Configuration configCopy = configuration.copy();
-        addDependency(configCopy, version);
-        ResolvedConfiguration resolved = configCopy.getResolvedConfiguration();
-        boolean isResolvable = !resolved.hasError();
-        return isResolvable;
+    private boolean isResolvable(Configuration configCopy) {
+        if (forceDownload) {
+            ResolvedConfiguration resolved = configCopy.getResolvedConfiguration();
+            boolean hasErrors = !resolved.hasError();
+            if (!hasErrors) {
+                logUnresolvedFor(resolved);
+            }
+            return hasErrors;
+        }
+        return true;
+    }
+
+    private void logUnresolvedFor(ResolvedConfiguration resolved) {
+        LenientConfiguration lenient = resolved.getLenientConfiguration();
+        FluentLogger.Api error = _error();
+        error.log("The configuration `%s` was not fully resolved.", resolved);
+        Set<UnresolvedDependency> unresolved = lenient.getUnresolvedModuleDependencies();
+        error.log("Unresolved dependencies: `%s`.", unresolved);
     }
 
     /**
@@ -107,11 +141,11 @@ public final class ConfigDependency implements Logging {
      */
     private void addDependency(Configuration cfg, String version) {
         _debug().log("Adding dependency on %s:%s:%s to the %s configuration.",
-                     SPINE_TOOLS_GROUP, SPINE_MC_CHECKS_ARTIFACT, version,
-                     annotationProcessor.value());
+                     SPINE_TOOLS_GROUP, SPINE_MC_JAVA_CHECKS_ARTIFACT, version,
+                     annotationProcessor);
         DependencySet dependencies = cfg.getDependencies();
         Dependency dependency = new DefaultExternalModuleDependency(
-                SPINE_TOOLS_GROUP, SPINE_MC_CHECKS_ARTIFACT, version);
+                SPINE_TOOLS_GROUP, SPINE_MC_JAVA_CHECKS_ARTIFACT, version);
         dependencies.add(dependency);
     }
 }

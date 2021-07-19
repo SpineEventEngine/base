@@ -26,7 +26,6 @@
 
 package io.spine.tools.mc.java.gradle;
 
-import com.google.common.testing.NullPointerTester;
 import io.spine.testing.SlowTest;
 import io.spine.tools.mc.java.gradle.given.StubProject;
 import org.gradle.api.Project;
@@ -39,22 +38,22 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
 import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
-import static io.spine.tools.mc.java.gradle.ConfigDependency.SPINE_MC_CHECKS_ARTIFACT;
+import static io.spine.tools.mc.java.gradle.ConfigDependency.SPINE_MC_JAVA_CHECKS_ARTIFACT;
 
 /**
  * A test for the {@link ConfigDependency} part of the Spine Error Prone Checks plugin.
  *
  * @implNote This test configures the project with real dependencies and repositories which leads
- *         to a slow test execution. In future, it should be removed in favor of proper integration
- *         tests for the {@code mc-java-checks} plugin.
+ *         to a slow test execution. In the future, it should be removed in favor of proper
+ *         integration tests for the {@code mc-java-checks} plugin.
  */
 @SlowTest
 @DisplayName("`ConfigDependency` should")
 class ConfigDependencyTest {
 
+    /** The helper to configure a Gradle project. */
     private StubProject stubProject;
 
     @BeforeEach
@@ -63,52 +62,44 @@ class ConfigDependencyTest {
     }
 
     @Test
-    @DisplayName(NOT_ACCEPT_NULLS)
-    void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(ConfigDependency.class);
-    }
-
-    @Test
-    @DisplayName("add spine check dependency to annotation processor config")
+    @DisplayName("add Spine Java Checks dependency to annotation processor config")
     void addSpineCheckDependencyToAnnotationProcessorConfig() {
         Project project = stubProject.withMavenRepositories().get();
-        addDependency(project);
 
-        boolean hasDependency = hasErrorProneChecksDependency(project);
+        boolean applied = ConfigDependency.applyTo(project, true);
+        assertThat(applied).isTrue();
+
+        boolean hasDependency = hasMcJavaChecksDependency(project);
         assertThat(hasDependency).isTrue();
     }
 
     @Test
-    @DisplayName("not add spine check dependency if it is not resolvable")
+    @DisplayName("not add Spine Java Checks dependency if it is not resolvable")
     void notAddSpineCheckDependencyIfItIsNotResolvable() {
         Project project = stubProject.get();
-        addDependency(project);
 
-        boolean hasDependency = hasErrorProneChecksDependency(project);
+        boolean applied = ConfigDependency.applyTo(project, true);
+        assertThat(applied).isFalse();
+
+        boolean hasDependency = hasMcJavaChecksDependency(project);
         assertThat(hasDependency).isFalse();
-    }
-
-    @SuppressWarnings("CheckReturnValue")
-        // We ignore boolean "success" flag which is not interesting for us in this test.
-    private static void addDependency(Project project) {
-        Configuration annotationProcessorConfig = annotationProcessorConfig(project);
-        ConfigDependency.applyTo(annotationProcessorConfig);
-    }
-
-    private static boolean hasErrorProneChecksDependency(Project project) {
-        Configuration config = annotationProcessorConfig(project);
-        DependencySet dependencies = config.getDependencies();
-        for (Dependency dependency : dependencies) {
-            if (SPINE_TOOLS_GROUP.equals(dependency.getGroup()) &&
-                    SPINE_MC_CHECKS_ARTIFACT.equals(dependency.getName())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private static Configuration annotationProcessorConfig(Project project) {
         ConfigurationContainer configs = project.getConfigurations();
-        return configs.getByName(annotationProcessor.value());
+        Configuration config = configs.getByName(annotationProcessor.value());
+        return config;
+    }
+
+    private static boolean hasMcJavaChecksDependency(Project project) {
+        Configuration config = annotationProcessorConfig(project);
+        DependencySet dependencies = config.getDependencies();
+        for (Dependency d : dependencies) {
+            if (SPINE_MC_JAVA_CHECKS_ARTIFACT.equals(d.getName())
+                    && SPINE_TOOLS_GROUP.equals(d.getGroup())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

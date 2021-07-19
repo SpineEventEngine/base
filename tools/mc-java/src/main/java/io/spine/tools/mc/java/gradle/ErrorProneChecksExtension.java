@@ -28,7 +28,7 @@ package io.spine.tools.mc.java.gradle;
 
 import org.gradle.api.Project;
 
-import static io.spine.tools.mc.java.gradle.ErrorProneChecksPlugin.extensionName;
+import static io.spine.tools.mc.java.gradle.McJavaChecksPlugin.extensionName;
 
 /**
  * The Error Prone Checks plugin extension.

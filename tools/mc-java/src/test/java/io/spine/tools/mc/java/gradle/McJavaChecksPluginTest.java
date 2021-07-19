@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * from this module.
  */
 @DisplayName("`ErrorProneChecksPlugin` should")
-class ErrorProneChecksPluginTest {
+class McJavaChecksPluginTest {
 
     private StubProject stubProject;
 
@@ -56,9 +56,9 @@ class ErrorProneChecksPluginTest {
     void addingExtension() {
         Project project = stubProject.get();
         project.getPluginManager()
-               .apply(ErrorProneChecksPlugin.class);
+               .apply(McJavaChecksPlugin.class);
         ExtensionContainer extensions = project.getExtensions();
-        Object found = extensions.findByName(ErrorProneChecksPlugin.extensionName());
+        Object found = extensions.findByName(McJavaChecksPlugin.extensionName());
         assertNotNull(found);
     }
 
@@ -67,6 +67,6 @@ class ErrorProneChecksPluginTest {
     void applyingToEmptyProject() {
         Project project = stubProject.get();
         project.getPluginManager()
-               .apply(ErrorProneChecksPlugin.class);
+               .apply(McJavaChecksPlugin.class);
     }
 }

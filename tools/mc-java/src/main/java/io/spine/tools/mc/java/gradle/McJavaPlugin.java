@@ -63,7 +63,7 @@ public class McJavaPlugin implements Plugin<Project>, Logging {
                   new RejectionGenPlugin(),
                   new ProtoAnnotatorPlugin(),
                   new JavaProtocConfigurationPlugin(),
-                  new ErrorProneChecksPlugin())
+                  new McJavaChecksPlugin())
               .forEach(plugin -> apply(plugin, project));
     }
 

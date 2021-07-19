@@ -53,7 +53,7 @@ final class PreprocessorConfig {
      *
      * @return the {@code annotationProcessor} configuration of the project
      */
-    public static Configuration applyTo(Project project) {
+    static Configuration applyTo(Project project) {
         checkNotNull(project);
         PreprocessorConfig config = new PreprocessorConfig(project);
         Configuration result = config.setupPreprocessorConfig();

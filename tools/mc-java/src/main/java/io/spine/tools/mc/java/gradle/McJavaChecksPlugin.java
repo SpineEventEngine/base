@@ -28,7 +28,6 @@ package io.spine.tools.mc.java.gradle;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.validate.ValidatingBuilder;
 import org.gradle.api.Project;
-import org.gradle.api.artifacts.Configuration;
 
 /**
  * A Gradle plugin which configures the project to run Spine-custom Error Prone checks during the
@@ -37,7 +36,7 @@ import org.gradle.api.artifacts.Configuration;
  * <p>To work, this plugin requires <a href="https://github.com/tbroyer/gradle-errorprone-plugin">
  * the Error Prone plugin</a> to be applied to the project.
  *
- * <p>The plugin adds a {@link ConfigDependency#SPINE_MC_CHECKS_ARTIFACT spine-mc-java-checks}
+ * <p>The plugin adds a {@link ConfigDependency#SPINE_MC_JAVA_CHECKS_ARTIFACT spine-mc-java-checks}
  * dependency to the {@code annotationProcessor} configuration of a Gradle project.
  * For the older Gradle versions (pre {@code 4.6}), where there is no such configuration,
  * the plugin creates it.
@@ -67,7 +66,7 @@ import org.gradle.api.artifacts.Configuration;
  *
  * @see ValidatingBuilder
  */
-public final class ErrorProneChecksPlugin extends SpinePlugin {
+public final class McJavaChecksPlugin extends SpinePlugin {
 
     private static final String EXTENSION_NAME = "modelChecks";
 
@@ -84,8 +83,7 @@ public final class ErrorProneChecksPlugin extends SpinePlugin {
     @Override
     public void apply(Project project) {
         ErrorProneChecksExtension.createIn(project);
-        Configuration preprocessorConfig = PreprocessorConfig.applyTo(project);
-        boolean dependencyResolved = ConfigDependency.applyTo(preprocessorConfig);
+        boolean dependencyResolved = ConfigDependency.applyTo(project, true);
         if (!dependencyResolved) {
             return;
         }
