@@ -28,20 +28,21 @@ package io.spine.tools.mc.java.gradle;
 
 import com.google.common.testing.NullPointerTester;
 import io.spine.testing.SlowTest;
+import io.spine.tools.mc.java.gradle.given.StubProject;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.DependencySet;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.tools.mc.java.gradle.ConfigDependency.SPINE_MC_CHECKS_ARTIFACT;
 import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
 import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
-import static io.spine.tools.mc.java.gradle.given.Project.newProject;
+import static io.spine.tools.mc.java.gradle.ConfigDependency.SPINE_MC_CHECKS_ARTIFACT;
 
 /**
  * A test for the {@link ConfigDependency} part of the Spine Error Prone Checks plugin.
@@ -54,6 +55,13 @@ import static io.spine.tools.mc.java.gradle.given.Project.newProject;
 @DisplayName("`ConfigDependency` should")
 class ConfigDependencyTest {
 
+    private StubProject stubProject;
+
+    @BeforeEach
+    void createProject() {
+        stubProject = StubProject.createFor(getClass());
+    }
+
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
@@ -63,7 +71,7 @@ class ConfigDependencyTest {
     @Test
     @DisplayName("add spine check dependency to annotation processor config")
     void addSpineCheckDependencyToAnnotationProcessorConfig() {
-        Project project = newProject().withMavenRepositories().get();
+        Project project = stubProject.withMavenRepositories().get();
         addDependency(project);
 
         boolean hasDependency = hasErrorProneChecksDependency(project);
@@ -73,7 +81,7 @@ class ConfigDependencyTest {
     @Test
     @DisplayName("not add spine check dependency if it is not resolvable")
     void notAddSpineCheckDependencyIfItIsNotResolvable() {
-        Project project = newProject().get();
+        Project project = stubProject.get();
         addDependency(project);
 
         boolean hasDependency = hasErrorProneChecksDependency(project);

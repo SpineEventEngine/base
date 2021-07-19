@@ -27,6 +27,7 @@
 package io.spine.tools.mc.java.gradle;
 
 import com.google.common.testing.NullPointerTester;
+import io.spine.tools.mc.java.gradle.given.StubProject;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
@@ -36,7 +37,6 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
-import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newProject;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -49,7 +49,7 @@ class PreprocessorConfigTest {
 
     @BeforeEach
     void setUp() {
-        project = newProject();
+        project = StubProject.createFor(getClass()).get();
         projectConfigs = project.getConfigurations();
         preprocessorConfig = projectConfigs.getByName(annotationProcessor.value());
     }

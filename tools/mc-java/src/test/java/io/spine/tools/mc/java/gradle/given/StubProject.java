@@ -26,40 +26,69 @@
 
 package io.spine.tools.mc.java.gradle.given;
 
+import io.spine.testing.TempDir;
+import org.gradle.api.Project;
 import org.gradle.api.artifacts.dsl.RepositoryHandler;
+import org.gradle.testfixtures.ProjectBuilder;
+
+import java.io.File;
+
+import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
+import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
+import static org.gradle.internal.impldep.com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A configurable Gradle project.
- *
- * <p>Can be configured to contain real dependencies, repositories, etc. according to the test
- * needs.
+ * A helper for configuring a Gradle project for the needs of test suites.
  *
  * <p>NOTE: the real dependencies and their resolution in tests will often lead to relatively long
  * execution times, the {@link io.spine.testing.SlowTest} annotation should be used for such
  * test cases.
  */
-public final class Project {
+public final class StubProject {
 
-    private final org.gradle.api.Project project;
+    private final Project project;
 
-    private Project(org.gradle.api.Project project) {
-        this.project = project;
+    private StubProject(Project project) {
+        this.project = checkNotNull(project);
     }
 
     /**
-     * Creates a new instance of the project.
+     * Creates a new Gradle project for the purposes of the passed test suite class.
      */
-    public static Project newProject() {
-        return new Project(ModelCompilerTestEnv.newProject());
+    public static StubProject createFor(Class<?> testSuiteClass) {
+        File tempDir = TempDir.forClass(testSuiteClass);
+        Project project = createAt(tempDir);
+        return new StubProject(project);
+    }
+
+    /**
+     * Creates a project in the given directory.
+     *
+     * <p>The created project has:
+     * <ul>
+     *     <li>{@code java} plugin applied;
+     *     <li>{@code generateProto} task;
+     *     <li>{@code generateTestProto} task.
+     * </ul>
+     *
+     * @param projectDir the {@linkplain Project#getProjectDir() root directory} of the project
+     */
+    public static Project createAt(File projectDir) {
+        Project project = ProjectBuilder.builder()
+                .withProjectDir(projectDir)
+                .build();
+        project.getPluginManager()
+               .apply("java");
+        project.task(generateProto.name());
+        project.task(generateTestProto.name());
+        return project;
     }
 
     /**
      * Configures the project to contain the {@code mavenLocal()} and {@code mavenCentral()}
      * repositories for proper dependency resolution.
-     *
-     * @return self for method chaining
      */
-    public Project withMavenRepositories() {
+    public StubProject withMavenRepositories() {
         RepositoryHandler repositories = project.getRepositories();
         repositories.mavenLocal();
         repositories.mavenCentral();
@@ -67,9 +96,9 @@ public final class Project {
     }
 
     /**
-     * Returns an actual Gradle project.
+     * Returns underlying Gradle project.
      */
-    public org.gradle.api.Project get() {
+    public Project get() {
         return project;
     }
 }

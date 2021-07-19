@@ -26,12 +26,13 @@
 
 package io.spine.tools.mc.java.gradle;
 
+import io.spine.tools.mc.java.gradle.given.StubProject;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionContainer;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newProject;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
@@ -40,13 +41,20 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * <p>For the tests of actual plugin functionality, see {@code io.spine.tools.check} test suites
  * from this module.
  */
-@DisplayName("ErrorProneChecksPlugin should")
+@DisplayName("`ErrorProneChecksPlugin` should")
 class ErrorProneChecksPluginTest {
+
+    private StubProject stubProject;
+
+    @BeforeEach
+    void createStubProject() {
+        stubProject = StubProject.createFor(getClass());
+    }
 
     @Test
     @DisplayName("create Spine check extension")
-    void create_spine_check_extension() {
-        Project project = newProject();
+    void addingExtension() {
+        Project project = stubProject.get();
         project.getPluginManager()
                .apply(ErrorProneChecksPlugin.class);
         ExtensionContainer extensions = project.getExtensions();
@@ -56,8 +64,8 @@ class ErrorProneChecksPluginTest {
 
     @Test
     @DisplayName("apply to empty project")
-    void apply_to_empty_project_without_exceptions() {
-        Project project = newProject();
+    void applyingToEmptyProject() {
+        Project project = stubProject.get();
         project.getPluginManager()
                .apply(ErrorProneChecksPlugin.class);
     }

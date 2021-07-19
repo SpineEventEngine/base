@@ -27,6 +27,7 @@
 package io.spine.tools.mc.java.gradle;
 
 import com.google.common.testing.NullPointerTester;
+import io.spine.tools.mc.java.gradle.given.StubProject;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionContainer;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,11 +35,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.tools.mc.java.gradle.given.ProjectConfigurations.assertCompileTasksContain;
-import static io.spine.tools.mc.java.gradle.given.ProjectConfigurations.assertCompileTasksEmpty;
 import static io.spine.tools.mc.java.gradle.Severity.ERROR;
 import static io.spine.tools.mc.java.gradle.Severity.OFF;
-import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newProject;
+import static io.spine.tools.mc.java.gradle.given.ProjectConfigurations.assertCompileTasksContain;
+import static io.spine.tools.mc.java.gradle.given.ProjectConfigurations.assertCompileTasksEmpty;
 
 /**
  * Tests {@link io.spine.tools.gradle.compiler.Severity}.
@@ -50,8 +50,8 @@ class SeverityConfigurerTest {
     private SeverityConfigurer configurer;
 
     @BeforeEach
-    void setUp() {
-        project = newProject();
+    void createProject() {
+        project = StubProject.createFor(getClass()).get();
         configurer = SeverityConfigurer.initFor(project);
     }
 

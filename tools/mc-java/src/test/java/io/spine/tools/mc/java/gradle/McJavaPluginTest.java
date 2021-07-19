@@ -27,6 +27,7 @@ package io.spine.tools.mc.java.gradle;
 
 import io.spine.tools.gradle.TaskName;
 import io.spine.tools.gradle.testing.TaskSubject;
+import io.spine.tools.mc.java.gradle.given.StubProject;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.TaskContainer;
@@ -38,6 +39,7 @@ import org.junit.jupiter.api.Test;
 import static io.spine.tools.gradle.BaseTaskName.clean;
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.gradle.JavaTaskName.compileTestJava;
+import static io.spine.tools.gradle.testing.GradleTruth.assertThat;
 import static io.spine.tools.mc.java.gradle.McJavaTaskName.annotateProto;
 import static io.spine.tools.mc.java.gradle.McJavaTaskName.annotateTestProto;
 import static io.spine.tools.mc.java.gradle.McJavaTaskName.generateRejections;
@@ -46,28 +48,18 @@ import static io.spine.tools.mc.java.gradle.McJavaTaskName.mergeDescriptorSet;
 import static io.spine.tools.mc.java.gradle.McJavaTaskName.mergeTestDescriptorSet;
 import static io.spine.tools.mc.java.gradle.McJavaTaskName.preClean;
 import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.MC_JAVA_GRADLE_PLUGIN_ID;
-import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newProject;
-import static io.spine.tools.gradle.testing.GradleTruth.assertThat;
 
-@DisplayName("ModelCompilerPlugin should")
+@DisplayName("`McJavaPlugin` should")
 class McJavaPluginTest {
 
     private TaskContainer tasks;
 
     @BeforeEach
-    void setUp() {
-        Project project = newProject();
+    void createProjectWithPlugin() {
+        Project project = StubProject.createFor(getClass()).get();
         project.getPluginManager()
                .apply(MC_JAVA_GRADLE_PLUGIN_ID);
         tasks = project.getTasks();
-    }
-
-    @Test
-    @DisplayName("apply to project")
-    void apply() {
-        Project project = newProject();
-        project.getPluginManager()
-               .apply(MC_JAVA_GRADLE_PLUGIN_ID);
     }
 
     @Nested

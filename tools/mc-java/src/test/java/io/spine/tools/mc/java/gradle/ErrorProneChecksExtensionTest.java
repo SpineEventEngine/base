@@ -26,18 +26,14 @@
 
 package io.spine.tools.mc.java.gradle;
 
+import io.spine.tools.mc.java.gradle.given.StubProject;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
-import java.io.File;
-import java.nio.file.Path;
 
 import static io.spine.tools.mc.java.gradle.Severity.ERROR;
-import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newProject;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -48,9 +44,8 @@ class ErrorProneChecksExtensionTest {
     private ErrorProneChecksExtension extension;
 
     @BeforeEach
-    void setUp(@TempDir Path tempDirPath) {
-        File tempDir = tempDirPath.toFile();
-        project = newProject(tempDir);
+    void setUp() {
+        project = StubProject.createFor(getClass()).get();
         ExtensionContainer extensions = project.getExtensions();
         extension = extensions.create(ErrorProneChecksPlugin.extensionName(),
                                       ErrorProneChecksExtension.class);
@@ -58,7 +53,7 @@ class ErrorProneChecksExtensionTest {
 
     @Test
     @DisplayName("return use validating builder severity")
-    void return_use_validating_builder_severity() {
+    void obtainingSeverity() {
         final Severity expected = ERROR;
         extension.useValidatingBuilderSeverity = expected;
         final Severity actual = ErrorProneChecksExtension.getUseValidatingBuilderSeverity(project);
@@ -66,8 +61,8 @@ class ErrorProneChecksExtensionTest {
     }
 
     @Test
-    @DisplayName("return null severity if not set")
-    void return_null_use_validating_builder_severity_if_not_set() {
+    @DisplayName("return `null` severity if not set")
+    void ifNotSet() {
         final Severity severity = ErrorProneChecksExtension.getUseValidatingBuilderSeverity(project);
         assertNull(severity);
     }
