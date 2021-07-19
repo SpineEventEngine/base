@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @DisplayName("`PreprocessorConfig` should")
-class PreprocessorConfigTest {
+class AnnotationProcessorConfigurationTest {
 
     private Project project;
     private ConfigurationContainer projectConfigs;
@@ -57,13 +57,13 @@ class PreprocessorConfigTest {
     @Test
     @DisplayName("pass null tolerance check")
     void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(PreprocessorConfig.class);
+        new NullPointerTester().testAllPublicStaticMethods(AnnotationProcessorConfiguration.class);
     }
 
     @Test
     @DisplayName("return annotation processor config if it exists")
     void returnAnnotationProcessorConfigIfItExists() {
-        Configuration returnedConfig = PreprocessorConfig.applyTo(project);
+        Configuration returnedConfig = AnnotationProcessorConfiguration.findOrCreateIn(project);
         assertEquals(preprocessorConfig, returnedConfig);
     }
 
@@ -73,9 +73,9 @@ class PreprocessorConfigTest {
         projectConfigs.remove(preprocessorConfig);
         assertNull(projectConfigs.findByName(annotationProcessor.value()));
 
-        Configuration preprocessorConfig = PreprocessorConfig.applyTo(project);
-        Configuration foundConfig = projectConfigs.findByName(annotationProcessor.value());
-        assertThat(preprocessorConfig)
-                .isEqualTo(foundConfig);
+        Configuration cfg = AnnotationProcessorConfiguration.findOrCreateIn(project);
+        Configuration found = projectConfigs.findByName(annotationProcessor.value());
+        assertThat(cfg)
+                .isEqualTo(found);
     }
 }

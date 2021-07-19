@@ -26,7 +26,8 @@
 
 package io.spine.tools.mc.java.gradle;
 
-import io.spine.tools.gradle.ConfigurationName;
+import com.google.common.annotations.VisibleForTesting;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
@@ -35,38 +36,42 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
 
 /**
- * A helper that sets up and configures the preprocessor dependency for the {@link Project}.
+ * A helper for adding
+ * {@link io.spine.tools.gradle.ConfigurationName#annotationProcessor annotationProcessor}
+ * configuration to a Gradle Project.
  */
-final class PreprocessorConfig {
+final class AnnotationProcessorConfiguration {
 
-    private final Project project;
-
-    private PreprocessorConfig(Project project) {
-        this.project = project;
+    /** Prevents instantiation of this utility class. */
+    private AnnotationProcessorConfiguration() {
     }
 
     /**
-     * Creates the {@code annotationProcessor} config for the project if it does not exist.
+     * Obtains the {@code annotationProcessor} configuration for the project.
      *
-     * <p>In the newer Gradle versions ({@code 4.6} and above) the config most probably already
-     * exists.
+     * <p>In the newer Gradle versions ({@code 4.6} and above) the configuration most probably
+     * already exists. If not, it will be created.
      *
      * @return the {@code annotationProcessor} configuration of the project
      */
-    static Configuration applyTo(Project project) {
+    static Configuration findOrCreateIn(Project project) {
         checkNotNull(project);
-        PreprocessorConfig config = new PreprocessorConfig(project);
-        Configuration result = config.setupPreprocessorConfig();
-        return result;
+        ConfigurationContainer configurations = project.getConfigurations();
+        @Nullable Configuration config = configurations.findByName(annotationProcessor.value());
+        if (config == null) {
+            config = configurations.create(annotationProcessor.value());
+        }
+        return config;
     }
 
-    private Configuration setupPreprocessorConfig() {
+    /**
+     * Get {@code annotationProcessor} configuration in the project.
+     */
+    @VisibleForTesting
+    static Configuration in(Project project) {
+        checkNotNull(project);
         ConfigurationContainer configurations = project.getConfigurations();
-        ConfigurationName config = annotationProcessor;
-        Configuration preprocessorConfig = configurations.findByName(config.value());
-        if (preprocessorConfig == null) {
-            preprocessorConfig = configurations.create(config.value());
-        }
-        return preprocessorConfig;
+        Configuration result = configurations.getByName(annotationProcessor.value());
+        return result;
     }
 }

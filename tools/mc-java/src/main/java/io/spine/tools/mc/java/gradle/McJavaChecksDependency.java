@@ -27,7 +27,6 @@
 package io.spine.tools.mc.java.gradle;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.flogger.FluentLogger;
 import io.spine.logging.Logging;
 import io.spine.tools.gradle.DependencyVersions;
 import org.gradle.api.Project;
@@ -48,7 +47,7 @@ import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
 /**
  * Adds a {@code spine-mc-java-checks} dependency to the given project {@link Configuration}.
  */
-public final class ConfigDependency implements Logging {
+public final class McJavaChecksDependency implements Logging {
 
     /**
      * The name of the Maven artifact of the Model Compiler Java Checks.
@@ -62,7 +61,7 @@ public final class ConfigDependency implements Logging {
     /** If true, the extended configuration will be checked for errors by downloading its files. */
     private final boolean forceDownload;
 
-    private ConfigDependency(Configuration cfg, boolean forceDownload) {
+    private McJavaChecksDependency(Configuration cfg, boolean forceDownload) {
         this.configuration = cfg;
         this.forceDownload = forceDownload;
     }
@@ -77,10 +76,10 @@ public final class ConfigDependency implements Logging {
      *          this method finishes
      * @return true if the configuration was applied
      */
-    public static boolean applyTo(Project project, boolean forceDownload) {
+    public static boolean addTo(Project project, boolean forceDownload) {
         checkNotNull(project);
-        Configuration preprocessorConfig = PreprocessorConfig.applyTo(project);
-        ConfigDependency dep = new ConfigDependency(preprocessorConfig, forceDownload);
+        Configuration cfg = AnnotationProcessorConfiguration.findOrCreateIn(project);
+        McJavaChecksDependency dep = new McJavaChecksDependency(cfg, forceDownload);
         boolean result = dep.addDependency();
         return result;
     }
@@ -111,6 +110,19 @@ public final class ConfigDependency implements Logging {
     }
 
     /**
+     * Adds the dependency to the project configuration.
+     */
+    private void addDependency(Configuration cfg, String version) {
+        _debug().log("Adding dependency on `%s:%s:%s` to the `%s` configuration.",
+                     SPINE_TOOLS_GROUP, SPINE_MC_JAVA_CHECKS_ARTIFACT, version,
+                     annotationProcessor);
+        DependencySet dependencies = cfg.getDependencies();
+        Dependency dependency = new DefaultExternalModuleDependency(
+                SPINE_TOOLS_GROUP, SPINE_MC_JAVA_CHECKS_ARTIFACT, version);
+        dependencies.add(dependency);
+    }
+
+    /**
      * Checks if the given configuration is resolvable.
      *
      * <p>Uses the configuration copy because the configuration resolution is the irreversible
@@ -119,33 +131,21 @@ public final class ConfigDependency implements Logging {
     private boolean isResolvable(Configuration configCopy) {
         if (forceDownload) {
             ResolvedConfiguration resolved = configCopy.getResolvedConfiguration();
-            boolean hasErrors = !resolved.hasError();
-            if (!hasErrors) {
-                logUnresolvedFor(resolved);
+            boolean hasErrors = resolved.hasError();
+            if (hasErrors) {
+                logUnresolvedFor(configCopy, resolved);
             }
             return hasErrors;
         }
         return true;
     }
 
-    private void logUnresolvedFor(ResolvedConfiguration resolved) {
+    private void logUnresolvedFor(Configuration unresolved, ResolvedConfiguration resolved) {
         LenientConfiguration lenient = resolved.getLenientConfiguration();
-        FluentLogger.Api error = _error();
-        error.log("The configuration `%s` was not fully resolved.", resolved);
-        Set<UnresolvedDependency> unresolved = lenient.getUnresolvedModuleDependencies();
-        error.log("Unresolved dependencies: `%s`.", unresolved);
-    }
-
-    /**
-     * Adds the dependency to the project configuration.
-     */
-    private void addDependency(Configuration cfg, String version) {
-        _debug().log("Adding dependency on %s:%s:%s to the %s configuration.",
-                     SPINE_TOOLS_GROUP, SPINE_MC_JAVA_CHECKS_ARTIFACT, version,
-                     annotationProcessor);
-        DependencySet dependencies = cfg.getDependencies();
-        Dependency dependency = new DefaultExternalModuleDependency(
-                SPINE_TOOLS_GROUP, SPINE_MC_JAVA_CHECKS_ARTIFACT, version);
-        dependencies.add(dependency);
+        Set<UnresolvedDependency> unresolvedDeps = lenient.getUnresolvedModuleDependencies();
+        _error().log(
+                "The configuration `%s` was not fully resolved. Unresolved dependencies: `%s`.",
+                unresolved.getName(), unresolvedDeps
+        );
     }
 }
