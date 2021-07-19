@@ -1,3 +1,5 @@
+import java.util.concurrent.TimeUnit
+
 /*
  * Copyright 2021, TeamDev. All rights reserved.
  *
@@ -69,7 +71,7 @@ configure(project.rootProject) {
                     .redirectError(errorOut)
                     .redirectOutput(debugOut)
                     .start()
-            if (!process.waitFor(5, TimeUnit.SECONDS)) {
+            if (!process.waitFor(10, TimeUnit.MINUTES)) {
                 throw new GradleException("Build FAILED. See $errorOut for details.")
             }
         }
