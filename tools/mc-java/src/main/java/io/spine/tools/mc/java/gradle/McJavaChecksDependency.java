@@ -118,7 +118,7 @@ public final class McJavaChecksDependency implements Logging {
         addDependency(configCopy);
         resolvedCopy = configCopy.getResolvedConfiguration();
         boolean hasError = resolvedCopy.hasError();
-        return hasError;
+        return !hasError;
     }
 
     private String artifactId() {

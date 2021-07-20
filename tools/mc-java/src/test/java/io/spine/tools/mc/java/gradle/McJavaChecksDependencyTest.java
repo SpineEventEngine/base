@@ -65,10 +65,11 @@ class McJavaChecksDependencyTest {
         Project project = stubProject.withMavenRepositories().get();
 
         boolean applied = McJavaChecksDependency.addTo(project);
-        assertThat(applied).isTrue();
+        assertThat(applied)
+                .isTrue();
 
-        boolean hasDependency = hasMcJavaChecksDependency(project);
-        assertThat(hasDependency).isTrue();
+        assertThat(hasMcJavaChecksDependencyIn(project))
+                .isTrue();
     }
 
     @Test
@@ -79,11 +80,11 @@ class McJavaChecksDependencyTest {
         boolean applied = McJavaChecksDependency.addTo(project);
         assertThat(applied).isFalse();
 
-        boolean hasDependency = hasMcJavaChecksDependency(project);
-        assertThat(hasDependency).isFalse();
+        assertThat(hasMcJavaChecksDependencyIn(project))
+                .isFalse();
     }
 
-    private static boolean hasMcJavaChecksDependency(Project project) {
+    private static boolean hasMcJavaChecksDependencyIn(Project project) {
         Configuration config = AnnotationProcessorConfiguration.in(project);
         DependencySet dependencies = config.getDependencies();
         for (Dependency d : dependencies) {
