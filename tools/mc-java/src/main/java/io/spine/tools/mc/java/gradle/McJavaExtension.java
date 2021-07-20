@@ -155,7 +155,7 @@ public class McJavaExtension extends GradleExtension {
      * <p>If this value is not set, the default severities are used,
      * which are specific for each check.
      *
-     * <p>May be overridden by the values provided by the {@link ErrorProneChecksExtension}.
+     * <p>May be overridden by the values provided by the {@link McJavaChecksExtension}.
      */
     public Severity defaultCheckSeverity;
 

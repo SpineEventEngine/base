@@ -31,28 +31,25 @@ import org.gradle.api.Project;
 import static io.spine.tools.mc.java.gradle.McJavaChecksPlugin.extensionName;
 
 /**
- * The Error Prone Checks plugin extension.
- *
- * <p>Allows configuring severity for all the Spine-custom Error Prone checks applied to the
- * project.
+ * Allows configuring severity for all the Spine Java Checks applied to the project.
  *
  * @see Severity
  */
 @SuppressWarnings("PublicField" /* required for exposing the property in Gradle. */)
-public class ErrorProneChecksExtension {
+public class McJavaChecksExtension {
 
     public Severity useValidatingBuilderSeverity;
 
     /**
      * Creates an instance of the extension in the passed project.
      */
-    public static void createIn(Project project) {
+    static void createIn(Project project) {
         project.getExtensions()
-                .create(extensionName(), ErrorProneChecksExtension.class);
+               .create(extensionName(), McJavaChecksExtension.class);
     }
 
     public static Severity getUseValidatingBuilderSeverity(Project project) {
-        ErrorProneChecksExtension extension = (ErrorProneChecksExtension)
+        McJavaChecksExtension extension = (McJavaChecksExtension)
                 project.getExtensions()
                        .getByName(extensionName());
         return extension.useValidatingBuilderSeverity;

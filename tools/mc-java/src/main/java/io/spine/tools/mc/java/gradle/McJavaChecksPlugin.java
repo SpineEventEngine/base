@@ -36,8 +36,9 @@ import org.gradle.api.Project;
  * <p>To work, this plugin requires <a href="https://github.com/tbroyer/gradle-errorprone-plugin">
  * the Error Prone plugin</a> to be applied to the project.
  *
- * <p>The plugin adds a {@link McJavaChecksDependency#SPINE_MC_JAVA_CHECKS_ARTIFACT spine-mc-java-checks}
- * dependency to the {@code annotationProcessor} configuration of a Gradle project.
+ * <p>The plugin adds
+ * a {@link McJavaChecksDependency#SPINE_MC_JAVA_CHECKS_ARTIFACT spine-mc-java-checks} dependency
+ * to the {@code annotationProcessor} configuration of a Gradle project.
  * For the older Gradle versions (pre {@code 4.6}), where there is no such configuration,
  * the plugin creates it.
  *
@@ -82,13 +83,13 @@ public final class McJavaChecksPlugin extends SpinePlugin {
      */
     @Override
     public void apply(Project project) {
-        ErrorProneChecksExtension.createIn(project);
-        boolean dependencyResolved = McJavaChecksDependency.addTo(project, true);
+        McJavaChecksExtension.createIn(project);
+        boolean dependencyResolved = McJavaChecksDependency.addTo(project);
         if (!dependencyResolved) {
             return;
         }
 
-        SeverityConfigurer severityConfigurer = SeverityConfigurer.initFor(project);
-        severityConfigurer.addConfigureSeverityAction();
+        McJavaChecksSeverity severity = McJavaChecksSeverity.initFor(project);
+        severity.addConfigureSeverityAction();
     }
 }

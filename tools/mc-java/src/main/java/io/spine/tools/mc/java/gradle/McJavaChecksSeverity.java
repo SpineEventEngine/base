@@ -35,7 +35,7 @@ import org.gradle.api.invocation.Gradle;
 import org.gradle.api.plugins.PluginContainer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.mc.java.gradle.ErrorProneChecksExtension.getUseValidatingBuilderSeverity;
+import static io.spine.tools.mc.java.gradle.McJavaChecksExtension.getUseValidatingBuilderSeverity;
 import static io.spine.tools.mc.java.gradle.McJavaExtension.getSpineCheckSeverity;
 
 /**
@@ -44,17 +44,17 @@ import static io.spine.tools.mc.java.gradle.McJavaExtension.getSpineCheckSeverit
  * <p>This class cannot configure the check severities without the Error Prone plugin applied to
  * the project.
  *
- * @see ErrorProneChecksExtension
+ * @see McJavaChecksExtension
  * @see McJavaExtension#getSpineCheckSeverity(Project)
  */
-public final class SeverityConfigurer implements Logging {
+public final class McJavaChecksSeverity implements Logging {
 
     private static final String ERROR_PRONE_PLUGIN_ID = "net.ltgt.errorprone";
 
     private final Project project;
-    private @Nullable Boolean hasModelChecksPlugin;
+    private @Nullable Boolean hasErrorPronePlugin;
 
-    private SeverityConfigurer(Project project) {
+    private McJavaChecksSeverity(Project project) {
         this.project = project;
     }
 
@@ -65,9 +65,9 @@ public final class SeverityConfigurer implements Logging {
      *         the project
      * @return the {@code SeverityConfigurer} instance
      */
-    public static SeverityConfigurer initFor(Project project) {
+    public static McJavaChecksSeverity initFor(Project project) {
         checkNotNull(project);
-        return new SeverityConfigurer(project);
+        return new McJavaChecksSeverity(project);
     }
 
     /**
@@ -86,7 +86,7 @@ public final class SeverityConfigurer implements Logging {
      */
     private void configureCheckSeverity() {
         if (!hasErrorPronePlugin()) {
-            _debug().log("Cannot configure Spine Error Prone check severity as the Error Prone " +
+            _error().log("Cannot configure Spine Java Checks severity as the Error Prone " +
                                  "plugin is not applied to the project `%s`.", project.getName());
             return;
         }
@@ -98,16 +98,16 @@ public final class SeverityConfigurer implements Logging {
      * Checks if the project has the Error Prone plugin applied.
      */
     private boolean hasErrorPronePlugin() {
-        if (hasModelChecksPlugin == null) {
+        if (hasErrorPronePlugin == null) {
             PluginContainer appliedPlugins = project.getPlugins();
-            hasModelChecksPlugin = appliedPlugins.hasPlugin(ERROR_PRONE_PLUGIN_ID);
+            hasErrorPronePlugin = appliedPlugins.hasPlugin(ERROR_PRONE_PLUGIN_ID);
         }
-        return hasModelChecksPlugin;
+        return hasErrorPronePlugin;
     }
 
     /**
-     * Configures the "UseValidatingBuilder" check severity for all {@code JavaCompile} tasks of
-     * the project.
+     * Configures the "UseValidatingBuilder" check severity for all
+     * {@code JavaCompile} tasks of the project.
      *
      * <p>Uses default severity set in the {@code modelCompiler} extension if set and not
      * overridden by the more specific {@code modelChecks} extension.
@@ -130,11 +130,11 @@ public final class SeverityConfigurer implements Logging {
     }
 
     /**
-     * Allows to manually set the {@code hasErrorProneChecksPlugin} property for tests without
-     * actually applying the plugin.
+     * Allows to manually set the {@code hasErrorPronePlugin} property instead of
+     * applying the plugin to a project when running tests.
      */
     @VisibleForTesting
-    void setHasModelChecksPlugin(boolean value) {
-        this.hasModelChecksPlugin = value;
+    void setHasErrorPronePlugin(boolean value) {
+        this.hasErrorPronePlugin = value;
     }
 }

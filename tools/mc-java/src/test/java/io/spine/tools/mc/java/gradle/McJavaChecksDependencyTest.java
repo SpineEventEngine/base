@@ -64,7 +64,7 @@ class McJavaChecksDependencyTest {
     void addToProject() {
         Project project = stubProject.withMavenRepositories().get();
 
-        boolean applied = McJavaChecksDependency.addTo(project, true);
+        boolean applied = McJavaChecksDependency.addTo(project);
         assertThat(applied).isTrue();
 
         boolean hasDependency = hasMcJavaChecksDependency(project);
@@ -76,7 +76,7 @@ class McJavaChecksDependencyTest {
     void notAddIfNotResolvable() {
         Project project = stubProject.get();
 
-        boolean applied = McJavaChecksDependency.addTo(project, true);
+        boolean applied = McJavaChecksDependency.addTo(project);
         assertThat(applied).isFalse();
 
         boolean hasDependency = hasMcJavaChecksDependency(project);

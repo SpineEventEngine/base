@@ -29,6 +29,7 @@ package io.spine.tools.mc.java.gradle;
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.logging.Logging;
 import io.spine.tools.gradle.DependencyVersions;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
@@ -41,8 +42,9 @@ import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDepen
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
-import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
+import static java.lang.String.format;
 
 /**
  * Adds a {@code spine-mc-java-checks} dependency to the given project {@link Configuration}.
@@ -58,12 +60,21 @@ public final class McJavaChecksDependency implements Logging {
     /** The configuration to be extended. */
     private final Configuration configuration;
 
-    /** If true, the extended configuration will be checked for errors by downloading its files. */
-    private final boolean forceDownload;
+    /** The version of the dependency, which is the same as one for {@code spine-base}. */
+    private final String version;
 
-    private McJavaChecksDependency(Configuration cfg, boolean forceDownload) {
+    /**
+     * The resolved copy of the configuration, which is used for checking if a dependency
+     * will be resolved.
+     *
+     * @see #isResolvable()
+     */
+    private @Nullable ResolvedConfiguration resolvedCopy;
+
+    private McJavaChecksDependency(Configuration cfg) {
         this.configuration = cfg;
-        this.forceDownload = forceDownload;
+        DependencyVersions versions = DependencyVersions.get();
+        this.version = versions.spineBase();
     }
 
     /**
@@ -71,15 +82,12 @@ public final class McJavaChecksDependency implements Logging {
      *
      * @param project
      *         the project to which apply the dependency
-     * @param forceDownload
-     *          forces the download of the files which make up the given configuration before
-     *          this method finishes
      * @return true if the configuration was applied
      */
-    public static boolean addTo(Project project, boolean forceDownload) {
+    public static boolean addTo(Project project) {
         checkNotNull(project);
         Configuration cfg = AnnotationProcessorConfiguration.findOrCreateIn(project);
-        McJavaChecksDependency dep = new McJavaChecksDependency(cfg, forceDownload);
+        McJavaChecksDependency dep = new McJavaChecksDependency(cfg);
         boolean result = dep.addDependency();
         return result;
     }
@@ -88,64 +96,55 @@ public final class McJavaChecksDependency implements Logging {
      * Adds the dependency to the project configuration.
      *
      * @return {@code true} if the operation was successful, {@code false} otherwise
-     * @see #forceDownload
      */
     private boolean addDependency() {
-        DependencyVersions versions = DependencyVersions.get();
-        String version = versions.spineBase();
-
-        Configuration configCopy = addDependency(version);
-
-        if (forceDownload) {
-            boolean isResolvable = isResolvable(configCopy);
-            return isResolvable;
+        if (isResolvable()) {
+            addDependency(configuration);
+            return true;
+        } else {
+            logUnresolvedDependencies();
+            return false;
         }
-        return true;
     }
 
-    private Configuration addDependency(String version) {
+    /**
+     * Checks if the given configuration is resolvable.
+     *
+     * <p>Uses the copy of the passed configuration because the configuration resolution
+     * is the irreversible action that can be done only once for any given {@link Configuration}.
+     */
+    private boolean isResolvable() {
         Configuration configCopy = configuration.copy();
-        addDependency(configCopy, version);
-        return configCopy;
+        addDependency(configCopy);
+        resolvedCopy = configCopy.getResolvedConfiguration();
+        boolean hasError = resolvedCopy.hasError();
+        return hasError;
+    }
+
+    private String artifactId() {
+        return format("%s:%s:%s", SPINE_TOOLS_GROUP, SPINE_MC_JAVA_CHECKS_ARTIFACT, version);
     }
 
     /**
      * Adds the dependency to the project configuration.
      */
-    private void addDependency(Configuration cfg, String version) {
-        _debug().log("Adding dependency on `%s:%s:%s` to the `%s` configuration.",
-                     SPINE_TOOLS_GROUP, SPINE_MC_JAVA_CHECKS_ARTIFACT, version,
-                     annotationProcessor);
+    private void addDependency(Configuration cfg) {
+        _debug().log("Adding dependency on `%s` to the `%s` configuration.", artifactId(), cfg);
         DependencySet dependencies = cfg.getDependencies();
         Dependency dependency = new DefaultExternalModuleDependency(
                 SPINE_TOOLS_GROUP, SPINE_MC_JAVA_CHECKS_ARTIFACT, version);
         dependencies.add(dependency);
     }
 
-    /**
-     * Checks if the given configuration is resolvable.
-     *
-     * <p>Uses the configuration copy because the configuration resolution is the irreversible
-     * action that can be done only once for any given {@link Configuration}.
-     */
-    private boolean isResolvable(Configuration configCopy) {
-        if (forceDownload) {
-            ResolvedConfiguration resolved = configCopy.getResolvedConfiguration();
-            boolean hasErrors = resolved.hasError();
-            if (hasErrors) {
-                logUnresolvedFor(configCopy, resolved);
-            }
-            return hasErrors;
-        }
-        return true;
-    }
-
-    private void logUnresolvedFor(Configuration unresolved, ResolvedConfiguration resolved) {
-        LenientConfiguration lenient = resolved.getLenientConfiguration();
+    private void logUnresolvedDependencies() {
+        checkState(resolvedCopy != null);
+        LenientConfiguration lenient = resolvedCopy.getLenientConfiguration();
         Set<UnresolvedDependency> unresolvedDeps = lenient.getUnresolvedModuleDependencies();
         _error().log(
-                "The configuration `%s` was not fully resolved. Unresolved dependencies: `%s`.",
-                unresolved.getName(), unresolvedDeps
+                "Unable to add dependency on `%s` to the configuration `%s` because some" +
+                        "dependency could not be resolved.%n" +
+                        "Unresolved dependencies: `%s`.",
+                artifactId(), configuration, unresolvedDeps
         );
     }
 }

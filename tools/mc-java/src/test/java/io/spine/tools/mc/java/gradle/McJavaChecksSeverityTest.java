@@ -44,21 +44,21 @@ import static io.spine.tools.mc.java.gradle.given.ProjectConfigurations.assertCo
  * Tests {@link io.spine.tools.gradle.compiler.Severity}.
  */
 @DisplayName("SeverityConfigurer should")
-class SeverityConfigurerTest {
+class McJavaChecksSeverityTest {
 
     private Project project;
-    private SeverityConfigurer configurer;
+    private McJavaChecksSeverity configurer;
 
     @BeforeEach
     void createProject() {
         project = StubProject.createFor(getClass()).get();
-        configurer = SeverityConfigurer.initFor(project);
+        configurer = McJavaChecksSeverity.initFor(project);
     }
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void nullCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(SeverityConfigurer.class);
+        new NullPointerTester().testAllPublicStaticMethods(McJavaChecksSeverity.class);
         new NullPointerTester().testAllPublicInstanceMethods(configurer);
     }
 
@@ -68,9 +68,9 @@ class SeverityConfigurerTest {
     @DisplayName("configure check severity")
     void configureCheckSeverity() {
         configureModelCompilerExtension();
-        ErrorProneChecksExtension extension = configureSpineCheckExtension();
+        McJavaChecksExtension extension = configureSpineCheckExtension();
         extension.useValidatingBuilderSeverity = ERROR;
-        configurer.setHasModelChecksPlugin(true);
+        configurer.setHasErrorPronePlugin(true);
         configurer.addConfigureSeverityAction();
         checkSeverityConfiguredToError();
     }
@@ -83,7 +83,7 @@ class SeverityConfigurerTest {
         McJavaExtension extension = configureModelCompilerExtension();
         extension.defaultCheckSeverity = ERROR;
         configureSpineCheckExtension();
-        configurer.setHasModelChecksPlugin(true);
+        configurer.setHasErrorPronePlugin(true);
         configurer.addConfigureSeverityAction();
         checkSeverityConfiguredToError();
     }
@@ -93,9 +93,9 @@ class SeverityConfigurerTest {
     void overrideModelCompilerCheck() {
         McJavaExtension modelCompilerExtension = configureModelCompilerExtension();
         modelCompilerExtension.defaultCheckSeverity = OFF;
-        ErrorProneChecksExtension modelChecksExtension = configureSpineCheckExtension();
+        McJavaChecksExtension modelChecksExtension = configureSpineCheckExtension();
         modelChecksExtension.useValidatingBuilderSeverity = ERROR;
-        configurer.setHasModelChecksPlugin(true);
+        configurer.setHasErrorPronePlugin(true);
         configurer.addConfigureSeverityAction();
         checkSeverityConfiguredToError();
     }
@@ -103,16 +103,16 @@ class SeverityConfigurerTest {
     @Test
     @DisplayName("not add severity args if ErrorProne plugin not applied")
     void detectErrorProne() {
-        configurer.setHasModelChecksPlugin(false);
+        configurer.setHasErrorPronePlugin(false);
         configurer.addConfigureSeverityAction();
         checkSeverityNotConfigured();
     }
 
-    private ErrorProneChecksExtension configureSpineCheckExtension() {
+    private McJavaChecksExtension configureSpineCheckExtension() {
         ExtensionContainer extensions = project.getExtensions();
-        ErrorProneChecksExtension extension =
+        McJavaChecksExtension extension =
                 extensions.create(McJavaChecksPlugin.extensionName(),
-                                  ErrorProneChecksExtension.class);
+                                  McJavaChecksExtension.class);
         return extension;
     }
 

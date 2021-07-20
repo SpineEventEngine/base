@@ -34,6 +34,7 @@ import java.util.Properties;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 
 /**
@@ -69,7 +70,7 @@ public final class DependencyVersions {
      */
     private static DependencyVersions load() {
          try (InputStream resource = DependencyVersions.class.getResourceAsStream(RESOURCE_NAME)) {
-             checkNotNull(resource, "%s is not available.", RESOURCE_NAME);
+             checkState(resource != null, "The resource `%s` is not available.", RESOURCE_NAME);
              Reader reader = new InputStreamReader(resource, UTF_8);
              Properties properties = new Properties();
              properties.load(reader);
@@ -120,7 +121,7 @@ public final class DependencyVersions {
 
         private String from(Properties properties) {
             String value = properties.getProperty(name);
-            checkNotNull(value, "Property `%s` could not be found.", name);
+            checkNotNull(value, "The property `%s` could not be found.", name);
             return value;
         }
     }
