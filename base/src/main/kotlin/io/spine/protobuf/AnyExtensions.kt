@@ -27,8 +27,6 @@
 package io.spine.protobuf
 
 import com.google.protobuf.Message
-import kotlin.Any
-import kotlin.IllegalArgumentException
 import com.google.protobuf.Any as AnyProto
 
 /**
@@ -58,5 +56,5 @@ public fun AnyProto.unpackGuessingType(): Message =
 /**
  * Packs this message into an `Any`.
  */
-public fun Message.pack(): Any =
+public fun Message.pack(): AnyProto =
     AnyPacker.pack(this)
