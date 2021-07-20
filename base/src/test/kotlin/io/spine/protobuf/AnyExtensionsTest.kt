@@ -84,7 +84,7 @@ class `'Any' extensions should` {
             .build()
         val any = msg.pack()
         assertThat(any.typeUrl)
-            .isEqualTo("types.spine.io/spine.test.protobuf.MessageToPack")
+            .isEqualTo("type.spine.io/spine.test.protobuf.MessageToPack")
         assertThat(any.unpack<MessageToPack>())
             .isEqualTo(msg)
     }
