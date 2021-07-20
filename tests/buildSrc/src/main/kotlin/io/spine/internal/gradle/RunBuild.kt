@@ -80,7 +80,14 @@ open class RunBuild : DefaultTask() {
         val debugOut = File(buildDir, "debug-out.txt")
 
         val process = startProcess(command, errorOut, debugOut)
+
         if (!process.waitFor(10, TimeUnit.MINUTES)) {
+            /*  The timeout is set because of Gradle process execution under Windows.
+                See the following locations for details:
+                  https://github.com/gradle/gradle/pull/8467#issuecomment-498374289
+                  https://github.com/gradle/gradle/issues/3987
+                  https://discuss.gradle.org/t/weirdness-in-gradle-exec-on-windows/13660/6
+             */
             if (errorOut.exists()) {
                 logger.error(errorOut.readText())
             }
