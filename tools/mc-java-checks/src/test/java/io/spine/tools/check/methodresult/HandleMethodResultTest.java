@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.tools.check.methodresult.HandleMethodResult.SUMMARY;
 
-@DisplayName("HandleMethodResult check should")
+@DisplayName("`HandleMethodResult` check should")
 class HandleMethodResultTest {
 
     private CompilationTestHelper compilationTestHelper;
