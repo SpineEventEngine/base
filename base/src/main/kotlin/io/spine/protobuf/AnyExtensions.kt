@@ -24,24 +24,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.protobuf
+
+import com.google.protobuf.Message
+import com.google.protobuf.Any as AnyProto
+
 /**
- * The versions of the libraries used.
+ * Unpacks this `Any` into the given message type.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
- *
- * This version file adheres to the contract of the
- * [publishing application](https://github.com/SpineEventEngine/publishing).
- *
- * When changing the version declarations or adding new ones, make sure to change
- * the publishing application accordingly.
+ * @param T the concrete type of the message stored in the `Any`.
+ * @see unpackGuessingType
  */
-
-/** The version of this library. */
-val base = "2.0.0-SNAPSHOT.38"
-
-project.extra.apply {
-    this["spineVersion"] = base
-    this["spineBaseVersion"] = base // Used by `filter-internal-javadoc.gradle`.
-    this["versionToPublish"] = base
+public inline fun <reified T : Message> AnyProto.unpack(): T {
+    val cls = T::class
+    if (!cls.isFinal) {
+        throw IllegalArgumentException(
+            "Message type must be a concrete message, not a general interface. " +
+                    "Use `unpackGuessingType()` if concrete message type is not available.")
+    }
+    return AnyPacker.unpack(this, cls.java)
 }
+
+/**
+ * Unpacks this `Any`.
+ *
+ * The concrete type of the message is looked up among the known types by
+ * the value of the `Any.type_url` field.
+ */
+public fun AnyProto.unpackGuessingType(): Message =
+    AnyPacker.unpack(this)
+
+/**
+ * Packs this message into an `Any`.
+ */
+public fun Message.pack(): AnyProto =
+    AnyPacker.pack(this)
