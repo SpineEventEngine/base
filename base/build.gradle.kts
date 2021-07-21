@@ -102,7 +102,6 @@ val rebuildProtobuf by tasks.registering(RunBuild::class) {
     // Set the timeout to fail a stalled build automatically under Windows.
     timeout.set(Duration.ofMinutes(30))
     dependsOn(rootProject.subprojects.map { p -> p.tasks["publishToMavenLocal"] })
-    mustRunAfter(tasks.build)
 }
 
 tasks.build.get().finalizedBy(rebuildProtobuf)
