@@ -32,7 +32,7 @@ import com.google.protobuf.Any as AnyProto
 /**
  * Unpacks this `Any` into the given message type.
  *
- * @param T the concrete type of the message stored in the `Any`
+ * @param T the concrete type of the message stored in the `Any`.
  * @see unpackGuessingType
  */
 public inline fun <reified T : Message> AnyProto.unpack(): T {
@@ -48,7 +48,8 @@ public inline fun <reified T : Message> AnyProto.unpack(): T {
 /**
  * Unpacks this `Any`.
  *
- * The concrete type of the message is looked up among the known types by the `Any.type_url`.
+ * The concrete type of the message is looked up among the known types by
+ * the value of the `Any.type_url` field.
  */
 public fun AnyProto.unpackGuessingType(): Message =
     AnyPacker.unpack(this)
