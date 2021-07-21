@@ -50,19 +50,24 @@ fun getResolvedArtifactFor(dependency: String): String {
         it.name == dependency
     }
     if (javacDependency.isEmpty()) {
-        throw MissingResourceException("The 'javac' dependency is not found among the " +
-                "resolved artifacts")
+        throw MissingResourceException(
+            "The `javac` dependency was not found among the resolved artifacts.")
     }
     return javacDependency[0].file.absolutePath
 }
 
+// Make sure that tests are executed when validating builders are built.
 val test: Test = tasks.test.get()
-test.dependsOn(project(":base").getTasksByName("rebuildProtobuf", false))
-
-tasks.processTestResources.get().duplicatesStrategy = DuplicatesStrategy.WARN
-tasks.sourceJar.get().duplicatesStrategy = DuplicatesStrategy.WARN
+val rebuildProtobuf: Task = project(":base")
+        .getTasksByName("rebuildProtobuf", false)
+        .toList()[0]
+test.dependsOn(rebuildProtobuf)
 
 afterEvaluate {
     val javacPath = getResolvedArtifactFor("javac")
     test.jvmArgs("-Xbootclasspath/p:$javacPath")
 }
+
+tasks.processTestResources.get().duplicatesStrategy = DuplicatesStrategy.WARN
+tasks.sourceJar.get().duplicatesStrategy = DuplicatesStrategy.WARN
+
