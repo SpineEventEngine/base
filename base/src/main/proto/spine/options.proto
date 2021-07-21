@@ -400,7 +400,7 @@ extend google.protobuf.MessageOptions {
     //     }
     //
     // NOTE: An external validation constraint for a field must be defined only once.
-    //       Spine Model Compiler does not check such an “overwriting”.
+    //       Spine Model Compiler does not check such an "overwriting".
     //       See the issue: https://github.com/SpineEventEngine/base/issues/318.
     //
     string constraint_for = 73904;
