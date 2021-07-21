@@ -31,6 +31,7 @@ import io.spine.internal.dependency.Flogger
 import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
+import io.spine.internal.gradle.Scripts
 import org.gradle.internal.os.OperatingSystem
 
 buildscript {
@@ -135,6 +136,9 @@ protobuf {
         }
     }
 }
+
+// Ensure UTF-8 encoding under Windows too.
+apply.from(Scripts.javacArgs(project))
 
 val compiledProtoDir = "$projectDir/compiled-proto"
 
