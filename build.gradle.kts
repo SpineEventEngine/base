@@ -282,10 +282,10 @@ apply {
     }
 }
 
-val tests by tasks.registering(RunBuild::class) {
+val integrationTests by tasks.registering(RunBuild::class) {
     directory = "$rootDir/tests"
 }
 
 tasks.register("buildAll") {
-    dependsOn(tasks.build, tests)
+    dependsOn(tasks.build, integrationTests)
 }
