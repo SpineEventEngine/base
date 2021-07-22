@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * <p>For the tests of actual plugin functionality, see {@code io.spine.tools.check} test suites
  * from this module.
  */
-@DisplayName("`ErrorProneChecksPlugin` should")
+@DisplayName("`McJavaChecksPlugin` should")
 class McJavaChecksPluginTest {
 
     private StubProject stubProject;
