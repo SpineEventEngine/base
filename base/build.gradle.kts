@@ -113,10 +113,13 @@ val rebuildProtobuf by tasks.registering(RunBuild::class) {
 tasks.build.get().finalizedBy(rebuildProtobuf)
 tasks.publish.get().dependsOn(rebuildProtobuf)
 
-tasks.processResources.get().duplicatesStrategy = DuplicatesStrategy.WARN
-tasks.processTestResources.get().duplicatesStrategy = DuplicatesStrategy.WARN
-tasks.sourceJar.get().duplicatesStrategy = DuplicatesStrategy.WARN
-tasks.jar.get().duplicatesStrategy = DuplicatesStrategy.WARN
+//TODO:2021-07-22:alexander.yevsyukov: Turn to WARN and investigate duplicates.
+// see https://github.com/SpineEventEngine/base/issues/657
+val dupStrategy = DuplicatesStrategy.INCLUDE
+tasks.processResources.get().duplicatesStrategy = dupStrategy
+tasks.processTestResources.get().duplicatesStrategy = dupStrategy
+tasks.sourceJar.get().duplicatesStrategy = dupStrategy
+tasks.jar.get().duplicatesStrategy = dupStrategy
 
 val compiledProtoRoot = "$projectDir/generated"
 val googlePackagePrefix = "com/google"

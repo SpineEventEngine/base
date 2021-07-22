@@ -33,5 +33,8 @@ dependencies {
     implementation(gradleTestKit())
 }
 
-tasks.processTestResources.get().duplicatesStrategy = DuplicatesStrategy.WARN
-tasks.sourceJar.get().duplicatesStrategy = DuplicatesStrategy.WARN
+//TODO:2021-07-22:alexander.yevsyukov: Turn to WARN and investigate duplicates.
+// see https://github.com/SpineEventEngine/base/issues/657
+val dupStrategy = DuplicatesStrategy.INCLUDE
+tasks.processTestResources.get().duplicatesStrategy = dupStrategy
+tasks.sourceJar.get().duplicatesStrategy = dupStrategy
