@@ -108,6 +108,7 @@ open class RunBuild : DefaultTask() {
         command.add("--console=plain")
         command.add("--debug")
         command.add("--stacktrace")
+        command.add("--no-daemon")
         val rootProject = project.rootProject
         includeGradleProperties
             .filter { rootProject.hasProperty(it) }
