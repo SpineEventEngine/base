@@ -81,17 +81,22 @@ open class RunBuild : DefaultTask() {
 
         val process = startProcess(command, errorOut, debugOut)
 
-        if (!process.waitFor(10, TimeUnit.MINUTES)) {
-            /*  The timeout is set because of Gradle process execution under Windows.
-                See the following locations for details:
-                  https://github.com/gradle/gradle/pull/8467#issuecomment-498374289
-                  https://github.com/gradle/gradle/issues/3987
-                  https://discuss.gradle.org/t/weirdness-in-gradle-exec-on-windows/13660/6
-             */
-            if (errorOut.exists()) {
+        /*  The timeout is set because of Gradle process execution under Windows.
+            See the following locations for details:
+              https://github.com/gradle/gradle/pull/8467#issuecomment-498374289
+              https://github.com/gradle/gradle/issues/3987
+              https://discuss.gradle.org/t/weirdness-in-gradle-exec-on-windows/13660/6
+         */
+        val completed = process.waitFor(10, TimeUnit.MINUTES)
+        if (!completed || process.exitValue() != 0) {
+            val errorOutExists = errorOut.exists()
+            if (errorOutExists) {
                 logger.error(errorOut.readText())
             }
-            throw GradleException("Build FAILED. See $errorOut for details.")
+            throw GradleException("Build FAILED." +
+                    if (errorOutExists) " See $errorOut for details."
+                    else " ${errorOut} file was not created."
+            )
         }
     }
 
