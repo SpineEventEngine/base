@@ -141,7 +141,7 @@ tasks.withType<JavaCompile> {
     if (currentJavaVersion != JavaVersion.VERSION_1_8) {
         throw GradleException(
             "Validating Builders must be built using Java 8 (as the main project)." +
-                    " The version of Java in this project: $currentJavaVersion".
+                    " The version of Java in this project: $currentJavaVersion"
         )
     }
 
