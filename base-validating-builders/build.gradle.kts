@@ -141,6 +141,20 @@ apply {
     from(Scripts.javacArgs(project))
 }
 
+tasks.withType(JavaCompile) {
+   if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
+        throw new GradleException("Spine Event Engine can be built with JDK 8 only." +
+                " Supporting JDK 11 and above at build-time is planned in 2.0 release." +
+                " Please use the pre-built binaries available in the Spine Maven repository." +
+                " See https://github.com/SpineEventEngine/base/issues/457.")
+    }
+
+    // Explicitly states the encoding of the source and test source files, ensuring
+    // correct execution of the `javac` task.
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+
 val compiledProtoDir = "$projectDir/compiled-proto"
 
 val copyCompiledClasses by tasks.registering(Copy::class) {
