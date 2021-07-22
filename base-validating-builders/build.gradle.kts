@@ -138,7 +138,9 @@ protobuf {
 }
 
 // Ensure UTF-8 encoding under Windows too.
-apply.from(Scripts.javacArgs(project))
+apply {
+    from(Scripts.javacArgs(project))
+}
 
 val compiledProtoDir = "$projectDir/compiled-proto"
 
