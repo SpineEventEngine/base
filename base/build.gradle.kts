@@ -101,7 +101,13 @@ val rebuildProtobuf by tasks.registering(RunBuild::class) {
     directory = "$rootDir/base-validating-builders"
     // Set the timeout to fail a stalled build automatically under Windows.
     timeout.set(Duration.ofMinutes(30))
-    dependsOn(rootProject.subprojects.map { p -> p.tasks["publishToMavenLocal"] })
+    val subProjects = setOf(
+        ":mc-java",
+        ":plugin-base",
+        ":tool-base",
+        ":base"
+    )
+    dependsOn(subProjects.map { p -> rootProject.project(p).tasks["publishToMavenLocal"] })
 }
 
 tasks.build.get().finalizedBy(rebuildProtobuf)

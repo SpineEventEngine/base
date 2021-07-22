@@ -75,7 +75,6 @@ buildscript {
         }
 
         classpath(files(
-                "$projectDir/../tools/protoc-api/build/libs/protoc-api-${spineVersion}.jar",
                 "$projectDir/../tools/mc-java/build/libs/mc-java-${spineVersion}.jar",
                 "$projectDir/../tools/plugin-base/build/libs/plugin-base-${spineVersion}.jar",
                 "$projectDir/../tools/tool-base/build/libs/tool-base-${spineVersion}.jar",
