@@ -63,6 +63,11 @@ public class McJavaExtension extends GradleExtension {
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     /**
+     * The name of the extension, as it appears in a Gradle build script.
+     */
+    static final String NAME = "modelCompiler";
+
+    /**
      * The absolute path to the Protobuf source code under the {@code main} directory.
      */
     public String mainProtoDir;

@@ -39,13 +39,11 @@ import java.util.stream.Stream;
  */
 public class McJavaPlugin implements Plugin<Project>, Logging {
 
-    private static final String EXTENSION_NAME = "modelCompiler";
-
     /**
      * Obtains the extension name of the plugin.
      */
     public static String extensionName() {
-        return EXTENSION_NAME;
+        return McJavaExtension.NAME;
     }
 
     @Override
