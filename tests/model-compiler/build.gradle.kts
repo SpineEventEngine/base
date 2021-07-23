@@ -24,10 +24,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.tools.protoc.MessageSelectorFactory.prefix
-import io.spine.tools.protoc.MessageSelectorFactory.regex
-import io.spine.tools.protoc.MessageSelectorFactory.suffix
-
 plugins {
     java
     id("io.spine.mc-java")
@@ -39,30 +35,50 @@ dependencies {
 
 modelCompiler {
 
-    java {
-        val methodFactory = "io.spine.tools.protoc.TestMethodFactory"
-        val nestedClassFactory = "io.spine.tools.protoc.TestNestedClassFactory"
+    val methodFactory = "io.spine.tools.protoc.TestMethodFactory"
+    val nestedClassFactory = "io.spine.tools.protoc.TestNestedClassFactory"
 
-        forMessages(suffix("documents.proto")) {
-            markAs("io.spine.tools.protoc.DocumentMessage")
-        }
+    interfaces {
+        mark(messages().inFiles(suffix("documents.proto")),
+            asType("io.spine.tools.protoc.DocumentMessage"))
+
+        mark(messages().inFiles(prefix("spine/tools/protoc/prefix_generation")),
+            asType("io.spine.tools.protoc.PrefixedMessage"))
+
+        mark(messages().inFiles(suffix("suffix_generation_test.proto"))
+                asType("io.spine.tools.protoc.SuffixedMessage"))
+
+        mark(messages().inFiles(regex(".*regex.*test.*"))
+                asType("io.spine.tools.protoc.RegexedMessage"))
+    }
+
+    methods {
+        applyFactory(
+            methodFactory,
+                     messages().inFiles(prefix("spine/tools/protoc/prefix_generation")),
+                     messages().inFiles(suffix("suffix_generation_test.proto")),
+                     messages().inFiles(regex(".*regex.*test.*")),
+                     messages().inFiles(regex(".*multi.*factory.*test.*"))
+        )
+    }
+
+    java {
+
         forMessages(prefix("spine/tools/protoc/prefix_generation")) {
             markAs("io.spine.tools.protoc.PrefixedMessage")
-            genegateMethods(methodFactory)
+
             generateNestedClasses(nestedClassFactory)
         }
+
         forMessages(suffix("suffix_generation_test.proto")) {
             markAs("io.spine.tools.protoc.SuffixedMessage")
-            genegateMethods(methodFactory)
+
             generateNestedClasses(nestedClassFactory)
         }
+
         forMessages(regex(".*regex.*test.*")) {
-            markAs("io.spine.tools.protoc.RegexedMessage")
-            genegateMethods(methodFactory)
+
             generateNestedClasses(nestedClassFactory)
-        }
-        forMessages(regex(".*multi.*factory.*test.*")) {
-            genegateMethods(methodFactory)
         }
     }
 }

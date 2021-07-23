@@ -25,10 +25,11 @@
  */
 
 include("annotator")
+include("checks")
 include("factories")
 include("entity-queries")
 include("known-types")
-include("mc-java")
+include("model-compiler")
 include("rejection")
 include("validating-options")
 include("validation")
