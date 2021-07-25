@@ -46,13 +46,6 @@ dependencies {
     testImplementation(ErrorProne.testHelpers)
 }
 
-// Make sure that tests are executed when validating builders are built.
-val test: Test = tasks.test.get()
-//val rebuildProtobuf: Task = project(":base")
-//        .getTasksByName("rebuildProtobuf", false)
-//        .toList()[0]
-//test.dependsOn(rebuildProtobuf)
-
 fun getResolvedArtifactFor(dependency: String): String {
     val resolvedTestClasspath = configurations.testRuntimeClasspath.get().resolvedConfiguration
     val javacDependency = resolvedTestClasspath.resolvedArtifacts.filter {
@@ -65,6 +58,7 @@ fun getResolvedArtifactFor(dependency: String): String {
     return javacDependency[0].file.absolutePath
 }
 
+val test: Test = tasks.test.get()
 afterEvaluate {
     val javacPath = getResolvedArtifactFor("javac")
     test.jvmArgs("-Xbootclasspath/p:$javacPath")
