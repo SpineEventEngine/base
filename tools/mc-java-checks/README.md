@@ -24,3 +24,7 @@ Currently, the Spine-custom Error Prone checks are applied automatically to any 
  The Error Prone Checks Plugin which is a part of the Model Compiler, performs all necessary 
  configurations and dependency updates to add the `spine-mc-java-checks` to the preprocessor 
  path.
+
+## Tests of this module
+... are located under the `tests/checks` directory to simplify the inter-module dependencies that
+started to fail under Windows after migration to Gradle 7.1.1. 
