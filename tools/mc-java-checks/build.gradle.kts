@@ -41,8 +41,8 @@ dependencies {
     compileOnlyApi(AutoService.annotations)
     implementation(project(":base"))
     implementation(project(":plugin-base"))
-    implementation(ErrorProne.core)
-    ErrorProne.annotations.forEach { implementation(it) }
+    api(ErrorProne.core)
+    ErrorProne.annotations.forEach { api(it) }
     testImplementation(ErrorProne.testHelpers)
 }
 

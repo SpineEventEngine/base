@@ -31,27 +31,15 @@ group = "io.spine.tools"
 
 repositories {
     maven { url = URI(io.spine.internal.gradle.Repos.sonatypeSnapshots) }
-    mavenLocal()
-    mavenCentral()
 }
+
+val spineVersion: String by extra
 
 dependencies {
-//    annotationProcessor(AutoService.processor)
-//    compileOnlyApi(AutoService.annotations)
-//    implementation(project(":base"))
-//    implementation(project(":plugin-base"))
-//    implementation(ErrorProne.core)
-//    ErrorProne.annotations.forEach { implementation(it) }
+    testImplementation("io.spine.tools:spine-mc-java-checks:${spineVersion}")
+    ErrorProne.annotations.forEach { testImplementation(it) }
     testImplementation(ErrorProne.testHelpers)
 }
-
-// Make sure that tests are executed when validating builders are built.
-
-val test: Test = tasks.test.get()
-//val rebuildProtobuf: Task = project(":base")
-//        .getTasksByName("rebuildProtobuf", false)
-//        .toList()[0]
-//test.dependsOn(rebuildProtobuf)
 
 fun getResolvedArtifactFor(dependency: String): String {
     val resolvedTestClasspath = configurations.testRuntimeClasspath.get().resolvedConfiguration
@@ -65,14 +53,8 @@ fun getResolvedArtifactFor(dependency: String): String {
     return javacDependency[0].file.absolutePath
 }
 
+val test: Test = tasks.test.get()
 afterEvaluate {
     val javacPath = getResolvedArtifactFor("javac")
     test.jvmArgs("-Xbootclasspath/p:$javacPath")
 }
-
-//TODO:2021-07-22:alexander.yevsyukov: Turn to WARN and investigate duplicates.
-// see https://github.com/SpineEventEngine/base/issues/657
-//val dupStrategy = DuplicatesStrategy.INCLUDE
-//tasks.processTestResources.get().duplicatesStrategy = dupStrategy
-//tasks.sourceJar.get().duplicatesStrategy = dupStrategy
-
