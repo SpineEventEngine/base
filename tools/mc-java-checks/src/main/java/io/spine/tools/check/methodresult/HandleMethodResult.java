@@ -39,8 +39,8 @@ import static com.google.errorprone.matchers.Matchers.allOf;
 import static com.google.errorprone.matchers.Matchers.not;
 
 /**
- * An ErrorProne check which ensures that the values returned from methods are not accidentally
- * ignored.
+ * An ErrorProne check which ensures that the values returned from methods are not
+ * accidentally ignored.
  *
  * <p>This check is a substitute for {@link CheckReturnValue}. The difference is that this check
  * ignores invocations of mutating methods on message builders.
