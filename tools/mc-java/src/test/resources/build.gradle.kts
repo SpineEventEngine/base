@@ -52,6 +52,7 @@ buildscript {
             exclude(group = "com.google.guava")
         }
         classpath("io.spine.tools:spine-mc-java:${spineVersion}")
+        classpath(io.spine.internal.dependency.ErrorProne.GradlePlugin.lib)
     }
 }
 
@@ -63,6 +64,7 @@ plugins {
 val commonPath = io.spine.internal.gradle.Scripts.commonPath
 apply {
     plugin("com.google.protobuf")
+    plugin("net.ltgt.errorprone")
     plugin("io.spine.mc-java")
     from("$rootDir/test-env.gradle")
 }
