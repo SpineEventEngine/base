@@ -43,7 +43,7 @@ import static io.spine.tools.mc.java.gradle.given.ProjectConfigurations.assertCo
 /**
  * Tests {@link io.spine.tools.gradle.compiler.Severity}.
  */
-@DisplayName("SeverityConfigurer should")
+@DisplayName("`McJavaChecksSeverity` should")
 class McJavaChecksSeverityTest {
 
     private Project project;
