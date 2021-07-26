@@ -33,6 +33,7 @@ import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.gradle.Scripts
 import org.gradle.internal.os.OperatingSystem
+import java.util.concurrent.TimeUnit
 
 buildscript {
     apply(from = "$projectDir/../version.gradle.kts")
@@ -185,7 +186,7 @@ tasks.build {
                 .directory(file(directory))
                 .start()
 
-        val completed = process.waitFor(10, java.util.concurrent.TimeUnit.MINUTES)
+        val completed = process.waitFor(10, TimeUnit.MINUTES)
         val exitCode = process.exitValue()
         if (!completed || exitCode != 0) {
             throw GradleException(
