@@ -188,7 +188,7 @@ final class ProtocPluginTest {
     }
 
     @Test
-    @DisplayName("mark top-level message declarations with accordance with `modelCompiler.generatedInterfaces`")
+    @DisplayName("mark top-level message declarations as specified in `modelCompiler` settings")
     void markMessagesByFilePattern() {
         assertThat(WeatherForecast.class).isAssignableTo(DocumentMessage.class);
         assertThat(WeatherForecast.Temperature.getDefaultInstance())
@@ -196,7 +196,7 @@ final class ProtocPluginTest {
     }
 
     @Test
-    @DisplayName("generate a custom method for an `.endsWith()` pattern")
+    @DisplayName("generate a custom method for a `.suffix()` pattern")
     void generateCustomPatternBasedMethod() {
         MessageType expectedType =
                 new MessageType(MessageEnhancedWithSuffixGenerations.getDescriptor());
@@ -204,7 +204,7 @@ final class ProtocPluginTest {
     }
 
     @Test
-    @DisplayName("mark a message with interface using `.endsWith()` pattern")
+    @DisplayName("mark a message with interface using `.suffix()` pattern")
     void markMessageWithInterfaceUsingEndsWithPattern() {
         assertThat(MessageEnhancedWithSuffixGenerations.getDefaultInstance())
                 .isInstanceOf(SuffixedMessage.class);
@@ -258,7 +258,8 @@ final class ProtocPluginTest {
         void prefixBasedMethod() {
             MessageType expectedType =
                     new MessageType(MessageEnhancedWithPrefixGenerations.getDescriptor());
-            assertEquals(expectedType, MessageEnhancedWithPrefixGenerations.ownType());
+            assertThat(MessageEnhancedWithPrefixGenerations.ownType())
+                    .isEqualTo(expectedType);
         }
 
         @Test
@@ -266,7 +267,8 @@ final class ProtocPluginTest {
         void regexBasedMethod() {
             MessageType expectedType =
                     new MessageType(MessageEnhancedWithRegexGenerations.getDescriptor());
-            assertEquals(expectedType, MessageEnhancedWithRegexGenerations.ownType());
+            assertThat(MessageEnhancedWithRegexGenerations.ownType())
+                    .isEqualTo(expectedType);
         }
 
         @Test
@@ -274,7 +276,8 @@ final class ProtocPluginTest {
         void suffixBasedMethod() {
             MessageType expectedType =
                     new MessageType(MessageEnhancedWithSuffixGenerations.getDescriptor());
-            assertEquals(expectedType, MessageEnhancedWithSuffixGenerations.ownType());
+            assertThat(MessageEnhancedWithSuffixGenerations.ownType())
+                    .isEqualTo(expectedType);
         }
     }
 
@@ -286,30 +289,33 @@ final class ProtocPluginTest {
         @DisplayName("prefix pattern")
         void basedOnNamePrefix() {
             Class<?> ownClass = MessageEnhancedWithPrefixGenerations.SomeNestedClass.messageClass();
-            assertEquals(MessageEnhancedWithPrefixGenerations.class, ownClass);
+            assertThat(ownClass)
+                    .isEqualTo(MessageEnhancedWithPrefixGenerations.class);
         }
 
         @Test
         @DisplayName("regex pattern")
         void basedOnNameMatchingRegex() {
             Class<?> ownClass = MessageEnhancedWithRegexGenerations.SomeNestedClass.messageClass();
-            assertEquals(MessageEnhancedWithRegexGenerations.class, ownClass);
+            assertThat(ownClass)
+                    .isEqualTo(MessageEnhancedWithRegexGenerations.class);
         }
 
         @Test
         @DisplayName("suffix pattern")
         void basedOnNameSuffix() {
             Class<?> ownClass = MessageEnhancedWithSuffixGenerations.SomeNestedClass.messageClass();
-            assertEquals(MessageEnhancedWithSuffixGenerations.class, ownClass);
+            assertThat(ownClass)
+                    .isEqualTo(MessageEnhancedWithSuffixGenerations.class);
         }
     }
 
     @Nested
-    @DisplayName("generate methods for `MFGTMessage` using")
+    @DisplayName("generate methods using multiple factories applying")
     final class MultiFactoryGeneration {
 
         @Test
-        @DisplayName("`UuidMethodFactory`")
+        @DisplayName("`UuidMethodFactory` if a message has single `uuid` field")
         void uuidMethodFactory() {
             assertNotEquals(MFGTMessage.generate(), MFGTMessage.generate());
             String uuid = Identifier.newUuid();
@@ -317,9 +323,10 @@ final class ProtocPluginTest {
         }
 
         @Test
-        @DisplayName("`TestMethodFactory`")
+        @DisplayName("a custom factory specified in the `modelCompiler/java` build settings")
         void testMethodFactory() {
-            assertEquals(new MessageType(MFGTMessage.getDescriptor()), MFGTMessage.ownType());
+            assertThat(MFGTMessage.ownType())
+                    .isEqualTo(new MessageType(MFGTMessage.getDescriptor()));
         }
     }
 
@@ -328,7 +335,8 @@ final class ProtocPluginTest {
     void generateColumns() {
         EntityColumn<?, ?> column = Movie.Column.title();
         String expectedName = "title";
-        assertEquals(expectedName, column.name().value());
+        assertThat(column.name().value())
+                .isEqualTo(expectedName);
     }
 
     @Test
@@ -336,17 +344,20 @@ final class ProtocPluginTest {
     void generateFields() {
         SubscribableField field = MovieTitleChanged.Field.oldTitle().value();
         String expectedFieldPath = "old_title.value";
-        assertEquals(expectedFieldPath, field.getField().toString());
+        assertThat(field.getField().toString())
+                .isEqualTo(expectedFieldPath);
     }
 
     @CanIgnoreReturnValue
     private static Class<?> checkMarkerInterface(String fqn) throws ClassNotFoundException {
         Class<?> cls = Class.forName(fqn);
-        assertTrue(cls.isInterface());
-        assertTrue(Message.class.isAssignableFrom(cls));
+        assertThat(cls.isInterface())
+                .isTrue();
+        assertThat(Message.class)
+                .isAssignableTo(cls);
 
-        Method[] declaredMethods = cls.getDeclaredMethods();
-        assertEquals(0, declaredMethods.length);
+        assertThat(cls.getDeclaredMethods())
+                .hasLength(0);
         return cls;
     }
 }
