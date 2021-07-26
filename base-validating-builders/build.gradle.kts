@@ -176,11 +176,21 @@ tasks.build {
             else -> "gradlew"
         }
         val process = ProcessBuilder()
-                .command("$directory/$script", ":base:cleanJar", ":base:jar", "--console=plain")
+                .command("$directory/$script",
+                    ":base:cleanJar",
+                    ":base:jar",
+                    "--console=plain",
+                    "--no-daemon"
+                )
                 .directory(file(directory))
                 .start()
-        if (!process.waitFor(10, TimeUnit.MINUTES)) {
-            throw GradleException("Unable to rebuild JAR for :base.")
+
+        val completed = process.waitFor(10, java.util.concurrent.TimeUnit.MINUTES)
+        val exitCode = process.exitValue()
+        if (!completed || exitCode != 0) {
+            throw GradleException(
+                "Unable to rebuild JAR for `:base`. Completed: $completed. Exit code: $exitCode."
+            )
         }
     }
 }
