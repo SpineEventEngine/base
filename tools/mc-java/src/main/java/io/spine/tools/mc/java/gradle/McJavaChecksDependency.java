@@ -140,7 +140,7 @@ public final class McJavaChecksDependency implements Logging {
         checkState(resolvedCopy != null);
         LenientConfiguration lenient = resolvedCopy.getLenientConfiguration();
         Set<UnresolvedDependency> unresolvedDeps = lenient.getUnresolvedModuleDependencies();
-        _error().log(
+        _warn().log(
                 "Unable to add dependency on `%s` to the configuration `%s` because some " +
                         "dependencies could not be resolved.%n" +
                         "Unresolved dependencies: `%s`.",
