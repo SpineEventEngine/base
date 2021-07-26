@@ -85,15 +85,16 @@ open class RunBuild : DefaultTask() {
               https://discuss.gradle.org/t/weirdness-in-gradle-exec-on-windows/13660/6
          */
         val completed = process.waitFor(10, TimeUnit.MINUTES)
-        if (!completed || process.exitValue() != 0) {
+        val exitCode = process.exitValue()
+        if (!completed || exitCode != 0) {
             val errorOutExists = errorOut.exists()
             if (errorOutExists) {
                 logger.error(errorOut.readText())
             }
-            throw GradleException("Build FAILED." +
-                    " Exit code: ${process.exitValue()}." +
+            throw GradleException("Child build process FAILED." +
+                    " Exit code: $exitCode." +
                     if (errorOutExists) " See $errorOut for details."
-                    else " ${errorOut} file was not created."
+                    else " $errorOut file was not created."
             )
         }
     }
