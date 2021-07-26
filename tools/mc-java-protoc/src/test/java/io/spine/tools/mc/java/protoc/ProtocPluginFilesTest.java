@@ -33,21 +33,22 @@ import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("ProtocPluginFiles should")
+@DisplayName("`ProtocPluginFiles` should")
 final class ProtocPluginFilesTest extends UtilityClassTest<ProtocPluginFiles> {
 
     ProtocPluginFilesTest() {
         super(ProtocPluginFiles.class);
     }
 
-    @DisplayName("prepare File builder for supplied Type")
+    @DisplayName("prepare `File.Builder` for a supplied `Type`")
     @Test
     void prepareFileBuilderForType() {
         MessageType type = new MessageType(EnhancedWithCodeGeneration.getDescriptor());
         File.Builder result = ProtocPluginFiles.prepareFile(type);
 
-        assertEquals("io/spine/tools/protoc/plugin/EnhancedWithCodeGeneration.java", result.getName());
+        assertThat(result.getName())
+                .isEqualTo("io/spine/tools/protoc/plugin/EnhancedWithCodeGeneration.java");
     }
 }
