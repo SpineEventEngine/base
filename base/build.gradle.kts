@@ -102,6 +102,7 @@ val rebuildProtobuf by tasks.registering(RunBuild::class) {
     // Set the timeout to fail a stalled build automatically under Windows.
     timeout.set(Duration.ofMinutes(30))
     val subProjects = setOf(
+        ":mc-java-checks",
         ":mc-java",
         ":plugin-base",
         ":tool-base",
