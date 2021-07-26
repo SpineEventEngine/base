@@ -91,6 +91,7 @@ open class RunBuild : DefaultTask() {
                 logger.error(errorOut.readText())
             }
             throw GradleException("Build FAILED." +
+                    " Exit code: ${process.exitValue()}." +
                     if (errorOutExists) " See $errorOut for details."
                     else " ${errorOut} file was not created."
             )
