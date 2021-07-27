@@ -27,9 +27,9 @@
 package io.spine.type;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.net.Uri;
+import io.spine.test.type.Uri;
 import io.spine.test.type.GreetingServiceProto;
-import io.spine.ui.Language;
+import io.spine.test.type.Language;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

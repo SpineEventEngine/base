@@ -34,8 +34,6 @@ option java_multiple_files = true;
 option java_outer_classname = "TestPatternOptionProto";
 option java_package = "io.spine.test.validate";
 
-import "google/protobuf/wrappers.proto";
-
 // Messages for "pattern" option tests.
 
 message PatternStringFieldValue {

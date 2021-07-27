@@ -27,7 +27,7 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableSet;
-import io.spine.net.Uri;
+import io.spine.test.type.Uri;
 import io.spine.test.validation.AMessage;
 import io.spine.test.validation.AnExternalConstraint;
 import io.spine.type.MessageType;

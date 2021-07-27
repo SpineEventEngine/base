@@ -29,7 +29,7 @@ package io.spine.code.java;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.StringValue;
-import io.spine.net.Uri;
+import io.spine.test.type.Uri;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

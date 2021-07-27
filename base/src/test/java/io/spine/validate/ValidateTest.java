@@ -31,8 +31,6 @@ import com.google.protobuf.Message;
 import io.spine.base.Field;
 import io.spine.base.Time;
 import io.spine.code.proto.FieldContext;
-import io.spine.net.Url;
-import io.spine.people.PersonName;
 import io.spine.test.validate.Passport;
 import io.spine.test.validate.RequiredMsgFieldValue;
 import io.spine.testing.UtilityClassTest;
@@ -130,13 +128,11 @@ class ValidateTest extends UtilityClassTest<Validate> {
         @Test
         @DisplayName("throw ValidationException with several violations")
         void reportManyFields() {
-            Passport oldValue = Passport
-                    .newBuilder()
+            Passport oldValue = Passport.newBuilder()
                     .setId("MT 111")
                     .setBirthplace("London")
                     .build();
-            Passport newValue = Passport
-                    .newBuilder()
+            Passport newValue = Passport.newBuilder()
                     .setId("JC 424")
                     .setBirthplace("Edinburgh")
                     .build();
@@ -146,10 +142,8 @@ class ValidateTest extends UtilityClassTest<Validate> {
         @Test
         @DisplayName("allow overriding repeated fields")
         void ignoreRepeated() {
-            Passport oldValue = Passport
-                    .newBuilder()
-                    .addPhoto(Url.newBuilder()
-                                 .setSpec("foo.bar/pic1"))
+            Passport oldValue = Passport.newBuilder()
+                    .addPhotoUrl("foo.bar/pic1")
                     .build();
             Passport newValue = Passport.getDefaultInstance();
             checkValidChange(oldValue, newValue);
@@ -159,12 +153,8 @@ class ValidateTest extends UtilityClassTest<Validate> {
         @DisplayName("allow overriding if (set_once) = false")
         void ignoreNonSetOnce() {
             Passport oldValue = Passport.getDefaultInstance();
-            Passport newValue = Passport
-                    .newBuilder()
-                    .setName(PersonName
-                                     .newBuilder()
-                                     .setGivenName("John")
-                                     .setFamilyName("Doe"))
+            Passport newValue = Passport.newBuilder()
+                    .setName("John Doe")
                     .build();
             checkValidChange(oldValue, newValue);
         }

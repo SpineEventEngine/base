@@ -39,12 +39,16 @@ import org.gradle.api.artifacts.ResolvedConfiguration;
 import org.gradle.api.artifacts.UnresolvedDependency;
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency;
 
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
 import static java.lang.String.format;
+import static java.util.function.Function.identity;
 
 /**
  * Adds a {@code spine-mc-java-checks} dependency to the given project {@link Configuration}.
@@ -140,11 +144,15 @@ public final class McJavaChecksDependency implements Logging {
         checkState(resolvedCopy != null);
         LenientConfiguration lenient = resolvedCopy.getLenientConfiguration();
         Set<UnresolvedDependency> unresolvedDeps = lenient.getUnresolvedModuleDependencies();
+        Map<UnresolvedDependency, Throwable> unresolvedDiags =
+                unresolvedDeps.stream()
+                              .collect(toImmutableMap(identity(), UnresolvedDependency::getProblem));
+
         _warn().log(
                 "Unable to add dependency on `%s` to the configuration `%s` because some " +
                         "dependencies could not be resolved.%n" +
                         "Unresolved dependencies: `%s`.",
-                artifactId(), configuration.getName(), unresolvedDeps
+                artifactId(), configuration.getName(), unresolvedDiags
         );
     }
 }
