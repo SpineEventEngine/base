@@ -56,7 +56,10 @@ class McJavaPluginTest {
 
     @BeforeEach
     void createProjectWithPlugin() {
-        Project project = StubProject.createFor(getClass()).get();
+        Project project =
+                StubProject.createFor(getClass())
+                           .withMavenRepositories()
+                           .get();
         project.getPluginManager()
                .apply(MC_JAVA_GRADLE_PLUGIN_ID);
         tasks = project.getTasks();

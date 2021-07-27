@@ -27,6 +27,7 @@
 package io.spine.tools.mc.java.gradle;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
 import io.spine.logging.Logging;
 import io.spine.tools.gradle.DependencyVersions;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -44,6 +45,7 @@ import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
 import static java.lang.String.format;
@@ -145,13 +147,22 @@ public final class McJavaChecksDependency implements Logging {
         Set<UnresolvedDependency> unresolvedDeps = lenient.getUnresolvedModuleDependencies();
         Map<UnresolvedDependency, Throwable> unresolvedDiags =
                 unresolvedDeps.stream()
-                              .collect(toImmutableMap(identity(), UnresolvedDependency::getProblem));
-
+                              .collect(
+                                      toImmutableMap(identity(), UnresolvedDependency::getProblem)
+                              );
+        ImmutableList<String> problemReport =
+                unresolvedDiags.entrySet()
+                               .stream()
+                               .map(entry -> format("%nDependency: `%s`%nProblem: `%s`",
+                                                    entry.getKey(),
+                                                    entry.getValue()))
+                               .sorted()
+                               .collect(toImmutableList());
         _warn().log(
                 "Unable to add dependency on `%s` to the configuration `%s` because some " +
-                        "dependencies could not be resolved.%n" +
-                        "Unresolved dependencies: `%s`.",
-                artifactId(), configuration.getName(), unresolvedDiags
+                        "dependencies could not be resolved: " +
+                        "%s.",
+                artifactId(), configuration.getName(), problemReport
         );
     }
 }
