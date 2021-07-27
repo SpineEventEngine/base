@@ -105,13 +105,10 @@ dependencies {
     ErrorProne.annotations.forEach { compileOnly(it) }
     compileOnly(JavaX.annotations)
     api("io.spine:spine-base:$spineVersion")
-}
 
-sourceSets {
-    main {
-        java.srcDirs("$projectDir/generated/main/spine")
-        proto.srcDirs("$projectDir/../base/src/main/proto")
-    }
+    testImplementation(JUnit.runner)
+    testImplementation(JUnit.pioneer)
+    testImplementation("io.spine.tools:spine-testlib:$spineVersion")
 }
 
 protobuf {
@@ -136,4 +133,10 @@ tasks.withType<JavaCompile> {
     // Explicitly sets the encoding of the source and test source files, ensuring
     // correct execution of the `javac` task.
     options.encoding = "UTF-8"
+}
+
+tasks.test {
+    useJUnitPlatform {
+        includeEngines("junit-jupiter")
+    }
 }
