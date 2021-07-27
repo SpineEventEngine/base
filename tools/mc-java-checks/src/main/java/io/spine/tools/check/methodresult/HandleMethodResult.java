@@ -60,7 +60,7 @@ public final class HandleMethodResult extends CheckReturnValue {
     private static final long serialVersionUID = 0L;
 
     static final String SUMMARY =
-            "Ignored return value of method that is annotated with @CheckReturnValue";
+            "Ignored return value of method that is annotated with `@CheckReturnValue`";
 
     @Override
     public Matcher<ExpressionTree> specializedMatcher() {

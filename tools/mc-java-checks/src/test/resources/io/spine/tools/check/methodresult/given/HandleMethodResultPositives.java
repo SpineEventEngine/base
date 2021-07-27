@@ -24,26 +24,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.check.vbuild;
+package io.spine.tools.check.methodresult.given;
 
-import com.google.errorprone.fixes.Fix;
-import com.google.errorprone.fixes.SuggestedFix;
-import com.sun.source.tree.Tree;
+import io.spine.base.Error;
 
 /**
- * The alternatives to the {@code Builder.build()} method.
+ * Contains statements for which the {@link HandleMethodResult} bug pattern should return a match.
  *
- * @see io.spine.validate.ValidatingBuilder
+ * <p>Comments in this file should not be modified as they serve as indicator for the
+ * {@link com.google.errorprone.CompilationTestHelper} Error Prone tool.
  */
-enum BuildMethodAlternative {
+class HandleMethodResultPositives {
 
-    vBuild,
-    buildPartial;
+    void callBuild() {
 
-    /**
-     * Creates a fix which suggests to replace the given tree element with this method.
-     */
-    public Fix replace(Tree tree) {
-        return SuggestedFix.replace(tree, name());
+        // BUG: Diagnostic matches: HandleMethodResult
+        Error.newBuilder().build();
+    }
+
+    void callGetter() {
+
+        // BUG: Diagnostic matches: HandleMethodResult
+        Error.newBuilder().getAttributesCount();
+    }
+
+    void callAsMethodReference() {
+        Error.Builder builder = Error.newBuilder();
+
+        // BUG: Diagnostic matches: HandleMethodResult
+        Runnable faulty = builder::build;
+        faulty.run();
+    }
+
+    void callNonBuilder() {
+        // BUG: Diagnostic matches: HandleMethodResult
+        checkMe();
+    }
+
+    public String checkMe() {
+        return "42";
     }
 }

@@ -24,42 +24,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.check.vbuild.given;
+package io.spine.tools.check.methodresult;
 
-import com.google.protobuf.Message;
-import io.spine.base.Error;
+import com.google.errorprone.CompilationTestHelper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import java.util.function.Supplier;
+import static io.spine.tools.check.methodresult.HandleMethodResult.SUMMARY;
 
-/**
- * Contains statements for which the {@link UseVBuild} bug pattern should return a match.
- *
- * <p>Comments in this file should not be modified as they serve as indicator for the
- * {@link com.google.errorprone.CompilationTestHelper} Error Prone tool.
- */
-class UseVBuildPositives {
+@DisplayName("`HandleMethodResult` check should")
+class HandleMethodResultTest {
 
-    void callBuild() {
+    private CompilationTestHelper helper;
 
-        // BUG: Diagnostic matches: UseVBuild
-        Error.newBuilder().build();
+    @BeforeEach
+    void setUp() {
+        helper = CompilationTestHelper.newInstance(HandleMethodResult.class, getClass());
     }
 
-    void callAsMethodReference() {
-        Error.Builder builder = Error.newBuilder();
-
-        // BUG: Diagnostic matches: UseVBuild
-        Supplier<? extends Message> faultySupplier = builder::build;
-        faultySupplier.get();
+    @Test
+    @DisplayName("match positive cases")
+    void recognizePositiveCases() {
+        helper.expectErrorMessage(HandleMethodResult.class.getSimpleName(),
+                                                 msg -> msg.contains(SUMMARY))
+              .addSourceFile("given/HandleMethodResultPositives.java")
+              .doTest();
     }
 
-    void callInLambda() {
-        Error.Builder builder = Error.newBuilder();
-
-        Supplier<? extends Message> faultySupplier = () -> {
-            // BUG: Diagnostic matches: UseVBuild
-            return builder.build();
-        };
-        faultySupplier.get();
+    @Test
+    @DisplayName("match negative cases")
+    void recognizeNegativeCases() {
+        helper.addSourceFile("given/HandleMethodResultNegatives.java")
+              .doTest();
     }
 }
