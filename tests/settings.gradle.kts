@@ -25,7 +25,6 @@
  */
 
 include("annotator")
-include("checks")
 include("factories")
 include("entity-queries")
 include("known-types")
