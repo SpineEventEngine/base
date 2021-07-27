@@ -41,7 +41,6 @@ import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDepen
 
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
