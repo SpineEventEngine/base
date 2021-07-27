@@ -59,6 +59,12 @@ class `'java { }' block should` {
     @BeforeEach
     fun prepareExtension() {
         val project = ProjectBuilder.builder().build()
+        // Add repositories for resolving locally built artifacts (via `mavenLocal()`)
+        // and their dependencies via `mavenCentral()`.
+        with(project.repositories) {
+            mavenLocal()
+            mavenCentral()
+        }
         project.apply {
             it.plugin("java")
             it.plugin(McJavaPlugin::class.java)
