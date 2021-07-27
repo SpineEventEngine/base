@@ -35,6 +35,9 @@ import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
+import io.spine.internal.gradle.applyStandard
+import io.spine.internal.gradle.excludeProtobufLite
+import io.spine.internal.gradle.forceVersions
 
 @Suppress("RemoveRedundantQualifierName") // cannot use imports under `buildScript`
 buildscript {
@@ -77,41 +80,71 @@ buildscript {
             }
         }
         classpath("io.spine.tools:spine-mc-java:$spineVersion")
-//        classpath("io.spine.tools:spine-mc-java-checks:$spineVersion")
     }
 }
 
 plugins {
     `java-library`
+    kotlin("jvm") version io.spine.internal.dependency.Kotlin.version
     idea
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
     io.spine.internal.dependency.Protobuf.GradlePlugin.apply {
         id(id) version version
     }
+    @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
+    io.spine.internal.dependency.ErrorProne.GradlePlugin.apply {
+        id(id) version version
+    }
+    pmd
+    id("maven-publish")
+    `force-jacoco`
 }
-
-val spineVersion: String by extra
 
 apply(plugin = "io.spine.mc-java")
 
-repositories {
-    mavenLocal()
-    mavenCentral()
+val javaVersion = JavaVersion.VERSION_1_8
+
+the<JavaPluginExtension>().apply {
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
 }
 
+//kotlin {
+//    explicitApi()
+//}
+//
+//tasks.withType<KotlinCompile>().configureEach {
+//    kotlinOptions {
+//        jvmTarget = javaVersion.toString()
+//        freeCompilerArgs = listOf("-Xskip-prerelease-check")
+//    }
+//}
+
+repositories.applyStandard()
+
+val spineVersion: String by extra
+
+// The dependencies should be similar to those defined in the `../build.gradle.kts`.
 dependencies {
-    Protobuf.libs.forEach { compileOnly(it) }
-    compileOnly(Guava.lib)
-    compileOnly(Flogger.lib)
-    compileOnly(CheckerFramework.annotations)
-    ErrorProne.annotations.forEach { compileOnly(it) }
-    compileOnly(JavaX.annotations)
+    errorprone(ErrorProne.core)
+    errorproneJavac(ErrorProne.javacPlugin)
+
+    Protobuf.libs.forEach { api(it) }
+    api(Flogger.lib)
+    api(Guava.lib)
+    api(CheckerFramework.annotations)
+    api(JavaX.annotations)
+    ErrorProne.annotations.forEach { api(it) }
+    api(kotlin("stdlib-jdk8"))
     api("io.spine:spine-base:$spineVersion")
 
     testImplementation(JUnit.runner)
     testImplementation(JUnit.pioneer)
     testImplementation("io.spine.tools:spine-testlib:$spineVersion")
 }
+
+configurations.forceVersions()
+configurations.excludeProtobufLite()
 
 protobuf {
     generateProtoTasks {
