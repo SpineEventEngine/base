@@ -57,6 +57,8 @@ class McJavaExtensionTest {
     void setUp() {
         projectDir = TempDir.forClass(getClass());
         project = StubProject.createAt(projectDir);
+        project.getRepositories().mavenLocal();
+        project.getRepositories().mavenCentral();
         project.getPluginManager()
                .apply(MC_JAVA_GRADLE_PLUGIN_ID);
     }
