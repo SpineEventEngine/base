@@ -26,7 +26,6 @@
 
 package io.spine.type;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Message;
 import io.spine.value.ClassTypeValue;
