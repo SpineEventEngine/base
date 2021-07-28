@@ -29,7 +29,9 @@ package io.spine.net;
 import com.google.common.collect.ImmutableMap;
 import io.spine.net.Uri.Schema;
 
+import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -38,35 +40,71 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 final class Schemas {
 
-    private static final Map<String, Schema> stringSchemas = buildSchemasMap();
+    /** Maps a lowercase name of a schema to its instance. */
+    private static final Map<SchemaKey, Schema> map = buildSchemasMap();
 
     /** Prevents instantiation of this utility class. */
     private Schemas() {
     }
 
     /**
-     * Parses schema from String representation.
+     * Tries to find a schema by the passed name.
      *
-     * @param value String schema representation.
-     * @return {@link Schema} value
+     * @param name the name of the schema
+     * @return {@link Schema} instance, or {@link Schema#UNDEFINED} if there is no schema with such
+     * a name
      */
-    static Schema parse(String value) {
-        checkNotNull(value);
-        String lowercaseValue = value.toLowerCase();
-        if (!stringSchemas.containsKey(lowercaseValue)) {
-            return Schema.UNDEFINED;
-        }
-        return stringSchemas.get(lowercaseValue);
+    static Schema parse(String name) {
+        checkNotNull(name);
+        SchemaKey key = new SchemaKey(name);
+        Schema result = map.getOrDefault(key, Schema.UNDEFINED);
+        return result;
     }
 
-    private static Map<String, Schema> buildSchemasMap() {
-        ImmutableMap.Builder<String, Schema> schemas = ImmutableMap.builder();
-
+    private static Map<SchemaKey, Schema> buildSchemasMap() {
+        ImmutableMap.Builder<SchemaKey, Schema> schemas = ImmutableMap.builder();
         for (Schema schema : Schema.values()) {
-            schemas.put(schema.name()
-                              .toLowerCase(), schema);
+            if (schema == Schema.UNDEFINED) {
+                continue;
+            }
+            schemas.put(new SchemaKey(schema), schema);
+        }
+        return schemas.build();
+    }
+
+    /**
+     * A key in the {@link #map} responsible for lowercase conversion of a schema name
+     * for lookup purposes.
+     *
+     * @see #parse(String)
+     */
+    private static final class SchemaKey {
+
+        private final String value;
+
+        private SchemaKey(String value) {
+            this.value = toValue(value);
         }
 
-        return schemas.build();
+        private SchemaKey(Schema schema) {
+            this(schema.name());
+        }
+
+        private static String toValue(String input) {
+            return input.toLowerCase(Locale.ENGLISH);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            SchemaKey schemaKey = (SchemaKey) o;
+            return Objects.equals(value, schemaKey.value);
+        }
+
+        @Override
+        public int hashCode() {
+            return value.hashCode();
+        }
     }
 }
