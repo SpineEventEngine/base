@@ -129,6 +129,7 @@ subprojects {
     val generatedSpineDir by extra("$generatedDir/main/spine")
     val generatedTestSpineDir by extra("$generatedDir/test/spine")
 
+    // Apply standard plugins.
     apply {
         plugin("java-library")
         plugin("kotlin")
@@ -138,10 +139,12 @@ subprojects {
         plugin("maven-publish")
     }
 
+    // Apply custom Kotlin script plugins.
     apply {
         plugin("pmd-settings")
     }
 
+    // Apply Groovy-based script plugins.
     ext["allowInternalJavadoc"] = true
     apply {
         with(Scripts) {
