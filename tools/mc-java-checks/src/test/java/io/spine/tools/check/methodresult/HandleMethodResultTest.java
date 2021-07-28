@@ -31,8 +31,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.check.methodresult.HandleMethodResult.SUMMARY;
-
 @DisplayName("`HandleMethodResult` check should")
 class HandleMethodResultTest {
 
@@ -46,9 +44,7 @@ class HandleMethodResultTest {
     @Test
     @DisplayName("match positive cases")
     void recognizePositiveCases() {
-        helper.expectErrorMessage(HandleMethodResult.class.getSimpleName(),
-                                                 msg -> msg.contains(SUMMARY))
-              .addSourceFile("given/HandleMethodResultPositives.java")
+        helper.addSourceFile("given/HandleMethodResultPositives.java")
               .doTest();
     }
 

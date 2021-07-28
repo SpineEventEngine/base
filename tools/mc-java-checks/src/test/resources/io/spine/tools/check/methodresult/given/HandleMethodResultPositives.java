@@ -37,27 +37,24 @@ import io.spine.base.Error;
 class HandleMethodResultPositives {
 
     void callBuild() {
-
-        // BUG: Diagnostic matches: HandleMethodResult
+        // BUG: Diagnostic contains: HandleMethodResult
         Error.newBuilder().build();
     }
 
     void callGetter() {
-
-        // BUG: Diagnostic matches: HandleMethodResult
+        // BUG: Diagnostic contains: HandleMethodResult
         Error.newBuilder().getAttributesCount();
     }
 
     void callAsMethodReference() {
         Error.Builder builder = Error.newBuilder();
-
-        // BUG: Diagnostic matches: HandleMethodResult
+        // BUG: Diagnostic contains: HandleMethodResult
         Runnable faulty = builder::build;
         faulty.run();
     }
 
     void callNonBuilder() {
-        // BUG: Diagnostic matches: HandleMethodResult
+        // BUG: Diagnostic contains: HandleMethodResult
         checkMe();
     }
 
