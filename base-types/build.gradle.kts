@@ -100,6 +100,7 @@ plugins {
     pmd
     id("maven-publish")
     `force-jacoco`
+    `pmd-settings`
 }
 
 apply(plugin = "io.spine.mc-java")
@@ -176,6 +177,8 @@ apply {
     with(Scripts) {
         from(javadocOptions(project))
         from(javacArgs(project))
+        //from(pmd(project))
+        from(updateGitHubPages(project))
     }
 }
 
