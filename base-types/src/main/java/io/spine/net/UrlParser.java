@@ -34,7 +34,10 @@ import io.spine.net.Uri.Schema;
 /**
  * Parses given URL to {@link Uri} instance.
  */
-@SuppressWarnings("CheckReturnValue") // of calls to methods of fields that are builders
+@SuppressWarnings({
+        "CheckReturnValue" /* of calls to methods of fields that are builders */,
+        "PMD.BeanMembersShouldSerialize" /* which is dubious rule. */
+})
 final class UrlParser {
 
     private static final char SEMICOLON = ':';

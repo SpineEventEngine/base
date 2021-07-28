@@ -78,6 +78,7 @@ final class Schemas {
      *
      * @see #parse(String)
      */
+    @SuppressWarnings("PMD.BeanMembersShouldSerialize") // which is dubious rule.
     private static final class SchemaKey {
 
         private final String value;
@@ -96,8 +97,12 @@ final class Schemas {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
             SchemaKey schemaKey = (SchemaKey) o;
             return Objects.equals(value, schemaKey.value);
         }

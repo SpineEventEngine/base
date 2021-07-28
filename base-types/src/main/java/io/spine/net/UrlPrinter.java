@@ -29,6 +29,7 @@ package io.spine.net;
 import io.spine.net.Uri.QueryParameter;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Performs conversion of URLs to String.
@@ -70,7 +71,7 @@ final class UrlPrinter {
 
         sb.append(protocol.getSchema()
                           .name()
-                          .toLowerCase())
+                          .toLowerCase(Locale.ENGLISH))
           .append(UrlParser.PROTOCOL_ENDING);
     }
 
