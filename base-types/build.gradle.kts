@@ -38,6 +38,7 @@ import io.spine.internal.dependency.Protobuf
 import io.spine.internal.gradle.applyStandard
 import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.forceVersions
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 @Suppress("RemoveRedundantQualifierName") // cannot use imports under `buildScript`
 buildscript {
@@ -109,16 +110,16 @@ the<JavaPluginExtension>().apply {
     targetCompatibility = javaVersion
 }
 
-//kotlin {
-//    explicitApi()
-//}
-//
-//tasks.withType<KotlinCompile>().configureEach {
-//    kotlinOptions {
-//        jvmTarget = javaVersion.toString()
-//        freeCompilerArgs = listOf("-Xskip-prerelease-check")
-//    }
-//}
+kotlin {
+    explicitApi()
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = javaVersion.toString()
+        freeCompilerArgs = listOf("-Xskip-prerelease-check")
+    }
+}
 
 repositories.applyStandard()
 
