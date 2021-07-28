@@ -107,6 +107,9 @@ public class McJsExtension extends GradleExtension {
      * ]
      * }</pre>
      */
+    @SuppressWarnings(
+            "UnrecognisedJavadocTag" /* ... `{@code }` within the code block example above. */
+    )
     public Map<String, List<String>> modules = newHashMap();
 
     private Task generateParsersTask;

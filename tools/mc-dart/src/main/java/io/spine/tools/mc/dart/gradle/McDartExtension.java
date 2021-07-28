@@ -58,7 +58,6 @@ import static org.gradle.api.Task.TASK_TYPE;
 /**
  * DSL extension for configuring Protobuf-to-Dart compilation.
  */
-@SuppressWarnings("UnstableApiUsage") // Gradle `Property` API.
 public final class McDartExtension extends GradleExtension {
 
     private static final String NAME = "protoDart";
@@ -105,7 +104,10 @@ public final class McDartExtension extends GradleExtension {
      * ]
      * }</pre>
      */
-    @SuppressWarnings({"PublicField", "WeakerAccess" /* Expose fields as a Gradle extension */ })
+    @SuppressWarnings({
+            "PublicField", "WeakerAccess" /* Expose fields as a Gradle extension */,
+            "UnrecognisedJavadocTag" /* ... `{@code }` within the code block example above. */
+    })
     public final Map<String, List<String>> modules = new HashMap<>();
 
     private final Project project;
