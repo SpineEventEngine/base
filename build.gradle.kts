@@ -139,12 +139,18 @@ subprojects {
     }
 
     apply {
+        plugin("pmd-settings")
+    }
+
+    ext["allowInternalJavadoc"] = true
+    apply {
         with(Scripts) {
             from(projectLicenseReport(project))
             from(checkstyle(project))
+            from(updateGitHubPages(project))
         }
     }
-
+    
     val javaVersion = JavaVersion.VERSION_1_8
 
     the<JavaPluginExtension>().apply {
@@ -260,13 +266,6 @@ subprojects {
         dependsOn(cleanGenerated)
     }
 
-    ext["allowInternalJavadoc"] = true
-    apply {
-        with(Scripts) {
-            from(pmd(project))
-            from(updateGitHubPages(project))
-        }
-    }
     project.tasks["publish"].dependsOn("${project.path}:updateGitHubPages")
 }
 
