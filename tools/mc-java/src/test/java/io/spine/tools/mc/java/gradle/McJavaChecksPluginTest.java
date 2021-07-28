@@ -48,7 +48,8 @@ class McJavaChecksPluginTest {
 
     @BeforeEach
     void createStubProject() {
-        stubProject = StubProject.createFor(getClass());
+        stubProject = StubProject.createFor(getClass())
+                                 .withMavenRepositories();
     }
 
     @Test
