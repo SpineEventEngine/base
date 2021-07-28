@@ -302,7 +302,6 @@ fun Project.spinePublishing(action: PublishExtension.() -> Unit) {
  * output is published as project's artifacts.
  */
 private enum class DefaultArtifact {
-
     sourceJar,
     testOutputJar,
     javadocJar;
