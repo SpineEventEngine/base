@@ -35,6 +35,7 @@ import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
+import io.spine.internal.gradle.Scripts
 import io.spine.internal.gradle.applyStandard
 import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.forceVersions
@@ -169,6 +170,13 @@ tasks.withType<JavaCompile> {
     // Explicitly sets the encoding of the source and test source files, ensuring
     // correct execution of the `javac` task.
     options.encoding = "UTF-8"
+}
+
+apply {
+    with(Scripts) {
+        from(javadocOptions(project))
+        from(javacArgs(project))
+    }
 }
 
 tasks.test {
