@@ -24,6 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import gradle.kotlin.dsl.accessors._a58233a23bc6df28037b16a01cec8068.pmd
 import io.spine.internal.dependency.Pmd
 
 plugins {
