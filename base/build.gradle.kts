@@ -30,11 +30,9 @@ import io.spine.internal.dependency.AutoService
 import io.spine.internal.dependency.Kotlin
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.gradle.IncrementGuard
-import io.spine.internal.gradle.RunBuild
 import io.spine.internal.gradle.Scripts
 import io.spine.internal.gradle.excludeProtobufLite
 import java.nio.file.Files.isSameFile
-import java.time.Duration
 
 plugins {
     `java-library`
@@ -96,23 +94,6 @@ tasks.jar.configure {
 }
 
 apply(from = Scripts.publishProto(project))
-
-val rebuildProtobuf by tasks.registering(RunBuild::class) {
-    directory = "$rootDir/base-validating-builders"
-    // Set the timeout to fail a stalled build automatically under Windows.
-    timeout.set(Duration.ofMinutes(30))
-    val subProjects = setOf(
-        ":mc-java-checks",
-        ":mc-java",
-        ":plugin-base",
-        ":tool-base",
-        ":base"
-    )
-    dependsOn(subProjects.map { p -> rootProject.project(p).tasks["publishToMavenLocal"] })
-}
-
-tasks.build.get().finalizedBy(rebuildProtobuf)
-tasks.publish.get().dependsOn(rebuildProtobuf)
 
 //TODO:2021-07-22:alexander.yevsyukov: Turn to WARN and investigate duplicates.
 // see https://github.com/SpineEventEngine/base/issues/657

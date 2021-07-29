@@ -37,11 +37,13 @@ import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.gradle.PublishingRepos
 import io.spine.internal.gradle.RunBuild
+import io.spine.internal.gradle.RunGradle
 import io.spine.internal.gradle.Scripts
 import io.spine.internal.gradle.applyStandard
 import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.forceVersions
 import io.spine.internal.gradle.spinePublishing
+import java.time.Duration
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 @Suppress("RemoveRedundantQualifierName") // Cannot use imported things here.
@@ -285,10 +287,63 @@ apply {
     }
 }
 
+val baseTypesDir = "$rootDir/base-types"
+
+private object PublishingTask {
+    const val publish = "publish"
+    const val publishToMavenLocal = "publishToMavenLocal"
+}
+
+val buildBaseTypes by tasks.registering(RunBuild::class) {
+    directory = baseTypesDir
+    timeout.set(Duration.ofMinutes(30))
+    val requiredProjects = setOf(
+        ":mc-java-checks",
+        ":mc-java",
+        ":plugin-base",
+        ":tool-base",
+        ":base"
+    )
+    dependsOn(requiredProjects.map { p ->
+        val subProject = rootProject.project(p)
+        subProject.tasks[PublishingTask.publishToMavenLocal]
+    })
+}
+
+tasks.build.get().finalizedBy(buildBaseTypes)
+
+val publishBaseTypes by tasks.registering(RunGradle::class) {
+    directory = baseTypesDir
+    task(PublishingTask.publish)
+    dependsOn(buildBaseTypes)
+}
+
+val publishBaseTypesToMavenLocal by tasks.registering(RunGradle::class) {
+    directory = baseTypesDir
+    task(PublishingTask.publishToMavenLocal)
+    dependsOn(buildBaseTypes)
+}
+
+/**
+ * Make the task created by the [Publish][io.spine.internal.gradle.Publish] plugin
+ * also publish base types.
+ */
+tasks[PublishingTask.publish].dependsOn(publishBaseTypes)
+
+/**
+ * Create custom `publishToMavenLocal` task for convenient publishing of all artifacts.
+ */
+tasks.register(PublishingTask.publishToMavenLocal) {
+    rootProject.subprojects.forEach { p ->
+        dependsOn(p.tasks[PublishingTask.publishToMavenLocal])
+    }
+    dependsOn(publishBaseTypesToMavenLocal)
+}
+
 val integrationTests by tasks.registering(RunBuild::class) {
     directory = "$rootDir/tests"
 }
 
 tasks.register("buildAll") {
-    dependsOn(tasks.build, integrationTests)
+    dependsOn(tasks.build, buildBaseTypes, integrationTests)
 }
