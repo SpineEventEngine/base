@@ -271,8 +271,7 @@ class Durations2Test extends UtilityClassTest<Durations2> {
     }
 
     @Nested
-    @DisplayName("Obtain from Duration")
-    @SuppressWarnings("deprecation")
+    @DisplayName("Obtain from `Duration`")
     class Obtain {
 
         @Test
@@ -283,7 +282,7 @@ class Durations2Test extends UtilityClassTest<Durations2> {
     }
 
     @Nested
-    @DisplayName("Verify if Duration is")
+    @DisplayName("Verify if `Duration` is")
     class Verify {
 
         @Test
