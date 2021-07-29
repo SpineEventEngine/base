@@ -103,11 +103,8 @@ import org.gradle.kotlin.dsl.setProperty
 class Publish : Plugin<Project> {
 
     companion object {
-
         const val taskName = "publish"
         const val extensionName = "spinePublishing"
-
-        private const val ARCHIVES = "archives"
     }
 
     override fun apply(project: Project) {
@@ -131,162 +128,171 @@ class Publish : Plugin<Project> {
             }
         }
     }
+}
 
-    private fun Project.applyMavenPublish(
-        extension: PublishExtension,
-        rootPublish: Task?,
-        checkCredentials: Task
-    ) {
-        logger.debug("Applying `maven-publish` plugin to ${name}.")
+private object ConfigurationName {
+    const val archives = "archives"
+}
 
-        apply(plugin = "maven-publish")
+private fun Project.applyMavenPublish(
+    extension: PublishExtension,
+    rootPublish: Task?,
+    checkCredentials: Task
+) {
+    logger.debug("Applying `maven-publish` plugin to ${name}.")
 
-        setUpDefaultArtifacts()
+    apply(plugin = "maven-publish")
 
-        val action = {
-            val publishingExtension = extensions.getByType(PublishingExtension::class)
-            with(publishingExtension) {
-                val project = this@applyMavenPublish
-                createMavenPublication(project, extension)
-                setUpRepositories(project, extension)
-            }
+    setUpDefaultArtifacts()
 
-            if (rootPublish != null) {
-                prepareTasks(rootPublish, checkCredentials)
-            } else {
-                tasks.getByPath(taskName).dependsOn(checkCredentials)
-            }
+    val action = {
+        val publishingExtension = extensions.getByType(PublishingExtension::class)
+        with(publishingExtension) {
+            val project = this@applyMavenPublish
+            createMavenPublication(project, extension)
+            setUpRepositories(project, extension)
         }
-        if (state.executed) {
-            action()
+
+        if (rootPublish != null) {
+            prepareTasks(rootPublish, checkCredentials)
         } else {
-            afterEvaluate { action() }
+            tasks.getByPath(Publish.taskName).dependsOn(checkCredentials)
         }
     }
-
-    private fun Project.createPublishTask(): Task =
-        rootProject.tasks.create(taskName)
-
-    private fun Project.createCheckTask(extension: PublishExtension): Task {
-        val checkCredentials = tasks.create("checkCredentials")
-        checkCredentials.doLast {
-            extension.targetRepositories
-                .get()
-                .forEach {
-                    it.credentials(this@createCheckTask)
-                        ?: throw InvalidUserDataException(
-                            "No valid credentials for repository `${it}`. Please make sure " +
-                                    "to pass username/password or a valid `.properties` file."
-                        )
-                }
-        }
-        return checkCredentials
+    if (state.executed) {
+        action()
+    } else {
+        afterEvaluate { action() }
     }
+}
 
-    private fun Project.prepareTasks(publish: Task, checkCredentials: Task) {
-        val publishTasks = getTasksByName(taskName, false)
-        publish.dependsOn(publishTasks)
-        publishTasks.forEach { it.dependsOn(checkCredentials) }
+private fun Project.createPublishTask(): Task =
+    rootProject.tasks.create(Publish.taskName)
+
+private fun Project.createCheckTask(extension: PublishExtension): Task {
+    val checkCredentials = tasks.create("checkCredentials")
+    checkCredentials.doLast {
+        extension.targetRepositories
+            .get()
+            .forEach {
+                it.credentials(this@createCheckTask)
+                    ?: throw InvalidUserDataException(
+                        "No valid credentials for repository `${it}`. Please make sure " +
+                                "to pass username/password or a valid `.properties` file."
+                    )
+            }
     }
+    return checkCredentials
+}
 
-    private fun Project.setUpDefaultArtifacts() {
-        val javaExtension: JavaPluginExtension =
-            project.extensions.getByType(JavaPluginExtension::class.java)
-        val sourceSets = javaExtension.sourceSets
+private fun Project.prepareTasks(publish: Task, checkCredentials: Task) {
+    val publishTasks = getTasksByName(Publish.taskName, false)
+    publish.dependsOn(publishTasks)
+    publishTasks.forEach { it.dependsOn(checkCredentials) }
+}
 
-        val sourceJar = tasks.createIfAbsent(
-            artifactTask = sourceJar,
-            from = sourceSets["main"].allSource,
-            classifier = "sources"
-        )
-        val testOutputJar = tasks.createIfAbsent(
-            artifactTask = testOutputJar,
-            from = sourceSets["test"].output,
-            classifier = "test"
-        )
-        val javadocJar = tasks.createIfAbsent(
-            artifactTask = javadocJar,
-            from = files("$buildDir/docs/javadoc"),
-            classifier = "javadoc",
-            dependencies = setOf("javadoc")
-        )
+private fun Project.setUpDefaultArtifacts() {
+    val javaExtension: JavaPluginExtension =
+        project.extensions.getByType(JavaPluginExtension::class.java)
+    val sourceSets = javaExtension.sourceSets
 
-        artifacts {
-            add(ARCHIVES, sourceJar)
-            add(ARCHIVES, testOutputJar)
-            add(ARCHIVES, javadocJar)
+    val sourceJar = tasks.createIfAbsent(
+        artifactTask = sourceJar,
+        from = sourceSets["main"].allSource,
+        classifier = "sources"
+    )
+    val testOutputJar = tasks.createIfAbsent(
+        artifactTask = testOutputJar,
+        from = sourceSets["test"].output,
+        classifier = "test"
+    )
+    val javadocJar = tasks.createIfAbsent(
+        artifactTask = javadocJar,
+        from = files("$buildDir/docs/javadoc"),
+        classifier = "javadoc",
+        dependencies = setOf("javadoc")
+    )
+
+    artifacts {
+        add(ConfigurationName.archives, sourceJar)
+        add(ConfigurationName.archives, testOutputJar)
+        add(ConfigurationName.archives, javadocJar)
+    }
+}
+
+private fun TaskContainer.createIfAbsent(
+    artifactTask: DefaultArtifact,
+    from: FileCollection,
+    classifier: String,
+    dependencies: Set<Any> = setOf()
+): Task {
+    val existing = findByName(artifactTask.name)
+    if (existing != null) {
+        return existing
+    }
+    return create(artifactTask.name, Jar::class) {
+        this.from(from)
+        archiveClassifier.set(classifier)
+        dependencies.forEach { dependsOn(it) }
+    }
+}
+
+private fun PublishingExtension.createMavenPublication(
+    project: Project,
+    extension: PublishExtension
+) {
+    val artifactIdForPublishing = if (extension.spinePrefix.get()) {
+        "spine-${project.name}"
+    } else {
+        project.name
+    }
+    publications {
+        create("mavenJava", MavenPublication::class.java) {
+            groupId = project.group.toString()
+            artifactId = artifactIdForPublishing
+            version = project.version.toString()
+
+            from(project.components.getAt("java"))
+
+            setArtifacts(project.configurations.getAt(ConfigurationName.archives).allArtifacts)
         }
     }
+}
 
-    private fun TaskContainer.createIfAbsent(artifactTask: DefaultArtifact,
-                                             from: FileCollection,
-                                             classifier: String,
-                                             dependencies: Set<Any> = setOf()): Task {
-        val existing = findByName(artifactTask.name)
-        if (existing != null) {
-            return existing
-        }
-        return create(artifactTask.name, Jar::class) {
-            this.from(from)
-            archiveClassifier.set(classifier)
-            dependencies.forEach { dependsOn(it) }
-        }
-    }
-
-    private fun PublishingExtension.createMavenPublication(project: Project,
-                                                           extension: PublishExtension
-    ) {
-        val artifactIdForPublishing = if (extension.spinePrefix.get()) {
-            "spine-${project.name}"
-        } else {
-            project.name
-        }
-        publications {
-            create("mavenJava", MavenPublication::class.java) {
-                groupId = project.group.toString()
-                artifactId = artifactIdForPublishing
-                version = project.version.toString()
-
-                from(project.components.getAt("java"))
-
-                setArtifacts(project.configurations.getAt(ARCHIVES).allArtifacts)
+private fun PublishingExtension.setUpRepositories(
+    project: Project,
+    extension: PublishExtension
+) {
+    val snapshots = project.version
+        .toString()
+        .matches(Regex(".+[-.]SNAPSHOT([+.]\\d+)?"))
+    repositories {
+        extension.targetRepositories.get().forEach { repo ->
+            maven {
+                initialize(repo, project, snapshots)
             }
         }
     }
+}
 
-    private fun PublishingExtension.setUpRepositories(
-        project: Project,
-        extension: PublishExtension
-    ) {
-        val snapshots = project.version
-            .toString()
-            .matches(Regex(".+[-.]SNAPSHOT([+.]\\d+)?"))
-        repositories {
-            extension.targetRepositories.get().forEach { repo ->
-                maven {
-                    initialize(repo, project, snapshots)
-                }
-            }
-        }
+private fun MavenArtifactRepository.initialize(
+    repo: Repository,
+    project: Project,
+    snapshots: Boolean
+) {
+    val publicRepo = if (snapshots) {
+        repo.snapshots
+    } else {
+        repo.releases
     }
-
-    private fun MavenArtifactRepository.initialize(repo: Repository,
-                                                   project: Project,
-                                                   snapshots: Boolean) {
-        val publicRepo = if(snapshots) {
-            repo.snapshots
-        } else {
-            repo.releases
-        }
-        // Special treatment for CloudRepo URL.
-        // Reading is performed via public repositories, and publishing via
-        // private ones that differ in the `/public` infix.
-        url = project.uri(publicRepo.replace("/public", ""))
-        val creds = repo.credentials(project.rootProject)
-        credentials {
-            username = creds?.username
-            password = creds?.password
-        }
+    // Special treatment for CloudRepo URL.
+    // Reading is performed via public repositories, and publishing via
+    // private ones that differ in the `/public` infix.
+    url = project.uri(publicRepo.replace("/public", ""))
+    val creds = repo.credentials(project.rootProject)
+    credentials {
+        username = creds?.username
+        password = creds?.password
     }
 }
 
