@@ -7,6 +7,7 @@
 This repository contains the foundation of the Spine framework which includes the following modules:
 
 * **[`base`](base)** — the framework base data types and utilities for working with them.
+* **[`base-types`](base-types)** — commonly used data types and related utilities. 
 * **[`testlib`](testlib)** - utilities for testing.
 
 * **[`tools/javadoc-style`](tools/javadoc-style)** — a Gradle plugin which processes Javadocs of
@@ -38,12 +39,6 @@ supposed to be used directly by the end user project.
 
 The repository also contains:
 
-* [`base-validating-builders`](base-validating-builders) — a helper module which generates
-  validating builders for the proto types declared in the module `base`. This module avoids circular
-  dependency because Model Compiler for Java also depends on `base`. 
-  See the [module README.md](base-validating-builders/README.md) for more details.
-  
-
 * A [common base](tools/plugin-base) for Spine Gradle plugins.
   
 
@@ -67,7 +62,7 @@ So, don't be afraid, this code is tested as the rest of the framework.
 
 In most Spine repositories, we update the `config` submodule by running `./config/pull` (or its
 Batch equivalent). However, in `base` we also need to copy Gradle `buildSrc` directory into included
-builds: `tests` and `base-validating-builders`. Thus, here we have `./pull` and `.\pull.bat`
+builds: `tests` and `base-types`. Thus, here we have `./pull` and `.\pull.bat`
 scripts which do whatever their `config` counterparts do and also copy `buildSrc` into the two
 included build directories.
 

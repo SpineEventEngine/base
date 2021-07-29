@@ -32,7 +32,6 @@ import io.spine.internal.dependency.Protobuf
 import io.spine.internal.gradle.IncrementGuard
 import io.spine.internal.gradle.Scripts
 import io.spine.internal.gradle.excludeProtobufLite
-import java.nio.file.Files.isSameFile
 
 plugins {
     `java-library`
@@ -63,33 +62,6 @@ sourceSets {
     test {
         resources.srcDir("$buildDir/descriptors/test")
         proto.setSrcDirs(listOf("$projectDir/src/test/proto"))
-    }
-}
-
-/**
- * The JAR task assembles class files with a respect to the re-built message classes.
- *
- * The task checks each input file for a newer version in the `base-validating-builders`.
- * If such a version is found, the older version is excluded.
- */
-tasks.jar.configure {
-    // See `base-validating-builders/README.md`
-    val compiledProtoPath = "$rootDir/base-validating-builders/compiled-proto"
-    val compiledProtos = fileTree(compiledProtoPath)
-
-    from(compiledProtos)
-
-    eachFile {
-        logger.info("Appending $this")
-        val classFile = file.toPath()
-        val isProto = compiledProtos.filter { it.path.endsWith(relativePath.toString()) }
-                                    .filter { !isSameFile(it.toPath(), classFile) }
-        if (!isProto.isEmpty) {
-            logger.info("File $classFile is excluded")
-            this.exclude()
-        } else {
-            logger.debug("File $classFile is not excluded")
-        }
     }
 }
 
