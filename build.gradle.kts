@@ -239,6 +239,7 @@ subprojects {
     tasks.create("sourceJar", Jar::class) {
         from(sourceSets["main"].allJava)
         archiveClassifier.set("sources")
+        dependsOn("generateProto")
     }
 
     tasks.create("testOutputJar", Jar::class) {
