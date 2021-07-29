@@ -31,9 +31,7 @@ import io.spine.tools.gradle.GeneratedSourceSet;
 import org.gradle.api.Project;
 import org.gradle.api.file.SourceDirectorySet;
 import org.gradle.api.plugins.JavaPlugin;
-import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
-import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,10 +41,11 @@ import org.junit.jupiter.api.io.TempDir;
 import java.nio.file.Path;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.tools.gradle.ProjectExtensions.sourceSet;
 import static org.gradle.api.tasks.SourceSet.MAIN_SOURCE_SET_NAME;
 import static org.gradle.api.tasks.SourceSet.TEST_SOURCE_SET_NAME;
 
-@DisplayName("ProjectSourceSuperset should")
+@DisplayName("`ProjectSourceSuperset` should")
 class ProjectSourceSupersetTest {
 
     private Project project;
@@ -78,7 +77,7 @@ class ProjectSourceSupersetTest {
         ProjectSourceSuperset structure = ProjectSourceSuperset.of(project);
         structure.register(root);
 
-        SourceSet sourceSet = sourceSet(sourceSetName);
+        SourceSet sourceSet = sourceSet(project, sourceSetName);
         SourceDirectorySet javaDirs = sourceSet.getJava();
         GeneratedSourceSet generatedSourceSet = root.sourceSet(sourceSetName);
         assertThat(javaDirs.getSrcDirs()).containsAtLeast(generatedSourceSet.java().toFile(),
@@ -86,14 +85,5 @@ class ProjectSourceSupersetTest {
                                                           generatedSourceSet.spine().toFile());
         assertThat(sourceSet.getResources().getSrcDirs())
                 .contains(generatedSourceSet.resources().toFile());
-    }
-
-    private SourceSet sourceSet(String name) {
-        JavaPluginConvention javaConvention = project.getConvention()
-                                                     .getPlugin(JavaPluginConvention.class);
-        SourceSetContainer sourceSets = javaConvention.getSourceSets();
-        SourceSet sourceSet = sourceSets.getByName(name);
-        assertThat(sourceSet).isNotNull();
-        return sourceSet;
     }
 }
