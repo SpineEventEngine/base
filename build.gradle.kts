@@ -310,8 +310,6 @@ val buildBaseTypes by tasks.registering(RunBuild::class) {
     })
 }
 
-tasks.build.get().finalizedBy(buildBaseTypes)
-
 val publishBaseTypes by tasks.registering(RunGradle::class) {
     directory = baseTypesDir
     task(PublishingTask.publish)
