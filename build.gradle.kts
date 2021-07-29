@@ -111,6 +111,11 @@ allprojects {
     version = rootProject.extra["versionToPublish"]!!
 }
 
+private object PublishingTask {
+    const val publish = "publish"
+    const val publishToMavenLocal = "publishToMavenLocal"
+}
+
 subprojects {
     buildscript {
         apply(from = "$rootDir/version.gradle.kts")
@@ -272,7 +277,7 @@ subprojects {
         dependsOn(cleanGenerated)
     }
 
-    project.tasks["publish"].dependsOn("${project.path}:updateGitHubPages")
+    project.tasks[PublishingTask.publish].dependsOn("${project.path}:updateGitHubPages")
 }
 
 apply {
@@ -288,11 +293,6 @@ apply {
 }
 
 val baseTypesDir = "$rootDir/base-types"
-
-private object PublishingTask {
-    const val publish = "publish"
-    const val publishToMavenLocal = "publishToMavenLocal"
-}
 
 val buildBaseTypes by tasks.registering(RunBuild::class) {
     directory = baseTypesDir

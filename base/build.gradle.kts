@@ -54,13 +54,34 @@ dependencies {
     testImplementation(project(":mute-logging"))
 }
 
+val srcDir by extra("$projectDir/src")
+val generatedDir by extra("$projectDir/generated")
+val generatedJavaDir by extra("$generatedDir/main/java")
+val generatedTestJavaDir by extra("$generatedDir/test/java")
+val generatedSpineDir by extra("$generatedDir/main/spine")
+val generatedTestSpineDir by extra("$generatedDir/test/spine")
+
 sourceSets {
     main {
-        resources.srcDir("$buildDir/descriptors/main")
+        java.srcDirs(
+            generatedJavaDir,
+            "$srcDir/main/java",
+            generatedSpineDir
+        )
+        resources.srcDirs("$buildDir/descriptors/main",
+                        "$srcDir/main/resources",
+                        "$generatedDir/main/resources")
         proto.setSrcDirs(listOf("$projectDir/src/main/proto"))
     }
     test {
-        resources.srcDir("$buildDir/descriptors/test")
+        java.srcDirs(
+            generatedTestJavaDir,
+            "$srcDir/test/java",
+            generatedTestSpineDir)
+        resources.srcDirs(
+            "$buildDir/descriptors/test",
+            "$srcDir/test/resources",
+            "$generatedDir/test/resources")
         proto.setSrcDirs(listOf("$projectDir/src/test/proto"))
     }
 }
