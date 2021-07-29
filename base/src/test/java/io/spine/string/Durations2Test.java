@@ -37,7 +37,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static com.google.protobuf.util.Durations.fromMinutes;
 import static com.google.protobuf.util.Durations.isNegative;
 import static com.google.protobuf.util.Durations.toHours;
 import static com.google.protobuf.util.Durations.toMillis;
