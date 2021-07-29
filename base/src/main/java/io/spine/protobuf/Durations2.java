@@ -60,6 +60,7 @@ import static java.util.Objects.requireNonNull;
 public final class Durations2 {
 
     public static final Duration ZERO = fromMillis(0L);
+    static final String PROTOBUF_DURATIONS = "com.google.protobuf.util.Durations";
 
     /** Prevent instantiation of this utility class. */
     private Durations2() {
@@ -71,7 +72,7 @@ public final class Durations2 {
      * @deprecated please use {@link Durations#fromMinutes(long)}.
      */
     @Deprecated
-    @InlineMe(replacement = "Durations.fromMinutes(minutes)")
+    @InlineMe(replacement = "Durations.fromMinutes(minutes)", imports = PROTOBUF_DURATIONS)
     public static Duration fromMinutes(long minutes) {
         return Durations.fromMinutes(minutes);
     }
@@ -82,7 +83,7 @@ public final class Durations2 {
      * @deprecated please use {@link Durations#fromHours(long)}.
      */
     @Deprecated
-    @InlineMe(replacement = "Durations.fromHours(hours)")
+    @InlineMe(replacement = "Durations.fromHours(hours)", imports = PROTOBUF_DURATIONS)
     public static Duration fromHours(long hours) {
         return Durations.fromHours(hours);
     }
@@ -188,7 +189,7 @@ public final class Durations2 {
      * @deprecated please use {@link Durations#toNanos(Duration)}.
      */
     @Deprecated
-    @InlineMe(replacement = "Durations.toNanos(duration)")
+    @InlineMe(replacement = "Durations.toNanos(duration)", imports = PROTOBUF_DURATIONS)
     public static long toNanos(Duration duration) {
         return Durations.toNanos(duration);
     }
@@ -199,7 +200,7 @@ public final class Durations2 {
      * @deprecated please use {@link Durations#toSeconds(Duration)}.
      */
     @Deprecated
-    @InlineMe(replacement = "Durations.toSeconds(duration)")
+    @InlineMe(replacement = "Durations.toSeconds(duration)", imports = PROTOBUF_DURATIONS)
     public static long toSeconds(Duration duration) {
         return Durations.toSeconds(duration);
     }
@@ -210,7 +211,7 @@ public final class Durations2 {
      * @deprecated please use {@link Durations#toMinutes(Duration)}.
      */
     @Deprecated
-    @InlineMe(replacement = "Durations.toMinutes(duration)")
+    @InlineMe(replacement = "Durations.toMinutes(duration)", imports = PROTOBUF_DURATIONS)
     public static long toMinutes(Duration duration) {
         return Durations.toMinutes(duration);
     }
@@ -221,7 +222,7 @@ public final class Durations2 {
      * @deprecated please use {@link Durations#toHours(Duration)}.
      */
     @Deprecated
-    @InlineMe(replacement = "Durations.toHours(value)")
+    @InlineMe(replacement = "Durations.toHours(value)", imports = PROTOBUF_DURATIONS)
     public static long getHours(Duration value) {
         return Durations.toHours(value);
     }
@@ -233,7 +234,6 @@ public final class Durations2 {
      * @deprecated please use {@code Durations.toMinutes(value) % 60}.
      */
     @Deprecated
-    @InlineMe(replacement = "Durations.toMinutes(value) % 60")
     public static int getMinutes(Duration value) {
         checkNotNull(value);
         long allMinutes = Durations.toMinutes(value);
@@ -302,6 +302,7 @@ public final class Durations2 {
      * @deprecated please use {@link Durations#isNegative(Duration)}.
      */
     @Deprecated
+    @InlineMe(replacement = "Durations.isNegative(value)", imports = PROTOBUF_DURATIONS)
     public static boolean isNegative(Duration value) {
         return Durations.isNegative(value);
     }
