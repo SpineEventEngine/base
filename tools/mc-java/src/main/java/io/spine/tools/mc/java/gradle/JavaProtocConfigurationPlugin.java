@@ -42,7 +42,6 @@ import io.spine.tools.protoc.SpineProtocConfig;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.plugins.JavaPluginConvention;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -55,6 +54,7 @@ import java.util.Base64;
 import static io.spine.tools.gradle.BaseTaskName.clean;
 import static io.spine.tools.gradle.JavaTaskName.processResources;
 import static io.spine.tools.gradle.JavaTaskName.processTestResources;
+import static io.spine.tools.gradle.ProjectExtensions.sourceSet;
 import static io.spine.tools.gradle.ProtocPluginName.grpc;
 import static io.spine.tools.gradle.ProtocPluginName.spineProtoc;
 import static io.spine.tools.java.fs.DefaultJavaPaths.at;
@@ -118,16 +118,13 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
         boolean tests = isTestsTask(protocTask);
         Project project = protocTask.getProject();
         TaskName writeRefName = writeRefNameTask(tests);
-        JavaPluginConvention javaConvention = project.getConvention()
-                                                     .getPlugin(JavaPluginConvention.class);
-        SourceScope sourceScope = tests ? SourceScope.test : SourceScope.main;
+        SourceScope scope = tests ? SourceScope.test : SourceScope.main;
         File descriptorFile = new File(protocTask.getDescriptorPath());
         Path resourceDirectory = descriptorFile.toPath()
                                                .getParent();
-        javaConvention.getSourceSets()
-                      .getByName(sourceScope.name())
-                      .getResources()
-                      .srcDir(resourceDirectory);
+        sourceSet(project, scope)
+                .getResources()
+                .srcDir(resourceDirectory);
         GradleTask writeRef = newTask(writeRefName,
                                       task -> writeRefFile(descriptorFile, resourceDirectory))
                 .insertBeforeTask(processResourceTaskName(tests))

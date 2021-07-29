@@ -29,17 +29,16 @@ package io.spine.tools.mc.java.gradle;
 import io.spine.tools.gradle.SourceScope;
 import org.gradle.api.Project;
 import org.gradle.api.file.FileCollection;
-import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
 
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.gradle.ProjectExtensions.sourceSet;
 import static io.spine.tools.gradle.SourceScope.main;
 import static io.spine.tools.gradle.SourceScope.test;
 import static io.spine.tools.mc.java.gradle.McJavaExtension.getGeneratedMainRejectionsDir;
 import static io.spine.tools.mc.java.gradle.McJavaExtension.getGeneratedTestRejectionsDir;
-import static java.util.Objects.requireNonNull;
 
 /**
  * A source code module with Protobuf.
@@ -89,8 +88,8 @@ final class ProtoModule {
         return protoSource(test);
     }
 
-    private FileCollection protoSource(SourceScope sourceScope) {
-        SourceSet sourceSet = sourceSet(sourceScope);
+    private FileCollection protoSource(SourceScope scope) {
+        SourceSet sourceSet = sourceSet(project, scope);
         Optional<FileCollection> files = protoSource(sourceSet);
         FileCollection emptyCollection = project.getLayout().files();
         return files.orElse(emptyCollection);
@@ -105,16 +104,6 @@ final class ProtoModule {
             FileCollection protoSet = (FileCollection) rawExtension;
             return Optional.of(protoSet);
         }
-    }
-
-    private SourceSet sourceSet(SourceScope sourceScope) {
-        JavaPluginConvention javaConvention =
-                project.getConvention()
-                       .getPlugin(JavaPluginConvention.class);
-        SourceSet sourceSet =
-                javaConvention.getSourceSets()
-                              .findByName(sourceScope.name());
-        return requireNonNull(sourceSet);
     }
 
     /**
