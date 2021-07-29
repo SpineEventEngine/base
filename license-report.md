@@ -237,10 +237,10 @@
      * **POM Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
      * **POM License: Mozilla Public License Version 2.0** - [http://www.mozilla.org/MPL/2.0/](http://www.mozilla.org/MPL/2.0/)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
 1. **Group:** net.sourceforge.saxon **Name:** saxon **Version:** 9.1.0.8
@@ -431,7 +431,7 @@
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jul 28 22:25:59 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jul 29 16:52:40 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -713,10 +713,10 @@ This report was generated on **Wed Jul 28 22:25:59 EEST 2021** using [Gradle-Lic
      * **POM Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
      * **POM License: Mozilla Public License Version 2.0** - [http://www.mozilla.org/MPL/2.0/](http://www.mozilla.org/MPL/2.0/)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
 1. **Group:** net.sourceforge.saxon **Name:** saxon **Version:** 9.1.0.8
@@ -911,7 +911,7 @@ This report was generated on **Wed Jul 28 22:25:59 EEST 2021** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jul 28 22:26:02 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jul 29 16:52:43 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -1189,10 +1189,10 @@ This report was generated on **Wed Jul 28 22:26:02 EEST 2021** using [Gradle-Lic
      * **POM Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
      * **POM License: Mozilla Public License Version 2.0** - [http://www.mozilla.org/MPL/2.0/](http://www.mozilla.org/MPL/2.0/)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
 1. **Group:** net.sourceforge.saxon **Name:** saxon **Version:** 9.1.0.8
@@ -1383,7 +1383,7 @@ This report was generated on **Wed Jul 28 22:26:02 EEST 2021** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jul 28 22:26:03 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jul 29 16:52:44 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -1661,10 +1661,10 @@ This report was generated on **Wed Jul 28 22:26:03 EEST 2021** using [Gradle-Lic
      * **POM Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
      * **POM License: Mozilla Public License Version 2.0** - [http://www.mozilla.org/MPL/2.0/](http://www.mozilla.org/MPL/2.0/)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
 1. **Group:** net.sourceforge.saxon **Name:** saxon **Version:** 9.1.0.8
@@ -1855,7 +1855,7 @@ This report was generated on **Wed Jul 28 22:26:03 EEST 2021** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jul 28 22:26:04 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jul 29 16:52:45 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -2141,10 +2141,10 @@ This report was generated on **Wed Jul 28 22:26:04 EEST 2021** using [Gradle-Lic
      * **POM Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
      * **POM License: Mozilla Public License Version 2.0** - [http://www.mozilla.org/MPL/2.0/](http://www.mozilla.org/MPL/2.0/)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
 1. **Group:** net.sourceforge.saxon **Name:** saxon **Version:** 9.1.0.8
@@ -2343,7 +2343,7 @@ This report was generated on **Wed Jul 28 22:26:04 EEST 2021** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jul 28 22:26:04 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jul 29 16:52:46 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -2690,10 +2690,10 @@ This report was generated on **Wed Jul 28 22:26:04 EEST 2021** using [Gradle-Lic
      * **POM Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
      * **POM License: Mozilla Public License Version 2.0** - [http://www.mozilla.org/MPL/2.0/](http://www.mozilla.org/MPL/2.0/)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
 1. **Group:** net.sourceforge.saxon **Name:** saxon **Version:** 9.1.0.8
@@ -2887,7 +2887,7 @@ This report was generated on **Wed Jul 28 22:26:04 EEST 2021** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jul 28 22:26:05 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jul 29 16:52:46 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -3165,10 +3165,10 @@ This report was generated on **Wed Jul 28 22:26:05 EEST 2021** using [Gradle-Lic
      * **POM Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
      * **POM License: Mozilla Public License Version 2.0** - [http://www.mozilla.org/MPL/2.0/](http://www.mozilla.org/MPL/2.0/)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
 1. **Group:** net.sourceforge.saxon **Name:** saxon **Version:** 9.1.0.8
@@ -3367,7 +3367,7 @@ This report was generated on **Wed Jul 28 22:26:05 EEST 2021** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jul 28 22:26:05 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jul 29 16:52:47 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -3613,10 +3613,10 @@ This report was generated on **Wed Jul 28 22:26:05 EEST 2021** using [Gradle-Lic
      * **POM Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
      * **POM License: Mozilla Public License Version 2.0** - [http://www.mozilla.org/MPL/2.0/](http://www.mozilla.org/MPL/2.0/)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
 1. **Group:** net.sourceforge.saxon **Name:** saxon **Version:** 9.1.0.8
@@ -3807,7 +3807,7 @@ This report was generated on **Wed Jul 28 22:26:05 EEST 2021** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jul 28 22:26:06 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jul 29 16:52:48 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -4085,10 +4085,10 @@ This report was generated on **Wed Jul 28 22:26:06 EEST 2021** using [Gradle-Lic
      * **POM Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
      * **POM License: Mozilla Public License Version 2.0** - [http://www.mozilla.org/MPL/2.0/](http://www.mozilla.org/MPL/2.0/)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
 1. **Group:** net.sourceforge.saxon **Name:** saxon **Version:** 9.1.0.8
@@ -4279,7 +4279,7 @@ This report was generated on **Wed Jul 28 22:26:06 EEST 2021** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jul 28 22:26:08 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jul 29 16:52:50 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -4572,10 +4572,10 @@ This report was generated on **Wed Jul 28 22:26:08 EEST 2021** using [Gradle-Lic
      * **POM Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
      * **POM License: Mozilla Public License Version 2.0** - [http://www.mozilla.org/MPL/2.0/](http://www.mozilla.org/MPL/2.0/)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
 1. **Group:** net.sourceforge.saxon **Name:** saxon **Version:** 9.1.0.8
@@ -4766,7 +4766,7 @@ This report was generated on **Wed Jul 28 22:26:08 EEST 2021** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jul 28 22:26:10 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jul 29 16:52:51 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -5044,10 +5044,10 @@ This report was generated on **Wed Jul 28 22:26:10 EEST 2021** using [Gradle-Lic
      * **POM Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
      * **POM License: Mozilla Public License Version 2.0** - [http://www.mozilla.org/MPL/2.0/](http://www.mozilla.org/MPL/2.0/)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
 1. **Group:** net.sourceforge.saxon **Name:** saxon **Version:** 9.1.0.8
@@ -5238,7 +5238,7 @@ This report was generated on **Wed Jul 28 22:26:10 EEST 2021** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jul 28 22:26:10 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jul 29 16:52:51 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -5571,10 +5571,10 @@ This report was generated on **Wed Jul 28 22:26:10 EEST 2021** using [Gradle-Lic
      * **POM Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
      * **POM License: Mozilla Public License Version 2.0** - [http://www.mozilla.org/MPL/2.0/](http://www.mozilla.org/MPL/2.0/)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
 1. **Group:** net.sourceforge.saxon **Name:** saxon **Version:** 9.1.0.8
@@ -5765,7 +5765,7 @@ This report was generated on **Wed Jul 28 22:26:10 EEST 2021** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jul 28 22:26:11 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jul 29 16:52:53 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -6058,10 +6058,10 @@ This report was generated on **Wed Jul 28 22:26:11 EEST 2021** using [Gradle-Lic
      * **POM Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
      * **POM License: Mozilla Public License Version 2.0** - [http://www.mozilla.org/MPL/2.0/](http://www.mozilla.org/MPL/2.0/)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
 1. **Group:** net.sourceforge.saxon **Name:** saxon **Version:** 9.1.0.8
@@ -6252,7 +6252,7 @@ This report was generated on **Wed Jul 28 22:26:11 EEST 2021** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jul 28 22:26:12 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jul 29 16:52:54 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -6498,10 +6498,10 @@ This report was generated on **Wed Jul 28 22:26:12 EEST 2021** using [Gradle-Lic
      * **POM Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
      * **POM License: Mozilla Public License Version 2.0** - [http://www.mozilla.org/MPL/2.0/](http://www.mozilla.org/MPL/2.0/)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-core **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
-1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.33.0
+1. **Group:** net.sourceforge.pmd **Name:** pmd-java **Version:** 6.36.0
      * **POM License: BSD-style** - [http://pmd.sourceforge.net/license.html](http://pmd.sourceforge.net/license.html)
 
 1. **Group:** net.sourceforge.saxon **Name:** saxon **Version:** 9.1.0.8
@@ -6692,4 +6692,4 @@ This report was generated on **Wed Jul 28 22:26:12 EEST 2021** using [Gradle-Lic
  The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
 
-This report was generated on **Wed Jul 28 22:26:13 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Jul 29 16:52:55 EEST 2021** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
