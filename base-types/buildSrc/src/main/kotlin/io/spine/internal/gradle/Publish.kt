@@ -52,8 +52,23 @@ import org.gradle.kotlin.dsl.setProperty
 /**
  * This plugin allows publishing artifacts to remote Maven repositories.
  *
- * Apply this plugin to the root project. Specify the projects which produce publishable artifacts
- * and the target Maven repositories via the `publishing` DSL:
+ * The plugin can be used with single- and multi-module projects.
+ *
+ * When applied to a single-module project, the reference to the project is passed to the plugin:
+ * ```
+ * import io.spine.gradle.internal.PublishingRepos
+ * import io.spine.gradle.internal.spinePublishing
+ *
+ * spinePublishing {
+ *     publish(project)
+ *     targetRepositories.addAll(
+ *         PublishingRepos.cloudRepo,
+ *         PublishingRepos.gitHub("LibraryName")
+ *     )
+ * }
+ * ```
+ * When applied to a multi-module project, the plugin should be applied to the root project.
+ * The sub-projects to be published are specified by their names:
  * ```
  * import io.spine.gradle.internal.PublishingRepos
  * import io.spine.gradle.internal.spinePublishing
@@ -99,32 +114,49 @@ class Publish : Plugin<Project> {
         val extension = PublishExtension.create(project)
         project.extensions.add(PublishExtension::class.java, extensionName, extension)
 
-        val publish = project.createPublishTask()
-        val checkCredentials = project.createCheckTask(extension)
-
         project.afterEvaluate {
+            val soloMode = extension.soloProject != null
+            val rootPublish: Task? =
+                if (soloMode) null
+                else project.createPublishTask()
+            val checkCredentials = project.createCheckTask(extension)
+
             extension.projectsToPublish
                 .get()
                 .map { project.project(it) }
-                .forEach { p ->
-                    p.logger.debug("Applying `maven-publish` plugin to ${name}.")
+                .forEach { it.applyMavenPublish(extension, rootPublish, checkCredentials) }
+        }
+    }
 
-                    p.apply(plugin = "maven-publish")
+    private fun Project.applyMavenPublish(
+        extension: PublishExtension,
+        rootPublish: Task?,
+        checkCredentials: Task
+    ) {
+        logger.debug("Applying `maven-publish` plugin to ${name}.")
 
-                    p.setUpDefaultArtifacts()
+        apply(plugin = "maven-publish")
 
-                    val action = {
-                        val publishingExtension = p.extensions.getByType(PublishingExtension::class)
-                        publishingExtension.createMavenPublication(p, extension)
-                        publishingExtension.setUpRepositories(p, extension)
-                        p.prepareTasks(publish, checkCredentials)
-                    }
-                    if (p.state.executed) {
-                        action()
-                    } else {
-                        p.afterEvaluate { action() }
-                    }
-                }
+        setUpDefaultArtifacts()
+
+        val action = {
+            val publishingExtension = extensions.getByType(PublishingExtension::class)
+            with(publishingExtension) {
+                val project = this@applyMavenPublish
+                createMavenPublication(project, extension)
+                setUpRepositories(project, extension)
+            }
+
+            if (rootPublish != null) {
+                prepareTasks(rootPublish, checkCredentials)
+            } else {
+                tasks.getByPath(taskName).dependsOn(checkCredentials)
+            }
+        }
+        if (state.executed) {
+            action()
+        } else {
+            afterEvaluate { action() }
         }
     }
 
@@ -275,8 +307,22 @@ private constructor(
         }
     }
 
+    /**
+     * The project to be published _instead_ of [projectsToPublish].
+     *
+     * If set, [projectsToPublish] will be ignored.
+     */
+    var soloProject: Project? = null
+
     init {
         spinePrefix.convention(true)
+    }
+
+    /**
+     * Instructs to publish the passed project _instead_ of [projectsToPublish].
+     */
+    fun publish(project: Project) {
+        soloProject = project;
     }
 }
 

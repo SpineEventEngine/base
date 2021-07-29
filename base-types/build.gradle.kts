@@ -35,10 +35,12 @@ import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
+import io.spine.internal.gradle.PublishingRepos
 import io.spine.internal.gradle.Scripts
 import io.spine.internal.gradle.applyStandard
 import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.forceVersions
+import io.spine.internal.gradle.spinePublishing
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 @Suppress("RemoveRedundantQualifierName") // cannot use imports under `buildScript`
@@ -98,12 +100,28 @@ plugins {
         id(id) version version
     }
     pmd
-    id("maven-publish")
+    jacoco
     `force-jacoco`
+    `project-report`
     `pmd-settings`
 }
 
 apply(plugin = "io.spine.mc-java")
+
+apply(from = "$projectDir/../version.gradle.kts")
+val spineVersion: String by extra
+val versionToPublish: String by extra
+
+group = "io.spine"
+version = versionToPublish
+
+spinePublishing {
+    targetRepositories.addAll(setOf(
+        PublishingRepos.cloudRepo,
+        PublishingRepos.gitHub("base")
+    ))
+    publish(project)
+}
 
 val javaVersion = JavaVersion.VERSION_1_8
 
@@ -124,8 +142,8 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 repositories.applyStandard()
-
-val spineVersion: String by extra
+configurations.forceVersions()
+configurations.excludeProtobufLite()
 
 // The dependencies should be similar to those defined in the `../build.gradle.kts`.
 dependencies {
@@ -145,9 +163,6 @@ dependencies {
     testImplementation(JUnit.pioneer)
     testImplementation("io.spine.tools:spine-testlib:$spineVersion")
 }
-
-configurations.forceVersions()
-configurations.excludeProtobufLite()
 
 protobuf {
     generateProtoTasks {
