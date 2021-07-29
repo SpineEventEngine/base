@@ -121,10 +121,14 @@ class Publish : Plugin<Project> {
                 else project.createPublishTask()
             val checkCredentials = project.createCheckTask(extension)
 
-            extension.projectsToPublish
-                .get()
-                .map { project.project(it) }
-                .forEach { it.applyMavenPublish(extension, rootPublish, checkCredentials) }
+            if (soloMode) {
+                project.applyMavenPublish(extension, null, checkCredentials)
+            } else {
+                extension.projectsToPublish
+                    .get()
+                    .map { project.project(it) }
+                    .forEach { it.applyMavenPublish(extension, rootPublish, checkCredentials) }
+            }
         }
     }
 
