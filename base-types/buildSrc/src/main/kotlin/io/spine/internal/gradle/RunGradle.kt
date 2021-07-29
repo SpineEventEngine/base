@@ -37,7 +37,7 @@ import org.gradle.internal.os.OperatingSystem
 /**
  * A Gradle task which runs another Gradle build.
  *
- * Launches Gradle wrapper under a given [directory] with the specified [task] names.
+ * Launches Gradle wrapper under a given [directory] with the specified [taskNames] names.
  * The `clean` task is also run if current build includes a `clean` task.
  *
  * The build writes verbose log into `$directory/build/debug-out.txt`. The error output is written
@@ -55,7 +55,7 @@ open class RunGradle : DefaultTask() {
     /**
      * The names of the tasks to be passed to the Gradle Wrapper script.
      */
-    private lateinit var task: List<String>
+    private lateinit var taskNames: List<String>
 
     /**
      * Names of Gradle properties to copy into the launched build.
@@ -72,7 +72,7 @@ open class RunGradle : DefaultTask() {
      * Specifies task names to be passed to the Gradle Wrapper script.
      */
     public fun task(vararg tasks: String) {
-        this.task = tasks.asList()
+        taskNames = tasks.asList()
     }
 
     @TaskAction
@@ -121,7 +121,7 @@ open class RunGradle : DefaultTask() {
         if (shouldClean) {
             command.add("clean")
         }
-        command.addAll(task)
+        command.addAll(taskNames)
         command.add("--console=plain")
         command.add("--debug")
         command.add("--stacktrace")
