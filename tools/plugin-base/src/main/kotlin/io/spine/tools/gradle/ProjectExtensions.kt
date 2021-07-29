@@ -45,6 +45,11 @@ public fun Project.javaPluginExtension(): JavaPluginExtension =
 public fun Project.sourceSets(): SourceSetContainer = javaPluginExtension().sourceSets
 
 /**
- * Obtains the source set by the passed scope.
+ * Obtains a source set by the passed scope.
  */
 public fun Project.sourceSet(scope: SourceScope): SourceSet = sourceSets().getByName(scope.name)
+
+/**
+ * Obtains a source set by the passed scope name.
+ */
+public fun Project.sourceSet(scope: String): SourceSet = sourceSets().getByName(scope)
