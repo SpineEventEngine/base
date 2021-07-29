@@ -74,7 +74,7 @@ open class RunGradle : DefaultTask() {
     public fun task(vararg tasks: String) {
         taskNames = tasks.asList()
     }
-
+    
     @TaskAction
     private fun execute() {
         // Ensure build error output log.
