@@ -62,9 +62,7 @@ class MessageClassTest {
                                   new TestMessageClass(MSG_CLASS, MSG_TYPE))
                 .addEqualityGroup(new TestMessageClass(MSG_CLASS, OTHER_TYPE),
                                   new TestMessageClass(MSG_CLASS, OTHER_TYPE))
-                .addEqualityGroup(new MessageClass<StringValue>(MSG_CLASS) {
-                    private static final long serialVersionUID = 0L;
-                }).testEquals();
+                .testEquals();
     }
 
     @Test
