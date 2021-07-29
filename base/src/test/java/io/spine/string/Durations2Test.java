@@ -64,7 +64,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings({"MagicNumber", "ClassCanBeStatic", "InnerClassMayBeStatic"})
-@DisplayName("Durations2 should")
+@DisplayName("`Durations2` should")
 class Durations2Test extends UtilityClassTest<Durations2> {
 
     private final Converter<java.time.Duration, Duration> converter = Durations2.converter();
@@ -225,13 +225,13 @@ class Durations2Test extends UtilityClassTest<Durations2> {
     class Add {
 
         @Test
-        @DisplayName("two nulls -> ZERO")
+        @DisplayName("two `null`s -> `ZERO`")
         void nullPlusNull() {
             assertThat(add(null, null)).isEqualTo(ZERO);
         }
 
         @Test
-        @DisplayName("null returning same instance")
+        @DisplayName("`null` returning same instance")
         void sameWithNull() {
             Duration duration = seconds(525);
             assertThat(add(duration, null))
@@ -319,7 +319,7 @@ class Durations2Test extends UtilityClassTest<Durations2> {
     }
 
     @Nested
-    @DisplayName("Tell if Duration is")
+    @DisplayName("Tell if `Duration` is")
     class Compare {
 
         @Test
