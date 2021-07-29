@@ -36,7 +36,8 @@ import static java.util.regex.Matcher.quoteReplacement;
 /**
  * A formatting action, which handles a text in backticks.
  *
- * <p>The action will replace all entries like {@code `text`} by {@code {@code text}}.
+ * <p>The action will replace text enclosed into backticks (e.g. {@code `text`}) with
+ * the same text wrapped into the {@literal @}{@code code} Javadoc tag.
  *
  * <p>A multi-line text is not supported, e.g a text as follows will not be handled:
  * <pre>{@code
