@@ -65,23 +65,27 @@ sourceSets {
     main {
         java.srcDirs(
             generatedJavaDir,
-            "$srcDir/main/java",
-            generatedSpineDir
+            generatedSpineDir,
+            "$srcDir/main/java"
         )
-        resources.srcDirs("$buildDir/descriptors/main",
-                        "$srcDir/main/resources",
-                        "$generatedDir/main/resources")
+        resources.srcDirs(
+            "$buildDir/descriptors/main",
+            "$generatedDir/main/resources",
+            "$srcDir/main/resources"
+        )
         proto.setSrcDirs(listOf("$projectDir/src/main/proto"))
     }
     test {
         java.srcDirs(
             generatedTestJavaDir,
-            "$srcDir/test/java",
-            generatedTestSpineDir)
+            generatedTestSpineDir,
+            "$srcDir/test/java"
+        )
         resources.srcDirs(
             "$buildDir/descriptors/test",
-            "$srcDir/test/resources",
-            "$generatedDir/test/resources")
+            "$generatedDir/test/resources",
+            "$srcDir/test/resources"
+        )
         proto.setSrcDirs(listOf("$projectDir/src/test/proto"))
     }
 }
