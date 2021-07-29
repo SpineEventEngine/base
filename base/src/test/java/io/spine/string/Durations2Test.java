@@ -277,16 +277,8 @@ class Durations2Test extends UtilityClassTest<Durations2> {
 
         @Test
         void amountOfHours() {
-            assertEquals(10, Durations2.getHours(hoursAndMinutes(10, 40)));
-            assertEquals(-256, Durations2.getHours(hoursAndMinutes(-256, -50)));
-        }
-
-        @Test
-        void remainderOfMinutes() {
-            final long minutesRemainder = 8;
-            final long minutesTotal = minutesRemainder + 60; // add 1 hour
-            assertThat(Durations2.getMinutes(fromMinutes(minutesTotal)))
-                    .isEqualTo(minutesRemainder);
+            assertEquals(10, toHours(hoursAndMinutes(10, 40)));
+            assertEquals(-256, toHours(hoursAndMinutes(-256, -50)));
         }
     }
 

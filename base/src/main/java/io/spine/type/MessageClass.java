@@ -107,7 +107,7 @@ public abstract class MessageClass<M extends Message> extends ClassTypeValue<M> 
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof MessageClass)) {
             return false;
         }
         if (!super.equals(o)) {
