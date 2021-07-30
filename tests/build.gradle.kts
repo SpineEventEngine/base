@@ -101,7 +101,7 @@ subprojects {
         ErrorProne.annotations.forEach { compileOnly(it) }
         implementation("io.spine:spine-base:$spineVersion")
         implementation("io.spine:spine-base-types:$spineVersion")
-        testImplementation("io.spine:spine-testlib:$spineVersion")
+        testImplementation("io.spine.tools:spine-testlib:$spineVersion")
         Truth.libs.forEach { testImplementation(it) }
         testRuntimeOnly(JUnit.runner)
     }
