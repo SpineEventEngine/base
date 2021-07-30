@@ -300,6 +300,8 @@ val buildBaseTypes by tasks.registering(RunBuild::class) {
     val requiredProjects = setOf(
         ":mc-java-checks",
         ":mc-java",
+        ":javadoc-style",
+        ":javadoc-filter",
         ":plugin-base",
         ":tool-base",
         ":base"
