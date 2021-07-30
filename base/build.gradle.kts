@@ -103,15 +103,15 @@ tasks.jar.get().duplicatesStrategy = dupStrategy
 val compiledProtoRoot = "$projectDir/generated"
 val googlePackagePrefix = "com/google"
 
-val pruneGoogleProtos by tasks.registering(type = Delete::class) {
-    delete("$compiledProtoRoot/main/java/$googlePackagePrefix")
-    tasks.compileJava.get().dependsOn(this)
-}
-
-val pruneTestGoogleProtos by tasks.registering(type = Delete::class) {
-    delete("$compiledProtoRoot/test/java/$googlePackagePrefix")
-    tasks.compileTestJava.get().dependsOn(this)
-}
+//val pruneGoogleProtos by tasks.registering(type = Delete::class) {
+//    delete("$compiledProtoRoot/main/java/$googlePackagePrefix")
+//    tasks.compileJava.get().dependsOn(this)
+//}
+//
+//val pruneTestGoogleProtos by tasks.registering(type = Delete::class) {
+//    delete("$compiledProtoRoot/test/java/$googlePackagePrefix")
+//    tasks.compileTestJava.get().dependsOn(this)
+//}
 
 protobuf {
     generatedFilesBaseDir = compiledProtoRoot
@@ -133,8 +133,8 @@ protobuf {
                 mainTasks.add(task)
             }
         }
-        pruneGoogleProtos.get().dependsOn(mainTasks)
-        pruneTestGoogleProtos.get().dependsOn(testTasks)
+//        pruneGoogleProtos.get().dependsOn(mainTasks)
+//        pruneTestGoogleProtos.get().dependsOn(testTasks)
     }
 }
 
