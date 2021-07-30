@@ -304,6 +304,7 @@ val buildBaseTypes by tasks.registering(RunBuild::class) {
         ":javadoc-filter",
         ":plugin-base",
         ":tool-base",
+        ":testlib",
         ":base"
     )
     dependsOn(requiredProjects.map { p ->
