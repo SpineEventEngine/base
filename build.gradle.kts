@@ -331,16 +331,6 @@ val publishBaseTypesToMavenLocal by tasks.registering(RunGradle::class) {
  */
 tasks[PublishingTask.publish].dependsOn(publishBaseTypes)
 
-/**
- * Create custom `publishToMavenLocal` task for convenient publishing of all artifacts.
- */
-tasks.register(PublishingTask.publishToMavenLocal) {
-    rootProject.subprojects.forEach { p ->
-        dependsOn(p.tasks[PublishingTask.publishToMavenLocal])
-    }
-    dependsOn(publishBaseTypesToMavenLocal)
-}
-
 val integrationTests by tasks.registering(RunBuild::class) {
     directory = "$rootDir/tests"
 }
