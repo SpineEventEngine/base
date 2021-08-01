@@ -25,8 +25,8 @@
  */
 
 import io.spine.internal.dependency.ErrorProne
-import io.spine.internal.dependency.Truth
 import io.spine.internal.dependency.JUnit
+import io.spine.internal.dependency.Truth
 import io.spine.internal.gradle.Scripts
 
 buildscript {
@@ -100,7 +100,6 @@ subprojects {
     dependencies {
         ErrorProne.annotations.forEach { compileOnly(it) }
         implementation("io.spine:spine-base:$spineVersion")
-        implementation("io.spine:spine-base-types:$spineVersion")
         testImplementation("io.spine.tools:spine-testlib:$spineVersion")
         Truth.libs.forEach { testImplementation(it) }
         testRuntimeOnly(JUnit.runner)
