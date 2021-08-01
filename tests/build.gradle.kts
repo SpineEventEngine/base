@@ -106,6 +106,8 @@ subprojects {
      * explicitly.
      */
     dependencies {
+        errorprone(ErrorProne.core)
+        errorproneJavac(ErrorProne.javacPlugin)
         ErrorProne.annotations.forEach { compileOnly(it) }
         implementation("io.spine:spine-base:$spineVersion")
         testImplementation("io.spine.tools:spine-testlib:$spineVersion")
@@ -155,3 +157,20 @@ subprojects {
 
 val scriptsPath = Scripts.commonPath
 apply(from = "${baseRoot}/${scriptsPath}/jacoco.gradle")
+//
+//tasks.build {
+//    val requiredProjects = setOf(
+//        ":base",
+//        ":testlib",
+//        ":tool-base",
+//        ":plugin-base",
+//        ":mc-java",
+//        ":mc-java-checks",
+//        ":mc-java-protoc"
+//    )
+//    dependsOn(requiredProjects.map { p ->
+//        gradle.includedBuilds
+//            .filter { b -> b.name == p }
+//            .map { it.task("publishToMavenLocal") }
+//    })
+//}
