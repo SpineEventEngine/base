@@ -333,6 +333,21 @@ tasks[PublishingTask.publish].dependsOn(publishBaseTypes)
 
 val integrationTests by tasks.registering(RunBuild::class) {
     directory = "$rootDir/tests"
+
+    val requiredProjects = setOf(
+        ":mc-java-checks",
+        ":mc-java",
+        ":javadoc-style",
+        ":javadoc-filter",
+        ":plugin-base",
+        ":tool-base",
+        ":testlib",
+        ":base"
+    )
+    dependsOn(requiredProjects.map { p ->
+        val subProject = rootProject.project(p)
+        subProject.tasks[PublishingTask.publishToMavenLocal]
+    })
 }
 
 tasks.register("buildAll") {
