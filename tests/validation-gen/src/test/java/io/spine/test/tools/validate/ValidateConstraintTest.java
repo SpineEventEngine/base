@@ -26,7 +26,7 @@
 
 package io.spine.test.tools.validate;
 
-import io.spine.people.PersonName;
+import io.spine.test.tools.validate.PersonName;
 import io.spine.validate.ConstraintViolation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

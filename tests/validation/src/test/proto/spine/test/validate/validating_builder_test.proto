@@ -36,7 +36,6 @@ option java_outer_classname = "ValidatingBuilderTestProto";
 option java_package = "io.spine.test.validate.msg.builder";
 
 import "google/protobuf/timestamp.proto";
-import "spine/net/url.proto";
 
 // The test definitions for the `ValidatingBuilder` tests.
 //
@@ -118,8 +117,26 @@ message Attachment {
 
     string title = 2 [(required) = true, (pattern).regex = ".*\\w+.*"];
 
-    spine.net.Url url = 3 [(required) = true, (validate) = true];
+    Url url = 3 [(required) = true, (validate) = true];
 }
+
+// A Universal Resource Locator.
+//
+// A test-only copy of the [spine.net.Url] type, to ease inter-module dependencies.
+//
+message Url {
+
+    // Reservation of the previously deprecated field indexes and names.
+    reserved 1 to 2;
+    reserved "raw", "record", "value";
+
+    // The value of the URL.
+    //
+    // Validity of the value should be provided by the code creating instances of this message.
+    //
+    string spec = 3 [(required) = true];
+}
+
 
 message EditTaskState {
     option (entity).kind = ENTITY;

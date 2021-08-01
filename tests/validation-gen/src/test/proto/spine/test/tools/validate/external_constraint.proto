@@ -46,14 +46,14 @@ message Email {
     string value = 1;
 }
 
-message PersonName {
+message SimplePersonName {
 
     string value = 1;
 }
 
 message User {
 
-    PersonName name = 1 [(.validate) = false];
+    SimplePersonName name = 1 [(.validate) = false];
 
     repeated ShippingAddress shipping_address = 2 [(.validate) = true];
 
