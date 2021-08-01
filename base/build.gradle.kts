@@ -100,24 +100,12 @@ tasks.processTestResources.get().duplicatesStrategy = dupStrategy
 tasks.sourceJar.get().duplicatesStrategy = dupStrategy
 tasks.jar.get().duplicatesStrategy = dupStrategy
 
-val compiledProtoRoot = "$projectDir/generated"
-val googlePackagePrefix = "com/google"
-
-//val pruneGoogleProtos by tasks.registering(type = Delete::class) {
-//    delete("$compiledProtoRoot/main/java/$googlePackagePrefix")
-//    tasks.compileJava.get().dependsOn(this)
-//}
-//
-//val pruneTestGoogleProtos by tasks.registering(type = Delete::class) {
-//    delete("$compiledProtoRoot/test/java/$googlePackagePrefix")
-//    tasks.compileTestJava.get().dependsOn(this)
-//}
-
 protobuf {
+    val compiledProtoRoot = "$projectDir/generated"
+    val googlePackagePrefix = "com/google"
+
     generatedFilesBaseDir = compiledProtoRoot
     generateProtoTasks {
-        val mainTasks = mutableListOf<Task>()
-        val testTasks = mutableListOf<Task>()
         for (task in all()) {
             val scope = task.sourceSet.name
             task.generateDescriptorSet = true
@@ -127,14 +115,21 @@ protobuf {
                 includeSourceInfo = true
             }
 
-            if (scope.contains("test")) {
-                testTasks.add(task)
-            } else {
-                mainTasks.add(task)
+            /**
+                Remove the code generated for Google Protobuf library types.
+
+                Java code for the `com.google` package was generated because we wanted
+                to have descriptors for all the types, including those from Google Protobuf library.
+                We want all the descriptors so that they are included into the resources used by
+                the `io.spine.type.KnownTypes` class.
+
+                Now, as we have the descriptors _and_ excessive Java code, we delete it to avoid
+                classes that duplicate those coming from Protobuf library JARs.
+            */
+            task.doLast {
+                delete("$compiledProtoRoot/$scope/java/$googlePackagePrefix")
             }
         }
-//        pruneGoogleProtos.get().dependsOn(mainTasks)
-//        pruneTestGoogleProtos.get().dependsOn(testTasks)
     }
 }
 
@@ -147,7 +142,7 @@ fun FileTreeElement.isGoogleProtoSource(): Boolean {
 }
 
 /**
- * From all artifacts, exclude Google `.proto` sources.
+ * Exclude Google `.proto` sources from all the artifacts.
  */
 tasks.withType(Jar::class) {
     exclude { it.isGoogleProtoSource() }
