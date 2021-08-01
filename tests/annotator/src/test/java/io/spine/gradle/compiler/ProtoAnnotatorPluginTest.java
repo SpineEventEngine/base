@@ -38,7 +38,7 @@ import static io.spine.gradle.compiler.given.AnnotatorTestEnv.assertNotInternal;
 import static io.spine.gradle.compiler.given.AnnotatorTestEnv.assertNotSpi;
 import static io.spine.gradle.compiler.given.AnnotatorTestEnv.assertSpi;
 
-@DisplayName("ProtoAnnotatorPlugin should")
+@DisplayName("`ProtoAnnotatorPlugin` should")
 class ProtoAnnotatorPluginTest {
 
     @Test
