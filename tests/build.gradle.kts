@@ -25,6 +25,7 @@
  */
 
 import io.spine.internal.dependency.ErrorProne
+import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.Truth
 import io.spine.internal.gradle.Scripts
@@ -48,9 +49,11 @@ buildscript {
 
     dependencies {
         classpath(io.spine.internal.dependency.Guava.lib)
+        @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
         classpath(io.spine.internal.dependency.Protobuf.GradlePlugin.lib) {
             exclude(group = "com.google.guava")
         }
+        @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
         classpath(io.spine.internal.dependency.ErrorProne.GradlePlugin.lib) {
             exclude(group = "com.google.guava")
         }
@@ -64,6 +67,10 @@ plugins {
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
     io.spine.internal.dependency.Protobuf.GradlePlugin.apply {
         id(id).version(version)
+    }
+    @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
+    io.spine.internal.dependency.ErrorProne.GradlePlugin.apply {
+        id(id) version version
     }
 }
 
@@ -85,7 +92,8 @@ subprojects {
 
     val commonPath = Scripts.commonPath
     apply {
-        plugin("com.google.protobuf")
+        plugin(ErrorProne.GradlePlugin.id)
+        plugin(Protobuf.GradlePlugin.id)
         plugin("io.spine.mc-java")
         plugin("idea")
         from("${baseRoot}/${commonPath}/test-output.gradle")
