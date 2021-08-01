@@ -104,7 +104,7 @@ public final class McJavaChecksDependency implements Logging {
      */
     private boolean addDependency() {
         if (isResolvable()) {
-            addDependency(configuration);
+            addDependencyTo(configuration);
             return true;
         } else {
             logUnresolvedDependencies();
@@ -120,7 +120,7 @@ public final class McJavaChecksDependency implements Logging {
      */
     private boolean isResolvable() {
         Configuration configCopy = configuration.copy();
-        addDependency(configCopy);
+        addDependencyTo(configCopy);
         resolvedCopy = configCopy.getResolvedConfiguration();
         boolean hasError = resolvedCopy.hasError();
         return !hasError;
@@ -133,7 +133,7 @@ public final class McJavaChecksDependency implements Logging {
     /**
      * Adds the dependency to the project configuration.
      */
-    private void addDependency(Configuration cfg) {
+    private void addDependencyTo(Configuration cfg) {
         _debug().log("Adding dependency on `%s` to the `%s` configuration.", artifactId(), cfg);
         DependencySet dependencies = cfg.getDependencies();
         Dependency dependency = new DefaultExternalModuleDependency(
