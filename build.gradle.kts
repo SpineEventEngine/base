@@ -319,12 +319,6 @@ val publishBaseTypes by tasks.registering(RunGradle::class) {
     dependsOn(buildBaseTypes)
 }
 
-val publishBaseTypesToMavenLocal by tasks.registering(RunGradle::class) {
-    directory = baseTypesDir
-    task(PublishingTask.publishToMavenLocal)
-    dependsOn(buildBaseTypes)
-}
-
 /**
  * Make the task created by the [Publish][io.spine.internal.gradle.Publish] plugin
  * also publish base types.
