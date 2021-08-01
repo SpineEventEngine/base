@@ -47,6 +47,11 @@ dependencies {
 val dupStrategy = DuplicatesStrategy.INCLUDE
 
 tasks.jar {
+    //TODO:2021-08-01:alexander.yevsyukov: Replace the below dependencies with output of `jar` tasks
+    // instead. See:
+    //   https://discuss.gradle.org/t/gradle-7-0-seems-to-take-an-overzealous-approach-to-inter-task-dependencies/39656/4
+    //   https://docs.gradle.org/current/userguide/userguide_single.html?&_ga=2.136886832.1455643218.1627825963-149591519.1626535262#sec:link_output_dir_to_input_files
+    //
     dependsOn(
             ":base:jar",
             ":tool-base:jar",
