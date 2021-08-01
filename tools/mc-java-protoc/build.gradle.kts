@@ -48,7 +48,9 @@ val dupStrategy = DuplicatesStrategy.INCLUDE
 
 tasks.jar {
     dependsOn(
+            ":base:jar",
             ":tool-base:jar",
+            ":plugin-base:jar",
             ":mc-java-validation:jar"
     )
 
