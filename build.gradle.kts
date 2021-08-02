@@ -320,8 +320,8 @@ val publishBaseTypes by tasks.registering(RunGradle::class) {
 }
 
 /**
- * Make the task created by the [Publish][io.spine.internal.gradle.Publish] plugin
- * also publish base types.
+ * Makes the task created by the [Publish][io.spine.internal.gradle.Publish] plugin
+ * also publish the `base-types` artifact.
  */
 tasks[PublishingTask.publish].dependsOn(publishBaseTypes)
 
