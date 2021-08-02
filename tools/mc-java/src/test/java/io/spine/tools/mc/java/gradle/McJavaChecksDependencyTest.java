@@ -61,7 +61,8 @@ class McJavaChecksDependencyTest {
     }
 
     @Test
-    @Disabled("Disable temporarily until the mystery with missing transitive depenencies is solved")
+    @Disabled("Disable temporarily until the mystery with missing transitive dependencies is solved." +
+            " See https://github.com/SpineEventEngine/base/issues/659")
     @DisplayName("add Spine Java Checks dependency to annotation processor config of a project")
     void addToProject() {
         Project project = stubProject.withMavenRepositories().get();
