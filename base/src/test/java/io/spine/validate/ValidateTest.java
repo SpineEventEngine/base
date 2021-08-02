@@ -31,6 +31,8 @@ import com.google.protobuf.Message;
 import io.spine.base.Field;
 import io.spine.base.Time;
 import io.spine.code.proto.FieldContext;
+import io.spine.test.type.PersonName;
+import io.spine.test.type.Url;
 import io.spine.test.validate.Passport;
 import io.spine.test.validate.RequiredMsgFieldValue;
 import io.spine.testing.UtilityClassTest;
@@ -143,7 +145,7 @@ class ValidateTest extends UtilityClassTest<Validate> {
         @DisplayName("allow overriding repeated fields")
         void ignoreRepeated() {
             Passport oldValue = Passport.newBuilder()
-                    .addPhotoUrl("foo.bar/pic1")
+                    .addPhoto(Url.newBuilder().setSpec("foo.bar/pic1").build())
                     .build();
             Passport newValue = Passport.getDefaultInstance();
             checkValidChange(oldValue, newValue);
@@ -153,8 +155,12 @@ class ValidateTest extends UtilityClassTest<Validate> {
         @DisplayName("allow overriding if (set_once) = false")
         void ignoreNonSetOnce() {
             Passport oldValue = Passport.getDefaultInstance();
+            PersonName name = PersonName.newBuilder()
+                    .setGivenName("John")
+                    .setFamilyName("Doe")
+                    .build();
             Passport newValue = Passport.newBuilder()
-                    .setName("John Doe")
+                    .setName(name)
                     .build();
             checkValidChange(oldValue, newValue);
         }
