@@ -37,15 +37,15 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.StringValue;
-import io.spine.net.Uri;
-import io.spine.net.Uri.Protocol;
+import io.spine.test.type.Uri;
+import io.spine.test.type.Uri.Protocol;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.net.Uri.Authorization.getDescriptor;
+import static io.spine.test.type.Uri.Authorization.getDescriptor;
 import static io.spine.testing.Assertions.assertIllegalState;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

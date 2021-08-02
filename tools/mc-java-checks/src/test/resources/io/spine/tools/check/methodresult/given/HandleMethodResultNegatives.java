@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.check.vbuild.given;
+package io.spine.tools.check.methodresult.given;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Struct;
@@ -48,7 +48,7 @@ abstract class HandleMethodResultNegatives {
         FieldPath.Builder builder = FieldPath.newBuilder();
         builder.addFieldName("foo")
                .addFieldName("bar");
-        return builder.vBuild();
+        return builder.build();
     }
 
     Struct callPut() {

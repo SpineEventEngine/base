@@ -37,7 +37,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static com.google.protobuf.util.Durations.fromMinutes;
 import static com.google.protobuf.util.Durations.isNegative;
 import static com.google.protobuf.util.Durations.toHours;
 import static com.google.protobuf.util.Durations.toMillis;
@@ -64,7 +63,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings({"MagicNumber", "ClassCanBeStatic", "InnerClassMayBeStatic"})
-@DisplayName("Durations2 should")
+@DisplayName("`Durations2` should")
 class Durations2Test extends UtilityClassTest<Durations2> {
 
     private final Converter<java.time.Duration, Duration> converter = Durations2.converter();
@@ -225,13 +224,13 @@ class Durations2Test extends UtilityClassTest<Durations2> {
     class Add {
 
         @Test
-        @DisplayName("two nulls -> ZERO")
+        @DisplayName("two `null`s -> `ZERO`")
         void nullPlusNull() {
             assertThat(add(null, null)).isEqualTo(ZERO);
         }
 
         @Test
-        @DisplayName("null returning same instance")
+        @DisplayName("`null` returning same instance")
         void sameWithNull() {
             Duration duration = seconds(525);
             assertThat(add(duration, null))
@@ -271,27 +270,18 @@ class Durations2Test extends UtilityClassTest<Durations2> {
     }
 
     @Nested
-    @DisplayName("Obtain from Duration")
-    @SuppressWarnings("deprecation")
+    @DisplayName("Obtain from `Duration`")
     class Obtain {
 
         @Test
         void amountOfHours() {
-            assertEquals(10, Durations2.getHours(hoursAndMinutes(10, 40)));
-            assertEquals(-256, Durations2.getHours(hoursAndMinutes(-256, -50)));
-        }
-
-        @Test
-        void remainderOfMinutes() {
-            final long minutesRemainder = 8;
-            final long minutesTotal = minutesRemainder + 60; // add 1 hour
-            assertThat(Durations2.getMinutes(fromMinutes(minutesTotal)))
-                    .isEqualTo(minutesRemainder);
+            assertEquals(10, toHours(hoursAndMinutes(10, 40)));
+            assertEquals(-256, toHours(hoursAndMinutes(-256, -50)));
         }
     }
 
     @Nested
-    @DisplayName("Verify if Duration is")
+    @DisplayName("Verify if `Duration` is")
     class Verify {
 
         @Test
@@ -328,7 +318,7 @@ class Durations2Test extends UtilityClassTest<Durations2> {
     }
 
     @Nested
-    @DisplayName("Tell if Duration is")
+    @DisplayName("Tell if `Duration` is")
     class Compare {
 
         @Test

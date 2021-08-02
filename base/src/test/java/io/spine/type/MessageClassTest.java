@@ -27,6 +27,7 @@
 package io.spine.type;
 
 import com.google.common.testing.EqualsTester;
+import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.Descriptors;
@@ -49,6 +50,7 @@ class MessageClassTest {
 
     private static final Class<StringValue> MSG_CLASS = StringValue.class;
     private static final TypeUrl MSG_TYPE = TypeUrl.of(StringValue.class);
+    private static final TypeUrl OTHER_TYPE = TypeUrl.of(Any.class);
 
     @SuppressWarnings("SerializableInnerClassWithNonSerializableOuterClass")
     @Test
@@ -56,14 +58,11 @@ class MessageClassTest {
     void beEqualWithingClass() {
         new EqualsTester()
                 .addEqualityGroup(new TestMessageClass(MSG_CLASS),
-                                  new TestMessageClass(MSG_CLASS))
-                .addEqualityGroup(new TestMessageClass(MSG_CLASS, MSG_TYPE),
+                                  new TestMessageClass(MSG_CLASS),
                                   new TestMessageClass(MSG_CLASS, MSG_TYPE))
-                .addEqualityGroup(new TestMessageClass(MSG_CLASS),
-                                  new TestMessageClass(MSG_CLASS, MSG_TYPE))
-                .addEqualityGroup(new MessageClass<StringValue>(MSG_CLASS) {
-                    private static final long serialVersionUID = 0L;
-                });
+                .addEqualityGroup(new TestMessageClass(MSG_CLASS, OTHER_TYPE),
+                                  new TestMessageClass(MSG_CLASS, OTHER_TYPE))
+                .testEquals();
     }
 
     @Test

@@ -63,6 +63,11 @@ public class McJavaExtension extends GradleExtension {
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     /**
+     * The name of the extension, as it appears in a Gradle build script.
+     */
+    static final String NAME = "modelCompiler";
+
+    /**
      * The absolute path to the Protobuf source code under the {@code main} directory.
      */
     public String mainProtoDir;
@@ -155,7 +160,7 @@ public class McJavaExtension extends GradleExtension {
      * <p>If this value is not set, the default severities are used,
      * which are specific for each check.
      *
-     * <p>May be overridden by the values provided by the {@link ErrorProneChecksExtension}.
+     * <p>May be overridden by the values provided by the {@link McJavaChecksExtension}.
      */
     public Severity defaultCheckSeverity;
 

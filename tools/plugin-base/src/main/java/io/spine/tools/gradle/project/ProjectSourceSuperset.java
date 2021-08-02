@@ -29,10 +29,10 @@ package io.spine.tools.gradle.project;
 import io.spine.tools.gradle.GeneratedSourceRoot;
 import io.spine.tools.gradle.GeneratedSourceSet;
 import org.gradle.api.Project;
-import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSetContainer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.gradle.Projects.sourceSets;
 
 /**
  * A {@link SourceSuperset} implementation based on source sets of a Gradle project.
@@ -59,8 +59,7 @@ public final class ProjectSourceSuperset implements SourceSuperset {
     @Override
     public void register(GeneratedSourceRoot rootDirectory) {
         checkNotNull(rootDirectory);
-
-        SourceSetContainer sourceSets = sourceSets();
+        SourceSetContainer sourceSets = sourceSets(project);
         sourceSets.forEach(sourceSet -> {
             GeneratedSourceSet scopeDir = rootDirectory.sourceSet(sourceSet.getName());
             sourceSet.getJava()
@@ -68,12 +67,5 @@ public final class ProjectSourceSuperset implements SourceSuperset {
             sourceSet.getResources()
                      .srcDir(scopeDir.resources());
         });
-    }
-
-    private SourceSetContainer sourceSets() {
-        JavaPluginConvention javaConvention = project.getConvention()
-                                                     .getPlugin(JavaPluginConvention.class);
-        SourceSetContainer sourceSets = javaConvention.getSourceSets();
-        return sourceSets;
     }
 }

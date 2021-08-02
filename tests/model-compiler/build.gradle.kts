@@ -24,9 +24,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.tools.protoc.MessageSelectorFactory.prefix
-import io.spine.tools.protoc.MessageSelectorFactory.regex
-import io.spine.tools.protoc.MessageSelectorFactory.suffix
 
 plugins {
     java
@@ -43,26 +40,30 @@ modelCompiler {
         val methodFactory = "io.spine.tools.protoc.TestMethodFactory"
         val nestedClassFactory = "io.spine.tools.protoc.TestNestedClassFactory"
 
-        forMessages(suffix("documents.proto")) {
+        forMessages(by().suffix("documents.proto")) {
             markAs("io.spine.tools.protoc.DocumentMessage")
         }
-        forMessages(prefix("spine/tools/protoc/prefix_generation")) {
+        
+        forMessages(by().prefix("spine/tools/protoc/prefix_generation")) {
             markAs("io.spine.tools.protoc.PrefixedMessage")
-            genegateMethods(methodFactory)
-            generateNestedClasses(nestedClassFactory)
+            generateMethodsWith(methodFactory)
+            generateNestedClassesWith(nestedClassFactory)
         }
-        forMessages(suffix("suffix_generation_test.proto")) {
+
+        forMessages(by().suffix("suffix_generation_test.proto")) {
             markAs("io.spine.tools.protoc.SuffixedMessage")
-            genegateMethods(methodFactory)
-            generateNestedClasses(nestedClassFactory)
+            generateMethodsWith(methodFactory)
+            generateNestedClassesWith(nestedClassFactory)
         }
-        forMessages(regex(".*regex.*test.*")) {
+        
+        forMessages(by().regex(".*regex.*test.*")) {
             markAs("io.spine.tools.protoc.RegexedMessage")
-            genegateMethods(methodFactory)
-            generateNestedClasses(nestedClassFactory)
+            generateMethodsWith(methodFactory)
+            generateNestedClassesWith(nestedClassFactory)
         }
-        forMessages(regex(".*multi.*factory.*test.*")) {
-            genegateMethods(methodFactory)
+
+        forMessages(by().regex(".*multi.*factory.*test.*")) {
+            generateMethodsWith(methodFactory)
         }
     }
 }

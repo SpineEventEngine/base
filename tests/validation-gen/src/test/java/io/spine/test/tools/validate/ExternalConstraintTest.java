@@ -74,12 +74,12 @@ class ExternalConstraintTest {
     @Test
     @DisplayName("ignore external constraints if `(validate)` is not set")
     void noValidate() {
-        PersonName name = PersonName.newBuilder()
-                                 .setValue("A")
-                                 .buildPartial();
+        SimplePersonName name = SimplePersonName.newBuilder()
+                .setValue("A")
+                .buildPartial();
         User user = User.newBuilder()
-                        .setName(name)
-                        .buildPartial();
+                .setName(name)
+                .buildPartial();
         assertThat(user.validate())
                 .isEmpty();
     }

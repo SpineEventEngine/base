@@ -79,6 +79,7 @@ private fun ResolutionStrategy.forceProductionDependencies() {
         AutoService.annotations,
         CheckerFramework.annotations,
         ErrorProne.annotations,
+        ErrorProne.core,
         Guava.lib,
         FindBugs.annotations,
         Kotlin.reflect,
@@ -129,8 +130,8 @@ fun ConfigurationContainer.excludeProtobufLite() {
         )
     }
 
-    excludeProtoLite("runtime")
-    excludeProtoLite("testRuntime")
+    excludeProtoLite("runtimeOnly")
+    excludeProtoLite("testRuntimeOnly")
 }
 
 @Suppress("unused")

@@ -1,0 +1,531 @@
+/*
+ * Copyright 2021, TeamDev. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+syntax = "proto3";
+
+package spine.test.type;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.test.type";
+option java_outer_classname = "TestTypesProto";
+option java_multiple_files = true;
+
+// A Universal Resource Locator.
+//
+message Url {
+
+    // Reservation of the previously deprecated field indexes and names.
+    reserved 1 to 2;
+    reserved "raw", "record", "value";
+
+    // The value of the URL.
+    //
+    // Validity of the value should be provided by the code creating instances of this message.
+    //
+    string spec = 3 [(required) = true];
+}
+
+// A URL in a structured form.
+//
+// This is a test-only type, which is similar to one available from `base-types` artifact.
+//
+message Uri {
+
+    // Application layer protocol.
+    Protocol protocol = 1;
+
+    // User's email and password (both optional).
+    Authorization auth = 2 [(validate) = true, (required) = false];
+
+    // Domain name.
+    string host = 3;
+
+    // Server's port (e.g. :8080).
+    //
+    // We leave port as string, because port 0 is hypothetically possible to use.
+    //
+    string port = 4;
+
+    // Relative path to desired resource (e.g. "/index" or "/js/app.js").
+    string path = 5;
+
+    // A list of key-value pairs (?key1=value1&key2=value2).
+    repeated QueryParameter query = 6;
+
+    // Sub-resource (e.g. "#article").
+    string fragment = 7;
+
+    // Application layer protocol.
+    message Protocol {
+
+        oneof protocol {
+
+            // Most often used schemas.
+            Schema schema = 1;
+
+            // Some other protocol
+            string name = 2;
+        }
+    }
+
+    // Most often used application layer protocols.
+    enum Schema {
+        UNDEFINED = 0;
+        HTTP = 1;
+        HTTPS = 2;
+        FTP = 3;
+        MAILTO = 4;
+        FILE = 5;
+        DATA = 6;
+        IRC = 7;
+        RTP = 8;
+    }
+
+    // Pair of the username (email commonly) and password (optional) (e.g. "user:password@").
+    message Authorization {
+
+        // User name.
+        string user_name = 1 [(required) = true];
+
+        // Corresponding password.
+        string password = 2;
+    }
+
+    // Url query parameter type. Should look like key=value after converting to string
+    message QueryParameter {
+
+        // Parameter name.
+        string key = 1;
+
+        // Parameter value.
+        string value = 2;
+    }
+}
+
+// A human language as defined by ISO 639-1.
+//
+// A test-only sibling of the type with the same name availble from `base-types` artifact.
+//
+enum Language {
+
+    UNDEFINED = 0;
+
+    // Abkhazian
+    ab = 1;
+    // Afar
+    aa = 2;
+    // Afrikaans
+    af = 3;
+    // Akan
+    ak = 4;
+    // Albanian
+    sq = 5;
+    // Amharic
+    am = 6;
+    // Arabic
+    ar = 7;
+    // Aragonese
+    an = 8;
+    // Armenian
+    hy = 9;
+    // Assamese
+    as = 10;
+    // Avaric
+    av = 11;
+    // Avestan
+    ae = 12;
+    // Aymara
+    ay = 13;
+    // Azerbaijani
+    az = 14;
+    // Bambara
+    bm = 15;
+    // Bashkir
+    ba = 16;
+    // Basque
+    eu = 17;
+    // Belarusian
+    be = 18;
+    // Bengali
+    bn = 19;
+    // Bihari languages
+    bh = 20;
+    // Bislama
+    bi = 21;
+    // Bosnian
+    bs = 22;
+    // Breton
+    br = 23;
+    // Bulgarian
+    bg = 24;
+    // Burmese
+    my = 25;
+    // Catalan, Valencian
+    ca = 26;
+    // Central Khmer
+    km = 27;
+    // Chamorro
+    ch = 28;
+    // Chechen
+    ce = 29;
+    // Chichewa, Chewa, Nyanja
+    ny = 30;
+    // Chinese
+    zh = 31;
+    // Church Slavic, Old Slavonic, Church Slavonic, Old Bulgarian, Old Church Slavonic
+    cu = 32;
+    // Chuvash
+    cv = 33;
+    // Cornish
+    kw = 34;
+    // Corsican
+    co = 35;
+    // Cree
+    cr = 36;
+    // Croatian
+    hr = 37;
+    // Czech
+    cs = 38;
+    // Danish
+    da = 39;
+    // Divehi, Dhivehi, Maldivian
+    dv = 40;
+    // Dutch, Flemish
+    nl = 41;
+    // Dzongkha
+    dz = 42;
+    // English
+    en = 43;
+    // Esperanto
+    eo = 44;
+    // Estonian
+    et = 45;
+    // Ewe
+    ee = 46;
+    // Faroese
+    fo = 47;
+    // Fijian
+    fj = 48;
+    // Finnish
+    fi = 49;
+    // French
+    fr = 50;
+    // Fulah
+    ff = 51;
+    // Gaelic, Scottish Gaelic
+    gd = 52;
+    // Galician
+    gl = 53;
+    // Ganda
+    lg = 54;
+    // Georgian
+    ka = 55;
+    // German
+    de = 56;
+    // Greek, Modern (1453-)
+    el = 57;
+    // Guarani
+    gn = 58;
+    // Gujarati
+    gu = 59;
+    // Haitian, Haitian Creole
+    ht = 60;
+    // Hausa
+    ha = 61;
+    // Hebrew
+    he = 62;
+    // Herero
+    hz = 63;
+    // Hindi
+    hi = 64;
+    // Hiri Motu
+    ho = 65;
+    // Hungarian
+    hu = 66;
+    // Icelandic
+    is = 67;
+    // Ido
+    //
+    // This member has the underscore suffix to avoid the name clash with the top package name "io"
+    // of the generated Java code.
+    //
+    io_ = 68;
+    // Igbo
+    ig = 69;
+    // Indonesian
+    id = 70;
+    // Interlingua (International Auxiliary Language Association)
+    ia = 71;
+    // Interlingue, Occidental
+    ie = 72;
+    // Inuktitut
+    iu = 73;
+    // Inupiaq
+    ik = 74;
+    // Irish
+    ga = 75;
+    // Italian
+    it = 76;
+    // Japanese
+    ja = 77;
+    // Javanese
+    jv = 78;
+    // Kalaallisut, Greenlandic
+    kl = 79;
+    // Kannada
+    kn = 80;
+    // Kanuri
+    kr = 81;
+    // Kashmiri
+    ks = 82;
+    // Kazakh
+    kk = 83;
+    // Kikuyu, Gikuyu
+    ki = 84;
+    // Kinyarwanda
+    rw = 85;
+    // Kirghiz, Kyrgyz
+    ky = 86;
+    // Komi
+    kv = 87;
+    // Kongo
+    kg = 88;
+    // Korean
+    ko = 89;
+    // Kuanyama, Kwanyama
+    kj = 90;
+    // Kurdish
+    ku = 91;
+    // Lao
+    lo = 92;
+    // Latin
+    la = 93;
+    // Latvian
+    lv = 94;
+    // Limburgan, Limburger, Limburgish
+    li = 95;
+    // Lingala
+    ln = 96;
+    // Lithuanian
+    lt = 97;
+    // Luba-Katanga
+    lu = 98;
+    // Luxembourgish, Letzeburgesch
+    lb = 99;
+    // Macedonian
+    mk = 100;
+    // Malagasy
+    mg = 101;
+    // Malay
+    ms = 102;
+    // Malayalam
+    ml = 103;
+    // Maltese
+    mt = 104;
+    // Manx
+    gv = 105;
+    // Maori
+    mi = 106;
+    // Marathi
+    mr = 107;
+    // Marshallese
+    mh = 108;
+    // Mongolian
+    mn = 109;
+    // Nauru
+    na = 110;
+    // Navajo, Navaho
+    nv = 111;
+    // Ndonga
+    ng = 112;
+    // Nepali
+    ne = 113;
+    // North Ndebele
+    nd = 114;
+    // Northern Sami
+    se = 115;
+    // Norwegian
+    no = 116;
+    // Norwegian Bokmal
+    nb = 117;
+    // Norwegian Nynorsk
+    nn = 118;
+    // Occitan
+    oc = 119;
+    // Ojibwa
+    oj = 120;
+    // Oriya
+    or = 121;
+    // Oromo
+    om = 122;
+    // Ossetian, Ossetic
+    os = 123;
+    // Pali
+    pi = 124;
+    // Pashto, Pushto
+    ps = 125;
+    // Persian
+    fa = 126;
+    // Polish
+    pl = 127;
+    // Portuguese
+    pt = 128;
+    // Punjabi, Panjabi
+    pa = 129;
+    // Quechua
+    qu = 130;
+    // Romanian, Moldavian, Moldovan
+    ro = 131;
+    // Romansh
+    rm = 132;
+    // Rundi
+    rn = 133;
+    // Russian
+    ru = 134;
+    // Samoan
+    sm = 135;
+    // Sango
+    sg = 136;
+    // Sanskrit
+    sa = 137;
+    // Sardinian
+    sc = 138;
+    // Serbian
+    sr = 139;
+    // Shona
+    sn = 140;
+    // Sichuan Yi, Nuosu
+    ii = 141;
+    // Sindhi
+    sd = 142;
+    // Sinhala, Sinhalese
+    si = 143;
+    // Slovak
+    sk = 144;
+    // Slovenian
+    sl = 145;
+    // Somali
+    so = 146;
+    // South Ndebele
+    nr = 147;
+    // Southern Sotho
+    st = 148;
+    // Spanish, Castilian
+    es = 149;
+    // Sundanese
+    su = 150;
+    // Swahili
+    sw = 151;
+    // Swati
+    ss = 152;
+    // Swedish
+    sv = 153;
+    // Tagalog
+    tl = 154;
+    // Tahitian
+    ty = 155;
+    // Tajik
+    tg = 156;
+    // Tamil
+    ta = 157;
+    // Tatar
+    tt = 158;
+    // Telugu
+    te = 159;
+    // Thai
+    th = 160;
+    // Tibetan
+    bo = 161;
+    // Tigrinya
+    ti = 162;
+    // Tonga (Tonga Islands)
+    to = 163;
+    // Tsonga
+    ts = 164;
+    // Tswana
+    tn = 165;
+    // Turkish
+    tr = 166;
+    // Turkmen
+    tk = 167;
+    // Twi
+    tw = 168;
+    // Uighur, Uyghur
+    ug = 169;
+    // Ukrainian
+    uk = 170;
+    // Urdu
+    ur = 171;
+    // Uzbek
+    uz = 172;
+    // Venda
+    ve = 173;
+    // Vietnamese
+    vi = 174;
+    // Volapuk
+    vo = 175;
+    // Walloon
+    wa = 176;
+    // Welsh
+    cy = 177;
+    // Western Frisian
+    fy = 178;
+    // Wolof
+    wo = 179;
+    // Xhosa
+    xh = 180;
+    // Yiddish
+    yi = 181;
+    // Yoruba
+    yo = 182;
+    // Zhuang, Chuang
+    za = 183;
+    // Zulu
+    zu = 184;
+}
+
+// A name of a person.
+message PersonName {
+
+    // A minimum requirement to refer to a person.
+    option (required_field) = "given_name|honorific_prefix & family_name";
+
+    // The honorific prefix (such as "Dr." or "Prof.") for this person.
+    string honorific_prefix = 1;
+
+    // The given (first) name of the person.
+    string given_name = 2;
+
+    // The middle name or the patronymic of this person.
+    string middle_name = 3;
+
+    // The family (last) name of the person.
+    string family_name = 4;
+
+    // The honorific suffixes (such as "Jr.") for this person.
+    string honorific_suffix = 5;
+}

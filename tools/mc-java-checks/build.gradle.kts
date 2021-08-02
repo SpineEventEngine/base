@@ -32,6 +32,8 @@ group = "io.spine.tools"
 
 repositories {
     maven { url = URI(io.spine.internal.gradle.Repos.sonatypeSnapshots) }
+    mavenLocal()
+    mavenCentral()
 }
 
 dependencies {
@@ -39,8 +41,8 @@ dependencies {
     compileOnlyApi(AutoService.annotations)
     implementation(project(":base"))
     implementation(project(":plugin-base"))
-    implementation(ErrorProne.core)
-    ErrorProne.annotations.forEach { implementation(it) }
+    api(ErrorProne.core)
+    ErrorProne.annotations.forEach { api(it) }
     testImplementation(ErrorProne.testHelpers)
 }
 
@@ -50,16 +52,20 @@ fun getResolvedArtifactFor(dependency: String): String {
         it.name == dependency
     }
     if (javacDependency.isEmpty()) {
-        throw MissingResourceException("The 'javac' dependency is not found among the " +
-                "resolved artifacts")
+        throw MissingResourceException(
+            "The `javac` dependency was not found among the resolved artifacts.")
     }
     return javacDependency[0].file.absolutePath
 }
 
 val test: Test = tasks.test.get()
-test.dependsOn(project(":base").getTasksByName("rebuildProtobuf", false))
-
 afterEvaluate {
     val javacPath = getResolvedArtifactFor("javac")
     test.jvmArgs("-Xbootclasspath/p:$javacPath")
 }
+
+//TODO:2021-07-22:alexander.yevsyukov: Turn to WARN and investigate duplicates.
+// see https://github.com/SpineEventEngine/base/issues/657
+val dupStrategy = DuplicatesStrategy.INCLUDE
+tasks.processTestResources.get().duplicatesStrategy = dupStrategy
+tasks.sourceJar.get().duplicatesStrategy = dupStrategy

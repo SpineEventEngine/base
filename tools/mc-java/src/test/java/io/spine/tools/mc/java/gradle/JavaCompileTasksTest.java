@@ -26,18 +26,24 @@
 
 package io.spine.tools.mc.java.gradle;
 
+import io.spine.tools.mc.java.gradle.given.StubProject;
 import org.gradle.api.Project;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newProject;
 import static io.spine.tools.mc.java.gradle.given.ProjectConfigurations.assertCompileTasksContain;
 import static io.spine.tools.mc.java.gradle.given.ProjectConfigurations.assertCompileTasksEmpty;
 
 @DisplayName("`JavaCompileTasks` should")
 class JavaCompileTasksTest {
 
-    private final Project project = newProject();
+    private Project project;
+
+    @BeforeEach
+    void createProject() {
+        project = StubProject.createFor(getClass()).get();
+    }
 
     @Test
     @DisplayName("add arguments to Java compile tasks")

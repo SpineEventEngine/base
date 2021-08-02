@@ -32,8 +32,8 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Timestamp;
-import io.spine.net.Uri;
-import io.spine.net.Url;
+import io.spine.test.type.Uri;
+import io.spine.test.type.Url;
 import io.spine.option.EntityOption;
 import io.spine.option.GoesOption;
 import io.spine.option.MinOption;
@@ -52,7 +52,7 @@ import java.util.function.Predicate;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("MessageType should")
+@DisplayName("`MessageType` should")
 final class MessageTypeTest {
 
     /**

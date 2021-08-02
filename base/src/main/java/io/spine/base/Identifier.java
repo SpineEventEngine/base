@@ -141,7 +141,7 @@ public final class Identifier<I> {
         }
 
         String str = id.toString();
-        boolean result = str.equals(EMPTY_ID);
+        boolean result = EMPTY_ID.equals(str);
         return result;
     }
 

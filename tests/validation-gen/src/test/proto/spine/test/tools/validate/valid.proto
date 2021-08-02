@@ -34,7 +34,27 @@ option java_package = "io.spine.test.tools.validate";
 option java_outer_classname = "ValidProto";
 option java_multiple_files = true;
 
-import "spine/people/person_name.proto";
+// A name of a person.
+message PersonName {
+
+    // A minimum requirement to refer to a person.
+    option (required_field) = "given_name|honorific_prefix & family_name";
+
+    // The honorific prefix (such as "Dr." or "Prof.") for this person.
+    string honorific_prefix = 1;
+
+    // The given (first) name of the person.
+    string given_name = 2;
+
+    // The middle name or the patronymic of this person.
+    string middle_name = 3;
+
+    // The family (last) name of the person.
+    string family_name = 4;
+
+    // The honorific suffixes (such as "Jr.") for this person.
+    string honorific_suffix = 5;
+}
 
 message ZipCode {
 
@@ -77,7 +97,7 @@ message EmailAddress {
 
 message DeliveryReceiver {
 
-    spine.people.PersonName name = 1 [(required) = true, (.validate) = true];
+    PersonName name = 1 [(required) = true, (.validate) = true];
 
     Address address = 2 [(required) = true, (.validate) = true];
 

@@ -28,6 +28,7 @@ package io.spine.tools.mc.java.gradle;
 
 import io.spine.code.java.SimpleClassName;
 import io.spine.protobuf.Messages;
+import io.spine.testing.TempDir;
 import io.spine.tools.gradle.testing.GradleProject;
 import io.spine.tools.java.code.BuilderSpec;
 import org.jboss.forge.roaster.Roaster;
@@ -38,11 +39,9 @@ import org.jboss.forge.roaster.model.source.MethodSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.mc.java.gradle.given.RejectionTestEnv.expectedBuilderClassComment;
@@ -59,8 +58,8 @@ class RejectionGenPluginTest {
     private File testProjectDir;
 
     @BeforeEach
-    void setUp(@TempDir Path tempDirPath) {
-        testProjectDir = tempDirPath.toFile();
+    void setUp() {
+        testProjectDir = TempDir.forClass(getClass());
     }
 
     @Test

@@ -26,6 +26,7 @@
 package io.spine.protobuf;
 
 import com.google.common.base.Converter;
+import com.google.errorprone.annotations.InlineMe;
 import com.google.protobuf.Duration;
 import com.google.protobuf.util.Durations;
 import io.spine.string.Stringifiers;
@@ -55,33 +56,14 @@ import static java.util.Objects.requireNonNull;
  *
  * @see com.google.protobuf.util.Durations Durations
  */
-@SuppressWarnings({"UtilityClass", "ClassWithTooManyMethods"})
+@SuppressWarnings("UtilityClass")
 public final class Durations2 {
 
     public static final Duration ZERO = fromMillis(0L);
+    static final String PROTOBUF_DURATIONS = "com.google.protobuf.util.Durations";
 
     /** Prevent instantiation of this utility class. */
     private Durations2() {
-    }
-
-    /**
-     * Obtains an instance of {@code Duration} representing the passed number of minutes.
-     *
-     * @deprecated please use {@link Durations#fromMinutes(long)}.
-     */
-    @Deprecated
-    public static Duration fromMinutes(long minutes) {
-        return Durations.fromMinutes(minutes);
-    }
-
-    /**
-     * Obtains an instance of {@code Duration} representing the passed number of hours.
-     *
-     * @deprecated please use {@link Durations#fromHours(long)}.
-     */
-    @Deprecated
-    public static Duration fromHours(long hours) {
-        return Durations.fromHours(hours);
     }
 
     /*
@@ -180,64 +162,6 @@ public final class Durations2 {
     }
 
     /**
-     * Convert a duration to the number of nanoseconds.
-     *
-     * @deprecated please use {@link Durations#toNanos(Duration)}.
-     */
-    @Deprecated
-    public static long toNanos(Duration duration) {
-        return Durations.toNanos(duration);
-    }
-
-    /**
-     * Convert a duration to the number of seconds.
-     *
-     * @deprecated please use {@link Durations#toSeconds(Duration)}.
-     */
-    @Deprecated
-    public static long toSeconds(Duration duration) {
-        return Durations.toSeconds(duration);
-    }
-
-    /**
-     * Converts passed duration to long value of minutes.
-     *
-     * @deprecated please use {@link Durations#toMinutes(Duration)}.
-     */
-    @Deprecated
-    public static long toMinutes(Duration duration) {
-        return Durations.toMinutes(duration);
-    }
-
-    /**
-     * Returns the number of hours in the passed duration.
-     *
-     * @deprecated please use {@link Durations#toHours(Duration)}.
-     */
-    @Deprecated
-    public static long getHours(Duration value) {
-        return Durations.toHours(value);
-    }
-
-    /**
-     * Returns the only remainder of minutes from the passed duration subtracting
-     * the amount of full hours.
-     *
-     * @deprecated please use {@code Durations.toMinutes(value) % 60}.
-     */
-    @Deprecated
-    public static int getMinutes(Duration value) {
-        checkNotNull(value);
-        long allMinutes = Durations.toMinutes(value);
-        @SuppressWarnings("MagicNumber") // not that magic.
-        int minutesPerHour = 60;
-        long remainder = allMinutes % minutesPerHour;
-        int result = Long.valueOf(remainder)
-                         .intValue();
-        return result;
-    }
-
-    /**
      * Returns {@code true} of the passed value is greater or equal zero,
      * {@code false} otherwise.
      */
@@ -294,6 +218,7 @@ public final class Durations2 {
      * @deprecated please use {@link Durations#isNegative(Duration)}.
      */
     @Deprecated
+    @InlineMe(replacement = "Durations.isNegative(value)", imports = PROTOBUF_DURATIONS)
     public static boolean isNegative(Duration value) {
         return Durations.isNegative(value);
     }
@@ -310,6 +235,7 @@ public final class Durations2 {
     /**
      * Converts the passed value to Java Time value.
      */
+    @SuppressWarnings("unused")
     public static java.time.Duration toJavaTime(Duration value) {
         checkNotNull(value);
         java.time.Duration result =

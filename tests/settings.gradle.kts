@@ -28,7 +28,7 @@ include("annotator")
 include("factories")
 include("entity-queries")
 include("known-types")
-include("mc-java")
+include("model-compiler")
 include("rejection")
 include("validating-options")
 include("validation")
@@ -40,10 +40,11 @@ include("validation-gen")
  * See the `includeBuild(...)` block below for more info.
  */
 val links = mapOf(
-        "io.spine:spine-base"            to ":base",
-        "io.spine.tools:spine-tool-base" to ":tool-base",
-        "io.spine.tools:spine-mc-java"   to ":mc-java",
-        "io.spine:spine-testlib"         to ":testlib"
+    "io.spine:spine-base" to ":base",
+    "io.spine.tools:spine-testlib" to ":testlib",
+    "io.spine.tools:spine-tool-base" to ":tool-base",
+    "io.spine.tools:spine-mc-java" to ":mc-java",
+    "io.spine.tools:spine-mc-java-checks" to ":mc-java-checks"
 )
 
 /*
@@ -58,7 +59,7 @@ val links = mapOf(
 includeBuild("$rootDir/../") {
     dependencySubstitution {
         links.forEach { (id, projectPath) ->
-            substitute(module(id)).with(project(projectPath))
+            substitute(module(id)).using(project(projectPath))
         }
     }
 }

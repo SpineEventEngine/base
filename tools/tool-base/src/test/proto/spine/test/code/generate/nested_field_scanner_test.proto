@@ -36,7 +36,6 @@ option java_outer_classname = "NestedFieldScannerTestProto";
 option java_multiple_files = true;
 
 import "google/protobuf/timestamp.proto";
-import "spine/net/url.proto";
 
 // A message type with multi-level nested `Message`-typed fields structure.
 message Magazine {
@@ -75,12 +74,12 @@ message MagazineCover {
     }
 
     message Url {
-        spine.net.Url url = 1;
+        string value = 1;
     }
 }
 
 message Photo {
-    spine.net.Url url = 1;
+    string url = 1;
 }
 
 // A message type which has multiple fields of the same type.

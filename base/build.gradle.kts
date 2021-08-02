@@ -30,13 +30,8 @@ import io.spine.internal.dependency.AutoService
 import io.spine.internal.dependency.Kotlin
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.gradle.IncrementGuard
-import io.spine.internal.gradle.RunBuild
 import io.spine.internal.gradle.Scripts
 import io.spine.internal.gradle.excludeProtobufLite
-import java.nio.file.Files.isSameFile
-import org.gradle.api.Task
-import org.gradle.api.tasks.Delete
-import org.gradle.api.tasks.bundling.Jar
 
 plugins {
     `java-library`
@@ -59,72 +54,58 @@ dependencies {
     testImplementation(project(":mute-logging"))
 }
 
+val srcDir by extra("$projectDir/src")
+val generatedDir by extra("$projectDir/generated")
+val generatedJavaDir by extra("$generatedDir/main/java")
+val generatedTestJavaDir by extra("$generatedDir/test/java")
+val generatedSpineDir by extra("$generatedDir/main/spine")
+val generatedTestSpineDir by extra("$generatedDir/test/spine")
+
 sourceSets {
     main {
-        resources.srcDir("$buildDir/descriptors/main")
+        java.srcDirs(
+            generatedJavaDir,
+            generatedSpineDir,
+            "$srcDir/main/java"
+        )
+        resources.srcDirs(
+            "$buildDir/descriptors/main",
+            "$generatedDir/main/resources",
+            "$srcDir/main/resources"
+        )
         proto.setSrcDirs(listOf("$projectDir/src/main/proto"))
     }
     test {
-        resources.srcDir("$buildDir/descriptors/test")
+        java.srcDirs(
+            generatedTestJavaDir,
+            generatedTestSpineDir,
+            "$srcDir/test/java"
+        )
+        resources.srcDirs(
+            "$buildDir/descriptors/test",
+            "$generatedDir/test/resources",
+            "$srcDir/test/resources"
+        )
         proto.setSrcDirs(listOf("$projectDir/src/test/proto"))
-    }
-}
-
-/**
- * The JAR task assembles class files with a respect to the re-built message classes.
- *
- * The task checks each input file for a newer version in the `base-validating-builders`.
- * If such a version is found, the older version is excluded.
- */
-tasks.jar.configure {
-    // See `base-validating-builders/README.md`
-    val compiledProtoPath = "$rootDir/base-validating-builders/compiled-proto"
-    val compiledProtos = fileTree(compiledProtoPath)
-
-    from(compiledProtos)
-
-    eachFile {
-        logger.info("Appending $this")
-        val classFile = file.toPath()
-        val isProto = compiledProtos.filter { it.path.endsWith(relativePath.toString()) }
-                                    .filter { !isSameFile(it.toPath(), classFile) }
-        if (!isProto.isEmpty) {
-            logger.info("File $classFile is excluded")
-            this.exclude()
-        } else {
-            logger.debug("File $classFile is not excluded")
-        }
     }
 }
 
 apply(from = Scripts.publishProto(project))
 
-val rebuildProtobuf by tasks.registering(RunBuild::class) {
-    directory = "$rootDir/base-validating-builders"
-    dependsOn(rootProject.subprojects.map { p -> p.tasks["publishToMavenLocal"] })
-}
-
-tasks.publish.get().dependsOn(rebuildProtobuf)
-tasks.build.get().finalizedBy(rebuildProtobuf)
-
-val compiledProtoRoot = "$projectDir/generated"
-val googlePackagePrefix = "com/google"
-
-val pruneGoogleProtos by tasks.registering(type = Delete::class) {
-    delete("$compiledProtoRoot/main/java/$googlePackagePrefix")
-    tasks.compileJava.get().dependsOn(this)
-}
-
-val pruneTestGoogleProtos by tasks.registering(type = Delete::class) {
-    delete("$compiledProtoRoot/test/java/$googlePackagePrefix")
-    tasks.compileTestJava.get().dependsOn(this)
-}
+//TODO:2021-07-22:alexander.yevsyukov: Turn to WARN and investigate duplicates.
+// see https://github.com/SpineEventEngine/base/issues/657
+val dupStrategy = DuplicatesStrategy.INCLUDE
+tasks.processResources.get().duplicatesStrategy = dupStrategy
+tasks.processTestResources.get().duplicatesStrategy = dupStrategy
+tasks.sourceJar.get().duplicatesStrategy = dupStrategy
+tasks.jar.get().duplicatesStrategy = dupStrategy
 
 protobuf {
+    val compiledProtoRoot = "$projectDir/generated"
+    val googlePackagePrefix = "com/google"
+
     generatedFilesBaseDir = compiledProtoRoot
     generateProtoTasks {
-        val mainTasks = mutableListOf<Task>()
-        val testTasks = mutableListOf<Task>()
         for (task in all()) {
             val scope = task.sourceSet.name
             task.generateDescriptorSet = true
@@ -134,14 +115,21 @@ protobuf {
                 includeSourceInfo = true
             }
 
-            if (scope.contains("test")) {
-                testTasks.add(task)
-            } else {
-                mainTasks.add(task)
+            /**
+                Remove the code generated for Google Protobuf library types.
+
+                Java code for the `com.google` package was generated because we wanted
+                to have descriptors for all the types, including those from Google Protobuf library.
+                We want all the descriptors so that they are included into the resources used by
+                the `io.spine.type.KnownTypes` class.
+
+                Now, as we have the descriptors _and_ excessive Java code, we delete it to avoid
+                classes that duplicate those coming from Protobuf library JARs.
+            */
+            task.doLast {
+                delete("$compiledProtoRoot/$scope/java/$googlePackagePrefix")
             }
         }
-        pruneGoogleProtos.get().dependsOn(mainTasks)
-        pruneTestGoogleProtos.get().dependsOn(testTasks)
     }
 }
 
@@ -154,7 +142,7 @@ fun FileTreeElement.isGoogleProtoSource(): Boolean {
 }
 
 /**
- * From all artifacts, exclude Google `.proto` sources.
+ * Exclude Google `.proto` sources from all the artifacts.
  */
 tasks.withType(Jar::class) {
     exclude { it.isGoogleProtoSource() }

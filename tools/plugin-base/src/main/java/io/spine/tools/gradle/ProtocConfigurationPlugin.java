@@ -60,6 +60,8 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
                .withPlugin(gradlePlugin().value(), plugin -> applyTo(project));
     }
 
+    @SuppressWarnings("deprecation")
+        // we have to use `getConvention()` until Protobuf Gradle Plugin migrates to new API.
     private void applyTo(Project project) {
         project.getConvention()
                .getPlugin(ProtobufConvention.class)
@@ -72,10 +74,10 @@ public abstract class ProtocConfigurationPlugin extends SpinePlugin {
         Path generatedFilesBaseDir = generatedFilesBaseDir(project);
         protobuf.setGeneratedFilesBaseDir(generatedFilesBaseDir.toString());
         String version = VERSIONS.protobuf();
-        protobuf.protoc(closure((ExecutableLocator protocLocator) ->
-                                        protocLocator.setArtifact(protobufCompiler()
-                                                                          .ofVersion(version)
-                                                                          .notation())));
+        protobuf.protoc(closure(
+                (ExecutableLocator locator) ->
+                        locator.setArtifact(protobufCompiler().ofVersion(version).notation())
+        ));
         ConsumerClosure<NamedDomainObjectContainer<ExecutableLocator>> pluginConfig = closure(
                 plugins -> configureProtocPlugins(plugins, project)
         );

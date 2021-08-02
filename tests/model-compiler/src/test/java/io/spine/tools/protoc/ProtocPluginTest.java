@@ -51,15 +51,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("InnerClassMayBeStatic")
 @DisplayName("`ProtocPlugin` should")
@@ -96,25 +93,46 @@ final class ProtocPluginTest {
     @Test
     @DisplayName("implement interface in the generated messages with `IS` option")
     void implementInterfaceInGeneratedMessagesWithIsOption() {
-        assertThat(PICustomerCreated.getDefaultInstance()).isInstanceOf(PICustomerEvent.class);
-        assertThat(PICreateCustomer.getDefaultInstance()).isInstanceOf(PICustomerCommand.class);
+        PICustomerCreated event = PICustomerCreated.getDefaultInstance();
+        assertThat(event).isInstanceOf(PICustomerEvent.class);
+        
+        PICreateCustomer cmd = PICreateCustomer.getDefaultInstance();
+        assertThat(cmd).isInstanceOf(PICustomerCommand.class);
     }
 
     @Test
     @DisplayName("use `IS` and `EVERY IS` together")
-    void useIsInPriorityToEveryIs() {
-        assertThat(PIUserCreated.getDefaultInstance()).isInstanceOf(PIUserEvent.class);
-        assertThat(PIUserNameUpdated.getDefaultInstance()).isInstanceOf(PIUserEvent.class);
+    void isAndEveryIsTogether() {
+        assertThat(PIUserCreated.getDefaultInstance())
+                .isInstanceOf(PIUserEvent.class);
+        assertThat(PIUserNameUpdated.getDefaultInstance())
+                .isInstanceOf(PIUserEvent.class);
 
-        assertThat(UserName.getDefaultInstance()).isInstanceOf(PIUserEvent.class);
-        assertThat(UserName.getDefaultInstance()).isInstanceOf(UserInfo.class);
+        assertThat(UserName.getDefaultInstance())
+                /*
+                   This assertion verifies if the `UserName` implements a custom
+                   event interface. It happens because `UserName` is declared in the same file with
+                   events (see `mixed_test.proto`) and the following option is applied:
+
+                   option (every_is).java_type = "io.spine.tools.protoc.test.PIUserEvent";
+
+                   This test should be updated to avoid the confusion on why a value object
+                   becomes an event. Although, it serves for the purposes of the test, it
+                   is misleading because a normal production code shouldn't have
+                   such an arrangement.
+                */
+                .isInstanceOf(PIUserEvent.class);
+
+        assertThat(UserName.getDefaultInstance())
+                .isInstanceOf(UserInfo.class);
     }
 
     @Test
     @DisplayName("resolve packages from src proto if the packages are not specified")
-    void resolvePackagesFromSrcProtoIfNotSpecified() throws ClassNotFoundException {
+    void resolvingPackages() throws ClassNotFoundException {
         Class<?> cls = checkMarkerInterface(USER_COMMAND_FQN);
-        assertTrue(cls.isAssignableFrom(PICreateUser.class));
+        assertThat(PICreateUser.class)
+                .isAssignableTo(cls);
     }
 
     @Test
@@ -128,86 +146,124 @@ final class ProtocPluginTest {
         );
     }
 
-    @Test
-    @DisplayName("mark as event messages")
-    void skipStandardTypesIfIgnored() {
-        assertThat(UserCreated.getDefaultInstance()).isInstanceOf(EventMessage.class);
-        assertThat(UserNotified.getDefaultInstance()).isInstanceOf(EventMessage.class);
+    @Nested
+    @DisplayName("mark")
+    class MarkingWithInterfaces {
 
-        assertThat(TypicalIdentifier.getDefaultInstance()).isInstanceOf(UuidValue.class);
+        @Test
+        @DisplayName("command messages")
+        void markCommandMessages() {
+            assertThat(CreateUser.getDefaultInstance())
+                    .isInstanceOf(CommandMessage.class);
+            assertThat(NotifyUser.getDefaultInstance())
+                    .isInstanceOf(CommandMessage.class);
+        }
+
+        @Test
+        @DisplayName("event messages")
+        void markMessages() {
+            assertThat(UserCreated.getDefaultInstance())
+                    .isInstanceOf(EventMessage.class);
+            assertThat(UserNotified.getDefaultInstance())
+                    .isInstanceOf(EventMessage.class);
+        }
+
+        @Test
+        @DisplayName("rejection messages")
+        void markRejectionMessages() {
+            assertThat(Rejections.UserAlreadyExists.getDefaultInstance())
+                    .isInstanceOf(RejectionMessage.class);
+            assertThat(Rejections.UserAlreadyExists.getDefaultInstance())
+                    .isInstanceOf(UserRejection.class);
+        }
+
+        @Test
+        @DisplayName("mark UUID-based identifiers")
+        void markUuids() {
+            assertThat(TypicalIdentifier.getDefaultInstance())
+                    .isInstanceOf(UuidValue.class);
+        }
+
+        @Test
+        @DisplayName("messages with already existing interface types")
+        @SuppressWarnings("UnnecessaryLocalVariable")
+            // Compile-time verification.
+        void implementHandcraftedInterfaces() {
+            assertThat(Rejections.UserAlreadyExists.getDefaultInstance())
+                    .isInstanceOf(UserRejection.class);
+            assertFalse(Message.class.isAssignableFrom(UserRejection.class));
+
+            String id = Identifier.newUuid();
+            Rejections.UserAlreadyExists message = Rejections.UserAlreadyExists.newBuilder()
+                    .setId(id)
+                    .build();
+            UserRejection rejection = message;
+            assertEquals(id, rejection.getId());
+        }
+
+        @Nested
+        @DisplayName("nested message declarations by")
+        class NestedMessages {
+
+            @Test
+            @DisplayName("`(is)` option")
+            void markNestedTypes() {
+                assertThat(Outer.Inner.class).isAssignableTo(Wrapped.class);
+            }
+
+            @Test
+            @DisplayName("`(every_is)` option")
+            void markEveryNested() {
+                assertThat(Kindergarten.class).isAssignableTo(EducationalInstitution.class);
+                assertThat(School.class).isAssignableTo(EducationalInstitution.class);
+                assertThat(School.Elementary.class).isAssignableTo(EducationalInstitution.class);
+                assertThat(School.HighSchool.class).isAssignableTo(EducationalInstitution.class);
+                assertThat(University.class).isAssignableTo(EducationalInstitution.class);
+                assertThat(University.College.class).isAssignableTo(EducationalInstitution.class);
+            }
+        }
+
+        @Test
+        @DisplayName("top-level message declarations as specified in `modelCompiler` settings")
+        void markMessagesByFilePattern() {
+            assertThat(WeatherForecast.class).isAssignableTo(DocumentMessage.class);
+            assertThat(WeatherForecast.Temperature.getDefaultInstance())
+                    .isNotInstanceOf(DocumentMessage.class);
+        }
+
+        @Nested
+        @DisplayName("a message with the interface using")
+        final class MarkMessages {
+
+            @Test
+            @DisplayName("regex pattern")
+            void regex() {
+                assertThat(MessageEnhancedWithRegexGenerations.getDefaultInstance())
+                        .isInstanceOf(RegexedMessage.class);
+            }
+
+            @Test
+            @DisplayName("prefix pattern")
+            void prefix() {
+                assertThat(MessageEnhancedWithPrefixGenerations.getDefaultInstance())
+                        .isInstanceOf(PrefixedMessage.class);
+            }
+
+            @Test
+            @DisplayName("suffix pattern")
+            void postfix() {
+                assertThat(MessageEnhancedWithSuffixGenerations.getDefaultInstance())
+                        .isInstanceOf(SuffixedMessage.class);
+            }
+        }
     }
 
     @Test
-    @DisplayName("mark as command messages")
-    void markCommandMessages() {
-        assertThat(CreateUser.getDefaultInstance()).isInstanceOf(CommandMessage.class);
-        assertThat(NotifyUser.getDefaultInstance()).isInstanceOf(CommandMessage.class);
-    }
-
-    @Test
-    @DisplayName("mark as rejection messages")
-    void markRejectionMessages() {
-        assertThat(Rejections.UserAlreadyExists.getDefaultInstance())
-                .isInstanceOf(RejectionMessage.class);
-        assertThat(Rejections.UserAlreadyExists.getDefaultInstance())
-                .isInstanceOf(UserRejection.class);
-    }
-
-    @Test
-    @DisplayName("mark messages with already existing interface types")
-    @SuppressWarnings("UnnecessaryLocalVariable")
-        // Compile-time verification.
-    void implementHandcraftedInterfaces() {
-        assertThat(Rejections.UserAlreadyExists.getDefaultInstance())
-                .isInstanceOf(UserRejection.class);
-        assertFalse(Message.class.isAssignableFrom(UserRejection.class));
-        String id = Identifier.newUuid();
-        Rejections.UserAlreadyExists message = Rejections.UserAlreadyExists
-                .newBuilder()
-                .setId(id)
-                .build();
-        UserRejection rejection = message;
-        assertEquals(id, rejection.getId());
-    }
-
-    @Test
-    @DisplayName("mark nested message declarations by `(is)` option")
-    void markNestedTypes() {
-        assertThat(Outer.Inner.class).isAssignableTo(Wrapped.class);
-    }
-
-    @Test
-    @DisplayName("mark nested message declarations by `(every_is)` option")
-    void markEveryNested() {
-        assertThat(Kindergarten.class).isAssignableTo(EducationalInstitution.class);
-        assertThat(School.class).isAssignableTo(EducationalInstitution.class);
-        assertThat(School.Elementary.class).isAssignableTo(EducationalInstitution.class);
-        assertThat(School.HighSchool.class).isAssignableTo(EducationalInstitution.class);
-        assertThat(University.class).isAssignableTo(EducationalInstitution.class);
-        assertThat(University.College.class).isAssignableTo(EducationalInstitution.class);
-    }
-
-    @Test
-    @DisplayName("mark top-level message declarations with accordance with `modelCompiler.generatedInterfaces`")
-    void markMessagesByFilePattern() {
-        assertThat(WeatherForecast.class).isAssignableTo(DocumentMessage.class);
-        assertThat(WeatherForecast.Temperature.getDefaultInstance())
-                .isNotInstanceOf(DocumentMessage.class);
-    }
-
-    @Test
-    @DisplayName("generate a custom method for an `.endsWith()` pattern")
+    @DisplayName("generate a custom method for a `.suffix()` pattern")
     void generateCustomPatternBasedMethod() {
         MessageType expectedType =
                 new MessageType(MessageEnhancedWithSuffixGenerations.getDescriptor());
         assertEquals(expectedType, MessageEnhancedWithSuffixGenerations.ownType());
-    }
-
-    @Test
-    @DisplayName("mark a message with interface using `.endsWith()` pattern")
-    void markMessageWithInterfaceUsingEndsWithPattern() {
-        assertThat(MessageEnhancedWithSuffixGenerations.getDefaultInstance())
-                .isInstanceOf(SuffixedMessage.class);
     }
 
     @Test
@@ -223,31 +279,6 @@ final class ProtocPluginTest {
         assertEquals(TypicalIdentifier.of(uuid), TypicalIdentifier.of(uuid));
     }
 
-    @Nested
-    @DisplayName("mark a message with the interface using")
-    final class MarkMessages {
-
-        @Test
-        @DisplayName("regex pattern")
-        void regex() {
-            assertThat(MessageEnhancedWithRegexGenerations.getDefaultInstance())
-                    .isInstanceOf(RegexedMessage.class);
-        }
-
-        @Test
-        @DisplayName("prefix pattern")
-        void prefix() {
-            assertThat(MessageEnhancedWithPrefixGenerations.getDefaultInstance())
-                    .isInstanceOf(PrefixedMessage.class);
-        }
-
-        @Test
-        @DisplayName("suffix pattern")
-        void postfix() {
-            assertThat(MessageEnhancedWithSuffixGenerations.getDefaultInstance())
-                    .isInstanceOf(SuffixedMessage.class);
-        }
-    }
 
     @Nested
     @DisplayName("generate a custom method for a message using")
@@ -258,7 +289,8 @@ final class ProtocPluginTest {
         void prefixBasedMethod() {
             MessageType expectedType =
                     new MessageType(MessageEnhancedWithPrefixGenerations.getDescriptor());
-            assertEquals(expectedType, MessageEnhancedWithPrefixGenerations.ownType());
+            assertThat(MessageEnhancedWithPrefixGenerations.ownType())
+                    .isEqualTo(expectedType);
         }
 
         @Test
@@ -266,7 +298,8 @@ final class ProtocPluginTest {
         void regexBasedMethod() {
             MessageType expectedType =
                     new MessageType(MessageEnhancedWithRegexGenerations.getDescriptor());
-            assertEquals(expectedType, MessageEnhancedWithRegexGenerations.ownType());
+            assertThat(MessageEnhancedWithRegexGenerations.ownType())
+                    .isEqualTo(expectedType);
         }
 
         @Test
@@ -274,7 +307,8 @@ final class ProtocPluginTest {
         void suffixBasedMethod() {
             MessageType expectedType =
                     new MessageType(MessageEnhancedWithSuffixGenerations.getDescriptor());
-            assertEquals(expectedType, MessageEnhancedWithSuffixGenerations.ownType());
+            assertThat(MessageEnhancedWithSuffixGenerations.ownType())
+                    .isEqualTo(expectedType);
         }
     }
 
@@ -286,30 +320,33 @@ final class ProtocPluginTest {
         @DisplayName("prefix pattern")
         void basedOnNamePrefix() {
             Class<?> ownClass = MessageEnhancedWithPrefixGenerations.SomeNestedClass.messageClass();
-            assertEquals(MessageEnhancedWithPrefixGenerations.class, ownClass);
+            assertThat(ownClass)
+                    .isEqualTo(MessageEnhancedWithPrefixGenerations.class);
         }
 
         @Test
         @DisplayName("regex pattern")
         void basedOnNameMatchingRegex() {
             Class<?> ownClass = MessageEnhancedWithRegexGenerations.SomeNestedClass.messageClass();
-            assertEquals(MessageEnhancedWithRegexGenerations.class, ownClass);
+            assertThat(ownClass)
+                    .isEqualTo(MessageEnhancedWithRegexGenerations.class);
         }
 
         @Test
         @DisplayName("suffix pattern")
         void basedOnNameSuffix() {
             Class<?> ownClass = MessageEnhancedWithSuffixGenerations.SomeNestedClass.messageClass();
-            assertEquals(MessageEnhancedWithSuffixGenerations.class, ownClass);
+            assertThat(ownClass)
+                    .isEqualTo(MessageEnhancedWithSuffixGenerations.class);
         }
     }
 
     @Nested
-    @DisplayName("generate methods for `MFGTMessage` using")
+    @DisplayName("generate methods using multiple factories applying")
     final class MultiFactoryGeneration {
 
         @Test
-        @DisplayName("`UuidMethodFactory`")
+        @DisplayName("`UuidMethodFactory` if a message has single `uuid` field")
         void uuidMethodFactory() {
             assertNotEquals(MFGTMessage.generate(), MFGTMessage.generate());
             String uuid = Identifier.newUuid();
@@ -317,9 +354,10 @@ final class ProtocPluginTest {
         }
 
         @Test
-        @DisplayName("`TestMethodFactory`")
+        @DisplayName("a custom factory specified in the `modelCompiler/java` build settings")
         void testMethodFactory() {
-            assertEquals(new MessageType(MFGTMessage.getDescriptor()), MFGTMessage.ownType());
+            assertThat(MFGTMessage.ownType())
+                    .isEqualTo(new MessageType(MFGTMessage.getDescriptor()));
         }
     }
 
@@ -328,7 +366,8 @@ final class ProtocPluginTest {
     void generateColumns() {
         EntityColumn<?, ?> column = Movie.Column.title();
         String expectedName = "title";
-        assertEquals(expectedName, column.name().value());
+        assertThat(column.name().value())
+                .isEqualTo(expectedName);
     }
 
     @Test
@@ -336,17 +375,20 @@ final class ProtocPluginTest {
     void generateFields() {
         SubscribableField field = MovieTitleChanged.Field.oldTitle().value();
         String expectedFieldPath = "old_title.value";
-        assertEquals(expectedFieldPath, field.getField().toString());
+        assertThat(field.getField().toString())
+                .isEqualTo(expectedFieldPath);
     }
 
     @CanIgnoreReturnValue
     private static Class<?> checkMarkerInterface(String fqn) throws ClassNotFoundException {
         Class<?> cls = Class.forName(fqn);
-        assertTrue(cls.isInterface());
-        assertTrue(Message.class.isAssignableFrom(cls));
+        assertThat(cls.isInterface())
+                .isTrue();
+        assertThat(cls)
+                .isAssignableTo(Message.class);
 
-        Method[] declaredMethods = cls.getDeclaredMethods();
-        assertEquals(0, declaredMethods.length);
+        assertThat(cls.getDeclaredMethods())
+                .hasLength(0);
         return cls;
     }
 }

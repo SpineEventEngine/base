@@ -158,6 +158,9 @@ public enum ConfigurationName {
     @Deprecated
     compile;
 
+    /**
+     * Obtains the configuration name as a string.
+     */
     public String value() {
         return name();
     }

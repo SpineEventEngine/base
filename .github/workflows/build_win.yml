@@ -21,6 +21,6 @@ jobs:
         shell: cmd
         run: gradlew.bat build
 
-      - name: Run smoke tests with Gradle
+      - name: Run integration tests with Gradle
         shell: cmd
         run: cd tests & gradlew.bat build --stacktrace

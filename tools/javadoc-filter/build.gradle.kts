@@ -38,10 +38,19 @@ dependencies {
     testImplementation(project(":mute-logging"))
 }
 
+//TODO:2021-07-22:alexander.yevsyukov: Turn to WARN and investigate duplicates.
+// see https://github.com/SpineEventEngine/base/issues/657
+val dupStrategy = DuplicatesStrategy.INCLUDE
+
 // We need to include module dependencies to JAR.
 // In particular, we need @Internal Spine annotation.
 tasks.jar.configure {
-    from(configurations.runtime.get().map {
+    from(configurations.runtimeClasspath.get().map {
             if(it.isDirectory()) it else zipTree(it)
     })
+    duplicatesStrategy = dupStrategy
 }
+
+tasks.processResources.get().duplicatesStrategy = dupStrategy
+tasks.processTestResources.get().duplicatesStrategy = dupStrategy
+tasks.sourceJar.get().duplicatesStrategy = dupStrategy

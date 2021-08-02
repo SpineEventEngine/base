@@ -30,3 +30,9 @@ dependencies {
     api(project(":plugin-base"))
     testImplementation(project(":testlib"))
 }
+
+//TODO:2021-07-22:alexander.yevsyukov: Turn to WARN and investigate duplicates.
+// see https://github.com/SpineEventEngine/base/issues/657
+val dupStrategy = DuplicatesStrategy.INCLUDE
+tasks.processResources.get().duplicatesStrategy = dupStrategy
+tasks.sourceJar.get().duplicatesStrategy = dupStrategy

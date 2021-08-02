@@ -37,11 +37,13 @@ import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.gradle.PublishingRepos
 import io.spine.internal.gradle.RunBuild
+import io.spine.internal.gradle.RunGradle
 import io.spine.internal.gradle.Scripts
 import io.spine.internal.gradle.applyStandard
 import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.forceVersions
 import io.spine.internal.gradle.spinePublishing
+import java.time.Duration
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 @Suppress("RemoveRedundantQualifierName") // Cannot use imported things here.
@@ -109,6 +111,11 @@ allprojects {
     version = rootProject.extra["versionToPublish"]!!
 }
 
+private object PublishingTask {
+    const val publish = "publish"
+    const val publishToMavenLocal = "publishToMavenLocal"
+}
+
 subprojects {
     buildscript {
         apply(from = "$rootDir/version.gradle.kts")
@@ -129,6 +136,7 @@ subprojects {
     val generatedSpineDir by extra("$generatedDir/main/spine")
     val generatedTestSpineDir by extra("$generatedDir/test/spine")
 
+    // Apply standard plugins.
     apply {
         plugin("java-library")
         plugin("kotlin")
@@ -138,13 +146,21 @@ subprojects {
         plugin("maven-publish")
     }
 
+    // Apply custom Kotlin script plugins.
+    apply {
+        plugin("pmd-settings")
+    }
+
+    // Apply Groovy-based script plugins.
+    ext["allowInternalJavadoc"] = true
     apply {
         with(Scripts) {
             from(projectLicenseReport(project))
             from(checkstyle(project))
+            from(updateGitHubPages(project))
         }
     }
-
+    
     val javaVersion = JavaVersion.VERSION_1_8
 
     the<JavaPluginExtension>().apply {
@@ -230,6 +246,7 @@ subprojects {
     tasks.create("sourceJar", Jar::class) {
         from(sourceSets["main"].allJava)
         archiveClassifier.set("sources")
+        dependsOn("generateProto")
     }
 
     tasks.create("testOutputJar", Jar::class) {
@@ -260,14 +277,7 @@ subprojects {
         dependsOn(cleanGenerated)
     }
 
-    ext["allowInternalJavadoc"] = true
-    apply {
-        with(Scripts) {
-            from(pmd(project))
-            from(updateGitHubPages(project))
-        }
-    }
-    project.tasks["publish"].dependsOn("${project.path}:updateGitHubPages")
+    project.tasks[PublishingTask.publish].dependsOn("${project.path}:updateGitHubPages")
 }
 
 apply {
@@ -282,10 +292,45 @@ apply {
     }
 }
 
-val tests by tasks.registering(RunBuild::class) {
+val baseTypesDir = "$rootDir/base-types"
+
+val buildBaseTypes by tasks.registering(RunBuild::class) {
+    directory = baseTypesDir
+    timeout.set(Duration.ofMinutes(30))
+    val requiredProjects = setOf(
+        ":mc-java-checks",
+        ":mc-java",
+        ":javadoc-style",
+        ":javadoc-filter",
+        ":plugin-base",
+        ":tool-base",
+        ":testlib",
+        ":base"
+    )
+    dependsOn(requiredProjects.map { p ->
+        val subProject = rootProject.project(p)
+        subProject.tasks[PublishingTask.publishToMavenLocal]
+    })
+}
+
+val publishBaseTypes by tasks.registering(RunGradle::class) {
+    directory = baseTypesDir
+    task(PublishingTask.publish)
+    dependsOn(buildBaseTypes)
+    /**
+     * Makes the task created by the [Publish][io.spine.internal.gradle.Publish] plugin
+     * also publish the `base-types` artifact.
+     */
+    val thisTask = this
+    tasks.named(PublishingTask.publish) {
+        dependsOn(thisTask)
+    }
+}
+
+val integrationTests by tasks.registering(RunBuild::class) {
     directory = "$rootDir/tests"
 }
 
 tasks.register("buildAll") {
-    dependsOn(tasks.build, tests)
+    dependsOn(tasks.build, buildBaseTypes, integrationTests)
 }

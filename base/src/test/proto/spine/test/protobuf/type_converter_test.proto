@@ -34,8 +34,6 @@ option java_package = "io.spine.test.protobuf";
 option java_outer_classname = "TypeConverterTestProto";
 option java_multiple_files = true;
 
-import "google/protobuf/any.proto";
-
 enum TaskStatus {
     QUEUED = 0;
     EXECUTING = 15;

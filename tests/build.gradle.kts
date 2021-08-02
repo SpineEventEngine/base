@@ -25,9 +25,11 @@
  */
 
 import io.spine.internal.dependency.ErrorProne
-import io.spine.internal.dependency.Truth
+import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.JUnit
+import io.spine.internal.dependency.Truth
 import io.spine.internal.gradle.Scripts
+import io.spine.internal.gradle.spinePublishing
 
 buildscript {
 
@@ -48,9 +50,11 @@ buildscript {
 
     dependencies {
         classpath(io.spine.internal.dependency.Guava.lib)
+        @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
         classpath(io.spine.internal.dependency.Protobuf.GradlePlugin.lib) {
             exclude(group = "com.google.guava")
         }
+        @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
         classpath(io.spine.internal.dependency.ErrorProne.GradlePlugin.lib) {
             exclude(group = "com.google.guava")
         }
@@ -64,6 +68,10 @@ plugins {
     @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
     io.spine.internal.dependency.Protobuf.GradlePlugin.apply {
         id(id).version(version)
+    }
+    @Suppress("RemoveRedundantQualifierName") // Cannot use imports here.
+    io.spine.internal.dependency.ErrorProne.GradlePlugin.apply {
+        id(id) version version
     }
 }
 
@@ -85,10 +93,17 @@ subprojects {
 
     val commonPath = Scripts.commonPath
     apply {
-        plugin("com.google.protobuf")
+        plugin(ErrorProne.GradlePlugin.id)
+        plugin(Protobuf.GradlePlugin.id)
         plugin("io.spine.mc-java")
         plugin("idea")
         from("${baseRoot}/${commonPath}/test-output.gradle")
+    }
+
+    apply {
+        with(Scripts) {
+            from(javacArgs(project))
+        }
     }
 
     val spineVersion: String by extra
@@ -98,9 +113,11 @@ subprojects {
      * explicitly.
      */
     dependencies {
+        errorprone(ErrorProne.core)
+        errorproneJavac(ErrorProne.javacPlugin)
         ErrorProne.annotations.forEach { compileOnly(it) }
         implementation("io.spine:spine-base:$spineVersion")
-        testImplementation("io.spine:spine-testlib:$spineVersion")
+        testImplementation("io.spine.tools:spine-testlib:$spineVersion")
         Truth.libs.forEach { testImplementation(it) }
         testRuntimeOnly(JUnit.runner)
     }
@@ -139,6 +156,10 @@ subprojects {
 
         include("**/*Test.class")
     }
+
+    //TODO:2021-07-22:alexander.yevsyukov: Turn to WARN and investigate duplicates.
+    // see https://github.com/SpineEventEngine/base/issues/657
+    tasks.processTestResources.get().duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
 val scriptsPath = Scripts.commonPath

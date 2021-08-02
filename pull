@@ -34,8 +34,8 @@ git pull
 cd ..
 ./config/pull
 
-echo "Copying 'buildSrc' to 'base-validating-builders'..."
-cp -R ./buildSrc ./base-validating-builders
+echo "Copying 'buildSrc' to 'base-types'..."
+cp -R ./buildSrc ./base-types
 
 echo "Copying 'buildSrc' to 'tests'..."
 cp -R ./buildSrc ./tests

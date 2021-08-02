@@ -27,13 +27,14 @@
 package io.spine.tools.protoc;
 
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.Immutable;
 import com.squareup.javapoet.MethodSpec;
 import io.spine.type.MessageType;
-import jdk.nashorn.internal.ir.annotations.Immutable;
 
 import javax.lang.model.element.Modifier;
 import java.util.List;
 
+@SuppressWarnings("unused")
 @Immutable
 public final class TestMethodFactory implements MethodFactory {
 

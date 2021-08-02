@@ -31,32 +31,27 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.check.methodresult.HandleMethodResult.SUMMARY;
-
-@DisplayName("HandleMethodResult check should")
+@DisplayName("`HandleMethodResult` check should")
 class HandleMethodResultTest {
 
-    private CompilationTestHelper compilationTestHelper;
+    private CompilationTestHelper helper;
 
     @BeforeEach
     void setUp() {
-        compilationTestHelper =
-                CompilationTestHelper.newInstance(HandleMethodResult.class, getClass());
+        helper = CompilationTestHelper.newInstance(HandleMethodResult.class, getClass());
     }
 
     @Test
     @DisplayName("match positive cases")
     void recognizePositiveCases() {
-        compilationTestHelper.expectErrorMessage(HandleMethodResult.class.getSimpleName(),
-                                                 msg -> msg.contains(SUMMARY))
-                             .addSourceFile("given/HandleMethodResultPositives.java")
-                             .doTest();
+        helper.addSourceFile("given/HandleMethodResultPositives.java")
+              .doTest();
     }
 
     @Test
     @DisplayName("match negative cases")
     void recognizeNegativeCases() {
-        compilationTestHelper.addSourceFile("given/HandleMethodResultNegatives.java")
-                             .doTest();
+        helper.addSourceFile("given/HandleMethodResultNegatives.java")
+              .doTest();
     }
 }

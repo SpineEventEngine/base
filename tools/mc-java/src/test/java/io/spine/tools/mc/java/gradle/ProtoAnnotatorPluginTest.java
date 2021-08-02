@@ -34,6 +34,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
+import io.spine.testing.TempDir;
 import io.spine.tools.java.fs.DefaultJavaPaths;
 import io.spine.tools.java.fs.SourceFile;
 import io.spine.code.proto.FileName;
@@ -49,8 +50,8 @@ import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
@@ -86,159 +87,163 @@ class ProtoAnnotatorPluginTest {
     private File testProjectDir;
 
     @BeforeEach
-    void setUp(@TempDir Path tempDirPath) {
-        testProjectDir = tempDirPath.toFile();
+    void createTempDir() {
+        testProjectDir = TempDir.forClass(getClass());
     }
 
-    @Test
-    @DisplayName("annotate if file option is true")
-    void annotateIfFileOptionIsTrue() throws IOException {
-        assertNestedTypesAnnotations(INTERNAL_ALL, true);
+    @Nested
+    @DisplayName("annotate")
+    class Annotating {
+
+        @Test
+        @DisplayName("if file option is true")
+        void ifFileOptionSet() throws IOException {
+            checkNestedTypesAnnotations(INTERNAL_ALL, true);
+        }
+
+        @Test
+        @DisplayName("service if file option if true")
+        void serviceIfFileOptionSet() throws IOException {
+            checkServiceAnnotations(INTERNAL_ALL_SERVICE, true);
+        }
+
+        @Test
+        @DisplayName("multiple files if file option is true")
+        void multipleFilesIfFileOptionSet() throws IOException {
+            checkMainDefinitionAnnotations(INTERNAL_ALL_MULTIPLE, true);
+        }
+
+        @Test
+        @DisplayName("if message option is true")
+        void ifMessageOptionSet() throws IOException {
+            checkNestedTypesAnnotations(INTERNAL_MESSAGE, true);
+        }
+
+        @Test
+        @DisplayName("multiple files if message option is true")
+        void multipleFiles() throws IOException {
+            checkMainDefinitionAnnotations(INTERNAL_MESSAGE_MULTIPLE, true);
+        }
+
+        @Test
+        @DisplayName("accessors if field option is true")
+        void accessors() throws IOException {
+            checkFieldAnnotations(INTERNAL_FIELD, true);
+        }
+
+        @Test
+        @DisplayName("accessors in multiple files if field option is true")
+        void accessorsInMultipleFiles() throws IOException {
+            checkFieldAnnotationsMultiple(INTERNAL_FIELD_MULTIPLE, true);
+        }
+
+        @Test
+        @DisplayName("GRPC services if service option is true")
+        void grpcServices() throws IOException {
+            checkServiceAnnotations(SPI_SERVICE, SPI.class, true);
+        }
     }
 
-    @Test
-    @DisplayName("annotate service if file option if true")
-    void annotateServiceIfFileOptionIsTrue() throws IOException {
-        assertServiceAnnotations(INTERNAL_ALL_SERVICE, true);
-    }
+    @Nested
+    @DisplayName("not annotate")
+    class NotAnnotating {
 
-    @Test
-    @DisplayName("not annotate if file option if false")
-    void notAnnotateIfFileOptionIfFalse() throws IOException {
-        assertNestedTypesAnnotations(NO_INTERNAL_OPTIONS, false);
-    }
+        @Test
+        @DisplayName("if file option if false")
+        void ifFileOption() throws IOException {
+            checkNestedTypesAnnotations(NO_INTERNAL_OPTIONS, false);
+        }
 
-    @Test
-    @DisplayName("not annotate service if file option is false")
-    void notAnnotateServiceIfFileOptionIfFalse() throws IOException {
-        assertNestedTypesAnnotations(NO_INTERNAL_OPTIONS, false);
-    }
+        @Test
+        @DisplayName("service if file option is false")
+        void serviceIfFileOption() throws IOException {
+            checkNestedTypesAnnotations(NO_INTERNAL_OPTIONS, false);
+        }
 
-    @Test
-    @DisplayName("annotate multiple files if file option is true")
-    void annotateMultipleFilesIfFileOptionIsTrue() throws IOException {
-        assertMainDefinitionAnnotations(INTERNAL_ALL_MULTIPLE, true);
-    }
+        @Test
+        @DisplayName("multiple files if file option is false")
+        void multipleFilesIfFileOption() throws IOException {
+            checkMainDefinitionAnnotations(NO_INTERNAL_OPTIONS_MULTIPLE, false);
+        }
 
-    @Test
-    @DisplayName("not annotate multiple files if file option is false")
-    void notAnnotateMultipleFilesIfFileOptionIsFalse() throws IOException {
-        assertMainDefinitionAnnotations(NO_INTERNAL_OPTIONS_MULTIPLE, false);
-    }
+        @Test
+        @DisplayName("if message option is false")
+        void ifMessageOption() throws IOException {
+            checkNestedTypesAnnotations(NO_INTERNAL_OPTIONS, false);
+        }
 
-    @Test
-    @DisplayName("annotate if message option is true")
-    void annotateIfMessageOptionIsTrue() throws IOException {
-        assertNestedTypesAnnotations(INTERNAL_MESSAGE, true);
-    }
+        @Test
+        @DisplayName("multiple files if message option is false")
+        void multipleFiles() throws IOException {
+            checkMainDefinitionAnnotations(NO_INTERNAL_OPTIONS_MULTIPLE, false);
+        }
 
-    @Test
-    @DisplayName("not annotate if message option is false")
-    void notAnnotateIfMessageOptionIsFalse() throws IOException {
-        assertNestedTypesAnnotations(NO_INTERNAL_OPTIONS, false);
-    }
+        @Test
+        @DisplayName("accessors if field option is false")
+        void accessors() throws IOException {
+            checkFieldAnnotations(NO_INTERNAL_OPTIONS, false);
+        }
 
-    @Test
-    @DisplayName("annotate multiple files if message option is true")
-    void annotateMultipleFilesIfMessageOptionIsTrue() throws IOException {
-        assertMainDefinitionAnnotations(INTERNAL_MESSAGE_MULTIPLE, true);
-    }
+        @Test
+        @DisplayName("accessors in multiple files if field option is false")
+        void accessorsInMultipleFiles() throws IOException {
+            checkFieldAnnotationsMultiple(NO_INTERNAL_OPTIONS_MULTIPLE, false);
+        }
 
-    @Test
-    @DisplayName("not annotate multiple files if message option is false")
-    void notAnnotateMultipleFilesIfMessageOptionIsFalse() throws IOException {
-        assertMainDefinitionAnnotations(NO_INTERNAL_OPTIONS_MULTIPLE, false);
-    }
-
-    @Test
-    @DisplayName("annotate accessors if field option is true")
-    void annotateAccessorsIfFieldOptionIsTrue() throws IOException {
-        assertFieldAnnotations(INTERNAL_FIELD, true);
-    }
-
-    @Test
-    @DisplayName("not annotate accessors if field option is false")
-    void notAnnotateAccessorsIfFieldOptionIsFalse() throws IOException {
-        assertFieldAnnotations(NO_INTERNAL_OPTIONS, false);
-    }
-
-    @Test
-    @DisplayName("annotate accessors in multiple files if field option is true")
-    void annotateAccessorsInMultipleFilesIfFieldOptionIsTrue()
-            throws IOException {
-        assertFieldAnnotationsMultiple(INTERNAL_FIELD_MULTIPLE, true);
-    }
-
-    @Test
-    @DisplayName("not annotate accessors in multiple files if field option is false")
-    void notAnnotateAccessorsInMultipleFilesIfFieldOptionIsFalse()
-            throws IOException {
-        assertFieldAnnotationsMultiple(NO_INTERNAL_OPTIONS_MULTIPLE, false);
-    }
-
-    @Test
-    @DisplayName("annotate GRPC services if section option is true")
-    void annotateGrpcServicesIfServiceOptionIsTrue() throws IOException {
-        assertServiceAnnotations(SPI_SERVICE, SPI.class, true);
-    }
-
-    @Test
-    @DisplayName("not annotate GRPC services if service option is false")
-    void notAnnotateGrpcServicesIfServiceOptionIsFalse() throws IOException {
-        assertServiceAnnotations(NO_INTERNAL_OPTIONS, false);
+        @Test
+        @DisplayName("GRPC services if service option is false")
+        void gprcServices() throws IOException {
+            checkServiceAnnotations(NO_INTERNAL_OPTIONS, false);
+        }
     }
 
     @Test
     @DisplayName("compile generated source with potential annotation duplication")
-    void compileGeneratedSourcesWithPotentialAnnotationDuplication() {
+    void compilingSources() {
         newProjectWithFile(POTENTIAL_ANNOTATION_DUP).executeTask(compileJava);
     }
 
-    private void assertServiceAnnotations(FileName testFile, boolean shouldBeAnnotated)
+    private void checkServiceAnnotations(FileName testFile, boolean shouldBeAnnotated)
             throws IOException {
-        assertServiceAnnotations(testFile, Internal.class, shouldBeAnnotated);
+        checkServiceAnnotations(testFile, Internal.class, shouldBeAnnotated);
     }
 
-    private void assertServiceAnnotations(FileName testFile,
-                                          Class<? extends Annotation> expectedAnnotation,
-                                          boolean shouldBeAnnotated)
+    private void checkServiceAnnotations(FileName testFile,
+                                         Class<? extends Annotation> expectedAnnotation,
+                                         boolean shouldBeAnnotated)
             throws IOException {
         FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
         List<ServiceDescriptor> services = fileDescriptor.getServices();
         for (ServiceDescriptor serviceDescriptor : services) {
-            SourceFile serviceFile = forService(serviceDescriptor.toProto(),
-                                                fileDescriptor.toProto());
-            SourceCheck check = new MainDefinitionAnnotationCheck(expectedAnnotation,
-                                                                  shouldBeAnnotated);
+            SourceFile serviceFile =
+                    forService(serviceDescriptor.toProto(), fileDescriptor.toProto());
+            SourceCheck check =
+                    new MainDefinitionAnnotationCheck(expectedAnnotation, shouldBeAnnotated);
             checkGrpcService(serviceFile, check);
         }
     }
 
-    private void assertFieldAnnotations(FileName testFile, boolean shouldBeAnnotated)
+    private void checkFieldAnnotations(FileName testFile, boolean shouldBeAnnotated)
             throws IOException {
         FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
-        Descriptor messageDescriptor = fileDescriptor.getMessageTypes()
-                                                     .get(0);
-        Path sourcePath = forMessage(messageDescriptor.toProto(), fileDescriptor.toProto())
-                .path();
+        Descriptor messageDescriptor = fileDescriptor.getMessageTypes().get(0);
+        Path sourcePath = forMessage(messageDescriptor.toProto(), fileDescriptor.toProto()).path();
         NestedTypeFieldsAnnotationCheck check =
                 new NestedTypeFieldsAnnotationCheck(messageDescriptor, shouldBeAnnotated);
         check(sourcePath, check);
     }
 
-    private void assertFieldAnnotationsMultiple(FileName testFile, boolean shouldBeAnnotated)
+    private void checkFieldAnnotationsMultiple(FileName testFile, boolean shouldBeAnnotated)
             throws IOException {
         FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
         Descriptor messageDescriptor = fileDescriptor.getMessageTypes()
                                                      .get(0);
-        FieldDescriptor experimentalField = messageDescriptor.getFields()
-                                                             .get(0);
-        Path sourcePath = forMessage(messageDescriptor.toProto(), fileDescriptor.toProto())
-                .path();
+        FieldDescriptor experimentalField = messageDescriptor.getFields().get(0);
+        Path sourcePath = forMessage(messageDescriptor.toProto(), fileDescriptor.toProto()).path();
         check(sourcePath, new FieldAnnotationCheck(experimentalField, shouldBeAnnotated));
     }
 
-    private void assertMainDefinitionAnnotations(FileName testFile, boolean shouldBeAnnotated)
+    private void checkMainDefinitionAnnotations(FileName testFile, boolean shouldBeAnnotated)
             throws IOException {
         FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
         for (Descriptor messageDescriptor : fileDescriptor.getMessageTypes()) {
@@ -250,7 +255,7 @@ class ProtoAnnotatorPluginTest {
         }
     }
 
-    private void assertNestedTypesAnnotations(FileName testFile, boolean shouldBeAnnotated)
+    private void checkNestedTypesAnnotations(FileName testFile, boolean shouldBeAnnotated)
             throws IOException {
         FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
         Path sourcePath = forOuterClassOf(fileDescriptor.toProto()).path();

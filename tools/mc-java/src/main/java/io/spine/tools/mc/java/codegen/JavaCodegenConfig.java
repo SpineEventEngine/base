@@ -192,7 +192,9 @@ public final class JavaCodegenConfig extends Config<SpineProtocConfig> {
     }
 
     @Override
+    @SuppressWarnings("ResultOfMethodCallIgnored") // calling builder
     public SpineProtocConfig toProto() {
+        Classpath classpath = buildClasspath();
         SpineProtocConfig.Builder builder = SpineProtocConfig.newBuilder()
                 .setCommands(commands.toProto())
                 .setEvents(events.toProto())
@@ -200,17 +202,17 @@ public final class JavaCodegenConfig extends Config<SpineProtocConfig> {
                 .setEntities(entities.toProto())
                 .setValidation(validation.toProto())
                 .setUuids(uuids.toProto())
-                .setClasspath(buildClasspath());
-        for (Messages messages : messagesConfigs) {
-            builder.addMessages(messages);
-        }
+                .setClasspath(classpath);
+        messagesConfigs.forEach(builder::addMessages);
         return builder.build();
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored") // calling builder
     private Classpath buildClasspath() {
         Classpath.Builder classpath = Classpath.newBuilder();
-        Collection<JavaCompile> javaCompileViews = project.getTasks()
-                                                          .withType(JavaCompile.class);
+        Collection<JavaCompile> javaCompileViews =
+                project.getTasks()
+                        .withType(JavaCompile.class);
         ImmutableList.copyOf(javaCompileViews)
                      .stream()
                      .map(JavaCompile::getClasspath)

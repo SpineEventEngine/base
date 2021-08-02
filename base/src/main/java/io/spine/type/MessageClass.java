@@ -32,6 +32,7 @@ import io.spine.value.ClassTypeValue;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Queue;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -99,5 +100,25 @@ public abstract class MessageClass<M extends Message> extends ClassTypeValue<M> 
             }
         }
         return builder.build();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MessageClass)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        MessageClass<?> other = (MessageClass<?>) o;
+        return typeUrl.equals(other.typeUrl);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), typeUrl);
     }
 }

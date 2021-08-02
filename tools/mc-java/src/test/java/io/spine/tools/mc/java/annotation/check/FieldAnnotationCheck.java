@@ -67,7 +67,7 @@ public class FieldAnnotationCheck implements SourceCheck {
     private void checkAccessorsAnnotation(JavaClassSource message) {
         String fieldName = FieldName.of(fieldDescriptor.toProto())
                                     .toCamelCase();
-        for (MethodSource method : message.getMethods()) {
+        for (MethodSource<?> method : message.getMethods()) {
             if (method.isPublic() && method.getName()
                                            .contains(fieldName)) {
                 Optional<?> annotation = findInternalAnnotation(method);
@@ -80,9 +80,9 @@ public class FieldAnnotationCheck implements SourceCheck {
         }
     }
 
-    private static JavaClassSource getBuilder(JavaSource messageSource) {
-        TypeHolder messageType = (TypeHolder) messageSource;
-        JavaType builderType = messageType.getNestedType(ofBuilder().value());
+    private static JavaClassSource getBuilder(JavaSource<?> messageSource) {
+        TypeHolder<?> messageType = (TypeHolder<?>) messageSource;
+        JavaType<?> builderType = messageType.getNestedType(ofBuilder().value());
         return (JavaClassSource) builderType;
     }
 }

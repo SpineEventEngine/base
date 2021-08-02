@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 import static io.spine.gradle.compiler.given.AnnotatorTestEnv.assertInternal;
 import static io.spine.gradle.compiler.given.AnnotatorTestEnv.assertNotInternal;
 
-@DisplayName("ProtoAnnotatorPlugin should pick up `internalClassPatterns` and")
+@DisplayName("`ProtoAnnotatorPlugin` should pick up `internalClassPatterns` and")
 class PatternWiseAnnotatorTest {
 
     @Test
