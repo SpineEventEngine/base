@@ -77,14 +77,6 @@ plugins {
 
 val baseRoot = "$rootDir/.."
 
-spinePublishing {
-    targetRepositories.addAll(setOf(
-        io.spine.internal.gradle.PublishingRepos.cloudRepo
-        PublishingRepos.gitHub("base")
-    ))
-    publish(project)
-}
-
 allprojects {
     apply(from = "$baseRoot/version.gradle.kts")
     apply(plugin = "java")
