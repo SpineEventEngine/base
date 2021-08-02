@@ -26,9 +26,8 @@
 
 package io.spine.internal.gradle
 
-
 /**
- * A Gradle task which runs other tasks via Gradle Wrapper script.
+ * Runs the `build` task via Gradle Wrapper.
  */
 open class RunBuild : RunGradle() {
 

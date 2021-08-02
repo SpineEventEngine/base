@@ -40,8 +40,8 @@ import org.gradle.internal.os.OperatingSystem
  * Launches Gradle wrapper under a given [directory] with the specified [taskNames] names.
  * The `clean` task is also run if current build includes a `clean` task.
  *
- * The build writes verbose log into `$directory/build/debug-out.txt`. The error output is written
- * into `$directory/build/error-out.txt`.
+ * The build writes verbose log into `$directory/build/debug-out.txt`.
+ * The error output is written into `$directory/build/error-out.txt`.
  */
 @Suppress("unused")
 open class RunGradle : DefaultTask() {
@@ -71,7 +71,7 @@ open class RunGradle : DefaultTask() {
     /**
      * Specifies task names to be passed to the Gradle Wrapper script.
      */
-    public fun task(vararg tasks: String) {
+    fun task(vararg tasks: String) {
         taskNames = tasks.asList()
     }
 
