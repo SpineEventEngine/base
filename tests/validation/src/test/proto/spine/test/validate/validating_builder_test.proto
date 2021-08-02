@@ -137,7 +137,6 @@ message Url {
     string spec = 3 [(required) = true];
 }
 
-
 message EditTaskState {
     option (entity).kind = ENTITY;
 
