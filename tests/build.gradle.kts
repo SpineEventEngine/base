@@ -99,6 +99,12 @@ subprojects {
         from("${baseRoot}/${commonPath}/test-output.gradle")
     }
 
+    apply {
+        with(Scripts) {
+            from(javacArgs(project))
+        }
+    }
+
     val spineVersion: String by extra
 
     /**

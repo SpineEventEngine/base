@@ -26,7 +26,9 @@
 
 package io.spine.tools.protoc;
 
+import com.google.errorprone.annotations.Immutable;
 import io.spine.type.SerializableMessage;
 
+@Immutable
 public interface RegexedMessage extends SerializableMessage {
 }

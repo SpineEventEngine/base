@@ -26,7 +26,9 @@
 
 package io.spine.tools.protoc;
 
+import com.google.errorprone.annotations.Immutable;
 import io.spine.type.KnownMessage;
 
+@Immutable
 public interface DocumentMessage extends KnownMessage {
 }

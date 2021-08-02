@@ -27,6 +27,7 @@
 package io.spine.sample.map.types;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import io.spine.code.java.ClassName;
 import io.spine.type.KnownTypes;
 import io.spine.type.TypeUrl;
@@ -34,7 +35,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.google.common.collect.ImmutableList.copyOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("KnownTypes should have an entry for")
@@ -168,6 +168,6 @@ class KnownTypesTest {
     }
 
     private static Iterable<String> compose(String... elems) {
-        return copyOf(elems);
+        return ImmutableList.copyOf(elems);
     }
 }

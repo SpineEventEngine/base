@@ -43,8 +43,7 @@ class RejectionPluginTest {
     @DisplayName("generate a rejection, which extends `ThrowableMessage`")
     void generate() {
         String username = Identifier.newUuid();
-        CannotUpdateUsername rejection = CannotUpdateUsername
-                .newBuilder()
+        CannotUpdateUsername rejection = CannotUpdateUsername.newBuilder()
                 .setUsername(username)
                 .build();
         Rejections.CannotUpdateUsername rejectionMessage = rejection.messageThrown();
@@ -53,9 +52,10 @@ class RejectionPluginTest {
     }
 
     @Test
-    @DisplayName("throw ValidationException if a rejection message is not valid")
+    @DisplayName("generate the code throwing `ValidationException`" +
+            " if a rejection message is not valid")
+    @SuppressWarnings("ThrowableNotThrown") // Calling `build()` throws itself.
     void validate() {
-        assertThrows(ValidationException.class, () -> CannotUpdateUsername.newBuilder()
-                                                                          .build());
+        assertThrows(ValidationException.class, () -> CannotUpdateUsername.newBuilder().build());
     }
 }
