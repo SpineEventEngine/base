@@ -317,13 +317,23 @@ val publishBaseTypes by tasks.registering(RunGradle::class) {
     directory = baseTypesDir
     task(PublishingTask.publish)
     dependsOn(buildBaseTypes)
+    /**
+     * Makes the task created by the [Publish][io.spine.internal.gradle.Publish] plugin
+     * also publish the `base-types` artifact.
+     */
+    val thisTask = this
+    tasks.named(PublishingTask.publish) {
+        dependsOn(thisTask)
+    }
 }
 
 /**
  * Makes the task created by the [Publish][io.spine.internal.gradle.Publish] plugin
  * also publish the `base-types` artifact.
  */
-tasks[PublishingTask.publish].dependsOn(publishBaseTypes)
+//tasks.named(PublishingTask.publish) {
+//    dependsOn(publishBaseTypes)
+//}
 
 val integrationTests by tasks.registering(RunBuild::class) {
     directory = "$rootDir/tests"
