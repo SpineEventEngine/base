@@ -49,6 +49,7 @@ buildscript {
     val spineVersion: String by extra
 
     repositories {
+        gradlePluginPortal()
         mavenLocal()
         mavenCentral()
     }

@@ -24,14 +24,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        gradlePluginPortal()
-        mavenCentral()
-    }
-}
-
 /*
  * Dependency links established with the Gradle included build.
  *
@@ -42,8 +34,7 @@ val links = mapOf(
     "io.spine.tools:spine-testlib" to ":testlib",
     "io.spine.tools:spine-tool-base" to ":tool-base",
     "io.spine.tools:spine-mc-java" to ":mc-java",
-    "io.spine.tools:spine-mc-java-checks" to ":mc-java-checks",
-    "io.spine.tools:spine-mc-java-protoc" to ":mc-java-protoc"
+    "io.spine.tools:spine-mc-java-checks" to ":mc-java-checks"
 )
 
 /*

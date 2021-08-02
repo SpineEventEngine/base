@@ -29,6 +29,7 @@ import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.Truth
 import io.spine.internal.gradle.Scripts
+import io.spine.internal.gradle.spinePublishing
 
 buildscript {
 
@@ -75,6 +76,14 @@ plugins {
 }
 
 val baseRoot = "$rootDir/.."
+
+spinePublishing {
+    targetRepositories.addAll(setOf(
+        io.spine.internal.gradle.PublishingRepos.cloudRepo
+        PublishingRepos.gitHub("base")
+    ))
+    publish(project)
+}
 
 allprojects {
     apply(from = "$baseRoot/version.gradle.kts")
