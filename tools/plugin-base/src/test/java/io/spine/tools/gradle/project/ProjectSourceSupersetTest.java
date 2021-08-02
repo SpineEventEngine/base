@@ -41,7 +41,7 @@ import org.junit.jupiter.api.io.TempDir;
 import java.nio.file.Path;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.tools.gradle.ProjectExtensions.sourceSet;
+import static io.spine.tools.gradle.Projects.sourceSet;
 import static org.gradle.api.tasks.SourceSet.MAIN_SOURCE_SET_NAME;
 import static org.gradle.api.tasks.SourceSet.TEST_SOURCE_SET_NAME;
 

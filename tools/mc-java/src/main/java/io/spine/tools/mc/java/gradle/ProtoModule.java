@@ -34,7 +34,7 @@ import org.gradle.api.tasks.SourceSet;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.gradle.ProjectExtensions.sourceSet;
+import static io.spine.tools.gradle.Projects.sourceSet;
 import static io.spine.tools.gradle.SourceScope.main;
 import static io.spine.tools.gradle.SourceScope.test;
 import static io.spine.tools.mc.java.gradle.McJavaExtension.getGeneratedMainRejectionsDir;

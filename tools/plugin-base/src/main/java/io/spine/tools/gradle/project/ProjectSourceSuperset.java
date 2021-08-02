@@ -28,12 +28,11 @@ package io.spine.tools.gradle.project;
 
 import io.spine.tools.gradle.GeneratedSourceRoot;
 import io.spine.tools.gradle.GeneratedSourceSet;
-import io.spine.tools.gradle.ProjectExtensions;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.SourceSetContainer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.gradle.ProjectExtensions.sourceSets;
+import static io.spine.tools.gradle.Projects.sourceSets;
 
 /**
  * A {@link SourceSuperset} implementation based on source sets of a Gradle project.

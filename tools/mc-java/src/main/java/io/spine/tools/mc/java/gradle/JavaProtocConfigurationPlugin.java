@@ -54,7 +54,7 @@ import java.util.Base64;
 import static io.spine.tools.gradle.BaseTaskName.clean;
 import static io.spine.tools.gradle.JavaTaskName.processResources;
 import static io.spine.tools.gradle.JavaTaskName.processTestResources;
-import static io.spine.tools.gradle.ProjectExtensions.sourceSet;
+import static io.spine.tools.gradle.Projects.sourceSet;
 import static io.spine.tools.gradle.ProtocPluginName.grpc;
 import static io.spine.tools.gradle.ProtocPluginName.spineProtoc;
 import static io.spine.tools.java.fs.DefaultJavaPaths.at;
