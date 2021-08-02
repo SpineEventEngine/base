@@ -193,7 +193,6 @@ apply {
     with(Scripts) {
         from(javadocOptions(project))
         from(javacArgs(project))
-        //from(pmd(project))
         from(updateGitHubPages(project))
     }
 }

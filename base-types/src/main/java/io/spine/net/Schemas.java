@@ -78,7 +78,6 @@ final class Schemas {
      *
      * @see #parse(String)
      */
-    @SuppressWarnings("PMD.BeanMembersShouldSerialize") // which is dubious rule.
     private static final class SchemaKey {
 
         private final String value;
