@@ -69,4 +69,3 @@ afterEvaluate {
 val dupStrategy = DuplicatesStrategy.INCLUDE
 tasks.processTestResources.get().duplicatesStrategy = dupStrategy
 tasks.sourceJar.get().duplicatesStrategy = dupStrategy
-
