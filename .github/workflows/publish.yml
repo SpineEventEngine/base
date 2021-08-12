@@ -40,7 +40,7 @@ jobs:
           MAVEN_PUBLISHER_KEY: ${{ secrets.MAVEN_PUBLISHER_KEY }}
 
       - name: Publish artifacts to Maven
-        run: ./gradlew build publish --stacktrace
+        run: ./gradlew assemble publish --stacktrace
         env:
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #          FORMAL_GIT_HUB_PAGES_AUTHOR: developers@spine.io
