@@ -480,13 +480,6 @@
     </inspection_tool>
     <inspection_tool class="NewExceptionWithoutArguments" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="NewMethodNamingConvention" enabled="true" level="WARNING" enabled_by_default="true">
-      <scope name="Production" level="WARNING" enabled="true">
-        <extension name="InstanceMethodNamingConvention" enabled="true">
-          <option name="m_regex" value="[a-z][A-Za-z\d]*" />
-          <option name="m_minLength" value="2" />
-          <option name="m_maxLength" value="32" />
-        </extension>
-      </scope>
       <scope name="Tests" level="INFO" enabled="true">
         <extension name="InstanceMethodNamingConvention" enabled="true">
           <option name="m_regex" value="[a-z][A-Za-z\d]*" />
@@ -497,6 +490,13 @@
           <option name="m_regex" value="[a-z][A-Za-z\d]*" />
           <option name="m_minLength" value="2" />
           <option name="m_maxLength" value="64" />
+        </extension>
+      </scope>
+      <scope name="Production" level="WARNING" enabled="true">
+        <extension name="InstanceMethodNamingConvention" enabled="true">
+          <option name="m_regex" value="[a-z][A-Za-z\d]*" />
+          <option name="m_minLength" value="2" />
+          <option name="m_maxLength" value="32" />
         </extension>
       </scope>
       <extension name="InstanceMethodNamingConvention" enabled="true">
@@ -638,7 +638,6 @@
       <option name="ignoreCloneable" value="false" />
     </inspection_tool>
     <inspection_tool class="RedundantMethodOverride" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="RedundantVisibilityModifier" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ResultOfObjectAllocationIgnored" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="Tests" level="WARNING" enabled="false" />
     </inspection_tool>
@@ -766,13 +765,13 @@
     <inspection_tool class="TrivialStringConcatenation" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="TsLint" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="TypeMayBeWeakened" enabled="true" level="INFO" enabled_by_default="true">
-      <scope name="Problems" level="INFO" enabled="true">
+      <scope name="Tests" level="INFO" enabled="true">
         <option name="useRighthandTypeAsWeakestTypeInAssignments" value="true" />
         <option name="useParameterizedTypeForCollectionMethods" value="true" />
         <option name="doNotWeakenToJavaLangObject" value="true" />
         <option name="onlyWeakentoInterface" value="true" />
       </scope>
-      <scope name="Tests" level="INFO" enabled="true">
+      <scope name="Problems" level="INFO" enabled="true">
         <option name="useRighthandTypeAsWeakestTypeInAssignments" value="true" />
         <option name="useParameterizedTypeForCollectionMethods" value="true" />
         <option name="doNotWeakenToJavaLangObject" value="true" />
@@ -821,9 +820,6 @@
     <inspection_tool class="UnusedReturnValue" enabled="true" level="TYPO" enabled_by_default="true" />
     <inspection_tool class="UpperCaseFieldNameNotConstant" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UseOfAWTPeerClass" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="UseOfConcreteClass" enabled="false" level="WARNING" enabled_by_default="false">
-      <option name="ignoreAbstractClasses" value="true" />
-    </inspection_tool>
     <inspection_tool class="UseOfJDBCDriverClass" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UseOfProcessBuilder" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UseOfPropertiesAsHashtable" enabled="true" level="WARNING" enabled_by_default="true" />

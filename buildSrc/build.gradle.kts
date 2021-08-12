@@ -58,9 +58,11 @@ repositories {
 }
 
 val jacksonVersion = "2.11.0"
+val googleAuthToolVersion = "2.1.1"
 val licenseReportVersion = "1.16"
 
 dependencies {
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
+    implementation("com.google.cloud.artifactregistry:artifactregistry-auth-common:$googleAuthToolVersion")
     api("com.github.jk1:gradle-license-report:${licenseReportVersion}")
 }
