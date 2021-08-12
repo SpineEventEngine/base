@@ -30,6 +30,7 @@ import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.artifactregistry.auth.DefaultCredentialProvider
 import io.spine.internal.gradle.PublishingRepos.gitHub
 import java.io.File
+import java.io.IOException
 import java.net.URI
 import java.util.*
 import org.gradle.api.Project
@@ -135,13 +136,22 @@ object PublishingRepos {
     val cloudArtifactRegistry = Repository(
         releases = "$CLOUD_ARTIFACT_REGISTRY/releases",
         snapshots = "$CLOUD_ARTIFACT_REGISTRY/snapshots",
-        credentialValues = {
+        credentialValues = this::fetchGoogleCreds
+    )
+
+    private fun fetchGoogleCreds(p: Project): Credentials? {
+        return try {
             val googleCreds = DefaultCredentialProvider()
             val creds = googleCreds.credential as GoogleCredentials
             creds.refreshIfExpired()
-            return@Repository Credentials("oauth2accesstoken", creds.accessToken.tokenValue)
+            Credentials("oauth2accesstoken", creds.accessToken.tokenValue)
+        } catch (e: IOException) {
+            p.logger.info("Unable to fetch credentials for Google Cloud Artifact Registry." +
+                    " Reason: '${e.message}'." +
+                    " See debug output for details.")
+            null
         }
-    )
+    }
 
     fun gitHub(repoName: String): Repository {
         var githubActor: String? = System.getenv("GITHUB_ACTOR")
