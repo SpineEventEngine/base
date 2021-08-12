@@ -1,8 +1,7 @@
 name: Publish
 
-on:
-  push:
-    branches: [master]
+on: [push]
+#    branches: [master]
 
 jobs:
   publish:
@@ -21,19 +20,19 @@ jobs:
         env:
           CLOUDREPO_CREDENTIALS_KEY: ${{ secrets.CLOUDREPO_CREDENTIALS_KEY }}
 
-      - name: Decrypt Git SSH credentials
-        run: ./config/scripts/decrypt.sh "$GIT_CREDENTIALS_KEY" ./deploy_key_rsa.gpg ./deploy_key_rsa
-        env:
-          GIT_CREDENTIALS_KEY: ${{ secrets.GIT_CREDENTIALS_KEY }}
+#      - name: Decrypt Git SSH credentials
+#        run: ./config/scripts/decrypt.sh "$GIT_CREDENTIALS_KEY" ./deploy_key_rsa.gpg ./deploy_key_rsa
+#        env:
+#          GIT_CREDENTIALS_KEY: ${{ secrets.GIT_CREDENTIALS_KEY }}
 
         # Make sure the SSH key is not "too visible". SSH agent will not accept it otherwise.
-      - name: Set file system permissions
-        run: chmod 400 ./deploy_key_rsa && chmod +x ./config/scripts/register-ssh-key.sh
+#      - name: Set file system permissions
+#        run: chmod 400 ./deploy_key_rsa && chmod +x ./config/scripts/register-ssh-key.sh
 
-      - name: Decrypt GCS credentials
-        run: ./config/scripts/decrypt.sh "$GCS_CREDENTIALS_KEY" ./gcs-auth-key.json.gpg ./gcs-auth-key.json
-        env:
-          GCS_CREDENTIALS_KEY: ${{ secrets.GCS_CREDENTIALS_KEY }}
+#      - name: Decrypt GCS credentials
+#        run: ./config/scripts/decrypt.sh "$GCS_CREDENTIALS_KEY" ./gcs-auth-key.json.gpg ./gcs-auth-key.json
+#        env:
+#          GCS_CREDENTIALS_KEY: ${{ secrets.GCS_CREDENTIALS_KEY }}
 
       - name: Decrypt GCAR credentials
         run: ./config/scripts/decrypt.sh "MAVEN_PUBLISHER_KEY" ./maven-publisher.json.gpg ./maven-publisher.json
@@ -43,7 +42,7 @@ jobs:
       - name: Publish artifacts to Maven
         run: ./gradlew build publish --stacktrace
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FORMAL_GIT_HUB_PAGES_AUTHOR: developers@spine.io
-          REPO_SLUG: SpineEventEngine/base
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          FORMAL_GIT_HUB_PAGES_AUTHOR: developers@spine.io
+#          REPO_SLUG: SpineEventEngine/base
           GOOGLE_APPLICATION_CREDENTIALS: ./maven-publisher.json
