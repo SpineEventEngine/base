@@ -36,7 +36,6 @@ import io.spine.tools.mc.java.codegen.JavaCodegenConfig;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
-import org.gradle.util.ConfigureUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -177,9 +176,11 @@ public class McJavaExtension extends GradleExtension {
 
     public List<String> internalMethodNames = new ArrayList<>();
 
+    private final Project project;
+
     public McJavaExtension(Project project) {
         super();
-        checkNotNull(project);
+        this.project = checkNotNull(project);
         this.java = new JavaCodegenConfig(project);
     }
 
@@ -342,7 +343,7 @@ public class McJavaExtension extends GradleExtension {
 
     @SuppressWarnings("unused") // Configures `generateAnnotations` closure.
     public void generateAnnotations(Closure<?> closure) {
-        ConfigureUtil.configure(closure, generateAnnotations);
+        project.configure(generateAnnotations, closure);
     }
 
     @SuppressWarnings("unused") // Configures `generateAnnotations` closure.
