@@ -26,7 +26,7 @@ jobs:
         env:
           GIT_CREDENTIALS_KEY: ${{ secrets.GIT_CREDENTIALS_KEY }}
 
-         Make sure the SSH key is not "too visible". SSH agent will not accept it otherwise.
+        # Make sure the SSH key is not "too visible". SSH agent will not accept it otherwise.
       - name: Set file system permissions
         run: chmod 400 ./deploy_key_rsa && chmod +x ./config/scripts/register-ssh-key.sh
 
