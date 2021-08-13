@@ -76,8 +76,8 @@ apply(from = "$rootDir/version.gradle.kts")
 
 spinePublishing {
     targetRepositories.addAll(setOf(
-//        PublishingRepos.cloudRepo,
-//        PublishingRepos.gitHub("base"),
+        PublishingRepos.cloudRepo,
+        PublishingRepos.gitHub("base"),
         PublishingRepos.cloudArtifactRegistry
     ))
     projectsToPublish.addAll(
@@ -278,7 +278,7 @@ subprojects {
         dependsOn(cleanGenerated)
     }
 
-//    project.tasks[PublishingTask.publish].dependsOn("${project.path}:updateGitHubPages")
+    project.tasks[PublishingTask.publish].dependsOn("${project.path}:updateGitHubPages")
 }
 
 apply {
