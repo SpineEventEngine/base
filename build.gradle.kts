@@ -37,12 +37,12 @@ import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.gradle.PublishingRepos
 import io.spine.internal.gradle.RunBuild
-import io.spine.internal.gradle.RunGradle
 import io.spine.internal.gradle.Scripts
 import io.spine.internal.gradle.applyStandard
 import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.forceVersions
 import io.spine.internal.gradle.spinePublishing
+import io.spine.internal.gradle.PublishExtension
 import java.time.Duration
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -293,45 +293,23 @@ apply {
     }
 }
 
-val baseTypesDir = "$rootDir/base-types"
-
-val buildBaseTypes by tasks.registering(RunBuild::class) {
-    directory = baseTypesDir
+/**
+ * The [integrationTests] task runs a separate Gradle project in the `tests` directory.
+ *
+ * The task depends on publishing all the artifacts produced by `base` into Maven Local,
+ * so the Gradle project in `tests` can depend on them.
+ */
+val projectsToPublish: Set<String> = the<PublishExtension>().projectsToPublish.get()
+val integrationTests by tasks.registering(RunBuild::class) {
+    directory = "$rootDir/tests"
+    // Have a timeout for the case of stalled child processes under Windows.
     timeout.set(Duration.ofMinutes(30))
-    val requiredProjects = setOf(
-        ":mc-java-checks",
-        ":mc-java",
-        ":javadoc-style",
-        ":javadoc-filter",
-        ":plugin-base",
-        ":tool-base",
-        ":testlib",
-        ":base"
-    )
-    dependsOn(requiredProjects.map { p ->
+    dependsOn(projectsToPublish.map { p ->
         val subProject = rootProject.project(p)
         subProject.tasks[PublishingTask.publishToMavenLocal]
     })
 }
 
-val publishBaseTypes by tasks.registering(RunGradle::class) {
-    directory = baseTypesDir
-    task(PublishingTask.publish)
-    dependsOn(buildBaseTypes)
-    /**
-     * Makes the task created by the [Publish][io.spine.internal.gradle.Publish] plugin
-     * also publish the `base-types` artifact.
-     */
-    val thisTask = this
-    tasks.named(PublishingTask.publish) {
-        dependsOn(thisTask)
-    }
-}
-
-val integrationTests by tasks.registering(RunBuild::class) {
-    directory = "$rootDir/tests"
-}
-
 tasks.register("buildAll") {
-    dependsOn(tasks.build, buildBaseTypes, integrationTests)
+    dependsOn(tasks.build, integrationTests)
 }
