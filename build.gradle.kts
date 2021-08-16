@@ -35,6 +35,7 @@ import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
+import io.spine.internal.gradle.PublishExtension
 import io.spine.internal.gradle.PublishingRepos
 import io.spine.internal.gradle.RunBuild
 import io.spine.internal.gradle.Scripts
@@ -42,7 +43,6 @@ import io.spine.internal.gradle.applyStandard
 import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.forceVersions
 import io.spine.internal.gradle.spinePublishing
-import io.spine.internal.gradle.PublishExtension
 import java.time.Duration
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -74,12 +74,19 @@ plugins {
 
 apply(from = "$rootDir/version.gradle.kts")
 
+val publishToArtifactRegistry =
+    rootProject.findProperty("publishToArtifactRegistry") as Boolean? ?: false
+
 spinePublishing {
-    targetRepositories.addAll(setOf(
-        PublishingRepos.cloudRepo,
-        PublishingRepos.gitHub("base"),
-        PublishingRepos.cloudArtifactRegistry
-    ))
+    val repos = if (publishToArtifactRegistry) {
+        setOf(PublishingRepos.cloudArtifactRegistry)
+    } else {
+        setOf(
+            PublishingRepos.cloudRepo,
+            PublishingRepos.gitHub("base")
+        )
+    }
+    targetRepositories.addAll(repos)
     projectsToPublish.addAll(
         "base",
         "tool-base",
