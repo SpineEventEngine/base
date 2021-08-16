@@ -75,7 +75,7 @@ plugins {
 apply(from = "$rootDir/version.gradle.kts")
 
 val publishToArtifactRegistry =
-    rootProject.findProperty("publishToArtifactRegistry") as Boolean? ?: false
+    (rootProject.findProperty("publishToArtifactRegistry") as String?).toBoolean()
 
 spinePublishing {
     val repos = if (publishToArtifactRegistry) {
