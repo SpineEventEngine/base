@@ -144,25 +144,27 @@ public final class McJavaChecksDependency implements Logging {
     private void logUnresolvedDependencies() {
         checkState(resolvedCopy != null);
         LenientConfiguration lenient = resolvedCopy.getLenientConfiguration();
-        Set<UnresolvedDependency> unresolvedDeps = lenient.getUnresolvedModuleDependencies();
-        Map<UnresolvedDependency, Throwable> unresolvedDiags =
-                unresolvedDeps.stream()
-                              .collect(
-                                      toImmutableMap(identity(), UnresolvedDependency::getProblem)
-                              );
+        Set<UnresolvedDependency> unresolved = lenient.getUnresolvedModuleDependencies();
+        Map<UnresolvedDependency, Throwable> diags =
+                unresolved.stream()
+                          .collect(toImmutableMap(identity(), UnresolvedDependency::getProblem));
         ImmutableList<String> problemReport =
-                unresolvedDiags.entrySet()
-                               .stream()
-                               .map(entry -> format("%nDependency: `%s`%nProblem: `%s`",
-                                                    entry.getKey(),
-                                                    entry.getValue()))
-                               .sorted()
-                               .collect(toImmutableList());
+                diags.entrySet()
+                     .stream()
+                     .map(McJavaChecksDependency::toErrorMessage)
+                     .sorted()
+                     .collect(toImmutableList());
         _warn().log(
                 "Unable to add dependency on `%s` to the configuration `%s` because some " +
                         "dependencies could not be resolved: " +
                         "%s.",
                 artifactId(), configuration.getName(), problemReport
         );
+    }
+
+    private static String toErrorMessage(Map.Entry<UnresolvedDependency, Throwable> entry) {
+        UnresolvedDependency dependency = entry.getKey();
+        Throwable throwable = entry.getValue();
+        return format("%nDependency: `%s`%nProblem: `%s`", dependency, throwable);
     }
 }
