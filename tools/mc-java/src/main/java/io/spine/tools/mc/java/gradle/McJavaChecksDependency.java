@@ -28,28 +28,32 @@ package io.spine.tools.mc.java.gradle;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import io.spine.logging.Logging;
 import io.spine.tools.gradle.DependencyVersions;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.DependencySet;
-import org.gradle.api.artifacts.LenientConfiguration;
-import org.gradle.api.artifacts.ResolvedConfiguration;
-import org.gradle.api.artifacts.UnresolvedDependency;
+import org.gradle.api.artifacts.ModuleIdentifier;
+import org.gradle.api.artifacts.ModuleVersionIdentifier;
+import org.gradle.api.artifacts.result.DependencyResult;
+import org.gradle.api.artifacts.result.ResolutionResult;
+import org.gradle.api.artifacts.result.ResolvedComponentResult;
+import org.gradle.api.artifacts.result.ResolvedDependencyResult;
+import org.gradle.api.artifacts.result.UnresolvedDependencyResult;
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency;
 
 import java.util.Map;
-import java.util.Set;
+import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
 import static java.lang.String.format;
-import static java.util.function.Function.identity;
 
 /**
  * Adds a {@code spine-mc-java-checks} dependency to the given project {@link Configuration}.
@@ -69,12 +73,11 @@ public final class McJavaChecksDependency implements Logging {
     private final String version;
 
     /**
-     * The resolved copy of the configuration, which is used for checking if a dependency
-     * will be resolved.
+     * The result of the attempt to add the dependency to the configuration.
      *
      * @see #isResolvable()
      */
-    private @Nullable ResolvedConfiguration resolvedCopy;
+    private @Nullable ResolutionResult resolutionResult;
 
     private McJavaChecksDependency(Configuration cfg) {
         this.configuration = cfg;
@@ -121,9 +124,19 @@ public final class McJavaChecksDependency implements Logging {
     private boolean isResolvable() {
         Configuration configCopy = configuration.copy();
         addDependencyTo(configCopy);
-        resolvedCopy = configCopy.getResolvedConfiguration();
-        boolean hasError = resolvedCopy.hasError();
-        return !hasError;
+        resolutionResult = configCopy.getIncoming()
+                                     .getResolutionResult();
+        ModuleIdentifier checksModule = checksDependency().getModule();
+        boolean wasResolved =
+                resolutionResult.getAllDependencies()
+                                .stream()
+                                .filter(resolutionResult -> resolutionResult instanceof ResolvedDependencyResult)
+                                .map(DependencyResult::getFrom)
+                                .map(ResolvedComponentResult::getModuleVersion)
+                                .filter(Objects::nonNull)
+                                .map(ModuleVersionIdentifier::getModule)
+                                .anyMatch(checksModule::equals);
+        return wasResolved;
     }
 
     private String artifactId() {
@@ -136,18 +149,34 @@ public final class McJavaChecksDependency implements Logging {
     private void addDependencyTo(Configuration cfg) {
         _debug().log("Adding dependency on `%s` to the `%s` configuration.", artifactId(), cfg);
         DependencySet dependencies = cfg.getDependencies();
-        Dependency dependency = new DefaultExternalModuleDependency(
-                SPINE_TOOLS_GROUP, SPINE_MC_JAVA_CHECKS_ARTIFACT, version);
+        Dependency dependency = checksDependency();
         dependencies.add(dependency);
     }
 
+    @NonNull
+    private DefaultExternalModuleDependency checksDependency() {
+        return new DefaultExternalModuleDependency(
+                SPINE_TOOLS_GROUP, SPINE_MC_JAVA_CHECKS_ARTIFACT, version);
+    }
+
     private void logUnresolvedDependencies() {
-        checkState(resolvedCopy != null);
-        LenientConfiguration lenient = resolvedCopy.getLenientConfiguration();
-        Set<UnresolvedDependency> unresolved = lenient.getUnresolvedModuleDependencies();
-        Map<UnresolvedDependency, Throwable> diags =
-                unresolved.stream()
-                          .collect(toImmutableMap(identity(), UnresolvedDependency::getProblem));
+        checkState(resolutionResult != null);
+
+        ImmutableList<UnresolvedDependencyResult> unresolvedDeps =
+                resolutionResult.getAllDependencies()
+                                .stream()
+                                .filter(UnresolvedDependencyResult.class::isInstance)
+                                .map(UnresolvedDependencyResult.class::cast)
+                                .collect(toImmutableList());
+
+        ImmutableMap.Builder<String, Throwable> builder = ImmutableMap.builder();
+        for (UnresolvedDependencyResult res : unresolvedDeps) {
+            String component = res.getAttempted().getDisplayName();
+            Throwable failure = res.getFailure();
+            builder.put(component, failure);
+        }
+        ImmutableMap<String, Throwable> diags = builder.build();
+
         ImmutableList<String> problemReport =
                 diags.entrySet()
                      .stream()
@@ -162,8 +191,8 @@ public final class McJavaChecksDependency implements Logging {
         );
     }
 
-    private static String toErrorMessage(Map.Entry<UnresolvedDependency, Throwable> entry) {
-        UnresolvedDependency dependency = entry.getKey();
+    private static String toErrorMessage(Map.Entry<String, Throwable> entry) {
+        String dependency = entry.getKey();
         Throwable throwable = entry.getValue();
         return format("%nDependency: `%s`%nProblem: `%s`", dependency, throwable);
     }
