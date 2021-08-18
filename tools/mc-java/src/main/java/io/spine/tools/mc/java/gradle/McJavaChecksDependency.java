@@ -50,6 +50,7 @@ import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
 import static java.lang.String.format;
 
@@ -148,14 +149,12 @@ public final class McJavaChecksDependency implements Logging {
         }
 
         private void logUnresolved() {
-            ImmutableMap.Builder<String, Throwable> builder = ImmutableMap.builder();
-            for (UnresolvedDependencyResult res : unresolved()) {
-                String component = res.getAttempted().getDisplayName();
-                Throwable failure = res.getFailure();
-                builder.put(component, failure);
-            }
-            ImmutableMap<String, Throwable> diags = builder.build();
-
+            ImmutableMap<String, Throwable> diags =
+                    unresolved().stream()
+                                .collect(toImmutableMap(
+                                        this::resultDisplayName,
+                                        UnresolvedDependencyResult::getFailure
+                                ));
             ImmutableList<String> problemReport =
                     diags.entrySet()
                          .stream()
@@ -168,6 +167,10 @@ public final class McJavaChecksDependency implements Logging {
                             "%s.",
                     artifactId(), configuration.getName(), problemReport
             );
+        }
+
+        private String resultDisplayName(UnresolvedDependencyResult r) {
+            return r.getAttempted().getDisplayName();
         }
 
         private String toErrorMessage(Map.Entry<String, Throwable> entry) {
