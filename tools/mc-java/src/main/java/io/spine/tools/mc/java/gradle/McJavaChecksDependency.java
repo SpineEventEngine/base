@@ -109,6 +109,26 @@ public final class McJavaChecksDependency implements Logging {
     }
 
     /**
+     * Adds the dependency to the project configuration.
+     */
+    private void addDependencyTo(Configuration cfg) {
+        _debug().log("Adding a dependency on `%s` to the `%s` configuration.", artifactId(), cfg);
+        DependencySet dependencies = cfg.getDependencies();
+        Dependency dependency = checksDependency();
+        dependencies.add(dependency);
+    }
+
+    private String artifactId() {
+        return format("%s:%s:%s", SPINE_TOOLS_GROUP, SPINE_MC_JAVA_CHECKS_ARTIFACT, version);
+    }
+
+    private DefaultExternalModuleDependency checksDependency() {
+        return new DefaultExternalModuleDependency(
+                SPINE_TOOLS_GROUP, SPINE_MC_JAVA_CHECKS_ARTIFACT, version
+        );
+    }
+
+    /**
      * Assists with checking if the dependency can be resolved, and if not, helps with
      * logging error diagnostics.
      */
@@ -170,7 +190,8 @@ public final class McJavaChecksDependency implements Logging {
         }
 
         private String resultDisplayName(UnresolvedDependencyResult r) {
-            return r.getAttempted().getDisplayName();
+            return r.getAttempted()
+                    .getDisplayName();
         }
 
         private String toErrorMessage(Map.Entry<String, Throwable> entry) {
@@ -178,25 +199,5 @@ public final class McJavaChecksDependency implements Logging {
             Throwable throwable = entry.getValue();
             return format("%nDependency: `%s`%nProblem: `%s`", dependency, throwable);
         }
-    }
-
-    /**
-     * Adds the dependency to the project configuration.
-     */
-    private void addDependencyTo(Configuration cfg) {
-        _debug().log("Adding a dependency on `%s` to the `%s` configuration.", artifactId(), cfg);
-        DependencySet dependencies = cfg.getDependencies();
-        Dependency dependency = checksDependency();
-        dependencies.add(dependency);
-    }
-
-    private String artifactId() {
-        return format("%s:%s:%s", SPINE_TOOLS_GROUP, SPINE_MC_JAVA_CHECKS_ARTIFACT, version);
-    }
-
-    private DefaultExternalModuleDependency checksDependency() {
-        return new DefaultExternalModuleDependency(
-                SPINE_TOOLS_GROUP, SPINE_MC_JAVA_CHECKS_ARTIFACT, version
-        );
     }
 }
