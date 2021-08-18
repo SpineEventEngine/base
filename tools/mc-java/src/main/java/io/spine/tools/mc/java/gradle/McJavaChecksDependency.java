@@ -28,28 +28,31 @@ package io.spine.tools.mc.java.gradle;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import io.spine.logging.Logging;
 import io.spine.tools.gradle.DependencyVersions;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.DependencySet;
-import org.gradle.api.artifacts.LenientConfiguration;
-import org.gradle.api.artifacts.ResolvedConfiguration;
-import org.gradle.api.artifacts.UnresolvedDependency;
+import org.gradle.api.artifacts.ModuleIdentifier;
+import org.gradle.api.artifacts.ModuleVersionIdentifier;
+import org.gradle.api.artifacts.result.DependencyResult;
+import org.gradle.api.artifacts.result.ResolutionResult;
+import org.gradle.api.artifacts.result.ResolvedComponentResult;
+import org.gradle.api.artifacts.result.ResolvedDependencyResult;
+import org.gradle.api.artifacts.result.UnresolvedDependencyResult;
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
 import static java.lang.String.format;
-import static java.util.function.Function.identity;
 
 /**
  * Adds a {@code spine-mc-java-checks} dependency to the given project {@link Configuration}.
@@ -67,14 +70,6 @@ public final class McJavaChecksDependency implements Logging {
 
     /** The version of the dependency, which is the same as one for {@code spine-base}. */
     private final String version;
-
-    /**
-     * The resolved copy of the configuration, which is used for checking if a dependency
-     * will be resolved.
-     *
-     * @see #isResolvable()
-     */
-    private @Nullable ResolvedConfiguration resolvedCopy;
 
     private McJavaChecksDependency(Configuration cfg) {
         this.configuration = cfg;
@@ -103,66 +98,106 @@ public final class McJavaChecksDependency implements Logging {
      * @return {@code true} if the operation was successful, {@code false} otherwise
      */
     private boolean addDependency() {
-        if (isResolvable()) {
+        ResolutionHelper helper = new ResolutionHelper();
+        if (helper.wasResolved()) {
             addDependencyTo(configuration);
             return true;
         } else {
-            logUnresolvedDependencies();
+            helper.logUnresolved();
             return false;
         }
-    }
-
-    /**
-     * Checks if the given configuration is resolvable.
-     *
-     * <p>Uses the copy of the passed configuration because the configuration resolution
-     * is the irreversible action that can be done only once for any given {@link Configuration}.
-     */
-    private boolean isResolvable() {
-        Configuration configCopy = configuration.copy();
-        addDependencyTo(configCopy);
-        resolvedCopy = configCopy.getResolvedConfiguration();
-        boolean hasError = resolvedCopy.hasError();
-        return !hasError;
-    }
-
-    private String artifactId() {
-        return format("%s:%s:%s", SPINE_TOOLS_GROUP, SPINE_MC_JAVA_CHECKS_ARTIFACT, version);
     }
 
     /**
      * Adds the dependency to the project configuration.
      */
     private void addDependencyTo(Configuration cfg) {
-        _debug().log("Adding dependency on `%s` to the `%s` configuration.", artifactId(), cfg);
+        _debug().log("Adding a dependency on `%s` to the `%s` configuration.", artifactId(), cfg);
         DependencySet dependencies = cfg.getDependencies();
-        Dependency dependency = new DefaultExternalModuleDependency(
-                SPINE_TOOLS_GROUP, SPINE_MC_JAVA_CHECKS_ARTIFACT, version);
+        Dependency dependency = checksDependency();
         dependencies.add(dependency);
     }
 
-    private void logUnresolvedDependencies() {
-        checkState(resolvedCopy != null);
-        LenientConfiguration lenient = resolvedCopy.getLenientConfiguration();
-        Set<UnresolvedDependency> unresolvedDeps = lenient.getUnresolvedModuleDependencies();
-        Map<UnresolvedDependency, Throwable> unresolvedDiags =
-                unresolvedDeps.stream()
-                              .collect(
-                                      toImmutableMap(identity(), UnresolvedDependency::getProblem)
-                              );
-        ImmutableList<String> problemReport =
-                unresolvedDiags.entrySet()
-                               .stream()
-                               .map(entry -> format("%nDependency: `%s`%nProblem: `%s`",
-                                                    entry.getKey(),
-                                                    entry.getValue()))
-                               .sorted()
-                               .collect(toImmutableList());
-        _warn().log(
-                "Unable to add dependency on `%s` to the configuration `%s` because some " +
-                        "dependencies could not be resolved: " +
-                        "%s.",
-                artifactId(), configuration.getName(), problemReport
+    private String artifactId() {
+        return format("%s:%s:%s", SPINE_TOOLS_GROUP, SPINE_MC_JAVA_CHECKS_ARTIFACT, version);
+    }
+
+    private DefaultExternalModuleDependency checksDependency() {
+        return new DefaultExternalModuleDependency(
+                SPINE_TOOLS_GROUP, SPINE_MC_JAVA_CHECKS_ARTIFACT, version
         );
+    }
+
+    /**
+     * Assists with checking if the dependency can be resolved, and if not, helps with
+     * logging error diagnostics.
+     */
+    private class ResolutionHelper {
+
+        private final ResolutionResult resolutionResult;
+        private final ModuleIdentifier checksModule;
+
+        private ResolutionHelper() {
+            Configuration configCopy = configuration.copy();
+            addDependencyTo(configCopy);
+            resolutionResult = configCopy.getIncoming()
+                                         .getResolutionResult();
+            checksModule = checksDependency().getModule();
+        }
+
+        private boolean wasResolved() {
+            boolean wasResolved =
+                    allDeps().stream()
+                             .filter(ResolvedDependencyResult.class::isInstance)
+                             .map(DependencyResult::getFrom)
+                             .map(ResolvedComponentResult::getModuleVersion)
+                             .filter(Objects::nonNull)
+                             .map(ModuleVersionIdentifier::getModule)
+                             .anyMatch(checksModule::equals);
+            return wasResolved;
+        }
+
+        private Set<? extends DependencyResult> allDeps() {
+            return resolutionResult.getAllDependencies();
+        }
+
+        private ImmutableList<UnresolvedDependencyResult> unresolved() {
+            return allDeps().stream()
+                            .filter(UnresolvedDependencyResult.class::isInstance)
+                            .map(UnresolvedDependencyResult.class::cast)
+                            .collect(toImmutableList());
+        }
+
+        private void logUnresolved() {
+            ImmutableMap<String, Throwable> diags =
+                    unresolved().stream()
+                                .collect(toImmutableMap(
+                                        this::resultDisplayName,
+                                        UnresolvedDependencyResult::getFailure
+                                ));
+            ImmutableList<String> problemReport =
+                    diags.entrySet()
+                         .stream()
+                         .map(this::toErrorMessage)
+                         .sorted()
+                         .collect(toImmutableList());
+            _warn().log(
+                    "Unable to add a dependency on `%s` to the configuration `%s` because some " +
+                            "dependencies could not be resolved: " +
+                            "%s.",
+                    artifactId(), configuration.getName(), problemReport
+            );
+        }
+
+        private String resultDisplayName(UnresolvedDependencyResult r) {
+            return r.getAttempted()
+                    .getDisplayName();
+        }
+
+        private String toErrorMessage(Map.Entry<String, Throwable> entry) {
+            String dependency = entry.getKey();
+            Throwable throwable = entry.getValue();
+            return format("%nDependency: `%s`%nProblem: `%s`", dependency, throwable);
+        }
     }
 }
