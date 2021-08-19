@@ -40,11 +40,11 @@ import static io.spine.query.given.RecordQueryBuilderTestEnv.ManufacturerColumns
 import static io.spine.query.given.RecordQueryBuilderTestEnv.ManufacturerColumns.isin;
 import static io.spine.query.given.RecordQueryBuilderTestEnv.ManufacturerColumns.stock_count;
 
-@DisplayName("`ColumnList` should")
-class ColumnListTest {
+@DisplayName("`Columns` should")
+class ColumnsTest {
 
     /**
-     * Checks that {@code ColumnList} is immutable.
+     * Checks that {@code Columns} is immutable.
      *
      * @implNote In this test we just ensure this type is marked with {@code Immutable}.
      *         The rest is done by Error Prone.
@@ -52,7 +52,7 @@ class ColumnListTest {
     @Test
     @DisplayName("be immutable")
     void beImmutable() {
-        Annotation[] declaredAnnotations = ColumnList.class.getDeclaredAnnotations();
+        Annotation[] declaredAnnotations = Columns.class.getDeclaredAnnotations();
         ImmutableSet<Class<? extends Annotation>> annotationTypes =
                 ImmutableSet.copyOf(declaredAnnotations)
                             .stream()
@@ -64,7 +64,7 @@ class ColumnListTest {
     @Test
     @DisplayName("create new instances from the passed `RecordColumn`s")
     void createNewInstances() {
-        ColumnList<Manufacturer> columns = ColumnList.of(is_traded, isin, stock_count);
+        Columns<Manufacturer> columns = Columns.of(is_traded, isin, stock_count);
         assertThat(columns).containsExactly(is_traded, isin, stock_count);
     }
 
@@ -72,6 +72,6 @@ class ColumnListTest {
     @DisplayName("not accept `null` arguments")
     void notAcceptNulls() {
         new NullPointerTester()
-                .testAllPublicStaticMethods(ColumnList.class);
+                .testAllPublicStaticMethods(Columns.class);
     }
 }

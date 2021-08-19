@@ -56,16 +56,16 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @Immutable
 @SuppressWarnings("DuplicateStringLiteralInspection")   /* Same message in the annotation. */
-public final class ColumnList<R extends Message> implements List<RecordColumn<R, ?>> {
+public final class Columns<R extends Message> implements List<RecordColumn<R, ?>> {
 
     private final ImmutableList<RecordColumn<R, ?>> delegate;
 
-    private ColumnList(ImmutableList<RecordColumn<R, ?>> delegate) {
+    private Columns(ImmutableList<RecordColumn<R, ?>> delegate) {
         this.delegate = delegate;
     }
 
     /**
-     * Creates a new instance of {@code ColumnList} from the passed {@code RecordColumn}s.
+     * Creates a new instance of {@code Columns} from the passed {@code RecordColumn}s.
      *
      * @param columns
      *         the columns to join in a list
@@ -74,10 +74,10 @@ public final class ColumnList<R extends Message> implements List<RecordColumn<R,
      * @return a new instance of the column list
      */
     @SafeVarargs
-    public static <R extends Message> ColumnList<R> of(RecordColumn<R, ?>... columns) {
+    public static <R extends Message> Columns<R> of(RecordColumn<R, ?>... columns) {
         checkNotNull(columns);
         ImmutableList<RecordColumn<R, ?>> asList = ImmutableList.copyOf(columns);
-        ColumnList<R> result = new ColumnList<>(asList);
+        Columns<R> result = new Columns<>(asList);
         return result;
     }
 
@@ -335,6 +335,6 @@ public final class ColumnList<R extends Message> implements List<RecordColumn<R,
     }
 
     private static RuntimeException unsupported() {
-        throw new UnsupportedOperationException("`ColumnList` is immutable.");
+        throw new UnsupportedOperationException("`Columns` is immutable.");
     }
 }
