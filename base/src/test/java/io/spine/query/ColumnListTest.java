@@ -27,6 +27,7 @@
 package io.spine.query;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.testing.NullPointerTester;
 import com.google.errorprone.annotations.Immutable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,9 @@ import java.lang.annotation.Annotation;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.query.given.RecordQueryBuilderTestEnv.ManufacturerColumns.is_traded;
+import static io.spine.query.given.RecordQueryBuilderTestEnv.ManufacturerColumns.isin;
+import static io.spine.query.given.RecordQueryBuilderTestEnv.ManufacturerColumns.stock_count;
 
 @DisplayName("`ColumnList` should")
 class ColumnListTest {
@@ -49,12 +53,25 @@ class ColumnListTest {
     @DisplayName("be immutable")
     void beImmutable() {
         Annotation[] declaredAnnotations = ColumnList.class.getDeclaredAnnotations();
-
         ImmutableSet<Class<? extends Annotation>> annotationTypes =
                 ImmutableSet.copyOf(declaredAnnotations)
                             .stream()
                             .map(Annotation::annotationType)
                             .collect(toImmutableSet());
         assertThat(annotationTypes).contains(Immutable.class);
+    }
+
+    @Test
+    @DisplayName("create new instances from the passed `RecordColumn`s")
+    void createNewInstances() {
+        ColumnList<Manufacturer> columns = ColumnList.of(is_traded, isin, stock_count);
+        assertThat(columns).containsExactly(is_traded, isin, stock_count);
+    }
+
+    @Test
+    @DisplayName("not accept `null` arguments")
+    void notAcceptNulls() {
+        new NullPointerTester()
+                .testAllPublicStaticMethods(ColumnList.class);
     }
 }
