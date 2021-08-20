@@ -58,14 +58,16 @@ class ColumnsTest {
                             .stream()
                             .map(Annotation::annotationType)
                             .collect(toImmutableSet());
-        assertThat(annotationTypes).contains(Immutable.class);
+        assertThat(annotationTypes)
+                .contains(Immutable.class);
     }
 
     @Test
     @DisplayName("create new instances from the passed `RecordColumn`s")
     void createNewInstances() {
         Columns<Manufacturer> columns = Columns.of(is_traded, isin, stock_count);
-        assertThat(columns).containsExactly(is_traded, isin, stock_count);
+        assertThat(columns)
+                .containsExactly(is_traded, isin, stock_count);
     }
 
     @Test
