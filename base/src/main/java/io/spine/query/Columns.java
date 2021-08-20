@@ -55,7 +55,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @implNote This type delegates all of its operations to a nested {@link ImmutableList}.
  */
 @Immutable
-@SuppressWarnings("DuplicateStringLiteralInspection")   /* Same message in the annotation. */
+@SuppressWarnings("DuplicateStringLiteralInspection") /* Same message in the annotation. */
 public final class Columns<R extends Message> implements List<RecordColumn<R, ?>> {
 
     private final ImmutableList<RecordColumn<R, ?>> delegate;
