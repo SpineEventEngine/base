@@ -47,12 +47,14 @@ import static io.spine.tools.fs.DirectoryName.test;
  * project directory. It is expected that for most projects, the default values of paths remain
  * unchanged.
  */
-@SuppressWarnings("AbstractClassWithoutAbstractMethods")
-// Only stores common elements of subclasses.
-public abstract class DefaultPaths extends AbstractDirectory {
+public class DefaultPaths extends AbstractDirectory {
 
-    protected DefaultPaths(Path path) {
+    public DefaultPaths(Path path) {
         super(path);
+    }
+
+    public DefaultPaths(File file) {
+        this(file.toPath());
     }
 
     public BuildRoot buildRoot() {

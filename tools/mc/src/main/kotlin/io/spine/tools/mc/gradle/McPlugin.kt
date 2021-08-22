@@ -35,7 +35,7 @@ import org.gradle.api.Project
  */
 class McPlugin: Plugin<Project>, Logging {
 
-    override fun apply(target: Project) {
-        TODO("Not yet implemented")
+    override fun apply(project: Project) {
+        McExtension.createIn(project)
     }
 }
