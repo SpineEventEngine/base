@@ -23,39 +23,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        mavenCentral()
-    }
+
+import io.spine.internal.dependency.Protobuf
+
+group = "io.spine.tools"
+
+dependencies {
+    api(project(":plugin-base"))
+
+    implementation(Protobuf.GradlePlugin.lib)
+    testImplementation(project(":testlib"))
+    testImplementation(gradleTestKit())
+    testImplementation(project(":plugin-testlib"))
 }
 
-rootProject.name = "spine-base"
-
-include("base")
-include("testlib")
-
-/**
- * Includes a module and sets custom project directory to it.
- */
-fun toolsModule(name: String) {
-    include(name)
-    project(":$name").projectDir = File("$rootDir/tools/$name")
-}
-
-toolsModule("tool-base")
-toolsModule("plugin-base")
-toolsModule("plugin-testlib")
-
-toolsModule("javadoc-filter")
-toolsModule("javadoc-style")
-
-toolsModule("mc")
-toolsModule("mc-java-checks")
-toolsModule("mc-java-validation")
-toolsModule("mc-java-protoc")
-toolsModule("mc-java")
-
-toolsModule("mc-dart")
-toolsModule("mc-js")
-
+//TODO:2021-07-22:alexander.yevsyukov: Turn to WARN and investigate duplicates.
+// see https://github.com/SpineEventEngine/base/issues/657
+val dupStrategy = DuplicatesStrategy.INCLUDE
+tasks.processResources.get().duplicatesStrategy = dupStrategy

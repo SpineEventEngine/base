@@ -23,39 +23,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        mavenCentral()
-    }
-}
 
-rootProject.name = "spine-base"
+package io.spine.tools.mc.gradle
 
-include("base")
-include("testlib")
+import io.spine.logging.Logging
+import org.gradle.api.Plugin
+import org.gradle.api.Project
 
 /**
- * Includes a module and sets custom project directory to it.
+ * A root Gradle plugin of Spine Model Compiler.
  */
-fun toolsModule(name: String) {
-    include(name)
-    project(":$name").projectDir = File("$rootDir/tools/$name")
+class McPlugin: Plugin<Project>, Logging {
+
+    override fun apply(target: Project) {
+        TODO("Not yet implemented")
+    }
 }
-
-toolsModule("tool-base")
-toolsModule("plugin-base")
-toolsModule("plugin-testlib")
-
-toolsModule("javadoc-filter")
-toolsModule("javadoc-style")
-
-toolsModule("mc")
-toolsModule("mc-java-checks")
-toolsModule("mc-java-validation")
-toolsModule("mc-java-protoc")
-toolsModule("mc-java")
-
-toolsModule("mc-dart")
-toolsModule("mc-js")
-
