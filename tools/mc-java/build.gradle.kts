@@ -52,6 +52,7 @@ dependencies {
     testImplementation(project(":testlib"))
     testImplementation(gradleTestKit())
     testImplementation(project(":plugin-testlib"))
+    testImplementation(project(":mute-logging"))
 }
 
 protobuf {
@@ -83,9 +84,9 @@ sourceSets {
 // Tests use the Protobuf plugin.
 tasks.test {
     dependsOn(
-        ":mc-java-checks:publishToMavenLocal",
-        ":mc-java:publishToMavenLocal",
-        ":mc-java-protoc:publishToMavenLocal"
+        project(":mc-java-checks").tasks.publishToMavenLocal,
+        project(":mc-java-protoc").tasks.publishToMavenLocal,
+        tasks.publishToMavenLocal
     )
 }
 
