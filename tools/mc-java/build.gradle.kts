@@ -86,6 +86,7 @@ tasks.test {
     dependsOn(
         project(":mc-java-checks").tasks.publishToMavenLocal,
         project(":mc-java-protoc").tasks.publishToMavenLocal,
+        project(":mc").tasks.publishToMavenLocal,
         tasks.publishToMavenLocal
     )
 }

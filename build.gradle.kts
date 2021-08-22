@@ -98,6 +98,8 @@ spinePublishing {
         "javadoc-filter",
         "javadoc-style",
 
+        "mc",
+
         "mc-java",
         "mc-java-checks",
         "mc-java-validation",
