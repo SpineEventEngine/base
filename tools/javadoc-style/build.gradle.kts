@@ -35,10 +35,12 @@ dependencies {
 }
 
 tasks.test.configure {
-    dependsOn("publishToMavenLocal",
-              ":base:publishToMavenLocal",
-              ":tool-base:publishToMavenLocal",
-              ":plugin-base:publishToMavenLocal")
+    dependsOn(
+        project(":base").tasks.publishToMavenLocal,
+        project(":tool-base").tasks.publishToMavenLocal,
+        project(":plugin-base").tasks.publishToMavenLocal,
+        tasks.publishToMavenLocal
+    )
 }
 
 //TODO:2021-07-22:alexander.yevsyukov: Turn to WARN and investigate duplicates.
