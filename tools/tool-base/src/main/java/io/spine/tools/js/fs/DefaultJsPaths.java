@@ -95,22 +95,4 @@ public final class DefaultJsPaths extends DefaultPaths {
     public GeneratedProtoRoot proto() {
         return new GeneratedProtoRoot(this);
     }
-
-    public static final class GeneratedProtoRoot extends SourceRoot {
-
-        @SuppressWarnings("DuplicateStringLiteralInspection") // Same name in different context.
-        private static final String DIR_NAME = "generated";
-
-        private GeneratedProtoRoot(DefaultPaths parent) {
-            super(parent, DIR_NAME);
-        }
-
-        public Directory mainJs() {
-            return Directory.rootIn(getMain());
-        }
-
-        public Directory testJs() {
-            return Directory.rootIn(getTest());
-        }
-    }
 }

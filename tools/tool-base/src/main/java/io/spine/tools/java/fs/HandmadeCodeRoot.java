@@ -24,44 +24,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.gradle;
+package io.spine.tools.java.fs;
 
-import com.google.protobuf.gradle.ExecutableLocator;
-import io.spine.tools.js.fs.DefaultJsPaths;
-import io.spine.tools.gradle.ProtocConfigurationPlugin;
-import io.spine.tools.js.fs.GeneratedProtoRoot;
-import org.gradle.api.NamedDomainObjectContainer;
-import org.gradle.api.Project;
-
-import java.io.File;
-import java.nio.file.Path;
+import io.spine.tools.fs.DefaultPaths;
 
 /**
- * A Gradle plugin that performs additional {@code protoc} configurations relevant for
- * JavaScript projects.
+ * A root source code directory for manually written code.
+ *
+ * <p>Adds a root directory for the proto code in addition to those exposed
+ * by {@code DefaultProject.SourceRoot}.
  */
-final class ProtocConfig extends ProtocConfigurationPlugin {
+public class HandmadeCodeRoot extends JavaCodeRoot {
 
-    @Override
-    protected File getTestDescriptorSet(Project project) {
-        return McJsExtension.getTestDescriptorSet(project);
+    HandmadeCodeRoot(DefaultPaths parent, String name) {
+        super(parent, name);
     }
 
-    @Override
-    protected Path generatedFilesBaseDir(Project project) {
-        DefaultJsPaths jsProject = DefaultJsPaths.at(project.getProjectDir());
-        GeneratedProtoRoot generatedProtoRoot = jsProject.proto();
-        return generatedProtoRoot.path();
+    /**
+     * A root for the main proto code.
+     */
+    public io.spine.tools.proto.fs.Directory mainProto() {
+        return io.spine.tools.proto.fs.Directory.rootIn(getMain());
     }
 
-    @Override
-    protected File getMainDescriptorSet(Project project) {
-        return McJsExtension.getMainDescriptorSet(project);
-    }
-
-    @Override
-    protected void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins,
-                                          Project project) {
-        // Do nothing.
+    /**
+     * A root for the test proto code.
+     */
+    public io.spine.tools.proto.fs.Directory testProto() {
+        return io.spine.tools.proto.fs.Directory.rootIn(getTest());
     }
 }

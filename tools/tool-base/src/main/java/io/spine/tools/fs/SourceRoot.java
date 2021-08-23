@@ -24,44 +24,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.gradle;
+package io.spine.tools.fs;
 
-import com.google.protobuf.gradle.ExecutableLocator;
-import io.spine.tools.js.fs.DefaultJsPaths;
-import io.spine.tools.gradle.ProtocConfigurationPlugin;
-import io.spine.tools.js.fs.GeneratedProtoRoot;
-import org.gradle.api.NamedDomainObjectContainer;
-import org.gradle.api.Project;
-
-import java.io.File;
-import java.nio.file.Path;
+import static io.spine.tools.fs.DirectoryName.main;
+import static io.spine.tools.fs.DirectoryName.test;
 
 /**
- * A Gradle plugin that performs additional {@code protoc} configurations relevant for
- * JavaScript projects.
+ * A root source code directory in a project or a module.
  */
-final class ProtocConfig extends ProtocConfigurationPlugin {
+public class SourceRoot extends SourceDir {
 
-    @Override
-    protected File getTestDescriptorSet(Project project) {
-        return McJsExtension.getTestDescriptorSet(project);
+    protected SourceRoot(DefaultPaths parent, String name) {
+        super(parent, name);
     }
 
-    @Override
-    protected Path generatedFilesBaseDir(Project project) {
-        DefaultJsPaths jsProject = DefaultJsPaths.at(project.getProjectDir());
-        GeneratedProtoRoot generatedProtoRoot = jsProject.proto();
-        return generatedProtoRoot.path();
+    protected SourceDir getMain() {
+        return new SourceDir(this, main.value());
     }
 
-    @Override
-    protected File getMainDescriptorSet(Project project) {
-        return McJsExtension.getMainDescriptorSet(project);
-    }
-
-    @Override
-    protected void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins,
-                                          Project project) {
-        // Do nothing.
+    protected SourceDir getTest() {
+        return new SourceDir(this, test.value());
     }
 }

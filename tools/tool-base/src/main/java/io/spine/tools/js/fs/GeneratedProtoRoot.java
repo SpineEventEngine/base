@@ -24,44 +24,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.js.gradle;
+package io.spine.tools.js.fs;
 
-import com.google.protobuf.gradle.ExecutableLocator;
-import io.spine.tools.js.fs.DefaultJsPaths;
-import io.spine.tools.gradle.ProtocConfigurationPlugin;
-import io.spine.tools.js.fs.GeneratedProtoRoot;
-import org.gradle.api.NamedDomainObjectContainer;
-import org.gradle.api.Project;
-
-import java.io.File;
-import java.nio.file.Path;
+import io.spine.tools.fs.DefaultPaths;
+import io.spine.tools.fs.SourceRoot;
 
 /**
- * A Gradle plugin that performs additional {@code protoc} configurations relevant for
- * JavaScript projects.
+ * A root directory with the generated code.
  */
-final class ProtocConfig extends ProtocConfigurationPlugin {
+public final class GeneratedProtoRoot extends SourceRoot {
 
-    @Override
-    protected File getTestDescriptorSet(Project project) {
-        return McJsExtension.getTestDescriptorSet(project);
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Same name in different context.
+    private static final String DIR_NAME = "generated";
+
+    GeneratedProtoRoot(DefaultPaths parent) {
+        super(parent, DIR_NAME);
     }
 
-    @Override
-    protected Path generatedFilesBaseDir(Project project) {
-        DefaultJsPaths jsProject = DefaultJsPaths.at(project.getProjectDir());
-        GeneratedProtoRoot generatedProtoRoot = jsProject.proto();
-        return generatedProtoRoot.path();
+    public Directory mainJs() {
+        return Directory.rootIn(getMain());
     }
 
-    @Override
-    protected File getMainDescriptorSet(Project project) {
-        return McJsExtension.getMainDescriptorSet(project);
-    }
-
-    @Override
-    protected void configureProtocPlugins(NamedDomainObjectContainer<ExecutableLocator> plugins,
-                                          Project project) {
-        // Do nothing.
+    public Directory testJs() {
+        return Directory.rootIn(getTest());
     }
 }

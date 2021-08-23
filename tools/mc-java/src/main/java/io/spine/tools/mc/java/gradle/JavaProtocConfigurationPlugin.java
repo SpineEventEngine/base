@@ -37,7 +37,7 @@ import io.spine.tools.gradle.ProtocConfigurationPlugin;
 import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.TaskName;
 import io.spine.tools.java.fs.DefaultJavaPaths;
-import io.spine.tools.java.fs.DefaultJavaPaths.GeneratedRoot;
+import io.spine.tools.java.fs.GeneratedRoot;
 import io.spine.tools.protoc.SpineProtocConfig;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
