@@ -46,4 +46,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith(MuteLoggingExtension.class)
 public @interface MuteLogging {
+
+    /**
+     * The reason this annotated test class or test method has logging muted.
+     */
+    String value() default "";
 }

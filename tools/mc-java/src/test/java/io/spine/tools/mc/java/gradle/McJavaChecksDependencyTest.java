@@ -74,8 +74,8 @@ class McJavaChecksDependencyTest {
     }
 
     @Test
-    @MuteLogging /* Do not show the warning for missing dependency. It's assumed by this test. */
     @DisplayName("not add Spine Java Checks dependency if it is not resolvable")
+    @MuteLogging("Do not show the warning for missing dependency. It's assumed by this test.")
     void notAddIfNotResolvable() {
         Project project = stubProject.get();
 
