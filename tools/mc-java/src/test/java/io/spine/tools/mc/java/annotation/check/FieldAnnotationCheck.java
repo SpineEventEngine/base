@@ -28,19 +28,15 @@ package io.spine.tools.mc.java.annotation.check;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.proto.FieldName;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.TypeHolder;
+import org.jboss.forge.roaster.model.VisibilityScoped;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
-import org.jboss.forge.roaster.model.source.MethodSource;
-
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.java.SimpleClassName.ofBuilder;
-import static io.spine.tools.mc.java.annotation.check.Annotations.findInternalAnnotation;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -49,17 +45,16 @@ public class FieldAnnotationCheck implements SourceCheck {
     private final FieldDescriptor fieldDescriptor;
     private final boolean shouldBeAnnotated;
 
-    public FieldAnnotationCheck(FieldDescriptor fieldDescriptor,
-                                boolean shouldBeAnnotated) {
+    public FieldAnnotationCheck(FieldDescriptor fieldDescriptor, boolean shouldBeAnnotated) {
         this.fieldDescriptor = fieldDescriptor;
         this.shouldBeAnnotated = shouldBeAnnotated;
     }
 
     @Override
-    public void accept(@Nullable AbstractJavaSource<JavaClassSource> input) {
+    public void accept(AbstractJavaSource<JavaClassSource> input) {
         checkNotNull(input);
         JavaClassSource message = (JavaClassSource) input;
-        JavaClassSource messageBuilder = getBuilder(message);
+        JavaClassSource messageBuilder = builderOf(message);
         checkAccessorsAnnotation(message);
         checkAccessorsAnnotation(messageBuilder);
     }
@@ -67,20 +62,21 @@ public class FieldAnnotationCheck implements SourceCheck {
     private void checkAccessorsAnnotation(JavaClassSource message) {
         String fieldName = FieldName.of(fieldDescriptor.toProto())
                                     .toCamelCase();
-        for (MethodSource<?> method : message.getMethods()) {
-            if (method.isPublic() && method.getName()
-                                           .contains(fieldName)) {
-                Optional<?> annotation = findInternalAnnotation(method);
-                if (shouldBeAnnotated) {
-                    assertTrue(annotation.isPresent());
-                } else {
-                    assertFalse(annotation.isPresent());
-                }
-            }
-        }
+        message.getMethods()
+               .stream()
+               .filter(VisibilityScoped::isPublic)
+               .filter(method -> method.getName().contains(fieldName))
+               .map(Annotations::findInternalAnnotation)
+               .forEach(annotation -> {
+                   if (shouldBeAnnotated) {
+                       assertTrue(annotation.isPresent());
+                   } else {
+                       assertFalse(annotation.isPresent());
+                   }
+               });
     }
 
-    private static JavaClassSource getBuilder(JavaSource<?> messageSource) {
+    private static JavaClassSource builderOf(JavaSource<?> messageSource) {
         TypeHolder<?> messageType = (TypeHolder<?>) messageSource;
         JavaType<?> builderType = messageType.getNestedType(ofBuilder().value());
         return (JavaClassSource) builderType;
