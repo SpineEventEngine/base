@@ -132,7 +132,6 @@ final class AnnotationAction implements Action<Task>, Logging {
                : getGeneratedTestGrpcDir(project);
     }
 
-
     private void logMissing(File descriptorSetFile) {
         _debug().log(
                 "Missing descriptor set file `%s`.%n" +

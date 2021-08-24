@@ -41,10 +41,9 @@ import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MainDefinitionAnnotationCheck implements SourceCheck {
+public final class MainDefinitionAnnotationCheck extends SourceCheck {
 
     private final Class<? extends Annotation> annotation;
-    private final boolean shouldBeAnnotated;
 
     public MainDefinitionAnnotationCheck(boolean shouldBeAnnotated) {
         this(Internal.class, shouldBeAnnotated);
@@ -52,8 +51,8 @@ public class MainDefinitionAnnotationCheck implements SourceCheck {
 
     public MainDefinitionAnnotationCheck(Class<? extends Annotation> annotation,
                                          boolean shouldBeAnnotated) {
+        super(shouldBeAnnotated);
         this.annotation = annotation;
-        this.shouldBeAnnotated = shouldBeAnnotated;
     }
 
     @Override
@@ -61,7 +60,7 @@ public class MainDefinitionAnnotationCheck implements SourceCheck {
         checkNotNull(source);
         Optional<? extends AnnotationSource<?>> annotationSource =
                 findAnnotation(source, annotation);
-        if (shouldBeAnnotated) {
+        if (shouldBeAnnotated()) {
             assertTrue(annotationSource.isPresent(),
                        format("%s should be annotated with %s.",
                               source.getCanonicalName(),

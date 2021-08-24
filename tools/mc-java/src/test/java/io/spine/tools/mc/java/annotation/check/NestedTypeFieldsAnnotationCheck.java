@@ -27,32 +27,29 @@
 package io.spine.tools.mc.java.annotation.check;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.Descriptors.Descriptor;
 
-public class NestedTypeFieldsAnnotationCheck implements SourceCheck {
+public final class NestedTypeFieldsAnnotationCheck extends SourceCheck {
 
-    private final Descriptor messageDescriptor;
-    private final boolean shouldBeAnnotated;
+    private final Descriptor descriptor;
 
-    public NestedTypeFieldsAnnotationCheck(Descriptor messageDescriptor,
-                                           boolean shouldBeAnnotated) {
-        this.messageDescriptor = messageDescriptor;
-        this.shouldBeAnnotated = shouldBeAnnotated;
+    public NestedTypeFieldsAnnotationCheck(Descriptor descriptor, boolean shouldBeAnnotated) {
+        super(shouldBeAnnotated);
+        this.descriptor = descriptor;
     }
 
     @Override
     @SuppressWarnings("unchecked") // Could not determine exact type for nested declaration.
-    public void accept(@Nullable AbstractJavaSource<JavaClassSource> outerClass) {
+    public void accept(AbstractJavaSource<JavaClassSource> outerClass) {
         checkNotNull(outerClass);
-        for (FieldDescriptor fieldDescriptor : messageDescriptor.getFields()) {
-            AbstractJavaSource nestedType = (AbstractJavaSource)
-                    outerClass.getNestedType(messageDescriptor.getName());
-            new FieldAnnotationCheck(fieldDescriptor, shouldBeAnnotated).accept(nestedType);
+        for (FieldDescriptor fieldDescriptor : descriptor.getFields()) {
+            AbstractJavaSource<JavaClassSource> nestedType = (AbstractJavaSource<JavaClassSource>)
+                    outerClass.getNestedType(descriptor.getName());
+            new FieldAnnotationCheck(fieldDescriptor, shouldBeAnnotated()).accept(nestedType);
         }
     }
 }

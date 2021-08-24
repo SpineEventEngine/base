@@ -79,6 +79,7 @@ import static io.spine.tools.mc.java.annotation.given.GivenProtoFile.SPI_SERVICE
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.mc.java.gradle.McJavaTaskName.annotateProto;
 
+@SuppressWarnings("MethodOnlyUsedFromInnerClass") // to overcome false positive warning in IDEA.
 @DisplayName("`ProtoAnnotatorPlugin` should")
 class AnnotatorPluginTest {
 

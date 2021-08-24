@@ -39,12 +39,10 @@ import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class NestedTypesAnnotationCheck implements SourceCheck {
-
-    private final boolean shouldBeAnnotated;
+public final class NestedTypesAnnotationCheck extends SourceCheck {
 
     public NestedTypesAnnotationCheck(boolean shouldBeAnnotated) {
-        this.shouldBeAnnotated = shouldBeAnnotated;
+        super(shouldBeAnnotated);
     }
 
     @Override
@@ -52,7 +50,7 @@ public class NestedTypesAnnotationCheck implements SourceCheck {
         checkNotNull(outerClass);
         for (JavaSource<?> nestedType : outerClass.getNestedTypes()) {
             Optional<?> annotation = findInternalAnnotation(nestedType);
-            if (shouldBeAnnotated) {
+            if (shouldBeAnnotated()) {
                 assertTrue(annotation.isPresent(),
                            format("%s is not annotated.", nestedType.getQualifiedName()));
             } else {

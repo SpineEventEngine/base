@@ -40,14 +40,13 @@ import static io.spine.code.java.SimpleClassName.ofBuilder;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FieldAnnotationCheck implements SourceCheck {
+public class FieldAnnotationCheck extends SourceCheck {
 
     private final FieldDescriptor fieldDescriptor;
-    private final boolean shouldBeAnnotated;
 
     public FieldAnnotationCheck(FieldDescriptor fieldDescriptor, boolean shouldBeAnnotated) {
+        super(shouldBeAnnotated);
         this.fieldDescriptor = fieldDescriptor;
-        this.shouldBeAnnotated = shouldBeAnnotated;
     }
 
     @Override
@@ -68,7 +67,7 @@ public class FieldAnnotationCheck implements SourceCheck {
                .filter(method -> method.getName().contains(fieldName))
                .map(Annotations::findInternalAnnotation)
                .forEach(annotation -> {
-                   if (shouldBeAnnotated) {
+                   if (shouldBeAnnotated()) {
                        assertTrue(annotation.isPresent());
                    } else {
                        assertFalse(annotation.isPresent());

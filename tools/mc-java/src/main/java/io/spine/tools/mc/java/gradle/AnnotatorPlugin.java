@@ -188,6 +188,5 @@ public class AnnotatorPlugin extends SpinePlugin {
                 .insertBeforeTask(compileTestJava)
                 .applyNowTo(project);
     }
-
 }
 
