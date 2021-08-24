@@ -24,19 +24,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.fs;
+package io.spine.tools.fs;
 
 import com.google.errorprone.annotations.Immutable;
+import io.spine.code.fs.AbstractDirectory;
 
 import java.nio.file.Path;
 
+import static io.spine.tools.fs.DirectoryName.main;
+import static io.spine.tools.fs.DirectoryName.test;
+
 /**
- * A directory in a programming project.
+ * A directory with descriptor files.
  */
 @Immutable
-public abstract class AbstractDirectory extends FsObject {
+public final class DescriptorsDir extends AbstractDirectory {
 
-    protected AbstractDirectory(Path path) {
-        super(path);
+    DescriptorsDir(BuildRoot parent, String name) {
+        super(parent.path()
+                    .resolve(name));
+    }
+
+    public Path mainDescriptors() {
+        return path().resolve(main.value());
+    }
+
+    public Path testDescriptors() {
+        return path().resolve(test.value());
     }
 }

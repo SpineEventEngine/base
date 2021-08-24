@@ -24,19 +24,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.fs;
+package io.spine.tools.java.fs;
 
 import com.google.errorprone.annotations.Immutable;
-
-import java.nio.file.Path;
+import io.spine.tools.fs.DefaultPaths;
 
 /**
- * A directory in a programming project.
+ * A root source code directory for manually written code.
+ *
+ * <p>Adds a root directory for the proto code in addition to those exposed
+ * by {@code DefaultProject.SourceRoot}.
  */
 @Immutable
-public abstract class AbstractDirectory extends FsObject {
+public class HandmadeCodeRoot extends JavaCodeRoot {
 
-    protected AbstractDirectory(Path path) {
-        super(path);
+    HandmadeCodeRoot(DefaultPaths parent, String name) {
+        super(parent, name);
+    }
+
+    /**
+     * A root for the main proto code.
+     */
+    public io.spine.tools.proto.fs.Directory mainProto() {
+        return io.spine.tools.proto.fs.Directory.rootIn(getMain());
+    }
+
+    /**
+     * A root for the test proto code.
+     */
+    public io.spine.tools.proto.fs.Directory testProto() {
+        return io.spine.tools.proto.fs.Directory.rootIn(getTest());
     }
 }

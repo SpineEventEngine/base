@@ -24,19 +24,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.fs;
+package io.spine.tools.fs;
 
 import com.google.errorprone.annotations.Immutable;
 
-import java.nio.file.Path;
+import static io.spine.tools.fs.DirectoryName.main;
+import static io.spine.tools.fs.DirectoryName.test;
 
 /**
- * A directory in a programming project.
+ * A root source code directory in a project or a module.
  */
 @Immutable
-public abstract class AbstractDirectory extends FsObject {
+public class SourceRoot extends SourceDir {
 
-    protected AbstractDirectory(Path path) {
-        super(path);
+    protected SourceRoot(DefaultPaths parent, String name) {
+        super(parent, name);
+    }
+
+    protected SourceDir getMain() {
+        return new SourceDir(this, main.value());
+    }
+
+    protected SourceDir getTest() {
+        return new SourceDir(this, test.value());
     }
 }

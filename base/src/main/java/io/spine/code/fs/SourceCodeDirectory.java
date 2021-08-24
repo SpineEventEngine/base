@@ -26,6 +26,8 @@
 
 package io.spine.code.fs;
 
+import com.google.errorprone.annotations.Immutable;
+
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -33,6 +35,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A directory with source code files.
  */
+@Immutable
 public abstract class SourceCodeDirectory extends AbstractDirectory {
 
     protected SourceCodeDirectory(Path path) {
