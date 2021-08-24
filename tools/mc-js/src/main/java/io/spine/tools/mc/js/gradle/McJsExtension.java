@@ -128,7 +128,7 @@ public class McJsExtension extends GradleExtension {
         McJsExtension extension = extension(project);
         String specifiedValue = extension.mainGenProtoDir;
         Path path = pathOrDefault(specifiedValue,
-                                  def(project).proto()
+                                  def(project).generated()
                                               .mainJs());
         return Directory.at(path);
     }
@@ -137,7 +137,7 @@ public class McJsExtension extends GradleExtension {
         McJsExtension extension = extension(project);
         String specifiedValue = extension.testGenProtoDir;
         Path path = pathOrDefault(specifiedValue,
-                                  def(project).proto()
+                                  def(project).generated()
                                               .testJs());
         return Directory.at(path);
     }

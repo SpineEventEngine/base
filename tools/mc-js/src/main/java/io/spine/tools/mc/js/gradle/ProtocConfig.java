@@ -50,7 +50,7 @@ final class ProtocConfig extends ProtocConfigurationPlugin {
     @Override
     protected Path generatedFilesBaseDir(Project project) {
         DefaultJsPaths jsProject = DefaultJsPaths.at(project.getProjectDir());
-        GeneratedRoot generatedRoot = jsProject.proto();
+        GeneratedRoot generatedRoot = jsProject.generated();
         return generatedRoot.path();
     }
 
