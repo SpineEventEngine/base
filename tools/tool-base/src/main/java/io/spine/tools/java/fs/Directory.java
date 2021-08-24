@@ -26,6 +26,7 @@
 
 package io.spine.tools.java.fs;
 
+import com.google.errorprone.annotations.Immutable;
 import io.spine.code.fs.AbstractDirectory;
 import io.spine.code.fs.SourceCodeDirectory;
 import io.spine.code.java.PackageName;
@@ -39,6 +40,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A folder with Java source files.
  */
+@Immutable
 public final class Directory extends SourceCodeDirectory {
 
     private static final String ROOT_NAME = "java";

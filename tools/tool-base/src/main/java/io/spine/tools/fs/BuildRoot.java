@@ -26,6 +26,7 @@
 
 package io.spine.tools.fs;
 
+import com.google.errorprone.annotations.Immutable;
 import io.spine.code.fs.AbstractDirectory;
 
 import static io.spine.tools.fs.DirectoryName.build;
@@ -34,6 +35,7 @@ import static io.spine.tools.fs.DirectoryName.descriptors;
 /**
  * The root directory for build output.
  */
+@Immutable
 public final class BuildRoot extends AbstractDirectory {
 
     private BuildRoot(DefaultPaths module) {

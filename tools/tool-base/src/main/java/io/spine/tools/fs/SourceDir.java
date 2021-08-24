@@ -26,12 +26,14 @@
 
 package io.spine.tools.fs;
 
+import com.google.errorprone.annotations.Immutable;
 import io.spine.code.fs.AbstractDirectory;
 import io.spine.code.fs.SourceCodeDirectory;
 
 /**
  * A source code directory.
  */
+@Immutable
 public class SourceDir extends SourceCodeDirectory {
 
     public SourceDir(AbstractDirectory parent, String name) {

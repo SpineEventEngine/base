@@ -26,6 +26,7 @@
 
 package io.spine.tools.dart.fs;
 
+import com.google.errorprone.annotations.Immutable;
 import io.spine.tools.fs.DefaultPaths;
 
 import java.io.File;
@@ -36,6 +37,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A default project layout for a Dart project.
  */
+@Immutable
 public final class DefaultDartPaths extends DefaultPaths {
 
     private DefaultDartPaths(Path path) {

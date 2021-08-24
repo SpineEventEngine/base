@@ -26,6 +26,7 @@
 
 package io.spine.tools.fs;
 
+import com.google.errorprone.annotations.Immutable;
 import io.spine.code.fs.AbstractDirectory;
 
 import java.nio.file.Path;
@@ -36,6 +37,7 @@ import static io.spine.tools.fs.DirectoryName.test;
 /**
  * A directory with descriptor files.
  */
+@Immutable
 public final class DescriptorsDir extends AbstractDirectory {
 
     DescriptorsDir(BuildRoot parent, String name) {

@@ -26,6 +26,7 @@
 
 package io.spine.tools.js.fs;
 
+import com.google.errorprone.annotations.Immutable;
 import io.spine.code.fs.AbstractDirectory;
 import io.spine.code.fs.SourceCodeDirectory;
 
@@ -36,6 +37,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A folder with JavaScript source files.
  */
+@Immutable
 public final class Directory extends SourceCodeDirectory {
 
     private static final String ROOT_NAME = "js";
