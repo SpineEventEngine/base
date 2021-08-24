@@ -59,7 +59,7 @@ public class McJavaPlugin implements Plugin<Project>, Logging {
         Stream.of(new CleaningPlugin(),
                   new DescriptorSetMergerPlugin(),
                   new RejectionGenPlugin(),
-                  new ProtoAnnotatorPlugin(),
+                  new AnnotatorPlugin(),
                   new JavaProtocConfigurationPlugin(),
                   new McJavaChecksPlugin())
               .forEach(plugin -> apply(plugin, project));

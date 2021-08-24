@@ -188,7 +188,7 @@ import static io.spine.tools.mc.java.gradle.McJavaExtension.getGeneratedTestJava
  *
  * <p>If {@code java_multiple_files = true} result of annotation will be similar.
  */
-public class ProtoAnnotatorPlugin extends SpinePlugin {
+public class AnnotatorPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
