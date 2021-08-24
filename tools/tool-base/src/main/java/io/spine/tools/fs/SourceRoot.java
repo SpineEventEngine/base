@@ -38,11 +38,12 @@ public class SourceRoot extends SourceDir {
         super(parent, name);
     }
 
-    protected SourceDir getMain() {
+    @SuppressWarnings("ConfusingMainMethod") // named after the src/main directory.
+    public SourceDir main() {
         return new SourceDir(this, main.value());
     }
 
-    protected SourceDir getTest() {
+    public SourceDir test() {
         return new SourceDir(this, test.value());
     }
 }
