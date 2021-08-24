@@ -199,16 +199,16 @@ public class AnnotatorPlugin extends SpinePlugin {
     private void createMainTask(Project project) {
         Action<Task> task = new Annotate(true);
         newTask(annotateProto, task)
-                .insertBeforeTask(compileJava)
                 .insertAfterTask(mergeDescriptorSet)
+                .insertBeforeTask(compileJava)
                 .applyNowTo(project);
     }
 
     private void createTestTask(Project project) {
         Action<Task> testTask = new Annotate(false);
         newTask(annotateTestProto, testTask)
-                .insertBeforeTask(compileTestJava)
                 .insertAfterTask(mergeTestDescriptorSet)
+                .insertBeforeTask(compileTestJava)
                 .applyNowTo(project);
     }
 
