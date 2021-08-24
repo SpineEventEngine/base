@@ -52,7 +52,7 @@ public final class DefaultAnnotatorFactory implements AnnotatorFactory {
      * An absolute path to the Java sources directory,
      * generated basing on {@link #fileDescriptors}.
      */
-    private final Path genProtoDir;
+    private final Path genJavaDir;
 
     /**
      * An absolute path to the {@code gRPC} services directory,
@@ -61,36 +61,36 @@ public final class DefaultAnnotatorFactory implements AnnotatorFactory {
     private final Path genGrpcDir;
 
     private DefaultAnnotatorFactory(Collection<FileDescriptor> fileDescriptors,
-                                    Path genProtoDir,
+                                    Path genJavaDir,
                                     Path genGrpcDir) {
         checkNotNull(fileDescriptors);
-        checkNotNull(genProtoDir);
+        checkNotNull(genJavaDir);
         checkNotNull(genGrpcDir);
         this.fileDescriptors = ImmutableList.copyOf(fileDescriptors);
-        this.genProtoDir = genProtoDir;
+        this.genJavaDir = genJavaDir;
         this.genGrpcDir = genGrpcDir;
     }
 
     public static AnnotatorFactory newInstance(File descriptorSetFile,
-                                               Path generatedProtoDir,
+                                               Path generatedJavaDir,
                                                Path generatedGrpcDir) {
         FileSet files = FileSet.parseAsKnownFiles(descriptorSetFile);
-        return new DefaultAnnotatorFactory(files.files(), generatedProtoDir, generatedGrpcDir);
+        return new DefaultAnnotatorFactory(files.files(), generatedJavaDir, generatedGrpcDir);
     }
 
     @Override
     public Annotator createFileAnnotator(ClassName annotation, ApiOption option) {
-        return new FileAnnotator(annotation, option, fileDescriptors, genProtoDir, genGrpcDir);
+        return new FileAnnotator(annotation, option, fileDescriptors, genJavaDir, genGrpcDir);
     }
 
     @Override
     public Annotator createMessageAnnotator(ClassName annotation, ApiOption option) {
-        return new MessageAnnotator(annotation, option, fileDescriptors, genProtoDir);
+        return new MessageAnnotator(annotation, option, fileDescriptors, genJavaDir);
     }
 
     @Override
     public Annotator createFieldAnnotator(ClassName annotation, ApiOption option) {
-        return new FieldAnnotator(annotation, option, fileDescriptors, genProtoDir);
+        return new FieldAnnotator(annotation, option, fileDescriptors, genJavaDir);
     }
 
     @Override
@@ -100,12 +100,12 @@ public final class DefaultAnnotatorFactory implements AnnotatorFactory {
 
     @Override
     public Annotator createPatternAnnotator(ClassName annotation, ClassNamePattern pattern) {
-        return new PatternAnnotator(annotation, pattern, fileDescriptors, genProtoDir);
+        return new PatternAnnotator(annotation, pattern, fileDescriptors, genJavaDir);
     }
 
     @Override
     public Annotator createMethodAnnotator(ClassName annotation,
                                            ImmutableSet<MethodPattern> patterns) {
-        return new MethodNameAnnotator(annotation, patterns, fileDescriptors, genProtoDir);
+        return new MethodNameAnnotator(annotation, patterns, fileDescriptors, genJavaDir);
     }
 }

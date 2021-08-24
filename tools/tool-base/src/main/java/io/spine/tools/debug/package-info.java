@@ -24,28 +24,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.js.fs;
-
-import io.spine.tools.fs.DefaultPaths;
-import io.spine.tools.fs.SourceRoot;
-
 /**
- * A root directory with the generated code.
+ * Utilities for debugging.
  */
-public final class GeneratedProtoRoot extends SourceRoot {
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.debug;
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Same name in different context.
-    private static final String DIR_NAME = "generated";
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    GeneratedProtoRoot(DefaultPaths parent) {
-        super(parent, DIR_NAME);
-    }
-
-    public Directory mainJs() {
-        return Directory.rootIn(getMain());
-    }
-
-    public Directory testJs() {
-        return Directory.rootIn(getTest());
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

@@ -26,6 +26,7 @@
 
 package io.spine.tools.mc.java.annotation.check;
 
+import com.google.common.truth.OptionalSubject;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.proto.FieldName;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -39,18 +40,16 @@ import org.jboss.forge.roaster.model.source.MethodSource;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.truth.Truth8.assertThat;
 import static io.spine.code.java.SimpleClassName.ofBuilder;
 import static io.spine.tools.mc.java.annotation.check.Annotations.findInternalAnnotation;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FieldAnnotationCheck implements SourceCheck {
 
     private final FieldDescriptor fieldDescriptor;
     private final boolean shouldBeAnnotated;
 
-    public FieldAnnotationCheck(FieldDescriptor fieldDescriptor,
-                                boolean shouldBeAnnotated) {
+    public FieldAnnotationCheck(FieldDescriptor fieldDescriptor, boolean shouldBeAnnotated) {
         this.fieldDescriptor = fieldDescriptor;
         this.shouldBeAnnotated = shouldBeAnnotated;
     }
@@ -59,7 +58,7 @@ public class FieldAnnotationCheck implements SourceCheck {
     public void accept(@Nullable AbstractJavaSource<JavaClassSource> input) {
         checkNotNull(input);
         JavaClassSource message = (JavaClassSource) input;
-        JavaClassSource messageBuilder = getBuilder(message);
+        JavaClassSource messageBuilder = builderOf(message);
         checkAccessorsAnnotation(message);
         checkAccessorsAnnotation(messageBuilder);
     }
@@ -71,16 +70,17 @@ public class FieldAnnotationCheck implements SourceCheck {
             if (method.isPublic() && method.getName()
                                            .contains(fieldName)) {
                 Optional<?> annotation = findInternalAnnotation(method);
+                OptionalSubject assertAnnotation = assertThat(annotation);
                 if (shouldBeAnnotated) {
-                    assertTrue(annotation.isPresent());
+                    assertAnnotation.isPresent();
                 } else {
-                    assertFalse(annotation.isPresent());
+                    assertAnnotation.isEmpty();
                 }
             }
         }
     }
 
-    private static JavaClassSource getBuilder(JavaSource<?> messageSource) {
+    private static JavaClassSource builderOf(JavaSource<?> messageSource) {
         TypeHolder<?> messageType = (TypeHolder<?>) messageSource;
         JavaType<?> builderType = messageType.getNestedType(ofBuilder().value());
         return (JavaClassSource) builderType;

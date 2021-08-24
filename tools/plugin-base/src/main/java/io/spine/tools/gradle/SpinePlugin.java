@@ -68,7 +68,7 @@ public abstract class SpinePlugin implements Plugin<Project>, Logging {
         return result;
     }
 
-    protected final void logMissingDescriptorSetFile(File setFile) {
+    public final void logMissingDescriptorSetFile(File setFile) {
         _debug().log(
                 "Missing descriptor set file `%s`.%n" +
                         "Please enable descriptor set generation.%n" +

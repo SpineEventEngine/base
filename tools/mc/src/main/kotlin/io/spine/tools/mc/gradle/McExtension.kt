@@ -30,7 +30,6 @@ import io.spine.code.fs.SourceCodeDirectory
 import io.spine.logging.Logging
 import io.spine.tools.fs.DefaultPaths
 import io.spine.tools.gradle.GradleExtension
-import io.spine.tools.java.fs.DefaultJavaPaths
 import io.spine.tools.mc.gradle.McExtension.Companion.name
 import java.io.File
 import org.gradle.api.Project
@@ -121,8 +120,7 @@ class McExtension private constructor(private val project: Project) : GradleExte
             extension.register()
         }
 
-        //TODO:2021-08-23:alexander.yevsyukov: Replace with language-neutral paths.
-        private fun defaultsOf(project: Project): DefaultJavaPaths =
-            DefaultJavaPaths.at(project.projectDir)
+        private fun defaultsOf(project: Project): DefaultPaths =
+            DefaultPaths(project.projectDir)
     }
 }

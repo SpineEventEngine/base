@@ -27,6 +27,7 @@
 package io.spine.tools.java.fs;
 
 import io.spine.tools.fs.DefaultPaths;
+import io.spine.tools.fs.DirectoryName;
 import io.spine.tools.fs.SourceRoot;
 
 /**
@@ -34,21 +35,21 @@ import io.spine.tools.fs.SourceRoot;
  */
 abstract class JavaCodeRoot extends SourceRoot {
 
-    JavaCodeRoot(DefaultPaths parent, String name) {
-        super(parent, name);
+    JavaCodeRoot(DefaultPaths paths, DirectoryName name) {
+        super(paths, name);
     }
 
     /**
      * A root directory for main Java code.
      */
     public Directory mainJava() {
-        return Directory.rootIn(getMain());
+        return Directory.rootIn(main());
     }
 
     /**
      * A root directory for test Java code.
      */
     public Directory testJava() {
-        return Directory.rootIn(getTest());
+        return Directory.rootIn(test());
     }
 }

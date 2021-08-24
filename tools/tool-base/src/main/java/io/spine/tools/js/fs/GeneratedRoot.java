@@ -24,33 +24,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.java.fs;
+package io.spine.tools.js.fs;
 
+import com.google.errorprone.annotations.Immutable;
 import io.spine.tools.fs.DefaultPaths;
+import io.spine.tools.fs.SourceRoot;
 
 /**
- * A root source code directory for manually written code.
- *
- * <p>Adds a root directory for the proto code in addition to those exposed
- * by {@code DefaultProject.SourceRoot}.
+ * A root directory with the generated code.
  */
-public class HandmadeCodeRoot extends JavaCodeRoot {
+@Immutable
+public final class GeneratedRoot extends SourceRoot {
 
-    HandmadeCodeRoot(DefaultPaths parent, String name) {
-        super(parent, name);
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Same name in different context.
+    private static final String DIR_NAME = "generated";
+
+    GeneratedRoot(DefaultPaths parent) {
+        super(parent, DIR_NAME);
     }
 
-    /**
-     * A root for the main proto code.
-     */
-    public io.spine.tools.proto.fs.Directory mainProto() {
-        return io.spine.tools.proto.fs.Directory.rootIn(getMain());
+    public Directory mainJs() {
+        return Directory.rootIn(main());
     }
 
-    /**
-     * A root for the test proto code.
-     */
-    public io.spine.tools.proto.fs.Directory testProto() {
-        return io.spine.tools.proto.fs.Directory.rootIn(getTest());
+    public Directory testJs() {
+        return Directory.rootIn(test());
     }
 }

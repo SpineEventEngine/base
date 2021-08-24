@@ -28,6 +28,7 @@ package io.spine.tools.mc.java.annotation.check;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
+import org.jboss.forge.roaster.model.source.AnnotationSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
 
@@ -51,13 +52,12 @@ public class NestedTypesAnnotationCheck implements SourceCheck {
     public void accept(@Nullable AbstractJavaSource<JavaClassSource> outerClass) {
         checkNotNull(outerClass);
         for (JavaSource<?> nestedType : outerClass.getNestedTypes()) {
-            Optional<?> annotation = findInternalAnnotation(nestedType);
+            Optional<? extends AnnotationSource<?>> annotation = findInternalAnnotation(nestedType);
+            String typeName = nestedType.getQualifiedName();
             if (shouldBeAnnotated) {
-                assertTrue(annotation.isPresent(),
-                           format("%s is not annotated.", nestedType.getQualifiedName()));
+                assertTrue(annotation.isPresent(), format("`%s` is not annotated.", typeName));
             } else {
-                assertFalse(annotation.isPresent(),
-                            format("%s is annotated.", nestedType.getQualifiedName()));
+                assertFalse(annotation.isPresent(), format("`%s` is annotated.", typeName));
             }
         }
     }

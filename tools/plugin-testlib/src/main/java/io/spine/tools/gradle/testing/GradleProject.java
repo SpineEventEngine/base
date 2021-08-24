@@ -30,6 +30,7 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import io.spine.tools.debug.DebugBox;
 import io.spine.tools.gradle.TaskName;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.testkit.runner.BuildResult;

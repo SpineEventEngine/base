@@ -26,12 +26,15 @@
 
 package io.spine.tools.fs;
 
+import com.google.errorprone.annotations.Immutable;
 import io.spine.code.fs.AbstractDirectory;
 
 import java.io.File;
 import java.nio.file.Path;
 
 import static io.spine.tools.fs.DirectoryName.dotSpine;
+import static io.spine.tools.fs.DirectoryName.generated;
+import static io.spine.tools.fs.DirectoryName.src;
 
 /**
  * This class represents a default directory structure for a Spine-based project of any language.
@@ -42,6 +45,7 @@ import static io.spine.tools.fs.DirectoryName.dotSpine;
  * project directory. It is expected that for most projects, the default values of paths remain
  * unchanged.
  */
+@Immutable
 public class DefaultPaths extends AbstractDirectory {
 
     public DefaultPaths(Path path) {
@@ -66,5 +70,13 @@ public class DefaultPaths extends AbstractDirectory {
     public File tempArtifacts() {
         File result = new File(path().toFile(), dotSpine.value());
         return result;
+    }
+
+    public HandmadeCodeRoot src() {
+        return new HandmadeCodeRoot(this, src.value());
+    }
+
+    public SourceRoot generated() {
+        return new SourceRoot(this, generated.value());
     }
 }

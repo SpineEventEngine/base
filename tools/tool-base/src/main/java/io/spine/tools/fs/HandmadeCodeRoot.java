@@ -24,34 +24,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.proto.fs;
+package io.spine.tools.fs;
 
-import io.spine.code.fs.AbstractDirectory;
-import io.spine.code.fs.SourceCodeDirectory;
-
-import java.nio.file.Path;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.google.errorprone.annotations.Immutable;
 
 /**
- * A proto source code directory.
+ * A root source code directory for manually written code.
  */
-public final class Directory extends SourceCodeDirectory {
+@Immutable
+public class HandmadeCodeRoot extends SourceRoot {
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Same name for different directories.
-    private static final String ROOT_NAME = "proto";
-
-    private Directory(Path path) {
-        super(path);
+    public HandmadeCodeRoot(DefaultPaths parent, String name) {
+        super(parent, name);
     }
 
     /**
-     * Creates an instance of the root directory named {@code "proto"}.
+     * A root for the main proto code.
      */
-    public static Directory rootIn(AbstractDirectory parent) {
-        checkNotNull(parent);
-        Path path = parent.path()
-                          .resolve(ROOT_NAME);
-        return new Directory(path);
+    public io.spine.tools.proto.fs.Directory mainProto() {
+        return io.spine.tools.proto.fs.Directory.rootIn(main());
+    }
+
+    /**
+     * A root for the test proto code.
+     */
+    public io.spine.tools.proto.fs.Directory testProto() {
+        return io.spine.tools.proto.fs.Directory.rootIn(test());
     }
 }
