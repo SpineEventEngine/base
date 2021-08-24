@@ -61,7 +61,7 @@
  * <p>A seemingly trivial task of muting the test output can become quite complicated when running
  * multiple tests in a row.
  *
- * <p>Most {@code Logger  implementations are static system-wide tools and in fact have static
+ * <p>Most {@code Logger} implementations are static system-wide tools and in fact have static
  * system-wide state. For example, the <a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Logger.html">
  * standard JDK Logger</a> which we use in tests relies on its {@code RootLogger} to handle
  * the console output and system {@code out/err} streams.
