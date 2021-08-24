@@ -38,7 +38,6 @@ dependencies {
 
     testImplementation(project(":base"))
     testImplementation(project(":testlib"))
-    testImplementation(project(":mute-logging"))
     testImplementation(project(":mc-java"))
 }
 

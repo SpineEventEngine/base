@@ -29,7 +29,7 @@ package io.spine.tools.mc.java.protoc;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.testing.logging.MuteLogging;
+import io.spine.testing.logging.mute.MuteLogging;
 import io.spine.tools.protoc.Classpath;
 import io.spine.tools.protoc.Method;
 import io.spine.tools.protoc.MethodFactory;

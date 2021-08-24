@@ -51,7 +51,6 @@ dependencies {
     compileOnly(AutoService.annotations)
     implementation(Kotlin.reflect)
     testImplementation(project(":testlib"))
-    testImplementation(project(":mute-logging"))
 }
 
 val srcDir by extra("$projectDir/src")

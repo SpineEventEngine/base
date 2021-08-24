@@ -26,8 +26,6 @@
 
 package io.spine.testing.logging;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -35,12 +33,12 @@ import java.io.OutputStream;
 /**
  * An {@link OutputStream} which stores its input.
  */
-final class MemoizingStream extends OutputStream {
+public final class MemoizingStream extends OutputStream {
 
     private static final int ONE_MEBI_BYTE = 1024 * 1024;
     private final ByteArrayOutputStream memory;
 
-    MemoizingStream() {
+    public MemoizingStream() {
         super();
         memory = new ByteArrayOutputStream(ONE_MEBI_BYTE);
     }
@@ -50,25 +48,29 @@ final class MemoizingStream extends OutputStream {
         memory.write(b);
     }
 
-    @VisibleForTesting
-    long size() {
+    /**
+     * Obtains the size of the memoized output in bytes.
+     */
+    public long size() {
         return memory.size();
     }
 
     /**
-     * Clears the memoized input.
+     * Clears the memoized output.
      */
-    void reset() {
+    public void reset() {
         memory.reset();
     }
 
     /**
      * Copies the memoized input into the given stream and {@linkplain #reset() clears} memory.
      *
-     * @param stream the target stream
-     * @throws IOException if the target stream throws an {@link IOException} on a write operation
+     * @param stream
+     *         the target stream
+     * @throws IOException
+     *         if the target stream throws an {@link IOException} on a write operation
      */
-    synchronized void flushTo(OutputStream stream) throws IOException {
+    public synchronized void flushTo(OutputStream stream) throws IOException {
         byte[] bytes = memory.toByteArray();
         stream.write(bytes);
         reset();

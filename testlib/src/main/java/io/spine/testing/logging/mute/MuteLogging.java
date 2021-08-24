@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.testing.logging;
+package io.spine.testing.logging.mute;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -46,4 +46,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith(MuteLoggingExtension.class)
 public @interface MuteLogging {
+
+    /**
+     * The reason this annotated test class or test method has logging muted.
+     */
+    String value() default "";
 }

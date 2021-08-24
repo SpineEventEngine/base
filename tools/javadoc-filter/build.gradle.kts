@@ -35,7 +35,6 @@ dependencies {
     implementation(JavaX.annotations)
     implementation(Grpc.core)
     testImplementation(project(":testlib"))
-    testImplementation(project(":mute-logging"))
 }
 
 //TODO:2021-07-22:alexander.yevsyukov: Turn to WARN and investigate duplicates.
