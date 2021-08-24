@@ -67,15 +67,4 @@ public abstract class SpinePlugin implements Plugin<Project>, Logging {
         File result = toAbsolute(pathname);
         return result;
     }
-
-    protected final void logMissingDescriptorSetFile(File setFile) {
-        _debug().log(
-                "Missing descriptor set file `%s`.%n" +
-                        "Please enable descriptor set generation.%n" +
-                        "See: " +
-                        "https://github.com/google/protobuf-gradle-plugin/blob/master/README.md" +
-                        "#generate-descriptor-set-files",
-                setFile.getPath()
-        );
-    }
 }
