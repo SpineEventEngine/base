@@ -52,10 +52,10 @@ tasks.jar {
     //   https://docs.gradle.org/current/userguide/userguide_single.html?&_ga=2.136886832.1455643218.1627825963-149591519.1626535262#sec:link_output_dir_to_input_files
     //
     dependsOn(
-            ":base:jar",
-            ":tool-base:jar",
-            ":plugin-base:jar",
-            ":mc-java-validation:jar"
+        project(":base").tasks.jar,
+        project(":tool-base").tasks.jar,
+        project(":plugin-base").tasks.jar,
+        project(":mc-java-validation").tasks.jar
     )
 
     // See https://stackoverflow.com/questions/35704403/what-are-the-eclipsef-rsa-and-eclipsef-sf-in-a-java-jar-file
