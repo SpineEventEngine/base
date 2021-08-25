@@ -32,7 +32,17 @@ import org.jboss.forge.roaster.model.source.JavaClassSource;
 import java.util.function.Consumer;
 
 /**
- * Interface for validation of a {@link JavaClassSource}.
+ * Abstract base for checking annotations in the generated source code.
  */
-public interface SourceCheck extends Consumer<AbstractJavaSource<JavaClassSource>> {
+public abstract class SourceCheck implements Consumer<AbstractJavaSource<JavaClassSource>> {
+
+    private final boolean shouldBeAnnotated;
+
+    SourceCheck(boolean shouldBeAnnotated) {
+        this.shouldBeAnnotated = shouldBeAnnotated;
+    }
+
+    boolean shouldBeAnnotated() {
+        return shouldBeAnnotated;
+    }
 }

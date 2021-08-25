@@ -24,25 +24,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.testing.logging;
+package io.spine.tools.fs;
 
-import java.io.OutputStream;
-import java.util.logging.Formatter;
-import java.util.logging.LogRecord;
-import java.util.logging.StreamHandler;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.code.fs.AbstractDirectory;
+
+import java.nio.file.Path;
+
+import static io.spine.tools.fs.DirectoryName.descriptors;
+import static io.spine.tools.fs.DirectoryName.main;
+import static io.spine.tools.fs.DirectoryName.test;
 
 /**
- * Flushes the output when publishing records.
+ * A directory with descriptor files.
  */
-final class FlushingHandler extends StreamHandler {
+@Immutable
+public final class DescriptorsDir extends AbstractDirectory {
 
-    FlushingHandler(OutputStream out, Formatter formatter) {
-        super(out, formatter);
+    private DescriptorsDir(BuildRoot parent, String name) {
+        super(parent.path().resolve(name));
     }
 
-    @Override
-    public synchronized void publish(LogRecord record) {
-        super.publish(record);
-        flush();
+    DescriptorsDir(BuildRoot parent) {
+        this(parent, descriptors.value());
+    }
+
+    /**
+     * Obtains the path to the sub-directory under the {@code main}.
+     */
+    public Path mainDescriptors() {
+        return path().resolve(main.value());
+    }
+
+    /**
+     * Obtains the path to the sub-directory under the {@code test}.
+     */
+    public Path testDescriptors() {
+        return path().resolve(test.value());
     }
 }

@@ -27,6 +27,7 @@
 package io.spine.tools.mc.java.gradle;
 
 import io.spine.testing.SlowTest;
+import io.spine.testing.logging.mute.MuteLogging;
 import io.spine.tools.mc.java.gradle.given.StubProject;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
@@ -74,6 +75,7 @@ class McJavaChecksDependencyTest {
 
     @Test
     @DisplayName("not add Spine Java Checks dependency if it is not resolvable")
+    @MuteLogging("Do not show the warning for missing dependency. It's assumed by this test.")
     void notAddIfNotResolvable() {
         Project project = stubProject.get();
 

@@ -24,10 +24,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.testing.logging;
+package io.spine.testing.logging.mute;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import io.spine.testing.logging.MemoizingStream;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.IOException;
@@ -37,7 +38,7 @@ import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Redirects the output of the associated JDK Logger to a memory stream.
@@ -159,15 +160,15 @@ final class MutingLoggerTap {
     }
 
     private Handler handler() {
-        return checkNotNull(handler);
+        return requireNonNull(handler);
     }
 
     private MemoizingStream stream() {
-        return checkNotNull(memoizingStream);
+        return requireNonNull(memoizingStream);
     }
 
     private ImmutableList<Handler> previousHandlers() {
-        return checkNotNull(previousHandlers);
+        return requireNonNull(previousHandlers);
     }
 
     private Logger logger() {

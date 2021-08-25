@@ -24,17 +24,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.dependency.JUnit
+package io.spine.testing.logging.mute;
 
-group = "io.spine.tools"
+import org.junit.jupiter.api.extension.ExtendWith;
 
-dependencies {
-    implementation(project(":base"))
-    implementation(project(":testlib"))
-    JUnit.api.forEach { implementation(it) }
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/**
+ * Mutes all the logging for a certain test case or test suite.
+ *
+ * <p>Any kind of output into the standard output streams is blocked by this annotation.
+ *
+ * <p>If the test fails, the stack trace is printed into the standard error stream.
+ *
+ * <p>After the test completes, the standard output capabilities are restored.
+ */
+@Target({ElementType.METHOD, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@ExtendWith(MuteLoggingExtension.class)
+public @interface MuteLogging {
+
+    /**
+     * The reason this annotated test class or test method has logging muted.
+     */
+    String value() default "";
 }
-
-//TODO:2021-07-22:alexander.yevsyukov: Turn to WARN and investigate duplicates.
-// see https://github.com/SpineEventEngine/base/issues/657
-val dupStrategy = DuplicatesStrategy.INCLUDE
-tasks.sourceJar.get().duplicatesStrategy = dupStrategy

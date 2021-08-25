@@ -24,27 +24,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.testing.logging;
+package io.spine.tools.java.fs;
 
-import com.google.common.truth.ObjectArraySubject;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.Extension;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.tools.fs.DefaultPaths;
+import io.spine.tools.fs.SourceRoot;
 
-import static com.google.common.truth.Truth.assertThat;
+/**
+ * A root directory with Java code, such as {@code main} or {@code generated}.
+ */
+@Immutable
+class JavaCodeRoot extends SourceRoot {
 
-@DisplayName("@MuteLogging should")
-class MuteLoggingTest {
+    protected JavaCodeRoot(DefaultPaths parent, String name) {
+        super(parent, name);
+    }
 
-    @Test
-    @DisplayName("be marked as an extension")
-    void annotated() {
-        Class<MuteLogging> annotation = MuteLogging.class;
-        ExtendWith extendsWith = annotation.getAnnotation(ExtendWith.class);
-        Class<? extends Extension>[] extensions = extendsWith.value();
-        ObjectArraySubject<Class<? extends Extension>> assertExtensions = assertThat(extensions);
-        assertExtensions.hasLength(1);
-        assertExtensions.asList().contains(MuteLoggingExtension.class);
+    /**
+     * A root directory for main Java code.
+     */
+    public Directory mainJava() {
+        return Directory.rootIn(getMain());
+    }
+
+    /**
+     * A root directory for test Java code.
+     */
+    public Directory testJava() {
+        return Directory.rootIn(getTest());
     }
 }

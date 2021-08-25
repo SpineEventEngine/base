@@ -24,35 +24,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.annotation.check;
+package io.spine.tools.java.fs;
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
-import org.jboss.forge.roaster.model.source.JavaClassSource;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.protobuf.Descriptors.Descriptor;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.tools.fs.DefaultPaths;
 
 /**
- * Checks that fields of a nested type are annotated.
+ * A root source code directory for manually written code.
+ *
+ * <p>Adds a root directory for the proto code in addition to those exposed
+ * by {@code DefaultProject.SourceRoot}.
  */
-public final class NestedTypeFieldsAnnotationCheck extends SourceCheck {
+@Immutable
+public class HandmadeCodeRoot extends JavaCodeRoot {
 
-    private final Descriptor descriptor;
-
-    public NestedTypeFieldsAnnotationCheck(Descriptor descriptor, boolean shouldBeAnnotated) {
-        super(shouldBeAnnotated);
-        this.descriptor = checkNotNull(descriptor);
+    HandmadeCodeRoot(DefaultPaths parent, String name) {
+        super(parent, name);
     }
 
-    @Override
-    @SuppressWarnings("unchecked") // Could not determine exact type for nested declaration.
-    public void accept(AbstractJavaSource<JavaClassSource> outerClass) {
-        checkNotNull(outerClass);
-        for (FieldDescriptor fieldDescriptor : descriptor.getFields()) {
-            AbstractJavaSource<JavaClassSource> nestedType = (AbstractJavaSource<JavaClassSource>)
-                    outerClass.getNestedType(descriptor.getName());
-            new FieldAnnotationCheck(fieldDescriptor, shouldBeAnnotated()).accept(nestedType);
-        }
+    /**
+     * A root for the main proto code.
+     */
+    public io.spine.tools.proto.fs.Directory mainProto() {
+        return io.spine.tools.proto.fs.Directory.rootIn(getMain());
+    }
+
+    /**
+     * A root for the test proto code.
+     */
+    public io.spine.tools.proto.fs.Directory testProto() {
+        return io.spine.tools.proto.fs.Directory.rootIn(getTest());
     }
 }

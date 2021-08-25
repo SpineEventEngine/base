@@ -79,7 +79,7 @@ class McJsExtensionTest {
     @DisplayName("return the default directory with main generated Protobufs")
     void defaultMainGenProto() {
         Directory directory = McJsExtension.getMainGenProto(project);
-        Directory expected = defaultPaths.proto()
+        Directory expected = defaultPaths.generated()
                                          .mainJs();
         assertThat(directory)
                 .isEqualTo(expected);
@@ -99,7 +99,7 @@ class McJsExtensionTest {
     @DisplayName("return the default directory with test generated Protobufs")
     void defaultTestGenProto() {
         Directory directory = McJsExtension.getTestGenProtoDir(project);
-        Directory expected = defaultPaths.proto()
+        Directory expected = defaultPaths.generated()
                                          .testJs();
         assertThat(directory)
                 .isEqualTo(expected);

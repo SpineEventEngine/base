@@ -24,28 +24,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = "io.spine.tools"
+package io.spine.tools.fs;
 
-dependencies {
-    implementation(project(":base"))
-    implementation(project(":plugin-base"))
-    testImplementation(project(":testlib"))
-    testImplementation(project(":plugin-testlib"))
-    testImplementation(gradleTestKit())
+import com.google.errorprone.annotations.Immutable;
+import io.spine.code.fs.AbstractDirectory;
+import io.spine.code.fs.SourceCodeDirectory;
+
+/**
+ * A source code directory.
+ */
+@Immutable
+public class SourceDir extends SourceCodeDirectory {
+
+    public SourceDir(AbstractDirectory parent, String name) {
+        super(parent.path()
+                    .resolve(name));
+    }
 }
-
-tasks.test.configure {
-    dependsOn(
-        project(":base").tasks.publishToMavenLocal,
-        project(":tool-base").tasks.publishToMavenLocal,
-        project(":plugin-base").tasks.publishToMavenLocal,
-        tasks.publishToMavenLocal
-    )
-}
-
-//TODO:2021-07-22:alexander.yevsyukov: Turn to WARN and investigate duplicates.
-// see https://github.com/SpineEventEngine/base/issues/657
-val dupStrategy = DuplicatesStrategy.INCLUDE
-tasks.processResources.get().duplicatesStrategy = dupStrategy
-tasks.processTestResources.get().duplicatesStrategy = dupStrategy
-tasks.sourceJar.get().duplicatesStrategy = dupStrategy

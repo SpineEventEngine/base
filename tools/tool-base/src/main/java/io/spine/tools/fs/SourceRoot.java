@@ -24,35 +24,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.annotation.check;
+package io.spine.tools.fs;
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
-import org.jboss.forge.roaster.model.source.JavaClassSource;
+import com.google.errorprone.annotations.Immutable;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.protobuf.Descriptors.Descriptor;
+import static io.spine.tools.fs.DirectoryName.main;
+import static io.spine.tools.fs.DirectoryName.test;
 
 /**
- * Checks that fields of a nested type are annotated.
+ * A root source code directory in a project or a module.
  */
-public final class NestedTypeFieldsAnnotationCheck extends SourceCheck {
+@Immutable
+public class SourceRoot extends SourceDir {
 
-    private final Descriptor descriptor;
-
-    public NestedTypeFieldsAnnotationCheck(Descriptor descriptor, boolean shouldBeAnnotated) {
-        super(shouldBeAnnotated);
-        this.descriptor = checkNotNull(descriptor);
+    protected SourceRoot(DefaultPaths parent, String name) {
+        super(parent, name);
     }
 
-    @Override
-    @SuppressWarnings("unchecked") // Could not determine exact type for nested declaration.
-    public void accept(AbstractJavaSource<JavaClassSource> outerClass) {
-        checkNotNull(outerClass);
-        for (FieldDescriptor fieldDescriptor : descriptor.getFields()) {
-            AbstractJavaSource<JavaClassSource> nestedType = (AbstractJavaSource<JavaClassSource>)
-                    outerClass.getNestedType(descriptor.getName());
-            new FieldAnnotationCheck(fieldDescriptor, shouldBeAnnotated()).accept(nestedType);
-        }
+    protected SourceDir getMain() {
+        return new SourceDir(this, main.value());
+    }
+
+    protected SourceDir getTest() {
+        return new SourceDir(this, test.value());
     }
 }

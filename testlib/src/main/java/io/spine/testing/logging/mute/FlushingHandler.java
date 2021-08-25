@@ -24,26 +24,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.testing.logging;
+package io.spine.testing.logging.mute;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.OutputStream;
+import java.util.logging.Formatter;
+import java.util.logging.LogRecord;
+import java.util.logging.StreamHandler;
 
 /**
- * Mutes all the logging for a certain test case or test suite.
- *
- * <p>Any kind of output into the standard output streams is blocked by this annotation.
- *
- * <p>If the test fails, the stack trace is printed into the standard error stream.
- *
- * <p>After the test completes, the standard output capabilities are restored.
+ * Flushes the output when publishing records.
  */
-@Target({ElementType.METHOD, ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@ExtendWith(MuteLoggingExtension.class)
-public @interface MuteLogging {
+final class FlushingHandler extends StreamHandler {
+
+    FlushingHandler(OutputStream out, Formatter formatter) {
+        super(out, formatter);
+    }
+
+    @Override
+    public synchronized void publish(LogRecord record) {
+        super.publish(record);
+        flush();
+    }
 }

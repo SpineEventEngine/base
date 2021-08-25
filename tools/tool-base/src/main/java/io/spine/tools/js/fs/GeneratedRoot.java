@@ -24,35 +24,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.mc.java.annotation.check;
+package io.spine.tools.js.fs;
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
-import org.jboss.forge.roaster.model.source.JavaClassSource;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.protobuf.Descriptors.Descriptor;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.tools.fs.DefaultPaths;
+import io.spine.tools.fs.SourceRoot;
 
 /**
- * Checks that fields of a nested type are annotated.
+ * A code with generated JS code.
  */
-public final class NestedTypeFieldsAnnotationCheck extends SourceCheck {
+@Immutable
+public final class GeneratedRoot extends SourceRoot {
 
-    private final Descriptor descriptor;
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Same name in different context.
+    private static final String DIR_NAME = "generated";
 
-    public NestedTypeFieldsAnnotationCheck(Descriptor descriptor, boolean shouldBeAnnotated) {
-        super(shouldBeAnnotated);
-        this.descriptor = checkNotNull(descriptor);
+    GeneratedRoot(DefaultPaths parent) {
+        super(parent, DIR_NAME);
     }
 
-    @Override
-    @SuppressWarnings("unchecked") // Could not determine exact type for nested declaration.
-    public void accept(AbstractJavaSource<JavaClassSource> outerClass) {
-        checkNotNull(outerClass);
-        for (FieldDescriptor fieldDescriptor : descriptor.getFields()) {
-            AbstractJavaSource<JavaClassSource> nestedType = (AbstractJavaSource<JavaClassSource>)
-                    outerClass.getNestedType(descriptor.getName());
-            new FieldAnnotationCheck(fieldDescriptor, shouldBeAnnotated()).accept(nestedType);
-        }
+    public Directory mainJs() {
+        return Directory.rootIn(getMain());
+    }
+
+    public Directory testJs() {
+        return Directory.rootIn(getTest());
     }
 }

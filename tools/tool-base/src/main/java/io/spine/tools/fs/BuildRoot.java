@@ -24,15 +24,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.fs;
+
+import com.google.errorprone.annotations.Immutable;
+import io.spine.code.fs.AbstractDirectory;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.fs.DirectoryName.build;
+
 /**
- * This package contains the classes of the {@link io.spine.testing.logging.MuteLogging} JUnit
- * extension.
+ * The root directory for build output.
  */
+@Immutable
+public final class BuildRoot extends AbstractDirectory {
 
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.testing.logging;
+    private BuildRoot(DefaultPaths module) {
+        super(module.path()
+                    .resolve(build.value()));
+    }
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    /**
+     * Creates an instance under the specified project root directory.
+     */
+    static BuildRoot of(DefaultPaths project) {
+        checkNotNull(project);
+        return new BuildRoot(project);
+    }
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    /**
+     * Obtains the instance referencing the {@code build/descriptors} directory.
+     */
+    public DescriptorsDir descriptors() {
+        return new DescriptorsDir(this);
+    }
+}

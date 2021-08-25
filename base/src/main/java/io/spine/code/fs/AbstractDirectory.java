@@ -26,11 +26,14 @@
 
 package io.spine.code.fs;
 
+import com.google.errorprone.annotations.Immutable;
+
 import java.nio.file.Path;
 
 /**
  * A directory in a programming project.
  */
+@Immutable
 public abstract class AbstractDirectory extends FsObject {
 
     protected AbstractDirectory(Path path) {

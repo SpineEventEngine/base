@@ -79,8 +79,9 @@ import static io.spine.tools.mc.java.annotation.given.GivenProtoFile.SPI_SERVICE
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.mc.java.gradle.McJavaTaskName.annotateProto;
 
-@DisplayName("`ProtoAnnotatorPlugin` should")
-class ProtoAnnotatorPluginTest {
+@SuppressWarnings("MethodOnlyUsedFromInnerClass") // to overcome false positive warning in IDEA.
+@DisplayName("`AnnotatorPlugin` should")
+class AnnotatorPluginTest {
 
     private static final String PROJECT_NAME = "annotator-plugin-test";
 
@@ -236,8 +237,7 @@ class ProtoAnnotatorPluginTest {
     private void checkFieldAnnotationsMultiple(FileName testFile, boolean shouldBeAnnotated)
             throws IOException {
         FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
-        Descriptor messageDescriptor = fileDescriptor.getMessageTypes()
-                                                     .get(0);
+        Descriptor messageDescriptor = fileDescriptor.getMessageTypes().get(0);
         FieldDescriptor experimentalField = messageDescriptor.getFields().get(0);
         Path sourcePath = forMessage(messageDescriptor.toProto(), fileDescriptor.toProto()).path();
         check(sourcePath, new FieldAnnotationCheck(experimentalField, shouldBeAnnotated));
