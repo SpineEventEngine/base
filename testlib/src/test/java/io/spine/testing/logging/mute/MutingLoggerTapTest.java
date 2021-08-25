@@ -40,7 +40,7 @@ import java.util.logging.Logger;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.TestValues.randomString;
 
-@DisplayName("MutingLoggerTap should")
+@DisplayName("`MutingLoggerTap` should")
 class MutingLoggerTapTest extends SystemOutputTest {
 
     private MutingLoggerTap tap;

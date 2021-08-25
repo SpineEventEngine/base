@@ -38,6 +38,7 @@ import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -154,9 +155,18 @@ final class MutingLoggerTap {
         stream().flushTo(outputStream);
     }
 
+    /**
+     * Obtains the size of the associated stream, flushing it before querying the size.
+     */
     @VisibleForTesting
     synchronized long streamSize() {
-        return stream().size();
+        MemoizingStream stream = stream();
+        try {
+            stream.flush();
+        } catch (IOException e) {
+            throw newIllegalStateException(e, "Error flushing `%s`.", stream);
+        }
+        return stream.size();
     }
 
     private Handler handler() {
