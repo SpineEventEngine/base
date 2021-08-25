@@ -135,30 +135,17 @@ public final class McJavaChecksDependency implements Logging {
     private class ResolutionHelper {
 
         private final ResolutionResult resolutionResult;
-        private final ModuleIdentifier checksModule;
 
         private ResolutionHelper() {
             Configuration configCopy = configuration.copy();
             addDependencyTo(configCopy);
             resolutionResult = configCopy.getIncoming()
                                          .getResolutionResult();
-            checksModule = checksDependency().getModule();
         }
 
         private boolean wasResolved() {
-            boolean wasResolved =
-                    allDeps().stream()
-                             .filter(ResolvedDependencyResult.class::isInstance)
-                             .map(DependencyResult::getFrom)
-                             .map(ResolvedComponentResult::getModuleVersion)
-                             .filter(Objects::nonNull)
-                             .map(ModuleVersionIdentifier::getModule)
-                             .anyMatch(checksModule::equals);
+            boolean wasResolved = unresolved().isEmpty();
             return wasResolved;
-        }
-
-        private Set<? extends DependencyResult> allDeps() {
-            return resolutionResult.getAllDependencies();
         }
 
         private ImmutableList<UnresolvedDependencyResult> unresolved() {
@@ -166,6 +153,10 @@ public final class McJavaChecksDependency implements Logging {
                             .filter(UnresolvedDependencyResult.class::isInstance)
                             .map(UnresolvedDependencyResult.class::cast)
                             .collect(toImmutableList());
+        }
+
+        private Set<? extends DependencyResult> allDeps() {
+            return resolutionResult.getAllDependencies();
         }
 
         private void logUnresolved() {
