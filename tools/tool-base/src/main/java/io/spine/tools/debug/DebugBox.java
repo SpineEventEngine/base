@@ -26,6 +26,9 @@
 
 package io.spine.tools.debug;
 
+import com.google.errorprone.annotations.FormatMethod;
+import com.google.errorprone.annotations.FormatString;
+
 import javax.swing.JOptionPane;
 
 /**
@@ -38,7 +41,11 @@ public class DebugBox {
     private DebugBox() {
     }
 
-    public static void show(String title, String messageFormat, Object... param) {
+    @SuppressWarnings("unused")
+    @FormatMethod
+    public static void showModal(String title,
+                                 @FormatString String messageFormat,
+                                 Object... param) {
         String msg = String.format(messageFormat, param);
         JOptionPane.showMessageDialog(null, msg, title, JOptionPane.INFORMATION_MESSAGE);
     }
