@@ -165,7 +165,7 @@ import static io.spine.tools.mc.java.gradle.McJavaTaskName.mergeTestDescriptorSe
  *
  * <p>If {@code java_multiple_files = true} result of annotation will be similar.
  */
-public class AnnotatorPlugin extends SpinePlugin {
+public final class AnnotatorPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {

@@ -31,6 +31,7 @@ import io.spine.code.fs.AbstractDirectory;
 
 import java.nio.file.Path;
 
+import static io.spine.tools.fs.DirectoryName.descriptors;
 import static io.spine.tools.fs.DirectoryName.main;
 import static io.spine.tools.fs.DirectoryName.test;
 
@@ -40,15 +41,24 @@ import static io.spine.tools.fs.DirectoryName.test;
 @Immutable
 public final class DescriptorsDir extends AbstractDirectory {
 
-    DescriptorsDir(BuildRoot parent, String name) {
-        super(parent.path()
-                    .resolve(name));
+    private DescriptorsDir(BuildRoot parent, String name) {
+        super(parent.path().resolve(name));
     }
 
+    DescriptorsDir(BuildRoot parent) {
+        this(parent, descriptors.value());
+    }
+
+    /**
+     * Obtains the path to the sub-directory under the {@code main}.
+     */
     public Path mainDescriptors() {
         return path().resolve(main.value());
     }
 
+    /**
+     * Obtains the path to the sub-directory under the {@code test}.
+     */
     public Path testDescriptors() {
         return path().resolve(test.value());
     }

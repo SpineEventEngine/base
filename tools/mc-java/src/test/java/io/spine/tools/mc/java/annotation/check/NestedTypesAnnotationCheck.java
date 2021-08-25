@@ -39,6 +39,9 @@ import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Checks that a nested type is annotated.
+ */
 public final class NestedTypesAnnotationCheck extends SourceCheck {
 
     public NestedTypesAnnotationCheck(boolean shouldBeAnnotated) {
@@ -52,10 +55,10 @@ public final class NestedTypesAnnotationCheck extends SourceCheck {
             Optional<?> annotation = findInternalAnnotation(nestedType);
             if (shouldBeAnnotated()) {
                 assertTrue(annotation.isPresent(),
-                           format("%s is not annotated.", nestedType.getQualifiedName()));
+                           format("`%s` is not annotated.", nestedType.getQualifiedName()));
             } else {
                 assertFalse(annotation.isPresent(),
-                            format("%s is annotated.", nestedType.getQualifiedName()));
+                            format("`%s` is annotated.", nestedType.getQualifiedName()));
             }
         }
     }

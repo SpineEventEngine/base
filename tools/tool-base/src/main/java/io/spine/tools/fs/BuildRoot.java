@@ -29,8 +29,8 @@ package io.spine.tools.fs;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.code.fs.AbstractDirectory;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.fs.DirectoryName.build;
-import static io.spine.tools.fs.DirectoryName.descriptors;
 
 /**
  * The root directory for build output.
@@ -43,11 +43,18 @@ public final class BuildRoot extends AbstractDirectory {
                     .resolve(build.value()));
     }
 
+    /**
+     * Creates an instance under the specified project root directory.
+     */
     static BuildRoot of(DefaultPaths project) {
+        checkNotNull(project);
         return new BuildRoot(project);
     }
 
+    /**
+     * Obtains the instance referencing the {@code build/descriptors} directory.
+     */
     public DescriptorsDir descriptors() {
-        return new DescriptorsDir(this, descriptors.value());
+        return new DescriptorsDir(this);
     }
 }
