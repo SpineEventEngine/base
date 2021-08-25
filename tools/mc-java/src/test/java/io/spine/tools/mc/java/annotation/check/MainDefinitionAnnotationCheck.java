@@ -27,7 +27,6 @@
 package io.spine.tools.mc.java.annotation.check;
 
 import io.spine.annotation.Internal;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.AnnotationSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
@@ -41,10 +40,12 @@ import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MainDefinitionAnnotationCheck implements SourceCheck {
+/**
+ * Tells if a specified Java annotation present in the generated code.
+ */
+public final class MainDefinitionAnnotationCheck extends SourceCheck {
 
     private final Class<? extends Annotation> annotation;
-    private final boolean shouldBeAnnotated;
 
     public MainDefinitionAnnotationCheck(boolean shouldBeAnnotated) {
         this(Internal.class, shouldBeAnnotated);
@@ -52,23 +53,23 @@ public class MainDefinitionAnnotationCheck implements SourceCheck {
 
     public MainDefinitionAnnotationCheck(Class<? extends Annotation> annotation,
                                          boolean shouldBeAnnotated) {
-        this.annotation = annotation;
-        this.shouldBeAnnotated = shouldBeAnnotated;
+        super(shouldBeAnnotated);
+        this.annotation = checkNotNull(annotation);
     }
 
     @Override
-    public void accept(@Nullable AbstractJavaSource<JavaClassSource> source) {
+    public void accept(AbstractJavaSource<JavaClassSource> source) {
         checkNotNull(source);
         Optional<? extends AnnotationSource<?>> annotationSource =
                 findAnnotation(source, annotation);
-        if (shouldBeAnnotated) {
+        if (shouldBeAnnotated()) {
             assertTrue(annotationSource.isPresent(),
-                       format("%s should be annotated with %s.",
+                       format("`%s` should be annotated with `%s`.",
                               source.getCanonicalName(),
                               annotation.getName()));
         } else {
             assertFalse(annotationSource.isPresent(),
-                        format("%s should NOT be annotated with %s.",
+                        format("`%s` should NOT be annotated with `%s`.",
                                source.getCanonicalName(),
                                annotation.getName()));
         }

@@ -34,18 +34,17 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
-import io.spine.code.proto.FileName;
-import io.spine.code.proto.FileSet;
 import io.spine.testing.TempDir;
-import io.spine.tools.debug.DebugBox;
-import io.spine.tools.gradle.testing.GradleProject;
 import io.spine.tools.java.fs.DefaultJavaPaths;
 import io.spine.tools.java.fs.SourceFile;
+import io.spine.code.proto.FileName;
+import io.spine.code.proto.FileSet;
 import io.spine.tools.mc.java.annotation.check.FieldAnnotationCheck;
 import io.spine.tools.mc.java.annotation.check.MainDefinitionAnnotationCheck;
 import io.spine.tools.mc.java.annotation.check.NestedTypeFieldsAnnotationCheck;
 import io.spine.tools.mc.java.annotation.check.NestedTypesAnnotationCheck;
 import io.spine.tools.mc.java.annotation.check.SourceCheck;
+import io.spine.tools.gradle.testing.GradleProject;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
@@ -63,7 +62,6 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.code.proto.FileDescriptors.DESC_EXTENSION;
-import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.java.fs.SourceFile.forMessage;
 import static io.spine.tools.java.fs.SourceFile.forOuterClassOf;
 import static io.spine.tools.java.fs.SourceFile.forService;
@@ -78,9 +76,10 @@ import static io.spine.tools.mc.java.annotation.given.GivenProtoFile.NO_INTERNAL
 import static io.spine.tools.mc.java.annotation.given.GivenProtoFile.NO_INTERNAL_OPTIONS_MULTIPLE;
 import static io.spine.tools.mc.java.annotation.given.GivenProtoFile.POTENTIAL_ANNOTATION_DUP;
 import static io.spine.tools.mc.java.annotation.given.GivenProtoFile.SPI_SERVICE;
+import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.mc.java.gradle.McJavaTaskName.annotateProto;
 
-@SuppressWarnings("MethodOnlyUsedFromInnerClass")
+@SuppressWarnings("MethodOnlyUsedFromInnerClass") // to overcome false positive warning in IDEA.
 @DisplayName("`AnnotatorPlugin` should")
 class AnnotatorPluginTest {
 
@@ -98,31 +97,31 @@ class AnnotatorPluginTest {
     class Annotating {
 
         @Test
-        @DisplayName("if file option is `true`")
+        @DisplayName("if file option is true")
         void ifFileOptionSet() throws IOException {
             checkNestedTypesAnnotations(INTERNAL_ALL, true);
         }
 
         @Test
-        @DisplayName("a gRCP service if file option if `true`")
+        @DisplayName("service if file option if true")
         void serviceIfFileOptionSet() throws IOException {
             checkServiceAnnotations(INTERNAL_ALL_SERVICE, true);
         }
 
         @Test
-        @DisplayName("multiple files if file option is `true`")
+        @DisplayName("multiple files if file option is true")
         void multipleFilesIfFileOptionSet() throws IOException {
             checkMainDefinitionAnnotations(INTERNAL_ALL_MULTIPLE, true);
         }
 
         @Test
-        @DisplayName("if message option is `true`")
+        @DisplayName("if message option is true")
         void ifMessageOptionSet() throws IOException {
             checkNestedTypesAnnotations(INTERNAL_MESSAGE, true);
         }
 
         @Test
-        @DisplayName("multiple files if message option is `true`")
+        @DisplayName("multiple files if message option is true")
         void multipleFiles() throws IOException {
             checkMainDefinitionAnnotations(INTERNAL_MESSAGE_MULTIPLE, true);
         }
@@ -134,13 +133,13 @@ class AnnotatorPluginTest {
         }
 
         @Test
-        @DisplayName("accessors in multiple files if field option is `true`")
+        @DisplayName("accessors in multiple files if field option is true")
         void accessorsInMultipleFiles() throws IOException {
             checkFieldAnnotationsMultiple(INTERNAL_FIELD_MULTIPLE, true);
         }
 
         @Test
-        @DisplayName("a gRPC service if service option is `true`")
+        @DisplayName("GRPC services if service option is true")
         void grpcServices() throws IOException {
             checkServiceAnnotations(SPI_SERVICE, SPI.class, true);
         }
@@ -151,19 +150,19 @@ class AnnotatorPluginTest {
     class NotAnnotating {
 
         @Test
-        @DisplayName("if file option if `false`")
+        @DisplayName("if file option if false")
         void ifFileOption() throws IOException {
             checkNestedTypesAnnotations(NO_INTERNAL_OPTIONS, false);
         }
 
         @Test
-        @DisplayName("service if file option is `false`")
+        @DisplayName("service if file option is false")
         void serviceIfFileOption() throws IOException {
             checkNestedTypesAnnotations(NO_INTERNAL_OPTIONS, false);
         }
 
         @Test
-        @DisplayName("multiple files if file option is `false`")
+        @DisplayName("multiple files if file option is false")
         void multipleFilesIfFileOption() throws IOException {
             checkMainDefinitionAnnotations(NO_INTERNAL_OPTIONS_MULTIPLE, false);
         }
@@ -175,25 +174,25 @@ class AnnotatorPluginTest {
         }
 
         @Test
-        @DisplayName("multiple files if message option is `false`")
+        @DisplayName("multiple files if message option is false")
         void multipleFiles() throws IOException {
             checkMainDefinitionAnnotations(NO_INTERNAL_OPTIONS_MULTIPLE, false);
         }
 
         @Test
-        @DisplayName("accessors if field option is `false`")
+        @DisplayName("accessors if field option is false")
         void accessors() throws IOException {
             checkFieldAnnotations(NO_INTERNAL_OPTIONS, false);
         }
 
         @Test
-        @DisplayName("accessors in multiple files if field option is `false`")
+        @DisplayName("accessors in multiple files if field option is false")
         void accessorsInMultipleFiles() throws IOException {
             checkFieldAnnotationsMultiple(NO_INTERNAL_OPTIONS_MULTIPLE, false);
         }
 
         @Test
-        @DisplayName("GRPC services if service option is `false`")
+        @DisplayName("GRPC services if service option is false")
         void gprcServices() throws IOException {
             checkServiceAnnotations(NO_INTERNAL_OPTIONS, false);
         }
@@ -238,8 +237,7 @@ class AnnotatorPluginTest {
     private void checkFieldAnnotationsMultiple(FileName testFile, boolean shouldBeAnnotated)
             throws IOException {
         FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
-        Descriptor messageDescriptor = fileDescriptor.getMessageTypes()
-                                                     .get(0);
+        Descriptor messageDescriptor = fileDescriptor.getMessageTypes().get(0);
         FieldDescriptor experimentalField = messageDescriptor.getFields().get(0);
         Path sourcePath = forMessage(messageDescriptor.toProto(), fileDescriptor.toProto()).path();
         check(sourcePath, new FieldAnnotationCheck(experimentalField, shouldBeAnnotated));

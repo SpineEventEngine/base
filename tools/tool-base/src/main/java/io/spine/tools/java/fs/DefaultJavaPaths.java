@@ -28,12 +28,12 @@ package io.spine.tools.java.fs;
 
 import com.google.errorprone.annotations.Immutable;
 import io.spine.tools.fs.DefaultPaths;
-import io.spine.tools.fs.SourceRoot;
 
 import java.io.File;
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.fs.DirectoryName.src;
 
 /**
  * A default directory structure for a Spine-based Java project.
@@ -76,8 +76,12 @@ public final class DefaultJavaPaths extends DefaultPaths {
         return at(projectDir.toPath());
     }
 
-    @Override
+    public HandmadeCodeRoot src() {
+        return new HandmadeCodeRoot(this, src.value());
+    }
+
     public GeneratedRoot generated() {
         return new GeneratedRoot(this);
     }
+
 }

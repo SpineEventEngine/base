@@ -24,15 +24,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.java.fs;
+
+import com.google.errorprone.annotations.Immutable;
+import io.spine.tools.fs.DefaultPaths;
+
 /**
- * This package contains the tests for the {@link io.spine.testing.logging.MuteLogging} JUnit
- * extension.
+ * A root source code directory for manually written code.
+ *
+ * <p>Adds a root directory for the proto code in addition to those exposed
+ * by {@code DefaultProject.SourceRoot}.
  */
+@Immutable
+public class HandmadeCodeRoot extends JavaCodeRoot {
 
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.testing.logging;
+    HandmadeCodeRoot(DefaultPaths parent, String name) {
+        super(parent, name);
+    }
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    /**
+     * A root for the main proto code.
+     */
+    public io.spine.tools.proto.fs.Directory mainProto() {
+        return io.spine.tools.proto.fs.Directory.rootIn(getMain());
+    }
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    /**
+     * A root for the test proto code.
+     */
+    public io.spine.tools.proto.fs.Directory testProto() {
+        return io.spine.tools.proto.fs.Directory.rootIn(getTest());
+    }
+}

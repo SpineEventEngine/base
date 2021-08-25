@@ -27,7 +27,7 @@
 package io.spine.tools.mc.java.gradle;
 
 import io.spine.testing.SlowTest;
-import io.spine.testing.logging.MuteLogging;
+import io.spine.testing.logging.mute.MuteLogging;
 import io.spine.tools.mc.java.gradle.given.StubProject;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;

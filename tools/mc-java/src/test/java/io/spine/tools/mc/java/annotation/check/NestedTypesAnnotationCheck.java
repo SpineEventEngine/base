@@ -28,7 +28,6 @@ package io.spine.tools.mc.java.annotation.check;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
-import org.jboss.forge.roaster.model.source.AnnotationSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
 
@@ -40,24 +39,26 @@ import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class NestedTypesAnnotationCheck implements SourceCheck {
-
-    private final boolean shouldBeAnnotated;
+/**
+ * Checks that a nested type is annotated.
+ */
+public final class NestedTypesAnnotationCheck extends SourceCheck {
 
     public NestedTypesAnnotationCheck(boolean shouldBeAnnotated) {
-        this.shouldBeAnnotated = shouldBeAnnotated;
+        super(shouldBeAnnotated);
     }
 
     @Override
     public void accept(@Nullable AbstractJavaSource<JavaClassSource> outerClass) {
         checkNotNull(outerClass);
         for (JavaSource<?> nestedType : outerClass.getNestedTypes()) {
-            Optional<? extends AnnotationSource<?>> annotation = findInternalAnnotation(nestedType);
-            String typeName = nestedType.getQualifiedName();
-            if (shouldBeAnnotated) {
-                assertTrue(annotation.isPresent(), format("`%s` is not annotated.", typeName));
+            Optional<?> annotation = findInternalAnnotation(nestedType);
+            if (shouldBeAnnotated()) {
+                assertTrue(annotation.isPresent(),
+                           format("`%s` is not annotated.", nestedType.getQualifiedName()));
             } else {
-                assertFalse(annotation.isPresent(), format("`%s` is annotated.", typeName));
+                assertFalse(annotation.isPresent(),
+                            format("`%s` is annotated.", nestedType.getQualifiedName()));
             }
         }
     }

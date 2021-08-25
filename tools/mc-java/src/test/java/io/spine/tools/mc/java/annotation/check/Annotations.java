@@ -36,9 +36,9 @@ import java.util.Optional;
 import static java.util.Optional.ofNullable;
 
 /**
- * Utilities for working with annotations in the generated code.
+ * Utilities for finding annotations in the generated code.
  */
-class Annotations {
+final class Annotations {
 
     private static final Class<? extends Annotation> ANNOTATION_CLASS = Internal.class;
 
@@ -55,8 +55,7 @@ class Annotations {
     findAnnotation(AnnotationTargetSource<?, ?> javaSource,
                    Class<? extends Annotation> annotationType) {
         String annotationName = annotationType.getName();
-        AnnotationSource<?> annotation = javaSource
-                .getAnnotation(annotationName);
+        AnnotationSource<?> annotation = javaSource.getAnnotation(annotationName);
         return ofNullable(annotation);
     }
 }

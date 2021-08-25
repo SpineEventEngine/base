@@ -24,15 +24,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.testing.logging.mute;
+
+import java.io.OutputStream;
+import java.util.logging.Formatter;
+import java.util.logging.LogRecord;
+import java.util.logging.StreamHandler;
+
 /**
- * This package contains the classes of the {@link io.spine.testing.logging.MuteLogging} JUnit
- * extension.
+ * Flushes the output when publishing records.
  */
+final class FlushingHandler extends StreamHandler {
 
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.testing.logging;
+    FlushingHandler(OutputStream out, Formatter formatter) {
+        super(out, formatter);
+    }
 
-import com.google.errorprone.annotations.CheckReturnValue;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+    @Override
+    public synchronized void publish(LogRecord record) {
+        super.publish(record);
+        flush();
+    }
+}

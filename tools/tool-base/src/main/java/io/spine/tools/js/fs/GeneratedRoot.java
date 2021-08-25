@@ -31,7 +31,7 @@ import io.spine.tools.fs.DefaultPaths;
 import io.spine.tools.fs.SourceRoot;
 
 /**
- * A root directory with the generated code.
+ * A code with generated JS code.
  */
 @Immutable
 public final class GeneratedRoot extends SourceRoot {
@@ -44,10 +44,10 @@ public final class GeneratedRoot extends SourceRoot {
     }
 
     public Directory mainJs() {
-        return Directory.rootIn(main());
+        return Directory.rootIn(getMain());
     }
 
     public Directory testJs() {
-        return Directory.rootIn(test());
+        return Directory.rootIn(getTest());
     }
 }

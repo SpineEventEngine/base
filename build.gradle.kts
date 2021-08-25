@@ -92,7 +92,6 @@ spinePublishing {
         "tool-base",
         "testlib",
         "plugin-base",
-        "mute-logging",
         "plugin-testlib",
 
         "javadoc-filter",

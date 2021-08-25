@@ -36,11 +36,8 @@ import io.spine.code.fs.SourceCodeDirectory;
 @Immutable
 public class SourceDir extends SourceCodeDirectory {
 
-    protected SourceDir(AbstractDirectory parent, String name) {
-        super(parent.path().resolve(name));
-    }
-
-    public SourceDir(AbstractDirectory parent, DirectoryName name) {
-        this(parent, name.toString());
+    public SourceDir(AbstractDirectory parent, String name) {
+        super(parent.path()
+                    .resolve(name));
     }
 }

@@ -28,6 +28,7 @@ package io.spine.tools.mc.java.annotation;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.FileSet;
@@ -41,6 +42,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * The default implementation of the {@link AnnotatorFactory}.
  */
+@Immutable
 public final class DefaultAnnotatorFactory implements AnnotatorFactory {
 
     /**

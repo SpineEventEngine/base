@@ -26,9 +26,7 @@
 
 package io.spine.tools.mc.java.gradle;
 
-import io.spine.tools.debug.DebugBox;
 import io.spine.tools.gradle.SpinePlugin;
-import io.spine.tools.mc.java.annotation.Annotator;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -41,11 +39,9 @@ import static io.spine.tools.mc.java.gradle.McJavaTaskName.mergeDescriptorSet;
 import static io.spine.tools.mc.java.gradle.McJavaTaskName.mergeTestDescriptorSet;
 
 /**
- * A plugin that annotates Java sources generated from {@code .proto} files.
+ * A plugin that annotates generated Java sources from {@code .proto} files.
  *
- * <p>Plugin annotates the Java sources depending on Protobuf option values such
- * as {@code (internal)} set for a field, or {@code (experimental_type)} on a {@code Message}.
- * For the full list of options, please see {@code spine/options.proto}.
+ * <p>Plugin annotates the Java sources depending on Protobuf option values.
  *
  * <p>To enable the Java sources annotation, apply the plugin to a Gradle project,
  * and annotation will be built into Gradle build lifecycle,
@@ -169,21 +165,16 @@ import static io.spine.tools.mc.java.gradle.McJavaTaskName.mergeTestDescriptorSe
  *
  * <p>If {@code java_multiple_files = true} result of annotation will be similar.
  */
-public class AnnotatorPlugin extends SpinePlugin {
+public final class AnnotatorPlugin extends SpinePlugin {
 
-    public AnnotatorPlugin() {
-        DebugBox.show("Annotation Plugin", "Created!");
-    }
-    
     @Override
     public void apply(Project project) {
-        DebugBox.show("Annotation Plugin", "Creating task.");
         createMainTask(project);
         createTestTask(project);
     }
 
     private void createMainTask(Project project) {
-        Action<Task> task = new AnnotationAction(this, true);
+        Action<Task> task = new AnnotationAction(true);
         newTask(annotateProto, task)
                 .insertAfterTask(mergeDescriptorSet)
                 .insertBeforeTask(compileJava)
@@ -191,7 +182,7 @@ public class AnnotatorPlugin extends SpinePlugin {
     }
 
     private void createTestTask(Project project) {
-        Action<Task> testTask = new AnnotationAction(this, false);
+        Action<Task> testTask = new AnnotationAction(false);
         newTask(annotateTestProto, testTask)
                 .insertAfterTask(mergeTestDescriptorSet)
                 .insertBeforeTask(compileTestJava)

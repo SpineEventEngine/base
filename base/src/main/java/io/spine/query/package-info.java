@@ -271,7 +271,7 @@
  * <p>It produces a query for all the {@code ProjectView} records which status is not
  * {@code CREATED} and which were started more than five days ago.
  *
- * <p>Disjunction (or OR statements) are also supported:</p>
+ * <p>Disjunction (or OR statements) are also supported:
  *
  * <pre>
  *    {@literal Either<ProjectView.QueryBuilder> startedMoreThanMonthAgo = }

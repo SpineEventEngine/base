@@ -28,6 +28,7 @@ package io.spine.tools.mc.java.gradle;
 
 import com.google.common.collect.ImmutableSet;
 import io.spine.code.java.ClassName;
+import io.spine.logging.Logging;
 import io.spine.tools.mc.java.annotation.AnnotatorFactory;
 import io.spine.tools.mc.java.annotation.DefaultAnnotatorFactory;
 import io.spine.tools.mc.java.annotation.ModuleAnnotator;
@@ -58,36 +59,40 @@ import static io.spine.tools.mc.java.gradle.McJavaExtension.getTestDescriptorSet
 /**
  * A task action which performs generated code annotation.
  */
-final class AnnotationAction implements Action<Task> {
+final class AnnotationAction implements Action<Task>, Logging {
 
-    private final AnnotatorPlugin plugin;
     private final boolean mainCode;
 
-    AnnotationAction(AnnotatorPlugin plugin, boolean mainCode) {
-        this.plugin = plugin;
+    /**
+     * Creates a new action instance.
+     *
+     * @param mainCode
+     *         if {@code true} the production code will be annotated,
+     *         otherwise the action will annotate the code of tests
+     */
+    AnnotationAction(boolean mainCode) {
         this.mainCode = mainCode;
     }
 
     @Override
     public void execute(Task task) {
         Project project = task.getProject();
-        File descriptorSetFile = descriptorSet(project);
+        File descriptorSetFile = descriptorSetFileOf(project);
         if (!descriptorSetFile.exists()) {
-            plugin.logMissingDescriptorSetFile(descriptorSetFile);
+            logMissing(descriptorSetFile);
             return;
         }
         ModuleAnnotator annotator = createAnnotator(project);
         annotator.annotate();
     }
 
-    @NonNull
     private ModuleAnnotator createAnnotator(Project project) {
         AnnotatorFactory annotatorFactory = createAnnotationFactory(project);
         CodeGenAnnotations annotations = getCodeGenAnnotations(project);
         ClassName internalClassName = annotations.internalClassName();
         ImmutableSet<String> internalClassPatterns = getInternalClassPatterns(project);
         ImmutableSet<String> internalMethodNames = getInternalMethodNames(project);
-        ModuleAnnotator annotator = ModuleAnnotator.newBuilder()
+        return ModuleAnnotator.newBuilder()
                 .setAnnotatorFactory(annotatorFactory)
                 .add(translate(spi()).as(annotations.spiClassName()))
                 .add(translate(beta()).as(annotations.betaClassName()))
@@ -97,24 +102,28 @@ final class AnnotationAction implements Action<Task> {
                 .setInternalMethodNames(internalMethodNames)
                 .setInternalAnnotation(internalClassName)
                 .build();
-        return annotator;
     }
 
     @NonNull
     private AnnotatorFactory createAnnotationFactory(Project project) {
-        File descriptorSetFile = descriptorSet(project);
-        Path generatedProtoPath = Paths.get(generatedJavaDir(project));
+        File descriptorSetFile = descriptorSetFileOf(project);
+        Path generatedJavaPath = Paths.get(generatedJavaDir(project));
         Path generatedGrpcPath = Paths.get(generatedGrpcDir(project));
-        AnnotatorFactory annotatorFactory = DefaultAnnotatorFactory.newInstance(
-                descriptorSetFile, generatedProtoPath, generatedGrpcPath
-        );
+        AnnotatorFactory annotatorFactory = DefaultAnnotatorFactory
+                .newInstance(descriptorSetFile, generatedJavaPath, generatedGrpcPath);
         return annotatorFactory;
     }
 
-    private File descriptorSet(Project project) {
+    private File descriptorSetFileOf(Project project) {
         return mainCode
                ? getMainDescriptorSetFile(project)
                : getTestDescriptorSetFile(project);
+    }
+
+    private String generatedJavaDir(Project project) {
+        return mainCode
+               ? getGeneratedMainJavaDir(project)
+               : getGeneratedTestJavaDir(project);
     }
 
     private String generatedGrpcDir(Project project) {
@@ -123,9 +132,14 @@ final class AnnotationAction implements Action<Task> {
                : getGeneratedTestGrpcDir(project);
     }
 
-    private String generatedJavaDir(Project project) {
-        return mainCode
-               ? getGeneratedMainJavaDir(project)
-               : getGeneratedTestJavaDir(project);
+    private void logMissing(File descriptorSetFile) {
+        _debug().log(
+                "Missing descriptor set file `%s`.%n" +
+                        "Please enable descriptor set generation.%n" +
+                        "See: " +
+                        "https://github.com/google/protobuf-gradle-plugin/blob/master/README.md" +
+                        "#generate-descriptor-set-files",
+                descriptorSetFile.getPath()
+        );
     }
 }

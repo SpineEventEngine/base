@@ -26,30 +26,31 @@
 
 package io.spine.tools.java.fs;
 
+import com.google.errorprone.annotations.Immutable;
 import io.spine.tools.fs.DefaultPaths;
-import io.spine.tools.fs.DirectoryName;
 import io.spine.tools.fs.SourceRoot;
 
 /**
- * An abstract base for Java source code root directories.
+ * A root directory with Java code, such as {@code main} or {@code generated}.
  */
-abstract class JavaCodeRoot extends SourceRoot {
+@Immutable
+class JavaCodeRoot extends SourceRoot {
 
-    JavaCodeRoot(DefaultPaths paths, DirectoryName name) {
-        super(paths, name);
+    protected JavaCodeRoot(DefaultPaths parent, String name) {
+        super(parent, name);
     }
 
     /**
      * A root directory for main Java code.
      */
     public Directory mainJava() {
-        return Directory.rootIn(main());
+        return Directory.rootIn(getMain());
     }
 
     /**
      * A root directory for test Java code.
      */
     public Directory testJava() {
-        return Directory.rootIn(test());
+        return Directory.rootIn(getTest());
     }
 }

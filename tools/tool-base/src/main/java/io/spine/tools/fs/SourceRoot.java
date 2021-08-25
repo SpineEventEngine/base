@@ -26,51 +26,26 @@
 
 package io.spine.tools.fs;
 
-import io.spine.code.fs.SourceCodeDirectory;
+import com.google.errorprone.annotations.Immutable;
 
 import static io.spine.tools.fs.DirectoryName.main;
-import static io.spine.tools.fs.DirectoryName.resources;
 import static io.spine.tools.fs.DirectoryName.test;
 
 /**
  * A root source code directory in a project or a module.
  */
+@Immutable
 public class SourceRoot extends SourceDir {
 
     protected SourceRoot(DefaultPaths parent, String name) {
         super(parent, name);
     }
 
-    protected SourceRoot(DefaultPaths paths, DirectoryName name) {
-        super(paths, name);
-    }
-
-    /**
-     * The directory with the production code.
-     */
-    @SuppressWarnings("ConfusingMainMethod") // named after the src/main directory.
-    public SourceDir main() {
+    protected SourceDir getMain() {
         return new SourceDir(this, main.value());
     }
 
-    /**
-     * The directory with the code of tests.
-     */
-    public SourceDir test() {
+    protected SourceDir getTest() {
         return new SourceDir(this, test.value());
-    }
-
-    /**
-     * The directory for main resources.
-     */
-    public SourceCodeDirectory mainResources() {
-        return new SourceDir(main(), resources.value());
-    }
-
-    /**
-     * The directory for test resources.
-     */
-    public SourceCodeDirectory testResources() {
-        return new SourceDir(test(), resources.value());
     }
 }
