@@ -52,7 +52,6 @@ dependencies {
     testImplementation(project(":testlib"))
     testImplementation(gradleTestKit())
     testImplementation(project(":plugin-testlib"))
-    testImplementation(project(":mute-logging"))
 }
 
 protobuf {
