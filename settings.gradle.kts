@@ -51,6 +51,7 @@ toolsModule("javadoc-filter")
 toolsModule("javadoc-style")
 
 toolsModule("mc")
+
 toolsModule("mc-java-checks")
 toolsModule("mc-java-validation")
 toolsModule("mc-java-protoc")

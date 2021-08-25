@@ -80,7 +80,7 @@ import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.mc.java.gradle.McJavaTaskName.annotateProto;
 
 @SuppressWarnings("MethodOnlyUsedFromInnerClass") // to overcome false positive warning in IDEA.
-@DisplayName("`ProtoAnnotatorPlugin` should")
+@DisplayName("`AnnotatorPlugin` should")
 class AnnotatorPluginTest {
 
     private static final String PROJECT_NAME = "annotator-plugin-test";
