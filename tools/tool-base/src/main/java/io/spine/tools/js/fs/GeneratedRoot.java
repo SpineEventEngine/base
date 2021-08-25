@@ -44,10 +44,10 @@ public final class GeneratedRoot extends SourceRoot {
     }
 
     public Directory mainJs() {
-        return Directory.rootIn(getMain());
+        return Directory.rootIn(main());
     }
 
     public Directory testJs() {
-        return Directory.rootIn(getTest());
+        return Directory.rootIn(test());
     }
 }

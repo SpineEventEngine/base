@@ -41,11 +41,11 @@ public class SourceRoot extends SourceDir {
         super(parent, name);
     }
 
-    protected SourceDir getMain() {
+    protected SourceDir main() {
         return new SourceDir(this, main.value());
     }
 
-    protected SourceDir getTest() {
+    protected SourceDir test() {
         return new SourceDir(this, test.value());
     }
 }

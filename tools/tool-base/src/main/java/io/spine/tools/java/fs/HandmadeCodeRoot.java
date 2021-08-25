@@ -46,13 +46,13 @@ public class HandmadeCodeRoot extends JavaCodeRoot {
      * A root for the main proto code.
      */
     public io.spine.tools.proto.fs.Directory mainProto() {
-        return io.spine.tools.proto.fs.Directory.rootIn(getMain());
+        return io.spine.tools.proto.fs.Directory.rootIn(main());
     }
 
     /**
      * A root for the test proto code.
      */
     public io.spine.tools.proto.fs.Directory testProto() {
-        return io.spine.tools.proto.fs.Directory.rootIn(getTest());
+        return io.spine.tools.proto.fs.Directory.rootIn(test());
     }
 }

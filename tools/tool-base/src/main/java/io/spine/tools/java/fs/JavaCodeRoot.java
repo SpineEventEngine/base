@@ -44,13 +44,13 @@ class JavaCodeRoot extends SourceRoot {
      * A root directory for main Java code.
      */
     public Directory mainJava() {
-        return Directory.rootIn(getMain());
+        return Directory.rootIn(main());
     }
 
     /**
      * A root directory for test Java code.
      */
     public Directory testJava() {
-        return Directory.rootIn(getTest());
+        return Directory.rootIn(test());
     }
 }
