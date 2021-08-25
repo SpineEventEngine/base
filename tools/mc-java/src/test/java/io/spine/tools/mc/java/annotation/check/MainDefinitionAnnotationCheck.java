@@ -27,7 +27,6 @@
 package io.spine.tools.mc.java.annotation.check;
 
 import io.spine.annotation.Internal;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.AnnotationSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
@@ -41,6 +40,9 @@ import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Tells if a specified Java annotation present in the generated code.
+ */
 public final class MainDefinitionAnnotationCheck extends SourceCheck {
 
     private final Class<? extends Annotation> annotation;
@@ -56,18 +58,18 @@ public final class MainDefinitionAnnotationCheck extends SourceCheck {
     }
 
     @Override
-    public void accept(@Nullable AbstractJavaSource<JavaClassSource> source) {
+    public void accept(AbstractJavaSource<JavaClassSource> source) {
         checkNotNull(source);
         Optional<? extends AnnotationSource<?>> annotationSource =
                 findAnnotation(source, annotation);
         if (shouldBeAnnotated()) {
             assertTrue(annotationSource.isPresent(),
-                       format("%s should be annotated with %s.",
+                       format("`%s` should be annotated with `%s`.",
                               source.getCanonicalName(),
                               annotation.getName()));
         } else {
             assertFalse(annotationSource.isPresent(),
-                        format("%s should NOT be annotated with %s.",
+                        format("`%s` should NOT be annotated with `%s`.",
                                source.getCanonicalName(),
                                annotation.getName()));
         }

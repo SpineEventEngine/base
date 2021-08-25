@@ -237,8 +237,7 @@ class AnnotatorPluginTest {
     private void checkFieldAnnotationsMultiple(FileName testFile, boolean shouldBeAnnotated)
             throws IOException {
         FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
-        Descriptor messageDescriptor = fileDescriptor.getMessageTypes()
-                                                     .get(0);
+        Descriptor messageDescriptor = fileDescriptor.getMessageTypes().get(0);
         FieldDescriptor experimentalField = messageDescriptor.getFields().get(0);
         Path sourcePath = forMessage(messageDescriptor.toProto(), fileDescriptor.toProto()).path();
         check(sourcePath, new FieldAnnotationCheck(experimentalField, shouldBeAnnotated));

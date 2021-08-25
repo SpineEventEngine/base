@@ -40,7 +40,11 @@ import static io.spine.code.java.SimpleClassName.ofBuilder;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FieldAnnotationCheck extends SourceCheck {
+/**
+ * Checks that a proto field marked with an option gets corresponding annotations
+ * in the accessor methods in the generated Java code.
+ */
+public final class FieldAnnotationCheck extends SourceCheck {
 
     private final FieldDescriptor fieldDescriptor;
 

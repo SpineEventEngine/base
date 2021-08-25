@@ -33,6 +33,9 @@ import org.jboss.forge.roaster.model.source.JavaClassSource;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.Descriptors.Descriptor;
 
+/**
+ * Checks that fields of a nested type are annotated.
+ */
 public final class NestedTypeFieldsAnnotationCheck extends SourceCheck {
 
     private final Descriptor descriptor;
