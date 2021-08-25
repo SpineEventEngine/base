@@ -32,7 +32,7 @@ import org.jboss.forge.roaster.model.source.JavaClassSource;
 import java.util.function.Consumer;
 
 /**
- * Interface for validation of a {@link JavaClassSource}.
+ * Abstract base for checking annotations in the generated source code.
  */
 public abstract class SourceCheck implements Consumer<AbstractJavaSource<JavaClassSource>> {
 

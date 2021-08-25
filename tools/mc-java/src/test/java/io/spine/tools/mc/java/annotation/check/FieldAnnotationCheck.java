@@ -50,7 +50,7 @@ public final class FieldAnnotationCheck extends SourceCheck {
 
     public FieldAnnotationCheck(FieldDescriptor fieldDescriptor, boolean shouldBeAnnotated) {
         super(shouldBeAnnotated);
-        this.fieldDescriptor = fieldDescriptor;
+        this.fieldDescriptor = checkNotNull(fieldDescriptor);
     }
 
     @Override

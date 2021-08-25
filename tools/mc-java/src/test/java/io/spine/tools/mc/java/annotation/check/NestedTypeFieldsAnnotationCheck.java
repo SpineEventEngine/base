@@ -42,7 +42,7 @@ public final class NestedTypeFieldsAnnotationCheck extends SourceCheck {
 
     public NestedTypeFieldsAnnotationCheck(Descriptor descriptor, boolean shouldBeAnnotated) {
         super(shouldBeAnnotated);
-        this.descriptor = descriptor;
+        this.descriptor = checkNotNull(descriptor);
     }
 
     @Override

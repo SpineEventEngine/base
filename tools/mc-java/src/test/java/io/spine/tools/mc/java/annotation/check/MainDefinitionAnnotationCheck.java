@@ -54,7 +54,7 @@ public final class MainDefinitionAnnotationCheck extends SourceCheck {
     public MainDefinitionAnnotationCheck(Class<? extends Annotation> annotation,
                                          boolean shouldBeAnnotated) {
         super(shouldBeAnnotated);
-        this.annotation = annotation;
+        this.annotation = checkNotNull(annotation);
     }
 
     @Override
