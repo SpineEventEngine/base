@@ -26,6 +26,7 @@
 
 package io.spine.tools.mc.js.code.given;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.tools.js.fs.DefaultJsPaths;
 import io.spine.tools.js.fs.Directory;
 import io.spine.code.proto.FileSet;
@@ -34,8 +35,9 @@ import io.spine.tools.gradle.testing.GradleProject;
 import java.io.File;
 import java.nio.file.Path;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
-import static io.spine.testing.TempDir.withPrefix;
+import static io.spine.testing.TempDir.forClass;
 import static io.spine.tools.gradle.BaseTaskName.build;
 
 public final class GivenProject {
@@ -43,11 +45,18 @@ public final class GivenProject {
     private static final String TASK_PROTO = "task.proto";
     private static final String PROJECT_NAME = "mc-js-test";
 
-    /** Prevents instantiation of this utility class. */
-    private GivenProject() {
+    private final File projectDir;
+    private boolean compiled = false;
+
+    private GivenProject(Class<?> testSuite) {
+        this.projectDir = forClass(testSuite);
     }
 
-    public static FileSet mainFileSet() {
+    public static GivenProject serving(Class<?> testSuite) {
+        return new GivenProject(testSuite);
+    }
+
+    public FileSet mainFileSet() {
         Path mainDescriptorsDir = project().buildRoot()
                                            .descriptors()
                                            .mainDescriptors();
@@ -55,19 +64,27 @@ public final class GivenProject {
         return FileSet.parse(descriptorSetFile.toFile());
     }
 
-    public static Directory mainProtoSources() {
+    public Directory mainProtoSources() {
         return project().generated()
                         .mainJs();
     }
 
-    private static DefaultJsPaths project() {
-        File projectDir = withPrefix("given-project");
-        compileProject(projectDir);
+    private DefaultJsPaths project() {
+        compiled();
         DefaultJsPaths project = DefaultJsPaths.at(projectDir);
         return project;
     }
 
-    private static void compileProject(File projectDir) {
+    @CanIgnoreReturnValue
+    private GivenProject compiled() {
+        if (!compiled) {
+            compile();
+            compiled = true;
+        }
+        return this;
+    }
+
+    private void compile() {
         GradleProject gradleProject = GradleProject.newBuilder()
                 .setProjectName(PROJECT_NAME)
                 .setProjectFolder(projectDir)

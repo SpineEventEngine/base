@@ -43,6 +43,7 @@ import io.spine.tools.mc.js.code.text.Import;
 import io.spine.option.OptionsProto;
 import io.spine.tools.mc.js.code.text.Comment;
 import io.spine.type.MessageType;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -60,14 +61,22 @@ import static io.spine.tools.mc.js.code.text.Parser.TYPE_PARSERS_FILE;
 import static io.spine.tools.mc.js.code.text.Parser.TYPE_PARSERS_IMPORT_NAME;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 
-@DisplayName("GenerateKnownTypeParsers should")
+@DisplayName("`CreateParsers` should")
 class CreateParsersTest {
 
-    private final FileDescriptor file = TaskId.getDescriptor()
-                                              .getFile();
-    private final FileSet fileSet = GivenProject.mainFileSet();
-    private final Directory generatedProtoDir = GivenProject.mainProtoSources();
-    private final CreateParsers writer = new CreateParsers(generatedProtoDir);
+    private static final FileDescriptor file = TaskId.getDescriptor().getFile();
+    
+    private static FileSet fileSet = null;
+    private static Directory generatedProtoDir = null;
+    private static CreateParsers writer = null;
+
+    @BeforeAll
+    static void compileProject() {
+        GivenProject project = GivenProject.serving(CreateParsersTest.class);
+        fileSet = project.mainFileSet();
+        generatedProtoDir = project.mainProtoSources();
+        writer = new CreateParsers(generatedProtoDir);
+    }
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
@@ -127,7 +136,7 @@ class CreateParsersTest {
         assertThat(targets).isEmpty();
     }
 
-    private void checkProcessedFiles(FileSet fileSet) throws IOException {
+    private static void checkProcessedFiles(FileSet fileSet) throws IOException {
         Collection<FileDescriptor> fileDescriptors = fileSet.files();
         for (FileDescriptor file : fileDescriptors) {
             List<Descriptor> messageTypes = file.getMessageTypes();
@@ -137,7 +146,7 @@ class CreateParsersTest {
         }
     }
 
-    private void checkParseCodeAdded(FileDescriptor file) throws IOException {
+    private static void checkParseCodeAdded(FileDescriptor file) throws IOException {
         Path jsFilePath = generatedProtoDir.resolve(FileName.from(file));
         for (MessageType messageType : TypeSet.onlyMessages(file)) {
             TypeName parserTypeName = TypeName.ofParser(messageType.descriptor());

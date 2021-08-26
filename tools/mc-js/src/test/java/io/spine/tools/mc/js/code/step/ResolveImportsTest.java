@@ -32,6 +32,7 @@ import io.spine.tools.fs.ExternalModule;
 import io.spine.tools.fs.ExternalModules;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.mc.js.code.given.GivenProject;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -48,12 +49,20 @@ import static java.util.Arrays.asList;
 @DisplayName("`ResolveImports` task should")
 class ResolveImportsTest {
 
-    private final Directory generatedProtoDir = GivenProject.mainProtoSources();
-    private final ExternalModule module = new ExternalModule(
+    private static final ExternalModule module = new ExternalModule(
             "test-module", DirectoryPattern.listOf("root-dir")
     );
-    private final Path tempDirectory = generatedProtoDir.path();
-    private final Path testFile = tempDirectory.resolve("js/with-imports.js");
+    private static Directory generatedProtoDir = null;
+    private static Path tempDirectory = null;
+    private static Path testFile = null;
+
+    @BeforeAll
+    static void compileProject() {
+        GivenProject project = GivenProject.serving(ResolveImportsTest.class);
+        generatedProtoDir = project.mainProtoSources();
+        tempDirectory = generatedProtoDir.path();
+        testFile = tempDirectory.resolve("js/with-imports.js");
+    }
 
     @Test
     @DisplayName("replace a relative import of a missing file")
@@ -138,7 +147,7 @@ class ResolveImportsTest {
                 .containsExactly("require('spine-web/proto/google/protobuf/timestamp_pb.js');");
     }
 
-    private void createFile(String name) throws IOException {
+    private static void createFile(String name) throws IOException {
         Path filePath = tempDirectory.resolve(name);
         Files.createDirectories(filePath.getParent());
         Files.createFile(filePath);
@@ -155,7 +164,7 @@ class ResolveImportsTest {
         return assertThat(lines);
     }
 
-    private ResolveImports newTask(ExternalModule module) {
+    private static ResolveImports newTask(ExternalModule module) {
         return new ResolveImports(generatedProtoDir, new ExternalModules(module));
     }
 }
