@@ -48,10 +48,18 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  */
 public final class TempDir {
 
-
+    /**
+     * The name of the {@code System} property for a temporary directory.
+     */
     @VisibleForTesting
     static final String TMPDIR_PROPERTY = "java.io.tmpdir";
 
+    /**
+     * The directory under which all instances of this class will be created.
+     *
+     * <p>This directory is automatically deleted when JVM exists.
+     * Please see the {@code static} block below.
+     */
     private static final Path baseDir;
 
     static {
@@ -63,6 +71,10 @@ public final class TempDir {
     private TempDir() {
     }
 
+    /**
+     * Creates a directory named after the package of this class under a directory
+     * specified by the {@link #TMPDIR_PROPERTY} {@code System} property.
+     */
     private static Path createBaseDir() {
         @SuppressWarnings("AccessOfSystemProperties")
         String tmpDir = System.getProperty(TMPDIR_PROPERTY);
