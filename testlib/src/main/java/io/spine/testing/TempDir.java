@@ -45,11 +45,6 @@ public final class TempDir {
 
     private static final String TMPDIR_PROPERTY = "java.io.tmpdir";
 
-//    static {
-//        //noinspection AccessOfSystemProperties
-//        System.setProperty(TMPDIR_PROPERTY, "/Volumes/RAMDisk");
-//    }
-
     /** Prevents direct instantiation. */
     private TempDir() {
     }
