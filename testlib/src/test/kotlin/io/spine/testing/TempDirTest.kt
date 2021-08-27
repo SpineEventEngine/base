@@ -27,6 +27,7 @@
 package io.spine.testing
 
 import com.google.common.truth.Truth.assertThat
+import io.spine.code.java.PackageName
 import java.io.File
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -46,6 +47,11 @@ class `'TempDir' should` {
             assertThat(tempDir.toString())
                 .contains(System.getProperty(TempDir.TMPDIR_PROPERTY))
         }
-    }
 
+        @Test
+        fun `named after the package of 'TempDir' class`() {
+            assertThat(tempDir.toString())
+                .contains(PackageName.of(TempDir::class.java).toString())
+        }
+    }
 }

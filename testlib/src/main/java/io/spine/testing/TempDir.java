@@ -100,15 +100,13 @@ public final class TempDir {
     public static File withPrefix(String prefix, FileAttribute<?>... attrs) {
         checkNotNull(prefix);
         checkNotEmptyOrBlank(prefix);
-        @SuppressWarnings("AccessOfSystemProperties")
-        String tmpDir = System.getProperty(TMPDIR_PROPERTY);
-        Path baseDir = Paths.get(tmpDir);
-        Path directory;
         try {
-            directory = Files.createTempDirectory(baseDir, prefix, attrs);
+            Path directory = Files.createTempDirectory(baseDir, prefix, attrs);
             return directory.toFile();
         } catch (IOException e) {
-            throw newIllegalStateException(e, "Unable to create temp dir under `%s`.", baseDir);
+            throw newIllegalStateException(
+                    e, "Unable to create temp dir under `%s` (prefix: `%s`).", baseDir, prefix
+            );
         }
     }
 
