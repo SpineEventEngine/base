@@ -29,6 +29,7 @@ import io.spine.testing.TempDir;
 import io.spine.tools.java.fs.DefaultJavaPaths;
 import io.spine.tools.mc.java.gradle.given.StubProject;
 import org.gradle.api.Project;
+import org.gradle.api.artifacts.dsl.RepositoryHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -40,6 +41,11 @@ import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getGeneratedMainRejectionsDir;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getGeneratedMainResourcesDir;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getMainDescriptorSetFile;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getSpineCheckSeverity;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getTestDescriptorSetFile;
 import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.MC_JAVA_GRADLE_PLUGIN_ID;
 import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newUuid;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -57,8 +63,9 @@ class McJavaExtensionTest {
     void setUp() {
         projectDir = TempDir.forClass(getClass());
         project = StubProject.createAt(projectDir);
-        project.getRepositories().mavenLocal();
-        project.getRepositories().mavenCentral();
+        RepositoryHandler repositories = project.getRepositories();
+        repositories.mavenLocal();
+        repositories.mavenCentral();
         project.getPluginManager()
                .apply(MC_JAVA_GRADLE_PLUGIN_ID);
     }
@@ -70,7 +77,7 @@ class McJavaExtensionTest {
         @Test
         @DisplayName("default value, if not set")
         void defaultValue() {
-            String dir = McJavaExtension.getGeneratedMainResourcesDir(project);
+            String dir = getGeneratedMainResourcesDir(project);
 
             assertNotEmptyAndIsInProjectDir(dir);
         }
@@ -80,7 +87,7 @@ class McJavaExtensionTest {
         void setValue() {
             spineProtobuf().generatedMainResourcesDir = newUuid();
 
-            String dir = McJavaExtension.getGeneratedMainResourcesDir(project);
+            String dir = getGeneratedMainResourcesDir(project);
 
             assertThat(dir)
                     .isEqualTo(spineProtobuf().generatedMainResourcesDir);
@@ -118,7 +125,7 @@ class McJavaExtensionTest {
         @Test
         @DisplayName("default value, if not set")
         void defaultValue() {
-            File file = McJavaExtension.getMainDescriptorSetFile(project);
+            File file = getMainDescriptorSetFile(project);
 
             assertNotEmptyAndIsInProjectDir(file.toString());
         }
@@ -128,7 +135,7 @@ class McJavaExtensionTest {
         void specifiedValue() {
             spineProtobuf().mainDescriptorSetFile = newUuid();
 
-            File file = McJavaExtension.getMainDescriptorSetFile(project);
+            File file = getMainDescriptorSetFile(project);
 
             assertThat(file.toString())
                     .isEqualTo(spineProtobuf().mainDescriptorSetFile);
@@ -142,7 +149,7 @@ class McJavaExtensionTest {
         @Test
         @DisplayName("default value, if not set")
         void defaultValue() {
-            File file = McJavaExtension.getTestDescriptorSetFile(project);
+            File file = getTestDescriptorSetFile(project);
 
             assertNotEmptyAndIsInProjectDir(file.toString());
         }
@@ -152,7 +159,7 @@ class McJavaExtensionTest {
         void specifiedValue() {
             spineProtobuf().testDescriptorSetFile = newUuid();
 
-            File file = McJavaExtension.getTestDescriptorSetFile(project);
+            File file = getTestDescriptorSetFile(project);
 
             assertThat(file.toString())
                     .isEqualTo(spineProtobuf().testDescriptorSetFile);
@@ -166,7 +173,7 @@ class McJavaExtensionTest {
         @Test
         @DisplayName("default value, if not set")
         void defaultValue() {
-            String dir = McJavaExtension.getGeneratedMainRejectionsDir(project);
+            String dir = getGeneratedMainRejectionsDir(project);
 
             assertNotEmptyAndIsInProjectDir(dir);
         }
@@ -176,7 +183,7 @@ class McJavaExtensionTest {
         void specifiedValue() {
             spineProtobuf().generatedMainRejectionsDir = newUuid();
 
-            String dir = McJavaExtension.getGeneratedMainRejectionsDir(project);
+            String dir = getGeneratedMainRejectionsDir(project);
 
             assertThat(dir)
                     .isEqualTo(spineProtobuf().generatedMainRejectionsDir);
@@ -267,14 +274,14 @@ class McJavaExtensionTest {
         @DisplayName("severity, if set")
         void specifiedValue() {
             spineProtobuf().defaultCheckSeverity = Severity.ERROR;
-            Severity actualSeverity = McJavaExtension.getSpineCheckSeverity(project);
+            Severity actualSeverity = getSpineCheckSeverity(project);
             assertEquals(spineProtobuf().defaultCheckSeverity, actualSeverity);
         }
 
         @Test
         @DisplayName("`null`, if not set")
         void nullValue() {
-            Severity actualSeverity = McJavaExtension.getSpineCheckSeverity(project);
+            Severity actualSeverity = getSpineCheckSeverity(project);
             assertNull(actualSeverity);
         }
     }
