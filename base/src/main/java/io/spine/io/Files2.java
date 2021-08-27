@@ -27,7 +27,9 @@
 package io.spine.io;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import kotlin.io.FilesKt;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,6 +64,8 @@ import static java.nio.file.Files.isRegularFile;
  * </ul>
  */
 public final class Files2 {
+
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     private static final String DOES_NOT_EXIST = "The file `%s` does not exist.";
 
@@ -266,5 +270,23 @@ public final class Files2 {
         Path normalized = file.toPath().normalize();
         File result = normalized.toAbsolutePath().toFile();
         return result;
+    }
+
+    /**
+     * Requests removal of the passed directory when the system shuts down.
+     *
+     * @see Runtime#addShutdownHook(Thread)
+     */
+    public static void deleteRecursivelyOnShutdownHook(Path directory) {
+        Runtime runtime = Runtime.getRuntime();
+        runtime.addShutdownHook(new Thread(() -> deleteRecursively(directory)));
+    }
+
+    private static void deleteRecursively(Path directory) {
+        boolean success = FilesKt.deleteRecursively(directory.toFile());
+        if (!success) {
+            logger.atWarning()
+                  .log("Error deleting the directory `%s`.", directory);
+        }
     }
 }
