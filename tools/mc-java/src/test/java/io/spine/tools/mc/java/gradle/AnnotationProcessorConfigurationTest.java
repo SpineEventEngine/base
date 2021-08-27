@@ -31,7 +31,7 @@ import io.spine.tools.mc.java.gradle.given.StubProject;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -43,17 +43,17 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class AnnotationProcessorConfigurationTest
         extends UtilityClassTest<AnnotationProcessorConfiguration> {
 
-    private Project project;
-    private ConfigurationContainer configurations;
-    private Configuration preprocessorConfig;
+    private static Project project = null;
+    private static ConfigurationContainer configurations = null;
+    private static Configuration preprocessorConfig = null;
 
     AnnotationProcessorConfigurationTest() {
         super(AnnotationProcessorConfiguration.class);
     }
 
-    @BeforeEach
-    void setUp() {
-        project = StubProject.createFor(getClass()).get();
+    @BeforeAll
+    static void createProject() {
+        project = StubProject.createFor(AnnotationProcessorConfigurationTest.class).get();
         configurations = project.getConfigurations();
         preprocessorConfig = configurations.getByName(annotationProcessor.value());
     }
