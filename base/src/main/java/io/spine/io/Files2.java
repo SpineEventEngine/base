@@ -291,7 +291,7 @@ public final class Files2 {
         boolean success = FilesKt.deleteRecursively(directory.toFile());
         if (!success) {
             logger.atWarning()
-                  .log("Error deleting the directory `%s`.", directory);
+                  .log("Unable to delete the directory `%s`.", directory);
         }
     }
 }
