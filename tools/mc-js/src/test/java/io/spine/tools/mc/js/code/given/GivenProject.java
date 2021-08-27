@@ -27,15 +27,14 @@
 package io.spine.tools.mc.js.code.given;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import io.spine.tools.js.fs.DefaultJsPaths;
-import io.spine.tools.js.fs.Directory;
 import io.spine.code.proto.FileSet;
 import io.spine.tools.gradle.testing.GradleProject;
+import io.spine.tools.js.fs.DefaultJsPaths;
+import io.spine.tools.js.fs.Directory;
 
 import java.io.File;
 import java.nio.file.Path;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
 import static io.spine.testing.TempDir.forClass;
 import static io.spine.tools.gradle.BaseTaskName.build;
