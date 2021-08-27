@@ -39,6 +39,7 @@ import java.io.File;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.mc.java.gradle.McJavaExtension.getGeneratedMainRejectionsDir;
 import static io.spine.tools.mc.java.gradle.McJavaExtension.getGeneratedMainResourcesDir;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getGeneratedTestResourcesDir;
 import static io.spine.tools.mc.java.gradle.McJavaExtension.getMainDescriptorSetFile;
 import static io.spine.tools.mc.java.gradle.McJavaExtension.getTestDescriptorSetFile;
 import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.MC_JAVA_GRADLE_PLUGIN_ID;
@@ -93,7 +94,7 @@ class McJavaExtensionTest {
         @Test
         @DisplayName("default value, if not set")
         void defaultValue() {
-            String dir = McJavaExtension.getGeneratedTestResourcesDir(project);
+            String dir = getGeneratedTestResourcesDir(project);
 
             assertNotEmptyAndIsInProjectDir(dir);
         }
@@ -103,7 +104,7 @@ class McJavaExtensionTest {
         void specifiedValue() {
             spineProtobuf().generatedTestResourcesDir = newUuid();
 
-            String dir = McJavaExtension.getGeneratedTestResourcesDir(project);
+            String dir = getGeneratedTestResourcesDir(project);
 
             assertThat(dir)
                     .isEqualTo(spineProtobuf().generatedTestResourcesDir);
