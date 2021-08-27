@@ -28,7 +28,6 @@ package io.spine.testing;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.code.java.PackageName;
-import io.spine.io.Files2;
 
 import java.io.File;
 import java.io.IOException;
