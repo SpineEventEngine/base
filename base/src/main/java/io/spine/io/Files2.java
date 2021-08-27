@@ -275,9 +275,14 @@ public final class Files2 {
     /**
      * Requests removal of the passed directory when the system shuts down.
      *
+     * @implNote This method creates a new {@code Thread} for deleting the passed directory.
+     *         That's why calling it should not be taken lightly. If your application creates
+     *         several directories that need to be removed when JVM is terminated, consider
+     *         gathering them under a common root passed to this method.
      * @see Runtime#addShutdownHook(Thread)
      */
     public static void deleteRecursivelyOnShutdownHook(Path directory) {
+        checkNotNull(directory);
         Runtime runtime = Runtime.getRuntime();
         runtime.addShutdownHook(new Thread(() -> deleteRecursively(directory)));
     }
