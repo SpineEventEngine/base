@@ -54,4 +54,12 @@ class `'TempDir' should` {
                 .contains(PackageName.of(TempDir::class.java).toString())
         }
     }
+
+    @Test
+    fun `create an instance serving test suite class`() {
+        val thisClass = javaClass
+        val tempDir = TempDir.forClass(thisClass)
+        assertThat(tempDir.toString())
+            .contains(thisClass.simpleName)
+    }
 }
