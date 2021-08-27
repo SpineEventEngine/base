@@ -29,9 +29,9 @@ package spine.test.annotator;
 
 import "spine/options.proto";
 
-message First {
+message FirstToCome {
     string value = 1;
 }
 
-service Service {
+service ServiceToGo {
 }

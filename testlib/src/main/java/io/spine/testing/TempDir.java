@@ -43,6 +43,13 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  */
 public final class TempDir {
 
+    private static final String TMPDIR_PROPERTY = "java.io.tmpdir";
+
+//    static {
+//        //noinspection AccessOfSystemProperties
+//        System.setProperty(TMPDIR_PROPERTY, "/Volumes/RAMDisk");
+//    }
+
     /** Prevents direct instantiation. */
     private TempDir() {
     }
@@ -70,7 +77,7 @@ public final class TempDir {
         checkNotNull(prefix);
         checkNotEmptyOrBlank(prefix);
         @SuppressWarnings("AccessOfSystemProperties")
-        File baseDir = new File(System.getProperty("java.io.tmpdir"));
+        File baseDir = new File(System.getProperty(TMPDIR_PROPERTY));
         Path directory;
         try {
             directory = Files.createTempDirectory(baseDir.toPath(), prefix, attrs);

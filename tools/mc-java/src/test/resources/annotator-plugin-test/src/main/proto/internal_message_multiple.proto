@@ -31,6 +31,6 @@ import "spine/options.proto";
 
 option java_multiple_files = true;
 
-message Experimental {
+message ExperimentalTwo {
     option (internal_type) = true;
 }
