@@ -26,42 +26,34 @@
 package io.spine.tools.mc.java.gradle;
 
 import io.spine.testing.TempDir;
-import io.spine.tools.java.fs.DefaultJavaPaths;
 import io.spine.tools.mc.java.gradle.given.StubProject;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.dsl.RepositoryHandler;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.List;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.mc.java.gradle.McJavaExtension.getGeneratedMainRejectionsDir;
 import static io.spine.tools.mc.java.gradle.McJavaExtension.getGeneratedMainResourcesDir;
 import static io.spine.tools.mc.java.gradle.McJavaExtension.getMainDescriptorSetFile;
-import static io.spine.tools.mc.java.gradle.McJavaExtension.getSpineCheckSeverity;
 import static io.spine.tools.mc.java.gradle.McJavaExtension.getTestDescriptorSetFile;
 import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.MC_JAVA_GRADLE_PLUGIN_ID;
 import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newUuid;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("`McJavaExtension` should")
 class McJavaExtensionTest {
 
-    private Project project;
-    private File projectDir;
+    private static Project project = null;
 
-    @BeforeEach
-    void setUp() {
-        projectDir = TempDir.forClass(getClass());
+    @BeforeAll
+    static void setUp() {
+        File projectDir = TempDir.forClass(McJavaExtensionTest.class);
         project = StubProject.createAt(projectDir);
         RepositoryHandler repositories = project.getRepositories();
         repositories.mavenLocal();
@@ -190,110 +182,14 @@ class McJavaExtensionTest {
         }
     }
 
-    @Nested
-    @DisplayName("for `dirsToClean`")
-    class DirsToClean {
-
-        @Nested
-        @DisplayName("return")
-        class Return {
-            
-            @Test
-            @DisplayName("default value, if not set")
-            void defaultValue() {
-                List<String> actualDirs = actualDirs();
-
-                assertThat(actualDirs).hasSize(1);
-                assertNotEmptyAndIsInProjectDir(actualDirs.get(0));
-            }
-
-            @Test
-            @DisplayName("single value, if set")
-            void singleValue() {
-                spineProtobuf().dirToClean = newUuid();
-
-                List<String> actualDirs = actualDirs();
-
-                assertThat(actualDirs).hasSize(1);
-                assertThat(actualDirs.get(0))
-                        .isEqualTo(spineProtobuf().dirToClean);
-            }
-
-            @Test
-            @DisplayName("list, if array is set")
-            void list() {
-                spineProtobuf().dirsToClean = newArrayList(newUuid(), newUuid());
-
-                List<String> actualDirs = actualDirs();
-
-                assertThat(actualDirs)
-                        .isEqualTo(spineProtobuf().dirsToClean);
-            }
-
-            @Test
-            @DisplayName("list, if array and single are set")
-            void listIfArrayAndSingle() {
-                spineProtobuf().dirsToClean = newArrayList(newUuid(), newUuid());
-                spineProtobuf().dirToClean = newUuid();
-
-                List<String> actualDirs = actualDirs();
-
-                assertThat(actualDirs)
-                        .isEqualTo(spineProtobuf().dirsToClean);
-            }
-        }
-
-        @Test
-        @DisplayName("include `.spine` dir, if exists")
-        void includeSpineDir() throws IOException {
-            DefaultJavaPaths defaultProject = DefaultJavaPaths.at(projectDir);
-            File spineDir = defaultProject.tempArtifacts();
-            assertTrue(spineDir.mkdir());
-            String generatedDir =
-                    defaultProject.generated()
-                                  .path()
-                                  .toFile()
-                                  .getCanonicalPath();
-
-            List<String> dirsToClean = actualDirs();
-
-            assertThat(dirsToClean)
-                 .containsAtLeast(spineDir.getCanonicalPath(), generatedDir);
-        }
-
-        private List<String> actualDirs() {
-            return McJavaExtension.getDirsToClean(project);
-        }
-    }
-
-    @Nested
-    @DisplayName("for Spine checker return")
-    class SpineChecker {
-
-        @Test
-        @DisplayName("severity, if set")
-        void specifiedValue() {
-            spineProtobuf().defaultCheckSeverity = Severity.ERROR;
-            Severity actualSeverity = getSpineCheckSeverity(project);
-            assertEquals(spineProtobuf().defaultCheckSeverity, actualSeverity);
-        }
-
-        @Test
-        @DisplayName("`null`, if not set")
-        void nullValue() {
-            Severity actualSeverity = getSpineCheckSeverity(project);
-            assertNull(actualSeverity);
-        }
-    }
-
-    private void assertNotEmptyAndIsInProjectDir(String path) {
+    private static void assertNotEmptyAndIsInProjectDir(String path) {
         assertFalse(path.trim()
                         .isEmpty());
         assertTrue(path.startsWith(project.getProjectDir()
                                           .getAbsolutePath()));
     }
 
-    private McJavaExtension spineProtobuf() {
+    private static McJavaExtension spineProtobuf() {
         return (McJavaExtension) project.getExtensions()
                                         .getByName(McJavaPlugin.extensionName());
     }
