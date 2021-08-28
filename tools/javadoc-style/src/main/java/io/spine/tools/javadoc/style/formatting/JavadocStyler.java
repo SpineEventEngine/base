@@ -65,6 +65,10 @@ public final class JavadocStyler {
         this.actions = ImmutableList.copyOf(actions);
     }
 
+    private static JavadocStyler newStyler() {
+        return new JavadocStyler(new BacktickedToCode(), new RemovePreTags());
+    }
+
     /**
      * Improves the style for all Java files in the specified directory, including sub-directories.
      */
@@ -74,14 +78,10 @@ public final class JavadocStyler {
                   .log("Cannot perform formatting. The directory `%s` does not exist.", directory);
             return;
         }
-
-        JavadocStyler formatter =
-                new JavadocStyler(new BacktickedToCode(), new RemovePreTags());
-
         try {
             logger.atFine()
                   .log("Starting Javadocs formatting in `%s`.", directory);
-            Files.walkFileTree(directory, new FormattingFileVisitor(formatter));
+            Files.walkFileTree(directory, new FormattingFileVisitor(newStyler()));
         } catch (IOException e) {
             throw newIllegalStateException(e, "Failed to format the sources in `%s`.", directory);
         }
