@@ -48,7 +48,7 @@ import static java.util.regex.Matcher.quoteReplacement;
 public final class BacktickFormatting extends LineFormatting {
 
     @VisibleForTesting
-    static final String BACKTICK = "`";
+    public static final String BACKTICK = "`";
     private static final Pattern PATTERN_BACKTICK = Pattern.compile(BACKTICK);
 
     /**

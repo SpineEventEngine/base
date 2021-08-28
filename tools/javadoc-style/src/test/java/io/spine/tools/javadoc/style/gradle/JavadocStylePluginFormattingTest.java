@@ -40,15 +40,12 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.tools.gradle.TaskDependencies.dependsOn;
 import static io.spine.tools.javadoc.style.formatting.BacktickFormatting.BACKTICK;
-import static io.spine.tools.javadoc.style.gradle.JavadocStyleTaskName.formatProtoDoc;
 import static io.spine.tools.javadoc.style.formatting.PreTagFormatting.CLOSING_PRE;
 import static io.spine.tools.javadoc.style.formatting.PreTagFormatting.OPENING_PRE;
+import static io.spine.tools.javadoc.style.gradle.JavadocStyleTaskName.formatProtoDoc;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("`JavadocStylePlugin` should format generated Javadoc sources with")
 class JavadocStylePluginFormattingTest {

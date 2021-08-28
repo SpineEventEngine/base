@@ -42,9 +42,9 @@ import static java.util.regex.Pattern.compile;
 public class PreTagFormatting implements FormattingAction {
 
     @VisibleForTesting
-    static final String OPENING_PRE = "<pre>";
+    public static final String OPENING_PRE = "<pre>";
     @VisibleForTesting
-    static final String CLOSING_PRE = "</pre>";
+    public static final String CLOSING_PRE = "</pre>";
 
     private static final Pattern PATTERN_OPENING_PRE = compile(OPENING_PRE);
     private static final Pattern NOT_FORMATTED_DOC_PATTERN =
