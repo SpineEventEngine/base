@@ -30,7 +30,6 @@ import io.spine.tools.java.fs.DefaultJavaPaths;
 import io.spine.tools.mc.java.gradle.given.StubProject;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.dsl.RepositoryHandler;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -44,7 +43,6 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.MC_JAVA_GRADLE_PLUGIN_ID;
 import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.newUuid;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("`McJavaExtension` directories to clean should")
@@ -141,10 +139,11 @@ class McJavaExtensionDirsTest {
     }
 
     private void assertNotEmptyAndIsInProjectDir(String path) {
-        assertFalse(path.trim()
-                        .isEmpty());
-        assertTrue(path.startsWith(project.getProjectDir()
-                                          .getAbsolutePath()));
+        assertThat(path.trim())
+                .isNotEmpty();
+        assertThat(path)
+                .startsWith(project.getProjectDir()
+                                   .getAbsolutePath());
     }
 
     private McJavaExtension spineProtobuf() {
