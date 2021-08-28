@@ -26,13 +26,10 @@
 
 package io.spine.tools.javadoc.style;
 
-import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 
-import java.util.List;
-
 import static java.lang.System.lineSeparator;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.joining;
 
 /**
  * A {@link FormattingAction}, that formats lines independently of each other.
@@ -40,7 +37,6 @@ import static java.util.stream.Collectors.toList;
 abstract class LineFormatting implements FormattingAction {
 
     private static final Splitter splitter = Splitter.on(lineSeparator());
-    private static final Joiner joiner = Joiner.on(lineSeparator());
 
     /**
      * Obtains the formatted representation of the specified text.
@@ -52,11 +48,10 @@ abstract class LineFormatting implements FormattingAction {
      */
     @Override
     public String execute(String text) {
-        List<String> formattedLines =
+        String result =
                 splitter.splitToStream(text)
                         .map(this::formatLine)
-                        .collect(toList());
-        String result = joiner.join(formattedLines);
+                        .collect(joining(lineSeparator()));
         return result;
     }
 
