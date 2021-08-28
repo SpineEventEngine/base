@@ -26,15 +26,19 @@
 
 package io.spine.tools.javadoc.style.formatting;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.google.common.flogger.FluentLogger;
 import io.spine.tools.java.fs.FileName;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.delete;
@@ -47,6 +51,7 @@ import static java.nio.file.Files.newBufferedWriter;
  */
 public final class JavadocStyler {
 
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
     private static final String TEMP_FILE_NAME = "temp_file_for_formatting.java";
 
     /** Formatting actions to perform. */
@@ -55,8 +60,31 @@ public final class JavadocStyler {
     /**
      * Creates an instance with the passed formatting actions.
      */
-    public JavadocStyler(Formatting... actions) {
+    @VisibleForTesting
+    JavadocStyler(Formatting... actions) {
         this.actions = ImmutableList.copyOf(actions);
+    }
+
+    /**
+     * Improves the style for all Java files in the specified directory, including sub-directories.
+     */
+    public static void applyFormattingAt(Path directory) {
+        if (!Files.exists(directory)) {
+            logger.atWarning()
+                  .log("Cannot perform formatting. The directory `%s` does not exist.", directory);
+            return;
+        }
+
+        JavadocStyler formatter =
+                new JavadocStyler(new BacktickedToCode(), new RemovePreTags());
+
+        try {
+            logger.atFine()
+                  .log("Starting Javadocs formatting in `%s`.", directory);
+            Files.walkFileTree(directory, new FormattingFileVisitor(formatter));
+        } catch (IOException e) {
+            throw newIllegalStateException(e, "Failed to format the sources in `%s`.", directory);
+        }
     }
 
     /**
