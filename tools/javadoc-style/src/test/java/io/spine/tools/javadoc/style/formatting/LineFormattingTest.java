@@ -24,50 +24,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc.style;
+package io.spine.tools.javadoc.style.formatting;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import java.util.Collections;
 
+import static com.google.common.truth.Truth.assertThat;
 import static java.lang.System.lineSeparator;
-import static java.util.stream.Collectors.toList;
 
-/**
- * A {@link FormattingAction}, that formats lines independently of each other.
- */
-abstract class LineFormatting implements FormattingAction {
+@DisplayName("`LineFormatting` should")
+class LineFormattingTest {
 
-    /**
-     * Obtains the formatted representation of the specified text.
-     *
-     * <p>The text will be split and lines will be formatted independently from each other.
-     *
-     * @param text the text to format
-     * @return the formatted text
-     */
-    @Override
-    public String execute(String text) {
-        String separator = lineSeparator();
-        List<String> lines =
-                Splitter.on(separator)
-                        .splitToList(text);
-        List<String> formattedLines =
-                lines.stream()
-                     .map(this::formatLine)
-                     .collect(toList());
-        String result =
-                Joiner.on(separator)
-                      .join(formattedLines);
-        return result;
+    private final FormattingAction formatting = new NothingFormatting();
+
+    @Test
+    @DisplayName("merge lines")
+    void mergeLines() {
+        String lineText = "a text in a single line";
+        int lineCount = 5;
+        Iterable<String> lines = Collections.nCopies(lineCount, lineText);
+        String expectedLines = Joiner.on(lineSeparator())
+                                     .join(lines);
+
+        String formattedLines = formatting.execute(expectedLines);
+
+        assertThat(formattedLines)
+                .isEqualTo(expectedLines);
     }
 
     /**
-     * Obtains the formatted representation of the specified line.
-     *
-     * @param line the single line without line separators
-     * @return the formatted representation
+     * A stub formatting which simply returns the passed line.
      */
-    abstract String formatLine(String line);
+    private static class NothingFormatting extends LineFormatting {
+
+        @Override
+        String formatLine(String line) {
+            return line;
+        }
+    }
 }

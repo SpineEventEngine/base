@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.javadoc.style;
+package io.spine.tools.javadoc.style.formatting;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -39,7 +39,7 @@ import static java.util.regex.Pattern.compile;
  * <p>The action removes the tags inserted by the Protobuf compiler,
  * i.e., the first opening tag and the last closing tag.
  */
-class PreTagFormatting implements FormattingAction {
+public class PreTagFormatting implements FormattingAction {
 
     @VisibleForTesting
     static final String OPENING_PRE = "<pre>";

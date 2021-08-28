@@ -24,9 +24,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc.style;
+package io.spine.tools.javadoc.style.gradle;
 
 import io.spine.tools.gradle.TaskName;
+import io.spine.tools.javadoc.style.gradle.JavadocStyleExtension;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.plugins.PluginContainer;
@@ -41,8 +42,8 @@ import static io.spine.tools.gradle.JavaTaskName.compileTestJava;
 import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
 import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 import static io.spine.tools.gradle.TaskDependencies.dependsOn;
-import static io.spine.tools.javadoc.style.JavadocStyleTaskName.formatProtoDoc;
-import static io.spine.tools.javadoc.style.JavadocStyleTaskName.formatTestProtoDoc;
+import static io.spine.tools.javadoc.style.gradle.JavadocStyleTaskName.formatProtoDoc;
+import static io.spine.tools.javadoc.style.gradle.JavadocStyleTaskName.formatTestProtoDoc;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

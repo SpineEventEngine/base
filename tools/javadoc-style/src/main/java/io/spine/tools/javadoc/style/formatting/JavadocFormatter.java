@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc.style;
+package io.spine.tools.javadoc.style.formatting;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.java.fs.FileName;
@@ -48,7 +48,7 @@ import static java.nio.file.Files.newBufferedWriter;
  * <p>The formatter executes {@linkplain FormattingAction formatting actions}
  * for the Javadoc lines in a source file.
  */
-final class JavadocFormatter {
+public final class JavadocFormatter {
 
     private static final String TEMP_FILE_NAME = "temp_file_for_formatting.java";
 
@@ -58,7 +58,7 @@ final class JavadocFormatter {
     /**
      * Creates an instance with the passed formatting actions.
      */
-    JavadocFormatter(FormattingAction... actions) {
+    public JavadocFormatter(FormattingAction... actions) {
         this.actions = ImmutableList.copyOf(actions);
     }
 

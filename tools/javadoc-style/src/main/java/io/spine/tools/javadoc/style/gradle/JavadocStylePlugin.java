@@ -23,9 +23,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.javadoc.style;
+package io.spine.tools.javadoc.style.gradle;
 
 import io.spine.tools.gradle.SpinePlugin;
+import io.spine.tools.javadoc.style.formatting.BacktickFormatting;
+import io.spine.tools.javadoc.style.formatting.FormattingAction;
+import io.spine.tools.javadoc.style.formatting.FormattingFileVisitor;
+import io.spine.tools.javadoc.style.formatting.JavadocFormatter;
+import io.spine.tools.javadoc.style.formatting.PreTagFormatting;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -38,10 +43,10 @@ import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.gradle.JavaTaskName.compileTestJava;
 import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
 import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
-import static io.spine.tools.javadoc.style.JavadocStyleExtension.getAbsoluteMainGenProtoDir;
-import static io.spine.tools.javadoc.style.JavadocStyleExtension.getAbsoluteTestGenProtoDir;
-import static io.spine.tools.javadoc.style.JavadocStyleTaskName.formatProtoDoc;
-import static io.spine.tools.javadoc.style.JavadocStyleTaskName.formatTestProtoDoc;
+import static io.spine.tools.javadoc.style.gradle.JavadocStyleExtension.getAbsoluteMainGenProtoDir;
+import static io.spine.tools.javadoc.style.gradle.JavadocStyleExtension.getAbsoluteTestGenProtoDir;
+import static io.spine.tools.javadoc.style.gradle.JavadocStyleTaskName.formatProtoDoc;
+import static io.spine.tools.javadoc.style.gradle.JavadocStyleTaskName.formatTestProtoDoc;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -102,10 +107,9 @@ public class JavadocStylePlugin extends SpinePlugin {
             return;
         }
 
-        JavadocFormatter formatter = new JavadocFormatter(
-                new BacktickFormatting(),
-                new PreTagFormatting()
-        );
+        JavadocFormatter formatter =
+                new JavadocFormatter(new BacktickFormatting(), new PreTagFormatting());
+
         try {
             _debug().log("Starting Javadocs formatting in `%s`.", genProtoDir);
             Files.walkFileTree(file.toPath(), new FormattingFileVisitor(formatter));

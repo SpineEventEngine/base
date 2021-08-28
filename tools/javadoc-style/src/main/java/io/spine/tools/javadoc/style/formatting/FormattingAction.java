@@ -24,39 +24,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc.style;
-
-import io.spine.logging.Logging;
-
-import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
+package io.spine.tools.javadoc.style.formatting;
 
 /**
- * A {@code FileVisitor} for formatting files.
+ * A formatting action, that formats a {@code String}.
  */
-final class FormattingFileVisitor extends SimpleFileVisitor<Path> implements Logging {
+public interface FormattingAction {
 
-    private final JavadocFormatter formatter;
-
-    FormattingFileVisitor(JavadocFormatter formatter) {
-        super();
-        this.formatter = formatter;
-    }
-
-    @Override
-    public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
-        _debug().log("Performing formatting for the file: `%s`.", path);
-        formatter.format(path);
-        return FileVisitResult.CONTINUE;
-    }
-
-    @Override
-    public FileVisitResult visitFileFailed(Path file, IOException exc) {
-        _error().withCause(exc)
-                .log("Error walking down the file tree for file: `%s`.", file);
-        return FileVisitResult.TERMINATE;
-    }
+    /**
+     * Obtains the formatted representation of the specified text.
+     *
+     * <p>The specified text may contain line separators.
+     *
+     * @param text the text to format
+     * @return the formatted text
+     */
+    String execute(String text);
 }

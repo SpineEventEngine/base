@@ -24,20 +24,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc.style;
-
 /**
- * A formatting action, that formats a {@code String}.
+ * This package contains the logic of formatting the generated Javadoc code.
  */
-interface FormattingAction {
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.javadoc.style.formatting;
 
-    /**
-     * Obtains the formatted representation of the specified text.
-     *
-     * <p>The specified text may contain line separators.
-     *
-     * @param text the text to format
-     * @return the formatted text
-     */
-    String execute(String text);
-}
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import javax.annotation.ParametersAreNonnullByDefault;

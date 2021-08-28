@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.javadoc.style;
+package io.spine.tools.javadoc.style.formatting;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -45,7 +45,7 @@ import static java.util.regex.Matcher.quoteReplacement;
  * lined text`
  * }</pre>
  */
-final class BacktickFormatting extends LineFormatting {
+public final class BacktickFormatting extends LineFormatting {
 
     @VisibleForTesting
     static final String BACKTICK = "`";

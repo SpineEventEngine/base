@@ -24,10 +24,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc.style;
+package io.spine.tools.javadoc.style.formatting;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+import io.spine.tools.javadoc.style.formatting.BacktickFormatting;
+import io.spine.tools.javadoc.style.formatting.JavadocFormatter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +42,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static io.spine.tools.javadoc.style.BacktickFormatting.wrapWithCodeTag;
+import static io.spine.tools.javadoc.style.formatting.BacktickFormatting.wrapWithCodeTag;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllLines;
@@ -56,6 +58,7 @@ class JavadocFormatterTest {
     private static final String TEXT_IN_BACKTICKS = BACKTICK + TEXT + BACKTICK;
 
     private File folder;
+
     private final JavadocFormatter backtickFormatter = new JavadocFormatter(
             new BacktickFormatting()
     );

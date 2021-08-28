@@ -24,12 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc.style;
+package io.spine.tools.javadoc.style.formatting;
 
+import io.spine.tools.javadoc.style.formatting.BacktickFormatting;
+import io.spine.tools.javadoc.style.formatting.FormattingAction;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.javadoc.style.BacktickFormatting.wrapWithCodeTag;
+import static io.spine.tools.javadoc.style.formatting.BacktickFormatting.wrapWithCodeTag;
 import static java.lang.System.lineSeparator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
