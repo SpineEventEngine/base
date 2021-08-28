@@ -181,7 +181,10 @@ class JavadocStylePluginTest {
         }
     }
 
-    static void formatAndAssert(String expectedContent, String contentToFormat, File folder, String fileName)
+    static void formatAndAssert(String expectedContent,
+                                String contentToFormat,
+                                File folder,
+                                String fileName)
             throws IOException {
         Path formattedFilePath = createAndFormatFile(contentToFormat, folder, fileName);
         List<String> formattedLines = Files.readAllLines(formattedFilePath, UTF_8);
