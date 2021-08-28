@@ -31,7 +31,7 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.plugins.PluginContainer;
 import org.gradle.testfixtures.ProjectBuilder;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -59,10 +59,10 @@ class JavadocStylePluginTest {
 
     private static final String PLUGIN_ID = "io.spine.javadoc-style";
 
-    private Project project;
+    private static Project project = null;
 
-    @BeforeEach
-    void setUp() {
+    @BeforeAll
+    static void createProjectWithPlugin() {
         project = ProjectBuilder.builder()
                 .build();
         project.task(compileJava.name());
