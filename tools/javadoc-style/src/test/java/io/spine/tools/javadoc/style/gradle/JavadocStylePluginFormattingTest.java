@@ -57,8 +57,6 @@ class JavadocStylePluginFormattingTest {
      */
     private static final String MAIN_GEN_PROTO_LOCATION = "generated/main/java";
 
-    private static final String PLUGIN_ID = "io.spine.javadoc-style";
-
     @Test
     @DisplayName("single-line code snippet")
     void formatGeneratedJavaSources(@TempDir Path testProjectDir) throws IOException {
