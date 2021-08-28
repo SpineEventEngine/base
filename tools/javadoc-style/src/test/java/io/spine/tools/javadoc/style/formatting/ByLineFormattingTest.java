@@ -35,7 +35,7 @@ import java.util.Collections;
 import static com.google.common.truth.Truth.assertThat;
 import static java.lang.System.lineSeparator;
 
-@DisplayName("`LineFormatting` should")
+@DisplayName("`ByLineFormatting` should")
 class ByLineFormattingTest {
 
     private final Formatting formatting = new NoOpFormatting();

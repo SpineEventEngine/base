@@ -40,12 +40,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.javadoc.style.formatting.BacktickedToCode.wrapWithCodeTag;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllLines;
 import static java.nio.file.Files.write;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("`JavadocFormatter` should")
 class JavadocStylerTest {
@@ -57,9 +57,7 @@ class JavadocStylerTest {
 
     private File folder;
 
-    private final JavadocStyler backtickFormatter = new JavadocStyler(
-            new BacktickedToCode()
-    );
+    private final JavadocStyler styler = new JavadocStyler(new BacktickedToCode());
 
     @BeforeEach
     void setUp(@TempDir Path tempDirPath) {
@@ -67,10 +65,10 @@ class JavadocStylerTest {
     }
 
     @Test
-    @DisplayName("ignore files expect java")
+    @DisplayName("handle only .java files")
     void processOnlyJava() throws IOException {
         Path path = Paths.get("Non_existing_file.txt");
-        backtickFormatter.format(path);
+        styler.format(path);
     }
 
     @Test
@@ -78,13 +76,18 @@ class JavadocStylerTest {
     void formatJavadocs() throws Exception {
         String javadoc = wrapAsJavadoc(TEXT_IN_BACKTICKS);
         String expected = wrapAsJavadoc(TEXT_IN_CODE_TAG);
-        assertEquals(expected, applyFormatting(javadoc));
+        String formatted = applyFormatting(javadoc);
+
+        assertThat(formatted)
+                .isEqualTo(expected);
     }
 
     @Test
     @DisplayName("not format non-Javadoc text")
     void notFormatNonJavadoc() throws Exception {
-        assertEquals(TEXT_IN_BACKTICKS, applyFormatting(TEXT_IN_BACKTICKS));
+        String formatted = applyFormatting(TEXT_IN_BACKTICKS);
+        assertThat(formatted)
+                .isEqualTo(TEXT_IN_BACKTICKS);
     }
 
     private static String wrapAsJavadoc(String javadocText) {
@@ -95,7 +98,7 @@ class JavadocStylerTest {
         Path path = createJavaFile();
         write(path, ImmutableList.of(content));
 
-        backtickFormatter.format(path);
+        styler.format(path);
 
         List<String> lines = readAllLines(path, UTF_8);
         return Joiner.on(lineSeparator())
