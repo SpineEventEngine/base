@@ -40,7 +40,7 @@ import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.MC_JAVA_G
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@DisplayName("`McJavaExtension` for checks return")
+@DisplayName("`McJavaExtension` for checks should return")
 class McJavaExtensionChecksTest {
 
     private Project project = null;

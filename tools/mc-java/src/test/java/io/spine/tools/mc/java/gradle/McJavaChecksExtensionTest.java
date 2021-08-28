@@ -37,7 +37,7 @@ import static io.spine.tools.mc.java.gradle.Severity.ERROR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@DisplayName("ErrorProneChecksExtension should")
+@DisplayName("`McJavaChecksExtension` should")
 class McJavaChecksExtensionTest {
 
     private Project project;
