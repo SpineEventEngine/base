@@ -134,7 +134,10 @@ class JavadocStylePluginTest {
             String textInPreTags = OPENING_PRE + text + CLOSING_PRE + generatedFieldDescription;
             String expected = singleLineJavadoc(text + generatedFieldDescription);
             String javadocToFormat = singleLineJavadoc(textInPreTags);
-            formatAndAssert(expected, javadocToFormat, testProjectDir.toFile());
+            formatAndAssert(expected,
+                            javadocToFormat,
+                            testProjectDir.toFile(),
+                            "SingleLineJavadocTest.java");
         }
 
         @Test
@@ -143,7 +146,10 @@ class JavadocStylePluginTest {
             String protoDoc = multilineJavadoc(BACKTICK, BACKTICK);
             String javadoc = multilineJavadoc("{@code ", "}");
 
-            formatAndAssert(javadoc, protoDoc, testProjectDir.toFile());
+            formatAndAssert(javadoc,
+                            protoDoc,
+                            testProjectDir.toFile(),
+                            "MultiLineJavadocTest.java");
         }
 
         private String singleLineJavadoc(String javadocText) {

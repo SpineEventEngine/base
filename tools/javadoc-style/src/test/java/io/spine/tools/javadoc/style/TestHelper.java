@@ -57,9 +57,9 @@ final class TestHelper {
     private TestHelper() {
     }
 
-    static void formatAndAssert(String expectedContent, String contentToFormat, File folder)
+    static void formatAndAssert(String expectedContent, String contentToFormat, File folder, String fileName)
             throws IOException {
-        Path formattedFilePath = format(contentToFormat, folder);
+        Path formattedFilePath = createAndFormatFile(contentToFormat, folder, fileName);
         List<String> formattedLines = Files.readAllLines(formattedFilePath, UTF_8);
         String mergedLines = Joiner.on(lineSeparator())
                                    .join(formattedLines);
@@ -67,8 +67,8 @@ final class TestHelper {
                 .isEqualTo(expectedContent);
     }
 
-    private static Path format(String fileContent, File folder) {
-        String sourceFile = MAIN_GEN_PROTO_LOCATION + "/TestSource.java";
+    private static Path createAndFormatFile(String fileContent, File folder, String fileName) {
+        String sourceFile = MAIN_GEN_PROTO_LOCATION + '/' + fileName;
 
         executeTask(sourceFile, folder, fileContent);
 
