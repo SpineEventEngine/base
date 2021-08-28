@@ -29,19 +29,19 @@ package io.spine.tools.javadoc.style.formatting;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.javadoc.style.formatting.BacktickFormatting.wrapWithCodeTag;
+import static io.spine.tools.javadoc.style.formatting.BacktickedToCode.wrapWithCodeTag;
 import static java.lang.System.lineSeparator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("`BacktickFormatting` should")
-class BacktickFormattingTest {
+class BacktickedToCodeTest {
 
     private static final char BACKTICK = '`';
     private static final String TEXT = "true";
     private static final String TEXT_IN_CODE_TAG = wrapWithCodeTag(TEXT);
     private static final String TEXT_IN_BACKTICKS = BACKTICK + TEXT + BACKTICK;
 
-    private final Formatting formatting = new BacktickFormatting();
+    private final Formatting formatting = new BacktickedToCode();
 
     @Test
     @DisplayName("surround text in backticks with {@code }")

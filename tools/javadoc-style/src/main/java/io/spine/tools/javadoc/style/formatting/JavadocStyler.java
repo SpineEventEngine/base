@@ -43,12 +43,9 @@ import static java.nio.file.Files.newBufferedReader;
 import static java.nio.file.Files.newBufferedWriter;
 
 /**
- * A formatter for Javadocs.
- *
- * <p>The formatter executes {@linkplain Formatting formatting actions}
- * for the Javadoc lines in a source file.
+ * Improves the style of Javadoc code by applying the passed formatting actions.
  */
-public final class JavadocFormatter {
+public final class JavadocStyler {
 
     private static final String TEMP_FILE_NAME = "temp_file_for_formatting.java";
 
@@ -58,14 +55,14 @@ public final class JavadocFormatter {
     /**
      * Creates an instance with the passed formatting actions.
      */
-    public JavadocFormatter(Formatting... actions) {
+    public JavadocStyler(Formatting... actions) {
         this.actions = ImmutableList.copyOf(actions);
     }
 
     /**
      * Formats the Javadocs in the file with the specified path.
      *
-     * <p>If the file is not a {@code .java} source, does noting.
+     * <p>If the file is not a {@code .java} source, does nothing.
      *
      * @param file the path to the file
      */

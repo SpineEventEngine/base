@@ -34,12 +34,9 @@ import static java.util.regex.Pattern.DOTALL;
 import static java.util.regex.Pattern.compile;
 
 /**
- * A formatting action, which handles {@code <pre>} tags.
- *
- * <p>The action removes the tags inserted by the Protobuf compiler,
- * i.e., the first opening tag and the last closing tag.
+ * Removes the {@code <pre>} tags inserted by the Protobuf compiler.
  */
-public class PreTagFormatting implements Formatting {
+public class RemovePreTags implements Formatting {
 
     @VisibleForTesting
     public static final String OPENING_PRE = "<pre>";

@@ -39,9 +39,9 @@ import java.nio.file.attribute.BasicFileAttributes;
  */
 public final class FormattingFileVisitor extends SimpleFileVisitor<Path> implements Logging {
 
-    private final JavadocFormatter formatter;
+    private final JavadocStyler formatter;
 
-    public FormattingFileVisitor(JavadocFormatter formatter) {
+    public FormattingFileVisitor(JavadocStyler formatter) {
         super();
         this.formatter = formatter;
     }

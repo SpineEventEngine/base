@@ -28,8 +28,6 @@ package io.spine.tools.javadoc.style.formatting;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.javadoc.style.formatting.BacktickFormatting;
-import io.spine.tools.javadoc.style.formatting.JavadocFormatter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,7 +40,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static io.spine.tools.javadoc.style.formatting.BacktickFormatting.wrapWithCodeTag;
+import static io.spine.tools.javadoc.style.formatting.BacktickedToCode.wrapWithCodeTag;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllLines;
@@ -50,7 +48,7 @@ import static java.nio.file.Files.write;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("`JavadocFormatter` should")
-class JavadocFormatterTest {
+class JavadocStylerTest {
 
     private static final char BACKTICK = '`';
     private static final String TEXT = "plain text";
@@ -59,8 +57,8 @@ class JavadocFormatterTest {
 
     private File folder;
 
-    private final JavadocFormatter backtickFormatter = new JavadocFormatter(
-            new BacktickFormatting()
+    private final JavadocStyler backtickFormatter = new JavadocStyler(
+            new BacktickedToCode()
     );
 
     @BeforeEach

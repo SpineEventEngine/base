@@ -26,10 +26,10 @@
 package io.spine.tools.javadoc.style.gradle;
 
 import io.spine.tools.gradle.SpinePlugin;
-import io.spine.tools.javadoc.style.formatting.BacktickFormatting;
+import io.spine.tools.javadoc.style.formatting.BacktickedToCode;
 import io.spine.tools.javadoc.style.formatting.FormattingFileVisitor;
-import io.spine.tools.javadoc.style.formatting.JavadocFormatter;
-import io.spine.tools.javadoc.style.formatting.PreTagFormatting;
+import io.spine.tools.javadoc.style.formatting.JavadocStyler;
+import io.spine.tools.javadoc.style.formatting.RemovePreTags;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -106,8 +106,8 @@ public class JavadocStylePlugin extends SpinePlugin {
             return;
         }
 
-        JavadocFormatter formatter =
-                new JavadocFormatter(new BacktickFormatting(), new PreTagFormatting());
+        JavadocStyler formatter =
+                new JavadocStyler(new BacktickedToCode(), new RemovePreTags());
 
         try {
             _debug().log("Starting Javadocs formatting in `%s`.", genProtoDir);
