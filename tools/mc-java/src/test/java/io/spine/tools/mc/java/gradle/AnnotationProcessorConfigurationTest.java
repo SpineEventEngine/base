@@ -62,7 +62,8 @@ class AnnotationProcessorConfigurationTest
     @DisplayName("create annotation processor config if it does not exist")
     void createAndReturnAnnotationProcessorConfigIfItDoesNotExist() {
         configurations.remove(preprocessorConfig);
-        assertNull(configurations.findByName(annotationProcessor.value()));
+        assertThat(configurations.findByName(annotationProcessor.value()))
+                .isNull();
 
         Configuration cfg = AnnotationProcessorConfiguration.findOrCreateIn(project);
         Configuration found = configurations.findByName(annotationProcessor.value());
