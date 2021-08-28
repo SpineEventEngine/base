@@ -33,11 +33,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.tools.mc.java.gradle.McJavaChecksExtension.getUseValidatingBuilderSeverity;
 import static io.spine.tools.mc.java.gradle.Severity.ERROR;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
-@DisplayName("ErrorProneChecksExtension should")
+@DisplayName("`McJavaChecksExtension` should")
 class McJavaChecksExtensionTest {
 
     private Project project;
@@ -56,14 +56,16 @@ class McJavaChecksExtensionTest {
     void obtainingSeverity() {
         final Severity expected = ERROR;
         extension.useValidatingBuilderSeverity = expected;
-        final Severity actual = McJavaChecksExtension.getUseValidatingBuilderSeverity(project);
-        assertEquals(expected, actual);
+        final Severity actual = getUseValidatingBuilderSeverity(project);
+        assertThat(actual)
+                .isEqualTo(expected);
     }
 
     @Test
     @DisplayName("return `null` severity if not set")
     void ifNotSet() {
-        final Severity severity = McJavaChecksExtension.getUseValidatingBuilderSeverity(project);
-        assertNull(severity);
+        Severity severity = getUseValidatingBuilderSeverity(project);
+        assertThat(severity)
+                .isNull();;
     }
 }

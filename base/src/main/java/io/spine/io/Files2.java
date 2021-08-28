@@ -30,6 +30,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import kotlin.io.FilesKt;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,8 +44,11 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.io.Files.createParentDirs;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.nio.file.Files.copy;
+import static java.nio.file.Files.createDirectories;
 import static java.nio.file.Files.createDirectory;
+import static java.nio.file.Files.exists;
 import static java.nio.file.Files.find;
 import static java.nio.file.Files.isDirectory;
 import static java.nio.file.Files.isRegularFile;
@@ -293,5 +297,30 @@ public final class Files2 {
             logger.atWarning()
                   .log("Unable to delete the directory `%s`.", directory);
         }
+    }
+
+    /**
+     * Obtains the value of the {@code System} property for a temporary directory.
+     */
+    @SuppressWarnings("AccessOfSystemProperties")
+    public static String systemTempDir() {
+        return System.getProperty("java.io.tmpdir");
+    }
+
+    /**
+     * Ensures that the specified directory exists, creating it, if it was not done
+     * prior to this call.
+     *
+     * @return the passed instance
+     */
+    public static Path ensureDirectory(Path directory) {
+        if (!exists(directory)) {
+            try {
+                createDirectories(directory);
+            } catch (IOException e) {
+                throw newIllegalStateException(e, "Unable to create `%s`.", directory);
+            }
+        }
+        return directory;
     }
 }

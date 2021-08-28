@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc.style.formatting;
+package io.spine.tools.javadoc.style;
 
 import com.google.common.base.Joiner;
 import org.junit.jupiter.api.DisplayName;
@@ -36,9 +36,9 @@ import static com.google.common.truth.Truth.assertThat;
 import static java.lang.System.lineSeparator;
 
 @DisplayName("`LineFormatting` should")
-class ByLineFormattingTest {
+class LineFormattingTest {
 
-    private final Formatting formatting = new NothingFormatting();
+    private final FormattingAction formatting = new NoOpFormatting();
 
     @Test
     @DisplayName("merge lines")
@@ -49,7 +49,7 @@ class ByLineFormattingTest {
         String expectedLines = Joiner.on(lineSeparator())
                                      .join(lines);
 
-        String formattedLines = formatting.apply(expectedLines);
+        String formattedLines = formatting.execute(expectedLines);
 
         assertThat(formattedLines)
                 .isEqualTo(expectedLines);
@@ -58,7 +58,7 @@ class ByLineFormattingTest {
     /**
      * A stub formatting which simply returns the passed line.
      */
-    private static class NothingFormatting extends ByLineFormatting {
+    private static class NoOpFormatting extends LineFormatting {
 
         @Override
         String formatLine(String line) {

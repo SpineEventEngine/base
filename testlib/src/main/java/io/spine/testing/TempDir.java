@@ -26,8 +26,8 @@
 
 package io.spine.testing;
 
-import com.google.common.annotations.VisibleForTesting;
 import io.spine.code.java.PackageName;
+import io.spine.io.Files2;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +38,8 @@ import java.nio.file.attribute.FileAttribute;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.io.Files2.deleteRecursivelyOnShutdownHook;
+import static io.spine.io.Files2.ensureDirectory;
+import static io.spine.io.Files2.systemTempDir;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
@@ -47,12 +49,6 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  * @apiNote Replaces deprecated {@code com.google.common.io.Files#createTempDir()}.
  */
 public final class TempDir {
-
-    /**
-     * The name of the {@code System} property for a temporary directory.
-     */
-    @VisibleForTesting
-    static final String TMPDIR_PROPERTY = "java.io.tmpdir";
 
     /**
      * The directory under which all instances of this class will be created.
@@ -73,21 +69,13 @@ public final class TempDir {
 
     /**
      * Creates a directory named after the package of this class under a directory
-     * specified by the {@link #TMPDIR_PROPERTY} {@code System} property.
+     * specified by the {@link Files2#systemTempDir()}.
      */
     private static Path createBaseDir() {
-        @SuppressWarnings("AccessOfSystemProperties")
-        String tmpDir = System.getProperty(TMPDIR_PROPERTY);
+        String tmpDir = systemTempDir();
         PackageName packageName = PackageName.of(TempDir.class);
         Path baseDir = Paths.get(tmpDir, packageName.toString());
-        if (!Files.exists(baseDir)) {
-            try {
-                Files.createDirectories(baseDir);
-            } catch (IOException e) {
-                throw newIllegalStateException(e, "Unable to create `%s`.", baseDir);
-            }
-        }
-        return baseDir;
+        return ensureDirectory(baseDir);
     }
 
     /**

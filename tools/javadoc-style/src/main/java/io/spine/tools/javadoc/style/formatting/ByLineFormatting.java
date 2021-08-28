@@ -24,55 +24,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc.style.formatting;
+package io.spine.tools.javadoc.style;
 
-import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 
-import java.util.List;
-
 import static java.lang.System.lineSeparator;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.joining;
 
 /**
- * Formats lines independently of each other.
+ * A {@link FormattingAction}, that formats lines independently of each other.
  */
-abstract class ByLineFormatting implements Formatting {
+abstract class LineFormatting implements FormattingAction {
+
+    private static final Splitter splitter = Splitter.on(lineSeparator());
 
     /**
      * Obtains the formatted representation of the specified text.
      *
-     * <p>The text will be split by lines using {@link System#lineSeparator()}, and
-     * lines will be {@linkplain #formatLine(String) formatted} independently of each other.
+     * <p>The text will be split and lines will be formatted independently from each other.
      *
-     * <p>Formatted lines are gathered back into one piece of text using the same line separator.
-     *
-     * @param text
-     *         the text to format
+     * @param text the text to format
      * @return the formatted text
-     * @see #formatLine(String)
      */
     @Override
-    public String apply(String text) {
-        String separator = lineSeparator();
-        List<String> lines =
-                Splitter.on(separator)
-                        .splitToList(text);
-        List<String> formattedLines =
-                lines.stream()
-                     .map(this::formatLine)
-                     .collect(toList());
+    public String execute(String text) {
         String result =
-                Joiner.on(separator)
-                      .join(formattedLines);
+                splitter.splitToStream(text)
+                        .map(this::formatLine)
+                        .collect(joining(lineSeparator()));
         return result;
     }
 
     /**
      * Obtains the formatted representation of the specified line.
      *
-     * @param line
-     *         the single line without line separators
+     * @param line the single line without line separators
      * @return the formatted representation
      */
     abstract String formatLine(String line);

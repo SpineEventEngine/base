@@ -35,12 +35,11 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.mc.java.gradle.McJavaExtension.getSpineCheckSeverity;
 import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.MC_JAVA_GRADLE_PLUGIN_ID;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
-@DisplayName("`McJavaExtension` for checks return")
+@DisplayName("`McJavaExtension` for checks should return")
 class McJavaExtensionChecksTest {
 
     private Project project = null;
@@ -61,14 +60,17 @@ class McJavaExtensionChecksTest {
     void specifiedValue() {
         spineProtobuf().defaultCheckSeverity = Severity.ERROR;
         Severity actualSeverity = getSpineCheckSeverity(project);
-        assertEquals(spineProtobuf().defaultCheckSeverity, actualSeverity);
+
+        assertThat(actualSeverity)
+                .isEqualTo(spineProtobuf().defaultCheckSeverity);
     }
 
     @Test
     @DisplayName("`null`, if not set")
     void nullValue() {
         Severity actualSeverity = getSpineCheckSeverity(project);
-        assertNull(actualSeverity);
+        assertThat(actualSeverity)
+                .isNull();
     }
 
     private McJavaExtension spineProtobuf() {
