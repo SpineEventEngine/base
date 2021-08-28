@@ -27,7 +27,10 @@
 package io.spine.io;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import kotlin.io.FilesKt;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,8 +44,11 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.io.Files.createParentDirs;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.nio.file.Files.copy;
+import static java.nio.file.Files.createDirectories;
 import static java.nio.file.Files.createDirectory;
+import static java.nio.file.Files.exists;
 import static java.nio.file.Files.find;
 import static java.nio.file.Files.isDirectory;
 import static java.nio.file.Files.isRegularFile;
@@ -62,6 +68,8 @@ import static java.nio.file.Files.isRegularFile;
  * </ul>
  */
 public final class Files2 {
+
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     private static final String DOES_NOT_EXIST = "The file `%s` does not exist.";
 
@@ -266,5 +274,53 @@ public final class Files2 {
         Path normalized = file.toPath().normalize();
         File result = normalized.toAbsolutePath().toFile();
         return result;
+    }
+
+    /**
+     * Requests removal of the passed directory when the system shuts down.
+     *
+     * @implNote This method creates a new {@code Thread} for deleting the passed directory.
+     *         That's why calling it should not be taken lightly. If your application creates
+     *         several directories that need to be removed when JVM is terminated, consider
+     *         gathering them under a common root passed to this method.
+     * @see Runtime#addShutdownHook(Thread)
+     */
+    public static void deleteRecursivelyOnShutdownHook(Path directory) {
+        checkNotNull(directory);
+        Runtime runtime = Runtime.getRuntime();
+        runtime.addShutdownHook(new Thread(() -> deleteRecursively(directory)));
+    }
+
+    private static void deleteRecursively(Path directory) {
+        boolean success = FilesKt.deleteRecursively(directory.toFile());
+        if (!success) {
+            logger.atWarning()
+                  .log("Unable to delete the directory `%s`.", directory);
+        }
+    }
+
+    /**
+     * Obtains the value of the {@code System} property for a temporary directory.
+     */
+    @SuppressWarnings("AccessOfSystemProperties")
+    public static String systemTempDir() {
+        return System.getProperty("java.io.tmpdir");
+    }
+
+    /**
+     * Ensures that the specified directory exists, creating it, if it was not done
+     * prior to this call.
+     *
+     * @return the passed instance
+     */
+    public static Path ensureDirectory(Path directory) {
+        if (!exists(directory)) {
+            try {
+                createDirectories(directory);
+            } catch (IOException e) {
+                throw newIllegalStateException(e, "Unable to create `%s`.", directory);
+            }
+        }
+        return directory;
     }
 }

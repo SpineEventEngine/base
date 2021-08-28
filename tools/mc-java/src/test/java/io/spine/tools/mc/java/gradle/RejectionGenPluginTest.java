@@ -50,6 +50,7 @@ import static io.spine.tools.mc.java.gradle.given.RejectionTestEnv.expectedFirst
 import static io.spine.tools.mc.java.gradle.given.RejectionTestEnv.expectedSecondFieldComment;
 import static io.spine.tools.mc.java.gradle.given.RejectionTestEnv.newProjectWithRejectionsJavadoc;
 import static io.spine.tools.mc.java.gradle.given.RejectionTestEnv.rejectionsJavadocThrowableSource;
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("`RejectionGenPlugin` should")
@@ -110,13 +111,21 @@ class RejectionGenPluginTest {
     private static void assertMethodDoc(String expectedComment,
                                         JavaClassSource source,
                                         String methodName) {
-        MethodSource<JavaClassSource> method = source.getMethods()
-                                                     .stream()
-                                                     .filter(m -> m.getName()
-                                                                   .equals(methodName))
-                                                     .findFirst()
-                                                     .orElseThrow(IllegalStateException::new);
+        MethodSource<JavaClassSource> method = findMethod(source, methodName);
         assertDoc(expectedComment, method);
+    }
+
+    private static MethodSource<JavaClassSource>
+    findMethod(JavaClassSource source, String methodName) {
+        MethodSource<JavaClassSource> method =
+                source.getMethods()
+                      .stream()
+                      .filter(m -> methodName.equals(m.getName()))
+                      .findFirst()
+                      .orElseThrow(() -> newIllegalStateException(
+                              "Cannot find the method `%s`.", methodName)
+                      );
+        return method;
     }
 
     private static void assertDoc(String expectedText, JavaDocCapableSource<?> source) {

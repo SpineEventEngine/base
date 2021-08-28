@@ -23,14 +23,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-syntax = "proto3";
 
-package spine.test.annotator;
+package io.spine.testing
 
-import "spine/options.proto";
+import com.google.common.truth.Truth.assertThat
+import io.spine.code.java.PackageName
+import io.spine.io.Files2
+import java.io.File
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-option java_multiple_files = true;
+class `'TempDir' should` {
 
-message ExperimentalTwo {
-    option (internal_type) = true;
+    companion object {
+        const val prefix = "TempDirTest"
+        val tempDir: File = TempDir.withPrefix(prefix)
+    }
+
+    @Nested
+    inner class `be created under the directory ` {
+
+        @Test
+        fun `from the 'System' property 'java-dot-io-dot-tmpdir'`() {
+            assertThat(tempDir.toString())
+                .contains(Files2.systemTempDir())
+        }
+
+        @Test
+        fun `named after the package of 'TempDir' class`() {
+            assertThat(tempDir.toString())
+                .contains(PackageName.of(TempDir::class.java).toString())
+        }
+    }
+
+    @Test
+    fun `create an instance serving a test suite class`() {
+        val thisClass = javaClass
+        val tempDir = TempDir.forClass(thisClass)
+        assertThat(tempDir.toString())
+            .contains(thisClass.simpleName)
+    }
 }

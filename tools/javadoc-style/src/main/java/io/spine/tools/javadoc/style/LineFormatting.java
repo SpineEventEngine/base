@@ -26,18 +26,17 @@
 
 package io.spine.tools.javadoc.style;
 
-import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 
-import java.util.List;
-
-import static com.google.common.collect.Lists.newLinkedList;
 import static java.lang.System.lineSeparator;
+import static java.util.stream.Collectors.joining;
 
 /**
- * A {@link FormattingAction}, that formats lines independently from each other.
+ * A {@link FormattingAction}, that formats lines independently of each other.
  */
 abstract class LineFormatting implements FormattingAction {
+
+    private static final Splitter splitter = Splitter.on(lineSeparator());
 
     /**
      * Obtains the formatted representation of the specified text.
@@ -49,15 +48,11 @@ abstract class LineFormatting implements FormattingAction {
      */
     @Override
     public String execute(String text) {
-        List<String> textAsLines = Splitter.on(lineSeparator())
-                                           .splitToList(text);
-        List<String> formattedLines = newLinkedList();
-        for (String line : textAsLines) {
-            String formattedLine = formatLine(line);
-            formattedLines.add(formattedLine);
-        }
-        return Joiner.on(lineSeparator())
-                     .join(formattedLines);
+        String result =
+                splitter.splitToStream(text)
+                        .map(this::formatLine)
+                        .collect(joining(lineSeparator()));
+        return result;
     }
 
     /**

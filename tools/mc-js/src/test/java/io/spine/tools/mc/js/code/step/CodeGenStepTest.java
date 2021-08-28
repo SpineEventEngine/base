@@ -31,7 +31,10 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.tools.js.fs.Directory;
 import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.FileSet;
+import io.spine.tools.mc.js.code.given.GivenProject;
 import io.spine.tools.mc.js.code.given.TestCodeGenStep;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -41,22 +44,36 @@ import java.nio.file.Paths;
 import java.util.Collection;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.tools.mc.js.code.given.GivenProject.mainFileSet;
-import static io.spine.tools.mc.js.code.given.GivenProject.mainProtoSources;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("GenerationTask should")
+@DisplayName("`CodeGenStep` should")
 class CodeGenStepTest {
 
     private static final String MISSING_PATH = "non-existent";
 
+    private static Directory generatedProtoDir = null;
+    private static FileSet mainFileSet = null;
+
+    private TestCodeGenStep task;
+
+    @BeforeAll
+    static void compileProject() {
+        GivenProject project = GivenProject.serving(CodeGenStepTest.class);
+        generatedProtoDir = project.mainProtoSources();
+        mainFileSet = project.mainFileSet();
+    }
+
+    @BeforeEach
+    void createTask() {
+        task = new TestCodeGenStep(generatedProtoDir);
+    }
+
     @Test
     @DisplayName("check if there are files to process")
     void checkFilesToProcess() {
-        TestCodeGenStep task = new TestCodeGenStep(mainProtoSources());
-        assertPerformed(task, mainFileSet());
+        assertPerformed(task, mainFileSet);
     }
 
     @Test
@@ -64,22 +81,20 @@ class CodeGenStepTest {
     void recognizeThereAreNoFiles() {
         Directory nonExistentRoot = Directory.at(Paths.get(MISSING_PATH));
         TestCodeGenStep task = new TestCodeGenStep(nonExistentRoot);
-        assertNotPerformed(task, mainFileSet());
+        assertNotPerformed(task, mainFileSet);
     }
 
     @Test
     @DisplayName("recognize there are no known types to process")
     void recognizeThereAreNoTypes() {
         FileSet emptyFileSet = FileSet.of(ImmutableSet.of());
-        TestCodeGenStep task = new TestCodeGenStep(mainProtoSources());
         assertNotPerformed(task, emptyFileSet);
     }
 
     @Test
     @DisplayName("process files compiled to JavaScript")
     void processCompiledJsFiles() {
-        TestCodeGenStep task = new TestCodeGenStep(mainProtoSources());
-        FileSet passedFiles = mainFileSet();
+        FileSet passedFiles = mainFileSet;
         task.performFor(passedFiles);
         FileSet processedFiles = task.processedFileSet();
         // It is expected that standard Protobuf types won't be generated (see test build script).
@@ -95,7 +110,7 @@ class CodeGenStepTest {
     void skipNotCompiledJsFiles(@TempDir Path tempDir) {
         Directory emptyDirectory = Directory.at(tempDir);
         TestCodeGenStep task = new TestCodeGenStep(emptyDirectory);
-        FileSet passedFiles = mainFileSet();
+        FileSet passedFiles = mainFileSet;
         // Check the file set is originally not empty.
         assertFalse(passedFiles.isEmpty());
         // Check all passed files were filtered out since they were not compiled to JS.

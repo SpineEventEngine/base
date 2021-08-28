@@ -42,7 +42,7 @@ import static io.spine.tools.javadoc.style.JavadocStyleExtension.getAbsoluteMain
 import static io.spine.tools.javadoc.style.JavadocStyleExtension.getAbsoluteTestGenProtoDir;
 import static io.spine.tools.javadoc.style.JavadocStyleTaskName.formatProtoDoc;
 import static io.spine.tools.javadoc.style.JavadocStyleTaskName.formatTestProtoDoc;
-import static java.lang.String.format;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * The plugin, that formats Javadocs in sources generated from {@code .proto} files.
@@ -69,8 +69,7 @@ public class JavadocStylePlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
-        _debug().log("Adding the ProtoJavadocPlugin extension to the project.");
-        JavadocStyleExtension.createIn(project);
+        createExtensionIn(project);
 
         Action<Task> mainAction = createAction(project, TaskType.MAIN);
         newTask(formatProtoDoc, mainAction)
@@ -83,6 +82,12 @@ public class JavadocStylePlugin extends SpinePlugin {
                 .insertBeforeTask(compileTestJava)
                 .insertAfterTask(generateTestProto)
                 .applyNowTo(project);
+    }
+
+    private void createExtensionIn(Project project) {
+        _debug().log("Adding the `%s` extension to the project `%s`.",
+                     JavadocStyleExtension.class.getName(), project.getName());
+        JavadocStyleExtension.createIn(project);
     }
 
     private Action<Task> createAction(Project project, TaskType taskType) {
@@ -105,8 +110,7 @@ public class JavadocStylePlugin extends SpinePlugin {
             _debug().log("Starting Javadocs formatting in `%s`.", genProtoDir);
             Files.walkFileTree(file.toPath(), new FormattingFileVisitor(formatter));
         } catch (IOException e) {
-            String errMsg = format("Failed to format the sources in `%s`.", genProtoDir);
-            throw new IllegalStateException(errMsg, e);
+            throw newIllegalStateException(e, "Failed to format the sources in `%s`.", genProtoDir);
         }
     }
 

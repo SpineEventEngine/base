@@ -53,7 +53,7 @@ import static io.spine.tools.gradle.GradlePlugin.implementedIn;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("PlugableProject should")
+@DisplayName("`PlugableProject` should")
 class PlugableProjectTest {
 
     private PlugableProject plugableProject;
@@ -62,8 +62,7 @@ class PlugableProjectTest {
     @BeforeEach
     void setUp() {
         File tempDir = TempDir.forClass(getClass());
-        project = ProjectBuilder
-                .builder()
+        project = ProjectBuilder.builder()
                 .withName(PlugableProjectTest.class.getSimpleName())
                 .withProjectDir(tempDir)
                 .build();
@@ -71,7 +70,7 @@ class PlugableProjectTest {
     }
 
     @Test
-    @DisplayName("not accept null arguments")
+    @DisplayName("not accept `null` arguments")
     void notAcceptNulls() {
         NullPointerTester tester = new NullPointerTester()
                 .setDefault(GradlePlugin.class, implementedIn(JavaPlugin.class));
