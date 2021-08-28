@@ -40,9 +40,6 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.tools.javadoc.style.formatting.BacktickedToCode.BACKTICK;
-import static io.spine.tools.javadoc.style.formatting.RemovePreTags.CLOSING_PRE;
-import static io.spine.tools.javadoc.style.formatting.RemovePreTags.OPENING_PRE;
 import static io.spine.tools.javadoc.style.gradle.JavadocStyleTaskName.formatProtoDoc;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -62,7 +59,7 @@ class JavadocStylePluginFormattingTest {
     void formatGeneratedJavaSources(@TempDir Path testProjectDir) throws IOException {
         String text = "javadoc text";
         String generatedFieldDescription = " <code>field description</code>";
-        String textInPreTags = OPENING_PRE + text + CLOSING_PRE + generatedFieldDescription;
+        String textInPreTags = "<pre>" + text + "</pre>" + generatedFieldDescription;
         String expected = singleLineJavadoc(text + generatedFieldDescription);
         String javadocToFormat = singleLineJavadoc(textInPreTags);
         formatAndAssert(expected,
@@ -74,7 +71,7 @@ class JavadocStylePluginFormattingTest {
     @Test
     @DisplayName("multi-line code snippet")
     void handleMultilineCodeSnippetsProperly(@TempDir Path testProjectDir) throws IOException {
-        String protoDoc = multilineJavadoc(BACKTICK, BACKTICK);
+        String protoDoc = multilineJavadoc("`", "`");
         String javadoc = multilineJavadoc("{@code ", "}");
 
         formatAndAssert(javadoc,

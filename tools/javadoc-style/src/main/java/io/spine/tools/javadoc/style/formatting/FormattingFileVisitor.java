@@ -37,7 +37,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 /**
  * A {@code FileVisitor} for formatting files.
  */
-public final class FormattingFileVisitor extends SimpleFileVisitor<Path> implements Logging {
+final class FormattingFileVisitor extends SimpleFileVisitor<Path> implements Logging {
 
     private final JavadocStyler formatter;
 

@@ -25,8 +25,6 @@
  */
 package io.spine.tools.javadoc.style.formatting;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,12 +34,10 @@ import static java.util.regex.Pattern.compile;
 /**
  * Removes the {@code <pre>} tags inserted by the Protobuf compiler.
  */
-public class RemovePreTags implements Formatting {
+final class RemovePreTags implements Formatting {
 
-    @VisibleForTesting
-    public static final String OPENING_PRE = "<pre>";
-    @VisibleForTesting
-    public static final String CLOSING_PRE = "</pre>";
+    private static final String OPENING_PRE = "<pre>";
+    private static final String CLOSING_PRE = "</pre>";
 
     private static final Pattern PATTERN_OPENING_PRE = compile(OPENING_PRE);
     private static final Pattern NOT_FORMATTED_DOC_PATTERN =
