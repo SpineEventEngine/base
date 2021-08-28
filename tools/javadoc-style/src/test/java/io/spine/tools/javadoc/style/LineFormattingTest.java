@@ -32,26 +32,33 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
+import static com.google.common.truth.Truth.assertThat;
 import static java.lang.System.lineSeparator;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("LineFormatting should")
+@DisplayName("`LineFormatting` should")
 class LineFormattingTest {
 
-    private final FormattingAction formatting = new ALineFormatting();
+    private final FormattingAction formatting = new NothingFormatting();
 
     @Test
     @DisplayName("merge lines")
-    void merge_lines_correctly() {
+    void mergeLines() {
         String lineText = "a text in a single line";
         int lineCount = 5;
         Iterable<String> lines = Collections.nCopies(lineCount, lineText);
-        String linesAsString = Joiner.on(lineSeparator())
+        String expectedLines = Joiner.on(lineSeparator())
                                      .join(lines);
-        assertEquals(linesAsString, formatting.execute(linesAsString));
+
+        String formattedLines = formatting.execute(expectedLines);
+
+        assertThat(formattedLines)
+                .isEqualTo(expectedLines);
     }
 
-    private static class ALineFormatting extends LineFormatting {
+    /**
+     * A stub formatting which simply returns the passed line.
+     */
+    private static class NothingFormatting extends LineFormatting {
 
         @Override
         String formatLine(String line) {

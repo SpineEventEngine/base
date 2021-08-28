@@ -31,11 +31,11 @@ import com.google.common.base.Splitter;
 
 import java.util.List;
 
-import static com.google.common.collect.Lists.newLinkedList;
 import static java.lang.System.lineSeparator;
+import static java.util.stream.Collectors.toList;
 
 /**
- * A {@link FormattingAction}, that formats lines independently from each other.
+ * A {@link FormattingAction}, that formats lines independently of each other.
  */
 abstract class LineFormatting implements FormattingAction {
 
@@ -49,15 +49,18 @@ abstract class LineFormatting implements FormattingAction {
      */
     @Override
     public String execute(String text) {
-        List<String> textAsLines = Splitter.on(lineSeparator())
-                                           .splitToList(text);
-        List<String> formattedLines = newLinkedList();
-        for (String line : textAsLines) {
-            String formattedLine = formatLine(line);
-            formattedLines.add(formattedLine);
-        }
-        return Joiner.on(lineSeparator())
-                     .join(formattedLines);
+        String separator = lineSeparator();
+        List<String> lines =
+                Splitter.on(separator)
+                        .splitToList(text);
+        List<String> formattedLines =
+                lines.stream()
+                     .map(this::formatLine)
+                     .collect(toList());
+        String result =
+                Joiner.on(separator)
+                      .join(formattedLines);
+        return result;
     }
 
     /**
