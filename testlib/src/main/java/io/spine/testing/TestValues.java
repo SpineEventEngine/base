@@ -31,6 +31,8 @@ import com.google.protobuf.StringValue;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Utility factories for test values.
  */
@@ -46,6 +48,15 @@ public final class TestValues {
     public static String randomString() {
         return UUID.randomUUID()
                    .toString();
+    }
+
+    /**
+     * Creates a random string based on {@linkplain java.util.UUID#randomUUID() generated UUID}
+     * and the given prefix.
+     */
+    public static String randomString(String prefix) {
+        checkNotNull(prefix);
+        return prefix + randomString();
     }
 
     /**
