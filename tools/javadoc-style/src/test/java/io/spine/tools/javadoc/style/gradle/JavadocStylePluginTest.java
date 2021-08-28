@@ -27,7 +27,6 @@
 package io.spine.tools.javadoc.style.gradle;
 
 import io.spine.tools.gradle.TaskName;
-import io.spine.tools.javadoc.style.gradle.JavadocStyleExtension;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.plugins.PluginContainer;
