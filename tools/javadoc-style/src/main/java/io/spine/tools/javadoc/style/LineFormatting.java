@@ -39,6 +39,9 @@ import static java.util.stream.Collectors.toList;
  */
 abstract class LineFormatting implements FormattingAction {
 
+    private static final Splitter splitter = Splitter.on(lineSeparator());
+    private static final Joiner joiner = Joiner.on(lineSeparator());
+
     /**
      * Obtains the formatted representation of the specified text.
      *
@@ -49,17 +52,11 @@ abstract class LineFormatting implements FormattingAction {
      */
     @Override
     public String execute(String text) {
-        String separator = lineSeparator();
-        List<String> lines =
-                Splitter.on(separator)
-                        .splitToList(text);
         List<String> formattedLines =
-                lines.stream()
-                     .map(this::formatLine)
-                     .collect(toList());
-        String result =
-                Joiner.on(separator)
-                      .join(formattedLines);
+                splitter.splitToStream(text)
+                        .map(this::formatLine)
+                        .collect(toList());
+        String result = joiner.join(formattedLines);
         return result;
     }
 
