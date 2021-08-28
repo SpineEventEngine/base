@@ -35,9 +35,9 @@ import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.toList;
 
 /**
- * A {@link FormattingAction}, that formats lines independently of each other.
+ * A {@link Formatting}, that formats lines independently of each other.
  */
-abstract class LineFormatting implements FormattingAction {
+abstract class LineFormatting implements Formatting {
 
     /**
      * Obtains the formatted representation of the specified text.
@@ -48,7 +48,7 @@ abstract class LineFormatting implements FormattingAction {
      * @return the formatted text
      */
     @Override
-    public String execute(String text) {
+    public String apply(String text) {
         String separator = lineSeparator();
         List<String> lines =
                 Splitter.on(separator)

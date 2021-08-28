@@ -45,7 +45,7 @@ import static java.nio.file.Files.newBufferedWriter;
 /**
  * A formatter for Javadocs.
  *
- * <p>The formatter executes {@linkplain FormattingAction formatting actions}
+ * <p>The formatter executes {@linkplain Formatting formatting actions}
  * for the Javadoc lines in a source file.
  */
 public final class JavadocFormatter {
@@ -53,12 +53,12 @@ public final class JavadocFormatter {
     private static final String TEMP_FILE_NAME = "temp_file_for_formatting.java";
 
     /** Formatting actions to perform. */
-    private final ImmutableList<FormattingAction> actions;
+    private final ImmutableList<Formatting> actions;
 
     /**
      * Creates an instance with the passed formatting actions.
      */
-    public JavadocFormatter(FormattingAction... actions) {
+    public JavadocFormatter(Formatting... actions) {
         this.actions = ImmutableList.copyOf(actions);
     }
 
@@ -158,8 +158,8 @@ public final class JavadocFormatter {
      */
     private String applyActions(String text) {
         String currentState = text;
-        for (FormattingAction formatting : actions) {
-            currentState = formatting.execute(currentState);
+        for (Formatting formatting : actions) {
+            currentState = formatting.apply(currentState);
         }
         return currentState;
     }

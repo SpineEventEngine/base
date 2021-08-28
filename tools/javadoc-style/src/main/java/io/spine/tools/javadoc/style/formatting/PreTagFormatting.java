@@ -39,7 +39,7 @@ import static java.util.regex.Pattern.compile;
  * <p>The action removes the tags inserted by the Protobuf compiler,
  * i.e., the first opening tag and the last closing tag.
  */
-public class PreTagFormatting implements FormattingAction {
+public class PreTagFormatting implements Formatting {
 
     @VisibleForTesting
     public static final String OPENING_PRE = "<pre>";
@@ -57,7 +57,7 @@ public class PreTagFormatting implements FormattingAction {
      * @return the text without generated {@code <pre>} tags
      */
     @Override
-    public String execute(String javadoc) {
+    public String apply(String javadoc) {
         if (!shouldFormat(javadoc)) {
             return javadoc;
         }

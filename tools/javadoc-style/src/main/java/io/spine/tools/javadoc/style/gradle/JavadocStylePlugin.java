@@ -27,7 +27,6 @@ package io.spine.tools.javadoc.style.gradle;
 
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.javadoc.style.formatting.BacktickFormatting;
-import io.spine.tools.javadoc.style.formatting.FormattingAction;
 import io.spine.tools.javadoc.style.formatting.FormattingFileVisitor;
 import io.spine.tools.javadoc.style.formatting.JavadocFormatter;
 import io.spine.tools.javadoc.style.formatting.PreTagFormatting;

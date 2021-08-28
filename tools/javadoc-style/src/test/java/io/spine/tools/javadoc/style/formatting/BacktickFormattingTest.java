@@ -26,8 +26,6 @@
 
 package io.spine.tools.javadoc.style.formatting;
 
-import io.spine.tools.javadoc.style.formatting.BacktickFormatting;
-import io.spine.tools.javadoc.style.formatting.FormattingAction;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -43,12 +41,12 @@ class BacktickFormattingTest {
     private static final String TEXT_IN_CODE_TAG = wrapWithCodeTag(TEXT);
     private static final String TEXT_IN_BACKTICKS = BACKTICK + TEXT + BACKTICK;
 
-    private final FormattingAction formatting = new BacktickFormatting();
+    private final Formatting formatting = new BacktickFormatting();
 
     @Test
     @DisplayName("surround text in backticks with {@code }")
     void backticks() {
-        String result = formatting.execute(TEXT_IN_BACKTICKS);
+        String result = formatting.apply(TEXT_IN_BACKTICKS);
         assertEquals(TEXT_IN_CODE_TAG, result);
     }
 
@@ -58,7 +56,7 @@ class BacktickFormattingTest {
         String separatingPart = " some other text ";
         String source = TEXT_IN_BACKTICKS + separatingPart + TEXT_IN_BACKTICKS;
         String expected = TEXT_IN_CODE_TAG + separatingPart + TEXT_IN_CODE_TAG;
-        assertEquals(expected, formatting.execute(source));
+        assertEquals(expected, formatting.apply(source));
     }
 
     @Test
@@ -68,7 +66,7 @@ class BacktickFormattingTest {
         String lineWithClosingBacktick = TEXT + BACKTICK;
         String multiLinedText = lineWithOpeningBacktick + lineSeparator()
                 + lineWithClosingBacktick;
-        assertEquals(multiLinedText, formatting.execute(multiLinedText));
+        assertEquals(multiLinedText, formatting.apply(multiLinedText));
     }
 
     /**
@@ -80,7 +78,7 @@ class BacktickFormattingTest {
     @DisplayName("escape replacement for matcher")
     void escapeReplacement() {
         String dollarInBackticks = BACKTICK + "$" + BACKTICK;
-        String result = formatting.execute(dollarInBackticks);
+        String result = formatting.apply(dollarInBackticks);
         assertEquals("{@code $}", result);
     }
 }

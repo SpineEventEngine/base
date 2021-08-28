@@ -38,7 +38,7 @@ import static java.lang.System.lineSeparator;
 @DisplayName("`LineFormatting` should")
 class LineFormattingTest {
 
-    private final FormattingAction formatting = new NothingFormatting();
+    private final Formatting formatting = new NothingFormatting();
 
     @Test
     @DisplayName("merge lines")
@@ -49,7 +49,7 @@ class LineFormattingTest {
         String expectedLines = Joiner.on(lineSeparator())
                                      .join(lines);
 
-        String formattedLines = formatting.execute(expectedLines);
+        String formattedLines = formatting.apply(expectedLines);
 
         assertThat(formattedLines)
                 .isEqualTo(expectedLines);

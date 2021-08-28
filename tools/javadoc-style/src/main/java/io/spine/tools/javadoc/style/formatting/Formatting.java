@@ -27,17 +27,18 @@
 package io.spine.tools.javadoc.style.formatting;
 
 /**
- * A formatting action, that formats a {@code String}.
+ * A formatting action applied to a piece of source code.
  */
-public interface FormattingAction {
+public interface Formatting {
 
     /**
      * Obtains the formatted representation of the specified text.
      *
      * <p>The specified text may contain line separators.
      *
-     * @param text the text to format
+     * @param text
+     *         the text to format
      * @return the formatted text
      */
-    String execute(String text);
+    String apply(String text);
 }
