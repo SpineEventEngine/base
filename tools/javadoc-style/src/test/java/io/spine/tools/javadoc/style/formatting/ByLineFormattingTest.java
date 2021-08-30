@@ -38,7 +38,7 @@ import static java.lang.System.lineSeparator;
 @DisplayName("`LineFormatting` should")
 class ByLineFormattingTest {
 
-    private final Formatting formatting = new NothingFormatting();
+    private final Formatting formatting = new NoOpFormatting();
 
     @Test
     @DisplayName("merge lines")
@@ -58,7 +58,7 @@ class ByLineFormattingTest {
     /**
      * A stub formatting which simply returns the passed line.
      */
-    private static class NothingFormatting extends ByLineFormatting {
+    private static class NoOpFormatting extends ByLineFormatting {
 
         @Override
         String formatLine(String line) {
