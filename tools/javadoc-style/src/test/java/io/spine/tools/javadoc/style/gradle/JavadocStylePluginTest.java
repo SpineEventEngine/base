@@ -24,33 +24,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc.style;
+package io.spine.tools.javadoc.style.gradle;
 
 import io.spine.tools.gradle.TaskName;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.plugins.PluginContainer;
 import org.gradle.testfixtures.ProjectBuilder;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
-import java.io.IOException;
-import java.nio.file.Path;
 
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.gradle.JavaTaskName.compileTestJava;
 import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
 import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 import static io.spine.tools.gradle.TaskDependencies.dependsOn;
-import static io.spine.tools.javadoc.style.BacktickFormatting.BACKTICK;
-import static io.spine.tools.javadoc.style.JavadocStyleTaskName.formatProtoDoc;
-import static io.spine.tools.javadoc.style.JavadocStyleTaskName.formatTestProtoDoc;
-import static io.spine.tools.javadoc.style.PreTagFormatting.CLOSING_PRE;
-import static io.spine.tools.javadoc.style.PreTagFormatting.OPENING_PRE;
-import static io.spine.tools.javadoc.style.TestHelper.formatAndAssert;
+import static io.spine.tools.javadoc.style.gradle.JavadocStyleTaskName.formatProtoDoc;
+import static io.spine.tools.javadoc.style.gradle.JavadocStyleTaskName.formatTestProtoDoc;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -59,10 +51,10 @@ class JavadocStylePluginTest {
 
     private static final String PLUGIN_ID = "io.spine.javadoc-style";
 
-    private Project project;
+    private static Project project = null;
 
-    @BeforeEach
-    void setUp() {
+    @BeforeAll
+    static void createProjectWithPlugin() {
         project = ProjectBuilder.builder()
                 .build();
         project.task(compileJava.name());
@@ -119,44 +111,6 @@ class JavadocStylePluginTest {
         private Task task(TaskName taskName) {
             return project.getTasks()
                           .getByName(taskName.name());
-        }
-    }
-
-    @Nested
-    @DisplayName("format generated Javadoc sources with")
-    class FormattingCode {
-
-        @Test
-        @DisplayName("single-line code snippet")
-        void formatGeneratedJavaSources(@TempDir Path testProjectDir) throws IOException {
-            String text = "javadoc text";
-            String generatedFieldDescription = " <code>field description</code>";
-            String textInPreTags = OPENING_PRE + text + CLOSING_PRE + generatedFieldDescription;
-            String expected = singleLineJavadoc(text + generatedFieldDescription);
-            String javadocToFormat = singleLineJavadoc(textInPreTags);
-            formatAndAssert(expected, javadocToFormat, testProjectDir.toFile());
-        }
-
-        @Test
-        @DisplayName("multi-line code snippet")
-        void handleMultilineCodeSnippetsProperly(@TempDir Path testProjectDir) throws IOException {
-            String protoDoc = multilineJavadoc(BACKTICK, BACKTICK);
-            String javadoc = multilineJavadoc("{@code ", "}");
-
-            formatAndAssert(javadoc, protoDoc, testProjectDir.toFile());
-        }
-
-        private String singleLineJavadoc(String javadocText) {
-            return "/** " + javadocText + " */";
-        }
-
-        private String multilineJavadoc(String codeStartTag, String codeEndTag) {
-            return String.format(
-                    "/**%nJavadoc header%n" +
-                            "<pre>%s" + "java snippet" + "%s</pre>%n" +
-                            "Javadoc footer" +
-                            "*/",
-                    codeStartTag, codeEndTag);
         }
     }
 }

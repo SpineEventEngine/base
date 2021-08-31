@@ -24,11 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc.style;
+package io.spine.tools.javadoc.style.gradle;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.gradle.testing.GradleProject;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,14 +40,12 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.tools.javadoc.style.JavadocStyleTaskName.formatProtoDoc;
+import static io.spine.tools.javadoc.style.gradle.JavadocStyleTaskName.formatProtoDoc;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-/**
- * A helper class for the {@link JavadocStylePlugin} testing.
- */
-final class TestHelper {
+@DisplayName("`JavadocStylePlugin` should format generated Javadoc sources with")
+class JavadocStylePluginFormattingTest {
 
     /**
      * The {@code protoJavadoc.mainGenProtoDir} value from the plugin configuration.
@@ -53,13 +54,51 @@ final class TestHelper {
      */
     private static final String MAIN_GEN_PROTO_LOCATION = "generated/main/java";
 
-    /** Prevents the utility class instantiation. */
-    private TestHelper() {
+    @Test
+    @DisplayName("single-line code snippet")
+    void formatGeneratedJavaSources(@TempDir Path testProjectDir) throws IOException {
+        String text = "javadoc text";
+        String generatedFieldDescription = " <code>field description</code>";
+        String textInPreTags = "<pre>" + text + "</pre>" + generatedFieldDescription;
+        String expected = singleLineJavadoc(text + generatedFieldDescription);
+        String javadocToFormat = singleLineJavadoc(textInPreTags);
+        formatAndAssert(expected,
+                        javadocToFormat,
+                        testProjectDir.toFile(),
+                        "SingleLineJavadocTest.java");
     }
 
-    static void formatAndAssert(String expectedContent, String contentToFormat, File folder)
+    @Test
+    @DisplayName("multi-line code snippet")
+    void handleMultilineCodeSnippetsProperly(@TempDir Path testProjectDir) throws IOException {
+        String protoDoc = multilineJavadoc("`", "`");
+        String javadoc = multilineJavadoc("{@code ", "}");
+
+        formatAndAssert(javadoc,
+                        protoDoc,
+                        testProjectDir.toFile(),
+                        "MultiLineJavadocTest.java");
+    }
+
+    private static String singleLineJavadoc(String javadocText) {
+        return "/** " + javadocText + " */";
+    }
+
+    private static String multilineJavadoc(String codeStartTag, String codeEndTag) {
+        return String.format(
+                "/**%nJavadoc header%n" +
+                        "<pre>%s" + "java snippet" + "%s</pre>%n" +
+                        "Javadoc footer" +
+                        "*/",
+                codeStartTag, codeEndTag);
+    }
+
+    static void formatAndAssert(String expectedContent,
+                                String contentToFormat,
+                                File folder,
+                                String fileName)
             throws IOException {
-        Path formattedFilePath = format(contentToFormat, folder);
+        Path formattedFilePath = createAndFormatFile(contentToFormat, folder, fileName);
         List<String> formattedLines = Files.readAllLines(formattedFilePath, UTF_8);
         String mergedLines = Joiner.on(lineSeparator())
                                    .join(formattedLines);
@@ -67,8 +106,8 @@ final class TestHelper {
                 .isEqualTo(expectedContent);
     }
 
-    private static Path format(String fileContent, File folder) {
-        String sourceFile = MAIN_GEN_PROTO_LOCATION + "/TestSource.java";
+    private static Path createAndFormatFile(String fileContent, File folder, String fileName) {
+        String sourceFile = MAIN_GEN_PROTO_LOCATION + '/' + fileName;
 
         executeTask(sourceFile, folder, fileContent);
 

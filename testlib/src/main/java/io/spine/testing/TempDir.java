@@ -26,13 +26,20 @@
 
 package io.spine.testing;
 
+import io.spine.code.java.PackageName;
+import io.spine.io.Files2;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.FileAttribute;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.io.Files2.deleteRecursivelyOnShutdownHook;
+import static io.spine.io.Files2.ensureDirectory;
+import static io.spine.io.Files2.systemTempDir;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
@@ -43,8 +50,32 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  */
 public final class TempDir {
 
+    /**
+     * The directory under which all instances of this class will be created.
+     *
+     * <p>This directory is automatically deleted when JVM exists.
+     * Please see the {@code static} block below.
+     */
+    private static final Path baseDir;
+
+    static {
+        baseDir = createBaseDir();
+        deleteRecursivelyOnShutdownHook(baseDir);
+    }
+
     /** Prevents direct instantiation. */
     private TempDir() {
+    }
+
+    /**
+     * Creates a directory named after the package of this class under a directory
+     * specified by the {@link Files2#systemTempDir()}.
+     */
+    private static Path createBaseDir() {
+        String tmpDir = systemTempDir();
+        PackageName packageName = PackageName.of(TempDir.class);
+        Path baseDir = Paths.get(tmpDir, packageName.toString());
+        return ensureDirectory(baseDir);
     }
 
     /**
@@ -69,16 +100,13 @@ public final class TempDir {
     public static File withPrefix(String prefix, FileAttribute<?>... attrs) {
         checkNotNull(prefix);
         checkNotEmptyOrBlank(prefix);
-        @SuppressWarnings("AccessOfSystemProperties")
-        File baseDir = new File(System.getProperty("java.io.tmpdir"));
-        Path directory;
         try {
-            directory = Files.createTempDirectory(baseDir.toPath(), prefix, attrs);
-            File asFile = directory.toFile();
-            asFile.deleteOnExit();
-            return asFile;
+            Path directory = Files.createTempDirectory(baseDir, prefix, attrs);
+            return directory.toFile();
         } catch (IOException e) {
-            throw newIllegalStateException(e, "Unable to create temp dir under `%s`.", baseDir);
+            throw newIllegalStateException(
+                    e, "Unable to create temp dir under `%s` (prefix: `%s`).", baseDir, prefix
+            );
         }
     }
 

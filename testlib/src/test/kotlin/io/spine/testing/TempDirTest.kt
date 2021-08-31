@@ -24,39 +24,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc.style;
+package io.spine.testing
 
-import io.spine.logging.Logging;
+import com.google.common.truth.Truth.assertThat
+import io.spine.code.java.PackageName
+import io.spine.io.Files2
+import java.io.File
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
+class `'TempDir' should` {
 
-/**
- * A {@code FileVisitor} for formatting files.
- */
-final class FormattingFileVisitor extends SimpleFileVisitor<Path> implements Logging {
-
-    private final JavadocFormatter formatter;
-
-    FormattingFileVisitor(JavadocFormatter formatter) {
-        super();
-        this.formatter = formatter;
+    companion object {
+        const val prefix = "TempDirTest"
+        val tempDir: File = TempDir.withPrefix(prefix)
     }
 
-    @Override
-    public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
-        _debug().log("Performing formatting for the file: `%s`.", path);
-        formatter.format(path);
-        return FileVisitResult.CONTINUE;
+    @Nested
+    inner class `be created under the directory ` {
+
+        @Test
+        fun `from the 'System' property 'java-dot-io-dot-tmpdir'`() {
+            assertThat(tempDir.toString())
+                .contains(Files2.systemTempDir())
+        }
+
+        @Test
+        fun `named after the package of 'TempDir' class`() {
+            assertThat(tempDir.toString())
+                .contains(PackageName.of(TempDir::class.java).toString())
+        }
     }
 
-    @Override
-    public FileVisitResult visitFileFailed(Path file, IOException exc) {
-        _error().withCause(exc)
-                .log("Error walking down the file tree for file: `%s`.", file);
-        return FileVisitResult.TERMINATE;
+    @Test
+    fun `create an instance serving a test suite class`() {
+        val thisClass = javaClass
+        val tempDir = TempDir.forClass(thisClass)
+        assertThat(tempDir.toString())
+            .contains(thisClass.simpleName)
     }
 }

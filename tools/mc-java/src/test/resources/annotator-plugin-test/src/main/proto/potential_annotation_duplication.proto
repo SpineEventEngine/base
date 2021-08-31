@@ -32,6 +32,6 @@ import "spine/options.proto";
 option (internal_all) = true;
 option java_multiple_files = true;
 
-message First {
+message FirstOutOfMany {
     option (internal_type) = true;
 }

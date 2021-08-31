@@ -115,7 +115,6 @@ public final class ExternalModule {
      * <a href="https://github.com/SpineEventEngine/web">The Spine Web</a> module.
      */
     public static ExternalModule spineWeb() {
-        @SuppressWarnings("DuplicateStringLiteralInspection") // also in test code.
         ImmutableList<DirectoryPattern> patterns = DirectoryPattern.listOf(
                 // Directories with handcrafted JS files.
                 "client/parser",

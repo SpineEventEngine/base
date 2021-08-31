@@ -31,9 +31,9 @@ import "spine/options.proto";
 
 option java_multiple_files = true;
 
-message First {
+message FirstHere {
     string value = 1;
 }
 
-service Service {
+service ServiceThere {
 }

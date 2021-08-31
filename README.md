@@ -7,7 +7,6 @@
 This repository contains the foundation of the Spine framework which includes the following modules:
 
 * **[`base`](base)** — the framework base data types and utilities for working with them.
-* **[`base-types`](base-types)** — commonly used data types and related utilities. 
 * **[`testlib`](testlib)** - utilities for testing.
 
 * **[`tools/javadoc-style`](tools/javadoc-style)** — a Gradle plugin which processes Javadocs of

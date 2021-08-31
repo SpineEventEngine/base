@@ -31,8 +31,8 @@ import "spine/options.proto";
 
 option (internal_all) = true;
 
-service First {
+service ServiceOne {
 }
 
-service Second {
+service ServiceTwo {
 }

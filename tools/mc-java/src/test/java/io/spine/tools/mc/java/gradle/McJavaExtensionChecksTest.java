@@ -23,51 +23,58 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package io.spine.tools.mc.java.gradle;
 
-import io.spine.testing.UtilityClassTest;
+import io.spine.testing.TempDir;
 import io.spine.tools.mc.java.gradle.given.StubProject;
 import org.gradle.api.Project;
-import org.gradle.api.artifacts.Configuration;
-import org.gradle.api.artifacts.ConfigurationContainer;
-import org.junit.jupiter.api.BeforeAll;
+import org.gradle.api.artifacts.dsl.RepositoryHandler;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static io.spine.tools.mc.java.gradle.McJavaExtension.getSpineCheckSeverity;
+import static io.spine.tools.mc.java.gradle.given.ModelCompilerTestEnv.MC_JAVA_GRADLE_PLUGIN_ID;
 
-@DisplayName("`AnnotationProcessorConfiguration` should")
-class AnnotationProcessorConfigurationTest
-        extends UtilityClassTest<AnnotationProcessorConfiguration> {
+@DisplayName("`McJavaExtension` for checks should return")
+class McJavaExtensionChecksTest {
 
-    private static Project project = null;
-    private static ConfigurationContainer configurations = null;
-    private static Configuration preprocessorConfig = null;
+    private Project project = null;
 
-    AnnotationProcessorConfigurationTest() {
-        super(AnnotationProcessorConfiguration.class);
-    }
-
-    @BeforeAll
-    static void createProject() {
-        project = StubProject.createFor(AnnotationProcessorConfigurationTest.class).get();
-        configurations = project.getConfigurations();
-        preprocessorConfig = configurations.getByName(annotationProcessor.value());
+    @BeforeEach
+    void setUp() {
+        File projectDir = TempDir.forClass(McJavaExtensionChecksTest.class);
+        project = StubProject.createAt(projectDir);
+        RepositoryHandler repositories = project.getRepositories();
+        repositories.mavenLocal();
+        repositories.mavenCentral();
+        project.getPluginManager()
+               .apply(MC_JAVA_GRADLE_PLUGIN_ID);
     }
 
     @Test
-    @DisplayName("create annotation processor config if it does not exist")
-    void createAndReturnAnnotationProcessorConfigIfItDoesNotExist() {
-        configurations.remove(preprocessorConfig);
-        assertThat(configurations.findByName(annotationProcessor.value()))
-                .isNull();
+    @DisplayName("severity, if set")
+    void specifiedValue() {
+        spineProtobuf().defaultCheckSeverity = Severity.ERROR;
+        Severity actualSeverity = getSpineCheckSeverity(project);
 
-        Configuration cfg = AnnotationProcessorConfiguration.findOrCreateIn(project);
-        Configuration found = configurations.findByName(annotationProcessor.value());
-        assertThat(cfg)
-                .isEqualTo(found);
+        assertThat(actualSeverity)
+                .isEqualTo(spineProtobuf().defaultCheckSeverity);
+    }
+
+    @Test
+    @DisplayName("`null`, if not set")
+    void nullValue() {
+        Severity actualSeverity = getSpineCheckSeverity(project);
+        assertThat(actualSeverity)
+                .isNull();
+    }
+
+    private McJavaExtension spineProtobuf() {
+        return (McJavaExtension) project.getExtensions()
+                                        .getByName(McJavaPlugin.extensionName());
     }
 }

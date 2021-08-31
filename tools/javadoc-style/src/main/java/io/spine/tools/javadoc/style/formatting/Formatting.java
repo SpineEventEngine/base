@@ -23,14 +23,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-syntax = "proto3";
 
-package spine.test.annotator;
+package io.spine.tools.javadoc.style.formatting;
 
-import "spine/options.proto";
+/**
+ * A formatting action applied to a piece of source code.
+ */
+public interface Formatting {
 
-option java_multiple_files = true;
-
-message ExperimentalTwo {
-    option (internal_type) = true;
+    /**
+     * Obtains the formatted representation of the specified text.
+     *
+     * <p>The specified text may contain line separators.
+     *
+     * @param text
+     *         the text to format
+     * @return the formatted text
+     */
+    String apply(String text);
 }

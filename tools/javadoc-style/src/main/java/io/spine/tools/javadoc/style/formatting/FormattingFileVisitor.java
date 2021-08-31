@@ -23,14 +23,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-syntax = "proto3";
 
-package spine.test.annotator;
+package io.spine.tools.javadoc.style.formatting;
 
-import "spine/options.proto";
+import io.spine.logging.Logging;
 
-option java_multiple_files = true;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 
-message ExperimentalTwo {
-    option (internal_type) = true;
+/**
+ * A {@code FileVisitor} for formatting files.
+ */
+final class FormattingFileVisitor extends SimpleFileVisitor<Path> implements Logging {
+
+    private final JavadocStyler formatter;
+
+    public FormattingFileVisitor(JavadocStyler formatter) {
+        super();
+        this.formatter = formatter;
+    }
+
+    @Override
+    public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
+        _debug().log("Performing formatting for the file: `%s`.", path);
+        formatter.format(path);
+        return FileVisitResult.CONTINUE;
+    }
+
+    @Override
+    public FileVisitResult visitFileFailed(Path file, IOException exc) {
+        _error().withCause(exc)
+                .log("Error walking down the file tree for file: `%s`.", file);
+        return FileVisitResult.TERMINATE;
+    }
 }

@@ -35,20 +35,23 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+
 import static io.spine.tools.gradle.BaseTaskName.build;
 import static io.spine.tools.mc.js.gradle.McJsTaskName.generateJsonParsers;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@DisplayName("ProtoJsPlugin should")
+@DisplayName("`McJsPlugin` should")
 class McJsPluginTest {
 
     private Project project;
 
     @BeforeEach
     void setUp() {
+        File tempDir = TempDir.forClass(getClass());
         project = ProjectBuilder.builder()
-                                .withProjectDir(TempDir.withPrefix("js-plugin-test"))
-                                .build();
+                .withProjectDir(tempDir)
+                .build();
         project.task(build.name());
     }
 

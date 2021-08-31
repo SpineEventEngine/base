@@ -25,13 +25,11 @@
  */
 
 /**
- * This package provides the Gradle plugin for
- * Javadocs formatting in generated Protobuf declarations.
+ * This package contains the logic of formatting the generated Javadoc code.
  */
-
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.javadoc.style;
+package io.spine.tools.javadoc.style.formatting;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

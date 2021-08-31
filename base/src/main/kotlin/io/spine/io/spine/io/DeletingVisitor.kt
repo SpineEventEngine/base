@@ -23,14 +23,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-syntax = "proto3";
 
-package spine.test.annotator;
+package io.spine.io.spine.io
 
-import "spine/options.proto";
+import java.io.IOException
+import java.nio.file.FileVisitResult
+import java.nio.file.FileVisitResult.CONTINUE
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.SimpleFileVisitor
+import java.nio.file.attribute.BasicFileAttributes
+import kotlin.io.path.deleteIfExists
 
-option java_multiple_files = true;
+/**
+ * The visitor which deletes all the files under a directory, and then the directory itself.
+ *
+ * Usage:
+ *
+ * ```
+ * Files.walkFileTree(path, DeletingVisitor())
+ * ```
+ */
+class DeletingVisitor: SimpleFileVisitor<Path>() {
 
-message ExperimentalTwo {
-    option (internal_type) = true;
+    override fun visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult {
+        Files.delete(file)
+        return CONTINUE
+    }
+
+    override fun postVisitDirectory(dir: Path, e: IOException?): FileVisitResult {
+        dir.toFile().deleteRecursively()
+        if (e == null) {
+            Files.delete(dir)
+            return CONTINUE
+        }
+        // Directory iteration failed.
+        throw e
+    }
 }

@@ -24,30 +24,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc.style;
+package io.spine.tools.javadoc.style.formatting;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.javadoc.style.BacktickFormatting.wrapWithCodeTag;
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.string.Diags.backtick;
+import static io.spine.testing.TestValues.randomString;
+import static io.spine.tools.javadoc.style.formatting.BacktickedToCode.wrapWithCodeTag;
 import static java.lang.System.lineSeparator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("`BacktickFormatting` should")
-class BacktickFormattingTest {
+@DisplayName("`BacktickedToCode` should")
+class BacktickedToCodeTest {
 
-    private static final char BACKTICK = '`';
-    private static final String TEXT = "true";
+    private static final String TEXT = randomString("Random-text-");
     private static final String TEXT_IN_CODE_TAG = wrapWithCodeTag(TEXT);
-    private static final String TEXT_IN_BACKTICKS = BACKTICK + TEXT + BACKTICK;
+    private static final String TEXT_IN_BACKTICKS = backtick(TEXT);
 
-    private final FormattingAction formatting = new BacktickFormatting();
+    private final Formatting formatting = new BacktickedToCode();
 
     @Test
     @DisplayName("surround text in backticks with {@code }")
     void backticks() {
-        String result = formatting.execute(TEXT_IN_BACKTICKS);
-        assertEquals(TEXT_IN_CODE_TAG, result);
+        String result = formatting.apply(TEXT_IN_BACKTICKS);
+        assertThat(result)
+                .isEqualTo(TEXT_IN_CODE_TAG);
     }
 
     @Test
@@ -56,17 +59,23 @@ class BacktickFormattingTest {
         String separatingPart = " some other text ";
         String source = TEXT_IN_BACKTICKS + separatingPart + TEXT_IN_BACKTICKS;
         String expected = TEXT_IN_CODE_TAG + separatingPart + TEXT_IN_CODE_TAG;
-        assertEquals(expected, formatting.execute(source));
+
+        String formatted = formatting.apply(source);
+        assertThat(formatted)
+                .isEqualTo(expected);
     }
 
     @Test
     @DisplayName("not handle multiline text surrounded with backticks")
     void multilineText() {
-        String lineWithOpeningBacktick = BACKTICK + TEXT;
-        String lineWithClosingBacktick = TEXT + BACKTICK;
-        String multiLinedText = lineWithOpeningBacktick + lineSeparator()
-                + lineWithClosingBacktick;
-        assertEquals(multiLinedText, formatting.execute(multiLinedText));
+        String multilineText =
+                '`' + randomString()
+                        + lineSeparator()
+                        + randomString() + '`';
+
+        String formatted = formatting.apply(multilineText);
+        assertThat(formatted)
+                .isEqualTo(multilineText);
     }
 
     /**
@@ -77,8 +86,8 @@ class BacktickFormattingTest {
     @Test
     @DisplayName("escape replacement for matcher")
     void escapeReplacement() {
-        String dollarInBackticks = BACKTICK + "$" + BACKTICK;
-        String result = formatting.execute(dollarInBackticks);
+        String dollarInBackticks = "`$`";
+        String result = formatting.apply(dollarInBackticks);
         assertEquals("{@code $}", result);
     }
 }

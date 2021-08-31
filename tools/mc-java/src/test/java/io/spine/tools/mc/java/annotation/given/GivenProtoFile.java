@@ -28,26 +28,43 @@ package io.spine.tools.mc.java.annotation.given;
 
 import io.spine.code.proto.FileName;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static com.google.common.collect.ImmutableList.toImmutableList;
+
 /**
  * Test proto file names.
  *
  * See {@code resources/annotator-plugin-test/src/main/proto/} directory for the files.
  */
-public class GivenProtoFile {
+public enum GivenProtoFile {
 
-    public static final FileName NO_INTERNAL_OPTIONS = FileName.of("no_internal_options.proto");
-    public static final FileName NO_INTERNAL_OPTIONS_MULTIPLE = FileName.of("no_internal_options_multiple.proto");
-    public static final FileName INTERNAL_ALL = FileName.of("internal_all.proto");
-    public static final FileName INTERNAL_ALL_SERVICE = FileName.of("internal_all_service.proto");
-    public static final FileName INTERNAL_ALL_MULTIPLE = FileName.of("internal_all_multiple.proto");
-    public static final FileName INTERNAL_MESSAGE = FileName.of("internal_message.proto");
-    public static final FileName INTERNAL_MESSAGE_MULTIPLE = FileName.of("internal_message_multiple.proto");
-    public static final FileName INTERNAL_FIELD = FileName.of("internal_field.proto");
-    public static final FileName INTERNAL_FIELD_MULTIPLE = FileName.of("internal_field_multiple.proto");
-    public static final FileName SPI_SERVICE = FileName.of("spi_service.proto");
-    public static final FileName POTENTIAL_ANNOTATION_DUP = FileName.of("potential_annotation_duplication.proto");
+    NO_INTERNAL_OPTIONS("no_internal_options.proto"),
+    NO_INTERNAL_OPTIONS_MULTIPLE("no_internal_options_multiple.proto"),
+    INTERNAL_ALL("internal_all.proto"),
+    INTERNAL_ALL_SERVICE("internal_all_service.proto"),
+    INTERNAL_ALL_MULTIPLE("internal_all_multiple.proto"),
+    INTERNAL_MESSAGE("internal_message.proto"),
+    INTERNAL_MESSAGE_MULTIPLE("internal_message_multiple.proto"),
+    INTERNAL_FIELD("internal_field.proto"),
+    INTERNAL_FIELD_MULTIPLE("internal_field_multiple.proto"),
+    SPI_SERVICE("spi_service.proto"),
+    POTENTIAL_ANNOTATION_DUP("potential_annotation_duplication.proto");
 
-    /** Prevent instantiation of this utility class. */
-    private GivenProtoFile() {
+    private final FileName fileName;
+
+    GivenProtoFile(String value) {
+        this.fileName = FileName.of(value);
+    }
+
+    public FileName fileName() {
+        return fileName;
+    }
+
+    public static List<String> names() {
+        return Arrays.stream(values())
+                     .map(item -> item.fileName.value())
+                     .collect(toImmutableList());
     }
 }

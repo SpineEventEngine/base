@@ -24,20 +24,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc.style;
+package io.spine.tools.javadoc.style.formatting;
 
-/**
- * A formatting action, that formats a {@code String}.
- */
-interface FormattingAction {
+import com.google.common.base.Joiner;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import java.util.Collections;
+
+import static com.google.common.truth.Truth.assertThat;
+import static java.lang.System.lineSeparator;
+
+@DisplayName("`ByLineFormatting` should")
+class ByLineFormattingTest {
+
+    private final Formatting formatting = new NoOpFormatting();
+
+    @Test
+    @DisplayName("merge lines")
+    void mergeLines() {
+        String lineText = "a text in a single line";
+        int lineCount = 5;
+        Iterable<String> lines = Collections.nCopies(lineCount, lineText);
+        String expectedLines = Joiner.on(lineSeparator())
+                                     .join(lines);
+
+        String formattedLines = formatting.apply(expectedLines);
+
+        assertThat(formattedLines)
+                .isEqualTo(expectedLines);
+    }
 
     /**
-     * Obtains the formatted representation of the specified text.
-     *
-     * <p>The specified text may contain line separators.
-     *
-     * @param text the text to format
-     * @return the formatted text
+     * A stub formatting which simply returns the passed line.
      */
-    String execute(String text);
+    private static class NoOpFormatting extends ByLineFormatting {
+
+        @Override
+        String formatLine(String line) {
+            return line;
+        }
+    }
 }

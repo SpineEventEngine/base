@@ -34,21 +34,22 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
-import io.spine.testing.TempDir;
-import io.spine.tools.java.fs.DefaultJavaPaths;
-import io.spine.tools.java.fs.SourceFile;
 import io.spine.code.proto.FileName;
 import io.spine.code.proto.FileSet;
+import io.spine.testing.TempDir;
+import io.spine.tools.gradle.testing.GradleProject;
+import io.spine.tools.java.fs.DefaultJavaPaths;
+import io.spine.tools.java.fs.SourceFile;
 import io.spine.tools.mc.java.annotation.check.FieldAnnotationCheck;
 import io.spine.tools.mc.java.annotation.check.MainDefinitionAnnotationCheck;
 import io.spine.tools.mc.java.annotation.check.NestedTypeFieldsAnnotationCheck;
 import io.spine.tools.mc.java.annotation.check.NestedTypesAnnotationCheck;
 import io.spine.tools.mc.java.annotation.check.SourceCheck;
-import io.spine.tools.gradle.testing.GradleProject;
+import io.spine.tools.mc.java.annotation.given.GivenProtoFile;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -62,6 +63,7 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.code.proto.FileDescriptors.DESC_EXTENSION;
+import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.java.fs.SourceFile.forMessage;
 import static io.spine.tools.java.fs.SourceFile.forOuterClassOf;
 import static io.spine.tools.java.fs.SourceFile.forService;
@@ -76,20 +78,24 @@ import static io.spine.tools.mc.java.annotation.given.GivenProtoFile.NO_INTERNAL
 import static io.spine.tools.mc.java.annotation.given.GivenProtoFile.NO_INTERNAL_OPTIONS_MULTIPLE;
 import static io.spine.tools.mc.java.annotation.given.GivenProtoFile.POTENTIAL_ANNOTATION_DUP;
 import static io.spine.tools.mc.java.annotation.given.GivenProtoFile.SPI_SERVICE;
-import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.mc.java.gradle.McJavaTaskName.annotateProto;
 
-@SuppressWarnings("MethodOnlyUsedFromInnerClass") // to overcome false positive warning in IDEA.
 @DisplayName("`AnnotatorPlugin` should")
 class AnnotatorPluginTest {
 
     private static final String PROJECT_NAME = "annotator-plugin-test";
 
-    private File testProjectDir;
+    private static File testProjectDir = null;
 
-    @BeforeEach
-    void createTempDir() {
-        testProjectDir = TempDir.forClass(getClass());
+    @BeforeAll
+    static void compileProject() {
+        testProjectDir = TempDir.forClass(AnnotatorPluginTest.class);
+        GradleProject project = GradleProject.newBuilder()
+                .setProjectName(PROJECT_NAME)
+                .setProjectFolder(testProjectDir)
+                .addProtoFiles(GivenProtoFile.names())
+                .build();
+        project.executeTask(annotateProto);
     }
 
     @Nested
@@ -141,7 +147,7 @@ class AnnotatorPluginTest {
         @Test
         @DisplayName("GRPC services if service option is true")
         void grpcServices() throws IOException {
-            checkServiceAnnotations(SPI_SERVICE, SPI.class, true);
+            checkServiceAnnotations(SPI_SERVICE.fileName(), SPI.class, true);
         }
     }
 
@@ -201,19 +207,25 @@ class AnnotatorPluginTest {
     @Test
     @DisplayName("compile generated source with potential annotation duplication")
     void compilingSources() {
-        newProjectWithFile(POTENTIAL_ANNOTATION_DUP).executeTask(compileJava);
+        File tempDir = TempDir.forClass(AnnotatorPluginTest.class);
+        GradleProject project = GradleProject.newBuilder()
+                .setProjectName(PROJECT_NAME)
+                .setProjectFolder(tempDir)
+                .addProtoFile(POTENTIAL_ANNOTATION_DUP.fileName().value())
+                .build();
+        project.executeTask(compileJava);
     }
 
-    private void checkServiceAnnotations(FileName testFile, boolean shouldBeAnnotated)
+    private static void checkServiceAnnotations(GivenProtoFile testFile, boolean shouldBeAnnotated)
             throws IOException {
-        checkServiceAnnotations(testFile, Internal.class, shouldBeAnnotated);
+        checkServiceAnnotations(testFile.fileName(), Internal.class, shouldBeAnnotated);
     }
 
-    private void checkServiceAnnotations(FileName testFile,
-                                         Class<? extends Annotation> expectedAnnotation,
-                                         boolean shouldBeAnnotated)
+    private static void checkServiceAnnotations(FileName testFile,
+                                                Class<? extends Annotation> expectedAnnotation,
+                                                boolean shouldBeAnnotated)
             throws IOException {
-        FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
+        FileDescriptor fileDescriptor = descriptorOf(testFile);
         List<ServiceDescriptor> services = fileDescriptor.getServices();
         for (ServiceDescriptor serviceDescriptor : services) {
             SourceFile serviceFile =
@@ -224,9 +236,9 @@ class AnnotatorPluginTest {
         }
     }
 
-    private void checkFieldAnnotations(FileName testFile, boolean shouldBeAnnotated)
+    private static void checkFieldAnnotations(GivenProtoFile testFile, boolean shouldBeAnnotated)
             throws IOException {
-        FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
+        FileDescriptor fileDescriptor = descriptorOf(testFile.fileName());
         Descriptor messageDescriptor = fileDescriptor.getMessageTypes().get(0);
         Path sourcePath = forMessage(messageDescriptor.toProto(), fileDescriptor.toProto()).path();
         NestedTypeFieldsAnnotationCheck check =
@@ -234,18 +246,20 @@ class AnnotatorPluginTest {
         check(sourcePath, check);
     }
 
-    private void checkFieldAnnotationsMultiple(FileName testFile, boolean shouldBeAnnotated)
+    private static
+    void checkFieldAnnotationsMultiple(GivenProtoFile testFile, boolean shouldBeAnnotated)
             throws IOException {
-        FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
+        FileDescriptor fileDescriptor = descriptorOf(testFile.fileName());
         Descriptor messageDescriptor = fileDescriptor.getMessageTypes().get(0);
         FieldDescriptor experimentalField = messageDescriptor.getFields().get(0);
         Path sourcePath = forMessage(messageDescriptor.toProto(), fileDescriptor.toProto()).path();
         check(sourcePath, new FieldAnnotationCheck(experimentalField, shouldBeAnnotated));
     }
 
-    private void checkMainDefinitionAnnotations(FileName testFile, boolean shouldBeAnnotated)
+    private static
+    void checkMainDefinitionAnnotations(GivenProtoFile testFile, boolean shouldBeAnnotated)
             throws IOException {
-        FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
+        FileDescriptor fileDescriptor = descriptorOf(testFile.fileName());
         for (Descriptor messageDescriptor : fileDescriptor.getMessageTypes()) {
             DescriptorProto messageProto = messageDescriptor.toProto();
             DescriptorProtos.FileDescriptorProto fileProto = fileDescriptor.toProto();
@@ -255,14 +269,15 @@ class AnnotatorPluginTest {
         }
     }
 
-    private void checkNestedTypesAnnotations(FileName testFile, boolean shouldBeAnnotated)
+    private static
+    void checkNestedTypesAnnotations(GivenProtoFile testFile, boolean shouldBeAnnotated)
             throws IOException {
-        FileDescriptor fileDescriptor = compileAndAnnotate(testFile);
+        FileDescriptor fileDescriptor = descriptorOf(testFile.fileName());
         Path sourcePath = forOuterClassOf(fileDescriptor.toProto()).path();
         check(sourcePath, new NestedTypesAnnotationCheck(shouldBeAnnotated));
     }
 
-    private void check(Path sourcePath, SourceCheck check) throws IOException {
+    private static void check(Path sourcePath, SourceCheck check) throws IOException {
         Path filePath = DefaultJavaPaths.at(testProjectDir)
                                         .generated()
                                         .mainJava()
@@ -273,7 +288,7 @@ class AnnotatorPluginTest {
         check.accept(javaSource);
     }
 
-    private void checkGrpcService(SourceFile serviceFile, SourceCheck check)
+    private static void checkGrpcService(SourceFile serviceFile, SourceCheck check)
             throws IOException {
         Path fullPath = DefaultJavaPaths.at(testProjectDir)
                                         .generated()
@@ -285,26 +300,7 @@ class AnnotatorPluginTest {
         check.accept(javaSource);
     }
 
-    /*
-     * Test environment setup
-     ************************************/
-
-    private GradleProject newProjectWithFile(FileName protoFileName) {
-        return GradleProject.newBuilder()
-                            .setProjectName(PROJECT_NAME)
-                            .setProjectFolder(testProjectDir)
-                            .addProtoFile(protoFileName.value())
-                            .build();
-    }
-
-    private FileDescriptor compileAndAnnotate(FileName testFile) {
-        GradleProject gradleProject = newProjectWithFile(testFile);
-        gradleProject.executeTask(annotateProto);
-        FileDescriptor result = getDescriptor(testFile);
-        return result;
-    }
-
-    private FileDescriptor getDescriptor(FileName fileName) {
+    private static FileDescriptor descriptorOf(FileName testFile) {
         Path mainDescriptor = DefaultJavaPaths
                 .at(testProjectDir)
                 .buildRoot()
@@ -312,8 +308,9 @@ class AnnotatorPluginTest {
                 .mainDescriptors()
                 .resolve("io.spine.test_" + testProjectDir.getName() + "_3.14" + DESC_EXTENSION);
         FileSet fileSet = FileSet.parse(mainDescriptor.toFile());
-        Optional<FileDescriptor> file = fileSet.tryFind(fileName);
-        checkState(file.isPresent(), "Unable to get file descriptor for `%s`.", fileName);
-        return file.get();
+        Optional<FileDescriptor> file = fileSet.tryFind(testFile);
+        checkState(file.isPresent(), "Unable to get file descriptor for `%s`.", testFile);
+        FileDescriptor result = file.get();
+        return result;
     }
 }

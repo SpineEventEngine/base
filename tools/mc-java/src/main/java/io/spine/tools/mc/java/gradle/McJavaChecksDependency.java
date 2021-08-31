@@ -28,29 +28,21 @@ package io.spine.tools.mc.java.gradle;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import io.spine.logging.Logging;
 import io.spine.tools.gradle.DependencyVersions;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.DependencySet;
-import org.gradle.api.artifacts.ModuleIdentifier;
-import org.gradle.api.artifacts.ModuleVersionIdentifier;
 import org.gradle.api.artifacts.result.DependencyResult;
 import org.gradle.api.artifacts.result.ResolutionResult;
-import org.gradle.api.artifacts.result.ResolvedComponentResult;
-import org.gradle.api.artifacts.result.ResolvedDependencyResult;
 import org.gradle.api.artifacts.result.UnresolvedDependencyResult;
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency;
 
-import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
 import static java.lang.String.format;
 
@@ -135,30 +127,17 @@ public final class McJavaChecksDependency implements Logging {
     private class ResolutionHelper {
 
         private final ResolutionResult resolutionResult;
-        private final ModuleIdentifier checksModule;
 
         private ResolutionHelper() {
             Configuration configCopy = configuration.copy();
             addDependencyTo(configCopy);
             resolutionResult = configCopy.getIncoming()
                                          .getResolutionResult();
-            checksModule = checksDependency().getModule();
         }
 
         private boolean wasResolved() {
-            boolean wasResolved =
-                    allDeps().stream()
-                             .filter(ResolvedDependencyResult.class::isInstance)
-                             .map(DependencyResult::getFrom)
-                             .map(ResolvedComponentResult::getModuleVersion)
-                             .filter(Objects::nonNull)
-                             .map(ModuleVersionIdentifier::getModule)
-                             .anyMatch(checksModule::equals);
+            boolean wasResolved = unresolved().isEmpty();
             return wasResolved;
-        }
-
-        private Set<? extends DependencyResult> allDeps() {
-            return resolutionResult.getAllDependencies();
         }
 
         private ImmutableList<UnresolvedDependencyResult> unresolved() {
@@ -168,15 +147,13 @@ public final class McJavaChecksDependency implements Logging {
                             .collect(toImmutableList());
         }
 
+        private Set<? extends DependencyResult> allDeps() {
+            return resolutionResult.getAllDependencies();
+        }
+
         private void logUnresolved() {
-            ImmutableMap<String, Throwable> diags =
-                    unresolved().stream()
-                                .collect(toImmutableMap(
-                                        this::resultDisplayName,
-                                        UnresolvedDependencyResult::getFailure
-                                ));
             ImmutableList<String> problemReport =
-                    diags.entrySet()
+                    unresolved()
                          .stream()
                          .map(this::toErrorMessage)
                          .sorted()
@@ -194,9 +171,9 @@ public final class McJavaChecksDependency implements Logging {
                     .getDisplayName();
         }
 
-        private String toErrorMessage(Map.Entry<String, Throwable> entry) {
-            String dependency = entry.getKey();
-            Throwable throwable = entry.getValue();
+        private String toErrorMessage(UnresolvedDependencyResult entry) {
+            String dependency = entry.getAttempted().getDisplayName();
+            Throwable throwable = entry.getFailure();
             return format("%nDependency: `%s`%nProblem: `%s`", dependency, throwable);
         }
     }

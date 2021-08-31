@@ -27,11 +27,12 @@
 package io.spine.tools.mc.js.code.index;
 
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.proto.FileSet;
 import io.spine.tools.js.fs.Directory;
 import io.spine.tools.js.fs.FileName;
-import io.spine.code.proto.FileSet;
-import io.spine.tools.mc.js.code.given.GivenProject;
 import io.spine.tools.mc.js.code.CodeWriter;
+import io.spine.tools.mc.js.code.given.GivenProject;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -42,12 +43,20 @@ import static io.spine.tools.mc.js.code.given.Generators.assertContains;
 import static java.nio.file.Files.exists;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("GenerateIndexFile should")
+@DisplayName("`GenerateIndexFile` should")
 class GenerateIndexFileTest {
 
-    private final FileSet fileSet = GivenProject.mainFileSet();
-    private final Directory generatedProtoDir = GivenProject.mainProtoSources();
-    private final GenerateIndexFile task = new GenerateIndexFile(generatedProtoDir);
+    private static FileSet fileSet = null;
+    private static Directory generatedProtoDir = null;
+    private static GenerateIndexFile task = null;
+
+    @BeforeAll
+    static void compileProject() {
+        GivenProject project = GivenProject.serving(GenerateIndexFileTest.class);
+        fileSet = project.mainFileSet();
+        generatedProtoDir = project.mainProtoSources();
+        task = new GenerateIndexFile(generatedProtoDir);
+    }
 
     @Test
     @DisplayName("write known types map to JS file")
