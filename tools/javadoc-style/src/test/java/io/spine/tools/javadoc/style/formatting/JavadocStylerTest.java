@@ -28,12 +28,13 @@ package io.spine.tools.javadoc.style.formatting;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+import com.google.common.testing.NullPointerTester;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,6 +42,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.string.Diags.backtick;
 import static io.spine.tools.javadoc.style.formatting.BacktickedToCode.wrapWithCodeTag;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -50,19 +52,11 @@ import static java.nio.file.Files.write;
 @DisplayName("`JavadocFormatter` should")
 class JavadocStylerTest {
 
-    private static final char BACKTICK = '`';
     private static final String TEXT = "plain text";
     private static final String TEXT_IN_CODE_TAG = wrapWithCodeTag(TEXT);
-    private static final String TEXT_IN_BACKTICKS = BACKTICK + TEXT + BACKTICK;
-
-    private File folder;
+    private static final String TEXT_IN_BACKTICKS = backtick(TEXT);
 
     private final JavadocStyler styler = new JavadocStyler(new BacktickedToCode());
-
-    @BeforeEach
-    void setUp(@TempDir Path tempDirPath) {
-        folder = tempDirPath.toFile();
-    }
 
     @Test
     @DisplayName("handle only .java files")
@@ -72,43 +66,61 @@ class JavadocStylerTest {
     }
 
     @Test
-    @DisplayName("format Javadocs")
-    void formatJavadocs() throws Exception {
-        String javadoc = wrapAsJavadoc(TEXT_IN_BACKTICKS);
-        String expected = wrapAsJavadoc(TEXT_IN_CODE_TAG);
-        String formatted = applyFormatting(javadoc);
-
-        assertThat(formatted)
-                .isEqualTo(expected);
+    @DisplayName("handle null inputs")
+    void nullity() {
+        new NullPointerTester().testAllPublicStaticMethods(JavadocStyler.class);
+        new NullPointerTester().testAllPublicInstanceMethods(styler);
     }
 
-    @Test
-    @DisplayName("not format non-Javadoc text")
-    void notFormatNonJavadoc() throws Exception {
-        String formatted = applyFormatting(TEXT_IN_BACKTICKS);
-        assertThat(formatted)
-                .isEqualTo(TEXT_IN_BACKTICKS);
-    }
+    @Nested
+    class Formatting {
 
-    private static String wrapAsJavadoc(String javadocText) {
-        return "/** " + javadocText + " */";
-    }
+        private Path tempDir;
 
-    private String applyFormatting(String content) throws IOException {
-        Path path = createJavaFile();
-        write(path, ImmutableList.of(content));
+        @BeforeEach
+        void setUp(@TempDir Path tempDir) {
+            this.tempDir = tempDir;
+        }
 
-        styler.format(path);
+        @Test
+        @DisplayName("format Javadocs")
+        void formatJavadocs() throws Exception {
+            String javadoc = wrapAsJavadoc(TEXT_IN_BACKTICKS);
+            String expected = wrapAsJavadoc(TEXT_IN_CODE_TAG);
+            String formatted = applyFormatting(javadoc);
 
-        List<String> lines = readAllLines(path, UTF_8);
-        return Joiner.on(lineSeparator())
-                     .join(lines);
-    }
+            assertThat(formatted)
+                    .isEqualTo(expected);
+        }
 
-    private Path createJavaFile() throws IOException {
-        String fileName = "JavadocFormatter_test_file.java";
-        Path absoluteFilePath = Paths.get(folder.getAbsolutePath(), fileName);
-        Path filePath = Files.createFile(absoluteFilePath);
-        return filePath;
+        @Test
+        @DisplayName("not format non-Javadoc text")
+        void notFormatNonJavadoc() throws Exception {
+            String formatted = applyFormatting(TEXT_IN_BACKTICKS);
+            assertThat(formatted)
+                    .isEqualTo(TEXT_IN_BACKTICKS);
+        }
+
+        private String wrapAsJavadoc(String javadocText) {
+            return "/** " + javadocText + " */";
+        }
+
+        private String applyFormatting(String content) throws IOException {
+            Path path = createJavaFile();
+            write(path, ImmutableList.of(content));
+
+            styler.format(path);
+
+            List<String> lines = readAllLines(path, UTF_8);
+            return Joiner.on(lineSeparator())
+                         .join(lines);
+        }
+
+        private Path createJavaFile() throws IOException {
+            String fileName = "JavadocFormatter_test_file.java";
+            Path absoluteFilePath = tempDir.resolve(fileName);
+            Path filePath = Files.createFile(absoluteFilePath);
+            return filePath;
+        }
     }
 }

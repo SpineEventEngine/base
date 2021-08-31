@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -73,6 +74,7 @@ public final class JavadocStyler {
      * Improves the style for all Java files in the specified directory, including sub-directories.
      */
     public static void applyFormattingAt(Path directory) {
+        checkNotNull(directory);
         if (!Files.exists(directory)) {
             logger.atWarning()
                   .log("Cannot perform formatting. The directory `%s` does not exist.", directory);
@@ -95,6 +97,7 @@ public final class JavadocStyler {
      * @param file the path to the file
      */
     void format(Path file) throws IOException {
+        checkNotNull(file);
         if (!FileName.isJava(file)) {
             return;
         }
