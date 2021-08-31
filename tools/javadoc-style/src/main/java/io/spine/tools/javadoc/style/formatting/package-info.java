@@ -24,45 +24,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc.style;
+/**
+ * This package contains the logic of formatting the generated Javadoc code.
+ */
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.javadoc.style.formatting;
 
-import com.google.common.base.Joiner;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-import java.util.Collections;
-
-import static com.google.common.truth.Truth.assertThat;
-import static java.lang.System.lineSeparator;
-
-@DisplayName("`LineFormatting` should")
-class LineFormattingTest {
-
-    private final FormattingAction formatting = new NoOpFormatting();
-
-    @Test
-    @DisplayName("merge lines")
-    void mergeLines() {
-        String lineText = "a text in a single line";
-        int lineCount = 5;
-        Iterable<String> lines = Collections.nCopies(lineCount, lineText);
-        String expectedLines = Joiner.on(lineSeparator())
-                                     .join(lines);
-
-        String formattedLines = formatting.execute(expectedLines);
-
-        assertThat(formattedLines)
-                .isEqualTo(expectedLines);
-    }
-
-    /**
-     * A stub formatting which simply returns the passed line.
-     */
-    private static class NoOpFormatting extends LineFormatting {
-
-        @Override
-        String formatLine(String line) {
-            return line;
-        }
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

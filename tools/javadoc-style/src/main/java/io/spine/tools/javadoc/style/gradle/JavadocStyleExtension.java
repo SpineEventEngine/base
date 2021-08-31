@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc.style;
+package io.spine.tools.javadoc.style.gradle;
 
 import io.spine.logging.Logging;
 import org.checkerframework.checker.nullness.qual.Nullable;

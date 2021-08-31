@@ -24,42 +24,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc.style;
+package io.spine.tools.javadoc.style.gradle;
 
-import com.google.common.base.Splitter;
-
-import static java.lang.System.lineSeparator;
-import static java.util.stream.Collectors.joining;
+import io.spine.annotation.Internal;
+import io.spine.tools.gradle.TaskName;
 
 /**
- * A {@link FormattingAction}, that formats lines independently of each other.
+ * Names of Gradle tasks defined by the Javadoc Prettifier plugin.
  */
-abstract class LineFormatting implements FormattingAction {
-
-    private static final Splitter splitter = Splitter.on(lineSeparator());
-
-    /**
-     * Obtains the formatted representation of the specified text.
-     *
-     * <p>The text will be split and lines will be formatted independently from each other.
-     *
-     * @param text the text to format
-     * @return the formatted text
-     */
-    @Override
-    public String execute(String text) {
-        String result =
-                splitter.splitToStream(text)
-                        .map(this::formatLine)
-                        .collect(joining(lineSeparator()));
-        return result;
-    }
+@Internal
+public enum JavadocStyleTaskName implements TaskName {
 
     /**
-     * Obtains the formatted representation of the specified line.
-     *
-     * @param line the single line without line separators
-     * @return the formatted representation
+     * Formats the Javadoc in sources generated from {@code .proto} files in the {@code main} scope.
      */
-    abstract String formatLine(String line);
+    formatProtoDoc,
+
+    /**
+     * Formats the Javadoc in sources generated from {@code .proto} files in the {@code test} scope.
+     */
+    formatTestProtoDoc
 }

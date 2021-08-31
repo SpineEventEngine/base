@@ -24,14 +24,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc.style;
+package io.spine.tools.javadoc.style.gradle;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.gradle.testing.GradleProject;
-import org.gradle.api.Project;
-import org.gradle.testfixtures.ProjectBuilder;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -43,19 +40,9 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.tools.gradle.JavaTaskName.compileJava;
-import static io.spine.tools.gradle.JavaTaskName.compileTestJava;
-import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
-import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
-import static io.spine.tools.gradle.TaskDependencies.dependsOn;
-import static io.spine.tools.javadoc.style.BacktickFormatting.BACKTICK;
-import static io.spine.tools.javadoc.style.JavadocStyleTaskName.formatProtoDoc;
-import static io.spine.tools.javadoc.style.PreTagFormatting.CLOSING_PRE;
-import static io.spine.tools.javadoc.style.PreTagFormatting.OPENING_PRE;
+import static io.spine.tools.javadoc.style.gradle.JavadocStyleTaskName.formatProtoDoc;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("`JavadocStylePlugin` should format generated Javadoc sources with")
 class JavadocStylePluginFormattingTest {
@@ -67,14 +54,12 @@ class JavadocStylePluginFormattingTest {
      */
     private static final String MAIN_GEN_PROTO_LOCATION = "generated/main/java";
 
-    private static final String PLUGIN_ID = "io.spine.javadoc-style";
-
     @Test
     @DisplayName("single-line code snippet")
     void formatGeneratedJavaSources(@TempDir Path testProjectDir) throws IOException {
         String text = "javadoc text";
         String generatedFieldDescription = " <code>field description</code>";
-        String textInPreTags = OPENING_PRE + text + CLOSING_PRE + generatedFieldDescription;
+        String textInPreTags = "<pre>" + text + "</pre>" + generatedFieldDescription;
         String expected = singleLineJavadoc(text + generatedFieldDescription);
         String javadocToFormat = singleLineJavadoc(textInPreTags);
         formatAndAssert(expected,
@@ -86,7 +71,7 @@ class JavadocStylePluginFormattingTest {
     @Test
     @DisplayName("multi-line code snippet")
     void handleMultilineCodeSnippetsProperly(@TempDir Path testProjectDir) throws IOException {
-        String protoDoc = multilineJavadoc(BACKTICK, BACKTICK);
+        String protoDoc = multilineJavadoc("`", "`");
         String javadoc = multilineJavadoc("{@code ", "}");
 
         formatAndAssert(javadoc,

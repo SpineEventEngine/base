@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc.style;
+package io.spine.tools.javadoc.style.formatting;
 
 import io.spine.logging.Logging;
 
@@ -39,9 +39,9 @@ import java.nio.file.attribute.BasicFileAttributes;
  */
 final class FormattingFileVisitor extends SimpleFileVisitor<Path> implements Logging {
 
-    private final JavadocFormatter formatter;
+    private final JavadocStyler formatter;
 
-    FormattingFileVisitor(JavadocFormatter formatter) {
+    public FormattingFileVisitor(JavadocStyler formatter) {
         super();
         this.formatter = formatter;
     }

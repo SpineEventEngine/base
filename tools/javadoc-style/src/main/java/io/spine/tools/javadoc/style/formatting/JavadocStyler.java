@@ -24,17 +24,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc.style;
+package io.spine.tools.javadoc.style.formatting;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.google.common.flogger.FluentLogger;
 import io.spine.tools.java.fs.FileName;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.delete;
@@ -43,33 +48,56 @@ import static java.nio.file.Files.newBufferedReader;
 import static java.nio.file.Files.newBufferedWriter;
 
 /**
- * A formatter for Javadocs.
- *
- * <p>The formatter executes {@linkplain FormattingAction formatting actions}
- * for the Javadoc lines in a source file.
+ * Improves the style of Javadoc code by applying the passed formatting actions.
  */
-final class JavadocFormatter {
+public final class JavadocStyler {
 
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
     private static final String TEMP_FILE_NAME = "temp_file_for_formatting.java";
 
     /** Formatting actions to perform. */
-    private final ImmutableList<FormattingAction> actions;
+    private final ImmutableList<Formatting> actions;
 
     /**
      * Creates an instance with the passed formatting actions.
      */
-    JavadocFormatter(FormattingAction... actions) {
+    @VisibleForTesting
+    JavadocStyler(Formatting... actions) {
         this.actions = ImmutableList.copyOf(actions);
+    }
+
+    private static JavadocStyler newStyler() {
+        return new JavadocStyler(new BacktickedToCode(), new RemovePreTags());
+    }
+
+    /**
+     * Improves the style for all Java files in the specified directory, including sub-directories.
+     */
+    public static void applyFormattingAt(Path directory) {
+        checkNotNull(directory);
+        if (!Files.exists(directory)) {
+            logger.atWarning()
+                  .log("Cannot perform formatting. The directory `%s` does not exist.", directory);
+            return;
+        }
+        try {
+            logger.atFine()
+                  .log("Starting Javadocs formatting in `%s`.", directory);
+            Files.walkFileTree(directory, new FormattingFileVisitor(newStyler()));
+        } catch (IOException e) {
+            throw newIllegalStateException(e, "Failed to format the sources in `%s`.", directory);
+        }
     }
 
     /**
      * Formats the Javadocs in the file with the specified path.
      *
-     * <p>If the file is not a {@code .java} source, does noting.
+     * <p>If the file is not a {@code .java} source, does nothing.
      *
      * @param file the path to the file
      */
     void format(Path file) throws IOException {
+        checkNotNull(file);
         if (!FileName.isJava(file)) {
             return;
         }
@@ -158,8 +186,8 @@ final class JavadocFormatter {
      */
     private String applyActions(String text) {
         String currentState = text;
-        for (FormattingAction formatting : actions) {
-            currentState = formatting.execute(currentState);
+        for (Formatting formatting : actions) {
+            currentState = formatting.apply(currentState);
         }
         return currentState;
     }

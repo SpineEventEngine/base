@@ -24,24 +24,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.javadoc.style;
-
-import io.spine.annotation.Internal;
-import io.spine.tools.gradle.TaskName;
+package io.spine.tools.javadoc.style.formatting;
 
 /**
- * Names of Gradle tasks defined by the Javadoc Prettifier plugin.
+ * A formatting action applied to a piece of source code.
  */
-@Internal
-public enum JavadocStyleTaskName implements TaskName {
+public interface Formatting {
 
     /**
-     * Formats the Javadoc in sources generated from {@code .proto} files in the {@code main} scope.
+     * Obtains the formatted representation of the specified text.
+     *
+     * <p>The specified text may contain line separators.
+     *
+     * @param text
+     *         the text to format
+     * @return the formatted text
      */
-    formatProtoDoc,
-
-    /**
-     * Formats the Javadoc in sources generated from {@code .proto} files in the {@code test} scope.
-     */
-    formatTestProtoDoc
+    String apply(String text);
 }

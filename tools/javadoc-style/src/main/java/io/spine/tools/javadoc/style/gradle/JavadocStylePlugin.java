@@ -23,26 +23,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.javadoc.style;
+package io.spine.tools.javadoc.style.gradle;
 
 import io.spine.tools.gradle.SpinePlugin;
+import io.spine.tools.javadoc.style.formatting.JavadocStyler;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static io.spine.tools.gradle.JavaTaskName.compileJava;
 import static io.spine.tools.gradle.JavaTaskName.compileTestJava;
 import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
 import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
-import static io.spine.tools.javadoc.style.JavadocStyleExtension.getAbsoluteMainGenProtoDir;
-import static io.spine.tools.javadoc.style.JavadocStyleExtension.getAbsoluteTestGenProtoDir;
-import static io.spine.tools.javadoc.style.JavadocStyleTaskName.formatProtoDoc;
-import static io.spine.tools.javadoc.style.JavadocStyleTaskName.formatTestProtoDoc;
-import static io.spine.util.Exceptions.newIllegalStateException;
+import static io.spine.tools.javadoc.style.gradle.JavadocStyleExtension.getAbsoluteMainGenProtoDir;
+import static io.spine.tools.javadoc.style.gradle.JavadocStyleExtension.getAbsoluteTestGenProtoDir;
+import static io.spine.tools.javadoc.style.gradle.JavadocStyleTaskName.formatProtoDoc;
+import static io.spine.tools.javadoc.style.gradle.JavadocStyleTaskName.formatTestProtoDoc;
 
 /**
  * The plugin, that formats Javadocs in sources generated from {@code .proto} files.
@@ -90,28 +89,14 @@ public class JavadocStylePlugin extends SpinePlugin {
         JavadocStyleExtension.createIn(project);
     }
 
-    private Action<Task> createAction(Project project, TaskType taskType) {
+    private static Action<Task> createAction(Project project, TaskType taskType) {
         return task -> formatJavadocs(project, taskType);
     }
 
-    private void formatJavadocs(Project project, TaskType taskType) {
+    private static void formatJavadocs(Project project, TaskType taskType) {
         String genProtoDir = taskType.getGenProtoDir(project);
-        File file = new File(genProtoDir);
-        if (!file.exists()) {
-            _warn().log("Cannot perform formatting. Directory `%s` does not exist.", file);
-            return;
-        }
-
-        JavadocFormatter formatter = new JavadocFormatter(
-                new BacktickFormatting(),
-                new PreTagFormatting()
-        );
-        try {
-            _debug().log("Starting Javadocs formatting in `%s`.", genProtoDir);
-            Files.walkFileTree(file.toPath(), new FormattingFileVisitor(formatter));
-        } catch (IOException e) {
-            throw newIllegalStateException(e, "Failed to format the sources in `%s`.", genProtoDir);
-        }
+        Path directory = Paths.get(genProtoDir);
+        JavadocStyler.applyFormattingAt(directory);
     }
 
     private enum TaskType {

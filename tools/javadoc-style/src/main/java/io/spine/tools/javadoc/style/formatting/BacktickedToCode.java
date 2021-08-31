@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.javadoc.style;
+package io.spine.tools.javadoc.style.formatting;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -45,35 +45,36 @@ import static java.util.regex.Matcher.quoteReplacement;
  * lined text`
  * }</pre>
  */
-final class BacktickFormatting extends LineFormatting {
+final class BacktickedToCode extends ByLineFormatting {
 
-    @VisibleForTesting
-    static final String BACKTICK = "`";
-    private static final Pattern PATTERN_BACKTICK = Pattern.compile(BACKTICK);
+    private static final Pattern BACKTICK = Pattern.compile("`");
 
     /**
      * A pattern to match a text surrounded with backticks.
      */
-    private static final Pattern PATTERN_TEXT_IN_BACKTICKS = Pattern.compile("(`[^`]*?`)");
+    private static final Pattern TEXT_IN_BACKTICKS = Pattern.compile("(`[^`]*?`)");
 
     @Override
-    @SuppressWarnings("JdkObsolete") // to address later.
     String formatLine(String line) {
         // Double the line size to avoid possible memory reallocation.
         StringBuffer buffer = new StringBuffer(line.length() * 2);
 
-        Matcher matcher = PATTERN_TEXT_IN_BACKTICKS.matcher(line);
+        Matcher matcher = TEXT_IN_BACKTICKS.matcher(line);
         while (matcher.find()) {
-            String partToFormat = matcher.group();
-            String partWithoutBackticks = PATTERN_BACKTICK.matcher(partToFormat)
-                                                          .replaceAll("");
-            String replacement = wrapWithCodeTag(partWithoutBackticks);
+            String backtickedText = matcher.group();
+            String text = untick(backtickedText);
+            String replacement = wrapWithCodeTag(text);
             matcher.appendReplacement(buffer, quoteReplacement(replacement));
         }
         matcher.appendTail(buffer);
         @SuppressWarnings("JdkObsolete") // `StringBuffer` use dictated by regex API.
         String result = buffer.toString();
         return result;
+    }
+
+    private static String untick(String backtickedText) {
+        return BACKTICK.matcher(backtickedText)
+                       .replaceAll("");
     }
 
     @VisibleForTesting

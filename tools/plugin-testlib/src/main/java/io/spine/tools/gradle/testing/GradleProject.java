@@ -327,7 +327,7 @@ public final class GradleProject {
          * <p>Use debug mode only for temporary debug purposes.
          */
         @SuppressWarnings({"unused", "RedundantSuppression"})
-        // Used only for debug purposes. Should never get to e.g. CLI server.
+        // Used only for debug purposes. Should never get to e.g. CI server.
         public Builder enableDebug() {
             this.debug = true;
             return this;
@@ -352,6 +352,7 @@ public final class GradleProject {
          * @param value
          *         value of the property
          */
+        @SuppressWarnings("unused")
         public Builder withProperty(String name, String value) {
             checkNotNull(name);
             checkNotNull(value);
@@ -364,6 +365,7 @@ public final class GradleProject {
          *
          * <p>If not set, the variables are inherited.
          */
+        @SuppressWarnings("unused")
         public Builder withEnvironment(ImmutableMap<String, String> environment) {
             checkNotNull(environment);
             this.environment = environment;
