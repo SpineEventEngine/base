@@ -858,7 +858,7 @@ message CompareByOption {
     // The allowed field types are:
     //  - any number type;
     //  - `bool` (false is less than true);
-    //  - `string` (alphabetical order);
+    //  - `string` (in the order of respective Unicode values);
     //  - enumerations (following the order of numbers associated with each constant);
     //  - messages marked with `(compare_by)`.
     //
