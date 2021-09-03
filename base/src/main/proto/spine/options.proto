@@ -451,9 +451,9 @@ extend google.protobuf.MessageOptions {
 
     // Specifies the natural ordering strategy for this type.
     //
-    // Code generators should generate language-specific comparisons based on the fields paths.
+    // Code generators should generate language-specific comparisons based on the field paths.
     //
-    // Runtime comparators may use reflection API to compare field values sequentially.
+    // Runtime comparators may use the reflection API to compare field values.
     //
     CompareOption compare_by = 73923;
 
@@ -855,12 +855,12 @@ message CompareOption {
 
     // Field paths used for comparisons.
     //
-    // The fields must be of types:
+    // The allowed field types are:
     //  - any number type;
-    //  - bool (false is less than true);
-    //  - string (alphabetical order);
-    //  - enum (following the order of numbers associated with each constant);
-    //  - a message which is marked with `(compare_by)`.
+    //  - `bool` (false is less than true);
+    //  - `string` (alphabetical order);
+    //  - enumerations (following the order of numbers associated with each constant);
+    //  - messages marked with `(compare_by)`.
     //
     // Other types are not permitted. Neither are repeated and map fields. Such declarations can
     // lead to build-time errors.
@@ -874,12 +874,12 @@ message CompareOption {
     //
     // Note. When comparing message fields, a non-set message is always less than a set message.
     // But if a message is set to a default value, the comparison falls back to
-    // the field-wise comparison, i.e. number values are treated as zeros, `bool`—as `false`,
+    // the field-wise comparison, i.e. number values are treated as zeros, `bool` — as `false`,
     // and so on.
     //
     repeated string field = 1;
 
     // If true, the default order is reversed. For example, numbers are ordered from the greater to
-    // the lower, enums—from the last number to the 0th value, etc.
+    // the lower, enums — from the last number value to the 0th value, etc.
     bool descending = 2;
 }
