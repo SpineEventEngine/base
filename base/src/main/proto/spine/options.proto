@@ -455,7 +455,7 @@ extend google.protobuf.MessageOptions {
     //
     // Runtime comparators may use the reflection API to compare field values.
     //
-    CompareOption compare_by = 73923;
+    CompareByOption compare_by = 73923;
 
     // Reserved 73924 to 73938 for future options.
 
@@ -851,7 +851,7 @@ message IsOption {
 //
 // See the `(compare_by)` option.
 //
-message CompareOption {
+message CompareByOption {
 
     // Field paths used for comparisons.
     //
