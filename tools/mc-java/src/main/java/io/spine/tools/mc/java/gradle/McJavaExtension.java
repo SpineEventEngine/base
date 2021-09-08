@@ -30,7 +30,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
 import groovy.lang.Closure;
 import io.spine.tools.code.Indent;
-import io.spine.tools.gradle.GradleExtension;
+import io.spine.tools.gradle.Projects;
 import io.spine.tools.java.fs.DefaultJavaPaths;
 import io.spine.tools.mc.java.codegen.JavaCodegenConfig;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -57,7 +57,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
         "ClassWithTooManyFields", "PMD.TooManyFields" /* Gradle extensions are flat like this. */,
         "RedundantSuppression" /* "ClassWithTooManyFields" is sometimes not recognized by IDEA. */
 })
-public class McJavaExtension extends GradleExtension {
+public class McJavaExtension {
 
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
@@ -179,7 +179,6 @@ public class McJavaExtension extends GradleExtension {
     private final Project project;
 
     public McJavaExtension(Project project) {
-        super();
         this.project = checkNotNull(project);
         this.java = new JavaCodegenConfig(project);
     }
@@ -189,11 +188,6 @@ public class McJavaExtension extends GradleExtension {
      */
     public void java(Action<JavaCodegenConfig> action) {
         action.execute(java);
-    }
-
-    @Override
-    protected DefaultJavaPaths defaultPaths(Project project) {
-        return def(project);
     }
 
     private static DefaultJavaPaths def(Project project) {
@@ -236,15 +230,17 @@ public class McJavaExtension extends GradleExtension {
 
     public static File getMainDescriptorSetFile(Project project) {
         McJavaExtension extension = extension(project);
+        File result = Projects.defaultMainDescriptors(project);
         String path = pathOrDefault(extension.mainDescriptorSetFile,
-                                    GradleExtension.defaultMainDescriptors(project));
+                                    result);
         return new File(path);
     }
 
     public static File getTestDescriptorSetFile(Project project) {
         McJavaExtension extension = extension(project);
+        File result = Projects.defaultTestDescriptors(project);
         String path = pathOrDefault(extension.testDescriptorSetFile,
-                                    GradleExtension.defaultTestDescriptors(project));
+                                    result);
         return new File(path);
     }
 

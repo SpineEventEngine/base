@@ -27,9 +27,8 @@
 package io.spine.tools.mc.dart.gradle;
 
 import com.google.common.collect.ImmutableMap;
-import io.spine.tools.dart.fs.DefaultDartPaths;
 import io.spine.tools.fs.ExternalModules;
-import io.spine.tools.gradle.GradleExtension;
+import io.spine.tools.gradle.Projects;
 import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.TaskName;
 import org.gradle.api.Project;
@@ -58,7 +57,7 @@ import static org.gradle.api.Task.TASK_TYPE;
 /**
  * DSL extension for configuring Protobuf-to-Dart compilation.
  */
-public final class McDartExtension extends GradleExtension {
+public final class McDartExtension {
 
     private static final String NAME = "protoDart";
 
@@ -162,8 +161,10 @@ public final class McDartExtension extends GradleExtension {
         testDir.convention(projectDir.dir(TEST_DIRECTORY));
         mainGeneratedDir.convention(libDir);
         testGeneratedDir.convention(testDir);
-        mainDescriptorSet.convention(defaultMainDescriptors(project));
-        testDescriptorSet.convention(defaultTestDescriptors(project));
+        File result = Projects.defaultMainDescriptors(project);
+        mainDescriptorSet.convention(result);
+        File result1 = Projects.defaultTestDescriptors(project);
+        testDescriptorSet.convention(result1);
         generatedDir.convention(projectDir.dir(GENERATED_BASE_DIR));
     }
 
@@ -282,10 +283,5 @@ public final class McDartExtension extends GradleExtension {
 
     private File file(Property<Object> property) {
         return project.file(property.get());
-    }
-
-    @Override
-    protected DefaultDartPaths defaultPaths(Project project) {
-        return DefaultDartPaths.at(project.getProjectDir());
     }
 }

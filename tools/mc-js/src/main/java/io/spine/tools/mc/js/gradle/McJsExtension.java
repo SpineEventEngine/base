@@ -26,10 +26,9 @@
 
 package io.spine.tools.mc.js.gradle;
 
-import io.spine.tools.fs.DefaultPaths;
 import io.spine.tools.fs.ExternalModule;
 import io.spine.tools.fs.ExternalModules;
-import io.spine.tools.gradle.GradleExtension;
+import io.spine.tools.gradle.Projects;
 import io.spine.tools.js.fs.DefaultJsPaths;
 import io.spine.tools.js.fs.Directory;
 import org.gradle.api.Project;
@@ -52,7 +51,7 @@ import static io.spine.tools.mc.js.gradle.McJsPlugin.extensionName;
  * task to configure when it will be executed during the build lifecycle.
  */
 @SuppressWarnings("PublicField" /* Expose fields as a Gradle extension */)
-public class McJsExtension extends GradleExtension {
+public class McJsExtension {
 
     /**
      * The name of the extension as it appears in a Gradle script.
@@ -144,15 +143,17 @@ public class McJsExtension extends GradleExtension {
 
     public static File getMainDescriptorSet(Project project) {
         McJsExtension extension = extension(project);
+        File result = Projects.defaultMainDescriptors(project);
         Path path = pathOrDefault(extension.mainDescriptorSetPath,
-                                  GradleExtension.defaultMainDescriptors(project));
+                                  result);
         return path.toFile();
     }
 
     public static File getTestDescriptorSet(Project project) {
         McJsExtension extension = extension(project);
+        File result = Projects.defaultTestDescriptors(project);
         Path path = pathOrDefault(extension.testDescriptorSetPath,
-                                  GradleExtension.defaultTestDescriptors(project));
+                                  result);
         return path.toFile();
     }
 
@@ -197,8 +198,4 @@ public class McJsExtension extends GradleExtension {
         return DefaultJsPaths.at(project.getProjectDir());
     }
 
-    @Override
-    protected DefaultPaths defaultPaths(Project project) {
-        return def(project);
-    }
 }

@@ -28,8 +28,8 @@ package io.spine.tools.mc.gradle
 
 import io.spine.code.fs.SourceCodeDirectory
 import io.spine.logging.Logging
-import io.spine.tools.fs.DefaultPaths
-import io.spine.tools.gradle.GradleExtension
+import io.spine.tools.gradle.defaultMainDescriptors
+import io.spine.tools.gradle.defaultTestDescriptors
 import io.spine.tools.java.fs.DefaultJavaPaths
 import io.spine.tools.mc.gradle.McExtension.Companion.name
 import java.io.File
@@ -41,7 +41,7 @@ import org.gradle.api.file.RegularFileProperty
 /**
  * Extends a Gradle project with the [`modelCompiler`][name] block.
  */
-class McExtension private constructor(private val project: Project) : GradleExtension() {
+class McExtension private constructor(private val project: Project) {
 
     /**
      * The absolute path to the Protobuf source code under the `main` directory.
@@ -79,12 +79,12 @@ class McExtension private constructor(private val project: Project) : GradleExte
 
     init {
         val projectDir: Directory = project.layout.projectDirectory
-        val def = defaultsOf(project)
-        val src = def.src()
         val file = { f: File -> projectDir.file(f.toString()) }
         val dir = { d: SourceCodeDirectory -> projectDir.dir(d.toString()) }
-        val of = project.objects
 
+        val of = project.objects
+        val def = defaultsOf(project)
+        val src = def.src()
         mainProtoDir = of.directoryProperty()
             .convention(dir(src.mainProto()))
 
@@ -92,10 +92,10 @@ class McExtension private constructor(private val project: Project) : GradleExte
             .convention(dir(src.testProto()))
 
         mainDescriptorSetFile = of.fileProperty()
-            .convention(file(defaultMainDescriptors(project)))
+            .convention(file(project.defaultMainDescriptors()))
 
         testDescriptorSetFile = of.fileProperty()
-            .convention(file(defaultTestDescriptors(project)))
+            .convention(file(project.defaultTestDescriptors()))
 
         val generated = def.generated()
         generatedMainResourcesDir = of.directoryProperty()
@@ -108,8 +108,6 @@ class McExtension private constructor(private val project: Project) : GradleExte
     private fun register() {
         project.extensions.add(javaClass, name, this)
     }
-
-    override fun defaultPaths(project: Project): DefaultPaths = defaultsOf(project)
 
     companion object Companion : Logging {
 
