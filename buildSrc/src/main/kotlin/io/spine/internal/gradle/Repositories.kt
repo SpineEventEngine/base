@@ -196,8 +196,8 @@ object Repos {
     val spine = PublishingRepos.cloudRepo.releases
     val spineSnapshots = PublishingRepos.cloudRepo.snapshots
 
-    val cloudArchive = PublishingRepos.cloudArtifactRegistry.releases
-    val cloudArchiveSnapshots = PublishingRepos.cloudArtifactRegistry.snapshots
+    val cloudArchive = PublishingRepos.cloudArtifactRegistry.releases.replace("artifactregistry://", "https://")
+    val cloudArchiveSnapshots = PublishingRepos.cloudArtifactRegistry.snapshots.replace("artifactregistry://", "https://")
 
     @Deprecated(
         message = "Sonatype release repository redirects to the Maven Central",
