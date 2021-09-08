@@ -120,7 +120,9 @@ object PublishingRepos {
     )
 
     private fun setUpGooglePlugin(p: Project): Credentials {
-        p.apply(plugin = "com.google.cloud.artifactregistry.gradle-plugin")
+        p.rootProject.allprojects {
+            apply(plugin = "com.google.cloud.artifactregistry.gradle-plugin")
+        }
         return Credentials("", "")
 //        return try {
 //            val googleCreds = DefaultCredentialProvider()
