@@ -28,7 +28,6 @@ package io.spine.tools.java.fs;
 
 import com.google.errorprone.annotations.Immutable;
 import io.spine.code.fs.AbstractDirectory;
-import io.spine.tools.fs.DefaultPaths;
 
 /**
  * A root source code directory for manually written code.
