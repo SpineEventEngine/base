@@ -27,8 +27,8 @@
 package io.spine.tools.java.fs;
 
 import com.google.errorprone.annotations.Immutable;
+import io.spine.code.fs.AbstractDirectory;
 import io.spine.code.fs.SourceCodeDirectory;
-import io.spine.tools.fs.DefaultPaths;
 import io.spine.tools.fs.SourceDir;
 
 import static io.spine.tools.fs.DirectoryName.generated;
@@ -46,7 +46,7 @@ public final class GeneratedRoot extends JavaCodeRoot {
     private static final String GRPC_DIR = grpc.value();
     private static final String RESOURCES_DIR = resources.value();
 
-    GeneratedRoot(DefaultPaths parent) {
+    GeneratedRoot(AbstractDirectory parent) {
         super(parent, generated.value());
     }
 
