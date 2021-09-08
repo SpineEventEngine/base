@@ -33,6 +33,9 @@ import java.io.File;
 import java.nio.file.Path;
 
 import static io.spine.code.proto.FileDescriptors.DESC_EXTENSION;
+import static io.spine.tools.gradle.Projects.artifact;
+import static io.spine.tools.gradle.Projects.descriptorSetFile;
+import static io.spine.tools.gradle.Projects.testArtifact;
 
 /**
  * An abstract base for creating Gradle extensions.
@@ -40,8 +43,8 @@ import static io.spine.code.proto.FileDescriptors.DESC_EXTENSION;
 public abstract class GradleExtension {
 
     protected final File defaultMainDescriptor(Project project) {
-        Artifact artifact = newBuilderFrom(project).build();
-        String fileName = descriptorSetFileOf(artifact);
+        Artifact artifact = artifact(project);
+        String fileName = descriptorSetFile(artifact).toString();
         Path mainDescriptor = defaultPaths(project)
                 .buildRoot()
                 .descriptors()
@@ -51,31 +54,14 @@ public abstract class GradleExtension {
     }
 
     protected final File defaultTestDescriptor(Project project) {
-        Artifact artifact = newBuilderFrom(project)
-                .useTestClassifier()
-                .build();
-        String fileName = descriptorSetFileOf(artifact);
+        Artifact artifact = testArtifact(project);
+        String fileName = descriptorSetFile(artifact).toString();
         Path testDescriptor = defaultPaths(project)
                 .buildRoot()
                 .descriptors()
                 .testDescriptors()
                 .resolve(fileName);
         return testDescriptor.toFile();
-    }
-
-    /**
-     * Obtains a name of a descriptor set file for the passed artifact.
-     */
-    private static String descriptorSetFileOf(Artifact artifact) {
-        String artifactId = artifact.fileSafeId();
-        return artifactId + DESC_EXTENSION;
-    }
-
-    private static Artifact.Builder newBuilderFrom(Project project) {
-        return Artifact.newBuilder()
-                .setGroup(project.getGroup().toString())
-                .setName(project.getName())
-                .setVersion(project.getVersion().toString());
     }
 
     protected abstract DefaultPaths defaultPaths(Project project);

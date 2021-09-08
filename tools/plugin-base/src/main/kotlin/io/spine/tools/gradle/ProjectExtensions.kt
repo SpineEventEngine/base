@@ -28,6 +28,8 @@
 
 package io.spine.tools.gradle
 
+import io.spine.code.proto.FileDescriptors.DESC_EXTENSION
+import java.io.File
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.SourceSet
@@ -53,3 +55,29 @@ public fun Project.sourceSet(scope: SourceScope): SourceSet = sourceSets().getBy
  * Obtains a source set by the passed scope name.
  */
 public fun Project.sourceSet(scope: String): SourceSet = sourceSets().getByName(scope)
+
+private fun Project.toArtifactBuilder(): Artifact.Builder =
+    Artifact.newBuilder()
+        .setGroup(project.group.toString())
+        .setName(project.name)
+        .setVersion(project.version.toString())
+
+/**
+ * Obtains the release [Artifact] of this project.
+ */
+public fun Project.artifact() =
+    toArtifactBuilder().build()
+
+/**
+ * Obtains the test [Artifact] of this project.
+ */
+public fun Project.testArtifact() =
+    toArtifactBuilder()
+        .useTestClassifier()
+        .build()
+
+/**
+ * Obtains a descriptor set file of this artifact.
+ */
+public fun Artifact.descriptorSetFile(): File =
+    File(fileSafeId() + DESC_EXTENSION)
