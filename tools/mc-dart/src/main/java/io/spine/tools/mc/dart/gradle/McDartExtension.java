@@ -162,8 +162,8 @@ public final class McDartExtension extends GradleExtension {
         testDir.convention(projectDir.dir(TEST_DIRECTORY));
         mainGeneratedDir.convention(libDir);
         testGeneratedDir.convention(testDir);
-        mainDescriptorSet.convention(defaultMainDescriptor(project));
-        testDescriptorSet.convention(defaultTestDescriptor(project));
+        mainDescriptorSet.convention(defaultMainDescriptors(project));
+        testDescriptorSet.convention(defaultTestDescriptors(project));
         generatedDir.convention(projectDir.dir(GENERATED_BASE_DIR));
     }
 

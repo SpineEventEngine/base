@@ -92,10 +92,10 @@ class McExtension private constructor(private val project: Project) : GradleExte
             .convention(dir(src.testProto()))
 
         mainDescriptorSetFile = of.fileProperty()
-            .convention(file(defaultMainDescriptor(project)))
+            .convention(file(defaultMainDescriptors(project)))
 
         testDescriptorSetFile = of.fileProperty()
-            .convention(file(defaultTestDescriptor(project)))
+            .convention(file(defaultTestDescriptors(project)))
 
         val generated = def.generated()
         generatedMainResourcesDir = of.directoryProperty()

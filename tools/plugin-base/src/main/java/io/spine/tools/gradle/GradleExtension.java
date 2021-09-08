@@ -30,37 +30,20 @@ import io.spine.tools.fs.DefaultPaths;
 import org.gradle.api.Project;
 
 import java.io.File;
-import java.nio.file.Path;
-
-import static io.spine.tools.gradle.Projects.artifact;
-import static io.spine.tools.gradle.Projects.descriptorSetFile;
-import static io.spine.tools.gradle.Projects.testArtifact;
 
 /**
  * An abstract base for creating Gradle extensions.
  */
 public abstract class GradleExtension {
 
-    protected final File defaultMainDescriptor(Project project) {
-        Artifact artifact = artifact(project);
-        String fileName = descriptorSetFile(artifact).toString();
-        Path mainDescriptor = defaultPaths(project)
-                .buildRoot()
-                .descriptors()
-                .mainDescriptors()
-                .resolve(fileName);
-        return mainDescriptor.toFile();
+    protected static File defaultMainDescriptors(Project project) {
+        File result = Projects.defaultMainDescriptors(project);
+        return result;
     }
 
-    protected final File defaultTestDescriptor(Project project) {
-        Artifact artifact = testArtifact(project);
-        String fileName = descriptorSetFile(artifact).toString();
-        Path testDescriptor = defaultPaths(project)
-                .buildRoot()
-                .descriptors()
-                .testDescriptors()
-                .resolve(fileName);
-        return testDescriptor.toFile();
+    protected static File defaultTestDescriptors(Project project) {
+        File result = Projects.defaultTestDescriptors(project);
+        return result;
     }
 
     protected abstract DefaultPaths defaultPaths(Project project);

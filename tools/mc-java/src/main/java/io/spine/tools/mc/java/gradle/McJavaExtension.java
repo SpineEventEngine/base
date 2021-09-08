@@ -237,14 +237,14 @@ public class McJavaExtension extends GradleExtension {
     public static File getMainDescriptorSetFile(Project project) {
         McJavaExtension extension = extension(project);
         String path = pathOrDefault(extension.mainDescriptorSetFile,
-                                    extension.defaultMainDescriptor(project));
+                                    GradleExtension.defaultMainDescriptors(project));
         return new File(path);
     }
 
     public static File getTestDescriptorSetFile(Project project) {
         McJavaExtension extension = extension(project);
         String path = pathOrDefault(extension.testDescriptorSetFile,
-                                    extension.defaultTestDescriptor(project));
+                                    GradleExtension.defaultTestDescriptors(project));
         return new File(path);
     }
 

@@ -28,7 +28,8 @@
 
 package io.spine.tools.gradle
 
-import io.spine.code.proto.FileDescriptors.DESC_EXTENSION
+import io.spine.tools.fs.DefaultPaths
+import io.spine.tools.fs.DescriptorsDir
 import java.io.File
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
@@ -65,19 +66,45 @@ private fun Project.toArtifactBuilder(): Artifact.Builder =
 /**
  * Obtains the release [Artifact] of this project.
  */
-public fun Project.artifact() =
-    toArtifactBuilder().build()
+public fun Project.artifact(): Artifact = toArtifactBuilder().build()
 
 /**
  * Obtains the test [Artifact] of this project.
  */
-public fun Project.testArtifact() =
-    toArtifactBuilder()
-        .useTestClassifier()
-        .build()
+public fun Project.testArtifact(): Artifact = toArtifactBuilder().useTestClassifier().build()
 
 /**
- * Obtains a descriptor set file of this artifact.
+ * Obtains language-neutral instance of [DefaultPaths] for this project.
  */
-public fun Artifact.descriptorSetFile(): File =
-    File(fileSafeId() + DESC_EXTENSION)
+private fun Project.defaultPaths(): DefaultPaths = DefaultPaths(projectDir.toPath());
+
+/**
+ * Obtains the directory into which descriptor set files are generated during the build.
+ */
+private fun Project.descriptorsDir(): DescriptorsDir = defaultPaths().buildRoot().descriptors()
+
+/**
+ * Obtains the descriptor set file for the main source set of this project.
+ */
+public fun Project.defaultMainDescriptors(): File {
+    val artifact = project.artifact()
+    val descriptorSetFile = artifact.descriptorSetFile()
+    val mainDescriptor =
+        descriptorsDir()
+            .mainDescriptors()
+            .resolve(descriptorSetFile.toString())
+    return mainDescriptor.toFile()
+}
+
+/**
+ * Obtains the descriptor set file for the main source set of this project.
+ */
+public fun Project.defaultTestDescriptors(): File {
+    val artifact = project.testArtifact()
+    val descriptorSetFile = artifact.descriptorSetFile()
+    val testDescriptors =
+        descriptorsDir()
+            .testDescriptors()
+            .resolve(descriptorSetFile.toString())
+    return testDescriptors.toFile()
+}
