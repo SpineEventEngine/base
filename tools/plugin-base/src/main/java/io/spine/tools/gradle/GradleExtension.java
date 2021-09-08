@@ -32,7 +32,6 @@ import org.gradle.api.Project;
 import java.io.File;
 import java.nio.file.Path;
 
-import static io.spine.code.proto.FileDescriptors.DESC_EXTENSION;
 import static io.spine.tools.gradle.Projects.artifact;
 import static io.spine.tools.gradle.Projects.descriptorSetFile;
 import static io.spine.tools.gradle.Projects.testArtifact;
