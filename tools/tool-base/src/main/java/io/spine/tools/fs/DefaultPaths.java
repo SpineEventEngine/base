@@ -44,11 +44,9 @@ import static io.spine.tools.fs.DirectoryName.dotSpine;
  * unchanged.
  */
 @Immutable
-@SuppressWarnings("AbstractClassWithoutAbstractMethods")
-// Only stores common elements of subclasses.
-public abstract class DefaultPaths extends AbstractDirectory {
+public class DefaultPaths extends AbstractDirectory {
 
-    protected DefaultPaths(Path path) {
+    public DefaultPaths(Path path) {
         super(path);
     }
 
