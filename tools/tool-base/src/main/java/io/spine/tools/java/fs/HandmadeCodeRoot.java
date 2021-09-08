@@ -27,6 +27,7 @@
 package io.spine.tools.java.fs;
 
 import com.google.errorprone.annotations.Immutable;
+import io.spine.code.fs.AbstractDirectory;
 import io.spine.tools.fs.DefaultPaths;
 
 /**
@@ -38,7 +39,7 @@ import io.spine.tools.fs.DefaultPaths;
 @Immutable
 public class HandmadeCodeRoot extends JavaCodeRoot {
 
-    HandmadeCodeRoot(DefaultPaths parent, String name) {
+    HandmadeCodeRoot(AbstractDirectory parent, String name) {
         super(parent, name);
     }
 
@@ -46,13 +47,13 @@ public class HandmadeCodeRoot extends JavaCodeRoot {
      * A root for the main proto code.
      */
     public io.spine.tools.proto.fs.Directory mainProto() {
-        return io.spine.tools.proto.fs.Directory.rootIn(getMain());
+        return io.spine.tools.proto.fs.Directory.rootIn(main());
     }
 
     /**
      * A root for the test proto code.
      */
     public io.spine.tools.proto.fs.Directory testProto() {
-        return io.spine.tools.proto.fs.Directory.rootIn(getTest());
+        return io.spine.tools.proto.fs.Directory.rootIn(test());
     }
 }

@@ -61,13 +61,13 @@ import static io.spine.tools.fs.DirectoryName.src;
 @Immutable
 public final class DefaultJavaPaths extends DefaultPaths {
 
-    private DefaultJavaPaths(Path path) {
-        super(path);
+    private DefaultJavaPaths(Path projectDir) {
+        super(projectDir);
     }
 
-    public static DefaultJavaPaths at(Path root) {
-        checkNotNull(root);
-        DefaultJavaPaths result = new DefaultJavaPaths(root);
+    public static DefaultJavaPaths at(Path projectDir) {
+        checkNotNull(projectDir);
+        DefaultJavaPaths result = new DefaultJavaPaths(projectDir);
         return result;
     }
 

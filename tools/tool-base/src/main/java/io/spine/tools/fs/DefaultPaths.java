@@ -39,17 +39,30 @@ import static io.spine.tools.fs.DirectoryName.dotSpine;
  *
  * <p>The descendants of the class contain the language-specific project structures.
  *
- * <p>The {@code DefaultProject} helps resolving names of the directories and files under the
- * project directory. It is expected that for most projects, the default values of paths remain
- * unchanged.
+ * <p>The {@code DefaultProject} helps to resolve names of the directories and files under the
+ * project directory. It is expected that for most projects, the default values of paths
+ * remain unchanged.
  */
 @Immutable
 public class DefaultPaths extends AbstractDirectory {
 
-    public DefaultPaths(Path path) {
-        super(path);
+    /**
+     * Creates a new instance taking the passed project root.
+     */
+    public DefaultPaths(Path projectDir) {
+        super(projectDir);
     }
 
+    /**
+     * Obtains the root directory of the project.
+     */
+    public AbstractDirectory projectDir() {
+        return this;
+    }
+
+    /**
+     * Obtains the {@code build} directory of the project.
+     */
     public BuildRoot buildRoot() {
         return BuildRoot.of(this);
     }
