@@ -26,14 +26,16 @@
 
 package io.spine.internal.gradle
 
+import com.google.auth.oauth2.GoogleCredentials
+import com.google.cloud.artifactregistry.auth.DefaultCredentialProvider
 import io.spine.internal.gradle.PublishingRepos.gitHub
 import java.io.File
+import java.io.IOException
 import java.net.URI
 import java.util.*
 import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
-import org.gradle.kotlin.dsl.apply
 
 /**
  * A Maven repository.
@@ -97,7 +99,7 @@ data class Credentials(
  */
 object PublishingRepos {
 
-    private const val CLOUD_ARTIFACT_REGISTRY = "artifactregistry://europe-maven.pkg.dev/spine-event-engine"
+    private const val CLOUD_ARTIFACT_REGISTRY = "https://europe-maven.pkg.dev/spine-event-engine"
 
     @Suppress("HttpUrlsUsage") // HTTPS is not supported by this repository.
     val mavenTeamDev = Repository(
@@ -116,25 +118,39 @@ object PublishingRepos {
     val cloudArtifactRegistry = Repository(
         releases = "$CLOUD_ARTIFACT_REGISTRY/releases",
         snapshots = "$CLOUD_ARTIFACT_REGISTRY/snapshots",
-        credentialValues = this::setUpGooglePlugin
+        credentialValues = this::fetchGoogleCredentials
     )
 
-    private fun setUpGooglePlugin(p: Project): Credentials {
-        p.rootProject.allprojects {
-            apply(plugin = "com.google.cloud.artifactregistry.gradle-plugin")
+    /**
+     * The experimental Google Cloud Artifact Registry repository.
+     *
+     * In order to successfully publish into this repository, a service account key is needed.
+     * The published must create a service account, grant it the permission to write into
+     * Artifact Registry, and generate a JSON key.
+     * Then, the key must be placed somewhere on the file system and the environment variable
+     * `GOOGLE_APPLICATION_CREDENTIALS` must be set to point at the key file.
+     * Once these preconditions are met, publishing becomes possible.
+     *
+     * Google provides a Gradle plugin for configuring the publishing repository credentials
+     * automatically. We achieve the same goal by assembling the credentials manually. We do so
+     * in order to fit the Google Cloud Artifact Registry repository into the standard frame of
+     * the Maven [Repository]-s. Applying the plugin would take a substantial effort due to the fact
+     * that both our publishing scripts and the Google's plugin use `afterEvaluate { }` hooks.
+     * Ordering said hooks is a non-trivial operation and the result is usually quite fragile.
+     * Thus, we choose to do this small piece of configuration manually.
+     */
+    private fun fetchGoogleCredentials(p: Project): Credentials? {
+        return try {
+            val googleCreds = DefaultCredentialProvider()
+            val creds = googleCreds.credential as GoogleCredentials
+            creds.refreshIfExpired()
+            Credentials("oauth2accesstoken", creds.accessToken.tokenValue)
+        } catch (e: IOException) {
+            p.logger.info("Unable to fetch credentials for Google Cloud Artifact Registry." +
+                    " Reason: '${e.message}'." +
+                    " The debug output may contain more details.")
+            null
         }
-        return Credentials("", "")
-//        return try {
-//            val googleCreds = DefaultCredentialProvider()
-//            val creds = googleCreds.credential as GoogleCredentials
-//            creds.refreshIfExpired()
-//            Credentials("oauth2accesstoken", creds.accessToken.tokenValue)
-//        } catch (e: IOException) {
-//            p.logger.info("Unable to fetch credentials for Google Cloud Artifact Registry." +
-//                    " Reason: '${e.message}'." +
-//                    " See debug output for details.")
-//            null
-//        }
     }
 
     fun gitHub(repoName: String): Repository {
@@ -198,8 +214,8 @@ object Repos {
     val spine = PublishingRepos.cloudRepo.releases
     val spineSnapshots = PublishingRepos.cloudRepo.snapshots
 
-    val cloudArchive = PublishingRepos.cloudArtifactRegistry.releases.replace("artifactregistry://", "https://")
-    val cloudArchiveSnapshots = PublishingRepos.cloudArtifactRegistry.snapshots.replace("artifactregistry://", "https://")
+    val cloudArchive = PublishingRepos.cloudArtifactRegistry.releases
+    val cloudArchiveSnapshots = PublishingRepos.cloudArtifactRegistry.snapshots
 
     @Deprecated(
         message = "Sonatype release repository redirects to the Maven Central",
