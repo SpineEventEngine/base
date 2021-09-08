@@ -46,6 +46,8 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newLinkedList;
+import static io.spine.tools.gradle.Projects.getDefaultMainDescriptors;
+import static io.spine.tools.gradle.Projects.getDefaultTestDescriptors;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -230,7 +232,7 @@ public class McJavaExtension {
 
     public static File getMainDescriptorSetFile(Project project) {
         McJavaExtension extension = extension(project);
-        File result = Projects.defaultMainDescriptors(project);
+        File result = getDefaultMainDescriptors(project);
         String path = pathOrDefault(extension.mainDescriptorSetFile,
                                     result);
         return new File(path);
@@ -238,7 +240,7 @@ public class McJavaExtension {
 
     public static File getTestDescriptorSetFile(Project project) {
         McJavaExtension extension = extension(project);
-        File result = Projects.defaultTestDescriptors(project);
+        File result = getDefaultTestDescriptors(project);
         String path = pathOrDefault(extension.testDescriptorSetFile,
                                     result);
         return new File(path);

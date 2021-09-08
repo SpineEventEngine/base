@@ -92,10 +92,10 @@ class McExtension private constructor(private val project: Project) {
             .convention(dir(src.testProto()))
 
         mainDescriptorSetFile = of.fileProperty()
-            .convention(file(project.defaultMainDescriptors()))
+            .convention(file(project.defaultMainDescriptors))
 
         testDescriptorSetFile = of.fileProperty()
-            .convention(file(project.defaultTestDescriptors()))
+            .convention(file(project.defaultTestDescriptors))
 
         val generated = def.generated()
         generatedMainResourcesDir = of.directoryProperty()

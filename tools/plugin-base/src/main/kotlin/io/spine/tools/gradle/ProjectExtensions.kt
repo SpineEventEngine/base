@@ -31,6 +31,7 @@ package io.spine.tools.gradle
 import io.spine.tools.fs.DefaultPaths
 import io.spine.tools.fs.DescriptorsDir
 import java.io.File
+import java.nio.file.Path
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.SourceSet
@@ -45,66 +46,71 @@ public fun Project.javaPluginExtension(): JavaPluginExtension =
 /**
  * Obtains source set container of the Java project.
  */
-public fun Project.sourceSets(): SourceSetContainer = javaPluginExtension().sourceSets
+public val Project.sourceSets: SourceSetContainer
+    get() = javaPluginExtension().sourceSets
 
 /**
  * Obtains a source set by the passed scope.
  */
-public fun Project.sourceSet(scope: SourceScope): SourceSet = sourceSets().getByName(scope.name)
+public fun Project.sourceSet(scope: SourceScope): SourceSet = sourceSets.getByName(scope.name)
 
 /**
  * Obtains a source set by the passed scope name.
  */
-public fun Project.sourceSet(scope: String): SourceSet = sourceSets().getByName(scope)
+public fun Project.sourceSet(scope: String): SourceSet = sourceSets.getByName(scope)
 
-private fun Project.toArtifactBuilder(): Artifact.Builder =
-    Artifact.newBuilder()
-        .setGroup(project.group.toString())
-        .setName(project.name)
-        .setVersion(project.version.toString())
+private fun Project.toArtifactBuilder(): Artifact.Builder {
+    return Artifact.newBuilder()
+        .setGroup(group.toString())
+        .setName(name)
+        .setVersion(version.toString())
+}
 
 /**
  * Obtains the release [Artifact] of this project.
  */
-public fun Project.artifact(): Artifact = toArtifactBuilder().build()
+public val Project.artifact: Artifact
+    get() = toArtifactBuilder().build()
 
 /**
  * Obtains the test [Artifact] of this project.
  */
-public fun Project.testArtifact(): Artifact = toArtifactBuilder().useTestClassifier().build()
+public val Project.testArtifact: Artifact
+    get() = toArtifactBuilder().useTestClassifier().build()
 
 /**
  * Obtains language-neutral instance of [DefaultPaths] for this project.
  */
-private fun Project.defaultPaths(): DefaultPaths = DefaultPaths(projectDir.toPath());
+private val Project.defaultPaths: DefaultPaths
+    get() = DefaultPaths(projectDir.toPath())
 
 /**
  * Obtains the directory into which descriptor set files are generated during the build.
  */
-private fun Project.descriptorsDir(): DescriptorsDir = defaultPaths().buildRoot().descriptors()
+private val Project.descriptorsDir: DescriptorsDir
+    get() = defaultPaths.buildRoot().descriptors()
 
 /**
  * Obtains the descriptor set file for the main source set of this project.
  */
-public fun Project.defaultMainDescriptors(): File {
-    val artifact = project.artifact()
-    val descriptorSetFile = artifact.descriptorSetFile()
-    val mainDescriptor =
-        descriptorsDir()
-            .mainDescriptors()
-            .resolve(descriptorSetFile.toString())
-    return mainDescriptor.toFile()
-}
+public val Project.defaultMainDescriptors: File
+    get() {
+        val descriptorSetFile = artifact.descriptorSetFile()
+        val mainDescriptor = descriptorSetFile.under(descriptorsDir.mainDescriptors())
+        return mainDescriptor.toFile()
+    }
 
 /**
  * Obtains the descriptor set file for the main source set of this project.
  */
-public fun Project.defaultTestDescriptors(): File {
-    val artifact = project.testArtifact()
-    val descriptorSetFile = artifact.descriptorSetFile()
-    val testDescriptors =
-        descriptorsDir()
-            .testDescriptors()
-            .resolve(descriptorSetFile.toString())
-    return testDescriptors.toFile()
-}
+public val Project.defaultTestDescriptors: File
+    get() {
+        val descriptorSetFile = testArtifact.descriptorSetFile()
+        val testDescriptors = descriptorSetFile.under(descriptorsDir.testDescriptors())
+        return testDescriptors.toFile()
+    }
+
+/**
+ * Obtains the path to this file resolved under the passed directory.
+ */
+private fun File.under(dir: Path): Path = dir.resolve(toString())

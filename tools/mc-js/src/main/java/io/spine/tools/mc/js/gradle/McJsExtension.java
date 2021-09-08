@@ -28,7 +28,6 @@ package io.spine.tools.mc.js.gradle;
 
 import io.spine.tools.fs.ExternalModule;
 import io.spine.tools.fs.ExternalModules;
-import io.spine.tools.gradle.Projects;
 import io.spine.tools.js.fs.DefaultJsPaths;
 import io.spine.tools.js.fs.Directory;
 import org.gradle.api.Project;
@@ -44,6 +43,8 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Maps.newHashMap;
 import static io.spine.tools.fs.ExternalModule.predefinedModules;
+import static io.spine.tools.gradle.Projects.getDefaultMainDescriptors;
+import static io.spine.tools.gradle.Projects.getDefaultTestDescriptors;
 import static io.spine.tools.mc.js.gradle.McJsPlugin.extensionName;
 
 /**
@@ -143,7 +144,7 @@ public class McJsExtension {
 
     public static File getMainDescriptorSet(Project project) {
         McJsExtension extension = extension(project);
-        File result = Projects.defaultMainDescriptors(project);
+        File result = getDefaultMainDescriptors(project);
         Path path = pathOrDefault(extension.mainDescriptorSetPath,
                                   result);
         return path.toFile();
@@ -151,7 +152,7 @@ public class McJsExtension {
 
     public static File getTestDescriptorSet(Project project) {
         McJsExtension extension = extension(project);
-        File result = Projects.defaultTestDescriptors(project);
+        File result = getDefaultTestDescriptors(project);
         Path path = pathOrDefault(extension.testDescriptorSetPath,
                                   result);
         return path.toFile();

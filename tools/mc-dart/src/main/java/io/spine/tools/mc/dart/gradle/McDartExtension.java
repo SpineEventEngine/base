@@ -28,7 +28,6 @@ package io.spine.tools.mc.dart.gradle;
 
 import com.google.common.collect.ImmutableMap;
 import io.spine.tools.fs.ExternalModules;
-import io.spine.tools.gradle.Projects;
 import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.TaskName;
 import org.gradle.api.Project;
@@ -45,6 +44,8 @@ import java.util.List;
 import java.util.Map;
 
 import static io.spine.tools.gradle.BaseTaskName.assemble;
+import static io.spine.tools.gradle.Projects.getDefaultMainDescriptors;
+import static io.spine.tools.gradle.Projects.getDefaultTestDescriptors;
 import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
 import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 import static io.spine.tools.gradle.ProtocPluginName.dart;
@@ -161,10 +162,8 @@ public final class McDartExtension {
         testDir.convention(projectDir.dir(TEST_DIRECTORY));
         mainGeneratedDir.convention(libDir);
         testGeneratedDir.convention(testDir);
-        File result = Projects.defaultMainDescriptors(project);
-        mainDescriptorSet.convention(result);
-        File result1 = Projects.defaultTestDescriptors(project);
-        testDescriptorSet.convention(result1);
+        mainDescriptorSet.convention(getDefaultMainDescriptors(project));
+        testDescriptorSet.convention(getDefaultTestDescriptors(project));
         generatedDir.convention(projectDir.dir(GENERATED_BASE_DIR));
     }
 
