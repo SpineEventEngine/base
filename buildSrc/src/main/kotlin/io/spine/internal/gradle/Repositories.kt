@@ -115,12 +115,6 @@ object PublishingRepos {
         credentialsFile = "cloudrepo.properties"
     )
 
-    val cloudArtifactRegistry = Repository(
-        releases = "$CLOUD_ARTIFACT_REGISTRY/releases",
-        snapshots = "$CLOUD_ARTIFACT_REGISTRY/snapshots",
-        credentialValues = this::fetchGoogleCredentials
-    )
-
     /**
      * The experimental Google Cloud Artifact Registry repository.
      *
@@ -139,6 +133,12 @@ object PublishingRepos {
      * Ordering said hooks is a non-trivial operation and the result is usually quite fragile.
      * Thus, we choose to do this small piece of configuration manually.
      */
+    val cloudArtifactRegistry = Repository(
+        releases = "$CLOUD_ARTIFACT_REGISTRY/releases",
+        snapshots = "$CLOUD_ARTIFACT_REGISTRY/snapshots",
+        credentialValues = this::fetchGoogleCredentials
+    )
+
     private fun fetchGoogleCredentials(p: Project): Credentials? {
         return try {
             val googleCreds = DefaultCredentialProvider()
