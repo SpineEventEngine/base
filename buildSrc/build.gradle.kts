@@ -72,7 +72,7 @@ val guavaVersion = "30.1.1-jre"
 
 dependencies {
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
-    implementation("com.google.cloud.artifactregistry:artifactregistry-auth-common:$googleAuthToolVersion") {
+    implementation("gradle.plugin.com.google.cloud.artifactregistry:artifactregistry-gradle-plugin:$googleAuthToolVersion") {
         exclude(group = "com.google.guava")
     }
     implementation("com.google.guava:guava:$guavaVersion")

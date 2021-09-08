@@ -26,16 +26,14 @@
 
 package io.spine.internal.gradle
 
-import com.google.auth.oauth2.GoogleCredentials
-import com.google.cloud.artifactregistry.auth.DefaultCredentialProvider
 import io.spine.internal.gradle.PublishingRepos.gitHub
 import java.io.File
-import java.io.IOException
 import java.net.URI
 import java.util.*
 import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
+import org.gradle.kotlin.dsl.apply
 
 /**
  * A Maven repository.
@@ -99,7 +97,7 @@ data class Credentials(
  */
 object PublishingRepos {
 
-    private const val CLOUD_ARTIFACT_REGISTRY = "https://europe-maven.pkg.dev/spine-event-engine"
+    private const val CLOUD_ARTIFACT_REGISTRY = "artifactregistry://europe-maven.pkg.dev/spine-event-engine"
 
     @Suppress("HttpUrlsUsage") // HTTPS is not supported by this repository.
     val mavenTeamDev = Repository(
@@ -115,42 +113,26 @@ object PublishingRepos {
         credentialsFile = "cloudrepo.properties"
     )
 
-    /**
-     * The experimental Google Cloud Artifact Registry repository.
-     *
-     * In order to successfully publish into this repository, a service account key is needed.
-     * The published must create a service account, grant it the permission to write into
-     * Artifact Registry, and generate a JSON key.
-     * Then, the key must be placed somewhere on the file system and the environment variable
-     * `GOOGLE_APPLICATION_CREDENTIALS` must be set to point at the key file.
-     * Once these preconditions are met, publishing becomes possible.
-     *
-     * ## Implementation note
-     * Google provides [tools](https://github.com/GoogleCloudPlatform/artifact-registry-maven-tools)
-     * for configuring authentication for the Maven repositories, including a Gradle plugin.
-     * However, the plugin is incompatible with Gradle 7.x at the moment.
-     * For now, we reproduce what the plugin does manually. This makes the whole `buildSrc`
-     * depend on the `artifactregistry-auth-common` artifact. Track [this issue](https://github.com/GoogleCloudPlatform/artifact-registry-maven-tools/issues/52)
-     * for the progress on Gradle 7.x support.
-     */
     val cloudArtifactRegistry = Repository(
         releases = "$CLOUD_ARTIFACT_REGISTRY/releases",
         snapshots = "$CLOUD_ARTIFACT_REGISTRY/snapshots",
-        credentialValues = this::fetchGoogleCreds
+        credentialValues = this::setUpGooglePlugin
     )
 
-    private fun fetchGoogleCreds(p: Project): Credentials? {
-        return try {
-            val googleCreds = DefaultCredentialProvider()
-            val creds = googleCreds.credential as GoogleCredentials
-            creds.refreshIfExpired()
-            Credentials("oauth2accesstoken", creds.accessToken.tokenValue)
-        } catch (e: IOException) {
-            p.logger.info("Unable to fetch credentials for Google Cloud Artifact Registry." +
-                    " Reason: '${e.message}'." +
-                    " See debug output for details.")
-            null
-        }
+    private fun setUpGooglePlugin(p: Project): Credentials {
+        p.apply(plugin = "com.google.cloud.artifactregistry.gradle-plugin")
+        return Credentials("", "")
+//        return try {
+//            val googleCreds = DefaultCredentialProvider()
+//            val creds = googleCreds.credential as GoogleCredentials
+//            creds.refreshIfExpired()
+//            Credentials("oauth2accesstoken", creds.accessToken.tokenValue)
+//        } catch (e: IOException) {
+//            p.logger.info("Unable to fetch credentials for Google Cloud Artifact Registry." +
+//                    " Reason: '${e.message}'." +
+//                    " See debug output for details.")
+//            null
+//        }
     }
 
     fun gitHub(repoName: String): Repository {
