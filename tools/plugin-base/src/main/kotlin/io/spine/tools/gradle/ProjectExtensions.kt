@@ -40,14 +40,14 @@ import org.gradle.api.tasks.SourceSetContainer
 /**
  * Obtains the Java plugin extension of the project.
  */
-public fun Project.javaPluginExtension(): JavaPluginExtension =
-    extensions.getByType(JavaPluginExtension::class.java)
+public val Project.javaPluginExtension: JavaPluginExtension
+    get() = extensions.getByType(JavaPluginExtension::class.java)
 
 /**
  * Obtains source set container of the Java project.
  */
 public val Project.sourceSets: SourceSetContainer
-    get() = javaPluginExtension().sourceSets
+    get() = javaPluginExtension.sourceSets
 
 /**
  * Obtains a source set by the passed scope.
