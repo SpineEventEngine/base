@@ -58,14 +58,14 @@ class McExtension private constructor(private val project: Project) {
      *
      * The file must have the `.desc` extension.
      */
-    val mainDescriptorSetFile: RegularFileProperty
+    val mainDescriptorSet: RegularFileProperty
 
     /**
      * The absolute path to the test Protobuf descriptor set file.
      *
      * The file must have the `.desc` extension.
      */
-    val testDescriptorSetFile: RegularFileProperty
+    val testDescriptorSet: RegularFileProperty
 
     /**
      * The absolute path to the main target generated resources directory.
@@ -91,10 +91,10 @@ class McExtension private constructor(private val project: Project) {
         testProtoDir = of.directoryProperty()
             .convention(dir(src.testProto()))
 
-        mainDescriptorSetFile = of.fileProperty()
+        mainDescriptorSet = of.fileProperty()
             .convention(file(project.defaultMainDescriptors))
 
-        testDescriptorSetFile = of.fileProperty()
+        testDescriptorSet = of.fileProperty()
             .convention(file(project.defaultTestDescriptors))
 
         val generated = def.generated()
