@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package spine.tools.comparables.test;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.tools.comparables.test";
+option java_outer_classname = "CatsProto";
+option java_multiple_files = true;
+
+message Cat {
+    option (compare_by).field = "how_pretty";
+    option (compare_by).field = "spotty";
+
+    uint32 how_pretty = 1 [(range) = "[1..10]"];
+
+    bool spotty = 2;
+}

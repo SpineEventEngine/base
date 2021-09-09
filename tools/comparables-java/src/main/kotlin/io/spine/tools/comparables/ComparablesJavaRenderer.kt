@@ -26,6 +26,7 @@
 
 package io.spine.tools.comparables
 
+import com.squareup.javapoet.AnnotationSpec
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.MethodSpec
@@ -55,12 +56,15 @@ public class ComparablesJavaRenderer : JavaRenderer() {
         val comparableTypes = select<ComparableType>().all()
         comparableTypes.forEach { type ->
             val javaClassName = classNameOf(type.name, type.declaredIn)
-            val (packageName, simpleName) = javaClassName.canonical.split("$", limit = 2)
+            val canonicalName = javaClassName.canonical
+            val simpleNameIndex = canonicalName.lastIndexOf(".")
+            val packageName = canonicalName.substring(0, simpleNameIndex)
+            val simpleName = canonicalName.substring(simpleNameIndex + 1, canonicalName.length)
             val selfName = PoetClassName.get(packageName, simpleName)
             val javaFile = sources.file(javaFileOf(type.name, type.declaredIn))
             javaFile
                 .at(MESSAGE_IMPLEMENTS.forType(type.name))
-                .add("${Comparable::class.java}<${simpleName}>,")
+                .add("${Comparable::class.java.canonicalName}<${simpleName}>,")
             javaFile
                 .at(CLASS_SCOPE.forType(type.name))
                 .withExtraIndentation(level = 1)
@@ -68,7 +72,7 @@ public class ComparablesJavaRenderer : JavaRenderer() {
         }
     }
 
-    private fun comparison(selfName: PoetClassName, type: ComparableType): String {
+    private fun comparison(selfName: PoetClassName, type: ComparableType): List<String> {
         val other = Literal("other")
         val naturalOrder = Literal("naturalOrder")
         val body = CodeBlock
@@ -91,8 +95,11 @@ public class ComparablesJavaRenderer : JavaRenderer() {
         val comparatorProperty = FieldSpec
             .builder(comparatorType, naturalOrder.toCode(), PRIVATE, STATIC, FINAL)
             .initializer(buildComparator(type))
+            .addAnnotation(AnnotationSpec.builder(SuppressWarnings::class.java)
+                .addMember("value", "\$S", "Convert2MethodRef")
+                .build())
             .build()
-        return comparatorProperty.toString() + System.lineSeparator() + method
+        return comparatorProperty.lines() + method.lines()
     }
 
     private fun buildComparator(type: ComparableType): String {
@@ -106,7 +113,7 @@ public class ComparablesJavaRenderer : JavaRenderer() {
             }
             chain
         }.map {
-            "$lambdaParam -> $it"
+            "(${type.name.simpleName} $lambdaParam) -> $it"
         }.map { Literal(it) }
         var expression = MethodCall(ClassName(Comparator::class.java), "comparing", arguments = listOf(fieldExtractors.first()))
         fieldExtractors.subList(1, fieldExtractors.size).forEach {
@@ -115,3 +122,7 @@ public class ComparablesJavaRenderer : JavaRenderer() {
         return expression.toCode()
     }
 }
+
+private fun FieldSpec.lines() = toString().split(System.lineSeparator())
+
+private fun MethodSpec.lines() = toString().split(System.lineSeparator())

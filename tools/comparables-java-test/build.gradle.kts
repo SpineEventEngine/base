@@ -23,41 +23,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        mavenCentral()
+
+import io.spine.internal.dependency.Truth
+
+plugins {
+    id("io.spine.proto-data") version "0.0.33"
+}
+
+protoData {
+    renderers("io.spine.tools.comparables.ComparablesJavaRenderer")
+    plugins("io.spine.tools.comparables.ComparablesPlugin")
+    options("spine/options.proto")
+}
+
+dependencies {
+    implementation(project(":base"))
+    protoData(project(":comparables"))
+    protoData(project(":comparables-java"))
+
+    Truth.libs.forEach { testImplementation(it) }
+}
+
+repositories {
+    val protoDataRepo = io.spine.internal.gradle.PublishingRepos.gitHub("ProtoData")
+    maven {
+        url = uri(protoDataRepo.releases)
+        credentials {
+            val creds = protoDataRepo.credentials(project)!!
+            username = creds.username
+            password = creds.password
+        }
     }
 }
-
-rootProject.name = "spine-base"
-
-include("base")
-include("testlib")
-
-/**
- * Includes a module and sets custom project directory to it.
- */
-fun toolsModule(name: String) {
-    include(name)
-    project(":$name").projectDir = File("$rootDir/tools/$name")
-}
-
-toolsModule("tool-base")
-toolsModule("plugin-base")
-toolsModule("plugin-testlib")
-
-toolsModule("javadoc-filter")
-toolsModule("javadoc-style")
-
-toolsModule("mc-java-checks")
-toolsModule("mc-java-validation")
-toolsModule("mc-java-protoc")
-toolsModule("mc-java")
-
-toolsModule("mc-dart")
-toolsModule("mc-js")
-
-toolsModule("comparables")
-toolsModule("comparables-java")
-toolsModule("comparables-java-test")
