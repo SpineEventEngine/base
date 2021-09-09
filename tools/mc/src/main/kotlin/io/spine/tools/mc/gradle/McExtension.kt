@@ -70,7 +70,7 @@ class McExtension private constructor(private val project: Project) {
         project.extensions.add(javaClass, name, this)
     }
 
-    companion object Companion : Logging {
+    companion object : Logging {
 
         const val name = "modelCompiler2"
 
