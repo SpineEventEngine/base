@@ -55,3 +55,6 @@ repositories {
         }
     }
 }
+
+tasks["compileKotlin"].dependsOn("launchProtoDataMain")
+tasks["compileTestKotlin"].dependsOn("launchProtoDataTest")
