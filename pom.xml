@@ -98,6 +98,12 @@ all modules and does not describe the project structure per-subproject.
     <scope>compile</scope>
   </dependency>
   <dependency>
+    <groupId>io.spine.protodata</groupId>
+    <artifactId>codegen-java</artifactId>
+    <version>0.0.33</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
     <groupId>javax.annotation</groupId>
     <artifactId>javax.annotation-api</artifactId>
     <version>1.3.2</version>
@@ -212,6 +218,22 @@ all modules and does not describe the project structure per-subproject.
     <groupId>com.puppycrawl.tools</groupId>
     <artifactId>checkstyle</artifactId>
     <version>8.29</version>
+  </dependency>
+  <dependency>
+    <groupId>io.grpc</groupId>
+    <artifactId>protoc-gen-grpc-java</artifactId>
+    <version>1.38.0</version>
+  </dependency>
+  <dependency>
+    <groupId>io.spine.tools</groupId>
+    <artifactId>spine-mc-java-checks</artifactId>
+    <version>2.0.0-SNAPSHOT.53</version>
+    <scope>provided</scope>
+  </dependency>
+  <dependency>
+    <groupId>io.spine.tools</groupId>
+    <artifactId>spine-mc-java-protoc</artifactId>
+    <version>2.0.0-SNAPSHOT.53</version>
   </dependency>
   <dependency>
     <groupId>net.sourceforge.pmd</groupId>

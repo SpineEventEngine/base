@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package spine.tools;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.tools.comparables";
+option java_outer_classname = "ComparableTypeProto";
+option java_multiple_files = true;
+
+import "spine/base/field_path.proto";
+import "spine/protodata/ast.proto";
+
+message ComparableType {
+    option (entity).kind = PROJECTION;
+
+    protodata.TypeName name = 1;
+
+    protodata.FilePath declared_in = 2;
+
+    repeated base.FieldPath field = 3;
+
+    bool reverse_order = 4;
+}

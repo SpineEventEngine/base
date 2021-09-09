@@ -24,31 +24,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.gradle.PublishingRepos.gitHub
+package io.spine.tools.comparables
 
-buildscript {
-    io.spine.internal.gradle.doApplyStandard(repositories)
-    dependencies {
-        classpath("io.spine.tools:spine-mc-java:2.0.0-SNAPSHOT.53")
-    }
-}
+import io.spine.protodata.plugin.Plugin
+import io.spine.protodata.plugin.ViewRepository
 
-apply(plugin = "io.spine.mc-java")
+public class ComparablesPlugin : Plugin {
 
-repositories {
-    val protoDataRepo = gitHub("ProtoData")
-    maven {
-        url = uri(protoDataRepo.releases)
-        credentials {
-            val creds = protoDataRepo.credentials(project)!!
-            username = creds.username
-            password = creds.password
-        }
-    }
-}
-
-val protoDataVersion = "0.0.33"
-
-dependencies {
-    implementation("io.spine.protodata:codegen-java:$protoDataVersion")
+    override fun viewRepositories(): Set<ViewRepository<*, *, *>> =
+        setOf(ComparableTypeView.Repo())
 }
