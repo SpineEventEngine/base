@@ -35,6 +35,8 @@ buildscript {
 
 apply(plugin = "io.spine.mc-java")
 
+group = "io.spine.tools"
+
 repositories {
     val protoDataRepo = gitHub("ProtoData")
     maven {

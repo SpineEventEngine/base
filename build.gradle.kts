@@ -96,7 +96,9 @@ spinePublishing {
         "mc-java-protoc",
 
         "mc-dart",
-        "mc-js"
+        "mc-js",
+
+        "comparables"
     )
 }
 
