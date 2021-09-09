@@ -52,5 +52,5 @@ repositories {
 val protoDataVersion = "0.0.33"
 
 dependencies {
-    implementation("io.spine.protodata:codegen-java:$protoDataVersion")
+    api("io.spine.protodata:codegen-java:$protoDataVersion")
 }

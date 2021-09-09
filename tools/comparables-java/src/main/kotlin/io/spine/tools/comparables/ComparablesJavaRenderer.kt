@@ -48,7 +48,8 @@ import javax.lang.model.element.Modifier.PUBLIC
 import javax.lang.model.element.Modifier.STATIC
 import com.squareup.javapoet.ClassName as PoetClassName
 
-public class ComparableRenderer : JavaRenderer() {
+@Suppress("unused") // Used by ProtoData reflectively.
+public class ComparablesJavaRenderer : JavaRenderer() {
 
     override fun render(sources: SourceSet) {
         val comparableTypes = select<ComparableType>().all()

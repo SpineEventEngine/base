@@ -29,6 +29,7 @@ package io.spine.tools.comparables
 import io.spine.protodata.plugin.Plugin
 import io.spine.protodata.plugin.ViewRepository
 
+@Suppress("unused") // Used by ProtoData reflectively.
 public class ComparablesPlugin : Plugin {
 
     override fun viewRepositories(): Set<ViewRepository<*, *, *>> =

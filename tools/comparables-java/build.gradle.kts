@@ -23,40 +23,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        mavenCentral()
+
+import io.spine.internal.gradle.PublishingRepos.gitHub
+
+group = "io.spine.tools"
+
+repositories {
+    val protoDataRepo = gitHub("ProtoData")
+    maven {
+        url = uri(protoDataRepo.releases)
+        credentials {
+            val creds = protoDataRepo.credentials(project)!!
+            username = creds.username
+            password = creds.password
+        }
     }
 }
 
-rootProject.name = "spine-base"
-
-include("base")
-include("testlib")
-
-/**
- * Includes a module and sets custom project directory to it.
- */
-fun toolsModule(name: String) {
-    include(name)
-    project(":$name").projectDir = File("$rootDir/tools/$name")
+dependencies {
+    implementation(project(":comparables"))
 }
-
-toolsModule("tool-base")
-toolsModule("plugin-base")
-toolsModule("plugin-testlib")
-
-toolsModule("javadoc-filter")
-toolsModule("javadoc-style")
-
-toolsModule("mc-java-checks")
-toolsModule("mc-java-validation")
-toolsModule("mc-java-protoc")
-toolsModule("mc-java")
-
-toolsModule("mc-dart")
-toolsModule("mc-js")
-
-toolsModule("comparables")
-toolsModule("comparables-java")

@@ -98,7 +98,8 @@ spinePublishing {
         "mc-dart",
         "mc-js",
 
-        "comparables"
+        "comparables",
+        "comparables-java"
     )
 }
 
