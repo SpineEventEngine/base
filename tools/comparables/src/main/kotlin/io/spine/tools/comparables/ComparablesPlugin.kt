@@ -29,6 +29,9 @@ package io.spine.tools.comparables
 import io.spine.protodata.plugin.Plugin
 import io.spine.protodata.plugin.ViewRepository
 
+/**
+ * Defines the [ComparableType] view.
+ */
 @Suppress("unused") // Used by ProtoData reflectively.
 public class ComparablesPlugin : Plugin {
 

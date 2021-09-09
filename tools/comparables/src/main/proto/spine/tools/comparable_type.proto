@@ -12,14 +12,22 @@ option java_multiple_files = true;
 import "spine/base/field_path.proto";
 import "spine/protodata/ast.proto";
 
+// A view on a  message type that can be ordered.
+//
+// This view reflects the rules defined in the `(compare_by)` message option.
+//
 message ComparableType {
     option (entity).kind = PROJECTION;
 
+    // Name of the type.
     protodata.TypeName name = 1;
 
+    // Path to the Protobuf file where the type is declared.
     protodata.FilePath declared_in = 2;
 
+    // Fields which form the order of comparison.
     repeated base.FieldPath field = 3;
 
+    // If `true`, the order of comparison should be reversed.
     bool reverse_order = 4;
 }

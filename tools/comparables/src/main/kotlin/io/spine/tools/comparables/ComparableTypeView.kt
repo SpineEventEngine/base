@@ -39,6 +39,9 @@ import io.spine.protodata.plugin.ViewRepository
 import io.spine.server.entity.alter
 import io.spine.server.route.EventRouting
 
+/**
+ * A view on a comparable message type.
+ */
 internal class ComparableTypeView : View<TypeName, ComparableType, ComparableType.Builder>() {
 
     @Subscribe
@@ -60,6 +63,9 @@ internal class ComparableTypeView : View<TypeName, ComparableType, ComparableTyp
         reverseOrder = option.descending
     }
 
+    /**
+     * Repository for the [ComparableTypeView].
+     */
     internal class Repo : ViewRepository<TypeName, ComparableTypeView, ComparableType>() {
 
         override fun setupEventRouting(routing: EventRouting<TypeName>) {

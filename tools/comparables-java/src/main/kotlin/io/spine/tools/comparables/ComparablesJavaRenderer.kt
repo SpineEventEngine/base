@@ -49,6 +49,16 @@ import javax.lang.model.element.Modifier.PUBLIC
 import javax.lang.model.element.Modifier.STATIC
 import com.squareup.javapoet.ClassName as PoetClassName
 
+/**
+ * A renderer for making messages [Comparable].
+ *
+ * Adds the [Comparable] interface to the message class and generates the `compareTo(...)` method,
+ * which compares the value of the message to another instance of the same message type according
+ * to the rules defined by the [ComparableType] view.
+ *
+ * Note that the [io.spine.tools.comparables.ComparablesPlugin] must be added to ProtoData in order
+ * for this renderer to work.
+ */
 @Suppress("unused") // Used by ProtoData reflectively.
 public class ComparablesJavaRenderer : JavaRenderer() {
 
@@ -72,6 +82,12 @@ public class ComparablesJavaRenderer : JavaRenderer() {
         }
     }
 
+    /**
+     * Generates the code for the order comparison.
+     *
+     * The code will contain the overridden `compareTo(..)` as defined in
+     * the [Comparable]interface.
+     */
     private fun comparison(selfName: PoetClassName, type: ComparableType): List<String> {
         val other = Literal("other")
         val naturalOrder = Literal("naturalOrder")
@@ -102,6 +118,12 @@ public class ComparablesJavaRenderer : JavaRenderer() {
         return comparatorProperty.lines() + method.lines()
     }
 
+    /**
+     * Generates code which yields an instance of [Comparator].
+     *
+     * The comparator compares two messages according to the rules defined in
+     * the [ComparableType] view.
+     */
     private fun buildComparator(type: ComparableType): String {
         val fields = type.fieldList
         check(fields.isNotEmpty()) { "`(compare_by)` must specify at least one field." }
@@ -114,15 +136,25 @@ public class ComparablesJavaRenderer : JavaRenderer() {
             chain
         }.map {
             "(${type.name.simpleName} $lambdaParam) -> $it"
-        }.map { Literal(it) }
-        var expression = MethodCall(ClassName(Comparator::class.java), "comparing", arguments = listOf(fieldExtractors.first()))
+        }.map(::Literal)
+        var expression = MethodCall(
+            ClassName(Comparator::class.java),
+            name = "comparing",
+            arguments = listOf(fieldExtractors.first())
+        )
         fieldExtractors.subList(1, fieldExtractors.size).forEach {
-            expression = expression.chain("thenComparing", arguments = listOf(it))
+            expression = expression.chain(name = "thenComparing", arguments = listOf(it))
         }
         return expression.toCode()
     }
 }
 
+/**
+ * Obtains the code lines of this field definition.
+ */
 private fun FieldSpec.lines() = toString().split(System.lineSeparator())
 
+/**
+ * Obtains the code lines of this method definition.
+ */
 private fun MethodSpec.lines() = toString().split(System.lineSeparator())
