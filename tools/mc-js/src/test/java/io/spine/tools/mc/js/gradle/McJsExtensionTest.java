@@ -89,7 +89,7 @@ class McJsExtensionTest {
     @DisplayName("return the set directory with main generated Protobufs")
     void customMainGenProto() {
         String customPath = "proto/main";
-        pluginExtension().mainGenProtoDir = customPath;
+        pluginExtension().generatedMainDir = customPath;
         Directory directory = McJsExtension.getMainGenProto(project);
         Directory expected = Directory.at(Paths.get(customPath));
         assertEquals(expected, directory);
@@ -109,7 +109,7 @@ class McJsExtensionTest {
     @DisplayName("return the set directory with test generated Protobufs")
     void customTestGenProto() {
         String customPath = "proto/test";
-        pluginExtension().testGenProtoDir = customPath;
+        pluginExtension().generatedTestDir = customPath;
         Directory directory = McJsExtension.getTestGenProtoDir(project);
         Directory expected = Directory.at(Paths.get(customPath));
         assertThat(directory)
@@ -134,7 +134,7 @@ class McJsExtensionTest {
     @DisplayName("return the main descriptor set at the custom path")
     void customMainDescriptorSet() {
         String customPath = "main/types.desc";
-        pluginExtension().mainDescriptorSetPath = customPath;
+        pluginExtension().mainDescriptorSetFile = customPath;
         File file = McJsExtension.getMainDescriptorSet(project);
         File expected = new File(customPath);
         assertThat(file)
@@ -159,7 +159,7 @@ class McJsExtensionTest {
     @DisplayName("return the test descriptor set at the custom path")
     void customTestDescriptorSet() {
         String customPath = "test/types.desc";
-        pluginExtension().testDescriptorSetPath = customPath;
+        pluginExtension().testDescriptorSetFile = customPath;
         File file = McJsExtension.getTestDescriptorSet(project);
         File expected = new File(customPath);
         assertThat(file)

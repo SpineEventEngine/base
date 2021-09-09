@@ -32,7 +32,7 @@ import org.gradle.api.Project;
 import org.gradle.api.tasks.SourceSetContainer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.gradle.Projects.sourceSets;
+import static io.spine.tools.gradle.Projects.getSourceSets;
 
 /**
  * A {@link SourceSuperset} implementation based on source sets of a Gradle project.
@@ -59,7 +59,7 @@ public final class ProjectSourceSuperset implements SourceSuperset {
     @Override
     public void register(GeneratedSourceRoot rootDirectory) {
         checkNotNull(rootDirectory);
-        SourceSetContainer sourceSets = sourceSets(project);
+        SourceSetContainer sourceSets = getSourceSets(project);
         sourceSets.forEach(sourceSet -> {
             GeneratedSourceSet scopeDir = rootDirectory.sourceSet(sourceSet.getName());
             sourceSet.getJava()

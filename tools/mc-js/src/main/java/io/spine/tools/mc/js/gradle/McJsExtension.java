@@ -26,10 +26,8 @@
 
 package io.spine.tools.mc.js.gradle;
 
-import io.spine.tools.fs.DefaultPaths;
 import io.spine.tools.fs.ExternalModule;
 import io.spine.tools.fs.ExternalModules;
-import io.spine.tools.gradle.GradleExtension;
 import io.spine.tools.js.fs.DefaultJsPaths;
 import io.spine.tools.js.fs.Directory;
 import org.gradle.api.Project;
@@ -45,6 +43,8 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Maps.newHashMap;
 import static io.spine.tools.fs.ExternalModule.predefinedModules;
+import static io.spine.tools.gradle.Projects.getDefaultMainDescriptors;
+import static io.spine.tools.gradle.Projects.getDefaultTestDescriptors;
 import static io.spine.tools.mc.js.gradle.McJsPlugin.extensionName;
 
 /**
@@ -52,7 +52,7 @@ import static io.spine.tools.mc.js.gradle.McJsPlugin.extensionName;
  * task to configure when it will be executed during the build lifecycle.
  */
 @SuppressWarnings("PublicField" /* Expose fields as a Gradle extension */)
-public class McJsExtension extends GradleExtension {
+public class McJsExtension {
 
     /**
      * The name of the extension as it appears in a Gradle script.
@@ -62,22 +62,22 @@ public class McJsExtension extends GradleExtension {
     /**
      * The absolute path to the main Protobuf descriptor set file.
      */
-    public String mainDescriptorSetPath;
+    public String mainDescriptorSetFile;
 
     /**
      * The absolute path to the test Protobuf descriptor set file.
      */
-    public String testDescriptorSetPath;
+    public String testDescriptorSetFile;
 
     /**
-     * The absolute path to the main Protobufs compiled to JavaScript.
+     * The absolute path to the main generated JavaScript code.
      */
-    public String mainGenProtoDir;
+    public String generatedMainDir;
 
     /**
-     * The absolute path to the test Protobufs compiled to JavaScript.
+     * The absolute path to the generated test JavaScript code.
      */
-    public String testGenProtoDir;
+    public String generatedTestDir;
 
     /**
      * Names of JavaScript modules and directories they provide.
@@ -126,7 +126,7 @@ public class McJsExtension extends GradleExtension {
 
     public static Directory getMainGenProto(Project project) {
         McJsExtension extension = extension(project);
-        String specifiedValue = extension.mainGenProtoDir;
+        String specifiedValue = extension.generatedMainDir;
         Path path = pathOrDefault(specifiedValue,
                                   def(project).generated()
                                               .mainJs());
@@ -135,7 +135,7 @@ public class McJsExtension extends GradleExtension {
 
     public static Directory getTestGenProtoDir(Project project) {
         McJsExtension extension = extension(project);
-        String specifiedValue = extension.testGenProtoDir;
+        String specifiedValue = extension.generatedTestDir;
         Path path = pathOrDefault(specifiedValue,
                                   def(project).generated()
                                               .testJs());
@@ -144,15 +144,16 @@ public class McJsExtension extends GradleExtension {
 
     public static File getMainDescriptorSet(Project project) {
         McJsExtension extension = extension(project);
-        Path path = pathOrDefault(extension.mainDescriptorSetPath,
-                                  extension.defaultMainDescriptor(project));
+        File result = getDefaultMainDescriptors(project);
+        Path path = pathOrDefault(extension.mainDescriptorSetFile,
+                                  result);
         return path.toFile();
     }
 
     public static File getTestDescriptorSet(Project project) {
         McJsExtension extension = extension(project);
-        Path path = pathOrDefault(extension.testDescriptorSetPath,
-                                  extension.defaultTestDescriptor(project));
+        File result = getDefaultTestDescriptors(project);
+        Path path = pathOrDefault(extension.testDescriptorSetFile, result);
         return path.toFile();
     }
 
@@ -195,10 +196,5 @@ public class McJsExtension extends GradleExtension {
 
     private static DefaultJsPaths def(Project project) {
         return DefaultJsPaths.at(project.getProjectDir());
-    }
-
-    @Override
-    protected DefaultPaths defaultPaths(Project project) {
-        return def(project);
     }
 }

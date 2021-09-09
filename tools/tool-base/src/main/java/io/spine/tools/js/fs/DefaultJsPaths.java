@@ -76,13 +76,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Immutable
 public final class DefaultJsPaths extends DefaultPaths {
 
-    private DefaultJsPaths(Path path) {
-        super(path);
+    private DefaultJsPaths(Path projectDir) {
+        super(projectDir);
     }
 
-    public static DefaultJsPaths at(Path root) {
-        checkNotNull(root);
-        DefaultJsPaths result = new DefaultJsPaths(root);
+    public static DefaultJsPaths at(Path projectDir) {
+        checkNotNull(projectDir);
+        DefaultJsPaths result = new DefaultJsPaths(projectDir);
         return result;
     }
 

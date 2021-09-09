@@ -24,37 +24,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.dart.fs;
+import io.spine.internal.dependency.Protobuf
 
-import io.spine.tools.fs.DefaultPaths;
+group = "io.spine.tools"
 
-import java.io.File;
-import java.nio.file.Path;
+dependencies {
+    api(project(":plugin-base"))
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-/**
- * A default project layout for a Dart project.
- */
-public final class DefaultDartPaths extends DefaultPaths {
-
-    private DefaultDartPaths(Path path) {
-        super(path);
-    }
-
-    /**
-     * Creates a new instance taking the passed project root path.
-     */
-    public static DefaultDartPaths at(Path root) {
-        checkNotNull(root);
-        return new DefaultDartPaths(root);
-    }
-
-    /**
-     * Creates a new instance taking the passed project root path.
-     */
-    public static DefaultDartPaths at(File root) {
-        checkNotNull(root);
-        return at(root.toPath());
-    }
+    implementation(Protobuf.GradlePlugin.lib)
+    testImplementation(project(":testlib"))
+    testImplementation(gradleTestKit())
+    testImplementation(project(":plugin-testlib"))
 }
+
+//TODO:2021-07-22:alexander.yevsyukov: Turn to WARN and investigate duplicates.
+// see https://github.com/SpineEventEngine/base/issues/657
+val dupStrategy = DuplicatesStrategy.INCLUDE
+tasks.processResources.get().duplicatesStrategy = dupStrategy
