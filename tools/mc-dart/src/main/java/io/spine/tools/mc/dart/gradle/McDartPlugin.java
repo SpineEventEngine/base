@@ -68,12 +68,12 @@ public final class McDartPlugin extends SpinePlugin {
     }
 
     private void createMainResolveImportTask(Project project, McDartExtension extension) {
-        DirectoryProperty rootDir = extension.getMainGeneratedDir();
+        DirectoryProperty rootDir = extension.getGeneratedMainDir();
         doCreateResolveImportsTask(project, extension, rootDir, false);
     }
 
     private void createTestResolveImportTask(Project project, McDartExtension extension) {
-        DirectoryProperty rootDir = extension.getTestGeneratedDir();
+        DirectoryProperty rootDir = extension.getGeneratedTestDir();
         doCreateResolveImportsTask(project, extension, rootDir, true);
     }
 

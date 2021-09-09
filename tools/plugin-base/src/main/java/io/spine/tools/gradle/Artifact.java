@@ -31,10 +31,12 @@ import io.spine.annotation.Internal;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.artifacts.Dependency;
 
+import java.io.File;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.code.proto.FileDescriptors.DESC_EXTENSION;
 
 /**
  * A Maven-style artifact specification.
@@ -119,6 +121,14 @@ public final class Artifact {
      */
     public String fileSafeId() {
         return buildId(FILE_SAFE_SEPARATOR, FILE_SAFE_SEPARATOR);
+    }
+
+    /**
+     * Obtains a descriptor set file of this artifact.
+     */
+    public File descriptorSetFile() {
+        File result = new File(fileSafeId() + DESC_EXTENSION);
+        return result;
     }
 
     private String buildId(char primarySeparator, char secondarySeparator) {

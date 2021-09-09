@@ -24,35 +24,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.java.fs;
+package io.spine.tools.mc.gradle
 
-import com.google.errorprone.annotations.Immutable;
-import io.spine.code.fs.AbstractDirectory;
+import io.spine.logging.Logging
+import org.gradle.api.Plugin
+import org.gradle.api.Project
 
 /**
- * A root source code directory for manually written code.
- *
- * <p>Adds a root directory for the proto code in addition to those exposed
- * by {@code DefaultProject.SourceRoot}.
+ * A root Gradle plugin of Spine Model Compiler.
  */
-@Immutable
-public class HandmadeCodeRoot extends JavaCodeRoot {
+class McPlugin: Plugin<Project>, Logging {
 
-    HandmadeCodeRoot(AbstractDirectory parent, String name) {
-        super(parent, name);
-    }
-
-    /**
-     * A root for the main proto code.
-     */
-    public io.spine.tools.proto.fs.Directory mainProto() {
-        return io.spine.tools.proto.fs.Directory.rootIn(main());
-    }
-
-    /**
-     * A root for the test proto code.
-     */
-    public io.spine.tools.proto.fs.Directory testProto() {
-        return io.spine.tools.proto.fs.Directory.rootIn(test());
+    override fun apply(project: Project) {
+        McExtension.createIn(project)
     }
 }

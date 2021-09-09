@@ -33,9 +33,9 @@ import org.gradle.api.Project;
 import java.util.stream.Stream;
 
 /**
- * Spine Model Compiler Gradle plugin.
+ * Spine Model Compiler for Java Gradle plugin.
  *
- * <p>Applies dependent plugins
+ * <p>Applies dependent plugins.
  */
 public class McJavaPlugin implements Plugin<Project>, Logging {
 
@@ -48,9 +48,7 @@ public class McJavaPlugin implements Plugin<Project>, Logging {
 
     @Override
     public void apply(Project project) {
-        _debug().log("Adding the extension to the project.");
-        project.getExtensions()
-               .create(extensionName(), McJavaExtension.class, project);
+        createExtensionIn(project);
 
         // Plugins that deal with Protobuf types must depend on `mergeDescriptorSet` and
         // `mergeTestDescriptorSet` tasks to be able to access every declared type
@@ -65,9 +63,15 @@ public class McJavaPlugin implements Plugin<Project>, Logging {
               .forEach(plugin -> apply(plugin, project));
     }
 
+    private void createExtensionIn(Project project) {
+        String extensionName = extensionName();
+        _debug().log("Adding the extension `%s` to the project `%s`.", extensionName, project);
+        project.getExtensions()
+               .create(extensionName, McJavaExtension.class, project);
+    }
+
     private void apply(SpinePlugin plugin, Project project) {
-        _debug().log("Applying `%s`.", plugin.getClass()
-                                             .getName());
+        _debug().log("Applying plugin `%s`.", plugin.getClass().getName());
         plugin.apply(project);
     }
 }

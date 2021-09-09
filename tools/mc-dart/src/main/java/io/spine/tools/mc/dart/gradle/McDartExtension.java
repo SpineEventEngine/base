@@ -27,9 +27,7 @@
 package io.spine.tools.mc.dart.gradle;
 
 import com.google.common.collect.ImmutableMap;
-import io.spine.tools.dart.fs.DefaultDartPaths;
 import io.spine.tools.fs.ExternalModules;
-import io.spine.tools.gradle.GradleExtension;
 import io.spine.tools.gradle.SourceScope;
 import io.spine.tools.gradle.TaskName;
 import org.gradle.api.Project;
@@ -46,6 +44,8 @@ import java.util.List;
 import java.util.Map;
 
 import static io.spine.tools.gradle.BaseTaskName.assemble;
+import static io.spine.tools.gradle.Projects.getDefaultMainDescriptors;
+import static io.spine.tools.gradle.Projects.getDefaultTestDescriptors;
 import static io.spine.tools.gradle.ProtobufTaskName.generateProto;
 import static io.spine.tools.gradle.ProtobufTaskName.generateTestProto;
 import static io.spine.tools.gradle.ProtocPluginName.dart;
@@ -58,7 +58,7 @@ import static org.gradle.api.Task.TASK_TYPE;
 /**
  * DSL extension for configuring Protobuf-to-Dart compilation.
  */
-public final class McDartExtension extends GradleExtension {
+public final class McDartExtension {
 
     private static final String NAME = "protoDart";
 
@@ -67,13 +67,14 @@ public final class McDartExtension extends GradleExtension {
     @SuppressWarnings("DuplicateStringLiteralInspection")
     private static final String GENERATED_BASE_DIR = "generated";
 
-    private final Property<Object> mainDescriptorSet;
-    private final Property<Object> testDescriptorSet;
+    private final Property<Object> mainDescriptorSetFile;
+    private final Property<Object> testDescriptorSetFile;
+
     private final DirectoryProperty generatedDir;
     private final DirectoryProperty libDir;
     private final DirectoryProperty testDir;
-    private final DirectoryProperty mainGeneratedDir;
-    private final DirectoryProperty testGeneratedDir;
+    private final DirectoryProperty generatedMainDir;
+    private final DirectoryProperty generatedTestDir;
 
     /**
      * Names of Dart modules and directories they provide.
@@ -116,12 +117,12 @@ public final class McDartExtension extends GradleExtension {
         super();
         this.project = project;
         ObjectFactory objects = project.getObjects();
+        this.mainDescriptorSetFile = objects.property(Object.class);
+        this.testDescriptorSetFile = objects.property(Object.class);
         this.libDir = objects.directoryProperty();
         this.testDir = objects.directoryProperty();
-        this.mainGeneratedDir = objects.directoryProperty();
-        this.testGeneratedDir = objects.directoryProperty();
-        this.mainDescriptorSet = objects.property(Object.class);
-        this.testDescriptorSet = objects.property(Object.class);
+        this.generatedMainDir = objects.directoryProperty();
+        this.generatedTestDir = objects.directoryProperty();
         this.generatedDir = objects.directoryProperty();
         initProperties();
     }
@@ -157,13 +158,13 @@ public final class McDartExtension extends GradleExtension {
     }
 
     private void initProperties() {
+        mainDescriptorSetFile.convention(getDefaultMainDescriptors(project));
+        testDescriptorSetFile.convention(getDefaultTestDescriptors(project));
         Directory projectDir = project.getLayout().getProjectDirectory();
         libDir.convention(projectDir.dir(LIB_DIRECTORY));
         testDir.convention(projectDir.dir(TEST_DIRECTORY));
-        mainGeneratedDir.convention(libDir);
-        testGeneratedDir.convention(testDir);
-        mainDescriptorSet.convention(defaultMainDescriptor(project));
-        testDescriptorSet.convention(defaultTestDescriptor(project));
+        generatedMainDir.convention(libDir);
+        generatedTestDir.convention(testDir);
         generatedDir.convention(projectDir.dir(GENERATED_BASE_DIR));
     }
 
@@ -190,15 +191,15 @@ public final class McDartExtension extends GradleExtension {
      *
      * <p>Defaults to {@code $projectDir/build/descriptors/main.desc}.
      */
-    public Property<Object> getMainDescriptorSet() {
-        return mainDescriptorSet;
+    public Property<Object> getMainDescriptorSetFile() {
+        return mainDescriptorSetFile;
     }
 
     /**
      * Resolves the descriptor set file for production Protobuf types.
      */
     File mainDescriptorSetFile() {
-        return file(getMainDescriptorSet());
+        return file(getMainDescriptorSetFile());
     }
 
     /**
@@ -206,15 +207,15 @@ public final class McDartExtension extends GradleExtension {
      *
      * <p>Defaults to {@code $projectDir/build/descriptors/test.desc}.
      */
-    public Property<Object> getTestDescriptorSet() {
-        return testDescriptorSet;
+    public Property<Object> getTestDescriptorSetFile() {
+        return testDescriptorSetFile;
     }
 
     /**
      * Resolves the descriptor set file for test Protobuf types.
      */
     File testDescriptorSetFile() {
-        return file(getTestDescriptorSet());
+        return file(getTestDescriptorSetFile());
     }
 
     /**
@@ -260,8 +261,8 @@ public final class McDartExtension extends GradleExtension {
      *
      * <p>Defaults to the {@code libDir}.
      */
-    public DirectoryProperty getMainGeneratedDir() {
-        return mainGeneratedDir;
+    public DirectoryProperty getGeneratedMainDir() {
+        return generatedMainDir;
     }
 
     /**
@@ -272,8 +273,8 @@ public final class McDartExtension extends GradleExtension {
      * <p>Defaults to the {@code testDir}.
      */
     @SuppressWarnings("unused") // For possible future use.
-    public DirectoryProperty getTestGeneratedDir() {
-        return testGeneratedDir;
+    public DirectoryProperty getGeneratedTestDir() {
+        return generatedTestDir;
     }
 
     ExternalModules modules() {
@@ -282,10 +283,5 @@ public final class McDartExtension extends GradleExtension {
 
     private File file(Property<Object> property) {
         return project.file(property.get());
-    }
-
-    @Override
-    protected DefaultDartPaths defaultPaths(Project project) {
-        return DefaultDartPaths.at(project.getProjectDir());
     }
 }

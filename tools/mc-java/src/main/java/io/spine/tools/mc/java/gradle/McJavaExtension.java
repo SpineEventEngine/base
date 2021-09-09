@@ -30,7 +30,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
 import groovy.lang.Closure;
 import io.spine.tools.code.Indent;
-import io.spine.tools.gradle.GradleExtension;
 import io.spine.tools.java.fs.DefaultJavaPaths;
 import io.spine.tools.mc.java.codegen.JavaCodegenConfig;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -46,6 +45,8 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newLinkedList;
+import static io.spine.tools.gradle.Projects.getDefaultMainDescriptors;
+import static io.spine.tools.gradle.Projects.getDefaultTestDescriptors;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -57,7 +58,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
         "ClassWithTooManyFields", "PMD.TooManyFields" /* Gradle extensions are flat like this. */,
         "RedundantSuppression" /* "ClassWithTooManyFields" is sometimes not recognized by IDEA. */
 })
-public class McJavaExtension extends GradleExtension {
+public class McJavaExtension {
 
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
@@ -65,6 +66,16 @@ public class McJavaExtension extends GradleExtension {
      * The name of the extension, as it appears in a Gradle build script.
      */
     static final String NAME = "modelCompiler";
+
+    /**
+     * The absolute path to the main Protobuf descriptor set file.
+     */
+    public String mainDescriptorSetFile;
+
+    /**
+     * The absolute path to the test Protobuf descriptor set file.
+     */
+    public String testDescriptorSetFile;
 
     /**
      * The absolute path to the Protobuf source code under the {@code main} directory.
@@ -77,30 +88,16 @@ public class McJavaExtension extends GradleExtension {
     public String testProtoDir;
 
     /**
-     * The absolute path to the main Protobuf descriptor set file.
-     *
-     * <p>The file must have the {@code .desc} extension.
-     */
-    public String mainDescriptorSetFile;
-
-    /**
-     * The absolute path to the test Protobuf descriptor set file.
-     *
-     * <p>The file must have the {@code .desc} extension.
-     */
-    public String testDescriptorSetFile;
-
-    /**
      * The absolute path to the main Java sources directory,
      * generated basing on Protobuf definitions.
      */
-    public String generatedMainJavaDir;
+    public String generatedMainDir;
 
     /**
      * The absolute path to the main {@code gRPC} services directory,
      * generated basing on Protobuf definitions.
      */
-    public String generatedMainGrpcJavaDir;
+    public String generatedMainGrpcDir;
 
     /**
      * The absolute path to the main target generated resources directory.
@@ -111,7 +108,7 @@ public class McJavaExtension extends GradleExtension {
      * The absolute path to the test Java sources directory,
      * generated basing on Protobuf definitions.
      */
-    public String generatedTestJavaDir;
+    public String generatedTestDir;
 
     /**
      * The absolute path to the test target generated resources directory.
@@ -179,7 +176,6 @@ public class McJavaExtension extends GradleExtension {
     private final Project project;
 
     public McJavaExtension(Project project) {
-        super();
         this.project = checkNotNull(project);
         this.java = new JavaCodegenConfig(project);
     }
@@ -189,11 +185,6 @@ public class McJavaExtension extends GradleExtension {
      */
     public void java(Action<JavaCodegenConfig> action) {
         action.execute(java);
-    }
-
-    @Override
-    protected DefaultJavaPaths defaultPaths(Project project) {
-        return def(project);
     }
 
     private static DefaultJavaPaths def(Project project) {
@@ -236,26 +227,28 @@ public class McJavaExtension extends GradleExtension {
 
     public static File getMainDescriptorSetFile(Project project) {
         McJavaExtension extension = extension(project);
+        File result = getDefaultMainDescriptors(project);
         String path = pathOrDefault(extension.mainDescriptorSetFile,
-                                    extension.defaultMainDescriptor(project));
+                                    result);
         return new File(path);
     }
 
     public static File getTestDescriptorSetFile(Project project) {
         McJavaExtension extension = extension(project);
+        File result = getDefaultTestDescriptors(project);
         String path = pathOrDefault(extension.testDescriptorSetFile,
-                                    extension.defaultTestDescriptor(project));
+                                    result);
         return new File(path);
     }
 
     public static String getGeneratedMainJavaDir(Project project) {
-        return pathOrDefault(extension(project).generatedMainJavaDir,
+        return pathOrDefault(extension(project).generatedMainDir,
                              def(project).generated()
                                          .mainJava());
     }
 
     public static String getGeneratedMainGrpcDir(Project project) {
-        return pathOrDefault(extension(project).generatedMainGrpcJavaDir,
+        return pathOrDefault(extension(project).generatedMainGrpcDir,
                              def(project).generated()
                                          .mainGrpc());
     }
@@ -267,7 +260,7 @@ public class McJavaExtension extends GradleExtension {
     }
 
     public static String getGeneratedTestJavaDir(Project project) {
-        return pathOrDefault(extension(project).generatedTestJavaDir,
+        return pathOrDefault(extension(project).generatedTestDir,
                              def(project).generated()
                                          .testJava());
     }

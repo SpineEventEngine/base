@@ -214,8 +214,8 @@ object Repos {
     val spine = PublishingRepos.cloudRepo.releases
     val spineSnapshots = PublishingRepos.cloudRepo.snapshots
 
-    val cloudArchive = PublishingRepos.cloudArtifactRegistry.releases
-    val cloudArchiveSnapshots = PublishingRepos.cloudArtifactRegistry.snapshots
+    val artifactRegistry = PublishingRepos.cloudArtifactRegistry.releases
+    val artifactRegistrySnapshots = PublishingRepos.cloudArtifactRegistry.snapshots
 
     @Deprecated(
         message = "Sonatype release repository redirects to the Maven Central",
@@ -280,8 +280,8 @@ fun RepositoryHandler.applyStandard() {
     val spineRepos = listOf(
         Repos.spine,
         Repos.spineSnapshots,
-        Repos.cloudArchive,
-        Repos.cloudArchiveSnapshots
+        Repos.artifactRegistry,
+        Repos.artifactRegistrySnapshots
     )
 
     spineRepos

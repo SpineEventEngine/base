@@ -27,7 +27,7 @@
 package io.spine.tools.java.fs;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.tools.fs.DefaultPaths;
+import io.spine.code.fs.AbstractDirectory;
 import io.spine.tools.fs.SourceRoot;
 
 /**
@@ -36,7 +36,7 @@ import io.spine.tools.fs.SourceRoot;
 @Immutable
 class JavaCodeRoot extends SourceRoot {
 
-    protected JavaCodeRoot(DefaultPaths parent, String name) {
+    protected JavaCodeRoot(AbstractDirectory parent, String name) {
         super(parent, name);
     }
 
@@ -44,13 +44,13 @@ class JavaCodeRoot extends SourceRoot {
      * A root directory for main Java code.
      */
     public Directory mainJava() {
-        return Directory.rootIn(getMain());
+        return Directory.rootIn(main());
     }
 
     /**
      * A root directory for test Java code.
      */
     public Directory testJava() {
-        return Directory.rootIn(getTest());
+        return Directory.rootIn(test());
     }
 }

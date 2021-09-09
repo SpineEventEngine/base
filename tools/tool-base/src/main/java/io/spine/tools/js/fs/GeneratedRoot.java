@@ -27,6 +27,7 @@
 package io.spine.tools.js.fs;
 
 import com.google.errorprone.annotations.Immutable;
+import io.spine.code.fs.AbstractDirectory;
 import io.spine.tools.fs.DefaultPaths;
 import io.spine.tools.fs.SourceRoot;
 
@@ -39,15 +40,15 @@ public final class GeneratedRoot extends SourceRoot {
     @SuppressWarnings("DuplicateStringLiteralInspection") // Same name in different context.
     private static final String DIR_NAME = "generated";
 
-    GeneratedRoot(DefaultPaths parent) {
+    GeneratedRoot(AbstractDirectory parent) {
         super(parent, DIR_NAME);
     }
 
     public Directory mainJs() {
-        return Directory.rootIn(getMain());
+        return Directory.rootIn(main());
     }
 
     public Directory testJs() {
-        return Directory.rootIn(getTest());
+        return Directory.rootIn(test());
     }
 }

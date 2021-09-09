@@ -27,6 +27,7 @@
 package io.spine.tools.fs;
 
 import com.google.errorprone.annotations.Immutable;
+import io.spine.code.fs.AbstractDirectory;
 
 import static io.spine.tools.fs.DirectoryName.main;
 import static io.spine.tools.fs.DirectoryName.test;
@@ -37,15 +38,22 @@ import static io.spine.tools.fs.DirectoryName.test;
 @Immutable
 public class SourceRoot extends SourceDir {
 
-    protected SourceRoot(DefaultPaths parent, String name) {
+    protected SourceRoot(AbstractDirectory parent, String name) {
         super(parent, name);
     }
 
-    protected SourceDir getMain() {
+    /**
+     * Obtains the directory called {@code main} under this source root.
+     */
+    @SuppressWarnings("ConfusingMainMethod") // named according to Maven conventions.
+    protected SourceDir main() {
         return new SourceDir(this, main.value());
     }
 
-    protected SourceDir getTest() {
+    /**
+     * Obtains the directory called {@code test} under this source root.
+     */
+    protected SourceDir test() {
         return new SourceDir(this, test.value());
     }
 }
