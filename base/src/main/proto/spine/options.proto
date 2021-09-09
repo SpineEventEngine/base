@@ -449,7 +449,15 @@ extend google.protobuf.MessageOptions {
 
     // Reserved 73922 for removed `enrichment_for` option.
 
-    // Reserved 73923 to 73938 for future options.
+    // Specifies the natural ordering strategy for this type.
+    //
+    // Code generators should generate language-specific comparisons based on the field paths.
+    //
+    // Runtime comparators may use the reflection API to compare field values.
+    //
+    CompareByOption compare_by = 73923;
+
+    // Reserved 73924 to 73938 for future options.
 
     // Reserved 73939 and 73940 for the deleted options `events` and `rejections`.
 }
@@ -835,4 +843,43 @@ message IsOption {
     // implements both interfaces.
     //
     string java_type = 2;
+}
+
+// Defines the way to compare two messages of the same type to one another.
+//
+// Comparisons can be used to sort values.
+//
+// See the `(compare_by)` option.
+//
+message CompareByOption {
+
+    // Field paths used for comparisons.
+    //
+    // The allowed field types are:
+    //  - any number type;
+    //  - `bool` (false is less than true);
+    //  - `string` (in the order of respective Unicode values);
+    //  - enumerations (following the order of numbers associated with each constant);
+    //  - messages marked with `(compare_by)`.
+    //
+    // Other types are not permitted. Neither are repeated and map fields. Such declarations can
+    // lead to build-time errors.
+    //
+    // To refer to nested fields, separate the field names with a dot (`.`). No fields in the path
+    // can be repeated or maps.
+    //
+    // When multiple field paths are specified, comparison is executed in the order of reference.
+    // For example, specifying ["seconds", "nanos"] makes the comparison mechanism prioritize
+    // the `seconds` field and refer to `nanos` only when `seconds` are equal.
+    //
+    // Note. When comparing message fields, a non-set message is always less than a set message.
+    // But if a message is set to a default value, the comparison falls back to
+    // the field-wise comparison, i.e. number values are treated as zeros, `bool` — as `false`,
+    // and so on.
+    //
+    repeated string field = 1;
+
+    // If true, the default order is reversed. For example, numbers are ordered from the greater to
+    // the lower, enums — from the last number value to the 0th value, etc.
+    bool descending = 2;
 }

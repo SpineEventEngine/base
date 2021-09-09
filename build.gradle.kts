@@ -74,19 +74,12 @@ plugins {
 
 apply(from = "$rootDir/version.gradle.kts")
 
-val publishToArtifactRegistry =
-    (rootProject.findProperty("publishToArtifactRegistry") as String?).toBoolean()
-
 spinePublishing {
-    val repos = if (publishToArtifactRegistry) {
-        setOf(PublishingRepos.cloudArtifactRegistry)
-    } else {
-        setOf(
-            PublishingRepos.cloudRepo,
-            PublishingRepos.gitHub("base")
-        )
-    }
-    targetRepositories.addAll(repos)
+    targetRepositories.addAll(
+        PublishingRepos.cloudRepo,
+        PublishingRepos.gitHub("base"),
+        PublishingRepos.cloudArtifactRegistry
+    )
     projectsToPublish.addAll(
         "base",
         "tool-base",
