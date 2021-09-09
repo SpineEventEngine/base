@@ -36,7 +36,6 @@ var protocPluginDependency: Dependency? = null
 val spineVersion: String by extra
 
 dependencies {
-    //api(project(":mc"))
     api(project(":plugin-base"))
     implementation(JavaPoet.lib)
 
