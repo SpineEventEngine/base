@@ -67,8 +67,8 @@ public final class McDartExtension {
     @SuppressWarnings("DuplicateStringLiteralInspection")
     private static final String GENERATED_BASE_DIR = "generated";
 
-    private final Property<Object> mainDescriptorSet;
-    private final Property<Object> testDescriptorSet;
+    private final Property<Object> mainDescriptorSetFile;
+    private final Property<Object> testDescriptorSetFile;
     private final DirectoryProperty generatedDir;
     private final DirectoryProperty libDir;
     private final DirectoryProperty testDir;
@@ -120,8 +120,8 @@ public final class McDartExtension {
         this.testDir = objects.directoryProperty();
         this.mainGeneratedDir = objects.directoryProperty();
         this.testGeneratedDir = objects.directoryProperty();
-        this.mainDescriptorSet = objects.property(Object.class);
-        this.testDescriptorSet = objects.property(Object.class);
+        this.mainDescriptorSetFile = objects.property(Object.class);
+        this.testDescriptorSetFile = objects.property(Object.class);
         this.generatedDir = objects.directoryProperty();
         initProperties();
     }
@@ -162,8 +162,8 @@ public final class McDartExtension {
         testDir.convention(projectDir.dir(TEST_DIRECTORY));
         mainGeneratedDir.convention(libDir);
         testGeneratedDir.convention(testDir);
-        mainDescriptorSet.convention(getDefaultMainDescriptors(project));
-        testDescriptorSet.convention(getDefaultTestDescriptors(project));
+        mainDescriptorSetFile.convention(getDefaultMainDescriptors(project));
+        testDescriptorSetFile.convention(getDefaultTestDescriptors(project));
         generatedDir.convention(projectDir.dir(GENERATED_BASE_DIR));
     }
 
@@ -190,15 +190,15 @@ public final class McDartExtension {
      *
      * <p>Defaults to {@code $projectDir/build/descriptors/main.desc}.
      */
-    public Property<Object> getMainDescriptorSet() {
-        return mainDescriptorSet;
+    public Property<Object> getMainDescriptorSetFile() {
+        return mainDescriptorSetFile;
     }
 
     /**
      * Resolves the descriptor set file for production Protobuf types.
      */
     File mainDescriptorSetFile() {
-        return file(getMainDescriptorSet());
+        return file(getMainDescriptorSetFile());
     }
 
     /**
@@ -206,15 +206,15 @@ public final class McDartExtension {
      *
      * <p>Defaults to {@code $projectDir/build/descriptors/test.desc}.
      */
-    public Property<Object> getTestDescriptorSet() {
-        return testDescriptorSet;
+    public Property<Object> getTestDescriptorSetFile() {
+        return testDescriptorSetFile;
     }
 
     /**
      * Resolves the descriptor set file for test Protobuf types.
      */
     File testDescriptorSetFile() {
-        return file(getTestDescriptorSet());
+        return file(getTestDescriptorSetFile());
     }
 
     /**

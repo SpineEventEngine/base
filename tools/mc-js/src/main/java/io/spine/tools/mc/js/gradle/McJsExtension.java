@@ -62,12 +62,12 @@ public class McJsExtension {
     /**
      * The absolute path to the main Protobuf descriptor set file.
      */
-    public String mainDescriptorSetPath;
+    public String mainDescriptorSetFile;
 
     /**
      * The absolute path to the test Protobuf descriptor set file.
      */
-    public String testDescriptorSetPath;
+    public String testDescriptorSetFile;
 
     /**
      * The absolute path to the main Protobufs compiled to JavaScript.
@@ -145,7 +145,7 @@ public class McJsExtension {
     public static File getMainDescriptorSet(Project project) {
         McJsExtension extension = extension(project);
         File result = getDefaultMainDescriptors(project);
-        Path path = pathOrDefault(extension.mainDescriptorSetPath,
+        Path path = pathOrDefault(extension.mainDescriptorSetFile,
                                   result);
         return path.toFile();
     }
@@ -153,7 +153,7 @@ public class McJsExtension {
     public static File getTestDescriptorSet(Project project) {
         McJsExtension extension = extension(project);
         File result = getDefaultTestDescriptors(project);
-        Path path = pathOrDefault(extension.testDescriptorSetPath,
+        Path path = pathOrDefault(extension.testDescriptorSetFile,
                                   result);
         return path.toFile();
     }

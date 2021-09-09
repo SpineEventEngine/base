@@ -26,16 +26,13 @@
 
 package io.spine.tools.mc.gradle
 
-import io.spine.code.fs.SourceCodeDirectory
 import io.spine.logging.Logging
 import io.spine.tools.gradle.defaultMainDescriptors
 import io.spine.tools.gradle.defaultTestDescriptors
-import io.spine.tools.java.fs.DefaultJavaPaths
 import io.spine.tools.mc.gradle.McExtension.Companion.name
 import java.io.File
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
-import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 
 /**
@@ -44,65 +41,29 @@ import org.gradle.api.file.RegularFileProperty
 class McExtension private constructor(private val project: Project) {
 
     /**
-     * The absolute path to the Protobuf source code under the `main` directory.
-     */
-    val mainProtoDir: DirectoryProperty
-
-    /**
-     * The absolute path to the test Protobuf source directory.
-     */
-    val testProtoDir: DirectoryProperty
-
-    /**
      * The absolute path to the main Protobuf descriptor set file.
      *
      * The file must have the `.desc` extension.
      */
-    val mainDescriptorSet: RegularFileProperty
+    val mainDescriptorSetFile: RegularFileProperty
 
     /**
      * The absolute path to the test Protobuf descriptor set file.
      *
      * The file must have the `.desc` extension.
      */
-    val testDescriptorSet: RegularFileProperty
-
-    /**
-     * The absolute path to the main target generated resources directory.
-     */
-    val generatedMainResourcesDir: DirectoryProperty
-
-    /**
-     * The absolute path to the test target generated resources directory.
-     */
-    val generatedTestResourcesDir: DirectoryProperty
+    val testDescriptorSetFile: RegularFileProperty
 
     init {
         val projectDir: Directory = project.layout.projectDirectory
         val file = { f: File -> projectDir.file(f.toString()) }
-        val dir = { d: SourceCodeDirectory -> projectDir.dir(d.toString()) }
-
         val of = project.objects
-        val def = defaultsOf(project)
-        val src = def.src()
-        mainProtoDir = of.directoryProperty()
-            .convention(dir(src.mainProto()))
 
-        testProtoDir = of.directoryProperty()
-            .convention(dir(src.testProto()))
-
-        mainDescriptorSet = of.fileProperty()
+        mainDescriptorSetFile = of.fileProperty()
             .convention(file(project.defaultMainDescriptors))
 
-        testDescriptorSet = of.fileProperty()
+        testDescriptorSetFile = of.fileProperty()
             .convention(file(project.defaultTestDescriptors))
-
-        val generated = def.generated()
-        generatedMainResourcesDir = of.directoryProperty()
-            .convention(dir(generated.mainResources()))
-
-        generatedTestResourcesDir = of.directoryProperty()
-            .convention(dir(generated.testResources()))
     }
 
     private fun register() {
@@ -118,9 +79,5 @@ class McExtension private constructor(private val project: Project) {
             val extension = McExtension(project)
             extension.register()
         }
-
-        //TODO:2021-08-23:alexander.yevsyukov: Replace with language-neutral paths.
-        private fun defaultsOf(project: Project): DefaultJavaPaths =
-            DefaultJavaPaths.at(project.projectDir)
     }
 }
