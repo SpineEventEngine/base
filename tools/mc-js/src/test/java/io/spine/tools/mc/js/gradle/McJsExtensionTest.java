@@ -89,7 +89,7 @@ class McJsExtensionTest {
     @DisplayName("return the set directory with main generated Protobufs")
     void customMainGenProto() {
         String customPath = "proto/main";
-        pluginExtension().mainGenProtoDir = customPath;
+        pluginExtension().generatedMainDir = customPath;
         Directory directory = McJsExtension.getMainGenProto(project);
         Directory expected = Directory.at(Paths.get(customPath));
         assertEquals(expected, directory);
@@ -109,7 +109,7 @@ class McJsExtensionTest {
     @DisplayName("return the set directory with test generated Protobufs")
     void customTestGenProto() {
         String customPath = "proto/test";
-        pluginExtension().testGenProtoDir = customPath;
+        pluginExtension().generatedTestDir = customPath;
         Directory directory = McJsExtension.getTestGenProtoDir(project);
         Directory expected = Directory.at(Paths.get(customPath));
         assertThat(directory)

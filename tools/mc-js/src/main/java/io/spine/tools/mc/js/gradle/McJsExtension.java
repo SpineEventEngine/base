@@ -70,14 +70,14 @@ public class McJsExtension {
     public String testDescriptorSetFile;
 
     /**
-     * The absolute path to the main Protobufs compiled to JavaScript.
+     * The absolute path to the main generated JavaScript code.
      */
-    public String mainGenProtoDir;
+    public String generatedMainDir;
 
     /**
-     * The absolute path to the test Protobufs compiled to JavaScript.
+     * The absolute path to the generated test JavaScript code.
      */
-    public String testGenProtoDir;
+    public String generatedTestDir;
 
     /**
      * Names of JavaScript modules and directories they provide.
@@ -126,7 +126,7 @@ public class McJsExtension {
 
     public static Directory getMainGenProto(Project project) {
         McJsExtension extension = extension(project);
-        String specifiedValue = extension.mainGenProtoDir;
+        String specifiedValue = extension.generatedMainDir;
         Path path = pathOrDefault(specifiedValue,
                                   def(project).generated()
                                               .mainJs());
@@ -135,7 +135,7 @@ public class McJsExtension {
 
     public static Directory getTestGenProtoDir(Project project) {
         McJsExtension extension = extension(project);
-        String specifiedValue = extension.testGenProtoDir;
+        String specifiedValue = extension.generatedTestDir;
         Path path = pathOrDefault(specifiedValue,
                                   def(project).generated()
                                               .testJs());
@@ -153,8 +153,7 @@ public class McJsExtension {
     public static File getTestDescriptorSet(Project project) {
         McJsExtension extension = extension(project);
         File result = getDefaultTestDescriptors(project);
-        Path path = pathOrDefault(extension.testDescriptorSetFile,
-                                  result);
+        Path path = pathOrDefault(extension.testDescriptorSetFile, result);
         return path.toFile();
     }
 
@@ -198,5 +197,4 @@ public class McJsExtension {
     private static DefaultJsPaths def(Project project) {
         return DefaultJsPaths.at(project.getProjectDir());
     }
-
 }

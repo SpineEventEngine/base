@@ -69,11 +69,12 @@ public final class McDartExtension {
 
     private final Property<Object> mainDescriptorSetFile;
     private final Property<Object> testDescriptorSetFile;
+
     private final DirectoryProperty generatedDir;
     private final DirectoryProperty libDir;
     private final DirectoryProperty testDir;
-    private final DirectoryProperty mainGeneratedDir;
-    private final DirectoryProperty testGeneratedDir;
+    private final DirectoryProperty generatedMainDir;
+    private final DirectoryProperty generatedTestDir;
 
     /**
      * Names of Dart modules and directories they provide.
@@ -116,12 +117,12 @@ public final class McDartExtension {
         super();
         this.project = project;
         ObjectFactory objects = project.getObjects();
-        this.libDir = objects.directoryProperty();
-        this.testDir = objects.directoryProperty();
-        this.mainGeneratedDir = objects.directoryProperty();
-        this.testGeneratedDir = objects.directoryProperty();
         this.mainDescriptorSetFile = objects.property(Object.class);
         this.testDescriptorSetFile = objects.property(Object.class);
+        this.libDir = objects.directoryProperty();
+        this.testDir = objects.directoryProperty();
+        this.generatedMainDir = objects.directoryProperty();
+        this.generatedTestDir = objects.directoryProperty();
         this.generatedDir = objects.directoryProperty();
         initProperties();
     }
@@ -157,13 +158,13 @@ public final class McDartExtension {
     }
 
     private void initProperties() {
+        mainDescriptorSetFile.convention(getDefaultMainDescriptors(project));
+        testDescriptorSetFile.convention(getDefaultTestDescriptors(project));
         Directory projectDir = project.getLayout().getProjectDirectory();
         libDir.convention(projectDir.dir(LIB_DIRECTORY));
         testDir.convention(projectDir.dir(TEST_DIRECTORY));
-        mainGeneratedDir.convention(libDir);
-        testGeneratedDir.convention(testDir);
-        mainDescriptorSetFile.convention(getDefaultMainDescriptors(project));
-        testDescriptorSetFile.convention(getDefaultTestDescriptors(project));
+        generatedMainDir.convention(libDir);
+        generatedTestDir.convention(testDir);
         generatedDir.convention(projectDir.dir(GENERATED_BASE_DIR));
     }
 
@@ -260,8 +261,8 @@ public final class McDartExtension {
      *
      * <p>Defaults to the {@code libDir}.
      */
-    public DirectoryProperty getMainGeneratedDir() {
-        return mainGeneratedDir;
+    public DirectoryProperty getGeneratedMainDir() {
+        return generatedMainDir;
     }
 
     /**
@@ -272,8 +273,8 @@ public final class McDartExtension {
      * <p>Defaults to the {@code testDir}.
      */
     @SuppressWarnings("unused") // For possible future use.
-    public DirectoryProperty getTestGeneratedDir() {
-        return testGeneratedDir;
+    public DirectoryProperty getGeneratedTestDir() {
+        return generatedTestDir;
     }
 
     ExternalModules modules() {

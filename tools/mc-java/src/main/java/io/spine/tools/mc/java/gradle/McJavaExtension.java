@@ -30,7 +30,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
 import groovy.lang.Closure;
 import io.spine.tools.code.Indent;
-import io.spine.tools.gradle.Projects;
 import io.spine.tools.java.fs.DefaultJavaPaths;
 import io.spine.tools.mc.java.codegen.JavaCodegenConfig;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -70,15 +69,11 @@ public class McJavaExtension {
 
     /**
      * The absolute path to the main Protobuf descriptor set file.
-     *
-     * <p>The file must have the {@code .desc} extension.
      */
     public String mainDescriptorSetFile;
 
     /**
      * The absolute path to the test Protobuf descriptor set file.
-     *
-     * <p>The file must have the {@code .desc} extension.
      */
     public String testDescriptorSetFile;
 
@@ -92,18 +87,17 @@ public class McJavaExtension {
      */
     public String testProtoDir;
 
-
     /**
      * The absolute path to the main Java sources directory,
      * generated basing on Protobuf definitions.
      */
-    public String generatedMainJavaDir;
+    public String generatedMainDir;
 
     /**
      * The absolute path to the main {@code gRPC} services directory,
      * generated basing on Protobuf definitions.
      */
-    public String generatedMainGrpcJavaDir;
+    public String generatedMainGrpcDir;
 
     /**
      * The absolute path to the main target generated resources directory.
@@ -114,7 +108,7 @@ public class McJavaExtension {
      * The absolute path to the test Java sources directory,
      * generated basing on Protobuf definitions.
      */
-    public String generatedTestJavaDir;
+    public String generatedTestDir;
 
     /**
      * The absolute path to the test target generated resources directory.
@@ -248,13 +242,13 @@ public class McJavaExtension {
     }
 
     public static String getGeneratedMainJavaDir(Project project) {
-        return pathOrDefault(extension(project).generatedMainJavaDir,
+        return pathOrDefault(extension(project).generatedMainDir,
                              def(project).generated()
                                          .mainJava());
     }
 
     public static String getGeneratedMainGrpcDir(Project project) {
-        return pathOrDefault(extension(project).generatedMainGrpcJavaDir,
+        return pathOrDefault(extension(project).generatedMainGrpcDir,
                              def(project).generated()
                                          .mainGrpc());
     }
@@ -266,7 +260,7 @@ public class McJavaExtension {
     }
 
     public static String getGeneratedTestJavaDir(Project project) {
-        return pathOrDefault(extension(project).generatedTestJavaDir,
+        return pathOrDefault(extension(project).generatedTestDir,
                              def(project).generated()
                                          .testJava());
     }
