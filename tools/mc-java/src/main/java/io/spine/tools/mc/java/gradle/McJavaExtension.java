@@ -69,16 +69,6 @@ public class McJavaExtension {
     static final String NAME = "modelCompiler";
 
     /**
-     * The absolute path to the Protobuf source code under the {@code main} directory.
-     */
-    public String mainProtoDir;
-
-    /**
-     * The absolute path to the test Protobuf source directory.
-     */
-    public String testProtoDir;
-
-    /**
      * The absolute path to the main Protobuf descriptor set file.
      *
      * <p>The file must have the {@code .desc} extension.
@@ -91,6 +81,17 @@ public class McJavaExtension {
      * <p>The file must have the {@code .desc} extension.
      */
     public String testDescriptorSetFile;
+
+    /**
+     * The absolute path to the Protobuf source code under the {@code main} directory.
+     */
+    public String mainProtoDir;
+
+    /**
+     * The absolute path to the test Protobuf source directory.
+     */
+    public String testProtoDir;
+
 
     /**
      * The absolute path to the main Java sources directory,
