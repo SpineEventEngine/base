@@ -50,7 +50,7 @@ toolsModule("plugin-testlib")
 toolsModule("javadoc-filter")
 toolsModule("javadoc-style")
 
-toolsModule("mc")
+toolsModule("model-compiler")
 
 toolsModule("mc-java-checks")
 toolsModule("mc-java-validation")

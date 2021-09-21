@@ -83,9 +83,9 @@ sourceSets {
 // Tests use the Protobuf plugin.
 tasks.test {
     dependsOn(
+        project(":model-compiler").tasks.publishToMavenLocal,
         project(":mc-java-checks").tasks.publishToMavenLocal,
         project(":mc-java-protoc").tasks.publishToMavenLocal,
-        project(":mc").tasks.publishToMavenLocal,
         tasks.publishToMavenLocal
     )
 }
