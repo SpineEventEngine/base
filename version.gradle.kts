@@ -38,10 +38,8 @@
  */
 
 /** The version of this library. */
-val base = "2.0.0-SNAPSHOT.57"
+val base = "2.0.0-SNAPSHOT.59"
 
-project.extra.apply {
-    this["spineVersion"] = base
-    this["spineBaseVersion"] = base // Used by `filter-internal-javadoc.gradle`.
-    this["versionToPublish"] = base
-}
+val spineVersion: String by extra(base)
+val spineBaseVersion: String by extra(base) // Used by `filter-internal-javadoc.gradle`.
+val versionToPublish: String by extra(base)
