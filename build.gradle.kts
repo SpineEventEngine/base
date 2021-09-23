@@ -53,9 +53,7 @@ buildscript {
     io.spine.internal.gradle.doForceVersions(configurations)
 }
 
-repositories {
-    repositories.applyStandard()
-}
+repositories.applyStandard()
 
 // Apply some plugins to make type-safe extension accessors available in this script file.
 plugins {
@@ -75,11 +73,13 @@ plugins {
 apply(from = "$rootDir/version.gradle.kts")
 
 spinePublishing {
-    targetRepositories.addAll(
-        PublishingRepos.cloudRepo,
-        PublishingRepos.gitHub("base"),
-        PublishingRepos.cloudArtifactRegistry
-    )
+    with(PublishingRepos) {
+        targetRepositories.addAll(
+            cloudRepo,
+            gitHub("base"),
+            cloudArtifactRegistry
+        )
+    }
     projectsToPublish.addAll(
         "base",
         "tool-base",
