@@ -118,7 +118,7 @@ class MarkdownReportRenderer implements ReportRenderer {
         data.configurations.each { final ConfigurationData config ->
 
 
-            if (["runtime", "runtimeClasspath"].indexOf(config.name) != -1) {
+            if(["runtime", "runtimeClasspath"].indexOf(config.name) != -1) {
                 runtimeDependencies.addAll(config.dependencies)
             } else {
                 compileToolingDependencies.addAll(config.dependencies)

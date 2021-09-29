@@ -29,6 +29,9 @@ package io.spine.internal.gradle.publish
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.artifacts.PublishArtifact
+import org.gradle.api.artifacts.PublishArtifactSet
+import org.gradle.api.publish.PublishingExtension
 
 /**
  * This plugin allows publishing artifacts to remote Maven repositories.
