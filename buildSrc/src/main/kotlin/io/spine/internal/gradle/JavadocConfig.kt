@@ -51,6 +51,7 @@ object JavadocConfig {
 
     fun applyTo(project: Project) {
         val docletOptions = project.tasks.javadocTask().options as StandardJavadocDocletOptions
+        docletOptions.encoding = encoding.name
         reduceParamWarnings(docletOptions)
         registerCustomTags(docletOptions)
     }

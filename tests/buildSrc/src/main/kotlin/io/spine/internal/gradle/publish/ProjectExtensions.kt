@@ -112,7 +112,6 @@ private fun Project.prepareTasks(publish: Task, checkCredentials: Task) {
 }
 
 private fun Project.setUpDefaultArtifacts() {
-    val sourceSets = this.sourceSets
     val sourceJar = tasks.createIfAbsent(
         artifactTask = ArtifactTaskName.sourceJar,
         from = sourceSets["main"].allSource,
@@ -131,9 +130,10 @@ private fun Project.setUpDefaultArtifacts() {
     )
 
     artifacts {
-        add(ConfigurationName.archives, sourceJar)
-        add(ConfigurationName.archives, testOutputJar)
-        add(ConfigurationName.archives, javadocJar)
+        val archives = ConfigurationName.archives
+        add(archives, sourceJar)
+        add(archives, testOutputJar)
+        add(archives, javadocJar)
     }
 }
 
