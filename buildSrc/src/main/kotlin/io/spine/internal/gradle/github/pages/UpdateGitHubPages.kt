@@ -146,12 +146,25 @@ class UpdateGitHubPages : Plugin<Project> {
             val projectVersion = project.version.toString()
             val isSnapshot = isSnapshot(projectVersion)
             if (isSnapshot) {
-                println(
-                    "GitHub Pages update will be skipped since this project" +
-                            " is a snapshot: `${project.name}-${project.version}`."
-                )
+                registerNoOpTask()
             } else {
                 registerTasks(extension, project)
+            }
+        }
+    }
+
+    /**
+     * Registers `updateGitHubPages` task which performs no actual update, but prints the message
+     * telling the update is skipped, since the project is in its `SNAPSHOT` version.
+     */
+    private fun Project.registerNoOpTask() {
+        tasks.register(taskName) {
+            doLast {
+                val project = this@registerNoOpTask
+                println(
+                    "GitHub Pages update will be skipped since this project is a snapshot: " +
+                            "`${project.name}-${project.version}`."
+                )
             }
         }
     }
