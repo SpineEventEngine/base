@@ -46,118 +46,69 @@ class LazyTempPath(private val prefix: String) : Path {
 
     private lateinit var tempPath: Path
 
-    private fun delegate(): Path {
-        if (!::tempPath.isInitialized) {
-            tempPath = createTempDirectory(prefix)
+    private val delegate: Path
+        get() {
+            if (!::tempPath.isInitialized) {
+                tempPath = createTempDirectory(prefix)
+            }
+            return tempPath
         }
-        return tempPath
-    }
 
-    override fun compareTo(other: Path?): Int {
-        return delegate().compareTo(other)
-    }
+    override fun compareTo(other: Path?): Int = delegate.compareTo(other)
 
-    override fun iterator(): MutableIterator<Path> {
-        return delegate().iterator()
-    }
+    override fun iterator(): MutableIterator<Path> = delegate.iterator()
 
     override fun register(
         watcher: WatchService?,
         events: Array<out WatchEvent.Kind<*>>?,
         vararg modifiers: WatchEvent.Modifier?
-    ): WatchKey {
-        return delegate().register(watcher, events, *modifiers)
-    }
+    ): WatchKey = delegate.register(watcher, events, *modifiers)
 
-    override fun register(watcher: WatchService?, vararg events: WatchEvent.Kind<*>?): WatchKey {
-        return delegate().register(watcher, *events)
-    }
+    override fun register(watcher: WatchService?, vararg events: WatchEvent.Kind<*>?): WatchKey =
+        delegate.register(watcher, *events)
 
-    override fun getFileSystem(): FileSystem {
-        return delegate().fileSystem
-    }
+    override fun getFileSystem(): FileSystem = delegate.fileSystem
 
-    override fun isAbsolute(): Boolean {
-        return delegate().isAbsolute
-    }
+    override fun isAbsolute(): Boolean = delegate.isAbsolute
 
-    override fun getRoot(): Path {
-        return delegate().root
-    }
+    override fun getRoot(): Path = delegate.root
 
-    override fun getFileName(): Path {
-        return delegate().fileName
-    }
+    override fun getFileName(): Path = delegate.fileName
 
-    override fun getParent(): Path {
-        return delegate().parent
-    }
+    override fun getParent(): Path = delegate.parent
 
-    override fun getNameCount(): Int {
-        return delegate().nameCount
-    }
+    override fun getNameCount(): Int = delegate.nameCount
 
-    override fun getName(index: Int): Path {
-        return delegate().getName(index)
-    }
+    override fun getName(index: Int): Path = delegate.getName(index)
 
-    override fun subpath(beginIndex: Int, endIndex: Int): Path {
-        return delegate().subpath(beginIndex, endIndex)
-    }
+    override fun subpath(beginIndex: Int, endIndex: Int): Path =
+        delegate.subpath(beginIndex, endIndex)
 
-    override fun startsWith(other: Path): Boolean {
-        return delegate().startsWith(other)
-    }
+    override fun startsWith(other: Path): Boolean = delegate.startsWith(other)
 
-    override fun startsWith(other: String): Boolean {
-        return delegate().startsWith(other)
-    }
+    override fun startsWith(other: String): Boolean = delegate.startsWith(other)
 
-    override fun endsWith(other: Path): Boolean {
-        return delegate().endsWith(other)
-    }
+    override fun endsWith(other: Path): Boolean = delegate.endsWith(other)
 
-    override fun endsWith(other: String): Boolean {
-        return delegate().endsWith(other)
-    }
+    override fun endsWith(other: String): Boolean = delegate.endsWith(other)
 
-    override fun normalize(): Path {
-        return delegate().normalize()
-    }
+    override fun normalize(): Path = delegate.normalize()
 
-    override fun resolve(other: Path): Path {
-        return delegate().resolve(other)
-    }
+    override fun resolve(other: Path): Path = delegate.resolve(other)
 
-    override fun resolve(other: String): Path {
-        return delegate().resolve(other)
-    }
+    override fun resolve(other: String): Path = delegate.resolve(other)
 
-    override fun resolveSibling(other: Path): Path {
-        return delegate().resolveSibling(other)
-    }
+    override fun resolveSibling(other: Path): Path = delegate.resolveSibling(other)
 
-    override fun resolveSibling(other: String): Path {
-        return delegate().resolveSibling(other)
-    }
+    override fun resolveSibling(other: String): Path = delegate.resolveSibling(other)
 
-    override fun relativize(other: Path): Path {
-        return delegate().relativize(other)
-    }
+    override fun relativize(other: Path): Path = delegate.relativize(other)
 
-    override fun toUri(): URI {
-        return delegate().toUri()
-    }
+    override fun toUri(): URI = delegate.toUri()
 
-    override fun toAbsolutePath(): Path {
-        return delegate().toAbsolutePath()
-    }
+    override fun toAbsolutePath(): Path = delegate.toAbsolutePath()
 
-    override fun toRealPath(vararg options: LinkOption?): Path {
-        return delegate().toRealPath(*options)
-    }
+    override fun toRealPath(vararg options: LinkOption?): Path = delegate.toRealPath(*options)
 
-    override fun toFile(): File {
-        return delegate().toFile()
-    }
+    override fun toFile(): File = delegate.toFile()
 }

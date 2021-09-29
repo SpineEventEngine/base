@@ -24,15 +24,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.dependency
+package io.spine.internal.gradle.publish
 
-// https://github.com/JetBrains/kotlin
-// https://github.com/Kotlin
-object Kotlin {
-    @Suppress("MemberVisibilityCanBePrivate") // used directly from outside
-    const val version      = "1.5.30"
-    const val reflect      = "org.jetbrains.kotlin:kotlin-reflect:${version}"
-    const val stdLib       = "org.jetbrains.kotlin:kotlin-stdlib:${version}"
-    const val stdLibCommon = "org.jetbrains.kotlin:kotlin-stdlib-common:${version}"
-    const val stdLibJdk8   = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${version}"
+import io.spine.internal.gradle.Repository
+
+/**
+ * Repositories to which we may publish.
+ */
+object PublishingRepos {
+
+    @Suppress("HttpUrlsUsage") // HTTPS is not supported by this repository.
+    val mavenTeamDev = Repository(
+        name = "maven.teamdev.com",
+        releases = "http://maven.teamdev.com/repository/spine",
+        snapshots = "http://maven.teamdev.com/repository/spine-snapshots",
+        credentialsFile = "credentials.properties"
+    )
+
+    val cloudRepo = Repository(
+        name = "CloudRepo",
+        releases = "https://spine.mycloudrepo.io/public/repositories/releases",
+        snapshots = "https://spine.mycloudrepo.io/public/repositories/snapshots",
+        credentialsFile = "cloudrepo.properties"
+    )
+
+    val cloudArtifactRegistry = CloudArtifactRegistry.repository
+
+    /**
+     * Obtains a GitHub repository by the given name.
+     */
+    fun gitHub(repoName: String): Repository = GitHubPackages.repository(repoName)
 }
+

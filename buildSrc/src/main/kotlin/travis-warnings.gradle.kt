@@ -24,15 +24,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.dependency
+import org.gradle.api.Project
+import org.gradle.api.tasks.javadoc.Javadoc
+import org.gradle.external.javadoc.CoreJavadocOptions
+import org.gradle.kotlin.dsl.named
 
-// https://github.com/JetBrains/kotlin
-// https://github.com/Kotlin
-object Kotlin {
-    @Suppress("MemberVisibilityCanBePrivate") // used directly from outside
-    const val version      = "1.5.30"
-    const val reflect      = "org.jetbrains.kotlin:kotlin-reflect:${version}"
-    const val stdLib       = "org.jetbrains.kotlin:kotlin-stdlib:${version}"
-    const val stdLibCommon = "org.jetbrains.kotlin:kotlin-stdlib-common:${version}"
-    const val stdLibJdk8   = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${version}"
+@Suppress("unused")
+object TravisLogs {
+
+    /**
+     * Specific setup for a Travis build, which prevents warning messages related to
+     * `javadoc` tasks in build logs.
+     *
+     * It is expected that warnings are viewed and analyzed during local builds.
+     */
+    fun hideJavadocWarnings(p: Project) {
+        //
+        val isTravis = System.getenv("TRAVIS") == "true"
+        if (isTravis) {
+            // Set the maximum number of Javadoc warnings to print.
+            // If the parameter value is zero, all warnings will be printed.
+            p.tasks.named<Javadoc>("javadoc") {
+                val opt = options
+                if (opt is CoreJavadocOptions) {
+                    opt.addStringOption("Xmaxwarns", "1")
+                }
+            }
+        }
+    }
 }

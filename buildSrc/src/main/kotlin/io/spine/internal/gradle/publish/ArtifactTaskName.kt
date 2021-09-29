@@ -24,15 +24,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.dependency
+package io.spine.internal.gradle.publish
 
-// https://github.com/JetBrains/kotlin
-// https://github.com/Kotlin
-object Kotlin {
-    @Suppress("MemberVisibilityCanBePrivate") // used directly from outside
-    const val version      = "1.5.30"
-    const val reflect      = "org.jetbrains.kotlin:kotlin-reflect:${version}"
-    const val stdLib       = "org.jetbrains.kotlin:kotlin-stdlib:${version}"
-    const val stdLibCommon = "org.jetbrains.kotlin:kotlin-stdlib-common:${version}"
-    const val stdLibJdk8   = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${version}"
+/**
+ * Default artifact task names.
+ *
+ * These tasks, if not present on a project already, are created by the [Publish] plugin.
+ * Their output is published as project's artifacts.
+ */
+internal enum class ArtifactTaskName {
+    sourceJar,
+    testOutputJar,
+    javadocJar;
 }
