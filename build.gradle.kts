@@ -35,14 +35,16 @@ import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
-import io.spine.internal.gradle.PublishExtension
-import io.spine.internal.gradle.PublishingRepos
+import io.spine.internal.gradle.JavadocConfig
 import io.spine.internal.gradle.RunBuild
 import io.spine.internal.gradle.Scripts
 import io.spine.internal.gradle.applyStandard
 import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.forceVersions
-import io.spine.internal.gradle.spinePublishing
+import io.spine.internal.gradle.github.pages.updateGitHubPages
+import io.spine.internal.gradle.publish.PublishExtension
+import io.spine.internal.gradle.publish.PublishingRepos
+import io.spine.internal.gradle.publish.spinePublishing
 import java.time.Duration
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -154,15 +156,20 @@ subprojects {
     }
 
     // Apply Groovy-based script plugins.
-    ext["allowInternalJavadoc"] = true
     apply {
         with(Scripts) {
             from(projectLicenseReport(project))
             from(checkstyle(project))
-            from(updateGitHubPages(project))
         }
     }
-    
+
+    JavadocConfig.applyTo(project)
+
+    updateGitHubPages {
+        allowInternalJavadoc.set(true)
+        rootFolder.set(rootDir)
+    }
+
     val javaVersion = JavaVersion.VERSION_1_8
 
     the<JavaPluginExtension>().apply {
@@ -240,7 +247,6 @@ subprojects {
     apply {
         with(Scripts) {
             from(testOutput(project))
-            from(javadocOptions(project))
             from(javacArgs(project))
         }
     }

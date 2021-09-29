@@ -34,7 +34,7 @@ import java.util.function.Predicate;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Verifiers if a package is a direct “parent” of the specified child.
+ * Verifiers if a package is a direct "parent" of the specified child.
  */
 @Immutable
 final class IsDirectParent implements Predicate<Package> {
