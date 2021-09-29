@@ -76,7 +76,7 @@ public class SourceFile extends AbstractSourceFile implements Logging {
      *
      * <p>A valid rejections file must:
      * <ul>
-     *     <li>be named ending on {@link io.spine.base.MessageFile#REJECTIONS “rejections.proto”};
+     *     <li>be named ending on {@link io.spine.base.MessageFile#REJECTIONS "rejections.proto"};
      *     <li>have the {@code java_multiple_files} option set to {@code false};
      *     <li>either have a {@code java_outer_classname} value which ends with
      *         {@linkplain RejectionType#isValidOuterClassName(SimpleClassName)} “Rejections”},

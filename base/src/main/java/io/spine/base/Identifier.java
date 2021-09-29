@@ -247,11 +247,11 @@ public final class Identifier<I> {
         /*
             This branch is highly unlikely because of the following:
              1) `StringValue`, `Int32Value`, `Int64Value` are covered by `IdType.STRING`,
-                `IdType.INTEGER`, and `IdType.LONG` correspondingly. They would “intercept” an
+                `IdType.INTEGER`, and `IdType.LONG` correspondingly. They would "intercept" an
                 unpacked value in the `for` loop above.
              2) The `IdType.MESSAGE` accepts (!) all the types but `StringValue`, `Int32Value`,
-                or `Int64Value`. It does so because it does not “intercept” the message-based value
-                of another “primitive” type of identifiers. That's why anything like `BooleanValue`,
+                or `Int64Value`. It does so because it does not "intercept" the message-based value
+                of another "primitive" type of identifiers. That's why anything like `BooleanValue`,
                 or event `Empty` would be recognized as valid `Message`-based identifier. And we
                 want to keep it this way for flexibility. E.g. someone may want to arrange
                 a singleton `ProcessManager` having `Empty` as an identifier. So be it!
