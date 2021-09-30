@@ -86,6 +86,7 @@ public final class Preconditions2 {
      * @throws NullPointerException
      *         if the passed string is {@code null}
      */
+    @CanIgnoreReturnValue
     public static String checkNotEmptyOrBlank(String str, @Nullable Object errorMessage) {
         checkNotNull(str, errorMessage);
         checkArgument(isNotEmpty(str), errorMessage);
@@ -122,6 +123,7 @@ public final class Preconditions2 {
      * @param value the value to check
      * @throws IllegalArgumentException if the value is negative or zero
      */
+    @CanIgnoreReturnValue
     public static long checkPositive(long value) {
         if (value <= 0) {
             throw newIllegalArgumentException("A positive value expected. Encountered: %d.", value);
@@ -141,6 +143,7 @@ public final class Preconditions2 {
      * @throws IllegalArgumentException
      *         if the value is negative or zero
      */
+    @CanIgnoreReturnValue
     public static long checkPositive(long value,
                                      @Nullable String errorMessageTemplate,
                                      @Nullable Object @Nullable ... errorMessageArgs) {
