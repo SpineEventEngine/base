@@ -26,6 +26,7 @@
 
 package io.spine.query;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.base.EntityState;
 
 /**
@@ -58,6 +59,7 @@ public final class EntityCriterion<S extends EntityState<?>,
     }
 
     @Override
+    @CanIgnoreReturnValue
     protected B addParameter(B builder,
                              EntityColumn<S, V> col,
                              ComparisonOperator operator, V value) {
