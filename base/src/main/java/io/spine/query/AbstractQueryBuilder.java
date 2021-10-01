@@ -203,6 +203,7 @@ abstract class AbstractQueryBuilder<I,
 
     @Override
     @SafeVarargs
+    @CanIgnoreReturnValue
     @SuppressWarnings("OverloadedVarargsMethod")    /* For convenience. */
     public final B either(Either<B>... parameters) {
         List<Either<B>> asList = Arrays.asList(parameters);
@@ -210,6 +211,7 @@ abstract class AbstractQueryBuilder<I,
     }
 
     @Internal
+    @CanIgnoreReturnValue
     @SuppressWarnings("ReturnValueIgnored")     /* `Either` values applied one by one. */
     public final B either(Iterable<Either<B>> parameters) {
         QueryPredicate.Builder<R> previous = currentPredicate;
@@ -245,8 +247,8 @@ abstract class AbstractQueryBuilder<I,
      *
      * @return this instance of query builder, for chaining
      */
-    @CanIgnoreReturnValue
     @Override
+    @CanIgnoreReturnValue
     public final B addCustomParameter(CustomSubjectParameter<?, ?> parameter) {
         checkNotNull(parameter);
         currentPredicate.addCustom(parameter);
@@ -297,6 +299,7 @@ abstract class AbstractQueryBuilder<I,
      *
      * @return this instance of query builder, for chaining
      */
+    @CanIgnoreReturnValue
     protected final B addSorting(SortBy<?, R> value) {
         ensureTopLevel("Sorting");
         sorting.add(checkNotNull(value));

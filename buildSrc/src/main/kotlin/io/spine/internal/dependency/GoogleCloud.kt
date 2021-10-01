@@ -24,17 +24,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle
-
-import io.spine.internal.dependency.AssertK
-import io.spine.internal.dependency.BouncyCastle
-import io.spine.internal.dependency.JavaJwt
-import io.spine.internal.dependency.Klaxon
+package io.spine.internal.dependency
 
 @Suppress("unused")
-object Publishing {
-    const val klaxon = Klaxon.lib
-    const val oauthJwt = JavaJwt.lib
-    const val bouncyCastlePkcs = BouncyCastle.libPkcsJdk15
-    const val assertK = AssertK.libJvm
+object GoogleCloud {
+
+    // https://github.com/googleapis/java-core
+    const val core = "com.google.cloud:google-cloud-core:2.1.7"
+
+    // https://github.com/googleapis/java-pubsub
+    const val pubSubGrpcApi = "com.google.api.grpc:proto-google-cloud-pubsub-v1:1.95.1"
+
+    // https://github.com/googleapis/java-trace
+    const val trace = "com.google.cloud:google-cloud-trace:1.4.1"
+
+    // https://github.com/googleapis/java-datastore
+    const val datastore = "com.google.cloud:google-cloud-datastore:1.106.5"
 }

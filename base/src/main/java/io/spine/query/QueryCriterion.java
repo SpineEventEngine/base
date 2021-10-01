@@ -26,6 +26,7 @@
 
 package io.spine.query;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Message;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -80,6 +81,7 @@ abstract class QueryCriterion<R extends Message,
      *         the value to which actual column values will be compared
      * @return a new instance of the subject parameter
      */
+    @CanIgnoreReturnValue
     protected abstract B addParameter(B builder, C col, ComparisonOperator operator, V value);
 
     /**
@@ -90,6 +92,7 @@ abstract class QueryCriterion<R extends Message,
      *         the column value to use when querying
      * @return the instance of query builder associated with this criterion
      */
+    @CanIgnoreReturnValue
     public B is(V value) {
         checkNotNull(value);
         return addParameter(builder, column, EQUALS, value);
@@ -103,6 +106,7 @@ abstract class QueryCriterion<R extends Message,
      *         the column value to use when querying
      * @return the instance of query builder associated with this criterion
      */
+    @CanIgnoreReturnValue
     public B isLessThan(V value) {
         checkNotNull(value);
         return addParameter(builder, column, LESS_THAN, value);
@@ -116,6 +120,7 @@ abstract class QueryCriterion<R extends Message,
      *         the column value to use when querying
      * @return the instance of query builder associated with this criterion
      */
+    @CanIgnoreReturnValue
     public B isLessOrEqualTo(V value) {
         checkNotNull(value);
         return addParameter(builder, column, LESS_OR_EQUALS, value);
@@ -129,6 +134,7 @@ abstract class QueryCriterion<R extends Message,
      *         the column value to use when querying
      * @return the instance of query builder associated with this criterion
      */
+    @CanIgnoreReturnValue
     public B isGreaterThan(V value) {
         checkNotNull(value);
         return addParameter(builder, column, GREATER_THAN, value);
@@ -142,6 +148,7 @@ abstract class QueryCriterion<R extends Message,
      *         the column value to use when querying
      * @return the instance of query builder associated with this criterion
      */
+    @CanIgnoreReturnValue
     public B isGreaterOrEqualTo(V value) {
         checkNotNull(value);
         return addParameter(builder, column, GREATER_OR_EQUALS, value);

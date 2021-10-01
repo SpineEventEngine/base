@@ -27,6 +27,7 @@
 package io.spine.query;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 /**
  * An expression which sets the values of record identifiers to be used
@@ -48,6 +49,10 @@ public final class IdCriterion<I, B extends AbstractQueryBuilder<I, ?, ?, B, ?>>
         this.builder = builder;
     }
 
+    /**
+     * Creates an instance of this criterion with a single passed value to compare to.
+     */
+    @CanIgnoreReturnValue
     public B is(I value) {
         IdParameter<I> parameter = IdParameter.is(value);
         return builder.setIdParameter(parameter);
@@ -57,6 +62,8 @@ public final class IdCriterion<I, B extends AbstractQueryBuilder<I, ?, ?, B, ?>>
      * Creates an instance of this criterion with the passed identifier values.
      */
     @SafeVarargs
+    @CanIgnoreReturnValue
+    @SuppressWarnings("OverloadedVarargsMethod")    /* For convenience. */
     public final B in(I... values) {
         ImmutableSet<I> asSet = ImmutableSet.copyOf(values);
         IdParameter<I> parameter = IdParameter.in(asSet);
@@ -66,6 +73,7 @@ public final class IdCriterion<I, B extends AbstractQueryBuilder<I, ?, ?, B, ?>>
     /**
      * Creates an instance of this criterion with the passed identifier values.
      */
+    @CanIgnoreReturnValue
     public final B in(Iterable<I> values) {
         ImmutableSet<I> asList = ImmutableSet.copyOf(values);
         IdParameter<I> parameter = IdParameter.in(asList);

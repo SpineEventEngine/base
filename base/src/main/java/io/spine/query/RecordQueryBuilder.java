@@ -26,6 +26,7 @@
 
 package io.spine.query;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Message;
 import io.spine.annotation.SPI;
 
@@ -98,6 +99,7 @@ public class RecordQueryBuilder<I, R extends Message>
      *         the type of the record column values
      * @return a new criterion for the given column
      */
+    @CanIgnoreReturnValue
     public <V> RecordCriterion<I, R, V> where(RecordColumn<R, V> column) {
         return new RecordCriterion<>(column, this);
     }
