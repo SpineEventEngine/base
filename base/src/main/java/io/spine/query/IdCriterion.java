@@ -49,6 +49,9 @@ public final class IdCriterion<I, B extends AbstractQueryBuilder<I, ?, ?, B, ?>>
         this.builder = builder;
     }
 
+    /**
+     * Creates an instance of this criterion with a single passed value to compare to.
+     */
     @CanIgnoreReturnValue
     public B is(I value) {
         IdParameter<I> parameter = IdParameter.is(value);
@@ -60,6 +63,7 @@ public final class IdCriterion<I, B extends AbstractQueryBuilder<I, ?, ?, B, ?>>
      */
     @SafeVarargs
     @CanIgnoreReturnValue
+    @SuppressWarnings("OverloadedVarargsMethod")    /* For convenience. */
     public final B in(I... values) {
         ImmutableSet<I> asSet = ImmutableSet.copyOf(values);
         IdParameter<I> parameter = IdParameter.in(asSet);
