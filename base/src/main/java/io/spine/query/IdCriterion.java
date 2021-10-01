@@ -49,6 +49,7 @@ public final class IdCriterion<I, B extends AbstractQueryBuilder<I, ?, ?, B, ?>>
         this.builder = builder;
     }
 
+    @CanIgnoreReturnValue
     public B is(I value) {
         IdParameter<I> parameter = IdParameter.is(value);
         return builder.setIdParameter(parameter);
