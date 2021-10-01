@@ -26,6 +26,7 @@
 
 package io.spine.query;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Message;
 
 /**
@@ -54,6 +55,7 @@ public final class RecordCriterion<I, R extends Message, V>
     }
 
     @Override
+    @CanIgnoreReturnValue
     protected RecordQueryBuilder<I, R>
     addParameter(RecordQueryBuilder<I, R> builder,
                  RecordColumn<R, V> col,
