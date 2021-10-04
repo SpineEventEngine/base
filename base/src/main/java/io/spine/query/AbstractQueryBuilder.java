@@ -261,6 +261,7 @@ abstract class AbstractQueryBuilder<I,
      * @return this instance of query builder, for chaining
      */
     @Internal
+    @CanIgnoreReturnValue
     protected final B setIdParameter(IdParameter<I> value) {
         ensureTopLevel("Conditions for IDs");
         id = checkNotNull(value);
