@@ -41,14 +41,14 @@ import java.util.*
  * If an error occurs, the methods throw [IllegalArgumentException] with the checked exception
  * as the cause, or return empty [Optional].
  */
-object FileDescriptorSetReader {
+public object FileDescriptorSetReader {
 
     /** The extension registry used when parsing.  */
     private fun registry(): ExtensionRegistry = OptionExtensionRegistry.instance()
 
     /** Parses a descriptor set from the given byte array. */
     @JvmStatic
-    fun parse(bytes: ByteArray): FileDescriptorSet = try {
+    public fun parse(bytes: ByteArray): FileDescriptorSet = try {
         parseFrom(bytes, registry())
     } catch (e: InvalidProtocolBufferException) {
         throw Exceptions.illegalArgumentWithCauseOf(e)
@@ -56,7 +56,7 @@ object FileDescriptorSetReader {
 
     /** Attempts to parse a descriptor set from the given byte array. */
     @JvmStatic
-    fun tryParse(bytes: ByteArray): Optional<FileDescriptorSet> = try {
+    public fun tryParse(bytes: ByteArray): Optional<FileDescriptorSet> = try {
         val result = parseFrom(bytes, registry())
         Optional.of(result)
     } catch (e: InvalidProtocolBufferException) {
@@ -65,7 +65,7 @@ object FileDescriptorSetReader {
 
     /** Parses a descriptor set from the given stream. */
     @JvmStatic
-    fun parse(stream: InputStream): FileDescriptorSet = try {
+    public fun parse(stream: InputStream): FileDescriptorSet = try {
         parseFrom(stream, registry())
     } catch (e: IOException) {
         throw Exceptions.illegalArgumentWithCauseOf(e)

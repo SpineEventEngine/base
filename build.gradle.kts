@@ -39,12 +39,16 @@ import io.spine.internal.gradle.JavadocConfig
 import io.spine.internal.gradle.RunBuild
 import io.spine.internal.gradle.Scripts
 import io.spine.internal.gradle.applyStandard
+import io.spine.internal.gradle.checkstyle.CheckStyleConfig
 import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.forceVersions
 import io.spine.internal.gradle.github.pages.updateGitHubPages
 import io.spine.internal.gradle.publish.PublishExtension
 import io.spine.internal.gradle.publish.PublishingRepos
 import io.spine.internal.gradle.publish.spinePublishing
+import io.spine.internal.gradle.report.coverage.JacocoConfig
+import io.spine.internal.gradle.report.license.LicenseReporter
+import io.spine.internal.gradle.report.pom.PomGenerator
 import java.time.Duration
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -113,6 +117,8 @@ allprojects {
 
     group = "io.spine"
     version = rootProject.extra["versionToPublish"]!!
+
+    repositories.applyStandard()
 }
 
 private object PublishingTask {
@@ -155,17 +161,12 @@ subprojects {
         plugin("pmd-settings")
     }
 
-    // Apply Groovy-based script plugins.
-    apply {
-        with(Scripts) {
-            from(projectLicenseReport(project))
-            from(checkstyle(project))
-        }
-    }
-
+    CheckStyleConfig.applyTo(project)
     JavadocConfig.applyTo(project)
+    LicenseReporter.generateReportIn(project)
 
-    updateGitHubPages {
+    val docletVersion = project.version.toString()
+    updateGitHubPages(docletVersion) {
         allowInternalJavadoc.set(true)
         rootFolder.set(rootDir)
     }
@@ -187,8 +188,6 @@ subprojects {
             freeCompilerArgs = listOf("-Xskip-prerelease-check")
         }
     }
-
-    repositories.applyStandard()
 
     /**
      * These dependencies are applied to all sub-projects and do not have to
@@ -288,17 +287,9 @@ subprojects {
     project.tasks[PublishingTask.publish].dependsOn("${project.path}:updateGitHubPages")
 }
 
-apply {
-    with(Scripts) {
-        // Aggregated coverage report across all subprojects.
-        from(jacoco(project))
-        // Generate a repository-wide report of 3rd-party dependencies and their licenses.
-        from(repoLicenseReport(project))
-        // Generate a `pom.xml` file containing first-level dependency of all projects
-        // in the repository.
-        from(generatePom(project))
-    }
-}
+JacocoConfig.applyTo(project)
+PomGenerator.applyTo(project)
+LicenseReporter.mergeAllReports(project)
 
 /**
  * The [integrationTests] task runs a separate Gradle project in the `tests` directory.
