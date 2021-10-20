@@ -38,21 +38,21 @@ import org.gradle.api.file.RegularFileProperty
 /**
  * Extends a Gradle project with the [`modelCompiler`][name] block.
  */
-class McExtension private constructor(private val project: Project) {
+public class McExtension private constructor(private val project: Project) {
 
     /**
      * The absolute path to the main Protobuf descriptor set file.
      *
      * The file must have the `.desc` extension.
      */
-    val mainDescriptorSetFile: RegularFileProperty
+    public val mainDescriptorSetFile: RegularFileProperty
 
     /**
      * The absolute path to the test Protobuf descriptor set file.
      *
      * The file must have the `.desc` extension.
      */
-    val testDescriptorSetFile: RegularFileProperty
+    public val testDescriptorSetFile: RegularFileProperty
 
     init {
         val projectDir: Directory = project.layout.projectDirectory
@@ -70,11 +70,11 @@ class McExtension private constructor(private val project: Project) {
         project.extensions.add(javaClass, name, this)
     }
 
-    companion object : Logging {
+    public companion object : Logging {
 
-        const val name = "modelCompiler2"
+        public const val name: String = "modelCompiler2"
 
-        fun createIn(project: Project) {
+        public fun createIn(project: Project) {
             _debug().log("Adding the `$name` extension to the project `$project`.")
             val extension = McExtension(project)
             extension.register()

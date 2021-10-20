@@ -49,7 +49,7 @@ import java.util.function.Predicate;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static io.spine.io.Files2.copyDir;
+import static io.spine.io.Copy.copyDir;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static java.nio.file.Files.copy;
 import static java.nio.file.Files.createDirectories;

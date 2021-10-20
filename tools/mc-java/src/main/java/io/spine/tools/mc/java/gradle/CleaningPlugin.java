@@ -25,13 +25,19 @@
  */
 package io.spine.tools.mc.java.gradle;
 
-import io.spine.tools.mc.java.fs.DirectoryCleaner;
+import com.google.common.flogger.FluentLogger;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
+import java.io.File;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.google.common.flogger.LazyArgs.lazy;
+import static io.spine.io.Delete.deleteRecursively;
 import static io.spine.tools.gradle.BaseTaskName.clean;
 import static io.spine.tools.mc.java.gradle.McJavaTaskName.preClean;
 
@@ -44,14 +50,27 @@ public class CleaningPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
-        Action<Task> preCleanAction = task -> {
-            _debug().log("Pre-clean: deleting the directories.");
-            DirectoryCleaner.deleteDirs(McJavaExtension.getDirsToClean(project));
-        };
+        Action<Task> preCleanAction = task -> cleanIn(project);
         GradleTask preCleanTask =
                 newTask(preClean, preCleanAction)
                         .insertBeforeTask(clean)
                         .applyNowTo(project);
         _debug().log("Pre-clean phase initialized: `%s`.", preCleanTask);
+    }
+
+    private void cleanIn(Project project) {
+        FluentLogger.Api debug = _debug();
+        List<String> dirsToClean = McJavaExtension.getDirsToClean(project);
+        debug.log(
+                "Pre-clean: deleting the directories (`%s`).", lazy(dirsToClean::toString)
+        );
+        List<File> directories =
+                dirsToClean.stream()
+                           .map(File::new)
+                           .collect(Collectors.toList());
+        for (File directory : directories) {
+            debug.log("Deleting directory `%s`...", directory);
+            deleteRecursively(directory.toPath());
+        }
     }
 }

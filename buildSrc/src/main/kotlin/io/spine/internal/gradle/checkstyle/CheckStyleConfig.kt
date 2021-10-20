@@ -24,40 +24,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.io.spine.io
+package io.spine.internal.gradle.checkstyle
 
-import java.io.IOException
-import java.nio.file.FileVisitResult
-import java.nio.file.FileVisitResult.CONTINUE
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.SimpleFileVisitor
-import java.nio.file.attribute.BasicFileAttributes
-import kotlin.io.path.deleteIfExists
+import io.spine.internal.dependency.CheckStyle
+import org.gradle.api.Project
+import org.gradle.api.plugins.quality.Checkstyle
+import org.gradle.api.plugins.quality.CheckstyleExtension
+import org.gradle.api.plugins.quality.CheckstylePlugin
+import org.gradle.kotlin.dsl.the
 
 /**
- * The visitor which deletes all the files under a directory, and then the directory itself.
+ * Configures the Checkstyle plugin.
  *
  * Usage:
+ * ```
+ *      CheckStyleConfig.applyTo(project)
+ * ```
  *
- * ```
- * Files.walkFileTree(path, DeletingVisitor())
- * ```
+ * Please note, the checks of the `test` sources are disabled.
+ *
+ * Also, this type is named in double-camel-case to avoid re-declaration due to a clash
+ * with some Gradle-provided types.
  */
-class DeletingVisitor: SimpleFileVisitor<Path>() {
+@Suppress("unused")
+object CheckStyleConfig {
 
-    override fun visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult {
-        Files.delete(file)
-        return CONTINUE
-    }
-
-    override fun postVisitDirectory(dir: Path, e: IOException?): FileVisitResult {
-        dir.toFile().deleteRecursively()
-        if (e == null) {
-            Files.delete(dir)
-            return CONTINUE
+    /**
+     * Applies the configuration to the passed [project].
+     */
+    fun applyTo(project: Project) {
+        project.apply {
+            plugin(CheckstylePlugin::class.java)
         }
-        // Directory iteration failed.
-        throw e
+
+        with(project.the<CheckstyleExtension>()) {
+            toolVersion = CheckStyle.version
+            configFile = project.rootDir.resolve("config/quality/checkstyle.xml")
+        }
+
+        project.afterEvaluate {
+            // Disables checking the test sources.
+            val checkstyleTest = project.tasks.findByName("checkstyleTest") as Checkstyle
+            checkstyleTest.enabled = false
+        }
     }
 }

@@ -33,7 +33,7 @@ import org.gradle.api.Project
 /**
  * A root Gradle plugin of Spine Model Compiler.
  */
-class McPlugin: Plugin<Project>, Logging {
+public class McPlugin: Plugin<Project>, Logging {
 
     override fun apply(project: Project) {
         McExtension.createIn(project)

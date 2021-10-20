@@ -40,7 +40,7 @@ import java.io.PrintWriter;
 import java.nio.file.Path;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.io.Files2.ensureFile;
+import static io.spine.io.Ensure.ensureFile;
 import static io.spine.io.Files2.existsNonEmpty;
 import static java.nio.charset.Charset.defaultCharset;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -58,42 +58,6 @@ class Files2Test extends UtilityClassTest<Files2> {
     @BeforeEach
     void setUp(@TempDir Path testFolderPath) {
         testFolder = testFolderPath.toFile();
-    }
-
-    @Nested
-    @DisplayName("ensure a file exists")
-    class EnsureThat {
-
-        private File file;
-
-        @BeforeEach
-        void createFile() {
-            String fileName = "ensure/exists/file" + TestValues.randomString() + ".txt";
-            file = new File(testFolder.getAbsolutePath(), fileName);
-        }
-
-        @Test
-        @DisplayName("with `File` argument")
-        void fileExists() {
-            boolean result = ensureFile(file);
-
-            // Check that the file was created.
-            assertTrue(result);
-            assertTrue(file.exists());
-
-            // When the file exists, the returned value is false.
-            assertFalse(ensureFile(file));
-        }
-
-        @Test
-        @DisplayName("with `Path` argument")
-        void pathExists() {
-            Path path = this.file.toPath();
-            assertThat(ensureFile(path))
-                    .isTrue();
-            assertThat(file.exists())
-                    .isTrue();
-        }
     }
 
     @Nested

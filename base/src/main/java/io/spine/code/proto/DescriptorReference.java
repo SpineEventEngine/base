@@ -30,7 +30,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import io.spine.io.Files2;
+import io.spine.io.Ensure;
 import io.spine.io.Resource;
 
 import java.io.File;
@@ -142,7 +142,7 @@ public final class DescriptorReference {
     public void writeTo(Path directory) {
         checkNotNull(directory);
         Path targetFile = directory.resolve(FILE_NAME);
-        Files2.ensureFile(targetFile);
+        Ensure.ensureFile(targetFile);
         try {
             List<String> resources = Files.readAllLines(targetFile);
             resources.add(reference);
@@ -175,7 +175,7 @@ public final class DescriptorReference {
     void writeTo(Path directory, String newline) {
         checkNotNull(directory);
         Path targetFile = directory.resolve(FILE_NAME);
-        Files2.ensureFile(targetFile);
+        Ensure.ensureFile(targetFile);
         try {
             List<String> resources = Files.readAllLines(targetFile);
             resources.add(reference + newline);
