@@ -53,7 +53,7 @@ import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static com.google.common.flogger.LazyArgs.lazy;
 import static io.spine.code.proto.Linker.link;
-import static io.spine.io.Files2.checkExists;
+import static io.spine.io.IoPreconditions.checkExists;
 import static java.util.logging.Level.FINE;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;

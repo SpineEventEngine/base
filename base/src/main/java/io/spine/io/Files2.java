@@ -28,7 +28,6 @@ package io.spine.io;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.flogger.FluentLogger;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import kotlin.io.FilesKt;
 
 import java.io.File;
@@ -39,7 +38,6 @@ import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static java.nio.file.Files.copy;
 import static java.nio.file.Files.createDirectory;
@@ -53,8 +51,6 @@ import static java.nio.file.Files.isRegularFile;
 public final class Files2 {
 
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
-
-    private static final String DOES_NOT_EXIST = "The file `%s` does not exist.";
 
     /** Prevents instantiation of this utility class. */
     private Files2() {
@@ -70,35 +66,6 @@ public final class Files2 {
         }
         boolean nonEmpty = file.length() > 0;
         return nonEmpty;
-    }
-
-    /**
-     * Ensures that the passed file exists.
-     *
-     * @return the passed file if it exists
-     * @throws IllegalStateException
-     *         if the file is missing
-     */
-    @CanIgnoreReturnValue
-    public static File checkExists(File file) throws IllegalStateException {
-        checkNotNull(file);
-        checkState(file.exists(), DOES_NOT_EXIST, file);
-        return file;
-    }
-
-    /**
-     * Ensures that the file with the passed path exists.
-     *
-     * @return the passed path if it exists
-     * @throws IllegalArgumentException
-     *         if the file does not exist
-     */
-    @CanIgnoreReturnValue
-    public static Path checkExists(Path path) throws IllegalArgumentException {
-        checkNotNull(path);
-        File file = path.toFile();
-        checkArgument(file.exists(), DOES_NOT_EXIST, file);
-        return path;
     }
 
     /**
