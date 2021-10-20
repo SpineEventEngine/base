@@ -53,7 +53,7 @@ public final class Copy {
     /**
      * Copies a whole directory and its contents into another directory.
      *
-     * <p>Both paths must point to an existing directory.
+     * <p>Both paths must point to existing directories.
      *
      * <p>The {@code dir} itself is copied as well. For example, if the {@code dir} path is
      * {@code /my/path/to/folder/foo} and the {@code target} path is {@code /my/other/folder}, as
@@ -72,7 +72,7 @@ public final class Copy {
     /**
      * Copies the directory and its contents matching the passed predicate into another directory.
      *
-     * <p>Both paths must point to an existing directory.
+     * <p>Both paths must point to existing directories.
      *
      * <p>The {@code dir} itself is copied as well. For example, if the {@code dir} path is
      * {@code /my/path/to/folder/foo} and the {@code target} path is {@code /my/other/folder}, as

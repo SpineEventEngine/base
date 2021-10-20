@@ -33,11 +33,13 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.io.Files.createParentDirs;
-import static io.spine.util.Exceptions.newIllegalArgumentException;
+import static io.spine.io.IoPreconditions.checkNotDirectory;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.nio.file.Files.createDirectories;
 import static java.nio.file.Files.exists;
+import static java.nio.file.Files.isDirectory;
 
 /**
  * Utilities that arrange conditions required for further I/O operations.
@@ -69,13 +71,14 @@ public final class Ensure {
      * @throws IllegalArgumentException
      *         if the given file is a directory
      * @throws IllegalStateException
-     *         in case of any I/O exceptions
+     *         in case of any I/O exceptions that may occur while creating the parent directories
+     *         for the file, or while creating the file itself
      */
     @CanIgnoreReturnValue
     public static boolean ensureFile(File file) {
         checkNotNull(file);
+        checkNotDirectory(file);
         try {
-            ensureNotFolder(file);
             if (!file.exists()) {
                 createParentDirs(file);
                 boolean result = file.createNewFile();
@@ -84,13 +87,6 @@ public final class Ensure {
             return false;
         } catch (IOException e) {
             throw new IllegalStateException(e);
-        }
-    }
-
-    private static void ensureNotFolder(File file) {
-        if (file.exists() && file.isDirectory()) {
-            throw newIllegalArgumentException("File expected, but a folder found: `%s`.",
-                                              file.getAbsolutePath());
         }
     }
 
@@ -126,8 +122,14 @@ public final class Ensure {
      * Ensures that the specified directory exists, creating it, if it was not done
      * prior to this call.
      *
+     * <p>If the passed path exists, but refers to a file, the method
+     * throws {@link IllegalStateException}.
+     *
      * @return the passed instance
+     * @throws IllegalStateException
+     *          if the passed path represents existing file, instead of a directory
      */
+    @CanIgnoreReturnValue
     public static Path ensureDirectory(Path directory) {
         if (!exists(directory)) {
             try {
@@ -135,6 +137,11 @@ public final class Ensure {
             } catch (IOException e) {
                 throw newIllegalStateException(e, "Unable to create `%s`.", directory);
             }
+        } else {
+            checkState(
+                    isDirectory(directory),
+                    "The path `%s` exists, but it is not a directory.", directory
+            );
         }
         return directory;
     }

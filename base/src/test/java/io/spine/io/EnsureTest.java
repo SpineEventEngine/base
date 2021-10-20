@@ -26,19 +26,24 @@
 
 package io.spine.io;
 
-import io.spine.testing.TestValues;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.io.Ensure.ensureDirectory;
 import static io.spine.io.Ensure.ensureFile;
+import static io.spine.testing.TestValues.randomString;
+import static java.nio.file.Files.isDirectory;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("`Ensure` utilities class should")
@@ -48,36 +53,90 @@ class EnsureTest extends UtilityClassTest<Ensure> {
         super(Ensure.class);
     }
 
-    private File file;
 
-    @BeforeEach
-    void setUp(@TempDir Path tempDir) {
-        File testFolder = tempDir.toFile();
+    @Nested
+    @DisplayName("handle files via")
+    class OnFiles {
 
-        String fileName = "ensure/exists/file" + TestValues.randomString() + ".txt";
-        file = new File(testFolder.getAbsolutePath(), fileName);
+        private File file;
+
+        @BeforeEach
+        void createFile(@TempDir Path tempDir) {
+            File testFolder = tempDir.toFile();
+
+            String fileName = "ensure/exists/file" + randomString() + ".txt";
+            file = new File(testFolder.getAbsolutePath(), fileName);
+        }
+
+        @Test
+        @DisplayName("`File` argument")
+        void fileArg() {
+            boolean result = ensureFile(file);
+
+            // Check that the file was created.
+            assertTrue(result);
+            assertTrue(file.exists());
+
+            // When the file exists, the returned value is false.
+            assertFalse(ensureFile(file));
+        }
+
+        @Test
+        @DisplayName("`Path` argument")
+        void pathArg() {
+            Path path = this.file.toPath();
+            assertThat(ensureFile(path))
+                    .isTrue();
+            assertThat(file.exists())
+                    .isTrue();
+        }
     }
 
-    @Test
-    @DisplayName("with `File` argument")
-    void fileExists() {
-        boolean result = ensureFile(file);
+    @Nested
+    @DisplayName("handle a directory creation")
+    class OnDirectories {
 
-        // Check that the file was created.
-        assertTrue(result);
-        assertTrue(file.exists());
+        private Path tempDir;
 
-        // When the file exists, the returned value is false.
-        assertFalse(ensureFile(file));
-    }
+        @BeforeEach
+        void createTempDir(@TempDir Path tempDir) {
+            this.tempDir = tempDir;
+        }
 
-    @Test
-    @DisplayName("with `Path` argument")
-    void pathExists() {
-        Path path = this.file.toPath();
-        assertThat(ensureFile(path))
-                .isTrue();
-        assertThat(file.exists())
-                .isTrue();
+        @Test
+        @DisplayName("if it does not exist")
+        void notExisting() {
+            Path subDir = Paths.get("sub-1-" + randomString(), "sub-2-" + randomString());
+            Path newDir = tempDir.resolve(subDir);
+
+            // See that the directory does not exist.
+            assertFalse(newDir.toFile().exists());
+
+            ensureDirectory(newDir);
+
+            assertTrue(isDirectory(newDir));
+        }
+
+        @Test
+        @DisplayName("if it exists")
+        void existing() {
+            Path existingDir = tempDir.resolve(randomString());
+            ensureDirectory(existingDir);
+
+            // Now as we know that the directory exists, let's try it again.
+            ensureDirectory(existingDir);
+
+            assertTrue(isDirectory(existingDir));
+        }
+
+        @Test
+        @DisplayName("rejecting existing file")
+        void rejectFile() {
+            Path filePath = tempDir.resolve("file" + randomString());
+            File file = filePath.toFile();
+            ensureFile(file);
+
+            assertThrows(IllegalStateException.class, () -> ensureDirectory(filePath));
+        }
     }
 }
