@@ -34,6 +34,7 @@ import java.nio.file.Path;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
+import static java.nio.file.Files.isDirectory;
 
 /**
  * Preconditions for I/O operations.
@@ -73,5 +74,19 @@ public class IoPreconditions {
         File file = path.toFile();
         checkArgument(file.exists(), DOES_NOT_EXIST, file);
         return path;
+    }
+
+    /**
+     * Ensures that the passed path is a directory.
+     *
+     * @return the passed path if it represents a directory
+     * @throws IllegalArgumentException
+     *         if the path is not a directory
+     */
+    @CanIgnoreReturnValue
+    public static Path checkIsDirectory(Path dir) throws IllegalArgumentException {
+        checkNotNull(dir);
+        checkArgument(isDirectory(dir), "The path `%s` is not a directory.", dir);
+        return dir;
     }
 }
