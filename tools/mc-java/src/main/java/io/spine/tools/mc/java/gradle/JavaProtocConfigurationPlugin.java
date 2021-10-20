@@ -191,7 +191,7 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
         } catch (IOException e) {
             throw newIllegalStateException(
                     e,
-                    "Unable store Spine Protoc Plugin configuration file at: `%s`.",
+                    "Unable to store Spine Protoc Plugin configuration file at: `%s`.",
                     configPath);
         }
     }
