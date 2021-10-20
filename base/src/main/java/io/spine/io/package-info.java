@@ -25,7 +25,17 @@
  */
 
 /**
- * Utility classes for I/O operations.
+ * This package provides utilities specific to enable Spine working with code files in code
+ * generation, project structure analysis, and other tasks that are not covered by well-known
+ * file management libraries.
+ *
+ * <p>For more file-related utilities, please see:
+ * <ul>
+ *     <li>{@link java.nio.file.Files Files} from NIO
+ *     <li>{@link java.nio.file.Paths Paths} from NIO2
+ *     <li>{@link com.google.common.io.Files Files from Guava}
+ *     <li>{@link kotlin.io.FilesKt Kotlin I/O extensions from Utils.kt}
+ * </ul>
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

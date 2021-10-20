@@ -41,30 +41,14 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static com.google.common.io.Files.createParentDirs;
-import static io.spine.util.Exceptions.newIllegalArgumentException;
-import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.nio.file.Files.copy;
-import static java.nio.file.Files.createDirectories;
 import static java.nio.file.Files.createDirectory;
-import static java.nio.file.Files.exists;
 import static java.nio.file.Files.find;
 import static java.nio.file.Files.isDirectory;
 import static java.nio.file.Files.isRegularFile;
 
 /**
  * Additional utilities for working with files.
- *
- * <p>These utilities are specific to enable Spine working with code files in code generation,
- * project structure analysis, and other tasks that are not covered by well-known file management
- * libraries.
- *
- * <p>For more file-related utilities, please see:
- * <ul>
- *     <li>{@link java.nio.file.Files Files} from NIO
- *     <li>{@link java.nio.file.Paths Paths} from NIO2
- *     <li>{@link com.google.common.io.Files Files from Guava}
- * </ul>
  */
 public final class Files2 {
 
@@ -74,80 +58,6 @@ public final class Files2 {
 
     /** Prevents instantiation of this utility class. */
     private Files2() {
-    }
-
-    /**
-     * Ensures that the given file exists.
-     *
-     * <p>Performs no action if the given file {@linkplain File#exists() already exists}.
-     *
-     * <p>If the given file does not exist, it is created along with its parent directories,
-     * if required.
-     *
-     * <p>If the passed {@code File} points to the existing directory, an
-     * {@link IllegalArgumentException} is thrown.
-     *
-     * <p>In case of any I/O issues, the respective exceptions are rethrown as
-     * {@link IllegalStateException}.
-     *
-     * @param file
-     *         a file to check
-     * @return {@code true} if the file did not exist and was successfully created;
-     *         {@code false} if the file already existed
-     * @throws IllegalArgumentException
-     *         if the given file is a directory
-     * @throws IllegalStateException
-     *         in case of any I/O exceptions
-     */
-    @CanIgnoreReturnValue
-    public static boolean ensureFile(File file) {
-        checkNotNull(file);
-        try {
-            ensureNotFolder(file);
-            if (!file.exists()) {
-                createParentDirs(file);
-                boolean result = file.createNewFile();
-                return result;
-            }
-            return false;
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    private static void ensureNotFolder(File file) {
-        if (file.exists() && file.isDirectory()) {
-            throw newIllegalArgumentException("File expected, but a folder found: `%s`.",
-                                              file.getAbsolutePath());
-        }
-    }
-
-    /**
-     * Ensures that the file represented by the specified {@code Path exists}.
-     *
-     * <p>If the file already exists, no action is performed.
-     *
-     * <p>If the file does not exist, it is created along with its parent if required.
-     *
-     * <p>If the specified path represents an existing directory, an
-     * {@link IllegalArgumentException} is thrown.
-     *
-     * <p>If any I/O errors occur, an {@link IllegalStateException} is thrown.
-     *
-     * @param pathToFile
-     *         the path to the file to check
-     * @return {@code true} if and only if the file represented by the specified path did not exist
-     *         and was successfully created
-     * @throws IllegalArgumentException
-     *         if the given path represents a directory
-     * @throws IllegalStateException
-     *         if any I/O errors occur
-     */
-    @CanIgnoreReturnValue
-    public static boolean ensureFile(Path pathToFile) {
-        checkNotNull(pathToFile);
-        boolean result = ensureFile(pathToFile.toFile());
-        return result;
     }
 
     /**
@@ -306,20 +216,4 @@ public final class Files2 {
         return System.getProperty("java.io.tmpdir");
     }
 
-    /**
-     * Ensures that the specified directory exists, creating it, if it was not done
-     * prior to this call.
-     *
-     * @return the passed instance
-     */
-    public static Path ensureDirectory(Path directory) {
-        if (!exists(directory)) {
-            try {
-                createDirectories(directory);
-            } catch (IOException e) {
-                throw newIllegalStateException(e, "Unable to create `%s`.", directory);
-            }
-        }
-        return directory;
-    }
 }

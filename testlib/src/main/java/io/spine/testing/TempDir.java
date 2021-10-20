@@ -38,7 +38,7 @@ import java.nio.file.attribute.FileAttribute;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.io.Files2.deleteRecursivelyOnShutdownHook;
-import static io.spine.io.Files2.ensureDirectory;
+import static io.spine.io.Ensure.ensureDirectory;
 import static io.spine.io.Files2.systemTempDir;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;

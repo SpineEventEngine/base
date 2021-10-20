@@ -30,67 +30,54 @@ import io.spine.testing.TestValues;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Path;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.io.Ensure.ensureFile;
-import static io.spine.io.Files2.existsNonEmpty;
-import static java.nio.charset.Charset.defaultCharset;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("`Files2` utility class should")
-class Files2Test extends UtilityClassTest<Files2> {
+@DisplayName("`Ensure` utilities class should")
+class EnsureTest extends UtilityClassTest<Ensure> {
 
-    private File testFolder;
-
-    Files2Test() {
-        super(Files2.class);
+    EnsureTest() {
+        super(Ensure.class);
     }
+
+    private File file;
 
     @BeforeEach
-    void setUp(@TempDir Path testFolderPath) {
-        testFolder = testFolderPath.toFile();
+    void setUp(@TempDir Path tempDir) {
+        File testFolder = tempDir.toFile();
+
+        String fileName = "ensure/exists/file" + TestValues.randomString() + ".txt";
+        file = new File(testFolder.getAbsolutePath(), fileName);
     }
 
-    @Nested
-    @DisplayName("verify that an existing file is not empty")
-    class NonEmptyFile {
+    @Test
+    @DisplayName("with `File` argument")
+    void fileExists() {
+        boolean result = ensureFile(file);
 
-        @Test
-        @DisplayName("returning `false` when existing file is empty")
-        void whenNonEmpty() {
-            File emptyFile = testFolder.toPath().resolve("empty file").toFile();
+        // Check that the file was created.
+        assertTrue(result);
+        assertTrue(file.exists());
 
-            assertThat(existsNonEmpty(emptyFile)).isFalse();
-        }
+        // When the file exists, the returned value is false.
+        assertFalse(ensureFile(file));
+    }
 
-        @Test
-        @DisplayName("returning `false` when a file does not exist")
-        void doesNotExist() {
-            File doesNotExist = new File(TestValues.randomString());
-
-            assertThat(existsNonEmpty(doesNotExist)).isFalse();
-        }
-
-        @Test
-        @DisplayName("returning `true` if the existing file is not empty")
-        void notEmpty() throws IOException {
-            File nonEmptyFile = testFolder.toPath().resolve("non-empty file").toFile();
-            String path = nonEmptyFile.getAbsolutePath();
-            String charsetName = defaultCharset().name();
-            try (PrintWriter out = new PrintWriter(path, charsetName)) {
-                out.println(TestValues.randomString());
-            }
-
-            assertThat(existsNonEmpty(nonEmptyFile)).isTrue();
-        }
+    @Test
+    @DisplayName("with `Path` argument")
+    void pathExists() {
+        Path path = this.file.toPath();
+        assertThat(ensureFile(path))
+                .isTrue();
+        assertThat(file.exists())
+                .isTrue();
     }
 }

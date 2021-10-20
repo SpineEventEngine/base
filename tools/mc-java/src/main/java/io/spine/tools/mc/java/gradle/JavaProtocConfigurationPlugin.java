@@ -30,7 +30,6 @@ import com.google.common.base.Charsets;
 import com.google.protobuf.gradle.ExecutableLocator;
 import com.google.protobuf.gradle.GenerateProtoTask;
 import io.spine.code.proto.DescriptorReference;
-import io.spine.io.Files2;
 import io.spine.tools.gradle.Artifact;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.ProtocConfigurationPlugin;
@@ -51,6 +50,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 
+import static io.spine.io.Ensure.ensureFile;
 import static io.spine.tools.gradle.BaseTaskName.clean;
 import static io.spine.tools.gradle.JavaTaskName.processResources;
 import static io.spine.tools.gradle.JavaTaskName.processTestResources;
@@ -180,7 +180,7 @@ public final class JavaProtocConfigurationPlugin extends ProtocConfigurationPlug
         McJavaExtension extension = project.getExtensions().getByType(McJavaExtension.class);
         SpineProtocConfig config = extension.java.toProto();
 
-        Files2.ensureFile(configPath);
+        ensureFile(configPath);
         try (FileOutputStream fos = new FileOutputStream(configPath.toFile())) {
             config.writeTo(fos);
         } catch (FileNotFoundException e) {
