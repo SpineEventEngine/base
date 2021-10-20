@@ -71,24 +71,23 @@ class EnsureTest extends UtilityClassTest<Ensure> {
         @Test
         @DisplayName("`File` argument")
         void fileArg() {
-            boolean result = ensureFile(file);
+            ensureFile(file);
 
             // Check that the file was created.
-            assertTrue(result);
             assertTrue(file.exists());
-
-            // When the file exists, the returned value is false.
-            assertFalse(ensureFile(file));
+            assertFalse(isDirectory(file.toPath()));
         }
 
         @Test
         @DisplayName("`Path` argument")
         void pathArg() {
-            Path path = this.file.toPath();
-            assertThat(ensureFile(path))
-                    .isTrue();
+            Path path = file.toPath();
+            Object returnedValue = ensureFile(path);
+
             assertThat(file.exists())
                     .isTrue();
+            assertThat(returnedValue)
+                    .isEqualTo(path);
         }
     }
 

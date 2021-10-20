@@ -66,25 +66,23 @@ public final class Ensure {
      *
      * @param file
      *         a file to check
-     * @return {@code true} if the file did not exist and was successfully created;
-     *         {@code false} if the file already existed
+     * @return the given instance
      * @throws IllegalArgumentException
      *         if the given file is a directory
      * @throws IllegalStateException
-     *         in case of any I/O exceptions that may occur while creating the parent directories
-     *         for the file, or while creating the file itself
+     *         in case of any I/O exceptions
      */
     @CanIgnoreReturnValue
-    public static boolean ensureFile(File file) {
+    public static File ensureFile(File file) {
         checkNotNull(file);
         checkNotDirectory(file);
+        if (file.exists()) {
+            return file;
+        }
         try {
-            if (!file.exists()) {
-                createParentDirs(file);
-                boolean result = file.createNewFile();
-                return result;
-            }
-            return false;
+            createParentDirs(file);
+            file.createNewFile();
+            return file;
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -104,25 +102,24 @@ public final class Ensure {
      *
      * @param pathToFile
      *         the path to the file to check
-     * @return {@code true} if and only if the file represented by the specified path did not exist
-     *         and was successfully created
+     * @return the given instance
      * @throws IllegalArgumentException
      *         if the given path represents a directory
      * @throws IllegalStateException
      *         if any I/O errors occur
      */
     @CanIgnoreReturnValue
-    public static boolean ensureFile(Path pathToFile) {
+    public static Path ensureFile(Path pathToFile) {
         checkNotNull(pathToFile);
-        boolean result = ensureFile(pathToFile.toFile());
-        return result;
+        ensureFile(pathToFile.toFile());
+        return pathToFile;
     }
 
     /**
      * Ensures that the specified directory exists, creating it, if it was not done
      * prior to this call.
      *
-     * <p>If the passed path exists, but refers to a file, the method
+     * <p>If the given path exists, but refers to a file, the method
      * throws {@link IllegalStateException}.
      *
      * @return the passed instance

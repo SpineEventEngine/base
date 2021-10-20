@@ -94,6 +94,7 @@ public class IoPreconditions {
     /**
      * Ensures that the passed {@code File} is not an existing directory.
      */
+    @CanIgnoreReturnValue
     public static File checkNotDirectory(File file) {
         if (file.exists() && file.isDirectory()) {
             throw newIllegalArgumentException("File expected, but a directory found: `%s`.",
