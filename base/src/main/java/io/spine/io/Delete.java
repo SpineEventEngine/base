@@ -26,48 +26,44 @@
 
 package io.spine.io;
 
-import java.io.File;
+import com.google.common.flogger.FluentLogger;
+import kotlin.io.FilesKt;
+
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Additional utilities for working with files.
+ * Utilities for delete operations on a file system.
  */
-public final class Files2 {
+public class Delete {
+
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     /** Prevents instantiation of this utility class. */
-    private Files2() {
+    private Delete() {
     }
 
     /**
-     * Verifies if a passed file exists and has non-zero size.
+     * Requests removal of the passed directory when the system shuts down.
+     *
+     * @implNote This method creates a new {@code Thread} for deleting the passed directory.
+     *         That's why calling it should not be taken lightly. If your application creates
+     *         several directories that need to be removed when JVM is terminated, consider
+     *         gathering them under a common root passed to this method.
+     * @see Runtime#addShutdownHook(Thread)
      */
-    public static boolean existsNonEmpty(File file) {
-        checkNotNull(file);
-        if (!file.exists()) {
-            return false;
+    public static void deleteRecursivelyOnShutdownHook(Path directory) {
+        checkNotNull(directory);
+        Runtime runtime = Runtime.getRuntime();
+        runtime.addShutdownHook(new Thread(() -> deleteRecursively(directory)));
+    }
+
+    private static void deleteRecursively(Path directory) {
+        boolean success = FilesKt.deleteRecursively(directory.toFile());
+        if (!success) {
+            logger.atWarning()
+                  .log("Unable to delete the directory `%s`.", directory);
         }
-        boolean nonEmpty = file.length() > 0;
-        return nonEmpty;
-    }
-
-    /**
-     * Normalizes and transforms the passed path to an absolute file reference.
-     */
-    public static File toAbsolute(String path) {
-        checkNotNull(path);
-        File file = new File(path);
-        Path normalized = file.toPath().normalize();
-        File result = normalized.toAbsolutePath().toFile();
-        return result;
-    }
-
-    /**
-     * Obtains the value of the {@code System} property for a temporary directory.
-     */
-    @SuppressWarnings("AccessOfSystemProperties")
-    public static String systemTempDir() {
-        return System.getProperty("java.io.tmpdir");
     }
 }
