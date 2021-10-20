@@ -27,6 +27,7 @@
 package io.spine.io;
 
 import com.google.common.flogger.FluentLogger;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import kotlin.io.FilesKt;
 
 import java.nio.file.Path;
@@ -36,7 +37,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Utilities for delete operations on a file system.
  */
-public class Delete {
+public final class Delete {
 
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
@@ -59,11 +60,23 @@ public class Delete {
         runtime.addShutdownHook(new Thread(() -> deleteRecursively(directory)));
     }
 
-    private static void deleteRecursively(Path directory) {
+    /**
+     * Deletes the passed directory.
+     *
+     * <p>If the operation fails, the method returns {@code false}. In such a case,
+     * the content of the directory may be partially deleted.
+     *
+     * @param directory
+     *          the directory to delete
+     * @return {@code true} if the directory was successfully deleted, {@code false} otherwise
+     */
+    @CanIgnoreReturnValue
+    public static boolean deleteRecursively(Path directory) {
         boolean success = FilesKt.deleteRecursively(directory.toFile());
         if (!success) {
             logger.atWarning()
                   .log("Unable to delete the directory `%s`.", directory);
         }
+        return success;
     }
 }

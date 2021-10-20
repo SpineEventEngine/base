@@ -44,7 +44,7 @@ import static java.nio.file.Files.isRegularFile;
 /**
  * Utilities for copy operations.
  */
-public class Copy {
+public final class Copy {
 
     /** Prevents instantiation of this utility class. */
     private Copy() {

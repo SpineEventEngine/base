@@ -42,7 +42,7 @@ import static java.nio.file.Files.exists;
 /**
  * Utilities that arrange conditions required for further I/O operations.
  */
-public class Ensure {
+public final class Ensure {
 
     /** Prevents instantiation of this utility class. */
     private Ensure() {
