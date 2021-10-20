@@ -34,6 +34,7 @@ import java.nio.file.Path;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static java.nio.file.Files.isDirectory;
 
 /**
@@ -88,5 +89,16 @@ public class IoPreconditions {
         checkNotNull(dir);
         checkArgument(isDirectory(dir), "The path `%s` is not a directory.", dir);
         return dir;
+    }
+
+    /**
+     * Ensures that the passed {@code File} is not an existing directory.
+     */
+    public static File checkNotDirectory(File file) {
+        if (file.exists() && file.isDirectory()) {
+            throw newIllegalArgumentException("File expected, but a directory found: `%s`.",
+                                              file.getAbsolutePath());
+        }
+        return file;
     }
 }
