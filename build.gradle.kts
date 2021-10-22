@@ -82,8 +82,8 @@ spinePublishing {
     with(PublishingRepos) {
         targetRepositories.addAll(
             cloudRepo,
-            gitHub("base"),
-            cloudArtifactRegistry
+            cloudArtifactRegistry,
+            gitHub("base")
         )
     }
     projectsToPublish.addAll(
@@ -203,10 +203,11 @@ subprojects {
         Protobuf.libs.forEach { api(it) }
         api(Flogger.lib)
         api(Guava.lib)
-        api(CheckerFramework.annotations)
-        api(JavaX.annotations)
-        ErrorProne.annotations.forEach { api(it) }
         api(kotlin("stdlib-jdk8"))
+
+        compileOnlyApi(CheckerFramework.annotations)
+        compileOnlyApi(JavaX.annotations)
+        ErrorProne.annotations.forEach { compileOnlyApi(it) }
 
         testImplementation(Guava.testLib)
         testImplementation(JUnit.runner)
@@ -216,8 +217,10 @@ subprojects {
         runtimeOnly(Flogger.Runtime.systemBackend)
     }
 
-    configurations.forceVersions()
-    configurations.excludeProtobufLite()
+    with(configurations) {
+        forceVersions()
+        excludeProtobufLite()
+    }
 
     sourceSets {
         main {
