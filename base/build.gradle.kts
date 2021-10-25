@@ -32,6 +32,7 @@ import io.spine.internal.dependency.Protobuf
 import io.spine.internal.gradle.IncrementGuard
 import io.spine.internal.gradle.Scripts
 import io.spine.internal.gradle.excludeProtobufLite
+import io.spine.internal.gradle.publish.Publish.Companion.publishProtoArtifact
 
 plugins {
     `java-library`
@@ -89,7 +90,7 @@ sourceSets {
     }
 }
 
-apply(from = Scripts.publishProto(project))
+publishProtoArtifact(project)
 
 //TODO:2021-07-22:alexander.yevsyukov: Turn to WARN and investigate duplicates.
 // see https://github.com/SpineEventEngine/base/issues/657
