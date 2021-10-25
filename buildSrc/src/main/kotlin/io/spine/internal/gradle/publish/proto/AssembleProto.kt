@@ -24,22 +24,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.internal.gradle.publish.proto
+
+import org.gradle.api.Project
+import org.gradle.api.tasks.TaskProvider
+import org.gradle.api.tasks.bundling.Jar
+
 /**
- * The versions of the libraries used.
+ * Registers an `assembleProto` Gradle task which locates and assembles all `.proto` files
+ * in a Gradle project.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
- *
- * This version file adheres to the contract of the
- * [publishing application](https://github.com/SpineEventEngine/publishing).
- *
- * When changing the version declarations or adding new ones, make sure to change
- * the publishing application accordingly.
+ * The result of assembly is a [Jar] task with an archive output classified as "proto".
  */
+object AssembleProto {
 
-/** The version of this library. */
-val base = "2.0.0-SNAPSHOT.70"
+    private const val taskName = "assembleProto"
 
-val spineVersion: String by extra(base)
-val spineBaseVersion: String by extra(base) // Used by `filter-internal-javadoc.gradle`.
-val versionToPublish: String by extra(base)
+    /**
+     * Performs the task registration for the passed [project].
+     */
+    fun registerIn(project: Project): TaskProvider<Jar> {
+        val task = project.tasks.register(taskName, Jar::class.java) {
+            description =
+                "Assembles a JAR artifact with all Proto definitions from the classpath."
+            from(project.protoFiles())
+            include {
+                it.file.isProtoFileOrDir()
+            }
+            archiveClassifier.set("proto")
+        }
+        return task
+    }
+}

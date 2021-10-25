@@ -83,7 +83,9 @@ spinePublishing {
         targetRepositories.addAll(
             cloudRepo,
             cloudArtifactRegistry,
-            gitHub("base")
+            // Do not publish to GitHub Packages until migration to new Model Compiler is finished.
+            // See: https://github.com/SpineEventEngine/base/issues/689
+            // gitHub("base")
         )
     }
     projectsToPublish.addAll(
