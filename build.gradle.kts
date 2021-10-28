@@ -217,17 +217,16 @@ subprojects {
         excludeProtobufLite()
     }
 
-    val srcDir by extra("$projectDir/src")
     val generatedDir by extra("$projectDir/generated")
     val generatedJavaDir by extra("$generatedDir/main/java")
     val generatedTestJavaDir by extra("$generatedDir/test/java")
 
     sourceSets {
         main {
-            resources.srcDirs("$srcDir/main/resources", "$generatedDir/main/resources")
+            resources.srcDirs("$generatedDir/main/resources")
         }
         test {
-            resources.srcDirs("$srcDir/test/resources", "$generatedDir/test/resources")
+            resources.srcDirs("$generatedDir/test/resources")
         }
     }
 
@@ -235,6 +234,15 @@ subprojects {
         generatedFilesBaseDir = generatedDir
         protoc {
             artifact = Protobuf.compiler
+        }
+    }
+
+    idea {
+        module {
+            generatedSourceDirs.add(project.file(generatedJavaDir))
+            testSourceDirs.add(project.file(generatedTestJavaDir))
+            isDownloadJavadoc = true
+            isDownloadSources = true
         }
     }
 
@@ -248,15 +256,6 @@ subprojects {
         with(Scripts) {
             from(testOutput(project))
             from(javacArgs(project))
-        }
-    }
-
-    idea {
-        module {
-            generatedSourceDirs.add(project.file(generatedJavaDir))
-            testSourceDirs.add(project.file(generatedTestJavaDir))
-            isDownloadJavadoc = true
-            isDownloadSources = true
         }
     }
 
