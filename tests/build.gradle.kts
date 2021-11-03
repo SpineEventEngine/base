@@ -76,8 +76,6 @@ val baseRoot = "$rootDir/.."
 allprojects {
     apply(from = "$baseRoot/version.gradle.kts")
     apply(plugin = "java")
-    apply(plugin = "jacoco")
-    apply(plugin = "project-report")
 
     repositories {
         mavenLocal()
@@ -157,6 +155,3 @@ subprojects {
     // see https://github.com/SpineEventEngine/base/issues/657
     tasks.processTestResources.get().duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
-
-val scriptsPath = Scripts.commonPath
-apply(from = "${baseRoot}/${scriptsPath}/jacoco.gradle")
