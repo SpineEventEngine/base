@@ -29,16 +29,12 @@ import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.Truth
 import io.spine.internal.gradle.Scripts
-import io.spine.internal.gradle.spinePublishing
 
 buildscript {
 
     val baseRoot = "${rootDir}/.."
     val versionGradle = "${baseRoot}/version.gradle.kts"
-    val commonPath = io.spine.internal.gradle.Scripts.commonPath
-
     apply(from = versionGradle)
-    apply(from = "${baseRoot}/${commonPath}/dependencies.gradle")
 
     repositories {
         gradlePluginPortal()
@@ -80,8 +76,6 @@ val baseRoot = "$rootDir/.."
 allprojects {
     apply(from = "$baseRoot/version.gradle.kts")
     apply(plugin = "java")
-    apply(plugin = "jacoco")
-    apply(plugin = "project-report")
 
     repositories {
         mavenLocal()
@@ -161,6 +155,3 @@ subprojects {
     // see https://github.com/SpineEventEngine/base/issues/657
     tasks.processTestResources.get().duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
-
-val scriptsPath = Scripts.commonPath
-apply(from = "${baseRoot}/${scriptsPath}/jacoco.gradle")
