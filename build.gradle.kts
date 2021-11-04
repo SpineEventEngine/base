@@ -42,6 +42,8 @@ import io.spine.internal.gradle.checkstyle.CheckStyleConfig
 import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.forceVersions
 import io.spine.internal.gradle.github.pages.updateGitHubPages
+import io.spine.internal.gradle.javac.configureErrorProne
+import io.spine.internal.gradle.javac.configureJavac
 import io.spine.internal.gradle.publish.PublishingRepos
 import io.spine.internal.gradle.publish.spinePublishing
 import io.spine.internal.gradle.report.coverage.JacocoConfig
@@ -68,7 +70,7 @@ plugins {
         id(id) version version
     }
     io.spine.internal.dependency.ErrorProne.GradlePlugin.apply {
-        id(id) version version
+        id(id)
     }
     `force-jacoco`
 }
@@ -110,7 +112,6 @@ subprojects {
         repositories.applyStandard()
         dependencies {
             classpath(Protobuf.GradlePlugin.lib)
-            classpath(ErrorProne.GradlePlugin.lib)
         }
         configurations.forceVersions()
     }
@@ -147,6 +148,11 @@ subprojects {
     the<JavaPluginExtension>().apply {
         sourceCompatibility = javaVersion
         targetCompatibility = javaVersion
+    }
+
+    tasks.withType<JavaCompile> {
+        configureJavac()
+        configureErrorProne()
     }
 
     kotlin {
@@ -231,7 +237,6 @@ subprojects {
     apply {
         with(Scripts) {
             from(testOutput(project))
-            from(javacArgs(project))
         }
     }
 
