@@ -34,7 +34,4 @@ git pull
 cd ..
 ./config/pull
 
-echo "Copying 'buildSrc' to 'tests'..."
-cp -R ./buildSrc ./tests
-
 echo "'config' updated."

@@ -61,6 +61,14 @@ val grGitVersion = "3.1.1"
  */
 val guavaVersion = "30.1.1-jre"
 
+/**
+ * The version of ErrorProne Gradle plugin.
+ *
+ * @see <a href="https://github.com/tbroyer/gradle-errorprone-plugin/releases">
+ *     Error Prone Gradle Plugin Releases</a>
+ */
+val errorProneVersion = "2.0.2"
+
 dependencies {
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
     implementation("com.google.cloud.artifactregistry:artifactregistry-auth-common:$googleAuthToolVersion") {
@@ -69,4 +77,5 @@ dependencies {
     implementation("com.google.guava:guava:$guavaVersion")
     api("com.github.jk1:gradle-license-report:$licenseReportVersion")
     implementation("org.ajoberstar.grgit:grgit-core:${grGitVersion}")
+    implementation("net.ltgt.gradle:gradle-errorprone-plugin:${errorProneVersion}")
 }
