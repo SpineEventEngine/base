@@ -36,20 +36,17 @@ import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.gradle.JavadocConfig
-import io.spine.internal.gradle.RunBuild
 import io.spine.internal.gradle.Scripts
 import io.spine.internal.gradle.applyStandard
 import io.spine.internal.gradle.checkstyle.CheckStyleConfig
 import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.forceVersions
 import io.spine.internal.gradle.github.pages.updateGitHubPages
-import io.spine.internal.gradle.publish.PublishExtension
 import io.spine.internal.gradle.publish.PublishingRepos
 import io.spine.internal.gradle.publish.spinePublishing
 import io.spine.internal.gradle.report.coverage.JacocoConfig
 import io.spine.internal.gradle.report.license.LicenseReporter
 import io.spine.internal.gradle.report.pom.PomGenerator
-import java.time.Duration
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 @Suppress("RemoveRedundantQualifierName") // Cannot use imported things here.
@@ -83,31 +80,10 @@ spinePublishing {
         targetRepositories.addAll(
             cloudRepo,
             cloudArtifactRegistry,
-            // Do not publish to GitHub Packages until migration to new Model Compiler is finished.
-            // See: https://github.com/SpineEventEngine/base/issues/689
-            // gitHub("base")
+             gitHub("base")
         )
     }
-    projectsToPublish.addAll(
-        "base",
-        "tool-base",
-        "testlib",
-        "plugin-base",
-        "plugin-testlib",
-
-        "javadoc-filter",
-        "javadoc-style",
-
-        "model-compiler",
-
-        "mc-java",
-        "mc-java-checks",
-        "mc-java-validation",
-        "mc-java-protoc",
-
-        "mc-dart",
-        "mc-js"
-    )
+    projectsToPublish.addAll(subprojects.map { it.path })
 }
 
 allprojects {
@@ -273,24 +249,3 @@ subprojects {
 JacocoConfig.applyTo(project)
 PomGenerator.applyTo(project)
 LicenseReporter.mergeAllReports(project)
-
-/**
- * The [integrationTests] task runs a separate Gradle project in the `tests` directory.
- *
- * The task depends on publishing all the artifacts produced by `base` into Maven Local,
- * so the Gradle project in `tests` can depend on them.
- */
-val projectsToPublish: Set<String> = the<PublishExtension>().projectsToPublish.get()
-val integrationTests by tasks.registering(RunBuild::class) {
-    directory = "$rootDir/tests"
-    // Have a timeout for the case of stalled child processes under Windows.
-    timeout.set(Duration.ofMinutes(30))
-    dependsOn(projectsToPublish.map { p ->
-        val subProject = rootProject.project(p)
-        subProject.tasks[PublishingTask.publishToMavenLocal]
-    })
-}
-
-tasks.register("buildAll") {
-    dependsOn(tasks.build, integrationTests)
-}
