@@ -34,28 +34,3 @@ rootProject.name = "spine-base"
 
 include("base")
 include("testlib")
-
-/**
- * Includes a module and sets custom project directory to it.
- */
-fun toolsModule(name: String) {
-    include(name)
-    project(":$name").projectDir = File("$rootDir/tools/$name")
-}
-
-toolsModule("tool-base")
-toolsModule("plugin-base")
-toolsModule("plugin-testlib")
-
-toolsModule("javadoc-filter")
-toolsModule("javadoc-style")
-
-toolsModule("model-compiler")
-
-toolsModule("mc-java-checks")
-toolsModule("mc-java-validation")
-toolsModule("mc-java-protoc")
-toolsModule("mc-java")
-
-toolsModule("mc-dart")
-toolsModule("mc-js")
