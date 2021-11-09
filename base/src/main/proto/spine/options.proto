@@ -294,7 +294,12 @@ extend google.protobuf.MessageOptions {
     // This option extends message types that extend `FieldOptions`
     // The number of parameters and their types are determined by the type of field options.
     //
-    string default_message = 73901;
+    // Usage of this value is deprecated. Along with the old `msg_format`s, it exists to support
+    // the old validation library. The new version of the validation library, which does not lie in
+    // the `base` repository, constructs the default error messages separately when creating
+    // language-agnostic validation rules.
+    //
+    string default_message = 73901 [deprecated = true];
 
     // The constraint to require at least one of the fields or a combination of fields.
     //
