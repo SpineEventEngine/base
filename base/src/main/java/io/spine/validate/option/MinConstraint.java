@@ -57,6 +57,8 @@ public final class MinConstraint extends RangedConstraint<MinOption> {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
+        // The old validation will not migrate to the new error messages.
     protected String compileErrorMessage(Range<ComparableNumber> range) {
         MinOption min = optionValue();
         String template = ViolationText.errorMessage(min, min.getMsgFormat());

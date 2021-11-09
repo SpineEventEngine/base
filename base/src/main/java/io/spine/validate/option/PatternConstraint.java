@@ -51,6 +51,8 @@ public final class PatternConstraint extends FieldConstraint<PatternOption> {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
+        // The old validation will not migrate to the new error messages.
     public String errorMessage(FieldContext field) {
         PatternOption option = optionValue();
         return ViolationText.errorMessage(option, option.getMsgFormat());
