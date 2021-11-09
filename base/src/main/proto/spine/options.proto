@@ -660,7 +660,7 @@ message PatternOption {
     //
     // The format parameter is the regular expression to which the value must match.
     //
-    option (default_message) = "The string must match the regular expression `{other}`.";
+    option (default_message) = "The string must match the regular expression `%s`.";
 
     // The regular expression to match.
     string regex = 1;
@@ -740,7 +740,8 @@ message PatternOption {
 // Example: Using the `(if_invalid)` option.
 //
 //     message Holder {
-//         MyMessage field = 1 [(validate) = true, (if_invalid).error_msg = "The field is invalid."];
+//         MyMessage field = 1 [(validate) = true,
+//                              (if_invalid).error_msg = "The field is invalid."];
 //    }
 //
 message IfInvalidOption {

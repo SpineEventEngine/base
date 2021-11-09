@@ -70,8 +70,7 @@ class PatternTest extends ValidationOfConstraintTest {
     void provideOneValidViolationIfStringDoesNotMatchToRegexPattern() {
         PatternStringFieldValue msg = patternStringFor("invalid email");
         @Regex
-        String regex =
-                "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+        String regex = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
         String expectedErrMsg = format(MATCH_REGEXP_MSG, regex);
         assertSingleViolation(msg, expectedErrMsg, EMAIL);
     }
