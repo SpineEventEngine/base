@@ -97,8 +97,7 @@ class ErrorMessageTest extends ValidationOfConstraintTest {
         assertEquals(expectedMessage, constraintViolation.getMsgFormat());
     }
 
-    @SuppressWarnings("deprecation")
-        // The old validation will not migrate to the new error messages.
+    @SuppressWarnings("deprecation") /* Old validation won't migrate to the new error messages. */
     private static String customErrorMessageFrom(Descriptor descriptor) {
         FieldDescriptor firstFieldDescriptor = descriptor.getFields()
                                                          .get(0);
