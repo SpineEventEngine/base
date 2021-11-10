@@ -56,6 +56,7 @@ public final class MaxConstraint extends RangedConstraint<MaxOption> {
     }
 
     @Override
+    @SuppressWarnings("deprecation") /* Old validation won't migrate to the new error messages. */
     protected String compileErrorMessage(Range<ComparableNumber> range) {
         MaxOption max = optionValue();
         String template = ViolationText.errorMessage(max, max.getMsgFormat());

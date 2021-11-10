@@ -34,7 +34,6 @@ import io.spine.internal.gradle.report.coverage.TaskName.jacocoRootReport
 import io.spine.internal.gradle.report.coverage.TaskName.jacocoTestReport
 import io.spine.internal.gradle.sourceSets
 import java.io.File
-import java.lang.IllegalStateException
 import java.util.*
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -62,6 +61,7 @@ import org.gradle.testing.jacoco.tasks.JacocoReport
  * Therefore, tn case this utility is applied to a single-module Gradle project,
  * an `IllegalStateException` is thrown.
  */
+@Suppress("unused")
 class JacocoConfig(
     private val rootProject: Project,
     private val reportsDir: File,
@@ -112,7 +112,7 @@ class JacocoConfig(
                 } else {
                     throw IllegalStateException(
                         "In a single-module Gradle project, `JacocoConfig` is NOT needed." +
-                                "Please apply `jacoco` plugin instead."
+                                " Please apply `jacoco` plugin instead."
                     )
                 }
             return projects

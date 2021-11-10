@@ -43,11 +43,17 @@ object ErrorProne {
     const val testHelpers = "com.google.errorprone:error_prone_test_helpers:${version}"
     const val javacPlugin  = "com.google.errorprone:javac:${javacPluginVersion}"
 
-    /**
-     * The version of this plugin is already specified in `buildSrc/build.gradle.kts` file.
-     * Thus, when applying the plugin in projects build files, only id should be used.
-     */
+    // https://github.com/tbroyer/gradle-errorprone-plugin/releases
     object GradlePlugin {
         const val id = "net.ltgt.errorprone"
+        /**
+         * The version of this plugin is already specified in `buildSrc/build.gradle.kts` file.
+         * Thus, when applying the plugin in projects build files, only the [id] should be used.
+         *
+         * When the plugin is used as a library (e.g. in tools), its version and the library
+         * artifacts are of importance.
+         */
+        const val version = "2.0.2"
+        const val lib = "net.ltgt.gradle:gradle-errorprone-plugin:${version}"
     }
 }

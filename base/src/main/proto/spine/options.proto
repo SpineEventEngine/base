@@ -294,7 +294,12 @@ extend google.protobuf.MessageOptions {
     // This option extends message types that extend `FieldOptions`
     // The number of parameters and their types are determined by the type of field options.
     //
-    string default_message = 73901;
+    // Usage of this value is deprecated. Along with the old `msg_format`s, it exists to support
+    // the old validation library. The new version of the validation library, which does not lie in
+    // the `base` repository, constructs the default error messages separately when creating
+    // language-agnostic validation rules.
+    //
+    string default_message = 73901 [deprecated = true];
 
     // The constraint to require at least one of the fields or a combination of fields.
     //
@@ -539,7 +544,7 @@ extend google.protobuf.ServiceOptions {
 //
 //    message Holder {
 //        MyMessage field = 1 [(required) = true,
-//                             (if_missing).msg_format = "This field is required."];
+//                             (if_missing).error_msg = "This field is required."];
 //    }
 //
 message IfMissingOption {
@@ -548,7 +553,13 @@ message IfMissingOption {
     option (default_message) = "A value must be set.";
 
     // A user-defined validation error format message.
-    string msg_format = 1;
+    //
+    // Use `error_msg` instead.
+    //
+    string msg_format = 1 [deprecated = true];
+
+    // A user-defined error message.
+    string error_msg = 2;
 }
 
 // The field value must be greater than or equal to the given minimum number.
@@ -559,7 +570,11 @@ message IfMissingOption {
 // Example: Defining lower boundary for a numeric field.
 //
 //     message KelvinTemperature {
-//         double value = 1 [(min).value = "0.0"];
+//         double value = 1 [(min) = {
+//             value = "0.0"
+//             exclusive = true
+//             error_msg = "Temperature cannot reach {other}K, but provided {value}."
+//         }];
 //     }
 //
 message MinOption {
@@ -582,7 +597,14 @@ message MinOption {
     bool exclusive = 2;
 
     // A user-defined validation error format message.
-    string msg_format = 3;
+    string msg_format = 3 [deprecated = true];
+
+    // A user-defined validation error format message.
+    //
+    // May include tokens `{value}`—for the actual value of the field, and `{other}`—for
+    // the threshold value. The tokens will be replaced at runtime when the error is constructed.
+    //
+    string error_msg = 4;
 }
 
 // The field value must be less than or equal to the given maximum number.
@@ -593,7 +615,7 @@ message MinOption {
 // Example: Defining upper boundary for a numeric field.
 //
 //     message Elevation {
-//         double value = 1 [(max).value = "8848.00"];
+//         double value = 1 [(max).value = "8848.86"];
 //     }
 //
 message MaxOption {
@@ -616,7 +638,14 @@ message MaxOption {
     bool exclusive = 2;
 
     // A user-defined validation error format message.
-    string msg_format = 3;
+    string msg_format = 3 [deprecated = true];
+
+    // A user-defined validation error format message.
+    //
+    // May include tokens `{value}`—for the actual value of the field, and `{other}`—for
+    // the threshold value. The tokens will be replaced at runtime when the error is constructed.
+    //
+    string error_msg = 4;
 }
 
 // A string field value must match the given regular expression.
@@ -626,7 +655,8 @@ message MaxOption {
 // Example: Using the `(pattern)` option.
 //
 //     message CreateAccount {
-//         string id = 1 [(pattern).regex = "^[A-Za-z0-9+]+$"];
+//         string id = 1 [(pattern).regex = "^[A-Za-z0-9+]+$",
+//                        (pattern).error_msg = "ID must be alphanumerical. Provided: `{value}`."];
 //     }
 //
 message PatternOption {
@@ -640,17 +670,21 @@ message PatternOption {
     // The regular expression to match.
     string regex = 1;
 
-    // The regex flag.
-    //
-    // Has no effect. Use `modifier` instead.
-    //
-    int32 flag = 2 [deprecated = true];
+    reserved 2;
+    reserved "flag";
 
     // Modifiers for this pattern.
     Modifier modifier = 4;
 
     // A user-defined validation error format message.
-    string msg_format = 3;
+    string msg_format = 3 [deprecated = true];
+
+    // A user-defined validation error format message.
+    //
+    // May include tokens `{value}`—for the actual value of the field, and `{other}`—for
+    // the threshold value. The tokens will be replaced at runtime when the error is constructed.
+    //
+    string error_msg = 5;
 
     // Regular expression modifiers.
     //
@@ -711,7 +745,8 @@ message PatternOption {
 // Example: Using the `(if_invalid)` option.
 //
 //     message Holder {
-//         MyMessage field = 1 [(validate) = true, (if_invalid).msg_format = "The field is invalid."];
+//         MyMessage field = 1 [(validate) = true,
+//                              (if_invalid).error_msg = "The field is invalid."];
 //    }
 //
 message IfInvalidOption {
@@ -720,7 +755,14 @@ message IfInvalidOption {
     option (default_message) = "The message must have valid properties.";
 
     // A user-defined validation error format message.
-    string msg_format = 1;
+    string msg_format = 1 [deprecated = true];
+
+    // A user-defined validation error format message.
+    //
+    // May include the token `{value}` for the actual value of the field. The token will be replaced
+    // at runtime when the error is constructed.
+    //
+    string error_msg = 2;
 }
 
 // Specifies that a message field can be present only if another field is present.
@@ -750,7 +792,14 @@ message GoesOption {
     string with = 1;
 
     // A user-defined validation error format message.
-    string msg_format = 2;
+    string msg_format = 2 [deprecated = true];
+
+    // A user-defined validation error format message.
+    //
+    // May include the token `{value}` for the actual value of the field. The token will be replaced
+    // at runtime when the error is constructed.
+    //
+    string error_msg = 3;
 }
 
 // Defines options of a message representing a state of an entity.
