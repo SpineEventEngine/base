@@ -36,7 +36,6 @@ import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.gradle.JavadocConfig
-import io.spine.internal.gradle.Scripts
 import io.spine.internal.gradle.applyStandard
 import io.spine.internal.gradle.checkstyle.CheckStyleConfig
 import io.spine.internal.gradle.excludeProtobufLite
@@ -49,6 +48,7 @@ import io.spine.internal.gradle.publish.spinePublishing
 import io.spine.internal.gradle.report.coverage.JacocoConfig
 import io.spine.internal.gradle.report.license.LicenseReporter
 import io.spine.internal.gradle.report.pom.PomGenerator
+import io.spine.internal.gradle.testing.registerTestTasks
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 @Suppress("RemoveRedundantQualifierName") // Cannot use imported things here.
@@ -228,15 +228,12 @@ subprojects {
         }
     }
 
-    tasks.test {
-        useJUnitPlatform {
-            includeEngines("junit-jupiter")
-        }
-    }
-
-    apply {
-        with(Scripts) {
-            from(testOutput(project))
+    tasks {
+        registerTestTasks()
+        test {
+            useJUnitPlatform {
+                includeEngines("junit-jupiter")
+            }
         }
     }
 
