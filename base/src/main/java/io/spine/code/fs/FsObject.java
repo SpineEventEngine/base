@@ -34,6 +34,7 @@ import java.nio.file.Path;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Abstract base for source code objects on a file system.
@@ -59,9 +60,9 @@ public abstract class FsObject {
      * @deprecated please use {@link #parent()}.
      */
     @Deprecated
-    @InlineMe(replacement = "parent()", imports = "io.spine.code.fs.FsObject")
-    public final Path directory() {
-        return checkNotNull(path.getParent());
+    @InlineMe(replacement = "this.parent()")
+    public final @Nullable Path directory() {
+        return this.parent();
     }
 
     /**
