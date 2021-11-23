@@ -26,6 +26,9 @@
 
 package io.spine.code.fs;
 
+import com.google.errorprone.annotations.InlineMe;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
@@ -52,11 +55,21 @@ public abstract class FsObject {
 
     /**
      * Obtains the directory to which this object belongs.
+     *
+     * @deprecated please use {@link #parent()}.
      */
+    @Deprecated
+    @InlineMe(replacement = "parent()", imports = "io.spine.code.fs.FsObject")
     public final Path directory() {
         return checkNotNull(path.getParent());
     }
 
+    /**
+     * Obtains a parent of this file system object.
+     */
+    public final @Nullable Path parent() {
+        return path.getParent();
+    }
     /**
      * Checks if the object is actually present in the file system.
      */
