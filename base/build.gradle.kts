@@ -30,18 +30,16 @@ import io.spine.internal.dependency.AutoService
 import io.spine.internal.dependency.Kotlin
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.gradle.IncrementGuard
-import io.spine.internal.gradle.Scripts
 import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.publish.Publish.Companion.publishProtoArtifact
+import io.spine.internal.gradle.testing.exposeTestArtifacts
 
 plugins {
     `java-library`
     id("com.google.protobuf")
 }
 
-group = "io.spine"
-
-apply(from = Scripts.testArtifacts(project))
+project.exposeTestArtifacts()
 apply<IncrementGuard>()
 
 configurations.excludeProtobufLite()
@@ -54,63 +52,32 @@ dependencies {
     testImplementation(project(":testlib"))
 }
 
-val srcDir by extra("$projectDir/src")
 val generatedDir by extra("$projectDir/generated")
-val generatedJavaDir by extra("$generatedDir/main/java")
-val generatedTestJavaDir by extra("$generatedDir/test/java")
 val generatedSpineDir by extra("$generatedDir/main/spine")
 val generatedTestSpineDir by extra("$generatedDir/test/spine")
 
 sourceSets {
     main {
-        java.srcDirs(
-            generatedJavaDir,
-            generatedSpineDir,
-            "$srcDir/main/java"
-        )
-        resources.srcDirs(
-            "$buildDir/descriptors/main",
-            "$generatedDir/main/resources",
-            "$srcDir/main/resources"
-        )
-        proto.setSrcDirs(listOf("$projectDir/src/main/proto"))
+        java.srcDir(generatedSpineDir)
+        resources.srcDir("$buildDir/descriptors/main")
     }
     test {
-        java.srcDirs(
-            generatedTestJavaDir,
-            generatedTestSpineDir,
-            "$srcDir/test/java"
-        )
-        resources.srcDirs(
-            "$buildDir/descriptors/test",
-            "$generatedDir/test/resources",
-            "$srcDir/test/resources"
-        )
-        proto.setSrcDirs(listOf("$projectDir/src/test/proto"))
+        java.srcDir(generatedTestSpineDir)
+        resources.srcDir("$buildDir/descriptors/test")
     }
 }
 
-publishProtoArtifact(project)
-
-//TODO:2021-07-22:alexander.yevsyukov: Turn to WARN and investigate duplicates.
-// see https://github.com/SpineEventEngine/base/issues/657
-val dupStrategy = DuplicatesStrategy.INCLUDE
-tasks.processResources.get().duplicatesStrategy = dupStrategy
-tasks.processTestResources.get().duplicatesStrategy = dupStrategy
-tasks.sourceJar.get().duplicatesStrategy = dupStrategy
-tasks.jar.get().duplicatesStrategy = dupStrategy
-
 protobuf {
-    val compiledProtoRoot = "$projectDir/generated"
+    val generatedRoot = "$projectDir/generated"
     val googlePackagePrefix = "com/google"
 
-    generatedFilesBaseDir = compiledProtoRoot
+    generatedFilesBaseDir = generatedRoot
     generateProtoTasks {
         for (task in all()) {
-            val scope = task.sourceSet.name
+            val ssn = task.sourceSet.name
             task.generateDescriptorSet = true
             with(task.descriptorSetOptions) {
-                path = "$buildDir/descriptors/$scope/known_types_${scope}.desc"
+                path = "$buildDir/descriptors/${ssn}/known_types_${ssn}.desc"
                 includeImports = true
                 includeSourceInfo = true
             }
@@ -127,7 +94,7 @@ protobuf {
                 classes that duplicate those coming from Protobuf library JARs.
             */
             task.doLast {
-                delete("$compiledProtoRoot/$scope/java/$googlePackagePrefix")
+                delete("${generatedRoot}/${ssn}/java/${googlePackagePrefix}")
             }
         }
     }
@@ -147,3 +114,5 @@ fun FileTreeElement.isGoogleProtoSource(): Boolean {
 tasks.withType(Jar::class) {
     exclude { it.isGoogleProtoSource() }
 }
+
+publishProtoArtifact(project)
