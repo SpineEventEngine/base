@@ -165,8 +165,8 @@ public final class Resource {
     /**
      * Reads this resource as text.
      *
-     * <p>Behaves similarly to {@link #open()} but works with a character stream, not with a byte
-     * stream.
+     * <p>Behaves similarly to {@link #open()} but works with a character stream,
+     * not with a byte stream.
      */
     private Reader openAsText(Charset charset) {
         return new InputStreamReader(open(), charset);
@@ -175,8 +175,8 @@ public final class Resource {
     /**
      * Reads this resource as UTF-8 text.
      *
-     * <p>Behaves similarly to {@link #open()} but works with a character stream, not with a byte
-     * stream.
+     * <p>Behaves similarly to {@link #open()} but works with a character stream,
+     * not with a byte stream.
      *
      * @see #openAsText(Charset)
      */
