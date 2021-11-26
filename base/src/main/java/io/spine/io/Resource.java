@@ -76,13 +76,14 @@ public final class Resource {
      *         the class relative to which the resource is referenced
      */
     public static Resource file(String path, ClassLoader customLoader) {
+        checkNotNull(path);
         checkNotNull(customLoader);
         checkNotEmptyOrBlank(path);
         return new Resource(path, customLoader);
     }
 
     private @Nullable URL findUrl() {
-        URL url = classLoader.getResource(path);
+        @Nullable URL url = classLoader.getResource(path);
         return url;
     }
 
@@ -92,7 +93,7 @@ public final class Resource {
      * @return {@code true} if the resource is present, {@code false} otherwise
      */
     public boolean exists() {
-        URL resource = findUrl();
+        @Nullable URL resource = findUrl();
         return resource != null;
     }
 
@@ -105,7 +106,7 @@ public final class Resource {
      * @return the resource URL
      */
     public URL locate() {
-        URL url = findUrl();
+        @Nullable URL url = findUrl();
         if (url == null) {
             throw cannotFind();
         }
