@@ -73,7 +73,7 @@ public final class Copy {
     }
 
     /**
-     * Copies the directory and its contents matching the passed predicate into another directory.
+     * Copies the directory and its contents matching the given predicate into another directory.
      *
      * <p>Both paths must point to existing directories.
      *
