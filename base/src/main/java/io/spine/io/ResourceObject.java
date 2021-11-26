@@ -1,0 +1,114 @@
+/*
+ * Copyright 2021, TeamDev. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package io.spine.io;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.Enumeration;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.newIllegalStateException;
+import static java.lang.String.format;
+
+abstract class ResourceObject {
+
+    private final String path;
+    private final ClassLoader classLoader;
+
+    ResourceObject(String path, ClassLoader classLoader) {
+        this.path = checkNotNull(path);
+        this.classLoader = checkNotNull(classLoader);
+    }
+
+    private @Nullable URL findUrl() {
+        @Nullable URL url = classLoader.getResource(path);
+        return url;
+    }
+
+    /**
+     * Checks if the resource with such a name exists in the classpath.
+     *
+     * @return {@code true} if the resource is present, {@code false} otherwise
+     */
+    public boolean exists() {
+        @Nullable URL resource = findUrl();
+        return resource != null;
+    }
+
+    /**
+     * Obtains a {@link URL} of the resolved resource.
+     *
+     * <p>If the resource cannot be resolved (i.e. the file does not exist), throws
+     * an {@code IllegalStateException}.
+     *
+     * @return the resource URL
+     */
+    public URL locate() {
+        @Nullable URL url = findUrl();
+        if (url == null) {
+            throw cannotFind();
+        }
+        return url;
+    }
+
+    /** Obtains the resource path of this resource object as passed on creation. */
+    final String path() {
+        return path;
+    }
+
+    final IllegalStateException cannotFind() {
+        return newIllegalStateException("Unable to find `%s`.", this);
+    }
+
+    final Enumeration<URL> resources() throws IOException {
+        return classLoader.getResources(path);
+    }
+
+    @Override
+    public int hashCode() {
+        return path.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ResourceObject)) {
+            return false;
+        }
+        ResourceObject other = (ResourceObject) o;
+        return path.equals(other.path);
+    }
+
+    @Override
+    public String toString() {
+        return format("`%s` via ClassLoader `%s`", path, classLoader);
+    }
+}

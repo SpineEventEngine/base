@@ -28,20 +28,12 @@ package io.spine.io
 import com.google.common.io.CharStreams
 import com.google.common.testing.NullPointerTester
 import com.google.common.truth.Truth.assertThat
-import io.spine.io.Copy.copyContent
 import io.spine.testing.Assertions.assertIllegalState
 import io.spine.testing.TestValues
 import java.io.InputStream
-import java.nio.file.Files.exists
-import java.nio.file.Files.isDirectory
-import java.nio.file.Path
-import java.nio.file.Paths
-import kotlin.io.path.listDirectoryEntries
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.io.TempDir
 
 @DisplayName("`Resource` should")
 class ResourceTest {
@@ -101,37 +93,5 @@ class ResourceTest {
             val content = CharStreams.toString(reader)
             assertThat(content).isNotEmpty()
         }
-    }
-
-    @Test
-    fun `expose a directory for copying`(@TempDir tempDir: Path) {
-        val directory = Resource.file("directory", classLoader)
-        val path = Paths.get(directory.locate()!!.path)
-
-        assertTrue(isDirectory(path))
-        
-        copyContent(path, tempDir)
-
-        assertThat(tempDir.listDirectoryEntries())
-            .isNotEmpty()
-
-        fun assertExists(relativePath: String) {
-            val fullPath = tempDir.resolve(relativePath)
-            assertTrue(exists(fullPath), "Expected to exist: `${fullPath}`.")
-        }
-
-        listOf(
-            ".dot-file",
-            "file1.txt",
-
-            "subdir/.dot-file",
-            "subdir/file1.txt",
-            "subdir/file2.txt",
-
-            "subdir/sub-sub-dir/.dot-file",
-            "subdir/sub-sub-dir/file1.txt",
-            "subdir/sub-sub-dir/file2.txt",
-            "subdir/sub-sub-dir/file3.txt",
-        ).forEach { p -> assertExists(p) }
     }
 }

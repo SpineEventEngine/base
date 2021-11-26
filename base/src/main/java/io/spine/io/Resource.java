@@ -26,12 +26,10 @@
 
 package io.spine.io;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.UnmodifiableIterator;
 import com.google.common.io.CharStreams;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -45,72 +43,32 @@ import java.util.Enumeration;
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
-import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
-import static java.lang.String.format;
 
 /**
  * A resource file in the classpath.
  *
- * <p>By default the resource will be loaded using the class loader of this class.
- * In order to use another loader, please use {@link #file(String, ClassLoader)}.
- * 
  * @see #file(String, ClassLoader)
  */
-public final class Resource {
-
-    private final String path;
-    private final ClassLoader classLoader;
+public final class Resource extends ResourceObject {
 
     private Resource(String path, ClassLoader classLoader) {
-        this.path = path;
-        this.classLoader = classLoader;
+        super(path, classLoader);
     }
 
     /**
-     * Creates a new reference to a resource at the context of the given class.
+     * Creates a new reference to a resource at the context of the given class loader.
      *
      * @param path
-     *         the path to the resource file, relative to {@code contextClass}
+     *         the path to the resource file
      * @param customLoader
-     *         the class relative to which the resource is referenced
+     *         the class loader relative to which the resource is referenced
      */
     public static Resource file(String path, ClassLoader customLoader) {
         checkNotNull(path);
         checkNotNull(customLoader);
         checkNotEmptyOrBlank(path);
         return new Resource(path, customLoader);
-    }
-
-    private @Nullable URL findUrl() {
-        @Nullable URL url = classLoader.getResource(path);
-        return url;
-    }
-
-    /**
-     * Checks if the resource with such a name exists in the classpath.
-     *
-     * @return {@code true} if the resource is present, {@code false} otherwise
-     */
-    public boolean exists() {
-        @Nullable URL resource = findUrl();
-        return resource != null;
-    }
-
-    /**
-     * Obtains a {@link URL} of the resolved resource.
-     *
-     * <p>If the resource cannot be resolved (i.e. the file does not exist), throws
-     * an {@code IllegalStateException}.
-     *
-     * @return the resource URL
-     */
-    public URL locate() {
-        @Nullable URL url = findUrl();
-        if (url == null) {
-            throw cannotFind();
-        }
-        return url;
     }
 
     /**
@@ -132,13 +90,9 @@ public final class Resource {
         return result;
     }
 
-    private IllegalStateException cannotFind() {
-        return newIllegalStateException("Unable to find %s.", this);
-    }
-
     private Enumeration<URL> resourceEnumeration() {
         try {
-            Enumeration<URL> resources = classLoader.getResources(path);
+            Enumeration<URL> resources = resources();
             return resources;
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
@@ -201,24 +155,15 @@ public final class Resource {
     }
 
     @Override
-    public String toString() {
-        return format("`%s` via ClassLoader `%s`", path, classLoader);
+    public int hashCode() {
+        return path().hashCode();
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+        if (o instanceof Resource) {
+            return super.equals(o);
         }
-        if (!(o instanceof Resource)) {
-            return false;
-        }
-        Resource resource = (Resource) o;
-        return Objects.equal(path, resource.path);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(path);
+        return false;
     }
 }
