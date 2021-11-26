@@ -27,9 +27,11 @@
 package io.spine.reflect;
 
 import com.google.common.testing.NullPointerTester;
+import com.google.common.truth.BooleanSubject;
 import io.spine.reflect.given.ConstructorsTestEnv;
 import io.spine.reflect.given.MethodsTestEnv.ClassWithPrivateMethod;
 import io.spine.testing.UtilityClassTest;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -130,7 +132,7 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         void convertInvisibleToHandle() throws Throwable {
             MethodHandle handle = asHandle(privateMethod);
             assertThat(handle).isNotNull();
-            assertThat(privateMethod.isAccessible()).isFalse();
+            assertAccessible().isFalse();
 
             Object invocationResult = handle.invoke(new ClassWithPrivateMethod());
             assertThat(invocationResult)
@@ -142,12 +144,17 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         void convertAccessibleToHandle() throws Throwable {
             privateMethod.setAccessible(true);
             MethodHandle handle = asHandle(privateMethod);
-            assertThat(privateMethod.isAccessible()).isTrue();
+            assertAccessible().isTrue();
             assertThat(handle).isNotNull();
 
             Object invocationResult = handle.invoke(new ClassWithPrivateMethod());
             assertThat(invocationResult)
                     .isEqualTo(METHOD_RESULT);
+        }
+
+        @NonNull
+        private BooleanSubject assertAccessible() {
+            return assertThat(privateMethod.isAccessible());
         }
     }
 
@@ -206,18 +213,19 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         @DisplayName("bring the accessibility back")
         class Accessibility {
 
+            private Constructor<?> ctor;
+
             @Test
             @DisplayName("if the instantiation succeeded")
             void success() throws NoSuchMethodException {
                 Class<ClassWithPrivateCtor> privateCtorClass = ClassWithPrivateCtor.class;
 
-                Constructor<ClassWithPrivateCtor> ctor =
-                        ClassWithPrivateCtor.class.getDeclaredConstructor();
+                ctor = ClassWithPrivateCtor.class.getDeclaredConstructor();
                 ClassWithPrivateCtor instance =
                         callParameterlessCtor(privateCtorClass);
                 assertThat(instance.instantiated()).isTrue();
 
-                assertThat(ctor.isAccessible()).isFalse();
+                assertConstructorAccessible().isFalse();
             }
 
             @Test
@@ -225,12 +233,15 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
             void failure() throws NoSuchMethodException {
                 Class<ThrowingConstructor> throwingCtorClass = ThrowingConstructor.class;
 
-                Constructor<ThrowingConstructor> ctor =
-                        ThrowingConstructor.class.getDeclaredConstructor();
+                ctor = ThrowingConstructor.class.getDeclaredConstructor();
 
                 assertIllegalState(() -> callParameterlessCtor(throwingCtorClass));
 
-                assertThat(ctor.isAccessible()).isFalse();
+                assertConstructorAccessible().isFalse();
+            }
+
+            BooleanSubject assertConstructorAccessible() {
+                return assertThat(ctor.isAccessible());
             }
         }
     }
