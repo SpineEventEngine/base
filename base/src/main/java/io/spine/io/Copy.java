@@ -36,7 +36,8 @@ import java.util.stream.Stream;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.io.IoPreconditions.checkIsDirectory;
 import static java.nio.file.Files.copy;
-import static java.nio.file.Files.createDirectory;
+import static java.nio.file.Files.createDirectories;
+import static java.nio.file.Files.exists;
 import static java.nio.file.Files.find;
 import static java.nio.file.Files.isDirectory;
 import static java.nio.file.Files.isRegularFile;
@@ -96,8 +97,14 @@ public final class Copy {
             Path relative = oldParent.relativize(path);
             Path newPath = target.resolve(relative);
             if (isDirectory(path)) {
-                createDirectory(newPath);
+                if (!exists(newPath)) {
+                    createDirectories(newPath);
+                }
             } else if (isRegularFile(path)) {
+                Path containingDir = newPath.getParent();
+                if (!exists(containingDir)) {
+                    createDirectories(containingDir);
+                }
                 copy(path, newPath);
             }
         }
