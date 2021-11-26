@@ -46,6 +46,7 @@ class MethodHolder {
     }
 }
 
+@Suppress("unused")
 object ObjMethodHolder {
 
     @JvmStatic
