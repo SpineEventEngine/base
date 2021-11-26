@@ -26,6 +26,7 @@
 package io.spine.io
 
 import com.google.common.truth.Truth.assertThat
+import io.spine.io.Copy.copyContent
 import io.spine.io.Copy.copyDir
 import java.nio.file.Files.createDirectory
 import java.nio.file.Files.exists
@@ -38,7 +39,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 
-internal class CopyTest {
+class `Copy utilities should` {
 
     companion object {
         const val sourceDirectory = "to-copy"
@@ -51,7 +52,6 @@ internal class CopyTest {
             file1 to 100,
             file2 to 200
         )
-
         fun sizeOf(fileName: String) = fileSize[fileName] ?: 42 // something non-zero
     }
 
@@ -128,6 +128,47 @@ internal class CopyTest {
         assertDoesNotExist(resultDir.resolve(file1))
 
         val subDir = resultDir.resolve(subDirectory)
+        assertExists(subDir)
+        assertFile(subDir, file2)
+        assertDoesNotExist(subDir.resolve(file1))
+
+        val deeperDir = subDir.resolve(subDirLevel2)
+        assertExists(deeperDir)
+        assertFile(deeperDir, file2)
+        assertDoesNotExist(deeperDir.resolve(file1))
+    }
+
+    @Test
+    fun `copy directory content`() {
+        copyContent(srcDir, destDir)
+
+        assertDoesNotExist(destDir.resolve(sourceDirectory))
+        assertFile(destDir, file1)
+        assertFile(destDir, file2)
+
+        val subDir = destDir.resolve(subDirectory)
+        assertExists(subDir)
+        assertFile(subDir, file1)
+        assertFile(subDir, file2)
+
+        val deeperDir = subDir.resolve(subDirLevel2)
+        assertExists(subDir)
+        assertFile(deeperDir, file1)
+        assertFile(deeperDir, file2)
+    }
+
+    @Test
+    fun `copy directory content with filtering`() {
+        copyContent(srcDir, destDir) { path ->
+            val name = path.toString()
+            name.contains("f2") || name.endsWith("sub-dir")
+        }
+
+        assertDoesNotExist(destDir.resolve(sourceDirectory))
+        assertFile(destDir, file2)
+        assertDoesNotExist(destDir.resolve(file1))
+
+        val subDir = destDir.resolve(subDirectory)
         assertExists(subDir)
         assertFile(subDir, file2)
         assertDoesNotExist(subDir.resolve(file1))
