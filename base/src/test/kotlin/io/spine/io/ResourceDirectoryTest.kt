@@ -44,19 +44,19 @@ class `'ResourceDirectory' should` {
 
     private companion object {
         const val resourceName = "directory"
-       val allFiles = listOf(
-           ".dot-file",
-           "file1.txt",
+        val allFiles = listOf(
+            ".dot-file",
+            "file1.txt",
 
-           "subdir/.dot-file",
-           "subdir/file1.txt",
-           "subdir/file2.txt",
+            "subdir/.dot-file",
+            "subdir/file1.txt",
+            "subdir/file2.txt",
 
-           "subdir/sub-sub-dir/.dot-file",
-           "subdir/sub-sub-dir/file1.txt",
-           "subdir/sub-sub-dir/file2.txt",
-           "subdir/sub-sub-dir/file3.txt",
-       )
+            "subdir/sub-sub-dir/.dot-file",
+            "subdir/sub-sub-dir/file1.txt",
+            "subdir/sub-sub-dir/file2.txt",
+            "subdir/sub-sub-dir/file3.txt",
+        )
 
        val dotNamed: Predicate<String> = Predicate { s -> s.contains(File.separator + ".dot") }
        val noSubSub: Predicate<String> = Predicate { s -> !s.contains("-sub-") }
