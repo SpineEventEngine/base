@@ -26,6 +26,7 @@
 
 package io.spine.io
 
+import java.io.File
 import java.nio.file.Files.exists
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -57,7 +58,7 @@ class `'ResourceDirectory' should` {
            "subdir/sub-sub-dir/file3.txt",
        )
 
-       val dotNamed: Predicate<String> = Predicate { s -> s.contains("/.dot") }
+       val dotNamed: Predicate<String> = Predicate { s -> s.contains(File.separator + ".dot") }
        val noSubSub: Predicate<String> = Predicate { s -> !s.contains("-sub-") }
     }
 
