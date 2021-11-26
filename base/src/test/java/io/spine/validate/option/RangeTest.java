@@ -300,25 +300,25 @@ final class RangeTest extends ValidationOfConstraintTest {
     private static Stream<Float> invalidHalfRangeDegrees() {
         return DoubleStream.of(-1.0, 180, 180.1, Float.MAX_VALUE, -Float.MAX_VALUE)
                            .boxed()
-                           .map(Float::new);
+                           .map(Double::floatValue);
     }
 
     private static Stream<Float> invalidDegrees() {
         return DoubleStream.of(-1.0, 360, 360.1, Float.MAX_VALUE, -Float.MAX_VALUE)
                            .boxed()
-                           .map(Float::new);
+                           .map(Double::floatValue);
     }
 
     private static Stream<Float> validDegrees() {
         return DoubleStream.of(0, 0.54, 1.23, 31.3, 40, 59.9, 180.1, 359.9)
                            .boxed()
-                           .map(Float::new);
+                           .map(Double::floatValue);
     }
 
     private static Stream<Float> validHalfRangeDegrees() {
         return DoubleStream.of(0, 0.54, 1.23, 31.3, 40, 59.9, 179.9)
                            .boxed()
-                           .map(Float::new);
+                           .map(Double::floatValue);
     }
 
     private static Stream<Double> invalidHalfRangeAngles() {
