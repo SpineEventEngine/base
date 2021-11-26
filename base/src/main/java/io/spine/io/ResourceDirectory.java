@@ -29,6 +29,7 @@ package io.spine.io;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,6 +41,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.io.Copy.copyContent;
 import static io.spine.io.Copy.copyDir;
+import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -75,8 +77,12 @@ public final class ResourceDirectory extends ResourceObject {
     public Path toPath() {
         @Nullable URL url = locate();
         checkState(url != null, "Unable to locate resource directory: `%s`.", path());
-        Path result = Paths.get(url.getPath());
-        return result;
+        try {
+            Path result = Paths.get(url.toURI());
+            return result;
+        } catch (URISyntaxException e) {
+            throw illegalStateWithCauseOf(e);
+        }
     }
 
     /**
