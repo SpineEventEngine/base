@@ -49,6 +49,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  * A resource file in the classpath.
  *
  * @see #file(String, ClassLoader)
+ * @see ResourceDirectory#get(String, ClassLoader)
  */
 public final class Resource extends ResourceObject {
 

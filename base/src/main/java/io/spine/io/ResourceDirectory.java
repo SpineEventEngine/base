@@ -46,6 +46,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  * A directory with resources in the classpath.
  *
  * @see #get(String, ClassLoader)
+ * @see Resource#file(String, ClassLoader)
  */
 public final class ResourceDirectory extends ResourceObject {
 
@@ -83,6 +84,7 @@ public final class ResourceDirectory extends ResourceObject {
      *
      * @param target
      *         the path to existing directory on the file system
+     * @see #copyContentTo(Path, Predicate)
      * @see Copy#copyContent(Path, Path)
      */
     public void copyContentTo(Path target) throws IOException {
@@ -97,6 +99,7 @@ public final class ResourceDirectory extends ResourceObject {
      *         the condition for accepting the copied content
      * @param target
      *         the path to existing directory on the file system
+     * @see #copyContentTo(Path)
      * @see Copy#copyContent(Path, Path, Predicate)
      */
     public void copyContentTo(Path target, Predicate<Path> matching) throws IOException {
@@ -111,6 +114,7 @@ public final class ResourceDirectory extends ResourceObject {
      *
      * @param target
      *         the path to existing directory on the file system
+     * @see #copyContentTo(Path, Predicate)
      * @see Copy#copyDir(Path, Path)
      */
     public void copyTo(Path target) throws IOException {
@@ -123,6 +127,7 @@ public final class ResourceDirectory extends ResourceObject {
      *
      * @param target
      *         the path to existing directory on the file system
+     * @see #copyContentTo(Path)
      * @see Copy#copyDir(Path, Path, Predicate)
      */
     public void copyTo(Path target, Predicate<Path> matching) throws IOException {
