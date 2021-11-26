@@ -57,9 +57,8 @@ class `'ResourceDirectory' should` {
             "subdir/sub-sub-dir/file2.txt",
             "subdir/sub-sub-dir/file3.txt",
         )
-
-       val dotNamed: Predicate<String> = Predicate { s -> s.contains(File.separator + ".dot") }
-       val noSubSub: Predicate<String> = Predicate { s -> !s.contains("-sub-") }
+        val dotNamed: Predicate<String> = Predicate { s -> s.contains(File.separator + ".dot") }
+        val noSubSub: Predicate<String> = Predicate { s -> !s.contains("-sub-") }
     }
 
     @BeforeEach
