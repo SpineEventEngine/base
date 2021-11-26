@@ -61,14 +61,14 @@ public final class Resource extends ResourceObject {
      *
      * @param path
      *         the path to the resource file
-     * @param customLoader
+     * @param classLoader
      *         the class loader relative to which the resource is referenced
      */
-    public static Resource file(String path, ClassLoader customLoader) {
+    public static Resource file(String path, ClassLoader classLoader) {
         checkNotNull(path);
-        checkNotNull(customLoader);
+        checkNotNull(classLoader);
         checkNotEmptyOrBlank(path);
-        return new Resource(path, customLoader);
+        return new Resource(path, classLoader);
     }
 
     /**
