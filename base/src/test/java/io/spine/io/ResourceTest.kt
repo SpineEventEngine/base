@@ -23,76 +23,115 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.io
 
-package io.spine.io;
+import com.google.common.io.CharStreams
+import com.google.common.testing.NullPointerTester
+import com.google.common.truth.Truth.assertThat
+import io.spine.io.Copy.copyContent
+import io.spine.testing.Assertions.assertIllegalState
+import io.spine.testing.TestValues
+import java.io.InputStream
+import java.nio.file.Files.exists
+import java.nio.file.Files.isDirectory
+import java.nio.file.Path
+import java.nio.file.Paths
+import kotlin.io.path.listDirectoryEntries
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 
-import com.google.common.io.CharStreams;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.nio.file.Path;
-
-import static com.google.common.truth.Truth.assertThat;
-import static io.spine.io.Resource.file;
-import static io.spine.testing.Assertions.assertIllegalState;
-import static java.util.UUID.randomUUID;
-
-@DisplayName("Resource should")
+@DisplayName("`Resource` should")
 class ResourceTest {
 
-    private static final String EXISTING_RESOURCE = "test_resource.txt";
-    private static final ClassLoader CLASS_LOADER = ResourceTest.class.getClassLoader();
+    private lateinit var resource: Resource
 
-    private Resource resource;
+    companion object {
+        private const val resourceFile = "test_resource.txt"
+        private val classLoader = ResourceTest::class.java.classLoader
+    }
 
     @BeforeEach
-    void createResource() {
-        resource = Resource.file(EXISTING_RESOURCE, CLASS_LOADER);
+    fun createResource() {
+        resource = Resource.file(resourceFile, classLoader)
     }
 
     @Test
-    @DisplayName("throw ISE if queried for a non-existing file")
-    void throwOnNonExisting(@TempDir Path path) {
-        Path nonExistentFilePath = path.resolve(randomUUID().toString());
-        File nonExistingFile = nonExistentFilePath.toFile();
-        String name = nonExistingFile.getName();
-        Resource file = file(name, CLASS_LOADER);
-        assertThat(file.exists()).isFalse();
-        assertIllegalState(file::locate);
+    fun `handle 'null' args`() {
+        NullPointerTester()
+            .setDefault(ClassLoader::class.java, classLoader)
+            .testAllPublicStaticMethods(Resource::class.java)
     }
 
     @Test
-    @DisplayName("correctly identify a file that is contained under the resources directory")
-    void correctlyPickUrlsUp() throws IOException {
-        assertThat(resource).isNotNull();
-        assertThat(resource.exists()).isTrue();
-        assertThat(resource.locate()).isNotNull();
-        assertThat(resource.locateAll()).hasSize(1);
-        try (InputStream stream = resource.open()) {
-            assertThat(stream.available()).isGreaterThan(0);
+    fun `throw ISE if queried for a non-existing file`() {
+        val name = TestValues.randomString()
+        val file = Resource.file(name, classLoader)
+        assertThat(file.exists()).isFalse()
+        assertIllegalState { file.locate() }
+    }
+
+    @Test
+    fun `identify a file under the resources directory`() {
+        assertThat(resource)
+            .isNotNull()
+        assertThat(resource.exists())
+            .isTrue()
+        assertThat(resource.locate())
+            .isNotNull()
+        assertThat(resource.locateAll())
+            .hasSize(1)
+        resource.open().use { stream -> assertNotEmpty(stream) }
+    }
+
+    @Test
+    fun `open as a byte stream`() {
+        resource.open().use { stream -> assertNotEmpty(stream) }
+    }
+
+    private fun assertNotEmpty(stream: InputStream) {
+        assertThat(stream.available()).isGreaterThan(0)
+    }
+
+    @Test
+    fun `open as a char stream`() {
+        resource.openAsText().use { reader ->
+            val content = CharStreams.toString(reader)
+            assertThat(content).isNotEmpty()
         }
     }
 
     @Test
-    @DisplayName("open as a byte stream")
-    void openAsBytes() throws IOException {
-        try (InputStream stream = resource.open()) {
-            assertThat(stream.available()).isGreaterThan(0);
-        }
-    }
+    fun `expose a directory for copying`(@TempDir tempDir: Path) {
+        val directory = Resource.file("directory", classLoader)
+        val path = Paths.get(directory.locate()!!.path)
 
-    @Test
-    @DisplayName("open as a char stream")
-    void openAsChars() throws IOException {
-        try (Reader reader = resource.openAsText()) {
-            String content = CharStreams.toString(reader);
-            assertThat(content).isNotEmpty();
+        assertTrue(isDirectory(path))
+        
+        copyContent(path, tempDir)
+
+        assertThat(tempDir.listDirectoryEntries())
+            .isNotEmpty()
+
+        fun assertExists(relativePath: String) {
+            val fullPath = tempDir.resolve(relativePath)
+            assertTrue(exists(fullPath), "Expected to exist: `${fullPath}`.")
         }
+
+        listOf(
+            ".dot-file",
+            "file1.txt",
+
+            "subdir/.dot-file",
+            "subdir/file1.txt",
+            "subdir/file2.txt",
+
+            "subdir/sub-sub-dir/.dot-file",
+            "subdir/sub-sub-dir/file1.txt",
+            "subdir/sub-sub-dir/file2.txt",
+            "subdir/sub-sub-dir/file3.txt",
+        ).forEach { p -> assertExists(p) }
     }
 }
