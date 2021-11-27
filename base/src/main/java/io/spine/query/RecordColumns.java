@@ -54,7 +54,7 @@ import java.lang.annotation.Target;
  *               create("project_view", ProjectName.class, ProjectView::getProjectName);
  *
  * {@literal       public static final RecordColumn<ProjectView, UserName> assignee =          }
- *               create("assignee", UserName.class, (p) -> p.getAssignee().getName());
+ * {@literal        create("assignee", UserName.class, (p) -> p.getAssignee().getName());      }
  *     }
  * </pre>
  *

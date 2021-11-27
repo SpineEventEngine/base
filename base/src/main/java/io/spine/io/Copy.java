@@ -30,13 +30,16 @@ import com.google.common.collect.ImmutableList;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.io.IoPreconditions.checkIsDirectory;
 import static java.nio.file.Files.copy;
-import static java.nio.file.Files.createDirectory;
+import static java.nio.file.Files.createDirectories;
+import static java.nio.file.Files.exists;
 import static java.nio.file.Files.find;
 import static java.nio.file.Files.isDirectory;
 import static java.nio.file.Files.isRegularFile;
@@ -61,7 +64,7 @@ public final class Copy {
      * the contents of the original {@code dir}, including nested directories, will be copied there.
      *
      * @param dir
-     *         the dir to copy
+     *         the directory to copy
      * @param target
      *         the new parent directory
      */
@@ -70,7 +73,7 @@ public final class Copy {
     }
 
     /**
-     * Copies the directory and its contents matching the passed predicate into another directory.
+     * Copies the directory and its contents matching the given predicate into another directory.
      *
      * <p>Both paths must point to existing directories.
      *
@@ -80,7 +83,7 @@ public final class Copy {
      * the contents of the original {@code dir}, including nested directories, will be copied there.
      *
      * @param dir
-     *         the dir to copy
+     *         the directory to copy
      * @param target
      *         the new parent directory
      * @param matching
@@ -89,15 +92,70 @@ public final class Copy {
     public static void copyDir(Path dir, Path target, Predicate<Path> matching) throws IOException {
         checkIsDirectory(dir);
         checkIsDirectory(target);
+        doCopy(dir, target, matching, true);
+    }
 
-        Path oldParent = dir.getParent();
+    /**
+     * Copies the content of a directory into another directory.
+     *
+     * <p>Both paths must point to existing directories.
+     *
+     * <p>Files under the directory and all nested directories and files under them are copied
+     * into the target directory. The directory itself is not copied.
+     *
+     * @param dir
+     *         the directory content of which will be copied
+     * @param target
+     *         the new parent directory
+     */
+    public static void copyContent(Path dir, Path target) throws IOException {
+        checkIsDirectory(dir);
+        checkIsDirectory(target);
+        doCopy(dir, target, path -> true, false);
+    }
+
+    /**
+     * Copies the content of a directory matching the given predicate into another directory.
+     *
+     * <p>Both paths must point to existing directories.
+     *
+     * <p>Files under the directory and all nested directories and files under them are copied
+     * into the target directory. The directory itself is not copied.
+     *
+     * @param dir
+     *         the directory content of which will be copied
+     * @param target
+     *         the new parent directory
+     * @param matching
+     *         the predicate accepting the copied content
+     */
+    public static void copyContent(Path dir, Path target, Predicate<Path> matching)
+            throws IOException {
+        checkIsDirectory(dir);
+        checkIsDirectory(target);
+        doCopy(dir, target, matching, false);
+    }
+
+    private static void doCopy(Path dir,
+                               Path target,
+                               Predicate<Path> matching,
+                               boolean withEnclosingDir) throws IOException {
+        Path oldParent = withEnclosingDir
+                         ? dir.getParent()
+                         : dir;
         ImmutableList<Path> paths = contentOf(dir, matching);
         for (Path path : paths) {
             Path relative = oldParent.relativize(path);
             Path newPath = target.resolve(relative);
             if (isDirectory(path)) {
-                createDirectory(newPath);
+                if (!exists(newPath)) {
+                    createDirectories(newPath);
+                }
             } else if (isRegularFile(path)) {
+                Path containingDir = newPath.getParent();
+                if (!exists(containingDir)) {
+                    createDirectories(containingDir);
+                }
                 copy(path, newPath);
             }
         }
@@ -107,13 +165,12 @@ public final class Copy {
      * Obtains all subdirectories and files enclosed the passed directory that match
      * the passed predicate.
      */
-    private static
-    ImmutableList<Path> contentOf(Path dir, Predicate<Path> matching) throws IOException {
-        ImmutableList<Path> paths;
-        try (Stream<Path> found =
-                     find(dir, Integer.MAX_VALUE, (path, attributes) -> matching.test(path))) {
-            paths = found.collect(toImmutableList());
+    private static ImmutableList<Path> contentOf(Path dir, Predicate<Path> matching)
+            throws IOException {
+        BiPredicate<Path, BasicFileAttributes> predicate = (path, attrs) -> matching.test(path);
+        try (Stream<Path> found = find(dir, Integer.MAX_VALUE, predicate)) {
+            ImmutableList<Path> paths = found.collect(toImmutableList());
+            return paths;
         }
-        return paths;
     }
 }

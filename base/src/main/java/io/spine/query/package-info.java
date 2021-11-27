@@ -110,7 +110,7 @@
  *   {@literal public static final RecordColumn<Manufacturer, Boolean> isTraded = }
  *   {@literal         new RecordColumn<>("is_traded", }
  *                               Boolean.class,
- *                               (r) -> !r.getStockSymbolList()
+ *   {@literal                            (r) -> !r.getStockSymbolList()          }
  *                                        .isEmpty());
  *
  *    private ManufacturerColumns() {
@@ -145,9 +145,9 @@
  *
  * <pre>
  *     {@literal RecordQuery<ManufacturerId, Manufacturer> query = }
- *                     manufacturerBuilder()
- *                             .either((b) -> b.where(whenFounded).isLessThan(firstJanuary1990),
- *                                     (b) -> b.where(isTraded).is(true))
+ *                 manufacturerBuilder()
+ *     {@literal                .either((b) -> b.where(whenFounded).isLessThan(firstJanuary1990), }
+ *     {@literal                        (b) -> b.where(isTraded).is(true))                        }
  *                             .build();
  * </pre>
  *
@@ -274,10 +274,10 @@
  * <p>Disjunction (or OR statements) are also supported:
  *
  * <pre>
- *    {@literal Either<ProjectView.QueryBuilder> startedMoreThanMonthAgo = }
- *        project -> project.daysSinceStarted().isGreaterThan(30);
- *    {@literal Either<ProjectView.QueryBuilder> isDone =                  }
- *        project -> project.status().is(Status.DONE);
+ *    {@literal Either<ProjectView.QueryBuilder> startedMoreThanMonthAgo =   }
+ *    {@literal     project -> project.daysSinceStarted().isGreaterThan(30); }
+ *    {@literal Either<ProjectView.QueryBuilder> isDone =                    }
+ *    {@literal     project -> project.status().is(Status.DONE);             }
  *
  * ProjectView.Query query =
  *        ProjectView.query()
