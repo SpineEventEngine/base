@@ -36,11 +36,20 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 
+/**
+ * Abstract base for objects stored in program resources.
+ *
+ * <p>Such a resource is represented by a string path relative to the {@code "resources"} directory
+ * of a project, and is loaded by a specified {@link ClassLoader} on runtime.
+ */
 abstract class ResourceObject {
 
     private final String path;
     private final ClassLoader classLoader;
 
+    /**
+     * Creates a new resource with given path and classloader.
+     */
     ResourceObject(String path, ClassLoader classLoader) {
         this.path = checkNotNull(path);
         this.classLoader = checkNotNull(classLoader);
@@ -82,10 +91,16 @@ abstract class ResourceObject {
         return path;
     }
 
+    /**
+     * Crate an exception stating that the resource cannot be found.
+     */
     final IllegalStateException cannotFind() {
         return newIllegalStateException("Unable to find `%s`.", this);
     }
 
+    /**
+     * Enumerates all resources with the given path.
+     */
     final Enumeration<URL> resources() throws IOException {
         return classLoader.getResources(path);
     }
