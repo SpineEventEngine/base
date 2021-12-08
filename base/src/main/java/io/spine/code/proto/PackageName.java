@@ -53,7 +53,7 @@ public final class PackageName extends StringTypeValue {
      */
     public static PackageName of(String value) {
         checkNotNull(value);
-        PackageName result = new PackageName(value);
+        var result = new PackageName(value);
         return result;
     }
 
@@ -62,8 +62,8 @@ public final class PackageName extends StringTypeValue {
      */
     public static PackageName of(Descriptor message) {
         checkNotNull(message);
-        PackageName result = of(message.getFile()
-                                       .getPackage());
+        var result = of(message.getFile()
+                               .getPackage());
         return result;
     }
 
@@ -88,7 +88,7 @@ public final class PackageName extends StringTypeValue {
      */
     public boolean isInnerOf(PackageName parentCandidate) {
         checkNotNull(parentCandidate);
-        boolean result = value().startsWith(parentCandidate.value());
+        var result = value().startsWith(parentCandidate.value());
         return result;
     }
 

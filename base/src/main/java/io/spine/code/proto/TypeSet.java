@@ -85,9 +85,9 @@ public final class TypeSet {
      * Obtains message and enum types declared in the passed file.
      */
     public static TypeSet from(FileDescriptor file) {
-        TypeSet messages = MessageType.allFrom(file);
-        TypeSet enums = EnumType.allFrom(file);
-        TypeSet services = ServiceType.allFrom(file);
+        var messages = MessageType.allFrom(file);
+        var enums = EnumType.allFrom(file);
+        var services = ServiceType.allFrom(file);
         return new TypeSet(messages.messageTypes, enums.enumTypes, services.serviceTypes);
     }
 
@@ -95,8 +95,8 @@ public final class TypeSet {
      * Obtains message and enum types declared in the files represented by the passed set.
      */
     public static TypeSet from(FileSet fileSet) {
-        TypeSet result = new TypeSet();
-        for (FileDescriptor file : fileSet.files()) {
+        var result = new TypeSet();
+        for (var file : fileSet.files()) {
             result = result.union(from(file));
         }
         return result;
@@ -105,10 +105,12 @@ public final class TypeSet {
     /**
      * Obtains message types declared in the passed file set.
      */
+    @SuppressWarnings("unused") /* Part of the public API. */
     public static ImmutableCollection<MessageType> onlyMessages(FileSet fileSet) {
-        TypeSet result = new TypeSet();
-        for (FileDescriptor file : fileSet.files()) {
-            TypeSet messageTypes = MessageType.allFrom(file);
+        checkNotNull(fileSet);
+        var result = new TypeSet();
+        for (var file : fileSet.files()) {
+            var messageTypes = MessageType.allFrom(file);
             result = result.union(messageTypes);
         }
         return result.messageTypes.values();
@@ -117,8 +119,9 @@ public final class TypeSet {
     /**
      * Obtains message types declared in the passed file.
      */
+    @SuppressWarnings("unused") /* Part of the public API. */
     public static ImmutableCollection<MessageType> onlyMessages(FileDescriptor file) {
-        TypeSet typeSet = MessageType.allFrom(file);
+        var typeSet = MessageType.allFrom(file);
         return typeSet.messageTypes.values();
     }
 
@@ -126,10 +129,10 @@ public final class TypeSet {
      * Obtains the size of the set.
      */
     public int size() {
-        int messagesCount = messageTypes.size();
-        int enumsCount = enumTypes.size();
-        int servicesCount = serviceTypes.size();
-        int result = messagesCount + enumsCount + servicesCount;
+        var messagesCount = messageTypes.size();
+        var enumsCount = enumTypes.size();
+        var servicesCount = serviceTypes.size();
+        var result = messagesCount + enumsCount + servicesCount;
         return result;
     }
 
@@ -168,7 +171,7 @@ public final class TypeSet {
      * @see #find(TypeName)
      */
     public boolean contains(TypeName typeName) {
-        boolean result = find(typeName).isPresent();
+        var result = find(typeName).isPresent();
         return result;
     }
 
@@ -176,7 +179,7 @@ public final class TypeSet {
      * Verifies if the set is empty.
      */
     public boolean isEmpty() {
-        boolean empty = size() == 0;
+        var empty = size() == 0;
         return empty;
     }
 
@@ -184,7 +187,7 @@ public final class TypeSet {
      * Writes all the types in this set into a {@link TypeRegistry}.
      */
     public TypeRegistry toTypeRegistry() {
-        TypeRegistry.Builder registry = TypeRegistry.newBuilder();
+        var registry = TypeRegistry.newBuilder();
         messageTypes.values()
                     .stream()
                     .map(Type::descriptor)
@@ -202,19 +205,16 @@ public final class TypeSet {
         if (this.isEmpty()) {
             return another;
         }
-        ImmutableMap<TypeName, MessageType> messages =
-                unite(this.messageTypes, another.messageTypes);
-        ImmutableMap<TypeName, EnumType> enums =
-                unite(this.enumTypes, another.enumTypes);
-        ImmutableMap<TypeName, ServiceType> services =
-                unite(this.serviceTypes, another.serviceTypes);
-        TypeSet result = new TypeSet(messages, enums, services);
+        var messages = unite(this.messageTypes, another.messageTypes);
+        var enums = unite(this.enumTypes, another.enumTypes);
+        var services = unite(this.serviceTypes, another.serviceTypes);
+        var result = new TypeSet(messages, enums, services);
         return result;
     }
 
     private static <T extends Type<?, ?>> ImmutableMap<TypeName, T>
     unite(Map<TypeName, T> left, Map<TypeName, T> right) {
-        // Use HashMap instead of ImmutableMap.Builder to deal with duplicates.
+        // Use `HashMap` instead of `ImmutableMap.Builder` to deal with duplicates.
         Map<TypeName, T> union = newHashMapWithExpectedSize(left.size() + right.size());
         union.putAll(left);
         union.putAll(right);
@@ -225,8 +225,7 @@ public final class TypeSet {
      * Obtains all the types contained in this set.
      */
     public ImmutableSet<Type<?, ?>> allTypes() {
-        ImmutableSet<Type<?, ?>> types = ImmutableSet
-                .<Type<?, ?>>builder()
+        var types = ImmutableSet.<Type<?, ?>>builder()
                 .addAll(messagesAndEnums())
                 .addAll(serviceTypes.values())
                 .build();
@@ -237,8 +236,7 @@ public final class TypeSet {
      * Obtains message and enum types contained in this set.
      */
     public Set<Type<?, ?>> messagesAndEnums() {
-        ImmutableSet<Type<?, ?>> types = ImmutableSet
-                .<Type<?, ?>>builder()
+        var types = ImmutableSet.<Type<?, ?>>builder()
                 .addAll(messageTypes.values())
                 .addAll(enumTypes.values())
                 .build();
@@ -274,7 +272,7 @@ public final class TypeSet {
         if (!(o instanceof TypeSet)) {
             return false;
         }
-        TypeSet typeSet = (TypeSet) o;
+        var typeSet = (TypeSet) o;
         return Objects.equal(messageTypes, typeSet.messageTypes) &&
                 Objects.equal(enumTypes, typeSet.enumTypes);
     }
@@ -294,11 +292,10 @@ public final class TypeSet {
     }
 
     private static String namesForDisplay(Map<TypeName, ?> types) {
-        return types.keySet()
-                    .stream()
-                    .map(TypeName::value)
-                    .sorted()
-                    .collect(joining(lineSeparator()));
+        return types.keySet().stream()
+                .map(TypeName::value)
+                .sorted()
+                .collect(joining(lineSeparator()));
     }
 
     /**
@@ -327,21 +324,21 @@ public final class TypeSet {
 
         @CanIgnoreReturnValue
         public Builder add(MessageType type) {
-            TypeName name = type.name();
+            var name = type.name();
             messageTypes.put(name, type);
             return this;
         }
 
         @CanIgnoreReturnValue
         public Builder add(EnumType type) {
-            TypeName name = type.name();
+            var name = type.name();
             enumTypes.put(name, type);
             return this;
         }
 
         @CanIgnoreReturnValue
         public Builder add(ServiceType type) {
-            TypeName name = type.name();
+            var name = type.name();
             serviceTypes.put(name, type);
             return this;
         }
@@ -349,7 +346,7 @@ public final class TypeSet {
         @CanIgnoreReturnValue
         public Builder addAll(Iterable<MessageType> types) {
             checkNotNull(types);
-            ImmutableMap<TypeName, MessageType> map = uniqueIndex(types, MessageType::name);
+            var map = uniqueIndex(types, MessageType::name);
             messageTypes.putAll(map);
             return this;
         }

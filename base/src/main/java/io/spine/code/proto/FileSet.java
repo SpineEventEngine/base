@@ -46,7 +46,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.logging.Level;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
@@ -113,15 +112,11 @@ public final class FileSet {
      * @return new file set
      */
     public static FileSet parseAsKnownFiles(File descriptorSet) {
-        Set<FileName> fileNames = FileDescriptors.parse(descriptorSet)
-                                                 .stream()
-                                                 .map(FileName::from)
-                                                 .collect(toSet());
-        Map<FileName, FileDescriptor> knownFiles =
-                KnownTypes.instance()
-                .asTypeSet()
-                .allTypes()
-                .stream()
+        var fileNames = FileDescriptors.parse(descriptorSet).stream()
+                .map(FileName::from)
+                .collect(toSet());
+        var allTypes = KnownTypes.instance().asTypeSet().allTypes();
+        var knownFiles = allTypes.stream()
                 .map(Type::file)
                 .filter(descr -> fileNames.contains(FileName.from(descr.getFile())))
                 .collect(toMap(FileName::from,       // File name as the key.
@@ -131,14 +126,14 @@ public final class FileSet {
         if (knownFiles.size() != fileNames.size()) {
             onUnknownFiles(knownFiles.keySet(), fileNames, descriptorSet);
         }
-        FileSet result = new FileSet(knownFiles);
+        var result = new FileSet(knownFiles);
         return result;
     }
 
     private static void onUnknownFiles(Set<FileName> knownFiles,
                                        Set<FileName> requestedFiles,
                                        File descriptorSetFile) {
-        Level detailLevel = FINE;
+        var detailLevel = FINE;
         logger.atWarning().log(
                 "Some files are unknown. " +
                 "%s files are present in classpath but %s files are discovered in `%s`.%n" +
@@ -150,8 +145,7 @@ public final class FileSet {
                 detailLevel
         );
         logger.at(detailLevel)
-              .log("Could not find files: %s.", lazy(() -> requestedFiles
-                      .stream()
+              .log("Could not find files: %s.", lazy(() -> requestedFiles.stream()
                       .filter(fileName -> !knownFiles.contains(fileName))
                       .map(FileName::toString)
                       .collect(joining(", "))));
@@ -185,7 +179,7 @@ public final class FileSet {
      */
     public static FileSet of(Iterable<FileDescriptorProto> protoDescriptors) {
         checkNotNull(protoDescriptors);
-        ImmutableSet<FileDescriptorProto> descriptors = ImmutableSet.copyOf(protoDescriptors);
+        var descriptors = ImmutableSet.copyOf(protoDescriptors);
         return link(descriptors);
     }
 
@@ -194,9 +188,9 @@ public final class FileSet {
      */
     public List<MessageType> topLevelMessages() {
         ImmutableList.Builder<MessageType> result = ImmutableList.builder();
-        for (FileDescriptor file : files()) {
-            SourceFile sourceFile = SourceFile.from(file);
-            List<MessageType> declarations = sourceFile.topLevelMessages();
+        for (var file : files()) {
+            var sourceFile = SourceFile.from(file);
+            var declarations = sourceFile.topLevelMessages();
             result.addAll(declarations);
         }
         return result.build();
@@ -210,8 +204,8 @@ public final class FileSet {
      */
     public List<MessageType> findMessageTypes(Predicate<DescriptorProto> predicate) {
         ImmutableList.Builder<MessageType> result = ImmutableList.builder();
-        for (FileDescriptor file : files()) {
-            SourceFile sourceFile = SourceFile.from(file);
+        for (var file : files()) {
+            var sourceFile = SourceFile.from(file);
             Collection<MessageType> declarations = sourceFile.allThat(predicate);
             result.addAll(declarations);
         }
@@ -228,11 +222,11 @@ public final class FileSet {
         if (this.isEmpty()) {
             return another;
         }
-        int expectedSize = this.files.size() + another.files.size();
+        var expectedSize = this.files.size() + another.files.size();
         Map<FileName, FileDescriptor> files = newHashMapWithExpectedSize(expectedSize);
         files.putAll(this.files);
         files.putAll(another.files);
-        FileSet result = new FileSet(files);
+        var result = new FileSet(files);
         return result;
     }
 
@@ -248,8 +242,8 @@ public final class FileSet {
                                                         .stream()
                                                         .filter(predicate)
                                                         .collect(toList());
-        FileSet newFileSet = newInstance();
-        for (FileDescriptor file : filteredFiles) {
+        var newFileSet = newInstance();
+        for (var file : filteredFiles) {
             newFileSet.add(file);
         }
         return newFileSet;
@@ -275,7 +269,7 @@ public final class FileSet {
      * {@code false} otherwise.
      */
     public boolean contains(FileName fileName) {
-        Optional<FileDescriptor> found = tryFind(fileName);
+        var found = tryFind(fileName);
         return found.isPresent();
     }
 
@@ -284,8 +278,8 @@ public final class FileSet {
      * {@code false} otherwise.
      */
     public boolean containsAll(Collection<FileName> fileNames) {
-        FileSet found = find(fileNames);
-        boolean result = found.size() == fileNames.size();
+        var found = find(fileNames);
+        var result = found.size() == fileNames.size();
         return result;
     }
 
@@ -294,8 +288,8 @@ public final class FileSet {
      */
     public FileSet find(Collection<FileName> fileNames) {
         Map<FileName, FileDescriptor> found = newHashMapWithExpectedSize(fileNames.size());
-        for (FileName name : fileNames) {
-            Optional<FileDescriptor> file = tryFind(name);
+        for (var name : fileNames) {
+            var file = tryFind(name);
             file.ifPresent(fileDescr -> found.put(name, fileDescr));
         }
         return new FileSet(found);
@@ -317,9 +311,9 @@ public final class FileSet {
      */
     @CanIgnoreReturnValue
     public boolean add(FileDescriptor file) {
-        FileName name = FileName.from(file);
+        var name = FileName.from(file);
         Object previous = files.put(name, file);
-        boolean isNew = previous == null;
+        var isNew = previous == null;
         return isNew;
     }
 
@@ -327,7 +321,7 @@ public final class FileSet {
      * Obtains the size of the set.
      */
     public int size() {
-        int result = files.size();
+        var result = files.size();
         return result;
     }
 
@@ -335,7 +329,7 @@ public final class FileSet {
      * Verifies if the set is empty.
      */
     public boolean isEmpty() {
-        boolean result = files.isEmpty();
+        var result = files.isEmpty();
         return result;
     }
 
@@ -365,7 +359,7 @@ public final class FileSet {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        FileSet other = (FileSet) obj;
+        var other = (FileSet) obj;
         return Objects.equals(this.files, other.files);
     }
 }

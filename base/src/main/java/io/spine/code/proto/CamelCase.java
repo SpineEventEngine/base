@@ -26,8 +26,6 @@
 
 package io.spine.code.proto;
 
-import java.util.Iterator;
-
 import static java.lang.Character.toUpperCase;
 
 /**
@@ -46,11 +44,10 @@ final class CamelCase {
      * {@code "TestHTTPRequest"}.
      */
     static String convert(UnderscoredName name) {
-        Iterator<String> iterator = name.words()
-                                        .iterator();
-        StringBuilder builder = new StringBuilder(name.value().length());
+        var iterator = name.words().iterator();
+        var builder = new StringBuilder(name.value().length());
         while (iterator.hasNext()) {
-            String word = iterator.next();
+            var word = iterator.next();
             if (!word.isEmpty()) {
                 builder.append(toUpperCase(word.charAt(0)))
                        .append(word.substring(1));

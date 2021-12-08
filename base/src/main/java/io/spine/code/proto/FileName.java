@@ -71,7 +71,7 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
      */
     public static FileName from(FileDescriptorProto descriptor) {
         checkNotNull(descriptor);
-        FileName result = of(descriptor.getName());
+        var result = of(descriptor.getName());
         return result;
     }
 
@@ -87,8 +87,8 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
      */
     @Override
     public List<String> words() {
-        String[] words = nameOnly().split(WORD_SEPARATOR);
-        ImmutableList<String> result = ImmutableList.copyOf(words);
+        var words = nameOnly().split(WORD_SEPARATOR);
+        var result = ImmutableList.copyOf(words);
         return result;
     }
 
@@ -96,9 +96,9 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
      * Obtains the file name without path and extension.
      */
     private String nameOnly() {
-        String name = nameWithoutExtension();
-        int lastBackslashIndex = name.lastIndexOf(PATH_SEPARATOR);
-        String result = name.substring(lastBackslashIndex + 1);
+        var name = nameWithoutExtension();
+        var lastBackslashIndex = name.lastIndexOf(PATH_SEPARATOR);
+        var result = name.substring(lastBackslashIndex + 1);
         return result;
     }
 
@@ -106,9 +106,9 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
      * Returns the file name with extension but without path.
      */
     public String nameWithExtension() {
-        String fullName = value();
-        int lastBackslashIndex = fullName.lastIndexOf(PATH_SEPARATOR);
-        String result = fullName.substring(lastBackslashIndex + 1);
+        var fullName = value();
+        var lastBackslashIndex = fullName.lastIndexOf(PATH_SEPARATOR);
+        var result = fullName.substring(lastBackslashIndex + 1);
         return result;
     }
 
@@ -123,14 +123,14 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
      * Returns the file name without extension but including path.
      */
     public String nameWithoutExtension() {
-        String value = value();
-        int extensionIndex = value.lastIndexOf(EXTENSION);
-        String result = value.substring(0, extensionIndex);
+        var value = value();
+        var extensionIndex = value.lastIndexOf(EXTENSION);
+        var result = value.substring(0, extensionIndex);
         return result;
     }
 
     private boolean matches(MessageFile file) {
-        boolean result = value().endsWith(file.suffix());
+        var result = value().endsWith(file.suffix());
         return result;
     }
 

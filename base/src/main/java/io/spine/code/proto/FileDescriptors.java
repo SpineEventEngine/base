@@ -34,9 +34,7 @@ import io.spine.io.Resource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -112,12 +110,11 @@ public final class FileDescriptors {
                      descriptorSet);
 
         List<FileDescriptorProto> files;
-        try (FileInputStream fis = new FileInputStream(descriptorSet)) {
-            FileDescriptorSet fileSet = FileDescriptorSetReader.parse(fis);
-            files = fileSet.getFileList()
-                           .stream()
-                           .filter(filter)
-                           .collect(toList());
+        try (var fis = new FileInputStream(descriptorSet)) {
+            var fileSet = FileDescriptorSetReader.parse(fis);
+            files = fileSet.getFileList().stream()
+                    .filter(filter)
+                    .collect(toList());
         } catch (IOException e) {
             throw newIllegalStateException(
                     e, "Cannot get proto file descriptors. Path: `%s`.", descriptorSet
@@ -134,8 +131,8 @@ public final class FileDescriptors {
      *         contained in the loaded files
      */
     static Set<FileDescriptorProto> load() {
-        Iterator<Resource> resources = DescriptorReference.loadAll();
-        Set<FileDescriptorProto> files = stream(resources)
+        var resources = DescriptorReference.loadAll();
+        var files = stream(resources)
                 .map(FileDescriptors::loadFrom)
                 .flatMap(set -> set.getFileList().stream())
                 .filter(distinctBy(FileDescriptorProto::getName))
@@ -162,8 +159,8 @@ public final class FileDescriptors {
     private static <T, K> Predicate<T> distinctBy(Function<T, K> selector) {
         Set<? super K> seen = newHashSet();
         return element -> {
-            K key = selector.apply(element);
-            boolean newKey = seen.add(key);
+            var key = selector.apply(element);
+            var newKey = seen.add(key);
             return newKey;
         };
     }
@@ -179,8 +176,8 @@ public final class FileDescriptors {
     }
 
     private static FileDescriptorSet doLoadFrom(Resource resource) {
-        try (InputStream stream = resource.open()) {
-            FileDescriptorSet parsed = FileDescriptorSetReader.parse(stream);
+        try (var stream = resource.open()) {
+            var parsed = FileDescriptorSetReader.parse(stream);
             return parsed;
         } catch (IOException e) {
             throw newIllegalStateException(
@@ -195,10 +192,10 @@ public final class FileDescriptors {
      * Tells if two descriptors represent the same file.
      */
     public static boolean sameFiles(FileDescriptor f1, FileDescriptor f2) {
-        boolean sameName = f2.getFullName()
-                             .equals(f1.getFullName());
-        boolean samePackage = f2.getPackage()
-                                .equals(f1.getPackage());
+        var sameName = f2.getFullName()
+                         .equals(f1.getFullName());
+        var samePackage = f2.getPackage()
+                            .equals(f1.getPackage());
         return sameName && samePackage;
     }
 
@@ -206,7 +203,7 @@ public final class FileDescriptors {
      * Verifies if the passed file declares types under the "google" package.
      */
     public static boolean isGoogle(FileDescriptor file) {
-        PackageName packageName = PackageName.of(file.getPackage());
+        var packageName = PackageName.of(file.getPackage());
         return packageName.isGoogle();
     }
 }

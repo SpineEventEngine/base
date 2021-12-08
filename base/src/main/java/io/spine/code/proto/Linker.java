@@ -36,7 +36,6 @@ import com.google.protobuf.Descriptors.DescriptorValidationException;
 import com.google.protobuf.Descriptors.FileDescriptor;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkState;
@@ -71,10 +70,10 @@ final class Linker {
     }
 
     static FileSet link(Collection<FileDescriptorProto> files) {
-        Linker linker = new Linker(files);
+        var linker = new Linker(files);
         @SuppressWarnings("FloggerSplitLogStatement")
             // See: https://github.com/SpineEventEngine/base/issues/612
-        FluentLogger.Api debug = logger.atFine();
+        var debug = logger.atFine();
         debug.log("Trying to link %d files.", files.size());
         try {
             linker.resolve();
@@ -82,9 +81,9 @@ final class Linker {
             throw newIllegalStateException(e, "Unable to link descriptor set files.");
         }
         debug.log("Linking complete. %s", linker);
-        FileSet result = linker.resolved()
-                               .union(linker.partiallyResolved())
-                               .union(linker.unresolved());
+        var result = linker.resolved()
+                           .union(linker.partiallyResolved())
+                           .union(linker.unresolved());
         return result;
     }
 
@@ -98,11 +97,11 @@ final class Linker {
     }
 
     private void findNoDependencies() throws DescriptorValidationException {
-        Iterator<FileDescriptorProto> iterator = remaining.iterator();
+        var iterator = remaining.iterator();
         while (iterator.hasNext()) {
-            FileDescriptorProto next = iterator.next();
+            var next = iterator.next();
             if (next.getDependencyCount() == 0) {
-                FileDescriptor fd = buildFrom(next, NO_DEPENDENCIES, true);
+                var fd = buildFrom(next, NO_DEPENDENCIES, true);
                 resolved.add(fd);
                 iterator.remove();
             }
@@ -114,21 +113,21 @@ final class Linker {
      * or no more resolved files found.
      */
     private void findResolved() throws DescriptorValidationException {
-        boolean resolvedFound = true;
+        var resolvedFound = true;
         while (!remaining.isEmpty() && resolvedFound) {
             resolvedFound = doFindResolved();
         }
     }
 
     private boolean doFindResolved() throws DescriptorValidationException {
-        boolean result = false;
-        Iterator<FileDescriptorProto> iterator = remaining.iterator();
+        var result = false;
+        var iterator = remaining.iterator();
         while (iterator.hasNext()) {
-            FileDescriptorProto next = iterator.next();
-            Collection<FileName> dependencyList = dependencies(next);
+            var next = iterator.next();
+            var dependencyList = dependencies(next);
             if (resolved.containsAll(dependencyList)) {
-                FileSet dependencies = resolved.find(dependencyList);
-                FileDescriptor newResolved = buildFrom(next, dependencies.toArray(), true);
+                var dependencies = resolved.find(dependencyList);
+                var newResolved = buildFrom(next, dependencies.toArray(), true);
                 resolved.add(newResolved);
                 result = true;
                 iterator.remove();
@@ -138,22 +137,22 @@ final class Linker {
     }
 
     private void findPartiallyResolved() throws DescriptorValidationException {
-        boolean partiallyResolvedFound = true;
+        var partiallyResolvedFound = true;
         while (!remaining.isEmpty() && partiallyResolvedFound) {
             partiallyResolvedFound = doFindPartiallyResolved();
         }
     }
 
     private boolean doFindPartiallyResolved() throws DescriptorValidationException {
-        boolean result = false;
-        FileSet partialAndResolved = resolved.union(partiallyResolved);
-        Iterator<FileDescriptorProto> iterator = remaining.iterator();
+        var result = false;
+        var partialAndResolved = resolved.union(partiallyResolved);
+        var iterator = remaining.iterator();
         while (iterator.hasNext()) {
-            FileDescriptorProto next = iterator.next();
-            Collection<FileName> dependencyList = dependencies(next);
-            FileSet dependencies = partialAndResolved.find(dependencyList);
+            var next = iterator.next();
+            var dependencyList = dependencies(next);
+            var dependencies = partialAndResolved.find(dependencyList);
             if (dependencies.isEmpty()) {
-                FileDescriptor newPartial = buildFrom(next, dependencies.toArray(), true);
+                var newPartial = buildFrom(next, dependencies.toArray(), true);
                 partiallyResolved.add(newPartial);
                 partialAndResolved.add(newPartial);
                 result = true;
@@ -173,8 +172,8 @@ final class Linker {
      */
     private void addUnresolved() throws DescriptorValidationException {
         while (!remaining.isEmpty()) {
-            FileDescriptorProto first = remaining.get(0);
-            FileDescriptor fd = buildFrom(first, NO_DEPENDENCIES, true);
+            var first = remaining.get(0);
+            var fd = buildFrom(first, NO_DEPENDENCIES, true);
             unresolved.add(fd);
             remaining.remove(first);
         }
@@ -204,8 +203,8 @@ final class Linker {
         return unresolved;
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // field names
     @Override
+    @SuppressWarnings("DuplicateStringLiteralInspection") // field names
     public String toString() {
         return MoreObjects.toStringHelper(this)
                           .add("input", namesForDisplay(input))

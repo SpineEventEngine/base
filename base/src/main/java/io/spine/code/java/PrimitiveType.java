@@ -35,6 +35,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 /**
  * Enumeration of the Java primitives used for representing Proto scalar types.
  */
+@SuppressWarnings("unused") /* Part of the public API. */
 public enum PrimitiveType {
     INT(int.class, Integer.class),
     LONG(long.class, Long.class),
@@ -59,7 +60,7 @@ public enum PrimitiveType {
      */
     public static Optional<? extends Class<?>> getWrapperClass(String primitiveType) {
         checkNotEmptyOrBlank(primitiveType);
-        for (PrimitiveType simpleType : values()) {
+        for (var simpleType : values()) {
             if (simpleType.matchesName(primitiveType)) {
                 return Optional.of(simpleType.getWrapperClass());
             }
@@ -69,7 +70,7 @@ public enum PrimitiveType {
     }
 
     boolean matchesName(String typeName) {
-        boolean result = getName().equals(typeName);
+        var result = getName().equals(typeName);
         return result;
     }
 

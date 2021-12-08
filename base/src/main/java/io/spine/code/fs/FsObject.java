@@ -34,7 +34,6 @@ import java.nio.file.Path;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Objects.requireNonNull;
 
 /**
  * Abstract base for source code objects on a file system.
@@ -96,7 +95,7 @@ public abstract class FsObject {
         if (!(obj instanceof FsObject)) {
             return false;
         }
-        FsObject other = (FsObject) obj;
+        var other = (FsObject) obj;
         return Objects.equals(this.path, other.path);
     }
 }

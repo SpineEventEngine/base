@@ -36,6 +36,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * A directory with source code files.
  */
 @Immutable
+@SuppressWarnings("unused") /* Part of the public API. */
 public abstract class SourceCodeDirectory extends AbstractDirectory {
 
     protected SourceCodeDirectory(Path path) {
@@ -44,13 +45,13 @@ public abstract class SourceCodeDirectory extends AbstractDirectory {
 
     public Path resolve(SourceCodeDirectory dir) {
         checkNotNull(dir);
-        Path result = path().resolve(dir.path());
+        var result = path().resolve(dir.path());
         return result;
     }
 
     public Path resolve(AbstractSourceFile file) {
         checkNotNull(file);
-        Path result = path().resolve(file.path());
+        var result = path().resolve(file.path());
         return result;
     }
 }

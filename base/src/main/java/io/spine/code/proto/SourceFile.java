@@ -28,7 +28,6 @@ package io.spine.code.proto;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.base.RejectionType;
 import io.spine.code.fs.AbstractSourceFile;
@@ -40,7 +39,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -67,7 +65,7 @@ public class SourceFile extends AbstractSourceFile implements Logging {
 
     private static Path toPath(FileDescriptor file) {
         checkNotNull(file);
-        Path result = Paths.get(file.getName());
+        var result = Paths.get(file.getName());
         return result;
     }
 
@@ -93,15 +91,15 @@ public class SourceFile extends AbstractSourceFile implements Logging {
                       .getJavaMultipleFiles()) {
             return false;
         }
-        Optional<SimpleClassName> outerClass = SimpleClassName.declaredOuterClassName(descriptor);
+        var outerClass = SimpleClassName.declaredOuterClassName(descriptor);
 
-        if (!outerClass.isPresent()) {
+        if (outerClass.isEmpty()) {
             // There's no outer class name given in options.
             // Assuming the file name ends with `rejections.proto`, it's a good rejections file.
             return true;
         }
 
-        boolean result = RejectionType.isValidOuterClassName(outerClass.get());
+        var result = RejectionType.isValidOuterClassName(outerClass.get());
         return result;
     }
 
@@ -129,8 +127,8 @@ public class SourceFile extends AbstractSourceFile implements Logging {
      */
     public List<MessageType> allThat(Predicate<DescriptorProto> predicate) {
         ImmutableList.Builder<MessageType> result = ImmutableList.builder();
-        for (Descriptor messageType : descriptor.getMessageTypes()) {
-            MessageType declaration = new MessageType(messageType);
+        for (var messageType : descriptor.getMessageTypes()) {
+            var declaration = new MessageType(messageType);
             _debug().log("Testing `%s` to match `%s`.", declaration, predicate);
             if (predicate.test(messageType.toProto())) {
                 result.add(declaration);

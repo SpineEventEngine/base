@@ -79,8 +79,8 @@ public final class SimpleClassName extends StringTypeValue {
      */
     public static SimpleClassName outerOf(FileDescriptorProto file) {
         checkNotNull(file);
-        String value = outerClassNameOf(file);
-        SimpleClassName result = create(value);
+        var value = outerClassNameOf(file);
+        var result = create(value);
         return result;
     }
 
@@ -100,17 +100,16 @@ public final class SimpleClassName extends StringTypeValue {
      *         {@linkplain Optional#empty() empty Optional} if the option is not set
      */
     public static Optional<SimpleClassName> declaredOuterClassName(FileDescriptor file) {
-        String className = declaredOuterClassName(file.toProto());
+        var className = declaredOuterClassName(file.toProto());
         if (className.isEmpty()) {
             return Optional.empty();
         }
-        SimpleClassName result = outerOf(file);
+        var result = outerOf(file);
         return Optional.of(result);
     }
 
     private static String declaredOuterClassName(FileDescriptorProto file) {
-        String result = file.getOptions()
-                            .getJavaOuterClassname();
+        var result = file.getOptions().getJavaOuterClassname();
         return result;
     }
 
@@ -128,13 +127,12 @@ public final class SimpleClassName extends StringTypeValue {
      */
     private static String outerClassNameOf(FileDescriptorProto file) {
         checkNotNull(file);
-        String nameDeclaredInOptions = declaredOuterClassName(file);
+        var nameDeclaredInOptions = declaredOuterClassName(file);
         if (!nameDeclaredInOptions.isEmpty()) {
             return nameDeclaredInOptions;
         }
-        String className =
-                io.spine.code.proto.FileName.from(file)
-                                            .nameOnlyCamelCase();
+        var className = io.spine.code.proto.FileName.from(file)
+                                                    .nameOnlyCamelCase();
         return className;
     }
 
@@ -151,7 +149,7 @@ public final class SimpleClassName extends StringTypeValue {
      */
     public static SimpleClassName messageOrBuilder(@ClassGetSimpleName String typeName) {
         checkNotEmptyOrBlank(typeName);
-        SimpleClassName result = create(typeName + OR_BUILDER_SUFFIX);
+        var result = create(typeName + OR_BUILDER_SUFFIX);
         return result;
     }
 
@@ -160,7 +158,7 @@ public final class SimpleClassName extends StringTypeValue {
      */
     public static SimpleClassName ofMessage(Descriptor descriptor) {
         checkNotNull(descriptor);
-        SimpleClassName result = create(descriptor.getName());
+        var result = create(descriptor.getName());
         return result;
     }
 

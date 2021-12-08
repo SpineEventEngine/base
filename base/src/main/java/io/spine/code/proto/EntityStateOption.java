@@ -35,8 +35,9 @@ import java.util.Optional;
 
 /**
  * An option for a message representing a state of the entity which defines its kind and visibility
- * to queries. There are four kids of options, namely, Aggregate, Projection, Process Manager,
- * and Entity).
+ * to queries.
+ *
+ * <p>There are four kids of options, namely, Aggregate, Projection, Process Manager, and Entity.
  */
 @Immutable
 public final class EntityStateOption extends MessageOption<EntityOption> {
@@ -60,7 +61,7 @@ public final class EntityStateOption extends MessageOption<EntityOption> {
      *        to avoid instantiating an object.
      */
     public static Optional<EntityOption> valueOf(Descriptor message) {
-        EntityStateOption option = new EntityStateOption();
+        var option = new EntityStateOption();
         return option.valueFrom(message);
     }
 
@@ -71,7 +72,7 @@ public final class EntityStateOption extends MessageOption<EntityOption> {
      *         {@code Optional} otherwise
      */
     public static Optional<EntityOption.Kind> entityKindOf(Descriptor message) {
-        Optional<EntityOption> option = valueOf(message);
+        var option = valueOf(message);
         return option.map(EntityOption::getKind);
     }
 }

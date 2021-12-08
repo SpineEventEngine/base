@@ -28,13 +28,11 @@ package io.spine.code.proto;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.base.RejectionType;
 import io.spine.code.java.SimpleClassName;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -67,12 +65,12 @@ public final class RejectionsFile extends SourceFile {
         checkNotNull(file);
         checkMatchesConvention(file);
 
-        RejectionsFile result = new RejectionsFile(file.descriptor());
+        var result = new RejectionsFile(file.descriptor());
         return result;
     }
 
     private static void checkMatchesConvention(SourceFile file) {
-        FileDescriptor descriptor = file.descriptor();
+        var descriptor = file.descriptor();
         checkArgument(isRejections(descriptor),
                       "`%s`. A rejection file must have a name ending in `rejections.proto`.",
                       file);
@@ -80,7 +78,7 @@ public final class RejectionsFile extends SourceFile {
                       "`%s`. A rejection file should generate Java classes into a single file. " +
                               "Please set `java_multiple_files` to `false`.",
                       file);
-        Optional<SimpleClassName> outerClass = SimpleClassName.declaredOuterClassName(descriptor);
+        var outerClass = SimpleClassName.declaredOuterClassName(descriptor);
         outerClass.ifPresent(name -> checkArgument(
                 isValidOuterClassName(name),
                 "%s. A rejection file must have the `java_outer_classname` ending in " +
@@ -92,11 +90,12 @@ public final class RejectionsFile extends SourceFile {
     /**
      * Obtains rejection messages declared in the file.
      */
+    @SuppressWarnings("unused") /* Part of the public API. */
     public List<RejectionType> rejectionDeclarations() {
         ImmutableList.Builder<RejectionType> result = ImmutableList.builder();
-        FileDescriptor file = descriptor();
-        for (Descriptor type : file.getMessageTypes()) {
-            RejectionType declaration = new RejectionType(type);
+        var file = descriptor();
+        for (var type : file.getMessageTypes()) {
+            var declaration = new RejectionType(type);
             result.add(declaration);
         }
         return result.build();
@@ -110,16 +109,16 @@ public final class RejectionsFile extends SourceFile {
     /**
      * Obtains rejection files from the passed set of files.
      */
+    @SuppressWarnings("unused") /* Part of the public API. */
     public static ImmutableSet<RejectionsFile> findAll(FileSet fileSet) {
-        ImmutableSet<RejectionsFile> result =
-                fileSet.files()
-                       .stream()
-                       .filter(RejectionsFile::isRejections)
-                       .map(file -> {
-                           SourceFile sourceFile = SourceFile.from(file);
-                           return from(sourceFile);
-                       })
-                       .collect(toImmutableSet());
+        checkNotNull(fileSet);
+        var result = fileSet.files().stream()
+                .filter(RejectionsFile::isRejections)
+                .map(file -> {
+                    var sourceFile = SourceFile.from(file);
+                    return from(sourceFile);
+                })
+                .collect(toImmutableSet());
         return result;
     }
 }

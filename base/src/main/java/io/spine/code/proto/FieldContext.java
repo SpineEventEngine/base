@@ -34,7 +34,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Provides information about a proto field in the nesting hierarchy.
@@ -119,7 +119,7 @@ public final class FieldContext {
      * @return the target descriptor
      */
     public FieldDescriptor target() {
-        return checkNotNull(target, "Empty context cannot have a target.");
+        return requireNonNull(target, "Empty context cannot have a target.");
     }
 
     /**
@@ -128,7 +128,7 @@ public final class FieldContext {
      * @return the target declaration
      */
     public FieldDeclaration targetDeclaration() {
-        FieldDescriptor target = target();
+        var target = target();
         return new FieldDeclaration(target);
     }
 
@@ -165,19 +165,17 @@ public final class FieldContext {
      * @return {@code true} if this context has the same target and the same parent
      */
     public boolean hasSameTargetAndParent(FieldContext other) {
-        String thisTargetName = target().getFullName();
-        String otherTargetName = other.target()
-                                      .getFullName();
-        boolean sameTarget = thisTargetName.equals(otherTargetName);
+        var thisTargetName = target().getFullName();
+        var otherTargetName = other.target().getFullName();
+        var sameTarget = thisTargetName.equals(otherTargetName);
         if (!sameTarget) {
             return false;
         }
-        Optional<String> parentFromThis = targetParent()
+        var parentFromThis = targetParent()
                 .map(FieldDescriptor::getFullName);
-        Optional<String> parentFromOther = other
-                .targetParent()
+        var parentFromOther = other.targetParent()
                 .map(FieldDescriptor::getFullName);
-        boolean bothHaveParents = parentFromThis.isPresent() && parentFromOther.isPresent();
+        var bothHaveParents = parentFromThis.isPresent() && parentFromOther.isPresent();
         return bothHaveParents && parentFromThis.get()
                                                 .equals(parentFromOther.get());
     }
@@ -190,7 +188,7 @@ public final class FieldContext {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        FieldContext context = (FieldContext) o;
+        var context = (FieldContext) o;
         return Objects.equals(targetNameOrEmpty(), context.targetNameOrEmpty())
                 && Objects.equals(parent, context.parent);
     }
