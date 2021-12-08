@@ -64,7 +64,7 @@ public enum MessageFile implements Predicate<FileDescriptorProto> {
      */
     @Override
     public boolean test(FileDescriptorProto file) {
-        String name = file.getName();
+        var name = file.getName();
         return name.endsWith(suffix);
     }
 

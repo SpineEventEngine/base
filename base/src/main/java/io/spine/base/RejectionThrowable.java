@@ -92,8 +92,8 @@ public abstract class RejectionThrowable extends Throwable {
     public synchronized RejectionThrowable initProducer(Any producerId) {
         checkNotNull(producerId);
         if (this.producerId != null) {
-            Object unpackedId = Identifier.unpack(producerId);
-            String stringId = Stringifiers.toString(unpackedId);
+            var unpackedId = Identifier.unpack(producerId);
+            var stringId = Stringifiers.toString(unpackedId);
             throw newIllegalStateException("Producer already initialized: `%s`.", stringId);
         }
         this.producerId = producerId;

@@ -56,7 +56,7 @@ public final class Time {
      * @see #setProvider(Provider)
      */
     public static synchronized Timestamp currentTime() {
-        Timestamp result = timeProvider.currentTime();
+        var result = timeProvider.currentTime();
         return result;
     }
 
@@ -168,13 +168,12 @@ public final class Time {
          */
         @Override
         public Timestamp currentTime() {
-            long millis = System.currentTimeMillis();
-            long seconds = (millis / 1000);
+            var millis = System.currentTimeMillis();
+            var seconds = (millis / 1000);
             @SuppressWarnings("NumericCastThatLosesPrecision")
-            int nanos = (int) (millis % 1000) * (int) MILLISECONDS.toNanos(1);
-            int nanosOnly = IncrementalNanos.valueForTime(seconds, nanos);
-            Timestamp result = Timestamp
-                    .newBuilder()
+            var nanos = (int) (millis % 1000) * (int) MILLISECONDS.toNanos(1);
+            var nanosOnly = IncrementalNanos.valueForTime(seconds, nanos);
+            var result = Timestamp.newBuilder()
                     .setSeconds(seconds)
                     .setNanos(nanos + nanosOnly)
                     .build();

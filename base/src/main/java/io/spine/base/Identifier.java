@@ -72,8 +72,8 @@ public final class Identifier<I> {
 
     static <I> Identifier<I> from(I value) {
         checkNotNull(value);
-        IdType type = IdType.of(value);
-        Identifier<I> result = create(type, value);
+        var type = IdType.of(value);
+        var result = create(type, value);
         return result;
     }
 
@@ -83,7 +83,7 @@ public final class Identifier<I> {
 
     private static Identifier<Message> fromMessage(Message value) {
         checkNotNull(value);
-        Identifier<Message> result = create(IdType.MESSAGE, value);
+        var result = create(IdType.MESSAGE, value);
         return result;
     }
 
@@ -92,8 +92,8 @@ public final class Identifier<I> {
      */
     public static <I> I defaultValue(Class<I> idClass) {
         checkNotNull(idClass);
-        IdType type = toType(idClass);
-        I result = type.defaultValue(idClass);
+        var type = toType(idClass);
+        var result = type.defaultValue(idClass);
         return result;
     }
 
@@ -109,7 +109,7 @@ public final class Identifier<I> {
      * Converts the class of identifiers to {@code Identifier.Type}.
      */
     public static <I> IdType toType(Class<I> idClass) {
-        for (IdType type : IdType.values()) {
+        for (var type : IdType.values()) {
             if (type.matchClass(idClass)) {
                 return type;
             }
@@ -135,13 +135,13 @@ public final class Identifier<I> {
      */
     public static <I> boolean isEmpty(I value) {
         checkNotNull(value);
-        Identifier<I> id = from(value);
+        var id = from(value);
         if (id.type == IdType.INTEGER || id.type == IdType.LONG) {
             return false;
         }
 
-        String str = id.toString();
-        boolean result = EMPTY_ID.equals(str);
+        var str = id.toString();
+        var result = EMPTY_ID.equals(str);
         return result;
     }
 
@@ -188,7 +188,7 @@ public final class Identifier<I> {
         // Even through `getType()` can never return null, we use its return value here
         // instead of annotating the method so that the returned value can be ignored
         // just because of this one usage.
-        IdType type = toType(idClass);
+        var type = toType(idClass);
         checkNotNull(type);
     }
 
@@ -215,8 +215,8 @@ public final class Identifier<I> {
      */
     public static <I> Any pack(I id) {
         checkNotNull(id);
-        Identifier<I> identifier = from(id);
-        Any anyId = identifier.pack();
+        var identifier = from(id);
+        var anyId = identifier.pack();
         return anyId;
     }
 
@@ -237,10 +237,10 @@ public final class Identifier<I> {
      */
     public static Object unpack(Any any) {
         checkNotNull(any);
-        Message unpacked = AnyPacker.unpack(any);
-        for (IdType type : IdType.values()) {
+        var unpacked = AnyPacker.unpack(any);
+        for (var type : IdType.values()) {
             if (type.matchMessage(unpacked)) {
-                Object result = type.fromMessage(unpacked);
+                var result = type.fromMessage(unpacked);
                 return result;
             }
         }
@@ -273,7 +273,7 @@ public final class Identifier<I> {
      */
     public static <I> I unpack(Any any, Class<I> idClass) {
         checkNotNull(idClass);
-        Object identifier = unpack(any);
+        var identifier = unpack(any);
         return idClass.cast(identifier);
     }
 
@@ -284,8 +284,8 @@ public final class Identifier<I> {
      * @see UUID#randomUUID()
      */
     public static String newUuid() {
-        String id = UUID.randomUUID()
-                        .toString();
+        var id = UUID.randomUUID()
+                     .toString();
         return id;
     }
 
@@ -315,18 +315,18 @@ public final class Identifier<I> {
 
         Identifier<?> identifier;
         if (id instanceof Any) {
-            Message unpacked = AnyPacker.unpack((Any) id);
+            var unpacked = AnyPacker.unpack((Any) id);
             identifier = fromMessage(unpacked);
         } else {
             identifier = from(id);
         }
 
-        String result = identifier.toString();
+        var result = identifier.toString();
         return result;
     }
 
     private Any pack() {
-        Any result = type.pack(value);
+        var result = type.pack(value);
         return result;
     }
 
@@ -345,8 +345,8 @@ public final class Identifier<I> {
     public static <I> Optional<FieldDescriptor> findField(Class<I> idClass, Descriptor message) {
         checkNotNull(idClass);
         checkNotNull(message);
-        IdType idType = toType(idClass);
-        Optional<FieldDescriptor> found =
+        var idType = toType(idClass);
+        var found =
                 message.getFields()
                        .stream()
                        .filter(idType::matchField)
@@ -360,9 +360,8 @@ public final class Identifier<I> {
      */
     private static <I> boolean sameType(Class<I> idClass, FieldDescriptor f) {
         @SuppressWarnings("unchecked") // safe since it's Message type.
-                TypeUrl messageType = TypeUrl.of(
-                (Class<? extends Message>) idClass);
-        TypeUrl fieldType = TypeUrl.from(f.getMessageType());
+        var messageType = TypeUrl.of((Class<? extends Message>) idClass);
+        var fieldType = TypeUrl.from(f.getMessageType());
         return fieldType.equals(messageType);
     }
 
@@ -372,8 +371,6 @@ public final class Identifier<I> {
         switch (type) {
             case INTEGER:
             case LONG:
-                result = value.toString();
-                break;
             case STRING:
                 result = value.toString();
                 break;

@@ -59,8 +59,8 @@ public final class RejectionType extends MessageType {
      */
     public static boolean test(Descriptor type) {
         checkNotNull(type);
-        boolean topLevel = isTopLevel(type);
-        FileName fileName = FileName.from(type.getFile());
+        var topLevel = isTopLevel(type);
+        var fileName = FileName.from(type.getFile());
         return topLevel && fileName.isRejections();
     }
 
@@ -84,8 +84,8 @@ public final class RejectionType extends MessageType {
      * {@code false} otherwise.
      */
     public static boolean isValidOuterClassName(SimpleClassName className) {
-        boolean result = className.value()
-                                  .endsWith(OUTER_CLASS_NAME_SUFFIX);
+        var result = className.value()
+                              .endsWith(OUTER_CLASS_NAME_SUFFIX);
         return result;
     }
 
@@ -96,7 +96,7 @@ public final class RejectionType extends MessageType {
      * @return the fully qualified class name for the rejection message
      */
     public ClassName messageClass() {
-        ClassName outerClass = ClassName.of(javaPackage(), outerJavaClass);
+        var outerClass = ClassName.of(javaPackage(), outerJavaClass);
         return outerClass.withNested(simpleJavaClassName());
     }
 
@@ -126,7 +126,7 @@ public final class RejectionType extends MessageType {
         if (!super.equals(obj)) {
             return false;
         }
-        RejectionType other = (RejectionType) obj;
+        var other = (RejectionType) obj;
         return Objects.equals(this.outerJavaClass, other.outerJavaClass);
     }
 }

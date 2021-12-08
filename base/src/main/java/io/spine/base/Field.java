@@ -32,7 +32,6 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
@@ -42,7 +41,6 @@ import io.spine.type.TypeUrl;
 import io.spine.value.ValueHolder;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -100,7 +98,7 @@ public final class Field extends ValueHolder<FieldPath> {
      */
     public static Field parse(String path) {
         checkNotNull(path);
-        FieldPath fp = doParse(path);
+        var fp = doParse(path);
         return create(fp);
     }
 
@@ -112,8 +110,8 @@ public final class Field extends ValueHolder<FieldPath> {
      */
     public static Field named(String fieldName) {
         checkName(fieldName);
-        FieldPath path = create(ImmutableList.of(fieldName));
-        Field result = create(path);
+        var path = create(ImmutableList.of(fieldName));
+        var result = create(path);
         return result;
     }
 
@@ -129,8 +127,8 @@ public final class Field extends ValueHolder<FieldPath> {
      *         if there is no field with the passed number in this message type
      */
     public static Field withNumberIn(int number, Descriptor message) {
-        String name = nameOf(number, message);
-        Field result = named(name);
+        var name = nameOf(number, message);
+        var result = named(name);
         return result;
     }
 
@@ -149,9 +147,7 @@ public final class Field extends ValueHolder<FieldPath> {
     public static String nameOf(int fieldNumber, Descriptor message) {
         checkNotNull(message);
         checkArgument(fieldNumber > 0);
-        String result = message
-                .getFields()
-                .stream()
+        var result = message.getFields().stream()
                 .filter(f -> f.getNumber() == fieldNumber)
                 .findFirst()
                 .map(FieldDescriptor::getName)
@@ -168,9 +164,9 @@ public final class Field extends ValueHolder<FieldPath> {
      */
     public Field nested(String fieldName) {
         checkName(fieldName);
-        FieldPath newPath = path().toBuilder()
-                                  .addFieldName(fieldName)
-                                  .build();
+        var newPath = path().toBuilder()
+                .addFieldName(fieldName)
+                .build();
         return create(newPath);
     }
 
@@ -181,9 +177,9 @@ public final class Field extends ValueHolder<FieldPath> {
         checkNotNull(other);
         List<String> fieldNames = other.path()
                                        .getFieldNameList();
-        FieldPath newPath = path().toBuilder()
-                                  .addAllFieldName(fieldNames)
-                                  .build();
+        var newPath = path().toBuilder()
+                .addAllFieldName(fieldNames)
+                .build();
         return create(newPath);
     }
 
@@ -201,7 +197,7 @@ public final class Field extends ValueHolder<FieldPath> {
      *         in this type of messages
      */
     public Optional<Object> findValue(Message holder) {
-        Object value = doGetValue(path(), holder, false);
+        var value = doGetValue(path(), holder, false);
         return Optional.ofNullable(value);
     }
 
@@ -211,7 +207,7 @@ public final class Field extends ValueHolder<FieldPath> {
      * @throws IllegalStateException if the type of the passed message does not declare this field
      */
     public Object valueIn(Message holder) {
-        Object result = findValue(holder).orElseThrow(
+        var result = findValue(holder).orElseThrow(
                 () -> newIllegalStateException("Unable to get the field `%s` from `%s`.",
                                                this, shortDebugString(holder))
         );
@@ -222,8 +218,8 @@ public final class Field extends ValueHolder<FieldPath> {
      * Checks if the field is present (as top-level or nested) in the given message type.
      */
     public boolean presentIn(Descriptor message) {
-        Optional<FieldDescriptor> descriptor = findDescriptor(message);
-        boolean result = descriptor.isPresent();
+        var descriptor = findDescriptor(message);
+        var result = descriptor.isPresent();
         return result;
     }
 
@@ -241,12 +237,12 @@ public final class Field extends ValueHolder<FieldPath> {
      * Obtains the type of the referenced field in the passed message class.
      */
     public Optional<Class<?>> findType(Class<? extends Message> holderType) {
-        Descriptor message = TypeName.of(holderType).messageDescriptor();
+        var message = TypeName.of(holderType).messageDescriptor();
         @Nullable FieldDescriptor field = fieldIn(path(), message);
         if (field == null) {
             return Optional.empty();
         }
-        Class<?> result = classOf(field);
+        var result = classOf(field);
         return Optional.of(result);
     }
 
@@ -254,8 +250,8 @@ public final class Field extends ValueHolder<FieldPath> {
      * Checks if the field is a nested field.
      */
     public boolean isNested() {
-        int pathComponents = path().getFieldNameCount();
-        boolean result = pathComponents > 1;
+        var pathComponents = path().getFieldNameCount();
+        var result = pathComponents > 1;
         return result;
     }
 
@@ -273,8 +269,7 @@ public final class Field extends ValueHolder<FieldPath> {
     /** Creates a new path containing the passed elements. */
     private static FieldPath create(List<String> elements) {
         elements.forEach(Field::checkName);
-        FieldPath result = FieldPath
-                .newBuilder()
+        var result = FieldPath.newBuilder()
                 .addAllFieldName(elements)
                 .build();
         return result;
@@ -284,7 +279,7 @@ public final class Field extends ValueHolder<FieldPath> {
     @VisibleForTesting
     static FieldPath doParse(String fieldPath) {
         checkArgument(!fieldPath.isEmpty(), "A field path must not be empty.");
-        List<String> pathElements = dotSplitter.splitToList(fieldPath);
+        var pathElements = dotSplitter.splitToList(fieldPath);
         return create(pathElements);
     }
 
@@ -306,11 +301,11 @@ public final class Field extends ValueHolder<FieldPath> {
      *          if the call is {@code strict} and the value not found
      */
     private static @Nullable Object doGetValue(FieldPath path, Message holder, boolean strict) {
-        Message message = holder;
+        var message = holder;
         Object currentValue = message;
-        for (Iterator<String> iterator = path.getFieldNameList().iterator(); iterator.hasNext(); ) {
-            String fieldName = iterator.next();
-            Descriptor type = message.getDescriptorForType();
+        for (var iterator = path.getFieldNameList().iterator(); iterator.hasNext(); ) {
+            var fieldName = iterator.next();
+            var type = message.getDescriptorForType();
             @Nullable FieldDescriptor field = type.findFieldByName(fieldName);
             if (field == null) {
                 if (strict) {
@@ -360,11 +355,11 @@ public final class Field extends ValueHolder<FieldPath> {
         if (!(currentValue instanceof EnumValueDescriptor)) {
             return currentValue;
         }
-        EnumValueDescriptor value = (EnumValueDescriptor) currentValue;
-        EnumDescriptor enumType = value.getType();
-        TypeName typeName = TypeName.of(enumType.getFullName());
+        var value = (EnumValueDescriptor) currentValue;
+        var enumType = value.getType();
+        var typeName = TypeName.of(enumType.getFullName());
         Class<? extends Enum> cls = typeName.toEnumClass();
-        Enum enumValue = Enum.valueOf(cls, value.getName());
+        var enumValue = Enum.valueOf(cls, value.getName());
         return enumValue;
     }
 
@@ -374,10 +369,10 @@ public final class Field extends ValueHolder<FieldPath> {
      * @return the descriptor or {@code null} if the message type does not declare this field
      */
     private static @Nullable FieldDescriptor fieldIn(FieldPath path, Descriptor message) {
-        Descriptor current = message;
+        var current = message;
         FieldDescriptor field = null;
-        for (Iterator<String> iterator = path.getFieldNameList().iterator(); iterator.hasNext(); ) {
-            String fieldName = iterator.next();
+        for (var iterator = path.getFieldNameList().iterator(); iterator.hasNext(); ) {
+            var fieldName = iterator.next();
             field = current.findFieldByName(fieldName);
             if (field == null) {
                 return null;
@@ -402,15 +397,15 @@ public final class Field extends ValueHolder<FieldPath> {
 
     /** Obtains the type of the values stored in the field. */
     static Class<?> classOf(FieldDescriptor field) {
-        FieldDescriptor.Type type = field.getType();
+        var type = field.getType();
         if (type == MESSAGE) {
-            Class<?> cls = TypeUrl.from(field.getMessageType()).toJavaClass();
+            var cls = TypeUrl.from(field.getMessageType()).toJavaClass();
             return cls;
         } else if (type == ENUM) {
-            Class<?> cls = TypeUrl.from(field.getEnumType()).toJavaClass();
+            var cls = TypeUrl.from(field.getEnumType()).toJavaClass();
             return cls;
         } else {
-            Class<?> result = ScalarType.javaType(field.toProto().getType());
+            var result = ScalarType.javaType(field.toProto().getType());
             return result;
         }
     }
@@ -424,7 +419,7 @@ public final class Field extends ValueHolder<FieldPath> {
      * Joins the passed path elements into the string representation of the path.
      */
     private static String join(Iterable<String> elements) {
-        String result = joiner.join(elements);
+        var result = joiner.join(elements);
         return result;
     }
 }

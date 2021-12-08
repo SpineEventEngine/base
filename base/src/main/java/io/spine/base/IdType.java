@@ -181,8 +181,8 @@ enum IdType {
 
         @Override
         <I> I defaultValue(Class<I> idClass) {
-            Class<? extends Message> msgClass = (Class<? extends Message>) idClass;
-            Message result = defaultInstance(msgClass);
+            var msgClass = (Class<? extends Message>) idClass;
+            var result = defaultInstance(msgClass);
             return (I) result;
         }
 
@@ -205,7 +205,7 @@ enum IdType {
      *         if the passed value is not of supported type
      */
     static <I> IdType of(I id) {
-        for (IdType type : values()) {
+        for (var type : values()) {
             if (type.matchValue(id)) {
                 return type;
             }
@@ -251,7 +251,7 @@ enum IdType {
      * Converts the passed ID object into the Protobuf implementation instance.
      */
     <I> Message toMessage(I id) {
-        Message message = TypeConverter.toMessage(id);
+        var message = TypeConverter.toMessage(id);
         return message;
     }
 
@@ -260,8 +260,8 @@ enum IdType {
      * then packs it into {@code Any}.
      */
     <I> Any pack(I id) {
-        Message msg = toMessage(id);
-        Any result = AnyPacker.pack(msg);
+        var msg = toMessage(id);
+        var result = AnyPacker.pack(msg);
         return result;
     }
 }
