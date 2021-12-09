@@ -62,9 +62,9 @@ class EnsureTest extends UtilityClassTest<Ensure> {
 
         @BeforeEach
         void createFile(@TempDir Path tempDir) {
-            File testFolder = tempDir.toFile();
+            var testFolder = tempDir.toFile();
 
-            String fileName = "ensure/exists/file" + randomString() + ".txt";
+            var fileName = "ensure/exists/file" + randomString() + ".txt";
             file = new File(testFolder.getAbsolutePath(), fileName);
         }
 
@@ -81,7 +81,7 @@ class EnsureTest extends UtilityClassTest<Ensure> {
         @Test
         @DisplayName("`Path` argument")
         void pathArg() {
-            Path path = file.toPath();
+            var path = file.toPath();
             Object returnedValue = ensureFile(path);
 
             assertThat(file.exists())
@@ -105,8 +105,8 @@ class EnsureTest extends UtilityClassTest<Ensure> {
         @Test
         @DisplayName("if it does not exist")
         void notExisting() {
-            Path subDir = Paths.get("sub-1-" + randomString(), "sub-2-" + randomString());
-            Path newDir = tempDir.resolve(subDir);
+            var subDir = Paths.get("sub-1-" + randomString(), "sub-2-" + randomString());
+            var newDir = tempDir.resolve(subDir);
 
             // See that the directory does not exist.
             assertFalse(newDir.toFile().exists());
@@ -119,7 +119,7 @@ class EnsureTest extends UtilityClassTest<Ensure> {
         @Test
         @DisplayName("if it exists")
         void existing() {
-            Path existingDir = tempDir.resolve(randomString());
+            var existingDir = tempDir.resolve(randomString());
             ensureDirectory(existingDir);
 
             // Now as we know that the directory exists, let's try it again.
@@ -131,8 +131,8 @@ class EnsureTest extends UtilityClassTest<Ensure> {
         @Test
         @DisplayName("rejecting existing file")
         void rejectFile() {
-            Path filePath = tempDir.resolve("file" + randomString());
-            File file = filePath.toFile();
+            var filePath = tempDir.resolve("file" + randomString());
+            var file = filePath.toFile();
             ensureFile(file);
 
             assertThrows(IllegalStateException.class, () -> ensureDirectory(filePath));

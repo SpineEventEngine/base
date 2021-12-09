@@ -40,11 +40,8 @@ import java.io.PrintWriter;
 import java.nio.file.Path;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.io.Ensure.ensureFile;
 import static io.spine.io.Files2.existsNonEmpty;
 import static java.nio.charset.Charset.defaultCharset;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("`Files2` utility class should")
 class Files2Test extends UtilityClassTest<Files2> {
@@ -67,7 +64,7 @@ class Files2Test extends UtilityClassTest<Files2> {
         @Test
         @DisplayName("returning `false` when existing file is empty")
         void whenNonEmpty() {
-            File emptyFile = testFolder.toPath().resolve("empty file").toFile();
+            var emptyFile = testFolder.toPath().resolve("empty file").toFile();
 
             assertThat(existsNonEmpty(emptyFile)).isFalse();
         }
@@ -75,7 +72,7 @@ class Files2Test extends UtilityClassTest<Files2> {
         @Test
         @DisplayName("returning `false` when a file does not exist")
         void doesNotExist() {
-            File doesNotExist = new File(TestValues.randomString());
+            var doesNotExist = new File(TestValues.randomString());
 
             assertThat(existsNonEmpty(doesNotExist)).isFalse();
         }
@@ -83,10 +80,10 @@ class Files2Test extends UtilityClassTest<Files2> {
         @Test
         @DisplayName("returning `true` if the existing file is not empty")
         void notEmpty() throws IOException {
-            File nonEmptyFile = testFolder.toPath().resolve("non-empty file").toFile();
-            String path = nonEmptyFile.getAbsolutePath();
-            String charsetName = defaultCharset().name();
-            try (PrintWriter out = new PrintWriter(path, charsetName)) {
+            var nonEmptyFile = testFolder.toPath().resolve("non-empty file").toFile();
+            var path = nonEmptyFile.getAbsolutePath();
+            var charsetName = defaultCharset().name();
+            try (var out = new PrintWriter(path, charsetName)) {
                 out.println(TestValues.randomString());
             }
 
