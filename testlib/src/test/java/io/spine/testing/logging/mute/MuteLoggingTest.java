@@ -26,24 +26,22 @@
 
 package io.spine.testing.logging.mute;
 
-import com.google.common.truth.ObjectArraySubject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.Extension;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("@MuteLogging should")
+@DisplayName("`@MuteLogging` should")
 class MuteLoggingTest {
 
     @Test
     @DisplayName("be marked as an extension")
     void annotated() {
-        Class<MuteLogging> annotation = MuteLogging.class;
-        ExtendWith extendsWith = annotation.getAnnotation(ExtendWith.class);
-        Class<? extends Extension>[] extensions = extendsWith.value();
-        ObjectArraySubject<Class<? extends Extension>> assertExtensions = assertThat(extensions);
+        var annotation = MuteLogging.class;
+        var extendsWith = annotation.getAnnotation(ExtendWith.class);
+        var extensions = extendsWith.value();
+        var assertExtensions = assertThat(extensions);
         assertExtensions.hasLength(1);
         assertExtensions.asList().contains(MuteLoggingExtension.class);
     }

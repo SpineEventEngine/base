@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("TestValues utility class should")
+@DisplayName("`TestValues` utility class should")
 class TestValuesTest extends UtilityClassTest<TestValues> {
 
     TestValuesTest() {
@@ -54,7 +54,7 @@ class TestValuesTest extends UtilityClassTest<TestValues> {
     @Test
     @DisplayName("provide a random number in a range")
     void randomNumber() {
-        int value = TestValues.random(-100, 100);
+        var value = TestValues.random(-100, 100);
         assertTrue(value >= -100);
         assertTrue(value <= 100);
     }

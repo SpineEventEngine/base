@@ -38,7 +38,7 @@ import java.util.logging.Logger;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("AssertingHandler should")
+@DisplayName("`AssertingHandler` should")
 class AssertingHandlerTest {
 
     private static final Logger logger = Logger.getLogger(AssertingHandlerTest.class.getName());
@@ -74,7 +74,7 @@ class AssertingHandlerTest {
     @Test
     @DisplayName("obtain `StringSubject` for the first record")
     void textAssertion() {
-        String msg = TestValues.randomString();
+        var msg = TestValues.randomString();
         logger.info(msg);
         handler.textOutput()
                .contains(msg);

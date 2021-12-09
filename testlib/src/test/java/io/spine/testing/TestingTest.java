@@ -31,7 +31,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Testing.repeat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("Tests utility class should")
+@DisplayName("`Testing` utility class should")
 class TestingTest extends UtilityClassTest<Testing> {
 
     TestingTest() {
@@ -46,8 +46,8 @@ class TestingTest extends UtilityClassTest<Testing> {
     @Test
     @DisplayName("repeat an action a number of times")
     void repeating() {
-        int expected = TestValues.random(10);
-        AtomicInteger counter = new AtomicInteger(0);
+        var expected = TestValues.random(10);
+        var counter = new AtomicInteger(0);
         repeat(expected, counter::incrementAndGet);
 
         assertThat(counter.get())

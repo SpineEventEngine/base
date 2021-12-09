@@ -28,7 +28,6 @@ package io.spine.testing.logging;
 
 import com.google.common.truth.ExpectFailure.SimpleSubjectBuilderCallback;
 import com.google.common.truth.Subject;
-import com.google.common.truth.TruthFailureSubject;
 import io.spine.testing.SubjectTest;
 import io.spine.testing.TestValues;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +41,7 @@ import static com.google.common.truth.ExpectFailure.assertThat;
 import static io.spine.testing.logging.LogRecordSubject.NO_LOG_RECORD;
 import static io.spine.testing.logging.LogRecordSubject.records;
 
-@DisplayName("LogRecordSubject should have")
+@DisplayName("`LogRecordSubject` should have")
 class LogRecordSubjectTest extends SubjectTest<LogRecordSubject, LogRecord> {
 
     private LogRecord record;
@@ -69,6 +68,7 @@ class LogRecordSubjectTest extends SubjectTest<LogRecordSubject, LogRecord> {
 
     @Test
     @DisplayName("the check for no logged records")
+    @SuppressWarnings("ResultOfMethodCallIgnored")  /* Intentionally. */
     void noRecords() {
         checkFails(whenTesting -> whenTesting.that(null).hasLevelThat());
         checkFails(whenTesting -> whenTesting.that(null).hasClassNameThat());
@@ -82,7 +82,7 @@ class LogRecordSubjectTest extends SubjectTest<LogRecordSubject, LogRecord> {
 
     private void
     checkFails(SimpleSubjectBuilderCallback<LogRecordSubject, LogRecord> assertionCallback) {
-        AssertionError failure = expectFailure(assertionCallback);
+        var failure = expectFailure(assertionCallback);
         assertThat(failure)
                 .factKeys()
                 .contains(NO_LOG_RECORD);
@@ -94,14 +94,14 @@ class LogRecordSubjectTest extends SubjectTest<LogRecordSubject, LogRecord> {
                 .hasMessageThat()
                 .isEqualTo(msg);
 
-        String notExpected = TestValues.randomString();
+        var notExpected = TestValues.randomString();
 
-        AssertionError failure = expectFailure(
+        var failure = expectFailure(
                 whenTesting -> whenTesting.that(record)
                                           .hasMessageThat()
                                           .isEqualTo(notExpected)
         );
-        TruthFailureSubject assertFailure = assertThat(failure);
+        var assertFailure = assertThat(failure);
         assertFailure.factKeys()
                      .containsAnyOf(EXPECTED, BUT_WAS);
     }
@@ -163,7 +163,7 @@ class LogRecordSubjectTest extends SubjectTest<LogRecordSubject, LogRecord> {
 
     @Test
     void hasMethodThat() {
-        String method = "hasMethodNameThat";
+        var method = "hasMethodNameThat";
         record.setSourceMethodName(method);
         assertWithSubjectThat(record)
                 .hasMethodNameThat()
@@ -175,7 +175,7 @@ class LogRecordSubjectTest extends SubjectTest<LogRecordSubject, LogRecord> {
 
     @Test
     void hasClassThat() {
-        String className = LogRecordSubjectTest.class.getName();
+        var className = LogRecordSubjectTest.class.getName();
         record.setSourceClassName(className);
         assertWithSubjectThat(record)
                 .hasClassNameThat()

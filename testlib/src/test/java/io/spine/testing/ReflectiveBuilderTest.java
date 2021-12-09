@@ -35,13 +35,13 @@ import java.lang.reflect.Constructor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@DisplayName("ReflectiveBuilder should")
+@DisplayName("`ReflectiveBuilder` should")
 class ReflectiveBuilderTest {
 
     @Test
     @DisplayName("have the result class")
     void resultClass() {
-        ReflectiveBuilder<Any> builder =
+        var builder =
                 new DummyBuilder().setResultClass(Any.class);
         assertEquals(Any.class, builder.resultClass());
     }
