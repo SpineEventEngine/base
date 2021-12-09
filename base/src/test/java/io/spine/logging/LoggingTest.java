@@ -29,7 +29,6 @@ package io.spine.logging;
 import com.google.common.flogger.FluentLogger;
 import com.google.common.flogger.LogContext;
 import com.google.common.flogger.backend.LogData;
-import com.google.common.truth.Subject;
 import io.spine.logging.given.LoggingObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,7 +41,7 @@ import java.util.logging.Logger;
 
 import static io.spine.testing.logging.LogTruth.assertThat;
 
-@DisplayName("Logging interface should")
+@DisplayName("`Logging` interface should")
 class LoggingTest {
 
     @Test
@@ -64,7 +63,7 @@ class LoggingTest {
     void fluentLogger() {
         Logging object = new LoggingObject();
 
-        FluentLogger logger = object.logger();
+        var logger = object.logger();
 
         assertThat(object.logger())
              .isSameInstanceAs(logger);
@@ -75,8 +74,8 @@ class LoggingTest {
     @Test
     @DisplayName("provide a static API to obtain a logger for a class")
     void staticApi() {
-        FluentLogger logger = Logging.loggerFor(LoggingObject.class);
-        Subject assertLogger = assertThat(logger);
+        var logger = Logging.loggerFor(LoggingObject.class);
+        var assertLogger = assertThat(logger);
         assertLogger.isNotNull();
         assertLogger.isSameInstanceAs(new LoggingObject().logger());
     }
@@ -118,7 +117,7 @@ class LoggingTest {
             julLogger.setLevel(expectedLevel);
             @SuppressWarnings("FloggerSplitLogStatement")
             // See: https://github.com/SpineEventEngine/base/issues/612
-            FluentLogger.Api api = method.get();
+            var api = method.get();
             assertThat(api)
                     .isInstanceOf(LogContext.class);
             assertThat(((LogData) api).getLevel())

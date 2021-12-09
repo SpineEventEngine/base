@@ -41,15 +41,15 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 /**
  * Tests that classes in a hierarchy have own logs.
  */
-@DisplayName("Logging interface should work in a class hierarchy")
+@DisplayName("`Logging` interface should work in a class hierarchy")
 class LoggingHierarchyTest {
 
     @Test
     @DisplayName("create a logger for each class in hierarchy")
     void classHierarchyFlogger() {
-        FluentLogger baseLogger = new Base().logger();
-        FluentLogger childOneLogger = new ChildOne().logger();
-        FluentLogger childTwoLogger = new ChildTwo().logger();
+        var baseLogger = new Base().logger();
+        var childOneLogger = new ChildOne().logger();
+        var childTwoLogger = new ChildTwo().logger();
 
         assertNotSame(baseLogger, childOneLogger);
         assertNotSame(baseLogger, childTwoLogger);
@@ -67,7 +67,7 @@ class LoggingHierarchyTest {
     private static void assertLogger(FluentLogger logger, Class<?> cls) {
         @SuppressWarnings("FloggerSplitLogStatement")
         // See: https://github.com/SpineEventEngine/base/issues/612
-        LogContext<?, ?> context = (LogContext<?, ?>) logger.atSevere();
+        var context = (LogContext<?, ?>) logger.atSevere();
         assertThat(context.getLoggerName())
                 .isEqualTo(cls.getName());
     }
