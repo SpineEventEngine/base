@@ -28,11 +28,7 @@ package io.spine.type;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.value.StringTypeValue;
-
-import java.util.Optional;
 
 import static io.spine.type.TypeName.NESTED_TYPE_SEPARATOR;
 
@@ -60,18 +56,16 @@ public final class NestedTypeName extends StringTypeValue {
      */
     static NestedTypeName of(Type<?, ?> type) {
         ImmutableList.Builder<String> names = ImmutableList.builder();
-        String unqualified = type.descriptor()
-                                 .getName();
+        var unqualified = type.descriptor()
+                              .getName();
         names.add(unqualified);
-        Optional<Type<Descriptor, DescriptorProto>> parent = type.containingType();
+        var parent = type.containingType();
         while (parent.isPresent()) {
-            Type<Descriptor, DescriptorProto> containingType = parent.get();
-            names.add(containingType.descriptor()
-                                    .getName());
+            var containingType = parent.get();
+            names.add(containingType.descriptor().getName());
             parent = containingType.containingType();
         }
-        ImmutableList<String> fullSimpleName = names.build()
-                                                    .reverse();
+        var fullSimpleName = names.build().reverse();
         return new NestedTypeName(fullSimpleName);
     }
 

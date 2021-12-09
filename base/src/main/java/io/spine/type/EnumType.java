@@ -66,7 +66,7 @@ public final class EnumType extends Type<EnumDescriptor, EnumDescriptorProto> {
 
     @Override
     public Optional<Type<Descriptor, DescriptorProto>> containingType() {
-        Descriptor parent = descriptor().getContainingType();
+        var parent = descriptor().getContainingType();
         return Optional.ofNullable(parent)
                        .map(MessageType::new);
     }
@@ -79,13 +79,13 @@ public final class EnumType extends Type<EnumDescriptor, EnumDescriptorProto> {
         // Need to go through top level enums and those nested messages.
     public static TypeSet allFrom(FileDescriptor file) {
         checkNotNull(file);
-        TypeSet.Builder result = TypeSet.newBuilder();
+        var result = TypeSet.newBuilder();
 
-        for (EnumDescriptor enumDescriptor : file.getEnumTypes()) {
+        for (var enumDescriptor : file.getEnumTypes()) {
             result.add(create(enumDescriptor));
         }
 
-        for (Descriptor messageType : file.getMessageTypes()) {
+        for (var messageType : file.getMessageTypes()) {
             addNested(messageType, result);
         }
         return result.build();
@@ -93,11 +93,11 @@ public final class EnumType extends Type<EnumDescriptor, EnumDescriptorProto> {
 
     @SuppressWarnings("MethodWithMultipleLoops") // Need to go through enums and nested messages.
     private static void addNested(Descriptor messageType, TypeSet.Builder set) {
-        for (EnumDescriptor enumDescriptor : messageType.getEnumTypes()) {
+        for (var enumDescriptor : messageType.getEnumTypes()) {
             set.add(create(enumDescriptor));
         }
 
-        for (Descriptor nestedType : messageType.getNestedTypes()) {
+        for (var nestedType : messageType.getNestedTypes()) {
             addNested(nestedType, set);
         }
     }

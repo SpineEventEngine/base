@@ -28,12 +28,8 @@ package io.spine.type;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
 import io.spine.base.UuidValue;
@@ -44,13 +40,10 @@ import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.LocationPath;
 import io.spine.code.proto.TypeSet;
 import io.spine.logging.Logging;
-import io.spine.option.EntityOption;
 import io.spine.option.OptionsProto;
 
 import java.util.Deque;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -83,10 +76,9 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     }
 
     private ImmutableList<FieldDeclaration> collectFields() {
-        List<FieldDescriptor> descriptors = descriptor().getFields();
-        ImmutableList.Builder<FieldDeclaration> fields =
-                ImmutableList.builderWithExpectedSize(descriptors.size());
-        for (FieldDescriptor field : descriptors) {
+        var descriptors = descriptor().getFields();
+        var fields = ImmutableList.<FieldDeclaration>builderWithExpectedSize(descriptors.size());
+        for (var field : descriptors) {
             fields.add(new FieldDeclaration(field, this));
         }
         return fields.build();
@@ -105,8 +97,8 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      */
     public static TypeSet allFrom(FileDescriptor file) {
         checkNotNull(file);
-        TypeSet.Builder result = TypeSet.newBuilder();
-        for (Descriptor messageType : file.getMessageTypes()) {
+        var result = TypeSet.newBuilder();
+        for (var messageType : file.getMessageTypes()) {
             addType(messageType, result);
         }
         return result.build();
@@ -117,9 +109,9 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
                 .getMapEntry()) {
             return;
         }
-        MessageType messageType = new MessageType(type);
+        var messageType = new MessageType(type);
         set.add(messageType);
-        for (Descriptor nestedType : type.getNestedTypes()) {
+        for (var nestedType : type.getNestedTypes()) {
             addType(nestedType, set);
         }
     }
@@ -141,7 +133,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
 
     @Override
     public Optional<Type<Descriptor, DescriptorProto>> containingType() {
-        Descriptor parent = descriptor().getContainingType();
+        var parent = descriptor().getContainingType();
         return Optional.ofNullable(parent)
                        .map(MessageType::new);
     }
@@ -156,7 +148,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * Tells if this message is under the "google" package.
      */
     public boolean isGoogle() {
-        boolean result = FileDescriptors.isGoogle(file());
+        var result = FileDescriptors.isGoogle(file());
         return result;
     }
 
@@ -168,9 +160,9 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         if (isGoogle()) {
             return false;
         }
-        FileDescriptor optionsProto = OptionsProto.getDescriptor();
-        FileDescriptor file = file();
-        boolean result = !sameFiles(optionsProto, file);
+        var optionsProto = OptionsProto.getDescriptor();
+        var file = file();
+        var result = !sameFiles(optionsProto, file);
         return result;
     }
 
@@ -178,7 +170,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * Tells if this message is top-level in its file.
      */
     public boolean isTopLevel() {
-        Descriptor descriptor = descriptor();
+        var descriptor = descriptor();
         return isTopLevel(descriptor);
     }
 
@@ -186,7 +178,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * Verifies if the message is top-level (rather than nested).
      */
     public static boolean isTopLevel(Descriptor descriptor) {
-        Descriptor parent = descriptor.getContainingType();
+        var parent = descriptor.getContainingType();
         return parent == null;
     }
 
@@ -201,7 +193,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * Tells if this message is a rejection.
      */
     public boolean isRejection() {
-        boolean result = isTopLevel() && declaringFileName().isRejections();
+        var result = isTopLevel() && declaringFileName().isRejections();
         return result;
     }
 
@@ -209,7 +201,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * Tells if this message is a command.
      */
     public boolean isCommand() {
-        boolean result = isTopLevel() && declaringFileName().isCommands();
+        var result = isTopLevel() && declaringFileName().isCommands();
         return result;
     }
 
@@ -219,7 +211,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * <p>Returns {@code false} if this type is a {@linkplain #isRejection() rejection}.
      */
     public boolean isEvent() {
-        boolean result = isTopLevel() && declaringFileName().isEvents();
+        var result = isTopLevel() && declaringFileName().isEvents();
         return result;
     }
 
@@ -234,11 +226,10 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * Tells if this message is an entity state.
      */
     public boolean isEntityState() {
-        Optional<EntityOption.Kind> entityKind = entityKindOf(descriptor());
-        boolean result =
-                entityKind.isPresent()
-                        && entityKind.get() != UNRECOGNIZED
-                        && entityKind.get() != KIND_UNKNOWN;
+        var entityKind = entityKindOf(descriptor());
+        var result = entityKind.isPresent()
+                && entityKind.get() != UNRECOGNIZED
+                && entityKind.get() != KIND_UNKNOWN;
         return result;
     }
 
@@ -251,11 +242,10 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         Deque<MessageType> deque = newLinkedList(nestedDeclarations);
 
         while (!deque.isEmpty()) {
-            MessageType nestedDeclaration = deque.pollFirst();
+            var nestedDeclaration = deque.pollFirst();
 
             assert nestedDeclaration != null; // Cannot be null since the queue is not empty.
-            DescriptorProto nestedDescriptor = nestedDeclaration.descriptor()
-                                                                .toProto();
+            var nestedDescriptor = nestedDeclaration.descriptor().toProto();
 
             if (predicate.test(nestedDescriptor)) {
                 result.add(nestedDeclaration);
@@ -271,11 +261,10 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * empty list if no nested types are declared.
      */
     private ImmutableList<MessageType> immediateNested() {
-        ImmutableList<MessageType> result =
-                descriptor().getNestedTypes()
-                            .stream()
-                            .map(MessageType::new)
-                            .collect(toImmutableList());
+        var descriptors = descriptor().getNestedTypes();
+        var result = descriptors.stream()
+                .map(MessageType::new)
+                .collect(toImmutableList());
         return result;
     }
 
@@ -285,15 +274,12 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * <p>Includes only the immediate declarations. Types declared inside the types declared inside
      * this type are not obtained.
      */
+    @SuppressWarnings("unused") /* Part of the public API. */
     public ImmutableList<Type<?, ?>> nestedDeclarations() {
-        Stream<Type<?, ?>> messageTypes = descriptor()
-                .getNestedTypes()
-                .stream()
-                .map(MessageType::new);
-        Stream<Type<?, ?>> enumTypes = descriptor()
-                .getEnumTypes()
-                .stream()
-                .map(EnumType::create);
+        var nestedDescriptors = descriptor().getNestedTypes();
+        Stream<Type<?, ?>> messageTypes = nestedDescriptors.stream().map(MessageType::new);
+        var enumDescriptors = descriptor().getEnumTypes();
+        Stream<Type<?, ?>> enumTypes = enumDescriptors.stream().map(EnumType::create);
         return concat(messageTypes, enumTypes)
                 .collect(toImmutableList());
     }
@@ -315,8 +301,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * @return the field declaration
      */
     public FieldDeclaration field(String name) {
-        FieldDescriptor fieldDescriptor = descriptor()
-                .findFieldByName(name);
+        var fieldDescriptor = descriptor().findFieldByName(name);
         checkArgument(fieldDescriptor != null, name);
         return new FieldDeclaration(fieldDescriptor, this);
     }
@@ -327,7 +312,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * @return the message location path
      */
     public LocationPath path() {
-        LocationPath result = LocationPath.fromMessage(descriptor());
+        var result = LocationPath.fromMessage(descriptor());
         return result;
     }
 
@@ -350,8 +335,9 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * @see <a href="https://github.com/google/protobuf-gradle-plugin/blob/master/README.md#generate-descriptor-set-files">
      *         Protobuf plugin configuration</a>
      */
+    @SuppressWarnings("unused") /* Part of the public API. */
     public Optional<String> leadingComments() {
-        LocationPath messagePath = path();
+        var messagePath = path();
         return leadingComments(messagePath);
     }
 
@@ -364,9 +350,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      *         a descriptor was generated without source code information
      */
     public Optional<String> leadingComments(LocationPath locationPath) {
-        FileDescriptorProto file = descriptor()
-                .getFile()
-                .toProto();
+        var file = descriptor().getFile().toProto();
         if (!file.hasSourceCodeInfo()) {
             _warn().log(
                     "Unable to obtain proto source code info. " +
@@ -376,7 +360,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
             return Optional.empty();
         }
 
-        DescriptorProtos.SourceCodeInfo.Location location = locationPath.toLocationIn(file);
+        var location = locationPath.toLocationIn(file);
         return location.hasLeadingComments()
                ? Optional.of(location.getLeadingComments())
                : Optional.empty();
@@ -386,14 +370,14 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * Determines if the message type represents a {@link UuidValue}.
      */
     public boolean isUuidValue() {
-        ImmutableList<FieldDeclaration> fields = fields();
+        var fields = fields();
         if (fields.size() != 1) {
             return false;
         }
-        FieldDeclaration theField = fields.get(0);
-        FieldName uuid = FieldName.of("uuid");
-        boolean nameMatches = uuid.equals(theField.name());
-        boolean typeMatches = theField.isString();
+        var theField = fields.get(0);
+        var uuid = FieldName.of("uuid");
+        var nameMatches = uuid.equals(theField.name());
+        var typeMatches = theField.isString();
         return nameMatches && typeMatches;
     }
 
@@ -407,10 +391,11 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * @return {@code true} if this type is marked with an option with the given name,
      *         {@code false} otherwise
      */
+    @SuppressWarnings("unused") /* Part of the public API. */
     public boolean hasOption(String optionName) {
         checkNotEmptyOrBlank(optionName,"Option name must not be null empty.");
-        MessageOptions options = descriptor().getOptions();
-        Set<FieldDescriptor> presentOptions = options.getAllFields().keySet();
+        var options = descriptor().getOptions();
+        var presentOptions = options.getAllFields().keySet();
         return presentOptions.stream()
                              .anyMatch(op -> optionName.equals(op.getName()));
     }

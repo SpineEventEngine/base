@@ -33,7 +33,6 @@ import com.google.protobuf.Any;
 import com.google.protobuf.AnyOrBuilder;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
-import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.Descriptors.ServiceDescriptor;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -43,7 +42,6 @@ import io.spine.code.proto.PackageName;
 import io.spine.option.OptionsProto;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -89,7 +87,7 @@ public final class TypeUrl implements Serializable {
 
     @VisibleForTesting
     static String composeTypeUrl(String prefix, String typeName) {
-        String url = prefix + SEPARATOR + typeName;
+        var url = prefix + SEPARATOR + typeName;
         return url;
     }
 
@@ -110,7 +108,7 @@ public final class TypeUrl implements Serializable {
      */
     public static TypeUrl from(Descriptor descriptor) {
         checkNotNull(descriptor);
-        String prefix = prefixFor(descriptor);
+        var prefix = prefixFor(descriptor);
         return create(prefix, descriptor.getFullName());
     }
 
@@ -121,7 +119,7 @@ public final class TypeUrl implements Serializable {
      */
     public static TypeUrl from(EnumDescriptor descriptor) {
         checkNotNull(descriptor);
-        String prefix = prefixFor(descriptor);
+        var prefix = prefixFor(descriptor);
         return create(prefix, descriptor.getFullName());
     }
 
@@ -132,7 +130,7 @@ public final class TypeUrl implements Serializable {
      */
     public static TypeUrl from(ServiceDescriptor descriptor) {
         checkNotNull(descriptor);
-        String prefix = prefixFor(descriptor);
+        var prefix = prefixFor(descriptor);
         return create(prefix, descriptor.getFullName());
     }
 
@@ -148,7 +146,7 @@ public final class TypeUrl implements Serializable {
         checkArgument(!typeUrl.isEmpty());
         checkArgument(isTypeUrl(typeUrl), "Malformed type URL: %s", typeUrl);
 
-        TypeUrl result = doParse(typeUrl);
+        var result = doParse(typeUrl);
         return result;
     }
 
@@ -157,17 +155,17 @@ public final class TypeUrl implements Serializable {
     }
 
     private static TypeUrl doParse(String typeUrl) {
-        List<String> strings = splitter.splitToList(typeUrl);
+        var strings = splitter.splitToList(typeUrl);
         if (strings.size() != 2) {
             throw malformedTypeUrl(typeUrl);
         }
-        String prefix = strings.get(0);
-        String typeName = strings.get(1);
+        var prefix = strings.get(0);
+        var typeName = strings.get(1);
         return create(prefix, typeName);
     }
 
     private static IllegalArgumentException malformedTypeUrl(String typeUrl) {
-        String errMsg = format("Invalid Protobuf type URL encountered: %s", typeUrl);
+        var errMsg = format("Invalid Protobuf type URL encountered: %s", typeUrl);
         throw new IllegalArgumentException(new InvalidProtocolBufferException(errMsg));
     }
 
@@ -178,7 +176,7 @@ public final class TypeUrl implements Serializable {
      * @return a type URL
      */
     public static TypeUrl ofEnclosed(AnyOrBuilder any) {
-        TypeUrl typeUrl = doParse(any.getTypeUrl());
+        var typeUrl = doParse(any.getTypeUrl());
         return typeUrl;
     }
 
@@ -186,8 +184,8 @@ public final class TypeUrl implements Serializable {
      * Obtains the type URL for the passed message class.
      */
     public static TypeUrl of(Class<? extends Message> cls) {
-        Message defaultInstance = defaultInstance(cls);
-        TypeUrl result = of(defaultInstance);
+        var defaultInstance = defaultInstance(cls);
+        var result = of(defaultInstance);
         return result;
     }
 
@@ -201,14 +199,14 @@ public final class TypeUrl implements Serializable {
      * OptionsProto#typeUrlPrefix file option}.
      */
     private static String prefixFor(GenericDescriptor descriptor) {
-        FileDescriptor file = descriptor.getFile();
+        var file = descriptor.getFile();
         if (file.getPackage()
                 .startsWith(PackageName.googleProtobuf()
                                        .value())) {
             return Prefix.GOOGLE_APIS.value();
         }
-        String result = file.getOptions()
-                            .getExtension(OptionsProto.typeUrlPrefix);
+        var result = file.getOptions()
+                         .getExtension(OptionsProto.typeUrlPrefix);
         return result;
     }
 
@@ -259,7 +257,7 @@ public final class TypeUrl implements Serializable {
      * Obtains string representation of the URL.
      */
     public String value() {
-        String result = composeTypeUrl(prefix, typeName.value());
+        var result = composeTypeUrl(prefix, typeName.value());
         return result;
     }
 
@@ -275,7 +273,7 @@ public final class TypeUrl implements Serializable {
         if (!(o instanceof TypeUrl)) {
             return false;
         }
-        TypeUrl typeUrl = (TypeUrl) o;
+        var typeUrl = (TypeUrl) o;
         return Objects.equals(prefix, typeUrl.prefix) &&
                Objects.equals(typeName, typeUrl.typeName);
     }

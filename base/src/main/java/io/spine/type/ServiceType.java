@@ -66,8 +66,8 @@ public final class ServiceType extends Type<ServiceDescriptor, ServiceDescriptor
      */
     public static TypeSet allFrom(FileDescriptor file) {
         checkNotNull(file);
-        TypeSet.Builder result = TypeSet.newBuilder();
-        for (ServiceDescriptor type : file.getServices()) {
+        var result = TypeSet.newBuilder();
+        for (var type : file.getServices()) {
             result.add(of(type));
         }
         return result.build();
