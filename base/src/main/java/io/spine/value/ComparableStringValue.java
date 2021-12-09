@@ -50,7 +50,7 @@ public abstract class ComparableStringValue<T extends ComparableStringValue<T>>
 
     @Override
     public int compareTo(T o) {
-        int result = value().compareTo(o.value());
+        var result = value().compareTo(o.value());
         return result;
     }
 }
