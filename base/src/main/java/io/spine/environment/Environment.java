@@ -28,7 +28,6 @@ package io.spine.environment;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
-import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.annotation.SPI;
 import io.spine.logging.Logging;
@@ -176,9 +175,8 @@ public final class Environment implements Logging {
     @CanIgnoreReturnValue
     private Environment register(EnvironmentType type) {
         if (!knownTypes.contains(type)) {
-            ImmutableList<EnvironmentType> currentlyKnown = knownTypes;
-            knownTypes = ImmutableList
-                    .<EnvironmentType>builder()
+            var currentlyKnown = knownTypes;
+            knownTypes = ImmutableList.<EnvironmentType>builder()
                     .add(type)
                     .addAll(currentlyKnown)
                     .build();
@@ -248,8 +246,8 @@ public final class Environment implements Logging {
      * @return whether the current environment type matches the specified one
      */
     public boolean is(Class<? extends EnvironmentType> type) {
-        Class<? extends EnvironmentType> current = type();
-        boolean result = type.isAssignableFrom(current);
+        var current = type();
+        var result = type.isAssignableFrom(current);
         return result;
     }
 
@@ -274,13 +272,12 @@ public final class Environment implements Logging {
     }
 
     private Class<? extends EnvironmentType> firstEnabled() {
-        EnvironmentType result =
-                knownTypes.stream()
-                          .filter(EnvironmentType::enabled)
-                          .findFirst()
-                          .orElseThrow(() -> newIllegalStateException(
-                                  "`Environment` could not find an active environment type."
-                          ));
+        var result = knownTypes.stream()
+                .filter(EnvironmentType::enabled)
+                .findFirst()
+                .orElseThrow(() -> newIllegalStateException(
+                        "`Environment` could not find an active environment type."
+                ));
         return result.getClass();
     }
 
@@ -306,7 +303,7 @@ public final class Environment implements Logging {
         checkNotNull(type);
         if (CustomEnvironmentType.class.isAssignableFrom(type)) {
             @SuppressWarnings("unchecked") // checked one line above
-            Class<? extends CustomEnvironmentType> customType =
+            var customType =
                     (Class<? extends CustomEnvironmentType>) type;
             register(customType);
         }
@@ -318,7 +315,7 @@ public final class Environment implements Logging {
         this.currentType = newCurrent;
         @SuppressWarnings("FloggerSplitLogStatement")
                 // See: https://github.com/SpineEventEngine/base/issues/612
-        FluentLogger.Api info = _info();
+        var info = _info();
         if (previous == null) {
             if (newCurrent != null) {
                 info.log("`Environment` set to `%s`.", newCurrent.getName());
@@ -327,9 +324,9 @@ public final class Environment implements Logging {
             if (previous.equals(newCurrent)) {
                 info.log("`Environment` stays `%s`.", newCurrent.getName());
             } else {
-                String newType = newCurrent != null
-                                 ? backtick(newCurrent.getName())
-                                 : "undefined";
+                var newType = newCurrent != null
+                              ? backtick(newCurrent.getName())
+                              : "undefined";
                 info.log("`Environment` turned from `%s` to %s.", previous.getName(), newType);
             }
         }

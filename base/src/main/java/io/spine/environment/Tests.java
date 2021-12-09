@@ -91,15 +91,14 @@ public final class Tests extends StandardEnvironmentType {
      */
     @Override
     protected boolean enabled() {
-        TestsProperty property = new TestsProperty();
+        var property = new TestsProperty();
         if (property.isSet()) {
             return property.value();
         }
 
-        String stacktrace = Throwables.getStackTraceAsString(new RuntimeException(""));
-        boolean result =
-                knownTestingFrameworks().stream()
-                                        .anyMatch(stacktrace::contains);
+        var stacktrace = Throwables.getStackTraceAsString(new RuntimeException(""));
+        var result = knownTestingFrameworks().stream()
+                .anyMatch(stacktrace::contains);
         return result;
     }
 }

@@ -76,7 +76,7 @@ final class TestsProperty {
     private final @Nullable String value;
 
     TestsProperty() {
-        String propValue = System.getProperty(KEY);
+        var propValue = System.getProperty(KEY);
         if (propValue != null) {
             propValue = QUOTES_OR_SPACE.matcher(propValue)
                                        .replaceAll("");
@@ -99,8 +99,8 @@ final class TestsProperty {
      */
     boolean value() {
         checkState(value != null);
-        boolean result = TESTS_VALUES.stream()
-                                     .anyMatch(value::equalsIgnoreCase);
+        var result = TESTS_VALUES.stream()
+                .anyMatch(value::equalsIgnoreCase);
         return result;
     }
 
