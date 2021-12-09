@@ -55,7 +55,7 @@ import static io.spine.type.TypeUrl.composeTypeUrl;
 import static io.spine.type.TypeUrl.parse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("TypeUrl should")
+@DisplayName("`TypeUrl` should")
 class TypeUrlTest {
 
     /** The descriptor of the type used for the tests. */
@@ -81,14 +81,14 @@ class TypeUrlTest {
     }
 
     @Nested
-    @DisplayName("Create an instance by")
+    @DisplayName("create an instance by")
     class CreateBy {
 
         @Test
         @DisplayName("`Message`")
         void message() {
-            Message msg = toMessage(newUuid());
-            TypeUrl typeUrl = TypeUrl.of(msg);
+            var msg = toMessage(newUuid());
+            var typeUrl = TypeUrl.of(msg);
 
             assertTypeUrl(typeUrl);
         }
@@ -96,8 +96,7 @@ class TypeUrlTest {
         @Test
         @DisplayName("fully-qualified type name")
         void typeName() {
-            TypeUrl typeUrl = TypeName.of(TYPE_NAME)
-                                      .toUrl();
+            var typeUrl = TypeName.of(TYPE_NAME).toUrl();
 
             assertTypeUrl(typeUrl);
         }
@@ -105,7 +104,7 @@ class TypeUrlTest {
         @Test
         @DisplayName("type URL")
         void typeUrl() {
-            TypeUrl typeUrl = TypeUrl.parse(TYPE_URL_VALUE);
+            var typeUrl = TypeUrl.parse(TYPE_URL_VALUE);
 
             assertTypeUrl(typeUrl);
         }
@@ -113,7 +112,7 @@ class TypeUrlTest {
         @Test
         @DisplayName("a descriptor of standard Protobuf type")
         void standardDescriptor() {
-            TypeUrl typeUrl = TypeUrl.from(TYPE_DESCRIPTOR);
+            var typeUrl = TypeUrl.from(TYPE_DESCRIPTOR);
 
             assertTypeUrl(typeUrl);
         }
@@ -121,11 +120,11 @@ class TypeUrlTest {
         @Test
         @DisplayName("a descriptor of Spine type")
         void spineDescriptor() {
-            Descriptors.Descriptor descriptor = EntityOption.getDescriptor();
-            String expectedUrl = composeTypeUrl(TypeUrl.Prefix.SPINE.value(),
-                                                descriptor.getFullName());
+            var descriptor = EntityOption.getDescriptor();
+            var expectedUrl = composeTypeUrl(TypeUrl.Prefix.SPINE.value(),
+                                             descriptor.getFullName());
 
-            TypeUrl typeUrl = TypeUrl.from(descriptor);
+            var typeUrl = TypeUrl.from(descriptor);
 
             assertValue(expectedUrl, typeUrl);
         }
@@ -147,15 +146,15 @@ class TypeUrlTest {
         @Test
         @DisplayName("by a class")
         void byClass() {
-            TypeUrl typeUrl = TypeUrl.of(StringValue.class);
+            var typeUrl = TypeUrl.of(StringValue.class);
 
             assertTypeUrl(typeUrl);
         }
 
         private void assertCreatedTypeUrl(String expectedPrefix, EnumDescriptor descriptor) {
-            String expected = composeTypeUrl(expectedPrefix, descriptor.getFullName());
+            var expected = composeTypeUrl(expectedPrefix, descriptor.getFullName());
 
-            TypeUrl typeUrl = TypeUrl.from(descriptor);
+            var typeUrl = TypeUrl.from(descriptor);
             assertValue(expected, typeUrl);
         }
 
@@ -195,13 +194,13 @@ class TypeUrlTest {
      * is provided by Protobuf, or by the Spine framework.
      */
     @Nested
-    @DisplayName("Allow empty prefix when")
+    @DisplayName("allow empty prefix when")
     class EmptyPrefix {
 
         private TypeUrl noPrefixType;
 
         @Test
-        @DisplayName("parcing type name")
+        @DisplayName("parsing type name")
         void inTypeName() {
             noPrefixType = parse("/package.Type");
             assertEmptyPrefix();
@@ -221,7 +220,7 @@ class TypeUrlTest {
     }
 
     @Nested
-    @DisplayName("Reject")
+    @DisplayName("reject")
     class Reject {
 
         @Test
@@ -239,11 +238,10 @@ class TypeUrlTest {
         @Test
         @DisplayName("invalid URL of a packed message")
         void anyWithInvalidUrl() {
-            Any any = Any.newBuilder()
-                         .setTypeUrl("invalid_type_url")
-                         .build();
-            RuntimeException exception =
-                    assertThrows(RuntimeException.class, () -> TypeUrl.ofEnclosed(any));
+            var any = Any.newBuilder()
+                    .setTypeUrl("invalid_type_url")
+                    .build();
+            var exception = assertThrows(RuntimeException.class, () -> TypeUrl.ofEnclosed(any));
             assertThat(exception.getCause())
                  .isInstanceOf(InvalidProtocolBufferException.class);
         }
@@ -290,7 +288,7 @@ class TypeUrlTest {
     @Test
     @DisplayName("throw `UnknownTypeException` when trying to obtain unknown Java class")
     void unknownJavaClass() {
-        TypeUrl url = TypeUrl.parse("unknown/JavaClass");
+        var url = TypeUrl.parse("unknown/JavaClass");
         assertUnknownType(url::toJavaClass);
     }
 
@@ -320,7 +318,7 @@ class TypeUrlTest {
     @Test
     @DisplayName("have popular type prefixes")
     void prefixEnumeration() {
-        TypeUrl.Prefix spinePrefix = TypeUrl.Prefix.SPINE;
+        var spinePrefix = TypeUrl.Prefix.SPINE;
         assertThat(spinePrefix.toString())
              .ignoringCase()
              .contains(spinePrefix.name());
