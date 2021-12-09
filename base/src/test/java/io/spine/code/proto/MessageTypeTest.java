@@ -32,8 +32,6 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Timestamp;
-import io.spine.test.type.Uri;
-import io.spine.test.type.Url;
 import io.spine.option.EntityOption;
 import io.spine.option.GoesOption;
 import io.spine.option.MinOption;
@@ -42,6 +40,8 @@ import io.spine.test.code.proto.event.MttProjectStarted;
 import io.spine.test.code.proto.rejections.TestRejections;
 import io.spine.test.code.proto.uuid.MttEntityState;
 import io.spine.test.code.proto.uuid.MttUuidMessage;
+import io.spine.test.type.Uri;
+import io.spine.test.type.Url;
 import io.spine.type.MessageType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -74,8 +74,8 @@ final class MessageTypeTest {
          * Tests a certain boolean method of {@code MessageType} created on the passed descriptor.
          */
         void assertQuality(Predicate<MessageType> method, Descriptor descriptor) {
-            MessageType type = new MessageType(descriptor);
-            boolean result = method.test(type);
+            var type = new MessageType(descriptor);
+            var result = method.test(type);
             assertTrue(result);
         }
 
@@ -135,6 +135,7 @@ final class MessageTypeTest {
 
             @Nested
             @DisplayName("not")
+            @SuppressWarnings("InnerClassTooDeeplyNested")
             class NotA {
 
                 @Test
@@ -176,6 +177,7 @@ final class MessageTypeTest {
 
             @Nested
             @DisplayName("a non-Google or a Spine options type")
+            @SuppressWarnings("InnerClassTooDeeplyNested")
             final class Custom {
 
                 @Test
@@ -207,7 +209,7 @@ final class MessageTypeTest {
     }
 
     @Nested
-    @DisplayName("Obtain path for")
+    @DisplayName("obtain path for")
     final class Path {
 
         @Test
@@ -218,10 +220,10 @@ final class MessageTypeTest {
 
         @CanIgnoreReturnValue
         private IterableSubject assertPath(Descriptor descriptor) {
-            MessageType type = new MessageType(descriptor);
-            LocationPath path = type.path();
+            var type = new MessageType(descriptor);
+            var path = type.path();
 
-            IterableSubject assertPath = assertThat(path.toList());
+            var assertPath = assertThat(path.toList());
             assertPath.contains(FileDescriptorProto.MESSAGE_TYPE_FIELD_NUMBER);
             assertPath.contains(descriptor.getIndex());
 
@@ -231,7 +233,7 @@ final class MessageTypeTest {
         @Test
         @DisplayName("second-level message")
         void secondLevel() {
-            IterableSubject assertPath = assertPath(Uri.Protocol.getDescriptor());
+            var assertPath = assertPath(Uri.Protocol.getDescriptor());
             assertPath.contains(Uri.getDescriptor()
                                    .getIndex());
         }

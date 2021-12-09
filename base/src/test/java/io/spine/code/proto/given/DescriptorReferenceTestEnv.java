@@ -44,15 +44,14 @@ public class DescriptorReferenceTestEnv {
 
     /** Returns a reference to a {@code "smoke-test-model-compiler.desc"} file. */
     public static DescriptorReference smokeTestModelCompilerRef() {
-        String reference = "smoke_tests_model-compiler_tests_unspecified.desc";
+        var reference = "smoke_tests_model-compiler_tests_unspecified.desc";
         return DescriptorReference.toOneFile(new File(reference));
     }
 
     /** Returns a reference to a {@code "known_types.desc"} file. */
     public static DescriptorReference knownTypesRef() {
-        String asFile = Resources.getResource(FileDescriptors.KNOWN_TYPES)
-                                 .getFile();
-        File result = new File(asFile);
+        var asFile = Resources.getResource(FileDescriptors.KNOWN_TYPES).getFile();
+        var result = new File(asFile);
         return DescriptorReference.toOneFile(result);
     }
 
@@ -61,9 +60,8 @@ public class DescriptorReferenceTestEnv {
      * exist.
      */
     public static DescriptorReference randomRef() {
-        String reference = UUID.randomUUID()
-                               .toString();
-        File result = new File(reference);
+        var reference = UUID.randomUUID().toString();
+        var result = new File(reference);
         return DescriptorReference.toOneFile(result);
     }
 }

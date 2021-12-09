@@ -26,11 +26,8 @@
 
 package io.spine.code.proto.given;
 
-import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.test.code.proto.FieldContainer;
-
-import java.util.List;
 
 public final class Given {
 
@@ -63,9 +60,9 @@ public final class Given {
     }
 
     private static FieldDescriptor fieldWithIndex(int index) {
-        Descriptor fieldContainer = FieldContainer.getDescriptor();
-        List<FieldDescriptor> fields = fieldContainer.getFields();
-        FieldDescriptor field = fields.get(index);
+        var fieldContainer = FieldContainer.getDescriptor();
+        var fields = fieldContainer.getFields();
+        var field = fields.get(index);
         return field;
     }
 }

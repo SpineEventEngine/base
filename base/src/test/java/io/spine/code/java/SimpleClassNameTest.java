@@ -37,8 +37,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -49,7 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * {@code base} module, this test uses descriptors copied from the {@code base} stored in
  * resources. That's why the {@code ErrorProto} descriptor is available for these tests.
  */
-@DisplayName("SimpleClassName should")
+@DisplayName("`SimpleClassName` should")
 class SimpleClassNameTest {
 
     private static final FileSet mainSet = FileSet.load();
@@ -60,9 +58,9 @@ class SimpleClassNameTest {
     @SuppressWarnings("OptionalGetWithoutIsPresent") /* The file is present in resources. */
     @BeforeEach
     void setUp() {
-        FileName errorFileName = FileName.from(Error.getDescriptor()
-                                                    .getFile()
-                                                    .toProto());
+        var errorFileName = FileName.from(Error.getDescriptor()
+                                               .getFile()
+                                               .toProto());
         errorProto = mainSet.tryFind(errorFileName)
                             .get();
     }
@@ -77,8 +75,7 @@ class SimpleClassNameTest {
     @Test
     @DisplayName("obtain declared outer class name")
     void obtain_declared_outer_class_name() {
-        Optional<SimpleClassName> className =
-                SimpleClassName.declaredOuterClassName(errorProto);
+        var className = SimpleClassName.declaredOuterClassName(errorProto);
 
         assertTrue(className.isPresent());
         assertEquals(ERROR_PROTO, className.get()

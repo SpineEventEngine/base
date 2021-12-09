@@ -27,7 +27,6 @@
 package io.spine.code.proto;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.test.compiler.message.Top;
 import io.spine.type.MessageType;
@@ -42,7 +41,7 @@ import java.util.function.Predicate;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("SourceFile should")
+@DisplayName("`SourceFile` should")
 class SourceFileTest {
 
     private static final FileDescriptor TEST_FILE_DESCRIPTOR = Top.getDescriptor()
@@ -57,10 +56,10 @@ class SourceFileTest {
     @Test
     @DisplayName("search nested declarations recursively")
     void search_nested_declarations_recursively() {
-        Descriptor nestedForNested = Top.NestedForTop.NestedForNested.getDescriptor();
-        String expectedTypeName = nestedForNested.getFullName();
-        String simpleTypeName = nestedForNested.getName();
-        MessageType result = findDeclaration(simpleTypeName);
+        var nestedForNested = Top.NestedForTop.NestedForNested.getDescriptor();
+        var expectedTypeName = nestedForNested.getFullName();
+        var simpleTypeName = nestedForNested.getName();
+        var result = findDeclaration(simpleTypeName);
         assertEquals(expectedTypeName, result.name()
                                              .value());
     }
@@ -87,7 +86,7 @@ class SourceFileTest {
         @Override
         public boolean test(@Nullable DescriptorProto input) {
             checkNotNull(input);
-            String messageName = input.getName();
+            var messageName = input.getName();
             return messageName.equals(name);
         }
     }

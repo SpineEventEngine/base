@@ -32,8 +32,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -62,7 +60,7 @@ class FileNameTest {
     @Test
     @DisplayName("return words")
     void returnWords() {
-        List<String> words = FileName.of("some_file_name.proto").words();
+        var words = FileName.of("some_file_name.proto").words();
 
         assertEquals(ImmutableList.of("some", "file", "name"), words);
     }
@@ -101,8 +99,8 @@ class FileNameTest {
         }
 
         private void assertConversion(String expected, String fileName) {
-            String calculated = FileName.of(fileName)
-                                        .nameOnlyCamelCase();
+            var calculated = FileName.of(fileName)
+                                     .nameOnlyCamelCase();
             assertEquals(expected, calculated);
         }
     }
@@ -117,7 +115,7 @@ class FileNameTest {
     @Test
     @DisplayName("tell commands file kind")
     void commandsFile() {
-        FileName commandsFile = FileName.of("my_commands.proto");
+        var commandsFile = FileName.of("my_commands.proto");
 
         assertTrue(commandsFile.isCommands());
         assertFalse(commandsFile.isEvents());
@@ -127,7 +125,7 @@ class FileNameTest {
     @Test
     @DisplayName("tell events file kind")
     void eventsFile() {
-        FileName eventsFile = FileName.of("project_events.proto");
+        var eventsFile = FileName.of("project_events.proto");
 
         assertTrue(eventsFile.isEvents());
         assertFalse(eventsFile.isCommands());
@@ -137,7 +135,7 @@ class FileNameTest {
     @Test
     @DisplayName("tell rejection file kind")
     void rejectionsFile() {
-        FileName rejectionsFile = FileName.of("rejections.proto");
+        var rejectionsFile = FileName.of("rejections.proto");
 
         assertTrue(rejectionsFile.isRejections());
         assertFalse(rejectionsFile.isCommands());
@@ -147,7 +145,7 @@ class FileNameTest {
     @Test
     @DisplayName("return file name with extension")
     void returnFileNameWithExtension(){
-        FileName fileName = FileName.of("io/spine/test/test_protos.proto");
+        var fileName = FileName.of("io/spine/test/test_protos.proto");
 
         assertEquals("test_protos.proto", fileName.nameWithExtension());
     }

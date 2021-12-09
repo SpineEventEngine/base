@@ -31,7 +31,6 @@ import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.BytesValue;
-import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Int32Value;
@@ -50,14 +49,14 @@ import static io.spine.testing.Assertions.assertIllegalState;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("FieldDeclaration should")
+@DisplayName("`FieldDeclaration` should")
 class FieldDeclarationTest {
 
     @Test
-    @DisplayName("not accept nulls on construction")
+    @DisplayName("not accept `null`s on construction")
     void notAcceptNullsOnCtor() {
-        Descriptor descriptor = Any.getDescriptor();
-        NullPointerTester tester = new NullPointerTester()
+        var descriptor = Any.getDescriptor();
+        var tester = new NullPointerTester()
                 .setDefault(MessageType.class, new MessageType(descriptor))
                 .setDefault(FieldDescriptor.class, descriptor.getFields()
                                                              .get(0));
@@ -65,23 +64,23 @@ class FieldDeclarationTest {
     }
 
     @Test
-    @DisplayName("not accept nulls")
+    @DisplayName("not accept `null`s")
     void notAcceptNulls() {
-        Descriptor descriptor = Any.getDescriptor();
-        FieldDescriptor field = descriptor.getFields()
-                                          .get(0);
+        var descriptor = Any.getDescriptor();
+        var field = descriptor.getFields()
+                              .get(0);
         new NullPointerTester()
                 .testAllPublicInstanceMethods(new FieldDeclaration(field));
     }
 
     @Test
-    @DisplayName("have equals() and hashCode()")
+    @DisplayName("have `equals()` and `hashCode()`")
     void equalsAndHashCode() {
-        Descriptor any = Any.getDescriptor();
-        FieldDescriptor typeUrl = any.getFields()
-                                     .get(0);
-        FieldDescriptor bytes = any.getFields()
-                                   .get(1);
+        var any = Any.getDescriptor();
+        var typeUrl = any.getFields()
+                         .get(0);
+        var bytes = any.getFields()
+                       .get(1);
         new EqualsTester()
                 .addEqualityGroup(new FieldDeclaration(typeUrl),
                                   new FieldDeclaration(typeUrl, new MessageType(any)))
@@ -95,34 +94,34 @@ class FieldDeclarationTest {
     class Defaults {
 
         @Test
-        @DisplayName("int32")
+        @DisplayName("`int32`")
         void anInt32() {
-            FieldDescriptor int32Field = Int32Value.getDescriptor()
-                                                   .getFields()
-                                                   .get(0);
-            FieldDeclaration declaration = new FieldDeclaration(int32Field);
+            var int32Field = Int32Value.getDescriptor()
+                                       .getFields()
+                                       .get(0);
+            var declaration = new FieldDeclaration(int32Field);
             assertTrue(declaration.isDefault(0));
             assertFalse(declaration.isDefault(""));
             assertFalse(declaration.isDefault(0.0));
         }
 
         @Test
-        @DisplayName("string")
+        @DisplayName("`string`")
         void aString() {
-            FieldDescriptor stringField = StringValue.getDescriptor()
-                                                     .getFields()
-                                                     .get(0);
-            FieldDeclaration declaration = new FieldDeclaration(stringField);
+            var stringField = StringValue.getDescriptor()
+                                         .getFields()
+                                         .get(0);
+            var declaration = new FieldDeclaration(stringField);
             assertTrue(declaration.isDefault(""));
             assertFalse(declaration.isDefault(0L));
         }
 
         @Test
-        @DisplayName("message")
+        @DisplayName("`Message`")
         void aMessage() {
-            FieldDescriptor messageField = Uri.getDescriptor()
-                                              .findFieldByName("auth");
-            FieldDeclaration declaration = new FieldDeclaration(messageField);
+            var messageField = Uri.getDescriptor()
+                                  .findFieldByName("auth");
+            var declaration = new FieldDeclaration(messageField);
             assertTrue(declaration.isDefault(Uri.Authorization.getDefaultInstance()));
             assertFalse(declaration.isDefault(0L));
             assertFalse(declaration.isDefault(Empty.getDefaultInstance()));
@@ -134,44 +133,44 @@ class FieldDeclarationTest {
     class TypeName {
 
         @Test
-        @DisplayName("int64")
+        @DisplayName("`int64`")
         void int64() {
-            FieldDescriptor int64Field = Int64Value.getDescriptor()
-                                                   .getFields()
-                                                   .get(0);
-            FieldDeclaration declaration = new FieldDeclaration(int64Field);
-            String typeName = declaration.javaTypeName();
+            var int64Field = Int64Value.getDescriptor()
+                                       .getFields()
+                                       .get(0);
+            var declaration = new FieldDeclaration(int64Field);
+            var typeName = declaration.javaTypeName();
             assertThat(typeName).isEqualTo(long.class.getName());
         }
 
         @Test
         @DisplayName("bytes")
         void bytes() {
-            FieldDescriptor int64Field = BytesValue.getDescriptor()
-                                                   .getFields()
-                                                   .get(0);
-            FieldDeclaration declaration = new FieldDeclaration(int64Field);
-            String typeName = declaration.javaTypeName();
+            var int64Field = BytesValue.getDescriptor()
+                                       .getFields()
+                                       .get(0);
+            var declaration = new FieldDeclaration(int64Field);
+            var typeName = declaration.javaTypeName();
             assertThat(typeName).isEqualTo(ByteString.class.getCanonicalName());
         }
 
         @Test
-        @DisplayName("message")
+        @DisplayName("`Message`")
         void message() {
-            FieldDescriptor messageField = Uri.getDescriptor()
-                                              .findFieldByName("protocol");
-            FieldDeclaration declaration = new FieldDeclaration(messageField);
-            String typeName = declaration.javaTypeName();
+            var messageField = Uri.getDescriptor()
+                                  .findFieldByName("protocol");
+            var declaration = new FieldDeclaration(messageField);
+            var typeName = declaration.javaTypeName();
             assertThat(typeName).isEqualTo(Protocol.class.getCanonicalName());
         }
 
         @Test
-        @DisplayName("enum")
+        @DisplayName("`enum`")
         void anEnum() {
-            FieldDescriptor enumField = Uri.Protocol.getDescriptor()
-                                                    .findFieldByName("schema");
-            FieldDeclaration declaration = new FieldDeclaration(enumField);
-            String typeName = declaration.javaTypeName();
+            var enumField = Uri.Protocol.getDescriptor()
+                                        .findFieldByName("schema");
+            var declaration = new FieldDeclaration(enumField);
+            var typeName = declaration.javaTypeName();
             assertThat(typeName).isEqualTo(Uri.Schema.class.getCanonicalName());
         }
     }
@@ -179,38 +178,36 @@ class FieldDeclarationTest {
     @Test
     @DisplayName("obtain a name of the getter generated for the field by Protobuf Java")
     void obtainJavaGetterName() {
-        FieldDescriptor field = Uri.Authorization.getDescriptor()
-                                                 .findFieldByName("user_name");
-        FieldDeclaration declaration = new FieldDeclaration(field);
-        String javaGetterName = declaration.javaGetterName();
+        var field = Uri.Authorization.getDescriptor()
+                                     .findFieldByName("user_name");
+        var declaration = new FieldDeclaration(field);
+        var javaGetterName = declaration.javaGetterName();
         assertThat(javaGetterName).isEqualTo("getUserName");
     }
 
     @Test
     @DisplayName("obtain the message type of the field")
     void obtainMessageType() {
-        FieldDescriptor field = Uri.getDescriptor()
-                                   .findFieldByName("auth");
-        FieldDeclaration declaration = new FieldDeclaration(field);
-        MessageType authorization = new MessageType(Uri.Authorization.getDescriptor());
+        var field = Uri.getDescriptor()
+                       .findFieldByName("auth");
+        var declaration = new FieldDeclaration(field);
+        var authorization = new MessageType(Uri.Authorization.getDescriptor());
         assertThat(declaration.messageType()).isEqualTo(authorization);
     }
 
     @Test
     @DisplayName("throw an `ISE` if the field is of non-message type")
     void throwOnWrongType() {
-        FieldDescriptor field = getDescriptor()
-                                                 .findFieldByName("user_name");
-        FieldDeclaration declaration = new FieldDeclaration(field);
+        var field = getDescriptor().findFieldByName("user_name");
+        var declaration = new FieldDeclaration(field);
         assertIllegalState(declaration::messageType);
     }
 
     @Test
     @DisplayName("tell if the field is a singular field of a message type")
     void checkSingularMessage() {
-        FieldDescriptor field = Uri.getDescriptor()
-                                   .findFieldByName("auth");
-        FieldDeclaration declaration = new FieldDeclaration(field);
+        var field = Uri.getDescriptor().findFieldByName("auth");
+        var declaration = new FieldDeclaration(field);
         assertThat(declaration.isSingularMessage()).isTrue();
     }
 
@@ -218,15 +215,13 @@ class FieldDeclarationTest {
     @DisplayName("tell if the field is not a singular field of a message type")
     void checkNotSingularMessage() {
         // Check non-singular type.
-        FieldDescriptor query = Uri.getDescriptor()
-                                   .findFieldByName("query");
-        FieldDeclaration nonSingular = new FieldDeclaration(query);
+        var query = Uri.getDescriptor().findFieldByName("query");
+        var nonSingular = new FieldDeclaration(query);
         assertThat(nonSingular.isSingularMessage()).isFalse();
 
         // Check non-`Message` type.
-        FieldDescriptor host = Uri.getDescriptor()
-                                  .findFieldByName("host");
-        FieldDeclaration nonMessage = new FieldDeclaration(host);
+        var host = Uri.getDescriptor().findFieldByName("host");
+        var nonMessage = new FieldDeclaration(host);
         assertThat(nonMessage.isSingularMessage()).isFalse();
     }
 }

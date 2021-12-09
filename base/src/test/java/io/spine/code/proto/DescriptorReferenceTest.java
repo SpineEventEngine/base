@@ -39,7 +39,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -57,7 +56,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("Descriptor reference should")
+@DisplayName("`DescriptorReference` should")
 class DescriptorReferenceTest {
 
     @SuppressWarnings("HardcodedLineSeparator")
@@ -81,15 +80,15 @@ class DescriptorReferenceTest {
     @Test
     @DisplayName("ignore previous content of the `desc.ref` file")
     void ignorePreviousDescRef(@TempDir Path path) {
-        DescriptorReference firstReference = randomRef();
+        var firstReference = randomRef();
         firstReference.writeTo(path);
         assertResourcesLoaded(path, firstReference);
 
-        DescriptorReference secondReference = knownTypesRef();
+        var secondReference = knownTypesRef();
         secondReference.writeTo(path);
         assertResourcesLoaded(path, firstReference, secondReference);
 
-        DescriptorReference thirdReference = smokeTestModelCompilerRef();
+        var thirdReference = smokeTestModelCompilerRef();
         thirdReference.writeTo(path);
         assertResourcesLoaded(path, firstReference, secondReference, thirdReference);
     }
@@ -97,14 +96,13 @@ class DescriptorReferenceTest {
     @Test
     @DisplayName("write a reference with expected content")
     void properContent(@TempDir Path path) throws IOException {
-        DescriptorReference knownTypes = knownTypesRef();
+        var knownTypes = knownTypesRef();
         knownTypes.writeTo(path);
 
-        File descRef = path.resolve(DescriptorReference.FILE_NAME)
-                           .toFile();
-        List<String> linesWritten = Files.readLines(descRef, UTF_8);
+        var descRef = path.resolve(DescriptorReference.FILE_NAME).toFile();
+        var linesWritten = Files.readLines(descRef, UTF_8);
         assertEquals(1, linesWritten.size());
-        String fileName = linesWritten.get(0);
+        var fileName = linesWritten.get(0);
         assertThat(knownTypes.asResource().toString())
                 .contains(fileName);
     }
@@ -112,7 +110,7 @@ class DescriptorReferenceTest {
     private static void assertDescriptorRefsWrittenCorrectly(@TempDir Path path,
                                                              String separator,
                                                              DescriptorReference... descriptors) {
-        for (DescriptorReference descriptor : descriptors) {
+        for (var descriptor : descriptors) {
             descriptor.writeTo(path, separator);
         }
 
@@ -122,31 +120,31 @@ class DescriptorReferenceTest {
     @Test
     @DisplayName("throw if the referenced path points to a file instead of a directory")
     void throwsOnDirectory(@TempDir Path path) {
-        DescriptorReference knownTypes = knownTypesRef();
-        File newFile = createFileUnderPath(path);
+        var knownTypes = knownTypesRef();
+        var newFile = createFileUnderPath(path);
         assertIllegalState(() -> knownTypes.writeTo(newFile.toPath()));
     }
 
     @Test
     @DisplayName("throw if the referenced path is null")
     void throwsOnNull() {
-        DescriptorReference knownTypes = knownTypesRef();
+        var knownTypes = knownTypesRef();
         assertNpe(() -> knownTypes.writeTo(null));
     }
 
     @Test
     @DisplayName("return an empty iterator upon missing `desc.ref` file")
     void onMissingDescRef() {
-        Iterator<Resource> result = DescriptorReference.loadFromResources(emptyList());
+        var result = DescriptorReference.loadFromResources(emptyList());
         assertFalse(result.hasNext());
     }
 
     private static void assertResourcesLoaded(Path path, DescriptorReference... expected) {
-        Path descRef = path.resolve(DescriptorReference.FILE_NAME);
-        Iterator<Resource> existingDescriptors = loadFromResources(asList(descRef));
+        var descRef = path.resolve(DescriptorReference.FILE_NAME);
+        var existingDescriptors = loadFromResources(asList(descRef));
         List<Resource> result = newArrayList(existingDescriptors);
         assertEquals(expected.length, result.size());
-        for (DescriptorReference reference : expected) {
+        for (var reference : expected) {
             assertTrue(result.contains(reference.asResource()));
         }
     }
@@ -165,9 +163,8 @@ class DescriptorReferenceTest {
     // recursive calls should not happen.
     private static File createFileUnderPath(Path path) {
         // Ensures no existing file with such name.
-        String fileName = UUID.randomUUID()
-                              .toString();
-        File result = new File(path.toFile(), fileName);
+        var fileName = UUID.randomUUID().toString();
+        var result = new File(path.toFile(), fileName);
         if (result.exists()) {
             return createFileUnderPath(path);
         }

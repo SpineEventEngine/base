@@ -26,7 +26,6 @@
 
 package io.spine.code.proto;
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -90,14 +89,14 @@ class FieldTypesTest extends UtilityClassTest<FieldTypes> {
     @Test
     @DisplayName("get key descriptor for a `Map` field")
     void getKeyDescriptor() {
-        FieldDescriptor key = keyDescriptor(mapField());
+        var key = keyDescriptor(mapField());
         assertEquals(INT64, key.getType());
     }
 
     @Test
     @DisplayName("get value descriptor for a `Map` field")
     void getValueDescriptor() {
-        FieldDescriptor value = valueDescriptor(mapField());
+        var value = valueDescriptor(mapField());
         assertEquals(STRING, value.getType());
     }
 
