@@ -47,8 +47,8 @@ public final class InvocationGuard {
      */
     public static void allowOnly(@FullyQualifiedName String allowedCallerClass) {
         checkNotNull(allowedCallerClass);
-        Class callingClass = CallerProvider.instance()
-                                           .previousCallerClass();
+        var callingClass = CallerProvider.instance()
+                                         .previousCallerClass();
         if (!allowedCallerClass.equals(callingClass.getName())) {
             throw nonAllowedCaller(callingClass);
         }
@@ -61,9 +61,9 @@ public final class InvocationGuard {
                                  @FullyQualifiedName String... otherClasses) {
         checkNotNull(firstClass);
         checkNotNull(otherClasses);
-        Class callingClass = CallerProvider.instance()
-                                           .previousCallerClass();
-        ImmutableSet<@FullyQualifiedName String> allowedCallers = ImmutableSet
+        var callingClass = CallerProvider.instance()
+                                         .previousCallerClass();
+        var allowedCallers = ImmutableSet
                 .<@FullyQualifiedName String>builder()
                 .add(firstClass)
                 .add(otherClasses)
@@ -73,8 +73,8 @@ public final class InvocationGuard {
         }
     }
 
-    private static SecurityException nonAllowedCaller(@ClassGetName Class callingClass) {
-        String msg = format(
+    private static SecurityException nonAllowedCaller(@ClassGetName Class<?> callingClass) {
+        var msg = format(
                 "The class `%s` is not allowed to perform this operation.", callingClass.getName()
         );
         throw new SecurityException(msg);
