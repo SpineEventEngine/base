@@ -62,8 +62,8 @@ final class PackingIterator extends UnmodifiableIterator<Any> {
      */
     @Override
     public Any next() {
-        Message next = source.next();
-        Any result = next != null
+        var next = source.next();
+        var result = next != null
                      ? AnyPacker.pack(next)
                      : Any.getDefaultInstance();
         return result;

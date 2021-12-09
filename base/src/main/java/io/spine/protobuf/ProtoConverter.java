@@ -72,7 +72,7 @@ abstract class ProtoConverter<M extends Message, T> extends Converter<M, T> {
             converter = new PrimitiveConverter<>();
         }
         @SuppressWarnings("unchecked") // Logically checked.
-        Converter<M, T> result = (Converter<M, T>) converter;
+        var result = (Converter<M, T>) converter;
         return result;
     }
 

@@ -58,9 +58,9 @@ final class EnumConverter extends ProtoConverter<EnumValue, Enum<? extends Proto
 
     @Override
     protected Enum<? extends ProtocolMessageEnum> toObject(EnumValue input) {
-        String name = input.getName();
+        var name = input.getName();
         if (name.isEmpty()) {
-            int number = input.getNumber();
+            var number = input.getNumber();
             return findByNumber(number);
         } else {
             return findByName(name);
@@ -74,17 +74,17 @@ final class EnumConverter extends ProtoConverter<EnumValue, Enum<? extends Proto
      *         if enum constant with such a number is not present
      */
     private Enum<? extends ProtocolMessageEnum> findByNumber(int number) {
-        Enum<? extends ProtocolMessageEnum>[] constants = type.getEnumConstants();
-        for (Enum<? extends ProtocolMessageEnum> constant : constants) {
-            boolean isUnrecognized = isUnrecognized(constant);
+        var constants = type.getEnumConstants();
+        for (var constant : constants) {
+            var isUnrecognized = isUnrecognized(constant);
             if (isUnrecognized && number == -1) {
                 return constant;
             }
             if (isUnrecognized) {
                 continue;
             }
-            ProtocolMessageEnum asProtoEnum = (ProtocolMessageEnum) constant;
-            int valueNumber = asProtoEnum.getNumber();
+            var asProtoEnum = (ProtocolMessageEnum) constant;
+            var valueNumber = asProtoEnum.getNumber();
             if (number == valueNumber) {
                 return constant;
             }
@@ -105,16 +105,15 @@ final class EnumConverter extends ProtoConverter<EnumValue, Enum<? extends Proto
      */
     @SuppressWarnings({"unchecked", "rawtypes"}) // Checked at runtime.
     private Enum<? extends ProtocolMessageEnum> findByName(String name) {
-        Enum result = Enum.valueOf((Class<? extends Enum>) type, name);
+        var result = Enum.valueOf((Class<? extends Enum>) type, name);
         return (Enum<? extends ProtocolMessageEnum>) result;
     }
 
     @Override
     protected EnumValue toMessage(Enum<? extends ProtocolMessageEnum> input) {
-        String name = input.name();
-        ProtocolMessageEnum asProtoEnum = (ProtocolMessageEnum) input;
-        EnumValue value = EnumValue
-                .newBuilder()
+        var name = input.name();
+        var asProtoEnum = (ProtocolMessageEnum) input;
+        var value = EnumValue.newBuilder()
                 .setName(name)
                 .setNumber(asProtoEnum.getNumber())
                 .build();

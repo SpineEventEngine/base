@@ -28,12 +28,10 @@ package io.spine.protobuf;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 import io.spine.code.proto.FieldDeclaration;
 
-import java.util.Map;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -77,19 +75,16 @@ public final class Diff {
         checkNotNull(a);
         checkNotNull(b);
         checkArgument(a.getClass().equals(b.getClass()));
-        ImmutableSet<FieldDeclaration> fields =
-                symmetricDifference(decompose(a), decompose(b))
-                        .stream()
-                        .map(tuple -> tuple.declaration)
-                        .collect(toImmutableSet());
+        var fields = symmetricDifference(decompose(a), decompose(b)).stream()
+                .map(tuple -> tuple.declaration)
+                .collect(toImmutableSet());
         return new Diff(fields);
     }
 
     private static Set<FieldTuple> decompose(Message message) {
-        Map<FieldDescriptor, Object> fieldMap = message.getAllFields();
-        return fieldMap
-                .entrySet()
-                .stream()
+        var fieldMap = message.getAllFields();
+        var entries = fieldMap.entrySet();
+        return entries.stream()
                 .map(entry -> new FieldTuple(
                         new FieldDeclaration(entry.getKey()), entry.getValue()
                 ))
@@ -129,7 +124,7 @@ public final class Diff {
             if (!(o instanceof FieldTuple)) {
                 return false;
             }
-            FieldTuple tuple = (FieldTuple) o;
+            var tuple = (FieldTuple) o;
             return Objects.equal(declaration, tuple.declaration) &&
                     Objects.equal(value, tuple.value);
         }

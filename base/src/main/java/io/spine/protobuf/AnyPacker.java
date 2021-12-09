@@ -72,9 +72,9 @@ public final class AnyPacker {
         if (message instanceof Any) {
             return (Any) message;
         }
-        TypeUrl typeUrl = TypeUrl.from(message.getDescriptorForType());
-        String typeUrlPrefix = typeUrl.prefix();
-        Any result = Any.pack(message, typeUrlPrefix);
+        var typeUrl = TypeUrl.from(message.getDescriptorForType());
+        var typeUrlPrefix = typeUrl.prefix();
+        var result = Any.pack(message, typeUrlPrefix);
         return result;
     }
 
@@ -87,7 +87,7 @@ public final class AnyPacker {
      */
     public static Message unpack(Any any) {
         checkNotNull(any);
-        TypeUrl typeUrl = TypeUrl.ofEnclosed(any);
+        var typeUrl = TypeUrl.ofEnclosed(any);
         Class<? extends Message> messageClass = typeUrl.getMessageClass();
         return unpack(any, messageClass);
     }
@@ -116,14 +116,13 @@ public final class AnyPacker {
         checkNotNull(any);
         checkNotNull(cls);
 
-        T defaultInstance = Messages.defaultInstance(cls);
-        TypeUrl expectedTypeUrl = TypeUrl.of(defaultInstance);
+        var defaultInstance = Messages.defaultInstance(cls);
+        var expectedTypeUrl = TypeUrl.of(defaultInstance);
         checkType(any, expectedTypeUrl);
         try {
             @SuppressWarnings("unchecked")  // Ensured by the check above.
-            T result = (T) defaultInstance
-                    .getParserForType()
-                    .parseFrom(any.getValue());
+            var result = (T) defaultInstance.getParserForType()
+                                            .parseFrom(any.getValue());
             return result;
         } catch (InvalidProtocolBufferException e) {
             throw new UnexpectedTypeException(e);
@@ -164,10 +163,10 @@ public final class AnyPacker {
     public static <T extends Message> Function<@Nullable Any, @Nullable T>
     unpackFunc(Class<T> type) {
         checkNotNull(type);
-        T defaultInstance = Messages.defaultInstance(type);
+        var defaultInstance = Messages.defaultInstance(type);
         @SuppressWarnings("unchecked")
-        Parser<T> parser = (Parser<T>) defaultInstance.getParserForType();
-        TypeUrl expectedTypeUrl = TypeUrl.of(defaultInstance);
+        var parser = (Parser<T>) defaultInstance.getParserForType();
+        var expectedTypeUrl = TypeUrl.of(defaultInstance);
         return any -> any == null
                       ? null
                       : parseMessage(parser, expectedTypeUrl, any);
@@ -177,7 +176,7 @@ public final class AnyPacker {
     parseMessage(Parser<T> parser, TypeUrl expectedTypeUrl, Any any) {
         checkType(any, expectedTypeUrl);
         try {
-            T message = parser.parseFrom(any.getValue());
+            var message = parser.parseFrom(any.getValue());
             return message;
         } catch (InvalidProtocolBufferException e) {
             throw new UnexpectedTypeException(e);
@@ -185,7 +184,7 @@ public final class AnyPacker {
     }
 
     private static void checkType(Any any, TypeUrl expectedType) {
-        TypeUrl actualType = TypeUrl.ofEnclosed(any);
+        var actualType = TypeUrl.ofEnclosed(any);
         if (!actualType.equals(expectedType)) {
             throw new UnexpectedTypeException(expectedType, actualType);
         }

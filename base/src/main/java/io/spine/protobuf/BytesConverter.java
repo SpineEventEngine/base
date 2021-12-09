@@ -36,14 +36,13 @@ final class BytesConverter extends ProtoConverter<BytesValue, ByteString> {
 
     @Override
     protected ByteString toObject(BytesValue input) {
-        ByteString result = input.getValue();
+        var result = input.getValue();
         return result;
     }
 
     @Override
     protected BytesValue toMessage(ByteString input) {
-        BytesValue bytes = BytesValue
-                .newBuilder()
+        var bytes = BytesValue.newBuilder()
                 .setValue(input)
                 .build();
         return bytes;

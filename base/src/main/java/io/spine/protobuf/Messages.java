@@ -44,6 +44,7 @@ import static java.lang.String.format;
 public final class Messages {
 
     /** The name of a message builder factory method. */
+    @SuppressWarnings("unused") /* Part of the public API. */
     public static final String METHOD_NEW_BUILDER = "newBuilder";
 
     /**
@@ -68,7 +69,7 @@ public final class Messages {
     public static <M extends Message> M defaultInstance(Class<M> messageClass) {
         checkNotNull(messageClass);
         @SuppressWarnings("unchecked")  // Ensured by the `MessageCacheLoader` implementation.
-        M result = (M) defaultInstances.getUnchecked(messageClass);
+        var result = (M) defaultInstances.getUnchecked(messageClass);
         return result;
     }
 
@@ -79,12 +80,12 @@ public final class Messages {
     public static Message.Builder builderFor(Class<? extends Message> cls) {
         checkNotNull(cls);
         try {
-            Message message = defaultInstance(cls);
-            Message.Builder builder = message.toBuilder();
+            var message = defaultInstance(cls);
+            var builder = message.toBuilder();
             return builder;
         } catch (UncheckedExecutionException e) {
-            String errMsg = format("Class `%s` must be a generated proto message.",
-                                   cls.getCanonicalName());
+            var errMsg = format("Class `%s` must be a generated proto message.",
+                                cls.getCanonicalName());
             throw new IllegalArgumentException(errMsg, e);
         }
     }
@@ -97,7 +98,7 @@ public final class Messages {
         checkNotNull(msgOrAny);
         Message commandMessage;
         if (msgOrAny instanceof Any) {
-            Any any = (Any) msgOrAny;
+            var any = (Any) msgOrAny;
             commandMessage = AnyPacker.unpack(any);
         } else {
             commandMessage = msgOrAny;
@@ -120,8 +121,8 @@ public final class Messages {
      */
     public static boolean isDefault(Message object) {
         checkNotNull(object);
-        boolean result = object.getDefaultInstanceForType()
-                               .equals(object);
+        var result = object.getDefaultInstanceForType()
+                           .equals(object);
         return result;
     }
 
@@ -134,7 +135,7 @@ public final class Messages {
      */
     public static boolean isNotDefault(Message object) {
         checkNotNull(object);
-        boolean result = !isDefault(object);
+        var result = !isDefault(object);
         return result;
     }
 
