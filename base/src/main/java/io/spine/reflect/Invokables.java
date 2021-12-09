@@ -63,7 +63,7 @@ public final class Invokables {
      */
     public static MethodHandle asHandle(Method method) {
         checkNotNull(method);
-        MethodHandle result = invokePreservingAccessibility(
+        var result = invokePreservingAccessibility(
                 method,
                 Invokable::from,
                 publicLookup::unreflect,
@@ -95,8 +95,8 @@ public final class Invokables {
 
     public static <C> C callParameterlessCtor(Class<C> type) {
         checkNotNull(type);
-        Constructor<C> ctor = ensureParameterlessCtor(type);
-        C result = invokePreservingAccessibility(
+        var ctor = ensureParameterlessCtor(type);
+        var result = invokePreservingAccessibility(
                 ctor,
                 Invokable::from,
                 Constructor::newInstance,
@@ -121,7 +121,7 @@ public final class Invokables {
         checkNotNull(method);
         checkNotNull(target);
 
-        Object result = invokePreservingAccessibility(
+        var result = invokePreservingAccessibility(
                 method,
                 Invokable::from,
                 m -> m.invoke(target),
@@ -148,8 +148,8 @@ public final class Invokables {
     private static <C> Constructor<C> ensureParameterlessCtor(Class<C> type) {
         checkNotNull(type);
         @SuppressWarnings("unchecked" /* safe, as `Class<C>` only declares `Constructor<C>`. */)
-        Constructor<C>[] ctors = (Constructor<C>[]) type.getDeclaredConstructors();
-        for (Constructor<C> ctor : ctors) {
+        var ctors = (Constructor<C>[]) type.getDeclaredConstructors();
+        for (var ctor : ctors) {
             if (ctor.getParameterCount() == 0) {
                 return ctor;
             }
@@ -189,14 +189,14 @@ public final class Invokables {
                                                           Function<T, Invokable<?, ?>> makeInvokable,
                                                           ReflectiveFunction<T, R> fn,
                                                           Supplier<String> onError) {
-        Invokable<?, ?> invokable = makeInvokable.apply(reflectiveObject);
-        boolean accessible = invokable.isAccessible();
+        var invokable = makeInvokable.apply(reflectiveObject);
+        var accessible = invokable.isAccessible();
         try {
             invokable.setAccessible(true);
-            R result = fn.apply(reflectiveObject);
+            var result = fn.apply(reflectiveObject);
             return result;
         } catch (RuntimeException | ReflectiveOperationException e) {
-            String message = onError.get();
+            var message = onError.get();
             throw newIllegalStateException(e, message);
         } finally {
             invokable.setAccessible(accessible);

@@ -67,19 +67,19 @@ public final class J2Kt {
      */
     public static Optional<KCallable<?>> findKotlinMethod(Method javaMethod) {
         checkNotNull(javaMethod);
-        Class<?> javaClass = javaMethod.getDeclaringClass();
+        var javaClass = javaMethod.getDeclaringClass();
         if (!isKotlin(javaClass)) {
             return Optional.empty();
         }
         KClass<?> kotlinClass = Reflection.getOrCreateKotlinClass(javaClass);
         if (isStatic(javaMethod.getModifiers())) {
-            Optional<KClass<?>> companion = objectOrCompanion(kotlinClass);
-            if (!companion.isPresent()) {
+            var companion = objectOrCompanion(kotlinClass);
+            if (companion.isEmpty()) {
                 return Optional.empty();
             }
             kotlinClass = companion.get();
         }
-        Optional<KCallable<?>> result = tryMatch(javaMethod, kotlinClass);
+        var result = tryMatch(javaMethod, kotlinClass);
         return result;
     }
 
@@ -140,16 +140,16 @@ public final class J2Kt {
 
         @Override
         public boolean test(KCallable<?> method) {
-            boolean nameMatches = name.equals(method.getName());
+            var nameMatches = name.equals(method.getName());
             if (!nameMatches) {
                 return false;
             }
-            boolean paramsMatch = paramTypesOf(method).equals(javaParamTypes);
+            var paramsMatch = paramTypesOf(method).equals(javaParamTypes);
             return paramsMatch;
         }
 
         private static List<KType> paramTypesOf(KCallable<?> method) {
-            List<KParameter> params = method.getParameters();
+            var params = method.getParameters();
             return params.stream()
                          .skip(1) // `this` instance as the first parameter.
                          .map(KParameter::getType)

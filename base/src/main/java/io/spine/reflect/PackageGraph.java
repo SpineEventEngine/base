@@ -34,13 +34,11 @@ import com.google.common.graph.EndpointPair;
 import com.google.common.graph.Graph;
 import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.ImmutableGraph;
-import com.google.common.graph.MutableGraph;
 import com.google.errorprone.annotations.Immutable;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -69,6 +67,7 @@ import static java.util.stream.Collectors.toList;
  * </pre>
  */
 @Immutable
+@SuppressWarnings("UnstableApiUsage")   /* Using Guava. */
 public final class PackageGraph implements Graph<PackageInfo> {
 
     /** The instance to which we delegate. */
@@ -82,7 +81,7 @@ public final class PackageGraph implements Graph<PackageInfo> {
      * Obtains alphabetically sorted list of packages visible to the caller's {@code ClassLoader}.
      */
     private static ImmutableList<Package> packages() {
-        Package[] knownPackages = Package.getPackages();
+        var knownPackages = Package.getPackages();
         Arrays.sort(knownPackages, comparing(Package::getName));
         return ImmutableList.copyOf(knownPackages);
     }
@@ -116,39 +115,36 @@ public final class PackageGraph implements Graph<PackageInfo> {
      */
     public static PackageGraph matching(Predicate<Package> predicate) {
         checkNotNull(predicate);
-        List<Package> filteredPackages = filterPackages(predicate);
+        var filteredPackages = filterPackages(predicate);
         return create(filteredPackages);
     }
 
     private static List<Package> filterPackages(Predicate<Package> predicate) {
-        List<Package> result = packages().stream()
-                                         .filter(predicate)
-                                         .collect(toList());
+        var result = packages().stream()
+                .filter(predicate)
+                .collect(toList());
         return result;
     }
 
     private static PackageGraph create(List<Package> filteredPackages) {
-        Graph<PackageInfo> mutableGraph = buildGraph(filteredPackages);
-        PackageGraph result = new PackageGraph(mutableGraph);
+        var mutableGraph = buildGraph(filteredPackages);
+        var result = new PackageGraph(mutableGraph);
         return result;
     }
 
     private static Graph<PackageInfo> buildGraph(List<Package> packages) {
-        MutableGraph<PackageInfo> graph = GraphBuilder
-                .directed()
-                .nodeOrder(ElementOrder.<PackageInfo>natural())
-                .build();
+        var graph = GraphBuilder.directed()
+                                .nodeOrder(ElementOrder.<PackageInfo>natural())
+                                .build();
         Queue<Package> queue = new ArrayDeque<>(packages);
-        Package first = queue.poll();
+        var first = queue.poll();
         while (first != null) {
-            final Package current = first;
-            Optional<PackageInfo> directParent =
-                    graph.nodes()
-                         .stream()
-                         .filter((node) -> IsDirectParent.of(current)
-                                                         .test(node.getValue()))
-                         .findFirst();
-            PackageInfo newNode = PackageInfo.of(current);
+            final var current = first;
+            var directParent = graph.nodes().stream()
+                    .filter((node) -> IsDirectParent.of(current)
+                                                    .test(node.getValue()))
+                    .findFirst();
+            var newNode = PackageInfo.of(current);
             if (directParent.isPresent()) {
                 graph.putEdge(newNode, directParent.get());
             } else {
@@ -161,9 +157,9 @@ public final class PackageGraph implements Graph<PackageInfo> {
 
     @VisibleForTesting
     boolean contains(Package p) {
-        Optional<PackageInfo> result = nodes().stream()
-                                              .filter((node) -> node.isAbout(p))
-                                              .findAny();
+        var result = nodes().stream()
+                .filter((node) -> node.isAbout(p))
+                .findAny();
         return result.isPresent();
     }
 
@@ -292,15 +288,15 @@ public final class PackageGraph implements Graph<PackageInfo> {
          */
         @Override
         public boolean test(Package aPackage) {
-            String packageName = aPackage.getName();
+            var packageName = aPackage.getName();
 
             if (inclusions.stream()
-                          .anyMatch(packageName::startsWith)) {
+                    .anyMatch(packageName::startsWith)) {
                 return true;
             }
 
             return exclusions.stream()
-                             .noneMatch(packageName::startsWith);
+                    .noneMatch(packageName::startsWith);
         }
     }
 }

@@ -66,9 +66,9 @@ public final class Types {
         checkNotNull(keyClass);
         checkNotNull(valueClass);
         // @formatter:off
-        Type type = new TypeToken<Map<K, V>>() {}
-                .where(new TypeParameter<K>() {}, keyClass)
-                .where(new TypeParameter<V>() {}, valueClass)
+        var type = new TypeToken<Map<K, V>>() {}
+                .where(new TypeParameter<>() {}, keyClass)
+                .where(new TypeParameter<>() {}, valueClass)
                 .getType();
         // @formatter:on
         return type;
@@ -86,8 +86,8 @@ public final class Types {
     public static <T> Type listTypeOf(Class<T> elementClass) {
         checkNotNull(elementClass);
         // @formatter:off
-        Type type = new TypeToken<List<T>>() {}
-                    .where(new TypeParameter<T>() {}, elementClass)
+        var type = new TypeToken<List<T>>() {}
+                    .where(new TypeParameter<>() {}, elementClass)
                     .getType();
         // @formatter:on
         return type;
@@ -103,8 +103,8 @@ public final class Types {
     public static boolean isEnumClass(Type type) {
         checkNotNull(type);
         if (type instanceof Class) {
-            Class<?> cls = (Class<?>) type;
-            boolean isEnum = cls.isEnum();
+            var cls = (Class<?>) type;
+            var isEnum = cls.isEnum();
             return isEnum;
         }
         return false;
@@ -120,8 +120,8 @@ public final class Types {
     public static boolean isMessageClass(Type type) {
         checkNotNull(type);
         if (type instanceof Class) {
-            Class<?> cls = (Class<?>) type;
-            boolean isMessage = Message.class.isAssignableFrom(cls);
+            var cls = (Class<?>) type;
+            var isMessage = Message.class.isAssignableFrom(cls);
             return isMessage;
         }
         return false;
@@ -144,14 +144,13 @@ public final class Types {
      */
     public static ImmutableList<Type> resolveArguments(Type type) {
         checkNotNull(type);
-        TypeToken<?> token = TypeToken.of(type);
+        var token = TypeToken.of(type);
         TypeVariable<? extends Class<?>>[] params = token.getRawType()
                                                          .getTypeParameters();
-        ImmutableList<Type> result =
-                Arrays.stream(params)
-                      .map(token::resolveType)
-                      .map(TypeToken::getType)
-                      .collect(toImmutableList());
+        var result = Arrays.stream(params)
+                .map(token::resolveType)
+                .map(TypeToken::getType)
+                .collect(toImmutableList());
         return result;
     }
 
@@ -173,13 +172,10 @@ public final class Types {
     <T> Class<?> argumentIn(Class<? extends T> cls, Class<T> genericSuperclass, int argNumber) {
         checkNotNull(cls);
         checkNotNull(genericSuperclass);
-        TypeToken<?> supertypeToken =
-                TypeToken.of(cls)
-                         .getSupertype(genericSuperclass);
-        ImmutableList<Type> typeArgs = resolveArguments(supertypeToken.getType());
-        Type argValue = typeArgs.get(argNumber);
-        Class<?> result = TypeToken.of(argValue)
-                                   .getRawType();
+        var supertypeToken = TypeToken.of(cls).getSupertype(genericSuperclass);
+        var typeArgs = resolveArguments(supertypeToken.getType());
+        var argValue = typeArgs.get(argNumber);
+        var result = TypeToken.of(argValue).getRawType();
         return result;
     }
 }
