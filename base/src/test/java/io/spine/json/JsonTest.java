@@ -29,12 +29,10 @@ package io.spine.json;
 import com.google.common.collect.Lists;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.StringValue;
-import com.google.protobuf.TypeRegistry;
 import io.spine.json.given.Node;
 import io.spine.json.given.WrappedString;
 import io.spine.testing.UtilityClassTest;
 import io.spine.type.KnownTypes;
-import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -51,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@DisplayName("Json utility class should")
+@DisplayName("`Json` utility class should")
 class JsonTest extends UtilityClassTest<Json> {
 
     JsonTest() {
@@ -61,13 +59,12 @@ class JsonTest extends UtilityClassTest<Json> {
     @Test
     @DisplayName("build JsonFormat registry for known types")
     void knownTypes() {
-        TypeRegistry typeRegistry = Json.typeRegistry();
+        var typeRegistry = Json.typeRegistry();
 
         List<Descriptor> found = Lists.newLinkedList();
-        for (TypeUrl typeUrl : KnownTypes.instance()
-                                         .allUrls()) {
-            Descriptor descriptor = typeRegistry.find(typeUrl.toTypeName()
-                                                             .value());
+        for (var typeUrl : KnownTypes.instance().allUrls()) {
+            var descriptor = typeRegistry.find(typeUrl.toTypeName()
+                                                      .value());
             if (descriptor != null) {
                 found.add(descriptor);
             }
@@ -85,19 +82,19 @@ class JsonTest extends UtilityClassTest<Json> {
     @Test
     @DisplayName("print to JSON")
     void print() {
-        StringValue value = StringValue.of("print_to_json");
+        var value = StringValue.of("print_to_json");
         assertFalse(toJson(value).isEmpty());
     }
 
     @Test
     @DisplayName("print to compact JSON")
     void printCompact() {
-        String idValue = newUuid();
-        Node node = Node.newBuilder()
-                        .setName(idValue)
-                        .setRight(Node.getDefaultInstance())
-                        .build();
-        String result = toCompactJson(node);
+        var idValue = newUuid();
+        var node = Node.newBuilder()
+                .setName(idValue)
+                .setRight(Node.getDefaultInstance())
+                .build();
+        var result = toCompactJson(node);
         assertFalse(result.isEmpty());
         assertFalse(result.contains(System.lineSeparator()));
     }
@@ -105,9 +102,9 @@ class JsonTest extends UtilityClassTest<Json> {
     @Test
     @DisplayName("parse from JSON")
     void parse() {
-        String idValue = newUuid();
-        String jsonMessage = format("{\"value\": \"%s\"}", idValue);
-        WrappedString parsedValue = fromJson(jsonMessage, WrappedString.class);
+        var idValue = newUuid();
+        var jsonMessage = format("{\"value\": \"%s\"}", idValue);
+        var parsedValue = fromJson(jsonMessage, WrappedString.class);
         assertNotNull(parsedValue);
         assertEquals(idValue, parsedValue.getValue());
     }
@@ -115,9 +112,9 @@ class JsonTest extends UtilityClassTest<Json> {
     @Test
     @DisplayName("parse from JSON with unknown values")
     void parseUnknown() {
-        String idValue = newUuid();
-        String jsonMessage = format("{\"value\": \"%s\", \"newField\": \"newValue\"}", idValue);
-        WrappedString parsedValue = fromJson(jsonMessage, WrappedString.class);
+        var idValue = newUuid();
+        var jsonMessage = format("{\"value\": \"%s\", \"newField\": \"newValue\"}", idValue);
+        var parsedValue = fromJson(jsonMessage, WrappedString.class);
         assertNotNull(parsedValue);
         assertEquals(idValue, parsedValue.getValue());
     }
