@@ -28,7 +28,6 @@ package io.spine.validate.diags;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
-import com.google.common.truth.StringSubject;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Field;
 import io.spine.type.TypeName;
@@ -38,11 +37,11 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("ViolationText should")
+@DisplayName("`ViolationText` should")
 class ViolationTextTest {
 
     @Test
-    @DisplayName("not accept null violations")
+    @DisplayName("not accept `null` violations")
     void nullTolerance() {
         new NullPointerTester()
                 .testAllPublicStaticMethods(ViolationText.class);
@@ -51,24 +50,22 @@ class ViolationTextTest {
     @Test
     @DisplayName("include type info in the violation text")
     void includeType() {
-        TypeName type = TypeName.of(Timestamp.class);
-        ConstraintViolation violation = ConstraintViolation
-                .newBuilder()
+        var type = TypeName.of(Timestamp.class);
+        var violation = ConstraintViolation.newBuilder()
                 .setTypeName(type.value())
                 .build();
-        ViolationText text = ViolationText.of(violation);
+        var text = ViolationText.of(violation);
         assertThat(text.toString()).contains(type.value());
     }
 
     @Test
     @DisplayName("include field info in the violation text")
     void includeField() {
-        Field field = Field.parse("msg.foo.bar");
-        ConstraintViolation violation = ConstraintViolation
-                .newBuilder()
+        var field = Field.parse("msg.foo.bar");
+        var violation = ConstraintViolation.newBuilder()
                 .setFieldPath(field.path())
                 .build();
-        ViolationText text = ViolationText.of(violation);
+        var text = ViolationText.of(violation);
         assertThat(text.toString())
                 .contains(field.toString());
     }
@@ -76,16 +73,14 @@ class ViolationTextTest {
     @Test
     @DisplayName("compile tests for many violations into one")
     void compileManyTexts() {
-        ConstraintViolation first = ConstraintViolation
-                .newBuilder()
+        var first = ConstraintViolation.newBuilder()
                 .setMsgFormat("Errored with a message")
                 .build();
-        ConstraintViolation second = ConstraintViolation
-                .newBuilder()
+        var second = ConstraintViolation.newBuilder()
                 .setMsgFormat("Messaged with an error")
                 .build();
-        String text = ViolationText.ofAll(ImmutableList.of(first, second));
-        StringSubject assertText = assertThat(text);
+        var text = ViolationText.ofAll(ImmutableList.of(first, second));
+        var assertText = assertThat(text);
         assertText.contains(ViolationText.of(first).toString());
         assertText.contains(ViolationText.of(second).toString());
     }

@@ -37,14 +37,13 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
 
-@DisplayName(VALIDATION_SHOULD + "analyze (is_required) oneof option and")
+@DisplayName(VALIDATION_SHOULD + "analyze `(is_required)` oneof option and")
 class IsRequiredTest extends ValidationOfConstraintTest {
 
     @Test
     @DisplayName("throw if required field group is not set")
     void required() {
-        Meal message = Meal
-                .newBuilder()
+        var message = Meal.newBuilder()
                 .setCheese(Sauce.getDefaultInstance())
                 .buildPartial();
         validate(message);
@@ -55,12 +54,10 @@ class IsRequiredTest extends ValidationOfConstraintTest {
     @Test
     @DisplayName("not throw if required field group is set")
     void requiredSet() {
-        Fish fish = Fish
-                .newBuilder()
+        var fish = Fish.newBuilder()
                 .setDescription(newUuid())
                 .build();
-        Meal message = Meal
-                .newBuilder()
+        var message = Meal.newBuilder()
                 .setCheese(Sauce.getDefaultInstance())
                 .setFish(fish)
                 .buildPartial();
@@ -70,12 +67,10 @@ class IsRequiredTest extends ValidationOfConstraintTest {
     @Test
     @DisplayName("ignore non-required field groups")
     void notRequired() {
-        Fish fish = Fish
-                .newBuilder()
+        var fish = Fish.newBuilder()
                 .setDescription(newUuid())
                 .build();
-        Meal message = Meal
-                .newBuilder()
+        var message = Meal.newBuilder()
                 .setFish(fish)
                 .buildPartial();
         assertValid(message);

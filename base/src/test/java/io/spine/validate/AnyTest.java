@@ -26,7 +26,6 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.Any;
 import io.spine.protobuf.AnyPacker;
 import io.spine.test.validate.RequiredMsgFieldValue;
 import io.spine.test.validate.anyfields.AnyContainer;
@@ -37,43 +36,39 @@ import org.junit.jupiter.api.Test;
 import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
 import static io.spine.validate.given.MessageValidatorTestEnv.newStringValue;
 
-@DisplayName(VALIDATION_SHOULD + "when validating google.protobuf.Any")
+@DisplayName(VALIDATION_SHOULD + "when validating `google.protobuf.Any`")
 class AnyTest extends ValidationOfConstraintTest {
 
     @Test
-    @DisplayName("consider Any valid if content is valid")
+    @DisplayName("consider `Any` valid if content is valid")
     void considerAnyValidIfContentIsValid() {
-        RequiredMsgFieldValue value = RequiredMsgFieldValue
-                .newBuilder()
+        var value = RequiredMsgFieldValue.newBuilder()
                 .setValue(newStringValue())
                 .build();
-        Any content = AnyPacker.pack(value);
-        AnyContainer container = AnyContainer
-                .newBuilder()
+        var content = AnyPacker.pack(value);
+        var container = AnyContainer.newBuilder()
                 .setAny(content)
                 .build();
         assertValid(container);
     }
 
     @Test
-    @DisplayName("consider Any not valid if content is not valid")
+    @DisplayName("consider `Any` not valid if content is not valid")
     void considerAnyNotValidIfContentIsNotValid() {
-        RequiredMsgFieldValue value = RequiredMsgFieldValue.getDefaultInstance();
-        Any content = AnyPacker.pack(value);
-        AnyContainer container = AnyContainer
-                .newBuilder()
+        var value = RequiredMsgFieldValue.getDefaultInstance();
+        var content = AnyPacker.pack(value);
+        var container = AnyContainer.newBuilder()
                 .setAny(content)
                 .build();
         assertNotValid(container);
     }
 
     @Test
-    @DisplayName("consider Any valid if validation is not required")
+    @DisplayName("consider `Any` valid if validation is not required")
     void considerAnyValidIfValidationIsNotRequired() {
-        RequiredMsgFieldValue value = RequiredMsgFieldValue.getDefaultInstance();
-        Any content = AnyPacker.pack(value);
-        UncheckedAnyContainer container = UncheckedAnyContainer
-                .newBuilder()
+        var value = RequiredMsgFieldValue.getDefaultInstance();
+        var content = AnyPacker.pack(value);
+        var container = UncheckedAnyContainer.newBuilder()
                 .setAny(content)
                 .build();
         assertValid(container);
@@ -82,15 +77,13 @@ class AnyTest extends ValidationOfConstraintTest {
     @Test
     @DisplayName("validate recursive messages")
     void validateRecursiveMessages() {
-        RequiredMsgFieldValue value = RequiredMsgFieldValue.getDefaultInstance();
-        Any internalAny = AnyPacker.pack(value);
-        AnyContainer internal = AnyContainer
-                .newBuilder()
+        var value = RequiredMsgFieldValue.getDefaultInstance();
+        var internalAny = AnyPacker.pack(value);
+        var internal = AnyContainer.newBuilder()
                 .setAny(internalAny)
                 .build();
-        Any externalAny = AnyPacker.pack(internal);
-        AnyContainer external = AnyContainer
-                .newBuilder()
+        var externalAny = AnyPacker.pack(internal);
+        var external = AnyContainer.newBuilder()
                 .setAny(externalAny)
                 .build();
         assertNotValid(external);

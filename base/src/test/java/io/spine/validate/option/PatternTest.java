@@ -41,49 +41,47 @@ import static io.spine.validate.given.MessageValidatorTestEnv.EMAIL;
 import static io.spine.validate.given.MessageValidatorTestEnv.MATCH_REGEXP_MSG;
 import static java.lang.String.format;
 
-@DisplayName(VALIDATION_SHOULD + "analyze (pattern) option and")
+@DisplayName(VALIDATION_SHOULD + "analyze `(pattern)` option and")
 class PatternTest extends ValidationOfConstraintTest {
 
     @Test
     @DisplayName("find out that string matches to regex pattern")
     void findOutThatStringMatchesToRegexPattern() {
-        PatternStringFieldValue msg = patternStringFor("valid.email@mail.com");
+        var msg = patternStringFor("valid.email@mail.com");
         assertValid(msg);
     }
 
     @Test
     @DisplayName("find out that string does not match to regex pattern")
     void findOutThatStringDoesNotMatchToRegexPattern() {
-        PatternStringFieldValue msg = patternStringFor("invalid email");
+        var msg = patternStringFor("invalid email");
         assertNotValid(msg);
     }
 
     @Test
-    @DisplayName("consider field is valid if PatternOption is not set")
+    @DisplayName("consider field is valid if `PatternOption` is not set")
     void considerFieldIsValidIfNoPatternOptionSet() {
-        StringValue msg = StringValue.getDefaultInstance();
+        var msg = StringValue.getDefaultInstance();
         assertValid(msg);
     }
 
     @Test
     @DisplayName("provide one valid violation if string does not match to regex pattern")
     void provideOneValidViolationIfStringDoesNotMatchToRegexPattern() {
-        PatternStringFieldValue msg = patternStringFor("invalid email");
+        var msg = patternStringFor("invalid email");
         @Regex
         String regex = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-        String expectedErrMsg = format(MATCH_REGEXP_MSG, regex);
+        var expectedErrMsg = format(MATCH_REGEXP_MSG, regex);
         assertSingleViolation(msg, expectedErrMsg, EMAIL);
     }
 
     @Test
     @DisplayName("find out that string does not match to external regex pattern")
     void findOutThatStringDoesNotMatchExternalConstraint() {
-        SimpleStringValue stringValue = SimpleStringValue
-                .newBuilder()
+        var stringValue = SimpleStringValue.newBuilder()
                 .setValue("A wordy sentence")
                 .build();
-        WithStringValue msg = WithStringValue
-                .newBuilder()
+        var msg = WithStringValue.newBuilder()
                 .setStringValue(stringValue)
                 .build();
         assertValid(stringValue);
@@ -93,14 +91,12 @@ class PatternTest extends ValidationOfConstraintTest {
     @Test
     @DisplayName("validate with `case_insensitive` modifier")
     void caseInsensitive() {
-        AllThePatterns message = AllThePatterns
-                .newBuilder()
+        var message = AllThePatterns.newBuilder()
                 .setLetters("AbC")
                 .buildPartial();
         assertValid(message);
 
-        AllThePatterns invalid = AllThePatterns
-                .newBuilder()
+        var invalid = AllThePatterns.newBuilder()
                 .setLetters("12345")
                 .buildPartial();
         assertNotValid(invalid);
@@ -109,14 +105,12 @@ class PatternTest extends ValidationOfConstraintTest {
     @Test
     @DisplayName("validate with `multiline` modifier")
     void multiline() {
-        AllThePatterns message = AllThePatterns
-                .newBuilder()
+        var message = AllThePatterns.newBuilder()
                 .setManyLines("text" + System.lineSeparator() + "more text")
                 .buildPartial();
         assertValid(message);
 
-        AllThePatterns invalid = AllThePatterns
-                .newBuilder()
+        var invalid = AllThePatterns.newBuilder()
                 .setManyLines("single line text")
                 .buildPartial();
         assertNotValid(invalid);
@@ -125,14 +119,12 @@ class PatternTest extends ValidationOfConstraintTest {
     @Test
     @DisplayName("validate with `partial` modifier")
     void partial() {
-        AllThePatterns message = AllThePatterns
-                .newBuilder()
+        var message = AllThePatterns.newBuilder()
                 .setPartial("Hello World!")
                 .buildPartial();
         assertValid(message);
 
-        AllThePatterns invalid = AllThePatterns
-                .newBuilder()
+        var invalid = AllThePatterns.newBuilder()
                 .setPartial("123456")
                 .buildPartial();
         assertNotValid(invalid);
@@ -141,14 +133,12 @@ class PatternTest extends ValidationOfConstraintTest {
     @Test
     @DisplayName("validate with `unicode` modifier")
     void utf8() {
-        AllThePatterns message = AllThePatterns
-                .newBuilder()
+        var message = AllThePatterns.newBuilder()
                 .setUtf8("ґ")
                 .buildPartial();
         assertValid(message);
 
-        AllThePatterns invalid = AllThePatterns
-                .newBuilder()
+        var invalid = AllThePatterns.newBuilder()
                 .setUtf8("\\\\")
                 .buildPartial();
         assertNotValid(invalid);
@@ -157,16 +147,14 @@ class PatternTest extends ValidationOfConstraintTest {
     @Test
     @DisplayName("validate with `dot_all` modifier")
     void dotAll() {
-        AllThePatterns message = AllThePatterns
-                .newBuilder()
+        var message = AllThePatterns.newBuilder()
                 .setDotAll("ab" + System.lineSeparator() + "cd")
                 .buildPartial();
         assertValid(message);
     }
 
     private static PatternStringFieldValue patternStringFor(String email) {
-        return PatternStringFieldValue
-                .newBuilder()
+        return PatternStringFieldValue.newBuilder()
                 .setEmail(email)
                 .build();
     }

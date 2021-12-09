@@ -43,8 +43,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.validate.Validate.checkValidChange;
 import static io.spine.validate.Validate.violationsOf;
@@ -70,9 +68,9 @@ class ValidateTest extends UtilityClassTest<Validate> {
     @DisplayName("run custom validation " +
             "and obtain no violations if there are no custom constraints")
     void customValidation() {
-        RequiredMsgFieldValue message = RequiredMsgFieldValue.getDefaultInstance();
-        List<ConstraintViolation> violations = violationsOf(message);
-        List<ConstraintViolation> customViolations = violationsOfCustomConstraints(message);
+        var message = RequiredMsgFieldValue.getDefaultInstance();
+        var violations = violationsOf(message);
+        var customViolations = violationsOfCustomConstraints(message);
         assertThat(violations).hasSize(1);
         assertThat(customViolations).isEmpty();
     }
@@ -80,34 +78,30 @@ class ValidateTest extends UtilityClassTest<Validate> {
     @Test
     @DisplayName("format message from constraint violation")
     void formatMessageFromConstraintViolation() {
-        ConstraintViolation violation = ConstraintViolation
-                .newBuilder()
+        var violation = ConstraintViolation.newBuilder()
                 .setMsgFormat("test %s test %s")
                 .addParam("1")
                 .addParam("2")
                 .build();
-        String formatted = ViolationText.of(violation)
-                                        .toString();
+        var formatted = ViolationText.of(violation).toString();
 
         assertEquals("test 1 test 2", formatted);
     }
 
     @MuteLogging
     @Nested
-    @DisplayName("test message changes upon (set_once) and")
+    @DisplayName("test message changes upon `(set_once)` and")
     class SetOnce {
 
         private static final String BIRTHPLACE = "birthplace";
 
         @Test
-        @DisplayName("throw ValidationException if a (set_once) field is overridden")
+        @DisplayName("throw `ValidationException` if a `(set_once)` field is overridden")
         void reportIllegalChanges() {
-            Passport oldValue = Passport
-                    .newBuilder()
+            var oldValue = Passport.newBuilder()
                     .setBirthplace("Kyiv")
                     .build();
-            Passport newValue = Passport
-                    .newBuilder()
+            var newValue = Passport.newBuilder()
                     .setBirthplace("Kharkiv")
                     .build();
             checkViolated(oldValue, newValue, BIRTHPLACE);
@@ -116,25 +110,23 @@ class ValidateTest extends UtilityClassTest<Validate> {
         @Test
         @DisplayName("ignore ID changes by default")
         void reportIdChanges() {
-            Passport oldValue = Passport
-                    .newBuilder()
+            var oldValue = Passport.newBuilder()
                     .setId("MT 000100010001")
                     .build();
-            Passport newValue = Passport
-                    .newBuilder()
+            var newValue = Passport.newBuilder()
                     .setId("JC 424242424242")
                     .build();
             checkValidChange(oldValue, newValue);
         }
 
         @Test
-        @DisplayName("throw ValidationException with several violations")
+        @DisplayName("throw `ValidationException` with several violations")
         void reportManyFields() {
-            Passport oldValue = Passport.newBuilder()
+            var oldValue = Passport.newBuilder()
                     .setId("MT 111")
                     .setBirthplace("London")
                     .build();
-            Passport newValue = Passport.newBuilder()
+            var newValue = Passport.newBuilder()
                     .setId("JC 424")
                     .setBirthplace("Edinburgh")
                     .build();
@@ -144,41 +136,40 @@ class ValidateTest extends UtilityClassTest<Validate> {
         @Test
         @DisplayName("allow overriding repeated fields")
         void ignoreRepeated() {
-            Passport oldValue = Passport.newBuilder()
+            var oldValue = Passport.newBuilder()
                     .addPhoto(Url.newBuilder().setSpec("foo.bar/pic1").build())
                     .build();
-            Passport newValue = Passport.getDefaultInstance();
+            var newValue = Passport.getDefaultInstance();
             checkValidChange(oldValue, newValue);
         }
 
         @Test
-        @DisplayName("allow overriding if (set_once) = false")
+        @DisplayName("allow overriding if `(set_once) = false`")
         void ignoreNonSetOnce() {
-            Passport oldValue = Passport.getDefaultInstance();
-            PersonName name = PersonName.newBuilder()
+            var oldValue = Passport.getDefaultInstance();
+            var name = PersonName.newBuilder()
                     .setGivenName("John")
                     .setFamilyName("Doe")
                     .build();
-            Passport newValue = Passport.newBuilder()
+            var newValue = Passport.newBuilder()
                     .setName(name)
                     .build();
             checkValidChange(oldValue, newValue);
         }
 
         private void checkViolated(Passport oldValue, Passport newValue, String... fields) {
-            ValidationException exception =
-                    assertThrows(ValidationException.class,
+            var exception = assertThrows(ValidationException.class,
                                  () -> checkValidChange(oldValue, newValue));
-            List<ConstraintViolation> violations = exception.getConstraintViolations();
+            var violations = exception.getConstraintViolations();
             assertThat(violations).hasSize(fields.length);
 
-            for (int i = 0; i < fields.length; i++) {
-                ConstraintViolation violation = violations.get(i);
-                String field = fields[i];
+            for (var i = 0; i < fields.length; i++) {
+                var violation = violations.get(i);
+                var field = fields[i];
 
                 assertThat(violation.getMsgFormat()).contains("(set_once)");
 
-                String expectedTypeName = TypeName.of(newValue).value();
+                var expectedTypeName = TypeName.of(newValue).value();
                 assertThat(violation.getTypeName()).contains(expectedTypeName);
 
                 assertThat(violation.getFieldPath())

@@ -42,59 +42,52 @@ import static io.spine.base.Identifier.newUuid;
 import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName(VALIDATION_SHOULD + "analyze (goes) option and find out that ")
+@DisplayName(VALIDATION_SHOULD + "analyze `(goes)` option and find out that ")
 final class GoesTest extends ValidationOfConstraintTest {
 
-    @DisplayName("(goes).with fields are both optional")
+    @DisplayName("`(goes).with` fields are both optional")
     @Test
     void goesWithFieldsAreBothOptional() {
-        Payment msg = Payment
-                .newBuilder()
+        var msg = Payment.newBuilder()
                 .setDescription("Scheduled payment")
                 .build();
         assertValid(msg);
     }
 
-    @DisplayName("(goes).with fields are not filled simultaneously")
+    @DisplayName("`(goes).with` fields are not filled simultaneously")
     @Test
     void goesWithFieldsShouldBeFilledSimultaneously() {
-        PaymentId id = PaymentId
-                .newBuilder()
+        var id = PaymentId.newBuilder()
                 .setUuid(newUuid())
                 .build();
-        Payment withId = Payment
-                .newBuilder()
+        var withId = Payment.newBuilder()
                 .setId(id)
                 .build();
         assertNotValid(withId);
 
-        Payment withTimestamp = Payment
-                .newBuilder()
+        var withTimestamp = Payment.newBuilder()
                 .setTimestamp(Timestamps.MAX_VALUE)
                 .build();
         assertNotValid(withTimestamp);
     }
 
-    @DisplayName("(goes).with fields are filled simultaneously")
+    @DisplayName("`(goes).with` fields are filled simultaneously")
     @Test
     void goesWithFieldsAreFilledSimultaneously() {
-        PaymentId id = PaymentId
-                .newBuilder()
+        var id = PaymentId.newBuilder()
                 .setUuid(newUuid())
                 .build();
-        Payment msg = Payment
-                .newBuilder()
+        var msg = Payment.newBuilder()
                 .setId(id)
                 .setTimestamp(Timestamps.MAX_VALUE)
                 .build();
         assertValid(msg);
     }
 
-    @DisplayName("(goes).with field is not found")
+    @DisplayName("`(goes).with` field is not found")
     @Test
     void findOutThatGoesWithFieldIsNotFound() {
-        WithFieldNotFound msg = WithFieldNotFound
-                .newBuilder()
+        var msg = WithFieldNotFound.newBuilder()
                 .setId(newUuid())
                 .setAvatar(ByteString.copyFrom(new byte[]{0, 1, 2}))
                 .build();
@@ -105,19 +98,16 @@ final class GoesTest extends ValidationOfConstraintTest {
                 .contains("user_id");
     }
 
-    @DisplayName("(goes).with is set as external constraint")
+    @DisplayName("`(goes).with` is set as external constraint")
     @Test
     void findOutThatGoesWithIsSetAsExternalConstraint() {
-        PaymentId id = PaymentId
-                .newBuilder()
+        var id = PaymentId.newBuilder()
                 .setUuid(newUuid())
                 .build();
-        PaymentData data = PaymentData
-                .newBuilder()
+        var data = PaymentData.newBuilder()
                 .setTimestamp(Timestamps.MAX_VALUE)
                 .build();
-        PaymentWithExternalConstraint msg = PaymentWithExternalConstraint
-                .newBuilder()
+        var msg = PaymentWithExternalConstraint.newBuilder()
                 .setId(id)
                 .setData(data)
                 .build();

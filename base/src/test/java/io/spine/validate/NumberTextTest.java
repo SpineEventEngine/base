@@ -47,7 +47,7 @@ class NumberTextTest {
     @Test
     @DisplayName("have a correct equality relationship")
     void testEquals() {
-        EqualsTester equalsTester = new EqualsTester();
+        var equalsTester = new EqualsTester();
         equalsTester.addEqualityGroup(new NumberText("0.0"), new NumberText("0.0"))
                     .addEqualityGroup(new NumberText("0.1"), new NumberText("0.10"))
                     .testEquals();
@@ -56,42 +56,42 @@ class NumberTextTest {
     @Test
     @DisplayName("recognize that two numbers have different types")
     void differentTypeTest() {
-        String plainNumber = "1";
-        String numberWithDecimalPart = "1.0";
-        NumberText plain = new NumberText(plainNumber);
-        NumberText withDecimal = new NumberText(numberWithDecimalPart);
+        var plainNumber = "1";
+        var numberWithDecimalPart = "1.0";
+        var plain = new NumberText(plainNumber);
+        var withDecimal = new NumberText(numberWithDecimalPart);
         assertFalse(plain.isOfSameType(withDecimal));
     }
 
     @Test
     @DisplayName("recognize that two numbers are of the same types")
     void sameTypeTest() {
-        String fitsIntoByte = "4";
-        String maxInteger = String.valueOf(Integer.MAX_VALUE);
-        NumberText small = new NumberText(fitsIntoByte);
-        NumberText large = new NumberText(maxInteger);
+        var fitsIntoByte = "4";
+        var maxInteger = String.valueOf(Integer.MAX_VALUE);
+        var small = new NumberText(fitsIntoByte);
+        var large = new NumberText(maxInteger);
         assertTrue(small.isOfSameType(large));
     }
 
     @Test
     @DisplayName("compare values")
     void comparisonTest() {
-        String smallerValue = "0.1";
-        String largerValue = "15";
-        NumberText smaller = new NumberText(smallerValue);
-        NumberText larger = new NumberText(largerValue);
-        int comparison = smaller.toNumber()
+        var smallerValue = "0.1";
+        var largerValue = "15";
+        var smaller = new NumberText(smallerValue);
+        var larger = new NumberText(largerValue);
+        var comparison = smaller.toNumber()
                                 .compareTo(larger.toNumber());
         assertTrue(comparison < 0);
     }
 
     @Test
-    @DisplayName("store numbers that do not fit into int")
+    @DisplayName("store numbers that do not fit into `int`")
     void testDoesNotFitIntoInt() {
-        String longMaxValue = String.valueOf(Long.MAX_VALUE);
-        String lessThanLongMaxValue = String.valueOf(Long.MAX_VALUE - 1);
-        NumberText larger = new NumberText(longMaxValue);
-        NumberText smaller = new NumberText(lessThanLongMaxValue);
+        var longMaxValue = String.valueOf(Long.MAX_VALUE);
+        var lessThanLongMaxValue = String.valueOf(Long.MAX_VALUE - 1);
+        var larger = new NumberText(longMaxValue);
+        var smaller = new NumberText(lessThanLongMaxValue);
         assertEquals(1, larger.toNumber()
                               .compareTo(smaller.toNumber()));
     }
@@ -100,7 +100,7 @@ class NumberTextTest {
     @MethodSource("textNumbers")
     @DisplayName("stringify values")
     void toStringTest(Number input, String expected) {
-        NumberText text = new NumberText(input);
+        var text = new NumberText(input);
         assertEquals(expected, text.toString());
     }
 

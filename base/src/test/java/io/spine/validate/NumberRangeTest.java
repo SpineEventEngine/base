@@ -26,7 +26,6 @@
 
 package io.spine.validate;
 
-import com.google.common.truth.StringSubject;
 import com.google.protobuf.DoubleValue;
 import com.google.protobuf.Message;
 import io.spine.test.validate.InvalidBound;
@@ -51,11 +50,11 @@ import static io.spine.validate.given.MessageValidatorTestEnv.LESS_THAN_MIN;
 import static io.spine.validate.given.MessageValidatorTestEnv.VALUE;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName(VALIDATION_SHOULD + "analyze (min) and (max) options and")
+@DisplayName(VALIDATION_SHOULD + "analyze `(min)` and `(max)` options and")
 class NumberRangeTest extends ValidationOfConstraintTest {
 
     @Test
-    @DisplayName("Consider number field is valid if no number options set")
+    @DisplayName("consider number field is valid if no number options set")
     void considerNumberFieldIsValidIfNoNumberOptionsSet() {
         Message nonZeroValue = DoubleValue.newBuilder()
                                           .setValue(5)
@@ -152,10 +151,9 @@ class NumberRangeTest extends ValidationOfConstraintTest {
     @Test
     @DisplayName("not allow fraction boundaries for integer fields")
     void fractionsBounds() {
-        IllegalStateException exception =
-                assertThrows(IllegalStateException.class,
+        var exception = assertThrows(IllegalStateException.class,
                              () -> validate(InvalidBound.getDefaultInstance()));
-        StringSubject assertMessage = assertThat(exception).hasMessageThat();
+        var assertMessage = assertThat(exception).hasMessageThat();
         assertMessage
                 .contains("2.71");
         assertMessage
@@ -164,12 +162,10 @@ class NumberRangeTest extends ValidationOfConstraintTest {
 
     private void minNumberTest(double value, boolean inclusive, boolean valid) {
         Message msg = inclusive
-                      ? MinInclusiveNumberFieldValue
-                              .newBuilder()
+                      ? MinInclusiveNumberFieldValue.newBuilder()
                               .setValue(value)
                               .build()
-                      : MinExclusiveNumberFieldValue
-                              .newBuilder()
+                      : MinExclusiveNumberFieldValue.newBuilder()
                               .setValue(value)
                               .build();
         validate(msg);
@@ -178,12 +174,10 @@ class NumberRangeTest extends ValidationOfConstraintTest {
 
     private void maxNumberTest(double value, boolean inclusive, boolean valid) {
         Message msg = inclusive
-                      ? MaxInclusiveNumberFieldValue
-                              .newBuilder()
+                      ? MaxInclusiveNumberFieldValue.newBuilder()
                               .setValue(value)
                               .build()
-                      : MaxExclusiveNumberFieldValue
-                              .newBuilder()
+                      : MaxExclusiveNumberFieldValue.newBuilder()
                               .setValue(value)
                               .build();
         validate(msg);

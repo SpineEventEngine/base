@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
 
-@DisplayName(VALIDATION_SHOULD + "analyze (distinct) option and")
+@DisplayName(VALIDATION_SHOULD + "analyze `(distinct)` option and")
 final class DistinctTest extends ValidationOfConstraintTest {
 
     @Test
@@ -50,8 +50,7 @@ final class DistinctTest extends ValidationOfConstraintTest {
 
         @Test
         void enums() {
-            DistinctValues msg = DistinctValues
-                    .newBuilder()
+            var msg = DistinctValues.newBuilder()
                     .addEnums(DistinctValues.Planet.EARTH)
                     .addEnums(DistinctValues.Planet.MARS)
                     .addEnums(DistinctValues.Planet.JUPITER)
@@ -61,8 +60,7 @@ final class DistinctTest extends ValidationOfConstraintTest {
 
         @Test
         void ints() {
-            DistinctValues msg = DistinctValues
-                    .newBuilder()
+            var msg = DistinctValues.newBuilder()
                     .addInts(1)
                     .addInts(2)
                     .addInts(3)
@@ -72,8 +70,7 @@ final class DistinctTest extends ValidationOfConstraintTest {
 
         @Test
         void strings() {
-            DistinctValues msg = DistinctValues
-                    .newBuilder()
+            var msg = DistinctValues.newBuilder()
                     .addStrings("First")
                     .addStrings("Second")
                     .addStrings("Third")
@@ -83,8 +80,7 @@ final class DistinctTest extends ValidationOfConstraintTest {
 
         @Test
         void messages() {
-            DistinctValues msg = DistinctValues
-                    .newBuilder()
+            var msg = DistinctValues.newBuilder()
                     .addMessages(customMessageOf(1))
                     .addMessages(customMessageOf(2))
                     .addMessages(customMessageOf(3))
@@ -99,8 +95,7 @@ final class DistinctTest extends ValidationOfConstraintTest {
 
         @Test
         void enums() {
-            DistinctValues msg = DistinctValues
-                    .newBuilder()
+            var msg = DistinctValues.newBuilder()
                     .addEnums(DistinctValues.Planet.EARTH)
                     .addEnums(DistinctValues.Planet.EARTH)
                     .addEnums(DistinctValues.Planet.JUPITER)
@@ -110,8 +105,7 @@ final class DistinctTest extends ValidationOfConstraintTest {
 
         @Test
         void ints() {
-            DistinctValues msg = DistinctValues
-                    .newBuilder()
+            var msg = DistinctValues.newBuilder()
                     .addInts(1)
                     .addInts(2)
                     .addInts(1)
@@ -121,8 +115,7 @@ final class DistinctTest extends ValidationOfConstraintTest {
 
         @Test
         void strings() {
-            DistinctValues msg = DistinctValues
-                    .newBuilder()
+            var msg = DistinctValues.newBuilder()
                     .addStrings("First")
                     .addStrings("Second")
                     .addStrings("First")
@@ -132,8 +125,7 @@ final class DistinctTest extends ValidationOfConstraintTest {
 
         @Test
         void messages() {
-            DistinctValues msg = DistinctValues
-                    .newBuilder()
+            var msg = DistinctValues.newBuilder()
                     .addMessages(customMessageOf(1))
                     .addMessages(customMessageOf(2))
                     .addMessages(customMessageOf(1))
@@ -148,8 +140,7 @@ final class DistinctTest extends ValidationOfConstraintTest {
 
         @Test
         void enums() {
-            DistinctValues msg = DistinctValues
-                    .newBuilder()
+            var msg = DistinctValues.newBuilder()
                     .addEnums(DistinctValues.Planet.EARTH)
                     .addEnums(DistinctValues.Planet.EARTH)
                     .addEnums(DistinctValues.Planet.JUPITER)
@@ -159,8 +150,7 @@ final class DistinctTest extends ValidationOfConstraintTest {
 
         @Test
         void ints() {
-            DistinctValues msg = DistinctValues
-                    .newBuilder()
+            var msg = DistinctValues.newBuilder()
                     .addInts(1)
                     .addInts(2)
                     .addInts(1)
@@ -170,8 +160,7 @@ final class DistinctTest extends ValidationOfConstraintTest {
 
         @Test
         void strings() {
-            DistinctValues msg = DistinctValues
-                    .newBuilder()
+            var msg = DistinctValues.newBuilder()
                     .addStrings("First")
                     .addStrings("Second")
                     .addStrings("First")
@@ -181,8 +170,7 @@ final class DistinctTest extends ValidationOfConstraintTest {
 
         @Test
         void messages() {
-            DistinctValues msg = DistinctValues
-                    .newBuilder()
+            var msg = DistinctValues.newBuilder()
                     .addMessages(customMessageOf(1))
                     .addMessages(customMessageOf(2))
                     .addMessages(customMessageOf(1))
@@ -191,16 +179,14 @@ final class DistinctTest extends ValidationOfConstraintTest {
         }
 
         private DistinctValuesWithExternalConstraint withExternalConstraint(DistinctValues value) {
-            return DistinctValuesWithExternalConstraint
-                    .newBuilder()
+            return DistinctValuesWithExternalConstraint.newBuilder()
                     .setDistinctValues(value)
                     .build();
         }
     }
 
     private static DistinctValues.CustomMessage customMessageOf(long value) {
-        return DistinctValues.CustomMessage
-                .newBuilder()
+        return DistinctValues.CustomMessage.newBuilder()
                 .setValue(value)
                 .build();
     }

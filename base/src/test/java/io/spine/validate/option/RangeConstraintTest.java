@@ -28,11 +28,9 @@ package io.spine.validate.option;
 
 import com.google.common.collect.BoundType;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Range;
 import com.google.common.collect.Sets;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.test.type.Url;
-import io.spine.validate.ComparableNumber;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -55,10 +53,11 @@ class RangeConstraintTest {
     @MethodSource("validRanges")
     @DisplayName("be able to parse valid range strings")
     void acceptProperRanges(String range, BoundType expected) {
-        Range<ComparableNumber> result = RangeConstraint.rangeFromOption(range, aDeclaration());
+        var result = RangeConstraint.rangeFromOption(range, aDeclaration());
         assertEquals(expected, result.upperBoundType());
     }
 
+    @SuppressWarnings("unused") /* Serves as a method source. */
     private static Stream<Arguments> validRanges() {
         return Stream.of(
                 Arguments.of("[1..2]", BoundType.CLOSED),
@@ -76,6 +75,7 @@ class RangeConstraintTest {
                      () -> RangeConstraint.rangeFromOption(badRange, aDeclaration()));
     }
 
+    @SuppressWarnings("unused") /* Serves as a method source. */
     private static ImmutableSet<Arguments> badRanges() {
         return argumentsFrom(
                 "{3..5]",
@@ -101,15 +101,16 @@ class RangeConstraintTest {
         assertIllegalArgument(() -> rangeFromOption(emptyRange, aDeclaration()));
     }
 
+    @SuppressWarnings("unused") /* Serves as a method source. */
     private static Set<Arguments> emptyRanges() {
-        int right = 0;
-        int left = right + 1;
-        ImmutableSet<Arguments> leftGreaterThanRight =
+        var right = 0;
+        var left = right + 1;
+        var leftGreaterThanRight =
                 rangeCombinationsFor(left,
                                      right,
                                      ImmutableSet.of('[', '('),
                                      ImmutableSet.of(']', ')'));
-        Arguments closedWithSameNumber = arguments("(0..0)");
+        var closedWithSameNumber = arguments("(0..0)");
         return Sets.union(leftGreaterThanRight, ImmutableSet.of(closedWithSameNumber));
     }
 
@@ -118,26 +119,22 @@ class RangeConstraintTest {
                          Number right,
                          ImmutableSet<Character> leftBoundary,
                          ImmutableSet<Character> rightBoundary) {
-        ImmutableSet<String> lefts = leftBoundary
-                .stream()
+        var lefts = leftBoundary.stream()
                 .map(boundary -> String.valueOf(boundary) + left + "..")
                 .collect(toImmutableSet());
-        ImmutableSet<String> rights = rightBoundary
-                .stream()
+        var rights = rightBoundary.stream()
                 .map(boundary -> String.valueOf(right) + boundary)
                 .collect(toImmutableSet());
-        ImmutableSet<Arguments> result =
-                Sets.cartesianProduct(lefts, rights)
-                    .stream()
-                    .flatMap(product -> Stream.of(product.get(0) + product.get(1)))
-                    .map(Arguments::of)
-                    .collect(toImmutableSet());
+        var result = Sets.cartesianProduct(lefts, rights).stream()
+                .flatMap(product -> Stream.of(product.get(0) + product.get(1)))
+                .map(Arguments::of)
+                .collect(toImmutableSet());
         return result;
     }
 
     private static ImmutableSet<Arguments> argumentsFrom(Object... elements) {
         ImmutableSet.Builder<Arguments> builder = ImmutableSet.builder();
-        for (Object element : elements) {
+        for (var element : elements) {
             builder.add(Arguments.of(element));
         }
         return builder.build();

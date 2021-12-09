@@ -32,23 +32,21 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("ValidationException should")
+@DisplayName("`ValidationException` should")
 class ValidationExceptionTest {
 
     @Test
-    @DisplayName("provide ValidationError")
+    @DisplayName("provide `ValidationError`")
     void error() {
-        ImmutableList<ConstraintViolation> violations =
-                ImmutableList.of(ConstraintViolation
-                                         .newBuilder()
+        var violations =
+                ImmutableList.of(ConstraintViolation.newBuilder()
                                          .setTypeName("example.org/example.Type")
                                          .setMsgFormat("Test error")
                                          .build());
-        ValidationException exception = new ValidationException(violations);
+        var exception = new ValidationException(violations);
         assertThat(exception.asValidationError())
-             .isEqualTo(ValidationError
-                                .newBuilder()
-                                .addAllConstraintViolation(violations)
-                                .build());
+                .isEqualTo(ValidationError.newBuilder()
+                                   .addAllConstraintViolation(violations)
+                                   .build());
     }
 }

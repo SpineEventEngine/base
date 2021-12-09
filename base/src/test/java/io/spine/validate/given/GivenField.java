@@ -26,7 +26,6 @@
 
 package io.spine.validate.given;
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.proto.FieldContext;
 import io.spine.test.validate.field.Message;
 
@@ -37,20 +36,20 @@ public class GivenField {
     }
 
     public static FieldContext mapContext() {
-        FieldDescriptor mapField = Message.getDescriptor()
-                                          .findFieldByName("map");
+        var mapField = Message.getDescriptor()
+                              .findFieldByName("map");
         return FieldContext.create(mapField);
     }
 
     public static FieldContext repeatedContext() {
-        FieldDescriptor repeatedField = Message.getDescriptor()
-                                               .findFieldByName("repeated");
+        var repeatedField = Message.getDescriptor()
+                                   .findFieldByName("repeated");
         return FieldContext.create(repeatedField);
     }
 
     public static FieldContext scalarContext() {
-        FieldDescriptor scalarField = Message.getDescriptor()
-                                             .findFieldByName("scalar");
+        var scalarField = Message.getDescriptor()
+                                 .findFieldByName("scalar");
         return FieldContext.create(scalarField);
     }
 }

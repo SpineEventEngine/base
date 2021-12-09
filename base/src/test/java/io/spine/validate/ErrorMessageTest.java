@@ -27,7 +27,6 @@
 package io.spine.validate;
 
 import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.option.OptionsProto;
 import io.spine.test.validate.CustomMessageRequiredByteStringFieldValue;
@@ -48,59 +47,53 @@ class ErrorMessageTest extends ValidationOfConstraintTest {
     @Test
     @DisplayName("Message field is NOT set")
     void msgNotSet() {
-        CustomMessageRequiredMsgFieldValue invalidMsg =
-                CustomMessageRequiredMsgFieldValue.getDefaultInstance();
+        var invalidMsg = CustomMessageRequiredMsgFieldValue.getDefaultInstance();
         assertErrorMessage(invalidMsg);
     }
 
     @Test
     @DisplayName("String field is NOT set")
     void stringNotSet() {
-        CustomMessageRequiredStringFieldValue invalidMsg =
-                CustomMessageRequiredStringFieldValue.getDefaultInstance();
+        var invalidMsg = CustomMessageRequiredStringFieldValue.getDefaultInstance();
         assertErrorMessage(invalidMsg);
     }
 
     @Test
     @DisplayName("ByteString field is NOT set")
     void bytesNotSet() {
-        CustomMessageRequiredByteStringFieldValue invalidMsg =
-                CustomMessageRequiredByteStringFieldValue.getDefaultInstance();
+        var invalidMsg = CustomMessageRequiredByteStringFieldValue.getDefaultInstance();
         assertErrorMessage(invalidMsg);
     }
 
     @Test
     @DisplayName("repeated field is NOT set")
     void repeatedNotSet() {
-        CustomMessageRequiredRepeatedMsgFieldValue invalidMsg =
-                CustomMessageRequiredRepeatedMsgFieldValue.getDefaultInstance();
+        var invalidMsg = CustomMessageRequiredRepeatedMsgFieldValue.getDefaultInstance();
         assertErrorMessage(invalidMsg);
     }
 
     @Test
     @DisplayName("Enum field is NOT set")
     void enumNotSet() {
-        CustomMessageRequiredEnumFieldValue invalidMsg =
-                CustomMessageRequiredEnumFieldValue.getDefaultInstance();
+        var invalidMsg = CustomMessageRequiredEnumFieldValue.getDefaultInstance();
         assertErrorMessage(invalidMsg);
     }
 
     private void assertErrorMessage(Message message) {
         assertNotValid(message);
-        Descriptor descriptor = message.getDescriptorForType();
-        String expectedErrorMessage = customErrorMessageFrom(descriptor);
+        var descriptor = message.getDescriptorForType();
+        var expectedErrorMessage = customErrorMessageFrom(descriptor);
         checkErrorMessage(expectedErrorMessage);
     }
 
     private void checkErrorMessage(String expectedMessage) {
-        ConstraintViolation constraintViolation = firstViolation();
+        var constraintViolation = firstViolation();
         assertEquals(expectedMessage, constraintViolation.getMsgFormat());
     }
 
     @SuppressWarnings("deprecation") /* Old validation won't migrate to the new error messages. */
     private static String customErrorMessageFrom(Descriptor descriptor) {
-        FieldDescriptor firstFieldDescriptor = descriptor.getFields()
-                                                         .get(0);
+        var firstFieldDescriptor = descriptor.getFields().get(0);
         return firstFieldDescriptor.getOptions()
                                    .getExtension(OptionsProto.ifMissing)
                                    .getMsgFormat();

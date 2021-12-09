@@ -63,99 +63,93 @@ final class FieldValidatingOptionTest {
 
     @BeforeAll
     static void beforeClass() {
-        MessageType externalConstraint = new MessageType(ATestMessageConstraint.getDescriptor());
+        var externalConstraint = new MessageType(ATestMessageConstraint.getDescriptor());
         ExternalConstraints.updateFrom(ImmutableSet.of(externalConstraint));
     }
 
     @DisplayName("return empty value if option is not present in external or field constraints")
     @Test
     void returnEmptyValueIfNotPresent() {
-        ATestMessageWithConstraint msg = ATestMessageWithConstraint.getDefaultInstance();
-        MessageValue value = MessageValue.atTopLevel(msg);
-        FieldValue fieldValue = valueField(value);
-        MaxLength maxLength = new MaxLength();
+        var msg = ATestMessageWithConstraint.getDefaultInstance();
+        var value = MessageValue.atTopLevel(msg);
+        var fieldValue = valueField(value);
+        var maxLength = new MaxLength();
         assertThat(maxLength.valueFrom(fieldValue.context())).isEmpty();
     }
 
     @DisplayName("return value if option is present in external constraint only")
     @Test
     void returnValueIfOptionIsPresentInExternalConstraint() {
-        FieldValue fieldValue = valueFieldWithExternalConstraint();
-        MaxLength maxLength = new MaxLength();
+        var fieldValue = valueFieldWithExternalConstraint();
+        var maxLength = new MaxLength();
         assertThat(maxLength.valueFrom(fieldValue.context())).isPresent();
     }
 
     @DisplayName("return value if option is present in field option")
     @Test
     void returnValueIfOptionIsPresentInFieldOption() {
-        ATestMessage msg = ATestMessage
-                .newBuilder()
+        var msg = ATestMessage.newBuilder()
                 .setValue(randomString())
                 .build();
-        MessageValue value = MessageValue.atTopLevel(msg);
-        FieldValue fieldValue = valueField(value);
-        MaxLength maxLength = new MaxLength();
+        var value = MessageValue.atTopLevel(msg);
+        var fieldValue = valueField(value);
+        var maxLength = new MaxLength();
         assertThat(maxLength.valueFrom(fieldValue.context())).isPresent();
     }
 
     @DisplayName("throw `IllegalStateException` if a specified option is not a field option")
     @Test
     void throwISEIfOptionIsNotPresentInFieldOption() {
-        ATestMessageWithConstraint msg = ATestMessageWithConstraint.getDefaultInstance();
-        MessageValue value = atTopLevel(msg);
-        FieldValue fieldValue = valueField(value);
-        MaxLength maxLength = new MaxLength();
+        var msg = ATestMessageWithConstraint.getDefaultInstance();
+        var value = atTopLevel(msg);
+        var fieldValue = valueField(value);
+        var maxLength = new MaxLength();
         assertIllegalState(() -> maxLength.optionValue(fieldValue.context()));
     }
 
     @DisplayName("not validate field if option is not present in external or field constraints")
     @Test
     void notValidateIfOptionNotPresent() {
-        NoValidationTestMessage msg = NoValidationTestMessage
-                .newBuilder()
+        var msg = NoValidationTestMessage.newBuilder()
                 .setValue(randomString())
                 .build();
-        MessageValue value = MessageValue.atTopLevel(msg);
-        FieldValue fieldValue = valueField(value);
-        MaxLength maxLength = new MaxLength();
+        var value = MessageValue.atTopLevel(msg);
+        var fieldValue = valueField(value);
+        var maxLength = new MaxLength();
         assertFalse(maxLength.shouldValidate(fieldValue.context()));
     }
 
     @DisplayName("validate field if option is present in external constraint")
     @Test
     void validateIfOptionIsPresentInExternalConstraint() {
-        FieldValue fieldValue = valueFieldWithExternalConstraint();
-        MaxLength maxLength = new MaxLength();
+        var fieldValue = valueFieldWithExternalConstraint();
+        var maxLength = new MaxLength();
         assertTrue(maxLength.shouldValidate(fieldValue.context()));
     }
 
     @DisplayName("validate field if option is present in field option")
     @Test
     void validateIfOptionIsPresentInFieldOption() {
-        ATestMessage msg = ATestMessage
-                .newBuilder()
+        var msg = ATestMessage.newBuilder()
                 .setValue(randomString())
                 .build();
-        MessageValue value = MessageValue.atTopLevel(msg);
-        FieldValue fieldValue = valueField(value);
-        MaxLength maxLength = new MaxLength();
+        var value = MessageValue.atTopLevel(msg);
+        var fieldValue = valueField(value);
+        var maxLength = new MaxLength();
         assertTrue(maxLength.shouldValidate(fieldValue.context()));
     }
 
     private static FieldValue valueFieldWithExternalConstraint() {
-        NoValidationTestMessage testMessage = NoValidationTestMessage
-                .newBuilder()
+        var testMessage = NoValidationTestMessage.newBuilder()
                 .setValue(randomString())
                 .build();
-        ATestMessageWithExternalConstraintOnly msg = ATestMessageWithExternalConstraintOnly
-                .newBuilder()
+        var msg = ATestMessageWithExternalConstraintOnly.newBuilder()
                 .setMessage(testMessage)
                 .build();
-        MessageValue value = MessageValue.atTopLevel(msg);
-        FieldValue messageValue = value
-                .valueOf("message")
+        var value = MessageValue.atTopLevel(msg);
+        var messageValue = value.valueOf("message")
                 .orElseGet(Assertions::fail);
-        MessageValue withExternalConstraints = MessageValue
+        var withExternalConstraints = MessageValue
                 .nestedIn(messageValue.context(), (Message) messageValue.singleValue());
         return valueField(withExternalConstraints);
     }
@@ -203,18 +197,18 @@ final class FieldValidatingOptionTest {
 
         @Override
         public ImmutableList<ConstraintViolation> validate(MessageValue containingMessage) {
-            FieldValue value = containingMessage.valueOf(field());
+            var value = containingMessage.valueOf(field());
             int maxLength = optionValue();
-            FieldContext context = value.context();
+            var context = value.context();
             return value.nonDefault()
                         .filter(val -> val.toString().length() > maxLength)
                         .map(val -> ConstraintViolation.newBuilder()
-                                                       .setFieldPath(context.fieldPath())
-                                                       .setTypeName(containingMessage.declaration()
-                                                                                     .name()
-                                                                                     .value())
-                                                       .setMsgFormat(errorMessage(context))
-                                                       .build())
+                                .setFieldPath(context.fieldPath())
+                                .setTypeName(containingMessage.declaration()
+                                                              .name()
+                                                              .value())
+                                .setMsgFormat(errorMessage(context))
+                                .build())
                         .collect(toImmutableList());
         }
     }
