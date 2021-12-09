@@ -97,8 +97,7 @@ public final class RecordQueryTestEnv {
     }
 
     public static RecordQueryBuilder<ManufacturerId, Manufacturer> conjunctiveBuilder() {
-        RecordQueryBuilder<ManufacturerId, Manufacturer> withPredicates =
-                conjunctivePredicates().apply(queryManufacturer());
+        var withPredicates = conjunctivePredicates().apply(queryManufacturer());
         return withMaskSortingAndLimit(withPredicates);
 
     }

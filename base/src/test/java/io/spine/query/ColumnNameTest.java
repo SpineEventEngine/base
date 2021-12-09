@@ -27,7 +27,6 @@
 package io.spine.query;
 
 import com.google.common.testing.NullPointerTester;
-import com.google.protobuf.Descriptors;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.test.code.proto.CoProject;
 import org.junit.jupiter.api.DisplayName;
@@ -50,16 +49,16 @@ class ColumnNameTest {
     @Test
     @DisplayName("be constructed from string value")
     void initFromString() {
-        String columnName = "the-column-name";
-        ColumnName name = ColumnName.of(columnName);
+        var columnName = "the-column-name";
+        var name = ColumnName.of(columnName);
 
         assertThat(name.value()).isEqualTo(columnName);
     }
 
-    @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
-    // Called to throw exception.
     @Test
     @DisplayName("not be constructed from empty string")
+    @SuppressWarnings({"CheckReturnValue",
+            "ResultOfMethodCallIgnored" /* Called to trigger the exception. */ })
     void notInitFromEmpty() {
         assertThrows(IllegalArgumentException.class, () -> ColumnName.of(""));
     }
@@ -67,11 +66,11 @@ class ColumnNameTest {
     @Test
     @DisplayName("be constructed from `FieldDeclaration`")
     void initFromFieldDeclaration() {
-        Descriptors.FieldDescriptor field = CoProject.getDescriptor()
-                                                     .getFields()
-                                                     .get(0);
-        FieldDeclaration fieldDeclaration = new FieldDeclaration(field);
-        ColumnName columnName = ColumnName.of(fieldDeclaration);
+        var field = CoProject.getDescriptor()
+                             .getFields()
+                             .get(0);
+        var fieldDeclaration = new FieldDeclaration(field);
+        var columnName = ColumnName.of(fieldDeclaration);
 
         assertThat(columnName.value()).isEqualTo(field.getName());
     }
