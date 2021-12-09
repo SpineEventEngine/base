@@ -126,29 +126,29 @@ class IdentifierTest {
     }
 
     @Nested
-    @DisplayName("recognize type by supported Message type")
+    @DisplayName("recognize type by supported `Message` type")
     class RecognizeType {
 
         @Test
-        @DisplayName("INTEGER")
+        @DisplayName("`INTEGER`")
         void ofInteger() {
             assertTrue(INTEGER.matchMessage(toMessage(10)));
         }
 
         @Test
-        @DisplayName("LONG")
+        @DisplayName("`LONG`")
         void ofLong() {
             assertTrue(LONG.matchMessage(toMessage(1020L)));
         }
 
         @Test
-        @DisplayName("STRING")
+        @DisplayName("`STRING`")
         void ofString() {
             assertTrue(STRING.matchMessage(toMessage("")));
         }
 
         @Test
-        @DisplayName("MESSAGE")
+        @DisplayName("`MESSAGE`")
         void ofMessage() {
             assertTrue(MESSAGE.matchMessage(Timestamp.getDefaultInstance()));
 
@@ -209,13 +209,13 @@ class IdentifierTest {
         }
 
         @Test
-        @DisplayName("a Message with a field of Message type, which has the default value")
+        @DisplayName("a `Message` with a field of `Message` type, which has the default value")
         void defaultNestedMessage() {
             assertEmpty(TimestampFieldId.getDefaultInstance());
         }
 
         private void assertEmpty(Object id) {
-            String str = Identifier.toString(id);
+            var str = Identifier.toString(id);
             assertThat(str).isEqualTo(EMPTY_ID);
         }
     }
@@ -293,11 +293,11 @@ class IdentifierTest {
         @Test
         @DisplayName("wrapped `Integer`")
         void ofWrappedInteger() {
-            int value = 1024;
-            Int32Value id = Int32Value.of(value);
-            String expected = Integer.toString(value);
+            var value = 1024;
+            var id = Int32Value.of(value);
+            var expected = Integer.toString(value);
 
-            String actual = Identifier.toString(id);
+            var actual = Identifier.toString(id);
 
             assertEquals(expected, actual);
         }
@@ -305,11 +305,11 @@ class IdentifierTest {
         @Test
         @DisplayName("wrapped `Long`")
         void ofWrappedLong() {
-            long value = 100500L;
-            Int64Value id = Int64Value.of(value);
-            String expected = Long.toString(value);
+            var value = 100500L;
+            var id = Int64Value.of(value);
+            var expected = Long.toString(value);
 
-            String actual = Identifier.toString(id);
+            var actual = Identifier.toString(id);
 
             assertEquals(expected, actual);
         }
@@ -323,9 +323,9 @@ class IdentifierTest {
         @Test
         @DisplayName("wrapped `String`")
         void ofWrappedString() {
-            StringValue id = StringValue.of(TEST_ID);
+            var id = StringValue.of(TEST_ID);
 
-            String result = Identifier.toString(id);
+            var result = Identifier.toString(id);
 
             assertEquals(TEST_ID, result);
         }
@@ -333,9 +333,9 @@ class IdentifierTest {
         @Test
         @DisplayName("`Message` with string field")
         void ofMessage() {
-            StringValue id = StringValue.of(TEST_ID);
+            var id = StringValue.of(TEST_ID);
 
-            String result = Identifier.toString(id);
+            var result = Identifier.toString(id);
 
             assertEquals(TEST_ID, result);
         }
@@ -343,12 +343,12 @@ class IdentifierTest {
         @Test
         @DisplayName("`Message` with nested `Message`")
         void ofNestedMessage() {
-            StringValue value = StringValue.of(TEST_ID);
-            NestedMessageId idToConvert = NestedMessageId.newBuilder()
+            var value = StringValue.of(TEST_ID);
+            var idToConvert = NestedMessageId.newBuilder()
                     .setId(value)
                     .build();
 
-            String result = Identifier.toString(idToConvert);
+            var result = Identifier.toString(idToConvert);
 
             assertEquals(TEST_ID, result);
         }
@@ -356,10 +356,10 @@ class IdentifierTest {
         @Test
         @DisplayName("`Any`")
         void ofAny() {
-            StringValue messageToWrap = StringValue.of(TEST_ID);
-            Any any = AnyPacker.pack(messageToWrap);
+            var messageToWrap = StringValue.of(TEST_ID);
+            var any = AnyPacker.pack(messageToWrap);
 
-            String result = Identifier.toString(any);
+            var result = Identifier.toString(any);
 
             assertEquals(TEST_ID, result);
         }
@@ -368,23 +368,23 @@ class IdentifierTest {
     @Test
     @DisplayName("provide string conversion of messages with several fields")
     void toStringSeveralFields() {
-        String nestedString = "nested_string";
-        String outerString = "outer_string";
-        int number = 256;
+        var nestedString = "nested_string";
+        var outerString = "outer_string";
+        var number = 256;
 
-        StringValue nestedMessageString = StringValue.of(nestedString);
-        SeveralFieldsId idToConvert = SeveralFieldsId.newBuilder()
+        var nestedMessageString = StringValue.of(nestedString);
+        var idToConvert = SeveralFieldsId.newBuilder()
                 .setString(outerString)
                 .setNumber(number)
                 .setMessage(nestedMessageString)
                 .build();
 
-        String expected =
+        var expected =
                 "string=\"" + outerString + '\"' +
                         " number=" + number +
                         " message { value=\"" + nestedString + "\" }";
 
-        String actual = Identifier.toString(idToConvert);
+        var actual = Identifier.toString(idToConvert);
 
         assertEquals(expected, actual);
     }
@@ -418,7 +418,7 @@ class IdentifierTest {
         @Test
         @DisplayName("`String`")
         void stringValue() {
-            String value = getClass().getSimpleName();
+            var value = getClass().getSimpleName();
             assertEquals(value, STRING.fromMessage(toMessage(value)));
         }
     }
@@ -484,9 +484,9 @@ class IdentifierTest {
         @Test
         @DisplayName("Any with StringValue and cast")
         void anyWithStringValue() {
-            StringValue testIdMessage = StringValue.of(TEST_ID);
-            Any any = AnyPacker.pack(testIdMessage);
-            String unpackedId = Identifier.unpack(any, String.class);
+            var testIdMessage = StringValue.of(TEST_ID);
+            var any = AnyPacker.pack(testIdMessage);
+            var unpackedId = Identifier.unpack(any, String.class);
             assertEquals(testIdMessage.getValue(), unpackedId);
         }
 
@@ -541,7 +541,7 @@ class IdentifierTest {
         }
 
         FieldDescriptor field(int index) {
-            FieldDescriptor field =
+            var field =
                     SeveralFieldsId.getDescriptor()
                                    .getFields()
                                    .get(index);
@@ -597,7 +597,7 @@ class IdentifierTest {
     @Test
     @DisplayName("allow event `Empty` as a `Message`-based ID")
     void throwOnUnpacking() {
-        Any packedEmpty = AnyPacker.pack(Empty.getDefaultInstance());
+        var packedEmpty = AnyPacker.pack(Empty.getDefaultInstance());
 
         assertThat(Identifier.unpack(packedEmpty))
                 .isEqualTo(Empty.getDefaultInstance());

@@ -63,7 +63,7 @@ class TimeTest {
     @Test
     @DisplayName("accept `TimeProvider`")
     void acceptProvider() {
-        Timestamp fiveMinutesAgo = subtract(currentTime(), DURATION_5_MINUTES);
+        var fiveMinutesAgo = subtract(currentTime(), DURATION_5_MINUTES);
 
         setProvider(new ConstantTimeProvider(fiveMinutesAgo));
 
@@ -77,7 +77,7 @@ class TimeTest {
     @Test
     @DisplayName("reset `TimeProvider` to default value")
     void reset() {
-        Timestamp aMinuteAgo = subtract(systemTime(), DURATION_1_MINUTE);
+        var aMinuteAgo = subtract(systemTime(), DURATION_1_MINUTE);
 
         setProvider(new ConstantTimeProvider(aMinuteAgo));
         resetProvider();
@@ -111,9 +111,9 @@ class TimeTest {
         @DisplayName("which returns incremental emulated values if called several times" +
                 " within a single point of wall-clock time")
         void differentValuesForTheSameTime() {
-            Instant now = Instant.now();
-            long seconds = now.getEpochSecond();
-            int nanos = now.getNano();
+            var now = Instant.now();
+            var seconds = now.getEpochSecond();
+            var nanos = now.getNano();
             assertThat(IncrementalNanos.valueForTime(seconds, nanos))
                     .isLessThan(IncrementalNanos.valueForTime(seconds, nanos));
         }
@@ -122,13 +122,13 @@ class TimeTest {
         @Test
         @DisplayName("which returns zero nanosecond value for each new point in time")
         void resetsNanosForNewInstant() {
-            Instant now = Instant.now();
-            Instant oneMsLater = now.plus(1, ChronoUnit.MILLIS);
+            var now = Instant.now();
+            var oneMsLater = now.plus(1, ChronoUnit.MILLIS);
             IncrementalNanos
                     .valueForTime(now.getEpochSecond(), now.getNano()); // Ignore this value.
-            long oneMsLaterSeconds = oneMsLater.getEpochSecond();
-            int oneMsLaterNanos = oneMsLater.getNano();
-            int value = IncrementalNanos.valueForTime(oneMsLaterSeconds, oneMsLaterNanos);
+            var oneMsLaterSeconds = oneMsLater.getEpochSecond();
+            var oneMsLaterNanos = oneMsLater.getNano();
+            var value = IncrementalNanos.valueForTime(oneMsLaterSeconds, oneMsLaterNanos);
             assertThat(value).isEqualTo(0);
         }
     }
@@ -144,7 +144,7 @@ class TimeTest {
     @Test
     @DisplayName("obtain current time zone")
     void timeZone() {
-        ZoneId zoneId = Time.currentTimeZone();
+        var zoneId = Time.currentTimeZone();
         assertThat(zoneId).isEqualTo(ZoneId.systemDefault());
     }
 

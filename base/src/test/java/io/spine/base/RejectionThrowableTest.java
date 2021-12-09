@@ -25,7 +25,6 @@
  */
 package io.spine.base;
 
-import com.google.common.collect.ImmutableList;
 import com.google.protobuf.AbstractMessage;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors;
@@ -34,13 +33,11 @@ import com.google.protobuf.Message;
 import com.google.protobuf.Parser;
 import com.google.protobuf.UnknownFieldSet;
 import com.google.protobuf.util.Timestamps;
-import io.spine.validate.ConstraintViolation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
-import java.util.Optional;
 
 import static io.spine.testing.Assertions.assertIllegalState;
 import static io.spine.testing.Assertions.assertNpe;
@@ -82,10 +79,10 @@ class RejectionThrowableTest {
         assertFalse(rejectionThrowable.producerId()
                                       .isPresent());
 
-        RejectionThrowable retVal = rejectionThrowable.initProducer(producer);
+        var retVal = rejectionThrowable.initProducer(producer);
 
         assertSame(rejectionThrowable, retVal);
-        Optional<Any> optional = rejectionThrowable.producerId();
+        var optional = rejectionThrowable.producerId();
         assertTrue(optional.isPresent());
         assertEquals(producer, optional.get());
     }
@@ -98,7 +95,7 @@ class RejectionThrowableTest {
     }
 
     @Test
-    @DisplayName("not allow null producer")
+    @DisplayName("not allow `null` producer")
     void prohibitNullProducer() {
         assertNpe(() -> rejectionThrowable.initProducer(nullRef()));
     }
@@ -116,7 +113,7 @@ class RejectionThrowableTest {
 
         private static final long serialVersionUID = 0L;
 
-        private TestRejectionThrowable(@SuppressWarnings("rawtypes") RejectionMessage rejection) {
+        private TestRejectionThrowable(RejectionMessage rejection) {
             super(rejection);
         }
     }
@@ -131,7 +128,7 @@ class RejectionThrowableTest {
      * the Spine Protobuf Compiler plugin. However, in this module we're unable to use the plugin,
      * so this fake implementation is declared.
      */
-    @SuppressWarnings({"ReturnOfNull", "Immutable", "rawtypes"}) // OK for a fake.
+    @SuppressWarnings({"ReturnOfNull", "Immutable"}) // OK for a fake.
     private static class FakeRejectionMessage extends AbstractMessage implements RejectionMessage {
 
         private static final long serialVersionUID = 0L;

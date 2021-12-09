@@ -36,7 +36,7 @@ public class AppEngineStandard extends AppEngine {
 
     @Override
     protected boolean enabled() {
-        String propertyValue = System.getProperty(ENV_KEY);
+        var propertyValue = System.getProperty(ENV_KEY);
         return activeValue().equalsIgnoreCase(propertyValue);
     }
 

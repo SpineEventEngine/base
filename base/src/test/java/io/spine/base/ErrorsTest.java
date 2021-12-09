@@ -57,7 +57,7 @@ class ErrorsTest extends UtilityClassTest<Errors> {
 
         @BeforeEach
         void createExceptions() {
-            String causeMessage = randomString();
+            var causeMessage = randomString();
             cause = new RuntimeException(causeMessage);
             throwable = new IllegalStateException(cause);
         }
@@ -65,8 +65,8 @@ class ErrorsTest extends UtilityClassTest<Errors> {
         @Test
         @DisplayName("with error code")
         void withCode() {
-            int errorCode = 404;
-            Error error = causeOf(throwable, errorCode);
+            var errorCode = 404;
+            var error = causeOf(throwable, errorCode);
 
             assertHasCause(error);
             assertThat(error.getCode())
@@ -76,7 +76,7 @@ class ErrorsTest extends UtilityClassTest<Errors> {
         @Test
         @DisplayName("without error code")
         void withoutCode() {
-            Error error = causeOf(throwable);
+            var error = causeOf(throwable);
 
             assertHasCause(error);
         }
@@ -91,10 +91,10 @@ class ErrorsTest extends UtilityClassTest<Errors> {
     @Test
     @DisplayName("convert throwable to `Error`")
     void convertThrowableToError() {
-        String expected = newUuid();
-        RuntimeException throwable = new RuntimeException(expected);
+        var expected = newUuid();
+        var throwable = new RuntimeException(expected);
 
-        Error error = fromThrowable(throwable);
+        var error = fromThrowable(throwable);
 
         assertThat(error.getMessage())
                 .isEqualTo(expected);
@@ -103,9 +103,9 @@ class ErrorsTest extends UtilityClassTest<Errors> {
     @Test
     @DisplayName("convert `ValidationException` into an error with `validation_error`")
     void validation() {
-        ConstraintViolation violation = ConstraintViolation.newBuilder().build();
-        ValidationException exception = new ValidationException(ImmutableList.of(violation));
-        Error error = fromThrowable(exception);
+        var violation = ConstraintViolation.newBuilder().build();
+        var exception = new ValidationException(ImmutableList.of(violation));
+        var error = fromThrowable(exception);
         assertThat(error.getValidationError())
                 .isEqualTo(exception.asValidationError());
     }

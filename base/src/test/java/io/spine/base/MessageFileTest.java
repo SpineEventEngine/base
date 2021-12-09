@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("MessageFile should")
+@DisplayName("`MessageFile` should")
 class MessageFileTest {
 
     @Nested
@@ -46,15 +46,14 @@ class MessageFileTest {
         @Test
         @DisplayName("accepting the file with matching suffix")
         void acceptingEligibleFile() {
-            FileDescriptor descriptor = MessageFileEventsProto.getDescriptor();
+            var descriptor = MessageFileEventsProto.getDescriptor();
             assertTrue(MessageFile.EVENTS.test(descriptor.toProto()));
         }
 
         @Test
         @DisplayName("rejecting the file with non-matching suffix")
         void rejectingNonEligibleFile() {
-            FileDescriptor descriptor = Any.getDescriptor()
-                                           .getFile();
+            var descriptor = Any.getDescriptor().getFile();
             assertFalse(MessageFile.EVENTS.test(descriptor.toProto()));
         }
     }

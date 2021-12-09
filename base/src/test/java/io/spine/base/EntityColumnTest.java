@@ -50,10 +50,10 @@ class EntityColumnTest {
     @Test
     @DisplayName("expose the its attributes")
     void exposeColumnName() {
-        String columnName = "some-column";
-        Class<Timestamp> returningType = Timestamp.class;
-        EntityColumn<FakeEntityState, Timestamp> column =
-                new EntityColumn<>(columnName, returningType, (r) -> Time.currentTime());
+        var columnName = "some-column";
+        var returningType = Timestamp.class;
+        var column = new EntityColumn<FakeEntityState, Timestamp>(columnName, returningType,
+                                                                  (r) -> Time.currentTime());
         assertThat(column.name().value()).isEqualTo(columnName);
         assertThat(column.type()).isEqualTo(returningType);
     }

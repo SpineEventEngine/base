@@ -55,7 +55,7 @@ class RejectionTypeTest {
         @Test
         @DisplayName("a throwable class")
         void throwableClass() {
-            ClassName expected =
+            var expected =
                     ClassName.of(type.javaPackage().value() + '.' + type.descriptor().getName());
             assertThat(type.throwableClass())
                     .isEqualTo(expected);
@@ -64,7 +64,7 @@ class RejectionTypeTest {
         @Test
         @DisplayName("a message class")
         void messageClass() {
-            ClassName expected = ClassName.from(DESCRIPTOR);
+            var expected = ClassName.from(DESCRIPTOR);
             assertThat(type.messageClass())
                     .isEqualTo(expected);
         }
