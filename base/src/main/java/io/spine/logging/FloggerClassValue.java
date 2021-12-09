@@ -60,10 +60,9 @@ final class FloggerClassValue extends ClassValue<FluentLogger> {
     }
 
     private static Constructor<FluentLogger> ctor() {
-        Class<LoggerBackend> loggerBackendClass = LoggerBackend.class;
+        var loggerBackendClass = LoggerBackend.class;
         try {
-            Constructor<FluentLogger> constructor =
-                    FluentLogger.class.getDeclaredConstructor(loggerBackendClass);
+            var constructor = FluentLogger.class.getDeclaredConstructor(loggerBackendClass);
             constructor.setAccessible(true);
             return constructor;
         } catch (NoSuchMethodException e) {
@@ -78,9 +77,9 @@ final class FloggerClassValue extends ClassValue<FluentLogger> {
     @Override
     protected FluentLogger computeValue(Class<?> type) {
         checkNotNull(type);
-        LoggerBackend backend = Platform.getBackend(type.getName());
+        var backend = Platform.getBackend(type.getName());
         try {
-            FluentLogger logger = constructor.newInstance(backend);
+            var logger = constructor.newInstance(backend);
             return logger;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             logger.atSevere()
