@@ -26,7 +26,6 @@
 
 package io.spine.util;
 
-import com.google.common.truth.StringSubject;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import io.spine.testing.TestValues;
@@ -66,8 +65,7 @@ class Preconditions2Test extends UtilityClassTest<Preconditions2> {
         }
 
         private void assertThrowsWithMessage(String arg, String errorMessage) {
-            IllegalArgumentException exception =
-                    assertIllegalArgument(() -> checkNotEmptyOrBlank(arg, errorMessage));
+            var exception = assertIllegalArgument(() -> checkNotEmptyOrBlank(arg, errorMessage));
             assertThat(exception).hasMessageThat()
                                  .contains(errorMessage);
         }
@@ -77,16 +75,16 @@ class Preconditions2Test extends UtilityClassTest<Preconditions2> {
         void nullStr() {
             assertNpe(() -> checkNotEmptyOrBlank(null));
 
-            String errorTemplateBase = randomString();
-            String[] errorArg = { randomString(), randomString() };
-            String errorTemplate = errorTemplateBase + "%s %s";
+            var errorTemplateBase = randomString();
+            var errorArg = new String[]{randomString(), randomString()};
+            var errorTemplate = errorTemplateBase + "%s %s";
 
-            NullPointerException exception = assertThrows(
+            var exception = assertThrows(
                     NullPointerException.class,
                     () -> checkNotEmptyOrBlank(null, errorTemplate, errorArg[0], errorArg[1])
             );
 
-            StringSubject assertExceptionMessage = assertThat(exception).hasMessageThat();
+            var assertExceptionMessage = assertThat(exception).hasMessageThat();
             assertExceptionMessage.contains(errorTemplateBase);
             assertExceptionMessage.contains(errorArg[0]);
             assertExceptionMessage.contains(errorArg[1]);
@@ -114,11 +112,11 @@ class Preconditions2Test extends UtilityClassTest<Preconditions2> {
     }
 
     @Nested
-    @DisplayName("Check that a value is positive")
+    @DisplayName("check that a value is positive")
     class PositiveValue {
 
         private void assertThrowsOn(long value) {
-            IllegalArgumentException exception =
+            var exception =
                     assertThrows(IllegalArgumentException.class,
                                  () -> checkPositive(value));
             assertThat(exception)
@@ -127,7 +125,7 @@ class Preconditions2Test extends UtilityClassTest<Preconditions2> {
         }
 
         private void assertThrowsWithMessage(long value, String errorMessage) {
-            IllegalArgumentException exception =
+            var exception =
                     assertThrows(IllegalArgumentException.class,
                                  () -> checkPositive(value, errorMessage));
             assertThat(exception).hasMessageThat()
@@ -151,7 +149,7 @@ class Preconditions2Test extends UtilityClassTest<Preconditions2> {
         @Test
         @DisplayName("accepting and returning it")
         void positive() {
-            long expected = TestValues.longRandom(1, 100_000);
+            var expected = TestValues.longRandom(1, 100_000);
             assertThat(checkPositive(expected))
                     .isEqualTo(expected);
         }
@@ -164,7 +162,7 @@ class Preconditions2Test extends UtilityClassTest<Preconditions2> {
     }
 
     @Nested
-    @DisplayName("Check that a message is not in the default state")
+    @DisplayName("check that a message is not in the default state")
     class NotDefaultMessage {
 
         private final Message defaultValue = StringValue.getDefaultInstance();
@@ -180,7 +178,7 @@ class Preconditions2Test extends UtilityClassTest<Preconditions2> {
         void stateChecking() {
             assertIllegalState(() -> checkNotDefaultState(defaultValue));
 
-            IllegalStateException exception =
+            var exception =
                     assertThrows(IllegalStateException.class,
                                  () -> checkNotDefaultState(defaultValue, customErrorMessage));
             assertThat(exception).hasMessageThat()
@@ -191,7 +189,7 @@ class Preconditions2Test extends UtilityClassTest<Preconditions2> {
         @DisplayName("throwing `IllegalArgumentException` for argument checks")
         void argumentChecking() {
             assertIllegalArgument(() -> checkNotDefaultArg(defaultValue));
-            IllegalArgumentException exception =
+            var exception =
                     assertThrows(IllegalArgumentException.class,
                                  () -> checkNotDefaultArg(defaultValue, customErrorMessage));
             assertThat(exception)
@@ -202,7 +200,7 @@ class Preconditions2Test extends UtilityClassTest<Preconditions2> {
         @Test
         @DisplayName("return non-default value on check")
         void returnValue() {
-            StringValue nonDefault = newUuidValue();
+            var nonDefault = newUuidValue();
             assertEquals(nonDefault, checkNotDefaultArg(nonDefault));
             assertEquals(nonDefault, checkNotDefaultArg(nonDefault, customErrorMessage));
             assertEquals(nonDefault, checkNotDefaultState(nonDefault));
