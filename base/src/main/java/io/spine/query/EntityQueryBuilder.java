@@ -26,7 +26,6 @@
 
 package io.spine.query;
 
-import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.base.EntityState;
 import io.spine.base.SubscribableField;
@@ -50,6 +49,7 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
  *         the type of a particular {@link EntityQuery} implementation which this builder
  *         is aimed to build
  */
+@SuppressWarnings("AbstractClassNeverImplemented") /* Part of the public API. */
 public abstract class EntityQueryBuilder<I,
                                          S extends EntityState<I>,
                                          B extends EntityQueryBuilder<I, S, B, Q>,
@@ -94,11 +94,12 @@ public abstract class EntityQueryBuilder<I,
      * @return this instance of query builder, for chaining
      */
     @CanIgnoreReturnValue
+    @SuppressWarnings("unused") /* Part of the public API. */
     public final B withMask(SubscribableField... fields) {
-        ImmutableList<String> paths = Arrays.stream(fields)
-                                            .map(f -> f.getField()
-                                                       .toString())
-                                            .collect(toImmutableList());
+        var paths = Arrays.stream(fields)
+                .map(f -> f.getField()
+                           .toString())
+                .collect(toImmutableList());
         return withMask(paths);
     }
 
@@ -117,8 +118,8 @@ public abstract class EntityQueryBuilder<I,
      */
     public final <T> T build(Function<EntityQuery<?, ?, ?>, T> transformer) {
         checkNotNull(transformer);
-        Q query = build();
-        T result = transformer.apply(query);
+        var query = build();
+        var result = transformer.apply(query);
         return result;
     }
 }

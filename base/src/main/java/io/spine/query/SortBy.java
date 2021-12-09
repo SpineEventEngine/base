@@ -63,6 +63,7 @@ public final class SortBy<C extends RecordColumn<R, ?>, R extends Message> {
     /**
      * Returns the direction, in which the column values should be sorted.
      */
+    @SuppressWarnings("unused") /* Part of the public API. */
     public Direction direction() {
         return direction;
     }
@@ -75,7 +76,7 @@ public final class SortBy<C extends RecordColumn<R, ?>, R extends Message> {
         if (!(o instanceof SortBy)) {
             return false;
         }
-        SortBy<?, ?> by = (SortBy<?, ?>) o;
+        var by = (SortBy<?, ?>) o;
         return column.equals(by.column) &&
                 direction == by.direction;
     }

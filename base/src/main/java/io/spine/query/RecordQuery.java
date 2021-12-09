@@ -95,7 +95,7 @@ public final class RecordQuery<I, R extends Message>
      * field masks, sorting, or limit are ignored.
      */
     public final RecordQuery<I, R> and(RecordPredicates<I, R> builder) {
-        RecordQuery<I, R> result = joinToRootPredicate(builder, AND);
+        var result = joinToRootPredicate(builder, AND);
         return result;
     }
 
@@ -107,15 +107,15 @@ public final class RecordQuery<I, R extends Message>
      * field masks, sorting, or limit are ignored.
      */
     public final RecordQuery<I, R> either(RecordPredicates<I, R> predicates) {
-        RecordQuery<I, R> result = joinToRootPredicate(predicates, OR);
+        var result = joinToRootPredicate(predicates, OR);
         return result;
     }
 
     @SuppressWarnings({"ReturnValueIgnored", "ResultOfMethodCallIgnored"}) /* Adjusting builders. */
     private RecordQuery<I, R> joinToRootPredicate(RecordPredicates<I, R> predicates,
                                                   LogicalOperator operator) {
-        QueryPredicate<R> sourcePredicate = subject().predicate();
-        RecordQueryBuilder<I, R> originBuilder = toBuilder();
+        var sourcePredicate = subject().predicate();
+        var originBuilder = toBuilder();
         if(sourcePredicate.operator() == operator.counterpart()) {
             QueryPredicate.Builder<R> newRoot = QueryPredicate.newBuilder(operator);
             newRoot.addPredicate(sourcePredicate);
@@ -126,7 +126,7 @@ public final class RecordQuery<I, R extends Message>
         } else {
             originBuilder.either(predicates::apply);
         }
-        RecordQuery<I, R> result = originBuilder.build();
+        var result = originBuilder.build();
         return result;
     }
 }

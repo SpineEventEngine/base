@@ -64,7 +64,7 @@ final class CartesianProducts {
         checkNotNull(simpleParams);
         checkNotNull(expression);
         checkNotNull(result);
-        for (SubjectParameter<R, ?, ?> givenParam : simpleParams) {
+        for (var givenParam : simpleParams) {
             paramOverSimpleParams(givenParam, expression.params(), result);
             paramOverCustomParams(givenParam, expression.customParams(), result);
             paramOverChildren(givenParam, expression.children(), result);
@@ -88,7 +88,7 @@ final class CartesianProducts {
         checkNotNull(children);
         checkNotNull(expression);
         checkNotNull(result);
-        for (Expression<R, ?> firstChild : children) {
+        for (var firstChild : children) {
             childOverSimpleParams(firstChild, expression.params(), result);
             childOverCustomParams(firstChild, expression.customParams(), result);
             childOverChildren(firstChild, expression.children(), result);
@@ -112,7 +112,7 @@ final class CartesianProducts {
         checkNotNull(customParams);
         checkNotNull(expression);
         checkNotNull(result);
-        for (CustomSubjectParameter<?, ?> customParam : customParams) {
+        for (var customParam : customParams) {
             customOverSimple(customParam, expression, result);
             customOverCustom(customParam, expression, result);
             customOverChildren(customParam, expression, result);
@@ -132,11 +132,11 @@ final class CartesianProducts {
     void paramOverSimpleParams(SubjectParameter<R, ?, ?> param,
                                ImmutableList<SubjectParameter<R, ?, ?>> simpleParams,
                                OrBuilder<R> result) {
-        for (SubjectParameter<R, ?, ?> simpleParam : simpleParams) {
+        for (var simpleParam : simpleParams) {
             AndBuilder<R> childBuilder = AndExpression.newBuilder();
-            AndExpression<R> childAnd = childBuilder.addParam(param)
-                                                    .addParam(simpleParam)
-                                                    .build();
+            var childAnd = childBuilder.addParam(param)
+                                       .addParam(simpleParam)
+                                       .build();
             result.addExpression(childAnd);
         }
     }
@@ -154,11 +154,11 @@ final class CartesianProducts {
     void paramOverCustomParams(SubjectParameter<R, ?, ?> param,
                                ImmutableList<CustomSubjectParameter<?, ?>> customParams,
                                OrBuilder<R> result) {
-        for (CustomSubjectParameter<?, ?> customParam : customParams) {
+        for (var customParam : customParams) {
             AndBuilder<R> childBuilder = AndExpression.newBuilder();
-            AndExpression<R> childAnd = childBuilder.addParam(param)
-                                                    .addCustomParam(customParam)
-                                                    .build();
+            var childAnd = childBuilder.addParam(param)
+                                       .addCustomParam(customParam)
+                                       .build();
             result.addExpression(childAnd);
         }
     }
@@ -175,11 +175,10 @@ final class CartesianProducts {
     private static <R> void paramOverChildren(SubjectParameter<R, ?, ?> param,
                                               ImmutableList<Expression<R, ?>> children,
                                               OrBuilder<R> result) {
-        for (Expression<R, ?> child : children) {
+        for (var child : children) {
             AndBuilder<R> childBuilder = AndExpression.newBuilder();
             addChild(child, childBuilder);
-            AndExpression<R> childAnd = childBuilder.addParam(param)
-                                                    .build();
+            var childAnd = childBuilder.addParam(param).build();
             result.addExpression(childAnd);
         }
     }
@@ -196,11 +195,10 @@ final class CartesianProducts {
     private static <R> void customOverChildren(CustomSubjectParameter<?, ?> customParam,
                                                OrExpression<R> expression,
                                                OrBuilder<R> result) {
-        for (Expression<R, ?> secondChild : expression.children()) {
+        for (var secondChild : expression.children()) {
             AndBuilder<R> childBuilder = AndExpression.newBuilder();
             addChild(secondChild, childBuilder);
-            AndExpression<R> childAnd = childBuilder.addCustomParam(customParam)
-                                                    .build();
+            var childAnd = childBuilder.addCustomParam(customParam).build();
             result.addExpression(childAnd);
         }
     }
@@ -217,11 +215,11 @@ final class CartesianProducts {
     private static <R> void customOverCustom(CustomSubjectParameter<?, ?> customParam,
                                              OrExpression<R> second,
                                              OrBuilder<R> result) {
-        for (CustomSubjectParameter<?, ?> secondCustom : second.customParams()) {
+        for (var secondCustom : second.customParams()) {
             AndBuilder<R> childBuilder = AndExpression.newBuilder();
-            AndExpression<R> childAnd = childBuilder.addCustomParam(customParam)
-                                                    .addCustomParam(secondCustom)
-                                                    .build();
+            var childAnd = childBuilder.addCustomParam(customParam)
+                                       .addCustomParam(secondCustom)
+                                       .build();
             result.addExpression(childAnd);
         }
     }
@@ -238,11 +236,11 @@ final class CartesianProducts {
     private static <R> void customOverSimple(CustomSubjectParameter<?, ?> customParam,
                                              OrExpression<R> expression,
                                              OrBuilder<R> result) {
-        for (SubjectParameter<R, ?, ?> secondParam : expression.params()) {
+        for (var secondParam : expression.params()) {
             AndBuilder<R> childBuilder = AndExpression.newBuilder();
-            AndExpression<R> childAnd = childBuilder.addCustomParam(customParam)
-                                                    .addParam(secondParam)
-                                                    .build();
+            var childAnd = childBuilder.addCustomParam(customParam)
+                                       .addParam(secondParam)
+                                       .build();
             result.addExpression(childAnd);
         }
     }
@@ -260,11 +258,10 @@ final class CartesianProducts {
     void childOverSimpleParams(Expression<R, ?> child,
                                ImmutableList<SubjectParameter<R, ?, ?>> simpleParams,
                                OrBuilder<R> result) {
-        for (SubjectParameter<R, ?, ?> simpleParam : simpleParams) {
+        for (var simpleParam : simpleParams) {
             AndBuilder<R> childBuilder = AndExpression.newBuilder();
             addChild(child, childBuilder);
-            AndExpression<R> childAnd = childBuilder.addParam(simpleParam)
-                                                    .build();
+            var childAnd = childBuilder.addParam(simpleParam).build();
             result.addExpression(childAnd);
         }
     }
@@ -282,11 +279,11 @@ final class CartesianProducts {
     void childOverCustomParams(Expression<R, ?> child,
                                ImmutableList<CustomSubjectParameter<?, ?>> customParams,
                                OrBuilder<R> result) {
-        for (CustomSubjectParameter<?, ?> customParam : customParams) {
+        for (var customParam : customParams) {
             AndBuilder<R> childBuilder = AndExpression.newBuilder();
             addChild(child, childBuilder);
-            AndExpression<R> childAnd = childBuilder.addCustomParam(customParam)
-                                                    .build();
+            var childAnd = childBuilder.addCustomParam(customParam)
+                                       .build();
             result.addExpression(childAnd);
         }
     }
@@ -303,11 +300,11 @@ final class CartesianProducts {
     private static <R> void childOverChildren(Expression<R, ?> child,
                                               ImmutableList<Expression<R, ?>> children,
                                               OrBuilder<R> result) {
-        for (Expression<R, ?> orChild : children) {
+        for (var orChild : children) {
             AndBuilder<R> childBuilder = AndExpression.newBuilder();
             addChild(child, childBuilder);
             addChild(orChild, childBuilder);
-            AndExpression<R> childAnd = childBuilder.build();
+            var childAnd = childBuilder.build();
             result.addExpression(childAnd);
         }
     }

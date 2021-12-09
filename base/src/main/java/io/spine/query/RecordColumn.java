@@ -162,7 +162,7 @@ public class RecordColumn<R extends Message, V>
         if (!super.equals(o)) {
             return false;
         }
-        RecordColumn<?, ?> column = (RecordColumn<?, ?>) o;
+        var column = (RecordColumn<?, ?>) o;
         return valueType.equals(column.valueType) &&
                 getter.equals(column.getter);
     }

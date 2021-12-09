@@ -26,17 +26,15 @@
 
 package io.spine.query;
 
-import io.spine.query.OrExpression.OrBuilder;
-
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 import java.util.Queue;
 import java.util.function.UnaryOperator;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.query.LogicalOperator.AND;
 import static io.spine.query.LogicalOperator.OR;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Transforms the {@link QueryPredicate} into its disjunctive normal form.
@@ -63,9 +61,9 @@ final class TransformToDnf<R> implements UnaryOperator<QueryPredicate<R>> {
 
     @Override
     public QueryPredicate<R> apply(QueryPredicate<R> source) {
-        Expression<R, ?> expression = asExpression(source);
-        Expression<R, ?> flat = flatten(expression);
-        QueryPredicate<R> result = fromExpression(flat);
+        var expression = asExpression(source);
+        var flat = flatten(expression);
+        var result = fromExpression(flat);
         return result;
     }
 
@@ -82,11 +80,11 @@ final class TransformToDnf<R> implements UnaryOperator<QueryPredicate<R>> {
         builder.addParams(predicate.parameters())
                .addCustomParams(predicate.customParameters());
 
-        for (QueryPredicate<R> child : predicate.children()) {
-            Expression<R, ?> expression = asExpression(child);
+        for (var child : predicate.children()) {
+            var expression = asExpression(child);
             builder.addExpression(expression);
         }
-        Expression<R, ?> result = builder.build();
+        var result = builder.build();
         return result;
     }
 
@@ -97,11 +95,11 @@ final class TransformToDnf<R> implements UnaryOperator<QueryPredicate<R>> {
         QueryPredicate.Builder<R> builder = QueryPredicate.newBuilder(expression.operator());
         builder.addParams(expression.params())
                .addCustomParams(expression.customParams());
-        for (Expression<R, ?> childExpression : expression.children()) {
-            QueryPredicate<R> childPredicate = fromExpression(childExpression);
+        for (var childExpression : expression.children()) {
+            var childPredicate = fromExpression(childExpression);
             builder.addPredicate(childPredicate);
         }
-        QueryPredicate<R> result = builder.build();
+        var result = builder.build();
         return result;
     }
 
@@ -125,10 +123,10 @@ final class TransformToDnf<R> implements UnaryOperator<QueryPredicate<R>> {
 
     private static <R> Expression<R, ?> handleOr(Expression<R, ?> expression) {
         Expression<R, ?> flattened;
-        Deque<Expression<R, ?>> flatExpressions = flatten(expression.children());
-        OrBuilder<R> resultBuilder = OrExpression.asOrBuilder(expression)
-                                                 .clearChildren();
-        for (Expression<R, ?> flatExpression : flatExpressions) {
+        var flatExpressions = flatten(expression.children());
+        var resultBuilder = OrExpression.asOrBuilder(expression)
+                                        .clearChildren();
+        for (var flatExpression : flatExpressions) {
             if (flatExpression.operator() == OR) {
                 OrExpression.asOr(flatExpression)
                             .copyTo(resultBuilder);
@@ -143,16 +141,16 @@ final class TransformToDnf<R> implements UnaryOperator<QueryPredicate<R>> {
     private static <R> Expression<R, ?> handleAnd(Expression<R, ?> expression) {
         Expression<R, ?> flattened;
         Queue<Expression<R, ?>> flatExpressions = flatten(expression.children());
-        Expression<R, ?> paramExpression = expression.withoutChildren();
+        var paramExpression = expression.withoutChildren();
         if (!paramExpression.isEmpty()) {
             flatExpressions.add(paramExpression);
         }
 
-        Expression<R, ?> head = flatExpressions.poll();
-        checkNotNull(head, "Head of the expression tree cannot be `null`.");
+        var head = flatExpressions.poll();
+        requireNonNull(head, "Head of the expression tree cannot be `null`.");
         while (!flatExpressions.isEmpty()) {
-            Expression<R, ?> next = flatExpressions.poll();
-            Expression<R, ?> distributed = Distribution.conjunctive(head, next);
+            var next = flatExpressions.poll();
+            var distributed = Distribution.conjunctive(head, next);
             head = flatten(distributed);
         }
         flattened = head;
@@ -161,9 +159,9 @@ final class TransformToDnf<R> implements UnaryOperator<QueryPredicate<R>> {
 
     private static <R> Deque<Expression<R, ?>> flatten(List<Expression<R, ?>> children) {
         Deque<Expression<R, ?>> flatExpressions = new ArrayDeque<>();
-        for (Expression<R, ?> child : children) {
+        for (var child : children) {
             if (child.hasChildren()) {
-                Expression<R, ?> flattenedChild = flatten(child);
+                var flattenedChild = flatten(child);
                 flatExpressions.add(flattenedChild);
             } else {
                 flatExpressions.add(child);

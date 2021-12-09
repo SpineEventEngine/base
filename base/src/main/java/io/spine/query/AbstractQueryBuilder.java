@@ -117,7 +117,7 @@ abstract class AbstractQueryBuilder<I,
 
     @Override
     public QueryPredicate<R> predicate() {
-        QueryPredicate<R> result = rootBuilder.build();
+        var result = rootBuilder.build();
         return result;
     }
 
@@ -157,16 +157,16 @@ abstract class AbstractQueryBuilder<I,
     @Override
     @CanIgnoreReturnValue
     public final B withMask(String ...maskPaths) {
-        ImmutableList<String> pathList = ImmutableList.copyOf(maskPaths);
+        var pathList = ImmutableList.copyOf(maskPaths);
         return withMask(pathList);
     }
 
     @Override
     @CanIgnoreReturnValue
     public final B withMask(Field... fields) {
-        ImmutableList<String> paths = Arrays.stream(fields)
-                                            .map(Field::toString)
-                                            .collect(toImmutableList());
+        var paths = Arrays.stream(fields)
+                .map(Field::toString)
+                .collect(toImmutableList());
         return withMask(paths);
     }
 
@@ -180,8 +180,8 @@ abstract class AbstractQueryBuilder<I,
      * @see #withMask(String...)
      */
     final B withMask(Collection<String> paths) {
-        Class<R> recordType = whichRecordType();
-        FieldMask fieldMask = fromStringList(recordType, paths);
+        var recordType = whichRecordType();
+        var fieldMask = fromStringList(recordType, paths);
         return withMask(fieldMask);
     }
 
@@ -206,7 +206,7 @@ abstract class AbstractQueryBuilder<I,
     @CanIgnoreReturnValue
     @SuppressWarnings("OverloadedVarargsMethod")    /* For convenience. */
     public final B either(Either<B>... parameters) {
-        List<Either<B>> asList = Arrays.asList(parameters);
+        var asList = Arrays.asList(parameters);
         return either(asList);
     }
 
@@ -214,11 +214,11 @@ abstract class AbstractQueryBuilder<I,
     @CanIgnoreReturnValue
     @SuppressWarnings("ReturnValueIgnored")     /* `Either` values applied one by one. */
     public final B either(Iterable<Either<B>> parameters) {
-        QueryPredicate.Builder<R> previous = currentPredicate;
+        var previous = currentPredicate;
 
-        QueryPredicate.Builder<R> either = QueryPredicate.newBuilder(currentPredicate, OR);
-        for (Either<B> parameter : parameters) {
-            QueryPredicate.Builder<R> and = QueryPredicate.newBuilder(either, AND);
+        var either = QueryPredicate.newBuilder(currentPredicate, OR);
+        for (var parameter : parameters) {
+            var and = QueryPredicate.newBuilder(either, AND);
             currentPredicate = and;
             parameter.apply(thisRef());
 
@@ -277,7 +277,7 @@ abstract class AbstractQueryBuilder<I,
     @CanIgnoreReturnValue
     protected final B replacePredicate(QueryPredicate<R> value) {
         checkNotNull(value);
-        QueryPredicate.Builder<R> asBuilder = value.toBuilder();
+        var asBuilder = value.toBuilder();
         return replacePredicate(asBuilder);
     }
 

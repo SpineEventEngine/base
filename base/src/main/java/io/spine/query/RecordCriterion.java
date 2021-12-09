@@ -61,7 +61,7 @@ public final class RecordCriterion<I, R extends Message, V>
                  RecordColumn<R, V> col,
                  ComparisonOperator operator,
                  V value) {
-        RecordSubjectParameter<R, V> parameter = new RecordSubjectParameter<>(col, operator, value);
+        var parameter = new RecordSubjectParameter<>(col, operator, value);
         return builder.addParameter(parameter);
     }
 }

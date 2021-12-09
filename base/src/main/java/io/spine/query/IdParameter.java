@@ -72,7 +72,7 @@ public final class IdParameter<I> {
         if (!(o instanceof IdParameter)) {
             return false;
         }
-        IdParameter<?> parameter = (IdParameter<?>) o;
+        var parameter = (IdParameter<?>) o;
         return Objects.equals(values, parameter.values);
     }
 

@@ -102,7 +102,7 @@ abstract class Expression<R, E extends Expression<R, E>> {
      * Returns a copy of this expression, but without child expressions.
      */
     final E withoutChildren() {
-        Builder<R, E, ?> builder = createBuilder();
+        var builder = createBuilder();
         copyParams(builder);
         copyCustomParams(builder);
         return builder.build();
@@ -119,7 +119,7 @@ abstract class Expression<R, E extends Expression<R, E>> {
      * Tells whether this expression has neither parameters nor children.
      */
     final boolean isEmpty() {
-        boolean result =
+        var result =
                 params().isEmpty()
                         && customParams().isEmpty()
                         && children().isEmpty();
@@ -136,7 +136,7 @@ abstract class Expression<R, E extends Expression<R, E>> {
      * of the passed expression.
      */
     E concat(E another) {
-        Builder<R, E, ?> result = createBuilder();
+        var result = createBuilder();
         copyTo(result);
         another.copyTo(result);
         return result.build();
@@ -167,7 +167,7 @@ abstract class Expression<R, E extends Expression<R, E>> {
      * Creates a new {@code Builder} with the same content as this expression.
      */
     Builder<R, ?, ?> toBuilder() {
-        Builder<R, E, ?> result = createBuilder();
+        var result = createBuilder();
         copyTo(result);
         return result;
     }
@@ -214,7 +214,7 @@ abstract class Expression<R, E extends Expression<R, E>> {
         @CanIgnoreReturnValue
         B addParams(Iterable<SubjectParameter<R, ?, ?>> parameters) {
             checkNotNull(parameters);
-            for (SubjectParameter<R, ?, ?> param : parameters) {
+            for (var param : parameters) {
                 addParam(param);
             }
             return thisRef();
@@ -236,7 +236,7 @@ abstract class Expression<R, E extends Expression<R, E>> {
         @CanIgnoreReturnValue
         B addCustomParams(Iterable<CustomSubjectParameter<?, ?>> parameters) {
             checkNotNull(parameters);
-            for (CustomSubjectParameter<?, ?> param : parameters) {
+            for (var param : parameters) {
                 addCustomParam(param);
             }
             return thisRef();

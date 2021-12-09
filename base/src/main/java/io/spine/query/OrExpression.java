@@ -60,9 +60,7 @@ final class OrExpression<R> extends Expression<R, OrExpression<R>> {
      */
     static <R> OrBuilder<R> asOrBuilder(Expression<R, ?> expression) {
         @SuppressWarnings("unchecked")
-        OrBuilder<R> resultBuilder = (OrBuilder<R>)
-                asOr(expression)
-                        .toBuilder();
+        var resultBuilder = (OrBuilder<R>) asOr(expression).toBuilder();
         return resultBuilder;
     }
 
