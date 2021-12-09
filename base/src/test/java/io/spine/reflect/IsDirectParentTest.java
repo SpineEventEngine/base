@@ -38,7 +38,7 @@ import java.util.function.Predicate;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("IsDirectParent predicate should")
+@DisplayName("`IsDirectParent` predicate should")
 class IsDirectParentTest {
 
     private static void assertDirectParent(Package parentCandidate, Package child) {
@@ -54,32 +54,32 @@ class IsDirectParentTest {
     @Test
     @DisplayName("accept direct parent package")
     void directParent() {
-        Package javaUtilFunction = Predicate.class.getPackage();
-        Package javaUtil = Collection.class.getPackage();
+        var javaUtilFunction = Predicate.class.getPackage();
+        var javaUtil = Collection.class.getPackage();
         assertDirectParent(javaUtil, javaUtilFunction);
     }
 
     @Test
     @DisplayName("reject indirect parent package")
     void rejectIndirectParent() {
-        Package javaUtilConcurrentLocks = Lock.class.getPackage();
-        Package javaUtil = Collection.class.getPackage();
+        var javaUtilConcurrentLocks = Lock.class.getPackage();
+        var javaUtil = Collection.class.getPackage();
         assertNotDirectParent(javaUtil, javaUtilConcurrentLocks);
     }
 
     @Test
     @DisplayName("reject sibling package")
     void rejectSibling() {
-        Package javaUtilFunction = Predicate.class.getPackage();
-        Package javaUtilConcurrent = Callable.class.getPackage();
+        var javaUtilFunction = Predicate.class.getPackage();
+        var javaUtilConcurrent = Callable.class.getPackage();
         assertNotDirectParent(javaUtilConcurrent, javaUtilFunction);
     }
 
     @Test
     @DisplayName("reject cousin package")
     void rejectCousins() {
-        Package javaLangAnnotation = Annotation.class.getPackage();
-        Package javaUtilFunction = Predicate.class.getPackage();
+        var javaLangAnnotation = Annotation.class.getPackage();
+        var javaUtilFunction = Predicate.class.getPackage();
         assertNotDirectParent(javaUtilFunction, javaLangAnnotation);
     }
 }

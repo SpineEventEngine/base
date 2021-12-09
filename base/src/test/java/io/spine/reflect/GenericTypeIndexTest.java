@@ -31,13 +31,13 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("GenericTypeIndex should")
+@DisplayName("`GenericTypeIndex` should")
 class GenericTypeIndexTest {
 
     @Test
     @DisplayName("obtain generic argument assuming generic superclass")
     void obtain_generic_argument_assuming_generic_superclass() {
-        Parametrized<Long, String> val = new Parametrized<Long, String>() {};
+        var val = new Parametrized<Long, String>() {};
         assertEquals(Long.class, Types.argumentIn(val.getClass(), Base.class, 0));
         assertEquals(String.class, Types.argumentIn(val.getClass(), Base.class, 1));
     }

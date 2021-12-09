@@ -26,7 +26,6 @@
 
 package io.spine.reflect;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.reflect.TypeToken;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Message;
@@ -37,7 +36,6 @@ import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -53,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings({"SerializableNonStaticInnerClassWithoutSerialVersionUID",
         "SerializableInnerClassWithNonSerializableOuterClass"}) // OK when using TypeToken.
-@DisplayName("Types utility class should")
+@DisplayName("`Types` utility class should")
 class TypesTest extends UtilityClassTest<Types> {
 
     TypesTest() {
@@ -63,16 +61,16 @@ class TypesTest extends UtilityClassTest<Types> {
     @Test
     @DisplayName("create a map type")
     void createMapType() {
-        Type type = mapTypeOf(String.class, Integer.class);
-        Type expectedType = new TypeToken<Map<String, Integer>>(){}.getType();
+        var type = mapTypeOf(String.class, Integer.class);
+        var expectedType = new TypeToken<Map<String, Integer>>(){}.getType();
         assertEquals(expectedType, type);
     }
 
     @Test
     @DisplayName("create a list type")
     void createListType() {
-        Type type = listTypeOf(String.class);
-        Type expectedType = new TypeToken<List<String>>(){}.getType();
+        var type = listTypeOf(String.class);
+        var expectedType = new TypeToken<List<String>>(){}.getType();
         assertEquals(expectedType, type);
     }
 
@@ -99,23 +97,23 @@ class TypesTest extends UtilityClassTest<Types> {
     @Test
     @DisplayName("resolve params of a generic type")
     void resolveTypeParams() {
-        Type type = new TypeToken<Function<String, StringValue>>() {}.getType();
-        ImmutableList<Type> types = resolveArguments(type);
+        var type = new TypeToken<Function<String, StringValue>>() {}.getType();
+        var types = resolveArguments(type);
         assertThat(types).containsExactly(String.class, StringValue.class);
     }
 
     @Test
     @DisplayName("return an empty list when resolving params of a non-parameterized type")
     void resolveRawTypeParams() {
-        Type type = new TypeToken<String>() {}.getType();
-        ImmutableList<Type> types = resolveArguments(type);
+        var type = new TypeToken<String>() {}.getType();
+        var types = resolveArguments(type);
         assertThat(types).isEmpty();
     }
 
     @Test
     @DisplayName("obtain a type argument value from the inheritance chain")
     void getTypeArgument() {
-        Class<?> argument = argumentIn(ListOfMessages.class, Iterable.class, 0);
+        var argument = argumentIn(ListOfMessages.class, Iterable.class, 0);
         assertEquals(argument, Message.class);
     }
 

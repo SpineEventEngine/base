@@ -37,7 +37,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,14 +45,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("PackageInfo should")
+@DisplayName("`PackageInfo` should")
 class PackageInfoTest {
 
     private final PackageInfo javaUtil = PackageInfo.of(Collection.class.getPackage());
     private final PackageInfo javaUtilConcurrent = PackageInfo.of(Callable.class.getPackage());
 
     @Test
-    @DisplayName("return package name in toString()")
+    @DisplayName("return package name in `toString()`")
     void stringify() {
         assertEquals(javaUtil.getValue()
                              .getName(),
@@ -61,7 +60,7 @@ class PackageInfoTest {
     }
 
     @Test
-    @DisplayName("have equals() and hashCode()")
+    @DisplayName("have `equals()` and `hashCode()`")
     void hashCodeAndEquals() {
         new EqualsTester()
                 .addEqualityGroup(javaUtil, PackageInfo.of(Collection.class.getPackage()))
@@ -70,17 +69,17 @@ class PackageInfoTest {
     }
 
     @Nested
-    @DisplayName("Obtain Annotation")
+    @DisplayName("obtain `Annotation`")
     class FindAnnotation {
 
         @Test
         @DisplayName("present directly in the package")
         void presentDirectly() {
-            Package pkg = Sub1Class.class.getPackage();
-            ValueAnnotation annotation = assertAnnotated(pkg);
+            var pkg = Sub1Class.class.getPackage();
+            var annotation = assertAnnotated(pkg);
 
-            PackageInfo packageInfo = PackageInfo.of(pkg);
-            Optional<ValueAnnotation> optional = packageInfo.findAnnotation(ValueAnnotation.class);
+            var packageInfo = PackageInfo.of(pkg);
+            var optional = packageInfo.findAnnotation(ValueAnnotation.class);
             assertTrue(optional.isPresent());
             assertEquals(annotation, optional.get());
         }
@@ -88,7 +87,7 @@ class PackageInfoTest {
         @Test
         @DisplayName("present in immediate parent package")
         void fromImmediateParent() {
-            Package pkg = Sub2Class.class.getPackage();
+            var pkg = Sub2Class.class.getPackage();
             assertNotAnnotated(pkg);
             assertFound(pkg);
         }
@@ -96,19 +95,19 @@ class PackageInfoTest {
         @Test
         @DisplayName("present in a parent above")
         void fromParentAbove() {
-            Package pkg = Sub3Class.class.getPackage();
+            var pkg = Sub3Class.class.getPackage();
             assertNotAnnotated(pkg);
             assertFound(pkg);
         }
 
         private void assertFound(Package pkg) {
-            PackageInfo packageInfo = PackageInfo.of(pkg);
-            Optional<ValueAnnotation> optional = packageInfo.findAnnotation(ValueAnnotation.class);
+            var packageInfo = PackageInfo.of(pkg);
+            var optional = packageInfo.findAnnotation(ValueAnnotation.class);
             assertTrue(optional.isPresent());
         }
 
         private ValueAnnotation assertAnnotated(Package pkg) {
-            ValueAnnotation annotation = pkg.getAnnotation(ValueAnnotation.class);
+            var annotation = pkg.getAnnotation(ValueAnnotation.class);
             // Make sure that the package is annotated in the test environment.
             assertNotNull(annotation);
             return annotation;
@@ -119,7 +118,7 @@ class PackageInfoTest {
     @Test
     @DisplayName("tell if there is not annotation")
     void notFound() {
-        Package pkg = LastVisitor.class.getPackage();
+        var pkg = LastVisitor.class.getPackage();
         assertNotAnnotated(pkg);
         assertFalse(PackageInfo.of(pkg)
                                .findAnnotation(ValueAnnotation.class)
@@ -127,7 +126,7 @@ class PackageInfoTest {
     }
 
     private static void assertNotAnnotated(Package pkg) {
-        ValueAnnotation annotation = pkg.getAnnotation(ValueAnnotation.class);
+        var annotation = pkg.getAnnotation(ValueAnnotation.class);
         // Make sure that the package is NOT annotated in the test environment.
         assertNull(annotation);
     }
