@@ -48,8 +48,8 @@ public final class MaxConstraint extends RangedConstraint<MaxOption> {
     }
 
     private static Range<ComparableNumber> maxRange(MaxOption option) {
-        boolean inclusive = !option.getExclusive();
-        NumberText maxValue = new NumberText(option.getValue());
+        var inclusive = !option.getExclusive();
+        var maxValue = new NumberText(option.getValue());
         return inclusive
                ? Range.atMost(maxValue.toNumber())
                : Range.lessThan(maxValue.toNumber());
@@ -58,8 +58,8 @@ public final class MaxConstraint extends RangedConstraint<MaxOption> {
     @Override
     @SuppressWarnings("deprecation") /* Old validation won't migrate to the new error messages. */
     protected String compileErrorMessage(Range<ComparableNumber> range) {
-        MaxOption max = optionValue();
-        String template = ViolationText.errorMessage(max, max.getMsgFormat());
+        var max = optionValue();
+        var template = ViolationText.errorMessage(max, max.getMsgFormat());
         return format(template, orEqualTo(range.upperBoundType()), range.upperEndpoint());
     }
 

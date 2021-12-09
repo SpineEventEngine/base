@@ -29,7 +29,6 @@ package io.spine.validate.option;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.option.IfMissingOption;
 import io.spine.validate.ConstraintTranslator;
 import io.spine.validate.diags.ViolationText;
 
@@ -48,8 +47,8 @@ public final class RequiredConstraint extends FieldConstraint<Boolean> {
     @Override
     @SuppressWarnings("deprecation") /* Old validation won't migrate to the new error messages. */
     public String errorMessage(FieldContext field) {
-        IfMissing ifMissing = new IfMissing();
-        IfMissingOption option = ifMissing.valueOrDefault(field.target());
+        var ifMissing = new IfMissing();
+        var option = ifMissing.valueOrDefault(field.target());
         return ViolationText.errorMessage(option, option.getMsgFormat());
     }
 

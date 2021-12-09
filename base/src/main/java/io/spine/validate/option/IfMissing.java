@@ -32,8 +32,6 @@ import io.spine.code.proto.FieldOption;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
 
-import java.util.Optional;
-
 /**
  * A field option that defines custom error message if a field is {@code required} but missing.
  */
@@ -50,7 +48,7 @@ public final class IfMissing extends FieldOption<IfMissingOption> {
      * have its own option value.
      */
     public IfMissingOption valueOrDefault(FieldDescriptor field) {
-        Optional<IfMissingOption> option = valueFrom(field);
+        var option = valueFrom(field);
         return option.orElse(IfMissingOption.getDefaultInstance());
     }
 }

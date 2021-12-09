@@ -46,7 +46,7 @@ public enum ValidatingOptionsLoader {
     private final ImmutableSet<ValidatingOptionFactory> implementations;
 
     ValidatingOptionsLoader() {
-        ServiceLoader<ValidatingOptionFactory> loader = load(ValidatingOptionFactory.class);
+        var loader = load(ValidatingOptionFactory.class);
         this.implementations = ImmutableSet.copyOf(loader);
     }
 

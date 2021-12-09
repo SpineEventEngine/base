@@ -65,27 +65,26 @@ public abstract class FieldValidatingOption<@ImmutableTypeParameter T>
      *         {@link #valueFrom(FieldContext)}.
      */
     protected T optionValue(FieldContext field) throws IllegalStateException {
-        Optional<T> option = valueFrom(field);
+        var option = valueFrom(field);
         return option.orElseThrow(() -> {
-            FieldDescriptor descriptor = extension().getDescriptor();
+            var descriptor = extension().getDescriptor();
 
-            String fieldName = field.targetDeclaration()
-                                    .name()
-                                    .value();
-            String containingTypeName = descriptor.getContainingType()
-                                                  .getName();
+            var fieldName = field.targetDeclaration()
+                                 .name()
+                                 .value();
+            var containingTypeName = descriptor.getContainingType()
+                                               .getName();
             return couldNotGetOptionValueFrom(fieldName, containingTypeName);
         });
     }
 
     private IllegalStateException couldNotGetOptionValueFrom(String fieldName,
                                                              String containingTypeName) {
-        String optionName = extension().getDescriptor()
-                                       .getName();
-        String message = format("Could not get value of option %s from field %s in message %s.",
-                                optionName,
-                                fieldName,
-                                containingTypeName);
+        var optionName = extension().getDescriptor().getName();
+        var message = format("Could not get value of option %s from field %s in message %s.",
+                             optionName,
+                             fieldName,
+                             containingTypeName);
         return new IllegalStateException(message);
     }
 
@@ -105,8 +104,7 @@ public abstract class FieldValidatingOption<@ImmutableTypeParameter T>
      *         {@code (constraint_for)} options.
      */
     public Optional<T> valueFrom(FieldContext context) {
-        Optional<T> externalConstraint =
-                ExternalConstraintOptions.getOptionValue(context, extension());
+        var externalConstraint = ExternalConstraintOptions.getOptionValue(context, extension());
         return externalConstraint.isPresent()
                ? externalConstraint
                : valueFrom(context.target());

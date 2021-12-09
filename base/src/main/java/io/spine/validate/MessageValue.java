@@ -128,7 +128,7 @@ public final class MessageValue {
      *         or {@code Optional.empty()} if the message doesn't contain the field
      */
     public Optional<FieldValue> valueOf(String fieldName) {
-        FieldDescriptor field = descriptor.findFieldByName(fieldName);
+        var field = descriptor.findFieldByName(fieldName);
         return valueOf(field);
     }
 
@@ -169,7 +169,7 @@ public final class MessageValue {
     public Optional<FieldValue> valueOf(OneofDescriptor oneof) {
         checkArgument(descriptor.getOneofs()
                                 .contains(oneof));
-        FieldDescriptor field = message.getOneofFieldDescriptor(oneof);
+        var field = message.getOneofFieldDescriptor(oneof);
         return valueOfNullable(field);
     }
 
@@ -197,15 +197,15 @@ public final class MessageValue {
         if (field == null) {
             return Optional.empty();
         }
-        FieldValue fieldValue = valueOfField(field);
+        var fieldValue = valueOfField(field);
         return Optional.of(fieldValue);
     }
 
     private FieldValue valueOfField(FieldDescriptor field) {
-        FieldContext fieldContext = context.forChild(field);
-        Object rawValue = readValue(field);
+        var fieldContext = context.forChild(field);
+        var rawValue = readValue(field);
         @SuppressWarnings("Immutable") // field values are immutable
-        FieldValue value = FieldValue.of(rawValue, fieldContext);
+        var value = FieldValue.of(rawValue, fieldContext);
         return value;
     }
 

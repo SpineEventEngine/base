@@ -91,16 +91,16 @@ public final class Constraints {
 
     private static void addRequiredField(MessageType type,
                                          ImmutableList.Builder<Constraint> constraintBuilder) {
-        RequiredField requiredField = new RequiredField();
+        var requiredField = new RequiredField();
         if (requiredField.valuePresent(type.descriptor())) {
-            Constraint requiredFieldConstraint = requiredField.constraintFor(type);
+            var requiredFieldConstraint = requiredField.constraintFor(type);
             constraintBuilder.add(requiredFieldConstraint);
         }
     }
 
     private static void scanIsRequired(MessageType type,
                                        ImmutableList.Builder<Constraint> builder) {
-        IsRequired option = new IsRequired();
+        var option = new IsRequired();
         type.descriptor()
             .getOneofs()
             .stream()

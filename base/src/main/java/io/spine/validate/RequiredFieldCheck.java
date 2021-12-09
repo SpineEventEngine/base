@@ -28,7 +28,6 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableSet;
 import io.spine.base.FieldPath;
-import io.spine.code.proto.FieldDeclaration;
 
 import java.util.Optional;
 
@@ -57,26 +56,24 @@ final class RequiredFieldCheck {
     }
 
     Optional<ConstraintViolation> perform() {
-        boolean matches = alternatives
-                .stream()
+        var matches = alternatives.stream()
                 .anyMatch(this::allPresent);
         return matches
                ? Optional.empty()
-               : Optional.of(ConstraintViolation
-                                     .newBuilder()
+               : Optional.of(ConstraintViolation.newBuilder()
                                      .setMsgFormat(ERROR_MESSAGE)
                                      .setFieldPath(fieldPath())
                                      .setTypeName(typeName())
                                      .addParam(optionValue)
                                      .build()
-        );
+               );
     }
 
     private boolean allPresent(Alternative alternative) {
-        for (FieldDeclaration declaration : alternative.fields()) {
-            String fieldName = declaration.name().value();
-            Optional<FieldValue> field = message.valueOf(fieldName);
-            FieldValue value = field.orElseThrow(
+        for (var declaration : alternative.fields()) {
+            var fieldName = declaration.name().value();
+            var field = message.valueOf(fieldName);
+            var value = field.orElseThrow(
                     () -> fieldNotFound(message, fieldName)
             );
             if (value.isDefault()) {

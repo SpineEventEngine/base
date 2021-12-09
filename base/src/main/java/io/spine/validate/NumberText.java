@@ -90,8 +90,8 @@ public final class NumberText {
      *         the specified one.
      */
     public boolean isOfSameType(NumberText anotherNumber) {
-        Class<? extends Number> classOfThisNumber = value.getClass();
-        Class<? extends Number> classOfAnotherNumber = anotherNumber.value.getClass();
+        var classOfThisNumber = value.getClass();
+        var classOfAnotherNumber = anotherNumber.value.getClass();
         return classOfThisNumber.equals(classOfAnotherNumber);
     }
 
@@ -103,7 +103,7 @@ public final class NumberText {
     }
 
     private static Number parseNumber(String text) {
-        List<String> wholeAndDecimal = DECIMAL_SPLIT.splitToList(text);
+        var wholeAndDecimal = DECIMAL_SPLIT.splitToList(text);
         hasOnlyWholeAndDecimal(wholeAndDecimal);
         if (hasDecimalPart(wholeAndDecimal)) {
             return Double.parseDouble(text);
@@ -112,7 +112,7 @@ public final class NumberText {
     }
 
     private static boolean hasDecimalPart(List<String> wholeAndDecimal) {
-        boolean hasOnlyWhole = wholeAndDecimal.size() <= 1;
+        var hasOnlyWhole = wholeAndDecimal.size() <= 1;
         return !hasOnlyWhole && !wholeAndDecimal.get(1)
                                                 .isEmpty();
     }
@@ -120,7 +120,7 @@ public final class NumberText {
     private static void hasOnlyWholeAndDecimal(Collection<String> wholeAndDecimal)
             throws IllegalStateException {
         if (wholeAndDecimal.size() > 2) {
-            String malformedNumber = String.join("", wholeAndDecimal);
+            var malformedNumber = String.join("", wholeAndDecimal);
             throw newIllegalStateException("Found malformed number: %s.", malformedNumber);
         }
     }
@@ -143,7 +143,7 @@ public final class NumberText {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        NumberText text = (NumberText) o;
+        var text = (NumberText) o;
         return Objects.equal(this.value, text.value);
     }
 }

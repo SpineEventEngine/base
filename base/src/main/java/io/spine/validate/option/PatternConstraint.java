@@ -30,7 +30,6 @@ import com.google.errorprone.annotations.Immutable;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.option.PatternOption;
-import io.spine.option.PatternOption.Modifier;
 import io.spine.validate.ConstraintTranslator;
 import io.spine.validate.diags.ViolationText;
 
@@ -53,7 +52,7 @@ public final class PatternConstraint extends FieldConstraint<PatternOption> {
     @Override
     @SuppressWarnings("deprecation") /* Old validation won't migrate to the new error messages. */
     public String errorMessage(FieldContext field) {
-        PatternOption option = optionValue();
+        var option = optionValue();
         return ViolationText.errorMessage(option, option.getMsgFormat());
     }
 
@@ -76,8 +75,8 @@ public final class PatternConstraint extends FieldConstraint<PatternOption> {
      * substring.
      */
     public boolean allowsPartialMatch() {
-        PatternOption option = optionValue();
-        Modifier modifier = option.getModifier();
+        var option = optionValue();
+        var modifier = option.getModifier();
         return modifier.getPartialMatch();
     }
 
@@ -87,9 +86,9 @@ public final class PatternConstraint extends FieldConstraint<PatternOption> {
      * <p>If no modifiers are specified, returns {@code 0}.
      */
     public int flagsMask() {
-        int result = 0;
-        PatternOption option = optionValue();
-        Modifier modifier = option.getModifier();
+        var result = 0;
+        var option = optionValue();
+        var modifier = option.getModifier();
         if (modifier.getDotAll()) {
             result |= DOTALL;
         }

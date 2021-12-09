@@ -66,8 +66,8 @@ public final class ComparableNumber extends Number implements Comparable<Number>
     public int compareTo(Number anotherNumber) {
         checkNotNull(anotherNumber);
 
-        long thisLong = longValue();
-        long thatLong = anotherNumber.longValue();
+        var thisLong = longValue();
+        var thatLong = anotherNumber.longValue();
         if (thisLong == thatLong) {
             return Double.compare(doubleValue(), anotherNumber.doubleValue());
         }
@@ -109,7 +109,7 @@ public final class ComparableNumber extends Number implements Comparable<Number>
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ComparableNumber number = (ComparableNumber) o;
+        var number = (ComparableNumber) o;
         return Objects.equal(value, number.value);
     }
 

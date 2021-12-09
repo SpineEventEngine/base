@@ -33,7 +33,6 @@ import io.spine.code.proto.FieldDeclaration;
 import io.spine.type.MessageType;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
@@ -79,19 +78,18 @@ public final class Alternative {
      */
     public static ImmutableSet<Alternative> parse(String notation, MessageType type) {
         ImmutableSet.Builder<Alternative> alternatives = ImmutableSet.builder();
-        String whiteSpaceRemoved = WHITESPACE.matcher(notation)
-                                             .replaceAll("");
-        Iterable<String> parts = orSplitter.split(whiteSpaceRemoved);
-        for (String part : parts) {
-            List<String> fieldNames = andSplitter.splitToList(part);
+        var whiteSpaceRemoved = WHITESPACE.matcher(notation)
+                                          .replaceAll("");
+        var parts = orSplitter.split(whiteSpaceRemoved);
+        for (var part : parts) {
+            var fieldNames = andSplitter.splitToList(part);
             alternatives.add(ofCombination(fieldNames, type));
         }
         return alternatives.build();
     }
 
     private static Alternative ofCombination(Collection<String> fieldNames, MessageType type) {
-        ImmutableSet<FieldDeclaration> fields = fieldNames
-                .stream()
+        var fields = fieldNames.stream()
                 .map(type::field)
                 .collect(toImmutableSet());
         return new Alternative(fields);

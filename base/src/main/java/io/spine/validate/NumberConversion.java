@@ -53,9 +53,9 @@ final class NumberConversion {
     static boolean check(Number number, Number anotherNumber) {
         checkNotNull(number);
         checkNotNull(anotherNumber);
-        Number unwrappedNumber = unwrap(number);
-        Number unwrappedAnotherNumber = unwrap(anotherNumber);
-        for (ConversionChecker<?> caster : CHECKERS) {
+        var unwrappedNumber = unwrap(number);
+        var unwrappedAnotherNumber = unwrap(anotherNumber);
+        for (var caster : CHECKERS) {
             if (caster.supports(unwrappedNumber)) {
                 return caster.isConvertible(unwrappedAnotherNumber);
             }
@@ -86,8 +86,8 @@ final class NumberConversion {
          * the caster.
          */
         default boolean isConvertible(Number number) {
-            Class<? extends Number> numberClass = number.getClass();
-            for (Class<? extends Number> type : convertibleTypes()) {
+            var numberClass = number.getClass();
+            for (var type : convertibleTypes()) {
                 if (type.equals(numberClass)) {
                     return true;
                 }

@@ -72,7 +72,7 @@ public interface ValidatingBuilder<M extends Message> extends Message.Builder {
      *         if the message is invalid
      */
     default @Validated M vBuild() throws ValidationException {
-        M message = build();
+        var message = build();
         Validate.checkValid(message);
         return message;
     }

@@ -48,8 +48,8 @@ import static java.lang.String.format;
  * @param <C> type of the {@linkplain io.spine.type.MessageClass} of {@code |M|}.
  * @param <R> type of an error code to use for error reporting; must be a Protobuf enum value
  */
-@SuppressWarnings("unused")
 @Internal
+@SuppressWarnings({"unused", "AbstractClassNeverImplemented"}) /* Part of the public API. */
 public abstract class ExceptionFactory<E extends Exception,
                                        M extends Message,
                                        C extends MessageClass<?>,
@@ -106,14 +106,13 @@ public abstract class ExceptionFactory<E extends Exception,
     }
 
     private Error createError() {
-        ValidationError validationError = error();
-        R errorCode = getErrorCode();
-        String errorType = errorCode.getDescriptorForType()
-                                    .getFullName();
-        String errorText = errorText();
+        var validationError = error();
+        var errorCode = getErrorCode();
+        var errorType = errorCode.getDescriptorForType()
+                                 .getFullName();
+        var errorText = errorText();
 
-        Error.Builder error = Error
-                .newBuilder()
+        var error = Error.newBuilder()
                 .setType(errorType)
                 .setCode(errorCode.getNumber())
                 .setValidationError(validationError)
@@ -130,8 +129,8 @@ public abstract class ExceptionFactory<E extends Exception,
     }
 
     private String errorText() {
-        String errorTextTemplate = getErrorText();
-        String violationsText = violationsText();
+        var errorTextTemplate = getErrorText();
+        var violationsText = violationsText();
         return format("%s %s", errorTextTemplate, violationsText);
     }
 

@@ -31,7 +31,6 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
-import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolMessageEnum;
 import io.spine.annotation.Internal;
 import io.spine.code.proto.FieldContext;
@@ -97,13 +96,13 @@ public final class FieldValue {
     static FieldValue of(Object rawValue, FieldContext context) {
         checkNotNull(rawValue);
         checkNotNull(context);
-        Object value = rawValue instanceof ProtocolMessageEnum
+        var value = rawValue instanceof ProtocolMessageEnum
                   ? ((ProtocolMessageEnum) rawValue).getValueDescriptor()
                   : rawValue;
-        FieldDescriptor fieldDescriptor = context.target();
-        FieldDeclaration declaration = new FieldDeclaration(fieldDescriptor);
+        var fieldDescriptor = context.target();
+        var declaration = new FieldDeclaration(fieldDescriptor);
 
-        FieldValue result = resolveType(declaration, context, value);
+        var result = resolveType(declaration, context, value);
         return result;
     }
 
@@ -120,10 +119,10 @@ public final class FieldValue {
     private static
     FieldValue resolveType(FieldDeclaration field, FieldContext context, Object value) {
         if (value instanceof List) {
-            List<?> values = (List<?>) value;
+            var values = (List<?>) value;
             return new FieldValue(values, context, field);
         } else if (value instanceof Map) {
-            Map<?, ?> map = (Map<?, ?>) value;
+            var map = (Map<?, ?>) value;
             return new FieldValue(map.values(), context, field);
         } else {
             return new FieldValue(ImmutableList.of(value), context, field);
@@ -145,8 +144,8 @@ public final class FieldValue {
         if (!declaration.isMap()) {
             return declaration.javaType();
         }
-        JavaType result = declaration.valueDeclaration()
-                                     .javaType();
+        var result = declaration.valueDeclaration()
+                                .javaType();
         return result;
     }
 
@@ -214,7 +213,7 @@ public final class FieldValue {
         if (singleValue instanceof EnumValueDescriptor) {
             return ((EnumValueDescriptor) singleValue).getNumber() == 0;
         }
-        Message thisAsMessage = TypeConverter.toMessage(singleValue);
+        var thisAsMessage = TypeConverter.toMessage(singleValue);
         return Messages.isDefault(thisAsMessage);
     }
 

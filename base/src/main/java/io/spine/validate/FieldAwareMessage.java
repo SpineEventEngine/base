@@ -34,7 +34,6 @@ import io.spine.annotation.Experimental;
 import io.spine.annotation.GeneratedMixin;
 import io.spine.annotation.Internal;
 
-import java.util.List;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -72,13 +71,13 @@ public interface FieldAwareMessage extends Message {
      */
     @VisibleForTesting
     default boolean checkFieldsReachable() {
-        Descriptors.Descriptor msgDescriptor = getDescriptorForType();
-        List<FieldDescriptor> fields = msgDescriptor.getFields();
+        var msgDescriptor = getDescriptorForType();
+        var fields = msgDescriptor.getFields();
 
-        for (FieldDescriptor field : fields) {
-            Object value = getField(field);
-            Object actual = readValue(field);
-            boolean equals = Objects.equals(actual, value);
+        for (var field : fields) {
+            var value = getField(field);
+            var actual = readValue(field);
+            var equals = Objects.equals(actual, value);
             checkArgument(equals, "" +
                     "`readValue(field)` is implemented incorrectly for the `%s` field in `%s`",
                           field, getClass());

@@ -28,7 +28,6 @@ package io.spine.validate;
 
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.MessageOptions;
 import io.spine.code.proto.MessageOption;
 import io.spine.option.OptionsProto;
 
@@ -50,7 +49,7 @@ final class ConstraintFor extends MessageOption<String> {
      * Obtains the value of the option based on its {@linkplain DescriptorProto descriptor}.
      */
     Optional<String> valueFrom(DescriptorProto message) {
-        MessageOptions options = message.getOptions();
+        var options = message.getOptions();
         return options.hasExtension(extension())
                ? Optional.of(options.getExtension(extension()))
                : Optional.empty();
