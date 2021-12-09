@@ -32,15 +32,15 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("ComparableStringValue should")
+@DisplayName("`ComparableStringValue` should")
 class ComparableStringValueTest {
 
     @Test
     @DisplayName("compare")
     @SuppressWarnings("LocalVariableNamingConvention") /* shorter names are meaningful for this test */
     void compare() {
-        TestVal a = new TestVal("a");
-        TestVal b = new TestVal("b");
+        var a = new TestVal("a");
+        var b = new TestVal("b");
 
         assertTrue(a.compareTo(b) < 0);
         assertTrue(b.compareTo(a) > 0);
