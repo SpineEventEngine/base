@@ -72,7 +72,7 @@ public class IoPreconditions {
     @CanIgnoreReturnValue
     public static Path checkExists(Path path) throws IllegalArgumentException {
         checkNotNull(path);
-        File file = path.toFile();
+        var file = path.toFile();
         checkArgument(file.exists(), DOES_NOT_EXIST, file);
         return path;
     }

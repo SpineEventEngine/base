@@ -56,7 +56,7 @@ public final class Delete {
      */
     public static void deleteRecursivelyOnShutdownHook(Path directory) {
         checkNotNull(directory);
-        Runtime runtime = Runtime.getRuntime();
+        var runtime = Runtime.getRuntime();
         runtime.addShutdownHook(new Thread(() -> deleteRecursively(directory)));
     }
 
@@ -72,7 +72,7 @@ public final class Delete {
      */
     @CanIgnoreReturnValue
     public static boolean deleteRecursively(Path directory) {
-        boolean success = FilesKt.deleteRecursively(directory.toFile());
+        var success = FilesKt.deleteRecursively(directory.toFile());
         if (!success) {
             logger.atWarning()
                   .log("Unable to delete the directory `%s`.", directory);

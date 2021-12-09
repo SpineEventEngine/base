@@ -33,7 +33,6 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.io.IoPreconditions.checkIsDirectory;
@@ -140,19 +139,19 @@ public final class Copy {
                                Path target,
                                Predicate<Path> matching,
                                boolean withEnclosingDir) throws IOException {
-        Path oldParent = withEnclosingDir
+        var oldParent = withEnclosingDir
                          ? dir.getParent()
                          : dir;
-        ImmutableList<Path> paths = contentOf(dir, matching);
-        for (Path path : paths) {
-            Path relative = oldParent.relativize(path);
-            Path newPath = target.resolve(relative);
+        var paths = contentOf(dir, matching);
+        for (var path : paths) {
+            var relative = oldParent.relativize(path);
+            var newPath = target.resolve(relative);
             if (isDirectory(path)) {
                 if (!exists(newPath)) {
                     createDirectories(newPath);
                 }
             } else if (isRegularFile(path)) {
-                Path containingDir = newPath.getParent();
+                var containingDir = newPath.getParent();
                 if (!exists(containingDir)) {
                     createDirectories(containingDir);
                 }
@@ -168,8 +167,8 @@ public final class Copy {
     private static ImmutableList<Path> contentOf(Path dir, Predicate<Path> matching)
             throws IOException {
         BiPredicate<Path, BasicFileAttributes> predicate = (path, attrs) -> matching.test(path);
-        try (Stream<Path> found = find(dir, Integer.MAX_VALUE, predicate)) {
-            ImmutableList<Path> paths = found.collect(toImmutableList());
+        try (var found = find(dir, Integer.MAX_VALUE, predicate)) {
+            var paths = found.collect(toImmutableList());
             return paths;
         }
     }

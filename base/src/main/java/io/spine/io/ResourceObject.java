@@ -118,7 +118,7 @@ abstract class ResourceObject {
         if (!(o instanceof ResourceObject)) {
             return false;
         }
-        ResourceObject other = (ResourceObject) o;
+        var other = (ResourceObject) o;
         return path.equals(other.path);
     }
 
