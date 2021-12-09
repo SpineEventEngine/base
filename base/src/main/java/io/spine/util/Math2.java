@@ -61,7 +61,7 @@ public final class Math2 {
             default:
                 // fall through.
         }
-        long total = a * b;
+        var total = a * b;
         if (total / b != a) {
             throwOverflow(a, b);
         }

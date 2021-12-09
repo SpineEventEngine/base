@@ -96,7 +96,7 @@ public final class Exceptions {
     public static UnsupportedOperationException unsupported(String format, Object... args) {
         checkNotNull(format);
         checkNotNull(args);
-        String msg = formatMessage(format, args);
+        var msg = formatMessage(format, args);
         return unsupported(msg);
     }
 
@@ -133,7 +133,7 @@ public final class Exceptions {
      */
     public static IllegalStateException illegalStateWithCauseOf(Throwable throwable) {
         checkNotNull(throwable);
-        Throwable rootCause = getRootCause(throwable);
+        var rootCause = getRootCause(throwable);
         throw new IllegalStateException(rootCause);
     }
 
@@ -146,7 +146,7 @@ public final class Exceptions {
      */
     public static IllegalArgumentException illegalArgumentWithCauseOf(Throwable throwable) {
         checkNotNull(throwable);
-        Throwable rootCause = getRootCause(throwable);
+        var rootCause = getRootCause(throwable);
         throw new IllegalArgumentException(rootCause);
     }
 
@@ -166,7 +166,7 @@ public final class Exceptions {
      */
     public static IllegalArgumentException newIllegalArgumentException(String format,
                                                                        Object... args) {
-        String errMsg = formatMessage(format, args);
+        var errMsg = formatMessage(format, args);
         throw new IllegalArgumentException(errMsg);
     }
 
@@ -183,7 +183,7 @@ public final class Exceptions {
                                                                        String format,
                                                                        Object... args) {
         checkNotNull(cause);
-        String errMsg = formatMessage(format, args);
+        var errMsg = formatMessage(format, args);
         throw new IllegalArgumentException(errMsg, cause);
     }
 
@@ -197,7 +197,7 @@ public final class Exceptions {
      */
     public static IllegalStateException newIllegalStateException(String format,
                                                                  Object... args) {
-        String errMsg = formatMessage(format, args);
+        var errMsg = formatMessage(format, args);
         throw new IllegalStateException(errMsg);
     }
 
@@ -215,7 +215,7 @@ public final class Exceptions {
                                                                  String format,
                                                                  Object... args) {
         checkNotNull(cause);
-        String errMsg = formatMessage(format, args);
+        var errMsg = formatMessage(format, args);
         throw new IllegalStateException(errMsg, cause);
     }
 }

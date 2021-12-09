@@ -41,6 +41,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @param <H>
  *         the type of the object holding the property from which we get the value
  */
+@SuppressWarnings({"unused", "AbstractClassNeverImplemented"}) /* Part of the public API. */
 public abstract class NamedProperty<T, H> {
 
     private final String name;
@@ -59,10 +60,11 @@ public abstract class NamedProperty<T, H> {
     /**
      * Obtains the class of the value.
      */
+    @SuppressWarnings("unused") /* Part of the public API. */
     protected Class<T> getValueClass() {
         @SuppressWarnings("unchecked") /* The type is ensured by the first generic param
                                           of this class declaration. */
-        Class<T> cls = (Class<T>) GenericParameter.PROPERTY_TYPE.argumentIn(getClass());
+        var cls = (Class<T>) GenericParameter.PROPERTY_TYPE.argumentIn(getClass());
         return cls;
     }
 
