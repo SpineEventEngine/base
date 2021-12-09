@@ -39,13 +39,9 @@ import io.spine.testing.TestValues;
 import io.spine.testing.UtilityClassTest;
 import io.spine.type.TypeUrl;
 import io.spine.type.UnexpectedTypeException;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import java.util.Iterator;
-import java.util.function.Function;
 
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static io.spine.base.Identifier.newUuid;
@@ -86,8 +82,8 @@ class AnyPackerTest extends UtilityClassTest<AnyPacker> {
     @Test
     @DisplayName("pack Spine message to Any")
     void packSpineMessageToAny() {
-        Any actual = pack(spineMsg);
-        TypeUrl typeUrl = TypeUrl.of(spineMsg);
+        var actual = pack(spineMsg);
+        var typeUrl = TypeUrl.of(spineMsg);
 
         assertEquals(Any.pack(spineMsg)
                         .getValue(), actual.getValue());
@@ -97,9 +93,9 @@ class AnyPackerTest extends UtilityClassTest<AnyPacker> {
     @Test
     @DisplayName("unpack Spine message from Any")
     void unpackSpineMessageFromAny() {
-        Any any = pack(spineMsg);
+        var any = pack(spineMsg);
 
-        MessageToPack actual = (MessageToPack) unpack(any);
+        var actual = (MessageToPack) unpack(any);
 
         assertEquals(spineMsg, actual);
     }
@@ -107,9 +103,9 @@ class AnyPackerTest extends UtilityClassTest<AnyPacker> {
     @Test
     @DisplayName("pack Google message to Any")
     void packGoogleMessageToAny() {
-        Any expected = Any.pack(googleMsg);
+        var expected = Any.pack(googleMsg);
 
-        Any actual = pack(googleMsg);
+        var actual = pack(googleMsg);
 
         assertEquals(expected, actual);
     }
@@ -117,9 +113,9 @@ class AnyPackerTest extends UtilityClassTest<AnyPacker> {
     @Test
     @DisplayName("unpack Google message from Any")
     void unpackGoogleMessageFromAny() {
-        Any any = Any.pack(googleMsg);
+        var any = Any.pack(googleMsg);
 
-        StringValue actual = (StringValue) unpack(any);
+        var actual = (StringValue) unpack(any);
 
         assertEquals(googleMsg, actual);
     }
@@ -127,7 +123,7 @@ class AnyPackerTest extends UtilityClassTest<AnyPacker> {
     @Test
     @DisplayName("return Any if it is passes to pack")
     void returnAnyIfItIsPassedToPack() {
-        Any any = Any.pack(googleMsg);
+        var any = Any.pack(googleMsg);
 
         assertSame(any, pack(any));
     }
@@ -147,9 +143,9 @@ class AnyPackerTest extends UtilityClassTest<AnyPacker> {
     @Test
     @DisplayName("create packing iterator")
     void createPackingIterator() {
-        StringValue value = newUuidValue();
-        Iterator<Message> iterator = Lists.<Message>newArrayList(value).iterator();
-        Iterator<Any> packingIterator = pack(iterator);
+        var value = newUuidValue();
+        var iterator = Lists.<Message>newArrayList(value).iterator();
+        var packingIterator = pack(iterator);
         assertThat(ImmutableList.copyOf(packingIterator))
              .containsExactly(pack(value));
     }
@@ -163,7 +159,7 @@ class AnyPackerTest extends UtilityClassTest<AnyPacker> {
     @Test
     @DisplayName("provide unpacking function")
     void unpackingFunc() {
-        StringValue value = newUuidValue();
+        var value = newUuidValue();
         assertThat(unpackFunc().apply(Any.pack(value)))
                 .isEqualTo(value);
     }
@@ -171,9 +167,9 @@ class AnyPackerTest extends UtilityClassTest<AnyPacker> {
     @Test
     @DisplayName("provide typed unpacking function")
     void typedUnpackingFunc() {
-        StringValue value = newUuidValue();
-        Function<Any, StringValue> function = unpackFunc(StringValue.class);
-        StringValue unpacked = function.apply(Any.pack(value));
+        var value = newUuidValue();
+        var function = unpackFunc(StringValue.class);
+        var unpacked = function.apply(Any.pack(value));
         assertThat(unpacked)
                   .isEqualTo(value);
     }
@@ -185,23 +181,22 @@ class AnyPackerTest extends UtilityClassTest<AnyPacker> {
         @Test
         @DisplayName("type URL and class do not match")
         void type() {
-            Any any = Any.pack(spineMsg);
+            var any = Any.pack(spineMsg);
             assertThrows(UnexpectedTypeException.class, () -> unpack(any, Empty.class));
         }
 
         @Test
         @DisplayName("type URL and the predefined class do not match")
         void typeInFunction() {
-            Any any = Any.pack(spineMsg);
-            Function<@Nullable Any, @Nullable Empty> fun = unpackFunc(Empty.class);
+            var any = Any.pack(spineMsg);
+            var fun = unpackFunc(Empty.class);
             assertThrows(UnexpectedTypeException.class, () -> fun.apply(any));
         }
 
         @Test
         @DisplayName("bytes don't match the type URL")
         void malformed() {
-            Any malformed = Any
-                    .newBuilder()
+            var malformed = Any.newBuilder()
                     .setTypeUrl(TypeUrl.of(Empty.class).value())
                     .setValue(ByteString.copyFromUtf8("malformed bytes"))
                     .build();
@@ -211,12 +206,11 @@ class AnyPackerTest extends UtilityClassTest<AnyPacker> {
         @Test
         @DisplayName("bytes don't match the function's predefined class")
         void malformedInFunction() {
-            Any malformed = Any
-                    .newBuilder()
+            var malformed = Any.newBuilder()
                     .setTypeUrl(TypeUrl.of(Empty.class).value())
                     .setValue(ByteString.copyFromUtf8("malformed bytes"))
                     .build();
-            Function<@Nullable Any, @Nullable Empty> fun = unpackFunc(Empty.class);
+            var fun = unpackFunc(Empty.class);
             assertThrows(UnexpectedTypeException.class, () -> fun.apply(malformed));
         }
     }
@@ -224,7 +218,7 @@ class AnyPackerTest extends UtilityClassTest<AnyPacker> {
     @Test
     @DisplayName("throw UnexpectedTypeException on a type URL and class mismatch")
     void unexpectedTypeInFunction() {
-        Any any = Any.pack(spineMsg);
+        var any = Any.pack(spineMsg);
         assertThrows(UnexpectedTypeException.class, () -> unpack(any, Empty.class));
     }
 }

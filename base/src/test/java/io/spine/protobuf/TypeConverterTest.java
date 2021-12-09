@@ -85,7 +85,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         @Test
         @DisplayName("`Int32Value` to `int`")
         void int32ValueToInt() {
-            int rawValue = 42;
+            var rawValue = 42;
             Message value = Int32Value.of(rawValue);
             checkMapping(rawValue, value);
         }
@@ -101,7 +101,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         @Test
         @DisplayName("`FloatValue` to `float`")
         void floatValueToFloat() {
-            float rawValue = 42.0f;
+            var rawValue = 42.0f;
             Message value = FloatValue.of(rawValue);
             checkMapping(rawValue, value);
         }
@@ -109,7 +109,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         @Test
         @DisplayName("`DoubleValue` to `double`")
         void doubleValueToDouble() {
-            double rawValue = 42.0;
+            var rawValue = 42.0;
             Message value = DoubleValue.of(rawValue);
             checkMapping(rawValue, value);
         }
@@ -117,7 +117,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         @Test
         @DisplayName("`BoolValue` to `boolean`")
         void boolValueToBoolean() {
-            boolean rawValue = true;
+            var rawValue = true;
             Message value = BoolValue.of(rawValue);
             checkMapping(rawValue, value);
         }
@@ -125,7 +125,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         @Test
         @DisplayName("`StringValue` to `String`")
         void stringValueToString() {
-            String rawValue = "Hello";
+            var rawValue = "Hello";
             Message value = StringValue.of(rawValue);
             checkMapping(rawValue, value);
         }
@@ -133,7 +133,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         @Test
         @DisplayName("`BytesValue` to `ByteString`")
         void bytesValueToByteString() {
-            ByteString rawValue = ByteString.copyFrom("Hello!", Charsets.UTF_8);
+            var rawValue = ByteString.copyFrom("Hello!", Charsets.UTF_8);
             Message value = BytesValue.of(rawValue);
             checkMapping(rawValue, value);
         }
@@ -141,9 +141,9 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         @Test
         @DisplayName("`UInt32` to `int`")
         void uint32ToInt() {
-            int value = 42;
-            UInt32Value wrapped = UInt32Value.of(value);
-            Any packed = AnyPacker.pack(wrapped);
+            var value = 42;
+            var wrapped = UInt32Value.of(value);
+            var packed = AnyPacker.pack(wrapped);
             int mapped = TypeConverter.toObject(packed, Integer.class);
             assertEquals(value, mapped);
         }
@@ -151,19 +151,19 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         @Test
         @DisplayName("`UInt64` to `int`")
         void uint64ToLong() {
-            long value = 42L;
-            UInt64Value wrapped = UInt64Value.of(value);
-            Any packed = AnyPacker.pack(wrapped);
+            var value = 42L;
+            var wrapped = UInt64Value.of(value);
+            var packed = AnyPacker.pack(wrapped);
             long mapped = TypeConverter.toObject(packed, Long.class);
             assertEquals(value, mapped);
         }
 
         private void checkMapping(Object javaObject, Message protoObject) {
-            Any wrapped = AnyPacker.pack(protoObject);
-            Object mappedJavaObject = TypeConverter.toObject(wrapped, javaObject.getClass());
+            var wrapped = AnyPacker.pack(protoObject);
+            var mappedJavaObject = TypeConverter.toObject(wrapped, javaObject.getClass());
             assertEquals(javaObject, mappedJavaObject);
-            Any restoredWrapped = TypeConverter.toAny(mappedJavaObject);
-            Message restored = AnyPacker.unpack(restoredWrapped);
+            var restoredWrapped = TypeConverter.toAny(mappedJavaObject);
+            var restored = AnyPacker.unpack(restoredWrapped);
             assertEquals(protoObject, restored);
         }
     }
@@ -175,8 +175,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         @Test
         @DisplayName("if the `EnumValue` has a constant name specified")
         void ifHasName() {
-            EnumValue value = EnumValue
-                    .newBuilder()
+            var value = EnumValue.newBuilder()
                     .setName(SUCCESS.name())
                     .build();
             checkConverts(value, SUCCESS);
@@ -185,8 +184,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         @Test
         @DisplayName("if the `EnumValue` has a constant number specified")
         void ifHasNumber() {
-            EnumValue value = EnumValue
-                    .newBuilder()
+            var value = EnumValue.newBuilder()
                     .setNumber(EXECUTING.getNumber())
                     .build();
             checkConverts(value, EXECUTING);
@@ -195,8 +193,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         @Test
         @DisplayName("with `UNRECOGNIZED` value by name")
         void unrecognizedByName() {
-            EnumValue value = EnumValue
-                    .newBuilder()
+            var value = EnumValue.newBuilder()
                     .setName(UNRECOGNIZED.name())
                     .build();
             checkConverts(value, UNRECOGNIZED);
@@ -205,8 +202,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         @Test
         @DisplayName("with `UNRECOGNIZED` value by number `-1`")
         void unrecognizedByNumber() {
-            EnumValue value = EnumValue
-                    .newBuilder()
+            var value = EnumValue.newBuilder()
                     .setNumber(-1)
                     .build();
             checkConverts(value, UNRECOGNIZED);
@@ -216,8 +212,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         @DisplayName("using the constant name if both the name and the number are specified")
         void preferringConversionWithName() {
             // Set the different name and number just for the sake of test.
-            EnumValue value = EnumValue
-                    .newBuilder()
+            var value = EnumValue.newBuilder()
                     .setName(SUCCESS.name())
                     .setNumber(FAILED.getNumber())
                     .build();
@@ -225,9 +220,8 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         }
 
         private void checkConverts(EnumValue enumValue, Enum<?> expected) {
-            Any wrapped = AnyPacker.pack(enumValue);
-            Object mappedJavaObject =
-                    TypeConverter.toObject(wrapped, expected.getDeclaringClass());
+            var wrapped = AnyPacker.pack(enumValue);
+            var mappedJavaObject = TypeConverter.toObject(wrapped, expected.getDeclaringClass());
             assertEquals(expected, mappedJavaObject);
         }
     }
@@ -240,35 +234,32 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         @Test
         @DisplayName("the `EnumValue` with an unknown name is passed")
         void unknownName() {
-            String unknownName = "some_name";
-            EnumValue value = EnumValue
-                    .newBuilder()
+            var unknownName = "some_name";
+            var value = EnumValue.newBuilder()
                     .setName(unknownName)
                     .build();
-            Any wrapped = pack(value);
+            var wrapped = pack(value);
             assertIllegalArgument(() -> toObject(wrapped, TaskStatus.class));
         }
 
         @Test
         @DisplayName("the `EnumValue` with an unknown number is passed")
         void unknownNumber() {
-            int unknownValue = 156;
-            EnumValue value = EnumValue
-                    .newBuilder()
+            var unknownValue = 156;
+            var value = EnumValue.newBuilder()
                     .setNumber(unknownValue)
                     .build();
-            Any wrapped = pack(value);
+            var wrapped = pack(value);
             assertIllegalArgument(() -> toObject(wrapped, TaskStatus.class));
         }
 
         @Test
         @DisplayName("converting a non-`EnumValue` object to a `Enum`")
         void rawValuesForEnum() {
-            Int32Value enumNumber = Int32Value
-                    .newBuilder()
+            var enumNumber = Int32Value.newBuilder()
                     .setValue(SUCCESS.getNumber())
                     .build();
-            Any packed = pack(enumNumber);
+            var packed = pack(enumNumber);
             assertIllegalArgument(() -> toObject(packed, TaskStatus.class));
         }
     }
@@ -276,10 +267,9 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
     @Test
     @DisplayName("convert `Enum` to `EnumValue`")
     void convertEnumToEnumValue() {
-        Any restoredWrapped = TypeConverter.toAny(SUCCESS);
-        Message restored = AnyPacker.unpack(restoredWrapped);
-        EnumValue expected = EnumValue
-                .newBuilder()
+        var restoredWrapped = TypeConverter.toAny(SUCCESS);
+        var restored = AnyPacker.unpack(restoredWrapped);
+        var expected = EnumValue.newBuilder()
                 .setName(SUCCESS.name())
                 .setNumber(SUCCESS.getNumber())
                 .build();
@@ -293,8 +283,8 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         @Test
         @DisplayName("a value to a particular message")
         void valueToParticularMessage() {
-            String stringValue = "a string value";
-            StringValue convertedValue = toMessage(stringValue, StringValue.class);
+            var stringValue = "a string value";
+            var convertedValue = toMessage(stringValue, StringValue.class);
             assertEquals(stringValue, convertedValue.getValue());
         }
     }

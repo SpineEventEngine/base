@@ -25,10 +25,8 @@
  */
 package io.spine.protobuf;
 
-import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
-import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
 import io.spine.test.messages.MessageWithStringValue;
 import io.spine.testing.TestValues;
@@ -62,23 +60,23 @@ class MessagesTest extends UtilityClassTest<Messages> {
     }
 
     @Test
-    @DisplayName("return the same any from toAny")
+    @DisplayName("return the same `Any` from `toAny()`")
     void sameAny() {
-        Any any = toAny(getClass().getSimpleName());
+        var any = toAny(getClass().getSimpleName());
         assertSame(any, AnyPacker.pack(any));
     }
 
     @Test
     @DisplayName("pack to `Any`")
     void packToAny() {
-        Timestamp timestamp = Time.currentTime();
+        var timestamp = Time.currentTime();
         assertEquals(timestamp, unpack(AnyPacker.pack(timestamp)));
     }
 
     @Test
     @DisplayName("return builder for the message")
     void builderForMessage() {
-        Message.Builder messageBuilder = builderFor(MessageWithStringValue.class);
+        var messageBuilder = builderFor(MessageWithStringValue.class);
         assertNotNull(messageBuilder);
         assertEquals(MessageWithStringValue.class,
                      messageBuilder.build()
@@ -86,7 +84,7 @@ class MessagesTest extends UtilityClassTest<Messages> {
     }
 
     @Test
-    @DisplayName("throw when try to get builder for a not generated message")
+    @DisplayName("throw when try to get builder for a non-generated message")
     void failGettingNonGeneratedBuilder() {
         assertIllegalArgument(() -> builderFor(Message.class));
     }
@@ -94,7 +92,7 @@ class MessagesTest extends UtilityClassTest<Messages> {
     @Test
     @DisplayName("ensure `Message`")
     void ensureMessageInstance() {
-        StringValue value = TestValues.newUuidValue();
+        var value = TestValues.newUuidValue();
         assertEquals(value, ensureMessage(AnyPacker.pack(value)));
         assertSame(value, ensureMessage(value));
     }
@@ -106,7 +104,7 @@ class MessagesTest extends UtilityClassTest<Messages> {
         @Test
         @DisplayName("a message is not in the default state")
         void messageIsNotInDefaultState() {
-            Message msg = toMessage("check_if_message_is_not_in_default_state");
+            var msg = toMessage("check_if_message_is_not_in_default_state");
 
             assertTrue(isNotDefault(msg));
             assertFalse(isNotDefault(StringValue.getDefaultInstance()));
