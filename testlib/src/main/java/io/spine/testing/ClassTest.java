@@ -91,6 +91,7 @@ public abstract class ClassTest<C> {
      *
      * @see #configure(NullPointerTester)
      */
+    @SuppressWarnings("unused") /* Part of the public API. */
     protected final Visibility minimalStaticMethodVisibility() {
         return minimalStaticMethodVisibility;
     }
@@ -105,7 +106,7 @@ public abstract class ClassTest<C> {
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
         /* This test does assert via `NullPointerTester. */
     void nullCheckParamsOfStaticMethods() {
-        NullPointerTester tester = new NullPointerTester();
+        var tester = new NullPointerTester();
         configure(tester);
         tester.testStaticMethods(subject(), minimalStaticMethodVisibility);
     }

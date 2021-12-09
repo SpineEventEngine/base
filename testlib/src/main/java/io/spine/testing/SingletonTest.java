@@ -100,8 +100,7 @@ public abstract class SingletonTest<S> extends ClassTest<S> {
         @Test
         @DisplayName("prohibiting non-private constructors")
         void prohibitNonPrivate() {
-            ImmutableList<Constructor<?>> nonPrivateConstructors =
-                    constructors(ModifierSupport::isNotPrivate);
+            var nonPrivateConstructors = constructors(ModifierSupport::isNotPrivate);
 
             assertThat(nonPrivateConstructors).isEmpty();
         }
@@ -109,16 +108,15 @@ public abstract class SingletonTest<S> extends ClassTest<S> {
         @Test
         @DisplayName("requiring at least one private constructor")
         void requirePrivate() {
-            ImmutableList<Constructor<?>> privateConstructors =
-                    constructors(ModifierSupport::isPrivate);
+            var privateConstructors = constructors(ModifierSupport::isPrivate);
 
             assertThat(privateConstructors).isNotEmpty();
         }
 
         private ImmutableList<Constructor<?>> constructors(Predicate<Constructor<?>> filter) {
             return constructors.stream()
-                               .filter(filter)
-                               .collect(toImmutableList());
+                    .filter(filter)
+                    .collect(toImmutableList());
         }
     }
 
@@ -128,7 +126,7 @@ public abstract class SingletonTest<S> extends ClassTest<S> {
      */
     @VisibleForTesting
     void ctorCheck() {
-        CheckConstructors check = new CheckConstructors();
+        var check = new CheckConstructors();
         check.prohibitNonPrivate();
         check.requirePrivate();
     }

@@ -71,7 +71,7 @@ public final class MemoizingStream extends OutputStream {
      *         if the target stream throws an {@link IOException} on a write operation
      */
     public synchronized void flushTo(OutputStream stream) throws IOException {
-        byte[] bytes = memory.toByteArray();
+        var bytes = memory.toByteArray();
         stream.write(bytes);
         reset();
     }

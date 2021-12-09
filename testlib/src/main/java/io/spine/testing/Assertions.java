@@ -201,9 +201,7 @@ public final class Assertions {
         checkNotNull(fieldMask);
         List<String> paths = fieldMask.getPathsList();
 
-        List<FieldDescriptor> fields =
-                message.getDescriptorForType()
-                       .getFields();
+        var fields = message.getDescriptorForType().getFields();
 
         List<String> fieldNames =
                 fields.stream()
@@ -213,12 +211,12 @@ public final class Assertions {
         // Assert that the passed field mask contains the field of this message type.
         assertThat(fieldNames).containsAtLeastElementsIn(paths);
 
-        for (FieldDescriptor field : fields) {
-            boolean maskHasSuchField = paths.contains(field.getName());
+        for (var field : fields) {
+            var maskHasSuchField = paths.contains(field.getName());
             if (field.isRepeated()) {
                 if (maskHasSuchField) {
-                    List<?> repeatedFieldValue = (List<?>) message.getField(field);
-                    boolean repeatsAtLeastOnce = repeatedFieldValue.isEmpty();
+                    var repeatedFieldValue = (List<?>) message.getField(field);
+                    var repeatsAtLeastOnce = repeatedFieldValue.isEmpty();
                     assertFalse(repeatsAtLeastOnce,
                                 format("Field %s wasn't found in the specified message.",
                                        field.getName()));
@@ -246,7 +244,7 @@ public final class Assertions {
      *         the maximum expected difference between the values
      */
     public static void assertInDelta(long expectedValue, long actualValue, long delta) {
-        long actualDelta = abs(expectedValue - actualValue);
+        var actualDelta = abs(expectedValue - actualValue);
         assertTrue(actualDelta <= delta);
     }
 }

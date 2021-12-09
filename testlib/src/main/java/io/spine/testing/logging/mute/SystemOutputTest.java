@@ -107,7 +107,7 @@ public abstract class SystemOutputTest {
     }
 
     private static String toString(ByteArrayOutputStream stream) {
-        String result = new String(stream.toByteArray(), charset());
+        var result = stream.toString(charset());
         return result;
     }
 }
