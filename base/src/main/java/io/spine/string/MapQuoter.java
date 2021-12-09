@@ -26,7 +26,6 @@
 
 package io.spine.string;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -45,11 +44,11 @@ final class MapQuoter extends Quoter {
     @Override
     String quote(String stringToQuote) {
         checkNotNull(stringToQuote);
-        Matcher matcher = compile(QUOTE_PATTERN).matcher(stringToQuote);
-        String unslashed = matcher.find() ?
-                           matcher.replaceAll(BACKSLASH + matcher.group()) :
-                           stringToQuote;
-        String result = QUOTE_CHAR + unslashed + QUOTE_CHAR;
+        var matcher = compile(QUOTE_PATTERN).matcher(stringToQuote);
+        var unslashed = matcher.find() ?
+                        matcher.replaceAll(BACKSLASH + matcher.group()) :
+                        stringToQuote;
+        var result = QUOTE_CHAR + unslashed + QUOTE_CHAR;
         return result;
     }
 

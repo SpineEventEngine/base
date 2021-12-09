@@ -102,23 +102,23 @@ public final class StringifierRegistry {
         Optional<Stringifier<T>> optional = instance().find(typeOfT);
 
         if (optional.isPresent()) {
-            Stringifier<T> stringifier = optional.get();
+            var stringifier = optional.get();
             return stringifier;
         }
 
         if (isEnumClass(typeOfT)) {
             @SuppressWarnings({"unchecked", "rawtypes"}) // OK since the type is checked above.
-            Stringifier<T> result = (Stringifier<T>) newForEnum((Class<Enum>) typeOfT);
+            var result = (Stringifier<T>) newForEnum((Class<Enum>) typeOfT);
             return result;
         }
 
         if (isMessageClass(typeOfT)) {
             @SuppressWarnings("unchecked") // OK since the type is checked above.
-            Stringifier<T> result = (Stringifier<T>) newForMessage((Class<Message>) typeOfT);
+            var result = (Stringifier<T>) newForMessage((Class<Message>) typeOfT);
             return result;
         }
 
-        String errMsg = format("No stringifier registered for the type: %s", typeOfT);
+        var errMsg = format("No stringifier registered for the type: %s", typeOfT);
         throw new MissingStringifierException(errMsg);
     }
 

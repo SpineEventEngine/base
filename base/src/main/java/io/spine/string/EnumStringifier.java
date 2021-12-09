@@ -54,7 +54,7 @@ final class EnumStringifier<E extends Enum<E>> extends SerializableStringifier<E
 
     @Override
     protected final E fromString(String s) {
-        E result = Enum.valueOf(enumClass, s);
+        var result = Enum.valueOf(enumClass, s);
         return result;
     }
 

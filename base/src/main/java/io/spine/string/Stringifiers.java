@@ -84,7 +84,7 @@ public final class Stringifiers {
         checkNotNull(object);
         checkNotNull(typeOfT);
         Stringifier<T> stringifier = StringifierRegistry.getFor(typeOfT);
-        String result = stringifier.convert(object);
+        var result = stringifier.convert(object);
         return requireNonNull(result);
     }
 
@@ -105,8 +105,8 @@ public final class Stringifiers {
         checkNotNull(str);
         checkNotNull(typeOfT);
         Stringifier<T> stringifier = StringifierRegistry.getFor(typeOfT);
-        T result = stringifier.reverse()
-                              .convert(str);
+        var result = stringifier.reverse()
+                                .convert(str);
         return requireNonNull(result);
     }
 
@@ -250,7 +250,7 @@ public final class Stringifiers {
      */
     public static <T extends Enum<T>> Stringifier<T> newForEnum(Class<T> enumClass) {
         checkNotNull(enumClass);
-        EnumStringifier<T> result = new EnumStringifier<>(enumClass);
+        var result = new EnumStringifier<>(enumClass);
         return result;
     }
 
@@ -265,7 +265,7 @@ public final class Stringifiers {
      */
     static <T extends Message> Stringifier<T> newForMessage(Class<T> messageClass) {
         checkNotNull(messageClass);
-        DefaultMessageStringifier<T> result = new DefaultMessageStringifier<>(messageClass);
+        var result = new DefaultMessageStringifier<>(messageClass);
         return result;
     }
 
@@ -277,11 +277,11 @@ public final class Stringifiers {
      * @return the constructed escaper
      */
     static Escaper createEscaper(char charToEscape) {
-        String escapedChar = "\\" + charToEscape;
-        Escaper result = Escapers.builder()
-                                 .addEscape('\"', "\\\"")
-                                 .addEscape(charToEscape, escapedChar)
-                                 .build();
+        var escapedChar = "\\" + charToEscape;
+        var result = Escapers.builder()
+                .addEscape('\"', "\\\"")
+                .addEscape(charToEscape, escapedChar)
+                .build();
         return result;
     }
 }

@@ -47,9 +47,9 @@ final class ListQuoter extends Quoter {
     @Override
     String quote(String stringToQuote) {
         checkNotNull(stringToQuote);
-        String escaped = QUOTE_PATTERN.matcher(stringToQuote)
-                                      .replaceAll(ESCAPED_QUOTE);
-        String result = QUOTE_CHAR + escaped + QUOTE_CHAR;
+        var escaped = QUOTE_PATTERN.matcher(stringToQuote)
+                                   .replaceAll(ESCAPED_QUOTE);
+        var result = QUOTE_CHAR + escaped + QUOTE_CHAR;
         return result;
     }
 

@@ -53,13 +53,13 @@ abstract class StringifierWithConverter<T> extends SerializableStringifier<T> {
 
     @Override
     protected String toString(T obj) {
-        String result = converter().reverse().convert(obj);
+        var result = converter().reverse().convert(obj);
         return requireNonNull(result);
     }
 
     @Override
     protected T fromString(String s) {
-        T result = converter().convert(s);
+        var result = converter().convert(s);
         return requireNonNull(result);
     }
 }
