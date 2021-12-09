@@ -80,9 +80,9 @@ class Durations2Test extends UtilityClassTest<Durations2> {
     @Test
     @DisplayName("parse a string")
     void toFromString() {
-        Duration expected = randomDuration();
-        String str = Durations.toString(expected);
-        Duration converted = Durations2.parse(str);
+        var expected = randomDuration();
+        var str = Durations.toString(expected);
+        var converted = Durations2.parse(str);
         assertThat(converted).isEqualTo(expected);
     }
 
@@ -93,16 +93,14 @@ class Durations2Test extends UtilityClassTest<Durations2> {
     @Test
     @DisplayName("convert to Java Time and back")
     void toFromJavaTime() {
-        Duration original = randomDuration();
-        java.time.Duration converted =
-                converter.reverse()
-                         .convert(original);
-        Duration back = converter.convert(converted);
+        var original = randomDuration();
+        var converted = converter.reverse().convert(original);
+        var back = converter.convert(converted);
         assertThat(back).isEqualTo(original);
     }
 
     @Test
-    @DisplayName("have ZERO constant")
+    @DisplayName("have `ZERO` constant")
     void zeroConstant() {
         assertThat(toNanos(ZERO)).isEqualTo(0);
     }
@@ -150,10 +148,10 @@ class Durations2Test extends UtilityClassTest<Durations2> {
         void hoursMinutesSeconds() {
             long hours = 3;
             long minutes = 25;
-            long secondsTotal = hoursToSeconds(hours) + minutesToSeconds(minutes);
-            Duration expected = seconds(secondsTotal);
+            var secondsTotal = hoursToSeconds(hours) + minutesToSeconds(minutes);
+            var expected = seconds(secondsTotal);
 
-            Duration actual = hoursAndMinutes(hours, minutes);
+            var actual = hoursAndMinutes(hours, minutes);
 
             assertEquals(expected, actual);
         }
@@ -168,12 +166,12 @@ class Durations2Test extends UtilityClassTest<Durations2> {
     }
 
     @Nested
-    @DisplayName("Convert a number of hours")
+    @DisplayName("convert a number of hours")
     class HourConversion {
 
         private void test(long hours) {
-            Duration expected = seconds(hoursToSeconds(hours));
-            Duration actual = hours(hours);
+            var expected = seconds(hoursToSeconds(hours));
+            var actual = hours(hours);
             assertThat(actual).isEqualTo(expected);
         }
 
@@ -197,7 +195,7 @@ class Durations2Test extends UtilityClassTest<Durations2> {
     }
 
     @Nested
-    @DisplayName("Fail if")
+    @DisplayName("fail if")
     class MathError {
 
         @Test
@@ -220,7 +218,7 @@ class Durations2Test extends UtilityClassTest<Durations2> {
     }
 
     @Nested
-    @DisplayName("Add")
+    @DisplayName("add")
     class Add {
 
         @Test
@@ -232,7 +230,7 @@ class Durations2Test extends UtilityClassTest<Durations2> {
         @Test
         @DisplayName("`null` returning same instance")
         void sameWithNull() {
-            Duration duration = seconds(525);
+            var duration = seconds(525);
             assertThat(add(duration, null))
                     .isSameInstanceAs(duration);
             assertThat(add(null, duration))
@@ -261,9 +259,9 @@ class Durations2Test extends UtilityClassTest<Durations2> {
         }
 
         private void testAddSeconds(long seconds1, long seconds2) {
-            long secondsTotal = seconds1 + seconds2;
-            Duration sumExpected = seconds(secondsTotal);
-            Duration sumActual = add(seconds(seconds1), seconds(seconds2));
+            var secondsTotal = seconds1 + seconds2;
+            var sumExpected = seconds(secondsTotal);
+            var sumActual = add(seconds(seconds1), seconds(seconds2));
 
             assertThat(sumActual).isEqualTo(sumExpected);
         }
@@ -281,7 +279,7 @@ class Durations2Test extends UtilityClassTest<Durations2> {
     }
 
     @Nested
-    @DisplayName("Verify if `Duration` is")
+    @DisplayName("verify if `Duration` is")
     class Verify {
 
         @Test
@@ -318,7 +316,7 @@ class Durations2Test extends UtilityClassTest<Durations2> {
     }
 
     @Nested
-    @DisplayName("Tell if `Duration` is")
+    @DisplayName("tell if `Duration` is")
     class Compare {
 
         @Test

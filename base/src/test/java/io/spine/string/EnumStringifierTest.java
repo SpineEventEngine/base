@@ -26,24 +26,23 @@
 
 package io.spine.string;
 
-import com.google.common.base.Converter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("EnumStringifier should")
+@DisplayName("`EnumStringifier` should")
 class EnumStringifierTest {
 
     @Test
     @DisplayName("convert values to String and back")
     void convert() {
-        EnumStringifier<DayOfWeek> stringifier = new EnumStringifier<>(DayOfWeek.class);
-        Converter<String, DayOfWeek> reverse = stringifier.reverse();
+        var stringifier = new EnumStringifier<>(DayOfWeek.class);
+        var reverse = stringifier.reverse();
 
-        for (DayOfWeek value : DayOfWeek.values()) {
-            String str = stringifier.convert(value);
+        for (var value : DayOfWeek.values()) {
+            var str = stringifier.convert(value);
             assertEquals(value, reverse.convert(str));
         }
     }
@@ -51,10 +50,10 @@ class EnumStringifierTest {
     @Test
     @DisplayName("have an identity tied to the name of a processed class")
     void provideDefaultIdentity() {
-        EnumStringifier<DayOfWeek> stringifier = new EnumStringifier<>(DayOfWeek.class);
-        String identity = stringifier.toString();
+        var stringifier = new EnumStringifier<>(DayOfWeek.class);
+        var identity = stringifier.toString();
 
-        String expected = EnumStringifier.identity(DayOfWeek.class);
+        var expected = EnumStringifier.identity(DayOfWeek.class);
         assertThat(identity).isEqualTo(expected);
     }
 

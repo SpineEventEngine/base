@@ -52,9 +52,9 @@ class DiagsTest extends UtilityClassTest<Diags> {
     @DisplayName("backtick string representation of an object")
     void backticks() {
         Object anObject = getClass();
-        String backticked = backtick(anObject);
+        var backticked = backtick(anObject);
 
-        StringSubject assertOutput = assertThat(backticked);
+        var assertOutput = assertThat(backticked);
         assertOutput.startsWith("`");
         assertOutput.endsWith("`");
         assertOutput.contains(anObject.toString());
@@ -68,9 +68,9 @@ class DiagsTest extends UtilityClassTest<Diags> {
         @DisplayName("`Iterable`")
         void iterable() {
             List<String> items = ImmutableList.of("one", "two", "tree");
-            String joined = Diags.join(items);
+            var joined = Diags.join(items);
 
-            StringSubject assertOutput = assertThat(joined);
+            var assertOutput = assertThat(joined);
             assertOutput.contains(COMMA_AND_SPACE);
             items.forEach(assertOutput::contains);
         }
@@ -78,9 +78,9 @@ class DiagsTest extends UtilityClassTest<Diags> {
         @Test
         @DisplayName("vararg")
         void varArg() {
-            String joined = Diags.join("uno", "dos", "tres");
+            var joined = Diags.join("uno", "dos", "tres");
 
-            StringSubject assertOutput = assertThat(joined);
+            var assertOutput = assertThat(joined);
             ImmutableList.of("uno", "dos", "tres")
                          .forEach(assertOutput::contains);
         }
@@ -88,9 +88,9 @@ class DiagsTest extends UtilityClassTest<Diags> {
         @Test
         @DisplayName("separating with comma followed by space char")
         void commaThenSpace() {
-            String joined = Diags.join(100, 200, 300);
+            var joined = Diags.join(100, 200, 300);
 
-            StringSubject assertOutput = assertThat(joined);
+            var assertOutput = assertThat(joined);
             assertOutput.contains(COMMA_AND_SPACE);
             ImmutableList.of(100, 200, 300)
                          .forEach(item -> assertOutput.contains(item.toString()));
@@ -107,8 +107,8 @@ class DiagsTest extends UtilityClassTest<Diags> {
         @Test
         @DisplayName("with items")
         void stringEnumeration() {
-            String output = list.stream()
-                                .collect(toEnumeration());
+            var output = list.stream()
+                    .collect(toEnumeration());
 
             assertOutput = assertThat(output);
 
@@ -119,8 +119,8 @@ class DiagsTest extends UtilityClassTest<Diags> {
         @Test
         @DisplayName("with backticked items")
         void backtickedEnumeration() {
-            String output = list.stream()
-                                .collect(toEnumerationBackticked());
+            var output = list.stream()
+                    .collect(toEnumerationBackticked());
 
             assertOutput = assertThat(output);
 
