@@ -116,26 +116,26 @@ final class ListStringifier<T> extends Stringifier<List<T>> {
     protected String toString(List<T> list) {
         Converter<String, String> quoter = Quoter.forLists();
         List<String> convertedItems = new ArrayList<>();
-        for (T item : list) {
-            String convertedItem = elementStringifier.andThen(quoter)
-                                                     .convert(item);
+        for (var item : list) {
+            var convertedItem = elementStringifier.andThen(quoter)
+                                                  .convert(item);
             convertedItems.add(convertedItem);
         }
-        String result = Joiner.on(delimiter)
-                              .join(convertedItems);
+        var result = Joiner.on(delimiter)
+                           .join(convertedItems);
         return result;
     }
 
     @Override
     protected List<T> fromString(String s) {
-        String escapedString = escaper.escape(s);
+        var escapedString = escaper.escape(s);
         List<String> items = newArrayList(splitter.split(escapedString));
         Converter<String, String> quoter = Quoter.forLists();
-        Converter<String, T> converter = quoter.reverse()
-                                               .andThen(elementStringifier.reverse());
+        var converter = quoter.reverse()
+                              .andThen(elementStringifier.reverse());
         List<T> result = newArrayList();
-        for (String item : items) {
-            T convertedItem = converter.convert(item);
+        for (var item : items) {
+            var convertedItem = converter.convert(item);
             result.add(convertedItem);
         }
         return result;

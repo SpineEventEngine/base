@@ -121,7 +121,7 @@ public final class Subject<I, R extends Message> {
         if (!(o instanceof Subject)) {
             return false;
         }
-        Subject<?, ?> subject = (Subject<?, ?>) o;
+        var subject = (Subject<?, ?>) o;
         return id.equals(subject.id) &&
                 recordType.equals(subject.recordType) &&
                 predicate.equals(subject.predicate);

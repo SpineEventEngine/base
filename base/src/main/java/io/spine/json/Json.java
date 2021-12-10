@@ -85,7 +85,7 @@ public final class Json {
      */
     public static String toJson(Message message) {
         checkNotNull(message);
-        String result = toJson(message, printer);
+        var result = toJson(message, printer);
         return result;
     }
 
@@ -100,7 +100,7 @@ public final class Json {
      */
     public static String toCompactJson(Message message) {
         checkNotNull(message);
-        String result = toJson(message, compactPrinter);
+        var result = toJson(message, compactPrinter);
         return result;
     }
 
@@ -109,7 +109,7 @@ public final class Json {
         try {
             result = printer.print(message);
         } catch (InvalidProtocolBufferException e) {
-            Throwable rootCause = getRootCause(e);
+            var rootCause = getRootCause(e);
             throw new UnknownTypeException(rootCause);
         }
         checkState(result != null);
@@ -121,9 +121,9 @@ public final class Json {
         checkNotNull(json);
         checkNotNull(messageClass);
         try {
-            Message.Builder messageBuilder = builderFor(messageClass);
+            var messageBuilder = builderFor(messageClass);
             parser.merge(json, messageBuilder);
-            T result = (T) messageBuilder.build();
+            var result = (T) messageBuilder.build();
             return result;
         } catch (InvalidProtocolBufferException e) {
             throw newIllegalArgumentException(

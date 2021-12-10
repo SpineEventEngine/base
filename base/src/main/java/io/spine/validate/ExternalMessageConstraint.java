@@ -104,8 +104,8 @@ final class ExternalMessageConstraint {
     private static ImmutableSet<FieldDescriptor>
     constructTargets(Descriptor constraint, Iterable<String> targetPaths) {
         ImmutableSet.Builder<FieldDescriptor> targets = ImmutableSet.builder();
-        for (String targetPath : targetPaths) {
-            FieldDescriptor target = getTargetDescriptor(targetPath);
+        for (var targetPath : targetPaths) {
+            var target = getTargetDescriptor(targetPath);
             checkConstraintFields(constraint, target);
             targets.add(target);
         }
@@ -120,18 +120,18 @@ final class ExternalMessageConstraint {
      * @return the field descriptor
      */
     private static FieldDescriptor getTargetDescriptor(String targetPath) {
-        int typeAndFieldNameBound = targetPath.lastIndexOf(FIELD_NAME_SEPARATOR);
+        var typeAndFieldNameBound = targetPath.lastIndexOf(FIELD_NAME_SEPARATOR);
         if (typeAndFieldNameBound == -1) {
-            String msg = "Invalid external constraint target `%s`. " +
+            var msg = "Invalid external constraint target `%s`. " +
                     "Proper format is `package.TargetMessage.target_field`.";
             throw newIllegalStateException(msg, targetPath);
         }
 
-        String fieldName = targetPath.substring(typeAndFieldNameBound + 1);
-        String targetMessageType = targetPath.substring(0, typeAndFieldNameBound);
-        Descriptor message = TypeName.of(targetMessageType)
-                                     .messageDescriptor();
-        FieldDescriptor field = message.findFieldByName(fieldName);
+        var fieldName = targetPath.substring(typeAndFieldNameBound + 1);
+        var targetMessageType = targetPath.substring(0, typeAndFieldNameBound);
+        var message = TypeName.of(targetMessageType)
+                              .messageDescriptor();
+        var field = message.findFieldByName(fieldName);
         if (field == null) {
             throw newIllegalStateException("The field '%s' is not found in the '%s' message.",
                                            fieldName, message.getName());
@@ -141,7 +141,7 @@ final class ExternalMessageConstraint {
 
     private static FieldDescriptor checkTargetType(FieldDescriptor targetDescriptor) {
         if (targetDescriptor.getJavaType() != MESSAGE) {
-            String errMsg = "External constraint target must be a Message. Specified type is `%s`.";
+            var errMsg = "External constraint target must be a Message. Specified type is `%s`.";
             throw newIllegalStateException(errMsg, targetDescriptor.getJavaType());
         }
         return targetDescriptor;
@@ -158,20 +158,20 @@ final class ExternalMessageConstraint {
      *         the target of the constraint
      */
     private static void checkConstraintFields(Descriptor constraint, FieldDescriptor target) {
-        for (FieldDescriptor constraintField : constraint.getFields()) {
-            Descriptor targetType = target.getMessageType();
-            String fieldName = constraintField.getName();
-            FieldDescriptor targetField = targetType.findFieldByName(fieldName);
+        for (var constraintField : constraint.getFields()) {
+            var targetType = target.getMessageType();
+            var fieldName = constraintField.getName();
+            var targetField = targetType.findFieldByName(fieldName);
             if (targetField == null) {
-                String msg = "The external constraint '%s' declares the field `%s`, " +
+                var msg = "The external constraint '%s' declares the field `%s`, " +
                         "which was not found in the `%s` message.";
                 throw newIllegalStateException(msg, constraint.getFullName(),
                                                fieldName, targetType.getName());
             }
 
-            boolean isCorrectType = constraintField.getJavaType() == targetField.getJavaType();
+            var isCorrectType = constraintField.getJavaType() == targetField.getJavaType();
             if (!isCorrectType) {
-                String errMsg = "`%s` must be of type `%s`.";
+                var errMsg = "`%s` must be of type `%s`.";
                 throw newIllegalStateException(errMsg, constraintField.getFullName(),
                                                targetField.getJavaType());
             }
@@ -187,7 +187,7 @@ final class ExternalMessageConstraint {
             return false;
         }
 
-        ExternalMessageConstraint other = (ExternalMessageConstraint) o;
+        var other = (ExternalMessageConstraint) o;
 
         return typeUrl().equals(other.typeUrl());
     }

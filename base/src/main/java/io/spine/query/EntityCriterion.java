@@ -40,6 +40,7 @@ import io.spine.base.EntityState;
  * @param <B>
  *         the type of the builder in scope of which this criterion exists
  */
+@SuppressWarnings("unused") /* Part of the public API. */
 public final class EntityCriterion<S extends EntityState<?>,
                                    V,
                                    B extends EntityQueryBuilder<?, S, B, ?>>
@@ -63,7 +64,7 @@ public final class EntityCriterion<S extends EntityState<?>,
     protected B addParameter(B builder,
                              EntityColumn<S, V> col,
                              ComparisonOperator operator, V value) {
-        EntitySubjectParameter<S, V> parameter = new EntitySubjectParameter<>(col, value, operator);
+        var parameter = new EntitySubjectParameter<>(col, value, operator);
         return builder.addParameter(parameter);
     }
 }

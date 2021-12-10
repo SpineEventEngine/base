@@ -27,7 +27,6 @@
 package io.spine.type;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.Immutable;
@@ -97,16 +96,16 @@ public class KnownTypes implements Serializable {
     }
 
     private static KnownTypes load() {
-        TypeSet types = loadTypeSet();
-        KnownTypes result = new KnownTypes(types);
+        var types = loadTypeSet();
+        var result = new KnownTypes(types);
         return result;
     }
 
     @SuppressWarnings("MethodOnlyUsedFromInnerClass")
     private KnownTypes extendWith(TypeSet moreTypes) {
         checkNotNull(moreTypes);
-        TypeSet combined = typeSet.union(moreTypes);
-        KnownTypes result = new KnownTypes(combined);
+        var combined = typeSet.union(moreTypes);
+        var result = new KnownTypes(combined);
         return result;
     }
 
@@ -127,8 +126,8 @@ public class KnownTypes implements Serializable {
      * Loads known types from the classpath.
      */
     private static TypeSet loadTypeSet() {
-        FileSet protoDefinitions = FileSet.load();
-        TypeSet types = TypeSet.from(protoDefinitions);
+        var protoDefinitions = FileSet.load();
+        var types = TypeSet.from(protoDefinitions);
         return types;
     }
 
@@ -147,7 +146,7 @@ public class KnownTypes implements Serializable {
             throw new UnknownTypeException(type.toTypeName()
                                                .value());
         }
-        ClassName result = instance().get(type);
+        var result = instance().get(type);
         return result;
     }
 
@@ -184,7 +183,7 @@ public class KnownTypes implements Serializable {
      * @return set of {@link TypeUrl TypeUrl}s of types that belong to the given package
      */
     public Set<TypeUrl> allFromPackage(String packageName) {
-        Set<TypeUrl> result = allUrls().stream()
+        var result = allUrls().stream()
                                        .filter(url -> url.toTypeName()
                                                          .belongsTo(packageName))
                                        .collect(toSet());
@@ -199,8 +198,8 @@ public class KnownTypes implements Serializable {
      * @return {@code true} if the given type is known, {@code false} otherwise
      */
     public boolean contains(TypeUrl typeUrl) {
-        TypeName name = typeUrl.toTypeName();
-        boolean result = typeSet.contains(name);
+        var name = typeUrl.toTypeName();
+        var result = typeSet.contains(name);
         return result;
     }
 
@@ -210,25 +209,25 @@ public class KnownTypes implements Serializable {
      * @see TypeSet#find(TypeName)
      */
     Optional<Type<?, ?>> find(TypeName typeName) {
-        Optional<Type<?, ?>> type = typeSet.find(typeName);
+        var type = typeSet.find(typeName);
         return type;
     }
 
     private Type<?, ?> get(TypeName name) throws UnknownTypeException {
-        Type<?, ?> result = typeSet.find(name)
-                                   .orElseThrow(() -> new UnknownTypeException(name.value()));
+        var result = typeSet.find(name)
+                            .orElseThrow(() -> new UnknownTypeException(name.value()));
         return result;
     }
 
     private ClassName get(TypeUrl typeUrl) {
-        Type<?, ?> type = get(typeUrl.toTypeName());
-        ClassName result = type.javaClassName();
+        var type = get(typeUrl.toTypeName());
+        var result = type.javaClassName();
         return result;
     }
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder(KnownTypes.class.getSimpleName());
+        var result = new StringBuilder(KnownTypes.class.getSimpleName());
         result.append(':')
               .append(lineSeparator());
         NEW_LINE_JOINER.appendTo(result, allUrlList());
@@ -246,8 +245,7 @@ public class KnownTypes implements Serializable {
      * Obtains alphabetically sorted list of URLs of all known types.
      */
     private List<String> allUrlList() {
-        ImmutableList<String> result = allUrls()
-                .stream()
+        var result = allUrls().stream()
                 .map(TypeUrl::value)
                 .sorted()
                 .collect(toImmutableList());
@@ -292,12 +290,13 @@ public class KnownTypes implements Serializable {
          * @throws java.lang.SecurityException
          *         if called from the client code
          */
+        @SuppressWarnings("unused") /* Part of the public API. */
         public static void extendWith(TypeSet moreKnownTypes) {
             InvocationGuard.allowOnly("io.spine.tools.type.MoreKnownTypes");
             logger.atFine().log("Adding types `%s` to known types.", moreKnownTypes);
             lock.lock();
             try {
-                KnownTypes extended = instance.extendWith(moreKnownTypes);
+                var extended = instance.extendWith(moreKnownTypes);
                 instance = extended;
                 ExternalConstraints.updateFrom(instance.messageTypes());
             } finally {

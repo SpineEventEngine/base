@@ -84,7 +84,7 @@ public final class LocationPath {
         path.add(FileDescriptorProto.MESSAGE_TYPE_FIELD_NUMBER);
         if (!MessageType.isTopLevel(descriptor)) {
             Deque<Integer> parentPath = new ArrayDeque<>();
-            Descriptor containingType = descriptor.getContainingType();
+            var containingType = descriptor.getContainingType();
             while (containingType != null) {
                 parentPath.addFirst(containingType.getIndex());
                 containingType = containingType.getContainingType();
@@ -92,7 +92,7 @@ public final class LocationPath {
             path.addAll(parentPath);
         }
         path.add(descriptor.getIndex());
-        ImmutableList<Integer> list = path.build();
+        var list = path.build();
         return new LocationPath(list, false);
     }
 
@@ -100,9 +100,9 @@ public final class LocationPath {
      * Appends the path item to the end of this path.
      */
     LocationPath append(Integer... items) {
-        ImmutableList<Integer> candidates = ImmutableList.copyOf(items);
+        var candidates = ImmutableList.copyOf(items);
         checkPath(candidates);
-        ImmutableList<Integer> combined = toBuilder().addAll(candidates).build();
+        var combined = toBuilder().addAll(candidates).build();
         return new LocationPath(combined, false);
     }
 
@@ -128,9 +128,9 @@ public final class LocationPath {
      * Converts the instance to the {@code SourceCodeInfo.Location} instance in the given file.
      */
     public SourceCodeInfo.Location toLocationIn(FileDescriptorProto file) {
-        List<Integer> thisPath = toList();
-        List<Location> locations = file.getSourceCodeInfo().getLocationList();
-        for (SourceCodeInfo.Location location : locations) {
+        var thisPath = toList();
+        var locations = file.getSourceCodeInfo().getLocationList();
+        for (var location : locations) {
             if (thisPath.equals(location.getPathList())) {
                 return location;
             }
@@ -149,7 +149,7 @@ public final class LocationPath {
         if (!(o instanceof LocationPath)) {
             return false;
         }
-        LocationPath that = (LocationPath) o;
+        var that = (LocationPath) o;
         return path.equals(that.path);
     }
 

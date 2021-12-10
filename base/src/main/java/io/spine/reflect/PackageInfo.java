@@ -65,7 +65,7 @@ public final class PackageInfo implements Comparable<PackageInfo> {
      */
     public static PackageInfo of(Package value) {
         checkNotNull(value);
-        PackageInfo result = new PackageInfo(value);
+        var result = new PackageInfo(value);
         return result;
     }
 
@@ -74,7 +74,7 @@ public final class PackageInfo implements Comparable<PackageInfo> {
      */
     public static PackageInfo of(Class<?> cls) {
         checkNotNull(cls);
-        PackageInfo result = new PackageInfo(cls.getPackage());
+        var result = new PackageInfo(cls.getPackage());
         return result;
     }
 
@@ -95,15 +95,15 @@ public final class PackageInfo implements Comparable<PackageInfo> {
     public <A extends Annotation> Optional<A> findAnnotation(Class<A> annotationClass) {
         checkNotNull(annotationClass);
 
-        Optional<A> result = getAnnotation(annotationClass);
+        var result = getAnnotation(annotationClass);
         if (result.isPresent()) {
             return result;
         }
 
         List<PackageInfo> goingUp = new ArrayList<>(parents());
         goingUp.sort(reverseOrder());
-        for (PackageInfo parent : goingUp) {
-            Optional<A> ofParent = parent.getAnnotation(annotationClass);
+        for (var parent : goingUp) {
+            var ofParent = parent.getAnnotation(annotationClass);
             if (ofParent.isPresent()) {
                 return ofParent;
             }
@@ -121,8 +121,8 @@ public final class PackageInfo implements Comparable<PackageInfo> {
      * @see #findAnnotation(Class)
      */
     public <A extends Annotation> Optional<A> getAnnotation(Class<A> annotationClass) {
-        A annotation = value.getAnnotation(annotationClass);
-        Optional<A> result = Optional.ofNullable(annotation);
+        var annotation = value.getAnnotation(annotationClass);
+        var result = Optional.ofNullable(annotation);
         return result;
     }
 
@@ -130,21 +130,19 @@ public final class PackageInfo implements Comparable<PackageInfo> {
      * Obtains parents of this package in the alphabetical order.
      */
     private List<PackageInfo> parents() {
-        Package[] pack = Package.getPackages();
-        String packageName = getName();
-        List<Package> parentList =
-                Arrays.stream(pack)
-                      .filter((p) -> {
-                          String parentName = p.getName();
-                          return packageName.startsWith(parentName) &&
-                                  !packageName.equals(parentName);
-                      })
-                      .sorted(comparing(Package::getName))
-                      .collect(toList());
-        List<PackageInfo> result =
-                parentList.stream()
-                          .map(PackageInfo::of)
-                          .collect(toList());
+        var pack = Package.getPackages();
+        var packageName = getName();
+        var parentList = Arrays.stream(pack)
+                .filter((p) -> {
+                    var parentName = p.getName();
+                    return packageName.startsWith(parentName) &&
+                            !packageName.equals(parentName);
+                })
+                .sorted(comparing(Package::getName))
+                .collect(toList());
+        var result = parentList.stream()
+                .map(PackageInfo::of)
+                .collect(toList());
         return result;
     }
 
@@ -158,7 +156,7 @@ public final class PackageInfo implements Comparable<PackageInfo> {
     /** Returns {@code true} if the enclosed package value is equal to the passed instance. */
     boolean isAbout(Package p) {
         checkNotNull(p);
-        boolean result = value.equals(p);
+        var result = value.equals(p);
         return result;
     }
 
@@ -182,7 +180,7 @@ public final class PackageInfo implements Comparable<PackageInfo> {
         if (!(o instanceof PackageInfo)) {
             return false;
         }
-        PackageInfo node = (PackageInfo) o;
+        var node = (PackageInfo) o;
         return Objects.equals(value, node.value);
     }
 

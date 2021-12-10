@@ -49,8 +49,8 @@ public final class MinConstraint extends RangedConstraint<MinOption> {
     }
 
     private static Range<ComparableNumber> minRange(MinOption option) {
-        boolean inclusive = !option.getExclusive();
-        NumberText minValue = new NumberText(option.getValue());
+        var inclusive = !option.getExclusive();
+        var minValue = new NumberText(option.getValue());
         return inclusive
                ? Range.atLeast(minValue.toNumber())
                : Range.greaterThan(minValue.toNumber());
@@ -59,8 +59,8 @@ public final class MinConstraint extends RangedConstraint<MinOption> {
     @Override
     @SuppressWarnings("deprecation") /* Old validation won't migrate to the new error messages. */
     protected String compileErrorMessage(Range<ComparableNumber> range) {
-        MinOption min = optionValue();
-        String template = ViolationText.errorMessage(min, min.getMsgFormat());
+        var min = optionValue();
+        var template = ViolationText.errorMessage(min, min.getMsgFormat());
         return format(template, orEqualTo(range.lowerBoundType()), range.lowerEndpoint());
     }
 

@@ -88,7 +88,7 @@ public abstract class SubjectParameter<R, C extends Column<R, V>, V> {
         if (!(o instanceof SubjectParameter)) {
             return false;
         }
-        SubjectParameter<?, ?, ?> parameter = (SubjectParameter<?, ?, ?>) o;
+        var parameter = (SubjectParameter<?, ?, ?>) o;
         return column.equals(parameter.column) &&
                 value.equals(parameter.value) &&
                 operator == parameter.operator;

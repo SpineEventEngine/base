@@ -28,9 +28,7 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
-import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import io.spine.code.proto.FieldContext;
-import io.spine.code.proto.FieldDeclaration;
 import io.spine.validate.option.FieldValidatingOption;
 import io.spine.validate.option.StandardOptionFactory;
 import io.spine.validate.option.ValidatingOptionFactory;
@@ -86,8 +84,8 @@ final class FieldConstraints {
     private static Stream<Constraint>
     findConstraints(FieldContext field, ImmutableSet<ValidatingOptionFactory> factories) {
         checkNotNull(field);
-        FieldDeclaration declaration = field.targetDeclaration();
-        JavaType type = declaration.javaType();
+        var declaration = field.targetDeclaration();
+        var type = declaration.javaType();
         switch (type) {
             case INT:
                 return constraintsFrom(factories, ValidatingOptionFactory::forInt, field);

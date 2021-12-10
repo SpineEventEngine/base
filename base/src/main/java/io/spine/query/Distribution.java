@@ -95,7 +95,7 @@ final class Distribution {
     private static <R> void distributeChildren(AndExpression<R> and,
                                                List<Expression<R, ?>> orChildren,
                                                OrExpression.OrBuilder<R> result) {
-        for (Expression<R, ?> child : orChildren) {
+        for (var child : orChildren) {
             AndBuilder<R> childBuilder = AndExpression.newBuilder();
             and.copyTo(childBuilder);
             if (child.operator() == AND) {
@@ -104,7 +104,7 @@ final class Distribution {
             } else {
                 childBuilder.addExpression(child);
             }
-            AndExpression<R> childAnd = childBuilder.build();
+            var childAnd = childBuilder.build();
             result.addExpression(childAnd);
         }
     }
@@ -126,11 +126,11 @@ final class Distribution {
     distributeCustomParams(AndExpression<R> and,
                            List<CustomSubjectParameter<?, ?>> customParams,
                            OrExpression.OrBuilder<R> result) {
-        for (CustomSubjectParameter<?, ?> param : customParams) {
+        for (var param : customParams) {
             AndBuilder<R> childBuilder = AndExpression.newBuilder();
             and.copyTo(childBuilder);
             childBuilder.addCustomParam(param);
-            AndExpression<R> childAnd = childBuilder.build();
+            var childAnd = childBuilder.build();
             result.addExpression(childAnd);
         }
     }
@@ -151,11 +151,11 @@ final class Distribution {
     private static <R> void distributeSimpleParams(AndExpression<R> and,
                                                    List<SubjectParameter<R, ?, ?>> disjunctiveParams,
                                                    OrExpression.OrBuilder<R> result) {
-        for (SubjectParameter<R, ?, ?> param : disjunctiveParams) {
+        for (var param : disjunctiveParams) {
             AndBuilder<R> childBuilder = AndExpression.newBuilder();
             and.copyTo(childBuilder);
             childBuilder.addParam(param);
-            AndExpression<R> childAnd = childBuilder.build();
+            var childAnd = childBuilder.build();
             result.addExpression(childAnd);
         }
     }

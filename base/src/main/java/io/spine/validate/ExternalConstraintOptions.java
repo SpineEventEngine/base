@@ -77,11 +77,11 @@ public final class ExternalConstraintOptions implements Serializable {
      */
     public static <T> Optional<T>
     getOptionValue(FieldContext fieldContext, GeneratedExtension<FieldOptions, T> option) {
-        ImmutableMap<FieldContext, FieldOptions> options = Holder.instance.options;
-        for (FieldContext context : options.keySet()) {
-            FieldOptions fieldOptions = options.get(context);
+        var options = Holder.instance.options;
+        for (var context : options.keySet()) {
+            var fieldOptions = options.get(context);
             if (fieldContext.hasSameTargetAndParent(context) && fieldOptions.hasExtension(option)) {
-                T optionValue = fieldOptions.getExtension(option);
+                var optionValue = fieldOptions.getExtension(option);
                 // A option is set explicitly if it was found in external constraints.
                 return Optional.of(optionValue);
             }
@@ -115,8 +115,8 @@ public final class ExternalConstraintOptions implements Serializable {
             logger.atFine()
                   .log("Updating external constraint options from constraints `%s`.",
                        externalConstraints);
-            ImmutableMap<FieldContext, FieldOptions> currentOptions = instance.options;
-            ImmutableMap<FieldContext, FieldOptions> newOptions = new Builder()
+            var currentOptions = instance.options;
+            var newOptions = new Builder()
                     .buildFrom(externalConstraints);
             Map<FieldContext, FieldOptions> options =
                     newHashMapWithExpectedSize(currentOptions.size() + newOptions.size());
@@ -139,26 +139,26 @@ public final class ExternalConstraintOptions implements Serializable {
 
         private ImmutableMap<FieldContext, FieldOptions>
         buildFrom(Iterable<ExternalMessageConstraint> constraints) {
-            for (ExternalMessageConstraint constraint : constraints) {
+            for (var constraint : constraints) {
                 putAll(constraint);
             }
             return ImmutableMap.copyOf(state);
         }
 
         private void putAll(ExternalMessageConstraint constraint) {
-            Descriptor constraintDescriptor = constraint.getDescriptor();
+            var constraintDescriptor = constraint.getDescriptor();
             Collection<FieldDescriptor> targets = constraint.getTargets();
-            for (FieldDescriptor target : targets) {
+            for (var target : targets) {
                 put(constraintDescriptor, target);
             }
         }
 
         private void put(Descriptor constraint, FieldDescriptor target) {
-            Descriptor targetType = target.getMessageType();
-            for (FieldDescriptor constraintField : constraint.getFields()) {
-                FieldDescriptor subTarget = targetType.findFieldByName(constraintField.getName());
-                FieldContext targetContext = FieldContext.create(target);
-                FieldContext subTargetContext = targetContext.forChild(subTarget);
+            var targetType = target.getMessageType();
+            for (var constraintField : constraint.getFields()) {
+                var subTarget = targetType.findFieldByName(constraintField.getName());
+                var targetContext = FieldContext.create(target);
+                var subTargetContext = targetContext.forChild(subTarget);
                 state.put(subTargetContext, constraintField.getOptions());
             }
         }

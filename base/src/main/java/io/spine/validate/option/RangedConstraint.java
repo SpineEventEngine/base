@@ -30,7 +30,6 @@ import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 import com.google.errorprone.annotations.Immutable;
 import com.google.errorprone.annotations.ImmutableTypeParameter;
-import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.validate.ComparableNumber;
@@ -62,7 +61,7 @@ public abstract class RangedConstraint<@ImmutableTypeParameter T> extends FieldC
 
     @SuppressWarnings("EnumSwitchStatementWhichMissesCases")
     private static void verifyType(FieldDeclaration field, Range<ComparableNumber> range) {
-        JavaType fieldType = field.javaType();
+        var fieldType = field.javaType();
         switch (fieldType) {
             case INT:  // Fallthrough intended.
             case LONG: {

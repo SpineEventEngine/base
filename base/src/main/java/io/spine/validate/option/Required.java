@@ -79,9 +79,7 @@ public class Required
     }
 
     private boolean notAssumingRequired(FieldContext context) {
-        boolean defaultValue = context
-                .targetDeclaration()
-                .isId();
+        var defaultValue = context.targetDeclaration().isId();
         return valueFrom(context.target())
                 .orElse(defaultValue);
     }
@@ -101,9 +99,9 @@ public class Required
      *         a value that the option is applied to
      */
     void checkUsage(FieldDeclaration field) {
-        JavaType type = field.javaType();
+        var type = field.javaType();
         if (!CAN_BE_REQUIRED.contains(type) && field.isNotCollection()) {
-            String typeName = field.descriptor().getType().name();
+            var typeName = field.descriptor().getType().name();
             _warn().log("The field `%s.%s` has the type %s and" +
                                 " should not be declared as `(required)`.",
                   field.declaringType().name(),
@@ -115,7 +113,7 @@ public class Required
     @Override
     public Constraint constraintFor(FieldContext context) {
         checkUsage(context.targetDeclaration());
-        boolean value = notAssumingRequired(context);
+        var value = notAssumingRequired(context);
         return new RequiredConstraint(value, context.targetDeclaration());
     }
 }

@@ -75,7 +75,7 @@ public abstract class AbstractOption<@ImmutableTypeParameter T,
 
     @Override
     public Optional<T> valueFrom(K object) {
-        E options = optionsFrom(object);
+        var options = optionsFrom(object);
         return options.hasExtension(extension)
                ? Optional.of(options.getExtension(this.extension))
                : Optional.empty();
@@ -90,7 +90,7 @@ public abstract class AbstractOption<@ImmutableTypeParameter T,
         if (!(o instanceof AbstractOption)) {
             return false;
         }
-        AbstractOption<?, ?, ?> option = (AbstractOption<?, ?, ?>) o;
+        var option = (AbstractOption<?, ?, ?>) o;
         return extension.getNumber() == option.extension.getNumber();
     }
 

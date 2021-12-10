@@ -166,7 +166,7 @@ public final class QueryPredicate<R> {
      * @see <a href="https://en.wikipedia.org/wiki/Disjunctive_normal_form">Disjunctive normal form</a>
      */
     public QueryPredicate<R> toDnf() {
-        QueryPredicate<R> result = new TransformToDnf<R>().apply(this);
+        var result = new TransformToDnf<R>().apply(this);
         return result;
     }
 
@@ -192,19 +192,19 @@ public final class QueryPredicate<R> {
     }
 
     private static <R> void copyChildren(QueryPredicate<R> predicate, Builder<R> builder) {
-        for (QueryPredicate<R> child : predicate.children) {
+        for (var child : predicate.children) {
             builder.addPredicate(child);
         }
     }
 
     private static <R> void copyCustomParams(QueryPredicate<R> predicate, Builder<R> builder) {
-        for (CustomSubjectParameter<?, ?> customParam : predicate.customParameters) {
+        for (var customParam : predicate.customParameters) {
             builder.addCustom(customParam);
         }
     }
 
     private static <R> void copyParams(QueryPredicate<R> predicate, Builder<R> builder) {
-        for (SubjectParameter<R, ?, ?> parameter : predicate.parameters) {
+        for (var parameter : predicate.parameters) {
             builder.add(parameter);
         }
     }
@@ -226,12 +226,12 @@ public final class QueryPredicate<R> {
         checkNotNull(operator);
 
         Builder<R> builder = newBuilder(operator);
-        for (QueryPredicate<R> predicate : predicates) {
+        for (var predicate : predicates) {
             copyParams(predicate, builder);
             copyCustomParams(predicate, builder);
             copyChildren(predicate, builder);
         }
-        QueryPredicate<R> result = builder.build();
+        var result = builder.build();
         return result;
     }
 
@@ -254,7 +254,7 @@ public final class QueryPredicate<R> {
         if (!(o instanceof QueryPredicate)) {
             return false;
         }
-        QueryPredicate<?> predicate = (QueryPredicate<?>) o;
+        var predicate = (QueryPredicate<?>) o;
         return operator == predicate.operator &&
                 Objects.equals(parameters, predicate.parameters) &&
                 Objects.equals(customParameters, predicate.customParameters) &&
@@ -334,7 +334,7 @@ public final class QueryPredicate<R> {
         @CanIgnoreReturnValue
         Builder<R> addParams(Iterable<SubjectParameter<R, ?, ?>> parameters) {
             checkNotNull(parameters);
-            for (SubjectParameter<R, ?, ?> parameter : parameters) {
+            for (var parameter : parameters) {
                 add(parameter);
             }
             return this;
@@ -358,7 +358,7 @@ public final class QueryPredicate<R> {
         @CanIgnoreReturnValue
         Builder<R> addCustomParams(Iterable<CustomSubjectParameter<?, ?>> parameters) {
             checkNotNull(parameters);
-            for (CustomSubjectParameter<?, ?> parameter : parameters) {
+            for (var parameter : parameters) {
                 addCustom(parameter);
             }
             return this;
@@ -388,7 +388,7 @@ public final class QueryPredicate<R> {
         QueryPredicate<R> build() {
             optimizeForOnlyChild();
             flattenSimilarChildren();
-            QueryPredicate<R> result = new QueryPredicate<>(this);
+            var result = new QueryPredicate<>(this);
             appendToParent(result);
             return result;
         }
@@ -410,13 +410,13 @@ public final class QueryPredicate<R> {
          */
         private void optimizeForOnlyChild() {
             if (isTopLevel() && hasNoParams() && children.size() == 1) {
-                QueryPredicate<R> onlyChild = children.get(0);
+                var onlyChild = children.get(0);
                 this.operator = onlyChild.operator();
                 addParams(onlyChild.parameters());
                 addCustomParams(onlyChild.customParameters());
                 children.clear();
-                ImmutableList<QueryPredicate<R>> grandChildren = onlyChild.children;
-                for (QueryPredicate<R> grandChild : grandChildren) {
+                var grandChildren = onlyChild.children;
+                for (var grandChild : grandChildren) {
                     addPredicate(grandChild);
                 }
             }
@@ -427,12 +427,11 @@ public final class QueryPredicate<R> {
          * the same logical operator as this builder.
          */
         private void flattenSimilarChildren() {
-            long differentChildrenCount =
-                    children.stream()
-                            .filter(c -> c.operator != operator())
-                            .count();
+            var differentChildrenCount = children.stream()
+                    .filter(c -> c.operator != operator())
+                    .count();
             if (differentChildrenCount == 0) {
-                for (QueryPredicate<R> child : children) {
+                for (var child : children) {
                     copyParams(child, this);
                     copyCustomParams(child, this);
                     copyChildren(child, this);
@@ -454,11 +453,11 @@ public final class QueryPredicate<R> {
          */
         private void appendToParent(QueryPredicate<R> result) {
             if (parent != null) {
-                boolean simplified = false;
+                var simplified = false;
 
-                int childrenSize = children.size();
-                int paramCount = parameters.size();
-                int customCount = customParameters.size();
+                var childrenSize = children.size();
+                var paramCount = parameters.size();
+                var customCount = customParameters.size();
 
                 if (operator() == parent.operator()) {
                     copyParams(result, parent);

@@ -43,6 +43,8 @@ import io.spine.internal.gradle.forceVersions
 import io.spine.internal.gradle.github.pages.updateGitHubPages
 import io.spine.internal.gradle.javac.configureErrorProne
 import io.spine.internal.gradle.javac.configureJavac
+import io.spine.internal.gradle.kotlin.applyJvmToolchain
+import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
 import io.spine.internal.gradle.publish.PublishingRepos
 import io.spine.internal.gradle.publish.spinePublishing
 import io.spine.internal.gradle.report.coverage.JacocoConfig
@@ -63,11 +65,11 @@ repositories.applyStandard()
 // Apply some plugins to make type-safe extension accessors available in this script file.
 plugins {
     `java-library`
-    kotlin("jvm") version io.spine.internal.dependency.Kotlin.version
+    kotlin("jvm")
     idea
 
     io.spine.internal.dependency.Protobuf.GradlePlugin.apply {
-        id(id) version version
+        id(id)
     }
     io.spine.internal.dependency.ErrorProne.GradlePlugin.apply {
         id(id)
@@ -143,11 +145,15 @@ subprojects {
         rootFolder.set(rootDir)
     }
 
-    val javaVersion = JavaVersion.VERSION_1_8
+    val javaVersion = 11
+    kotlin {
+        applyJvmToolchain(javaVersion)
+        explicitApi()
+    }
 
-    the<JavaPluginExtension>().apply {
-        sourceCompatibility = javaVersion
-        targetCompatibility = javaVersion
+    tasks.withType<KotlinCompile>().configureEach {
+        kotlinOptions.jvmTarget = JavaVersion.VERSION_11.toString()
+        setFreeCompilerArgs()
     }
 
     tasks.withType<JavaCompile> {
@@ -175,12 +181,10 @@ subprojects {
      */
     dependencies {
         errorprone(ErrorProne.core)
-        errorproneJavac(ErrorProne.javacPlugin)
 
         Protobuf.libs.forEach { api(it) }
         api(Flogger.lib)
         api(Guava.lib)
-        api(kotlin("stdlib-jdk8"))
 
         compileOnlyApi(CheckerFramework.annotations)
         compileOnlyApi(JavaX.annotations)

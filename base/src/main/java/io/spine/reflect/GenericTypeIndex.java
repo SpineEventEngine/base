@@ -74,13 +74,11 @@ public interface GenericTypeIndex<C> {
      */
     default Class<?> argumentIn(Class<? extends C> cls) {
         checkNotNull(cls);
-        @SuppressWarnings("rawtypes")
-        Class<? extends GenericTypeIndex> indexClass = getClass();
+        var indexClass = getClass();
         @SuppressWarnings("unchecked") /* The type cast is ensured by the declaration of
             the `GenericTypeIndex` interface. */
-        Class<C> superclassOfPassed = (Class<C>)
-                Types.argumentIn(indexClass, GenericTypeIndex.class, 0);
-        Class<?> result = Types.argumentIn(cls, superclassOfPassed, index());
+        var superclassOfPassed = (Class<C>) Types.argumentIn(indexClass, GenericTypeIndex.class, 0);
+        var result = Types.argumentIn(cls, superclassOfPassed, index());
         return result;
     }
 }

@@ -30,7 +30,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
-import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.annotation.Internal;
 import io.spine.type.KnownTypes;
@@ -103,7 +102,7 @@ public final class ExternalConstraints implements Serializable {
      *         {@code false} otherwise
      */
     public static boolean isDefinedFor(Descriptor containerType, String fieldName) {
-        for (ExternalMessageConstraint constraint : all()) {
+        for (var constraint : all()) {
             if (constraint.hasTarget(containerType, fieldName)) {
                 return true;
             }
@@ -123,7 +122,7 @@ public final class ExternalConstraints implements Serializable {
      * Builds external constraints for known Protobuf types.
      */
     private static ImmutableSet<ExternalMessageConstraint> constraintsFor(KnownTypes knownTypes) {
-        ImmutableSet<MessageType> types = checkNotNull(knownTypes)
+        var types = checkNotNull(knownTypes)
                 .asTypeSet()
                 .messageTypes();
         return constraintsFor(types);
@@ -146,8 +145,8 @@ public final class ExternalConstraints implements Serializable {
      */
     private static ExternalMessageConstraint toConstraint(MessageType type) {
         checkNotNull(type);
-        ConstraintFor constraintFor = new ConstraintFor();
-        String constraintTargets = constraintFor
+        var constraintFor = new ConstraintFor();
+        var constraintTargets = constraintFor
                 .valueFrom(type.toProto())
                 .orElseThrow(() -> newIllegalArgumentException(type.name()
                                                                    .value()));
@@ -188,8 +187,8 @@ public final class ExternalConstraints implements Serializable {
             checkNotNull(types);
             logger.atFine()
                   .log("Updating external constraints from types `%s`.", types);
-            ImmutableSet<ExternalMessageConstraint> currentConstraints = instance.constraints;
-            ImmutableSet<ExternalMessageConstraint> newConstraints = constraintsFor(types);
+            var currentConstraints = instance.constraints;
+            var newConstraints = constraintsFor(types);
             Set<ExternalMessageConstraint> constraints =
                     newHashSetWithExpectedSize(currentConstraints.size() + newConstraints.size());
             constraints.addAll(currentConstraints);
@@ -207,9 +206,9 @@ public final class ExternalConstraints implements Serializable {
         @Override
         public boolean test(MessageType input) {
             checkNotNull(input);
-            DescriptorProtos.DescriptorProto proto = input.toProto();
-            boolean result = new ConstraintFor().valueFrom(proto)
-                                                .isPresent();
+            var proto = input.toProto();
+            var result = new ConstraintFor().valueFrom(proto)
+                                            .isPresent();
             logger.atFine()
                   .log("[HasExternalConstraint] Tested `%s` with the result of `%b`.",
                        proto.getName(), result);

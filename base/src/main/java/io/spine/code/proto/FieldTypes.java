@@ -26,7 +26,6 @@
 
 package io.spine.code.proto;
 
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -62,7 +61,7 @@ public final class FieldTypes {
      */
     public static boolean isMessage(FieldDescriptor field) {
         checkNotNull(field);
-        boolean isMessage = field.getType() == MESSAGE;
+        var isMessage = field.getType() == MESSAGE;
         return isMessage;
     }
 
@@ -78,7 +77,7 @@ public final class FieldTypes {
      */
     public static boolean isRepeated(FieldDescriptor field) {
         checkNotNull(field);
-        FieldDescriptorProto proto = field.toProto();
+        var proto = field.toProto();
         return FieldTypesProto.isRepeated(proto);
     }
 
@@ -91,7 +90,7 @@ public final class FieldTypes {
      */
     public static boolean isMap(FieldDescriptor field) {
         checkNotNull(field);
-        FieldDescriptorProto proto = field.toProto();
+        var proto = field.toProto();
         return FieldTypesProto.isMap(proto);
     }
 
@@ -111,8 +110,8 @@ public final class FieldTypes {
         checkArgument(isMap(field),
                       "Trying to get key descriptor for the non-map field %s.",
                       field.getName());
-        FieldDescriptor descriptor = field.getMessageType()
-                                          .findFieldByName(MAP_ENTRY_KEY);
+        var descriptor = field.getMessageType()
+                              .findFieldByName(MAP_ENTRY_KEY);
         return descriptor;
     }
 
@@ -132,8 +131,8 @@ public final class FieldTypes {
         checkArgument(isMap(field),
                       "Trying to get value descriptor for the non-map field %s.",
                       field.getName());
-        FieldDescriptor descriptor = field.getMessageType()
-                                          .findFieldByName(MAP_ENTRY_VALUE);
+        var descriptor = field.getMessageType()
+                              .findFieldByName(MAP_ENTRY_VALUE);
         return descriptor;
     }
 }

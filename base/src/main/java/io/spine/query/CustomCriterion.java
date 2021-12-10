@@ -73,7 +73,7 @@ final class CustomCriterion<S, V, B extends QueryBuilder<?, ?, ?, B, ?>> {
     @CanIgnoreReturnValue
     public B is(V value) {
         checkNotNull(value);
-        CustomSubjectParameter<S, V> param = new CustomSubjectParameter<>(column, value, EQUALS);
+        var param = new CustomSubjectParameter<>(column, value, EQUALS);
         return builder.addCustomParameter(param);
     }
 }

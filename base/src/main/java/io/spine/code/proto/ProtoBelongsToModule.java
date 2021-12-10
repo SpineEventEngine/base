@@ -44,9 +44,8 @@ public abstract class ProtoBelongsToModule implements Predicate<SourceFile> {
 
     @Override
     public boolean test(SourceFile file) {
-        Path filePath = resolve(file);
-        boolean exists = filePath.toFile()
-                                 .exists();
+        var filePath = resolve(file);
+        var exists = filePath.toFile().exists();
         logger.atFinest()
               .log("Checking if the file `%s` exists, result: `%b`.", filePath, exists);
         return exists;
@@ -55,6 +54,7 @@ public abstract class ProtoBelongsToModule implements Predicate<SourceFile> {
     /**
      * Obtains this predicate operating with {@link FileDescriptor} instead of {@link SourceFile}.
      */
+    @SuppressWarnings("unused") /* Part of the public API. */
     public Predicate<FileDescriptor> forDescriptor() {
         Predicate<FileDescriptor> result = descriptor -> test(SourceFile.from(descriptor));
         return result;

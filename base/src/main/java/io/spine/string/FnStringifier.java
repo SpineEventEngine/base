@@ -36,6 +36,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @param <T>
  *         type of stringified objects
  */
+@SuppressWarnings({"unused", "AbstractClassNeverImplemented"}) /* Part of the public API. */
 public abstract class FnStringifier<T> extends SerializableStringifier<T> {
 
     private static final long serialVersionUID = 0L;
@@ -54,13 +55,13 @@ public abstract class FnStringifier<T> extends SerializableStringifier<T> {
 
     @Override
     protected final String toString(T obj) {
-        String result = printer.apply(obj);
+        var result = printer.apply(obj);
         return result;
     }
 
     @Override
     protected final T fromString(String s) {
-        T result = parser.apply(s);
+        var result = parser.apply(s);
         return result;
     }
 }

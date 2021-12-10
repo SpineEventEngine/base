@@ -33,14 +33,11 @@ import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.code.proto.FieldName;
 import io.spine.protobuf.Diff;
 import io.spine.type.MessageType;
-import io.spine.type.TypeName;
 import io.spine.validate.option.SetOnce;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
@@ -65,7 +62,7 @@ public final class Validate {
      */
     public static void checkValid(Message message) throws ValidationException {
         checkNotNull(message);
-        List<ConstraintViolation> violations = violationsOf(message);
+        var violations = violationsOf(message);
         if (!violations.isEmpty()) {
             throw new ValidationException(violations);
         }
@@ -103,14 +100,12 @@ public final class Validate {
      */
     @Internal
     @SuppressWarnings("WeakerAccess") // see apiNote.
-    public static List<ConstraintViolation> 
+    public static List<ConstraintViolation>
     validateAtRuntime(Message message, FieldContext context) {
-        Optional<ValidationError> error =
-                Constraints.of(MessageType.of(message), context)
-                           .runThrough(new MessageValidator(message, context));
-        List<ConstraintViolation> violations =
-                error.map(ValidationError::getConstraintViolationList)
-                     .orElse(ImmutableList.of());
+        var error = Constraints.of(MessageType.of(message), context)
+                               .runThrough(new MessageValidator(message, context));
+        var violations = error.map(ValidationError::getConstraintViolationList)
+                              .orElse(ImmutableList.of());
         return violations;
     }
 
@@ -127,12 +122,10 @@ public final class Validate {
      */
     public static List<ConstraintViolation> violationsOfCustomConstraints(Message message) {
         checkNotNull(message);
-        Optional<ValidationError> error =
-                Constraints.onlyCustom(MessageType.of(message), FieldContext.empty())
-                           .runThrough(new MessageValidator(message));
-        List<ConstraintViolation> violations =
-                error.map(ValidationError::getConstraintViolationList)
-                     .orElse(ImmutableList.of());
+        var error = Constraints.onlyCustom(MessageType.of(message), FieldContext.empty())
+                               .runThrough(new MessageValidator(message));
+        var violations = error.map(ValidationError::getConstraintViolationList)
+                              .orElse(ImmutableList.of());
         return violations;
     }
 
@@ -153,7 +146,7 @@ public final class Validate {
     public static <M extends Message> void checkValidChange(M previous, M current) {
         checkNotNull(previous);
         checkNotNull(current);
-        ImmutableSet<ConstraintViolation> setOnceViolations = validateChange(previous, current);
+        var setOnceViolations = validateChange(previous, current);
         if (!setOnceViolations.isEmpty()) {
             throw new ValidationException(setOnceViolations);
         }
@@ -177,16 +170,15 @@ public final class Validate {
         checkNotNull(previous);
         checkNotNull(current);
 
-        Diff diff = Diff.between(previous, current);
-        ImmutableSet<ConstraintViolation> violations = current
-                .getDescriptorForType()
+        var diff = Diff.between(previous, current);
+        var violations = current.getDescriptorForType()
                 .getFields()
                 .stream()
                 .map(FieldDeclaration::new)
                 .filter(Validate::isNonOverridable)
                 .filter(diff::contains)
                 .filter(field -> {
-                    Object fieldValue = previous.getField(field.descriptor());
+                    var fieldValue = previous.getField(field.descriptor());
                     return !field.isDefault(fieldValue);
                 })
                 .map(Validate::violatedSetOnce)
@@ -211,9 +203,9 @@ public final class Validate {
     private static boolean isNonOverridable(FieldDeclaration field) {
         checkNotNull(field);
 
-        boolean marked = markedSetOnce(field);
+        var marked = markedSetOnce(field);
         if (marked) {
-            boolean setOnceInapplicable = field.isCollection();
+            var setOnceInapplicable = field.isCollection();
             if (setOnceInapplicable) {
                 onSetOnceMisuse(field);
                 return false;
@@ -226,13 +218,13 @@ public final class Validate {
     }
 
     private static boolean markedSetOnce(FieldDeclaration declaration) {
-        Optional<Boolean> setOnceDeclaration = SetOnce.from(declaration.descriptor());
+        var setOnceDeclaration = SetOnce.from(declaration.descriptor());
         boolean setOnceValue = setOnceDeclaration.orElse(false);
         return setOnceValue;
     }
 
     private static void onSetOnceMisuse(FieldDeclaration field) {
-        FieldName fieldName = field.name();
+        var fieldName = field.name();
         logger.atSevere()
               .log("Error found in `%s`. " +
                            "Repeated and map fields cannot be marked as `(set_once) = true`.",
@@ -240,10 +232,9 @@ public final class Validate {
     }
 
     private static ConstraintViolation violatedSetOnce(FieldDeclaration declaration) {
-        TypeName declaringTypeName = declaration.declaringType().name();
-        FieldName fieldName = declaration.name();
-        ConstraintViolation violation = ConstraintViolation
-                .newBuilder()
+        var declaringTypeName = declaration.declaringType().name();
+        var fieldName = declaration.name();
+        var violation = ConstraintViolation.newBuilder()
                 .setMsgFormat("Attempted to change the value of the field `%s.%s` which has " +
                                       "`(set_once) = true` and is already set.")
                 .addParam(declaringTypeName.value())

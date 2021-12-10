@@ -39,6 +39,7 @@ import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Converts the primitive and built-in types to the corresponding {@link Message}s and back.
@@ -81,22 +82,22 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
     @Override
     protected T toObject(M input) {
         Class<?> boxedType = input.getClass();
-        Converter<M, T> converter = wrapperConverter(boxedType);
-        T result = converter.convert(input);
-        return result;
+        var converter = wrapperConverter(boxedType);
+        var result = converter.convert(input);
+        return requireNonNull(result);
     }
 
     @Override
     protected M toMessage(T input) {
-        Class<?> cls = input.getClass();
-        Converter<T, M> converter = primitiveConverter(cls);
-        M result = converter.convert(input);
-        return result;
+        var cls = input.getClass();
+        var converter = primitiveConverter(cls);
+        var result = converter.convert(input);
+        return requireNonNull(result);
     }
 
     private Converter<M, T> wrapperConverter(Class<?> boxedType) {
         @SuppressWarnings("unchecked")
-        Converter<M, T> converter = (Converter<M, T>) PROTO_WRAPPER_TO_CONVERTER.get(boxedType);
+        var converter = (Converter<M, T>) PROTO_WRAPPER_TO_CONVERTER.get(boxedType);
         checkArgument(
                 converter != null,
                 "Could not find a primitive type for `%s`.",
@@ -107,7 +108,7 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
 
     private Converter<T, M> primitiveConverter(Class<?> cls) {
         @SuppressWarnings("unchecked")
-        Converter<M, T> converter = (Converter<M, T>) PRIMITIVE_TO_CONVERTER.get(cls);
+        var converter = (Converter<M, T>) PRIMITIVE_TO_CONVERTER.get(cls);
         checkArgument(
                 converter != null,
                 "Could not find a wrapper type for `%s`.",
@@ -125,8 +126,7 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
 
         @Override
         protected Int32Value wrap(Integer value) {
-            return Int32Value
-                    .newBuilder()
+            return Int32Value.newBuilder()
                     .setValue(value)
                     .build();
         }
@@ -141,8 +141,7 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
 
         @Override
         protected Int64Value wrap(Long value) {
-            return Int64Value
-                    .newBuilder()
+            return Int64Value.newBuilder()
                     .setValue(value)
                     .build();
         }
@@ -189,8 +188,7 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
 
         @Override
         protected FloatValue wrap(Float value) {
-            return FloatValue
-                    .newBuilder()
+            return FloatValue.newBuilder()
                     .setValue(value)
                     .build();
         }
@@ -205,8 +203,7 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
 
         @Override
         protected DoubleValue wrap(Double value) {
-            return DoubleValue
-                    .newBuilder()
+            return DoubleValue.newBuilder()
                     .setValue(value)
                     .build();
         }
@@ -221,8 +218,7 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
 
         @Override
         protected BoolValue wrap(Boolean value) {
-            return BoolValue
-                    .newBuilder()
+            return BoolValue.newBuilder()
                     .setValue(value)
                     .build();
         }
@@ -237,8 +233,7 @@ final class PrimitiveConverter<M extends Message, T> extends ProtoConverter<M, T
 
         @Override
         protected StringValue wrap(String value) {
-            return StringValue
-                    .newBuilder()
+            return StringValue.newBuilder()
                     .setValue(value)
                     .build();
         }

@@ -46,7 +46,7 @@ public final class Errors {
      * Creates new instance of {@link Error} by the passed {@code Throwable}.
      */
     public static Error fromThrowable(Throwable throwable) {
-        Error.Builder result = toErrorBuilder(throwable);
+        var result = toErrorBuilder(throwable);
         return result.build();
     }
 
@@ -58,7 +58,7 @@ public final class Errors {
      * @return new instance of {@link Error}
      */
     public static Error causeOf(Throwable throwable) {
-        Error.Builder error = toBuilderCauseOf(throwable);
+        var error = toBuilderCauseOf(throwable);
         return error.build();
     }
 
@@ -76,7 +76,7 @@ public final class Errors {
      * @see #causeOf(Throwable) as the recommended overload
      */
     public static Error causeOf(Throwable throwable, int errorCode) {
-        Error.Builder error = toBuilderCauseOf(throwable).setCode(errorCode);
+        var error = toBuilderCauseOf(throwable).setCode(errorCode);
         return error.build();
     }
 
@@ -101,20 +101,18 @@ public final class Errors {
      *         the {@code Throwable} to convert
      * @return new builder of {@link Error}
      */
-    @SuppressWarnings("CheckReturnValue") // calling builder
+    @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"}) // Calling builder.
     private static Error.Builder toErrorBuilder(Throwable throwable) {
         checkNotNull(throwable);
-        String type = throwable.getClass()
-                               .getCanonicalName();
-        String message = nullToEmpty(throwable.getMessage());
-        String stacktrace = getStackTraceAsString(throwable);
-        Error.Builder result = Error
-                .newBuilder()
+        var type = throwable.getClass().getCanonicalName();
+        var message = nullToEmpty(throwable.getMessage());
+        var stacktrace = getStackTraceAsString(throwable);
+        var result = Error.newBuilder()
                 .setType(type)
                 .setMessage(message)
                 .setStacktrace(stacktrace);
         if (throwable instanceof ValidationException) {
-            ValidationException validationException = (ValidationException) throwable;
+            var validationException = (ValidationException) throwable;
             result.setValidationError(validationException.asValidationError());
         }
         return result;

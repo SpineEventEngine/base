@@ -27,11 +27,8 @@
 package io.spine.code.proto;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.option.EntityOption;
 import io.spine.option.OptionsProto;
 import io.spine.type.MessageType;
-
-import java.util.Optional;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 
@@ -64,9 +61,8 @@ public final class ColumnOption extends FieldOption<Boolean> {
         if (!declaresEntity(messageType)) {
             return false;
         }
-        boolean result = messageType.fields()
-                                    .stream()
-                                    .anyMatch(ColumnOption::isColumn);
+        var result = messageType.fields().stream()
+                .anyMatch(ColumnOption::isColumn);
         return result;
     }
 
@@ -80,10 +76,9 @@ public final class ColumnOption extends FieldOption<Boolean> {
         if (!declaresEntity(messageType)) {
             return ImmutableList.of();
         }
-        ImmutableList<FieldDeclaration> result = messageType.fields()
-                                                            .stream()
-                                                            .filter(ColumnOption::isColumn)
-                                                            .collect(toImmutableList());
+        var result = messageType.fields().stream()
+                .filter(ColumnOption::isColumn)
+                .collect(toImmutableList());
         return result;
     }
 
@@ -102,8 +97,8 @@ public final class ColumnOption extends FieldOption<Boolean> {
         if (field.isCollection()) {
             return false;
         }
-        ColumnOption option = new ColumnOption();
-        Optional<Boolean> value = option.valueFrom(field.descriptor());
+        var option = new ColumnOption();
+        var value = option.valueFrom(field.descriptor());
         boolean isColumn = value.orElse(false);
         return isColumn;
     }
@@ -113,7 +108,7 @@ public final class ColumnOption extends FieldOption<Boolean> {
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted") // For readability.
     private static boolean declaresEntity(MessageType messageType) {
-        Optional<EntityOption> entityOption = EntityStateOption.valueOf(messageType.descriptor());
+        var entityOption = EntityStateOption.valueOf(messageType.descriptor());
         return entityOption.isPresent();
     }
 }

@@ -91,7 +91,7 @@ final class ConstraintCache {
 
     private static Constraints
     fromCache(LoadingCache<Key, Constraints> constraints, MessageType type, FieldContext context) {
-        Key key = new Key(type, context);
+        var key = new Key(type, context);
         try {
             return constraints.get(key);
         } catch (@SuppressWarnings("OverlyBroadCatchBlock")
@@ -122,7 +122,7 @@ final class ConstraintCache {
             if (!(o instanceof Key)) {
                 return false;
             }
-            Key key = (Key) o;
+            var key = (Key) o;
             return Objects.equal(type, key.type) &&
                     Objects.equal(fieldContext, key.fieldContext);
         }

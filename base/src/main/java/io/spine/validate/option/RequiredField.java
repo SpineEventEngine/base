@@ -30,6 +30,7 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.type.MessageType;
 import io.spine.validate.Constraint;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Optional;
 
@@ -59,8 +60,8 @@ public final class RequiredField implements ValidatingOption<String, MessageType
 
     @Override
     public Optional<String> valueFrom(Descriptor message) {
-        String result = message.getOptions()
-                               .getExtension(requiredField);
+        @Nullable String result = message.getOptions()
+                                      .getExtension(requiredField);
         return result == null || result.isEmpty()
                ? Optional.empty()
                : Optional.of(result);
@@ -68,7 +69,7 @@ public final class RequiredField implements ValidatingOption<String, MessageType
 
     @Override
     public Constraint constraintFor(MessageType messageType) {
-        String expression = valueFrom(messageType.descriptor()).orElse("");
+        var expression = valueFrom(messageType.descriptor()).orElse("");
         return new RequiredFieldConstraint(expression, messageType);
     }
 }

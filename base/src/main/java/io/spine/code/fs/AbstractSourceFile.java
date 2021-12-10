@@ -33,7 +33,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.io.IoPreconditions.checkExists;
@@ -61,10 +60,10 @@ public abstract class AbstractSourceFile extends FsObject {
      */
     @OverridingMethodsMustInvokeSuper
     protected void load() {
-        Path path = path();
+        var path = path();
         checkExists(path.toFile());
         try {
-            List<String> loaded = readAllLines(path);
+            var loaded = readAllLines(path);
             lines = ImmutableList.copyOf(loaded);
         } catch (IOException e) {
             throw newIllegalStateException(e, "Unable to read the file `%s`.", path);
@@ -76,7 +75,7 @@ public abstract class AbstractSourceFile extends FsObject {
      */
     @OverridingMethodsMustInvokeSuper
     public void store() {
-        Path path = path();
+        var path = path();
         try {
             write(path, lines(), Charsets.UTF_8, TRUNCATE_EXISTING);
         } catch (IOException e) {

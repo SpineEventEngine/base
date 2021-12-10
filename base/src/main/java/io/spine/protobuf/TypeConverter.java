@@ -37,6 +37,7 @@ import io.spine.type.TypeUrl;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.protobuf.AnyPacker.unpack;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A utility for converting the {@linkplain Message Protobuf Messages} (in form of {@link Any}) into
@@ -83,9 +84,9 @@ public final class TypeConverter {
         checkNotNull(target);
         checkNotRawEnum(message, target);
         Converter<? super Message, T> converter = ProtoConverter.forType(target);
-        Message genericMessage = unpack(message);
-        T result = converter.convert(genericMessage);
-        return result;
+        var genericMessage = unpack(message);
+        var result = converter.convert(genericMessage);
+        return requireNonNull(result);
     }
 
     /**
@@ -100,8 +101,8 @@ public final class TypeConverter {
      */
     public static <T> Any toAny(T value) {
         checkNotNull(value);
-        Message message = toMessage(value);
-        Any result = AnyPacker.pack(message);
+        var message = toMessage(value);
+        var result = AnyPacker.pack(message);
         return result;
     }
 
@@ -116,10 +117,10 @@ public final class TypeConverter {
      */
     public static <T> Message toMessage(T value) {
         @SuppressWarnings("unchecked" /* Must be checked at runtime. */)
-        Class<T> srcClass = (Class<T>) value.getClass();
-        Converter<Message, T> converter = ProtoConverter.forType(srcClass);
-        Message message = converter.reverse().convert(value);
-        checkNotNull(message);
+        var srcClass = (Class<T>) value.getClass();
+        var converter = ProtoConverter.forType(srcClass);
+        var message = converter.reverse().convert(value);
+        requireNonNull(message);
         return message;
     }
 
@@ -138,7 +139,7 @@ public final class TypeConverter {
      */
     public static <T, M extends Message> M toMessage(T value, Class<M> messageClass) {
         checkNotNull(messageClass);
-        Message message = toMessage(value);
+        var message = toMessage(value);
         return messageClass.cast(message);
     }
 
@@ -152,8 +153,8 @@ public final class TypeConverter {
         if (!target.isEnum()) {
             return;
         }
-        String typeUrl = message.getTypeUrl();
-        String enumValueTypeUrl = ENUM_VALUE_TYPE_URL.value();
+        var typeUrl = message.getTypeUrl();
+        var enumValueTypeUrl = ENUM_VALUE_TYPE_URL.value();
         checkArgument(
                 enumValueTypeUrl.equals(typeUrl),
                 "Currently the conversion of enum types packed as `%s` is not supported. " +

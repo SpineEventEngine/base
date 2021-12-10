@@ -78,7 +78,7 @@ public final class ResourceDirectory extends ResourceObject {
         @Nullable URL url = locate();
         checkState(url != null, "Unable to locate resource directory: `%s`.", path());
         try {
-            Path result = Paths.get(url.toURI());
+            var result = Paths.get(url.toURI());
             return result;
         } catch (URISyntaxException e) {
             throw illegalStateWithCauseOf(e);
@@ -111,7 +111,7 @@ public final class ResourceDirectory extends ResourceObject {
     public void copyContentTo(Path target, Predicate<Path> matching) throws IOException {
         checkTarget(target);
         checkNotNull(matching);
-        Path from = toPath();
+        var from = toPath();
         copyContent(from, target, matching);
     }
 
@@ -139,7 +139,7 @@ public final class ResourceDirectory extends ResourceObject {
     public void copyTo(Path target, Predicate<Path> matching) throws IOException {
         checkTarget(target);
         checkNotNull(matching);
-        Path from = toPath();
+        var from = toPath();
         copyDir(from, target, matching);
     }
 

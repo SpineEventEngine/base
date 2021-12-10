@@ -29,7 +29,6 @@ package io.spine.validate.diags;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 import io.spine.base.Field;
-import io.spine.base.FieldPath;
 import io.spine.option.OptionsProto;
 import io.spine.validate.ConstraintViolation;
 
@@ -68,36 +67,35 @@ public final class ViolationText {
      * a new line.
      */
     public static String ofAll(Collection<ConstraintViolation> violations) {
-        String result =
-                violations.stream()
-                          .map(ViolationText::of)
-                          .map(ViolationText::toString)
-                          .collect(joining(lineSeparator()));
+        var result = violations.stream()
+                .map(ViolationText::of)
+                .map(ViolationText::toString)
+                .collect(joining(lineSeparator()));
         return result;
     }
 
     @Override
     public String toString() {
-        StringBuilder builder = buildMessage();
-        for (ConstraintViolation violation : this.violation.getViolationList()) {
+        var builder = buildMessage();
+        for (var violation : this.violation.getViolationList()) {
             builder.append(lineSeparator());
-            ViolationText nested = of(violation);
+            var nested = of(violation);
             builder.append(nested);
         }
         return builder.toString();
     }
 
     private StringBuilder buildMessage() {
-        String typeName = violation.getTypeName();
-        FieldPath path = violation.getFieldPath();
-        String fieldPath = path.getFieldNameCount() == 0
+        var typeName = violation.getTypeName();
+        var path = violation.getFieldPath();
+        var fieldPath = path.getFieldNameCount() == 0
                 ? ""
                 : Field.withPath(path).toString();
-        String format = violation.getMsgFormat();
+        var format = violation.getMsgFormat();
         List<String> params = violation.getParamList();
-        String formattedMessage = format(format, params.toArray());
+        var formattedMessage = format(format, params.toArray());
 
-        StringBuilder result = new StringBuilder();
+        var result = new StringBuilder();
         appendPrefix(result, typeName);
         appendPrefix(result, fieldPath);
         result.append(formattedMessage);
@@ -125,10 +123,10 @@ public final class ViolationText {
      */
     @Internal
     public static String errorMessage(Message option, String customMsg) {
-        String defaultMsg = option.getDescriptorForType()
-                                  .getOptions()
-                                  .getExtension(OptionsProto.defaultMessage);
-        String msg = customMsg.isEmpty() ? defaultMsg : customMsg;
+        var defaultMsg = option.getDescriptorForType()
+                               .getOptions()
+                               .getExtension(OptionsProto.defaultMessage);
+        var msg = customMsg.isEmpty() ? defaultMsg : customMsg;
         return msg;
     }
 }

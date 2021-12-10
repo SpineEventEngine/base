@@ -35,13 +35,11 @@ import io.spine.io.Resource;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -111,9 +109,8 @@ public final class DescriptorReference {
      */
     @VisibleForTesting
     static Iterator<Resource> loadFromResources(Collection<URL> resources) {
-        ClassLoader classLoader = DescriptorReference.class.getClassLoader();
-        return resources
-                .stream()
+        var classLoader = DescriptorReference.class.getClassLoader();
+        return resources.stream()
                 .map(DescriptorReference::readCatalog)
                 .flatMap(catalog -> LINE_SPLITTER.splitToList(catalog).stream())
                 .distinct()
@@ -122,9 +119,9 @@ public final class DescriptorReference {
     }
 
     private static String readCatalog(URL resource) {
-        try (InputStream catalogStream = resource.openStream()) {
-            byte[] catalogBytes = toByteArray(catalogStream);
-            String catalog = new String(catalogBytes, UTF_8);
+        try (var catalogStream = resource.openStream()) {
+            var catalogBytes = toByteArray(catalogStream);
+            var catalog = new String(catalogBytes, UTF_8);
             return catalog;
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
@@ -141,13 +138,13 @@ public final class DescriptorReference {
      */
     public void writeTo(Path directory) {
         checkNotNull(directory);
-        Path targetFile = directory.resolve(FILE_NAME);
+        var targetFile = directory.resolve(FILE_NAME);
         Ensure.ensureFile(targetFile);
         try {
-            List<String> resources = Files.readAllLines(targetFile);
+            var resources = Files.readAllLines(targetFile);
             resources.add(reference);
-            String result = String.join(SEPARATOR, resources)
-                                  .trim();
+            var result = String.join(SEPARATOR, resources)
+                               .trim();
             Files.write(targetFile, ImmutableList.of(result), TRUNCATE_EXISTING);
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
@@ -174,13 +171,13 @@ public final class DescriptorReference {
     @VisibleForTesting
     void writeTo(Path directory, String newline) {
         checkNotNull(directory);
-        Path targetFile = directory.resolve(FILE_NAME);
+        var targetFile = directory.resolve(FILE_NAME);
         Ensure.ensureFile(targetFile);
         try {
-            List<String> resources = Files.readAllLines(targetFile);
+            var resources = Files.readAllLines(targetFile);
             resources.add(reference + newline);
-            String result = String.join(SEPARATOR, resources)
-                                  .trim();
+            var result = String.join(SEPARATOR, resources)
+                               .trim();
             Files.write(targetFile, ImmutableList.of(result), TRUNCATE_EXISTING);
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);

@@ -28,7 +28,6 @@ package io.spine.io;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
-import com.google.common.collect.UnmodifiableIterator;
 import com.google.common.io.CharStreams;
 
 import java.io.BufferedReader;
@@ -82,9 +81,9 @@ public final class Resource extends ResourceObject {
      * @return the URLs to the resolved resource files
      */
     public ImmutableList<URL> locateAll() {
-        Enumeration<URL> resources = resourceEnumeration();
-        UnmodifiableIterator<URL> iterator = Iterators.forEnumeration(resources);
-        ImmutableList<URL> result = ImmutableList.copyOf(iterator);
+        var resources = resourceEnumeration();
+        var iterator = Iterators.forEnumeration(resources);
+        var result = ImmutableList.copyOf(iterator);
         if (result.isEmpty()) {
             throw cannotFind();
         }
@@ -93,7 +92,7 @@ public final class Resource extends ResourceObject {
 
     private Enumeration<URL> resourceEnumeration() {
         try {
-            Enumeration<URL> resources = resources();
+            var resources = resources();
             return resources;
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
@@ -110,7 +109,7 @@ public final class Resource extends ResourceObject {
      * @return new {@link InputStream}
      */
     public InputStream open() {
-        URL resource = locate();
+        var resource = locate();
         try {
             return resource.openStream();
         } catch (IOException e) {

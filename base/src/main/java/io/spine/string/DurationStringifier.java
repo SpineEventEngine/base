@@ -51,7 +51,7 @@ final class DurationStringifier extends SerializableStringifier<Duration> {
 
     @Override
     protected String toString(Duration duration) {
-        String result = Durations.toString(duration);
+        var result = Durations.toString(duration);
         return result;
     }
 

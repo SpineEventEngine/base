@@ -56,7 +56,7 @@ public final class FieldTypesProto {
      */
     public static boolean isRepeated(FieldDescriptorProto field) {
         checkNotNull(field);
-        boolean result = field.getLabel() == LABEL_REPEATED && !isMap(field);
+        var result = field.getLabel() == LABEL_REPEATED && !isMap(field);
         return result;
     }
 
@@ -77,8 +77,8 @@ public final class FieldTypesProto {
         if (field.getType() != TYPE_MESSAGE) {
             return false;
         }
-        boolean result = field.getTypeName()
-                              .endsWith('.' + getEntryNameFor(field));
+        var result = field.getTypeName()
+                          .endsWith('.' + getEntryNameFor(field));
         return result;
     }
 
@@ -94,7 +94,8 @@ public final class FieldTypesProto {
      * @return the name of the map field
      */
     public static String getEntryNameFor(FieldDescriptorProto mapField) {
-        FieldName fieldName = FieldName.of(mapField);
+        checkNotNull(mapField);
+        var fieldName = FieldName.of(mapField);
         return fieldName.toCamelCase() + ENTRY_SUFFIX;
     }
 
@@ -119,14 +120,16 @@ public final class FieldTypesProto {
      *         the field descriptor whose type name to modify
      * @return the type name without leading dot
      */
+    @SuppressWarnings("unused") /* Part of the public API. */
     public static String trimTypeName(FieldDescriptorProto fieldDescriptor) {
-        String typeName = fieldDescriptor.getTypeName();
+        checkNotNull(fieldDescriptor);
+        var typeName = fieldDescriptor.getTypeName();
         checkNotNull(typeName);
 
         if (typeName.isEmpty()) {
             return typeName;
         }
-        String trimmedName = removeLeadingDot(typeName);
+        var trimmedName = removeLeadingDot(typeName);
         return trimmedName;
     }
 

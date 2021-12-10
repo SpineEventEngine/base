@@ -58,7 +58,7 @@ public final class PackageName extends StringTypeValue {
      */
     public static PackageName of(String value) {
         checkNotNull(value);
-        PackageName result = new PackageName(value);
+        var result = new PackageName(value);
         return result;
     }
 
@@ -83,7 +83,7 @@ public final class PackageName extends StringTypeValue {
      */
     public PackageName nested(String name) {
         checkNotNull(name);
-        PackageName result = of(value() + delimiter() + name);
+        var result = of(value() + delimiter() + name);
         return result;
     }
 
@@ -97,6 +97,7 @@ public final class PackageName extends StringTypeValue {
     /**
      * Obtains Java package delimiter as a single {@code char}.
      */
+    @SuppressWarnings("unused") /* Part of the public API. */
     public static char delimiterChar() {
         return DELIMITER_CHAR;
     }
@@ -105,20 +106,20 @@ public final class PackageName extends StringTypeValue {
      * Obtains a Java package name by the passed file descriptor.
      */
     public static PackageName resolve(FileDescriptorProto file) {
-        String javaPackage = resolveName(file).trim();
+        var javaPackage = resolveName(file).trim();
         checkArgument(
                 !javaPackage.isEmpty(),
                 "Message classes generated from the file `%s` belong to the default package.%n"
                         + "Please use `option java_package` or `package`"
                         + " to specify a Java package for these types.", file.getName()
         );
-        PackageName result = new PackageName(javaPackage);
+        var result = new PackageName(javaPackage);
         return result;
     }
 
     private static String resolveName(FileDescriptorProto file) {
-        String javaPackage = file.getOptions()
-                                 .getJavaPackage();
+        var javaPackage = file.getOptions()
+                              .getJavaPackage();
         if (isNullOrEmpty(javaPackage)) {
             javaPackage = file.getPackage();
         }

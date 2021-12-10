@@ -31,7 +31,6 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
@@ -116,8 +115,8 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
      * Loads the Java class representing this Protobuf type.
      */
     public Class<?> javaClass() {
-        String clsName = javaClassName().value();
-        Class<?> result = knownClasses.getIfPresent(clsName);
+        var clsName = javaClassName().value();
+        var result = knownClasses.getIfPresent(clsName);
         if (result == null) {
             try {
                 result = Class.forName(clsName);
@@ -138,8 +137,8 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
      * Obtains package for the corresponding Java type.
      */
     public PackageName javaPackage() {
-        FileDescriptorProto fileDescr = descriptor.getFile().toProto();
-        PackageName result = PackageName.resolve(fileDescr);
+        var fileDescr = descriptor.getFile().toProto();
+        var result = PackageName.resolve(fileDescr);
         return result;
     }
 
@@ -172,6 +171,7 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
      *         {@link com.google.protobuf.Message.Builder} and
      *         {@link com.google.protobuf.MessageOrBuilder}
      */
+    @SuppressWarnings("unused") /* Part of the public API. */
     public final boolean supportsBuilders() {
         return supportsBuilders;
     }
@@ -199,7 +199,7 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
         if (!(o instanceof Type)) {
             return false;
         }
-        Type<?, ?> type = (Type<?, ?>) o;
+        var type = (Type<?, ?>) o;
         return Objects.equal(descriptor.getFullName(), type.descriptor.getFullName());
     }
 

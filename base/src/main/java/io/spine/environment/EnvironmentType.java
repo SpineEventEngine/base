@@ -67,7 +67,7 @@ public abstract class EnvironmentType {
         if (obj == null) {
             return false;
         }
-        boolean result = getClass().equals(obj.getClass());
+        var result = getClass().equals(obj.getClass());
         return result;
     }
 }

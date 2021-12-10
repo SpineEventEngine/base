@@ -76,8 +76,8 @@ public final class Columns<R extends Message> implements List<RecordColumn<R, ?>
     @SafeVarargs
     public static <R extends Message> Columns<R> of(RecordColumn<R, ?>... columns) {
         checkNotNull(columns);
-        ImmutableList<RecordColumn<R, ?>> asList = ImmutableList.copyOf(columns);
-        Columns<R> result = new Columns<>(asList);
+        var asList = ImmutableList.copyOf(columns);
+        var result = new Columns<>(asList);
         return result;
     }
 

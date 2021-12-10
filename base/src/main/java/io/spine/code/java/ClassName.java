@@ -117,9 +117,10 @@ public final class ClassName extends StringTypeValue {
      *         the file from which the outer class is generated
      * @return new instance of {@code ClassName}
      */
+    @SuppressWarnings("unused") /* Part of the public API. */
     public static ClassName outerClass(FileDescriptor file) {
-        PackageName packageName = PackageName.resolve(file.toProto());
-        SimpleClassName simpleName = SimpleClassName.outerOf(file);
+        var packageName = PackageName.resolve(file.toProto());
+        var simpleName = SimpleClassName.outerOf(file);
         return of(packageName, simpleName);
     }
 
@@ -169,7 +170,7 @@ public final class ClassName extends StringTypeValue {
     }
 
     private static String javaPackageName(FileDescriptor file) {
-        PackageName packageName = PackageName.resolve(file.toProto());
+        var packageName = PackageName.resolve(file.toProto());
         return packageName.value() + DOT_SEPARATOR;
     }
 
@@ -179,13 +180,13 @@ public final class ClassName extends StringTypeValue {
      */
     private static String outerClassPrefix(FileDescriptor file) {
         checkNotNull(file);
-        boolean multipleFiles = file.getOptions()
-                                    .getJavaMultipleFiles();
+        var multipleFiles = file.getOptions()
+                                .getJavaMultipleFiles();
         if (multipleFiles) {
             return "";
         } else {
-            String className = SimpleClassName.outerOf(file)
-                                              .value();
+            var className = SimpleClassName.outerOf(file)
+                                           .value();
             return className + OUTER_CLASS_DELIMITER;
         }
     }
@@ -199,12 +200,12 @@ public final class ClassName extends StringTypeValue {
             return "";
         }
         Deque<String> parentClassNames = newLinkedList();
-        Descriptor current = containingMessage;
+        var current = containingMessage;
         while (current != null) {
             parentClassNames.addFirst(current.getName() + OUTER_CLASS_DELIMITER);
             current = current.getContainingType();
         }
-        String result = String.join("", parentClassNames);
+        var result = String.join("", parentClassNames);
         return result;
     }
 
@@ -227,7 +228,7 @@ public final class ClassName extends StringTypeValue {
      * @see Class#getCanonicalName()
      */
     public String canonicalName() {
-        String withDots = toDotted(value());
+        var withDots = toDotted(value());
         return withDots;
     }
 
@@ -251,7 +252,7 @@ public final class ClassName extends StringTypeValue {
      */
     @Internal
     public static String toDotted(String outerDelimited) {
-        String result = outerDelimited.replace(OUTER_CLASS_DELIMITER, DOT_SEPARATOR);
+        var result = outerDelimited.replace(OUTER_CLASS_DELIMITER, DOT_SEPARATOR);
         return result;
     }
 
@@ -267,6 +268,7 @@ public final class ClassName extends StringTypeValue {
      *
      * @return {@code MessageOrBuilder} interface FQN
      */
+    @SuppressWarnings("unused") /* Part of the public API. */
     public ClassName orBuilder() {
         return of(value() + OR_BUILDER_SUFFIX);
     }
@@ -274,10 +276,10 @@ public final class ClassName extends StringTypeValue {
     private static ClassName construct(FileDescriptor file,
                                        String typeName,
                                        @Nullable Descriptor enclosing) {
-        String packageName = javaPackageName(file);
-        String outerClass = outerClassPrefix(file);
-        String enclosingTypes = containingClassPrefix(enclosing);
-        String result = packageName + outerClass + enclosingTypes + typeName;
+        var packageName = javaPackageName(file);
+        var outerClass = outerClassPrefix(file);
+        var enclosingTypes = containingClassPrefix(enclosing);
+        var result = packageName + outerClass + enclosingTypes + typeName;
         return of(result);
     }
 
@@ -286,8 +288,8 @@ public final class ClassName extends StringTypeValue {
      * classes, the most nested name will be returned.
      */
     public SimpleClassName toSimple() {
-        String fullName = canonicalName();
-        String result = afterDot(fullName);
+        var fullName = canonicalName();
+        var result = afterDot(fullName);
         return SimpleClassName.create(result);
     }
 
@@ -299,6 +301,7 @@ public final class ClassName extends StringTypeValue {
      * @return this name without the package
      */
     @Internal
+    @SuppressWarnings("unused") /* Part of the public API. */
     public String withoutPackage() {
         return toDotted(afterDot(value()));
     }
@@ -311,7 +314,7 @@ public final class ClassName extends StringTypeValue {
      * @return the last part of the name
      */
     private static String afterDot(String fullName) {
-        int lastDotIndex = fullName.lastIndexOf(DOT_SEPARATOR);
+        var lastDotIndex = fullName.lastIndexOf(DOT_SEPARATOR);
         return fullName.substring(lastDotIndex + 1);
     }
 
@@ -319,14 +322,14 @@ public final class ClassName extends StringTypeValue {
      * Obtains the name of the package of this class.
      */
     public PackageName packageName() {
-        int packageEndIndex = packageEndIndex();
-        String result = value().substring(0, packageEndIndex);
+        var packageEndIndex = packageEndIndex();
+        var result = value().substring(0, packageEndIndex);
         return PackageName.of(result);
     }
 
     private int packageEndIndex() {
-        String fullName = value();
-        int lastDotIndex = fullName.lastIndexOf(DOT_SEPARATOR);
+        var fullName = value();
+        var lastDotIndex = fullName.lastIndexOf(DOT_SEPARATOR);
         checkState(lastDotIndex > 0, "%s should be qualified.", fullName);
         return lastDotIndex;
     }
@@ -337,10 +340,11 @@ public final class ClassName extends StringTypeValue {
      * <p>If this class is top level, returns the simple name of this class. If this class is
      * nested, returns the name of the declaring top level class.
      */
+    @SuppressWarnings("unused") /* Part of the public API. */
     public SimpleClassName topLevelClass() {
-        String qualifiedClassName = afterDot(value());
-        int delimiterIndex = qualifiedClassName.indexOf(OUTER_CLASS_DELIMITER);
-        String topLevelClassName = delimiterIndex >= 0
+        var qualifiedClassName = afterDot(value());
+        var delimiterIndex = qualifiedClassName.indexOf(OUTER_CLASS_DELIMITER);
+        var topLevelClassName = delimiterIndex >= 0
                                    ? qualifiedClassName.substring(0, delimiterIndex)
                                    : qualifiedClassName;
         return SimpleClassName.create(topLevelClassName);

@@ -33,8 +33,6 @@ import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.Message;
 import io.spine.value.StringTypeValue;
 
-import java.util.List;
-
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -115,9 +113,9 @@ public final class TypeName extends StringTypeValue {
      * Returns the unqualified name of the Protobuf type, for example: {@code StringValue}.
      */
     public String simpleName() {
-        String typeName = value();
-        List<String> tokens = packageSplitter.splitToList(typeName);
-        String result = tokens.get(tokens.size() - 1);
+        var typeName = value();
+        var tokens = packageSplitter.splitToList(typeName);
+        var result = tokens.get(tokens.size() - 1);
         return result;
     }
 
@@ -151,10 +149,10 @@ public final class TypeName extends StringTypeValue {
      * @throws UnknownTypeException if the type is not found among known types
      */
     public <T extends Message> Class<T> toMessageClass() throws UnknownTypeException {
-        Class<?> cls = toJavaClass();
+        var cls = toJavaClass();
         checkState(Message.class.isAssignableFrom(cls));
         @SuppressWarnings("unchecked")
-        Class<T> result = (Class<T>) cls;
+        var result = (Class<T>) cls;
         return result;
     }
 
@@ -168,10 +166,10 @@ public final class TypeName extends StringTypeValue {
      * @throws UnknownTypeException if the type is not found among known types
      */
     public <T extends Enum<?>> Class<T> toEnumClass() throws UnknownTypeException {
-        Class<?> cls = toJavaClass();
+        var cls = toJavaClass();
         checkState(Enum.class.isAssignableFrom(cls));
         @SuppressWarnings("unchecked")
-        Class<T> result = (Class<T>) cls;
+        var result = (Class<T>) cls;
         return result;
     }
 
@@ -187,7 +185,7 @@ public final class TypeName extends StringTypeValue {
      * and it represents an enum.
      */
     public Descriptor messageDescriptor() {
-        Descriptor result = (Descriptor) genericDescriptor();
+        var result = (Descriptor) genericDescriptor();
         return result;
     }
 
@@ -195,17 +193,16 @@ public final class TypeName extends StringTypeValue {
      * Verifies if the type belongs to the passed package.
      */
     boolean belongsTo(String packageName) {
-        String typeName = value();
-        boolean inPackage =
-                typeName.startsWith(packageName)
-                        && typeName.charAt(packageName.length()) == PACKAGE_SEPARATOR;
+        var typeName = value();
+        var inPackage = typeName.startsWith(packageName)
+                && typeName.charAt(packageName.length()) == PACKAGE_SEPARATOR;
         return inPackage;
     }
 
     Type<?, ?> type() {
-        Type<?, ?> result = KnownTypes.instance()
-                                      .find(this)
-                                      .orElseThrow(() -> new UnknownTypeException(value()));
+        var result = KnownTypes.instance()
+                               .find(this)
+                               .orElseThrow(() -> new UnknownTypeException(value()));
         return result;
     }
 }

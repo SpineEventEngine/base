@@ -31,7 +31,6 @@ import io.spine.code.proto.FieldDeclaration;
 import io.spine.validate.ComparableNumber;
 import io.spine.validate.NumberText;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkState;
@@ -88,12 +87,12 @@ final class RangeDecl {
      * Transforms the passed range declaration into a range of numbers.
      */
     static Range<ComparableNumber> compile(String rangeOptionValue, FieldDeclaration field) {
-        RangeDecl decl = new RangeDecl(rangeOptionValue, field);
+        var decl = new RangeDecl(rangeOptionValue, field);
         return decl.toRange();
     }
 
     private RangeDecl(String rangeOptionValue, FieldDeclaration field) {
-        Matcher rangeMatcher = NUMBER_RANGE.matcher(rangeOptionValue.trim());
+        var rangeMatcher = NUMBER_RANGE.matcher(rangeOptionValue.trim());
         checkState(rangeMatcher.matches(),
                    "Malformed range `%s` on the field `%s`. " +
                            "Must have a form of `[a..b]` " +

@@ -118,14 +118,14 @@ public enum ComparisonOperator {
                 );
             }
             if (left instanceof Timestamp) {
-                Timestamp firstT = (Timestamp) left;
-                Timestamp secondT = (Timestamp) right;
+                var firstT = (Timestamp) left;
+                var secondT = (Timestamp) right;
                 return Timestamps.compare(firstT, secondT) > 0;
             }
             if (left instanceof Comparable<?>) {
                 Comparable cmpLeft = (Comparable<?>) left;
                 Comparable cmpRight = (Comparable<?>) right;
-                int comparisonResult = cmpLeft.compareTo(cmpRight);
+                var comparisonResult = cmpLeft.compareTo(cmpRight);
                 return comparisonResult > 0;
             }
             throw new UnsupportedOperationException(format(

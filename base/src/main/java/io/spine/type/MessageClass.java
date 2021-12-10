@@ -84,14 +84,14 @@ public abstract class MessageClass<M extends Message> extends ClassTypeValue<M> 
     interfacesOf(Class<? extends Message> cls) {
         checkNotNull(cls);
         ImmutableSet.Builder<Class<? extends Message>> builder = ImmutableSet.builder();
-        Class<?>[] interfaces = cls.getInterfaces();
+        var interfaces = cls.getInterfaces();
         Queue<Class<?>> deque = new ArrayDeque<>(Arrays.asList(interfaces));
         while (!deque.isEmpty()) {
-            Class<?> anInterface = deque.poll();
+            var anInterface = deque.poll();
             if (Message.class.isAssignableFrom(anInterface)
                     && !anInterface.equals(Message.class)) {
                 @SuppressWarnings("unchecked")
-                Class<? extends Message> cast = (Class<? extends Message>) anInterface;
+                var cast = (Class<? extends Message>) anInterface;
                 builder.add(cast);
             }
             interfaces = anInterface.getInterfaces();
@@ -113,7 +113,7 @@ public abstract class MessageClass<M extends Message> extends ClassTypeValue<M> 
         if (!super.equals(o)) {
             return false;
         }
-        MessageClass<?> other = (MessageClass<?>) o;
+        var other = (MessageClass<?>) o;
         return typeUrl.equals(other.typeUrl);
     }
 

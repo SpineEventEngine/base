@@ -85,8 +85,8 @@ public class RecordQueryBuilder<I, R extends Message>
      */
     public <T> T build(Function<RecordQuery<?, ?>, T> transformer) {
         checkNotNull(transformer);
-        RecordQuery<I, R> query = build();
-        T result = transformer.apply(query);
+        var query = build();
+        var result = transformer.apply(query);
         return result;
     }
 

@@ -29,15 +29,13 @@ package io.spine.base;
 import com.google.common.reflect.TypeToken;
 import com.google.protobuf.Message;
 import com.google.protobuf.MessageOrBuilder;
-import io.spine.string.Stringifier;
 import io.spine.string.StringifierRegistry;
 
-import java.util.Collection;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.TextFormat.shortDebugString;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Utilities for converting message-based identifiers to String.
@@ -53,29 +51,27 @@ final class MessageIdToString {
     static String toString(Message message) {
         checkNotNull(message);
         String result;
-        StringifierRegistry registry = StringifierRegistry.instance();
-        Class<? extends Message> msgClass = message.getClass();
-        TypeToken<? extends Message> msgToken = TypeToken.of(msgClass);
-        java.lang.reflect.Type msgType = msgToken.getType();
-        Optional<Stringifier<Object>> optional = registry.find(msgType);
+        var registry = StringifierRegistry.instance();
+        var msgClass = message.getClass();
+        var msgToken = TypeToken.of(msgClass);
+        var msgType = msgToken.getType();
+        var optional = registry.find(msgType);
         if (optional.isPresent()) {
-            Stringifier<Object> converter = optional.get();
+            var converter = optional.get();
             result = converter.convert(message);
         } else {
             result = convert(message);
         }
-        return result;
+        return requireNonNull(result);
     }
 
     private static String convert(Message message) {
-        Collection<Object> values = message.getAllFields()
-                                           .values();
+        var values = message.getAllFields().values();
         String result;
         if (values.isEmpty()) {
             result = Identifier.EMPTY_ID;
         } else if (values.size() == 1) {
-            Object object = values.iterator()
-                                  .next();
+            var object = values.iterator().next();
             result = object instanceof Message
                      ? toString((Message) object)
                      : object.toString();
@@ -86,7 +82,7 @@ final class MessageIdToString {
     }
 
     private static String messageWithMultipleFieldsToString(MessageOrBuilder message) {
-        String result = shortDebugString(message);
+        var result = shortDebugString(message);
         result = PATTERN_COLON_SPACE.matcher(result)
                                     .replaceAll(EQUAL_SIGN);
         return result;

@@ -26,11 +26,9 @@
 
 package io.spine.code.proto;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Extension;
 import com.google.protobuf.ExtensionRegistry;
 import io.spine.option.OptionsProto;
-import io.spine.validate.option.ValidatingOptionFactory;
 import io.spine.validate.option.ValidatingOptionsLoader;
 
 /**
@@ -63,28 +61,26 @@ public final class OptionExtensionRegistry {
      * spine/options.proto} extensions.
      */
     private static ExtensionRegistry optionExtensions() {
-        ExtensionRegistry registry = ExtensionRegistry.newInstance();
+        var registry = ExtensionRegistry.newInstance();
         OptionsProto.registerAllExtensions(registry);
         registerCustomOptions(registry);
         return registry;
     }
 
     private static void registerCustomOptions(ExtensionRegistry target) {
-        ImmutableSet<ValidatingOptionFactory> implementations =
-                ValidatingOptionsLoader.INSTANCE.implementations();
+        var implementations = ValidatingOptionsLoader.INSTANCE.implementations();
         implementations.stream()
-                       .flatMap(factory -> factory.all().stream())
-                       .map(AbstractOption::extension)
-                       .filter(extension -> isExtensionRegistered(target, extension))
-                       .forEach(target::add);
+                .flatMap(factory -> factory.all().stream())
+                .map(AbstractOption::extension)
+                .filter(extension -> isExtensionRegistered(target, extension))
+                .forEach(target::add);
     }
 
     private static boolean isExtensionRegistered(ExtensionRegistry registry,
                                                  Extension<?, ?> extension) {
-        String name = extension.getDescriptor()
-                               .getFullName();
-        boolean mutableAbsent = registry.findMutableExtensionByName(name) == null;
-        boolean immutableAbsent = registry.findImmutableExtensionByName(name) == null;
+        var name = extension.getDescriptor().getFullName();
+        var mutableAbsent = registry.findMutableExtensionByName(name) == null;
+        var immutableAbsent = registry.findImmutableExtensionByName(name) == null;
         return mutableAbsent && immutableAbsent;
     }
 }

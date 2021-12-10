@@ -52,8 +52,7 @@ public final class Production extends StandardEnvironmentType {
 
     @Override
     protected boolean enabled() {
-        boolean tests = Tests.type()
-                             .enabled();
+        var tests = Tests.type().enabled();
         return !tests;
     }
 }

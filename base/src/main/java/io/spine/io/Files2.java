@@ -27,7 +27,6 @@
 package io.spine.io;
 
 import java.io.File;
-import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -48,18 +47,19 @@ public final class Files2 {
         if (!file.exists()) {
             return false;
         }
-        boolean nonEmpty = file.length() > 0;
+        var nonEmpty = file.length() > 0;
         return nonEmpty;
     }
 
     /**
      * Normalizes and transforms the passed path to an absolute file reference.
      */
+    @SuppressWarnings("unused") /* Part of the public API. */
     public static File toAbsolute(String path) {
         checkNotNull(path);
-        File file = new File(path);
-        Path normalized = file.toPath().normalize();
-        File result = normalized.toAbsolutePath().toFile();
+        var file = new File(path);
+        var normalized = file.toPath().normalize();
+        var result = normalized.toAbsolutePath().toFile();
         return result;
     }
 

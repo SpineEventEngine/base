@@ -74,9 +74,8 @@ abstract class Quoter extends Converter<String, String> {
      * @return the created pattern
      */
     static String createDelimiterPattern(char delimiter) {
-        String quotedDelimiter = Pattern.quote(String.valueOf(delimiter));
-        String result = compile(DELIMITER_PATTERN_PREFIX + quotedDelimiter)
-                .pattern();
+        var quotedDelimiter = Pattern.quote(String.valueOf(delimiter));
+        var result = compile(DELIMITER_PATTERN_PREFIX + quotedDelimiter).pattern();
         return result;
     }
 
@@ -96,9 +95,9 @@ abstract class Quoter extends Converter<String, String> {
 
     static String unquoteValue(String value, Pattern pattern) {
         checkQuoted(value);
-        String unquoted = value.substring(2, value.length() - 2);
-        String unescaped = pattern.matcher(unquoted)
-                                  .replaceAll("");
+        var unquoted = value.substring(2, value.length() - 2);
+        var unescaped = pattern.matcher(unquoted)
+                               .replaceAll("");
         return unescaped;
     }
 

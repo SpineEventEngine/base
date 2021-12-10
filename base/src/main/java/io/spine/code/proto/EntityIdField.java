@@ -26,7 +26,6 @@
 
 package io.spine.code.proto;
 
-import com.google.common.collect.ImmutableList;
 import io.spine.type.MessageType;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -38,6 +37,7 @@ import static io.spine.code.proto.ColumnOption.isColumn;
  * The first field of the Protobuf message marked with {@code (entity)} option, representing
  * its identifier.
  */
+@SuppressWarnings("unused") /* Part of the public API. */
 public final class EntityIdField {
 
     private final FieldDeclaration declaration;
@@ -57,11 +57,11 @@ public final class EntityIdField {
         checkArgument(messageType.isEntityState(),
                       "`EntityIdField` expected an `EntityState` descendant, " +
                               "but got `%s`.", messageType.javaClassName());
-        ImmutableList<FieldDeclaration> fields = messageType.fields();
+        var fields = messageType.fields();
         checkState(fields.size() > 0, "At least one field is expected to be declared " +
                 "in the `EntityState` message of type `%s`.", messageType.javaClassName());
 
-        FieldDeclaration declaration = fields.get(0);
+        var declaration = fields.get(0);
         checkState(!isColumn(declaration), "`EntityIdField` must not be marked as `(column)`." +
                 " Please check the declaration of `%s` type.", messageType.toProto().getName());
         return new EntityIdField(declaration);

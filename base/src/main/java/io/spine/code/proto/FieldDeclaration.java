@@ -30,11 +30,8 @@ import com.google.common.base.Objects;
 import com.google.common.primitives.Primitives;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Any;
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
-import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 import io.spine.base.MessageFile;
@@ -46,7 +43,6 @@ import io.spine.type.EnumType;
 import io.spine.type.KnownTypes;
 import io.spine.type.MessageType;
 import io.spine.type.TypeName;
-import io.spine.type.TypeUrl;
 import io.spine.type.UnknownTypeException;
 
 import java.util.Optional;
@@ -128,7 +124,7 @@ public final class FieldDeclaration {
         checkNotNull(fieldValue);
         if (isMessage()) {
             if (fieldValue instanceof Message) {
-                Message message = (Message) fieldValue;
+                var message = (Message) fieldValue;
                 return Messages.isDefault(message) && sameMessageType(message);
             } else {
                 return false;
@@ -139,9 +135,8 @@ public final class FieldDeclaration {
     }
 
     private boolean sameMessageType(Message msg) {
-        String messageClassName = msg.getClass()
-                                     .getName();
-        String fieldClassName = messageClassName();
+        var messageClassName = msg.getClass().getName();
+        var fieldClassName = messageClassName();
         return fieldClassName.equals(messageClassName);
     }
 
@@ -160,16 +155,16 @@ public final class FieldDeclaration {
     }
 
     private static String javaTypeName(FieldDescriptor field) {
-        FieldDescriptor.Type fieldType = field.getType();
+        var fieldType = field.getType();
         if (fieldType == MESSAGE) {
-            MessageType messageType =
+            var messageType =
                     new MessageType(field.getMessageType());
             return messageType.javaClassName()
                               .canonicalName();
         }
 
         if (fieldType == ENUM) {
-            EnumType enumType = EnumType.create(field.getEnumType());
+            var enumType = EnumType.create(field.getEnumType());
             return enumType.javaClassName()
                            .canonicalName();
         }
@@ -178,14 +173,14 @@ public final class FieldDeclaration {
     }
 
     private String messageClassName() {
-        TypeName typeName = TypeName.from(field.getMessageType());
-        KnownTypes knownTypes = KnownTypes.instance();
+        var typeName = TypeName.from(field.getMessageType());
+        var knownTypes = KnownTypes.instance();
         try {
-            TypeUrl fieldType = typeName.toUrl();
-            ClassName className = knownTypes.classNameOf(fieldType);
+            var fieldType = typeName.toUrl();
+            var className = knownTypes.classNameOf(fieldType);
             return className.value();
         } catch (UnknownTypeException e) {
-            String allTypeUrls = knownTypes.printAllTypes();
+            var allTypeUrls = knownTypes.printAllTypes();
             throw newIllegalStateException(
                     e,
                     "Cannot find a type %s in the list of known types:%n%s", typeName, allTypeUrls
@@ -207,7 +202,7 @@ public final class FieldDeclaration {
      * @return {@code true} if the field is an entity ID, {@code false} otherwise
      */
     public boolean isId() {
-        boolean fieldMatches = isFirstField() && isNotCollection();
+        var fieldMatches = isFirstField() && isNotCollection();
         return fieldMatches && (isCommandsFile() || isEntityField());
     }
 
@@ -307,7 +302,7 @@ public final class FieldDeclaration {
     @Internal
     public MessageType messageType() {
         checkState(isMessage());
-        Descriptor messageType = descriptor().getMessageType();
+        var messageType = descriptor().getMessageType();
         return new MessageType(messageType);
     }
 
@@ -318,9 +313,9 @@ public final class FieldDeclaration {
     public ClassName className() {
         if (isScalar()) {
             @SuppressWarnings("OptionalGetWithoutIsPresent") // checked in `if`
-            ScalarType scalarType = ScalarType.of(descriptor().toProto()).get();
-            Class<?> type = scalarType.javaClass();
-            Class<?> wrapped = Primitives.wrap(type);
+            var scalarType = ScalarType.of(descriptor().toProto()).get();
+            var type = scalarType.javaClass();
+            var wrapped = Primitives.wrap(type);
             return ClassName.of(wrapped);
         }
         return ClassName.of(javaTypeName());
@@ -328,16 +323,15 @@ public final class FieldDeclaration {
 
     /** Obtains the descriptor of the value of a map. */
     public FieldDeclaration valueDeclaration() {
-        FieldDescriptor valueDescriptor = FieldTypes.valueDescriptor(field);
+        var valueDescriptor = FieldTypes.valueDescriptor(field);
         return new FieldDeclaration(valueDescriptor);
     }
 
     private boolean isEntityField() {
-        EntityOption entityOption =
-                field.getContainingType()
-                     .getOptions()
-                     .getExtension(OptionsProto.entity);
-        EntityOption.Kind entityKind = entityOption.getKind();
+        var entityOption = field.getContainingType()
+                                .getOptions()
+                                .getExtension(OptionsProto.entity);
+        var entityKind = entityOption.getKind();
         return entityKind.getNumber() > 0;
     }
 
@@ -355,8 +349,8 @@ public final class FieldDeclaration {
     }
 
     private boolean isCommandsFile() {
-        FileDescriptor file = field.getFile();
-        boolean result = MessageFile.COMMANDS.test(file.toProto());
+        var file = field.getFile();
+        var result = MessageFile.COMMANDS.test(file.toProto());
         return result;
     }
 
@@ -364,8 +358,8 @@ public final class FieldDeclaration {
      * Returns the name of the getter generated by the Protobuf Java plugin for the field.
      */
     public String javaGetterName() {
-        String camelCasedName = name().toCamelCase();
-        String result = format("get%s", camelCasedName);
+        var camelCasedName = name().toCamelCase();
+        var result = format("get%s", camelCasedName);
         return result;
     }
 
@@ -374,8 +368,9 @@ public final class FieldDeclaration {
      *
      * @return the leading field comments or {@code Optional.empty()} if there are no comments
      */
+    @SuppressWarnings("unused") /* Part of the public API. */
     public Optional<String> leadingComments() {
-        LocationPath fieldPath = fieldPath();
+        var fieldPath = fieldPath();
         return declaringMessage.leadingComments(fieldPath);
     }
 
@@ -387,15 +382,14 @@ public final class FieldDeclaration {
      * @return the field location path
      */
     private LocationPath fieldPath() {
-        LocationPath locationPath =
-                new LocationPath(declaringMessage.path())
-                        .append(FIELD_FIELD_NUMBER)
-                        .append(fieldIndex());
+        var locationPath = new LocationPath(declaringMessage.path())
+                .append(FIELD_FIELD_NUMBER)
+                .append(fieldIndex());
         return locationPath;
     }
 
     private int fieldIndex() {
-        FieldDescriptorProto proto = this.field.toProto();
+        var proto = this.field.toProto();
         return declaringMessage.descriptor()
                                .toProto()
                                .getFieldList()
@@ -410,7 +404,7 @@ public final class FieldDeclaration {
         if (!(o instanceof FieldDeclaration)) {
             return false;
         }
-        FieldDeclaration that = (FieldDeclaration) o;
+        var that = (FieldDeclaration) o;
         return Objects.equal(declaringMessage, that.declaringMessage) &&
                 Objects.equal(field.getFullName(), that.field.getFullName());
     }

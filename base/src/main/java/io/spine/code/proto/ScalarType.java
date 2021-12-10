@@ -88,7 +88,7 @@ public enum ScalarType {
      * @return the corresponding Java type
      */
     public static Class<?> javaType(Type protoScalar) {
-        for (ScalarType scalarType : values()) {
+        for (var scalarType : values()) {
             if (scalarType.protoScalarType == protoScalar) {
                 return scalarType.javaClass;
             }
@@ -112,8 +112,8 @@ public enum ScalarType {
      * @see #isScalarType(com.google.protobuf.DescriptorProtos.FieldDescriptorProto)
      */
     public static Optional<ScalarType> of(FieldDescriptorProto field) {
-        Type type = field.getType();
-        for (ScalarType scalarType : values()) {
+        var type = field.getType();
+        for (var scalarType : values()) {
             if (scalarType.protoScalarType() == type) {
                 return Optional.of(scalarType);
             }

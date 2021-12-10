@@ -34,6 +34,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A predicate determining if the given {@code .proto} source belongs to the specified module.
  */
+@SuppressWarnings("unused") /* Part of the public API. */
 public final class SourceProtoBelongsToModule extends ProtoBelongsToModule {
 
     /** An absolute path to the root folder for the {@code .proto} files in the module. */
@@ -47,7 +48,7 @@ public final class SourceProtoBelongsToModule extends ProtoBelongsToModule {
 
     @Override
     protected Path resolve(SourceFile file) {
-        Path result = rootPath.resolve(file.path());
+        var result = rootPath.resolve(file.path());
         return result;
     }
 }

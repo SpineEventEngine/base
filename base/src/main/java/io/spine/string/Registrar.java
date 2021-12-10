@@ -30,7 +30,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.reflect.TypeToken;
 
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -55,10 +54,11 @@ public final class Registrar {
     /**
      * Registers stringifiers.
      */
+    @SuppressWarnings("unused") /* Part of the public API. */
     public void register() {
-        StringifierRegistry registry = StringifierRegistry.instance();
+        var registry = StringifierRegistry.instance();
         stringifiers.forEach((stringifier) -> {
-            Class<?> dataClass = getDataClass(stringifier.getClass());
+            var dataClass = getDataClass(stringifier.getClass());
             registry.register(stringifier, dataClass);
         });
     }
@@ -66,13 +66,13 @@ public final class Registrar {
     /**
      * Obtains the class handled by the passed class of stringifiers.
      */
+    @SuppressWarnings("rawtypes")   /* Avoiding the generics hell. */
     private static Class<?> getDataClass(Class<? extends Stringifier> stringifierClass) {
-        TypeToken<?> supertypeToken = TypeToken.of(stringifierClass)
-                                               .getSupertype(Stringifier.class);
-        ParameterizedType genericSupertype =
-                (ParameterizedType) supertypeToken.getType();
-        Type[] typeArguments = genericSupertype.getActualTypeArguments();
-        Type typeArgument = typeArguments[0];
+        var supertypeToken = TypeToken.of(stringifierClass)
+                                      .getSupertype(Stringifier.class);
+        var genericSupertype = (ParameterizedType) supertypeToken.getType();
+        var typeArguments = genericSupertype.getActualTypeArguments();
+        var typeArgument = typeArguments[0];
         return (Class<?>) typeArgument;
     }
 }

@@ -47,18 +47,18 @@ final class IsDirectParent implements Predicate<Package> {
 
     static Predicate<Package> of(Package child) {
         checkNotNull(child);
-        IsDirectParent result = new IsDirectParent(child);
+        var result = new IsDirectParent(child);
         return result;
     }
 
     @Override
     public boolean test(Package candidate) {
-        String commonPrefix = Strings.commonPrefix(candidate.getName(), childName);
+        var commonPrefix = Strings.commonPrefix(candidate.getName(), childName);
         if (commonPrefix.isEmpty()) {
             return false;
         }
-        String remainingPath = childName.substring(commonPrefix.length());
-        boolean hasOnlyOneDot = remainingPath.lastIndexOf('.') == 0;
+        var remainingPath = childName.substring(commonPrefix.length());
+        var hasOnlyOneDot = remainingPath.lastIndexOf('.') == 0;
         return hasOnlyOneDot;
     }
 }

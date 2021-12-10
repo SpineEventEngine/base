@@ -148,7 +148,7 @@ public final class Durations2 {
         if (d2 == null) {
             return d1;
         }
-        Duration result = Durations.add(d1, d2);
+        var result = Durations.add(d1, d2);
         return result;
     }
 
@@ -157,7 +157,7 @@ public final class Durations2 {
      * {@code Duration} instance with hours and minutes.
      */
     public static Duration hoursAndMinutes(long hours, long minutes) {
-        Duration result = add(hours(hours), minutes(minutes));
+        var result = add(hours(hours), minutes(minutes));
         return result;
     }
 
@@ -167,8 +167,8 @@ public final class Durations2 {
      */
     public static boolean isPositiveOrZero(Duration value) {
         checkNotNull(value);
-        long millis = toMillis(value);
-        boolean result = millis >= 0;
+        var millis = toMillis(value);
+        var result = millis >= 0;
         return result;
     }
 
@@ -178,9 +178,9 @@ public final class Durations2 {
      */
     public static boolean isPositive(Duration value) {
         checkNotNull(value);
-        boolean secondsPositive = value.getSeconds() > 0;
-        boolean nanosPositive = value.getNanos() > 0;
-        boolean result = secondsPositive || nanosPositive;
+        var secondsPositive = value.getSeconds() > 0;
+        var nanosPositive = value.getNanos() > 0;
+        var result = secondsPositive || nanosPositive;
         return result;
 
     }
@@ -188,9 +188,9 @@ public final class Durations2 {
     /** Returns {@code true} if the passed value is zero, {@code false} otherwise. */
     public static boolean isZero(Duration value) {
         checkNotNull(value);
-        boolean noSeconds = value.getSeconds() == 0;
-        boolean noNanos = value.getNanos() == 0;
-        boolean result = noSeconds && noNanos;
+        var noSeconds = value.getSeconds() == 0;
+        var noNanos = value.getNanos() == 0;
+        var result = noSeconds && noNanos;
         return result;
     }
 
@@ -199,7 +199,7 @@ public final class Durations2 {
      * {@code false} otherwise.
      */
     public static boolean isGreaterThan(Duration value, Duration another) {
-        boolean result = compare(value, another) > 0;
+        var result = compare(value, another) > 0;
         return result;
     }
 
@@ -208,7 +208,7 @@ public final class Durations2 {
      * {@code false} otherwise.
      */
     public static boolean isLessThan(Duration value, Duration another) {
-        boolean result = compare(value, another) < 0;
+        var result = compare(value, another) < 0;
         return result;
     }
 
@@ -228,7 +228,7 @@ public final class Durations2 {
      */
     public static Duration of(java.time.Duration value) {
         checkNotNull(value);
-        Duration result = converter().convert(value);
+        var result = converter().convert(value);
         return requireNonNull(result);
     }
 
@@ -238,7 +238,7 @@ public final class Durations2 {
     @SuppressWarnings("unused")
     public static java.time.Duration toJavaTime(Duration value) {
         checkNotNull(value);
-        java.time.Duration result =
+        var result =
                 converter().reverse()
                            .convert(value);
         return requireNonNull(result);
@@ -255,10 +255,9 @@ public final class Durations2 {
      */
     public static Duration parse(String str) {
         checkNotNull(str);
-        Duration result =
-                Stringifiers.forDuration()
-                            .reverse()
-                            .convert(str);
+        var result = Stringifiers.forDuration()
+                                 .reverse()
+                                 .convert(str);
         return requireNonNull(result);
     }
 

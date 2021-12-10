@@ -121,9 +121,8 @@ final class MapStringifier<K, V> extends Stringifier<Map<K, V>> {
 
     private static Splitter.MapSplitter createMapSplitter(String bucketPattern,
                                                           String keyValuePattern) {
-        Splitter.MapSplitter result =
-                Splitter.onPattern(bucketPattern)
-                        .withKeyValueSeparator(Splitter.onPattern(keyValuePattern));
+        var result = Splitter.onPattern(bucketPattern)
+                             .withKeyValueSeparator(Splitter.onPattern(keyValuePattern));
         return result;
     }
 
@@ -135,40 +134,40 @@ final class MapStringifier<K, V> extends Stringifier<Map<K, V>> {
     @Override
     protected String toString(Map<K, V> obj) {
         Converter<String, String> quoter = Quoter.forMaps();
-        Converter<K, String> keyConverter = keyStringifier.andThen(quoter);
-        Converter<V, String> valueConverter = valueStringifier.andThen(quoter);
+        var keyConverter = keyStringifier.andThen(quoter);
+        var valueConverter = valueStringifier.andThen(quoter);
 
         Map<String, String> resultMap = newLinkedHashMap();
-        for (Map.Entry<K, V> entry : obj.entrySet()) {
-            String convertedKey = keyConverter.convert(entry.getKey());
-            String convertedValue = valueConverter.convert(entry.getValue());
+        for (var entry : obj.entrySet()) {
+            var convertedKey = keyConverter.convert(entry.getKey());
+            var convertedValue = valueConverter.convert(entry.getValue());
             resultMap.put(convertedKey, convertedValue);
         }
-        String result = Joiner.on(delimiter)
-                              .withKeyValueSeparator(KEY_VALUE_DELIMITER)
-                              .join(resultMap);
+        var result = Joiner.on(delimiter)
+                           .withKeyValueSeparator(KEY_VALUE_DELIMITER)
+                           .join(resultMap);
         return result;
     }
 
     @Override
     protected Map<K, V> fromString(String s) {
-        String escapedString = escaper.escape(s);
-        Map<String, String> buckets = splitter.split(escapedString);
-        Map<K, V> resultMap = convert(buckets);
+        var escapedString = escaper.escape(s);
+        var buckets = splitter.split(escapedString);
+        var resultMap = convert(buckets);
         return resultMap;
     }
 
     private Map<K, V> convert(Map<String, String> buckets) {
         Converter<String, String> quoter = Quoter.forMaps();
-        Converter<String, K> keyConverter = quoter.reverse()
-                                                  .andThen(keyStringifier.reverse());
-        Converter<String, V> valueConverter = quoter.reverse()
-                                                    .andThen(valueStringifier.reverse());
+        var keyConverter = quoter.reverse()
+                                 .andThen(keyStringifier.reverse());
+        var valueConverter = quoter.reverse()
+                                   .andThen(valueStringifier.reverse());
         Map<K, V> resultMap = newHashMap();
         try {
-            for (Map.Entry<String, String> bucket : buckets.entrySet()) {
-                K convertedKey = keyConverter.convert(bucket.getKey());
-                V convertedValue = valueConverter.convert(bucket.getValue());
+            for (var bucket : buckets.entrySet()) {
+                var convertedKey = keyConverter.convert(bucket.getKey());
+                var convertedValue = valueConverter.convert(bucket.getValue());
                 resultMap.put(convertedKey, convertedValue);
             }
             return resultMap;
