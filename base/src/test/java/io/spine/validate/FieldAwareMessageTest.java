@@ -43,16 +43,16 @@ class FieldAwareMessageTest {
     @Test
     @DisplayName("read values when `readValues` is properly implemented")
     void readValues() {
-        AggregateState msg = FieldAwareMessageTestEnv.msg();
-        FieldAwareMsg state = new FieldAwareMsg(msg);
+        var msg = FieldAwareMessageTestEnv.msg();
+        var state = new FieldAwareMsg(msg);
         assertThat(state.checkFieldsReachable()).isTrue();
     }
 
     @Test
     @DisplayName("fail to read values when `readValues` has implementation issues")
     void failToReadValues() {
-        AggregateState msg = msg();
-        BrokenFieldAware state = new BrokenFieldAware(msg);
+        var msg = msg();
+        var state = new BrokenFieldAware(msg);
         assertIllegalArgument(state::checkFieldsReachable);
     }
 }

@@ -50,7 +50,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("PackageGraph should")
+@DisplayName("`PackageGraph` should")
 class PackageGraphTest {
 
     private final PackageGraph graph = PackageGraph.newInstance();
@@ -67,13 +67,13 @@ class PackageGraphTest {
     }
 
     @Nested
-    @DisplayName("Create instance with packages")
+    @DisplayName("create instance with packages")
     class Create {
 
         @Test
-        @DisplayName("all known to the caller's ClassLoader")
+        @DisplayName("all known to the caller's `ClassLoader`")
         void allKnown() {
-            PackageGraph graph = PackageGraph.newInstance();
+            var graph = PackageGraph.newInstance();
             assertContainsPackageOf(graph, String.class);
             assertContainsPackageOf(graph, Predicate.class);
             assertContainsPackageOf(graph, Test.class);
@@ -82,7 +82,7 @@ class PackageGraphTest {
         @Test
         @DisplayName("having common name prefix")
         void commonPrefix() {
-            PackageGraph graph = PackageGraph.containing("org.junit");
+            var graph = PackageGraph.containing("org.junit");
             assertNotContainsPackageOf(graph, String.class);
             assertNotContainsPackageOf(graph, Predicate.class);
             assertContainsPackageOf(graph, Test.class);
@@ -90,15 +90,14 @@ class PackageGraphTest {
         }
 
         @Test
-        @DisplayName("accepted by a Filter")
+        @DisplayName("accepted by a `Filter`")
         void filtered() {
-            PackageGraph.Filter filter =
-                    PackageGraph.newFilter()
-                                .exclude("java")
-                                .include("java.lang.annotation")
-                                .include("java.util.function");
+            var filter = PackageGraph.newFilter()
+                                     .exclude("java")
+                                     .include("java.lang.annotation")
+                                     .include("java.util.function");
 
-            PackageGraph graph = PackageGraph.matching(filter);
+            var graph = PackageGraph.matching(filter);
 
             assertContainsPackageOf(graph, Annotation.class);
             assertContainsPackageOf(graph, Predicate.class);
@@ -117,7 +116,7 @@ class PackageGraphTest {
         }
     }
 
-    @DisplayName("Implement Graph interface")
+    @DisplayName("implement `Graph` interface")
     @Nested
     class GraphApi {
 
@@ -149,7 +148,7 @@ class PackageGraphTest {
         @Test
         @DisplayName("returning adjacent nodes")
         void adjacentNodes() {
-            Set<PackageInfo> nodes = graph.adjacentNodes(javaUtil);
+            var nodes = graph.adjacentNodes(javaUtil);
             assertContainsPackageOf(nodes, Callable.class);
             assertContainsPackageOf(nodes, Function.class);
             assertContainsPackageOf(nodes, Logger.class);
@@ -158,7 +157,7 @@ class PackageGraphTest {
         @Test
         @DisplayName("obtaining predecessors")
         void predecessors() {
-            Set<PackageInfo> predecessors = graph.predecessors(javaUtilConcurrent);
+            var predecessors = graph.predecessors(javaUtilConcurrent);
 
             assertContainsPackageOf(predecessors, AtomicBoolean.class);
             assertContainsPackageOf(predecessors, Lock.class);
@@ -167,7 +166,7 @@ class PackageGraphTest {
         @Test
         @DisplayName("obtaining successors")
         void successors() {
-            Set<PackageInfo> successors = graph.successors(javaUtilConcurrent);
+            var successors = graph.successors(javaUtilConcurrent);
 
             assertEquals(1, successors.size());
             assertContainsPackageOf(successors, Collection.class);
@@ -180,20 +179,18 @@ class PackageGraphTest {
         @Test
         @DisplayName("obtaining incident edges")
         void incidentEdges() {
-            Set<EndpointPair<PackageInfo>> edges = graph.incidentEdges(javaUtilConcurrent);
+            var edges = graph.incidentEdges(javaUtilConcurrent);
             // The primary purpose of these checks is to demonstrate how the edges work.
             // They do not test our code since we simply redirect to Guava's Graph.
-            for (EndpointPair<PackageInfo> edge : edges) {
-                boolean isSource = edge.source()
-                                       .equals(javaUtilConcurrent);
-                boolean isTarget = edge.target()
-                                       .equals(javaUtilConcurrent);
+            for (var edge : edges) {
+                var isSource = edge.source().equals(javaUtilConcurrent);
+                var isTarget = edge.target().equals(javaUtilConcurrent);
                 assertTrue(isSource || isTarget);
             }
         }
 
         @Nested
-        @DisplayName("Return degree")
+        @DisplayName("return degree")
         class Degree {
 
             @Test
@@ -226,7 +223,7 @@ class PackageGraphTest {
         }
 
         @Nested
-        @DisplayName("Check edge")
+        @DisplayName("check edge")
         class Edge {
 
             @Test
@@ -263,13 +260,13 @@ class PackageGraphTest {
         }
 
         static void nodes(Collection<PackageInfo> nodes) {
-            for (PackageInfo node : nodes) {
+            for (var node : nodes) {
                 System.out.println(node);
             }
         }
 
         static void edges(Collection<EndpointPair<PackageInfo>> edges) {
-            for (EndpointPair<PackageInfo> edge : edges) {
+            for (var edge : edges) {
                 System.out.println(edge);
             }
         }

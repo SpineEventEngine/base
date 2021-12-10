@@ -34,7 +34,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
@@ -81,8 +80,8 @@ final class MutingLoggerTap {
      * @see #replaceHandlers()
      */
     private void createHandler() {
-        Handler currentHandler = findHandler();
-        Formatter formatter = currentHandler.getFormatter();
+        var currentHandler = findHandler();
+        var formatter = currentHandler.getFormatter();
         handler = new FlushingHandler(stream(), formatter);
         try {
             handler.setEncoding(currentHandler.getEncoding());
@@ -93,7 +92,7 @@ final class MutingLoggerTap {
     }
 
     private Handler findHandler() {
-        Logger logger = logger();
+        var logger = logger();
         while (logger.getHandlers().length == 0) {
             if (logger.getUseParentHandlers()) {
                 logger = logger.getParent();
@@ -113,10 +112,10 @@ final class MutingLoggerTap {
      */
     private void replaceHandlers() {
         // Remember configuration of the logger.
-        Logger logger = logger();
+        var logger = logger();
         usedParentHandlers = logger.getUseParentHandlers();
         previousHandlers = ImmutableList.copyOf(logger.getHandlers());
-        for (Handler handler : previousHandlers) {
+        for (var handler : previousHandlers) {
             logger.removeHandler(handler);
         }
         logger.addHandler(handler());
@@ -132,10 +131,10 @@ final class MutingLoggerTap {
         if (handler == null) { // not installed.
             return;
         }
-        Logger logger = logger();
+        var logger = logger();
         logger.removeHandler(handler());
         logger.setUseParentHandlers(usedParentHandlers);
-        for (Handler previousHandler : previousHandlers()) {
+        for (var previousHandler : previousHandlers()) {
             logger.addHandler(previousHandler);
         }
         stream().reset();
@@ -160,7 +159,7 @@ final class MutingLoggerTap {
      */
     @VisibleForTesting
     synchronized long streamSize() {
-        MemoizingStream stream = stream();
+        var stream = stream();
         try {
             stream.flush();
         } catch (IOException e) {

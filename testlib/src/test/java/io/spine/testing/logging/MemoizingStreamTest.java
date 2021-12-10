@@ -41,7 +41,7 @@ import static io.spine.testing.TestValues.random;
 import static java.lang.Byte.MAX_VALUE;
 import static java.lang.Byte.MIN_VALUE;
 
-@DisplayName("MemoizingStream should")
+@DisplayName("`MemoizingStream` should")
 class MemoizingStreamTest {
 
     private static final byte[] EMPTY_BYTES = {};
@@ -101,7 +101,7 @@ class MemoizingStreamTest {
     @Test
     @DisplayName("flush all the input")
     void flushEverything() throws IOException {
-        byte[] input = randomBytes(42);
+        var input = randomBytes(42);
 
         stream.write(input);
 
@@ -111,7 +111,7 @@ class MemoizingStreamTest {
     @Test
     @DisplayName("not store flushed bytes")
     void clearAfterFlush() throws IOException {
-        byte[] input = randomBytes(12);
+        var input = randomBytes(12);
 
         stream.write(input);
 
@@ -122,7 +122,7 @@ class MemoizingStreamTest {
     @Test
     @DisplayName("clear memoized bytes on demand")
     void clearOnDemand() throws IOException {
-        byte[] input = randomBytes(4);
+        var input = randomBytes(4);
 
         stream.write(input);
         stream.reset();
@@ -133,7 +133,7 @@ class MemoizingStreamTest {
     @Test
     @DisplayName("allow to clear memoized bytes any number of times")
     void clearAnyNumberOfTimes() throws IOException {
-        byte[] input = randomBytes(4);
+        var input = randomBytes(4);
 
         stream.write(input);
 
@@ -159,9 +159,9 @@ class MemoizingStreamTest {
     }
 
     private void checkMemoized(byte[] expected) throws IOException {
-        ByteArrayOutputStream outputCollector = new ByteArrayOutputStream();
+        var outputCollector = new ByteArrayOutputStream();
         stream.flushTo(outputCollector);
-        byte[] actualBytes = outputCollector.toByteArray();
+        var actualBytes = outputCollector.toByteArray();
 
         assertThat(actualBytes)
                 .asList()
@@ -169,10 +169,10 @@ class MemoizingStreamTest {
     }
 
     private static byte[] randomBytes(int count) {
-        byte[] result = new byte[count];
-        for (int i = 0; i < count; i++) {
+        var result = new byte[count];
+        for (var i = 0; i < count; i++) {
             @SuppressWarnings("NumericCastThatLosesPrecision") // OK because of the bounds.
-            byte randomByte = (byte) random(0, MAX_VALUE);
+            var randomByte = (byte) random(0, MAX_VALUE);
             result[i] = randomByte;
         }
         return result;

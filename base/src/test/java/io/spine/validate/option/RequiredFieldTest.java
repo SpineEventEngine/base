@@ -45,7 +45,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName(VALIDATION_SHOULD + "analyze (required_field) message option and consider message")
+@DisplayName(VALIDATION_SHOULD + "analyze `(required_field)` message option and consider message")
 final class RequiredFieldTest extends ValidationOfConstraintTest {
 
     @DisplayName("valid if")
@@ -55,8 +55,7 @@ final class RequiredFieldTest extends ValidationOfConstraintTest {
         @DisplayName("all required fields are set")
         @Test
         void allRequiredFieldsAreSet() {
-            EveryFieldRequired message = EveryFieldRequired
-                    .newBuilder()
+            var message = EveryFieldRequired.newBuilder()
                     .setFirst("first field set")
                     .setSecond("second field set")
                     .setThird("third field set")
@@ -64,15 +63,14 @@ final class RequiredFieldTest extends ValidationOfConstraintTest {
             assertValid(message);
         }
 
-        @DisplayName("oneof field")
+        @DisplayName("`oneof` field")
         @Nested
         final class OneofField {
 
             @DisplayName("'first' is set")
             @Test
             void first() {
-                OneofRequired withFirstField = OneofRequired
-                        .newBuilder()
+                var withFirstField = OneofRequired.newBuilder()
                         .setFirst("first field set")
                         .build();
                 assertValid(withFirstField);
@@ -81,8 +79,7 @@ final class RequiredFieldTest extends ValidationOfConstraintTest {
             @DisplayName("'second' is set")
             @Test
             void second() {
-                OneofRequired withSecondField = OneofRequired
-                        .newBuilder()
+                var withSecondField = OneofRequired.newBuilder()
                         .setSecond("second field set")
                         .build();
                 assertValid(withSecondField);
@@ -90,11 +87,10 @@ final class RequiredFieldTest extends ValidationOfConstraintTest {
         }
 
         @Disabled("See https://github.com/SpineEventEngine/base/issues/381")
-        @DisplayName("oneof and other field are set")
+        @DisplayName("`oneof` and other field are set")
         @Test
         void oneofAndOtherFieldsAreSet() {
-            OneofFieldAndOtherFieldRequired message = OneofFieldAndOtherFieldRequired
-                    .newBuilder()
+            var message = OneofFieldAndOtherFieldRequired.newBuilder()
                     .setSecond("second field set")
                     .setThird("third field set")
                     .build();
@@ -105,8 +101,7 @@ final class RequiredFieldTest extends ValidationOfConstraintTest {
         @Test
         void optionalFieldsAreNotSet() {
             assertValid(EveryFieldOptional.getDefaultInstance());
-            EveryFieldOptional message = EveryFieldOptional
-                    .newBuilder()
+            var message = EveryFieldOptional.newBuilder()
                     .setFirst("first field set")
                     .setThird("third field set")
                     .build();
@@ -124,16 +119,14 @@ final class RequiredFieldTest extends ValidationOfConstraintTest {
 
     @SuppressWarnings("unused") // used via `@MethodSource` value
     private static Stream<ComplexRequiredFields> validComplexMessages() {
-        ComplexRequiredFields message = ComplexRequiredFields
-                .newBuilder()
+        var message = ComplexRequiredFields.newBuilder()
                 .addFirst("first field set")
                 .setFourth("fourth field set")
                 .setFifth(ComplexRequiredFields.FifthField
                                   .newBuilder()
                                   .setValue("fifthFieldValue"))
                 .build();
-        ComplexRequiredFields alternativeMessage = ComplexRequiredFields
-                .newBuilder()
+        var alternativeMessage = ComplexRequiredFields.newBuilder()
                 .putSecond("key", "second field set")
                 .setThird("fourth field set")
                 .setFifth(ComplexRequiredFields.FifthField
@@ -151,32 +144,29 @@ final class RequiredFieldTest extends ValidationOfConstraintTest {
         @Test
         void requiredFieldIsNotSet() {
             assertNotValid(EveryFieldRequired.getDefaultInstance(), false);
-            EveryFieldRequired onlyOneRequiredSet = EveryFieldRequired
-                    .newBuilder()
+            var onlyOneRequiredSet = EveryFieldRequired.newBuilder()
                     .setFirst("only one set")
                     .build();
             assertNotValid(onlyOneRequiredSet, false);
 
-            EveryFieldRequired twoRequiredSet = EveryFieldRequired
-                    .newBuilder()
+            var twoRequiredSet = EveryFieldRequired.newBuilder()
                     .setFirst("first set")
                     .setSecond("second set")
                     .build();
             assertNotValid(twoRequiredSet, false);
         }
 
-        @DisplayName("a required oneof is not set")
+        @DisplayName("a required `oneof` is not set")
         @Test
         void oneofNotSet() {
             assertNotValid(OneofRequired.getDefaultInstance(), false);
-            OneofRequired withDefaultValue = OneofRequired
-                    .newBuilder()
+            var withDefaultValue = OneofRequired.newBuilder()
                     .setFirst("")
                     .build();
             assertNotValid(withDefaultValue, false);
         }
 
-        @DisplayName("oneof or other field is not set")
+        @DisplayName("`oneof` or other field is not set")
         @Test
         void oneofOrOtherNotSet() {
             Exception exception = assertThrows(
@@ -200,23 +190,19 @@ final class RequiredFieldTest extends ValidationOfConstraintTest {
 
     @SuppressWarnings("unused") // invoked via `@MethodSource`.
     private static Stream<ComplexRequiredFields> invalidComplexMessages() {
-        ComplexRequiredFields.FifthField.Builder fifthFieldValue =
-                ComplexRequiredFields.FifthField.newBuilder()
-                                                .setValue("fifthFieldValue");
-        ComplexRequiredFields withoutListOrMap = ComplexRequiredFields
-                .newBuilder()
+        var fifthFieldValue = ComplexRequiredFields.FifthField.newBuilder()
+                .setValue("fifthFieldValue");
+        var withoutListOrMap = ComplexRequiredFields.newBuilder()
                 .setFourth("fourth field set")
                 .setFifth(fifthFieldValue)
                 .build();
 
-        ComplexRequiredFields withoutOneof = ComplexRequiredFields
-                .newBuilder()
+        var withoutOneof = ComplexRequiredFields.newBuilder()
                 .putSecond("key", "second field set")
                 .setFifth(fifthFieldValue)
                 .build();
 
-        ComplexRequiredFields withoutMessage = ComplexRequiredFields
-                .newBuilder()
+        var withoutMessage = ComplexRequiredFields.newBuilder()
                 .putSecond("key", "second field set")
                 .setThird("fourth field set")
                 .build();

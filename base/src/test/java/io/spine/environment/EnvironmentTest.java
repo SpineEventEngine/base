@@ -43,7 +43,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.environment.TestsProperty.TESTS_VALUES;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@DisplayName("Environment should")
+@DisplayName("`Environment` should")
 @SuppressWarnings("AccessOfSystemProperties")
 class EnvironmentTest {
 
@@ -242,9 +242,9 @@ class EnvironmentTest {
     @Test
     @DisplayName("cache the `Tests` environment type")
     void cacheTests() throws InterruptedException {
-        AtomicBoolean envCached = new AtomicBoolean(false);
+        var envCached = new AtomicBoolean(false);
         assertThat(environment.is(Tests.class));
-        Thread thread = new Thread(() -> {
+        var thread = new Thread(() -> {
             TestsProperty.clear();
             assertThat(environment.is(Tests.class)).isTrue();
             assertThat(Tests.type().enabled()).isFalse();

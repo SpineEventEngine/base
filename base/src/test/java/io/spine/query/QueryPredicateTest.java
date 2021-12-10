@@ -73,30 +73,25 @@ class QueryPredicateTest {
     @DisplayName("allow copying and joining predicates with some logical operator")
     void allowToCopyAndJoinPredicates() {
 
-        QueryPredicate<Manufacturer> notTraded =
-                firstPredicateOf(queryManufacturer().where(is_traded)
-                                                    .is(false));
+        var notTraded =
+                firstPredicateOf(queryManufacturer().where(is_traded).is(false));
 
-        QueryPredicate<Manufacturer> specificIsin =
-                firstPredicateOf(queryManufacturer().where(isin)
-                                                    .is("A194N"));
+        var specificIsin =
+                firstPredicateOf(queryManufacturer().where(isin).is("A194N"));
 
-        QueryPredicate<Manufacturer> foundedAfterEpoch =
-                firstPredicateOf(queryManufacturer().where(when_founded)
-                                                    .isGreaterThan(Timestamps.fromSeconds(0)));
+        var epoch = Timestamps.fromSeconds(0);
+        var foundedAfterEpoch =
+                firstPredicateOf(queryManufacturer().where(when_founded).isGreaterThan(epoch));
 
-        ImmutableList<QueryPredicate<Manufacturer>> predicatesToJoin =
-                ImmutableList.of(notTraded, specificIsin, foundedAfterEpoch);
+        var predicatesToJoin = ImmutableList.of(notTraded, specificIsin, foundedAfterEpoch);
 
-        LogicalOperator expectedOperator = OR;
-        QueryPredicate<Manufacturer> joinResult =
-                QueryPredicate.merge(predicatesToJoin, expectedOperator);
+        var expectedOperator = OR;
+        var joinResult = QueryPredicate.merge(predicatesToJoin, expectedOperator);
 
-        ImmutableList<SubjectParameter<?, ?, ?>> expectedParameters =
-                predicatesToJoin.stream()
-                                .flatMap(p -> p.allParams()
-                                               .stream())
-                                .collect(toImmutableList());
+        var expectedParameters = predicatesToJoin.stream()
+                .flatMap(p -> p.allParams()
+                        .stream())
+                .collect(toImmutableList());
 
         assertThat(joinResult).isNotNull();
         assertThat(joinResult.allParams()).containsExactlyElementsIn(expectedParameters);
@@ -106,30 +101,26 @@ class QueryPredicateTest {
     @Test
     @DisplayName("when transforming a flat predicate into its DNF, return it as-is")
     void returnFlatPredicateAsIs() {
-        RecordQuery<ManufacturerId, Manufacturer> query =
-                queryManufacturer()
-                        .where(is_traded).is(IS_TRADED)
-                        .where(when_founded).isLessThan(NOW)
-                        .build();
-        QueryPredicate<Manufacturer> original = query.subject()
-                                                      .predicate();
-        QueryPredicate<Manufacturer> transformed = original.toDnf();
+        var query = queryManufacturer()
+                .where(is_traded).is(IS_TRADED)
+                .where(when_founded).isLessThan(NOW)
+                .build();
+        var original = query.subject().predicate();
+        var transformed = original.toDnf();
         assertThat(transformed).isEqualTo(original);
     }
 
     @Test
     @DisplayName("when transforming a predicate that is already in DNF, return it as-is")
     void returnDnfPredicateAsIs() {
-        RecordQuery<ManufacturerId, Manufacturer> query =
-                queryManufacturer()
-                        .either(r -> r.where(stock_count).is(TEN_STOCKS)
-                                      .where(isin).is(FIRST_ISIN),
-                                r -> r.where(stock_count).is(HUNDRED_STOCKS)
-                                      .where(isin).is(SECOND_ISIN))
-                        .build();
-        QueryPredicate<Manufacturer> original = query.subject()
-                                                     .predicate();
-        QueryPredicate<Manufacturer> transformed = original.toDnf();
+        var query = queryManufacturer()
+                .either(r -> r.where(stock_count).is(TEN_STOCKS)
+                              .where(isin).is(FIRST_ISIN),
+                        r -> r.where(stock_count).is(HUNDRED_STOCKS)
+                              .where(isin).is(SECOND_ISIN))
+                .build();
+        var original = query.subject().predicate();
+        var transformed = original.toDnf();
         assertThat(transformed).isEqualTo(original);
     }
 
@@ -167,23 +158,21 @@ class QueryPredicateTest {
                         .where(when_founded).isLessThan(IN_BETWEEN)                         /* E */
                         .either(childEither1, childEither2);                                /* G */
 
-        RecordQuery<ManufacturerId, Manufacturer> query =
-                queryManufacturer()
-                        .where(is_traded).is(IS_TRADED)                                     /* A */
-                        .either(firstEither, secondEither)
-                        .build();
-        QueryPredicate<Manufacturer> rootPredicate = query.subject()
-                                                          .predicate();
-        QueryPredicate<Manufacturer> dnfPredicate = rootPredicate.toDnf();
+        var query = queryManufacturer()
+                .where(is_traded).is(IS_TRADED)                                     /* A */
+                .either(firstEither, secondEither)
+                .build();
+        var rootPredicate = query.subject().predicate();
+        var dnfPredicate = rootPredicate.toDnf();
         assertThat(dnfPredicate).isNotNull();
 
-        LogicalOperator rootOperator = dnfPredicate.operator();
+        var rootOperator = dnfPredicate.operator();
         assertThat(rootOperator).isEqualTo(OR);
 
-        ImmutableList<SubjectParameter<?, ?, ?>> allParams = dnfPredicate.allParams();
+        var allParams = dnfPredicate.allParams();
         assertThat(allParams).isEmpty();
 
-        ImmutableList<QueryPredicate<Manufacturer>> children = dnfPredicate.children();
+        var children = dnfPredicate.children();
         assertThat(children).hasSize(4);
 
         assertFirstChild(children);
@@ -196,20 +185,20 @@ class QueryPredicateTest {
      * Expects the first child of the passed collection to be {@code A && B && C}.
      */
     private static void assertFirstChild(ImmutableList<QueryPredicate<Manufacturer>> children) {
-        QueryPredicate<Manufacturer> first = children.get(0);
+        var first = children.get(0);
         assertThat(first.children()).isEmpty();
         assertThat(first.operator()).isEqualTo(AND);
 
-        ImmutableList<SubjectParameter<?, ?, ?>> allParams = first.allParams();
+        var allParams = first.allParams();
         assertThat(allParams).hasSize(3);
 
-        SubjectParameter<?, ?, ?> actualA = allParams.get(0);
+        var actualA = allParams.get(0);
         assertParamA(actualA);
 
-        SubjectParameter<?, ?, ?> actualB = allParams.get(1);
+        var actualB = allParams.get(1);
         assertParam(actualB, isin, EQUALS, FIRST_ISIN);
 
-        SubjectParameter<?, ?, ?> actualC = allParams.get(2);
+        var actualC = allParams.get(2);
         assertParam(actualC, when_founded, GREATER_THAN, IN_BETWEEN);
     }
 
@@ -217,23 +206,23 @@ class QueryPredicateTest {
      * Expects the second child of the passed collection to be {@code A && D && E && F}.
      */
     private static void assertSecondChild(ImmutableList<QueryPredicate<Manufacturer>> children) {
-        QueryPredicate<Manufacturer> second = children.get(1);
+        var second = children.get(1);
         assertThat(second.children()).isEmpty();
         assertThat(second.operator()).isEqualTo(AND);
 
-        ImmutableList<SubjectParameter<?, ?, ?>> allParams = second.allParams();
+        var allParams = second.allParams();
         assertThat(allParams).hasSize(4);
 
-        SubjectParameter<?, ?, ?> actualA = allParams.get(0);
+        var actualA = allParams.get(0);
         assertParamA(actualA);
 
-        SubjectParameter<?, ?, ?> actualD = allParams.get(1);
+        var actualD = allParams.get(1);
         assertParamD(actualD);
 
-        SubjectParameter<?, ?, ?> actualE = allParams.get(2);
+        var actualE = allParams.get(2);
         assertParamE(actualE);
 
-        SubjectParameter<?, ?, ?> actualF = allParams.get(3);
+        var actualF = allParams.get(3);
         assertParam(actualF, stock_count, LESS_THAN, TEN_STOCKS);
     }
 
@@ -241,26 +230,26 @@ class QueryPredicateTest {
      * Expects the third child of the passed collection to be {@code A && D && E && G && H}.
      */
     private static void assertThirdChild(ImmutableList<QueryPredicate<Manufacturer>> children) {
-        QueryPredicate<Manufacturer> third = children.get(2);
+        var third = children.get(2);
         assertThat(third.children()).isEmpty();
         assertThat(third.operator()).isEqualTo(AND);
 
-        ImmutableList<SubjectParameter<?, ?, ?>> allParams = third.allParams();
+        var allParams = third.allParams();
         assertThat(allParams).hasSize(5);
 
-        SubjectParameter<?, ?, ?> actualA = allParams.get(0);
+        var actualA = allParams.get(0);
         assertParamA(actualA);
 
-        SubjectParameter<?, ?, ?> actualD = allParams.get(1);
+        var actualD = allParams.get(1);
         assertParamD(actualD);
 
-        SubjectParameter<?, ?, ?> actualE = allParams.get(2);
+        var actualE = allParams.get(2);
         assertParamE(actualE);
 
-        SubjectParameter<?, ?, ?> actualG = allParams.get(3);
+        var actualG = allParams.get(3);
         assertParamG(actualG);
 
-        SubjectParameter<?, ?, ?> actualH = allParams.get(4);
+        var actualH = allParams.get(4);
         assertParam(actualH, when_founded, EQUALS, DEFAULT_TIME);
     }
 
@@ -268,26 +257,26 @@ class QueryPredicateTest {
      * Expects the fourth child of the passed collection to be {@code A && D && E && G && J}.
      */
     private static void assertFourthChild(ImmutableList<QueryPredicate<Manufacturer>> children) {
-        QueryPredicate<Manufacturer> fourth = children.get(3);
+        var fourth = children.get(3);
         assertThat(fourth.children()).isEmpty();
         assertThat(fourth.operator()).isEqualTo(AND);
 
-        ImmutableList<SubjectParameter<?, ?, ?>> allParams = fourth.allParams();
+        var allParams = fourth.allParams();
         assertThat(allParams).hasSize(5);
 
-        SubjectParameter<?, ?, ?> actualA = allParams.get(0);
+        var actualA = allParams.get(0);
         assertParamA(actualA);
 
-        SubjectParameter<?, ?, ?> actualD = allParams.get(1);
+        var actualD = allParams.get(1);
         assertParamD(actualD);
 
-        SubjectParameter<?, ?, ?> actualE = allParams.get(2);
+        var actualE = allParams.get(2);
         assertParamE(actualE);
 
-        SubjectParameter<?, ?, ?> actualG = allParams.get(3);
+        var actualG = allParams.get(3);
         assertParamG(actualG);
 
-        SubjectParameter<?, ?, ?> actualJ = allParams.get(4);
+        var actualJ = allParams.get(4);
         assertParam(actualJ, when_founded, LESS_THAN, NOW);
     }
 

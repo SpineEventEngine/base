@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 import static io.spine.protobuf.Durations2.hoursAndMinutes;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("DurationStringifier should")
+@DisplayName("`DurationStringifier` should")
 class DurationStringifierTest extends AbstractStringifierTest<Duration> {
 
     DurationStringifierTest() {
@@ -46,10 +46,10 @@ class DurationStringifierTest extends AbstractStringifierTest<Duration> {
     }
 
     @Test
-    @DisplayName("Convert negative duration")
+    @DisplayName("convert negative duration")
     void convertNegativeDuration() {
-        Stringifier<Duration> stringifier = stringifier();
-        Duration negative = hoursAndMinutes(-4, -31);
+        var stringifier = stringifier();
+        var negative = hoursAndMinutes(-4, -31);
         assertEquals(negative, parser().convert(stringifier.convert(negative)));
     }
 }

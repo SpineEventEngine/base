@@ -45,7 +45,7 @@ class PackageNameTest {
     @Test
     @DisplayName("create a new instance by value")
     void newInstance() {
-        String packageName = "some.pack.age";
+        var packageName = "some.pack.age";
         assertThat(PackageName.of(packageName)
                               .value()).isEqualTo(packageName);
     }
@@ -74,13 +74,13 @@ class PackageNameTest {
         }
 
         void assertIsInner(String inner, String outer) {
-            BooleanSubject assertInner = assertInner(inner, outer);
+            var assertInner = assertInner(inner, outer);
             assertInner.isTrue();
         }
 
         private BooleanSubject assertInner(String inner, String outer) {
-            PackageName innerPackage = PackageName.of(inner);
-            PackageName outerPackage = PackageName.of(outer);
+            var innerPackage = PackageName.of(inner);
+            var outerPackage = PackageName.of(outer);
             return assertThat(innerPackage.isInnerOf(outerPackage));
         }
     }

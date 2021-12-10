@@ -28,34 +28,28 @@ package io.spine.reflect;
 
 import io.spine.reflect.given.MethodHolder;
 import io.spine.reflect.given.ObjMethodHolder;
-import kotlin.reflect.KCallable;
-import kotlin.reflect.KParameter;
 import kotlin.reflect.KParameter.Kind;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Optional;
-
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth8.assertThat;
 
-@DisplayName("`J2Kt` should")
+@DisplayName("``J2Kt`` should")
 class J2KtTest {
 
     @Test
     @DisplayName("find a static method in a class")
     void findStatic() throws NoSuchMethodException {
-        String name = "staticMethod";
-        Method method = MethodHolder.class.getDeclaredMethod(name, int.class);
-        Optional<KCallable<?>> found = J2Kt.findKotlinMethod(method);
+        var name = "staticMethod";
+        var method = MethodHolder.class.getDeclaredMethod(name, int.class);
+        var found = J2Kt.findKotlinMethod(method);
         assertThat(found)
                 .isPresent();
-        KCallable<?> ktMethod = found.get();
+        var ktMethod = found.get();
         assertThat(ktMethod.getName())
                 .isEqualTo(name);
-        List<KParameter> params = ktMethod.getParameters();
+        var params = ktMethod.getParameters();
         assertThat(params)
                 .hasSize(2);
         assertThat(params.get(0).getKind())
@@ -67,15 +61,15 @@ class J2KtTest {
     @Test
     @DisplayName("find a instance method a single argument in a class")
     void findInstance() throws NoSuchMethodException {
-        String name = "instanceMethod";
-        Method method = MethodHolder.class.getDeclaredMethod(name, String.class);
-        Optional<KCallable<?>> found = J2Kt.findKotlinMethod(method);
+        var name = "instanceMethod";
+        var method = MethodHolder.class.getDeclaredMethod(name, String.class);
+        var found = J2Kt.findKotlinMethod(method);
         assertThat(found)
                 .isPresent();
-        KCallable<?> ktMethod = found.get();
+        var ktMethod = found.get();
         assertThat(ktMethod.getName())
                 .isEqualTo(name);
-        List<KParameter> params = ktMethod.getParameters();
+        var params = ktMethod.getParameters();
         assertThat(params)
                 .hasSize(2);
         assertThat(params.get(0).getKind())
@@ -87,15 +81,15 @@ class J2KtTest {
     @Test
     @DisplayName("find a instance method with no arguments in a class")
     void findInstanceNoArg() throws NoSuchMethodException {
-        String name = "noParamMethod";
-        Method method = MethodHolder.class.getDeclaredMethod(name);
-        Optional<KCallable<?>> found = J2Kt.findKotlinMethod(method);
+        var name = "noParamMethod";
+        var method = MethodHolder.class.getDeclaredMethod(name);
+        var found = J2Kt.findKotlinMethod(method);
         assertThat(found)
                 .isPresent();
-        KCallable<?> ktMethod = found.get();
+        var ktMethod = found.get();
         assertThat(ktMethod.getName())
                 .isEqualTo(name);
-        List<KParameter> params = ktMethod.getParameters();
+        var params = ktMethod.getParameters();
         assertThat(params)
                 .hasSize(1);
         assertThat(params.get(0).getKind())
@@ -105,15 +99,15 @@ class J2KtTest {
     @Test
     @DisplayName("find a static method in an object")
     void findStaticInObj() throws NoSuchMethodException {
-        String name = "staticObjMethod";
-        Method method = ObjMethodHolder.class.getDeclaredMethod(name);
-        Optional<KCallable<?>> found = J2Kt.findKotlinMethod(method);
+        var name = "staticObjMethod";
+        var method = ObjMethodHolder.class.getDeclaredMethod(name);
+        var found = J2Kt.findKotlinMethod(method);
         assertThat(found)
                 .isPresent();
-        KCallable<?> ktMethod = found.get();
+        var ktMethod = found.get();
         assertThat(ktMethod.getName())
                 .isEqualTo(name);
-        List<KParameter> params = ktMethod.getParameters();
+        var params = ktMethod.getParameters();
         assertThat(params)
                 .hasSize(1);
         assertThat(params.get(0).getKind())
@@ -123,15 +117,15 @@ class J2KtTest {
     @Test
     @DisplayName("find a instance method in an object")
     void findInstanceInObj() throws NoSuchMethodException {
-        String name = "instanceObjMethod";
-        Method method = ObjMethodHolder.class.getDeclaredMethod(name);
-        Optional<KCallable<?>> found = J2Kt.findKotlinMethod(method);
+        var name = "instanceObjMethod";
+        var method = ObjMethodHolder.class.getDeclaredMethod(name);
+        var found = J2Kt.findKotlinMethod(method);
         assertThat(found)
                 .isPresent();
-        KCallable<?> ktMethod = found.get();
+        var ktMethod = found.get();
         assertThat(ktMethod.getName())
                 .isEqualTo(name);
-        List<KParameter> params = ktMethod.getParameters();
+        var params = ktMethod.getParameters();
         assertThat(params)
                 .hasSize(1);
         assertThat(params.get(0).getKind())

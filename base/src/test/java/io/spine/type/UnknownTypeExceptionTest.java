@@ -24,9 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.protobuf.error;
+package io.spine.type;
 
-import io.spine.type.UnknownTypeException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -34,14 +33,14 @@ import static io.spine.base.Identifier.newUuid;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("UnknownTypeException should")
+@DisplayName("`UnknownTypeException` should")
 class UnknownTypeExceptionTest {
 
     @Test
     @DisplayName("have constructor with type name")
     void have_ctor_with_type_name() {
-        String str = newUuid();
-        UnknownTypeException exception = new UnknownTypeException(str);
+        var str = newUuid();
+        var exception = new UnknownTypeException(str);
 
         assertTrue(exception.getMessage()
                             .contains(str));
@@ -50,9 +49,9 @@ class UnknownTypeExceptionTest {
     @Test
     @DisplayName("have constructor with type name and cause")
     void have_ctor_with_type_name_and_cause() {
-        String str = newUuid();
-        RuntimeException cause = new RuntimeException("");
-        UnknownTypeException exception = new UnknownTypeException(str, cause);
+        var str = newUuid();
+        var cause = new RuntimeException("");
+        var exception = new UnknownTypeException(str, cause);
 
         assertTrue(exception.getMessage()
                             .contains(str));

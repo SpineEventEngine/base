@@ -55,7 +55,7 @@ class LinkerTest {
     @Test
     @DisplayName("resolve files")
     void resolveFiles() {
-        FileSet resolved = linker.resolved();
+        var resolved = linker.resolved();
         assertTrue(resolved.size() > 0);
         assertTrue(resolved.containsAll(ImmutableList.of(
                 FileName.of("google/protobuf/any.proto"),

@@ -28,7 +28,6 @@ package io.spine.base;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.common.truth.Truth8;
-import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
@@ -73,8 +72,8 @@ class FieldTest {
         @Test
         @DisplayName("with immediate field name")
         void immediate() {
-            String expected = "val";
-            Field field = Field.parse(expected);
+            var expected = "val";
+            var field = Field.parse(expected);
             assertThat(field.path().getFieldNameList())
                     .containsExactly(expected);
         }
@@ -82,8 +81,8 @@ class FieldTest {
         @Test
         @DisplayName("delimited with dots")
         void nested() {
-            String path = "highway.to.hell";
-            Field field = Field.parse(path);
+            var path = "highway.to.hell";
+            var field = Field.parse(path);
             assertThat(field.toString())
                     .isEqualTo(path);
             assertThat(field.path().getFieldNameList())
@@ -100,7 +99,7 @@ class FieldTest {
     @Test
     @DisplayName("create the instance by the path")
     void byPath() {
-        FieldPath expected = Field.doParse("road_to.mandalay");
+        var expected = Field.doParse("road_to.mandalay");
         assertThat(Field.withPath(expected).path())
                 .isEqualTo(expected);
     }
@@ -112,7 +111,7 @@ class FieldTest {
         @Test
         @DisplayName("accepting non-empty string")
         void byName() {
-            String name = "my_way";
+            var name = "my_way";
             assertThat(Field.named(name).toString())
                     .isEqualTo(name);
         }
@@ -148,9 +147,9 @@ class FieldTest {
 
         @BeforeEach
         void createMessage() {
-            Any value = pack(Time.currentTime());
+            var value = pack(Time.currentTime());
             expectedValue = value.getTypeUrl();
-            AnyHolder anyHolder = AnyHolder
+            var anyHolder = AnyHolder
                     .newBuilder()
                     .setVal(value)
                     .build();
@@ -184,11 +183,10 @@ class FieldTest {
         @Test
         @DisplayName("directly via a simple path")
         void obtainSimple() {
-            StringHolder holder = StringHolder
-                    .newBuilder()
+            var holder = StringHolder.newBuilder()
                     .setVal("foobar")
                     .build();
-            Field field = Field.parse("val");
+            var field = Field.parse("val");
             assertThat(field.valueIn(holder))
                     .isEqualTo(holder.getVal());
         }
@@ -196,25 +194,21 @@ class FieldTest {
         @Test
         @DisplayName("via recursive path")
         void recursivePath() {
-            String value = "42";
-            StringHolder holder0 = StringHolder
-                    .newBuilder()
+            var value = "42";
+            var holder0 = StringHolder.newBuilder()
                     .setVal(value)
                     .build();
-            StringHolderHolder holder1 = StringHolderHolder
-                    .newBuilder()
+            var holder1 = StringHolderHolder.newBuilder()
                     .setHolder(holder0)
                     .build();
-            GenericHolder holder2 = GenericHolder
-                    .newBuilder()
+            var holder2 = GenericHolder.newBuilder()
                     .setHolderHolder(holder1)
                     .build();
-            GenericHolder holder3 = GenericHolder
-                    .newBuilder()
+            var holder3 = GenericHolder.newBuilder()
                     .setGeneric(holder2)
                     .build();
 
-            Field field = Field.parse("generic.holder_holder.holder.val");
+            var field = Field.parse("generic.holder_holder.holder.val");
             assertThat(field.valueIn(holder3))
                     .isEqualTo(value);
         }
@@ -222,12 +216,11 @@ class FieldTest {
         @Test
         @DisplayName("if the value is enum")
         void enumValue() {
-            GenericHolder holder = GenericHolder
-                    .newBuilder()
+            var holder = GenericHolder.newBuilder()
                     .setCount(Count.TWO)
                     .build();
 
-            Field field = Field.parse("count");
+            var field = Field.parse("count");
             assertThat(field.valueIn(holder))
                     .isEqualTo(Count.TWO);
         }
@@ -241,12 +234,11 @@ class FieldTest {
         @Test
         @DisplayName("failing if the path reaches over a primitive value")
         void failOnMissingField() {
-            String value = "primitive value";
-            StringHolder holder = StringHolder
-                    .newBuilder()
+            var value = "primitive value";
+            var holder = StringHolder.newBuilder()
                     .setVal(value)
                     .build();
-            Field wrongPath = parse("val.this_field_is_absent");
+            var wrongPath = parse("val.this_field_is_absent");
             assertIllegalState(() -> wrongPath.valueIn(holder));
         }
     }
@@ -254,16 +246,16 @@ class FieldTest {
     @Test
     @DisplayName("check that the field is present in the message type")
     void checkPresent() {
-        Field field = Field.parse("val");
-        Descriptor message = StringHolder.getDescriptor();
+        var field = Field.parse("val");
+        var message = StringHolder.getDescriptor();
         assertThat(field.presentIn(message)).isTrue();
     }
 
     @Test
     @DisplayName("check that the field is not present in the message type")
     void checkNotPresent() {
-        Field field = Field.parse("some_other_field");
-        Descriptor message = StringHolder.getDescriptor();
+        var field = Field.parse("some_other_field");
+        var message = StringHolder.getDescriptor();
         assertThat(field.presentIn(message)).isFalse();
     }
 
@@ -325,7 +317,7 @@ class FieldTest {
         @Test
         @DisplayName("when the type is recursive")
         void recursiveType() {
-            Field field = Field.parse("generic.generic.generic.generic.generic");
+            var field = Field.parse("generic.generic.generic.generic.generic");
 
             Truth8.assertThat(field.findType(GenericHolder.class))
                   .hasValue(GenericHolder.class);
@@ -341,7 +333,7 @@ class FieldTest {
         @Test
         @DisplayName("returning the short name of the field, if present")
         void nameValue() {
-            String name = Field.nameOf(Timestamp.NANOS_FIELD_NUMBER, message);
+            var name = Field.nameOf(Timestamp.NANOS_FIELD_NUMBER, message);
             assertThat(name).isEqualTo("nanos");
         }
 
@@ -367,19 +359,19 @@ class FieldTest {
     @Test
     @DisplayName("obtain the instance which is a nested field in the current field type")
     void returnNested() {
-        String topLevelField = "top-level-field";
-        Field topLevel = Field.named(topLevelField);
-        String nestedField = "nested-field";
-        Field nested = topLevel.nested(nestedField);
+        var topLevelField = "top-level-field";
+        var topLevel = Field.named(topLevelField);
+        var nestedField = "nested-field";
+        var nested = topLevel.nested(nestedField);
 
-        FieldPath path = nested.path();
+        var path = nested.path();
         assertThat(path.getFieldNameList()).containsExactly(topLevelField, nestedField);
     }
 
     @Test
     @DisplayName("obtain the instance by number in a message type")
     void byNumber() {
-        Field seconds = Field.withNumberIn(1, Timestamp.getDescriptor());
+        var seconds = Field.withNumberIn(1, Timestamp.getDescriptor());
         assertThat((Long) seconds.valueIn(Time.currentTime()))
                 .isGreaterThan(0);
     }
@@ -387,14 +379,14 @@ class FieldTest {
     @Test
     @DisplayName("check that the field is a nested field")
     void checkNested() {
-        Field field = Field.parse("some.nested.field");
+        var field = Field.parse("some.nested.field");
         assertThat(field.isNested()).isTrue();
     }
 
     @Test
     @DisplayName("check that the field is not a nested field")
     void checkTopLevel() {
-        Field field = Field.parse("top_level_field");
+        var field = Field.parse("top_level_field");
         assertThat(field.isNested()).isFalse();
     }
 }

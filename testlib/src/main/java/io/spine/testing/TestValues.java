@@ -63,10 +63,10 @@ public final class TestValues {
      * Generates a {@code StringValue} with generated UUID.
      */
     public static StringValue newUuidValue() {
-        String id = randomString();
+        var id = randomString();
         return StringValue.newBuilder()
-                          .setValue(id)
-                          .build();
+                .setValue(id)
+                .build();
     }
 
     /**
@@ -80,7 +80,7 @@ public final class TestValues {
      * Generates a random integer in the range [min, max).
      */
     public static int random(int min, int max) {
-        int randomNum = ThreadLocalRandom.current().nextInt(min, max);
+        var randomNum = ThreadLocalRandom.current().nextInt(min, max);
         return randomNum;
     }
 
@@ -88,7 +88,7 @@ public final class TestValues {
      * Generates a random long value in the range [min, max).
      */
     public static long longRandom(long min, long max) {
-        long randomNum = ThreadLocalRandom.current().nextLong(min, max);
+        var randomNum = ThreadLocalRandom.current().nextLong(min, max);
         return randomNum;
     }
 

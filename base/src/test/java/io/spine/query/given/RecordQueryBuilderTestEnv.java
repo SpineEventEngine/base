@@ -68,8 +68,8 @@ public final class RecordQueryBuilderTestEnv {
      */
     public static ManufacturerId manufacturerId() {
         return ManufacturerId.newBuilder()
-                             .setUuid(randomString())
-                             .build();
+                .setUuid(randomString())
+                .build();
     }
 
     /**
@@ -96,7 +96,7 @@ public final class RecordQueryBuilderTestEnv {
     public static Subject<ManufacturerId, Manufacturer>
     subjectWithNoParameters(RecordQuery<ManufacturerId, Manufacturer> query) {
         assertThat(query).isNotNull();
-        Subject<ManufacturerId, Manufacturer> subject = query.subject();
+        var subject = query.subject();
         assertThat(subject.predicate().parameters()).isEmpty();
         return subject;
     }
@@ -119,12 +119,12 @@ public final class RecordQueryBuilderTestEnv {
                                            RecordColumn<Manufacturer, ?> column,
                                            ComparisonOperator operator,
                                            Object value) {
-        boolean parameterFound = false;
-        for (SubjectParameter<Manufacturer, ?, ?> parameter : list) {
+        var parameterFound = false;
+        for (var parameter : list) {
             if (parameter.column()
                          .equals(column)) {
-                ComparisonOperator actualOperator = parameter.operator();
-                Object actualValue = parameter.value();
+                var actualOperator = parameter.operator();
+                var actualValue = parameter.value();
                 if (actualOperator == operator && value.equals(actualValue)) {
                     parameterFound = true;
                 }

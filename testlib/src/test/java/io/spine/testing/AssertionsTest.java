@@ -71,7 +71,7 @@ class AssertionsTest extends UtilityClassTest<Assertions> {
     }
 
     @Nested
-    @DisplayName("Check private parameterless constructor")
+    @DisplayName("check private parameterless constructor")
     class ParameterlessCtor {
 
         @Test
@@ -100,24 +100,23 @@ class AssertionsTest extends UtilityClassTest<Assertions> {
     }
 
     @Nested
-    @DisplayName("Assert matches mask")
+    @DisplayName("assert matches mask")
     class TestingMatchesMask {
 
         private Timestamp timestampMsg;
 
         @BeforeEach
         void setUp() {
-            long currentTime = Instant.now()
-                                      .toEpochMilli();
+            var currentTime = Instant.now().toEpochMilli();
             timestampMsg = Timestamp.newBuilder()
-                                    .setSeconds(currentTime)
-                                    .build();
+                    .setSeconds(currentTime)
+                    .build();
         }
 
         @Test
         @DisplayName("when field is matched")
         void fieldIsPresent() {
-            FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(Timestamp.class, 1);
+            var fieldMask = FieldMaskUtil.fromFieldNumbers(Timestamp.class, 1);
 
             assertMatchesMask(timestampMsg, fieldMask);
         }
@@ -125,7 +124,7 @@ class AssertionsTest extends UtilityClassTest<Assertions> {
         @Test
         @DisplayName("throws the error when field is not present")
         void fieldIsNotPresent() {
-            FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(Any.class, 1);
+            var fieldMask = FieldMaskUtil.fromFieldNumbers(Any.class, 1);
 
             assertThrows(AssertionError.class, () -> assertMatchesMask(timestampMsg, fieldMask));
         }
@@ -133,13 +132,13 @@ class AssertionsTest extends UtilityClassTest<Assertions> {
         @Test
         @DisplayName("throws the error when the field value is not set")
         void fieldIsNotSet() {
-            String fieldPath = Timestamp.getDescriptor()
-                                        .getFields()
-                                        .get(0)
-                                        .getFullName();
-            FieldMask.Builder builder = FieldMask.newBuilder();
+            var fieldPath = Timestamp.getDescriptor()
+                                     .getFields()
+                                     .get(0)
+                                     .getFullName();
+            var builder = FieldMask.newBuilder();
             builder.addPaths(fieldPath);
-            FieldMask fieldMask = builder.build();
+            var fieldMask = builder.build();
 
             assertThrows(AssertionError.class,
                          () -> assertMatchesMask(Timestamp.getDefaultInstance(), fieldMask));
@@ -154,19 +153,19 @@ class AssertionsTest extends UtilityClassTest<Assertions> {
             @DisplayName("match existing repeated primitive fields")
             @Test
             void matchRepeatedPrimitiveFields() {
-                Prescription prescription = prescribeFromCold();
-                FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(Prescription.class,
-                                                                     PRESCRIBED_DRUG_FIELD_NUMBER,
-                                                                     PRESCRIBED_ON_FIELD_NUMBER);
+                var prescription = prescribeFromCold();
+                var fieldMask = FieldMaskUtil.fromFieldNumbers(Prescription.class,
+                                                               PRESCRIBED_DRUG_FIELD_NUMBER,
+                                                               PRESCRIBED_ON_FIELD_NUMBER);
                 assertMatchesMask(prescription, fieldMask);
             }
 
             @DisplayName("not match absent repeated primitive fields")
             @Test
             void notMatchAbsentRepeatedPrimitiveFields() {
-                Prescription emptyPrescription = Prescription.getDefaultInstance();
-                FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(Prescription.class,
-                                                                     PRESCRIBED_DRUG_FIELD_NUMBER);
+                var emptyPrescription = Prescription.getDefaultInstance();
+                var fieldMask = FieldMaskUtil.fromFieldNumbers(Prescription.class,
+                                                               PRESCRIBED_DRUG_FIELD_NUMBER);
                 assertThrows(AssertionError.class,
                              () -> assertMatchesMask(emptyPrescription, fieldMask));
             }
@@ -174,12 +173,11 @@ class AssertionsTest extends UtilityClassTest<Assertions> {
             @DisplayName("match existing repeated non-default message fields")
             @Test
             void matchRepeatedNonDefaultMessageFields() {
-                PrescriptionHistory history = PrescriptionHistory
-                        .newBuilder()
+                var history = PrescriptionHistory.newBuilder()
                         .addReceivedPrescription(prescribeFromCold())
                         .setPrescriptionReceiver(patientId)
                         .build();
-                FieldMask fieldMask =
+                var fieldMask =
                         FieldMaskUtil.fromFieldNumbers(PrescriptionHistory.class,
                                                        PRESCRIPTION_RECEIVER_FIELD_NUMBER,
                                                        RECEIVED_PRESCRIPTION_FIELD_NUMBER);
@@ -189,12 +187,11 @@ class AssertionsTest extends UtilityClassTest<Assertions> {
             @DisplayName("not match absent repeated message fields")
             @Test
             void notMatchAbsentRepeatedMessageFields() {
-                PrescriptionHistory history = PrescriptionHistory
-                        .newBuilder()
+                var history = PrescriptionHistory.newBuilder()
                         .setPrescriptionReceiver(patientId)
                         .build();
 
-                FieldMask fieldMask =
+                var fieldMask =
                         FieldMaskUtil.fromFieldNumbers(PrescriptionHistory.class,
                                                        PRESCRIPTION_RECEIVER_FIELD_NUMBER,
                                                        RECEIVED_PRESCRIPTION_FIELD_NUMBER);
@@ -204,13 +201,12 @@ class AssertionsTest extends UtilityClassTest<Assertions> {
             @DisplayName("match existing repeated enum fields")
             @Test
             void matchPresentRepeatedEnumFields() {
-                HospitalPolicy policy = HospitalPolicy
-                        .newBuilder()
+                var policy = HospitalPolicy.newBuilder()
                         .addAcceptedCondition(CRITICAL)
                         .addAcceptedCondition(CRITICAL_BUT_STABLE)
                         .build();
 
-                FieldMask fieldMask =
+                var fieldMask =
                         FieldMaskUtil.fromFieldNumbers(HospitalPolicy.class,
                                                        ACCEPTED_CONDITION_FIELD_NUMBER);
                 assertMatchesMask(policy, fieldMask);
@@ -219,22 +215,18 @@ class AssertionsTest extends UtilityClassTest<Assertions> {
             @DisplayName("not match absent repeated enum fields")
             @Test
             void notMatchAbsentRepeatedEnumFields() {
-                HospitalPolicy emptyPolicy = HospitalPolicy.getDefaultInstance();
-                FieldMask fieldMask =
-                        FieldMaskUtil.fromFieldNumbers(HospitalPolicy.class,
-                                                       ACCEPTED_CONDITION_FIELD_NUMBER);
+                var emptyPolicy = HospitalPolicy.getDefaultInstance();
+                var fieldMask = FieldMaskUtil.fromFieldNumbers(HospitalPolicy.class,
+                                                               ACCEPTED_CONDITION_FIELD_NUMBER);
                 assertThrows(AssertionError.class, () -> assertMatchesMask(emptyPolicy, fieldMask));
             }
 
             private Prescription prescribeFromCold() {
-                long currentTime = Instant.now()
-                                          .toEpochMilli();
-                Timestamp now = Timestamp
-                        .newBuilder()
+                var currentTime = Instant.now().toEpochMilli();
+                var now = Timestamp.newBuilder()
                         .setSeconds(currentTime)
                         .build();
-                return Prescription
-                        .newBuilder()
+                return Prescription.newBuilder()
                         .setPrescribedOn(now)
                         .addPrescribedDrug("Paracetamol")
                         .addPrescribedDrug("Aspirin")
@@ -243,10 +235,8 @@ class AssertionsTest extends UtilityClassTest<Assertions> {
             }
 
             private PatientId newPatient() {
-                String uuid = UUID.randomUUID()
-                                  .toString();
-                return PatientId
-                        .newBuilder()
+                var uuid = UUID.randomUUID().toString();
+                return PatientId.newBuilder()
                         .setValue(uuid)
                         .build();
             }
@@ -254,7 +244,7 @@ class AssertionsTest extends UtilityClassTest<Assertions> {
     }
 
     @Nested
-    @DisplayName("Assert values in delta")
+    @DisplayName("assert values in delta")
     class TestingInDelta {
 
         private static final long DELTA = 10;
@@ -267,41 +257,41 @@ class AssertionsTest extends UtilityClassTest<Assertions> {
         @Test
         @DisplayName("when values are equal")
         void equalValues() {
-            long expectedValue = getValue();
+            var expectedValue = getValue();
             @SuppressWarnings("UnnecessaryLocalVariable") // For readability of this test.
-            long actualValue = expectedValue;
+            var actualValue = expectedValue;
             assertInDelta(expectedValue, actualValue, 0);
         }
 
         @Test
         @DisplayName("when values are close")
         void closeValues() {
-            long expectedValue = getValue();
-            long actualValue = getValue();
+            var expectedValue = getValue();
+            var actualValue = getValue();
             assertInDelta(expectedValue, actualValue, DELTA);
         }
 
         @Test
         @DisplayName("when actual value less than the sum of the expected value and delta")
         void actualValueLessThanExpectedWithDelta() {
-            long expectedValue = getValue();
-            long actualValue = expectedValue + DELTA - 1;
+            var expectedValue = getValue();
+            var actualValue = expectedValue + DELTA - 1;
             assertInDelta(expectedValue, actualValue, DELTA);
         }
 
         @Test
         @DisplayName("when the actual value equals the sum of the expected value and delta")
         void actualValueEqualsTheSumExpectedValueAndDelta() {
-            long expectedValue = getValue();
-            long actualValue = expectedValue + DELTA;
+            var expectedValue = getValue();
+            var actualValue = expectedValue + DELTA;
             assertInDelta(expectedValue, actualValue, DELTA);
         }
 
         @Test
         @DisplayName("throw when the actual value greater than the sum of the expected value and delta")
         void actualValueGreaterThanTheSumExpectedValueAndDelta() {
-            long expectedValue = getValue();
-            long actualValue = expectedValue + DELTA + 1;
+            var expectedValue = getValue();
+            var actualValue = expectedValue + DELTA + 1;
             assertThrows(
                     AssertionError.class,
                     () -> assertInDelta(expectedValue, actualValue, DELTA)
@@ -311,24 +301,24 @@ class AssertionsTest extends UtilityClassTest<Assertions> {
         @Test
         @DisplayName("when the actual value greater than the subtraction of the expected value and delta")
         void actualValueGreaterThanTheSubtractionOfExpectedValueAndDelta() {
-            long actualValue = getValue();
-            long expectedValue = actualValue + DELTA - 1;
+            var actualValue = getValue();
+            var expectedValue = actualValue + DELTA - 1;
             assertInDelta(expectedValue, actualValue, DELTA);
         }
 
         @Test
         @DisplayName("when the actual value equals the subtraction of the expected value and delta")
         void actualValueEqualsTheSubtractionOfExpectedValueAndDelta() {
-            long actualValue = getValue();
-            long expectedValue = actualValue + DELTA;
+            var actualValue = getValue();
+            var expectedValue = actualValue + DELTA;
             assertInDelta(expectedValue, actualValue, DELTA);
         }
 
         @Test
         @DisplayName("throw when the actual value less than the subtraction of the expected value and delta")
         void actualValueLessThanTheSubtractionExpectedValueAndDelta() {
-            long actualValue = getValue();
-            long expectedValue = actualValue + DELTA + 1;
+            var actualValue = getValue();
+            var expectedValue = actualValue + DELTA + 1;
             assertThrows(
                     AssertionError.class,
                     () -> assertInDelta(expectedValue, actualValue, DELTA)

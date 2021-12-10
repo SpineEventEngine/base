@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
 
-@DisplayName(VALIDATION_SHOULD + "consider oneof")
+@DisplayName(VALIDATION_SHOULD + "consider `oneof`")
 final class OneofTest extends ValidationOfConstraintTest {
 
     @DisplayName("valid if")
@@ -48,8 +48,7 @@ final class OneofTest extends ValidationOfConstraintTest {
         @Test
         @DisplayName("a required field is set to a non-default value")
         void requiredFieldIsNotDefault() {
-            OneofWithRequiredFields requiredIsSet = OneofWithRequiredFields
-                    .newBuilder()
+            var requiredIsSet = OneofWithRequiredFields.newBuilder()
                     .setFirst(newUuid())
                     .build();
             assertValid(requiredIsSet);
@@ -58,8 +57,7 @@ final class OneofTest extends ValidationOfConstraintTest {
         @Test
         @DisplayName("all required fields are set")
         void allRequiredFieldsAreNotDefault() {
-            OneofAndOtherAreRequired requiredAreSet = OneofAndOtherAreRequired
-                    .newBuilder()
+            var requiredAreSet = OneofAndOtherAreRequired.newBuilder()
                     .setSecond(newUuid())
                     .setThird(newUuid())
                     .build();
@@ -69,8 +67,7 @@ final class OneofTest extends ValidationOfConstraintTest {
         @Test
         @DisplayName("an optional field is set to the default value")
         void optionalIsDefault() {
-            OneofWithOptionalFields optionalIsDefault = OneofWithOptionalFields
-                    .newBuilder()
+            var optionalIsDefault = OneofWithOptionalFields.newBuilder()
                     .setFirst("")
                     .build();
             assertValid(optionalIsDefault);
@@ -80,8 +77,7 @@ final class OneofTest extends ValidationOfConstraintTest {
         @Test
         @DisplayName("an optional field is properly validated")
         void optionalIsValid() {
-            OneofWithValidation validFieldSet = OneofWithValidation
-                    .newBuilder()
+            var validFieldSet = OneofWithValidation.newBuilder()
                     .setWithValidation("valid")
                     .build();
             assertValid(validFieldSet);
@@ -96,8 +92,7 @@ final class OneofTest extends ValidationOfConstraintTest {
         @Test
         @DisplayName("an optional field without validation is set")
         void optionalFieldWithoutValidationSet() {
-            OneofWithValidation fieldWithoutValidationSet = OneofWithValidation
-                    .newBuilder()
+            var fieldWithoutValidationSet = OneofWithValidation.newBuilder()
                     .setNoValidation("does not require validation")
                     .build();
             assertValid(fieldWithoutValidationSet);
@@ -106,8 +101,7 @@ final class OneofTest extends ValidationOfConstraintTest {
         @Test
         @DisplayName("a required field without validation is set")
         void requiredNonValidatedFieldSet() {
-            RequiredOneofWithValidation requiredWithoutValidationSet = RequiredOneofWithValidation
-                    .newBuilder()
+            var requiredWithoutValidationSet = RequiredOneofWithValidation.newBuilder()
                     .setRawValue("o_0")
                     .build();
             assertValid(requiredWithoutValidationSet);
@@ -116,8 +110,7 @@ final class OneofTest extends ValidationOfConstraintTest {
         @Test
         @DisplayName("a required field with validation is set")
         void requiredValidatedFieldSet() {
-            RequiredOneofWithValidation requiredWithValidationSet = RequiredOneofWithValidation
-                    .newBuilder()
+            var requiredWithValidationSet = RequiredOneofWithValidation.newBuilder()
                     .setValidValue("aaa1111")
                     .build();
             assertValid(requiredWithValidationSet);
@@ -131,18 +124,16 @@ final class OneofTest extends ValidationOfConstraintTest {
         @Test
         @DisplayName("a required field is set to the default value")
         void requiredFieldIsDefault() {
-            OneofWithRequiredFields requiredIsDefault = OneofWithRequiredFields
-                    .newBuilder()
+            var requiredIsDefault = OneofWithRequiredFields.newBuilder()
                     .setFirst("")
                     .build();
             assertNotValid(requiredIsDefault, false);
         }
 
         @Test
-        @DisplayName("a field within oneof is not valid")
+        @DisplayName("a field within `oneof` is not valid")
         void fieldIsNotValid() {
-            OneofWithValidation validFieldSet = OneofWithValidation
-                    .newBuilder()
+            var validFieldSet = OneofWithValidation.newBuilder()
                     .setWithValidation("   ")
                     .build();
             assertNotValid(validFieldSet);
@@ -157,8 +148,7 @@ final class OneofTest extends ValidationOfConstraintTest {
         @Test
         @DisplayName("a required field is not valid")
         void requiredFieldIsNotValid() {
-            RequiredOneofWithValidation requiredWithValidationSet = RequiredOneofWithValidation
-                    .newBuilder()
+            var requiredWithValidationSet = RequiredOneofWithValidation.newBuilder()
                     .setValidValue("###")
                     .build();
             assertNotValid(requiredWithValidationSet);

@@ -69,7 +69,7 @@ class ValidatingOptionFactoryTest {
     }
 
     private void assetEmpty(Function<ValidatingOptionFactory, Set<?>> typeSelector) {
-        Set<?> result = typeSelector.apply(options);
+        var result = typeSelector.apply(options);
         assertThat(result).isEmpty();
     }
 }

@@ -27,25 +27,21 @@
 package io.spine.string;
 
 import com.google.common.base.Converter;
-import com.google.common.truth.Truth;
 import com.google.common.truth.Truth8;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.Optional;
 
 import static com.google.common.testing.SerializableTester.reserializeAndAssert;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertHasPrivateParameterlessCtor;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static java.lang.reflect.Modifier.isFinal;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * The abstract base for stringifier tests.
  *
- * @param <T> the type of stringifier objects
+ * @param <T>
+ *         the type of stringifier objects
  */
 abstract class AbstractStringifierTest<T> {
 
@@ -80,10 +76,10 @@ abstract class AbstractStringifierTest<T> {
     @Test
     @DisplayName("convert forward and backward")
     void convert() {
-        T obj = createObject();
+        var obj = createObject();
 
-        final String str = stringifier.convert(obj);
-        final T convertedBack = parser().convert(str);
+        final var str = stringifier.convert(obj);
+        final var convertedBack = parser().convert(str);
 
         assertThat(convertedBack).isEqualTo(obj);
     }
@@ -97,8 +93,8 @@ abstract class AbstractStringifierTest<T> {
     @Test
     @DisplayName("serialize")
     void serialize() {
-        Stringifier<T> expected = stringifier();
-        Stringifier<T> stringifier = reserializeAndAssert(expected);
+        var expected = stringifier();
+        var stringifier = reserializeAndAssert(expected);
         assertThat(stringifier)
                 .isSameInstanceAs(expected);
     }
@@ -106,12 +102,12 @@ abstract class AbstractStringifierTest<T> {
     @Test
     @DisplayName("be registered")
     void isRegistered() {
-        Optional<Stringifier<Object>> found = registry().find(dataClass);
+        var found = registry().find(dataClass);
         Truth8.assertThat(found).isPresent();
     }
 
     @Test
-    @DisplayName("have final class")
+    @DisplayName("be a `final` class")
     void isFinalClass() {
         Class<?> stringifierClass = stringifier.getClass();
         assertThat(isFinal(stringifierClass.getModifiers()))

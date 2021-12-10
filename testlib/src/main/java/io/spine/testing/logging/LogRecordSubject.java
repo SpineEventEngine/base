@@ -28,7 +28,6 @@ package io.spine.testing.logging;
 
 import com.google.common.truth.FailureMetadata;
 import com.google.common.truth.ObjectArraySubject;
-import com.google.common.truth.StandardSubjectBuilder;
 import com.google.common.truth.StringSubject;
 import com.google.common.truth.Subject;
 import com.google.common.truth.ThrowableSubject;
@@ -64,7 +63,7 @@ public class LogRecordSubject extends Subject {
             shouldExistButDoesNot();
             return ignoreCheck().that("");
         }
-        StandardSubjectBuilder check = check("getMessage()");
+        var check = check("getMessage()");
         return check.that(actual.getMessage());
     }
 
@@ -74,8 +73,8 @@ public class LogRecordSubject extends Subject {
             shouldExistButDoesNot();
             return ignoreCheck().that((Object) null);
         }
-        StandardSubjectBuilder check = check("getLevel()");
-        Subject that = check.that(actual.getLevel());
+        var check = check("getLevel()");
+        var that = check.that(actual.getLevel());
         return that;
     }
 
@@ -95,7 +94,7 @@ public class LogRecordSubject extends Subject {
             shouldExistButDoesNot();
             return ignoreCheck().that((Object[]) null);
         }
-        StandardSubjectBuilder check = check("getParameters()");
+        var check = check("getParameters()");
         return check.that(actual.getParameters());
     }
 
@@ -105,7 +104,7 @@ public class LogRecordSubject extends Subject {
             shouldExistButDoesNot();
             return ignoreCheck().that((Throwable) null);
         }
-        StandardSubjectBuilder check = check("getThrown()");
+        var check = check("getThrown()");
         return check.that(actual.getThrown());
     }
 
@@ -115,7 +114,7 @@ public class LogRecordSubject extends Subject {
             shouldExistButDoesNot();
             return ignoreCheck().that((String) null);
         }
-        StandardSubjectBuilder check = check("getSourceMethodName()");
+        var check = check("getSourceMethodName()");
         return check.that(actual.getSourceMethodName());
     }
 
@@ -125,7 +124,7 @@ public class LogRecordSubject extends Subject {
             shouldExistButDoesNot();
             return ignoreCheck().that((String) null);
         }
-        StandardSubjectBuilder check = check("getSourceClassName()");
+        var check = check("getSourceClassName()");
         return check.that(actual.getSourceClassName());
     }
 

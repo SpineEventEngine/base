@@ -40,7 +40,7 @@ class ComparableNumberTest {
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void notAcceptNulls() {
-        NullPointerTester tester = new NullPointerTester();
+        var tester = new NullPointerTester();
         tester.testAllPublicConstructors(ComparableNumber.class);
         tester.testAllPublicInstanceMethods(new ComparableNumber(42));
     }
@@ -52,8 +52,8 @@ class ComparableNumberTest {
         @Test
         @DisplayName("between instances")
         void testEquals() {
-            String longMaxValue = String.valueOf(Long.MAX_VALUE);
-            String doubleMinValue = String.valueOf(Double.MIN_VALUE);
+            var longMaxValue = String.valueOf(Long.MAX_VALUE);
+            var doubleMinValue = String.valueOf(Double.MIN_VALUE);
             new EqualsTester()
                     .addEqualityGroup(new NumberText(1L).toNumber(), new NumberText("1").toNumber())
                     .addEqualityGroup(new NumberText(longMaxValue).toNumber(),
@@ -66,10 +66,10 @@ class ComparableNumberTest {
         @Test
         @DisplayName("between instances and primitives")
         void testEqualsBetweenPrimitives() {
-            double doubleValue = Double.MAX_VALUE;
-            int intValue = Integer.MAX_VALUE;
-            float floatValue = Float.MAX_VALUE;
-            long longValue = Long.MAX_VALUE;
+            var doubleValue = Double.MAX_VALUE;
+            var intValue = Integer.MAX_VALUE;
+            var floatValue = Float.MAX_VALUE;
+            var longValue = Long.MAX_VALUE;
 
             new EqualsTester()
                     .addEqualityGroup(doubleValue, new ComparableNumber(doubleValue).doubleValue())

@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("MessageIdToString utility class should")
+@DisplayName("`MessageIdToString` utility class should")
 class MessageIdToStringTest extends UtilityClassTest<MessageIdToString> {
 
     MessageIdToStringTest() {
@@ -41,12 +41,12 @@ class MessageIdToStringTest extends UtilityClassTest<MessageIdToString> {
     }
 
     @Test
-    @DisplayName("convert Message to String")
+    @DisplayName("convert `Message` to `String`")
     void convert() {
-        UuidMessage test = UuidMessage.newBuilder()
-                                      .setUuid("0bd2d85f-8a07-4041-a62a-6852654d44e6")
-                                      .build();
-        String value = MessageIdToString.toString(test);
+        var test = UuidMessage.newBuilder()
+                .setUuid("0bd2d85f-8a07-4041-a62a-6852654d44e6")
+                .build();
+        var value = MessageIdToString.toString(test);
 
         assertThat(value).contains(test.getUuid());
     }

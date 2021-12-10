@@ -90,12 +90,12 @@ class NestedTypeNameTest {
     @DisplayName("join parts with underscores")
     void printWithUnderscores() {
         Type<?, ?> type = new MessageType(Uri.Protocol.getDescriptor());
-        NestedTypeName name = NestedTypeName.of(type);
+        var name = NestedTypeName.of(type);
         assertThat(name.joinWithUnderscore()).isEqualTo("Uri_Protocol");
     }
 
     private static void check(String expected, Type<?, ?> type) {
-        NestedTypeName name = type.nestedSimpleName();
+        var name = type.nestedSimpleName();
         assertThat(name.value()).isEqualTo(expected);
     }
 }

@@ -27,7 +27,6 @@
 package io.spine.code.proto;
 
 import com.google.common.testing.EqualsTester;
-import com.google.common.truth.StringSubject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -56,7 +55,7 @@ class LocationPathTest {
     @Test
     @DisplayName("print the path to string")
     void text() {
-        StringSubject assertString = assertThat(new LocationPath(6, 17, 10, 20).toString());
+        var assertString = assertThat(new LocationPath(6, 17, 10, 20).toString());
         assertString.contains("6");
         assertString.contains("17");
         assertString.contains("10");

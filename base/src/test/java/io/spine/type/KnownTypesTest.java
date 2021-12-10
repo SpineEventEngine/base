@@ -26,7 +26,6 @@
 
 package io.spine.type;
 
-import com.google.common.truth.StringSubject;
 import com.google.protobuf.Any;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Empty;
@@ -45,7 +44,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -58,7 +56,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Tests {@link io.spine.type.KnownTypes}.
  */
-@DisplayName("KnownTypes should")
+@DisplayName("`KnownTypes` should")
 class KnownTypesTest {
 
     private final KnownTypes knownTypes = KnownTypes.instance();
@@ -66,7 +64,7 @@ class KnownTypesTest {
     @Test
     @DisplayName("obtain type URLs of known proto types")
     void typeUrls() {
-        Set<TypeUrl> typeUrls = knownTypes.allUrls();
+        var typeUrls = knownTypes.allUrls();
 
         assertFalse(typeUrls.isEmpty());
     }
@@ -93,8 +91,8 @@ class KnownTypesTest {
         }
 
         private void assertContainsClass(Class<? extends Message> msgClass) {
-            TypeUrl typeUrl = TypeUrl.of(msgClass);
-            ClassName className = knownTypes.classNameOf(typeUrl);
+            var typeUrl = TypeUrl.of(msgClass);
+            var className = knownTypes.classNameOf(typeUrl);
 
             assertThat(className)
                     .isEqualTo(ClassName.of(msgClass));
@@ -103,8 +101,8 @@ class KnownTypesTest {
         @Test
         @DisplayName("nested into other proto types")
         void containNestedProtoTypes() {
-            TypeUrl typeUrl = TypeUrl.from(EntityOption.Kind.getDescriptor());
-            ClassName className = knownTypes.classNameOf(typeUrl);
+            var typeUrl = TypeUrl.from(EntityOption.Kind.getDescriptor());
+            var className = knownTypes.classNameOf(typeUrl);
 
             assertThat(className)
                     .isEqualTo(ClassName.of(EntityOption.Kind.class));
@@ -114,10 +112,10 @@ class KnownTypesTest {
     @Test
     @DisplayName("find type URL by type name")
     void findTypeUrlByName() {
-        TypeUrl typeUrlExpected = TypeUrl.from(StringValue.getDescriptor());
+        var typeUrlExpected = TypeUrl.from(StringValue.getDescriptor());
 
-        Optional<TypeUrl> typeUrlActual = knownTypes.find(typeUrlExpected.toTypeName())
-                                                    .map(Type::url);
+        var typeUrlActual = knownTypes.find(typeUrlExpected.toTypeName())
+                                      .map(Type::url);
         assertTrue(typeUrlActual.isPresent());
         assertEquals(typeUrlExpected, typeUrlActual.get());
     }
@@ -125,13 +123,13 @@ class KnownTypesTest {
     @Test
     @DisplayName("obtain all types under a given package")
     void typesFromPackage() {
-        TypeUrl taskId = TypeUrl.from(KnownTaskId.getDescriptor());
-        TypeUrl taskName = TypeUrl.from(KnownTaskName.getDescriptor());
-        TypeUrl task = TypeUrl.from(KnownTask.getDescriptor());
+        var taskId = TypeUrl.from(KnownTaskId.getDescriptor());
+        var taskName = TypeUrl.from(KnownTaskName.getDescriptor());
+        var task = TypeUrl.from(KnownTask.getDescriptor());
 
-        String packageName = "spine.test.types";
+        var packageName = "spine.test.types";
 
-        Set<TypeUrl> packageTypes = knownTypes.allFromPackage(packageName);
+        var packageTypes = knownTypes.allFromPackage(packageName);
 
         assertThat(packageTypes)
                 .containsAtLeast(taskId, taskName, task);
@@ -140,7 +138,7 @@ class KnownTypesTest {
     @Test
     @DisplayName("return empty set of types for unknown package")
     void emptyTypeSetForUnknownPackage() {
-        String packageName = "com.foo.invalid.package";
+        var packageName = "com.foo.invalid.package";
         Set<?> emptyTypesCollection = knownTypes.allFromPackage(packageName);
         assertNotNull(emptyTypesCollection);
         assertTrue(emptyTypesCollection.isEmpty());
@@ -149,7 +147,7 @@ class KnownTypesTest {
     @Test
     @DisplayName("do not return types by package prefix")
     void noTypesByPrefix() {
-        String prefix = "spine.test.ty"; // "spine.test.types" is a valid package
+        var prefix = "spine.test.ty"; // "spine.test.types" is a valid package
 
         Collection<TypeUrl> packageTypes = knownTypes.allFromPackage(prefix);
         assertTrue(packageTypes.isEmpty());
@@ -158,29 +156,29 @@ class KnownTypesTest {
     @Test
     @DisplayName("throw UnknownTypeException for requesting info on an unknown type")
     void throwOnUnknownType() {
-        TypeUrl unexpectedUrl = TypeUrl.parse("prefix/unexpected.type");
+        var unexpectedUrl = TypeUrl.parse("prefix/unexpected.type");
         assertUnknownType(() -> knownTypes.classNameOf(unexpectedUrl));
     }
 
     @Test
     @DisplayName("print known type URLs in alphabetical order")
     void printingTypeUrls() {
-        String list = knownTypes.printAllTypes();
+        var list = knownTypes.printAllTypes();
 
-        StringSubject assertOutput = assertThat(list);
+        var assertOutput = assertThat(list);
         assertOutput.isNotEmpty();
 
-        String anyUrl = TypeUrl.from(Any.getDescriptor()).value();
-        String timestampUrl = TypeUrl.from(Timestamp.getDescriptor()).value();
-        String durationUrl = TypeUrl.from(Duration.getDescriptor()).value();
+        var anyUrl = TypeUrl.from(Any.getDescriptor()).value();
+        var timestampUrl = TypeUrl.from(Timestamp.getDescriptor()).value();
+        var durationUrl = TypeUrl.from(Duration.getDescriptor()).value();
 
         assertOutput.contains(anyUrl);
         assertOutput.contains(timestampUrl);
         assertOutput.contains(durationUrl);
 
-        int anyIndex = list.indexOf(anyUrl);
-        int durationIndex = list.indexOf(durationUrl);
-        int timestampIndex = list.indexOf(timestampUrl);
+        var anyIndex = list.indexOf(anyUrl);
+        var durationIndex = list.indexOf(durationUrl);
+        var timestampIndex = list.indexOf(timestampUrl);
 
         assertTrue(anyIndex < timestampIndex);
         assertTrue(durationIndex < timestampIndex);

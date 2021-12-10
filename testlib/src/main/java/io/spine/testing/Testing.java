@@ -49,7 +49,7 @@ public final class Testing {
      */
     @SuppressWarnings("OverlyBroadCatchBlock") // see Javadoc
     static void callConstructor(Constructor<?> constructor) {
-        boolean accessible = constructor.isAccessible();
+        var accessible = constructor.isAccessible();
         if (!accessible) {
             constructor.setAccessible(true);
         }
@@ -69,7 +69,7 @@ public final class Testing {
      */
     public static void repeat(int count, Runnable action) {
         checkNotNull(action);
-        for (int i = 0; i < count; i++) {
+        for (var i = 0; i < count; i++) {
              action.run();
         }
     }

@@ -86,7 +86,7 @@ public abstract class ValidationOfConstraintTest {
                                          boolean checkFieldPath) {
         assertThat(violations)
                 .isNotEmpty();
-        for (ConstraintViolation violation : violations) {
+        for (var violation : violations) {
             assertHasCorrectFormat(violation);
             if (checkFieldPath) {
                 assertHasFieldPath(violation);
@@ -95,10 +95,9 @@ public abstract class ValidationOfConstraintTest {
     }
 
     private static void assertHasCorrectFormat(ConstraintViolation violation) {
-        String format = violation.getMsgFormat();
+        var format = violation.getMsgFormat();
         assertFalse(format.isEmpty());
-        boolean noParams = violation.getParamList()
-                                    .isEmpty();
+        var noParams = violation.getParamList().isEmpty();
         if (noParams) {
             assertThat(format)
                     .doesNotContain("%s");
@@ -124,9 +123,9 @@ public abstract class ValidationOfConstraintTest {
 
     /** Checks that a message is not valid and has a single violation. */
     protected void assertSingleViolation(String expectedErrMsg, String invalidFieldName) {
-        ConstraintViolation violation = firstViolation();
-        String actualErrorMessage = format(violation.getMsgFormat(), violation.getParamList()
-                                                                              .toArray());
+        var violation = firstViolation();
+        var actualErrorMessage = format(violation.getMsgFormat(), violation.getParamList()
+                                                                           .toArray());
         assertThat(actualErrorMessage)
                 .isEqualTo(expectedErrMsg);
         assertFieldPathIs(violation, invalidFieldName);

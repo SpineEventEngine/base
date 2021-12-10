@@ -50,9 +50,9 @@ class RejectionsFileTest {
     @Test
     @DisplayName("accept only files ending with `rejections.proto`")
     void checkFileName() {
-        SourceFile sourceFile = SourceFile.from(EmptyProto.getDescriptor());
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                                                          () -> RejectionsFile.from(sourceFile));
+        var sourceFile = SourceFile.from(EmptyProto.getDescriptor());
+        var exception = assertThrows(IllegalArgumentException.class,
+                                     () -> RejectionsFile.from(sourceFile));
         assertThat(exception)
                 .hasMessageThat()
                 .contains("`rejections.proto`");
@@ -61,9 +61,9 @@ class RejectionsFileTest {
     @Test
     @DisplayName("accept only files with `Rejections` outer class name")
     void checkOuterClassName() {
-        SourceFile sourceFile = SourceFile.from(FakeRejectionsProto.getDescriptor());
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                                                          () -> RejectionsFile.from(sourceFile));
+        var sourceFile = SourceFile.from(FakeRejectionsProto.getDescriptor());
+        var exception = assertThrows(IllegalArgumentException.class,
+                                     () -> RejectionsFile.from(sourceFile));
         assertThat(exception)
                 .hasMessageThat()
                 .contains("`Rejections`");
@@ -72,9 +72,9 @@ class RejectionsFileTest {
     @Test
     @DisplayName("accept only files with `java_multiple_files = false`")
     void checkMultipleFiles() {
-        SourceFile sourceFile = SourceFile.from(MoreFakeRejections.getDescriptor());
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                                                          () -> RejectionsFile.from(sourceFile));
+        var sourceFile = SourceFile.from(MoreFakeRejections.getDescriptor());
+        var exception = assertThrows(IllegalArgumentException.class,
+                                     () -> RejectionsFile.from(sourceFile));
         assertThat(exception)
                 .hasMessageThat()
                 .contains("`java_multiple_files`");

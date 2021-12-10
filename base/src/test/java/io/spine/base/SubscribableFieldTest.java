@@ -49,7 +49,7 @@ class SubscribableFieldTest {
     @Test
     @DisplayName("expose the field reference")
     void exposeColumnName() {
-        Field field = newField();
+        var field = newField();
         SubscribableField subscribableField = new EntityStateField(field);
         assertThat(subscribableField.getField()).isEqualTo(field);
     }

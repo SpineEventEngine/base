@@ -34,7 +34,7 @@ import static io.spine.base.Time.currentTime;
 import static io.spine.string.Stringifiers.fromString;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 
-@DisplayName("TimestampStringifier should")
+@DisplayName("`TimestampStringifier` should")
 class TimestampStringifierTest extends AbstractStringifierTest<Timestamp> {
 
     TimestampStringifierTest() {
@@ -47,10 +47,10 @@ class TimestampStringifierTest extends AbstractStringifierTest<Timestamp> {
     }
 
     @Test
-    @DisplayName("Throw IllegalArgumentException when parsing unsupported format")
+    @DisplayName("throw `IllegalArgumentException` when parsing unsupported format")
     void parsingError() {
         // This uses TextFormat printing, for the output which won't be parsable.
-        String time = currentTime().toString();
+        var time = currentTime().toString();
         assertIllegalArgument(() -> fromString(time, Timestamp.class));
     }
 }

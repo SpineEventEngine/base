@@ -78,12 +78,10 @@ class TypeNameTest {
     @DisplayName("return simple name if no package")
     void simpleNameIfNoPackage() {
         // A msg type without Protobuf package
-        String name = IfMissingOption.class.getSimpleName();
-        TypeUrl typeUrl = TypeName.of(name)
-                                  .toUrl();
+        var name = IfMissingOption.class.getSimpleName();
+        var typeUrl = TypeName.of(name).toUrl();
 
-        String actual = TypeName.from(typeUrl)
-                                .simpleName();
+        var actual = TypeName.from(typeUrl).simpleName();
 
         assertEquals(name, actual);
     }
@@ -95,7 +93,7 @@ class TypeNameTest {
         @Test
         @DisplayName("for `Message`")
         void forMessage() {
-            TypeName typeName = TypeName.of(StringValue.getDefaultInstance());
+            var typeName = TypeName.of(StringValue.getDefaultInstance());
             assertNotNull(typeName);
             assertEquals(StringValue.class.getSimpleName(), typeName.simpleName());
         }
@@ -103,7 +101,7 @@ class TypeNameTest {
         @Test
         @DisplayName("for Java class")
         void forJavaClass() {
-            TypeName typeName = TypeName.of(StringValue.class);
+            var typeName = TypeName.of(StringValue.class);
             assertNotNull(typeName);
             assertEquals(StringValue.class.getSimpleName(), typeName.simpleName());
         }
@@ -111,7 +109,7 @@ class TypeNameTest {
         @Test
         @DisplayName("by descriptor")
         void byDescriptor() {
-            TypeName typeName = TypeName.from(UInt64Value.getDescriptor());
+            var typeName = TypeName.from(UInt64Value.getDescriptor());
             assertNotNull(typeName);
             assertEquals(UInt64Value.class.getSimpleName(), typeName.simpleName());
         }
@@ -120,8 +118,8 @@ class TypeNameTest {
     @Test
     @DisplayName("provide proto descriptor")
     void descriptorByTypeName() {
-        TypeName typeName = TypeName.of("spine.test.types.KnownTask");
-        Descriptor typeDescriptor = typeName.messageDescriptor();
+        var typeName = TypeName.of("spine.test.types.KnownTask");
+        var typeDescriptor = typeName.messageDescriptor();
         assertNotNull(typeDescriptor);
         assertEquals(typeName.value(), typeDescriptor.getFullName());
     }
@@ -129,7 +127,7 @@ class TypeNameTest {
     @Test
     @DisplayName("fail to find invalid type descriptor")
     void invalidTypeDescriptor() {
-        TypeName invalidTypeName = TypeName.of("no.such.package.InvalidType");
+        var invalidTypeName = TypeName.of("no.such.package.InvalidType");
         assertUnknownType(invalidTypeName::genericDescriptor);
     }
 }

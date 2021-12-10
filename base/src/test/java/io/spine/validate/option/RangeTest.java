@@ -45,7 +45,7 @@ import java.util.stream.Stream;
 import static io.spine.validate.ValidationOfConstraintTest.VALIDATION_SHOULD;
 
 @SuppressWarnings("unused") // methods are invoked via `@MethodSource`.
-@DisplayName(VALIDATION_SHOULD + "analyze (range) option and find out that")
+@DisplayName(VALIDATION_SHOULD + "analyze `(range)` option and find out that")
 final class RangeTest extends ValidationOfConstraintTest {
 
     @Nested
@@ -56,7 +56,7 @@ final class RangeTest extends ValidationOfConstraintTest {
         @ParameterizedTest
         @MethodSource("io.spine.validate.option.RangeTest#validHours")
         void fitIntoRange(int hour) {
-            NumRanges msg = hourRange(hour);
+            var msg = hourRange(hour);
             assertValid(msg);
         }
 
@@ -64,7 +64,7 @@ final class RangeTest extends ValidationOfConstraintTest {
         @ParameterizedTest
         @MethodSource("io.spine.validate.option.RangeTest#validHalfDayHours")
         void fitIntoExternalConstraintRange(int hour) {
-            NumRanges msg = hourRange(hour);
+            var msg = hourRange(hour);
             assertValid(holderOf(msg));
         }
 
@@ -72,7 +72,7 @@ final class RangeTest extends ValidationOfConstraintTest {
         @ParameterizedTest
         @MethodSource("io.spine.validate.option.RangeTest#invalidHours")
         void doNotFitIntoRange(int hour) {
-            NumRanges msg = hourRange(hour);
+            var msg = hourRange(hour);
             assertNotValid(msg);
         }
 
@@ -80,7 +80,7 @@ final class RangeTest extends ValidationOfConstraintTest {
         @ParameterizedTest
         @MethodSource("io.spine.validate.option.RangeTest#invalidHalfDayHours")
         void doNotFitIntoExternalConstraintRange(int hour) {
-            NumRanges msg = hourRange(hour);
+            var msg = hourRange(hour);
             assertNotValid(holderOf(msg));
         }
 
@@ -98,7 +98,7 @@ final class RangeTest extends ValidationOfConstraintTest {
         @ParameterizedTest
         @MethodSource("io.spine.validate.option.RangeTest#validMinutes")
         void fitIntoRange(long minute) {
-            NumRanges msg = minuteRange(minute);
+            var msg = minuteRange(minute);
             assertValid(msg);
         }
 
@@ -106,7 +106,7 @@ final class RangeTest extends ValidationOfConstraintTest {
         @ParameterizedTest
         @MethodSource("io.spine.validate.option.RangeTest#validHalfHourMinutes")
         void fitIntoExternalConstraintRange(long minute) {
-            NumRanges msg = minuteRange(minute);
+            var msg = minuteRange(minute);
             assertValid(holderOf(msg));
         }
 
@@ -114,7 +114,7 @@ final class RangeTest extends ValidationOfConstraintTest {
         @ParameterizedTest
         @MethodSource("io.spine.validate.option.RangeTest#invalidMinutes")
         void doNotFitIntoRange(long minute) {
-            NumRanges msg = minuteRange(minute);
+            var msg = minuteRange(minute);
             assertNotValid(msg);
         }
 
@@ -122,7 +122,7 @@ final class RangeTest extends ValidationOfConstraintTest {
         @ParameterizedTest
         @MethodSource("io.spine.validate.option.RangeTest#invalidHalfHourMinutes")
         void doNotFitIntoExternalConstraintRange(long minute) {
-            NumRanges msg = minuteRange(minute);
+            var msg = minuteRange(minute);
             assertNotValid(holderOf(msg));
         }
 
@@ -140,7 +140,7 @@ final class RangeTest extends ValidationOfConstraintTest {
         @ParameterizedTest
         @MethodSource("io.spine.validate.option.RangeTest#validDegrees")
         void fitIntoRange(float degree) {
-            NumRanges msg = floatRange(degree);
+            var msg = floatRange(degree);
             assertValid(msg);
         }
 
@@ -148,7 +148,7 @@ final class RangeTest extends ValidationOfConstraintTest {
         @ParameterizedTest
         @MethodSource("io.spine.validate.option.RangeTest#validHalfRangeDegrees")
         void fitIntoExternalConstraintRange(float degree) {
-            NumRanges msg = floatRange(degree);
+            var msg = floatRange(degree);
             assertValid(holderOf(msg));
         }
 
@@ -156,7 +156,7 @@ final class RangeTest extends ValidationOfConstraintTest {
         @ParameterizedTest
         @MethodSource("io.spine.validate.option.RangeTest#invalidDegrees")
         void doNotFitIntoRange(float degree) {
-            NumRanges msg = floatRange(degree);
+            var msg = floatRange(degree);
             assertNotValid(msg);
         }
 
@@ -164,7 +164,7 @@ final class RangeTest extends ValidationOfConstraintTest {
         @ParameterizedTest
         @MethodSource("io.spine.validate.option.RangeTest#invalidHalfRangeDegrees")
         void doNotFitIntoExternalConstraintRange(float degree) {
-            NumRanges msg = floatRange(degree);
+            var msg = floatRange(degree);
             assertNotValid(holderOf(msg));
         }
 
@@ -182,7 +182,7 @@ final class RangeTest extends ValidationOfConstraintTest {
         @ParameterizedTest
         @MethodSource("io.spine.validate.option.RangeTest#validAngles")
         void fitIntoRange(double angle) {
-            NumRanges msg = doubleRange(angle);
+            var msg = doubleRange(angle);
             assertValid(msg);
         }
 
@@ -190,7 +190,7 @@ final class RangeTest extends ValidationOfConstraintTest {
         @ParameterizedTest
         @MethodSource("io.spine.validate.option.RangeTest#validHalfRangeAngles")
         void fitIntoExternalConstraintRange(double angle) {
-            NumRanges msg = doubleRange(angle);
+            var msg = doubleRange(angle);
             assertValid(holderOf(msg));
         }
 
@@ -198,7 +198,7 @@ final class RangeTest extends ValidationOfConstraintTest {
         @ParameterizedTest
         @MethodSource("io.spine.validate.option.RangeTest#invalidAngles")
         void doNotFitIntoRange(double angle) {
-            NumRanges msg = doubleRange(angle);
+            var msg = doubleRange(angle);
             assertNotValid(msg);
         }
 
@@ -206,7 +206,7 @@ final class RangeTest extends ValidationOfConstraintTest {
         @ParameterizedTest
         @MethodSource("io.spine.validate.option.RangeTest#invalidHalfRangeAngles")
         void doNotFitIntoExternalConstraintRange(double angle) {
-            NumRanges msg = doubleRange(angle);
+            var msg = doubleRange(angle);
             assertNotValid(holderOf(msg));
         }
 
@@ -223,8 +223,7 @@ final class RangeTest extends ValidationOfConstraintTest {
         @DisplayName("valid")
         @Test
         void valid() {
-            Hours hours = Hours
-                    .newBuilder()
+            var hours = Hours.newBuilder()
                     .addAllHour(validHours().collect(ImmutableList.toImmutableList()))
                     .build();
             assertValid(hours);
@@ -233,8 +232,7 @@ final class RangeTest extends ValidationOfConstraintTest {
         @DisplayName("invalid")
         @Test
         void invalid() {
-            Hours hours = Hours
-                    .newBuilder()
+            var hours = Hours.newBuilder()
                     .addAllHour(invalidHours().collect(ImmutableList.toImmutableList()))
                     .build();
             assertNotValid(hours);
@@ -242,15 +240,13 @@ final class RangeTest extends ValidationOfConstraintTest {
     }
 
     private static RangesHolder holderOf(NumRanges ranges) {
-        return RangesHolder
-                .newBuilder()
+        return RangesHolder.newBuilder()
                 .setRanges(ranges)
                 .build();
     }
 
     private static NumRanges.Builder validRange() {
-        return NumRanges
-                .newBuilder()
+        return NumRanges.newBuilder()
                 .setHour(1)
                 .setAngle(1)
                 .setDegree(1)

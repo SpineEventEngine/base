@@ -72,9 +72,9 @@ public final class TempDir {
      * specified by the {@link Files2#systemTempDir()}.
      */
     private static Path createBaseDir() {
-        String tmpDir = systemTempDir();
-        PackageName packageName = PackageName.of(TempDir.class);
-        Path baseDir = Paths.get(tmpDir, packageName.toString());
+        var tmpDir = systemTempDir();
+        var packageName = PackageName.of(TempDir.class);
+        var baseDir = Paths.get(tmpDir, packageName.toString());
         return ensureDirectory(baseDir);
     }
 
@@ -101,7 +101,7 @@ public final class TempDir {
         checkNotNull(prefix);
         checkNotEmptyOrBlank(prefix);
         try {
-            Path directory = Files.createTempDirectory(baseDir, prefix, attrs);
+            var directory = Files.createTempDirectory(baseDir, prefix, attrs);
             return directory.toFile();
         } catch (IOException e) {
             throw newIllegalStateException(
@@ -131,7 +131,7 @@ public final class TempDir {
      */
     public static File forClass(Class<?> testSuite, FileAttribute<?>... attrs) {
         checkNotNull(testSuite);
-        String prefix = testSuite.getSimpleName();
+        var prefix = testSuite.getSimpleName();
         return withPrefix(prefix, attrs);
     }
 }

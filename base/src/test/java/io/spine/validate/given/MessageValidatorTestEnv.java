@@ -27,9 +27,7 @@
 package io.spine.validate.given;
 
 import com.google.protobuf.ByteString;
-import com.google.protobuf.ProtocolStringList;
 import com.google.protobuf.StringValue;
-import io.spine.base.FieldPath;
 import io.spine.validate.ConstraintViolation;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -59,8 +57,8 @@ public class MessageValidatorTestEnv {
     }
 
     public static void assertFieldPathIs(ConstraintViolation violation, String... expectedFields) {
-        FieldPath path = violation.getFieldPath();
-        ProtocolStringList actualFields = path.getFieldNameList();
+        var path = violation.getFieldPath();
+        var actualFields = path.getFieldNameList();
         assertThat(actualFields)
                 .containsExactlyElementsIn(expectedFields);
     }
@@ -70,7 +68,7 @@ public class MessageValidatorTestEnv {
     }
 
     public static ByteString newByteString() {
-        ByteString bytes = ByteString.copyFromUtf8(newUuid());
+        var bytes = ByteString.copyFromUtf8(newUuid());
         return bytes;
     }
 }

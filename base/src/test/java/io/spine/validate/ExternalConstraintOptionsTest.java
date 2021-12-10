@@ -26,8 +26,6 @@
 
 package io.spine.validate;
 
-import com.google.common.truth.OptionalSubject;
-import com.google.protobuf.Descriptors;
 import io.spine.code.proto.FieldContext;
 import io.spine.option.OptionsProto;
 import io.spine.test.validation.AField;
@@ -38,20 +36,20 @@ import org.junit.jupiter.api.Test;
 import static com.google.common.truth.Truth8.assertThat;
 import static io.spine.validate.ExternalConstraintOptions.getOptionValue;
 
-@DisplayName("ExternalConstraintOptions should")
+@DisplayName("`ExternalConstraintOptions` should")
 final class ExternalConstraintOptionsTest {
 
     @DisplayName("retrieve option value from context")
     @Test
     void retrieveOptionValue() {
-        FieldContext targetContext = FieldContext.create(AMessage.getDescriptor()
-                                                                 .getFields()
-                                                                 .get(0));
-        Descriptors.FieldDescriptor nameField = AField.getDescriptor()
-                                                      .getFields()
-                                                      .get(0);
-        FieldContext context = targetContext.forChild(nameField);
-        OptionalSubject subject = assertThat(getOptionValue(context, OptionsProto.required));
+        var targetContext = FieldContext.create(AMessage.getDescriptor()
+                                                        .getFields()
+                                                        .get(0));
+        var nameField = AField.getDescriptor()
+                              .getFields()
+                              .get(0);
+        var context = targetContext.forChild(nameField);
+        var subject = assertThat(getOptionValue(context, OptionsProto.required));
         subject.isPresent();
         subject.hasValue(true);
     }
@@ -59,26 +57,27 @@ final class ExternalConstraintOptionsTest {
     @DisplayName("return empty for field without options")
     @Test
     void returnEmptyForNonExistingRuleOptions() {
-        FieldContext targetContext = FieldContext.create(AMessage.getDescriptor()
-                                                                 .getFields()
-                                                                 .get(0));
-        Descriptors.FieldDescriptor addressField = AField.getDescriptor()
-                                                         .getFields()
-                                                         .get(3);
-        FieldContext context = targetContext.forChild(addressField);
+        var targetContext = FieldContext.create(AMessage.getDescriptor()
+                                                        .getFields()
+                                                        .get(0));
+        var addressField = AField.getDescriptor()
+                                 .getFields()
+                                 .get(3);
+        var context = targetContext.forChild(addressField);
         assertThat(getOptionValue(context, OptionsProto.required)).isEmpty();
     }
 
-    @DisplayName("not return `default` option value if the option is not present while the field context does match")
+    @DisplayName("not return `default` option value if the option is not present" +
+            " while the field context does match")
     @Test
     void notReturnOptionIfItIsNotPresentButContextMatch() {
-        FieldContext targetContext = FieldContext.create(AMessage.getDescriptor()
-                                                                 .getFields()
-                                                                 .get(0));
-        Descriptors.FieldDescriptor nameField = AField.getDescriptor()
-                                                      .getFields()
-                                                      .get(0);
-        FieldContext context = targetContext.forChild(nameField);
+        var targetContext = FieldContext.create(AMessage.getDescriptor()
+                                                        .getFields()
+                                                        .get(0));
+        var nameField = AField.getDescriptor()
+                              .getFields()
+                              .get(0);
+        var context = targetContext.forChild(nameField);
         assertThat(getOptionValue(context, OptionsProto.goes)).isEmpty();
     }
 }

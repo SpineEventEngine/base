@@ -35,16 +35,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("StringTypeValue should")
+@DisplayName("`StringTypeValue` should")
 class StringTypeValueTest {
 
     @SuppressWarnings("SerializableInnerClassWithNonSerializableOuterClass")
     @Test
     @DisplayName("return value")
     void getValue() {
-        String expected = "return_value_in_toString";
+        var expected = "return_value_in_toString";
 
-        StringTypeValue value = new StringTypeValue(expected) {
+        var value = new StringTypeValue(expected) {
             private static final long serialVersionUID = 0L;
         };
 
@@ -52,7 +52,7 @@ class StringTypeValueTest {
     }
 
     @Test
-    @DisplayName("have hashCode() and equals()")
+    @DisplayName("have `hashCode()` and `equals()`")
     void hashCodeAndEquals() {
         new EqualsTester().addEqualityGroup(new StrVal("uno"), new StrVal("uno"))
                           .addEqualityGroup(new StrVal("dos"))
@@ -67,7 +67,7 @@ class StringTypeValueTest {
     }
 
     @Test
-    @DisplayName("be Serializable")
+    @DisplayName("be `Serializable`")
     void serialize() {
         reserializeAndAssert(new StrVal(getClass().getName()));
     }

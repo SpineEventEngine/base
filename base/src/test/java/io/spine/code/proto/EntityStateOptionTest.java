@@ -28,7 +28,6 @@ package io.spine.code.proto;
 
 import com.google.common.truth.Truth8;
 import com.google.protobuf.Descriptors.Descriptor;
-import io.spine.option.EntityOption;
 import io.spine.option.EntityOption.Kind;
 import io.spine.option.EntityOption.Visibility;
 import io.spine.test.code.proto.EsoEntity;
@@ -37,8 +36,6 @@ import io.spine.test.code.proto.EsoSecretAggregate;
 import io.spine.test.code.proto.EsoSubscribablePm;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.Optional;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.option.EntityOption.Kind.AGGREGATE;
@@ -50,29 +47,29 @@ import static io.spine.option.EntityOption.Visibility.NONE;
 import static io.spine.option.EntityOption.Visibility.QUERY;
 import static io.spine.option.EntityOption.Visibility.SUBSCRIBE;
 
-@DisplayName("EntityStateOption should")
+@DisplayName("`EntityStateOption` should")
 class EntityStateOptionTest {
 
     @Test
-    @DisplayName("obtain value for an ENTITY kind")
+    @DisplayName("obtain value for an `ENTITY` kind")
     void entity() {
         assertOption(EsoEntity.getDescriptor(), ENTITY, QUERY);
     }
 
     @Test
-    @DisplayName("obtain value for an AGGREGATE kind")
+    @DisplayName("obtain value for an `AGGREGATE` kind")
     void aggregate() {
         assertOption(EsoSecretAggregate.getDescriptor(), AGGREGATE, NONE);
     }
 
     @Test
-    @DisplayName("obtain value for an PROCESS_MANAGER kind")
+    @DisplayName("obtain value for an `PROCESS_MANAGER` kind")
     void processManager() {
         assertOption(EsoSubscribablePm.getDescriptor(), PROCESS_MANAGER, SUBSCRIBE);
     }
 
     @Test
-    @DisplayName("obtain value for an PROJECTION kind")
+    @DisplayName("obtain value for an `PROJECTION` kind")
     void projection() {
         assertOption(EsoPublicProjection.getDescriptor(), PROJECTION, FULL);
     }
@@ -80,16 +77,16 @@ class EntityStateOptionTest {
     @Test
     @DisplayName("obtain the kind of an entity")
     void obtainEntityKind() {
-        Optional<Kind> kind = EntityStateOption.entityKindOf(EsoPublicProjection.getDescriptor());
+        var kind = EntityStateOption.entityKindOf(EsoPublicProjection.getDescriptor());
         Truth8.assertThat(kind).isPresent();
         assertThat(kind.get()).isEqualTo(PROJECTION);
     }
 
     void assertOption(Descriptor type, Kind kind, Visibility visibility) {
-        Optional<EntityOption> found = EntityStateOption.valueOf(type);
+        var found = EntityStateOption.valueOf(type);
         Truth8.assertThat(found).isPresent();
         @SuppressWarnings("OptionalGetWithoutIsPresent") // checked above.
-        EntityOption option = found.get();
+        var option = found.get();
         assertThat(option.getKind())
                 .isEqualTo(kind);
         assertThat(option.getVisibility())

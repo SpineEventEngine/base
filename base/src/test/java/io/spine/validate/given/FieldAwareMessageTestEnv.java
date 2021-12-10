@@ -314,7 +314,7 @@ public final class FieldAwareMessageTestEnv {
 
         @Override
         public Object readValue(Descriptors.FieldDescriptor field) {
-            int index = field.getIndex();
+            var index = field.getIndex();
             switch (index) {
                 case 0:
                     return getEntityId();

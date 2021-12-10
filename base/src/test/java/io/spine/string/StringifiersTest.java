@@ -28,8 +28,6 @@ package io.spine.string;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.reflect.TypeToken;
-import com.google.common.truth.StringSubject;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.Durations;
@@ -43,9 +41,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.base.Identifier.newUuid;
@@ -85,7 +81,7 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
         @Test
         @DisplayName("a `String`")
         void aString() {
-            String theString = "some-string";
+            var theString = "some-string";
 
             checkStringifies(theString, theString);
         }
@@ -93,8 +89,8 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
         @Test
         @DisplayName("a `Timestamp`")
         void aTimestamp() {
-            Timestamp timestamp = Timestamp.getDefaultInstance();
-            String expected = Timestamps.toString(timestamp);
+            var timestamp = Timestamp.getDefaultInstance();
+            var expected = Timestamps.toString(timestamp);
 
             checkStringifies(timestamp, expected);
         }
@@ -102,8 +98,8 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
         @Test
         @DisplayName("a `Duration`")
         void aDuration() {
-            Duration duration = Duration.getDefaultInstance();
-            String expected = Durations.toString(duration);
+            var duration = Duration.getDefaultInstance();
+            var expected = Durations.toString(duration);
 
             checkStringifies(duration, expected);
         }
@@ -117,20 +113,20 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
         @Test
         @DisplayName("a Protobuf `Message`")
         void aProtobufMessage() {
-            STaskId id = STaskId.newBuilder()
+            var id = STaskId.newBuilder()
                     .setUuid(newUuid())
                     .build();
-            STask message = STask.newBuilder()
+            var message = STask.newBuilder()
                     .setId(id)
                     .setStatus(DONE)
                     .build();
 
-            String expected = Json.toCompactJson(message);
+            var expected = Json.toCompactJson(message);
             checkStringifies(message, expected);
         }
 
         private void checkStringifies(Object value, String expected) {
-            String conversionResult = Stringifiers.toString(value);
+            var conversionResult = Stringifiers.toString(value);
             assertThat(conversionResult).isEqualTo(expected);
         }
     }
@@ -146,14 +142,14 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
         @DisplayName("`List`")
         void list() {
             List<Timestamp> stamps = createList();
-            Stringifier<List<Timestamp>> stringifier = newForListOf(Timestamp.class, DELIMITER);
+            var stringifier = newForListOf(Timestamp.class, DELIMITER);
 
-            String out = stringifier.toString(stamps);
+            var out = stringifier.toString(stamps);
 
-            StringSubject assertOut = assertThat(out);
+            var assertOut = assertThat(out);
             assertOut.contains(String.valueOf(DELIMITER));
-            Quoter quoter = Quoter.forLists();
-            for (Timestamp stamp : stamps) {
+            var quoter = Quoter.forLists();
+            for (var stamp : stamps) {
                 assertOut.contains(quoter.quote(Timestamps.toString(stamp)));
             }
         }
@@ -161,16 +157,15 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
         @Test
         @DisplayName("`Map`")
         void map() {
-            ImmutableMap<Long, Timestamp> stamps = createMap();
-            Stringifier<Map<Long, Timestamp>> stringifier =
-                    newForMapOf(Long.class, Timestamp.class, DELIMITER);
+            var stamps = createMap();
+            var stringifier = newForMapOf(Long.class, Timestamp.class, DELIMITER);
 
-            String out = stringifier.toString(stamps);
-            StringSubject assertOut = assertThat(out);
+            var out = stringifier.toString(stamps);
+            var assertOut = assertThat(out);
             assertOut.contains(String.valueOf(DELIMITER));
 
-            Quoter quoter = Quoter.forMaps();
-            for (Long key : stamps.keySet()) {
+            var quoter = Quoter.forMaps();
+            for (var key : stamps.keySet()) {
                 assertOut.contains(String.valueOf(key));
                 assertOut.contains(quoter.quote(Timestamps.toString(stamps.get(key))));
             }
@@ -178,7 +173,7 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
 
         private ImmutableList<Timestamp> createList() {
             ImmutableList.Builder<Timestamp> builder = ImmutableList.builder();
-            for (int i = 0; i < SIZE; i++) {
+            for (var i = 0; i < SIZE; i++) {
                 builder.add(Time.currentTime());
             }
             return builder.build();
@@ -186,8 +181,8 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
 
         private ImmutableMap<Long, Timestamp> createMap() {
             ImmutableMap.Builder<Long, Timestamp> builder = ImmutableMap.builder();
-            for (int i = 0; i < SIZE; i++) {
-                Timestamp t = Time.currentTime();
+            for (var i = 0; i < SIZE; i++) {
+                var t = Time.currentTime();
                 builder.put((long) i, t);
             }
             return builder.build();
@@ -220,10 +215,10 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
         @DisplayName("`List`")
         void list() {
             List<Integer> numbers = ImmutableList.of(100, 200, -300);
-            Stringifier<List<Integer>> stringifier = Stringifiers.newForListOf(Integer.class);
-            String numString = stringifier.toString(numbers);
+            var stringifier = Stringifiers.newForListOf(Integer.class);
+            var numString = stringifier.toString(numbers);
 
-            List<Integer> parsed = stringifier.fromString(numString);
+            var parsed = stringifier.fromString(numString);
             assertThat(parsed).containsExactlyElementsIn(numbers);
         }
     }

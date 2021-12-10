@@ -41,10 +41,9 @@ class RecordColumnTest {
     @Test
     @DisplayName("allow creating new instances")
     void allowCreation() {
-        String name = "description";
-        String description = "some description";
-        RecordColumn<Manufacturer, String> column =
-                new RecordColumn<>(name, String.class, (r) -> description);
+        var name = "description";
+        var description = "some description";
+        var column = new RecordColumn<Manufacturer, String>(name, String.class, (r) -> description);
 
         assertThat(column).isNotNull();
         assertThat(column.name().value()).isEqualTo(name);

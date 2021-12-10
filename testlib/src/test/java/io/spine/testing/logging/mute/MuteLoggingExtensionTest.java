@@ -40,7 +40,6 @@ import org.junit.jupiter.api.extension.TestInstances;
 
 import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Optional;
@@ -53,7 +52,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("UseOfSystemOutOrSystemErr") // Test std I/O overloading.
-@DisplayName("MuteLogging JUnit Extension should")
+@DisplayName("`MuteLogging` JUnit Extension should")
 class MuteLoggingExtensionTest extends SystemOutputTest {
 
     private MuteLoggingExtension extension;
@@ -68,8 +67,8 @@ class MuteLoggingExtensionTest extends SystemOutputTest {
     @Test
     @DisplayName("have public parameter-less constructor")
     void ctor() throws NoSuchMethodException {
-        Constructor<MuteLoggingExtension> constructor = MuteLoggingExtension.class.getConstructor();
-        int modifiers = constructor.getModifiers();
+        var constructor = MuteLoggingExtension.class.getConstructor();
+        var modifiers = constructor.getModifiers();
         assertTrue(isPublic(modifiers));
     }
 
@@ -78,8 +77,8 @@ class MuteLoggingExtensionTest extends SystemOutputTest {
     void printOutputOnException() throws IOException {
         extension.beforeEach(successfulContext());
 
-        LoggingStub stub = new LoggingStub();
-        String errorMessage = stub.logError();
+        var stub = new LoggingStub();
+        var errorMessage = stub.logError();
 
         extension.afterEach(failedContext());
 
@@ -87,7 +86,7 @@ class MuteLoggingExtensionTest extends SystemOutputTest {
         System.err.flush();
 
         assertEquals(0, out().size());
-        String actualErrorOutput = errorOutput();
+        var actualErrorOutput = errorOutput();
         assertThat(actualErrorOutput).contains(errorMessage);
     }
 
@@ -96,7 +95,7 @@ class MuteLoggingExtensionTest extends SystemOutputTest {
     void muteSpineLogging() throws IOException {
         extension.beforeEach(successfulContext());
 
-        LoggingStub stub = new LoggingStub();
+        var stub = new LoggingStub();
         stub.logWarning();
 
         extension.afterEach(successfulContext());
@@ -214,14 +213,14 @@ class MuteLoggingExtensionTest extends SystemOutputTest {
 
         @CanIgnoreReturnValue
         String logWarning() {
-            String warningMessage = "Warning:" + TestValues.randomString();
+            var warningMessage = "Warning:" + TestValues.randomString();
             _warn().log(warningMessage);
             return warningMessage;
         }
 
         @CanIgnoreReturnValue
         String logError() {
-            String errorMessage = "Error: " + TestValues.randomString();
+            var errorMessage = "Error: " + TestValues.randomString();
             _error().log(errorMessage);
             return errorMessage;
         }

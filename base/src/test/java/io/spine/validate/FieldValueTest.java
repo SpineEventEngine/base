@@ -28,8 +28,6 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.protobuf.Descriptors.EnumValueDescriptor;
-import com.google.protobuf.Syntax;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -48,7 +46,7 @@ import static io.spine.validate.given.GivenField.scalarContext;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("FieldValue should")
+@DisplayName("`FieldValue` should")
 class FieldValueTest {
 
     @Nested
@@ -59,7 +57,7 @@ class FieldValueTest {
         @DisplayName("a map to values")
         void map() {
             Map<String, String> map = ImmutableMap.of(newUuid(), newUuid(), newUuid(), newUuid());
-            FieldValue fieldValue = FieldValue.of(map, mapContext());
+            var fieldValue = FieldValue.of(map, mapContext());
             assertConversion(map.values(), fieldValue);
         }
 
@@ -67,47 +65,44 @@ class FieldValueTest {
         @DisplayName("a repeated field")
         void repeated() {
             List<String> repeated = ImmutableList.of(newUuid(), newUuid());
-            FieldValue fieldValue =
-                    FieldValue.of(repeated, repeatedContext());
+            var fieldValue = FieldValue.of(repeated, repeatedContext());
             assertConversion(repeated, fieldValue);
         }
 
         @Test
         @DisplayName("a scalar field")
         void scalar() {
-            String scalar = newUuid();
-            FieldValue fieldValue = FieldValue.of(scalar, scalarContext());
+            var scalar = newUuid();
+            var fieldValue = FieldValue.of(scalar, scalarContext());
             assertConversion(singletonList(scalar), fieldValue);
         }
     }
 
     @Nested
-    @DisplayName("determine JavaType for")
+    @DisplayName("determine `JavaType` for")
     class DetermineJavaType {
 
         @Test
         @DisplayName("a map")
         void map() {
-            FieldValue mapValue =
-                    FieldValue.of(ImmutableMap.<String, String>of(), mapContext());
+            var mapValue = FieldValue.of(ImmutableMap.<String, String>of(), mapContext());
             assertEquals(STRING, mapValue.javaType());
         }
 
         @Test
         @DisplayName("a repeated")
         void repeated() {
-            FieldValue repeatedValue =
-                    FieldValue.of(ImmutableList.<String>of(), repeatedContext());
+            var repeatedValue = FieldValue.of(ImmutableList.<String>of(), repeatedContext());
             assertEquals(STRING, repeatedValue.javaType());
         }
     }
 
     @Test
-    @DisplayName("handle Enum value")
+    @DisplayName("handle `Enum` value")
     void enumValue() {
-        Syntax rawValue = SYNTAX_PROTO3;
-        FieldValue enumValue = FieldValue.of(rawValue, scalarContext());
-        List<EnumValueDescriptor> expectedValues = singletonList(rawValue.getValueDescriptor());
+        var rawValue = SYNTAX_PROTO3;
+        var enumValue = FieldValue.of(rawValue, scalarContext());
+        var expectedValues = singletonList(rawValue.getValueDescriptor());
         assertConversion(expectedValues, enumValue);
     }
 

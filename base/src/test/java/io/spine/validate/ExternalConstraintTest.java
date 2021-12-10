@@ -27,7 +27,6 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.test.validation.AMessage;
 import io.spine.test.validation.AnExternalConstraint;
 import org.junit.jupiter.api.DisplayName;
@@ -41,7 +40,7 @@ import static com.google.protobuf.Descriptors.Descriptor;
 import static io.spine.testing.Assertions.assertIllegalState;
 import static io.spine.testing.Assertions.assertNpe;
 
-@DisplayName("ExternalMessageConstraint should")
+@DisplayName("`ExternalMessageConstraint` should")
 final class ExternalConstraintTest {
 
     private static final String PACKAGE = "spine.test.validation";
@@ -52,7 +51,7 @@ final class ExternalConstraintTest {
         return new ExternalMessageConstraint(DESCRIPTOR, ImmutableList.of(path));
     }
 
-    @DisplayName("not allow null")
+    @DisplayName("not allow `null`")
     @Nested
     final class NotAllowNull {
 
@@ -72,20 +71,18 @@ final class ExternalConstraintTest {
     @Test
     @DisplayName("build field descriptors")
     void buildFieldDescriptors() {
-        ExternalMessageConstraint rule = constraint(VALIDATED_FIELD);
+        var rule = constraint(VALIDATED_FIELD);
         assertThat(DESCRIPTOR).isEqualTo(rule.getDescriptor());
-        ImmutableList<FieldDescriptor> targets =
-                rule.getTargets()
-                    .asList();
+        var targets = rule.getTargets().asList();
         assertThat(targets).isNotEmpty();
-        FieldDescriptor fieldDescriptor = targets.get(0);
+        var fieldDescriptor = targets.get(0);
         assertThat(fieldDescriptor.getFullName()).isEqualTo(VALIDATED_FIELD);
     }
 
     @Test
     @DisplayName("build same validation rules")
     void buildSameRules() {
-        ExternalMessageConstraint rule = constraint(VALIDATED_FIELD);
+        var rule = constraint(VALIDATED_FIELD);
         assertThat(rule).isEqualTo(constraint(VALIDATED_FIELD));
     }
 
@@ -103,14 +100,14 @@ final class ExternalConstraintTest {
         @DisplayName("a non-existing field path")
         @Test
         void forNonExistingField() {
-            String fieldName = PACKAGE + ".AMessage.non_existing";
+            var fieldName = PACKAGE + ".AMessage.non_existing";
             assertIllegalState(() -> constraint(fieldName));
         }
 
         @DisplayName("a non-message field path")
         @Test
         void forNonMessageField() {
-            String fieldName = PACKAGE + ".AMessage.non_message_field";
+            var fieldName = PACKAGE + ".AMessage.non_message_field";
             assertIllegalState(() ->  constraint(fieldName));
         }
 

@@ -27,7 +27,6 @@
 package io.spine.util;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,21 +43,21 @@ class DuplicatesTest extends UtilityClassTest<Duplicates> {
     @Test
     @DisplayName("report duplicates")
     void reportDuplicates() {
-        ImmutableSet<?> duplicates = Duplicates.findIn(ImmutableList.of(1, 2, 3, 1, 42, 42));
+        var duplicates = Duplicates.findIn(ImmutableList.of(1, 2, 3, 1, 42, 42));
         assertThat(duplicates).containsExactly(1, 42);
     }
 
     @Test
     @DisplayName("report if no duplicates")
     void empty() {
-        ImmutableSet<?> duplicates = Duplicates.findIn(ImmutableList.of(1, 2, 3, 42));
+        var duplicates = Duplicates.findIn(ImmutableList.of(1, 2, 3, 42));
         assertThat(duplicates).isEmpty();
     }
 
     @Test
     @DisplayName("report no duplicates in an empty list")
     void emptyInput() {
-        ImmutableSet<?> duplicates = Duplicates.findIn(ImmutableList.of());
+        var duplicates = Duplicates.findIn(ImmutableList.of());
         assertThat(duplicates).isEmpty();
     }
 }

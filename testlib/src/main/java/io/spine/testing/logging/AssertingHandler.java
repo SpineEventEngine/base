@@ -35,10 +35,10 @@ import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.logging.SimpleFormatter;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static java.lang.System.lineSeparator;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Test fixture for testing loggers based on JDK Logging.
@@ -57,25 +57,25 @@ final class AssertingHandler extends Handler implements LoggingAssertions {
     }
 
     private List<LogRecord> logRecords() {
-        return checkNotNull(logRecords, "The handler is already closed.");
+        return requireNonNull(logRecords, "The handler is already closed.");
     }
 
     @Override
     public StringSubject textOutput() {
-        LogRecord logRecord = firstRecord();
+        var logRecord = firstRecord();
         assertWithMessage(FACT_NO_RECORDS)
                 .that(logRecord)
                 .isNotNull();
         flush();
-        StringSubject subject = assertThat(logRecordToString(logRecord));
+        var subject = assertThat(logRecordToString(logRecord));
         return subject;
     }
 
     @Override
     public LogRecordSubject record() {
-        LogRecord logRecord = firstRecord();
+        var logRecord = firstRecord();
         flush();
-        LogRecordSubject subject = LogTruth.assertThat(logRecord);
+        var subject = LogTruth.assertThat(logRecord);
         return subject;
     }
 
@@ -93,14 +93,14 @@ final class AssertingHandler extends Handler implements LoggingAssertions {
     }
 
     private static String logRecordToString(LogRecord logRecord) {
-        StringBuilder sb = new StringBuilder();
-        String message = new SimpleFormatter().formatMessage(logRecord);
+        var sb = new StringBuilder();
+        var message = new SimpleFormatter().formatMessage(logRecord);
         sb.append(logRecord.getLevel())
           .append(": ")
           .append(message)
           .append(lineSeparator());
 
-        Throwable thrown = logRecord.getThrown();
+        var thrown = logRecord.getThrown();
         if (thrown != null) {
             sb.append(thrown);
         }

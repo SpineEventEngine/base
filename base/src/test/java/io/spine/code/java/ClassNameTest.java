@@ -27,7 +27,6 @@
 package io.spine.code.java;
 
 import com.google.common.testing.NullPointerTester;
-import com.google.protobuf.Descriptors;
 import com.google.protobuf.StringValue;
 import io.spine.test.type.Uri;
 import org.junit.jupiter.api.DisplayName;
@@ -53,7 +52,7 @@ class ClassNameTest {
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
-        Descriptors.Descriptor descriptor = StringValue.getDescriptor();
+        var descriptor = StringValue.getDescriptor();
         new NullPointerTester()
                 .setDefault(SimpleClassName.class, SimpleClassName.ofMessage(descriptor))
                 .setDefault(PackageName.class, PackageName.resolve(descriptor.getFile()
@@ -64,8 +63,8 @@ class ClassNameTest {
     @Test
     @DisplayName("provide binary name and canonical name")
     void provideBinaryAndCanonical() {
-        Class<Uri.Protocol> cls = Uri.Protocol.class;
-        ClassName className = ClassName.of(cls);
+        var cls = Uri.Protocol.class;
+        var className = ClassName.of(cls);
         assertThat(className.binaryName()).isEqualTo(cls.getName());
         assertThat(className.canonicalName()).isEqualTo(cls.getCanonicalName());
     }
@@ -73,7 +72,7 @@ class ClassNameTest {
     @Test
     @DisplayName("throw ISE when parsing an invalid name")
     void throwOnInvalid() {
-        ClassName className = ClassName.of("NotQualifiedName");
+        var className = ClassName.of("NotQualifiedName");
         assertIllegalState(className::packageName);
     }
 

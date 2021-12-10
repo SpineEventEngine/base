@@ -36,8 +36,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.validate.MessageValue.atTopLevel;
@@ -60,33 +58,32 @@ final class MessageValueTest extends ClassTest<MessageValue> {
     }
 
     @Nested
-    @DisplayName("Obtain oneof value")
+    @DisplayName("obtain oneof value")
     class OneofValue {
 
         @Test
         @DisplayName("using the valid descriptor")
         void withValidDescriptor() {
-            boolean boolValue = false;
-            Value message = Value
-                    .newBuilder()
+            var boolValue = false;
+            var message = Value.newBuilder()
                     .setBoolValue(boolValue)
                     .build();
-            MessageValue value = MessageValue.atTopLevel(message);
+            var value = MessageValue.atTopLevel(message);
             assertOneofValue(value, boolValue);
         }
 
         @Test
-        @DisplayName("and throw IAE if a oneof is not declared in a message")
+        @DisplayName("and throw `IAE` if a oneof is not declared in a message")
         void throwOnMissingOneof() {
-            StringValue message = StringValue.getDefaultInstance();
-            MessageValue value = atTopLevel(message);
+            var message = StringValue.getDefaultInstance();
+            var value = atTopLevel(message);
             assertIllegalArgument(() -> value.valueOf(VALUE_ONEOF));
         }
 
         private void assertOneofValue(MessageValue message, Object expectedValue) {
-            Optional<FieldValue> optionalValue = message.valueOf(VALUE_ONEOF);
+            var optionalValue = message.valueOf(VALUE_ONEOF);
             assertTrue(optionalValue.isPresent());
-            FieldValue value = optionalValue.get();
+            var value = optionalValue.get();
             assertThat(value.singleValue())
                     .isEqualTo(expectedValue);
         }

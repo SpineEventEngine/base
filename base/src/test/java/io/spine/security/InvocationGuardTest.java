@@ -35,7 +35,7 @@ import org.junit.jupiter.api.function.Executable;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
-@DisplayName("InvocationGuard should")
+@DisplayName("`InvocationGuard` should")
 class InvocationGuardTest extends UtilityClassTest<InvocationGuard> {
 
     InvocationGuardTest() {
@@ -43,7 +43,7 @@ class InvocationGuardTest extends UtilityClassTest<InvocationGuard> {
     }
 
     @Nested
-    @DisplayName("throw SecurityException")
+    @DisplayName("throw `SecurityException`")
     class Throwing {
 
         @Test
@@ -71,9 +71,9 @@ class InvocationGuardTest extends UtilityClassTest<InvocationGuard> {
     @Test
     @DisplayName("do not throw on allowed class")
     void pass() {
-        String callingClass = CallerProvider.instance()
-                                            .callerClass()
-                                            .getName();
+        var callingClass = CallerProvider.instance()
+                                         .callerClass()
+                                         .getName();
         try {
             InvocationGuard.allowOnly(callingClass);
         } catch (Exception e) {

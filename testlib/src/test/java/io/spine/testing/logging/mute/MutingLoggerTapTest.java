@@ -57,7 +57,7 @@ class MutingLoggerTapTest extends SystemOutputTest {
         @Test
         @DisplayName("regular logging")
         void regularLog() {
-            String expected = "Test non interception.";
+            var expected = "Test non interception.";
             logger().info(expected);
 
             assertThat(loggingOutput()).contains(expected);
@@ -66,7 +66,7 @@ class MutingLoggerTapTest extends SystemOutputTest {
         @Test
         @DisplayName("error logging")
         void errorLog() {
-            String expectedError = "Testing error non interception.";
+            var expectedError = "Testing error non interception.";
             logger().severe(expectedError);
 
             assertThat(loggingOutput()).contains(expectedError);
@@ -90,7 +90,7 @@ class MutingLoggerTapTest extends SystemOutputTest {
         @Test
         @DisplayName("regular logging")
         void regularLog() {
-            String expected = "Test interception.";
+            var expected = "Test interception.";
             logger().info(expected);
 
             assertThat(loggingOutput()).doesNotContain(expected);
@@ -99,7 +99,7 @@ class MutingLoggerTapTest extends SystemOutputTest {
         @Test
         @DisplayName("error logging")
         void errorLog() {
-            String expectedError = "Testing error interception.";
+            var expectedError = "Testing error interception.";
             logger().severe(expectedError);
 
             assertThat(loggingOutput()).doesNotContain(expectedError);
@@ -110,8 +110,8 @@ class MutingLoggerTapTest extends SystemOutputTest {
         void redirection() {
             assertThat(tap.streamSize())
                     .isEqualTo(0);
-            String msg = randomString();
-            Logger logger = logger();
+            var msg = randomString();
+            var logger = logger();
 
             logger.info(msg);
 
@@ -140,18 +140,18 @@ class MutingLoggerTapTest extends SystemOutputTest {
             @Test
             @DisplayName("accumulated output")
             void ofRegularLogs() {
-                String fo = flushedOutput();
+                var fo = flushedOutput();
                 assertThat(fo).contains(logMessage);
             }
 
             @Test
             @DisplayName("accumulated error output")
             void ofErrorLogs() {
-                String fo = flushedOutput();
+                var fo = flushedOutput();
                 assertThat(fo).contains(errorMessage);
             }
             String flushedOutput() {
-                return new String(stream.toByteArray(), Charset.defaultCharset());
+                return stream.toString(Charset.defaultCharset());
             }
         }
     }

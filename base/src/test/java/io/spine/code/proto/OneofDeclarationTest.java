@@ -36,11 +36,11 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("OneofDeclaration should")
+@DisplayName("`OneofDeclaration` should")
 class OneofDeclarationTest {
 
     @Test
-    @DisplayName("not accept nulls")
+    @DisplayName("not accept `null`s")
     void nonNull() {
         new NullPointerTester()
                 .setDefault(MessageType.class, new MessageType(Empty.getDescriptor()))
@@ -53,13 +53,11 @@ class OneofDeclarationTest {
     @Test
     @DisplayName("obtain name")
     void obtainName() {
-        Descriptors.Descriptor declaringType = Transmission.getDescriptor();
-        Descriptors.OneofDescriptor protocolOneof = declaringType
-                .getOneofs()
-                .get(0);
-        MessageType declaringMessageType = new MessageType(declaringType);
-        OneofDeclaration declaration = new OneofDeclaration(protocolOneof, declaringMessageType);
-        FieldName name = declaration.name();
+        var declaringType = Transmission.getDescriptor();
+        var protocolOneof = declaringType.getOneofs().get(0);
+        var declaringMessageType = new MessageType(declaringType);
+        var declaration = new OneofDeclaration(protocolOneof, declaringMessageType);
+        var name = declaration.name();
         assertThat(name.javaCase()).isEqualTo("type");
     }
 }

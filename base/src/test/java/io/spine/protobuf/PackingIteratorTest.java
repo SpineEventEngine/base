@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("PackingIterator should")
+@DisplayName("`PackingIterator` should")
 class PackingIteratorTest {
 
     private List<Message> list;
@@ -73,7 +73,7 @@ class PackingIteratorTest {
     @DisplayName("implement next()")
     void implement_next() {
         while (packer.hasNext()) {
-            Any packed = packer.next();
+            var packed = packer.next();
             assertNotNull(packed);
             assertFalse(isDefault(unpack(packed)));
         }

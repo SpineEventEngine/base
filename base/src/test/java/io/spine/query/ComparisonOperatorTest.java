@@ -154,7 +154,7 @@ class ComparisonOperatorTest {
         void notSame() {
             Object left = Timestamp.getDefaultInstance();
             Object right = 0;
-            for (ComparisonOperator operator : orderingOperators) {
+            for (var operator : orderingOperators) {
                 assertThrows(IllegalArgumentException.class,
                              () -> operator.eval(left, right));
             }
@@ -166,7 +166,7 @@ class ComparisonOperatorTest {
         void unsupported() {
             Object left = Any.getDefaultInstance();
             Object right = Any.getDefaultInstance();
-            for (ComparisonOperator operator : orderingOperators) {
+            for (var operator : orderingOperators) {
                 assertThrows(UnsupportedOperationException.class,
                              () -> operator.eval(left, right));
             }
@@ -177,8 +177,8 @@ class ComparisonOperatorTest {
     @DisplayName("return `false` in `>`, `>=`, `<` and `<=` if any of the operands is `null`")
     void orderingOperatorsReturnFalseForTwoNulls() {
         Timestamp nullOperand = nullRef();
-        Timestamp anotherOperand = Timestamp.getDefaultInstance();
-        for (ComparisonOperator operator : orderingOperators) {
+        var anotherOperand = Timestamp.getDefaultInstance();
+        for (var operator : orderingOperators) {
             assertThat(operator.eval(nullOperand, anotherOperand)).isFalse();
             assertThat(operator.eval(anotherOperand, nullOperand)).isFalse();
         }

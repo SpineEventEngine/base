@@ -26,9 +26,7 @@
 
 package io.spine.code.proto;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.test.code.proto.CoProject;
 import io.spine.test.code.proto.CoTask;
 import io.spine.test.code.proto.CoTaskDescription;
@@ -62,68 +60,68 @@ class ColumnOptionTest {
     @Test
     @DisplayName("determine that message type has no columns")
     void checkHasNoColumns() {
-        MessageType typeWithoutColumns = new MessageType(CoTask.getDescriptor());
+        var typeWithoutColumns = new MessageType(CoTask.getDescriptor());
         assertThat(ColumnOption.hasColumns(typeWithoutColumns)).isFalse();
     }
 
     @Test
     @DisplayName("determine that message type is not eligible for having columns")
     void checkNotEligibleForColumns() {
-        MessageType nonEligible = new MessageType(CoTaskDescription.getDescriptor());
+        var nonEligible = new MessageType(CoTaskDescription.getDescriptor());
         assertThat(ColumnOption.hasColumns(nonEligible)).isFalse();
     }
 
     @Test
     @DisplayName("obtain columns of the entity")
     void obtainColumns() {
-        ImmutableList<FieldDeclaration> columns = ColumnOption.columnsOf(type);
+        var columns = ColumnOption.columnsOf(type);
         assertThat(columns).hasSize(2);
 
-        ImmutableList<String> columnNames = columns.stream()
-                                                   .map(FieldDeclaration::name)
-                                                   .map(StringTypeValue::value)
-                                                   .collect(toImmutableList());
+        var columnNames = columns.stream()
+                .map(FieldDeclaration::name)
+                .map(StringTypeValue::value)
+                .collect(toImmutableList());
         assertThat(columnNames).containsExactly("name", "estimate");
     }
 
     @Test
     @DisplayName("return empty list of columns if the message is not eligible for having ones")
     void obtainEmptyColumns() {
-        MessageType nonEligible = new MessageType(CoTaskDescription.getDescriptor());
-        ImmutableList<FieldDeclaration> list = ColumnOption.columnsOf(nonEligible);
+        var nonEligible = new MessageType(CoTaskDescription.getDescriptor());
+        var list = ColumnOption.columnsOf(nonEligible);
         assertThat(list).isEmpty();
     }
 
     @Test
     @DisplayName("determine that the passed field is a column")
     void checkIsColumn() {
-        FieldDeclaration nameField = fieldByName("name");
-        boolean isColumn = ColumnOption.isColumn(nameField);
+        var nameField = fieldByName("name");
+        var isColumn = ColumnOption.isColumn(nameField);
         assertThat(isColumn).isTrue();
     }
 
     @Test
     @DisplayName("determine that the passed field is not a column")
     void checkIsNotColumn() {
-        FieldDeclaration statusField = fieldByName("status");
-        boolean isColumn = ColumnOption.isColumn(statusField);
+        var statusField = fieldByName("status");
+        var isColumn = ColumnOption.isColumn(statusField);
         assertThat(isColumn).isFalse();
     }
 
     @Test
     @DisplayName("return `false` for fields of type non-eligible for having columns")
     void checkFieldOfNonEligible() {
-        FieldDescriptor descriptor = CoTaskDescription.getDescriptor()
-                                                 .findFieldByName("value");
-        FieldDeclaration field = new FieldDeclaration(descriptor);
-        boolean isColumn = ColumnOption.isColumn(field);
+        var descriptor = CoTaskDescription.getDescriptor()
+                                          .findFieldByName("value");
+        var field = new FieldDeclaration(descriptor);
+        var isColumn = ColumnOption.isColumn(field);
         assertThat(isColumn).isFalse();
     }
 
     private FieldDeclaration fieldByName(String name) {
-        FieldDescriptor field = type.descriptor()
-                                    .findFieldByName(name);
-        FieldDeclaration result = new FieldDeclaration(field);
+        var field = type.descriptor()
+                        .findFieldByName(name);
+        var result = new FieldDeclaration(field);
         return result;
     }
 }

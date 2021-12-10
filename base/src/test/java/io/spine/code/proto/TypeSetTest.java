@@ -27,14 +27,13 @@
 package io.spine.code.proto;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
-import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.type.TypeName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("TypeSet should")
+@DisplayName("`TypeSet` should")
 class TypeSetTest {
 
     private static final FileSet fileSet = FileSet.load();
@@ -43,9 +42,8 @@ class TypeSetTest {
     @DisplayName("obtain messages and enums from a file")
     void fromFile() {
         @SuppressWarnings("OptionalGetWithoutIsPresent") /* The file is present in resources. */
-        FileDescriptor file = fileSet.tryFind(FileName.of("google/protobuf/descriptor.proto"))
-                                     .get();
-        TypeSet typeSet = TypeSet.from(file);
+        var file = fileSet.tryFind(FileName.of("google/protobuf/descriptor.proto")).get();
+        var typeSet = TypeSet.from(file);
         assertNotEmpty(typeSet);
         assertThat(typeSet.contains(TypeName.from(FileDescriptorSet.getDescriptor())))
                 .isTrue();
@@ -54,7 +52,7 @@ class TypeSetTest {
     @Test
     @DisplayName("obtain message and enums")
     void fromSet() {
-        TypeSet typeSet = TypeSet.from(fileSet);
+        var typeSet = TypeSet.from(fileSet);
         assertNotEmpty(typeSet);
         // We have a number of test service declarations for testing annotations.
         assertThat(typeSet.serviceTypes())

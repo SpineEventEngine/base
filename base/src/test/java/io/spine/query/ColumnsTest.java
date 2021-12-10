@@ -26,13 +26,13 @@
 
 package io.spine.query;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.testing.NullPointerTester;
 import com.google.errorprone.annotations.Immutable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.lang.annotation.Annotation;
+import java.util.stream.Stream;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.truth.Truth.assertThat;
@@ -52,12 +52,10 @@ class ColumnsTest {
     @Test
     @DisplayName("be immutable")
     void beImmutable() {
-        Annotation[] declaredAnnotations = Columns.class.getDeclaredAnnotations();
-        ImmutableSet<Class<? extends Annotation>> annotationTypes =
-                ImmutableSet.copyOf(declaredAnnotations)
-                            .stream()
-                            .map(Annotation::annotationType)
-                            .collect(toImmutableSet());
+        var declaredAnnotations = Columns.class.getDeclaredAnnotations();
+        var annotationTypes = Stream.of(declaredAnnotations)
+                                    .map(Annotation::annotationType)
+                                    .collect(toImmutableSet());
         assertThat(annotationTypes)
                 .contains(Immutable.class);
     }
@@ -65,7 +63,7 @@ class ColumnsTest {
     @Test
     @DisplayName("create new instances from the passed `RecordColumn`s")
     void createNewInstances() {
-        Columns<Manufacturer> columns = Columns.of(is_traded, isin, stock_count);
+        var columns = Columns.of(is_traded, isin, stock_count);
         assertThat(columns)
                 .containsExactly(is_traded, isin, stock_count);
     }

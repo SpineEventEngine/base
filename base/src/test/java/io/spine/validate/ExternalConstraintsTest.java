@@ -36,13 +36,13 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("ExternalConstraints should")
+@DisplayName("`ExternalConstraints` should")
 final class ExternalConstraintsTest {
 
     @DisplayName("update rules from types")
     @Test
     void updateRulesFromTypes() {
-        MessageType ruleType = new MessageType(AnExternalConstraint.getDescriptor());
+        var ruleType = new MessageType(AnExternalConstraint.getDescriptor());
         ExternalConstraints.updateFrom(ImmutableSet.of(ruleType));
         assertThat(ExternalConstraints.all()).hasSize(6);
     }
@@ -50,14 +50,14 @@ final class ExternalConstraintsTest {
     @Test
     @DisplayName("tell if an external constraint is defined for a field")
     void checkIfDefined() {
-        boolean defined = ExternalConstraints.isDefinedFor(AMessage.getDescriptor(), "field");
+        var defined = ExternalConstraints.isDefinedFor(AMessage.getDescriptor(), "field");
         assertThat(defined).isTrue();
     }
 
     @Test
     @DisplayName("tell if an external constraint is NOT defined for a field")
     void checkIfNotDefined() {
-        boolean defined = ExternalConstraints.isDefinedFor(Uri.getDescriptor(), "host");
+        var defined = ExternalConstraints.isDefinedFor(Uri.getDescriptor(), "host");
         assertThat(defined).isFalse();
     }
 }

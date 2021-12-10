@@ -26,7 +26,6 @@
 
 package io.spine.query.given;
 
-import com.google.protobuf.Any;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.util.Timestamps;
@@ -41,6 +40,7 @@ import static io.spine.protobuf.AnyPacker.pack;
 /**
  * Test values used in comparison tests of a {@link io.spine.query.ComparisonOperator}.
  */
+@SuppressWarnings("unused") /* Serve as method sources */
 public final class ComparisonOperatorTestEnv {
 
     private ComparisonOperatorTestEnv() {
@@ -75,8 +75,8 @@ public final class ComparisonOperatorTestEnv {
     }
 
     private static Arguments equalMessages() {
-        Any message = pack(FieldMask.getDefaultInstance());
-        Any anotherMessage = pack(FieldMask.getDefaultInstance());
+        var message = pack(FieldMask.getDefaultInstance());
+        var anotherMessage = pack(FieldMask.getDefaultInstance());
         return Arguments.of(message, anotherMessage);
     }
 

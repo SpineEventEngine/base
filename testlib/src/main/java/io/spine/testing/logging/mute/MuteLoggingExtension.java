@@ -31,7 +31,6 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.io.IOException;
-import java.util.Optional;
 
 /**
  * A JUnit {@link org.junit.jupiter.api.extension.Extension Extension} which mutes all the logs
@@ -61,7 +60,7 @@ public final class MuteLoggingExtension implements BeforeEachCallback, AfterEach
 
     @Override
     public void afterEach(ExtensionContext context) throws IOException {
-        Optional<Throwable> exception = context.getExecutionException();
+        var exception = context.getExecutionException();
         if (exception.isPresent()) {
             loggerTap.flushToSystemErr();
         }

@@ -60,111 +60,96 @@ class RecordQueryTest {
         @Test
         @DisplayName("in conjunction with conjunctive predicates, if this query is disjunctive")
         void disjunctiveAndConjunction() {
-            RecordQuery<ManufacturerId, Manufacturer> query =
-                    disjunctiveBuilder(either1(), either2()).build();
-            RecordQuery<ManufacturerId, Manufacturer> expected =
+            var query = disjunctiveBuilder(either1(), either2()).build();
+            var expected =
                     conjunctivePredicates().apply(disjunctiveBuilder(either1(), either2())).build();
 
-            RecordQuery<ManufacturerId, Manufacturer> actual = query.and(conjunctivePredicates());
+            var actual = query.and(conjunctivePredicates());
             assertThat(actual).isEqualTo(expected);
         }
 
         @Test
         @DisplayName("in conjunction with disjunctive predicates, if this query is disjunctive")
         void disjunctiveAndDisjunction() {
-            RecordQuery<ManufacturerId, Manufacturer> query =
-                    disjunctiveBuilder(either1(), either2()).build();
-            RecordQuery<ManufacturerId, Manufacturer> expected =
+            var query = disjunctiveBuilder(either1(), either2()).build();
+            var expected =
                     disjunctiveBuilder(either1(), either2())
                             .either(r -> either3().apply(r),
                                     r -> either4().apply(r))
                             .build();
-            RecordQuery<ManufacturerId, Manufacturer> actual =
-                    query.and(disjunctivePredicates(either3(), either4()));
+            var actual = query.and(disjunctivePredicates(either3(), either4()));
             assertThat(actual).isEqualTo(expected);
         }
 
         @Test
         @DisplayName("in disjunction with disjunctive predicates, if this query is disjunctive")
         void disjunctiveEitherDisjunction() {
-            RecordQuery<ManufacturerId, Manufacturer> query =
-                    disjunctiveBuilder(either1(), either2()).build();
-            RecordQuery<ManufacturerId, Manufacturer> expected =
-                    disjunctiveBuilder(either1(), either2(), either3(), either4()).build();
+            var query = disjunctiveBuilder(either1(), either2()).build();
+            var expected = disjunctiveBuilder(either1(), either2(), either3(), either4()).build();
 
-            RecordQuery<ManufacturerId, Manufacturer> actual =
-                    query.either(disjunctivePredicates(either3(), either4()));
+            var actual = query.either(disjunctivePredicates(either3(), either4()));
             assertThat(actual).isEqualTo(expected);
         }
 
         @Test
         @DisplayName("in disjunction with conjunctive predicates, if this query is disjunctive")
         void disjunctiveEitherConjunction() {
-            RecordQuery<ManufacturerId, Manufacturer> query =
-                    disjunctiveBuilder(either1(), either2()).build();
-            RecordQuery<ManufacturerId, Manufacturer> expected =
+            var query = disjunctiveBuilder(either1(), either2()).build();
+            var expected =
                     disjunctiveBuilder(either1(), either2(), r -> conjunctivePredicates().apply(r))
                             .build();
-            RecordQuery<ManufacturerId, Manufacturer> actual =
-                    query.either(conjunctivePredicates());
+            var actual = query.either(conjunctivePredicates());
             assertThat(actual).isEqualTo(expected);
         }
 
         @Test
         @DisplayName("in conjunction with conjunctive predicates, if this query is conjunctive")
         void conjunctiveAndConjunction() {
-            RecordQuery<ManufacturerId, Manufacturer> query = conjunctiveBuilder().build();
-            RecordQuery<ManufacturerId, Manufacturer> expected =
-                    conjunctivePredicates().apply(conjunctiveBuilder()).build();
+            var query = conjunctiveBuilder().build();
+            var expected = conjunctivePredicates().apply(conjunctiveBuilder()).build();
 
-            RecordQuery<ManufacturerId, Manufacturer> actual =
-                    query.and(conjunctivePredicates());
+            var actual = query.and(conjunctivePredicates());
             assertThat(actual).isEqualTo(expected);
         }
 
         @Test
         @DisplayName("in conjunction with disjunctive predicates, if this query is conjunctive")
         void conjunctiveAndDisjunction() {
-            RecordQuery<ManufacturerId, Manufacturer> query = conjunctiveBuilder().build();
-            RecordQuery<ManufacturerId, Manufacturer> expected =
-                    disjunctivePredicates().apply(conjunctiveBuilder()).build();
+            var query = conjunctiveBuilder().build();
+            var expected = disjunctivePredicates().apply(conjunctiveBuilder()).build();
 
-            RecordQuery<ManufacturerId, Manufacturer> actual = query.and(disjunctivePredicates());
+            var actual = query.and(disjunctivePredicates());
             assertThat(actual).isEqualTo(expected);
         }
 
         @Test
         @DisplayName("in disjunction with conjunctive predicates, if this query is conjunctive")
         void conjunctiveEitherConjunction() {
-            RecordQuery<ManufacturerId, Manufacturer> query = conjunctiveBuilder().build();
-            RecordQueryBuilder<ManufacturerId, Manufacturer> almostAsExpected =
-                    queryManufacturer().either(
+            var query = conjunctiveBuilder().build();
+            var almostAsExpected = queryManufacturer()
+                    .either(
                             r -> conjunctivePredicates().apply(r),
                             r -> moreConjunctivePredicates().apply(r)
                     );
-            RecordQuery<ManufacturerId, Manufacturer> expected =
-                    withMaskSortingAndLimit(almostAsExpected).build();
+            var expected = withMaskSortingAndLimit(almostAsExpected).build();
 
-            RecordQuery<ManufacturerId, Manufacturer> actual =
-                    query.either(moreConjunctivePredicates());
+            var actual = query.either(moreConjunctivePredicates());
             assertThat(actual).isEqualTo(expected);
         }
 
         @Test
         @DisplayName("in disjunction with disjunctive predicates, if this query is conjunctive")
         void conjunctiveEitherDisjunction() {
-            RecordQuery<ManufacturerId, Manufacturer> query = conjunctiveBuilder().build();
-            RecordQueryBuilder<ManufacturerId, Manufacturer> almostAsExpected =
-                    queryManufacturer().either(
+            var query = conjunctiveBuilder().build();
+            var almostAsExpected = queryManufacturer()
+                    .either(
                             r -> conjunctivePredicates().apply(r),
                             r -> either1().apply(r),
                             r -> either2().apply(r)
                     );
-            RecordQuery<ManufacturerId, Manufacturer> expected =
-                    withMaskSortingAndLimit(almostAsExpected).build();
+            var expected = withMaskSortingAndLimit(almostAsExpected).build();
 
-            RecordQuery<ManufacturerId, Manufacturer> actual =
-                    query.either(disjunctivePredicates(either1(), either2()));
+            var actual = query.either(disjunctivePredicates(either1(), either2()));
             assertThat(actual).isEqualTo(expected);
         }
     }

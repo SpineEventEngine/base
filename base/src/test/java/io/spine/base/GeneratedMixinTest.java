@@ -26,7 +26,6 @@
 
 package io.spine.base;
 
-import com.google.common.truth.IterableSubject;
 import io.spine.annotation.GeneratedMixin;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,7 +53,7 @@ class GeneratedMixinTest {
     @Test
     @DisplayName("have `TYPE` target")
     void target() {
-        IterableSubject assertTargets = assertThat(annotation(Target.class).value()).asList();
+        var assertTargets = assertThat(annotation(Target.class).value()).asList();
 
         assertTargets.hasSize(1);
         assertTargets.contains(ElementType.TYPE);

@@ -27,8 +27,6 @@
 package io.spine.protobuf;
 
 import com.google.protobuf.Empty;
-import com.google.protobuf.StringValue;
-import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,17 +43,16 @@ class MessageFieldExceptionTest {
     @Test
     @DisplayName("construct an instance with a formatted message")
     void instanceWithFormattedMessage() {
-        String param1 = "Букварь";
-        String param2 = "blue";
-        String param3 = String.valueOf(3);
-        StringValue protobufMessage = newUuidValue();
-        MessageFieldException exception =
-                new MessageFieldException(protobufMessage,
-                                          "Reading log is: %s %s %s",
-                                          param1, param2, param3);
+        var param1 = "Букварь";
+        var param2 = "blue";
+        var param3 = String.valueOf(3);
+        var protobufMessage = newUuidValue();
+        var exception = new MessageFieldException(protobufMessage,
+                                                  "Reading log is: %s %s %s",
+                                                  param1, param2, param3);
 
         assertEquals(protobufMessage, exception.getProtobufMessage());
-        String exceptionMessage = exception.getMessage();
+        var exceptionMessage = exception.getMessage();
         assertTrue(exceptionMessage.contains(param1));
         assertTrue(exceptionMessage.contains(param2));
         assertTrue(exceptionMessage.contains(param3));
@@ -64,8 +61,8 @@ class MessageFieldExceptionTest {
     @Test
     @DisplayName("contain an instance without text")
     void instanceWithoutText() {
-        Timestamp protobufMessage = Time.currentTime();
-        MessageFieldException exception = new MessageFieldException(protobufMessage);
+        var protobufMessage = Time.currentTime();
+        var exception = new MessageFieldException(protobufMessage);
 
         assertEquals(protobufMessage, exception.getProtobufMessage());
         assertTrue(exception.getMessage()

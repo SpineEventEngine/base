@@ -49,39 +49,39 @@ class EntityIdTest extends ValidationOfConstraintTest {
         @Test
         @DisplayName("find out that non-default message is valid")
         void findOutThatMessageEntityIdInCommandIsValid() {
-            EntityIdMsgFieldValue msg = EntityIdMsgFieldValue.newBuilder()
-                                                             .setValue(newStringValue())
-                                                             .build();
+            var msg = EntityIdMsgFieldValue.newBuilder()
+                    .setValue(newStringValue())
+                    .build();
             assertValid(msg);
         }
 
         @Test
         @DisplayName("find out that default message is NOT valid")
         void findOutThatMessageEntityIdInCommandIsNotValid() {
-            EntityIdMsgFieldValue msg = EntityIdMsgFieldValue.getDefaultInstance();
+            var msg = EntityIdMsgFieldValue.getDefaultInstance();
             assertNotValid(msg);
         }
 
         @Test
         @DisplayName("find out that non-empty string is valid")
         void findOutThatStringEntityIdInCommandIsValid() {
-            EntityIdStringFieldValue msg = EntityIdStringFieldValue.newBuilder()
-                                                                   .setValue(newUuid())
-                                                                   .build();
+            var msg = EntityIdStringFieldValue.newBuilder()
+                    .setValue(newUuid())
+                    .build();
             assertValid(msg);
         }
 
         @Test
         @DisplayName("find out that empty string is NOT valid")
         void findOutThatStringEntityIdInCommandIsNotValid() {
-            EntityIdStringFieldValue msg = EntityIdStringFieldValue.getDefaultInstance();
+            var msg = EntityIdStringFieldValue.getDefaultInstance();
             assertNotValid(msg);
         }
 
         @Test
         @DisplayName("provide one valid violation if is not valid")
         void provideOneValidViolationIfEntityIdInCommandIsNotValid() {
-            EntityIdMsgFieldValue msg = EntityIdMsgFieldValue.getDefaultInstance();
+            var msg = EntityIdMsgFieldValue.getDefaultInstance();
             assertSingleViolation(msg, VALUE);
         }
     }
@@ -93,23 +93,23 @@ class EntityIdTest extends ValidationOfConstraintTest {
         @Test
         @DisplayName("consider it required by default")
         void requiredByDefault() {
-            AggregateState stateWithDefaultId = AggregateState.getDefaultInstance();
+            var stateWithDefaultId = AggregateState.getDefaultInstance();
             assertNotValid(stateWithDefaultId);
         }
 
         @Test
         @DisplayName("match only the first field named `id` or ending with `_id`")
         void onlyFirstField() {
-            AggregateState onlyEntityIdSet = AggregateState.newBuilder()
-                                                           .setEntityId(newUuid())
-                                                           .build();
+            var onlyEntityIdSet = AggregateState.newBuilder()
+                    .setEntityId(newUuid())
+                    .build();
             assertValid(onlyEntityIdSet);
         }
 
         @Test
         @DisplayName("not consider it (required) if the option is set explicitly set to false")
         void notRequiredIfOptionIsFalse() {
-            ProjectionState stateWithDefaultId = ProjectionState.getDefaultInstance();
+            var stateWithDefaultId = ProjectionState.getDefaultInstance();
             assertValid(stateWithDefaultId);
         }
     }
