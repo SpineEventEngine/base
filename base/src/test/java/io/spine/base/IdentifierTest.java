@@ -379,10 +379,9 @@ class IdentifierTest {
                 .setMessage(nestedMessageString)
                 .build();
 
-        var expected =
-                "string=\"" + outerString + '\"' +
-                        " number=" + number +
-                        " message { value=\"" + nestedString + "\" }";
+        var expected = "string=\"" + outerString + '\"' +
+                " number=" + number +
+                " message { value=\"" + nestedString + "\" }";
 
         var actual = Identifier.toString(idToConvert);
 
