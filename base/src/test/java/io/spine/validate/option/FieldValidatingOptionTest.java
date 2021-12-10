@@ -200,15 +200,14 @@ final class FieldValidatingOptionTest {
             var value = containingMessage.valueOf(field());
             int maxLength = optionValue();
             var context = value.context();
+            var violation = ConstraintViolation.newBuilder()
+                    .setFieldPath(context.fieldPath())
+                    .setTypeName(containingMessage.declaration().name().value())
+                    .setMsgFormat(errorMessage(context))
+                    .build();
             return value.nonDefault()
                         .filter(val -> val.toString().length() > maxLength)
-                        .map(val -> ConstraintViolation.newBuilder()
-                                .setFieldPath(context.fieldPath())
-                                .setTypeName(containingMessage.declaration()
-                                                              .name()
-                                                              .value())
-                                .setMsgFormat(errorMessage(context))
-                                .build())
+                        .map(val -> violation)
                         .collect(toImmutableList());
         }
     }
