@@ -41,8 +41,7 @@ class ReflectiveBuilderTest {
     @Test
     @DisplayName("have the result class")
     void resultClass() {
-        var builder =
-                new DummyBuilder().setResultClass(Any.class);
+        var builder = new DummyBuilder().setResultClass(Any.class);
         assertEquals(Any.class, builder.resultClass());
     }
 
