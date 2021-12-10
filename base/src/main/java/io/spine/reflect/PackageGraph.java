@@ -137,12 +137,11 @@ public final class PackageGraph implements Graph<PackageInfo> {
                                 .nodeOrder(ElementOrder.<PackageInfo>natural())
                                 .build();
         Queue<Package> queue = new ArrayDeque<>(packages);
-        var first = queue.poll();
-        while (first != null) {
-            final var current = first;
+        var current = queue.poll();
+        while (current != null) {
+            var isDirectParent = IsDirectParent.of(current);
             var directParent = graph.nodes().stream()
-                    .filter((node) -> IsDirectParent.of(current)
-                                                    .test(node.getValue()))
+                    .filter((node) -> isDirectParent.test(node.getValue()))
                     .findFirst();
             var newNode = PackageInfo.of(current);
             if (directParent.isPresent()) {
@@ -150,7 +149,7 @@ public final class PackageGraph implements Graph<PackageInfo> {
             } else {
                 graph.addNode(newNode);
             }
-            first = queue.poll();
+            current = queue.poll();
         }
         return graph;
     }

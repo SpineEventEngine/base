@@ -45,9 +45,9 @@ final class MapQuoter extends Quoter {
     String quote(String stringToQuote) {
         checkNotNull(stringToQuote);
         var matcher = compile(QUOTE_PATTERN).matcher(stringToQuote);
-        var unslashed = matcher.find() ?
-                        matcher.replaceAll(BACKSLASH + matcher.group()) :
-                        stringToQuote;
+        var unslashed = matcher.find()
+                        ? matcher.replaceAll(BACKSLASH + matcher.group())
+                        : stringToQuote;
         var result = QUOTE_CHAR + unslashed + QUOTE_CHAR;
         return result;
     }
