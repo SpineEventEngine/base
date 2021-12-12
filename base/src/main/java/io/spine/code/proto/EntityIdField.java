@@ -37,7 +37,7 @@ import static io.spine.code.proto.ColumnOption.isColumn;
  * The first field of the Protobuf message marked with {@code (entity)} option, representing
  * its identifier.
  */
-@SuppressWarnings("unused") /* Part of the public API. */
+@SuppressWarnings("unused") /* Part of the public API. Exposed for `tool-base`. */
 public final class EntityIdField {
 
     private final FieldDeclaration declaration;
