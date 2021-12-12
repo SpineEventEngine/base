@@ -49,7 +49,8 @@ import static java.lang.String.format;
  * @param <R> type of an error code to use for error reporting; must be a Protobuf enum value
  */
 @Internal
-@SuppressWarnings({"unused", "AbstractClassNeverImplemented"}) /* Part of the public API. */
+@SuppressWarnings({"unused", /* Part of the public API. Exposed for `server`. */
+        "AbstractClassNeverImplemented"})
 public abstract class ExceptionFactory<E extends Exception,
                                        M extends Message,
                                        C extends MessageClass<?>,
