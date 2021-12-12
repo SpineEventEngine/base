@@ -40,7 +40,7 @@ import io.spine.base.EntityState;
  * @param <B>
  *         the type of the builder in scope of which this criterion exists
  */
-@SuppressWarnings("unused") /* Part of the public API. */
+@SuppressWarnings("unused") /* Part of the public API. Used in the generated code. */
 public final class EntityCriterion<S extends EntityState<?>,
                                    V,
                                    B extends EntityQueryBuilder<?, S, B, ?>>
