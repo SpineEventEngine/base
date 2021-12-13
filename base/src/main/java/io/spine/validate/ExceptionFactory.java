@@ -43,13 +43,18 @@ import static java.lang.String.format;
  * A helper class for building exceptions used to report invalid {@code Message}s,
  * which have fields that violate validation constraint(s).
  *
- * @param <E> type of {@code Exception} to build
- * @param <M> type of the {@code Message}
- * @param <C> type of the {@linkplain io.spine.type.MessageClass} of {@code |M|}.
- * @param <R> type of an error code to use for error reporting; must be a Protobuf enum value
+ * @param <E>
+ *         type of {@code Exception} to build
+ * @param <M>
+ *         type of the {@code Message}
+ * @param <C>
+ *         type of the {@linkplain io.spine.type.MessageClass} of {@code |M|}.
+ * @param <R>
+ *         type of an error code to use for error reporting; must be a Protobuf enum value
  */
 @Internal
-@SuppressWarnings({"unused", "AbstractClassNeverImplemented"}) /* Part of the public API. */
+@SuppressWarnings({"unused", /* Part of the public API. Exposed for `server`. */
+        "AbstractClassNeverImplemented"})
 public abstract class ExceptionFactory<E extends Exception,
                                        M extends Message,
                                        C extends MessageClass<?>,

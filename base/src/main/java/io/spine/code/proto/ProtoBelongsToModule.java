@@ -38,6 +38,8 @@ import java.util.function.Predicate;
  * <p>The descendants of this class are supposed to work with different
  * types of files, e.g. an original {@code .proto} file, a compiled {@code .java}, etc.
  */
+@SuppressWarnings({"unused", /* Part of the public API. Exposed for `mc-js`. */
+        "AbstractClassNeverImplemented"})
 public abstract class ProtoBelongsToModule implements Predicate<SourceFile> {
 
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();

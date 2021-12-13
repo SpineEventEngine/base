@@ -36,7 +36,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @param <T>
  *         type of stringified objects
  */
-@SuppressWarnings({"unused", "AbstractClassNeverImplemented"}) /* Part of the public API. */
+@SuppressWarnings({"unused", /* Part of the public API. Exposed for `base-types`. */
+        "AbstractClassNeverImplemented"})
 public abstract class FnStringifier<T> extends SerializableStringifier<T> {
 
     private static final long serialVersionUID = 0L;

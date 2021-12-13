@@ -49,7 +49,7 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
  *         the type of a particular {@link EntityQuery} implementation which this builder
  *         is aimed to build
  */
-@SuppressWarnings("AbstractClassNeverImplemented") /* Part of the public API. */
+@SuppressWarnings("AbstractClassNeverImplemented") /* Used in the generated code. */
 public abstract class EntityQueryBuilder<I,
                                          S extends EntityState<I>,
                                          B extends EntityQueryBuilder<I, S, B, Q>,
