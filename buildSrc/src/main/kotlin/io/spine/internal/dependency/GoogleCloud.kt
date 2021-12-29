@@ -30,14 +30,14 @@ package io.spine.internal.dependency
 object GoogleCloud {
 
     // https://github.com/googleapis/java-core
-    const val core = "com.google.cloud:google-cloud-core:2.1.7"
+    const val core = "com.google.cloud:google-cloud-core:2.3.3"
 
-    // https://github.com/googleapis/java-pubsub
-    const val pubSubGrpcApi = "com.google.api.grpc:proto-google-cloud-pubsub-v1:1.95.1"
+    // https://github.com/googleapis/java-pubsub/tree/main/proto-google-cloud-pubsub-v1
+    const val pubSubGrpcApi = "com.google.api.grpc:proto-google-cloud-pubsub-v1:1.97.0"
 
     // https://github.com/googleapis/java-trace
-    const val trace = "com.google.cloud:google-cloud-trace:1.4.1"
+    const val trace = "com.google.cloud:google-cloud-trace:2.1.0"
 
     // https://github.com/googleapis/java-datastore
-    const val datastore = "com.google.cloud:google-cloud-datastore:1.106.5"
+    const val datastore = "com.google.cloud:google-cloud-datastore:2.2.1"
 }

@@ -28,6 +28,6 @@ package io.spine.internal.dependency
 
 // https://github.com/google/auto
 object AutoValue {
-    private const val version = "1.8"
+    private const val version = "1.9"
     const val annotations = "com.google.auto.value:auto-value-annotations:${version}"
 }

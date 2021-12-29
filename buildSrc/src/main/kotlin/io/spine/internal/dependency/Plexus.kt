@@ -33,6 +33,6 @@ package io.spine.internal.dependency
  * [Plexus Utils](https://codehaus-plexus.github.io/plexus-utils/)
  */
 object Plexus {
-    private const val version = "3.3.0"
+    private const val version = "3.4.0"
     const val utils = "org.codehaus.plexus:plexus-utils:${version}"
 }

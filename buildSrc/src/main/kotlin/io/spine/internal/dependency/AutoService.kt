@@ -28,7 +28,7 @@ package io.spine.internal.dependency
 
 // https://github.com/google/auto
 object AutoService {
-    private const val version = "1.0"
+    private const val version = "1.0.1"
     const val annotations = "com.google.auto.service:auto-service-annotations:${version}"
     @Suppress("unused")
     const val processor   = "com.google.auto.service:auto-service:${version}"

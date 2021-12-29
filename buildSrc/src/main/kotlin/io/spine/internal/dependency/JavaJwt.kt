@@ -32,6 +32,6 @@ package io.spine.internal.dependency
  * [Java JWT](https://github.com/auth0/java-jwt)
  */
 object JavaJwt {
-    private const val version = "3.14.0"
+    private const val version = "3.18.1"
     const val lib = "com.auth0:java-jwt:${version}"
 }

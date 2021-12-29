@@ -32,6 +32,10 @@ package io.spine.internal.dependency
  */
 object J2ObjC {
     // https://github.com/google/j2objc/releases
+    // `1.3.` is the latest version available from Maven Central.
+    // https://search.maven.org/artifact/com.google.j2objc/j2objc-annotations
     private const val version = "1.3"
-    const val lib = "com.google.j2objc:j2objc-annotations:${version}"
+    const val annotations = "com.google.j2objc:j2objc-annotations:${version}"
+    @Deprecated("Please use `annotations` instead.", ReplaceWith("annotations"))
+    const val lib = annotations
 }

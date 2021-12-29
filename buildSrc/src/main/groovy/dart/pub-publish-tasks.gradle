@@ -26,6 +26,9 @@
 
 import org.apache.tools.ant.taskdefs.condition.Os
 
+println("`pub-publish-tasks.gradle` script is deprecated. " +
+        "Please use `DartTasks.publish()` extension instead.")
+
 final def publicationDir = "$buildDir/pub/publication/$project.name"
 final def extension = Os.isFamily(Os.FAMILY_WINDOWS) ? '.bat' : ''
 final def PUB_EXECUTABLE = 'pub' + extension
