@@ -201,6 +201,11 @@ subprojects {
     with(configurations) {
         forceVersions()
         excludeProtobufLite()
+        all {
+            resolutionStrategy {
+                force("org.junit:junit-bom:${JUnit.version}")
+            }
+        }
     }
 
     val generatedDir by extra("$projectDir/generated")
