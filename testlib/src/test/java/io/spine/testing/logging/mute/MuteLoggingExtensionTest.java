@@ -37,6 +37,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstances;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
@@ -206,6 +207,11 @@ class MuteLoggingExtensionTest extends SystemOutputTest {
         @Override
         public Store getStore(Namespace namespace) {
             return null;
+        }
+
+        @Override
+        public ExecutionMode getExecutionMode() {
+            return ExecutionMode.SAME_THREAD;
         }
     }
 
