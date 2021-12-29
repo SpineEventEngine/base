@@ -34,7 +34,6 @@ import org.junit.jupiter.api.assertThrows
 
 class `'Glob' should` {
 
-
     @Test
     fun `prohibit empty pattern`() {
         assertThrows<IllegalArgumentException> { Glob("") }

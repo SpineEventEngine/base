@@ -36,7 +36,7 @@ import java.nio.file.PathMatcher
  *
  * @see java.nio.file.FileSystem.getPathMatcher
  */
-public class Glob(pattern: String) {
+public data class Glob(val pattern: String) {
 
     init {
         require(pattern.isNotEmpty())
@@ -56,7 +56,7 @@ public class Glob(pattern: String) {
          * A pattern which matches any file with the given extension.
          *
          * @param extension
-         *         a file extension with or without the leading dot
+         *         a file extension with or without the leading dot.
          */
         @JvmStatic
         public fun extension(extension: CharSequence): Glob {
