@@ -24,21 +24,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.dependency
+package io.spine.io
 
-// https://checkerframework.org/
-object CheckerFramework {
-    private const val version = "3.21.0"
-    const val annotations = "org.checkerframework:checker-qual:${version}"
-    @Suppress("unused")
-    val dataflow = listOf(
-        "org.checkerframework:dataflow:${version}",
-        "org.checkerframework:javacutil:${version}"
-    )
-    /**
-     * This is discontinued artifact, which we do not use directly.
-     * This is a transitive dependency for us, which we force in
-     * [DependencyResolution.forceConfiguration]
-     */
-    const val compatQual = "org.checkerframework:checker-compat-qual:2.5.5"
+import com.google.common.truth.Truth.assertThat
+import java.nio.file.Paths
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+
+class `'Glob' should` {
+
+    @Test
+    fun `prohibit empty pattern`() {
+        assertThrows<IllegalArgumentException> { Glob("") }
+    }
+
+    @Nested
+    inner class `create instances by extension which` {
+
+        @Test
+        fun `is empty`() {
+            assertExtensionMatches("", "some/where/file.")
+        }
+
+        @Test
+        fun `has leading dot`() {
+            assertExtensionMatches(".foo", "1/2/3/file.foo")
+        }
+
+        @Test
+        fun `is just text`() {
+            assertExtensionMatches("bar", "4/5/file.bar")
+        }
+
+        private fun assertExtensionMatches(extension: String, path: String) {
+            val g = Glob.extension(extension)
+            val p = Paths.get(path)
+            val matches = g.matches(p)
+            assertThat(matches).isTrue()
+        }
+    }
 }

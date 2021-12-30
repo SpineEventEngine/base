@@ -30,7 +30,7 @@ package io.spine.internal.dependency
  * Commons CLI is a transitive dependency which we don't use directly.
  * We `force` it in [DependencyResolution.forceConfiguration].
  *
- * [Commons CLI]](https://commons.apache.org/proper/commons-cli/)
+ * [Commons CLI](https://commons.apache.org/proper/commons-cli/)
  */
 object CommonsCli {
     private const val version = "1.4"

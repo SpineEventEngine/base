@@ -28,6 +28,6 @@ package io.spine.internal.dependency
 
 // https://github.com/google/auto
 object AutoCommon {
-    private const val version = "1.0"
+    private const val version = "1.2.1"
     const val lib = "com.google.auto:auto-common:${version}"
 }

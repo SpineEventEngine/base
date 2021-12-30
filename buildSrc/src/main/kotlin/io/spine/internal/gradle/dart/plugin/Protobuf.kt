@@ -24,21 +24,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.dependency
+package io.spine.internal.gradle.dart.plugin
 
-// https://checkerframework.org/
-object CheckerFramework {
-    private const val version = "3.21.0"
-    const val annotations = "org.checkerframework:checker-qual:${version}"
-    @Suppress("unused")
-    val dataflow = listOf(
-        "org.checkerframework:dataflow:${version}",
-        "org.checkerframework:javacutil:${version}"
-    )
-    /**
-     * This is discontinued artifact, which we do not use directly.
-     * This is a transitive dependency for us, which we force in
-     * [DependencyResolution.forceConfiguration]
-     */
-    const val compatQual = "org.checkerframework:checker-compat-qual:2.5.5"
+import com.google.protobuf.gradle.builtins
+import com.google.protobuf.gradle.id
+import com.google.protobuf.gradle.plugins
+import com.google.protobuf.gradle.protobuf
+import com.google.protobuf.gradle.remove
+import io.spine.internal.dependency.Protobuf
+
+/**
+ * Applies `protobuf` plugin and configures `GenerateProtoTask` to work with a Dart module.
+ *
+ * @see DartPlugins
+ */
+fun DartPlugins.protobuf() {
+
+    plugins.apply(Protobuf.GradlePlugin.id)
+
+    project.protobuf {
+        generateProtoTasks.all().forEach { task ->
+            task.apply {
+                plugins { id("dart") }
+                builtins { remove("java") }
+            }
+        }
+    }
 }

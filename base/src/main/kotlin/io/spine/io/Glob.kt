@@ -24,21 +24,50 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.dependency
+package io.spine.io
 
-// https://checkerframework.org/
-object CheckerFramework {
-    private const val version = "3.21.0"
-    const val annotations = "org.checkerframework:checker-qual:${version}"
-    @Suppress("unused")
-    val dataflow = listOf(
-        "org.checkerframework:dataflow:${version}",
-        "org.checkerframework:javacutil:${version}"
-    )
+import java.nio.file.FileSystems
+import java.nio.file.Path
+import java.nio.file.PathMatcher
+
+/**
+ * A [GLOB](https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob) pattern for
+ * matching file paths.
+ *
+ * @see java.nio.file.FileSystem.getPathMatcher
+ */
+public data class Glob(val pattern: String) {
+
+    init {
+        require(pattern.isNotEmpty())
+    }
+
+    private val matcher: PathMatcher = FileSystems.getDefault()
+        .getPathMatcher("glob:$pattern")
+
+    public companion object {
+
+        /**
+         * A pattern which matches any file.
+         */
+        public val any: Glob = Glob("**")
+
+        /**
+         * A pattern which matches any file with the given extension.
+         *
+         * @param extension
+         *         a file extension with or without the leading dot.
+         */
+        @JvmStatic
+        public fun extension(extension: CharSequence): Glob {
+            val ext = if (extension.isEmpty()) extension
+            else if (extension[0] == '.') extension.substring(1) else extension
+            return Glob("**.$ext")
+        }
+    }
+
     /**
-     * This is discontinued artifact, which we do not use directly.
-     * This is a transitive dependency for us, which we force in
-     * [DependencyResolution.forceConfiguration]
+     * Checks if the given path matches this pattern.
      */
-    const val compatQual = "org.checkerframework:checker-compat-qual:2.5.5"
+    public fun matches(path: Path): Boolean = matcher.matches(path)
 }

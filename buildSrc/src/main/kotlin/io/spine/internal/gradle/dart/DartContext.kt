@@ -24,21 +24,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.dependency
+package io.spine.internal.gradle.dart
 
-// https://checkerframework.org/
-object CheckerFramework {
-    private const val version = "3.21.0"
-    const val annotations = "org.checkerframework:checker-qual:${version}"
-    @Suppress("unused")
-    val dataflow = listOf(
-        "org.checkerframework:dataflow:${version}",
-        "org.checkerframework:javacutil:${version}"
-    )
+import org.gradle.api.Project
+import org.gradle.api.tasks.Exec
+
+/**
+ * Provides access to the current [DartEnvironment] and shortcuts for running `pub` tool.
+ */
+open class DartContext(dartEnv: DartEnvironment, internal val project: Project)
+    : DartEnvironment by dartEnv
+{
     /**
-     * This is discontinued artifact, which we do not use directly.
-     * This is a transitive dependency for us, which we force in
-     * [DependencyResolution.forceConfiguration]
+     * Executes `pub` command in this [Exec] task.
+     *
+     * The Dart ecosystem uses packages to manage shared software such as libraries and tools.
+     * To get or publish Dart packages, the `pub` package manager is to be used.
      */
-    const val compatQual = "org.checkerframework:checker-compat-qual:2.5.5"
+    fun Exec.pub(vararg args: Any) = commandLine(pubExecutable, *args)
 }
