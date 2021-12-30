@@ -48,7 +48,7 @@ public data class Glob(val pattern: String) {
     public companion object {
 
         /**
-         * A pattern which matched any file.
+         * A pattern which matches any file.
          */
         public val any: Glob = Glob("**")
 
