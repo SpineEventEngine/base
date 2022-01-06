@@ -1,5 +1,5 @@
 /*
- * Copyright 2021, TeamDev. All rights reserved.
+ * Copyright 2022, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@
  */
 
 /** The version of this library. */
-val base = "2.0.0-SNAPSHOT.81"
+val base = "2.0.0-SNAPSHOT.82"
 
 val spineVersion: String by extra(base)
 val spineBaseVersion: String by extra(base) // Used by `filter-internal-javadoc.gradle`.
