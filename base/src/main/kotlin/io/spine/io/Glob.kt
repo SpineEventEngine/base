@@ -53,23 +53,58 @@ public data class Glob(val pattern: String) {
         public val any: Glob = Glob("**")
 
         /**
-         * A pattern which matches any file with the given extension.
+         * Creates a pattern which matches any file with the given extensions.
          *
-         * @param extension
-         *         a file extension with or without the leading dot.
-         * @param allowUpperCase
-         *         If `true` the pattern would match both lowercase and uppercase versions of
-         *         the specified extension. Otherwise, the passed extension will be used as is.
+         * @param extensions
+         *         file extensions with or without the leading dot.
+         * @see [extensionLowerAndUpper]
          */
         @JvmStatic
-        @JvmOverloads
-        public fun extension(extension: CharSequence, allowUpperCase: Boolean = false): Glob {
-            val ext: String = extension.withoutDot()
+        public fun extension(vararg extensions: CharSequence): Glob =
+            create(extensions.toList(), false)
 
-            if (allowUpperCase) {
-                return Glob("**.{${ext.lowercase()},${ext.uppercase()}}")
+        /**
+         * Creates a pattern which matches any file with the given extensions in lower- and
+         * uppercase versions.
+         *
+         * @see [extension]
+         */
+        public fun extensionLowerAndUpper(vararg extensions: CharSequence): Glob =
+            create(extensions.toList(), true)
+
+        private fun create(extensions: Iterable<CharSequence>, allowUpperCase: Boolean): Glob {
+            val ext: List<String> = extensions.withCaseOptions(allowUpperCase)
+
+            if (ext.size > 1) {
+                val commaSeparated = ext.joinToString(",")
+                return Glob("**.{$commaSeparated}")
             }
-            return Glob("**.$ext")
+            return Glob("**.${ext[0]}")
+        }
+
+        /**
+         * Transforms this iteration of char sequences into a sorted list of values that do not
+         * have a leading dot.
+         *
+         * @param allowUpperCase
+         *         if `true` each entry of the returned list would have lower- and uppercase
+         *         version of the sequence. Otherwise, the sequences would be used as is.
+         */
+        private fun Iterable<CharSequence>.withCaseOptions(allowUpperCase: Boolean): List<String> {
+            val values: MutableSet<String> = mutableSetOf()
+            val result: MutableList<String> = mutableListOf()
+            for (e in this) {
+                val dotless = e.withoutDot()
+                if (allowUpperCase) {
+                    values.add(dotless.lowercase())
+                    values.add(dotless.uppercase())
+                } else {
+                    values.add(dotless)
+                }
+            }
+            result.addAll(values)
+            result.sort()
+            return result
         }
 
         /**

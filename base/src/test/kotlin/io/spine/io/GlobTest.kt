@@ -68,9 +68,11 @@ class `'Glob' should` {
 
     @Test
     fun `allow both lowercase and uppercase values`() {
-        val g = Glob.extension("hey", true)
+        val g = Glob.extensionLowerAndUpper("hey", "jude")
         val lower = Paths.get("file.hey")
         val upper = Paths.get("another.HEY")
+        val more = Paths.get("more.JUDE")
+        val another = Paths.get("yet.jude")
         val mixed = Paths.get("mix.Hey")
 
         fun assertMatches(p: Path) {
@@ -83,6 +85,9 @@ class `'Glob' should` {
 
         assertMatches(lower)
         assertMatches(upper)
+        assertMatches(more)
+        assertMatches(another)
+
         assertDoesNotMatch(mixed)
     }
 }
