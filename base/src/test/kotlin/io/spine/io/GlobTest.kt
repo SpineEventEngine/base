@@ -27,6 +27,7 @@
 package io.spine.io
 
 import com.google.common.truth.Truth.assertThat
+import java.nio.file.Path
 import java.nio.file.Paths
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -63,5 +64,25 @@ class `'Glob' should` {
             val matches = g.matches(p)
             assertThat(matches).isTrue()
         }
+    }
+
+    @Test
+    fun `allow both lowercase and uppercase values`() {
+        val g = Glob.extension("hey", true)
+        val lower = Paths.get("file.hey")
+        val upper = Paths.get("another.HEY")
+        val mixed = Paths.get("mix.Hey")
+
+        fun assertMatches(p: Path) {
+            assertThat(g.matches(p)).isTrue()
+        }
+        
+        fun assertDoesNotMatch(p: Path) {
+            assertThat(g.matches(p)).isFalse()
+        }
+
+        assertMatches(lower)
+        assertMatches(upper)
+        assertDoesNotMatch(mixed)
     }
 }

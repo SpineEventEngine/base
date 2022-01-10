@@ -57,11 +57,19 @@ public data class Glob(val pattern: String) {
          *
          * @param extension
          *         a file extension with or without the leading dot.
+         * @param allowUpperCase
+         *         If `true` the pattern would match both lowercase and uppercase versions of
+         *         the specified extension. Otherwise, the passed extension will be used as is.
          */
         @JvmStatic
-        public fun extension(extension: CharSequence): Glob {
-            val ext = if (extension.isEmpty()) extension
-            else if (extension[0] == '.') extension.substring(1) else extension
+        @JvmOverloads
+        public fun extension(extension: CharSequence, allowUpperCase: Boolean = false): Glob {
+            val ext: String = if (extension.isEmpty()) ""
+            else if (extension[0] == '.') extension.substring(1) else extension.toString()
+
+            if (allowUpperCase) {
+                return Glob("**.{${ext.lowercase()},${ext.uppercase()}}")
+            }
             return Glob("**.$ext")
         }
     }
