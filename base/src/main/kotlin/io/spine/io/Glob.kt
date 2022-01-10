@@ -64,13 +64,21 @@ public data class Glob(val pattern: String) {
         @JvmStatic
         @JvmOverloads
         public fun extension(extension: CharSequence, allowUpperCase: Boolean = false): Glob {
-            val ext: String = if (extension.isEmpty()) ""
-            else if (extension[0] == '.') extension.substring(1) else extension.toString()
+            val ext: String = extension.withoutDot()
 
             if (allowUpperCase) {
                 return Glob("**.{${ext.lowercase()},${ext.uppercase()}}")
             }
             return Glob("**.$ext")
+        }
+
+        /**
+         * Obtains the string without the leading dot, if present.
+         */
+        private fun CharSequence.withoutDot(): String {
+            if (isEmpty()) return ""
+            return if (this[0] == '.') substring(1)
+            else toString()
         }
     }
 
