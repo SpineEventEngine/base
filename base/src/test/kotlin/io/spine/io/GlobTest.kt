@@ -27,6 +27,7 @@
 package io.spine.io
 
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth.assertWithMessage
 import java.nio.file.Paths
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -71,12 +72,16 @@ class `'Glob' should` {
 
         fun assertMatches(file: String) {
             val p = Paths.get(file)
-            assertThat(g.matches(p)).isTrue()
+            assertWithMessage("The file `%s` should match the pattern `%s`.", file, g.pattern)
+                .that(g.matches(p))
+                .isTrue()
         }
         
         fun assertDoesNotMatch(file: String) {
             val p = Paths.get(file)
-            assertThat(g.matches(p)).isFalse()
+            assertWithMessage("The file `%s` should NOT match the pattern `%s`.", file, g.pattern)
+                .that(g.matches(p))
+                .isFalse()
         }
 
         assertMatches("1.hey")
