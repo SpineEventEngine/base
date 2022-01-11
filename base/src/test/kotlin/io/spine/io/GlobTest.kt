@@ -27,6 +27,7 @@
 package io.spine.io
 
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth.assertWithMessage
 import java.nio.file.Paths
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -63,5 +64,44 @@ class `'Glob' should` {
             val matches = g.matches(p)
             assertThat(matches).isTrue()
         }
+    }
+
+    @Test
+    fun `allow both lowercase and uppercase values`() {
+        val g = Glob.extensionLowerAndUpper("hey", "jude", "mIx")
+
+        fun assertMatches(file: String) {
+            val p = Paths.get(file)
+            assertWithMessage("The file `%s` should match the pattern `%s`.", file, g.pattern)
+                .that(g.matches(p))
+                .isTrue()
+        }
+        
+        fun assertDoesNotMatch(file: String) {
+            val p = Paths.get(file)
+            assertWithMessage("The file `%s` should NOT match the pattern `%s`.", file, g.pattern)
+                .that(g.matches(p))
+                .isFalse()
+        }
+
+        assertMatches("1.hey")
+        assertMatches("2.HEY")
+        assertMatches("3.jude")
+        assertMatches("4.JUDE")
+        assertMatches("5.mix")
+        assertMatches("6.MIX")
+
+        assertDoesNotMatch("hey")
+        assertDoesNotMatch("jude.")
+        assertDoesNotMatch("mix")
+        assertDoesNotMatch("mIx")
+        assertDoesNotMatch("miX")
+    }
+
+    @Test
+    fun `create pattern matching files without extensions`() {
+        val noExtensions = Glob.extension()
+        val p = Paths.get("my_file.")
+        assertThat(noExtensions.matches(p)).isTrue()
     }
 }
