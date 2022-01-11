@@ -106,8 +106,8 @@ public data class Glob(val pattern: String) {
             if (!iterator().hasNext()) {
                 return listOf()
             }
-            val values: MutableSet<String> = mutableSetOf()
-            val result: MutableList<String> = mutableListOf()
+            val values = mutableSetOf<String>()
+            val result = mutableListOf<String>()
             for (seq in this) {
                 val dotless = seq.withoutLeadingDot()
                 if (allowUpperCase) {
