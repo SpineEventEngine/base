@@ -91,7 +91,11 @@ class `'Glob' should` {
         assertMatches("5.mix")
         assertMatches("6.MIX")
 
-        assertDoesNotMatch("X.Hey")
+        assertDoesNotMatch("hey")
+        assertDoesNotMatch("jude.")
+        assertDoesNotMatch("mix")
+        assertDoesNotMatch("mIx")
+        assertDoesNotMatch("miX")
     }
 
     @Test
