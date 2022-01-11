@@ -42,8 +42,12 @@ public data class Glob(val pattern: String) {
         require(pattern.isNotEmpty())
     }
 
-    private val matcher: PathMatcher = FileSystems.getDefault()
-        .getPathMatcher("glob:$pattern")
+    private val matcher: PathMatcher = FileSystems.getDefault().getPathMatcher("glob:$pattern")
+
+    /**
+     * Checks if the given path matches this pattern.
+     */
+    public fun matches(path: Path): Boolean = matcher.matches(path)
 
     public companion object {
 
@@ -57,6 +61,8 @@ public data class Glob(val pattern: String) {
          *
          * @param extensions
          *         file extensions with or without the leading dot.
+         *         If no extensions are specified, the created pattern will match
+         *         files without extensions.
          * @see [extensionLowerAndUpper]
          */
         @JvmStatic
@@ -65,7 +71,10 @@ public data class Glob(val pattern: String) {
 
         /**
          * Creates a pattern which matches any file with the given extensions in lower- and
-         * uppercase versions.
+         * uppercase versions of specified file extensions.
+         *
+         * Even if char sequences are in passed the `mIxeD` case, only `lower`- and `UPPER`- case
+         * versions of the sequences will be used.
          *
          * @see [extension]
          */
@@ -74,7 +83,9 @@ public data class Glob(val pattern: String) {
 
         private fun create(extensions: Iterable<CharSequence>, allowUpperCase: Boolean): Glob {
             val ext: List<String> = extensions.withCaseOptions(allowUpperCase)
-
+            if (ext.isEmpty()) {
+                return Glob("**.")
+            }
             if (ext.size > 1) {
                 val commaSeparated = ext.joinToString(",")
                 return Glob("**.{$commaSeparated}")
@@ -91,10 +102,13 @@ public data class Glob(val pattern: String) {
          *         version of the sequence. Otherwise, the sequences would be used as is.
          */
         private fun Iterable<CharSequence>.withCaseOptions(allowUpperCase: Boolean): List<String> {
+            if (!iterator().hasNext()) {
+                return listOf()
+            }
             val values: MutableSet<String> = mutableSetOf()
             val result: MutableList<String> = mutableListOf()
-            for (e in this) {
-                val dotless = e.withoutDot()
+            for (seq in this) {
+                val dotless = seq.withoutLeadingDot()
                 if (allowUpperCase) {
                     values.add(dotless.lowercase())
                     values.add(dotless.uppercase())
@@ -110,15 +124,10 @@ public data class Glob(val pattern: String) {
         /**
          * Obtains the string without the leading dot, if present.
          */
-        private fun CharSequence.withoutDot(): String {
+        private fun CharSequence.withoutLeadingDot(): String {
             if (isEmpty()) return ""
             return if (this[0] == '.') substring(1)
             else toString()
         }
     }
-
-    /**
-     * Checks if the given path matches this pattern.
-     */
-    public fun matches(path: Path): Boolean = matcher.matches(path)
 }
