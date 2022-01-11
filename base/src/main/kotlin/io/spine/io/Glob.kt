@@ -86,11 +86,12 @@ public data class Glob(val pattern: String) {
             if (ext.isEmpty()) {
                 return Glob("**.")
             }
-            if (ext.size > 1) {
+            return if (ext.size > 1) {
                 val commaSeparated = ext.joinToString(",")
-                return Glob("**.{$commaSeparated}")
+                Glob("**.{$commaSeparated}")
+            } else {
+                Glob("**.${ext[0]}")
             }
-            return Glob("**.${ext[0]}")
         }
 
         /**
