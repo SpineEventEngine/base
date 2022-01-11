@@ -54,6 +54,7 @@ public data class Glob(val pattern: String) {
         /**
          * A pattern which matches any file.
          */
+        @JvmField
         public val any: Glob = Glob("**")
 
         /**
@@ -66,8 +67,21 @@ public data class Glob(val pattern: String) {
          * @see [extensionLowerAndUpper]
          */
         @JvmStatic
-        public fun extension(vararg extensions: CharSequence): Glob =
+        public fun extension(vararg extensions: String): Glob =
             create(extensions.toList(), false)
+
+        /**
+         * Creates a pattern which matches any file with the given extensions.
+         *
+         * @param extensions
+         *         file extensions with or without the leading dot.
+         *         If no extensions are specified, the created pattern will match
+         *         files without extensions.
+         * @see [extensionLowerAndUpper]
+         */
+        @JvmStatic
+        public fun extension(extensions: Iterable<String>): Glob =
+            create(extensions, false)
 
         /**
          * Creates a pattern which matches any file with the given extensions in lower- and
@@ -78,10 +92,24 @@ public data class Glob(val pattern: String) {
          *
          * @see [extension]
          */
-        public fun extensionLowerAndUpper(vararg extensions: CharSequence): Glob =
+        @JvmStatic
+        public fun extensionLowerAndUpper(vararg extensions: String): Glob =
             create(extensions.toList(), true)
 
-        private fun create(extensions: Iterable<CharSequence>, allowUpperCase: Boolean): Glob {
+        /**
+         * Creates a pattern which matches any file with the given extensions in lower- and
+         * uppercase versions of specified file extensions.
+         *
+         * Even if char sequences are in passed the `mIxeD` case, only `lower`- and `UPPER`- case
+         * versions of the sequences will be used.
+         *
+         * @see [extension]
+         */
+        @JvmStatic
+        public fun extensionLowerAndUpper(extensions: Iterable<String>): Glob =
+            create(extensions, true)
+
+        private fun create(extensions: Iterable<String>, allowUpperCase: Boolean): Glob {
             val ext: List<String> = extensions.withCaseOptions(allowUpperCase)
             if (ext.isEmpty()) {
                 return Glob("**.")
@@ -102,7 +130,7 @@ public data class Glob(val pattern: String) {
          *         if `true` each entry of the returned list would have lower- and uppercase
          *         version of the sequence. Otherwise, the sequences would be used as is.
          */
-        private fun Iterable<CharSequence>.withCaseOptions(allowUpperCase: Boolean): List<String> {
+        private fun Iterable<String>.withCaseOptions(allowUpperCase: Boolean): List<String> {
             if (!iterator().hasNext()) {
                 return listOf()
             }
@@ -125,10 +153,10 @@ public data class Glob(val pattern: String) {
         /**
          * Obtains the string without the leading dot, if present.
          */
-        private fun CharSequence.withoutLeadingDot(): String {
-            if (isEmpty()) return ""
+        private fun String.withoutLeadingDot(): String {
+            if (isEmpty()) return this
             return if (this[0] == '.') substring(1)
-            else toString()
+            else this
         }
     }
 }
