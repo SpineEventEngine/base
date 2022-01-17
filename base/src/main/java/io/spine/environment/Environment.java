@@ -315,19 +315,19 @@ public final class Environment implements Logging {
         this.currentType = newCurrent;
         @SuppressWarnings("FloggerSplitLogStatement")
                 // See: https://github.com/SpineEventEngine/base/issues/612
-        var info = _info();
+        var debug = _debug();
         if (previous == null) {
             if (newCurrent != null) {
-                info.log("`Environment` set to `%s`.", newCurrent.getName());
+                debug.log("`Environment` set to `%s`.", newCurrent.getName());
             }
         } else {
             if (previous.equals(newCurrent)) {
-                info.log("`Environment` stays `%s`.", newCurrent.getName());
+                debug.log("`Environment` stays `%s`.", newCurrent.getName());
             } else {
                 var newType = newCurrent != null
                               ? backtick(newCurrent.getName())
                               : "undefined";
-                info.log("`Environment` turned from `%s` to %s.", previous.getName(), newType);
+                debug.log("`Environment` turned from `%s` to %s.", previous.getName(), newType);
             }
         }
     }
