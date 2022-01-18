@@ -40,6 +40,7 @@ abstract class PublishExtension @Inject constructor() {
     abstract val projectsToPublish: SetProperty<String>
     abstract val targetRepositories: SetProperty<Repository>
     abstract val spinePrefix: Property<Boolean>
+    abstract val customPrefix: Property<String>
 
     /**
      * The project to be published _instead_ of [projectsToPublish].
@@ -54,7 +55,7 @@ abstract class PublishExtension @Inject constructor() {
         const val name = "spinePublishing"
 
         /** The prefix to be used before the project name if [spinePrefix] is set to `true`. */
-        const val artifactPrefix = "spine-"
+        const val standardPrefix = "spine-"
 
         /**
          * Creates a new instance of the extension and adds it to the given project.
@@ -62,22 +63,32 @@ abstract class PublishExtension @Inject constructor() {
         fun createIn(project: Project): PublishExtension {
             val extension = project.extensions.create(name, PublishExtension::class.java)
             extension.spinePrefix.convention(true)
+            extension.customPrefix.convention("")
             return extension
         }
     }
 
     /**
      * Obtains an artifact ID of the given project, taking into account the value of
-     * the [spinePrefix] property. If the property is set to `true`, [artifactPrefix] will
+     * the [spinePrefix] and [customPrefix] properties.
+     *
+     * If the `customPrefix` property is set to a non-empty string, it will be used before
+     * the published project name. Otherwise, the [spinePrefix] property is taken into account.
+     *
+     * If the `spinePrefix` property is set to `true`, [standardPrefix] will
      * be used before the project name. Otherwise, just the name of the project will be
      * used as the artifact ID.
      */
-    fun artifactId(project: Project): String =
-        if (spinePrefix.get()) {
-            "$artifactPrefix${project.name}"
+    fun artifactId(project: Project): String {
+        val customPrefix = customPrefix.get()
+        return if (customPrefix.isNotEmpty()) {
+            "$customPrefix${project.name}"
+        } else if (spinePrefix.get()) {
+            "$standardPrefix${project.name}"
         } else {
             project.name
         }
+    }
 
     /**
      * Instructs to publish the passed project _instead_ of [projectsToPublish].
