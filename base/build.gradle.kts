@@ -32,6 +32,7 @@ import io.spine.internal.dependency.Protobuf
 import io.spine.internal.gradle.IncrementGuard
 import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.publish.Publish.Companion.publishProtoArtifact
+import io.spine.internal.gradle.publish.Publish.Companion.attachProtoToJavaSources
 import io.spine.internal.gradle.testing.exposeTestArtifacts
 
 plugins {
@@ -53,8 +54,8 @@ dependencies {
 }
 
 val generatedDir by extra("$projectDir/generated")
-val generatedSpineDir by extra("$generatedDir/main/spine")
-val generatedTestSpineDir by extra("$generatedDir/test/spine")
+val generatedSpineDir by extra("$generatedDir/main/java")
+val generatedTestSpineDir by extra("$generatedDir/test/java")
 
 sourceSets {
     main {
@@ -94,7 +95,9 @@ protobuf {
                 classes that duplicate those coming from Protobuf library JARs.
             */
             task.doLast {
+                println("Called deleting")
                 delete("${generatedRoot}/${ssn}/java/${googlePackagePrefix}")
+                delete("${generatedRoot}/${ssn}/java/com")
             }
         }
     }
@@ -116,3 +119,4 @@ tasks.withType(Jar::class) {
 }
 
 publishProtoArtifact(project)
+attachProtoToJavaSources(project)

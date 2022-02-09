@@ -84,7 +84,7 @@ spinePublishing {
         targetRepositories.addAll(
             cloudRepo,
             cloudArtifactRegistry,
-             gitHub("base")
+            gitHub("base")
         )
     }
     projectsToPublish.addAll(subprojects.map { it.path })

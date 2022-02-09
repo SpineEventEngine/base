@@ -49,7 +49,6 @@ import org.gradle.kotlin.dsl.getByType
 @Suppress("unused")
 fun Project.spinePublishing(action: PublishExtension.() -> Unit) {
     apply<Publish>()
-
     val extension = extensions.getByType(PublishExtension::class)
     extension.action()
 }

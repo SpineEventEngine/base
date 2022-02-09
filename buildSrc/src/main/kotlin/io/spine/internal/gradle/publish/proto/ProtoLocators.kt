@@ -48,6 +48,7 @@ import org.gradle.api.file.SourceDirectorySet
  * except those included into the returned `Collection`.
  */
 internal fun Project.protoFiles(): Collection<File> {
+    println("Called Project.protoFiles()")
     val files = this.configurations.findByName("runtimeClasspath")!!.files
     val jarFiles = files.map { JarFileName(it.name) }
     val result = mutableListOf<File>()
@@ -87,6 +88,10 @@ internal fun Project.protoFiles(): Collection<File> {
     val mainSourceSet = this.sourceSets.findByName("main")!!
     val protoSourceDirs = mainSourceSet.extensions.getByName("proto") as SourceDirectorySet
     result.addAll(protoSourceDirs.srcDirs)
+    println("Result of Project.protoFiles(): ${result.size}")
+    result.forEach {
+        println("$it   ---- ${it.isProtoFileOrDir()}")
+    }
     return result
 }
 
@@ -95,7 +100,7 @@ internal fun Project.protoFiles(): Collection<File> {
  *
  * If this file is a directory, scans its children recursively.
  *
- * @return `true` if the this [is a Protobuf file][isProto], or
+ * @return `true` if this [is a Protobuf file][isProto], or
  *         a directory containing at least one Protobuf file,
  *         `false` otherwise
  */

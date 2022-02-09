@@ -30,6 +30,10 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import io.spine.internal.gradle.publish.proto.AssembleProto
+import io.spine.internal.gradle.publish.proto.isProtoFileOrDir
+import io.spine.internal.gradle.publish.proto.protoFiles
+import org.gradle.jvm.tasks.Jar
+import org.gradle.kotlin.dsl.named
 
 /**
  * This plugin allows publishing artifacts to remote Maven repositories.
@@ -50,7 +54,7 @@ import io.spine.internal.gradle.publish.proto.AssembleProto
  *     }
  * ```
  * When applied to a multi-module project, the plugin should be applied to the root project.
- * The sub-projects to be published are specified by their names:
+ * The subprojects to be published are specified by their names:
  * ```
  *     import io.spine.gradle.internal.PublishingRepos
  *     import io.spine.gradle.internal.spinePublishing
@@ -119,6 +123,17 @@ class Publish : Plugin<Project> {
             val task = AssembleProto.registerIn(project)
             project.artifacts {
                 add("archives", task)
+            }
+        }
+
+        fun attachProtoToJavaSources(project: Project) {
+            println("Called attachProtoToJavaSources")
+            project.tasks.named<Jar>("sourceJar") {
+                from(project.protoFiles()) {
+                    include {
+                        it.file.isProtoFileOrDir()
+                    }
+                }
             }
         }
     }
