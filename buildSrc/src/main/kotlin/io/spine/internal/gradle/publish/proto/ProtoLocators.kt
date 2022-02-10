@@ -88,10 +88,6 @@ internal fun Project.protoFiles(): Collection<File> {
     val mainSourceSet = this.sourceSets.findByName("main")!!
     val protoSourceDirs = mainSourceSet.extensions.getByName("proto") as SourceDirectorySet
     result.addAll(protoSourceDirs.srcDirs)
-    println("Result of Project.protoFiles(): ${result.size}")
-    result.forEach {
-        println("$it   ---- ${it.isProtoFileOrDir()}")
-    }
     return result
 }
 
