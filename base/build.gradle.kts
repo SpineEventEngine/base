@@ -40,10 +40,7 @@ plugins {
     id("com.google.protobuf")
 }
 
-project.exposeTestArtifacts()
 apply<IncrementGuard>()
-
-configurations.excludeProtobufLite()
 
 dependencies {
     Protobuf.libs.forEach { protobuf(it) }
@@ -68,11 +65,14 @@ sourceSets {
     }
 }
 
-protobuf {
-    val generatedRoot = "$projectDir/generated"
-    val googlePackagePrefix = "com/google"
+java {
+    exposeTestArtifacts()
+}
 
-    generatedFilesBaseDir = generatedRoot
+protobuf {
+    configurations.excludeProtobufLite()
+    generatedFilesBaseDir = generatedDir
+
     generateProtoTasks {
         for (task in all()) {
             val ssn = task.sourceSet.name
@@ -84,23 +84,32 @@ protobuf {
             }
 
             /**
-                Remove the code generated for Google Protobuf library types.
+            Remove the code generated for Google Protobuf library types.
 
-                Java code for the `com.google` package was generated because we wanted
-                to have descriptors for all the types, including those from Google Protobuf library.
-                We want all the descriptors so that they are included into the resources used by
-                the `io.spine.type.KnownTypes` class.
+            Java code for the `com.google` package was generated because we wanted
+            to have descriptors for all the types, including those from Google Protobuf library.
+            We want all the descriptors so that they are included into the resources used by
+            the `io.spine.type.KnownTypes` class.
 
-                Now, as we have the descriptors _and_ excessive Java code, we delete it to avoid
-                classes that duplicate those coming from Protobuf library JARs.
-            */
+            Now, as we have the descriptors _and_ excessive Java code, we delete it to avoid
+            classes that duplicate those coming from Protobuf library JARs.
+             */
             task.doLast {
-                println("Called deleting")
-                delete("${generatedRoot}/${ssn}/java/${googlePackagePrefix}")
-                delete("${generatedRoot}/${ssn}/java/com")
+                delete("${generatedDir}/${ssn}/java/com/google")
+                delete("${generatedDir}/${ssn}/java/com")
             }
         }
     }
+
+    /**
+     * Exclude Google `.proto` sources from all the artifacts.
+     */
+    tasks.withType<Jar>().configureEach {
+        exclude { it.isGoogleProtoSource() }
+    }
+
+    publishProtoArtifact(project)
+    attachProtoToJavaSources(project)
 }
 
 /**
@@ -110,13 +119,3 @@ fun FileTreeElement.isGoogleProtoSource(): Boolean {
     val pathSegments = relativePath.segments
     return pathSegments.isNotEmpty() && pathSegments[0].equals("google")
 }
-
-/**
- * Exclude Google `.proto` sources from all the artifacts.
- */
-tasks.withType(Jar::class) {
-    exclude { it.isGoogleProtoSource() }
-}
-
-publishProtoArtifact(project)
-attachProtoToJavaSources(project)
