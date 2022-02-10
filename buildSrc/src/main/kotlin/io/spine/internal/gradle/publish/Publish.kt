@@ -126,8 +126,15 @@ class Publish : Plugin<Project> {
             }
         }
 
+        /**
+         * Extends the resulting `*-sources.jar` to contain `.proto` definitions
+         * along with java code.
+         *
+         * JAR with sources contains both "hand-made" java code and the code, generated from
+         * proto messages. Generated code is hard to read and understand, in most cases it is
+         * simpler to navigate to an original proto definition.
+         */
         fun attachProtoToJavaSources(project: Project) {
-            println("Called attachProtoToJavaSources")
             project.tasks.named<Jar>("sourceJar") {
                 from(project.protoFiles()) {
                     include {
