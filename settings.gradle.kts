@@ -32,5 +32,7 @@ pluginManagement {
 
 rootProject.name = "spine-base"
 
-include("base")
-include("testlib")
+include(
+    "base",
+    "testlib"
+)
