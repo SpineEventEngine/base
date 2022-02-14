@@ -27,19 +27,12 @@
 package io.spine.internal.gradle.publish
 
 import io.spine.internal.gradle.Repository
-import io.spine.internal.gradle.sourceSets
-import org.gradle.api.InvalidUserDataException
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.UnknownTaskException
-import org.gradle.api.file.FileCollection
-import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
-import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.findByType
-import org.gradle.kotlin.dsl.get
 
 fun Project.spinePublishing2(configuration: SpinePublishing.() -> Unit) {
     extensions.run {
@@ -58,38 +51,38 @@ open class SpinePublishing(private val rootProject: Project) {
     var useSpinePrefix: Boolean = true
     var customPrefix: String = ""
 
-    init {
-        rootProject.afterEvaluate {
-            val rootPublishTask = publishTask(rootProject)
-            val checkCredentialsTask = checkCredentialsTask(rootProject)
-            modules.map { name -> rootProject.project(name) }
-                .forEach { it.applyMavenPublish(rootPublishTask, checkCredentialsTask) }
-        }
-    }
+//    init {
+//        rootProject.afterEvaluate {
+//            val rootPublishTask = publishTask(rootProject)
+//            val rootCheckCredsTask = checkCredentialsTask(rootProject)
+//            modules.map { name -> rootProject.project(name) }
+//                .forEach { it.applyMavenPublish(rootPublishTask, rootCheckCredsTask) }
+//        }
+//    }
 
-    private fun publishTask(project: Project): TaskProvider<Task> = with(project.tasks) {
-        try {
-            named(taskName)
-        } catch (e: UnknownTaskException) {
-            register(taskName)
-        }
-    }
+//    private fun publishTask(project: Project): TaskProvider<Task> = with(project.tasks) {
+//        try {
+//            named(taskName)
+//        } catch (e: UnknownTaskException) {
+//            register(taskName)
+//        }
+//    }
 
-    private fun checkCredentialsTask(project: Project): TaskProvider<Task> =
-        project.tasks.register("checkCredentials") {
-            doLast {
-                destinations.forEach {
-                    it.credentials(project)
-                        ?: throw InvalidUserDataException(
-                            "No valid credentials for repository `${it}`. Please make sure " +
-                                    "to pass username/password or a valid `.properties` file."
-                        )
-                }
-            }
-        }
+//    private fun checkCredentialsTask(project: Project): TaskProvider<Task> =
+//        project.tasks.register("checkCredentials") {
+//            doLast {
+//                destinations.forEach {
+//                    it.credentials(project)
+//                        ?: throw InvalidUserDataException(
+//                            "No valid credentials for repository `${it}`. Please make sure " +
+//                                    "to pass username/password or a valid `.properties` file."
+//                        )
+//                }
+//            }
+//        }
 
     private fun Project.applyMavenPublish(rootPublish: TaskProvider<Task>,
-                                          checkCredentials: TaskProvider<Task>) {
+                                          rootCheckCredsTask: TaskProvider<Task>) {
 
         apply(plugin = "maven-publish")
 
@@ -97,72 +90,26 @@ open class SpinePublishing(private val rootProject: Project) {
         createMavenPublication()
         setUpRepositories()
 
-        setUpTaskDependencies(rootPublish, checkCredentials)
+        setUpTaskDependencies(rootPublish, rootCheckCredsTask)
     }
 
     private fun setUpTaskDependencies(rootPublish: TaskProvider<Task>,
                                       checkCredentials: TaskProvider<Task>) {
 
-        TODO("Not yet implemented")
+        // ...
     }
 
     private fun createMavenPublication() {
-        TODO("Not yet implemented")
+        // ...
     }
 
     private fun setUpRepositories() {
-        TODO("Not yet implemented")
+        // ...
     }
 
 
-    private fun Project.setUpDefaultArtifacts() {
-        val sourceJar = tasks.createIfAbsent(
-            artifactTask = ArtifactTaskName.sourceJar,
-            from = sourceSets["main"].allSource,
-            classifier = "sources"
-        )
-        val testOutputJar = tasks.createIfAbsent(
-            artifactTask = ArtifactTaskName.testOutputJar,
-            from = sourceSets["test"].output,
-            classifier = "test"
-        )
-        val javadocJar = tasks.createIfAbsent(
-            artifactTask = ArtifactTaskName.javadocJar,
-            from = files("$buildDir/docs/javadoc"),
-            classifier = "javadoc",
-            dependencies = setOf("javadoc")
-        )
-
-        artifacts {
-            val archives = ConfigurationName.archives
-            add(archives, sourceJar)
-            add(archives, testOutputJar)
-            add(archives, javadocJar)
-        }
-    }
-
-    private fun Project.prepareTasks(publish: Task, checkCredentials: Task) {
-        val publishTasks = getTasksByName(Publish.taskName, false)
-        publish.dependsOn(publishTasks)
-        publishTasks.forEach { it.dependsOn(checkCredentials) }
-    }
-
-    private fun TaskContainer.createIfAbsent(
-        artifactTask: ArtifactTaskName,
-        from: FileCollection,
-        classifier: String,
-        dependencies: Set<Any> = setOf()
-    ): Task {
-        val existing = findByName(artifactTask.name)
-        if (existing != null) {
-            return existing
-        }
-        println("creating because absent: $artifactTask")
-        return create(artifactTask.name, Jar::class) {
-            this.from(from)
-            archiveClassifier.set(classifier)
-            dependencies.forEach { dependsOn(it) }
-        }
+    private fun setUpDefaultArtifacts() {
+        // ...
     }
 
     fun spineRepositories(select: PublishingRepos.() -> Set<Repository>) = select(PublishingRepos)
