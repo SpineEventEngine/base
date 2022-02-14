@@ -146,6 +146,7 @@ private fun TaskContainer.createIfAbsent(
     if (existing != null) {
         return existing
     }
+    println("creating because absent: $artifactTask")
     return create(artifactTask.name, Jar::class) {
         this.from(from)
         archiveClassifier.set(classifier)
