@@ -83,7 +83,6 @@ apply(from = "$rootDir/version.gradle.kts")
 // An example of publishing a single module.
 // Configuration is done in a module's build file.
 spinePublishing2 {
-    modules = setOf(project.path)
     destinations = spineRepositories {
         setOf(
             cloudRepo,
@@ -97,7 +96,7 @@ spinePublishing2 {
 }
 
 // An example of publishing several modules.
-// Configuration is done in a root project.
+// Configuration is done in a root project's build file.
 spinePublishing2 {
     modules = setOf(
         "base",
