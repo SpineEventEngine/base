@@ -47,6 +47,7 @@ import io.spine.internal.gradle.kotlin.applyJvmToolchain
 import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
 import io.spine.internal.gradle.publish.PublishingRepos
 import io.spine.internal.gradle.publish.spinePublishing
+import io.spine.internal.gradle.publish.spinePublishing2
 import io.spine.internal.gradle.report.coverage.JacocoConfig
 import io.spine.internal.gradle.report.license.LicenseReporter
 import io.spine.internal.gradle.report.pom.PomGenerator
@@ -79,6 +80,44 @@ plugins {
 
 apply(from = "$rootDir/version.gradle.kts")
 
+// An example of publishing a single module.
+// Configuration is done in a module's build file.
+spinePublishing2 {
+    modules = setOf(project.path)
+    destinations = spineRepositories {
+        setOf(
+            cloudRepo,
+            cloudArtifactRegistry,
+            gitHub("base")
+        )
+    }
+    protoJar {
+        disabled = true
+    }
+}
+
+// An example of publishing several modules.
+// Configuration is done in a root project.
+spinePublishing2 {
+    modules = setOf(
+        "base",
+        "testlib"
+    )
+    destinations = spineRepositories {
+        setOf(
+            cloudRepo,
+            cloudArtifactRegistry,
+            gitHub("base")
+        )
+    }
+    protoJar {
+        exclusions = setOf(
+            "base"
+        )
+    }
+}
+
+// Original extension.
 spinePublishing {
     with(PublishingRepos) {
         targetRepositories.addAll(
@@ -173,7 +212,7 @@ subprojects {
     }
 
     /**
-     * These dependencies are applied to all sub-projects and do not have to
+     * These dependencies are applied to all subprojects and do not have to
      * be included explicitly.
      *
      * We expose production code dependencies as API because they are used
