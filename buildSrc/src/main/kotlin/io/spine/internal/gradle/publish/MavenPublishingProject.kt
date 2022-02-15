@@ -29,11 +29,13 @@ package io.spine.internal.gradle.publish
 import io.spine.internal.gradle.Repository
 import org.gradle.api.InvalidUserDataException
 import org.gradle.api.Project
+import org.gradle.api.UnknownTaskException
 import org.gradle.api.artifacts.PublishArtifact
 import org.gradle.api.artifacts.PublishArtifactSet
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.tasks.TaskContainer
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByType
@@ -130,18 +132,19 @@ class MavenPublishingProject(
     }
 
     private fun Project.setTaskDependencies() {
-        val publish = "publish"
-        val rootPublish = rootProject.tasks.named(publish)
-        val localPublish = tasks.named(publish)
-        rootPublish.configure {
-            dependsOn(localPublish)
-        }
-
+        val rootPublish = rootProject.tasks.getOrCreatePublishTask()
+        val localPublish = tasks.getOrCreatePublishTask()
         val checkCredentials = registerCheckCredentialsTask()
-        localPublish.configure {
-            dependsOn(checkCredentials)
-        }
+        rootPublish.configure { dependsOn(localPublish) }
+        localPublish.configure { dependsOn(checkCredentials) }
     }
+
+    private fun TaskContainer.getOrCreatePublishTask() =
+        try {
+            named("publish")
+        } catch (e: UnknownTaskException) {
+            register("publish")
+        }
 
     private fun Project.registerCheckCredentialsTask() = tasks.register("checkCredentials") {
         doLast {

@@ -108,8 +108,8 @@ protobuf {
         exclude { it.isGoogleProtoSource() }
     }
 
-    publishProtoArtifact(project)
-    attachProtoToJavaSources(project)
+//    publishProtoArtifact(project)
+//    attachProtoToJavaSources(project)
 }
 
 /**

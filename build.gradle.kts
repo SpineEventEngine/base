@@ -82,18 +82,18 @@ apply(from = "$rootDir/version.gradle.kts")
 
 // An example of publishing a single module.
 // Configuration is done in a module's build file.
-spinePublishing2 {
-    destinations = spineRepositories {
-        setOf(
-            cloudRepo,
-            cloudArtifactRegistry,
-            gitHub("base")
-        )
-    }
-    protoJar {
-        disabled = true
-    }
-}
+//spinePublishing2 {
+//    destinations = spineRepositories {
+//        setOf(
+//            cloudRepo,
+//            cloudArtifactRegistry,
+//            gitHub("base")
+//        )
+//    }
+//    protoJar {
+//        disabled = true
+//    }
+//}
 
 // An example of publishing several modules.
 // Configuration is done in a root project's build file.
@@ -109,24 +109,24 @@ spinePublishing2 {
             gitHub("base")
         )
     }
-    protoJar {
-        exclusions = setOf(
-            "base"
-        )
-    }
+//    protoJar {
+//        exclusions = setOf(
+//            "base"
+//        )
+//    }
 }
 
 // Original extension.
-spinePublishing {
-    with(PublishingRepos) {
-        targetRepositories.addAll(
-            cloudRepo,
-            cloudArtifactRegistry,
-            gitHub("base")
-        )
-    }
-    projectsToPublish.addAll(subprojects.map { it.path })
-}
+//spinePublishing {
+//    with(PublishingRepos) {
+//        targetRepositories.addAll(
+//            cloudRepo,
+//            cloudArtifactRegistry,
+//            gitHub("base")
+//        )
+//    }
+//    projectsToPublish.addAll(subprojects.map { it.path })
+//}
 
 allprojects {
     apply {
