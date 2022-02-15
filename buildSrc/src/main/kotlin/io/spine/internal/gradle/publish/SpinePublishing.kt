@@ -28,9 +28,6 @@ package io.spine.internal.gradle.publish
 
 import io.spine.internal.gradle.Repository
 import org.gradle.api.Project
-import org.gradle.api.Task
-import org.gradle.api.tasks.TaskProvider
-import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.findByType
 
@@ -52,69 +49,7 @@ open class SpinePublishing(private val rootProject: Project) {
     private var protoJar: ProtoJar = ProtoJar()
     var modules: Set<String> = emptySet()
     var destinations: Set<Repository> = emptySet()
-    var useSpinePrefix: Boolean = true
     var customPrefix: String = ""
-
-//    init {
-//        rootProject.afterEvaluate {
-//            val rootPublishTask = publishTask(rootProject)
-//            val rootCheckCredsTask = checkCredentialsTask(rootProject)
-//            modules.map { name -> rootProject.project(name) }
-//                .forEach { it.applyMavenPublish(rootPublishTask, rootCheckCredsTask) }
-//        }
-//    }
-
-//    private fun publishTask(project: Project): TaskProvider<Task> = with(project.tasks) {
-//        try {
-//            named(taskName)
-//        } catch (e: UnknownTaskException) {
-//            register(taskName)
-//        }
-//    }
-
-//    private fun checkCredentialsTask(project: Project): TaskProvider<Task> =
-//        project.tasks.register("checkCredentials") {
-//            doLast {
-//                destinations.forEach {
-//                    it.credentials(project)
-//                        ?: throw InvalidUserDataException(
-//                            "No valid credentials for repository `${it}`. Please make sure " +
-//                                    "to pass username/password or a valid `.properties` file."
-//                        )
-//                }
-//            }
-//        }
-
-    private fun Project.applyMavenPublish(rootPublish: TaskProvider<Task>,
-                                          rootCheckCredsTask: TaskProvider<Task>) {
-
-        apply(plugin = "maven-publish")
-
-        setUpDefaultArtifacts()
-        createMavenPublication()
-        setUpRepositories()
-
-        setUpTaskDependencies(rootPublish, rootCheckCredsTask)
-    }
-
-    private fun setUpTaskDependencies(rootPublish: TaskProvider<Task>,
-                                      checkCredentials: TaskProvider<Task>) {
-
-        // ...
-    }
-
-    private fun createMavenPublication() {
-        // ...
-    }
-
-    private fun setUpRepositories() {
-        // ...
-    }
-
-
-    private fun setUpDefaultArtifacts() {
-        // ...
-    }
 
     fun spineRepositories(select: PublishingRepos.() -> Set<Repository>) = select(PublishingRepos)
 
@@ -124,10 +59,54 @@ open class SpinePublishing(private val rootProject: Project) {
      * Called to notify the extension that its configuration is completed.
      *
      * On this stage the extension will validate the received configuration and set up
-     * `maven-publish` plugin accordingly.
+     * `maven-publish` plugin for each module.
      */
     internal fun configured() {
 
+        val publishingProjects = publishingProjects()
+        val mavenPublishingProjects = publishingProjects
+            .map { MavenPublishingProject(it) }
+
+        rootProject.afterEvaluate {
+            mavenPublishingProjects.forEach { it.setUp() }
+        }
+    }
+
+    /**
+     * Assembles configurations required to publish each module.
+     *
+     * If no [modules] are explicitly specified for publishing, a [rootProject]
+     * is considered the one to be published.
+     */
+    private fun publishingProjects(): List<PublishingProject> {
+
+        assertProtoExclusions()
+
+        val protoJarExclusions = protoJar.exclusions
+        val publishingProjects = modules.ifEmpty { setOf(rootProject.path) }
+            .map { path ->
+                PublishingProject(
+                    project = rootProject.project(path),
+                    prefix = customPrefix.ifEmpty { "spine" },
+                    excludeProtoJar = protoJarExclusions.contains(path) || protoJar.disabled
+                )
+            }
+
+        return publishingProjects
+    }
+
+    /**
+     * Asserts that all modules, marked as excluded from proto JAR generation,
+     * are actually specified for publishing.
+     */
+    private fun assertProtoExclusions() {
+        val nonPublishedExclusions = protoJar.exclusions.minus(modules)
+        if (nonPublishedExclusions.isNotEmpty()) {
+            throw IllegalStateException(
+                "One or more modules are marked as `excluded from proto JAR" +
+                        "generation`, but they are not even published: $nonPublishedExclusions"
+            )
+        }
     }
 }
 
@@ -140,6 +119,9 @@ class ProtoJar {
 
     /**
      * Set of modules, for which a `proto` JAR will NOT be generated.
+     *
+     * Use this set only if the set of [published modules][SpinePublishing.modules]
+     * is specified explicitly. Otherwise, use [disabled] flag.
      */
     var exclusions: Set<String> = emptySet()
 
