@@ -93,6 +93,11 @@ spinePublishing2 {
     protoJar {
         disabled = true
     }
+//    proto {
+//        sourcesJar {
+//            disabled = true
+//        }
+//    }
 }
 
 // An example of publishing several modules.
@@ -114,6 +119,13 @@ spinePublishing2 {
             "base"
         )
     }
+//    proto {
+//        sourcesJar {
+//            exclusions = set(
+//                "base"
+//            )
+//        }
+//    }
 }
 
 // Original extension.
