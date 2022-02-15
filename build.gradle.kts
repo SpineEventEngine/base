@@ -90,14 +90,16 @@ spinePublishing2 {
             gitHub("base")
         )
     }
+    // option #1
     protoJar {
         disabled = true
     }
-//    proto {
-//        sourcesJar {
-//            disabled = true
-//        }
-//    }
+    // option #2
+    proto {
+        sourcesJar {
+            disabled = true
+        }
+    }
 }
 
 // An example of publishing several modules.
@@ -114,18 +116,20 @@ spinePublishing2 {
             gitHub("base")
         )
     }
+    // option #1
     protoJar {
         exclusions = setOf(
             "base"
         )
     }
-//    proto {
-//        sourcesJar {
-//            exclusions = set(
-//                "base"
-//            )
-//        }
-//    }
+    // option #2
+    proto {
+        sourcesJar {
+            exclusions = setOf(
+                "base"
+            )
+        }
+    }
 }
 
 // Original extension.

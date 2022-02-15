@@ -35,16 +35,15 @@ import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.findByType
 
 fun Project.spinePublishing2(configuration: SpinePublishing.() -> Unit) {
-    extensions.run {
-        configuration.invoke(
-            findByType() ?: create(SpinePublishing::class.java.simpleName, project)
-        )
-    }
+    val name = SpinePublishing::class.java.simpleName
+    val extension = extensions.run { findByType<SpinePublishing>() ?: create(name, project) }
+    configuration.invoke(extension)
 }
 
 open class SpinePublishing(private val rootProject: Project) {
 
     private var protoJar: ProtoJar = ProtoJar()
+    private var protoPublishing: ProtoPublishing = ProtoPublishing()
     private val taskName = "publish"
     var modules: Set<String> = setOf()
     var destinations: Set<Repository> = setOf()
@@ -115,6 +114,8 @@ open class SpinePublishing(private val rootProject: Project) {
     fun spineRepositories(select: PublishingRepos.() -> Set<Repository>) = select(PublishingRepos)
 
     fun protoJar(configuration: ProtoJar.() -> Unit)  = configuration.invoke(protoJar)
+
+    fun proto(configuration: ProtoPublishing.() -> Unit) = configuration.invoke(protoPublishing)
 }
 
 /**
@@ -132,4 +133,14 @@ class ProtoJar {
      * Disables `proto` JAR generation for all publishing modules.
      */
     var disabled = false
+}
+
+class ProtoPublishing {
+    private val sourcesJar: SourcesJar = SourcesJar()
+    fun sourcesJar(configuration: SourcesJar.() -> Unit) = configuration.invoke(sourcesJar)
+}
+
+class SourcesJar {
+    var disabled: Boolean = false
+    var exclusions: Set<String> = emptySet()
 }
