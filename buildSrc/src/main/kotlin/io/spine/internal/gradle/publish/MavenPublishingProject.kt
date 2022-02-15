@@ -27,15 +27,16 @@
 package io.spine.internal.gradle.publish
 
 import io.spine.internal.gradle.Repository
-import io.spine.internal.gradle.sourceSets
+import org.gradle.api.InvalidUserDataException
 import org.gradle.api.Project
-import org.gradle.api.Task
-import org.gradle.api.file.FileCollection
-import org.gradle.api.tasks.TaskContainer
-import org.gradle.api.tasks.bundling.Jar
+import org.gradle.api.artifacts.PublishArtifact
+import org.gradle.api.artifacts.PublishArtifactSet
+import org.gradle.api.artifacts.repositories.MavenArtifactRepository
+import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.create
-import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getByType
 
 /**
  * A [Project] that publishes one or more artifacts using `maven-publish` plugin.
@@ -50,54 +51,107 @@ class MavenPublishingProject(
     /**
      * Applies the plugin, configures publications and prepares `publish*` tasks.
      */
-    fun setUp() {
-        project.apply(plugin = "maven-publish")
-        project.declareArtifacts()
+    fun setUp() = with(project) {
+        apply(plugin = "maven-publish")
+        declareArtifacts()
         createMavenPublication()
         specifyRepositories()
+        setTaskDependencies()
     }
 
-    private fun Project.declareArtifacts() = tasks.run {
-        val sourceJar = createIfAbsent(
-            task = ArtifactTaskName.sourceJar,
-            from = sourceSets["main"].allSource,
-            classifier = "sources"
-        )
-        val testOutputJar = createIfAbsent(
-            task = ArtifactTaskName.testOutputJar,
-            from = sourceSets["test"].output,
-            classifier = "test"
-        )
-        val javadocJar = createIfAbsent(
-            task = ArtifactTaskName.javadocJar,
-            from = files("$buildDir/docs/javadoc"),
-            classifier = "javadoc",
-            dependencies = setOf("javadoc")
-        )
-
+    private fun Project.declareArtifacts() = with(MavenArtifacts()) {
+        val archives = ConfigurationName.archives
         artifacts {
-            val archives = ConfigurationName.archives
-            add(archives, sourceJar)
-            add(archives, testOutputJar)
-            add(archives, javadocJar)
+            add(archives, sourceJar())
+            add(archives, testOutputJar())
+            add(archives, javadocJar())
         }
     }
 
-    private fun TaskContainer.createIfAbsent(
-        task: ArtifactTaskName,
-        from: FileCollection,
-        classifier: String,
-        dependencies: Set<Any> = setOf()
-    ): Task =
-        findByName(task.name) ?: create(task.name, Jar::class) {
-            this.from(from)
-            archiveClassifier.set(classifier)
-            dependencies.forEach { dependsOn(it) }
-        }
+    private fun Project.createMavenPublication() {
+        val artifact = listOf(prefix, name).joinToString("-")
+        val publishing = extensions.getByType<PublishingExtension>()
+        publishing.publications.create<MavenPublication>("mavenJava") {
+            groupId = project.group.toString()
+            artifactId = artifact
+            version = project.version.toString()
 
-    private fun createMavenPublication() {
+            from(project.components.getAt("java"))
+
+            val archivesConfig = project.configurations.getAt(ConfigurationName.archives)
+            val allArtifacts = archivesConfig.allArtifacts
+            val deduplicated = allArtifacts.deduplicate()
+            setArtifacts(deduplicated)
+        }
     }
 
-    private fun specifyRepositories() {
+    /**
+     * Obtains an [Iterable] containing artifacts that have the same `extension` and `classifier`.
+     *
+     * Such a situation may occur when applying both `com.gradle.plugin-publish` plugin AND
+     * `spinePublishing` in the same project. `com.gradle.plugin-publish` adds `sources` and `javadoc`
+     * artifacts, and we do it too in [Project.setUpDefaultArtifacts].
+     *
+     * At the time when we add artifacts in [Project.setUpDefaultArtifacts], those added by
+     * `com.gradle.plugin-publish` are not yet visible to our code. Hence, we have to perform
+     * the deduplication before we set the artifacts in [PublishingExtension.createMavenPublication].
+     */
+    private fun PublishArtifactSet.deduplicate(): Iterable<PublishArtifact> =
+        distinctBy { it.extension to it.classifier }
+
+    private fun Project.specifyRepositories() {
+        val isSnapshot = project.version
+            .toString()
+            .matches(Regex(".+[-.]SNAPSHOT([+.]\\d+)?"))
+        val publishing = extensions.getByType<PublishingExtension>()
+        destinations.forEach { repository ->
+            publishing.repositories.maven { initialize(repository, project, isSnapshot) }
+        }
+    }
+
+    private fun MavenArtifactRepository.initialize(
+        repository: Repository,
+        project: Project,
+        isSnapshot: Boolean
+    ) {
+        val destination = with(repository) {
+            if (isSnapshot) snapshots else releases
+        }
+
+        // Special treatment for CloudRepo URL.
+        // Reading is performed via public repositories, and publishing via
+        // private ones that differ in the `/public` infix.
+        url = project.uri(destination.replace("/public", ""))
+        val creds = repository.credentials(project.rootProject)
+        credentials {
+            username = creds?.username
+            password = creds?.password
+        }
+    }
+
+    private fun Project.setTaskDependencies() {
+        val publish = "publish"
+        val rootPublish = rootProject.tasks.named(publish)
+        val localPublish = tasks.named(publish)
+        rootPublish.configure {
+            dependsOn(localPublish)
+        }
+
+        val checkCredentials = registerCheckCredentialsTask()
+        localPublish.configure {
+            dependsOn(checkCredentials)
+        }
+    }
+
+    private fun Project.registerCheckCredentialsTask() = tasks.register("checkCredentials") {
+        doLast {
+            destinations.forEach {
+                it.credentials(project)
+                    ?: throw InvalidUserDataException(
+                        "No valid credentials for repository `${it}`. Please make sure " +
+                                "to pass username/password or a valid `.properties` file."
+                    )
+            }
+        }
     }
 }

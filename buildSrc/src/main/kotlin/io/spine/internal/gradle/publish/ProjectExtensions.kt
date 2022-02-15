@@ -85,6 +85,12 @@ internal fun Project.applyMavenPublish(
     }
 }
 
+private fun Project.prepareTasks(publish: Task, checkCredentials: Task) {
+    val publishTasks = getTasksByName(Publish.taskName, false)
+    publish.dependsOn(publishTasks)
+    publishTasks.forEach { it.dependsOn(checkCredentials) }
+}
+
 internal fun Project.createPublishTask(): Task =
     rootProject.tasks.create(Publish.taskName)
 
@@ -102,12 +108,6 @@ internal fun Project.createCheckTask(extension: PublishExtension): Task {
             }
     }
     return checkCredentials
-}
-
-private fun Project.prepareTasks(publish: Task, checkCredentials: Task) {
-    val publishTasks = getTasksByName(Publish.taskName, false)
-    publish.dependsOn(publishTasks)
-    publishTasks.forEach { it.dependsOn(checkCredentials) }
 }
 
 private fun Project.setUpDefaultArtifacts() {
