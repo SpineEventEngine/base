@@ -26,17 +26,78 @@
 
 package io.spine.internal.gradle.publish
 
+import io.spine.internal.gradle.Repository
+import io.spine.internal.gradle.sourceSets
 import org.gradle.api.Project
+import org.gradle.api.Task
+import org.gradle.api.file.FileCollection
+import org.gradle.api.tasks.TaskContainer
+import org.gradle.api.tasks.bundling.Jar
+import org.gradle.kotlin.dsl.apply
+import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.get
 
 /**
  * A [Project] that publishes one or more artifacts using `maven-publish` plugin.
  */
-class MavenPublishingProject(private val publishingProject: PublishingProject) {
+class MavenPublishingProject(
+    private val project: Project,
+    private val prefix: String,
+    private val excludeProtoJar: Boolean,
+    private val destinations: Set<Repository>
+) {
 
     /**
      * Applies the plugin, configures publications and prepares `publish*` tasks.
      */
     fun setUp() {
-        // Apply `maven-publish` plugin and prepare tasks
+        project.apply(plugin = "maven-publish")
+        project.declareArtifacts()
+        createMavenPublication()
+        specifyRepositories()
+    }
+
+    private fun Project.declareArtifacts() = tasks.run {
+        val sourceJar = createIfAbsent(
+            task = ArtifactTaskName.sourceJar,
+            from = sourceSets["main"].allSource,
+            classifier = "sources"
+        )
+        val testOutputJar = createIfAbsent(
+            task = ArtifactTaskName.testOutputJar,
+            from = sourceSets["test"].output,
+            classifier = "test"
+        )
+        val javadocJar = createIfAbsent(
+            task = ArtifactTaskName.javadocJar,
+            from = files("$buildDir/docs/javadoc"),
+            classifier = "javadoc",
+            dependencies = setOf("javadoc")
+        )
+
+        artifacts {
+            val archives = ConfigurationName.archives
+            add(archives, sourceJar)
+            add(archives, testOutputJar)
+            add(archives, javadocJar)
+        }
+    }
+
+    private fun TaskContainer.createIfAbsent(
+        task: ArtifactTaskName,
+        from: FileCollection,
+        classifier: String,
+        dependencies: Set<Any> = setOf()
+    ): Task =
+        findByName(task.name) ?: create(task.name, Jar::class) {
+            this.from(from)
+            archiveClassifier.set(classifier)
+            dependencies.forEach { dependsOn(it) }
+        }
+
+    private fun createMavenPublication() {
+    }
+
+    private fun specifyRepositories() {
     }
 }

@@ -36,9 +36,11 @@ import org.gradle.kotlin.dsl.findByType
  */
 fun Project.spinePublishing2(configuration: SpinePublishing.() -> Unit) {
     val name = SpinePublishing::class.java.simpleName
-    val extension = extensions.run { findByType<SpinePublishing>() ?: create(name, project) }
-    extension.run(configuration)
-    extension.configured()
+    val extension = with(extensions) { findByType<SpinePublishing>() ?: create(name, project) }
+    extension.run {
+        configuration()
+        configured()
+    }
 }
 
 /**
@@ -63,36 +65,22 @@ open class SpinePublishing(private val rootProject: Project) {
      */
     internal fun configured() {
 
-        val publishingProjects = publishingProjects()
-        val mavenPublishingProjects = publishingProjects
-            .map { MavenPublishingProject(it) }
-
-        rootProject.afterEvaluate {
-            mavenPublishingProjects.forEach { it.setUp() }
-        }
-    }
-
-    /**
-     * Assembles configurations required to publish each module.
-     *
-     * If no [modules] are explicitly specified for publishing, a [rootProject]
-     * is considered the one to be published.
-     */
-    private fun publishingProjects(): List<PublishingProject> {
-
         assertProtoExclusions()
 
         val protoJarExclusions = protoJar.exclusions
         val publishingProjects = modules.ifEmpty { setOf(rootProject.path) }
             .map { path ->
-                PublishingProject(
+                MavenPublishingProject(
                     project = rootProject.project(path),
                     prefix = customPrefix.ifEmpty { "spine" },
-                    excludeProtoJar = protoJarExclusions.contains(path) || protoJar.disabled
+                    excludeProtoJar = protoJarExclusions.contains(path) || protoJar.disabled,
+                    destinations
                 )
             }
 
-        return publishingProjects
+        rootProject.afterEvaluate {
+            publishingProjects.forEach { it.setUp() }
+        }
     }
 
     /**
