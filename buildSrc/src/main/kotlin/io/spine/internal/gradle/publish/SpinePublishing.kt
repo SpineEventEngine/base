@@ -34,19 +34,24 @@ import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.findByType
 
+/**
+ * Configures [SpinePublishing] extension.
+ */
 fun Project.spinePublishing2(configuration: SpinePublishing.() -> Unit) {
     val name = SpinePublishing::class.java.simpleName
     val extension = extensions.run { findByType<SpinePublishing>() ?: create(name, project) }
-    configuration.invoke(extension)
+    extension.run(configuration)
+    extension.configured()
 }
 
+/**
+ * A scope for setting up publishing of spine modules using `maven-publish` plugin.
+ */
 open class SpinePublishing(private val rootProject: Project) {
 
     private var protoJar: ProtoJar = ProtoJar()
-    private var protoPublishing: ProtoPublishing = ProtoPublishing()
-    private val taskName = "publish"
-    var modules: Set<String> = setOf()
-    var destinations: Set<Repository> = setOf()
+    var modules: Set<String> = emptySet()
+    var destinations: Set<Repository> = emptySet()
     var useSpinePrefix: Boolean = true
     var customPrefix: String = ""
 
@@ -113,9 +118,17 @@ open class SpinePublishing(private val rootProject: Project) {
 
     fun spineRepositories(select: PublishingRepos.() -> Set<Repository>) = select(PublishingRepos)
 
-    fun protoJar(configuration: ProtoJar.() -> Unit)  = configuration.invoke(protoJar)
+    fun protoJar(configuration: ProtoJar.() -> Unit)  = protoJar.run(configuration)
 
-    fun proto(configuration: ProtoPublishing.() -> Unit) = configuration.invoke(protoPublishing)
+    /**
+     * Called to notify the extension that its configuration is completed.
+     *
+     * On this stage the extension will validate the received configuration and set up
+     * `maven-publish` plugin accordingly.
+     */
+    internal fun configured() {
+
+    }
 }
 
 /**
@@ -124,6 +137,7 @@ open class SpinePublishing(private val rootProject: Project) {
  * and the proto files extracted from the JAR dependencies of the project.
  */
 class ProtoJar {
+
     /**
      * Set of modules, for which a `proto` JAR will NOT be generated.
      */
@@ -133,14 +147,4 @@ class ProtoJar {
      * Disables `proto` JAR generation for all publishing modules.
      */
     var disabled = false
-}
-
-class ProtoPublishing {
-    private val sourcesJar: SourcesJar = SourcesJar()
-    fun sourcesJar(configuration: SourcesJar.() -> Unit) = configuration.invoke(sourcesJar)
-}
-
-class SourcesJar {
-    var disabled: Boolean = false
-    var exclusions: Set<String> = emptySet()
 }

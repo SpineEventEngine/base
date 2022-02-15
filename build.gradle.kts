@@ -90,15 +90,8 @@ spinePublishing2 {
             gitHub("base")
         )
     }
-    // option #1
     protoJar {
         disabled = true
-    }
-    // option #2
-    proto {
-        sourcesJar {
-            disabled = true
-        }
     }
 }
 
@@ -116,19 +109,10 @@ spinePublishing2 {
             gitHub("base")
         )
     }
-    // option #1
     protoJar {
         exclusions = setOf(
             "base"
         )
-    }
-    // option #2
-    proto {
-        sourcesJar {
-            exclusions = setOf(
-                "base"
-            )
-        }
     }
 }
 
