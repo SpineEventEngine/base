@@ -104,12 +104,11 @@ protobuf {
 /**
  * Exclude Google `.proto` sources from all the artifacts.
  */
-afterEvaluate {
-    fun FileTreeElement.isGoogleProtoSource(): Boolean {
-        val pathSegments = relativePath.segments
-        return pathSegments.isNotEmpty() && pathSegments[0].equals("google")
-    }
-    tasks.withType<Jar>().configureEach {
-        exclude { it.isGoogleProtoSource() }
-    }
+tasks.withType<Jar>().configureEach {
+    exclude { it.isGoogleProtoSource() }
+}
+
+fun FileTreeElement.isGoogleProtoSource(): Boolean {
+    val pathSegments = relativePath.segments
+    return pathSegments.isNotEmpty() && pathSegments[0].equals("google")
 }
