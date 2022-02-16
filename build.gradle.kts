@@ -78,30 +78,23 @@ plugins {
 
 apply(from = "$rootDir/version.gradle.kts")
 
-// An example of publishing a single module.
-// Configuration is done in a module's build file.
-//spinePublishing2 {
-//    destinations = spineRepositories {
-//        setOf(
+// Original extension.
+
+//spinePublishing {
+//    with(PublishingRepos) {
+//        targetRepositories.addAll(
 //            cloudRepo,
 //            cloudArtifactRegistry,
 //            gitHub("base")
 //        )
 //    }
-//    protoJar {
-//        disabled = true
-//    }
-//    artifacts {
-//        compileOutput()
-//        testsOutput()
-//        javaSources()
-//        protoSources()
-//        javadoc()
-//    }
+//    projectsToPublish.addAll(subprojects.map { it.path })
 //}
 
+// New extension.
 // An example of publishing several modules.
 // Configuration is done in a root project's build file.
+
 spinePublishing2 {
     modules = setOf(
         "base",
@@ -114,24 +107,62 @@ spinePublishing2 {
             gitHub("base")
         )
     }
-//    protoJar {
-//        exclusions = setOf(
-//            "base"
-//        )
-//    }
+    protoJar {
+        exclusions = setOf(
+            "testlib"
+        )
+    }
 }
 
-// Original extension.
-//spinePublishing {
-//    with(PublishingRepos) {
-//        targetRepositories.addAll(
-//            cloudRepo,
-//            cloudArtifactRegistry,
-//            gitHub("base")
-//        )
-//    }
-//    projectsToPublish.addAll(subprojects.map { it.path })
-//}
+// New extension.
+// An example of publishing a single module.
+// Configuration is done in a module's build file.
+
+/*
+spinePublishing2 {
+    destinations = spineRepositories {
+        setOf(
+            cloudRepo,
+            cloudArtifactRegistry,
+            gitHub("base")
+        )
+    }
+    protoJar {
+        disabled = true
+    }
+}
+*/
+
+// Another prototype.
+// An example of publishing a single module.
+// Extension is configured only on a per-module basis.
+
+/*
+spinePublishing2 {
+    destinations = spineRepositories {
+        // can be extracted into an extra property in a root project.
+        setOf(
+            cloudRepo,
+            cloudArtifactRegistry,
+            gitHub("base")
+        )
+    }
+    artifacts {
+        // 5 method calls => 5 jars
+        // + quite intuitive to understand
+        // + much easier to add or drop artifacts
+        // - code duplication
+
+        mainOutput()
+        testOutput()
+        javadoc()
+        javaSources() {
+            includeProto = true
+        }
+        protoSources()
+    }
+}
+*/
 
 allprojects {
     apply {
@@ -215,24 +246,22 @@ subprojects {
         }
     }
 
-    java {
-        tasks {
-            // Needed to fix Javadoc search
-            val discardModulePrefix = """
-                
-                // <link to the issue>
-                
-                getURLPrefix = function(ui) {
-                    return "";
-                };
+    tasks {
+        // Needed to fix Javadoc search
+        val discardModulePrefix = """
+            
+            // <link to the issue>
+            
+            getURLPrefix = function(ui) {
+                return "";
+            };
             """.trimIndent()
 
-            withType<Javadoc>().configureEach {
-                doLast {
-                    // Append the fix to the file
-                    val searchScript = File("${destinationDir!!.absolutePath}/search.js")
-                    searchScript.appendText(discardModulePrefix)
-                }
+        withType<Javadoc>().configureEach {
+            doLast {
+                // Append the fix to the file
+                val searchScript = File("${destinationDir!!.absolutePath}/search.js")
+                searchScript.appendText(discardModulePrefix)
             }
         }
     }

@@ -92,7 +92,7 @@ open class SpinePublishing(private val rootProject: Project) {
         val nonPublishedExclusions = protoJar.exclusions.minus(modules)
         if (nonPublishedExclusions.isNotEmpty()) {
             throw IllegalStateException(
-                "One or more modules are marked as `excluded from proto JAR" +
+                "One or more modules are marked as `excluded from proto JAR " +
                         "generation`, but they are not even published: $nonPublishedExclusions"
             )
         }
