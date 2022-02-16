@@ -49,6 +49,7 @@ import org.gradle.kotlin.dsl.getByType
 @Suppress("unused")
 fun Project.spinePublishing(action: PublishExtension.() -> Unit) {
     apply<Publish>()
+
     val extension = extensions.getByType(PublishExtension::class)
     extension.action()
 }
@@ -85,12 +86,6 @@ internal fun Project.applyMavenPublish(
     }
 }
 
-private fun Project.prepareTasks(publish: Task, checkCredentials: Task) {
-    val publishTasks = getTasksByName(Publish.taskName, false)
-    publish.dependsOn(publishTasks)
-    publishTasks.forEach { it.dependsOn(checkCredentials) }
-}
-
 internal fun Project.createPublishTask(): Task =
     rootProject.tasks.create(Publish.taskName)
 
@@ -110,18 +105,24 @@ internal fun Project.createCheckTask(extension: PublishExtension): Task {
     return checkCredentials
 }
 
+private fun Project.prepareTasks(publish: Task, checkCredentials: Task) {
+    val publishTasks = getTasksByName(Publish.taskName, false)
+    publish.dependsOn(publishTasks)
+    publishTasks.forEach { it.dependsOn(checkCredentials) }
+}
+
 private fun Project.setUpDefaultArtifacts() {
-    val sourceJar = tasks.jarArtifact(
+    val sourceJar = tasks.createIfAbsent(
         artifactTask = ArtifactTaskName.sourceJar,
         from = sourceSets["main"].allSource,
         classifier = "sources"
     )
-    val testOutputJar = tasks.jarArtifact(
+    val testOutputJar = tasks.createIfAbsent(
         artifactTask = ArtifactTaskName.testOutputJar,
         from = sourceSets["test"].output,
         classifier = "test"
     )
-    val javadocJar = tasks.jarArtifact(
+    val javadocJar = tasks.createIfAbsent(
         artifactTask = ArtifactTaskName.javadocJar,
         from = files("$buildDir/docs/javadoc"),
         classifier = "javadoc",
@@ -136,7 +137,7 @@ private fun Project.setUpDefaultArtifacts() {
     }
 }
 
-private fun TaskContainer.jarArtifact(
+private fun TaskContainer.createIfAbsent(
     artifactTask: ArtifactTaskName,
     from: FileCollection,
     classifier: String,
@@ -146,7 +147,6 @@ private fun TaskContainer.jarArtifact(
     if (existing != null) {
         return existing
     }
-    println("creating because absent: $artifactTask")
     return create(artifactTask.name, Jar::class) {
         this.from(from)
         archiveClassifier.set(classifier)

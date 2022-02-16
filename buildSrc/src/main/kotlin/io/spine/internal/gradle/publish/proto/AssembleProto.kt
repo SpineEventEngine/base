@@ -45,7 +45,8 @@ object AssembleProto {
      */
     fun registerIn(project: Project): TaskProvider<Jar> {
         val task = project.tasks.register(taskName, Jar::class.java) {
-            description = "Assembles a JAR artifact with all Proto definitions from the classpath."
+            description =
+                "Assembles a JAR artifact with all Proto definitions from the classpath."
             from(project.protoClasspath())
             include {
                 it.file.isProtoFileOrDir()

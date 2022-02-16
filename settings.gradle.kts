@@ -34,5 +34,5 @@ rootProject.name = "spine-base"
 
 include(
     "base",
-    "testlib"
+    "testlib",
 )
