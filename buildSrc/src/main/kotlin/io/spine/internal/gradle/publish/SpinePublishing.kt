@@ -53,8 +53,16 @@ open class SpinePublishing(private val project: Project) {
     var destinations: Set<Repository> = emptySet()
     var customPrefix: String = ""
 
+    /**
+     * A shortcut for selecting repositories from the [defaults][PublishingRepos].
+     */
     fun spineRepositories(select: PublishingRepos.() -> Set<Repository>) = select(PublishingRepos)
 
+    /**
+     * Configures publishing of a JAR containing all the `.proto` definitions
+     * found in the project's classpath, which are the definitions from `sourceSets.main.proto`
+     * and the proto files extracted from the JAR dependencies of the project.
+     */
     fun protoJar(configuration: ProtoJar.() -> Unit)  = protoJar.run(configuration)
 
     /**
@@ -127,8 +135,8 @@ class ProtoJar {
     /**
      * Set of modules, for which a `proto` JAR will NOT be generated.
      *
-     * Use this set only if the set of [published modules][SpinePublishing.modules]
-     * is specified explicitly. Otherwise, use [disabled] flag.
+     * Specify this set only if the [published modules][SpinePublishing.modules]
+     * are specified explicitly. Otherwise, use [disabled] flag.
      */
     var exclusions: Set<String> = emptySet()
 

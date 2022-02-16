@@ -32,7 +32,6 @@ import io.spine.internal.dependency.Protobuf
 import io.spine.internal.gradle.IncrementGuard
 import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.testing.exposeTestArtifacts
-import io.spine.internal.gradle.publish.spinePublishing2
 
 plugins {
     `java-library`
@@ -103,13 +102,11 @@ protobuf {
 }
 
 /**
- * Exclude Google `.proto` sources from all the artifacts.
+ * Exclude Google `.proto` sources from all publishing artifacts.
  */
 tasks.withType<Jar>().configureEach {
-    exclude { it.isGoogleProtoSource() }
-}
-
-fun FileTreeElement.isGoogleProtoSource(): Boolean {
-    val pathSegments = relativePath.segments
-    return pathSegments.isNotEmpty() && pathSegments[0].equals("google")
+    exclude {
+        val pathSegments = it.relativePath.segments
+        pathSegments.isNotEmpty() && pathSegments[0].equals("google")
+    }
 }

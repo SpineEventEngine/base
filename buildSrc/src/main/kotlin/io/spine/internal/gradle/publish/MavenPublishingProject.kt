@@ -27,6 +27,7 @@
 package io.spine.internal.gradle.publish
 
 import io.spine.internal.gradle.Repository
+import java.util.Objects.isNull
 import org.gradle.api.InvalidUserDataException
 import org.gradle.api.Project
 import org.gradle.api.UnknownTaskException
@@ -51,7 +52,7 @@ class MavenPublishingProject(
 ) {
 
     /**
-     * Applies the plugin, configures publications and prepares `publish*` tasks.
+     * Applies the plugin, sets up `Maven` publication and declares a list of artifacts.
      */
     fun setUp() = project.afterEvaluate {
         apply(plugin = "maven-publish")
@@ -152,13 +153,17 @@ class MavenPublishingProject(
 
     private fun Project.registerCheckCredentialsTask() = tasks.register("checkCredentials") {
         doLast {
-            destinations.forEach {
-                it.credentials(project)
-                    ?: throw InvalidUserDataException(
-                        "No valid credentials for repository `${it}`. Please make sure " +
-                                "to pass username/password or a valid `.properties` file."
-                    )
-            }
+            destinations.forEach { it.assertCredentials(project) }
+        }
+    }
+
+    private fun Repository.assertCredentials(project: Project) {
+        val credentials = credentials(project)
+        if (isNull(credentials)) {
+            throw InvalidUserDataException(
+                "No valid credentials for repository `${this}`. Please make sure " +
+                        "to pass username/password or a valid `.properties` file."
+            )
         }
     }
 }

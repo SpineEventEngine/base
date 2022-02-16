@@ -133,14 +133,12 @@ spinePublishing2 {
 }
 */
 
-// Another prototype.
+// Another prototype - explicit artifacts declaration.
 // An example of publishing a single module.
-// Extension is configured only on a per-module basis.
 
 /*
 spinePublishing2 {
     destinations = spineRepositories {
-        // can be extracted into an extra property in a root project.
         setOf(
             cloudRepo,
             cloudArtifactRegistry,
@@ -250,7 +248,7 @@ subprojects {
         // Needed to fix Javadoc search
         val discardModulePrefix = """
             
-            // <link to the issue>
+            // <link to the issue in `config` repository>
             
             getURLPrefix = function(ui) {
                 return "";

@@ -39,6 +39,9 @@ import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.register
 
+/**
+ * Enumerates artifacts, which can be published along with the default project compilation output.
+ */
 class MavenArtifacts {
 
     fun Project.sourcesJar() = jarArtifact("sourcesJar") {
