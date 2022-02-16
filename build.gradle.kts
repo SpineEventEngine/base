@@ -91,6 +91,13 @@ apply(from = "$rootDir/version.gradle.kts")
 //    protoJar {
 //        disabled = true
 //    }
+//    artifacts {
+//        compileOutput()
+//        testsOutput()
+//        javaSources()
+//        protoSources()
+//        javadoc()
+//    }
 //}
 
 // An example of publishing several modules.
@@ -107,6 +114,11 @@ spinePublishing2 {
             gitHub("base")
         )
     }
+//    protoJar {
+//        exclusions = setOf(
+//            "base"
+//        )
+//    }
 }
 
 // Original extension.
@@ -200,6 +212,28 @@ subprojects {
         kotlinOptions {
             jvmTarget = javaVersion.toString()
             freeCompilerArgs = listOf("-Xskip-prerelease-check")
+        }
+    }
+
+    java {
+        tasks {
+            // Needed to fix Javadoc search
+            val discardModulePrefix = """
+                
+                // <link to the issue>
+                
+                getURLPrefix = function(ui) {
+                    return "";
+                };
+            """.trimIndent()
+
+            withType<Javadoc>().configureEach {
+                doLast {
+                    // Append the fix to the file
+                    val searchScript = File("${destinationDir!!.absolutePath}/search.js")
+                    searchScript.appendText(discardModulePrefix)
+                }
+            }
         }
     }
 
