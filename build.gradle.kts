@@ -45,8 +45,6 @@ import io.spine.internal.gradle.javac.configureErrorProne
 import io.spine.internal.gradle.javac.configureJavac
 import io.spine.internal.gradle.kotlin.applyJvmToolchain
 import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
-import io.spine.internal.gradle.publish.PublishingRepos
-import io.spine.internal.gradle.publish.spinePublishing
 import io.spine.internal.gradle.publish.spinePublishing2
 import io.spine.internal.gradle.report.coverage.JacocoConfig
 import io.spine.internal.gradle.report.license.LicenseReporter
@@ -109,11 +107,6 @@ spinePublishing2 {
             gitHub("base")
         )
     }
-//    protoJar {
-//        exclusions = setOf(
-//            "base"
-//        )
-//    }
 }
 
 // Original extension.

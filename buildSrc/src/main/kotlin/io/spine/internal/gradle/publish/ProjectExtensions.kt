@@ -111,17 +111,17 @@ internal fun Project.createCheckTask(extension: PublishExtension): Task {
 }
 
 private fun Project.setUpDefaultArtifacts() {
-    val sourceJar = tasks.createIfAbsent(
+    val sourceJar = tasks.jarArtifact(
         artifactTask = ArtifactTaskName.sourceJar,
         from = sourceSets["main"].allSource,
         classifier = "sources"
     )
-    val testOutputJar = tasks.createIfAbsent(
+    val testOutputJar = tasks.jarArtifact(
         artifactTask = ArtifactTaskName.testOutputJar,
         from = sourceSets["test"].output,
         classifier = "test"
     )
-    val javadocJar = tasks.createIfAbsent(
+    val javadocJar = tasks.jarArtifact(
         artifactTask = ArtifactTaskName.javadocJar,
         from = files("$buildDir/docs/javadoc"),
         classifier = "javadoc",
@@ -136,7 +136,7 @@ private fun Project.setUpDefaultArtifacts() {
     }
 }
 
-private fun TaskContainer.createIfAbsent(
+private fun TaskContainer.jarArtifact(
     artifactTask: ArtifactTaskName,
     from: FileCollection,
     classifier: String,

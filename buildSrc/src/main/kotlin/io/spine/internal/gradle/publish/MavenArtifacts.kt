@@ -29,7 +29,7 @@ package io.spine.internal.gradle.publish
 import io.spine.internal.gradle.sourceSets
 import org.gradle.api.Project
 import org.gradle.api.UnknownTaskException
-import org.gradle.api.file.FileCollection
+import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.jvm.tasks.Jar
 import org.gradle.kotlin.dsl.get
@@ -38,39 +38,33 @@ import org.gradle.kotlin.dsl.register
 
 class MavenArtifacts {
 
-    fun Project.sourceJar(): TaskProvider<Jar> = createIfAbsent(
-        taskName = "sourceJar",
-        from = sourceSets["main"].allSource,
-        classifier = "sources"
-    )
+    fun Project.sourcesJar() = jarArtifact("sourcesJar") {
+        from(sourceSets["main"].allSource)
+        archiveClassifier.set("sources")
+    }
 
-    fun Project.testOutputJar(): TaskProvider<Jar> = createIfAbsent(
-        taskName = "testOutputJar",
-        from = sourceSets["test"].output,
-        classifier = "test"
-    )
+    fun Project.testOutputJar() = jarArtifact("testOutputJar") {
+        from(sourceSets["test"].output)
+        archiveClassifier.set("test")
+    }
 
-    fun Project.javadocJar(): TaskProvider<Jar> = createIfAbsent(
-        taskName = "javadocJar",
-        from = files("$buildDir/docs/javadoc"),
-        classifier = "javadoc",
-        dependencies = setOf("javadoc")
-    )
+    fun Project.javadocJar() = jarArtifact("javadocJar") {
+        from(files("$buildDir/docs/javadoc"))
+        archiveClassifier.set("javadoc")
+        dependsOn("javadoc")
+    }
 
-    private fun Project.createIfAbsent(
-        taskName: String,
-        from: FileCollection,
-        classifier: String,
-        dependencies: Set<Any> = setOf()
-    ): TaskProvider<Jar> = with(tasks) {
+    private fun Project.jarArtifact(taskName: String, init: Jar.() -> Unit) {
+        val task = tasks.getOrCreate(taskName, init)
+        artifacts.add(ConfigurationName.archives, task)
+    }
+
+    private fun TaskContainer.getOrCreate(name: String, init: Jar.() -> Unit): TaskProvider<Jar> =
         try {
-            named<Jar>(taskName)
+            named<Jar>(name)
         } catch (e: UnknownTaskException) {
-            register<Jar>(taskName) {
-                this.from(from)
-                archiveClassifier.set(classifier)
-                dependencies.forEach { dependsOn(it) }
+            register<Jar>(name) {
+                init()
             }
         }
-    }
 }

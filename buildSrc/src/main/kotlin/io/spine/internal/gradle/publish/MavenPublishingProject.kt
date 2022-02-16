@@ -53,7 +53,7 @@ class MavenPublishingProject(
     /**
      * Applies the plugin, configures publications and prepares `publish*` tasks.
      */
-    fun setUp() = with(project) {
+    fun setUp() = project.afterEvaluate {
         apply(plugin = "maven-publish")
         declareArtifacts()
         createMavenPublication()
@@ -62,17 +62,15 @@ class MavenPublishingProject(
     }
 
     private fun Project.declareArtifacts() = with(MavenArtifacts()) {
-        val archives = ConfigurationName.archives
-        artifacts {
-            add(archives, sourceJar())
-            add(archives, testOutputJar())
-            add(archives, javadocJar())
-        }
+        sourcesJar()
+        testOutputJar()
+        javadocJar()
     }
 
     private fun Project.createMavenPublication() {
         val artifact = listOf(prefix, name).joinToString("-")
         val publishing = extensions.getByType<PublishingExtension>()
+        println("project's group: ${project.group}")
         publishing.publications.create<MavenPublication>("mavenJava") {
             groupId = project.group.toString()
             artifactId = artifact
