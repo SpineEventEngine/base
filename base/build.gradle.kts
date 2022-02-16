@@ -83,15 +83,15 @@ protobuf {
             }
 
             /**
-            Remove the code generated for Google Protobuf library types.
-
-            Java code for the `com.google` package was generated because we wanted
-            to have descriptors for all the types, including those from Google Protobuf library.
-            We want all the descriptors so that they are included into the resources used by
-            the `io.spine.type.KnownTypes` class.
-
-            Now, as we have the descriptors _and_ excessive Java code, we delete it to avoid
-            classes that duplicate those coming from Protobuf library JARs.
+             * Remove the code generated for Google Protobuf library types.
+             *
+             * Java code for the `com.google` package was generated because we wanted
+             * to have descriptors for all the types, including those from Google Protobuf library.
+             * We want all the descriptors so that they are included into the resources used by
+             * the `io.spine.type.KnownTypes` class.
+             *
+             * Now, as we have the descriptors _and_ excessive Java code, we delete it to avoid
+             * classes that duplicate those coming from Protobuf library JARs.
              */
             task.doLast {
                 delete("${generatedDir}/${ssn}/java/com/google")
