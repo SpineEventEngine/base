@@ -98,7 +98,7 @@ apply(from = "$rootDir/version.gradle.kts")
 spinePublishing2 {
     modules = setOf(
         "base",
-        "testlib"
+        "testlib",
     )
     destinations = spineRepositories {
         setOf(
@@ -109,7 +109,7 @@ spinePublishing2 {
     }
     protoJar {
         exclusions = setOf(
-            "testlib"
+            "testlib",
         )
     }
 }

@@ -32,6 +32,7 @@ import io.spine.internal.dependency.Protobuf
 import io.spine.internal.gradle.IncrementGuard
 import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.testing.exposeTestArtifacts
+import io.spine.internal.gradle.publish.spinePublishing2
 
 plugins {
     `java-library`

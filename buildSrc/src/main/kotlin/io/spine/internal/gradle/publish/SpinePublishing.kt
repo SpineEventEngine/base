@@ -46,7 +46,7 @@ fun Project.spinePublishing2(configuration: SpinePublishing.() -> Unit) {
 /**
  * A scope for setting up publishing of spine modules using `maven-publish` plugin.
  */
-open class SpinePublishing(private val rootProject: Project) {
+open class SpinePublishing(private val project: Project) {
 
     private var protoJar: ProtoJar = ProtoJar()
     var modules: Set<String> = emptySet()
@@ -66,21 +66,41 @@ open class SpinePublishing(private val rootProject: Project) {
     internal fun configured() {
 
         assertProtoExclusions()
+        assertModulesNotDuplicated()
 
         val protoJarExclusions = protoJar.exclusions
-        val publishingProjects = modules.ifEmpty { setOf(rootProject.path) }
+        val publishingProjects = modules.ifEmpty { setOf(project.path) }
             .map { path ->
                 val isProtoJarExcluded = (protoJarExclusions.contains(path) || protoJar.disabled)
                 MavenPublishingProject(
-                    project = rootProject.project(path),
+                    project = project.project(path),
                     prefix = customPrefix.ifEmpty { "spine" },
                     publishProtoJar = isProtoJarExcluded.not(),
                     destinations
                 )
             }
 
-        rootProject.afterEvaluate {
+        project.afterEvaluate {
             publishingProjects.forEach { it.setUp() }
+        }
+    }
+
+    /**
+     * Assert that publishing of this module is not already configured in a root project.
+     */
+    private fun assertModulesNotDuplicated() {
+        val rootProject = project.rootProject
+        if (rootProject == project) {
+            return
+        }
+
+        val extension = with(rootProject.extensions) { findByType<SpinePublishing>() }
+        extension?.let {
+            val subproject = project.name
+            if (it.modules.contains(subproject)) {
+                throw IllegalStateException("Publishing of `$subproject` module is already " +
+                            "configured in a root project!")
+            }
         }
     }
 
@@ -91,10 +111,8 @@ open class SpinePublishing(private val rootProject: Project) {
     private fun assertProtoExclusions() {
         val nonPublishedExclusions = protoJar.exclusions.minus(modules)
         if (nonPublishedExclusions.isNotEmpty()) {
-            throw IllegalStateException(
-                "One or more modules are marked as `excluded from proto JAR " +
-                        "generation`, but they are not even published: $nonPublishedExclusions"
-            )
+            throw IllegalStateException("One or more modules are marked as `excluded from proto " +
+                    "JAR generation`, but they are not even published: $nonPublishedExclusions")
         }
     }
 }
