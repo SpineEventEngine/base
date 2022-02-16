@@ -46,7 +46,7 @@ import org.gradle.kotlin.dsl.getByType
 class MavenPublishingProject(
     private val project: Project,
     private val prefix: String,
-    private val excludeProtoJar: Boolean,
+    private val publishProtoJar: Boolean,
     private val destinations: Set<Repository>
 ) {
 
@@ -62,15 +62,19 @@ class MavenPublishingProject(
     }
 
     private fun Project.declareArtifacts() = with(MavenArtifacts()) {
+
         sourcesJar()
         testOutputJar()
         javadocJar()
+
+        if (publishProtoJar) {
+            protoJar()
+        }
     }
 
     private fun Project.createMavenPublication() {
         val artifact = listOf(prefix, name).joinToString("-")
         val publishing = extensions.getByType<PublishingExtension>()
-        println("project's group: ${project.group}")
         publishing.publications.create<MavenPublication>("mavenJava") {
             groupId = project.group.toString()
             artifactId = artifact
@@ -104,8 +108,10 @@ class MavenPublishingProject(
             .toString()
             .matches(Regex(".+[-.]SNAPSHOT([+.]\\d+)?"))
         val publishing = extensions.getByType<PublishingExtension>()
-        destinations.forEach { repository ->
-            publishing.repositories.maven { initialize(repository, project, isSnapshot) }
+        destinations.forEach { destination ->
+            publishing.repositories.maven {
+                initialize(destination, project, isSnapshot)
+            }
         }
     }
 

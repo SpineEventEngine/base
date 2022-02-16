@@ -31,7 +31,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import io.spine.internal.gradle.publish.proto.AssembleProto
 import io.spine.internal.gradle.publish.proto.isProtoFileOrDir
-import io.spine.internal.gradle.publish.proto.protoFiles
+import io.spine.internal.gradle.publish.proto.protoClasspath
 import org.gradle.jvm.tasks.Jar
 import org.gradle.kotlin.dsl.named
 
@@ -136,7 +136,7 @@ class Publish : Plugin<Project> {
          */
         fun attachProtoToJavaSources(project: Project) {
             project.tasks.named<Jar>("sourceJar") {
-                from(project.protoFiles()) {
+                from(project.protoClasspath()) {
                     include {
                         it.file.isProtoFileOrDir()
                     }

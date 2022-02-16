@@ -26,12 +26,15 @@
 
 package io.spine.internal.gradle.publish
 
+import io.spine.internal.gradle.publish.proto.isProtoFileOrDir
+import io.spine.internal.gradle.publish.proto.protoClasspath
 import io.spine.internal.gradle.sourceSets
 import org.gradle.api.Project
 import org.gradle.api.UnknownTaskException
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
-import org.gradle.jvm.tasks.Jar
+import org.gradle.api.tasks.bundling.Jar
+import org.gradle.kotlin.dsl.attributes
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.register
@@ -39,19 +42,33 @@ import org.gradle.kotlin.dsl.register
 class MavenArtifacts {
 
     fun Project.sourcesJar() = jarArtifact("sourcesJar") {
-        from(sourceSets["main"].allSource)
         archiveClassifier.set("sources")
+        from(sourceSets["main"].allSource)
+        from(protoClasspath()) {
+            include {
+                it.file.isProtoFileOrDir()
+            }
+        }
     }
 
     fun Project.testOutputJar() = jarArtifact("testOutputJar") {
-        from(sourceSets["test"].output)
         archiveClassifier.set("test")
+        from(sourceSets["test"].output)
     }
 
     fun Project.javadocJar() = jarArtifact("javadocJar") {
-        from(files("$buildDir/docs/javadoc"))
         archiveClassifier.set("javadoc")
+        from(files("$buildDir/docs/javadoc"))
         dependsOn("javadoc")
+    }
+
+    fun Project.protoJar() = jarArtifact("protoJar") {
+        archiveClassifier.set("proto")
+        from(protoClasspath()) {
+            include {
+                it.file.isProtoFileOrDir()
+            }
+        }
     }
 
     private fun Project.jarArtifact(taskName: String, init: Jar.() -> Unit) {
@@ -65,6 +82,9 @@ class MavenArtifacts {
         } catch (e: UnknownTaskException) {
             register<Jar>(name) {
                 init()
+                manifest {
+                    attributes("Automatic-Module-Name" to "org.gradle.sample")
+                }
             }
         }
 }

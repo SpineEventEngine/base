@@ -47,8 +47,7 @@ import org.gradle.api.file.SourceDirectorySet
  * It's guaranteed that there are no other Proto definitions in the current project classpath
  * except those included into the returned `Collection`.
  */
-internal fun Project.protoFiles(): Collection<File> {
-    println("Called Project.protoFiles()")
+internal fun Project.protoClasspath(): Collection<File> {
     val files = this.configurations.findByName("runtimeClasspath")!!.files
     val jarFiles = files.map { JarFileName(it.name) }
     val result = mutableListOf<File>()
@@ -79,7 +78,7 @@ internal fun Project.protoFiles(): Collection<File> {
              * Thus, we log an error message. Framework users should pay attention
              * to the circumstances under which this message is logged.
              */
-            this@protoFiles.logger.debug(
+            this@protoClasspath.logger.debug(
                 "${e.message}${System.lineSeparator()}" +
                         "The proto artifact may be corrupted."
             )

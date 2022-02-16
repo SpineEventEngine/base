@@ -31,8 +31,6 @@ import io.spine.internal.dependency.Kotlin
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.gradle.IncrementGuard
 import io.spine.internal.gradle.excludeProtobufLite
-import io.spine.internal.gradle.publish.Publish.Companion.publishProtoArtifact
-import io.spine.internal.gradle.publish.Publish.Companion.attachProtoToJavaSources
 import io.spine.internal.gradle.testing.exposeTestArtifacts
 
 plugins {
@@ -104,18 +102,13 @@ protobuf {
     /**
      * Exclude Google `.proto` sources from all the artifacts.
      */
-    tasks.withType<Jar>().configureEach {
-        exclude { it.isGoogleProtoSource() }
+    afterEvaluate {
+        fun FileTreeElement.isGoogleProtoSource(): Boolean {
+            val pathSegments = relativePath.segments
+            return pathSegments.isNotEmpty() && pathSegments[0].equals("google")
+        }
+        tasks.withType<Jar>().configureEach {
+            exclude { it.isGoogleProtoSource() }
+        }
     }
-
-//    publishProtoArtifact(project)
-//    attachProtoToJavaSources(project)
-}
-
-/**
- * Checks if the given file belongs to the Google `.proto` sources.
- */
-fun FileTreeElement.isGoogleProtoSource(): Boolean {
-    val pathSegments = relativePath.segments
-    return pathSegments.isNotEmpty() && pathSegments[0].equals("google")
 }

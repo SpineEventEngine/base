@@ -70,10 +70,11 @@ open class SpinePublishing(private val rootProject: Project) {
         val protoJarExclusions = protoJar.exclusions
         val publishingProjects = modules.ifEmpty { setOf(rootProject.path) }
             .map { path ->
+                val isProtoJarExcluded = (protoJarExclusions.contains(path) || protoJar.disabled)
                 MavenPublishingProject(
                     project = rootProject.project(path),
                     prefix = customPrefix.ifEmpty { "spine" },
-                    excludeProtoJar = protoJarExclusions.contains(path) || protoJar.disabled,
+                    publishProtoJar = isProtoJarExcluded.not(),
                     destinations
                 )
             }
