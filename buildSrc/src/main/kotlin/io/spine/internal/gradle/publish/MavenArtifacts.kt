@@ -83,6 +83,7 @@ internal class MavenArtifacts {
 
     // Try-catch block is used here because Gradle still does not provide API for checking a task
     // presence without triggering its creation.
+    // See: https://docs.gradle.org/current/userguide/task_configuration_avoidance.html
     private fun TaskContainer.getOrCreate(name: String, init: Jar.() -> Unit): TaskProvider<Jar> =
         try {
             named<Jar>(name)

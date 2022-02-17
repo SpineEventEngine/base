@@ -35,7 +35,7 @@ import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
-import io.spine.internal.gradle.JavadocConfig
+import io.spine.internal.gradle.javadoc.JavadocConfig
 import io.spine.internal.gradle.applyStandard
 import io.spine.internal.gradle.checkstyle.CheckStyleConfig
 import io.spine.internal.gradle.excludeProtobufLite
@@ -241,26 +241,6 @@ subprojects {
         kotlinOptions {
             jvmTarget = javaVersion.toString()
             freeCompilerArgs = listOf("-Xskip-prerelease-check")
-        }
-    }
-
-    tasks {
-        // Needed to fix Javadoc search
-        val discardModulePrefix = """
-            
-            // <link to the issue in `config` repository>
-            
-            getURLPrefix = function(ui) {
-                return "";
-            };
-            """.trimIndent()
-
-        withType<Javadoc>().configureEach {
-            doLast {
-                // Append the fix to the file
-                val searchScript = File("${destinationDir!!.absolutePath}/search.js")
-                searchScript.appendText(discardModulePrefix)
-            }
         }
     }
 
