@@ -100,13 +100,3 @@ protobuf {
         }
     }
 }
-
-/**
- * Exclude Google `.proto` sources from all publishing artifacts.
- */
-tasks.withType<Jar>().configureEach {
-    exclude {
-        val pathSegments = it.relativePath.segments
-        pathSegments.isNotEmpty() && pathSegments[0].equals("google")
-    }
-}

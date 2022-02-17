@@ -47,7 +47,7 @@ object AssembleProto {
         val task = project.tasks.register(taskName, Jar::class.java) {
             description =
                 "Assembles a JAR artifact with all Proto definitions from the classpath."
-            from(project.protoClasspath())
+            from(project.protoFiles())
             include {
                 it.file.isProtoFileOrDir()
             }

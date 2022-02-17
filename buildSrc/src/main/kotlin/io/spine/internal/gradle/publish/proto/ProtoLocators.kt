@@ -32,10 +32,21 @@ import java.util.*
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.file.SourceDirectorySet
+import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getByType
 
 /**
  * Extensions assisting in locating `.proto` files and directories in a Gradle `Project`.
  */
+
+/**
+ * Collects Proto sources from `main` source set.
+ */
+internal fun Project.protoSources(): Collection<File> {
+    val mainSourceSet = sourceSets["main"]
+    val protoSourceDirs = mainSourceSet.extensions.getByType<SourceDirectorySet>()
+    return protoSourceDirs.srcDirs
+}
 
 /**
  * Collects all the directories from this project and its dependencies (including zip tree
@@ -47,7 +58,7 @@ import org.gradle.api.file.SourceDirectorySet
  * It's guaranteed that there are no other Proto definitions in the current project classpath
  * except those included into the returned `Collection`.
  */
-internal fun Project.protoClasspath(): Collection<File> {
+internal fun Project.protoFiles(): Collection<File> {
     val files = this.configurations.findByName("runtimeClasspath")!!.files
     val jarFiles = files.map { JarFileName(it.name) }
     val result = mutableListOf<File>()
@@ -78,7 +89,7 @@ internal fun Project.protoClasspath(): Collection<File> {
              * Thus, we log an error message. Framework users should pay attention
              * to the circumstances under which this message is logged.
              */
-            this@protoClasspath.logger.debug(
+            this@protoFiles.logger.debug(
                 "${e.message}${System.lineSeparator()}" +
                         "The proto artifact may be corrupted."
             )

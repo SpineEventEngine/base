@@ -26,15 +26,13 @@
 
 package io.spine.internal.gradle.publish
 
-import io.spine.internal.gradle.publish.proto.isProtoFileOrDir
-import io.spine.internal.gradle.publish.proto.protoClasspath
+import io.spine.internal.gradle.publish.proto.protoSources
 import io.spine.internal.gradle.sourceSets
 import org.gradle.api.Project
 import org.gradle.api.UnknownTaskException
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
-import org.gradle.kotlin.dsl.attributes
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.register
@@ -42,36 +40,40 @@ import org.gradle.kotlin.dsl.register
 /**
  * Enumerates artifacts, which can be published along with the default project compilation output.
  */
-class MavenArtifacts {
+internal class MavenArtifacts {
 
+    /**
+     * Sources of `main` source set.
+     */
     fun Project.sourcesJar() = jarArtifact("sourcesJar") {
         archiveClassifier.set("sources")
-        from(sourceSets["main"].allSource)
-        from(protoClasspath()) {
-            include {
-                it.file.isProtoFileOrDir()
-            }
-        }
+        from(sourceSets["main"].allSource) // puts Java and Kotlin sources
+        from(protoSources()) // puts Proto sources
     }
 
+    /**
+     * Compilation output of `test` source set.
+     */
     fun Project.testOutputJar() = jarArtifact("testOutputJar") {
         archiveClassifier.set("test")
         from(sourceSets["test"].output)
     }
 
+    /**
+     * Javadoc, generated upon Java and Kotlin sources from `main` source set.
+     */
     fun Project.javadocJar() = jarArtifact("javadocJar") {
         archiveClassifier.set("javadoc")
         from(files("$buildDir/docs/javadoc"))
         dependsOn("javadoc")
     }
 
+    /**
+     * Only Proto sources of `main` source set.
+     */
     fun Project.protoJar() = jarArtifact("protoJar") {
         archiveClassifier.set("proto")
-        from(protoClasspath()) {
-            include {
-                it.file.isProtoFileOrDir()
-            }
-        }
+        from(protoSources())
     }
 
     private fun Project.jarArtifact(taskName: String, init: Jar.() -> Unit) {
@@ -79,15 +81,14 @@ class MavenArtifacts {
         artifacts.add(ConfigurationName.archives, task)
     }
 
+    // Try-catch block is used here because Gradle still does not provide API for checking a task
+    // presence without triggering its creation.
     private fun TaskContainer.getOrCreate(name: String, init: Jar.() -> Unit): TaskProvider<Jar> =
         try {
             named<Jar>(name)
         } catch (e: UnknownTaskException) {
             register<Jar>(name) {
                 init()
-                manifest {
-                    attributes("Automatic-Module-Name" to "org.gradle.sample")
-                }
             }
         }
 }
