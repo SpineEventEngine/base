@@ -26,14 +26,16 @@
 
 package io.spine.internal.gradle.publish
 
-import io.spine.internal.gradle.publish.proto.protoSources
 import io.spine.internal.gradle.sourceSets
+import java.io.File
 import org.gradle.api.Project
 import org.gradle.api.UnknownTaskException
+import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.register
 
@@ -49,6 +51,15 @@ internal class MavenArtifacts {
         archiveClassifier.set("sources")
         from(sourceSets["main"].allSource) // puts Java and Kotlin sources
         from(protoSources()) // puts Proto sources
+    }
+
+    /**
+     * Collects Proto sources from `main` source set.
+     */
+    private fun Project.protoSources(): Collection<File> {
+        val mainSourceSet = sourceSets["main"]
+        val protoSourceDirs = mainSourceSet.extensions.getByType<SourceDirectorySet>()
+        return protoSourceDirs.srcDirs
     }
 
     /**
