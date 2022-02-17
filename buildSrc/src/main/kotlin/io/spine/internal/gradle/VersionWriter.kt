@@ -26,7 +26,6 @@
 
 package io.spine.internal.gradle
 
-import io.spine.internal.gradle.publish.PublishExtension
 import java.util.*
 import org.gradle.api.DefaultTask
 import org.gradle.api.Plugin
@@ -88,8 +87,7 @@ abstract class WriteVersions : DefaultTask() {
     }
 
     /**
-     * Creates a `.properties` file with versions named after the name of the project,
-     * taking in account the value of the [PublishExtension.spinePrefix] property.
+     * Creates a `.properties` file with versions named after the name of the project.
      *
      * If the property is set to `true`, the name of the file would be:
      * ```
