@@ -34,7 +34,6 @@ import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
-import org.gradle.kotlin.dsl.getByName
 
 /**
  * This file contains extension methods and properties for the Gradle `Project`.
@@ -79,7 +78,7 @@ fun <T : Task> Project.findTask(name: String): T {
 val Project.artifactId: String
     get() {
         val publishing = extensions.getByType<PublishingExtension>()
-        val publication = publishing.publications.getByName<MavenPublication>("mavenJava")
-        val artifactId = publication.artifactId
+        val publication = publishing.publications.findByName("mavenJava") as MavenPublication?
+        val artifactId = publication?.artifactId ?: name
         return artifactId
     }
