@@ -50,10 +50,10 @@ object JavadocConfig {
     val encoding = Encoding("UTF-8")
 
     fun applyTo(project: Project) {
-        val javadocTask = project.tasks.javadocTask()
-            .apply { discardJavaModulesInLinks() }
-        val docletOptions = javadocTask.options as StandardJavadocDocletOptions
-        docletOptions.apply {
+        val javadocTask = project.tasks.javadocTask().apply {
+            discardJavaModulesInLinks()
+        }
+        with(javadocTask.options as StandardJavadocDocletOptions) {
             encoding = JavadocConfig.encoding.name
             reduceParamWarnings()
             registerCustomTags()
@@ -101,15 +101,17 @@ object JavadocConfig {
      * that does not declare Java9 modules, search results contain broken links with appended
      * `undefined` prefix to the URL. This `undefined` was meant to be a name of a Java9 module.
      *
-     * We ask `javadoc` task to modify `search.js` and override a method, responsible for
-     * the formation of URL prefixes. We can't just specify the option `--no-module-directories`,
-     * because it leads to discarding of all module prefixes in generated links. That means,
-     * links to the types from standard library would not work, as they declared within modules.
-     *
      * See: [Broken links when generating from project without modules](https://bugs.openjdk.java.net/browse/JDK-8215291)
      * See: [Issues linking to external documentation](https://bugs.openjdk.java.net/browse/JDK-8211194)
      */
     private fun Javadoc.discardJavaModulesInLinks() {
+
+        // We ask `javadoc` task to modify `search.js` and override a method, responsible for
+        // the formation of URL prefixes. We can't specify the option `--no-module-directories`,
+        // because it leads to discarding of all module prefixes in generated links. That means,
+        // links to the types from the standard library would not work, as they declared
+        // within modules.
+
         val discardModulePrefix = """
             
             getURLPrefix = function(ui) {

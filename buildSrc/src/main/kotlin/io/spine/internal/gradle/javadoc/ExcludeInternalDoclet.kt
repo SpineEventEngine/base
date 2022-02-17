@@ -108,7 +108,8 @@ private fun Project.appendCustomJavadocTask(excludeInternalDoclet: Configuration
             docletpath = excludeInternalDoclet.files.toList()
         }
 
-        val docletOptions = options as StandardJavadocDocletOptions
-        docletOptions.apply { registerCustomTags() }
+        with(options as StandardJavadocDocletOptions) {
+            registerCustomTags()
+        }
     }
 }
