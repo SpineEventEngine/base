@@ -34,10 +34,10 @@ import org.gradle.kotlin.dsl.findByType
 /**
  * Configures [SpinePublishing] extension.
  */
-fun Project.spinePublishing2(configuration: SpinePublishing.() -> Unit) {
+fun Project.spinePublishing(configuration: SpinePublishing.() -> Unit) {
     val name = SpinePublishing::class.java.simpleName
-    val extension = with(extensions) { findByType<SpinePublishing>() ?: create(name, project) }
-    extension.run {
+    val publishing = with(extensions) { findByType<SpinePublishing>() ?: create(name, project) }
+    publishing.run {
         configuration()
         configured()
     }
@@ -51,7 +51,7 @@ open class SpinePublishing(private val project: Project) {
     private var protoJar: ProtoJar = ProtoJar()
     var modules: Set<String> = emptySet()
     var destinations: Set<Repository> = emptySet()
-    var customPrefix: String = ""
+    var artifactPrefix: String = "spine"
 
     /**
      * A shortcut for selecting repositories from the [defaults][PublishingRepos].
@@ -82,7 +82,7 @@ open class SpinePublishing(private val project: Project) {
                 val isProtoJarExcluded = (protoJarExclusions.contains(path) || protoJar.disabled)
                 MavenPublishingProject(
                     project = project.project(path),
-                    prefix = customPrefix.ifEmpty { "spine" },
+                    prefix = artifactPrefix,
                     publishProtoJar = isProtoJarExcluded.not(),
                     destinations
                 )

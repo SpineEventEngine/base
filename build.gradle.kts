@@ -45,7 +45,7 @@ import io.spine.internal.gradle.javac.configureErrorProne
 import io.spine.internal.gradle.javac.configureJavac
 import io.spine.internal.gradle.kotlin.applyJvmToolchain
 import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
-import io.spine.internal.gradle.publish.spinePublishing2
+import io.spine.internal.gradle.publish.spinePublishing
 import io.spine.internal.gradle.report.coverage.JacocoConfig
 import io.spine.internal.gradle.report.license.LicenseReporter
 import io.spine.internal.gradle.report.pom.PomGenerator
@@ -78,24 +78,7 @@ plugins {
 
 apply(from = "$rootDir/version.gradle.kts")
 
-// Original extension.
-
-//spinePublishing {
-//    with(PublishingRepos) {
-//        targetRepositories.addAll(
-//            cloudRepo,
-//            cloudArtifactRegistry,
-//            gitHub("base")
-//        )
-//    }
-//    projectsToPublish.addAll(subprojects.map { it.path })
-//}
-
-// New extension.
-// An example of publishing several modules.
-// Configuration is done in a root project's build file.
-
-spinePublishing2 {
+spinePublishing {
     modules = setOf(
         "base",
         "testlib",
@@ -113,54 +96,6 @@ spinePublishing2 {
         )
     }
 }
-
-// New extension.
-// An example of publishing a single module.
-// Configuration is done in a module's build file.
-
-/*
-spinePublishing2 {
-    destinations = spineRepositories {
-        setOf(
-            cloudRepo,
-            cloudArtifactRegistry,
-            gitHub("base")
-        )
-    }
-    protoJar {
-        disabled = true
-    }
-}
-*/
-
-// Another prototype - explicit artifacts declaration.
-// An example of publishing a single module.
-
-/*
-spinePublishing2 {
-    destinations = spineRepositories {
-        setOf(
-            cloudRepo,
-            cloudArtifactRegistry,
-            gitHub("base")
-        )
-    }
-    artifacts {
-        // 5 method calls => 5 jars
-        // + quite intuitive to understand
-        // + much easier to add or drop artifacts
-        // - code duplication
-
-        mainOutput()
-        testOutput()
-        javadoc()
-        javaSources() {
-            includeProto = true
-        }
-        protoSources()
-    }
-}
-*/
 
 allprojects {
     apply {
