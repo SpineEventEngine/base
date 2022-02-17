@@ -42,7 +42,12 @@ import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByType
 
 /**
- * A [Project] that publishes one or more artifacts using `maven-publish` plugin.
+ * A [Project] that publishes one or more JAR artifacts using `maven-publish` plugin.
+ *
+ * @param project source of artifacts
+ * @param prefix string to be prepended (by "-") to a name of each artifact
+ * @param publishProtoJar tells whether to publish a dedicated [MavenArtifacts.protoJar]
+ * @param destinations Maven repositories, to which the resulting artifacts are sent
  */
 class MavenPublishingProject(
     private val project: Project,
@@ -52,7 +57,7 @@ class MavenPublishingProject(
 ) {
 
     /**
-     * Applies the plugin, sets up `Maven` publication and declares a list of artifacts.
+     * Applies the plugin, sets up a publication and declares artifacts.
      */
     fun setUp() = project.afterEvaluate {
         apply(plugin = "maven-publish")
@@ -63,11 +68,9 @@ class MavenPublishingProject(
     }
 
     private fun Project.declareArtifacts() = with(MavenArtifacts()) {
-
         sourcesJar()
         testOutputJar()
         javadocJar()
-
         if (publishProtoJar) {
             protoJar()
         }
@@ -94,12 +97,12 @@ class MavenPublishingProject(
      * Obtains an [Iterable] containing artifacts that have the same `extension` and `classifier`.
      *
      * Such a situation may occur when applying both `com.gradle.plugin-publish` plugin AND
-     * `spinePublishing` in the same project. `com.gradle.plugin-publish` adds `sources` and `javadoc`
-     * artifacts, and we do it too in [Project.setUpDefaultArtifacts].
+     * `spinePublishing` in the same project. `com.gradle.plugin-publish` adds `sources` and
+     * `javadoc` artifacts, and we do it too in [declareArtifacts].
      *
-     * At the time when we add artifacts in [Project.setUpDefaultArtifacts], those added by
+     * At the time when we add artifacts in [declareArtifacts], those added by
      * `com.gradle.plugin-publish` are not yet visible to our code. Hence, we have to perform
-     * the deduplication before we set the artifacts in [PublishingExtension.createMavenPublication].
+     * the deduplication before we specify the artifacts in [createMavenPublication].
      */
     private fun PublishArtifactSet.deduplicate(): Iterable<PublishArtifact> =
         distinctBy { it.extension to it.classifier }
@@ -129,21 +132,25 @@ class MavenPublishingProject(
         // Reading is performed via public repositories, and publishing via
         // private ones that differ in the `/public` infix.
         url = project.uri(destination.replace("/public", ""))
-        val creds = repository.credentials(project.rootProject)
+
+        val repoCreds = repository.credentials(project.rootProject)
         credentials {
-            username = creds?.username
-            password = creds?.password
+            username = repoCreds?.username
+            password = repoCreds?.password
         }
     }
 
     private fun Project.setTaskDependencies() {
         val rootPublish = rootProject.tasks.getOrCreatePublishTask()
         val localPublish = tasks.getOrCreatePublishTask()
-        val checkCredentials = registerCheckCredentialsTask()
+        val checkCredentials = tasks.registerCheckCredentialsTask()
         rootPublish.configure { dependsOn(localPublish) }
         localPublish.configure { dependsOn(checkCredentials) }
     }
 
+    // Try-catch block is used here because Gradle still does not provide API for checking a task
+    // presence without triggering its creation.
+    // See: https://docs.gradle.org/current/userguide/task_configuration_avoidance.html
     private fun TaskContainer.getOrCreatePublishTask() =
         try {
             named("publish")
@@ -151,7 +158,7 @@ class MavenPublishingProject(
             register("publish")
         }
 
-    private fun Project.registerCheckCredentialsTask() = tasks.register("checkCredentials") {
+    private fun TaskContainer.registerCheckCredentialsTask() = register("checkCredentials") {
         doLast {
             destinations.forEach { it.assertCredentials(project) }
         }
