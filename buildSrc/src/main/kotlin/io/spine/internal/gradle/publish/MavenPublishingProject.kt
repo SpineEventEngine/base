@@ -45,7 +45,7 @@ import org.gradle.kotlin.dsl.getByType
  * A [Project] that publishes one or more JAR artifacts using `maven-publish` plugin.
  *
  * @param project source of artifacts
- * @param prefix string to be prepended (by "-") to a name of each artifact
+ * @param prefix string to be prepended (by "-") to an identifier of each artifact
  * @param publishProtoJar tells whether to publish a dedicated [MavenArtifacts.protoJar]
  * @param destinations Maven repositories, to which the resulting artifacts are sent
  */
@@ -57,7 +57,7 @@ class MavenPublishingProject(
 ) {
 
     /**
-     * Applies the plugin, sets up a publication and declares artifacts.
+     * Applies `maven-publish` plugin, sets up `mavenJava` publication and declares artifacts.
      */
     fun setUp() = project.afterEvaluate {
         apply(plugin = "maven-publish")

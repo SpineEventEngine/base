@@ -77,7 +77,7 @@ object JavadocConfig {
     }
 
     /**
-     * Registers [custom tags][customTags] for javadoc.
+     * Registers [customTags] for javadoc.
      */
     fun StandardJavadocDocletOptions.registerCustomTags() {
         tags = customTags.map { it.toString() }
