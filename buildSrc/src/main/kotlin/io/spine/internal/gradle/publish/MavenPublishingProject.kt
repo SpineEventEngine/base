@@ -77,7 +77,8 @@ class MavenPublishingProject(
     }
 
     private fun Project.createMavenPublication() {
-        val artifact = listOf(prefix, name).joinToString("-")
+        val nonEmptyPrefix = prefix.ifEmpty { null }
+        val artifact = listOfNotNull(nonEmptyPrefix, name).joinToString("-")
         val publishing = extensions.getByType<PublishingExtension>()
         publishing.publications.create<MavenPublication>("mavenJava") {
             groupId = project.group.toString()
