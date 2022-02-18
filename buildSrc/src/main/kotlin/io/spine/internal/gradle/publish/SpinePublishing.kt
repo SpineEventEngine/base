@@ -33,6 +33,117 @@ import org.gradle.kotlin.dsl.findByType
 
 /**
  * Configures [SpinePublishing] extension.
+ *
+ * This extension sets up generation and publishing of JAR artifacts to Maven repositories.
+ *
+ * The extension can be opened from two places:
+ *
+ * 1. A root project – when one needs to publish several modules to the same destinations.
+ * 2. A project itself – when only one module is published, or it uses specific destinations.
+ *
+ * When opened within a root project, list of published modules should be specified explicitly:
+ *
+ * ```
+ * spinePublishing {
+ *     modules = setOf(
+ *         "subprojectA",
+ *         "subprojectB",
+ *     )
+ *     destinations = spineRepositories {
+ *         setOf(
+ *             cloudRepo,
+ *             cloudArtifactRegistry,
+ *         )
+ *     }
+ * }
+ * ```
+ *
+ * When opened within a published module itself, only destinations should be specified:
+ *
+ * ```
+ * spinePublishing {
+ *     destinations = spineRepositories {
+ *         setOf(
+ *             cloudRepo,
+ *             cloudArtifactRegistry,
+ *             gitHub("base"),
+ *         )
+ *     }
+ * }
+ * ```
+ *
+ * It is worth to mention, that publishing of a module can be configured only from a single place.
+ * For example, declaring `subprojectA` as published in a root project and opening
+ * `spinePublishing` extension within `subprojectA` itself would lead to an exception.
+ *
+ * Along with the default project's compilation output, the extension configures publishing
+ * of the next artifacts:
+ *
+ * 1. [MavenArtifacts.sourcesJar] – sources of `main` source set. Includes "hand-made" Java, Kotlin
+ *    and Proto files. In order to include the generated code into this artifact, a module
+ *    should specify those files as a part of `main` source set:
+ *
+ *    ```
+ *    sourceSets {
+ *        val generatedDir by extra("$projectDir/generated")
+ *        val generatedSpineDir by extra("$generatedDir/main/java")
+ *
+ *        main {
+ *            java.srcDir(generatedSpineDir)
+ *        }
+ *    }
+ *    ```
+ *
+ * 2. [MavenArtifacts.testOutputJar] – compilation output of `test` source set.
+ * 3. [MavenArtifacts.javadocJar] - javadoc, generated upon Java sources from `main` source set.
+ *    If javadoc for Kotlin is also needed, apply Dokka plugins. It tunes `javadoc` task to generate
+ *    docs upon Kotlin sources as well.
+ * 4. [MavenArtifacts.protoJar] – only Proto sources of `main` source set. This artifact
+ *    is optional and can be dropped out.
+ *
+ *    In order to disable it for some of published modules:
+ *
+ *    ```
+ *    spinePublishing {
+ *        modules = setOf(
+ *            "subprojectA",
+ *            "subprojectB",
+ *        )
+ *        protoJar {
+ *            exclusions = setOf(
+ *                "subprojectB",
+ *            )
+ *        }
+ *    }
+ *    ```
+ *
+ *    For all modules, or when configured from a published project itself:
+ *
+ *    ```
+ *    spinePublishing {
+ *        protoJar {
+ *            disabled = true
+ *        }
+ *    }
+ *    ```
+ *
+ *    The resulting artifact is available under "proto" classifier. I.e., in Gradle 7+, one could
+ *    depend on it like this:
+ *
+ *     ```
+ *     implementation("io.spine:spine-client:$version@proto")
+ *     ```
+ *
+ * To publish more artifacts for a certain project, add them to the `archives` configuration:
+ *
+ * ```
+ * artifacts {
+ *     archives(myCustomJarTask)
+ * }
+ * ```
+ *
+ * If any plugins applied to the published project declare any other artifacts, those artifacts
+ * are published as well.
  */
 fun Project.spinePublishing(configuration: SpinePublishing.() -> Unit) {
     val name = SpinePublishing::class.java.simpleName
@@ -46,8 +157,8 @@ fun Project.spinePublishing(configuration: SpinePublishing.() -> Unit) {
 /**
  * A Gradle extension for setting up publishing of spine modules using `maven-publish` plugin.
  *
- * @param project can be a root project or a concrete module
- *
+ * @param project can be a root or specific project
+ *w
  * @see spinePublishing
  */
 open class SpinePublishing(private val project: Project) {
