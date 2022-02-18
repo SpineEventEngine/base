@@ -26,9 +26,11 @@
 
 package io.spine.code.version
 
+import com.google.common.testing.EqualsTester
 import com.google.common.truth.Truth.assertThat
-import org.junit.Test
 import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class `'Version' should` {
 
@@ -48,5 +50,37 @@ class `'Version' should` {
     private fun assertValueOf(v: Version, s: String) {
         assertThat(v.toString())
             .isEqualTo(s)
+    }
+
+    @Nested
+    inner class prohibit {
+
+        @Test
+        fun `negative values`() {
+            assertIllegal { Version(-1, 0) }
+            assertIllegal { Version(0, -1) }
+            assertIllegal { Version(0, 0, -1) }
+            assertIllegal { Version(0, 0, 0, -1) }
+            assertIllegal { Version(0, 0, null, -1) }
+        }
+    }
+
+    private fun assertIllegal(v: () -> Version) =
+        assertThrows<IllegalArgumentException> { v.invoke() }
+
+    @Test
+    fun `implement equality`() {
+        EqualsTester()
+            .addEqualityGroup(Version(1, 0), Version(1, 0))
+            .addEqualityGroup(Version(2, 0, 0))
+            .addEqualityGroup(Version(3, 0, 0, 100))
+            .testEquals()
+    }
+
+    @Test
+    fun `be comparable`() {
+        assertThat(Version(1, 0)).isLessThan(Version(1, 0, 0))
+        assertThat(Version(1, 0, 0)).isLessThan(Version(1, 0, 1))
+        assertThat(Version(2, 0)).isGreaterThan(Version(1, 100, 1000, 1000000))
     }
 }
