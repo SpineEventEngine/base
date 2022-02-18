@@ -101,8 +101,7 @@ object JavadocConfig {
      * that does not declare Java9 modules, search results contain broken links with appended
      * `undefined` prefix to the URL. This `undefined` was meant to be a name of a Java9 module.
      *
-     * See: [Broken links when generating from project without modules](https://bugs.openjdk.java.net/browse/JDK-8215291)
-     * See: [Issues linking to external documentation](https://bugs.openjdk.java.net/browse/JDK-8211194)
+     * See: [Issue #334](https://github.com/SpineEventEngine/config/issues/334)
      */
     private fun Javadoc.discardJavaModulesInLinks() {
 
