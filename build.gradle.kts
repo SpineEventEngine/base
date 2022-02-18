@@ -87,7 +87,7 @@ spinePublishing {
         setOf(
             cloudRepo,
             cloudArtifactRegistry,
-            gitHub("base")
+            gitHub("base"),
         )
     }
     protoJar {
@@ -96,6 +96,8 @@ spinePublishing {
         )
     }
 }
+
+
 
 allprojects {
     apply {

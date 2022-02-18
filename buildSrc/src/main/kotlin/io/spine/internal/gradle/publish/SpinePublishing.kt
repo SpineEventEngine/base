@@ -44,24 +44,72 @@ fun Project.spinePublishing(configuration: SpinePublishing.() -> Unit) {
 }
 
 /**
- * A scope for setting up publishing of spine modules using `maven-publish` plugin.
+ * A Gradle extension for setting up publishing of spine modules using `maven-publish` plugin.
+ *
+ * @param project can be a root project or a concrete module
+ *
+ * @see spinePublishing
  */
 open class SpinePublishing(private val project: Project) {
 
     private var protoJar: ProtoJar = ProtoJar()
+
+    /**
+     * Set of modules to be published.
+     *
+     * Both module's name or path can be used.
+     *
+     * Use this property if the extension is configured from a root project's build file for
+     * several modules at once. Otherwise, just ignore. The project, in which the extension
+     * was opened, will be published.
+     *
+     * Empty by default.
+     */
     var modules: Set<String> = emptySet()
+
+    /**
+     * Set of repositories, to which the resulting artifacts will be sent.
+     *
+     * One can use [spineRepositories] shortcut to select destinations from the pre-defined
+     * [set of repositories][PublishingRepos], to which a spine-related project may be published:
+     *
+     * ```
+     * destinations = spineRepositories {
+     *     setOf(
+     *         cloudRepo,
+     *         cloudArtifactRegistry,
+     *         gitHub("base"),
+     *     )
+     * }
+     * ```
+     *
+     * Empty by default.
+     */
     var destinations: Set<Repository> = emptySet()
+
+    /**
+     * String to be prepended (by "-") to an identifier of each artifact.
+     *
+     * Default value is "spine".
+     */
     var artifactPrefix: String = "spine"
 
     /**
-     * A shortcut for selecting repositories from the [defaults][PublishingRepos].
+     * A shortcut for selecting destinations from the pre-defined
+     * [set of repositories][PublishingRepos], to which a spine-related project may be published.
      */
     fun spineRepositories(select: PublishingRepos.() -> Set<Repository>) = select(PublishingRepos)
 
     /**
-     * Configures publishing of a JAR containing all the `.proto` definitions
-     * found in the project's classpath, which are the definitions from `sourceSets.main.proto`
-     * and the proto files extracted from the JAR dependencies of the project.
+     * Allows discarding generation of a dedicated `proto.jar` containing all the `.proto`
+     * definitions from `sourceSets.main.proto`.
+     *
+     * Can be used in two ways:
+     *
+     * - [specify][ProtoJar.exclusions] set of modules, for which the generation will be suppressed;
+     * - [disable][ProtoJar.disabled] it for all published modules.
+     *
+     * @see MavenArtifacts.protoJar
      */
     fun protoJar(configuration: ProtoJar.() -> Unit)  = protoJar.run(configuration)
 
@@ -69,7 +117,7 @@ open class SpinePublishing(private val project: Project) {
      * Called to notify the extension that its configuration is completed.
      *
      * On this stage the extension will validate the received configuration and set up
-     * `maven-publish` plugin for each module.
+     * `maven-publish` plugin for each published module.
      */
     internal fun configured() {
 
@@ -82,7 +130,7 @@ open class SpinePublishing(private val project: Project) {
                 val isProtoJarExcluded = (protoJarExclusions.contains(path) || protoJar.disabled)
                 MavenPublishingProject(
                     project = project.project(path),
-                    prefix = artifactPrefix,
+                    artifactPrefix = artifactPrefix,
                     publishProtoJar = isProtoJarExcluded.not(),
                     destinations
                 )
@@ -94,7 +142,10 @@ open class SpinePublishing(private val project: Project) {
     }
 
     /**
-     * Assert that publishing of this module is not already configured in a root project.
+     * Assert that publishing of a module is configured only from a single place.
+     *
+     * We allow configuration of publishing from two places - a root project and a module itself.
+     * Here we verify if publishing of a module is not configured from both places simultaneously.
      */
     private fun assertModulesNotDuplicated() {
         val rootProject = project.rootProject
@@ -114,7 +165,10 @@ open class SpinePublishing(private val project: Project) {
 
     /**
      * Asserts that all modules, marked as excluded from proto JAR generation,
-     * are actually specified for publishing.
+     * are actually published.
+     *
+     * It makes no sense to exclude a module from [MavenArtifacts.protoJar] generation, if a module
+     * is not published at all.
      */
     private fun assertProtoExclusions() {
         val nonPublishedExclusions = protoJar.exclusions.minus(modules)
@@ -127,21 +181,22 @@ open class SpinePublishing(private val project: Project) {
 
 /**
  * Configures publishing of a JAR containing all the `.proto` definitions
- * found in the project's classpath, which are the definitions from `sourceSets.main.proto`
- * and the proto files extracted from the JAR dependencies of the project.
+ * from `sourceSets.main.proto`.
+ *
+ * @see MavenArtifacts.protoJar
  */
 class ProtoJar {
 
     /**
      * Set of modules, for which a `proto` JAR will NOT be generated.
      *
-     * Specify this set only if the [published modules][SpinePublishing.modules]
+     * Use this property only if the [published modules][SpinePublishing.modules]
      * are specified explicitly. Otherwise, use [disabled] flag.
      */
     var exclusions: Set<String> = emptySet()
 
     /**
-     * Disables `proto` JAR generation for all publishing modules.
+     * Disables `proto` JAR generation for all published modules.
      */
     var disabled = false
 }
