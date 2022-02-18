@@ -215,6 +215,7 @@ class MuteLoggingExtensionTest extends SystemOutputTest {
         }
     }
 
+    @SuppressWarnings("FloggerLogString") // Cannot use Flogger formatting here.
     private static final class LoggingStub implements Logging {
 
         @CanIgnoreReturnValue

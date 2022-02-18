@@ -34,8 +34,6 @@ import io.spine.option.GoesOption;
 import io.spine.option.OptionsProto;
 import io.spine.validate.Constraint;
 
-import static java.lang.String.format;
-
 /**
  * An option that defines field bond to another field within the message.
  */
@@ -66,11 +64,10 @@ public final class Goes
 
     private boolean canBeRequired(FieldContext context) {
         var field = context.targetDeclaration();
-        var warning = format(
+        return checkType(field,
                 "Field `%s` cannot be checked for presence. `(goes).with` is obsolete.",
                 field
         );
-        return checkType(field, warning);
     }
 
     private boolean canPairedBeRequired(FieldContext context) {
@@ -82,20 +79,19 @@ public final class Goes
         var field = context.targetDeclaration();
         var messageType = field.declaringType();
         var pairedField = messageType.field(pairedFieldName);
-        var warningMessage = format(
+        return checkType(pairedField,
                 "Field `%s` paired with `%s` cannot be checked for presence. " +
                         "`(goes).with` at %s is obsolete.",
                 pairedField, field, field
         );
-        return checkType(pairedField, warningMessage);
     }
 
-    private boolean checkType(FieldDeclaration field, String warningMessage) {
+    private boolean checkType(FieldDeclaration field, String fmt, Object... params) {
         var type = field.javaType();
         if (field.isCollection() || Required.CAN_BE_REQUIRED.contains(type)) {
             return true;
         } else {
-            _warn().log(warningMessage);
+            _warn().logVarargs(fmt, params);
             return false;
         }
     }
