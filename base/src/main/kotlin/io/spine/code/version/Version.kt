@@ -34,9 +34,23 @@ import kotlin.math.sign
 public class Version private constructor(
     private val major: String,
     private val minor: String,
-    private val patch: String? = null,
+    patch: String? = null,
     private val snapshot: String? = null
 ) : Comparable<Version> {
+
+    private val patch: String?
+
+    public companion object {
+        private const val SNAPSHOT_INFIX: String = "-SNAPSHOT"
+    }
+
+    /**
+     * If the patch component is not specified, but there is a snapshot index, we assume that
+     * the patch is zero because we need a patch value before the snapshot suffix.
+     */
+    init {
+        this.patch = if (patch == null && snapshot != null) "0" else patch
+    }
 
     /**
      * Creates a new version using integer values of the components.
@@ -44,7 +58,7 @@ public class Version private constructor(
      * If `snapshot` value is non-null, while `patch` is null, zero patch value would be assumed.
      *
      * @throws IllegalArgumentException
-     *          if one of the components is a negative value
+     *          if one of the given values is negative
      */
     public constructor(major: Int, minor: Int, patch: Int? = null, snapshot: Int? = null) :
             this(major.toString(), minor.toString(), patch?.toString(), snapshot?.toString()) {
@@ -54,17 +68,10 @@ public class Version private constructor(
         require(snapshot?.sign != -1)
     }
 
-    public companion object {
-        private const val SNAPSHOT_INFIX: String = "-SNAPSHOT"
-    }
-
     private val value: String
         get() {
             val snapshotPart = if (snapshot != null) "$SNAPSHOT_INFIX.$snapshot" else ""
-            val patchPart = if (patch != null) ".$patch"
-                // Have no patch component here, but may have snapshot one.
-                else if (snapshotPart.isNotEmpty()) ".0"
-                else ""
+            val patchPart = if (patch != null) ".$patch" else ""
             return "$major.$minor$patchPart$snapshotPart"
         }
 
@@ -74,16 +81,24 @@ public class Version private constructor(
     public fun isSnapshot(): Boolean = value.contains(SNAPSHOT_INFIX)
 
     /**
-     * Compares two versions.
+     * Compares two versions by components starting from the `major` number.
+     *
+     * If `major`, `minor`, and `patch` components are equal, a non-snapshot version would
+     * be greater than a snapshot one.
      */
     override fun compareTo(other: Version): Int {
         var result = major.compareTo(other.major)
         if (result != 0) return result
         result = minor.compareTo(other.minor)
         if (result != 0) return result
+        result = compareValues(patch, other.patch)
+        if (result != 0) return result
 
-        //TODO:2022-02-18:alexander.yevsyukov: Make snapshots less than non-snapshots
-        return value.compareTo(other.value)
+        // Non-snapshot values are greater than snapshot ones.
+        if (snapshot == null && other.snapshot != null) {
+            return 1
+        }
+        return compareValues(snapshot, other.snapshot)
     }
 
     /**

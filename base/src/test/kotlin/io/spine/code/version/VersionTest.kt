@@ -43,14 +43,16 @@ class `'Version' should` {
             assertValueOf(Version(1, 0, 0), "1.0.0")
             assertValueOf(Version(1, 0, 100), "1.0.100")
             assertValueOf(Version(2, 0, null), "2.0")
-            assertValueOf(Version(2, 0, null, 0), "2.0.0-SNAPSHOT.0")
+            assertValueOf(Version(2, 0, null, null), "2.0")
         }
     }
 
-    private fun assertValueOf(v: Version, s: String) {
-        assertThat(v.toString())
-            .isEqualTo(s)
+    @Test
+    fun `assume zero patch if null passed and snapshot is not null`() {
+        assertValueOf(Version(2, 0, patch = null, snapshot = 0), "2.0.0-SNAPSHOT.0")
     }
+
+    private fun assertValueOf(v: Version, s: String) = assertThat(v.toString()).isEqualTo(s)
 
     @Nested
     inner class prohibit {
@@ -63,10 +65,10 @@ class `'Version' should` {
             assertIllegal { Version(0, 0, 0, -1) }
             assertIllegal { Version(0, 0, null, -1) }
         }
-    }
 
-    private fun assertIllegal(v: () -> Version) =
-        assertThrows<IllegalArgumentException> { v.invoke() }
+        private fun assertIllegal(v: () -> Version) =
+            assertThrows<IllegalArgumentException> { v.invoke() }
+    }
 
     @Test
     fun `implement equality`() {
@@ -77,10 +79,31 @@ class `'Version' should` {
             .testEquals()
     }
 
-    @Test
-    fun `be comparable`() {
-        assertThat(Version(1, 0)).isLessThan(Version(1, 0, 0))
-        assertThat(Version(1, 0, 0)).isLessThan(Version(1, 0, 1))
-        assertThat(Version(2, 0)).isGreaterThan(Version(1, 100, 1000, 1000000))
+    @Nested
+    inner class `provide comparison having` {
+
+        @Test
+        fun `version with patch greater than without`() {
+            assertThat(Version(1, 0, 0)).isGreaterThan(Version(1, 0))
+        }
+
+        @Test
+        fun `compared each component`() {
+            assertThat(Version(0, 0, 0)).isLessThan(Version(0, 0, 1))
+            assertThat(Version(0, 0, 0)).isLessThan(Version(0, 1, 0))
+            assertThat(Version(0, 0, 0)).isLessThan(Version(1, 0, 0))
+            assertThat(Version(1, 0, 0)).isLessThan(Version(1, 0, 1))
+            assertThat(Version(1, 0, 0)).isLessThan(Version(2, 0, 0))
+            assertThat(Version(1, 0, 0)).isLessThan(Version(1, 1, 0))
+            assertThat(Version(1, 0, 0)).isLessThan(Version(1, 0, 1))
+            assertThat(Version(1, 0, 0, 0)).isLessThan(Version(1, 0, 0, 1))
+
+            assertThat(Version(2, 0)).isGreaterThan(Version(1, 100, 1000, 1000000))
+        }
+
+        @Test
+        fun `release version greater than snapshot`() {
+            assertThat(Version(0, 0, 0)).isGreaterThan(Version(0, 0, 0, 0))
+        }
     }
 }
