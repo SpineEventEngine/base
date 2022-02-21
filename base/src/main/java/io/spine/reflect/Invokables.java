@@ -184,11 +184,11 @@ public final class Invokables {
      *         if a {@code ReflectiveOperationException} is thrown
      *         by {@code fn}, or other error occurs during the reflective operation execution
      */
-    @SuppressWarnings("OverlyBroadCatchBlock" /* catching any runtimes does not hurt here. */)
-    private static <T, R> R invokePreservingAccessibility(T reflectiveObject,
-                                                          Function<T, Invokable<?, ?>> makeInvokable,
-                                                          ReflectiveFunction<T, R> fn,
-                                                          Supplier<String> onError) {
+    private static <T, R>
+    R invokePreservingAccessibility(T reflectiveObject,
+                                    Function<T, Invokable<?, ?>> makeInvokable,
+                                    ReflectiveFunction<T, R> fn,
+                                    Supplier<String> onError) {
         var invokable = makeInvokable.apply(reflectiveObject);
         var accessible = invokable.isAccessible();
         try {
