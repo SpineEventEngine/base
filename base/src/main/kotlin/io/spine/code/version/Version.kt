@@ -26,6 +26,7 @@
 
 package io.spine.code.version
 
+import java.util.Comparator.comparing
 import kotlin.math.sign
 
 /**
@@ -87,18 +88,16 @@ public class Version private constructor(
      * be greater than a snapshot one.
      */
     override fun compareTo(other: Version): Int {
-        var result = Comparator.comparing(Version::major)
+        val result = comparing(Version::major)
             .thenComparing(Version::minor)
-            .compare(this, other)
-        if (result != 0) return result
-        result = compareValues(patch, other.patch)
-        if (result != 0) return result
-
-        // Non-snapshot values are greater than snapshot ones.
-        if (snapshot == null && other.snapshot != null) {
-            return 1
-        }
-        return compareValues(snapshot, other.snapshot)
+            .thenComparing { v -> v.patch.orEmpty() }
+            .thenComparing { v1, v2 ->
+                // Non-snapshot values are greater than snapshot ones.
+                if (v1.snapshot == null && v2.snapshot != null) { 1 }
+                else if (v1.snapshot != null && v2.snapshot == null) { -1}
+                else compareValues(v1.snapshot, v2.snapshot)
+            }.compare(this, other)
+        return result
     }
 
     /**

@@ -104,6 +104,7 @@ class `'Version' should` {
         @Test
         fun `release version greater than snapshot`() {
             assertThat(Version(0, 0, 0)).isGreaterThan(Version(0, 0, 0, 0))
+            assertThat(Version(1, 0, 0, 0)).isLessThan(Version(1, 0, 0))
         }
     }
 }
