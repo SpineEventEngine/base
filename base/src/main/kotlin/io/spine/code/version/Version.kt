@@ -87,9 +87,9 @@ public class Version private constructor(
      * be greater than a snapshot one.
      */
     override fun compareTo(other: Version): Int {
-        var result = major.compareTo(other.major)
-        if (result != 0) return result
-        result = minor.compareTo(other.minor)
+        var result = Comparator.comparing(Version::major)
+            .thenComparing(Version::minor)
+            .compare(this, other)
         if (result != 0) return result
         result = compareValues(patch, other.patch)
         if (result != 0) return result
