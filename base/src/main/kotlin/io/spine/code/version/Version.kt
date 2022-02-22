@@ -88,14 +88,14 @@ public class Version private constructor(
      * be greater than a snapshot one.
      */
     override fun compareTo(other: Version): Int {
-        val result = comparing(Version::major)
-            .thenComparing(Version::minor)
-            .thenComparing { v -> v.patch.orEmpty() }
+        val result = comparing<Version, Int> { it.major.toInt() }
+            .thenComparing { v -> v.minor.toInt() }
+            .thenComparing { v ->  v.patch?.toIntOrNull() ?: -100 /* no `patch` is always less. */ }
             .thenComparing { v1, v2 ->
                 // Non-snapshot values are greater than snapshot ones.
                 if (v1.snapshot == null && v2.snapshot != null) { 1 }
-                else if (v1.snapshot != null && v2.snapshot == null) { -1}
-                else compareValues(v1.snapshot, v2.snapshot)
+                else if (v1.snapshot != null && v2.snapshot == null) { -1 }
+                else compareValues(v1.snapshot?.toIntOrNull(), v2.snapshot?.toIntOrNull())
             }.compare(this, other)
         return result
     }

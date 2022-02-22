@@ -80,10 +80,10 @@ class `'Version' should` {
     }
 
     @Nested
-    inner class `provide comparison having` {
+    inner class `provide comparison` {
 
         @Test
-        fun `compared each component numerically`() {
+        fun `of each component numerically`() {
             assertThat(Version(0, 0, 0)).isLessThan(Version(0, 0, 1))
             assertThat(Version(0, 0, 0)).isLessThan(Version(0, 1, 0))
             assertThat(Version(0, 0, 0)).isLessThan(Version(1, 0, 0))
@@ -99,13 +99,13 @@ class `'Version' should` {
         }
 
         @Test
-        fun `version with patch greater than without`() {
+        fun `having version with 'patch' greater than without`() {
             assertThat(Version(1, 0, 0)).isGreaterThan(Version(1, 0))
             assertThat(Version(1, 0, 1)).isGreaterThan(Version(1, 0))
         }
 
         @Test
-        fun `release version greater than snapshot`() {
+        fun `having release version greater than snapshot`() {
             assertThat(Version(0, 0, 0)).isGreaterThan(Version(0, 0, 0, 0))
             assertThat(Version(1, 0, 0, 0)).isLessThan(Version(1, 0, 0))
         }
