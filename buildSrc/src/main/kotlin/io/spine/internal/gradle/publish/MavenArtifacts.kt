@@ -117,7 +117,7 @@ internal class MavenArtifacts(private val publishProtoJar: Boolean) {
 
     private fun Project.jarArtifact(taskName: String, init: Jar.() -> Unit) {
         val task = tasks.getOrCreate(taskName, init)
-        artifacts.add(ConfigurationName.archives, task)
+        artifacts.add("archives", task)
     }
 
     // Try-catch block is used here because Gradle still does not provide API for checking a task

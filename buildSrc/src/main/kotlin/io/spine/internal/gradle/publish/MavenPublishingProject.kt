@@ -97,7 +97,7 @@ class MavenPublishingProject(
 
                 from(project.components.getAt("java"))
 
-                val archivesConfig = project.configurations.getAt(ConfigurationName.archives)
+                val archivesConfig = project.configurations.getAt("archives")
                 val allArtifacts = archivesConfig.allArtifacts
                 val deduplicated = allArtifacts.deduplicate()
                 setArtifacts(deduplicated)
