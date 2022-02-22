@@ -250,7 +250,7 @@ spinePublishing {
         "base",
         "testlib"
     )
-    destinations = spineRepositories {
+    destinations = targetRepositories {
         setOf(
             cloudRepo,
             cloudArtifactRegistry,

@@ -179,7 +179,7 @@ open class SpinePublishing(private val project: Project) {
     /**
      * Set of repositories, to which the resulting artifacts will be sent.
      *
-     * One can use [spineRepositories] shortcut to select destinations from the pre-defined
+     * One can use [targetRepositories] shortcut to select destinations from the pre-defined
      * [set of repositories][PublishingRepos], to which a spine-related project may be published:
      *
      * ```
@@ -209,7 +209,7 @@ open class SpinePublishing(private val project: Project) {
      * A shortcut for selecting destinations from the pre-defined
      * [set of repositories][PublishingRepos], to which a spine-related project may be published.
      */
-    fun spineRepositories(select: PublishingRepos.() -> Set<Repository>) = select(PublishingRepos)
+    fun targetRepositories(select: PublishingRepos.() -> Set<Repository>) = select(PublishingRepos)
 
     /**
      * Allows disabling publishing of a dedicated [MavenArtifacts.protoJar] artifact,
