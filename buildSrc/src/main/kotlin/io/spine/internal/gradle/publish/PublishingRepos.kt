@@ -41,12 +41,7 @@ object PublishingRepos {
         credentialsFile = "credentials.properties"
     )
 
-    val cloudRepo = Repository(
-        name = "CloudRepo",
-        releases = "https://spine.mycloudrepo.io/public/repositories/releases",
-        snapshots = "https://spine.mycloudrepo.io/public/repositories/snapshots",
-        credentialsFile = "cloudrepo.properties"
-    )
+    val cloudRepo = CloudRepo
 
     val cloudArtifactRegistry = CloudArtifactRegistry.repository
 
@@ -56,3 +51,27 @@ object PublishingRepos {
     fun gitHub(repoName: String): Repository = GitHubPackages.repository(repoName)
 }
 
+/**
+ * Special treatment...
+ */
+object CloudRepo {
+
+    // Special treatment for CloudRepo URL.
+    // Reading is performed via public repositories, and publishing via
+    // private ones that differ in the `/public` infix.
+
+    val reading = Repository(
+        name = "CloudRepo",
+        releases = "https://spine.mycloudrepo.io/public/repositories/releases",
+        snapshots = "https://spine.mycloudrepo.io/public/repositories/snapshots",
+        credentialsFile = "cloudrepo.properties"
+    )
+
+    val writing = Repository(
+        name = "CloudRepo",
+        releases = "https://spine.mycloudrepo.io/repositories/releases",
+        snapshots = "https://spine.mycloudrepo.io/repositories/snapshots",
+        credentialsFile = "cloudrepo.properties"
+    )
+
+}

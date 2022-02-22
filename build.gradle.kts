@@ -252,7 +252,7 @@ spinePublishing {
     )
     destinations = targetRepositories {
         setOf(
-            cloudRepo,
+            cloudRepo.writing,
             cloudArtifactRegistry,
             gitHub("base"),
         )
