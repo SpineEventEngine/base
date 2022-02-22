@@ -58,8 +58,23 @@ class MavenPublishingProject(
 
     /**
      * Applies `maven-publish` plugin, sets up `mavenJava` publication and declares artifacts.
+     *
+     * Here `project.afterEvaluate` closure is used. General rule of thumb is to avoid using
+     * of this closure, as it configures a project when its configuration is considered completed.
+     * That's quite counter-intuitive.
+     *
+     * The root cause why it is used here is a possibility to set up publishing of multiple modules
+     * from a root project. When this possibility is employed, in fact, we configure publishing
+     * for a module, build file of which has not been even evaluated by that time. This leads to
+     * an unexpected behavior.
+     *
+     * The simplest example here is specifying of `version` and `group`. Let's suppose, they are
+     * specified in a module's build. It is a common practice. But publishing of this module is
+     * set up from a root project. By the time, when we specify them for published artifacts,
+     * we don't know them. As a result, we have to use `project.afterEvaluate` in order
+     * to guarantee that a module will be configured by the time we set up publishing for it.
      */
-    fun setUp() = with(project) {
+    fun setUp() = project.afterEvaluate {
         apply(plugin = "maven-publish")
         declareArtifacts()
         createMavenPublication()

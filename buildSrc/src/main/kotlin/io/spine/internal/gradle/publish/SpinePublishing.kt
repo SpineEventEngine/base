@@ -234,21 +234,19 @@ open class SpinePublishing(private val project: Project) {
         assertModulesNotDuplicated()
 
         val protoJarExclusions = protoJar.exclusions
-        val publishingProjects = modules.ifEmpty { setOf(project.path) }
+        val publishedModules = modules.ifEmpty { setOf(project.name) }
             .map { name ->
-                val isProtoJarExcluded = (protoJarExclusions.contains(name) || protoJar.disabled)
+                val isProtoExcluded = (protoJarExclusions.contains(name) || protoJar.disabled)
                 val project = project.project(name)
                 MavenPublishingProject(
                     project = project,
                     artifactId = artifactId(project),
-                    publishProtoJar = isProtoJarExcluded.not(),
+                    publishProtoJar = isProtoExcluded.not(),
                     destinations
                 )
             }
 
-        project.afterEvaluate {
-            publishingProjects.forEach { it.setUp() }
-        }
+        publishedModules.forEach { it.setUp() }
     }
 
     /**
