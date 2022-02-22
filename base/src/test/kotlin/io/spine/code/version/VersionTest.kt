@@ -83,12 +83,7 @@ class `'Version' should` {
     inner class `provide comparison having` {
 
         @Test
-        fun `version with patch greater than without`() {
-            assertThat(Version(1, 0, 0)).isGreaterThan(Version(1, 0))
-        }
-
-        @Test
-        fun `compared each component`() {
+        fun `compared each component numerically`() {
             assertThat(Version(0, 0, 0)).isLessThan(Version(0, 0, 1))
             assertThat(Version(0, 0, 0)).isLessThan(Version(0, 1, 0))
             assertThat(Version(0, 0, 0)).isLessThan(Version(1, 0, 0))
@@ -99,9 +94,13 @@ class `'Version' should` {
             assertThat(Version(1, 0, 0, 0)).isLessThan(Version(1, 0, 0, 1))
 
             assertThat(Version(2, 0)).isGreaterThan(Version(1, 100, 1000, 1000000))
-            
-            // A version with the patch index is generally greater than without.
-            assertThat(Version(1, 0, 0)).isGreaterThan(Version(1, 0)) // The edge case.
+
+            assertThat(Version(1, 10)).isGreaterThan(Version(1, 2))
+        }
+
+        @Test
+        fun `version with patch greater than without`() {
+            assertThat(Version(1, 0, 0)).isGreaterThan(Version(1, 0))
             assertThat(Version(1, 0, 1)).isGreaterThan(Version(1, 0))
         }
 
