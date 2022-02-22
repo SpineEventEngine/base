@@ -28,6 +28,7 @@ package io.spine.code.version
 
 import com.google.common.testing.EqualsTester
 import com.google.common.truth.Truth.assertThat
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -84,30 +85,32 @@ class `'Version' should` {
 
         @Test
         fun `of each component numerically`() {
-            assertThat(Version(0, 0, 0)).isLessThan(Version(0, 0, 1))
-            assertThat(Version(0, 0, 0)).isLessThan(Version(0, 1, 0))
-            assertThat(Version(0, 0, 0)).isLessThan(Version(1, 0, 0))
-            assertThat(Version(1, 0, 0)).isLessThan(Version(1, 0, 1))
-            assertThat(Version(1, 0, 0)).isLessThan(Version(2, 0, 0))
-            assertThat(Version(1, 0, 0)).isLessThan(Version(1, 1, 0))
-            assertThat(Version(1, 0, 0)).isLessThan(Version(1, 0, 1))
-            assertThat(Version(1, 0, 0, 0)).isLessThan(Version(1, 0, 0, 1))
+            assertTrue(Version(0, 0, 0) < Version(0, 0, 1))
 
-            assertThat(Version(2, 0)).isGreaterThan(Version(1, 100, 1000, 1000000))
+            assertTrue(Version(0, 0, 0) < Version(0, 0, 1))
+            assertTrue(Version(0, 0, 0) < Version(0, 1, 0))
+            assertTrue(Version(0, 0, 0) < Version(1, 0, 0))
+            assertTrue(Version(1, 0, 0) < Version(1, 0, 1))
+            assertTrue(Version(1, 0, 0) < Version(2, 0, 0))
+            assertTrue(Version(1, 0, 0) < Version(1, 1, 0))
+            assertTrue(Version(1, 0, 0) < Version(1, 0, 1))
+            assertTrue(Version(1, 0, 0, 0) < Version(1, 0, 0, 1))
 
-            assertThat(Version(1, 10)).isGreaterThan(Version(1, 2))
+            assertTrue(Version(1, 100, 1000, 1000000) < Version(2, 0))
+
+            assertTrue(Version(1, 2) < Version(1, 10))
         }
 
         @Test
         fun `having version with 'patch' greater than without`() {
-            assertThat(Version(1, 0, 0)).isGreaterThan(Version(1, 0))
-            assertThat(Version(1, 0, 1)).isGreaterThan(Version(1, 0))
+            assertThat(Version(1, 0) < Version(1, 0, 0))
+            assertThat(Version(1, 0) < Version(1, 0, 1))
         }
 
         @Test
         fun `having release version greater than snapshot`() {
-            assertThat(Version(0, 0, 0)).isGreaterThan(Version(0, 0, 0, 0))
-            assertThat(Version(1, 0, 0, 0)).isLessThan(Version(1, 0, 0))
+            assertThat(Version(0, 0, 0, 0) < Version(0, 0, 0))
+            assertThat(Version(1, 0, 0) < Version(1, 0, 0, 0))
         }
     }
 }
