@@ -44,17 +44,17 @@ internal class MavenPublishedProject(
     private val destinations: Collection<Repository>,
 ) : Project by project {
 
-    val publication: MavenPublication = createNewPublication().apply {
-        setMavenCoordinates()
-        setJars()
+    init {
+        createAndRegister().apply {
+            setMavenCoordinates()
+            setJars()
+        }
     }
 
     /**
      * Creates and registers new Maven publication in this Gradle project.
-     *
-     * @return the registered publication
      */
-    private fun createNewPublication(): MavenPublication {
+    private fun createAndRegister(): MavenPublication {
         val gradlePublishing = extensions.getByType<PublishingExtension>()
         val gradlePublications = gradlePublishing.publications
         val mavenPublication = gradlePublications.create<MavenPublication>("mavenJava")
