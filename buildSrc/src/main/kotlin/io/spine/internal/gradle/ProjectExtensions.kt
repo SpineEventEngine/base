@@ -26,14 +26,14 @@
 
 package io.spine.internal.gradle
 
+import io.spine.internal.gradle.publish.SpinePublishing
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.SourceSetContainer
+import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.getByType
-import org.gradle.api.publish.PublishingExtension
-import org.gradle.api.publish.maven.MavenPublication
 
 /**
  * This file contains extension methods and properties for the Gradle `Project`.
@@ -73,12 +73,20 @@ fun <T : Task> Project.findTask(name: String): T {
 }
 
 /**
- * Obtains the Maven artifact ID of the project.
+ * Obtains Maven artifact ID of the project.
+ *
+ * The method determines if [SpinePublishing] is configured upon this project. If yes, returns
+ * [SpinePublishing.artifactId] for the project. Otherwise, returns a project name.
  */
 val Project.artifactId: String
     get() {
-        val publishing = extensions.getByType<PublishingExtension>()
-        val publication = publishing.publications.findByName("mavenJava") as MavenPublication?
-        val artifactId = publication?.artifactId ?: name
-        return artifactId
+
+        // When publishing is configured for a multi-module project, the extension is opened
+        // in a root project's build file. For a single-module project – in a project's build file.
+
+        val spinePublishing = extensions.findByType<SpinePublishing>()
+            ?: rootProject.extensions.findByType()
+
+        val artifactId = spinePublishing?.artifactId(this)
+        return artifactId ?: name
     }

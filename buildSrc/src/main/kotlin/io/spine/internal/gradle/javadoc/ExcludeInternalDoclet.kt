@@ -28,7 +28,6 @@ package io.spine.internal.gradle.javadoc
 
 import io.spine.internal.gradle.javadoc.ExcludeInternalDoclet.Companion.taskName
 import io.spine.internal.gradle.sourceSets
-import io.spine.internal.gradle.javadoc.JavadocConfig.registerCustomTags
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.tasks.javadoc.Javadoc
@@ -108,8 +107,7 @@ private fun Project.appendCustomJavadocTask(excludeInternalDoclet: Configuration
             docletpath = excludeInternalDoclet.files.toList()
         }
 
-        with(options as StandardJavadocDocletOptions) {
-            registerCustomTags()
-        }
+        val docletOptions = options as StandardJavadocDocletOptions
+        JavadocConfig.registerCustomTags(docletOptions)
     }
 }

@@ -44,14 +44,14 @@ import org.gradle.kotlin.dsl.getByType
 /**
  * A [Project] that publishes one or more JAR artifacts using `maven-publish` plugin.
  *
- * @param project source of artifacts
- * @param artifactPrefix string to be prepended (by "-") to an identifier of each artifact
+ * @param project producer of artifacts
+ * @param artifactId the name of jars without version
  * @param publishProtoJar tells whether to publish a dedicated [MavenArtifacts.protoJar]
  * @param destinations Maven repositories, to which the resulting artifacts are sent
  */
 class MavenPublishingProject(
     private val project: Project,
-    private val artifactPrefix: String,
+    private val artifactId: String,
     private val publishProtoJar: Boolean,
     private val destinations: Set<Repository>
 ) {
@@ -59,7 +59,7 @@ class MavenPublishingProject(
     /**
      * Applies `maven-publish` plugin, sets up `mavenJava` publication and declares artifacts.
      */
-    fun setUp() = project.afterEvaluate {
+    fun setUp() = with(project) {
         apply(plugin = "maven-publish")
         declareArtifacts()
         createMavenPublication()
@@ -67,31 +67,26 @@ class MavenPublishingProject(
         setTaskDependencies()
     }
 
-    private fun Project.declareArtifacts() = with(MavenArtifacts()) {
-        sourcesJar()
-        testOutputJar()
-        javadocJar()
-        if (publishProtoJar) {
-            protoJar()
-        }
+    private fun Project.declareArtifacts() {
+        val artifacts = MavenArtifacts(publishProtoJar)
+        artifacts.registerIn(this)
     }
 
     private fun Project.createMavenPublication() {
-        val nonEmptyPrefix = artifactPrefix.ifEmpty { null }
-        val artifact = listOfNotNull(nonEmptyPrefix, name).joinToString("-")
-        val publishing = extensions.getByType<PublishingExtension>()
-        publishing.publications.create<MavenPublication>("mavenJava") {
-            groupId = project.group.toString()
-            artifactId = artifact
-            version = project.version.toString()
+        extensions.getByType<PublishingExtension>()
+            .publications
+            .create<MavenPublication>("mavenJava") {
+                groupId = project.group.toString()
+                artifactId = this@MavenPublishingProject.artifactId
+                version = project.version.toString()
 
-            from(project.components.getAt("java"))
+                from(project.components.getAt("java"))
 
-            val archivesConfig = project.configurations.getAt(ConfigurationName.archives)
-            val allArtifacts = archivesConfig.allArtifacts
-            val deduplicated = allArtifacts.deduplicate()
-            setArtifacts(deduplicated)
-        }
+                val archivesConfig = project.configurations.getAt(ConfigurationName.archives)
+                val allArtifacts = archivesConfig.allArtifacts
+                val deduplicated = allArtifacts.deduplicate()
+                setArtifacts(deduplicated)
+            }
     }
 
     /**
@@ -109,13 +104,11 @@ class MavenPublishingProject(
         distinctBy { it.extension to it.classifier }
 
     private fun Project.specifyRepositories() {
-        val isSnapshot = project.version
-            .toString()
+        val isSnapshot = project.version.toString()
             .matches(Regex(".+[-.]SNAPSHOT([+.]\\d+)?"))
-        val publishing = extensions.getByType<PublishingExtension>()
-        destinations.forEach { destination ->
-            publishing.repositories.maven {
-                initialize(destination, project, isSnapshot)
+        with(extensions.getByType<PublishingExtension>()) {
+            destinations.forEach { destination ->
+                repositories.maven { initialize(destination, project, isSnapshot) }
             }
         }
     }

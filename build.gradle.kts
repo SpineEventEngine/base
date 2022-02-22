@@ -37,6 +37,7 @@ import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.gradle.javadoc.JavadocConfig
 import io.spine.internal.gradle.applyStandard
+import io.spine.internal.gradle.artifactId
 import io.spine.internal.gradle.checkstyle.CheckStyleConfig
 import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.forceVersions
@@ -77,27 +78,6 @@ plugins {
 }
 
 apply(from = "$rootDir/version.gradle.kts")
-
-spinePublishing {
-    modules = setOf(
-        "base",
-        "testlib",
-    )
-    destinations = spineRepositories {
-        setOf(
-            cloudRepo,
-            cloudArtifactRegistry,
-            gitHub("base"),
-        )
-    }
-    protoJar {
-        exclusions = setOf(
-            "testlib",
-        )
-    }
-}
-
-
 
 allprojects {
     apply {
@@ -264,6 +244,27 @@ subprojects {
     }
 
     project.tasks[PublishingTask.publish].dependsOn("${project.path}:updateGitHubPages")
+}
+
+spinePublishing {
+    modules = setOf(
+        "base",
+        "testlib"
+    )
+    destinations = spineRepositories {
+        setOf(
+            cloudRepo,
+            cloudArtifactRegistry,
+            gitHub("base"),
+        )
+    }
+    protoJar {
+        exclusions = setOf("testlib")
+    }
+}
+
+subprojects {
+    println(this.artifactId)
 }
 
 JacocoConfig.applyTo(project)
