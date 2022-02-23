@@ -27,10 +27,8 @@
 package io.spine.internal.gradle.publish
 
 import io.spine.internal.gradle.sourceSets
-import java.io.File
 import org.gradle.api.Project
 import org.gradle.api.UnknownTaskException
-import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
@@ -39,20 +37,9 @@ import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.register
 
 /**
- * JAR artifacts, which can be published along with the default project compilation output.
+ * Enumerates [Jar] tasks, which produce publishable Maven artifacts.
  */
-internal class MavenArtifacts(private val publishProtoJar: Boolean) {
-
-    fun registerIn(project: Project) = with(project) {
-
-        sourcesJar()
-        testOutputJar()
-        javadocJar()
-
-        if (hasProto() && publishProtoJar) {
-            protoJar()
-        }
-    }
+internal class Artifacts {
 
     /**
      * Sources from `main` source set.
@@ -63,7 +50,7 @@ internal class MavenArtifacts(private val publishProtoJar: Boolean) {
      *  - Java
      *  - Proto
      */
-    private fun Project.sourcesJar() = jarArtifact("sourcesJar") {
+    fun Project.sourcesJar() = tasks.getOrCreate("sourcesJar") {
         archiveClassifier.set("sources")
         from(sourceSets["main"].allSource) // puts Java and Kotlin sources
         from(protoSources()) // puts Proto sources.
@@ -72,36 +59,15 @@ internal class MavenArtifacts(private val publishProtoJar: Boolean) {
     /**
      * Only Proto sources from `main` source set.
      */
-    private fun Project.protoJar() = jarArtifact("protoJar") {
+    fun Project.protoJar() = tasks.getOrCreate("protoJar") {
         archiveClassifier.set("proto")
         from(protoSources())
     }
 
     /**
-     * Tells whether there are any Proto sources in `main` source set.
-     */
-    private fun Project.hasProto(): Boolean {
-        val protoSources = protoSources()
-        val result = protoSources.any { it.exists() }
-        return result
-    }
-
-    /**
-     * Locates Proto sources in `main` source set.
-     *
-     * Special treatment for them because they are not Java-related, and, thus, not included
-     * into `sourceSets["main"].allSource`.
-     */
-    private fun Project.protoSources(): Collection<File> {
-        val mainSourceSet = sourceSets["main"]
-        val protoSourceDirs = mainSourceSet.extensions.getByName("proto") as SourceDirectorySet
-        return protoSourceDirs.srcDirs
-    }
-
-    /**
      * Compilation output of `test` source set.
      */
-    private fun Project.testOutputJar() = jarArtifact("testOutputJar") {
+    fun Project.testOutputJar() = tasks.getOrCreate("testOutputJar") {
         archiveClassifier.set("test")
         from(sourceSets["test"].output)
     }
@@ -109,15 +75,10 @@ internal class MavenArtifacts(private val publishProtoJar: Boolean) {
     /**
      * Javadoc, generated upon Java and Kotlin sources from `main` source set.
      */
-    private fun Project.javadocJar() = jarArtifact("javadocJar") {
+    fun Project.javadocJar() = tasks.getOrCreate("javadocJar") {
         archiveClassifier.set("javadoc")
         from(files("$buildDir/docs/javadoc"))
         dependsOn("javadoc")
-    }
-
-    private fun Project.jarArtifact(taskName: String, init: Jar.() -> Unit) {
-        val task = tasks.getOrCreate(taskName, init)
-        artifacts.add("archives", task)
     }
 
     // Try-catch block is used here because Gradle still does not provide API for checking a task
