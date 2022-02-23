@@ -39,6 +39,18 @@ import org.gradle.kotlin.dsl.getByType
 
 /**
  * A [Project] that is published to one or more Maven repositories.
+ *
+ * Such a project has:
+ *
+ *  1. [Maven Publish Plugin](https://docs.gradle.org/current/userguide/publishing_maven.html)
+ *     applied.
+ *  2. [MavenPublication] created and configured.
+ *
+ *  @param project the published project.
+ *  @param artifactId a name that the project is known by. It is placed between the project's
+ *                    group id and version.
+ *  @param customJars artifacts to be published along with the compilation output.
+ *  @param destinations target repositories to which the produced artifacts will be sent.
  */
 internal class MavenPublishedProject(
     project: Project,
@@ -51,7 +63,7 @@ internal class MavenPublishedProject(
         apply(plugin = "maven-publish")
         val gradlePublishing = extensions.getByType<PublishingExtension>()
         createPublication(gradlePublishing)
-        setDestinations(gradlePublishing)
+        registerDestinations(gradlePublishing)
     }
 
     /**
@@ -72,14 +84,23 @@ internal class MavenPublishedProject(
     }
 
     private fun MavenPublication.specifyJars() {
+
+        // produces a jar with the compilation output of `main` source set.
         from(project.components.getAt("java"))
+
+        // any other jars. usually includes `sources.jar`, `test.jar`, etc.
         setArtifacts(customJars)
     }
 
-    private fun setDestinations(gradlePublishing: PublishingExtension) {
+    /**
+     * Goes through the given [destinations] and registers each as a repository for publishing
+     * in this Gradle project.
+     */
+    private fun registerDestinations(gradlePublishing: PublishingExtension) {
         val isSnapshot = version.toString().isSnapshot()
-        gradlePublishing.repositories {
-            destinations.forEach { register(it, isSnapshot) }
+        val gradleRepositories = gradlePublishing.repositories
+        destinations.forEach { repository ->
+            gradleRepositories.register(repository, isSnapshot)
         }
     }
 

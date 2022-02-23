@@ -82,11 +82,13 @@ class MavenPublishingProject(
         setTaskDependencies()
     }
 
+    // moved
     private fun Project.declareArtifacts() {
         val artifacts = MavenArtifacts(publishProtoJar)
         artifacts.registerIn(this)
     }
 
+    // moved
     private fun Project.createMavenPublication() {
         extensions.getByType<PublishingExtension>()
             .publications
@@ -118,6 +120,7 @@ class MavenPublishingProject(
     private fun PublishArtifactSet.deduplicate(): Iterable<PublishArtifact> =
         distinctBy { it.extension to it.classifier }
 
+    // moved
     private fun Project.specifyRepositories() {
         val isSnapshot = project.version.toString()
             .matches(Regex(".+[-.]SNAPSHOT([+.]\\d+)?"))
@@ -128,6 +131,7 @@ class MavenPublishingProject(
         }
     }
 
+    // moved
     private fun MavenArtifactRepository.initialize(
         repository: Repository,
         project: Project,
