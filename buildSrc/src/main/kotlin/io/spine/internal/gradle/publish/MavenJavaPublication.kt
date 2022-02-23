@@ -32,42 +32,38 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
-import org.gradle.jvm.tasks.Jar
-import org.gradle.kotlin.dsl.apply
+import org.gradle.api.tasks.TaskProvider
+import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByType
 
 /**
- * A [Project] that is published to one or more Maven repositories.
+ * Creates and configures the conventional "mavenJava" publication in the given project.
  *
- * Such a project has:
+ * The only prerequisite for the project is to have `maven-publish` plugin applied.
  *
- *  1. [Maven Publish Plugin](https://docs.gradle.org/current/userguide/publishing_maven.html)
- *     applied.
- *  2. [MavenPublication] created and configured.
+ * "mavenJava" is a conventional name for [MavenPublication], which contains java module.
  *
- *  @param project the published project.
- *  @param artifactId a name that the project is known by. It is placed between the project's
- *                    group id and version.
- *  @param customJars artifacts to be published along with the compilation output.
- *  @param destinations target repositories to which the produced artifacts will be sent.
+ *  @param project the project, in which this publication will be registered.
+ *  @param artifactId a name that the project is known by.
+ *  @param jars artifacts to be published along with the compilation output.
+ *  @param destinations Maven repositories to which the produced artifacts will be sent.
  */
-internal class MavenPublishedProject(
-    project: Project,
+internal class MavenJavaPublication(
+    private val project: Project,
     private val artifactId: String,
-    private val customJars: Collection<Jar>,
+    private val jars: Collection<TaskProvider<Jar>>,
     private val destinations: Collection<Repository>,
-) : Project by project {
+) {
 
     init {
-        apply(plugin = "maven-publish")
-        val gradlePublishing = extensions.getByType<PublishingExtension>()
+        val gradlePublishing = project.extensions.getByType<PublishingExtension>()
         createPublication(gradlePublishing)
         registerDestinations(gradlePublishing)
     }
 
     /**
-     * Creates a new Maven publication in this Gradle project.
+     * Creates a new "mavenJava" Maven publication in this Gradle project.
      */
     private fun createPublication(gradlePublishing: PublishingExtension) {
         val gradlePublications = gradlePublishing.publications
@@ -78,18 +74,22 @@ internal class MavenPublishedProject(
     }
 
     private fun MavenPublication.specifyMavenCoordinates() {
-        groupId = this@MavenPublishedProject.group.toString()
-        artifactId = this@MavenPublishedProject.artifactId
-        version = this@MavenPublishedProject.version.toString()
+        groupId = project.group.toString()
+        artifactId = this@MavenJavaPublication.artifactId
+        version = project.version.toString()
     }
 
+    /**
+     * Specifies which jars this publication will contain.
+     */
     private fun MavenPublication.specifyJars() {
 
-        // produces a jar with the compilation output of `main` source set.
+        // Adds a jar with the compilation output of `main` source set.
         from(project.components.getAt("java"))
 
-        // any other jars. usually includes `sources.jar`, `test.jar`, etc.
-        setArtifacts(customJars)
+        // Adds any other jars. Usually includes `sources.jar`, `test.jar`, `javadoc.jar` etc.
+        // They are not provided by `java` component out of the box.
+        setArtifacts(jars)
     }
 
     /**
@@ -97,7 +97,7 @@ internal class MavenPublishedProject(
      * in this Gradle project.
      */
     private fun registerDestinations(gradlePublishing: PublishingExtension) {
-        val isSnapshot = version.toString().isSnapshot()
+        val isSnapshot = project.version.toString().isSnapshot()
         val gradleRepositories = gradlePublishing.repositories
         destinations.forEach { repository ->
             gradleRepositories.register(repository, isSnapshot)
@@ -108,7 +108,7 @@ internal class MavenPublishedProject(
         val target = if (isSnapshot) repository.snapshots else repository.releases
         val credentials = repository.credentials(project.rootProject)
         maven {
-            url = uri(target)
+            url = project.uri(target)
             credentials {
                 username = credentials?.username
                 password = credentials?.password
