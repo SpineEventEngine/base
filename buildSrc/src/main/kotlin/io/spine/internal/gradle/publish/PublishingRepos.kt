@@ -52,26 +52,36 @@ object PublishingRepos {
 }
 
 /**
- * Special treatment...
+ * CloudRepo Maven repository.
+ *
+ * There is a special treatment for this repository. Usually, fetching and pushing of artifacts
+ * is performed via the same URL. But it is not true for CloudRepo. Fetching is performed via
+ * public repository, and pushing via private one. Their URLs differ in `/public` infix.
  */
 object CloudRepo {
 
-    // Special treatment for CloudRepo URL.
-    // Reading is performed via public repositories, and publishing via
-    // private ones that differ in the `/public` infix.
+    private const val name = "CloudRepo"
+    private const val baseUrl = "https://spine.mycloudrepo.io/public/repositories"
+    private const val credentialsFile = "cloudrepo.properties"
 
+    /**
+     * Use this instance to depend on artifacts from this repository.
+     */
     val reading = Repository(
-        name = "CloudRepo",
-        releases = "https://spine.mycloudrepo.io/public/repositories/releases",
-        snapshots = "https://spine.mycloudrepo.io/public/repositories/snapshots",
-        credentialsFile = "cloudrepo.properties"
+        name = name,
+        releases = "$baseUrl/releases",
+        snapshots = "$baseUrl/snapshots",
+        credentialsFile = credentialsFile
     )
 
+    /**
+     * Use this instance to publish artifacts to this repository.
+     */
     val writing = Repository(
-        name = "CloudRepo",
-        releases = "https://spine.mycloudrepo.io/repositories/releases",
-        snapshots = "https://spine.mycloudrepo.io/repositories/snapshots",
-        credentialsFile = "cloudrepo.properties"
+        name = name,
+        releases = "${baseUrl.replace("/public", "")}/releases",
+        snapshots = "${baseUrl.replace("/public", "")}/snapshots",
+        credentialsFile = credentialsFile
     )
 
 }

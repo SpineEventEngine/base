@@ -29,10 +29,11 @@ package io.spine.internal.gradle.publish
 import io.spine.internal.gradle.Repository
 import io.spine.internal.gradle.isSnapshot
 import org.gradle.api.Project
-import org.gradle.api.artifacts.repositories.MavenArtifactRepository
+import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.jvm.tasks.Jar
+import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByType
 
@@ -46,23 +47,22 @@ internal class MavenPublishedProject(
     private val destinations: Collection<Repository>,
 ) : Project by project {
 
-    private val gradlePublishing = extensions.getByType<PublishingExtension>()
-
     init {
-        createPublication().apply {
-            specifyMavenCoordinates()
-            specifyJars()
-        }
-        setDestinations()
+        apply(plugin = "maven-publish")
+        val gradlePublishing = extensions.getByType<PublishingExtension>()
+        createPublication(gradlePublishing)
+        setDestinations(gradlePublishing)
     }
 
     /**
-     * Creates new Maven publication in this Gradle project.
+     * Creates a new Maven publication in this Gradle project.
      */
-    private fun createPublication(): MavenPublication {
+    private fun createPublication(gradlePublishing: PublishingExtension) {
         val gradlePublications = gradlePublishing.publications
-        val mavenPublication = gradlePublications.create<MavenPublication>("mavenJava")
-        return mavenPublication
+        gradlePublications.create<MavenPublication>("mavenJava") {
+            specifyMavenCoordinates()
+            specifyJars()
+        }
     }
 
     private fun MavenPublication.specifyMavenCoordinates() {
@@ -76,29 +76,22 @@ internal class MavenPublishedProject(
         setArtifacts(customJars)
     }
 
-    private fun setDestinations() {
+    private fun setDestinations(gradlePublishing: PublishingExtension) {
         val isSnapshot = version.toString().isSnapshot()
         gradlePublishing.repositories {
-            destinations.forEach {
-                maven { initialize(it, isSnapshot) }
-            }
+            destinations.forEach { register(it, isSnapshot) }
         }
     }
 
-    private fun MavenArtifactRepository.initialize(
-        repository: Repository,
-        isSnapshot: Boolean
-    ) {
-        val destination = with(repository) {
-            if (isSnapshot) snapshots else releases
-        }
-
-        url = uri(destination)
-
-        val repoCreds = repository.credentials(project.rootProject)
-        credentials {
-            username = repoCreds?.username
-            password = repoCreds?.password
+    private fun RepositoryHandler.register(repository: Repository, isSnapshot: Boolean) {
+        val target = if (isSnapshot) repository.snapshots else repository.releases
+        val credentials = repository.credentials(project.rootProject)
+        maven {
+            url = uri(target)
+            credentials {
+                username = credentials?.username
+                password = credentials?.password
+            }
         }
     }
 }
