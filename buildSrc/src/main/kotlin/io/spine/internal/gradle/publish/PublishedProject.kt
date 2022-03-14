@@ -32,6 +32,8 @@ import org.gradle.api.InvalidUserDataException
 import org.gradle.api.Project
 import org.gradle.api.UnknownTaskException
 import org.gradle.api.tasks.TaskContainer
+import org.gradle.api.tasks.TaskProvider
+import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.apply
 
 /**
@@ -63,7 +65,7 @@ class PublishedProject(
         }
     }
 
-    private fun Project.jars(publishProto: Boolean) = with(Artifacts()) {
+    private fun Project.jars(publishProto: Boolean): List<TaskProvider<Jar>> {
         val selected = mutableListOf(
             sourcesJar(),
             javadocJar(),
@@ -74,7 +76,7 @@ class PublishedProject(
             selected.add(protoJar())
         }
 
-        selected
+        return selected
     }
 
     private fun Project.setTaskDependencies() {

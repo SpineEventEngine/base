@@ -37,59 +37,74 @@ import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.register
 
 /**
- * Enumerates [Jar] tasks, which produce publishable Maven artifacts.
+ * Locates or creates `sourcesJar` task in this [Project].
+ *
+ * The output of this task is a `jar` archive. The archive contains sources from `main` source set.
+ * The task makes sure that sources from the directories below will be included into
+ * a resulted archive:
+ *
+ *  - Kotlin
+ *  - Java
+ *  - Proto
+ *
+ * Java and Kotlin sources are default to `main` source set since it is created by `java` plugin.
+ * Thus, we need a [special treatment][protoSources] for Proto sources to be included.
  */
-internal class Artifacts {
-
-    /**
-     * Sources from `main` source set.
-     *
-     * Includes:
-     *
-     *  - Kotlin
-     *  - Java
-     *  - Proto
-     */
-    fun Project.sourcesJar() = tasks.getOrCreate("sourcesJar") {
-        archiveClassifier.set("sources")
-        from(sourceSets["main"].allSource) // puts Java and Kotlin sources
-        from(protoSources()) // puts Proto sources.
-    }
-
-    /**
-     * Only Proto sources from `main` source set.
-     */
-    fun Project.protoJar() = tasks.getOrCreate("protoJar") {
-        archiveClassifier.set("proto")
-        from(protoSources())
-    }
-
-    /**
-     * Compilation output of `test` source set.
-     */
-    fun Project.testOutputJar() = tasks.getOrCreate("testOutputJar") {
-        archiveClassifier.set("test")
-        from(sourceSets["test"].output)
-    }
-
-    /**
-     * Javadoc, generated upon Java and Kotlin sources from `main` source set.
-     */
-    fun Project.javadocJar() = tasks.getOrCreate("javadocJar") {
-        archiveClassifier.set("javadoc")
-        from(files("$buildDir/docs/javadoc"))
-        dependsOn("javadoc")
-    }
-
-    // Try-catch block is used here because Gradle still does not provide API for checking a task
-    // presence without triggering its creation.
-    // See: https://docs.gradle.org/current/userguide/task_configuration_avoidance.html
-    private fun TaskContainer.getOrCreate(name: String, init: Jar.() -> Unit): TaskProvider<Jar> =
-        try {
-            named<Jar>(name)
-        } catch (e: UnknownTaskException) {
-            register<Jar>(name) {
-                init()
-            }
-        }
+fun Project.sourcesJar() = tasks.getOrCreate("sourcesJar") {
+    archiveClassifier.set("sources")
+    from(sourceSets["main"].allSource) // Puts Java and Kotlin sources.
+    from(protoSources()) // Puts Proto sources.
 }
+
+/**
+ * Locates or creates `protoJar` task in this [Project].
+ *
+ * The output of this task is a `jar` archive. The archive contains only
+ * [Proto sources][protoSources] from `main` source set.
+ */
+fun Project.protoJar() = tasks.getOrCreate("protoJar") {
+    archiveClassifier.set("proto")
+    from(protoSources())
+}
+
+/**
+ * Locates or creates `testOutputJar` task in this [Project].
+ *
+ * The output of this task is a `jar` archive. The archive contains compilation output
+ * of `test` source set.
+ */
+fun Project.testOutputJar() = tasks.getOrCreate("testOutputJar") {
+    archiveClassifier.set("test")
+    from(sourceSets["test"].output)
+}
+
+/**
+ * Locates or creates `javadocJar` task in this [Project].
+ *
+ * The output of this task is `jar` archive. The archive contains Javadoc,
+ * generated upon Java and Kotlin sources from `main` source set.
+ */
+fun Project.javadocJar() = tasks.getOrCreate("javadocJar") {
+    archiveClassifier.set("javadoc")
+    from(files("$buildDir/docs/javadoc"))
+    dependsOn("javadoc")
+}
+
+/**
+ * Locates a task in this [TaskContainer] by the given name.
+ *
+ * If the task is not present in the container, creates a new one using the given initializer.
+ *
+ * Try-catch block is used here because Gradle still does not provide API for checking a task
+ * presence without triggering its creation.
+ *
+ * See: [Task Configuration Avoidance](https://docs.gradle.org/current/userguide/task_configuration_avoidance.html)
+ */
+private fun TaskContainer.getOrCreate(name: String, init: Jar.() -> Unit): TaskProvider<Jar> =
+    try {
+        named<Jar>(name)
+    } catch (e: UnknownTaskException) {
+        register<Jar>(name) {
+            init()
+        }
+    }
