@@ -38,15 +38,15 @@ import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByType
 
 /**
- * Creates and configures the conventional "mavenJava" publication in the given project.
+ * Creates and configures "mavenJava" publication in the given project.
  *
  * The only prerequisite for the project is to have `maven-publish` plugin applied.
  *
- * "mavenJava" is a conventional name for [MavenPublication], which contains java module.
+ * "mavenJava" is a conventional name for [MavenPublication], which contains a java module.
  *
  *  @param project the project, in which this publication will be registered.
  *  @param artifactId a name that the project is known by.
- *  @param jars artifacts to be published along with the compilation output.
+ *  @param jars list of artifacts to be published along with the compilation output.
  *  @param destinations Maven repositories to which the produced artifacts will be sent.
  */
 internal class MavenJavaPublication(
@@ -63,7 +63,7 @@ internal class MavenJavaPublication(
     }
 
     /**
-     * Creates a new "mavenJava" Maven publication in this Gradle project.
+     * Creates a new "mavenJava" [MavenPublication] in this Gradle project.
      */
     private fun createPublication(gradlePublishing: PublishingExtension) {
         val gradlePublications = gradlePublishing.publications
@@ -79,9 +79,6 @@ internal class MavenJavaPublication(
         version = project.version.toString()
     }
 
-    /**
-     * Specifies which jars this publication will contain.
-     */
     private fun MavenPublication.specifyJars() {
 
         // Adds a jar with the compilation output of `main` source set.
@@ -99,8 +96,8 @@ internal class MavenJavaPublication(
     private fun registerDestinations(gradlePublishing: PublishingExtension) {
         val isSnapshot = project.version.toString().isSnapshot()
         val gradleRepositories = gradlePublishing.repositories
-        destinations.forEach { repository ->
-            gradleRepositories.register(repository, isSnapshot)
+        destinations.forEach { destination ->
+            gradleRepositories.register(destination, isSnapshot)
         }
     }
 
