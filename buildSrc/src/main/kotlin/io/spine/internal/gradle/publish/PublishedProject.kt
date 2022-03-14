@@ -39,10 +39,10 @@ import org.gradle.kotlin.dsl.apply
 /**
  * Sets up publishing for a given project.
  *
- * The setting up publishing for a project requires four steps:
+ *
  *
  *  1. Applying `maven-publish` plugin.
- *  2. Registering [Jar][org.gradle.api.tasks.bundling.Jar] tasks, which generate artifacts.
+ *  2. Registering [Jar][org.gradle.api.tasks.bundling.Jar] tasks, which produce artifacts.
  *  3. Make `rootProject.tasks.publish` depend on this project's `publish` task.
  */
 class PublishedProject(
