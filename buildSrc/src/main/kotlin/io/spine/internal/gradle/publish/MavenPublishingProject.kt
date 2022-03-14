@@ -46,7 +46,7 @@ import org.gradle.kotlin.dsl.getByType
  *
  * @param project producer of artifacts
  * @param artifactId the name of jars without version
- * @param publishProtoJar tells whether to publish a dedicated [MavenArtifacts.protoJar]
+ * @param publishProtoJar tells whether to publish a dedicated [Artifacts.protoJar]
  * @param destinations Maven repositories, to which the resulting artifacts are sent
  */
 class MavenPublishingProject(
@@ -79,13 +79,12 @@ class MavenPublishingProject(
         declareArtifacts()
         createMavenPublication()
         specifyRepositories()
-        setTaskDependencies()
     }
 
     // moved
     private fun Project.declareArtifacts() {
-        val artifacts = MavenArtifacts(publishProtoJar)
-        artifacts.registerIn(this)
+//        val artifacts = MavenArtifacts(publishProtoJar)
+//        artifacts.registerIn(this)
     }
 
     // moved
@@ -150,40 +149,6 @@ class MavenPublishingProject(
         credentials {
             username = repoCreds?.username
             password = repoCreds?.password
-        }
-    }
-
-    private fun Project.setTaskDependencies() {
-        val rootPublish = rootProject.tasks.getOrCreatePublishTask()
-        val localPublish = tasks.getOrCreatePublishTask()
-        val checkCredentials = tasks.registerCheckCredentialsTask()
-        rootPublish.configure { dependsOn(localPublish) }
-        localPublish.configure { dependsOn(checkCredentials) }
-    }
-
-    // Try-catch block is used here because Gradle still does not provide API for checking a task
-    // presence without triggering its creation.
-    // See: https://docs.gradle.org/current/userguide/task_configuration_avoidance.html
-    private fun TaskContainer.getOrCreatePublishTask() =
-        try {
-            named("publish")
-        } catch (e: UnknownTaskException) {
-            register("publish")
-        }
-
-    private fun TaskContainer.registerCheckCredentialsTask() = register("checkCredentials") {
-        doLast {
-            destinations.forEach { it.assertCredentials(project) }
-        }
-    }
-
-    private fun Repository.assertCredentials(project: Project) {
-        val credentials = credentials(project)
-        if (isNull(credentials)) {
-            throw InvalidUserDataException(
-                "No valid credentials for repository `${this}`. Please make sure " +
-                        "to pass username/password or a valid `.properties` file."
-            )
         }
     }
 }
