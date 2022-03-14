@@ -50,7 +50,7 @@ import org.gradle.kotlin.dsl.register
  * Java and Kotlin sources are default to `main` source set since it is created by `java` plugin.
  * Thus, we need a [special treatment][protoSources] for Proto sources to be included.
  */
-fun Project.sourcesJar() = tasks.getOrCreate("sourcesJar") {
+internal fun Project.sourcesJar() = tasks.getOrCreate("sourcesJar") {
     archiveClassifier.set("sources")
     from(sourceSets["main"].allSource) // Puts Java and Kotlin sources.
     from(protoSources()) // Puts Proto sources.
@@ -62,7 +62,7 @@ fun Project.sourcesJar() = tasks.getOrCreate("sourcesJar") {
  * The output of this task is a `jar` archive. The archive contains only
  * [Proto sources][protoSources] from `main` source set.
  */
-fun Project.protoJar() = tasks.getOrCreate("protoJar") {
+internal fun Project.protoJar() = tasks.getOrCreate("protoJar") {
     archiveClassifier.set("proto")
     from(protoSources())
 }
@@ -73,7 +73,7 @@ fun Project.protoJar() = tasks.getOrCreate("protoJar") {
  * The output of this task is a `jar` archive. The archive contains compilation output
  * of `test` source set.
  */
-fun Project.testOutputJar() = tasks.getOrCreate("testOutputJar") {
+internal fun Project.testOutputJar() = tasks.getOrCreate("testOutputJar") {
     archiveClassifier.set("test")
     from(sourceSets["test"].output)
 }
@@ -84,7 +84,7 @@ fun Project.testOutputJar() = tasks.getOrCreate("testOutputJar") {
  * The output of this task is `jar` archive. The archive contains Javadoc,
  * generated upon Java and Kotlin sources from `main` source set.
  */
-fun Project.javadocJar() = tasks.getOrCreate("javadocJar") {
+internal fun Project.javadocJar() = tasks.getOrCreate("javadocJar") {
     archiveClassifier.set("javadoc")
     from(files("$buildDir/docs/javadoc"))
     dependsOn("javadoc")
