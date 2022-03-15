@@ -37,46 +37,64 @@ import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.apply
 
 /**
- * Sets up publishing for a given project.
+ * Configuration, required to set up publishing of a [Project] using `maven-publish` plugin.
  *
- *
- *
- *  1. Applying `maven-publish` plugin.
- *  2. Registering [Jar][org.gradle.api.tasks.bundling.Jar] tasks, which produce artifacts.
- *  3. Make `rootProject.tasks.publish` depend on this project's `publish` task.
+ * @param artifactId a name that a project is known by.
+ * @param publishProto tells whether [protoJar] artifact should be published.
+ * @param destinations set of repositories, to which the resulting artifacts will be sent.
  */
-class PublishedProject(
-    project: Project,
-    artifactId: String,
-    publishProto: Boolean = true,
+internal class MavenPublishingConfig(
+    private val artifactId: String,
+    private val publishProto: Boolean = true,
     private val destinations: Collection<Repository>,
 ) {
 
-    init {
-        with(project) {
-            apply(plugin = "maven-publish")
-            MavenJavaPublication(
-                project = this,
-                artifactId = artifactId,
-                jars = jars(publishProto),
-                destinations = destinations
-            )
-            setTaskDependencies()
-        }
+    /**
+     * Applies this configuration to the given project.
+     *
+     * In order to enable project publish to Maven, several steps are to be performed:
+     *
+     *  1. Apply `maven-publish` plugin.
+     *  2. Set dependencies for `publish` task.
+     *  3. Register [Jar][org.gradle.api.tasks.bundling.Jar] tasks, which produce actual artifacts.
+     *  4. Create [MavenJavaPublication].
+     */
+    fun apply(project: Project) = with(project) {
+        apply(plugin = "maven-publish")
+        setTaskDependencies()
+
+        val artifacts = selectArtifacts(publishProto)
+        val publication = MavenJavaPublication(
+            artifactId = artifactId,
+            jars = artifacts,
+            destinations = destinations
+        )
+
+        publication.registerIn(project)
     }
 
-    private fun Project.jars(publishProto: Boolean): List<TaskProvider<Jar>> {
-        val selected = mutableListOf(
+    /**
+     * Registers [Jar] tasks which produce Maven artifacts.
+     *
+     * This method is responsible for determining which artifacts will the resulting publication
+     * contain.
+     *
+     * Returns the list of the registered tasks.
+     */
+    private fun Project.selectArtifacts(publishProto: Boolean): List<TaskProvider<Jar>> {
+        val artifacts = mutableListOf(
             sourcesJar(),
             javadocJar(),
             testOutputJar(),
         )
 
+        // We don't want to have an empty `proto.jar`,
+        // when a project doesn't have any proto files at all.
         if (hasProto() && publishProto) {
-            selected.add(protoJar())
+            artifacts.add(protoJar())
         }
 
-        return selected
+        return artifacts
     }
 
     private fun Project.setTaskDependencies() {
@@ -87,9 +105,16 @@ class PublishedProject(
         localPublish.configure { dependsOn(checkCredentials) }
     }
 
-    // Try-catch block is used here because Gradle still does not provide API for checking a task
-    // presence without triggering its creation.
-    // See: https://docs.gradle.org/current/userguide/task_configuration_avoidance.html
+    /**
+     * Locates `publish` task in this [TaskContainer].
+     *
+     * If the task is not present in the container, creates a new one.
+     *
+     * Try-catch block is used here because Gradle still does not provide API for checking a task
+     * presence without triggering its creation.
+     *
+     * See: [Task Configuration Avoidance](https://docs.gradle.org/current/userguide/task_configuration_avoidance.html)
+     */
     private fun TaskContainer.getOrCreatePublishTask() =
         try {
             named("publish")

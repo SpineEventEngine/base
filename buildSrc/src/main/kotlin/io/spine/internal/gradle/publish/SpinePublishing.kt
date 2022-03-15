@@ -77,7 +77,7 @@ import org.gradle.kotlin.dsl.findByType
  * Along with the compilation output of `main` source set, the extension sets up publishing
  * of the next artifacts:
  *
- * 1. [Artifacts.sourcesJar] – sources from `main` source set. Includes "hand-made" Java,
+ * 1. [sourcesJar] – sources from `main` source set. Includes "hand-made" Java,
  *    Kotlin and Proto files. In order to include the generated code into this artifact, a module
  *    should specify those files as a part of `main` source set.
  *
@@ -93,11 +93,11 @@ import org.gradle.kotlin.dsl.findByType
  *    }
  *    ```
  *
- * 2. [Artifacts.testOutputJar] – compilation output of `test` source set.
- * 3. [Artifacts.javadocJar] - javadoc, generated upon Java sources from `main` source set.
+ * 2. [testOutputJar] – compilation output of `test` source set.
+ * 3. [javadocJar] - javadoc, generated upon Java sources from `main` source set.
  *    If javadoc for Kotlin is also needed, apply Dokka plugin. It tunes `javadoc` task to generate
  *    docs upon Kotlin sources as well.
- * 4. [Artifacts.protoJar] – only Proto sources from `main` source set. It's published only if
+ * 4. [protoJar] – only Proto sources from `main` source set. It's published only if
  *    Proto files are actually present in the source set. Publication of this artifact is optional,
  *    and can be disabled.
  *
@@ -212,7 +212,7 @@ open class SpinePublishing(private val project: Project) {
     fun targetRepositories(select: PublishingRepos.() -> Set<Repository>) = select(PublishingRepos)
 
     /**
-     * Allows disabling publishing of a dedicated [Artifacts.protoJar] artifact,
+     * Allows disabling publishing of a dedicated [protoJar] artifact,
      * containing all the `.proto` definitions from `sourceSets.main.proto`.
      *
      * Can be used in two ways:
@@ -235,32 +235,41 @@ open class SpinePublishing(private val project: Project) {
 
         val protoJarExclusions = protoJar.exclusions
         val publishedModules = modules.ifEmpty { setOf(project.name) }
-            .map { name ->
-                val isProtoExcluded = (protoJarExclusions.contains(name) || protoJar.disabled)
-                val project = project.project(name)
-                setUpPublishing(project, isProtoExcluded.not())
-            }
+
+        publishedModules.forEach { module ->
+            val isProtoExcluded = (protoJarExclusions.contains(module) || protoJar.disabled)
+            val publishProto = isProtoExcluded.not()
+            setUpPublishing(module, publishProto)
+        }
     }
 
-    private fun setUpPublishing(project: Project, publishProto: Boolean) {
-        val artifacts = with(project) {
-//            MavenArtifacts.select {
-//                sourcesJar()
-//                testOutputJar()
-//                javadocJar()
-//                if (hasProto() && publishProto) {
-//                    protoJar()
-//                }
-//            }
+    /**
+     * Sets up `maven-publish` plugin for the given module.
+     *
+     * The method takes into account whether to publish a standalone jar with proto definitions.
+     *
+     * Here `project.afterEvaluate` closure is used. General rule of thumb is to avoid using
+     * of this closure, as it configures a project when its configuration is considered completed.
+     * Which is quite counter-intuitive.
+     *
+     * The root cause why it is used here is a possibility to configure publishing of multiple
+     * modules from a root project. When this possibility is employed, in fact, we configure
+     * publishing for a module, build file of which has not been even evaluated by that time.
+     * That leads to an unexpected behavior.
+     *
+     * The simplest example here is specifying of `version` and `group` for Maven coordinates.
+     * Let's suppose, they are declared in a module's build. It is a common practice. But publishing
+     * of the module is configured from a root project. By the time, when we need to specify them,
+     * we just don't know them. As a result, we have to use `project.afterEvaluate` in order
+     * to guarantee that a module will be configured by the time we configure publishing for it.
+     */
+    private fun setUpPublishing(module: String, publishProto: Boolean) {
+        val project = project.project(module)
+        val artifactId = artifactId(project)
+        val publishingConfig = MavenPublishingConfig(artifactId, publishProto, destinations)
+        project.afterEvaluate {
+            publishingConfig.apply(project)
         }
-//        project.afterEvaluate {
-//            MavenPublishedProject(
-//                project = project,
-//                artifactId = artifactId(project),
-//                jars = artifacts,
-//                destinations = destinations
-//            )
-//        }
     }
 
     /**
@@ -305,7 +314,7 @@ open class SpinePublishing(private val project: Project) {
      * Asserts that all modules, marked as excluded from proto JAR publishing,
      * are actually published.
      *
-     * It makes no sense to exclude a module from [Artifacts.protoJar] publication, if a module
+     * It makes no sense to exclude a module from [protoJar] publication, if a module
      * is not published at all.
      */
     private fun assertProtoExclusionsArePublished() {
@@ -318,7 +327,7 @@ open class SpinePublishing(private val project: Project) {
 }
 
 /**
- * Allows disabling publication of a dedicated [Artifacts.protoJar] artifact,
+ * Allows disabling publication of a dedicated [protoJar] artifact,
  * containing all the `.proto` definitions from `sourceSets.main.proto`.
  */
 class ProtoJar {
