@@ -78,7 +78,7 @@ internal class MavenJavaPublication(
         val gradlePublications = gradlePublishing.publications
         gradlePublications.create<MavenPublication>("mavenJava") {
             specifyMavenCoordinates(project)
-            specifyJars(project)
+            setArtifacts(jars)
         }
     }
 
@@ -86,16 +86,6 @@ internal class MavenJavaPublication(
         groupId = project.group.toString()
         artifactId = this@MavenJavaPublication.artifactId
         version = project.version.toString()
-    }
-
-    private fun MavenPublication.specifyJars(project: Project) {
-
-        // Adds a jar with the compilation output of `main` source set.
-        from(project.components.getAt("java"))
-
-        // Adds any other jars. Usually includes `sources.jar`, `test.jar`, `javadoc.jar` etc.
-        // They are not provided by `java` component out of the box.
-        setArtifacts(jars)
     }
 
     /**

@@ -31,7 +31,6 @@ import io.spine.internal.dependency.Kotlin
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.gradle.IncrementGuard
 import io.spine.internal.gradle.excludeProtobufLite
-import io.spine.internal.gradle.testing.exposeTestArtifacts
 
 plugins {
     `java-library`
@@ -62,10 +61,6 @@ sourceSets {
         java.srcDir(generatedTestSpineDir)
         resources.srcDir("$buildDir/descriptors/test")
     }
-}
-
-java {
-    exposeTestArtifacts()
 }
 
 protobuf {

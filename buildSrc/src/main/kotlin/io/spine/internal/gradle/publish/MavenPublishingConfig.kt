@@ -76,13 +76,13 @@ internal class MavenPublishingConfig(
     /**
      * Registers [Jar] tasks which produce Maven artifacts.
      *
-     * This method is responsible for determining which artifacts will the resulting publication
-     * contain.
+     * This method determines which artifacts the resulting publication will contain.
      *
-     * Returns the list of the registered tasks.
+     * @return the list of the registered tasks.
      */
     private fun Project.selectArtifacts(publishProto: Boolean): List<TaskProvider<Jar>> {
         val artifacts = mutableListOf(
+            outputJar(),
             sourcesJar(),
             javadocJar(),
             testOutputJar(),
