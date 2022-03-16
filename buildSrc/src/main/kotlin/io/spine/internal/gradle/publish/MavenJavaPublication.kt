@@ -35,6 +35,7 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByType
 
 /**
@@ -51,12 +52,12 @@ import org.gradle.kotlin.dsl.getByType
  * See: [Maven Publish Plugin | Publications](https://docs.gradle.org/current/userguide/publishing_maven.html#publishing_maven:publications)
  *
  *  @param artifactId a name that a project is known by.
- *  @param jars list of artifacts to be published along with the compilation output.
+ *  @param artifacts list of artifacts to be published along with the compilation output.
  *  @param destinations Maven repositories to which the produced artifacts will be sent.
  */
 internal class MavenJavaPublication(
     private val artifactId: String,
-    private val jars: Collection<TaskProvider<Jar>>,
+    private val artifacts: Collection<TaskProvider<Jar>>,
     private val destinations: Collection<Repository>,
 ) {
 
@@ -78,7 +79,7 @@ internal class MavenJavaPublication(
         val gradlePublications = gradlePublishing.publications
         gradlePublications.create<MavenPublication>("mavenJava") {
             specifyMavenCoordinates(project)
-            setArtifacts(jars)
+            specifyArtifacts(project)
         }
     }
 
@@ -86,6 +87,37 @@ internal class MavenJavaPublication(
         groupId = project.group.toString()
         artifactId = this@MavenJavaPublication.artifactId
         version = project.version.toString()
+    }
+
+    /**
+     * Specifies which artifacts this [MavenPublication] will contain.
+     *
+     * A typical Maven publication built upon Gradle contains:
+     *
+     *  1. Jar archives. For example: compilation output, sources, javadoc, etc.
+     *  2. Maven metadata file that has ".pom" extension.
+     *  3. Gradle metadata file that has ".module" extension.
+     *
+     *  Metadata files contain information about a publication itself, its artifacts and their
+     *  dependencies. Presence of ".pom" file is mandatory for publication to be consumed by
+     *  `mvn` build tool itself or other build tools that understand Maven notation (Gradle, Ivy).
+     *  Presence of ".module" is optional, but useful when a publication is consumed by `gradle`.
+     *
+     *  See: [Maven – POM Reference](https://maven.apache.org/pom.html)
+     *       [Understanding Gradle Module Metadata](https://docs.gradle.org/current/userguide/publishing_gradle_module_metadata.html)
+     */
+    private fun MavenPublication.specifyArtifacts(project: Project) {
+
+        // "java" component provides jar with compilation output of "main" source set.
+        // It is NOT defined as another `Jar` task intentionally. Doing that will leave the
+        // publication without correct ".pom" and ".module" metadata files generated.
+        from(project.components["java"])
+
+        // Other artifacts are represented by `Jar` tasks. Those artifacts don't bring any other
+        // metadata in comparison with `Component` (such as dependencies notation).
+        artifacts.forEach {
+            artifact(it)
+        }
     }
 
     /**

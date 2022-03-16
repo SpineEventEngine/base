@@ -82,7 +82,6 @@ internal class MavenPublishingConfig(
      */
     private fun Project.selectArtifacts(publishProto: Boolean): List<TaskProvider<Jar>> {
         val artifacts = mutableListOf(
-            outputJar(),
             sourcesJar(),
             javadocJar(),
             testOutputJar(),

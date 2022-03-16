@@ -37,16 +37,6 @@ import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.register
 
 /**
- * Locates or creates `outputJar` task in this [Project].
- *
- * The output of this task is a `jar` archive. The archive contains compilation output
- * of `main` source set.
- */
-internal fun Project.outputJar() = tasks.getOrCreate("outputJar") {
-    from(sourceSets["main"].output)
-}
-
-/**
  * Locates or creates `sourcesJar` task in this [Project].
  *
  * The output of this task is a `jar` archive. The archive contains sources from `main` source set.
