@@ -45,8 +45,8 @@ internal fun Project.hasProto(): Boolean {
 /**
  * Locates Proto sources in `main` source set.
  *
- * Special treatment for them because they are not Java-related, and, thus, not included
- * into `sourceSets["main"].allSource`.
+ * Special treatment for them is required, because they are not Java-related, and, thus,
+ * not included into `sourceSets["main"].allSource`.
  */
 internal fun Project.protoSources(): Collection<File> {
     val mainSourceSet = sourceSets["main"]

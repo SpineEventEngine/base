@@ -87,18 +87,15 @@ abstract class WriteVersions : DefaultTask() {
     }
 
     /**
-     * Creates a `.properties` file with versions named after
-     * the name of [Project.artifactId] property.
+     * Creates a `.properties` file with versions named after the name
+     * of [Project.artifactId] property.
      *
      * The name of the file would be: `versions-<artifactId>.properties`.
      *
-     * If [SpinePublishing][io.spine.internal.gradle.publish.SpinePublishing] is used to set up
-     * publishing, [Project.artifactId] usually returns project's name along with "spine" prefix.
-     * In this case, the name of the file would be:
-     *
-     * ```
-     * versions-spine-<projectName>.properties
-     * ```
+     * When [SpinePublishing][io.spine.internal.gradle.publish.SpinePublishing] extension is
+     * configured upon a project, [Project.artifactId] usually returns project's name along with
+     * "spine" prefix. In this case, the name of the file would be:
+     * `versions-spine-<projectName>.properties`.
      */
     @TaskAction
     private fun writeFile() {
