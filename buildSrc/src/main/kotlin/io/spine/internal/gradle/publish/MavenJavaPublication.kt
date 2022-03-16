@@ -52,12 +52,12 @@ import org.gradle.kotlin.dsl.getByType
  * See: [Maven Publish Plugin | Publications](https://docs.gradle.org/current/userguide/publishing_maven.html#publishing_maven:publications)
  *
  *  @param artifactId a name that a project is known by.
- *  @param artifacts list of artifacts to be published along with the compilation output.
+ *  @param jars list of artifacts to be published along with the compilation output.
  *  @param destinations Maven repositories to which the produced artifacts will be sent.
  */
 internal class MavenJavaPublication(
     private val artifactId: String,
-    private val artifacts: Collection<TaskProvider<Jar>>,
+    private val jars: Collection<TaskProvider<Jar>>,
     private val destinations: Collection<Repository>,
 ) {
 
@@ -115,7 +115,7 @@ internal class MavenJavaPublication(
 
         // Other artifacts are represented by `Jar` tasks. Those artifacts don't bring any other
         // metadata in comparison with `Component` (such as dependencies notation).
-        artifacts.forEach {
+        jars.forEach {
             artifact(it)
         }
     }

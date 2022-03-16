@@ -66,7 +66,7 @@ internal class MavenPublishingConfig(
         val artifacts = chooseJars(publishProto)
         val publication = MavenJavaPublication(
             artifactId = artifactId,
-            artifacts = artifacts,
+            jars = artifacts,
             destinations = destinations
         )
 
