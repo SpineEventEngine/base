@@ -50,6 +50,6 @@ internal fun Project.hasProto(): Boolean {
  */
 internal fun Project.protoSources(): Collection<File> {
     val mainSourceSet = sourceSets["main"]
-    val protoSourceDirs = mainSourceSet.extensions.getByName("proto") as SourceDirectorySet
-    return protoSourceDirs.srcDirs
+    val protoSourceDirs = mainSourceSet.extensions.findByName("proto") as SourceDirectorySet?
+    return protoSourceDirs?.srcDirs ?: emptyList()
 }
