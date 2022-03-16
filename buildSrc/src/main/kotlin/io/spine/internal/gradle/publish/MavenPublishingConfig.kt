@@ -63,10 +63,10 @@ internal class MavenPublishingConfig(
         apply(plugin = "maven-publish")
         setTaskDependencies()
 
-        val artifacts = selectArtifacts(publishProto)
+        val artifacts = chooseJars(publishProto)
         val publication = MavenJavaPublication(
             artifactId = artifactId,
-            jars = artifacts,
+            artifacts = artifacts,
             destinations = destinations
         )
 
@@ -80,7 +80,7 @@ internal class MavenPublishingConfig(
      *
      * @return the list of the registered tasks.
      */
-    private fun Project.selectArtifacts(publishProto: Boolean): List<TaskProvider<Jar>> {
+    private fun Project.chooseJars(publishProto: Boolean): List<TaskProvider<Jar>> {
         val artifacts = mutableListOf(
             sourcesJar(),
             javadocJar(),
