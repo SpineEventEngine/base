@@ -30,7 +30,6 @@ import io.spine.internal.gradle.Repository
 import java.util.*
 import org.gradle.api.InvalidUserDataException
 import org.gradle.api.Project
-import org.gradle.api.UnknownTaskException
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
@@ -104,20 +103,10 @@ internal class MavenPublishingConfig(
         localPublish.configure { dependsOn(checkCredentials) }
     }
 
-    /**
-     * Locates `publish` task in this [TaskContainer].
-     *
-     * If the task is not present in the container, creates a new one.
-     *
-     * Try-catch block is used here because Gradle still does not provide API for checking a task
-     * presence without triggering its creation.
-     *
-     * See: [Task Configuration Avoidance](https://docs.gradle.org/current/userguide/task_configuration_avoidance.html)
-     */
     private fun TaskContainer.getOrCreatePublishTask() =
-        try {
+        if (names.contains("publish")) {
             named("publish")
-        } catch (e: UnknownTaskException) {
+        } else {
             register("publish")
         }
 

@@ -28,7 +28,6 @@ package io.spine.internal.gradle.publish
 
 import io.spine.internal.gradle.sourceSets
 import org.gradle.api.Project
-import org.gradle.api.UnknownTaskException
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
@@ -90,20 +89,10 @@ internal fun Project.javadocJar() = tasks.getOrCreate("javadocJar") {
     dependsOn("javadoc")
 }
 
-/**
- * Locates a task in this [TaskContainer] by the given name.
- *
- * If the task is not present in the container, creates a new one using the given initializer.
- *
- * Try-catch block is used here because Gradle still does not provide API for checking a task
- * presence without triggering its creation.
- *
- * See: [Task Configuration Avoidance](https://docs.gradle.org/current/userguide/task_configuration_avoidance.html)
- */
 private fun TaskContainer.getOrCreate(name: String, init: Jar.() -> Unit): TaskProvider<Jar> =
-    try {
+    if (names.contains(name)) {
         named<Jar>(name)
-    } catch (e: UnknownTaskException) {
+    } else {
         register<Jar>(name) {
             init()
         }
