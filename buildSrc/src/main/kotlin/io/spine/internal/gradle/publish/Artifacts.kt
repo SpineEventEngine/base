@@ -81,7 +81,8 @@ internal fun Project.testOutputJar() = tasks.getOrCreate("testOutputJar") {
  * Locates or creates `javadocJar` task in this [Project].
  *
  * The output of this task is `jar` archive. The archive contains Javadoc,
- * generated upon Java and Kotlin sources from `main` source set.
+ * generated upon Java sources from `main` source set. If javadoc for Kotlin is also needed,
+ * apply Dokka plugin. It tunes `javadoc` task to generate docs upon Kotlin sources as well.
  */
 internal fun Project.javadocJar() = tasks.getOrCreate("javadocJar") {
     archiveClassifier.set("javadoc")

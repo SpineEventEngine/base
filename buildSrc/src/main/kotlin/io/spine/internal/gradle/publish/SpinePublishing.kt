@@ -237,16 +237,13 @@ open class SpinePublishing(private val project: Project) {
         val publishedModules = modules.ifEmpty { setOf(project.name) }
 
         publishedModules.forEach { module ->
-            val isProtoExcluded = (protoJarExclusions.contains(module) || protoJar.disabled)
-            val publishProto = isProtoExcluded.not()
-            setUpPublishing(module, publishProto)
+            val excludeProtoJar = (protoJarExclusions.contains(module) || protoJar.disabled)
+            setUpPublishing(module, excludeProtoJar)
         }
     }
 
     /**
      * Sets up `maven-publish` plugin for the given module.
-     *
-     * The method takes into account whether to publish a standalone jar with proto definitions.
      *
      * Here `project.afterEvaluate` closure is used. General rule of thumb is to avoid using
      * of this closure, as it configures a project when its configuration is considered completed.
@@ -263,10 +260,10 @@ open class SpinePublishing(private val project: Project) {
      * we just don't know them. As a result, we have to use `project.afterEvaluate` in order
      * to guarantee that a module will be configured by the time we configure publishing for it.
      */
-    private fun setUpPublishing(module: String, publishProto: Boolean) {
+    private fun setUpPublishing(module: String, excludeProtoJar: Boolean) {
         val project = project.project(module)
         val artifactId = artifactId(project)
-        val publishingConfig = MavenPublishingConfig(artifactId, publishProto, destinations)
+        val publishingConfig = PublishingConfig(artifactId, excludeProtoJar, destinations)
         project.afterEvaluate {
             publishingConfig.apply(project)
         }
