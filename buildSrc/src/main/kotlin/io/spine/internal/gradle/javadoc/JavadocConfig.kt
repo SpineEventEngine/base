@@ -83,7 +83,7 @@ object JavadocConfig {
     }
 
     /**
-     * Registers [tags] for `javadoc`.
+     * Registers custom [tags] for the passed doclet options.
      */
     fun registerCustomTags(docletOptions: StandardJavadocDocletOptions) {
         docletOptions.tags = tags.map { it.toString() }
@@ -111,8 +111,8 @@ object JavadocConfig {
      */
     private fun discardJavaModulesInLinks(javadoc: Javadoc) {
 
-        // We ask `javadoc` task to modify `search.js` and override a method, responsible for
-        // the formation of URL prefixes. We can't specify the option `--no-module-directories`,
+        // We ask `Javadoc` task to modify "search.js" and override a method, responsible for
+        // the formation of URL prefixes. We can't specify the option "--no-module-directories",
         // because it leads to discarding of all module prefixes in generated links. That means,
         // links to the types from the standard library would not work, as they declared
         // within modules since Java 9.

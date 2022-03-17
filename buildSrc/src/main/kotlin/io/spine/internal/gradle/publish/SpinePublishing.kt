@@ -34,12 +34,12 @@ import org.gradle.kotlin.dsl.findByType
 /**
  * Configures [SpinePublishing] extension.
  *
- * This extension sets up publishing of JAR artifacts to Maven repositories.
+ * This extension sets up publishing of artifacts to Maven repositories.
  *
  * The extension can be configured for single- and multi-module projects.
  *
- * When used with a multi-module project, the extension should be opened in a root project.
- * The published modules are specified explicitly by their names:
+ * When used with a multi-module project, the extension should be opened in a root project's
+ * build file. The published modules are specified explicitly by their names:
  *
  * ```
  * spinePublishing {
@@ -47,7 +47,7 @@ import org.gradle.kotlin.dsl.findByType
  *         "subprojectA",
  *         "subprojectB",
  *     )
- *     destinations = spineRepositories {
+ *     destinations = targetRepositories {
  *         setOf(
  *             cloudRepo,
  *             cloudArtifactRegistry,
@@ -56,11 +56,12 @@ import org.gradle.kotlin.dsl.findByType
  * }
  * ```
  *
- * When used with a single-module project, only destinations should be specified:
+ * When used with a single-module project, the extension should be opened in a project's build file.
+ * Only destinations should be specified:
  *
  * ```
  * spinePublishing {
- *     destinations = spineRepositories {
+ *     destinations = targetRepositories {
  *         setOf(
  *             cloudRepo,
  *             cloudArtifactRegistry,
@@ -74,12 +75,13 @@ import org.gradle.kotlin.dsl.findByType
  * For example, declaring `subprojectA` as published in a root project and opening
  * `spinePublishing` extension within `subprojectA` itself would lead to an exception.
  *
- * Along with the compilation output of `main` source set, the extension sets up publishing
- * of the next artifacts:
+ * In each of published modules, the extension will create a [publication][MavenJavaPublication]
+ * named "mavenJava". Along with the compilation output of "main" source set, the extension adds
+ * the next artifacts:
  *
- * 1. [sourcesJar] – sources from `main` source set. Includes "hand-made" Java,
+ * 1. [sourcesJar] – sources from "main" source set. Includes "hand-made" Java,
  *    Kotlin and Proto files. In order to include the generated code into this artifact, a module
- *    should specify those files as a part of `main` source set.
+ *    should specify those files as a part of "main" source set.
  *
  *    Here's an example of how to do that:
  *
@@ -93,11 +95,11 @@ import org.gradle.kotlin.dsl.findByType
  *    }
  *    ```
  *
- * 2. [testOutputJar] – compilation output of `test` source set.
+ * 2. [testOutputJar] – compilation output of "test" source set.
  * 3. [javadocJar] - javadoc, generated upon Java sources from `main` source set.
  *    If javadoc for Kotlin is also needed, apply Dokka plugin. It tunes `javadoc` task to generate
  *    docs upon Kotlin sources as well.
- * 4. [protoJar] – only Proto sources from `main` source set. It's published only if
+ * 4. [protoJar] – only Proto sources from "main" source set. It's published only if
  *    Proto files are actually present in the source set. Publication of this artifact is optional,
  *    and can be disabled.
  *
@@ -134,16 +136,7 @@ import org.gradle.kotlin.dsl.findByType
  *     implementation("io.spine:spine-client:$version@proto")
  *     ```
  *
- * To publish more artifacts for a certain project, add them to the `archives` configuration:
- *
- * ```
- * artifacts {
- *     archives(myCustomJarTask)
- * }
- * ```
- *
- * If any plugins applied to the published module declare any other artifacts, those artifacts
- * are published as well.
+ * @see [registerArtifacts]
  */
 fun Project.spinePublishing(configuration: SpinePublishing.() -> Unit) {
     val name = SpinePublishing::class.java.simpleName
@@ -183,7 +176,7 @@ open class SpinePublishing(private val project: Project) {
      * [set of repositories][PublishingRepos], to which a spine-related project may be published:
      *
      * ```
-     * destinations = spineRepositories {
+     * destinations = targetRepositories {
      *     setOf(
      *         cloudRepo,
      *         cloudArtifactRegistry,
@@ -213,7 +206,7 @@ open class SpinePublishing(private val project: Project) {
 
     /**
      * Allows disabling publishing of a dedicated [protoJar] artifact,
-     * containing all the `.proto` definitions from `sourceSets.main.proto`.
+     * containing all Proto sources from `sourceSets.main.proto`.
      *
      * Can be used in two ways:
      *
@@ -245,7 +238,10 @@ open class SpinePublishing(private val project: Project) {
     /**
      * Sets up `maven-publish` plugin for the given module.
      *
-     * Here `project.afterEvaluate` closure is used. General rule of thumb is to avoid using
+     * Firstly, an instance of [PublishingConfig] is assembled for the module. Then, this
+     * config is applied to the module.
+     *
+     * This method utilizes `project.afterEvaluate` closure. General rule of thumb is to avoid using
      * of this closure, as it configures a project when its configuration is considered completed.
      * Which is quite counter-intuitive.
      *
@@ -255,10 +251,11 @@ open class SpinePublishing(private val project: Project) {
      * That leads to an unexpected behavior.
      *
      * The simplest example here is specifying of `version` and `group` for Maven coordinates.
-     * Let's suppose, they are declared in a module's build. It is a common practice. But publishing
-     * of the module is configured from a root project. By the time, when we need to specify them,
-     * we just don't know them. As a result, we have to use `project.afterEvaluate` in order
-     * to guarantee that a module will be configured by the time we configure publishing for it.
+     * Let's suppose, they are declared in a module's build file. It is a common practice.
+     * But publishing of the module is configured from a root project's build file. By the time,
+     * when we need to specify them, we just don't know them. As a result, we have to use
+     * `project.afterEvaluate` in order to guarantee that a module will be configured by the time
+     * we configure publishing for it.
      */
     private fun setUpPublishing(module: String, excludeProtoJar: Boolean) {
         val project = project.project(module)
@@ -270,11 +267,11 @@ open class SpinePublishing(private val project: Project) {
     }
 
     /**
-     * Obtains an artifact ID of the given project, taking into account
+     * Obtains an artifact ID for the given project, taking into account
      * the value of [artifactPrefix] property.
      *
      * If [artifactPrefix] is set to a non-empty string, it will be used before
-     * the published project name. Otherwise, just project name is returned.
+     * the published project name, followed by a hyphen. Otherwise, just project name is returned.
      */
     internal fun artifactId(project: Project): String {
         if (artifactPrefix.isEmpty()) {
@@ -286,10 +283,10 @@ open class SpinePublishing(private val project: Project) {
     }
 
     /**
-     * Assert that publishing of a module is configured only from a single place.
+     * Asserts that publishing of a module is configured only from a single place.
      *
      * We allow configuration of publishing from two places - a root project and module itself.
-     * Here we verify if publishing of a module is not configured in both places simultaneously.
+     * Here we verify that publishing of a module is not configured in both places simultaneously.
      */
     private fun assertModulesNotDuplicated() {
         val rootProject = project.rootProject

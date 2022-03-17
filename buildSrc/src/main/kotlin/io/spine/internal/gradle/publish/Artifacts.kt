@@ -47,7 +47,7 @@ import org.gradle.kotlin.dsl.register
  *  - Proto
  *
  * Java and Kotlin sources are default to `main` source set since it is created by `java` plugin.
- * Thus, we need a [special treatment][protoSources] for Proto sources to be included.
+ * For Proto sources to be included – [special treatment][protoSources] is needed.
  */
 internal fun Project.sourcesJar() = tasks.getOrCreate("sourcesJar") {
     archiveClassifier.set("sources")
@@ -80,7 +80,7 @@ internal fun Project.testOutputJar() = tasks.getOrCreate("testOutputJar") {
 /**
  * Locates or creates `javadocJar` task in this [Project].
  *
- * The output of this task is `jar` archive. The archive contains Javadoc,
+ * The output of this task is a `jar` archive. The archive contains Javadoc,
  * generated upon Java sources from `main` source set. If javadoc for Kotlin is also needed,
  * apply Dokka plugin. It tunes `javadoc` task to generate docs upon Kotlin sources as well.
  */

@@ -37,7 +37,7 @@ import org.gradle.api.tasks.TaskContainer
  *
  * This method performs the following:
  *
- *  1. Makes `publish` task in a root project dependent on a local `publish`.
+ *  1. Makes `publish` task in a root project depend on a local `publish`.
  *  2. Makes local `publish` task verify that credentials are present for each
  *     of destination repositories.
  */

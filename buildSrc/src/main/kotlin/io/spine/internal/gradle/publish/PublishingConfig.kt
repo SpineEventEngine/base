@@ -33,7 +33,7 @@ import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.apply
 
 /**
- * Configuration, required to set up publishing of a project using `maven-publish` plugin.
+ * Information, required to set up publishing of a project using `maven-publish` plugin.
  *
  * @param artifactId a name that a project is known by.
  * @param excludeProtoJar tells whether [protoJar] artifact should be published.
@@ -94,8 +94,8 @@ private fun Project.registerArtifacts(excludeProtoJar: Boolean = false): List<Ta
         testOutputJar(),
     )
 
-    // We don't want to have an empty `proto.jar`,
-    // when a project doesn't have any proto files at all.
+    // We don't want to have an empty "proto.jar",
+    // when a project doesn't have any Proto files at all.
 
     val publishProto = excludeProtoJar.not()
     if (hasProto() && publishProto) {

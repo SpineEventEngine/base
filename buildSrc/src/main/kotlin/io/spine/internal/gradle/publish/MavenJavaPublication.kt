@@ -39,15 +39,19 @@ import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByType
 
 /**
- * A conventional "mavenJava" publication.
+ * A publication for a typical Java project.
  *
  * In Gradle, in order to publish something somewhere one should create a publication.
  * A publication has a name and consists of one or more artifacts plus information about
  * those artifacts – the metadata.
  *
- * An instance of this class describes [MavenPublication] named "mavenJava". It is generally
- * accepted that a publication with this name contains a java project published to one or
+ * An instance of this class represents [MavenPublication] named "mavenJava". It is generally
+ * accepted that a publication with this name contains a Java project published to one or
  * more Maven repositories.
+ *
+ * By default, only a jar with the compilation output of `main` source set and its
+ * metadata files are published. Other artifacts are specified through the
+ * [constructor parameter][jars]. Please, take a look on [specifyArtifacts] for additional info.
  *
  * See: [Maven Publish Plugin | Publications](https://docs.gradle.org/current/userguide/publishing_maven.html#publishing_maven:publications)
  *
@@ -92,7 +96,7 @@ internal class MavenJavaPublication(
     /**
      * Specifies which artifacts this [MavenPublication] will contain.
      *
-     * A typical Maven publication built upon Gradle contains:
+     * A typical Maven publication contains:
      *
      *  1. Jar archives. For example: compilation output, sources, javadoc, etc.
      *  2. Maven metadata file that has ".pom" extension.
@@ -108,7 +112,7 @@ internal class MavenJavaPublication(
      */
     private fun MavenPublication.specifyArtifacts(project: Project) {
 
-        // "java" component provides jar with compilation output of "main" source set.
+        // "java" component provides a jar with compilation output of "main" source set.
         // It is NOT defined as another `Jar` task intentionally. Doing that will leave the
         // publication without correct ".pom" and ".module" metadata files generated.
         from(project.components["java"])

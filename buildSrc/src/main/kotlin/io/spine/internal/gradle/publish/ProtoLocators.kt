@@ -34,7 +34,7 @@ import org.gradle.kotlin.dsl.get
 
 
 /**
- * Tells whether there are any Proto sources in `main` source set.
+ * Tells whether there are any Proto sources in "main" source set.
  */
 internal fun Project.hasProto(): Boolean {
     val protoSources = protoSources()
@@ -43,10 +43,10 @@ internal fun Project.hasProto(): Boolean {
 }
 
 /**
- * Locates Proto sources in `main` source set.
+ * Locates Proto sources in "main" source set.
  *
- * Special treatment for them is required, because they are not Java-related, and, thus,
- * not included into `sourceSets["main"].allSource`.
+ * "main" source set is added by `java` plugin. Special treatment for Proto sources is needed,
+ * because they are not Java-related, and, thus, not included in `sourceSets["main"].allSource`.
  */
 internal fun Project.protoSources(): Collection<File> {
     val mainSourceSet = sourceSets["main"]
