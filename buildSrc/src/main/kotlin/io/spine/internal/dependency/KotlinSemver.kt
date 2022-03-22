@@ -24,29 +24,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle.publish
+package io.spine.internal.dependency
 
-import io.spine.internal.gradle.Repository
-
-/**
- * Repositories to which we may publish.
- */
-object PublishingRepos {
-
-    @Suppress("HttpUrlsUsage") // HTTPS is not supported by this repository.
-    val mavenTeamDev = Repository(
-        name = "maven.teamdev.com",
-        releases = "http://maven.teamdev.com/repository/spine",
-        snapshots = "http://maven.teamdev.com/repository/spine-snapshots",
-        credentialsFile = "credentials.properties"
-    )
-
-    val cloudRepo = CloudRepo.destination
-
-    val cloudArtifactRegistry = CloudArtifactRegistry.repository
-
-    /**
-     * Obtains a GitHub repository by the given name.
-     */
-    fun gitHub(repoName: String): Repository = GitHubPackages.repository(repoName)
+// https://github.com/z4kn4fein/kotlin-semver
+@Suppress("unused")
+object KotlinSemver {
+    private const val version = "1.2.1"
+    const val lib     = "io.github.z4kn4fein:semver:$version"
 }
