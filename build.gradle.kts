@@ -35,7 +35,6 @@ import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
-import io.spine.internal.gradle.JavadocConfig
 import io.spine.internal.gradle.applyStandard
 import io.spine.internal.gradle.checkstyle.CheckStyleConfig
 import io.spine.internal.gradle.excludeProtobufLite
@@ -43,6 +42,7 @@ import io.spine.internal.gradle.forceVersions
 import io.spine.internal.gradle.github.pages.updateGitHubPages
 import io.spine.internal.gradle.javac.configureErrorProne
 import io.spine.internal.gradle.javac.configureJavac
+import io.spine.internal.gradle.javadoc.JavadocConfig
 import io.spine.internal.gradle.kotlin.applyJvmToolchain
 import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
 import io.spine.internal.gradle.publish.PublishingRepos
@@ -80,14 +80,17 @@ plugins {
 apply(from = "$rootDir/version.gradle.kts")
 
 spinePublishing {
-    with(PublishingRepos) {
-        targetRepositories.addAll(
+    modules = setOf(
+        "base",
+        "testlib"
+    )
+    destinations = with(PublishingRepos) {
+        setOf(
             cloudRepo,
             cloudArtifactRegistry,
-             gitHub("base")
+            gitHub("base")
         )
     }
-    projectsToPublish.addAll(subprojects.map { it.path })
 }
 
 allprojects {
