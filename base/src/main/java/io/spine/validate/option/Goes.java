@@ -66,11 +66,14 @@ public final class Goes
 
     private boolean canBeRequired(FieldContext context) {
         var field = context.targetDeclaration();
-        var warning = format(
-                "Field `%s` cannot be checked for presence. `(goes).with` is obsolete.",
-                field
-        );
-        return checkType(field, warning);
+        var result = checkType(field);
+        if (!result) {
+            _warn().log(
+                    "Field `%s` cannot be checked for presence. `(goes).with` is obsolete.",
+                    field
+            );
+        }
+        return result;
     }
 
     private boolean canPairedBeRequired(FieldContext context) {
@@ -82,21 +85,19 @@ public final class Goes
         var field = context.targetDeclaration();
         var messageType = field.declaringType();
         var pairedField = messageType.field(pairedFieldName);
-        var warningMessage = format(
-                "Field `%s` paired with `%s` cannot be checked for presence. " +
-                        "`(goes).with` at %s is obsolete.",
-                pairedField, field, field
-        );
-        return checkType(pairedField, warningMessage);
+        var result = checkType(field);
+        if (!result) {
+            _warn().log(
+                    "Field `%s` paired with `%s` cannot be checked for presence. " +
+                            "`(goes).with` at %s is obsolete.",
+                    pairedField, field, field
+            );
+        }
+        return result;
     }
 
-    private boolean checkType(FieldDeclaration field, String warningMessage) {
+    private static boolean checkType(FieldDeclaration field) {
         var type = field.javaType();
-        if (field.isCollection() || Required.CAN_BE_REQUIRED.contains(type)) {
-            return true;
-        } else {
-            _warn().log(warningMessage);
-            return false;
-        }
+        return field.isCollection() || Required.CAN_BE_REQUIRED.contains(type);
     }
 }

@@ -218,13 +218,15 @@ class MuteLoggingExtensionTest extends SystemOutputTest {
     private static final class LoggingStub implements Logging {
 
         @CanIgnoreReturnValue
+        @SuppressWarnings("FloggerLogString")
         String logWarning() {
-            var warningMessage = "Warning:" + TestValues.randomString();
+            var warningMessage = "Warning: " + TestValues.randomString();
             _warn().log(warningMessage);
             return warningMessage;
         }
 
         @CanIgnoreReturnValue
+        @SuppressWarnings("FloggerLogString")
         String logError() {
             var errorMessage = "Error: " + TestValues.randomString();
             _error().log(errorMessage);
