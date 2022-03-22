@@ -89,7 +89,15 @@ protobuf {
              * classes that duplicate those coming from Protobuf library JARs.
              */
             task.doLast {
-                delete("${generatedDir}/${ssn}/java/com")
+                val comPackage = File("${generatedDir}/${ssn}/java/com")
+                val googlePackage = comPackage.resolve("google")
+
+                delete(googlePackage)
+
+                // We don't need an empty `com` package.
+                if (comPackage.exists() && comPackage.list()?.isEmpty() == true) {
+                    delete(comPackage)
+                }
             }
         }
     }
