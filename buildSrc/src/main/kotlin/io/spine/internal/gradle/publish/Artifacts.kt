@@ -42,6 +42,7 @@ import org.gradle.kotlin.dsl.withType
  *
  * Goes through all registered `Jar` tasks and filters out Google's files.
  */
+@Suppress("unused")
 fun TaskContainer.excludeGoogleProtoFromArtifacts() {
     withType<Jar>().configureEach {
         exclude { it.isGoogleProtoSource() }
