@@ -24,35 +24,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle.publish.proto
+package io.spine.internal.gradle.publish
 
+import io.spine.internal.gradle.sourceSets
+import java.io.File
 import org.gradle.api.Project
-import org.gradle.api.tasks.TaskProvider
-import org.gradle.api.tasks.bundling.Jar
+import org.gradle.api.file.SourceDirectorySet
+import org.gradle.kotlin.dsl.get
+
 
 /**
- * Registers an `assembleProto` Gradle task which locates and assembles all `.proto` files
- * in a Gradle project.
- *
- * The result of assembly is a [Jar] task with an archive output classified as "proto".
+ * Tells whether there are any Proto sources in "main" source set.
  */
-object AssembleProto {
+internal fun Project.hasProto(): Boolean {
+    val protoSources = protoSources()
+    val result = protoSources.any { it.exists() }
+    return result
+}
 
-    private const val taskName = "assembleProto"
-
-    /**
-     * Performs the task registration for the passed [project].
-     */
-    fun registerIn(project: Project): TaskProvider<Jar> {
-        val task = project.tasks.register(taskName, Jar::class.java) {
-            description =
-                "Assembles a JAR artifact with all Proto definitions from the classpath."
-            from(project.protoFiles())
-            include {
-                it.file.isProtoFileOrDir()
-            }
-            archiveClassifier.set("proto")
-        }
-        return task
-    }
+/**
+ * Locates Proto sources in "main" source set.
+ *
+ * "main" source set is added by `java` plugin. Special treatment for Proto sources is needed,
+ * because they are not Java-related, and, thus, not included in `sourceSets["main"].allSource`.
+ */
+internal fun Project.protoSources(): Collection<File> {
+    val mainSourceSet = sourceSets["main"]
+    val protoSourceDirs = mainSourceSet.extensions.findByName("proto") as SourceDirectorySet?
+    return protoSourceDirs?.srcDirs ?: emptyList()
 }

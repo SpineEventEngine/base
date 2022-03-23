@@ -24,16 +24,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle.publish
+package io.spine.internal.dependency
 
-/**
- * Default artifact task names.
- *
- * These tasks, if not present on a project already, are created by the [Publish] plugin.
- * Their output is published as project's artifacts.
- */
-internal enum class ArtifactTaskName {
-    sourceJar,
-    testOutputJar,
-    javadocJar;
+// https://github.com/z4kn4fein/kotlin-semver
+@Suppress("unused")
+object KotlinSemver {
+    private const val version = "1.2.1"
+    const val lib     = "io.github.z4kn4fein:semver:$version"
 }

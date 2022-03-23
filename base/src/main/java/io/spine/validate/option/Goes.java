@@ -84,12 +84,13 @@ public final class Goes
         var pairedField = messageType.field(pairedFieldName);
         var warningMessage = format(
                 "Field `%s` paired with `%s` cannot be checked for presence. " +
-                        "`(goes).with` at %s is obsolete.",
+                        "`(goes).with` at `%s` is obsolete.",
                 pairedField, field, field
         );
         return checkType(pairedField, warningMessage);
     }
 
+    @SuppressWarnings("FloggerLogString")
     private boolean checkType(FieldDeclaration field, String warningMessage) {
         var type = field.javaType();
         if (field.isCollection() || Required.CAN_BE_REQUIRED.contains(type)) {

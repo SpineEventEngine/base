@@ -54,7 +54,7 @@ class IncrementGuard : Plugin<Project> {
     override fun apply(target: Project) {
         val tasks = target.tasks
         tasks.register(taskName, CheckVersionIncrement::class.java) {
-            repository = PublishingRepos.cloudRepo
+            repository = CloudRepo.published
             tasks.getByName("check").dependsOn(this)
 
             shouldRunAfter("test")
