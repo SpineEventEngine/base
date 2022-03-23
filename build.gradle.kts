@@ -240,7 +240,7 @@ subprojects {
             dependsOn(cleanGenerated)
         }
 
-        named("publish").configure {
+        named("publish") {
             dependsOn("${project.path}:updateGitHubPages")
         }
     }
