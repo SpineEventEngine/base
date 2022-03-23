@@ -66,14 +66,11 @@ public final class Goes
 
     private boolean canBeRequired(FieldContext context) {
         var field = context.targetDeclaration();
-        var result = checkType(field);
-        if (!result) {
-            _warn().log(
-                    "Field `%s` cannot be checked for presence. `(goes).with` is obsolete.",
-                    field
-            );
-        }
-        return result;
+        var warning = format(
+                "Field `%s` cannot be checked for presence. `(goes).with` is obsolete.",
+                field
+        );
+        return checkType(field, warning);
     }
 
     private boolean canPairedBeRequired(FieldContext context) {
@@ -85,19 +82,22 @@ public final class Goes
         var field = context.targetDeclaration();
         var messageType = field.declaringType();
         var pairedField = messageType.field(pairedFieldName);
-        var result = checkType(field);
-        if (!result) {
-            _warn().log(
-                    "Field `%s` paired with `%s` cannot be checked for presence. " +
-                            "`(goes).with` at `%s` is obsolete.",
-                    pairedField, field, field
-            );
-        }
-        return result;
+        var warningMessage = format(
+                "Field `%s` paired with `%s` cannot be checked for presence. " +
+                        "`(goes).with` at `%s` is obsolete.",
+                pairedField, field, field
+        );
+        return checkType(pairedField, warningMessage);
     }
 
-    private static boolean checkType(FieldDeclaration field) {
+    @SuppressWarnings("FloggerLogString")
+    private boolean checkType(FieldDeclaration field, String warningMessage) {
         var type = field.javaType();
-        return field.isCollection() || Required.CAN_BE_REQUIRED.contains(type);
+        if (field.isCollection() || Required.CAN_BE_REQUIRED.contains(type)) {
+            return true;
+        } else {
+            _warn().log(warningMessage);
+            return false;
+        }
     }
 }
