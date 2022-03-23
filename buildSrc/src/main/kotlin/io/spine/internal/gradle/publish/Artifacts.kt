@@ -28,12 +28,33 @@ package io.spine.internal.gradle.publish
 
 import io.spine.internal.gradle.sourceSets
 import org.gradle.api.Project
+import org.gradle.api.file.FileTreeElement
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.register
+import org.gradle.kotlin.dsl.withType
+
+/**
+ * Excludes Google `.proto` sources from all artifacts.
+ *
+ * Goes through all registered `Jar` tasks and filters out Google's files.
+ */
+fun TaskContainer.excludeGoogleProtoFromArtifacts() {
+    withType<Jar>().configureEach {
+        exclude { it.isGoogleProtoSource() }
+    }
+}
+
+/**
+ * Checks if the given file belongs to the Google `.proto` sources.
+ */
+private fun FileTreeElement.isGoogleProtoSource(): Boolean {
+    val pathSegments = relativePath.segments
+    return pathSegments.isNotEmpty() && pathSegments[0].equals("google")
+}
 
 /**
  * Locates or creates `sourcesJar` task in this [Project].
