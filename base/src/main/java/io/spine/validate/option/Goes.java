@@ -89,7 +89,7 @@ public final class Goes
         if (!result) {
             _warn().log(
                     "Field `%s` paired with `%s` cannot be checked for presence. " +
-                            "`(goes).with` at %s is obsolete.",
+                            "`(goes).with` at `%s` is obsolete.",
                     pairedField, field, field
             );
         }
