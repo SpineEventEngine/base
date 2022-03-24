@@ -91,6 +91,24 @@ spinePublishing {
             gitHub("base")
         )
     }
+    protoJar {
+        // disables `protoJar` generation for all published modules
+        disabled = true
+
+        // disables `protoJar` generation for the specified modules
+        exclusions = setOf(
+            "teslib"
+        )
+    }
+    testJar {
+        // enables `testJar` generation for all published modules
+        enabled = true
+
+        // enables `testJar` generation for the specified modules
+        inclusions = setOf(
+            "base"
+        )
+    }
 }
 
 allprojects {
