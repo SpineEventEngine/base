@@ -36,12 +36,14 @@ import org.gradle.kotlin.dsl.apply
  * Information, required to set up publishing of a project using `maven-publish` plugin.
  *
  * @param artifactId a name that a project is known by.
- * @param excludeProtoJar tells whether [protoJar] artifact should be published.
+ * @param includeProtoJar tells whether [protoJar] artifact should be published.
+ * @param includeTestJar tells whether [testJar] artifact should be published.
  * @param destinations set of repositories, to which the resulting artifacts will be sent.
  */
 internal class PublishingConfig(
     val artifactId: String,
-    val excludeProtoJar: Boolean = false,
+    val includeProtoJar: Boolean = true,
+    val includeTestJar: Boolean = false,
     val destinations: Collection<Repository>,
 )
 
@@ -63,7 +65,7 @@ internal fun PublishingConfig.apply(project: Project) = with(project) {
 }
 
 private fun PublishingConfig.createPublication(project: Project) {
-    val artifacts = project.registerArtifacts(excludeProtoJar)
+    val artifacts = project.registerArtifacts(includeProtoJar, includeTestJar)
     val publication = MavenJavaPublication(
         artifactId = artifactId,
         jars = artifacts,
@@ -82,24 +84,29 @@ private fun PublishingConfig.createPublication(project: Project) {
  *
  *  1. [sourcesJar] – Java, Kotlin and Proto source files.
  *  2. [javadocJar] – documentation, generated upon Java files.
- *  3. [testOutputJar] – compilation output of "test" source set.
+ *  3. [testJar] – compilation output of "test" source set.
  *  4. [protoJar] – only Proto sources. It is an optional artifact.
  *
  * @return the list of the registered tasks.
  */
-private fun Project.registerArtifacts(excludeProtoJar: Boolean = false): List<TaskProvider<Jar>> {
+private fun Project.registerArtifacts(
+    includeProtoJar: Boolean = true,
+    includeTestJar: Boolean = false
+): List<TaskProvider<Jar>> {
+
     val artifacts = mutableListOf(
         sourcesJar(),
         javadocJar(),
-        testOutputJar(),
     )
 
     // We don't want to have an empty "proto.jar",
     // when a project doesn't have any Proto files at all.
 
-    val publishProto = excludeProtoJar.not()
-    if (hasProto() && publishProto) {
+    if (hasProto() && includeProtoJar) {
         artifacts.add(protoJar())
+    }
+    if (includeTestJar) {
+        artifacts.add(testJar())
     }
 
     return artifacts

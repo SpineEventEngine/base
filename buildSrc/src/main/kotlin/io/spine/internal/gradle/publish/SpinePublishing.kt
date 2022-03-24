@@ -90,7 +90,7 @@ import org.gradle.kotlin.dsl.findByType
  *    }
  *    ```
  *
- * 2. [testOutputJar] – compilation output of "test" source set.
+ * 2. [testJar] – compilation output of "test" source set.
  * 3. [javadocJar] - javadoc, generated upon Java sources from `main` source set.
  *    If javadoc for Kotlin is also needed, apply Dokka plugin. It tunes `javadoc` task to generate
  *    docs upon Kotlin sources as well.
@@ -149,7 +149,8 @@ fun Project.spinePublishing(configuration: SpinePublishing.() -> Unit) {
  */
 open class SpinePublishing(private val project: Project) {
 
-    private var protoJar: ProtoJar = ProtoJar()
+    private val protoJar = ProtoJar()
+    private val testJar = TestJar()
 
     /**
      * Set of modules to be published.
@@ -192,8 +193,10 @@ open class SpinePublishing(private val project: Project) {
     var artifactPrefix: String = "spine"
 
     /**
-     * Allows disabling publishing of a dedicated [protoJar] artifact,
-     * containing all Proto sources from `sourceSets.main.proto`.
+     * Allows disabling publishing of [protoJar] artifact, containing all Proto sources
+     * from `sourceSets.main.proto`.
+     *
+     * This artifact is published by default.
      *
      * Can be used in two ways:
      *
@@ -203,6 +206,19 @@ open class SpinePublishing(private val project: Project) {
     fun protoJar(configuration: ProtoJar.() -> Unit)  = protoJar.run(configuration)
 
     /**
+     * Allows enabling publication of [testJar] artifact, containing compilation output
+     * of `test` source set.
+     *
+     * This artifact is not published by default.
+     *
+     * Can be used in two ways:
+     *
+     * - [specify][TestJar.inclusions] set of modules, for which the publishing will be enabled;
+     * - [enable][TestJar.enabled] it for all published modules.
+     */
+    fun testJar(configuration: TestJar.() -> Unit)  = testJar.run(configuration)
+
+    /**
      * Called to notify the extension that its configuration is completed.
      *
      * On this stage the extension will validate the received configuration and set up
@@ -210,15 +226,18 @@ open class SpinePublishing(private val project: Project) {
      */
     internal fun configured() {
 
-        ensureProtoExclusionsArePublished()
+        ensureProtoJarExclusionsArePublished()
+        ensureTestJarInclusionsArePublished()
         ensuresModulesNotDuplicated()
 
         val protoJarExclusions = protoJar.exclusions
+        val testJarInclusions = testJar.inclusions
         val publishedModules = modules.ifEmpty { setOf(project.name) }
 
         publishedModules.forEach { module ->
-            val excludeProtoJar = (protoJarExclusions.contains(module) || protoJar.disabled)
-            setUpPublishing(module, excludeProtoJar)
+            val includeProtoJar = (protoJarExclusions.contains(module) || protoJar.disabled).not()
+            val includeTestJar = (testJarInclusions.contains(module) || testJar.enabled)
+            setUpPublishing(module, includeProtoJar, includeTestJar)
         }
     }
 
@@ -244,10 +263,15 @@ open class SpinePublishing(private val project: Project) {
      * `project.afterEvaluate` in order to guarantee that a module will be configured by the time
      * we configure publishing for it.
      */
-    private fun setUpPublishing(module: String, excludeProtoJar: Boolean) {
+    private fun setUpPublishing(module: String, includeProtoJar: Boolean, includeTestJar: Boolean) {
         val project = project.project(module)
         val artifactId = artifactId(project)
-        val publishingConfig = PublishingConfig(artifactId, excludeProtoJar, destinations)
+        val publishingConfig = PublishingConfig(
+            artifactId,
+            includeProtoJar,
+            includeTestJar,
+            destinations
+        )
         project.afterEvaluate {
             publishingConfig.apply(project)
         }
@@ -276,11 +300,26 @@ open class SpinePublishing(private val project: Project) {
      * It makes no sense to exclude a module from [protoJar] publication, if a module
      * is not published at all.
      */
-    private fun ensureProtoExclusionsArePublished() {
+    private fun ensureProtoJarExclusionsArePublished() {
         val nonPublishedExclusions = protoJar.exclusions.minus(modules)
         if (nonPublishedExclusions.isNotEmpty()) {
             throw IllegalStateException("One or more modules are marked as `excluded from proto " +
                     "JAR publication`, but they are not even published: $nonPublishedExclusions")
+        }
+    }
+
+    /**
+     * Ensures that all modules, marked as included into test JAR publishing,
+     * are actually published.
+     *
+     * It makes no sense to include a module into [testJar] publication, if a module
+     * is not published at all.
+     */
+    private fun ensureTestJarInclusionsArePublished() {
+        val nonPublishedInclusions = testJar.inclusions.minus(modules)
+        if (nonPublishedInclusions.isNotEmpty()) {
+            throw IllegalStateException("One or more modules are marked as `included into test " +
+                    "JAR publication`, but they are not even published: $nonPublishedInclusions")
         }
     }
 
@@ -307,19 +346,3 @@ open class SpinePublishing(private val project: Project) {
     }
 }
 
-/**
- * Allows disabling publication of a dedicated [protoJar] artifact,
- * containing all the `.proto` definitions from `sourceSets.main.proto`.
- */
-class ProtoJar {
-
-    /**
-     * Set of modules, for which a proto JAR will NOT be published.
-     */
-    var exclusions: Set<String> = emptySet()
-
-    /**
-     * Disables proto JAR publishing for all published modules.
-     */
-    var disabled = false
-}
