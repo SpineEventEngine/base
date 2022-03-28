@@ -91,8 +91,6 @@ spinePublishing {
             gitHub("base")
         )
     }
-    protoJar {
-    }
 }
 
 allprojects {
