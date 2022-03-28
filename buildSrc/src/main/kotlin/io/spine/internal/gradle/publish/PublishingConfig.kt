@@ -85,7 +85,7 @@ private fun PublishingConfig.createPublication(project: Project) {
  *  1. [sourcesJar] – Java, Kotlin and Proto source files.
  *  2. [javadocJar] – documentation, generated upon Java files.
  *
- *  Optionally, the following artifacts can also be registered:
+ * Optionally, the following artifacts can also be registered:
  *
  *  1. [testJar] – compilation output of "test" source set.
  *  2. [protoJar] – only Proto source files.

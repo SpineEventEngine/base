@@ -70,9 +70,12 @@ import org.gradle.kotlin.dsl.findByType
  * For example, declaring `subprojectA` as published in a root project and opening
  * `spinePublishing` extension within `subprojectA` itself would lead to an exception.
  *
- * In each of published modules, the extension will create a [publication][MavenJavaPublication]
- * named "mavenJava". Along with the compilation output of "main" source set, the extension adds
- * the next artifacts:
+ * In Gradle, in order to publish something somewhere one should create a publication. In each
+ * of published modules, the extension will create a [publication][MavenJavaPublication]
+ * named "mavenJava".
+ *
+ * By default, along with the compilation output of "main" source set, the extension publishes
+ * the following artifacts:
  *
  * 1. [sourcesJar] – sources from "main" source set. Includes "hand-made" Java,
  *    Kotlin and Proto files. In order to include the generated code into this artifact, a module
@@ -89,47 +92,16 @@ import org.gradle.kotlin.dsl.findByType
  *        }
  *    }
  *    ```
+ * 2. [javadocJar] - javadoc, generated upon Java sources from `main` source set.
+ *   If javadoc for Kotlin is also needed, apply Dokka plugin. It tunes `javadoc` task to generate
+ *   docs upon Kotlin sources as well.
+ * 3. [protoJar] – only Proto sources from "main" source set. It's published only if
+ *   Proto files are actually present in the source set. Publication of this artifact is optional
+ *   and can be disabled via [SpinePublishing.protoJar].
  *
- * 2. [testJar] – compilation output of "test" source set.
- * 3. [javadocJar] - javadoc, generated upon Java sources from `main` source set.
- *    If javadoc for Kotlin is also needed, apply Dokka plugin. It tunes `javadoc` task to generate
- *    docs upon Kotlin sources as well.
- * 4. [protoJar] – only Proto sources from "main" source set. It's published only if
- *    Proto files are actually present in the source set. Publication of this artifact is optional,
- *    and can be disabled.
- *
- *    Here's an example of how to disable it for some of published modules:
- *
- *    ```
- *    spinePublishing {
- *        modules = setOf(
- *            "subprojectA",
- *            "subprojectB",
- *        )
- *        protoJar {
- *            exclusions = setOf(
- *                "subprojectB",
- *            )
- *        }
- *    }
- *    ```
- *
- *    For all modules, or when the extension is configured within a published module itself:
- *
- *    ```
- *    spinePublishing {
- *        protoJar {
- *            disabled = true
- *        }
- *    }
- *    ```
- *
- *    The resulting artifact is available under "proto" classifier. I.e., in Gradle 7+, one could
- *    depend on it like this:
- *
- *     ```
- *     implementation("io.spine:spine-client:$version@proto")
- *     ```
+ * Additionally, [testJar] artifact can be added to the publication. This artifact contains
+ * compilation output of "test" source set. It is not published by default. Use
+ * [SpinePublishing.testJar] to enable publishing of this artifact.
  *
  * @see [registerArtifacts]
  */
@@ -196,25 +168,77 @@ open class SpinePublishing(private val project: Project) {
      * Allows disabling publishing of [protoJar] artifact, containing all Proto sources
      * from `sourceSets.main.proto`.
      *
-     * This artifact is published by default.
+     * Here's an example of how to disable it for some of published modules:
      *
-     * Can be used in two ways:
+     * ```
+     * spinePublishing {
+     *     modules = setOf(
+     *         "subprojectA",
+     *         "subprojectB",
+     *     )
+     *     protoJar {
+     *         exclusions = setOf(
+     *             "subprojectB",
+     *         )
+     *     }
+     * }
+     * ```
      *
-     * - [specify][ProtoJar.exclusions] set of modules, for which the publishing will be disabled;
-     * - [disable][ProtoJar.disabled] it for all published modules.
+     * For all modules, or when the extension is configured within a published module itself:
+     *
+     * ```
+     * spinePublishing {
+     *     protoJar {
+     *         disabled = true
+     *     }
+     * }
+     * ```
+     *
+     * The resulting artifact is available under "proto" classifier. I.e., in Gradle 7+, one could
+     * depend on it like this:
+     *
+     * ```
+     * implementation("io.spine:spine-client:$version@proto")
+     * ```
      */
     fun protoJar(configuration: ProtoJar.() -> Unit)  = protoJar.run(configuration)
 
     /**
-     * Allows enabling publication of [testJar] artifact, containing compilation output
+     * Allows enabling publishing of [testJar] artifact, containing compilation output
      * of `test` source set.
      *
-     * This artifact is not published by default.
+     * Here's an example of how to enable it for some of published modules:
      *
-     * Can be used in two ways:
+     * ```
+     * spinePublishing {
+     *     modules = setOf(
+     *         "subprojectA",
+     *         "subprojectB",
+     *     )
+     *     testJar {
+     *         inclusions = setOf(
+     *             "subprojectB",
+     *         )
+     *     }
+     * }
+     * ```
      *
-     * - [specify][TestJar.inclusions] set of modules, for which the publishing will be enabled;
-     * - [enable][TestJar.enabled] it for all published modules.
+     * For all modules, or when the extension is configured within a published module itself:
+     *
+     * ```
+     * spinePublishing {
+     *     testJar {
+     *         enabled = true
+     *     }
+     * }
+     * ```
+     *
+     * The resulting artifact is available under "test" classifier. I.e., in Gradle 7+, one could
+     * depend on it like this:
+     *
+     * ```
+     * implementation("io.spine:spine-client:$version@test")
+     * ```
      */
     fun testJar(configuration: TestJar.() -> Unit)  = testJar.run(configuration)
 
@@ -268,9 +292,9 @@ open class SpinePublishing(private val project: Project) {
         val artifactId = artifactId(project)
         val publishingConfig = PublishingConfig(
             artifactId,
+            destinations,
             includeProtoJar,
             includeTestJar,
-            destinations
         )
         project.afterEvaluate {
             publishingConfig.apply(project)

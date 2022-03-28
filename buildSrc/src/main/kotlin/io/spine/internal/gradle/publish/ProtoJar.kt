@@ -27,11 +27,13 @@
 package io.spine.internal.gradle.publish
 
 /**
- * A DSL element of [SpinePublishing] extension which allows disabling publication
+ * A DSL element of [SpinePublishing] extension which allows disabling publishing
  * of [protoJar] artifact.
  *
  * This artifact contains all the `.proto` definitions from `sourceSets.main.proto`. By default,
  * it is published.
+ *
+ * Take a look on [SpinePublishing.protoJar] for a usage example.
  *
  * @see [registerArtifacts]
  */
