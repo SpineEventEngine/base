@@ -80,7 +80,7 @@ private fun PublishingConfig.createPublication(project: Project) {
  * By default, only a jar with java compilation output is included into publication. This method
  * registers tasks which produce additional artifacts.
  *
- * The list of default artifacts:
+ * The list of additional artifacts:
  *
  *  1. [sourcesJar] – Java, Kotlin and Proto source files.
  *  2. [javadocJar] – documentation, generated upon Java files.
@@ -107,7 +107,7 @@ private fun Project.registerArtifacts(
         artifacts.add(protoJar())
     }
 
-    // We don't have the corresponding `hasTests()` check, since this artifact is disabled
+    // Here, we don't have the corresponding `hasTests()` check, since this artifact is disabled
     // by default. And turning it on means "We have tests and need them to be published."
     if (includeTestJar) {
         artifacts.add(testJar())

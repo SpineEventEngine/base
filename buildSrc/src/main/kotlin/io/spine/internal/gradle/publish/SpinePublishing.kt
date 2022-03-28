@@ -72,7 +72,7 @@ import org.gradle.kotlin.dsl.findByType
  *
  * In Gradle, in order to publish something somewhere one should create a publication. In each
  * of published modules, the extension will create a [publication][MavenJavaPublication]
- * named "mavenJava".
+ * named "mavenJava". All artifacts, published by this extension belong to this publication.
  *
  * By default, along with the compilation output of "main" source set, the extension publishes
  * the following artifacts:
@@ -99,9 +99,8 @@ import org.gradle.kotlin.dsl.findByType
  *   Proto files are actually present in the source set. Publication of this artifact is optional
  *   and can be disabled via [SpinePublishing.protoJar].
  *
- * Additionally, [testJar] artifact can be added to the publication. This artifact contains
- * compilation output of "test" source set. It is not published by default. Use
- * [SpinePublishing.testJar] to enable publishing of this artifact.
+ * Additionally, [testJar] artifact can be published. This artifact contains compilation output
+ * of "test" source set. Use [SpinePublishing.testJar] to enable its publishing.
  *
  * @see [registerArtifacts]
  */
