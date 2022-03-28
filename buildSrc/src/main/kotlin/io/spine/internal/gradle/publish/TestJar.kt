@@ -27,10 +27,10 @@
 package io.spine.internal.gradle.publish
 
 /**
- * Allows enabling publication of [testJar] artifact, containing compilation output
- * of `test` source set.
+ * A DSL element of [SpinePublishing] extension which allows enabling publication
+ * of [testJar] artifact.
  *
- * This artifact is not published by default.
+ * The artifact contains compilation output of `test` source set. By default, it is not published.
  *
  * @see [registerArtifacts]
  */

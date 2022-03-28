@@ -27,17 +27,18 @@
 package io.spine.internal.gradle.publish
 
 /**
- * Allows disabling publication of [protoJar] artifact, containing all the `.proto` definitions
- * from `sourceSets.main.proto`.
+ * A DSL element of [SpinePublishing] extension which allows disabling publication
+ * of [protoJar] artifact.
  *
- * This artifact is published by default.
+ * This artifact contains all the `.proto` definitions from `sourceSets.main.proto`. By default,
+ * it is published.
  *
  * @see [registerArtifacts]
  */
 class ProtoJar {
 
     /**
-     * Set of modules, for which a proto JAR will NOT be published.
+     * Set of modules, for which a proto JAR will not be published.
      */
     var exclusions: Set<String> = emptySet()
 
