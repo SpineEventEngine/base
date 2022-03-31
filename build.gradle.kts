@@ -91,9 +91,6 @@ spinePublishing {
             gitHub("base")
         )
     }
-    testJar {
-        inclusions = setOf("base")
-    }
 }
 
 allprojects {
