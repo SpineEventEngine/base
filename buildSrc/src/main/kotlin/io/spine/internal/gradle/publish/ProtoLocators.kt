@@ -48,8 +48,8 @@ internal fun Project.hasProto(): Boolean {
  * "main" source set is added by `java` plugin. Special treatment for Proto sources is needed,
  * because they are not Java-related, and, thus, not included in `sourceSets["main"].allSource`.
  */
-internal fun Project.protoSources(): Collection<File> {
+internal fun Project.protoSources(): Set<File> {
     val mainSourceSet = sourceSets["main"]
     val protoSourceDirs = mainSourceSet.extensions.findByName("proto") as SourceDirectorySet?
-    return protoSourceDirs?.srcDirs ?: emptyList()
+    return protoSourceDirs?.srcDirs ?: emptySet()
 }

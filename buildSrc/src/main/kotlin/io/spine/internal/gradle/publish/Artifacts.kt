@@ -89,12 +89,12 @@ internal fun Project.protoJar() = tasks.getOrCreate("protoJar") {
 }
 
 /**
- * Locates or creates `testOutputJar` task in this [Project].
+ * Locates or creates `testJar` task in this [Project].
  *
  * The output of this task is a `jar` archive. The archive contains compilation output
  * of `test` source set.
  */
-internal fun Project.testOutputJar() = tasks.getOrCreate("testOutputJar") {
+internal fun Project.testJar() = tasks.getOrCreate("testJar") {
     archiveClassifier.set("test")
     from(sourceSets["test"].output)
 }
