@@ -26,30 +26,25 @@
 
 package io.spine.internal.gradle.publish
 
-import io.spine.internal.gradle.sourceSets
-import java.io.File
-import org.gradle.api.Project
-import org.gradle.api.file.SourceDirectorySet
-import org.gradle.kotlin.dsl.get
-
-
 /**
- * Tells whether there are any Proto sources in "main" source set.
- */
-internal fun Project.hasProto(): Boolean {
-    val protoSources = protoSources()
-    val result = protoSources.any { it.exists() }
-    return result
-}
-
-/**
- * Locates Proto sources in "main" source set.
+ * A DSL element of [SpinePublishing] extension which allows enabling publishing
+ * of [testJar] artifact.
  *
- * "main" source set is added by `java` plugin. Special treatment for Proto sources is needed,
- * because they are not Java-related, and, thus, not included in `sourceSets["main"].allSource`.
+ * This artifact contains compilation output of `test` source set. By default, it is not published.
+ *
+ * Take a look on [SpinePublishing.testJar] for a usage example.
+
+ * @see [registerArtifacts]
  */
-internal fun Project.protoSources(): Set<File> {
-    val mainSourceSet = sourceSets["main"]
-    val protoSourceDirs = mainSourceSet.extensions.findByName("proto") as SourceDirectorySet?
-    return protoSourceDirs?.srcDirs ?: emptySet()
+class TestJar {
+
+    /**
+     * Set of modules, for which a test JAR will be published.
+     */
+    var inclusions: Set<String> = emptySet()
+
+    /**
+     * Enables test JAR publishing for all published modules.
+     */
+    var enabled = false
 }

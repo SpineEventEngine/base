@@ -41,7 +41,7 @@ import org.gradle.api.tasks.TaskContainer
  *  2. Makes local `publish` task verify that credentials are present for each
  *     of destination repositories.
  */
-internal fun Project.configurePublishTask(destinations: Collection<Repository>) {
+internal fun Project.configurePublishTask(destinations: Set<Repository>) {
     val rootPublish = rootProject.tasks.getOrCreatePublishTask()
     val localPublish = tasks.getOrCreatePublishTask()
     val checkCredentials = tasks.registerCheckCredentialsTask(destinations)
@@ -58,7 +58,7 @@ private fun TaskContainer.getOrCreatePublishTask() =
         register(PUBLISH)
     }
 
-private fun TaskContainer.registerCheckCredentialsTask(destinations: Collection<Repository>) =
+private fun TaskContainer.registerCheckCredentialsTask(destinations: Set<Repository>) =
     register("checkCredentials") {
         doLast {
             destinations.forEach { it.ensureCredentials(project) }

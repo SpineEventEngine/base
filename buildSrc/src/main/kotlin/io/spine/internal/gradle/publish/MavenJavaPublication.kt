@@ -61,8 +61,8 @@ import org.gradle.kotlin.dsl.getByType
  */
 internal class MavenJavaPublication(
     private val artifactId: String,
-    private val jars: Collection<TaskProvider<Jar>>,
-    private val destinations: Collection<Repository>,
+    private val jars: Set<TaskProvider<Jar>>,
+    private val destinations: Set<Repository>,
 ) {
 
     /**

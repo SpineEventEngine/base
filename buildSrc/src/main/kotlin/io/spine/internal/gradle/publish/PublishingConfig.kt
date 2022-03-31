@@ -36,13 +36,15 @@ import org.gradle.kotlin.dsl.apply
  * Information, required to set up publishing of a project using `maven-publish` plugin.
  *
  * @param artifactId a name that a project is known by.
- * @param excludeProtoJar tells whether [protoJar] artifact should be published.
  * @param destinations set of repositories, to which the resulting artifacts will be sent.
+ * @param includeProtoJar tells whether [protoJar] artifact should be published.
+ * @param includeTestJar tells whether [testJar] artifact should be published.
  */
 internal class PublishingConfig(
     val artifactId: String,
-    val excludeProtoJar: Boolean = false,
-    val destinations: Collection<Repository>,
+    val destinations: Set<Repository>,
+    val includeProtoJar: Boolean = true,
+    val includeTestJar: Boolean = false,
 )
 
 /**
@@ -63,7 +65,7 @@ internal fun PublishingConfig.apply(project: Project) = with(project) {
 }
 
 private fun PublishingConfig.createPublication(project: Project) {
-    val artifacts = project.registerArtifacts(excludeProtoJar)
+    val artifacts = project.registerArtifacts(includeProtoJar, includeTestJar)
     val publication = MavenJavaPublication(
         artifactId = artifactId,
         jars = artifacts,
@@ -78,28 +80,37 @@ private fun PublishingConfig.createPublication(project: Project) {
  * By default, only a jar with java compilation output is included into publication. This method
  * registers tasks which produce additional artifacts.
  *
- * The list of additional artifacts:
+ * The list of additional artifacts to be registered:
  *
  *  1. [sourcesJar] – Java, Kotlin and Proto source files.
- *  2. [javadocJar] – documentation, generated upon Java files.
- *  3. [testOutputJar] – compilation output of "test" source set.
- *  4. [protoJar] – only Proto sources. It is an optional artifact.
+ *  2. [protoJar] – only Proto source files.
+ *  3. [javadocJar] – documentation, generated upon Java files.
+ *  4. [testJar] – compilation output of "test" source set.
+ *
+ * Registration of [protoJar] and [testJar] is optional. It can be controlled by the method's
+ * parameters.
  *
  * @return the list of the registered tasks.
  */
-private fun Project.registerArtifacts(excludeProtoJar: Boolean = false): List<TaskProvider<Jar>> {
-    val artifacts = mutableListOf(
+private fun Project.registerArtifacts(
+    includeProtoJar: Boolean = true,
+    includeTestJar: Boolean = false
+): Set<TaskProvider<Jar>> {
+
+    val artifacts = mutableSetOf(
         sourcesJar(),
         javadocJar(),
-        testOutputJar(),
     )
 
-    // We don't want to have an empty "proto.jar",
-    // when a project doesn't have any Proto files at all.
-
-    val publishProto = excludeProtoJar.not()
-    if (hasProto() && publishProto) {
+    // We don't want to have an empty "proto.jar" when a project doesn't have any Proto files.
+    if (hasProto() && includeProtoJar) {
         artifacts.add(protoJar())
+    }
+
+    // Here, we don't have the corresponding `hasTests()` check, since this artifact is disabled
+    // by default. And turning it on means "We have tests and need them to be published."
+    if (includeTestJar) {
+        artifacts.add(testJar())
     }
 
     return artifacts
