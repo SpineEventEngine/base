@@ -91,6 +91,9 @@ spinePublishing {
             gitHub("base")
         )
     }
+    dokkaJar {
+        enabled = true
+    }
 }
 
 allprojects {
@@ -98,6 +101,7 @@ allprojects {
         plugin("jacoco")
         plugin("idea")
         plugin("project-report")
+        plugin("dokka-for-java")
     }
 
     group = "io.spine"
