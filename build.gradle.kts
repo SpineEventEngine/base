@@ -101,7 +101,6 @@ allprojects {
         plugin("jacoco")
         plugin("idea")
         plugin("project-report")
-        plugin("dokka-for-java")
     }
 
     group = "io.spine"
@@ -130,6 +129,7 @@ subprojects {
         plugin("net.ltgt.errorprone")
         plugin("pmd")
         plugin("maven-publish")
+        plugin("dokka-for-java")
     }
 
     // Apply custom Kotlin script plugins.
