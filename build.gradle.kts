@@ -129,12 +129,12 @@ subprojects {
         plugin("net.ltgt.errorprone")
         plugin("pmd")
         plugin("maven-publish")
-        plugin("dokka-for-java")
     }
 
     // Apply custom Kotlin script plugins.
     apply {
         plugin("pmd-settings")
+        plugin("dokka-for-java")
     }
 
     CheckStyleConfig.applyTo(project)
