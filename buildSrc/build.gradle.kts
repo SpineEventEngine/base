@@ -63,7 +63,7 @@ val grGitVersion = "3.1.1"
  * Please check that this value matches one defined in
  *  [io.spine.internal.dependency.Kotlin.version].
  */
-val kotlinVersion = "1.6.10"
+val kotlinVersion = "1.6.20"
 
 /**
  * The version of Guava used in `buildSrc`.
@@ -101,7 +101,7 @@ val protobufPluginVersion = "0.8.18"
  * @see <a href="https://github.com/Kotlin/dokka/releases">
  *     Dokka Releases</a>
  */
-val dokkaVersion = "1.6.10"
+val dokkaVersion = "1.6.20"
 
 dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
