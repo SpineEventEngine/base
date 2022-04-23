@@ -32,6 +32,7 @@ import io.spine.internal.dependency.Protobuf
 import io.spine.internal.gradle.publish.IncrementGuard
 import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.publish.excludeGoogleProtoFromArtifacts
+import org.gradle.configurationcache.extensions.capitalized
 
 plugins {
     `java-library`
@@ -100,8 +101,24 @@ protobuf {
                     delete(comPackage)
                 }
             }
+
+            /*
+             * Make the tasks `processResources` depend on `generateProto` tasks explicitly so that:
+             *  1) descriptor set files get into resources, avoiding the racing conditions
+             *     during the build.
+             *  2) we don't have the warning "Execution optimizations have been disabled..." issued
+             *     by Gradle during the build because Protobuf Gradle Plugin does not set
+             *     dependencies between `generateProto` and `processResources` tasks.
+             */
+            val processResources = processResourceTaskName(ssn)
+            tasks[processResources].dependsOn(task)
         }
     }
+}
+
+fun processResourceTaskName(sourceSetName: String): String {
+    val infix = if (sourceSetName == "main") "" else sourceSetName.capitalized()
+    return "process${infix}Resources"
 }
 
 tasks {
