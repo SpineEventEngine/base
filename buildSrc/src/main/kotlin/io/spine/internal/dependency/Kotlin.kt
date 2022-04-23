@@ -29,6 +29,9 @@ package io.spine.internal.dependency
 // https://github.com/JetBrains/kotlin
 // https://github.com/Kotlin
 object Kotlin {
+    /**
+    * When changing the version, also change the version used in the `buildSrc/build.gradle.kts`.
+    */
     @Suppress("MemberVisibilityCanBePrivate") // used directly from outside
     const val version      = "1.6.21"
     const val reflect      = "org.jetbrains.kotlin:kotlin-reflect:${version}"
