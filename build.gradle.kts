@@ -29,6 +29,7 @@
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.protoc
 import io.spine.internal.dependency.CheckerFramework
+import io.spine.internal.dependency.Dokka
 import io.spine.internal.dependency.ErrorProne
 import io.spine.internal.dependency.Flogger
 import io.spine.internal.dependency.Guava
@@ -195,7 +196,10 @@ subprojects {
         excludeProtobufLite()
         all {
             resolutionStrategy {
-                force("org.junit:junit-bom:${JUnit.version}")
+                force(
+                    "org.junit:junit-bom:${JUnit.version}",
+                    "org.jetbrains.dokka:dokka-base:${Dokka.version}"
+                )
             }
         }
     }
