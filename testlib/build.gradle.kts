@@ -24,10 +24,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import com.google.protobuf.gradle.generateProtoTasks
+import com.google.protobuf.gradle.protobuf
 import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Truth
+import io.spine.internal.gradle.protobuf.setup
 
 group = "io.spine.tools"
 
@@ -41,4 +44,14 @@ dependencies {
     Truth.libs.forEach { api(it) }
     api(Guava.testLib)
     implementation(project(":base"))
+}
+
+val generatedDir by extra("$projectDir/generated")
+
+protobuf {
+    generateProtoTasks {
+        for (task in all()) {
+            task.setup(generatedDir)
+        }
+    }
 }

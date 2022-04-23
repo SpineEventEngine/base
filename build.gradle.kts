@@ -226,6 +226,7 @@ subprojects {
     }
 
     protobuf {
+        configurations.excludeProtobufLite()
         generatedFilesBaseDir = generatedDir
         protoc {
             artifact = Protobuf.compiler
