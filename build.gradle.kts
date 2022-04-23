@@ -210,10 +210,18 @@ subprojects {
 
     sourceSets {
         main {
-            resources.srcDirs("$generatedDir/main/resources")
+            java.srcDir(generatedJavaDir)
+            resources.srcDirs(
+                "$generatedDir/main/resources",
+                "$buildDir/descriptors/main"
+            )
         }
         test {
-            resources.srcDirs("$generatedDir/test/resources")
+            java.srcDir(generatedTestJavaDir)
+            resources.srcDirs(
+                "$generatedDir/test/resources",
+                "$buildDir/descriptors/test"
+            )
         }
     }
 
