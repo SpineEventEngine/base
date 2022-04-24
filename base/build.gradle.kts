@@ -29,14 +29,9 @@ import com.google.protobuf.gradle.protobuf
 import io.spine.internal.dependency.AutoService
 import io.spine.internal.dependency.Kotlin
 import io.spine.internal.dependency.Protobuf
+import io.spine.internal.gradle.protobuf.setup
 import io.spine.internal.gradle.publish.IncrementGuard
-import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.publish.excludeGoogleProtoFromArtifacts
-
-plugins {
-    `java-library`
-    id("com.google.protobuf")
-}
 
 apply<IncrementGuard>()
 
@@ -50,56 +45,10 @@ dependencies {
 
 val generatedDir by extra("$projectDir/generated")
 
-sourceSets {
-    val generatedSpineDir by extra("$generatedDir/main/java")
-    val generatedTestSpineDir by extra("$generatedDir/test/java")
-
-    main {
-        java.srcDir(generatedSpineDir)
-        resources.srcDir("$buildDir/descriptors/main")
-    }
-    test {
-        java.srcDir(generatedTestSpineDir)
-        resources.srcDir("$buildDir/descriptors/test")
-    }
-}
-
 protobuf {
-    configurations.excludeProtobufLite()
-    generatedFilesBaseDir = generatedDir
-
     generateProtoTasks {
         for (task in all()) {
-            val ssn = task.sourceSet.name
-            task.generateDescriptorSet = true
-            with(task.descriptorSetOptions) {
-                path = "$buildDir/descriptors/${ssn}/known_types_${ssn}.desc"
-                includeImports = true
-                includeSourceInfo = true
-            }
-
-            /**
-             * Remove the code generated for Google Protobuf library types.
-             *
-             * Java code for the `com.google` package was generated because we wanted
-             * to have descriptors for all the types, including those from Google Protobuf library.
-             * We want all the descriptors so that they are included into the resources used by
-             * the `io.spine.type.KnownTypes` class.
-             *
-             * Now, as we have the descriptors _and_ excessive Java code, we delete it to avoid
-             * classes that duplicate those coming from Protobuf library JARs.
-             */
-            task.doLast {
-                val comPackage = File("${generatedDir}/${ssn}/java/com")
-                val googlePackage = comPackage.resolve("google")
-
-                delete(googlePackage)
-
-                // We don't need an empty `com` package.
-                if (comPackage.exists() && comPackage.list()?.isEmpty() == true) {
-                    delete(comPackage)
-                }
-            }
+            task.setup(generatedDir)
         }
     }
 }

@@ -29,6 +29,7 @@
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.protoc
 import io.spine.internal.dependency.CheckerFramework
+import io.spine.internal.dependency.Dokka
 import io.spine.internal.dependency.ErrorProne
 import io.spine.internal.dependency.Flogger
 import io.spine.internal.dependency.Guava
@@ -195,7 +196,10 @@ subprojects {
         excludeProtobufLite()
         all {
             resolutionStrategy {
-                force("org.junit:junit-bom:${JUnit.version}")
+                force(
+                    "org.junit:junit-bom:${JUnit.version}",
+                    "org.jetbrains.dokka:dokka-base:${Dokka.version}"
+                )
             }
         }
     }
@@ -206,14 +210,23 @@ subprojects {
 
     sourceSets {
         main {
-            resources.srcDirs("$generatedDir/main/resources")
+            java.srcDir(generatedJavaDir)
+            resources.srcDirs(
+                "$generatedDir/main/resources",
+                "$buildDir/descriptors/main"
+            )
         }
         test {
-            resources.srcDirs("$generatedDir/test/resources")
+            java.srcDir(generatedTestJavaDir)
+            resources.srcDirs(
+                "$generatedDir/test/resources",
+                "$buildDir/descriptors/test"
+            )
         }
     }
 
     protobuf {
+        configurations.excludeProtobufLite()
         generatedFilesBaseDir = generatedDir
         protoc {
             artifact = Protobuf.compiler

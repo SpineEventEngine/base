@@ -29,15 +29,20 @@
     --color-dark: #007bff;
 }
 
+:root.theme-dark dt {
+    color: #fff;
+}
+
 .library-name a::before {
     background-image: url('https://spine.io/img/spine-sign-white.svg')
 }
 
 .cover a,
-.main-subrow.keyValue a {
-    font-family: monospace;
+.keyValue > div:first-child > .inline-flex > div:first-child > a {
+    font-family: var(--default-monospace-font-family);
 }
 
-:root.theme-dark dt {
-    color: #fff;
+.keyValue > div:first-child > .inline-flex > div:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
