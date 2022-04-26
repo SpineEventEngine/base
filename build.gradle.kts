@@ -102,7 +102,6 @@ allprojects {
         plugin("jacoco")
         plugin("idea")
         plugin("project-report")
-        plugin("dokka-for-java")
     }
 
     group = "io.spine"
@@ -136,6 +135,7 @@ subprojects {
     // Apply custom Kotlin script plugins.
     apply {
         plugin("pmd-settings")
+        plugin("dokka-for-java")
     }
 
     CheckStyleConfig.applyTo(project)
