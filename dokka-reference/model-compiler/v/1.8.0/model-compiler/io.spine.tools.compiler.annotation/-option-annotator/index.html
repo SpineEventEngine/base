@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>OptionAnnotator</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<link href="../../../images/logo-icon.svg">
+<link href="../../../styles/custom-styles.css" rel="Stylesheet">
+</head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+            <a href="../../../index.html">
+                    <span>model-compiler</span>
+            </a>
+    </div>
+    <div>
+1.8.0    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageIds="model-compiler::io.spine.tools.compiler.annotation/OptionAnnotator///PointingToDeclaration//-1153472790">
+  <div class="breadcrumbs"><a href="../../../index.html">model-compiler</a><span class="delimiter">/</span><a href="../index.html">io.spine.tools.compiler.annotation</a><span class="delimiter">/</span><a href="index.html">OptionAnnotator</a></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Option</span><wbr></wbr><span><span>Annotator</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":model-compiler:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">public </span><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="index.html">OptionAnnotator</a><span class="token operator">&lt;</span>D<span class="token keyword"> extends </span>GenericDescriptor<span class="token operator">&gt;</span><span class="token keyword"> extends </span><a href="../-annotator/index.html">Annotator</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">An <a href="../-annotator/index.html">Annotator</a> which annotates Java sources basing on a given Protobuf option. </p><p class="paragraph">Subtypes are purposed for different Protobuf option types such as <code class="lang-kotlin">FileOptions</code>, <code class="lang-kotlin">MessageOptions</code> etc. </p><p class="paragraph">Depending on the option type, an annotator manages a corresponding Protobuf descriptor (e.g. <code class="lang-kotlin">FileDescriptorProto</code> for <code class="lang-kotlin">FileOptions</code>).</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Inherited functions">Inherited functions</button><button class="section-tab" data-togglable="Parameters">Parameters</button></div>
+    <div class="tabs-section-body">
+      <h2 class="">Parameters</h2>
+      <div data-togglable="Parameters">
+        <div class="platform-hinted WithExtraAttributes" data-platform-hinted="data-platform-hinted" data-togglable="Parameters"><div class="content sourceset-depenent-content" data-active="" data-togglable=":model-compiler:dokkaHtml/main"><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":model-compiler:dokkaHtml/main" data-filterable-set=":model-compiler:dokkaHtml/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span><span>&lt;D&gt;</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">the proto descriptor type used to receive <a href="option.html">option</a> value</p></div></div></div></div></div></div></div></div></div>
+      </div>
+      <h2 class="tabbedcontent">Constructors</h2>
+      <div class="table" data-togglable="Constructors"><a data-name="1584000326%2FConstructors%2F-1153472790" anchor-label="OptionAnnotator" id="1584000326%2FConstructors%2F-1153472790" data-filterable-set=":model-compiler:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":model-compiler:dokkaHtml/main" data-filterable-set=":model-compiler:dokkaHtml/main">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-option-annotator.html"><span>Option</span><wbr></wbr><span><span>Annotator</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1584000326%2FConstructors%2F-1153472790"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":model-compiler:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword"></span>void <a href="-option-annotator.html"><span class="token function">OptionAnnotator</span></a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword"></span>ClassName annotation<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword"></span><a href="../-api-option/index.html">ApiOption</a> option<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword"></span>ImmutableList&lt;FileDescriptor&gt; fileDescriptors<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword"></span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/nio/file/Path.html">Path</a> genProtoDir</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="-546086201%2FFunctions%2F-1153472790" anchor-label="annotate" id="-546086201%2FFunctions%2F-1153472790" data-filterable-set=":model-compiler:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":model-compiler:dokkaHtml/main" data-filterable-set=":model-compiler:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="annotate.html"><span><span>annotate</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-546086201%2FFunctions%2F-1153472790"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":model-compiler:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">final </span><span class="token keyword"></span>void <a href="annotate.html"><span class="token function">annotate</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span>FileDescriptor fileDescriptor</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Annotates the Java sources generated from the specified file descriptor.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="943704963%2FFunctions%2F-1153472790" anchor-label="annotateMessageTypes" id="943704963%2FFunctions%2F-1153472790" data-filterable-set=":model-compiler:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":model-compiler:dokkaHtml/main" data-filterable-set=":model-compiler:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="annotate-message-types.html"><span>annotate</span><wbr></wbr><span>Message</span><wbr></wbr><span><span>Types</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="943704963%2FFunctions%2F-1153472790"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":model-compiler:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">final </span><span class="token keyword"></span>void <a href="annotate-message-types.html"><span class="token function">annotateMessageTypes</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span>Descriptor type<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword"></span>FileDescriptor file</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Annotates message class and MessageOrBuilder interface that correspond to the passed type.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1545669558%2FFunctions%2F-1153472790" anchor-label="annotateMultipleFiles" id="1545669558%2FFunctions%2F-1153472790" data-filterable-set=":model-compiler:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":model-compiler:dokkaHtml/main" data-filterable-set=":model-compiler:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="annotate-multiple-files.html"><span>annotate</span><wbr></wbr><span>Multiple</span><wbr></wbr><span><span>Files</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1545669558%2FFunctions%2F-1153472790"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":model-compiler:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">abstract </span><span class="token keyword"></span>void <a href="annotate-multiple-files.html"><span class="token function">annotateMultipleFiles</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span>FileDescriptor fileDescriptor</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Annotates the Java sources generated from the specified file descriptor if <code class="lang-kotlin">java_multiple_files</code> proto file option is <code class="lang-kotlin">true</code>.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-559082277%2FFunctions%2F-1153472790" anchor-label="annotateOneFile" id="-559082277%2FFunctions%2F-1153472790" data-filterable-set=":model-compiler:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":model-compiler:dokkaHtml/main" data-filterable-set=":model-compiler:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="annotate-one-file.html"><span>annotate</span><wbr></wbr><span>One</span><wbr></wbr><span><span>File</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-559082277%2FFunctions%2F-1153472790"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":model-compiler:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">abstract </span><span class="token keyword"></span>void <a href="annotate-one-file.html"><span class="token function">annotateOneFile</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span>FileDescriptor fileDescriptor</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Annotates the Java sources generated from the specified file descriptor if <code class="lang-kotlin">java_multiple_files</code> proto file option is set to <code class="lang-kotlin">false</code>.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-567563191%2FFunctions%2F-1153472790" anchor-label="option" id="-567563191%2FFunctions%2F-1153472790" data-filterable-set=":model-compiler:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":model-compiler:dokkaHtml/main" data-filterable-set=":model-compiler:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="option.html"><span><span>option</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-567563191%2FFunctions%2F-1153472790"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":model-compiler:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">final </span><span class="token keyword"></span><a href="../-api-option/index.html">ApiOption</a> <a href="option.html"><span class="token function">option</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Obtains the Protobuf API option to transform into a Java annotation.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1616089537%2FFunctions%2F-1153472790" anchor-label="shouldAnnotate" id="-1616089537%2FFunctions%2F-1153472790" data-filterable-set=":model-compiler:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":model-compiler:dokkaHtml/main" data-filterable-set=":model-compiler:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="should-annotate.html"><span>should</span><wbr></wbr><span><span>Annotate</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1616089537%2FFunctions%2F-1153472790"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":model-compiler:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">abstract </span><span class="token keyword"></span>boolean <a href="should-annotate.html"><span class="token function">shouldAnnotate</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="index.html">D</a> descriptor</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Tells whether the generated program elements from the specified descriptor should be annotated.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Inherited functions</h2>
+      <div class="table" data-togglable="Inherited functions"><a data-name="938605193%2FFunctions%2F-1153472790" anchor-label="addAnnotation" id="938605193%2FFunctions%2F-1153472790" data-filterable-set=":model-compiler:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":model-compiler:dokkaHtml/main" data-filterable-set=":model-compiler:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#938605193%2FFunctions%2F-1153472790"><span>add</span><wbr></wbr><span><span>Annotation</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="938605193%2FFunctions%2F-1153472790"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":model-compiler:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">final </span><span class="token keyword"></span>void <a href="index.html#938605193%2FFunctions%2F-1153472790"><span class="token function">addAnnotation</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span>AnnotationTargetSource&lt;?, ?&gt; source</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Adds a fully qualified <span data-unresolved-link="io.spine.tools.compiler.annotation/Annotator/annotation/#/PointingToDeclaration/">annotation</span> to the AnnotationTargetSource.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1758600927%2FFunctions%2F-1153472790" anchor-label="annotate" id="-1758600927%2FFunctions%2F-1153472790" data-filterable-set=":model-compiler:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":model-compiler:dokkaHtml/main" data-filterable-set=":model-compiler:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-182337774%2FFunctions%2F-1153472790"><span><span>annotate</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1758600927%2FFunctions%2F-1153472790"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":model-compiler:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">abstract </span><span class="token keyword"></span>void <a href="index.html#-182337774%2FFunctions%2F-1153472790"><span class="token function">annotate</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Annotates the Java sources generated from Protobuf.</div><div class="symbol monospace block"><span class="token keyword">final </span><span class="token keyword"></span>void <a href="index.html#1145575323%2FFunctions%2F-1153472790"><span class="token function">annotate</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span>SourceFile relativeSourcePath</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Rewrites the file applying <a href="../-annotator/-type-declaration-annotation/index.html">TypeDeclarationAnnotation</a>.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1855500952%2FFunctions%2F-1153472790" anchor-label="descriptors" id="1855500952%2FFunctions%2F-1153472790" data-filterable-set=":model-compiler:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":model-compiler:dokkaHtml/main" data-filterable-set=":model-compiler:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#1855500952%2FFunctions%2F-1153472790"><span><span>descriptors</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1855500952%2FFunctions%2F-1153472790"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":model-compiler:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">final </span><span class="token keyword"></span>ImmutableList&lt;FileDescriptor&gt; <a href="index.html#1855500952%2FFunctions%2F-1153472790"><span class="token function">descriptors</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Obtains the list of file descriptors from which the annotated Java code is generated.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="416300888%2FFunctions%2F-1153472790" anchor-label="rewriteSource" id="416300888%2FFunctions%2F-1153472790" data-filterable-set=":model-compiler:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":model-compiler:dokkaHtml/main" data-filterable-set=":model-compiler:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#416300888%2FFunctions%2F-1153472790"><span>rewrite</span><wbr></wbr><span><span>Source</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="416300888%2FFunctions%2F-1153472790"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":model-compiler:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword"></span>void <a href="index.html#416300888%2FFunctions%2F-1153472790"><span class="token function">rewriteSource</span></a><span class="token operator">&lt;</span>T<span class="token keyword"> extends </span>JavaSource&lt;T&gt;<span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span>SourceFile relativeSourcePath<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword"></span><span data-unresolved-link="io.spine.tools.compiler.annotation/SourceVisitor///PointingToDeclaration/">SourceVisitor</span><span class="token operator">&lt;</span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/nio/file/SimpleFileVisitor.html">T</a><span class="token operator">&gt;</span> visitor</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Rewrites a generated Java source with the specified relative path after applying a <span data-unresolved-link="io.spine.tools.compiler.annotation/SourceVisitor///PointingToDeclaration/">SourceVisitor</span>.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>Copyright 2022, TeamDev</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+        </div>
+    </div>
+</div>
+</body>
+</html>
