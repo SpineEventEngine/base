@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>AnyPacker</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<link href="../../../images/logo-icon.svg">
+<link href="../../../styles/custom-styles.css" rel="Stylesheet">
+</head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+            <a href="../../../index.html">
+                    <span>base</span>
+            </a>
+    </div>
+    <div>
+1.8.0    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageIds="base::io.spine.protobuf/AnyPacker///PointingToDeclaration//-1922210632">
+  <div class="breadcrumbs"><a href="../../../index.html">base</a><span class="delimiter">/</span><a href="../index.html">io.spine.protobuf</a><span class="delimiter">/</span><a href="index.html">AnyPacker</a></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Any</span><wbr></wbr><span><span>Packer</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">public </span><span class="token keyword">final </span><span class="token keyword">class </span><a href="index.html">AnyPacker</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Utilities for packing messages into Any and unpacking them. </p><p class="paragraph">When packing, the <code class="lang-kotlin">AnyPacker</code> takes care of obtaining correct type URL prefix for the passed messages. </p><p class="paragraph">When unpacking, the <code class="lang-kotlin">AnyPacker</code> obtains Java class matching the type URL from the passed <code class="lang-kotlin">Any</code>.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="See also">See also</button></div>
+    <div class="tabs-section-body">
+      <h2 class="">See also</h2>
+      <div data-togglable="See also">
+        <div class="platform-hinted WithExtraAttributes" data-platform-hinted="data-platform-hinted" data-togglable="See also"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div data-togglable="See also"><div class="table" data-togglable="See also"><div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span><span>Any#pack(Message,</span></span> <span><span>String)</span></span></div></span></div><div><div class="title"><div data-togglable="See also"></div></div></div></div></div><div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span><span>Any#unpack(Class)</span></span></div></span></div><div><div class="title"><div data-togglable="See also"></div></div></div></div></div></div></div></div></div>
+      </div>
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="552945696%2FFunctions%2F-1922210632" anchor-label="pack" id="552945696%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="pack.html"><span><span>pack</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="552945696%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">static </span>Any <a href="pack.html"><span class="token function">pack</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span>Message message</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Wraps Message object inside of Any instance.</div><div class="symbol monospace block"><span class="token keyword">static </span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Iterator.html">Iterator</a><span class="token operator">&lt;</span>Any<span class="token operator">&gt;</span> <a href="pack.html"><span class="token function">pack</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Iterator.html">Iterator</a><span class="token operator">&lt;</span>Message<span class="token operator">&gt;</span> iterator</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Creates an iterator that packs each incoming message into <code class="lang-kotlin">Any</code>.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-599741935%2FFunctions%2F-1922210632" anchor-label="unpack" id="-599741935%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="unpack.html"><span><span>unpack</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-599741935%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">static </span>Message <a href="unpack.html"><span class="token function">unpack</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span>Any any</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Unwraps <code class="lang-kotlin">Any</code> value into an instance of type specified by value returned by getTypeUrl.</div><div class="symbol monospace block"><span class="token keyword">static </span><span data-unresolved-link="io.spine.net.string/NetStringifier///PointingToGenericParameters(0)/">T</span> <a href="unpack.html"><span class="token function">unpack</span></a><span class="token operator">&lt;</span>T<span class="token keyword"> extends </span>Message<span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span>Any any<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword"></span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html">Class</a><span class="token operator">&lt;</span><span data-unresolved-link="io.spine.net.string/NetStringifier///PointingToGenericParameters(0)/">T</span><span class="token operator">&gt;</span> cls</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Unwraps <code class="lang-kotlin">Any</code> value into an instance of the passed class.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="363794346%2FFunctions%2F-1922210632" anchor-label="unpackFunc" id="363794346%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="unpack-func.html"><span>unpack</span><wbr></wbr><span><span>Func</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="363794346%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">static </span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html">Function</a><span class="token operator">&lt;</span>Any<span class="token punctuation">, </span>Message<span class="token operator">&gt;</span> <a href="unpack-func.html"><span class="token function">unpackFunc</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Provides the function for unpacking messages from <code class="lang-kotlin">Any</code>.</div><div class="symbol monospace block"><span class="token keyword">static </span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Function.html">Function</a><span class="token operator">&lt;</span>Any<span class="token punctuation">, </span><span data-unresolved-link="io.spine.net.string/NetStringifier///PointingToGenericParameters(0)/">T</span><span class="token operator">&gt;</span> <a href="unpack-func.html"><span class="token function">unpackFunc</span></a><span class="token operator">&lt;</span>T<span class="token keyword"> extends </span>Message<span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html">Class</a><span class="token operator">&lt;</span><span data-unresolved-link="io.spine.net.string/NetStringifier///PointingToGenericParameters(0)/">T</span><span class="token operator">&gt;</span> type</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Provides the function for unpacking messages of a given type from <code class="lang-kotlin">Any</code>.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>Copyright 2022, TeamDev</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+        </div>
+    </div>
+</div>
+</body>
+</html>

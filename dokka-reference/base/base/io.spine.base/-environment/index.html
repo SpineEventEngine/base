@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Environment</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<link href="../../../images/logo-icon.svg">
+<link href="../../../styles/custom-styles.css" rel="Stylesheet">
+</head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+            <a href="../../../index.html">
+                    <span>base</span>
+            </a>
+    </div>
+    <div>
+1.8.0    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageIds="base::io.spine.base/Environment///PointingToDeclaration//-1922210632">
+  <div class="breadcrumbs"><a href="../../../index.html">base</a><span class="delimiter">/</span><a href="../index.html">io.spine.base</a><span class="delimiter">/</span><a href="index.html">Environment</a></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Environment</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">public </span><span class="token keyword">final </span><span class="token keyword">class </span><a href="index.html">Environment</a><span class="token keyword"> implements </span><a href="../../io.spine.logging/-logging/index.html">Logging</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Provides information about the environment (current platform used, etc.). </p><h3 class="">Detecting the type of the environment</h3><p class="paragraph">It is possible to <a href="type.html">obtain the type</a> of the current environment, or to check whether current environment type <a href="is.html">matches another type</a>. </p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">
+public final class Application {
+
+    private final EmailSender sender;
+
+    private Application() {
+        Environment environment = Environment.instance();
+        if (environment.is(Tests.class)) {
+            // Do not send out emails if in tests.
+            this.sender = new MockEmailSender();
+        } else {
+            this.sender = EmailSender.withConfig(&quot;email_gateway.yml&quot;);
+        }
+        //...
+    }
+}
+</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">The following standard types are always available for checking with the current environment: </p><ul><li><a href="../-tests/index.html">Tests</a> is detected if the current call stack has a reference to a <a href="../-tests/known-testing-frameworks.html">unit testing framework</a>. </li><li><a href="../-production/index.html">Production</a> is set in all other cases. </li></ul><p class="paragraph">The framework users may define their custom settings depending on the current environment type. Please see <a href="../-custom-environment-type/index.html">CustomEnvironmentType</a> for details. </p><h3 class="">When environment changes</h3><p class="paragraph">When calculating the <a href="type.html">current type</a><code class="lang-kotlin">Environment</code> finds the first <a href="../-environment-type/enabled.html">enabled</a><code class="lang-kotlin">EnvironmentType</code>, and then remembers it as the currently active. Subsequent calls will not cause re-evaluation of the <a href="../-environment-type/enabled.html">enabled</a>. </p><p class="paragraph">If later the current type becomes logically inactive, <code class="lang-kotlin">Environment</code> needs to be updated by one of the following approaches: </p><ul><li>Setting a new environment type, directly by calling <a href="set-to.html">setTo</a>. </li><li>Calling the <a href="reset.html">reset</a> method. This would drop the currently selected type. </li></ul><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">
+    Environment environment = Environment.instance();
+    environment.register(AwsLambda.class);
+    assertThat(environment.is(AwsLambda.class)).isTrue();
+
+    System.clearProperty(AwsLambda.AWS_ENV_VARIABLE);
+
+    // Even though `AwsLambda` is not active, we have cached the value, and
+    // `is(AwsLambda.class)` is `true`.
+    assertThat(environment.is(AwsLambda.class)).isTrue();
+
+    environment.reset();
+
+    // When `reset` explicitly, cached value is erased.
+    assertThat(environment.is(AwsLambda.class)).isFalse();
+</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Inherited functions">Inherited functions</button><button class="section-tab" data-togglable="See also">See also</button></div>
+    <div class="tabs-section-body">
+      <h2 class="">See also</h2>
+      <div data-togglable="See also">
+        <div class="platform-hinted WithExtraAttributes" data-platform-hinted="data-platform-hinted" data-togglable="See also"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div data-togglable="See also"><div class="table" data-togglable="See also"><div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><a href="../-environment-type/index.html"><span>io.</span><wbr></wbr><span>spine.</span><wbr></wbr><span>base.</span><wbr></wbr><span>Environment</span><wbr></wbr><span><span>Type</span></span></a></div></span></div><div><div class="title"><div data-togglable="See also"></div></div></div></div></div><div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><a href="../-custom-environment-type/index.html"><span>io.</span><wbr></wbr><span>spine.</span><wbr></wbr><span>base.</span><wbr></wbr><span>Custom</span><wbr></wbr><span>Environment</span><wbr></wbr><span><span>Type</span></span></a></div></span></div><div><div class="title"><div data-togglable="See also"></div></div></div></div></div><div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><a href="../-tests/index.html"><span>io.</span><wbr></wbr><span>spine.</span><wbr></wbr><span>base.</span><wbr></wbr><span>Tests</span></a></div></span></div><div><div class="title"><div data-togglable="See also"></div></div></div></div></div><div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><a href="../-production/index.html"><span>io.</span><wbr></wbr><span>spine.</span><wbr></wbr><span>base.</span><wbr></wbr><span>Production</span></a></div></span></div><div><div class="title"><div data-togglable="See also"></div></div></div></div></div></div></div></div></div>
+      </div>
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="890706789%2FFunctions%2F-1922210632" anchor-label="createCopy" id="890706789%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="create-copy.html"><span>create</span><wbr></wbr><span><span>Copy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="890706789%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword"></span><a href="index.html">Environment</a> <a href="create-copy.html"><span class="token function">createCopy</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Creates a copy of the instance so that it can be later restored via <a href="restore-from.html">restoreFrom</a> by cleanup in tests.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1033114591%2FFunctions%2F-1922210632" anchor-label="instance" id="-1033114591%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="instance.html"><span><span>instance</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1033114591%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">static </span><a href="index.html">Environment</a> <a href="instance.html"><span class="token function">instance</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Returns the singleton instance.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1111048593%2FFunctions%2F-1922210632" anchor-label="is" id="1111048593%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="is.html"><span><span>is</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1111048593%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword"></span>boolean <a href="is.html"><span class="token function">is</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html">Class</a><span class="token operator">&lt;</span><span class="token keyword">? extends </span><a href="../-environment-type/index.html">EnvironmentType</a><span class="token operator">&gt;</span> type</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Determines whether the current environment is the same as the specified one.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="616101831%2FFunctions%2F-1922210632" anchor-label="register" id="616101831%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="register.html"><span><span>register</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="616101831%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword"></span><a href="index.html">Environment</a> <a href="register.html"><span class="token function">register</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html">Class</a><span class="token operator">&lt;</span><span class="token keyword">? extends </span><a href="../-custom-environment-type/index.html">CustomEnvironmentType</a><span class="token operator">&gt;</span> type</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Remembers the specified environment type, allowing <a href="is.html">to determine whether it's enabled</a> later.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="98711701%2FFunctions%2F-1922210632" anchor-label="reset" id="98711701%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="reset.html"><span><span>reset</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="98711701%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword"></span>void <a href="reset.html"><span class="token function">reset</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Resets the instance and clears the <span data-unresolved-link="io.spine.base/TestsProperty///PointingToDeclaration/">TestsProperty</span>.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-361819475%2FFunctions%2F-1922210632" anchor-label="restoreFrom" id="-361819475%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="restore-from.html"><span>restore</span><wbr></wbr><span><span>From</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-361819475%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword"></span>void <a href="restore-from.html"><span class="token function">restoreFrom</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="index.html">Environment</a> copy</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Restores the state from the instance created by <a href="create-copy.html">createCopy</a>.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1349056460%2FFunctions%2F-1922210632" anchor-label="setTo" id="1349056460%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-to.html"><span>set</span><wbr></wbr><span><span>To</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1349056460%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword"></span>void <a href="set-to.html"><span class="token function">setTo</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html">Class</a><span class="token operator">&lt;</span><span class="token keyword">? extends </span><a href="../-environment-type/index.html">EnvironmentType</a><span class="token operator">&gt;</span> type</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Sets the current environment type to the specified one.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1532582300%2FFunctions%2F-1922210632" anchor-label="type" id="1532582300%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="type.html"><span><span>type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1532582300%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword"></span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html">Class</a><span class="token operator">&lt;</span><span class="token keyword">? extends </span><a href="../-environment-type/index.html">EnvironmentType</a><span class="token operator">&gt;</span> <a href="type.html"><span class="token function">type</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Returns the type of the current environment.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Inherited functions</h2>
+      <div class="table" data-togglable="Inherited functions"><a data-name="53316155%2FFunctions%2F-1922210632" anchor-label="_config" id="53316155%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#53316155%2FFunctions%2F-1922210632"><span><span>_config</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="53316155%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword"></span>Api <a href="index.html#53316155%2FFunctions%2F-1922210632"><span class="token function">_config</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">A convenience method for atConfig.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1452559030%2FFunctions%2F-1922210632" anchor-label="_debug" id="-1452559030%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-1452559030%2FFunctions%2F-1922210632"><span><span>_debug</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1452559030%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword"></span>Api <a href="index.html#-1452559030%2FFunctions%2F-1922210632"><span class="token function">_debug</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Sames as <a href="../../io.spine.logging/-logging/_fine.html">_fine</a>.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1935171787%2FFunctions%2F-1922210632" anchor-label="_error" id="-1935171787%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-1935171787%2FFunctions%2F-1922210632"><span><span>_error</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1935171787%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword"></span>Api <a href="index.html#-1935171787%2FFunctions%2F-1922210632"><span class="token function">_error</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Same as <a href="../../io.spine.logging/-logging/_severe.html">_severe</a>.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-728682813%2FFunctions%2F-1922210632" anchor-label="_fine" id="-728682813%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-728682813%2FFunctions%2F-1922210632"><span><span>_fine</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-728682813%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword"></span>Api <a href="index.html#-728682813%2FFunctions%2F-1922210632"><span class="token function">_fine</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">A convenience method for atFine.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="420904261%2FFunctions%2F-1922210632" anchor-label="_finer" id="420904261%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#420904261%2FFunctions%2F-1922210632"><span><span>_finer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="420904261%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword"></span>Api <a href="index.html#420904261%2FFunctions%2F-1922210632"><span class="token function">_finer</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">A convenience method for atFiner.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1572948478%2FFunctions%2F-1922210632" anchor-label="_finest" id="-1572948478%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-1572948478%2FFunctions%2F-1922210632"><span><span>_finest</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1572948478%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword"></span>Api <a href="index.html#-1572948478%2FFunctions%2F-1922210632"><span class="token function">_finest</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">A convenience method for atFine.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1284160079%2FFunctions%2F-1922210632" anchor-label="_info" id="1284160079%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#1284160079%2FFunctions%2F-1922210632"><span><span>_info</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1284160079%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword"></span>Api <a href="index.html#1284160079%2FFunctions%2F-1922210632"><span class="token function">_info</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">A convenience method for atInfo.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1529845943%2FFunctions%2F-1922210632" anchor-label="_severe" id="-1529845943%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-1529845943%2FFunctions%2F-1922210632"><span><span>_severe</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1529845943%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword"></span>Api <a href="index.html#-1529845943%2FFunctions%2F-1922210632"><span class="token function">_severe</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">A convenience method for atSevere.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-787599720%2FFunctions%2F-1922210632" anchor-label="_trace" id="-787599720%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-787599720%2FFunctions%2F-1922210632"><span><span>_trace</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-787599720%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword"></span>Api <a href="index.html#-787599720%2FFunctions%2F-1922210632"><span class="token function">_trace</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Same as <a href="../../io.spine.logging/-logging/_finest.html">_finest</a>.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="37703543%2FFunctions%2F-1922210632" anchor-label="_warn" id="37703543%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#37703543%2FFunctions%2F-1922210632"><span><span>_warn</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="37703543%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword"></span>Api <a href="index.html#37703543%2FFunctions%2F-1922210632"><span class="token function">_warn</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">A convenience method for atWarning.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="314531789%2FFunctions%2F-1922210632" anchor-label="debugLevel" id="314531789%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#314531789%2FFunctions%2F-1922210632"><span>debug</span><wbr></wbr><span><span>Level</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="314531789%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">static </span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.logging/java/util/logging/Level.html">Level</a> <a href="index.html#314531789%2FFunctions%2F-1922210632"><span class="token function">debugLevel</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Returns <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.logging/java/util/logging/Level.html#FINE()">FINE</a> as the convention for debug logging.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="646967490%2FFunctions%2F-1922210632" anchor-label="errorLevel" id="646967490%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#646967490%2FFunctions%2F-1922210632"><span>error</span><wbr></wbr><span><span>Level</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="646967490%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">static </span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.logging/java/util/logging/Level.html">Level</a> <a href="index.html#646967490%2FFunctions%2F-1922210632"><span class="token function">errorLevel</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Returns <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.logging/java/util/logging/Level.html#SEVERE()">SEVERE</a> as the convention for logging errors.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1185133710%2FFunctions%2F-1922210632" anchor-label="logger" id="1185133710%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#1185133710%2FFunctions%2F-1922210632"><span><span>logger</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1185133710%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword"></span>FluentLogger <a href="index.html#1185133710%2FFunctions%2F-1922210632"><span class="token function">logger</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Obtains <code class="lang-kotlin">FluentLogger</code> instance for this class.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-706849684%2FFunctions%2F-1922210632" anchor-label="loggerFor" id="-706849684%2FFunctions%2F-1922210632" data-filterable-set=":base:dokkaHtml/main"></a>
+        <div class="table-row" data-filterable-current=":base:dokkaHtml/main" data-filterable-set=":base:dokkaHtml/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#-706849684%2FFunctions%2F-1922210632"><span>logger</span><wbr></wbr><span><span>For</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-706849684%2FFunctions%2F-1922210632"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">static </span>FluentLogger <a href="index.html#-706849684%2FFunctions%2F-1922210632"><span class="token function">loggerFor</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html">Class</a><span class="token operator">&lt;</span><span class="token keyword">? extends </span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html">Object</a><span class="token operator">&gt;</span> cls</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Obtains <code class="lang-kotlin">FluentLogger</code> instance for the given class.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>Copyright 2022, TeamDev</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+        </div>
+    </div>
+</div>
+</body>
+</html>
