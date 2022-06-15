@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>CodeGenerationAction</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<link href="../../../images/logo-icon.svg">
+<link href="../../../styles/custom-styles.css" rel="Stylesheet">
+</head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+            <a href="../../../index.html">
+                    <span>plugin-base</span>
+            </a>
+    </div>
+    <div>
+1.8.0    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageIds="plugin-base::io.spine.tools.gradle/CodeGenerationAction/CodeGenerationAction/#Project#java.util.function.Supplier&lt;FileSet&gt;#java.util.function.Supplier&lt;java.lang.String&gt;#java.util.function.Supplier&lt;java.lang.String&gt;/PointingToDeclaration//-678180928">
+  <div class="breadcrumbs"><a href="../../../index.html">plugin-base</a><span class="delimiter">/</span><a href="../index.html">io.spine.tools.gradle</a><span class="delimiter">/</span><a href="index.html">CodeGenerationAction</a><span class="delimiter">/</span><a href="-code-generation-action.html">CodeGenerationAction</a></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Code</span><wbr></wbr><span>Generation</span><wbr></wbr><span><span>Action</span></span></h1>
+  </div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":plugin-base:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword"></span>void <a href="-code-generation-action.html"><span class="token function">CodeGenerationAction</span></a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword"></span>Project project<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword"></span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Supplier.html">Supplier</a><span class="token operator">&lt;</span>FileSet<span class="token operator">&gt;</span> files<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword"></span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Supplier.html">Supplier</a><span class="token operator">&lt;</span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html">String</a><span class="token operator">&gt;</span> targetDirPath<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword"></span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Supplier.html">Supplier</a><span class="token operator">&lt;</span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html">String</a><span class="token operator">&gt;</span> protoSrcDirPath</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Creates a new instance.</p><h2 class="">Parameters</h2><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":plugin-base:dokkaHtml/main" data-filterable-set=":plugin-base:dokkaHtml/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span><span>project</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">the project for which we generated the code</p></div></div></div></div></div><div class="table-row" data-filterable-current=":plugin-base:dokkaHtml/main" data-filterable-set=":plugin-base:dokkaHtml/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span><span>files</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">the supplier of the Protobuf files, which (as other suppliers passed to the constructor) is dynamically evaluated when the task is executed</p></div></div></div></div></div><div class="table-row" data-filterable-current=":plugin-base:dokkaHtml/main" data-filterable-set=":plugin-base:dokkaHtml/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span>target</span><wbr></wbr><span>Dir</span><wbr></wbr><span><span>Path</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">the supplier of the path of the directory for the generated sources</p></div></div></div></div></div><div class="table-row" data-filterable-current=":plugin-base:dokkaHtml/main" data-filterable-set=":plugin-base:dokkaHtml/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span>proto</span><wbr></wbr><span>Src</span><wbr></wbr><span>Dir</span><wbr></wbr><span><span>Path</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">the supplier of the path of the directory with <code class="lang-kotlin">.proto</code> files</p></div></div></div></div></div></div></div></div></div>
+</div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>Copyright 2022, TeamDev</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+        </div>
+    </div>
+</div>
+</body>
+</html>
