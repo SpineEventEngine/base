@@ -1,0 +1,32 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:io.spine.dart.gradle////PointingToDeclaration/proto-dart-plugin/io.spine.dart.gradle/index.html
+$dokka.location:io.spine.dart.gradle/DartProtocConfigurationPlugin///PointingToDeclaration/proto-dart-plugin/io.spine.dart.gradle/-dart-protoc-configuration-plugin/index.html
+$dokka.location:io.spine.dart.gradle/DartProtocConfigurationPlugin/configureProtocPlugins/#NamedDomainObjectContainer<ExecutableLocator>#Project/PointingToDeclaration/proto-dart-plugin/io.spine.dart.gradle/-dart-protoc-configuration-plugin/configure-protoc-plugins.html
+$dokka.location:io.spine.dart.gradle/DartProtocConfigurationPlugin/generatedFilesBaseDir/#Project/PointingToDeclaration/proto-dart-plugin/io.spine.dart.gradle/-dart-protoc-configuration-plugin/generated-files-base-dir.html
+$dokka.location:io.spine.dart.gradle/DartProtocConfigurationPlugin/getMainDescriptorSet/#Project/PointingToDeclaration/proto-dart-plugin/io.spine.dart.gradle/-dart-protoc-configuration-plugin/get-main-descriptor-set.html
+$dokka.location:io.spine.dart.gradle/DartProtocConfigurationPlugin/getTestDescriptorSet/#Project/PointingToDeclaration/proto-dart-plugin/io.spine.dart.gradle/-dart-protoc-configuration-plugin/get-test-descriptor-set.html
+$dokka.location:io.spine.dart.gradle/Extension///PointingToDeclaration/proto-dart-plugin/io.spine.dart.gradle/-extension/index.html
+$dokka.location:io.spine.dart.gradle/Extension/defaultProject/#Project/PointingToDeclaration/proto-dart-plugin/io.spine.dart.gradle/-extension/default-project.html
+$dokka.location:io.spine.dart.gradle/Extension/getGeneratedBaseDir/#/PointingToDeclaration/proto-dart-plugin/io.spine.dart.gradle/-extension/get-generated-base-dir.html
+$dokka.location:io.spine.dart.gradle/Extension/getLibDir/#/PointingToDeclaration/proto-dart-plugin/io.spine.dart.gradle/-extension/get-lib-dir.html
+$dokka.location:io.spine.dart.gradle/Extension/getMainDescriptorSet/#/PointingToDeclaration/proto-dart-plugin/io.spine.dart.gradle/-extension/get-main-descriptor-set.html
+$dokka.location:io.spine.dart.gradle/Extension/getMainGeneratedDir/#/PointingToDeclaration/proto-dart-plugin/io.spine.dart.gradle/-extension/get-main-generated-dir.html
+$dokka.location:io.spine.dart.gradle/Extension/getTestDescriptorSet/#/PointingToDeclaration/proto-dart-plugin/io.spine.dart.gradle/-extension/get-test-descriptor-set.html
+$dokka.location:io.spine.dart.gradle/Extension/getTestDir/#/PointingToDeclaration/proto-dart-plugin/io.spine.dart.gradle/-extension/get-test-dir.html
+$dokka.location:io.spine.dart.gradle/Extension/getTestGeneratedDir/#/PointingToDeclaration/proto-dart-plugin/io.spine.dart.gradle/-extension/get-test-generated-dir.html
+$dokka.location:io.spine.dart.gradle/ProtoDartPlugin///PointingToDeclaration/proto-dart-plugin/io.spine.dart.gradle/-proto-dart-plugin/index.html
+$dokka.location:io.spine.dart.gradle/ProtoDartPlugin/apply/#Project/PointingToDeclaration/proto-dart-plugin/io.spine.dart.gradle/-proto-dart-plugin/apply.html
+$dokka.location:io.spine.dart////PointingToDeclaration/proto-dart-plugin/io.spine.dart/index.html
+$dokka.location:io.spine.dart/CachedDartProtocPlugin///PointingToDeclaration/proto-dart-plugin/io.spine.dart/-cached-dart-protoc-plugin/index.html
+$dokka.location:io.spine.dart/CachedDartProtocPlugin/locate/#/PointingToDeclaration/proto-dart-plugin/io.spine.dart/-cached-dart-protoc-plugin/locate.html
+$dokka.location:io.spine.dart/PubCache///PointingToDeclaration/proto-dart-plugin/io.spine.dart/-pub-cache/index.html
+$dokka.location:io.spine.dart/PubCache/bin/#/PointingToDeclaration/proto-dart-plugin/io.spine.dart/-pub-cache/bin.html
+$dokka.location:io.spine.dart/SourceFile///PointingToDeclaration/proto-dart-plugin/io.spine.dart/-source-file/index.html
+$dokka.location:io.spine.dart/SourceFile/isGeneratedDart/#java.nio.file.Path/PointingToDeclaration/proto-dart-plugin/io.spine.dart/-source-file/is-generated-dart.html
+$dokka.location:io.spine.dart/SourceFile/read/#java.nio.file.Path/PointingToDeclaration/proto-dart-plugin/io.spine.dart/-source-file/read.html
+$dokka.location:io.spine.dart/SourceFile/resolveImports/#ImmutableList<ExternalModule>#java.nio.file.Path/PointingToDeclaration/proto-dart-plugin/io.spine.dart/-source-file/resolve-imports.html
+$dokka.location:io.spine.dart/SourceFile/store/#/PointingToDeclaration/proto-dart-plugin/io.spine.dart/-source-file/store.html
+io.spine.dart
+io.spine.dart.gradle
+
