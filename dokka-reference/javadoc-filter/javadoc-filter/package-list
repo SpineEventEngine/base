@@ -1,0 +1,9 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:io.spine.tools.javadoc////PointingToDeclaration/javadoc-filter/io.spine.tools.javadoc/index.html
+$dokka.location:io.spine.tools.javadoc/AnnotationAnalyst///PointingToDeclaration/javadoc-filter/io.spine.tools.javadoc/-annotation-analyst/index.html
+$dokka.location:io.spine.tools.javadoc/ExcludeInternalDoclet///PointingToDeclaration/javadoc-filter/io.spine.tools.javadoc/-exclude-internal-doclet/index.html
+$dokka.location:io.spine.tools.javadoc/ExcludeInternalDoclet/main/#java.lang.String[]/PointingToDeclaration/javadoc-filter/io.spine.tools.javadoc/-exclude-internal-doclet/main.html
+$dokka.location:io.spine.tools.javadoc/ExcludeInternalDoclet/start/#com.sun.javadoc.RootDoc/PointingToDeclaration/javadoc-filter/io.spine.tools.javadoc/-exclude-internal-doclet/start.html
+io.spine.tools.javadoc
+
