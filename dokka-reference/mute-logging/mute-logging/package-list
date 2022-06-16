@@ -1,0 +1,16 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:io.spine.testing.logging////PointingToDeclaration/mute-logging/io.spine.testing.logging/index.html
+$dokka.location:io.spine.testing.logging/MuteLogging///PointingToDeclaration/mute-logging/io.spine.testing.logging/-mute-logging/index.html
+$dokka.location:io.spine.testing.logging/MuteLoggingExtension///PointingToDeclaration/mute-logging/io.spine.testing.logging/-mute-logging-extension/index.html
+$dokka.location:io.spine.testing.logging/MuteLoggingExtension/MuteLoggingExtension/#/PointingToDeclaration/mute-logging/io.spine.testing.logging/-mute-logging-extension/-mute-logging-extension.html
+$dokka.location:io.spine.testing.logging/MuteLoggingExtension/afterEach/#ExtensionContext/PointingToDeclaration/mute-logging/io.spine.testing.logging/-mute-logging-extension/after-each.html
+$dokka.location:io.spine.testing.logging/MuteLoggingExtension/beforeEach/#ExtensionContext/PointingToDeclaration/mute-logging/io.spine.testing.logging/-mute-logging-extension/before-each.html
+$dokka.location:io.spine.testing.logging/SystemOutputTest///PointingToDeclaration/mute-logging/io.spine.testing.logging/-system-output-test/index.html
+$dokka.location:io.spine.testing.logging/SystemOutputTest/err/#/PointingToDeclaration/mute-logging/io.spine.testing.logging/-system-output-test/err.html
+$dokka.location:io.spine.testing.logging/SystemOutputTest/errorOutput/#/PointingToDeclaration/mute-logging/io.spine.testing.logging/-system-output-test/error-output.html
+$dokka.location:io.spine.testing.logging/SystemOutputTest/loggingOutput/#/PointingToDeclaration/mute-logging/io.spine.testing.logging/-system-output-test/logging-output.html
+$dokka.location:io.spine.testing.logging/SystemOutputTest/out/#/PointingToDeclaration/mute-logging/io.spine.testing.logging/-system-output-test/--out--.html
+$dokka.location:io.spine.testing.logging/SystemOutputTest/output/#/PointingToDeclaration/mute-logging/io.spine.testing.logging/-system-output-test/output.html
+io.spine.testing.logging
+
