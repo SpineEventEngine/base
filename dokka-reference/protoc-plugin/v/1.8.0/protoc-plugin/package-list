@@ -1,0 +1,111 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:io.spine.tools.protoc.plugin.builder////PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.builder/index.html
+$dokka.location:io.spine.tools.protoc.plugin.builder/BuilderGenerator///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.builder/-builder-generator/index.html
+$dokka.location:io.spine.tools.protoc.plugin.builder/BuilderGenerator/generate/#Type<?,?>/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.builder/-builder-generator/generate.html
+$dokka.location:io.spine.tools.protoc.plugin.builder/BuilderGenerator/instance/#SpineProtocConfig/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.builder/-builder-generator/instance.html
+$dokka.location:io.spine.tools.protoc.plugin.column////PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.column/index.html
+$dokka.location:io.spine.tools.protoc.plugin.column/ColumnGenerator///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.column/-column-generator/index.html
+$dokka.location:io.spine.tools.protoc.plugin.column/ColumnGenerator/generate/#Type<?,?>/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.column/-column-generator/generate.html
+$dokka.location:io.spine.tools.protoc.plugin.column/ColumnGenerator/instance/#SpineProtocConfig/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.column/-column-generator/instance.html
+$dokka.location:io.spine.tools.protoc.plugin.field////PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.field/index.html
+$dokka.location:io.spine.tools.protoc.plugin.field/FieldGenerator///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.field/-field-generator/index.html
+$dokka.location:io.spine.tools.protoc.plugin.field/FieldGenerator/generate/#Type<?,?>/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.field/-field-generator/generate.html
+$dokka.location:io.spine.tools.protoc.plugin.field/FieldGenerator/instance/#SpineProtocConfig/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.field/-field-generator/instance.html
+$dokka.location:io.spine.tools.protoc.plugin.iface////PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.iface/index.html
+$dokka.location:io.spine.tools.protoc.plugin.iface/InterfaceGenerator///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.iface/-interface-generator/index.html
+$dokka.location:io.spine.tools.protoc.plugin.iface/InterfaceGenerator/generate/#Type<?,?>/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.iface/-interface-generator/generate.html
+$dokka.location:io.spine.tools.protoc.plugin.iface/InterfaceGenerator/instance/#SpineProtocConfig/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.iface/-interface-generator/instance.html
+$dokka.location:io.spine.tools.protoc.plugin.iface/MessageImplements///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.iface/-message-implements/index.html
+$dokka.location:io.spine.tools.protoc.plugin.iface/MessageImplements/implementInterface/#MessageType#io.spine.tools.protoc.plugin.iface.MessageInterface/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.iface/-message-implements/implement-interface.html
+$dokka.location:io.spine.tools.protoc.plugin.iface/MessageInterface///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.iface/-message-interface/index.html
+$dokka.location:io.spine.tools.protoc.plugin.iface/MessageInterface/name/#/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.iface/-message-interface/name.html
+$dokka.location:io.spine.tools.protoc.plugin.iface/MessageInterface/parameters/#/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.iface/-message-interface/parameters.html
+$dokka.location:io.spine.tools.protoc.plugin.iface/PredefinedInterface///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.iface/-predefined-interface/index.html
+$dokka.location:io.spine.tools.protoc.plugin.iface/PredefinedInterface/PredefinedInterface/#ClassName#io.spine.tools.protoc.plugin.TypeParameters/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.iface/-predefined-interface/-predefined-interface.html
+$dokka.location:io.spine.tools.protoc.plugin.iface/PredefinedInterface/name/#/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.iface/-predefined-interface/name.html
+$dokka.location:io.spine.tools.protoc.plugin.iface/PredefinedInterface/parameters/#/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.iface/-predefined-interface/parameters.html
+$dokka.location:io.spine.tools.protoc.plugin.method////PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.method/index.html
+$dokka.location:io.spine.tools.protoc.plugin.method/MethodGenerator///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.method/-method-generator/index.html
+$dokka.location:io.spine.tools.protoc.plugin.method/MethodGenerator/generate/#Type<?,?>/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.method/-method-generator/generate.html
+$dokka.location:io.spine.tools.protoc.plugin.method/MethodGenerator/instance/#SpineProtocConfig/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.method/-method-generator/instance.html
+$dokka.location:io.spine.tools.protoc.plugin.nested////PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.nested/index.html
+$dokka.location:io.spine.tools.protoc.plugin.nested/NestedClassGenerator///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.nested/-nested-class-generator/index.html
+$dokka.location:io.spine.tools.protoc.plugin.nested/NestedClassGenerator/generate/#Type<?,?>/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.nested/-nested-class-generator/generate.html
+$dokka.location:io.spine.tools.protoc.plugin.nested/NestedClassGenerator/instance/#SpineProtocConfig/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.nested/-nested-class-generator/instance.html
+$dokka.location:io.spine.tools.protoc.plugin.validation////PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.validation/index.html
+$dokka.location:io.spine.tools.protoc.plugin.validation/ValidatorCode///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.validation/-validator-code/index.html
+$dokka.location:io.spine.tools.protoc.plugin.validation/ValidatorCode/generate/#Type<?,?>/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.validation/-validator-code/generate.html
+$dokka.location:io.spine.tools.protoc.plugin.validation/ValidatorCode/instance/#SpineProtocConfig/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin.validation/-validator-code/instance.html
+$dokka.location:io.spine.tools.protoc.plugin////PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/index.html
+$dokka.location:io.spine.tools.protoc.plugin/AbstractCompilerOutput///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-abstract-compiler-output/index.html
+$dokka.location:io.spine.tools.protoc.plugin/AbstractCompilerOutput/AbstractCompilerOutput/#File/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-abstract-compiler-output/-abstract-compiler-output.html
+$dokka.location:io.spine.tools.protoc.plugin/AbstractCompilerOutput/asFile/#/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-abstract-compiler-output/as-file.html
+$dokka.location:io.spine.tools.protoc.plugin/AbstractCompilerOutput/equals/#java.lang.Object/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-abstract-compiler-output/equals.html
+$dokka.location:io.spine.tools.protoc.plugin/AbstractCompilerOutput/hashCode/#/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-abstract-compiler-output/hash-code.html
+$dokka.location:io.spine.tools.protoc.plugin/AbstractCompilerOutput/toString/#/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-abstract-compiler-output/to-string.html
+$dokka.location:io.spine.tools.protoc.plugin/ClassInstantiationException///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-class-instantiation-exception/index.html
+$dokka.location:io.spine.tools.protoc.plugin/ClassMember///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-class-member/index.html
+$dokka.location:io.spine.tools.protoc.plugin/ClassMember/method/#GeneratedMethod#MessageType/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-class-member/method.html
+$dokka.location:io.spine.tools.protoc.plugin/ClassMember/nestedClass/#GeneratedNestedClass#MessageType/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-class-member/nested-class.html
+$dokka.location:io.spine.tools.protoc.plugin/CodeGenerationTask///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-code-generation-task/index.html
+$dokka.location:io.spine.tools.protoc.plugin/CodeGenerationTask/generateFor/#MessageType/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-code-generation-task/generate-for.html
+$dokka.location:io.spine.tools.protoc.plugin/CodeGenerationTasks///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-code-generation-tasks/index.html
+$dokka.location:io.spine.tools.protoc.plugin/CodeGenerationTasks/CodeGenerationTasks/#ImmutableList<CodeGenerationTask>/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-code-generation-tasks/-code-generation-tasks.html
+$dokka.location:io.spine.tools.protoc.plugin/CodeGenerationTasks/generateFor/#MessageType/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-code-generation-tasks/generate-for.html
+$dokka.location:io.spine.tools.protoc.plugin/CodeGenerator///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-code-generator/index.html
+$dokka.location:io.spine.tools.protoc.plugin/CodeGenerator/CodeGenerator/#/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-code-generator/-code-generator.html
+$dokka.location:io.spine.tools.protoc.plugin/CodeGenerator/generate/#Type<?,?>/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-code-generator/generate.html
+$dokka.location:io.spine.tools.protoc.plugin/CodeGenerator/process/#CodeGeneratorRequest/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-code-generator/process.html
+$dokka.location:io.spine.tools.protoc.plugin/CompilerOutput///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-compiler-output/index.html
+$dokka.location:io.spine.tools.protoc.plugin/CompilerOutput/asFile/#/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-compiler-output/as-file.html
+$dokka.location:io.spine.tools.protoc.plugin/CompilerOutput/wrapping/#File/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-compiler-output/wrapping.html
+$dokka.location:io.spine.tools.protoc.plugin/CompositeGenerator.Builder///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-composite-generator/-builder/index.html
+$dokka.location:io.spine.tools.protoc.plugin/CompositeGenerator.Builder/add/#io.spine.tools.protoc.plugin.CodeGenerator/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-composite-generator/-builder/add.html
+$dokka.location:io.spine.tools.protoc.plugin/CompositeGenerator.Builder/build/#/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-composite-generator/-builder/build.html
+$dokka.location:io.spine.tools.protoc.plugin/CompositeGenerator///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-composite-generator/index.html
+$dokka.location:io.spine.tools.protoc.plugin/CompositeGenerator/builder/#/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-composite-generator/builder.html
+$dokka.location:io.spine.tools.protoc.plugin/CompositeGenerator/generate/#Type<?,?>/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-composite-generator/generate.html
+$dokka.location:io.spine.tools.protoc.plugin/ExternalClassLoader///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-external-class-loader/index.html
+$dokka.location:io.spine.tools.protoc.plugin/ExternalClassLoader/ExternalClassLoader/#Classpath#java.lang.Class<T>/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-external-class-loader/-external-class-loader.html
+$dokka.location:io.spine.tools.protoc.plugin/ExternalClassLoader/newInstance/#java.lang.String/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-external-class-loader/new-instance.html
+$dokka.location:io.spine.tools.protoc.plugin/FilePatternMatcher///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-file-pattern-matcher/index.html
+$dokka.location:io.spine.tools.protoc.plugin/FilePatternMatcher/FilePatternMatcher/#FilePattern/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-file-pattern-matcher/-file-pattern-matcher.html
+$dokka.location:io.spine.tools.protoc.plugin/FilePatternMatcher/test/#MessageType/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-file-pattern-matcher/test.html
+$dokka.location:io.spine.tools.protoc.plugin/IdentityParameter///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-identity-parameter/index.html
+$dokka.location:io.spine.tools.protoc.plugin/IdentityParameter/valueFor/#Type<?,?>/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-identity-parameter/value-for.html
+$dokka.location:io.spine.tools.protoc.plugin/InsertionPoint.builder_implements///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}protoc-plugin/io.spine.tools.protoc.plugin/-insertion-point/builder_implements/index.html
+$dokka.location:io.spine.tools.protoc.plugin/InsertionPoint.builder_scope///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}protoc-plugin/io.spine.tools.protoc.plugin/-insertion-point/builder_scope/index.html
+$dokka.location:io.spine.tools.protoc.plugin/InsertionPoint.class_scope///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}protoc-plugin/io.spine.tools.protoc.plugin/-insertion-point/class_scope/index.html
+$dokka.location:io.spine.tools.protoc.plugin/InsertionPoint.enum_scope///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}protoc-plugin/io.spine.tools.protoc.plugin/-insertion-point/enum_scope/index.html
+$dokka.location:io.spine.tools.protoc.plugin/InsertionPoint.interface_extends///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}protoc-plugin/io.spine.tools.protoc.plugin/-insertion-point/interface_extends/index.html
+$dokka.location:io.spine.tools.protoc.plugin/InsertionPoint.message_implements///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}protoc-plugin/io.spine.tools.protoc.plugin/-insertion-point/message_implements/index.html
+$dokka.location:io.spine.tools.protoc.plugin/InsertionPoint.outer_class_scope///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}protoc-plugin/io.spine.tools.protoc.plugin/-insertion-point/outer_class_scope/index.html
+$dokka.location:io.spine.tools.protoc.plugin/InsertionPoint///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-insertion-point/index.html
+$dokka.location:io.spine.tools.protoc.plugin/InsertionPoint/forType/#Type<?,?>/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-insertion-point/for-type.html
+$dokka.location:io.spine.tools.protoc.plugin/InsertionPoint/getDefinition/#/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-insertion-point/get-definition.html
+$dokka.location:io.spine.tools.protoc.plugin/InsertionPoint/valueOf/#java.lang.String/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-insertion-point/value-of.html
+$dokka.location:io.spine.tools.protoc.plugin/InsertionPoint/values/#/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-insertion-point/values.html
+$dokka.location:io.spine.tools.protoc.plugin/NoOpGenerator///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-no-op-generator/index.html
+$dokka.location:io.spine.tools.protoc.plugin/NoOpGenerator/generate/#Type<?,?>/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-no-op-generator/generate.html
+$dokka.location:io.spine.tools.protoc.plugin/NoOpGenerator/instance/#/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-no-op-generator/instance.html
+$dokka.location:io.spine.tools.protoc.plugin/Plugin///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-plugin/index.html
+$dokka.location:io.spine.tools.protoc.plugin/Plugin/main/#java.lang.String[]/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-plugin/main.html
+$dokka.location:io.spine.tools.protoc.plugin/ProtocPluginFiles///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-protoc-plugin-files/index.html
+$dokka.location:io.spine.tools.protoc.plugin/ProtocPluginFiles/prepareFile/#Type<?,?>/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-protoc-plugin-files/prepare-file.html
+$dokka.location:io.spine.tools.protoc.plugin/ProtocPluginFiles/prepareFile/#java.lang.String/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-protoc-plugin-files/prepare-file.html
+$dokka.location:io.spine.tools.protoc.plugin/TypeParameter///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-type-parameter/index.html
+$dokka.location:io.spine.tools.protoc.plugin/TypeParameter/valueFor/#Type<?,?>/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-type-parameter/value-for.html
+$dokka.location:io.spine.tools.protoc.plugin/TypeParameters///PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-type-parameters/index.html
+$dokka.location:io.spine.tools.protoc.plugin/TypeParameters/asStringFor/#Type<?,?>/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-type-parameters/as-string-for.html
+$dokka.location:io.spine.tools.protoc.plugin/TypeParameters/empty/#/PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-type-parameters/empty.html
+$dokka.location:io.spine.tools.protoc.plugin/TypeParameters/of/#io.spine.tools.protoc.plugin.TypeParameter.../PointingToDeclaration/protoc-plugin/io.spine.tools.protoc.plugin/-type-parameters/of.html
+io.spine.tools.protoc.plugin
+io.spine.tools.protoc.plugin.builder
+io.spine.tools.protoc.plugin.column
+io.spine.tools.protoc.plugin.field
+io.spine.tools.protoc.plugin.iface
+io.spine.tools.protoc.plugin.method
+io.spine.tools.protoc.plugin.nested
+io.spine.tools.protoc.plugin.validation
+
