@@ -1,0 +1,54 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:io.spine.tools.gradle.testing////PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/index.html
+$dokka.location:io.spine.tools.gradle.testing/GradleProject.Builder///PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-gradle-project/-builder/index.html
+$dokka.location:io.spine.tools.gradle.testing/GradleProject.Builder/addJavaFiles/#java.lang.String.../PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-gradle-project/-builder/add-java-files.html
+$dokka.location:io.spine.tools.gradle.testing/GradleProject.Builder/addProtoFile/#java.lang.String/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-gradle-project/-builder/add-proto-file.html
+$dokka.location:io.spine.tools.gradle.testing/GradleProject.Builder/addProtoFiles/#java.util.Collection<java.lang.String>/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-gradle-project/-builder/add-proto-files.html
+$dokka.location:io.spine.tools.gradle.testing/GradleProject.Builder/build/#/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-gradle-project/-builder/build.html
+$dokka.location:io.spine.tools.gradle.testing/GradleProject.Builder/createFile/#java.lang.String#java.lang.Iterable<java.lang.String>/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-gradle-project/-builder/create-file.html
+$dokka.location:io.spine.tools.gradle.testing/GradleProject.Builder/createProto/#java.lang.String#java.lang.Iterable<java.lang.String>/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-gradle-project/-builder/create-proto.html
+$dokka.location:io.spine.tools.gradle.testing/GradleProject.Builder/enableDebug/#/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-gradle-project/-builder/enable-debug.html
+$dokka.location:io.spine.tools.gradle.testing/GradleProject.Builder/setProjectFolder/#java.io.File/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-gradle-project/-builder/set-project-folder.html
+$dokka.location:io.spine.tools.gradle.testing/GradleProject.Builder/setProjectName/#java.lang.String/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-gradle-project/-builder/set-project-name.html
+$dokka.location:io.spine.tools.gradle.testing/GradleProject.Builder/withPluginClasspath/#/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-gradle-project/-builder/with-plugin-classpath.html
+$dokka.location:io.spine.tools.gradle.testing/GradleProject///PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-gradle-project/index.html
+$dokka.location:io.spine.tools.gradle.testing/GradleProject/executeAndFail/#TaskName/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-gradle-project/execute-and-fail.html
+$dokka.location:io.spine.tools.gradle.testing/GradleProject/executeTask/#TaskName/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-gradle-project/execute-task.html
+$dokka.location:io.spine.tools.gradle.testing/GradleProject/javaPlugin/#/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-gradle-project/java-plugin.html
+$dokka.location:io.spine.tools.gradle.testing/GradleProject/newBuilder/#/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-gradle-project/new-builder.html
+$dokka.location:io.spine.tools.gradle.testing/GradleTruth///PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-gradle-truth/index.html
+$dokka.location:io.spine.tools.gradle.testing/GradleTruth/assertThat/#Task/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-gradle-truth/assert-that.html
+$dokka.location:io.spine.tools.gradle.testing/MemoizingDependant///PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-memoizing-dependant/index.html
+$dokka.location:io.spine.tools.gradle.testing/MemoizingDependant/depend/#ConfigurationName#java.lang.String/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-memoizing-dependant/depend.html
+$dokka.location:io.spine.tools.gradle.testing/MemoizingDependant/dependencies/#/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-memoizing-dependant/dependencies.html
+$dokka.location:io.spine.tools.gradle.testing/MemoizingDependant/exclude/#Dependency/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-memoizing-dependant/exclude.html
+$dokka.location:io.spine.tools.gradle.testing/MemoizingDependant/exclusions/#/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-memoizing-dependant/exclusions.html
+$dokka.location:io.spine.tools.gradle.testing/MemoizingDependant/force/#Artifact/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-memoizing-dependant/force.html
+$dokka.location:io.spine.tools.gradle.testing/MemoizingDependant/force/#java.lang.String/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-memoizing-dependant/force.html
+$dokka.location:io.spine.tools.gradle.testing/MemoizingDependant/forcedDependencies/#/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-memoizing-dependant/forced-dependencies.html
+$dokka.location:io.spine.tools.gradle.testing/MemoizingDependant/removeForcedDependency/#Dependency/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-memoizing-dependant/remove-forced-dependency.html
+$dokka.location:io.spine.tools.gradle.testing/MemoizingDependant/removeForcedDependency/#java.lang.String/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-memoizing-dependant/remove-forced-dependency.html
+$dokka.location:io.spine.tools.gradle.testing/MemoizingPluginRegistry///PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-memoizing-plugin-registry/index.html
+$dokka.location:io.spine.tools.gradle.testing/MemoizingPluginRegistry/apply/#GradlePlugin<?>/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-memoizing-plugin-registry/apply.html
+$dokka.location:io.spine.tools.gradle.testing/MemoizingPluginRegistry/apply/#PluginScript/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-memoizing-plugin-registry/apply.html
+$dokka.location:io.spine.tools.gradle.testing/MemoizingPluginRegistry/isApplied/#GradlePlugin<?>/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-memoizing-plugin-registry/is-applied.html
+$dokka.location:io.spine.tools.gradle.testing/MemoizingPluginRegistry/pluginScripts/#/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-memoizing-plugin-registry/plugin-scripts.html
+$dokka.location:io.spine.tools.gradle.testing/MemoizingPluginRegistry/plugins/#/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-memoizing-plugin-registry/plugins.html
+$dokka.location:io.spine.tools.gradle.testing/MemoizingPluginRegistry/with/#GradlePlugin<P>#java.util.function.Consumer<P>/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-memoizing-plugin-registry/with.html
+$dokka.location:io.spine.tools.gradle.testing/MemoizingSourceSuperset///PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-memoizing-source-superset/index.html
+$dokka.location:io.spine.tools.gradle.testing/MemoizingSourceSuperset/javaSourceDirs/#/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-memoizing-source-superset/java-source-dirs.html
+$dokka.location:io.spine.tools.gradle.testing/MemoizingSourceSuperset/register/#GeneratedSourceRoot/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-memoizing-source-superset/register.html
+$dokka.location:io.spine.tools.gradle.testing/NoOp.ACTION///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}plugin-testlib/io.spine.tools.gradle.testing/-no-op/-a-c-t-i-o-n/index.html
+$dokka.location:io.spine.tools.gradle.testing/NoOp///PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-no-op/index.html
+$dokka.location:io.spine.tools.gradle.testing/NoOp/action/#/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-no-op/action.html
+$dokka.location:io.spine.tools.gradle.testing/NoOp/execute/#java.lang.Object/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-no-op/execute.html
+$dokka.location:io.spine.tools.gradle.testing/NoOp/valueOf/#java.lang.String/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-no-op/value-of.html
+$dokka.location:io.spine.tools.gradle.testing/NoOp/values/#/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-no-op/values.html
+$dokka.location:io.spine.tools.gradle.testing/TaskSubject///PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-task-subject/index.html
+$dokka.location:io.spine.tools.gradle.testing/TaskSubject/dependsOn/#Task/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-task-subject/depends-on.html
+$dokka.location:io.spine.tools.gradle.testing/TaskSubject/dependsOn/#TaskName/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-task-subject/depends-on.html
+$dokka.location:io.spine.tools.gradle.testing/TaskSubject/isDependencyOf/#Task/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-task-subject/is-dependency-of.html
+$dokka.location:io.spine.tools.gradle.testing/TaskSubject/tasks/#/PointingToDeclaration/plugin-testlib/io.spine.tools.gradle.testing/-task-subject/tasks.html
+io.spine.tools.gradle.testing
+
