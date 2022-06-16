@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>mark</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<link href="../../../images/logo-icon.svg">
+<link href="../../../styles/custom-styles.css" rel="Stylesheet">
+</head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+            <a href="../../../index.html">
+                    <span>protoc-api</span>
+            </a>
+    </div>
+    <div>
+1.8.0    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageIds="protoc-api::io.spine.tools.protoc/GeneratedInterfaces/mark/#io.spine.tools.protoc.PatternSelector#ClassName/PointingToDeclaration//-478363857">
+  <div class="breadcrumbs"><a href="../../../index.html">protoc-api</a><span class="delimiter">/</span><a href="../index.html">io.spine.tools.protoc</a><span class="delimiter">/</span><a href="index.html">GeneratedInterfaces</a><span class="delimiter">/</span><a href="mark.html">mark</a></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>mark</span></span></h1>
+  </div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":protoc-api:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">final </span><span class="token keyword"></span>void <a href="mark.html"><span class="token function">mark</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="../-pattern-selector/index.html">PatternSelector</a> patternSelector<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword"></span>ClassName interfaceName</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Configures an interface generation for messages declared in files matching a given pattern. </p><p class="paragraph">Sample usage is as follows: </p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">mark messages().inFiles(suffix: &quot;events.proto&quot;), asType(&quot;my.custom.EventMessage&quot;)
+</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">The statement in the example above configures all message types declared in a file which name ends with <code class="lang-kotlin">events.proto</code> to implement the <code class="lang-kotlin">my.custom.EventMessage</code>. It is expected that <code class="lang-kotlin">my.custom.EventMessage</code> is an interface defined by the user. </p><p class="paragraph">Note that only the top-level messages declarations are affected by this configuration. Nested messages defined in the same file do not implement the interface. </p><p class="paragraph">Caution. In order for the framework components to function properly, one should not entirely override the <code class="lang-kotlin">default</code> message interfaces. Instead, provide a custom interface which <code class="lang-kotlin">extends</code> the standard one. Example of a safe way to override standard interfaces: </p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">// In my/custom/EventMessage.java:
+
+package my.custom;
+
+public interface EventMessage extends io.spine.base.EventMessage {
+// ...
+}
+
+// In build.gradle:
+
+// ...
+
+modelCompiler {
+    interfaces {
+        mark messages().inFiles(suffix: &quot;events.proto&quot;), asType(&quot;my.custom.EventMessage&quot;)
+    }
+}
+</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">In the example above, <code class="lang-kotlin">my.custom.EventMessage</code> extends io.spine.base.EventMessage and thus it is safe to mark all events with this interface instead of the default one.</p><br><div class="symbol monospace block"><span class="token keyword">final </span><span class="token keyword"></span>void <a href="mark.html"><span class="token function">mark</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="../-uuid-message/index.html">UuidMessage</a> uuidMessage<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword"></span>ClassName interfaceName</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Configures an interface generation for messages with a single <code class="lang-kotlin">string</code> field called <code class="lang-kotlin">uuid</code>. </p><p class="paragraph">This method functions similarly to the <a href="mark.html">mark</a> except for several differences: </p><ul><li>the file in which the message type is defined does not matter; </li><li>nested definitions are affected as well as top-level ones. </li></ul><p class="paragraph">Sample usage is as follows: </p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">mark messages().uuid(), asType(&quot;my.custom.Identifier&quot;)
+</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><br><div class="symbol monospace block"><span class="token keyword">final </span><span class="token keyword"></span>void <a href="mark.html"><span class="token function">mark</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><span data-unresolved-link="io.spine.tools.protoc/EntityState///PointingToDeclaration/">EntityState</span> entityState<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword"></span>ClassName interfaceName</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Configures an interface generation for messages that represent an entity state. </p><p class="paragraph">All messages marked with <code class="lang-kotlin">(entity)</code> option and with a valid <code class="lang-kotlin">(kind)</code> will be marked with the given interface name. </p><p class="paragraph">Sample usage is as follows: </p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">mark messages().entityState(), asType(&quot;my.custom.EntityState&quot;)
+</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Note that it is required for the provided interface to extend the io.spine.base.EntityState interface, otherwise the inner Spine routines will work incorrectly.</p></div></div>
+</div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>Copyright 2022, TeamDev</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+        </div>
+    </div>
+</div>
+</body>
+</html>
