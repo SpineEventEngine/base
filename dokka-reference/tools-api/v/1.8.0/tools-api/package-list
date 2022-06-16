@@ -1,0 +1,15 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:io.spine.tools.protoc.plugin.method////PointingToDeclaration/tools-api/io.spine.tools.protoc.plugin.method/index.html
+$dokka.location:io.spine.tools.protoc.plugin.method/GeneratedMethod///PointingToDeclaration/tools-api/io.spine.tools.protoc.plugin.method/-generated-method/index.html
+$dokka.location:io.spine.tools.protoc.plugin.method/GeneratedMethod/GeneratedMethod/#java.lang.String/PointingToDeclaration/tools-api/io.spine.tools.protoc.plugin.method/-generated-method/-generated-method.html
+$dokka.location:io.spine.tools.protoc.plugin.method/MethodFactory///PointingToDeclaration/tools-api/io.spine.tools.protoc.plugin.method/-method-factory/index.html
+$dokka.location:io.spine.tools.protoc.plugin.method/MethodFactory/createFor/#MessageType/PointingToDeclaration/tools-api/io.spine.tools.protoc.plugin.method/-method-factory/create-for.html
+$dokka.location:io.spine.tools.protoc.plugin.nested////PointingToDeclaration/tools-api/io.spine.tools.protoc.plugin.nested/index.html
+$dokka.location:io.spine.tools.protoc.plugin.nested/GeneratedNestedClass///PointingToDeclaration/tools-api/io.spine.tools.protoc.plugin.nested/-generated-nested-class/index.html
+$dokka.location:io.spine.tools.protoc.plugin.nested/GeneratedNestedClass/GeneratedNestedClass/#java.lang.String/PointingToDeclaration/tools-api/io.spine.tools.protoc.plugin.nested/-generated-nested-class/-generated-nested-class.html
+$dokka.location:io.spine.tools.protoc.plugin.nested/NestedClassFactory///PointingToDeclaration/tools-api/io.spine.tools.protoc.plugin.nested/-nested-class-factory/index.html
+$dokka.location:io.spine.tools.protoc.plugin.nested/NestedClassFactory/createFor/#MessageType/PointingToDeclaration/tools-api/io.spine.tools.protoc.plugin.nested/-nested-class-factory/create-for.html
+io.spine.tools.protoc.plugin.method
+io.spine.tools.protoc.plugin.nested
+
