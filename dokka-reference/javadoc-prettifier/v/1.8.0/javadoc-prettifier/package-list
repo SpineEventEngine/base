@@ -1,0 +1,8 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:io.spine.tools.protodoc////PointingToDeclaration/javadoc-prettifier/io.spine.tools.protodoc/index.html
+$dokka.location:io.spine.tools.protodoc/Extension///PointingToDeclaration/javadoc-prettifier/io.spine.tools.protodoc/-extension/index.html
+$dokka.location:io.spine.tools.protodoc/ProtoJavadocPlugin///PointingToDeclaration/javadoc-prettifier/io.spine.tools.protodoc/-proto-javadoc-plugin/index.html
+$dokka.location:io.spine.tools.protodoc/ProtoJavadocPlugin/apply/#Project/PointingToDeclaration/javadoc-prettifier/io.spine.tools.protodoc/-proto-javadoc-plugin/apply.html
+io.spine.tools.protodoc
+
