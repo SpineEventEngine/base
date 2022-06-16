@@ -1,0 +1,17 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:io.spine.tools.check.methodresult////PointingToDeclaration/errorprone-checks/io.spine.tools.check.methodresult/index.html
+$dokka.location:io.spine.tools.check.methodresult/HandleMethodResult///PointingToDeclaration/errorprone-checks/io.spine.tools.check.methodresult/-handle-method-result/index.html
+$dokka.location:io.spine.tools.check.methodresult/HandleMethodResult/specializedMatcher/#/PointingToDeclaration/errorprone-checks/io.spine.tools.check.methodresult/-handle-method-result/specialized-matcher.html
+$dokka.location:io.spine.tools.check.vbuild////PointingToDeclaration/errorprone-checks/io.spine.tools.check.vbuild/index.html
+$dokka.location:io.spine.tools.check.vbuild/UseVBuild///PointingToDeclaration/errorprone-checks/io.spine.tools.check.vbuild/-use-v-build/index.html
+$dokka.location:io.spine.tools.check.vbuild/UseVBuild/matchMemberReference/#com.sun.source.tree.MemberReferenceTree#VisitorState/PointingToDeclaration/errorprone-checks/io.spine.tools.check.vbuild/-use-v-build/match-member-reference.html
+$dokka.location:io.spine.tools.check.vbuild/UseVBuild/matchMethodInvocation/#com.sun.source.tree.MethodInvocationTree#VisitorState/PointingToDeclaration/errorprone-checks/io.spine.tools.check.vbuild/-use-v-build/match-method-invocation.html
+$dokka.location:io.spine.tools.check////PointingToDeclaration/errorprone-checks/io.spine.tools.check/index.html
+$dokka.location:io.spine.tools.check/BugPatternMatcher///PointingToDeclaration/errorprone-checks/io.spine.tools.check/-bug-pattern-matcher/index.html
+$dokka.location:io.spine.tools.check/BugPatternMatcher/fixes/#T/PointingToDeclaration/errorprone-checks/io.spine.tools.check/-bug-pattern-matcher/fixes.html
+$dokka.location:io.spine.tools.check/BugPatternMatcher/matches/#T#VisitorState/PointingToDeclaration/errorprone-checks/io.spine.tools.check/-bug-pattern-matcher/matches.html
+io.spine.tools.check
+io.spine.tools.check.methodresult
+io.spine.tools.check.vbuild
+
