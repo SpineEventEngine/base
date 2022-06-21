@@ -1,0 +1,31 @@
+name: Build under Ubuntu
+
+on:
+  pull_request:
+    branches:
+      - master
+      - v1
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-java@v3
+        with:
+          java-version: 8
+          distribution: zulu
+          cache: gradle
+
+      - name: Pull config
+        run: git submodule update --init --recursive
+
+      - name: Build project and run tests
+        shell: bash
+        run: ./gradlew build --stacktrace
+
+      - name: Run smoke tests
+        shell: bash
+        run: cd ./tools/smoke-tests && ./gradlew build --stacktrace
