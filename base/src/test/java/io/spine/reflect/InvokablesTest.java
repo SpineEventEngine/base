@@ -74,10 +74,12 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
     @Nested
     @DisplayName("when invoking methods")
     class Methods {
+        private ClassWithPrivateMethod target;
 
         @BeforeEach
         void obtainMethod() throws NoSuchMethodException {
             privateMethod = ClassWithPrivateMethod.class.getDeclaredMethod("privateMethod");
+            target = new ClassWithPrivateMethod();
         }
 
         @AfterEach
@@ -88,7 +90,6 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         @Test
         @DisplayName("set accessible and invoke successfully")
         void allowToSetAccessibleAndInvoke() {
-            var target = new ClassWithPrivateMethod();
             var result = setAccessibleAndInvoke(privateMethod, target);
 
             assertThat(result).isEqualTo(METHOD_RESULT);
@@ -108,7 +109,6 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         @DisplayName("throw `ISE` if an exception is thrown during invocation")
         void throwOnInvocationError() throws NoSuchMethodException {
             var method = ClassWithPrivateMethod.class.getDeclaredMethod("throwingMethod");
-            var target = new ClassWithPrivateMethod();
 
             assertIllegalState(() -> setAccessibleAndInvoke(method, target));
         }
@@ -131,7 +131,7 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         void convertInvisibleToHandle() throws Throwable {
             var handle = asHandle(privateMethod);
             assertThat(handle).isNotNull();
-            assertAccessible().isFalse();
+            assertAccessible(target).isFalse();
 
             var invocationResult = handle.invoke(new ClassWithPrivateMethod());
             assertThat(invocationResult)
@@ -143,17 +143,17 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         void convertAccessibleToHandle() throws Throwable {
             privateMethod.setAccessible(true);
             var handle = asHandle(privateMethod);
-            assertAccessible().isTrue();
+            assertAccessible(target).isTrue();
             assertThat(handle).isNotNull();
 
-            var invocationResult = handle.invoke(new ClassWithPrivateMethod());
+            var invocationResult = handle.invoke(target);
             assertThat(invocationResult)
                     .isEqualTo(METHOD_RESULT);
         }
 
         @NonNull
-        private BooleanSubject assertAccessible() {
-            return assertThat(privateMethod.isAccessible());
+        private BooleanSubject assertAccessible(ClassWithPrivateMethod target) {
+            return assertThat(privateMethod.canAccess(target));
         }
     }
 
