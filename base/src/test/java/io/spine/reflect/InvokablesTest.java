@@ -219,6 +219,8 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
                 var privateCtorClass = ClassWithPrivateCtor.class;
 
                 ctor = ClassWithPrivateCtor.class.getDeclaredConstructor();
+                assertConstructorAccessible().isFalse();
+
                 var instance = callParameterlessCtor(privateCtorClass);
                 assertThat(instance.instantiated()).isTrue();
 
@@ -228,17 +230,19 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
             @Test
             @DisplayName("if the instantiation failed")
             void failure() throws NoSuchMethodException {
-                var throwingCtorClass = ThrowingConstructor.class;
+                var throwingConstructorClass = ThrowingConstructor.class;
 
                 ctor = ThrowingConstructor.class.getDeclaredConstructor();
 
-                assertIllegalState(() -> callParameterlessCtor(throwingCtorClass));
+                assertConstructorAccessible().isFalse();
+
+                assertIllegalState(() -> callParameterlessCtor(throwingConstructorClass));
 
                 assertConstructorAccessible().isFalse();
             }
 
             BooleanSubject assertConstructorAccessible() {
-                return assertThat(ctor.isAccessible());
+                return assertThat(ctor.canAccess(null));
             }
         }
     }
