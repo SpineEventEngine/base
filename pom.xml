@@ -167,7 +167,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine.tools</groupId>
     <artifactId>spine-dokka-extensions</artifactId>
-    <version>2.0.0-SNAPSHOT.3</version>
+    <version>2.0.0-SNAPSHOT.4</version>
   </dependency>
   <dependency>
     <groupId>javax.annotation</groupId>
@@ -199,17 +199,17 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>org.jetbrains.dokka</groupId>
     <artifactId>dokka-base</artifactId>
-    <version>1.6.20</version>
+    <version>1.6.21</version>
   </dependency>
   <dependency>
     <groupId>org.jetbrains.dokka</groupId>
     <artifactId>dokka-core</artifactId>
-    <version>1.6.20</version>
+    <version>1.6.21</version>
   </dependency>
   <dependency>
     <groupId>org.jetbrains.dokka</groupId>
     <artifactId>kotlin-as-java-plugin</artifactId>
-    <version>1.6.20</version>
+    <version>1.6.21</version>
   </dependency>
   <dependency>
     <groupId>org.jetbrains.kotlin</groupId>
