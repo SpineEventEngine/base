@@ -415,15 +415,29 @@ extend google.protobuf.MessageOptions {
     // API Annotations
     //-----------------
 
-    // Indicates a file which is internal to Spine, not part of the public API, and should not be
-    // used by users of the framework.
+    // Indicates a type usage of which is restricted in one of the following ways.
+    //
+    // 1. This type is internal to the Spine Event Engine framework. It is not a part of
+    // the public API, and must not be used by framework users.
+    //
+    // 2. The type is internal to a bounded context, artifact of which exposes the type to
+    // the outside world (presumably for historical reasons).
+    //
+    // The type with such an option can be used only inside the bounded context which declares it.
+    //
+    // The type must not be used neither for inbound (i.e. being sent to the bounded context) nor
+    // for outbound communication (i.e. being sent by this bounded context to another
+    // bounded context).
+    //
+    // An attempt to violate these usage restrictions will result in a runtime error.
+    //
     bool internal_type = 73911;
 
     // Indicates a file which contains elements of Service Provider Interface (SPI).
     bool SPI_type = 73912;
 
-    // Indicates a public API that can change at any time, and has no guarantee of API stability and
-    // backward-compatibility.
+    // Indicates a public API that can change at any time, and has no guarantee of
+    // API stability and backward-compatibility.
     bool experimental_type = 73913;
 
     // Signifies that a public API is subject to incompatible changes, or even removal,
@@ -476,18 +490,22 @@ extend google.protobuf.FileOptions {
     //
     string type_url_prefix = 73941;
 
-    // Indicates a file which should not be used by users of the framework.
+    // Indicates a file which contains types usage of which is limited.
+    //
+    // For more information on such limitations please see the documentation of
+    // the type option called `internal_type`.
+    //
     bool internal_all = 73942;
 
     // Indicates a file which contains elements of Service Provider Interface (SPI).
     bool SPI_all = 73943;
 
-    // Indicates a public API that can change at any time, and has no guarantee of API stability and
-    // backward-compatibility.
+    // Indicates a public API that can change at any time, and has no guarantee of
+    // API stability and backward-compatibility.
     bool experimental_all = 73944;
 
-    // Signifies that a public API is subject to incompatible changes, or even removal, in a future
-    // release.
+    // Signifies that a public API is subject to incompatible changes, or even removal,
+    // in a future release.
     bool beta_all = 73945;
 
     // Specifies a characteristic common for all the message types in the given file.
