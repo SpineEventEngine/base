@@ -490,9 +490,9 @@ extend google.protobuf.FileOptions {
     //
     string type_url_prefix = 73941;
 
-    // Indicates a file which contains types usage of which is limited.
+    // Indicates a file which contains types usage of which is restricted.
     //
-    // For more information on such limitations please see the documentation of
+    // For more information on such restrictions please see the documentation of
     // the type option called `internal_type`.
     //
     bool internal_all = 73942;
