@@ -49,7 +49,7 @@ public final class Testing {
      */
     @SuppressWarnings("OverlyBroadCatchBlock") // see Javadoc
     static void callConstructor(Constructor<?> constructor) {
-        var accessible = constructor.isAccessible();
+        var accessible = constructor.canAccess(null);
         if (!accessible) {
             constructor.setAccessible(true);
         }

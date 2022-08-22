@@ -112,7 +112,7 @@ public final class ConstructorsTestEnv {
 
     public static class ThrowingConstructor {
 
-        public ThrowingConstructor() {
+        private ThrowingConstructor() {
             throw new IllegalStateException("");
         }
 
