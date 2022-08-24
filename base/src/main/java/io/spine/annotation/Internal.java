@@ -33,8 +33,27 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotates a program element (class, method, package, etc.) which is internal to Spine and is
- * not a part of the public API, and thus should not be used by users of the framework.
+ * Annotates a program element (class, method, package, etc.) which is not a part of a public API,
+ * and thus should not be used.
+ *
+ * <p>If the annotation is used for a constructor, a field, a method, or a package, it means
+ * that corresponding element is internal to the Spine Event Engine and as such should
+ * not be used programmers using the framework.
+ *
+ * <p>If the annotation is used for a type it may mean one of the following:
+ * <ol>
+ *     <li>This type is internal to the Spine Event Engine framework.
+ *
+ *     <li><p>The type is internal to a bounded context, artifact of which exposes the type to
+ *     the outside world (presumably for historical reasons).</p>
+ *
+ *     <p>The type with this annotation can be used only inside the bounded context
+ *     which declares it.</p>
+ *
+ *     <p>The type must not be used neither for inbound (i.e. being sent to the bounded context
+ *     which declares this type) nor for outbound communication (i.e. being sent by this bounded
+ *     context to another bounded context).</p>
+ * </ol>
  *
  * <p>If you plan to implement an extension which is going to be wired into the framework,
  * you may want to use the internal parts. Please consider consulting with the Spine
