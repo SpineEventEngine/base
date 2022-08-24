@@ -38,7 +38,7 @@ class UnknownTypeExceptionTest {
 
     @Test
     @DisplayName("have constructor with type name")
-    void have_ctor_with_type_name() {
+    void ctorWithTypeName() {
         var str = newUuid();
         var exception = new UnknownTypeException(str);
 
@@ -48,7 +48,7 @@ class UnknownTypeExceptionTest {
 
     @Test
     @DisplayName("have constructor with type name and cause")
-    void have_ctor_with_type_name_and_cause() {
+    void ctorWithTypeAndCause() {
         var str = newUuid();
         var cause = new RuntimeException("");
         var exception = new UnknownTypeException(str, cause);
