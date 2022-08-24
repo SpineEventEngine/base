@@ -427,7 +427,7 @@ extend google.protobuf.MessageOptions {
     //
     // The type must not be used neither for inbound (i.e. being sent to the bounded context
     // which declares this type) nor for outbound communication (i.e. being sent by this
-    // bounded context to another bounded context).
+    // bounded context outside).
     //
     // An attempt to violate these usage restrictions will result in a runtime error.
     //

@@ -52,7 +52,7 @@ import java.lang.annotation.Target;
  *
  *     <p>The type must not be used neither for inbound (i.e. being sent to the bounded context
  *     which declares this type) nor for outbound communication (i.e. being sent by this bounded
- *     context to another bounded context).</p>
+ *     context outside).</p>
  * </ol>
  *
  * <p>If you plan to implement an extension which is going to be wired into the framework,
