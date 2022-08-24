@@ -26,7 +26,11 @@
 
 package io.spine.type;
 
+import com.google.protobuf.Message;
+
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.type.MessageExtensions.isInternal;
 import static java.lang.String.format;
 
 /**
@@ -43,7 +47,25 @@ public class UnpublishedLanguageException extends RuntimeException {
 
     private static final long serialVersionUID = 0L;
 
-    public UnpublishedLanguageException(TypeName type) {
+    /**
+     * Creates an exception referencing the proto type of the passed
+     * message instance annotated as {@link io.spine.annotation.Internal Internal}.
+     *
+     * @param msg
+     *         the message to report
+     * @throws IllegalArgumentException
+     *         if the message is not annotated as internal
+     */
+    public UnpublishedLanguageException(Message msg) {
+        this(TypeName.of(checkInternal(msg)));
+    }
+
+    private static Message checkInternal(Message msg) {
+        checkArgument(isInternal(msg));
+        return msg;
+    }
+
+    private UnpublishedLanguageException(TypeName type) {
         super(formatMsg(type));
     }
 
@@ -51,7 +73,8 @@ public class UnpublishedLanguageException extends RuntimeException {
         checkNotNull(type);
         return format(
                 "The type `%s` is not a part of the published language" +
-                        " of its bounded context.", type
+                        " of its bounded context." +
+                        " As such it cannot be sent to/from outside this bounded context.", type
         );
     }
 }
