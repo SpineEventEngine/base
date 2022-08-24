@@ -42,3 +42,32 @@ public fun <T: Message> T.isInternal(): Boolean =
  */
 public val <T: Message> T.typeName: TypeName
     get() = TypeName.of(this)
+
+/**
+ * Verifies that the given message instance is annotated with
+ * [io.spine.annotation.Internal] and if so, returns it.
+ *
+ * @throws IllegalArgumentException
+ *          if the message is not internal
+ */
+public fun requireInternal(msg: Message): Message {
+    require(msg.isInternal()) {
+        "The message class `${msg::class.java.canonicalName}` is not" +
+                "annotated as `${Internal::class.java.canonicalName}`."
+    }
+    return msg
+}
+
+/**
+ * Verifies if the given message is not internal to a bounded context,
+ * returning it if so.
+ *
+ * @throws UnpublishedLanguageException
+ *          if the given message is internal
+ */
+public fun requirePublished(msg: Message): Message {
+    if (msg.isInternal()) {
+        throw UnpublishedLanguageException(msg)
+    }
+    return msg
+}
