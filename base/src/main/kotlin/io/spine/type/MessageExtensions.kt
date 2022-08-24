@@ -28,14 +28,22 @@
 
 package io.spine.type
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue
 import com.google.protobuf.Message
 import io.spine.annotation.Internal
+import io.spine.protobuf.Messages.defaultInstance
 
 /**
  * Tells if this message type is internal to a bounded context.
  */
 public fun <T: Message> T.isInternal(): Boolean =
-    this::class.java.isAnnotationPresent(Internal::class.java)
+    this::class.java.isInternal()
+
+/**
+ * Tells if this class of messages is internal to a bounded context.
+ */
+public fun <T: Message> Class<T>.isInternal(): Boolean =
+    isAnnotationPresent(Internal::class.java)
 
 /**
  * Obtains the name of this message type.
@@ -50,10 +58,11 @@ public val <T: Message> T.typeName: TypeName
  * @throws IllegalArgumentException
  *          if the message is not internal
  */
+@CanIgnoreReturnValue
 public fun requireInternal(msg: Message): Message {
     require(msg.isInternal()) {
         "The message class `${msg::class.java.canonicalName}` is not" +
-                "annotated as `${Internal::class.java.canonicalName}`."
+                " annotated as `${Internal::class.java.canonicalName}`."
     }
     return msg
 }
@@ -65,9 +74,26 @@ public fun requireInternal(msg: Message): Message {
  * @throws UnpublishedLanguageException
  *          if the given message is internal
  */
+@CanIgnoreReturnValue
 public fun requirePublished(msg: Message): Message {
     if (msg.isInternal()) {
         throw UnpublishedLanguageException(msg)
     }
     return msg
+}
+
+/**
+ * Verifies if the given class of messages is a part of published language
+ * of a bounded context, returning it if so.
+ *
+ * @throws UnpublishedLanguageException
+ *          if the message class is internal to the bounded context
+ */
+@CanIgnoreReturnValue
+public fun <T: Message> requirePublished(clazz: Class<T>): Class<T> {
+    if (clazz.isInternal()) {
+        val msg = defaultInstance(clazz)
+        throw UnpublishedLanguageException(msg)
+    }
+    return clazz
 }
