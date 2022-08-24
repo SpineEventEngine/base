@@ -49,6 +49,7 @@ import static io.spine.query.Direction.ASC;
 import static io.spine.query.Direction.DESC;
 import static io.spine.query.LogicalOperator.AND;
 import static io.spine.query.LogicalOperator.OR;
+import static io.spine.type.MessageExtensions.requirePublished;
 import static io.spine.util.Preconditions2.checkPositive;
 
 /**
@@ -92,7 +93,7 @@ abstract class AbstractQueryBuilder<I,
 
     AbstractQueryBuilder(Class<I> idType, Class<R> recordType) {
         this.idType = idType;
-        this.recordType = recordType;
+        this.recordType = requirePublished(recordType);
     }
 
     /**
