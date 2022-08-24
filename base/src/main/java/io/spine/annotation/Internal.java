@@ -65,7 +65,7 @@ import java.lang.annotation.Target;
  * @see SPI
  */
 @Internal
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.RUNTIME)
 @Target({
         ElementType.ANNOTATION_TYPE,
         ElementType.CONSTRUCTOR,
