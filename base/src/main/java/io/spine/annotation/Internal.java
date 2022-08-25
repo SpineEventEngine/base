@@ -33,20 +33,40 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotates a program element (class, method, package, etc.) which is internal to Spine and is
- * not a part of the public API, and thus should not be used by users of the framework.
+ * Annotates a program element (class, method, package, etc.) which is not a part of a public API,
+ * and thus should not be used by people who are not members of the team developing the module
+ * containing this program element.
  *
- * <p>If you plan to implement an extension which is going to be wired into the framework,
- * you may want to use the internal parts. Please consider consulting with the Spine
- * development team, as the internal APIs do not have the same stability API guarantee as
- * public ones.
+ * <p>If the annotation is used for a constructor, a <strong>field</strong>,
+ * a <strong>method</strong>, or a <strong>package</strong>, it means
+ * that corresponding element is internal to the Spine Event Engine and as such should
+ * not be used programmers using the framework.
+ *
+ * <p>If the annotation is used for a <strong>type</strong> it means one of the following.
+ *
+ * <p><strong>First reason.</strong> This type is internal to the Spine Event Engine framework,
+ * and is not meant to be used directly by the framework users.</p>
+ *
+ * <p><strong>Second reason.</strong> The type is internal to a bounded context, artifact of which
+ * exposes the type to the outside world (presumably for historical reasons).</p>
+ *
+ * <p>When so, the type with this annotation can be used only inside the bounded context
+ * which declares it.
+ *
+ * <p>The type must not be used neither for inbound (i.e. being sent to the bounded context
+ * which declares this type) nor for outbound communication (i.e. being sent by this bounded
+ * context outside). An attempt to use the type otherwise will cause runtime error.</p>
+ *
+ * @apiNote If you plan to implement an extension which is going to be wired into
+ * the framework, you may want to use the internal parts. Please consider consulting with the Spine
+ * development team, as the internal APIs do not have the same stability guarantee as public ones.
  *
  * <p>See {@link SPI} annotation if you plan to write an extension of the framework.
  *
  * @see SPI
  */
 @Internal
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.RUNTIME)
 @Target({
         ElementType.ANNOTATION_TYPE,
         ElementType.CONSTRUCTOR,
