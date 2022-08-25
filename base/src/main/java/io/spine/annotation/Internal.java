@@ -34,7 +34,8 @@ import java.lang.annotation.Target;
 
 /**
  * Annotates a program element (class, method, package, etc.) which is not a part of a public API,
- * and thus should not be used.
+ * and thus should not be used by people who are not members of the team developing the module
+ * containing this program element.
  *
  * <p>If the annotation is used for a constructor, a field, a method, or a package, it means
  * that corresponding element is internal to the Spine Event Engine and as such should
