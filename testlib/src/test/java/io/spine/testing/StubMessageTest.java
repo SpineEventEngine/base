@@ -24,51 +24,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.type;
+package io.spine.testing;
 
-import com.google.protobuf.Any;
-import com.google.protobuf.Descriptors;
-import com.google.protobuf.Message;
-import io.spine.annotation.Internal;
-import io.spine.testing.StubMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@DisplayName("`UnpublishedLanguageException` should")
-class UnpublishedLanguageExceptionTest {
+class StubMessageTest {
 
     @Test
-    @DisplayName("contain the name of the type in its message")
-    void containTypeName() {
-        var msg = new SecretMessage();
+    @DisplayName("can have derived classes with default constructor")
+    void derivedClass() {
+         var msg = new StubMessage() {
+         };
 
-        assertThat(SecretMessage.class.isAnnotationPresent(Internal.class))
-                .isTrue();
-
-        var typeName = TypeName.of(msg);
-        var exception = new UnpublishedLanguageException(msg);
-
-        assertThat(exception.getMessage()).contains(typeName.toString());
-    }
-
-    /**
-     * A stub implementation of the {@code Message} interface, which is
-     * annotated as internal, and tries to pretend being {@code Any}
-     * so that its type name can be obtained.
-     */
-    @Internal
-    private static class SecretMessage extends StubMessage {
-
-        @Override
-        public Message getDefaultInstanceForType() {
-            return Any.getDefaultInstance();
-        }
-
-        @Override
-        public Descriptors.Descriptor getDescriptorForType() {
-            return Any.getDescriptor();
-        }
+         assertThat(msg).isNotNull();
     }
 }
