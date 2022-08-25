@@ -29,7 +29,7 @@ package io.spine.type;
 import static java.lang.String.format;
 
 /**
- * Thrown when the content of {@link com.google.protobuf.Any Any} does not
+ * Thrown when the type packed into {@link com.google.protobuf.Any Any} does not
  * match one we expect when unpacking.
  *
  * <p>Typically this exception wraps
