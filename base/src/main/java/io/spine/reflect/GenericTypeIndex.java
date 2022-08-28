@@ -31,12 +31,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Base interface for enumerations on generic parameters of types.
  *
+ * <p>Such enumeration are convenient when it is needed to obtain generic arguments
+ * of a class on runtime.
+ *
  * <p>Example of implementing an enumeration for generic parameters:
  * <pre>
  * {@code
  * public abstract class Tuple<K, V> {
  *     ...
- *     public enum GenericParameter extends GenericTypeIndex<Tuple> {
+ *     public enum GenericParameter implements GenericTypeIndex<Tuple> {
  *
  *         // <K> param has index 0
  *         KEY(0),
@@ -54,7 +57,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * }
  * }
  * </pre>
- * @param <C> the type for which class the generic index is declared
+ *
+ * <p>Then the usage of these enum entries would be like this:
+ * <pre>
+ *    var keyClass = Tuple.GenericParameter.argumentIn(ClassExtendingTuple.class);
+ *    var valueClass = Tuple.GenericParameter.argumentIn(ClassExtendingTuple.class);
+ * </pre>
+ *
+ * @param <C>
+ *         the type for which class the generic index is declared
  */
 public interface GenericTypeIndex<C> {
 
