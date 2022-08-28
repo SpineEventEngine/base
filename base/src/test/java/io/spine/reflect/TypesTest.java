@@ -34,6 +34,7 @@ import io.spine.reflect.given.TypesTestEnv.ListOfMessages;
 import io.spine.reflect.given.TypesTestEnv.TaskStatus;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -77,7 +78,6 @@ class TypesTest extends UtilityClassTest<Types> {
     @Test
     @DisplayName("tell if the type is an enum class")
     void tellIfIsEnumClass() {
-
         assertThat(isEnumClass(TaskStatus.class))
                 .isTrue();
         assertThat(isEnumClass(Message.class))
@@ -87,7 +87,6 @@ class TypesTest extends UtilityClassTest<Types> {
     @Test
     @DisplayName("tell if the type is a message class")
     void tellIfIsMessageClass() {
-
         assertThat(isMessageClass(StringValue.class))
                 .isTrue();
         assertThat(isMessageClass(TaskStatus.class))
@@ -110,12 +109,40 @@ class TypesTest extends UtilityClassTest<Types> {
         assertThat(types).isEmpty();
     }
 
-    @Test
-    @DisplayName("obtain a type argument value from the inheritance chain")
-    void getTypeArgument() {
-        var argument = argumentIn(ListOfMessages.class, Iterable.class, 0);
-        assertEquals(argument, Message.class);
+    @Nested
+    @DisplayName("obtain a generic type argument")
+    class TypeArguments {
+
+        @Test
+        @DisplayName("from the inheritance chain")
+        void getTypeArgument() {
+            var argument = argumentIn(ListOfMessages.class, Iterable.class, 0);
+            assertEquals(argument, Message.class);
+        }
+
+        @Test
+        @DisplayName("assuming generic superclass")
+        void assumingGenericSuperclass() {
+            var val = new Parametrized<Long, String>() {};
+            assertEquals(Long.class, Types.argumentIn(val.getClass(), Base.class, 0));
+            assertEquals(String.class, Types.argumentIn(val.getClass(), Base.class, 1));
+        }
+
+        @Test
+        @DisplayName("obtain generic argument via superclass")
+        void viaSuperclass() {
+            assertEquals(String.class, Types.argumentIn(Leaf.class, Base.class, 0));
+            assertEquals(Float.class, Types.argumentIn(Leaf.class, Base.class, 1));
+        }
     }
+
+
+    @SuppressWarnings({"EmptyClass", "unused"})
+    private static class Base<T, K> {}
+
+    private static class Parametrized<T, K> extends Base<T, K> {}
+
+    private static class Leaf extends Base<String, Float> {}
 
     @Override
     protected void configure(NullPointerTester tester) {
