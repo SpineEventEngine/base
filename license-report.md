@@ -505,9 +505,6 @@ The dependencies distributed under several licenses, are used according their co
 
 This report was generated on **Sun Aug 28 22:05:46 EEST 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
-
-
-
 # Dependencies of `io.spine.tools:spine-testlib:2.0.0-SNAPSHOT.94`
 
 ## Runtime

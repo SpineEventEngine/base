@@ -28,9 +28,8 @@ package io.spine.type;
 
 import com.google.protobuf.Message;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.type.MessageExtensions.isInternal;
+import static io.spine.type.MessageExtensions.requireInternal;
 import static java.lang.String.format;
 
 /**
@@ -57,12 +56,7 @@ public class UnpublishedLanguageException extends RuntimeException {
      *         if the message is not annotated as internal
      */
     public UnpublishedLanguageException(Message msg) {
-        this(TypeName.of(checkInternal(msg)));
-    }
-
-    private static Message checkInternal(Message msg) {
-        checkArgument(isInternal(msg));
-        return msg;
+        this(TypeName.of(requireInternal(msg)));
     }
 
     private UnpublishedLanguageException(TypeName type) {
