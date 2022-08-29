@@ -29,30 +29,41 @@ package io.spine.reflect;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("`GenericTypeIndex` should")
 class GenericTypeIndexTest {
 
     @Test
-    @DisplayName("obtain generic argument assuming generic superclass")
-    void obtain_generic_argument_assuming_generic_superclass() {
-        var val = new Parametrized<Long, String>() {};
-        assertEquals(Long.class, Types.argumentIn(val.getClass(), Base.class, 0));
-        assertEquals(String.class, Types.argumentIn(val.getClass(), Base.class, 1));
-    }
-
-    @Test
-    @DisplayName("obtain generic argument via superclass")
-    void obtain_generic_argument_via_superclass() {
-        assertEquals(String.class, Types.argumentIn(Leaf.class, Base.class, 0));
-        assertEquals(Float.class, Types.argumentIn(Leaf.class, Base.class, 1));
+    @DisplayName("allow obtaining generic arguments via enums")
+    void obtainGenericsViaEnums() {
+        assertThat(Pair.GenericParam.FIRST.argumentIn(Tango.class))
+                .isEqualTo(Float.class);
+        assertThat(Pair.GenericParam.SECOND.argumentIn(Tango.class))
+                .isEqualTo(Double.class);
     }
 
     @SuppressWarnings({"EmptyClass", "unused"})
-    private static class Base<T, K> {}
+    private static class Pair<A, B> {
 
-    private static class Parametrized<T, K> extends Base<T, K> {}
+        @SuppressWarnings("rawtypes")
+        private enum GenericParam implements GenericTypeIndex<Pair> {
+            FIRST(0),
+            SECOND(1);
 
-    private static class Leaf extends Base<String, Float> {}
+            private final int index;
+
+            GenericParam(int index) {
+                this.index = index;
+            }
+
+            @Override
+            public int index() {
+                return index;
+            }
+        }
+    }
+
+    private static class Tango extends Pair<Float, Double> {
+    }
 }
