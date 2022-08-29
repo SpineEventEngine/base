@@ -24,22 +24,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
- *
- * This version file adheres to the contract of the
- * [publishing application](https://github.com/SpineEventEngine/publishing).
- *
- * When changing the version declarations or adding new ones, make sure to change
- * the publishing application accordingly.
- */
+package io.spine.testing;
 
-/** The version of this library. */
-val base = "2.0.0-SNAPSHOT.95"
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-val spineVersion: String by extra(base)
-val spineBaseVersion: String by extra(base) // Used by `filter-internal-javadoc.gradle`.
-val versionToPublish: String by extra(base)
+import static com.google.common.truth.Truth.assertThat;
+
+class StubMessageTest {
+
+    @Test
+    @DisplayName("can have derived classes with default constructor")
+    void derivedClass() {
+         var msg = new StubMessage() {
+         };
+
+         assertThat(msg).isNotNull();
+    }
+}
