@@ -63,7 +63,7 @@ public class UnpublishedLanguageException extends RuntimeException {
      * Creates an exception referencing the given type name.
      *
      * @param type
-     *         the name of the type to be used in the message of the exception.
+     *         the name of the type to be used in the message of the exception
      */
     public UnpublishedLanguageException(TypeName type) {
         super(formatMsg(type));
