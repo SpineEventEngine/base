@@ -73,8 +73,8 @@ public final class Validate {
     }
 
     /**
-     * Validates the given message according to its definition and returns the constrain violations,
-     * if any.
+     * Validates the given message according to its definition and returns
+     * the constraint violations, if any.
      *
      * @return violations of the validation rules or an empty list if the message is valid
      */
