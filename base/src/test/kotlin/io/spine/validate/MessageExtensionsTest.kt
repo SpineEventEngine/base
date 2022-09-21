@@ -26,22 +26,32 @@
 
 package io.spine.validate
 
-import com.google.protobuf.Message
+import com.google.common.truth.Truth.assertThat
+import io.spine.test.validate.Meal
+import io.spine.test.validate.Meat
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
-/**
- * Creates a copy of this message by copies of its properties and then applying
- * values of properties defined in the given block.
- */
-public fun <M: MessageWithConstraints, B: ValidatingBuilder<M>> M.copy(block: B.() -> Unit): M {
-    @Suppress("UNCHECKED_CAST") // ensured by the generated code
-    val builder = this.toBuilder() as B
-    builder.block()
-    return builder.vBuild()
+@DisplayName("Validation `Message` extensions should")
+internal class MessageExtensionsTest {
+
+    @Nested
+    inner class `Check if the message is valid` {
+
+        @Test
+        fun `returning 'this' if so`() {
+            val meal = Meal.newBuilder().setMeat(Meat.getDefaultInstance()).build()
+
+            assertThat(meal.checkValid()).isSameInstanceAs(meal)
+        }
+
+        @Test
+        fun `throwing 'ValidationException' if not`() {
+            assertThrows<ValidationException> {
+                Meal.getDefaultInstance().checkValid()
+            }
+        }
+    }
 }
-
-/**
- * Verifies of this message instance matched the validation constraints, and returns `this` if so.
- *
- * @throws ValidationException if this message is not valid.
- */
-public fun <M: Message> M.checkValid(): M = Validate.checkValid(this)
