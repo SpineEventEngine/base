@@ -29,6 +29,7 @@ package io.spine.validate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 import io.spine.code.proto.FieldContext;
@@ -57,15 +58,18 @@ public final class Validate {
      * Validates the given message according to its definition and throws
      * {@code ValidationException} if any constraints are violated.
      *
-     * @throws ValidationException if the passed message does not satisfy the constraints
-     *                             set for it in its Protobuf definition
+     * @throws ValidationException
+     *         if the passed message does not satisfy the constraints
+     *         set for it in its Protobuf definition
      */
-    public static void checkValid(Message message) throws ValidationException {
+    @CanIgnoreReturnValue
+    public static <M extends Message> M checkValid(M message) throws ValidationException {
         checkNotNull(message);
         var violations = violationsOf(message);
         if (!violations.isEmpty()) {
             throw new ValidationException(violations);
         }
+        return message;
     }
 
     /**
