@@ -27,6 +27,7 @@
 package io.spine.base;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.protobuf.AnyPacker;
 import io.spine.testing.UtilityClassTest;
 import io.spine.validate.ConstraintViolation;
 import io.spine.validate.ValidationException;
@@ -101,12 +102,12 @@ class ErrorsTest extends UtilityClassTest<Errors> {
     }
 
     @Test
-    @DisplayName("convert `ValidationException` into an error with `validation_error`")
+    @DisplayName("convert `ValidationException` into an error")
     void validation() {
         var violation = ConstraintViolation.newBuilder().build();
         var exception = new ValidationException(ImmutableList.of(violation));
         var error = fromThrowable(exception);
-        assertThat(error.getValidationError())
-                .isEqualTo(exception.asValidationError());
+        assertThat(AnyPacker.unpack(error.getError()))
+                .isEqualTo(exception.toMessage());
     }
 }

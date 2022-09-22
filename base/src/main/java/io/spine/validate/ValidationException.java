@@ -26,6 +26,8 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.InlineMe;
+import io.spine.base.ErrorMessage;
 import io.spine.validate.diags.ViolationText;
 
 import java.util.List;
@@ -33,7 +35,7 @@ import java.util.List;
 /**
  * An exception that is thrown if a {@code Message} does not pass the validation.
  */
-public class ValidationException extends RuntimeException {
+public class ValidationException extends RuntimeException implements ErrorMessage<ValidationError> {
 
     private static final long serialVersionUID = 0L;
 
@@ -54,16 +56,27 @@ public class ValidationException extends RuntimeException {
 
     /**
      * Provides the violation info as a {@link ValidationError}.
+     *
+     * @deprecated please use {@link #toMessage()}
      */
+    @Deprecated
+    @InlineMe(replacement = "this.toMessage()")
     public final ValidationError asValidationError() {
-        return ValidationError
-                .newBuilder()
-                .addAllConstraintViolation(constraintViolations)
-                .build();
+        return this.toMessage();
     }
 
     @Override
     public String getMessage() {
         return getClass().getSimpleName() + ": " + ViolationText.ofAll(constraintViolations);
+    }
+
+    /**
+     * Provides the violation info as a {@link ValidationError}.
+     */
+    @Override
+    public ValidationError toMessage() {
+        return ValidationError.newBuilder()
+                .addAllConstraintViolation(constraintViolations)
+                .build();
     }
 }

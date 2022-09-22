@@ -35,6 +35,7 @@ option java_outer_classname = "ErrorProto";
 option java_package = "io.spine.base";
 
 import "google/protobuf/struct.proto";
+import "google/protobuf/any.proto";
 
 import "spine/validate/validation_error.proto";
 
@@ -51,9 +52,15 @@ message Error {
     int32 code = 2;
 
     // An error indicating that a message did not pass validation.
-    validate.ValidationError validation_error = 3;
+    //
+    // Deprecated: please use the `error` field instead.
+    //
+    validate.ValidationError validation_error = 3 [deprecated = true];
 
-    reserved 4 to 9;
+    // The message of the error wrapped into `Any`, if available.
+    google.protobuf.Any error = 4;
+    
+    reserved 5 to 9;
 
     // A developer-readable diagnostics message on the error.
     string message = 10;

@@ -32,6 +32,7 @@ import com.google.protobuf.ProtocolMessageEnum;
 import com.google.protobuf.Value;
 import io.spine.annotation.Internal;
 import io.spine.base.Error;
+import io.spine.protobuf.AnyPacker;
 import io.spine.type.MessageClass;
 import io.spine.validate.diags.ViolationText;
 
@@ -50,7 +51,7 @@ import static java.lang.String.format;
  * @param <C>
  *         type of the {@linkplain io.spine.type.MessageClass} of {@code |M|}.
  * @param <R>
- *         type of an error code to use for error reporting; must be a Protobuf enum value
+ *         type of error code to use for error reporting; must be a Protobuf enum value
  */
 @Internal
 @SuppressWarnings({"unused", /* Part of the public API. Exposed for `server`. */
@@ -120,15 +121,14 @@ public abstract class ExceptionFactory<E extends Exception,
         var error = Error.newBuilder()
                 .setType(errorType)
                 .setCode(errorCode.getNumber())
-                .setValidationError(validationError)
+                .setError(AnyPacker.pack(validationError))
                 .setMessage(errorText)
                 .putAllAttributes(getMessageTypeAttribute(message));
         return error.build();
     }
 
     private ValidationError error() {
-        return ValidationError
-                .newBuilder()
+        return ValidationError.newBuilder()
                 .addAllConstraintViolation(constraintViolations)
                 .build();
     }

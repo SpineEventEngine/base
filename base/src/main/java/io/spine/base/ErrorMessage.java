@@ -24,29 +24,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.base;
 
-import com.google.common.collect.ImmutableList;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.protobuf.Message;
 
-import static com.google.common.truth.Truth.assertThat;
+/**
+ * Common interface for exceptions that can convert to a message instance for
+ * later inclusion into an {@link Error}.
+ *
+ * @param <M>
+ *         the type of the error message provided by the exception
+ */
+public interface ErrorMessage<M extends Message> {
 
-@DisplayName("`ValidationException` should")
-class ValidationExceptionTest {
-
-    @Test
-    @DisplayName("provide `ValidationError`")
-    void error() {
-        var violations =
-                ImmutableList.of(ConstraintViolation.newBuilder()
-                                         .setTypeName("example.org/example.Type")
-                                         .setMsgFormat("Test error")
-                                         .build());
-        var exception = new ValidationException(violations);
-        assertThat(exception.toMessage())
-                .isEqualTo(ValidationError.newBuilder()
-                                   .addAllConstraintViolation(violations)
-                                   .build());
-    }
+    /**
+     * Converts an exception into a corresponding Protobuf message instance.
+     */
+    M toMessage();
 }
