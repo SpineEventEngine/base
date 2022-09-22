@@ -38,7 +38,7 @@
  */
 
 /** The version of this library. */
-val base = "2.0.0-SNAPSHOT.97"
+val base = "2.0.0-SNAPSHOT.98"
 
 val spineVersion: String by extra(base)
 val spineBaseVersion: String by extra(base) // Used by `filter-internal-javadoc.gradle`.
