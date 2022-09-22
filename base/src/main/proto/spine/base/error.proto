@@ -51,11 +51,8 @@ message Error {
     // An integer code resulting from a native code call, or a number from a Proto enum value.
     int32 code = 2;
 
-    // An error indicating that a message did not pass validation.
-    //
-    // Deprecated: please use the `error` field instead.
-    //
-    validate.ValidationError validation_error = 3 [deprecated = true];
+    reserved "validation_error";
+    reserved 3; // It used to be the index of the deprecated `validation_error` field.
 
     // The message of the error wrapped into `Any`, if available.
     google.protobuf.Any error = 4;
