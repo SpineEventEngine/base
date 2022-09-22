@@ -45,7 +45,6 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * <p>Typically used to signalize about a command rejection, occurred in a system. In which case
  * the {@code message} thrown is a detailed description of the rejection reason.
  */
-@SuppressWarnings("AbstractClassNeverImplemented") // is used by generated code
 public abstract class RejectionThrowable extends Throwable {
 
     private static final long serialVersionUID = 0L;
