@@ -26,15 +26,13 @@
 
 package io.spine.code.proto;
 
-import com.google.protobuf.Extension;
 import com.google.protobuf.ExtensionRegistry;
 import io.spine.option.OptionsProto;
-import io.spine.validate.option.ValidatingOptionsLoader;
 
 /**
  * A registry that contains all of Protobuf option extensions.
  *
- * <p>Calling {@link OptionExtensionRegistry#instance()} obtains a registry with all of the options
+ * <p>Calling {@link OptionExtensionRegistry#instance()} obtains a registry with all the options
  * defined in Spine.
  *
  * @apiNote Use this instead of accessing {@link ExtensionRegistry#newInstance()} directly, since
@@ -63,24 +61,9 @@ public final class OptionExtensionRegistry {
     private static ExtensionRegistry optionExtensions() {
         var registry = ExtensionRegistry.newInstance();
         OptionsProto.registerAllExtensions(registry);
-        registerCustomOptions(registry);
+        //TODO:2022-09-22:alexander.yevsyukov: Call the below code at the calling sites
+        // calling this method.
+        // ValidatingOptionsLoader.registerCustomOptions(registry);
         return registry;
-    }
-
-    private static void registerCustomOptions(ExtensionRegistry target) {
-        var implementations = ValidatingOptionsLoader.INSTANCE.implementations();
-        implementations.stream()
-                .flatMap(factory -> factory.all().stream())
-                .map(AbstractOption::extension)
-                .filter(extension -> isExtensionRegistered(target, extension))
-                .forEach(target::add);
-    }
-
-    private static boolean isExtensionRegistered(ExtensionRegistry registry,
-                                                 Extension<?, ?> extension) {
-        var name = extension.getDescriptor().getFullName();
-        var mutableAbsent = registry.findMutableExtensionByName(name) == null;
-        var immutableAbsent = registry.findImmutableExtensionByName(name) == null;
-        return mutableAbsent && immutableAbsent;
     }
 }

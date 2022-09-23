@@ -26,11 +26,7 @@
 
 package io.spine.base;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.protobuf.AnyPacker;
 import io.spine.testing.UtilityClassTest;
-import io.spine.validate.ConstraintViolation;
-import io.spine.validate.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -99,15 +95,5 @@ class ErrorsTest extends UtilityClassTest<Errors> {
 
         assertThat(error.getMessage())
                 .isEqualTo(expected);
-    }
-
-    @Test
-    @DisplayName("convert `ValidationException` into an error")
-    void validation() {
-        var violation = ConstraintViolation.newBuilder().build();
-        var exception = new ValidationException(ImmutableList.of(violation));
-        var error = fromThrowable(exception);
-        assertThat(AnyPacker.unpack(error.getError()))
-                .isEqualTo(exception.toMessage());
     }
 }

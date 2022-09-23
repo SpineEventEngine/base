@@ -24,31 +24,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+import com.google.protobuf.gradle.generateProtoTasks
+import com.google.protobuf.gradle.protobuf
+import io.spine.internal.dependency.AutoService
+import io.spine.internal.dependency.Protobuf
+import io.spine.internal.gradle.protobuf.setup
+import io.spine.internal.gradle.publish.excludeGoogleProtoFromArtifacts
 
-import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.Message;
-import io.spine.testing.StubMessage;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+dependencies {
+    Protobuf.libs.forEach { api(it) }
+    annotationProcessor(AutoService.processor)
+    compileOnly(AutoService.annotations)
+    implementation(project(":base"))
+    testImplementation(project(":testlib"))
+}
 
-import static com.google.common.truth.Truth.assertThat;
+val generatedDir by extra("$projectDir/generated")
 
-@DisplayName("MessageContext interface should")
-class MessageContextTest {
-
-    @Test
-    @DisplayName("extend Message")
-    void contextSuffix() {
-        assertThat(Message.class.isAssignableFrom(StubMessageContext.class))
-                .isTrue();
+protobuf {
+    generateProtoTasks {
+        for (task in all()) {
+            task.setup(generatedDir)
+        }
     }
+}
 
-    /**
-     * Stub implementation of {@link MessageContext}.
-     */
-    @Immutable
-    private static class StubMessageContext extends StubMessage implements MessageContext {
-        private static final long serialVersionUID = 0L;
-    }
+tasks {
+    excludeGoogleProtoFromArtifacts()
 }

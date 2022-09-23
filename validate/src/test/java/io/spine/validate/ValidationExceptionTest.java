@@ -24,31 +24,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.validate;
 
-import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.Message;
-import io.spine.testing.StubMessage;
+import com.google.common.collect.ImmutableList;
+import io.spine.protobuf.AnyPacker;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.base.Errors.fromThrowable;
 
-@DisplayName("MessageContext interface should")
-class MessageContextTest {
+@DisplayName("`ValidationException` should")
+class ValidationExceptionTest {
 
     @Test
-    @DisplayName("extend Message")
-    void contextSuffix() {
-        assertThat(Message.class.isAssignableFrom(StubMessageContext.class))
-                .isTrue();
+    @DisplayName("provide `ValidationError`")
+    void error() {
+        var violations =
+                ImmutableList.of(ConstraintViolation.newBuilder()
+                                         .setTypeName("example.org/example.Type")
+                                         .setMsgFormat("Test error")
+                                         .build());
+        var exception = new ValidationException(violations);
+        assertThat(exception.toMessage())
+                .isEqualTo(ValidationError.newBuilder()
+                                   .addAllConstraintViolation(violations)
+                                   .build());
     }
 
-    /**
-     * Stub implementation of {@link MessageContext}.
-     */
-    @Immutable
-    private static class StubMessageContext extends StubMessage implements MessageContext {
-        private static final long serialVersionUID = 0L;
+    @Test
+    @DisplayName("convert `ValidationException` into an error")
+    void validation() {
+        var violation = ConstraintViolation.newBuilder().build();
+        var exception = new ValidationException(ImmutableList.of(violation));
+        var error = fromThrowable(exception);
+        assertThat(AnyPacker.unpack(error.getError()))
+                .isEqualTo(exception.toMessage());
     }
 }

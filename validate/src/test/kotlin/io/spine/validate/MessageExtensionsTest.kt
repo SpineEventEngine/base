@@ -24,31 +24,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.validate
 
-import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.Message;
-import io.spine.testing.StubMessage;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.common.truth.Truth.assertThat
+import io.spine.test.validate.Meal
+import io.spine.test.validate.Meat
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
-import static com.google.common.truth.Truth.assertThat;
+@DisplayName("Validation `Message` extensions should")
+internal class MessageExtensionsTest {
 
-@DisplayName("MessageContext interface should")
-class MessageContextTest {
+    @Nested
+    inner class `Check if the message is valid` {
 
-    @Test
-    @DisplayName("extend Message")
-    void contextSuffix() {
-        assertThat(Message.class.isAssignableFrom(StubMessageContext.class))
-                .isTrue();
-    }
+        @Test
+        fun `returning 'this' if so`() {
+            val meal = Meal.newBuilder().setMeat(Meat.getDefaultInstance()).build()
 
-    /**
-     * Stub implementation of {@link MessageContext}.
-     */
-    @Immutable
-    private static class StubMessageContext extends StubMessage implements MessageContext {
-        private static final long serialVersionUID = 0L;
+            assertThat(meal.checkValid()).isSameInstanceAs(meal)
+        }
+
+        @Test
+        fun `throwing 'ValidationException' if not`() {
+            assertThrows<io.spine.validate.ValidationException> {
+                Meal.getDefaultInstance().checkValid()
+            }
+        }
     }
 }

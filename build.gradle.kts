@@ -166,7 +166,7 @@ subprojects {
     }
 
     /**
-     * These dependencies are applied to all sub-projects and do not have to
+     * These dependencies are applied to all subprojects and do not have to
      * be included explicitly.
      *
      * We expose production code dependencies as API because they are used

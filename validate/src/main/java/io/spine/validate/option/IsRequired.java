@@ -24,31 +24,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.validate.option;
 
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.Message;
-import io.spine.testing.StubMessage;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.protobuf.Descriptors.OneofDescriptor;
+import io.spine.code.proto.OneofDeclaration;
+import io.spine.option.OptionsProto;
+import io.spine.validate.Constraint;
 
-import static com.google.common.truth.Truth.assertThat;
+import java.util.Optional;
 
-@DisplayName("MessageContext interface should")
-class MessageContextTest {
+/**
+ * A {@code oneof} validation option which constrains the target {@code oneof} group to be set.
+ *
+ * <p>If the value of the option is {@code true}, one of the fields in the group must be set.
+ */
+@Immutable
+public class IsRequired implements ValidatingOption<Boolean, OneofDeclaration, OneofDescriptor> {
 
-    @Test
-    @DisplayName("extend Message")
-    void contextSuffix() {
-        assertThat(Message.class.isAssignableFrom(StubMessageContext.class))
-                .isTrue();
+    @Override
+    public Constraint constraintFor(OneofDeclaration field) {
+        return new IsRequiredConstraint(field);
     }
 
-    /**
-     * Stub implementation of {@link MessageContext}.
-     */
-    @Immutable
-    private static class StubMessageContext extends StubMessage implements MessageContext {
-        private static final long serialVersionUID = 0L;
+    @Override
+    public Optional<Boolean> valueFrom(OneofDescriptor descriptor) {
+        boolean value = descriptor.getOptions()
+                                  .getExtension(OptionsProto.isRequired);
+        return value ? Optional.of(true) : Optional.empty();
     }
 }
