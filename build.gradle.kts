@@ -83,6 +83,7 @@ apply(from = "$rootDir/version.gradle.kts")
 spinePublishing {
     modules = setOf(
         "base",
+        "validate",
         "testlib"
     )
     destinations = with(PublishingRepos) {
