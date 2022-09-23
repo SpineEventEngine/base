@@ -30,6 +30,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.google.errorprone.annotations.InlineMe;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 import io.spine.code.proto.FieldContext;
@@ -61,9 +62,23 @@ public final class Validate {
      * @throws ValidationException
      *         if the passed message does not satisfy the constraints
      *         set for it in its Protobuf definition
+     * @deprecated please use {@link #check(Message)}
+     */
+    @Deprecated
+    @InlineMe(replacement = "Validate.check(message)", imports = "io.spine.validate.Validate")
+    public static void checkValid(Message message) throws ValidationException {
+        check(message);
+    }
+
+    /**
+     * Validates the given message according to its definition and returns it if so.
+     *
+     * @throws ValidationException
+     *         if the passed message does not satisfy the constraints
+     *         set for it in its Protobuf definition
      */
     @CanIgnoreReturnValue
-    public static <M extends Message> M checkValid(M message) throws ValidationException {
+    public static <M extends Message> M check(M message) throws ValidationException {
         checkNotNull(message);
         var violations = violationsOf(message);
         if (!violations.isEmpty()) {

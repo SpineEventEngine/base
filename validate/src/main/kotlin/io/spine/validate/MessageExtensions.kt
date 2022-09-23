@@ -44,4 +44,4 @@ public fun <M: MessageWithConstraints, B: ValidatingBuilder<M>> M.copy(block: B.
  *
  * @throws ValidationException if this message is not valid.
  */
-public fun <M: Message> M.checkValid(): M = Validate.checkValid(this)
+public fun <M: Message> M.checkValid(): M = Validate.check(this)
