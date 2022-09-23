@@ -27,7 +27,6 @@
 package io.spine.type;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Any;
@@ -38,7 +37,6 @@ import io.spine.code.java.ClassName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.security.InvocationGuard;
-//import io.spine.validate.ExternalConstraints;
 
 import java.io.Serializable;
 import java.util.List;
@@ -115,11 +113,6 @@ public class KnownTypes implements Serializable {
 
     private Set<Type<?, ?>> types() {
         return typeSet.allTypes();
-    }
-
-    @SuppressWarnings("MethodOnlyUsedFromInnerClass")
-    private ImmutableSet<MessageType> messageTypes() {
-        return typeSet.messageTypes();
     }
 
     /**
@@ -295,9 +288,6 @@ public class KnownTypes implements Serializable {
             try {
                 var extended = instance.extendWith(moreKnownTypes);
                 instance = extended;
-                //TODO:2022-09-22:alexander.yevsyukov: Call the below code at the sites calling
-                // this method.
-                // ExternalConstraints.updateFrom(instance.messageTypes());
             } finally {
                 lock.unlock();
             }
