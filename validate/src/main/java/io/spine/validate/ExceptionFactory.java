@@ -121,7 +121,7 @@ public abstract class ExceptionFactory<E extends Exception,
         var error = Error.newBuilder()
                 .setType(errorType)
                 .setCode(errorCode.getNumber())
-                .setError(AnyPacker.pack(validationError))
+                .setDetails(AnyPacker.pack(validationError))
                 .setMessage(errorText)
                 .putAllAttributes(getMessageTypeAttribute(message));
         return error.build();

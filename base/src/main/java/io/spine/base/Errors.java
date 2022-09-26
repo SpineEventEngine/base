@@ -113,7 +113,7 @@ public final class Errors {
                 .setStacktrace(stacktrace);
         if (throwable instanceof ErrorWithMessage) {
             var validationException = (ErrorWithMessage<?>) throwable;
-            result.setError(AnyPacker.pack(validationException.asMessage()));
+            result.setDetails(AnyPacker.pack(validationException.asMessage()));
         }
         return result;
     }

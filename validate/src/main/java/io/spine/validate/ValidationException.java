@@ -60,7 +60,7 @@ public class ValidationException extends RuntimeException implements ErrorWithMe
      * @deprecated please use {@link #asMessage()}
      */
     @Deprecated
-    @InlineMe(replacement = "this.toMessage()")
+    @InlineMe(replacement = "this.asMessage()")
     public final ValidationError asValidationError() {
         return this.asMessage();
     }

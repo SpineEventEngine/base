@@ -58,7 +58,7 @@ class ValidationExceptionTest {
         var violation = ConstraintViolation.newBuilder().build();
         var exception = new ValidationException(ImmutableList.of(violation));
         var error = fromThrowable(exception);
-        assertThat(AnyPacker.unpack(error.getError()))
+        assertThat(AnyPacker.unpack(error.getDetails()))
                 .isEqualTo(exception.asMessage());
     }
 }
