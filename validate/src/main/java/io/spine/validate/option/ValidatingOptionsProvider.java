@@ -32,7 +32,7 @@ import io.spine.option.OptionsProvider;
 
 @SuppressWarnings("unused") // loaded by AutoService
 @AutoService(OptionsProvider.class)
-public class ValidatingOptionsProvider implements OptionsProvider {
+public final class ValidatingOptionsProvider implements OptionsProvider {
 
     public ValidatingOptionsProvider() {
     }
