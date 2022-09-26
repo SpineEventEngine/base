@@ -27,7 +27,9 @@
 package io.spine.code.proto;
 
 import com.google.protobuf.ExtensionRegistry;
-import io.spine.option.OptionsProto;
+import io.spine.option.OptionsProvider;
+
+import java.util.ServiceLoader;
 
 /**
  * A registry that contains all of Protobuf option extensions.
@@ -55,15 +57,16 @@ public final class OptionExtensionRegistry {
     }
 
     /**
-     * Creates an {@link ExtensionRegistry} with all the {@code
-     * spine/options.proto} extensions.
+     * Creates an {@link ExtensionRegistry} performing the registration for all
+     * {@link OptionsProvider}s discovered by the service loading mechanism in
+     * the current classpath.
      */
     private static ExtensionRegistry optionExtensions() {
         var registry = ExtensionRegistry.newInstance();
-        OptionsProto.registerAllExtensions(registry);
-        //TODO:2022-09-22:alexander.yevsyukov: Call the below code at the calling sites
-        // calling this method.
-        // ValidatingOptionsLoader.registerCustomOptions(registry);
+        var loader = ServiceLoader.load(OptionsProvider.class);
+        for (var provider : loader) {
+            provider.registerIn(registry);
+        }
         return registry;
     }
 }
