@@ -29,6 +29,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorSet
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet.parseFrom
 import com.google.protobuf.ExtensionRegistry
 import com.google.protobuf.InvalidProtocolBufferException
+import io.spine.option.OptionsProvider
 import io.spine.util.Exceptions
 import java.io.IOException
 import java.io.InputStream
@@ -44,7 +45,7 @@ import java.util.*
 public object FileDescriptorSetReader {
 
     /** The extension registry used when parsing.  */
-    private fun registry(): ExtensionRegistry = OptionExtensionRegistry.instance()
+    private fun registry(): ExtensionRegistry = OptionsProvider.registryWithAllOptions()
 
     /** Parses a descriptor set from the given byte array. */
     @JvmStatic

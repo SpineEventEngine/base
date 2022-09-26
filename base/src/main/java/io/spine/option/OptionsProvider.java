@@ -28,10 +28,26 @@ package io.spine.option;
 
 import com.google.protobuf.ExtensionRegistry;
 
+import java.util.ServiceLoader;
+
 /**
  * A service provider interface for custom Protobuf options.
  */
 public interface OptionsProvider {
+
+    /**
+     * Creates an {@link ExtensionRegistry} performing the registration for all
+     * {@code OptionsProvider}s discovered by the service loading mechanism in
+     * the current classpath.
+     */
+    static ExtensionRegistry registryWithAllOptions() {
+        var registry = ExtensionRegistry.newInstance();
+        var loader = ServiceLoader.load(OptionsProvider.class);
+        for (var provider : loader) {
+            provider.registerIn(registry);
+        }
+        return registry;
+    }
 
     /**
      * Registers custom options in the given registry.
