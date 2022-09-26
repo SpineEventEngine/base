@@ -26,7 +26,6 @@
 
 package io.spine.validate.option;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.Range;
 import com.google.errorprone.annotations.Immutable;
@@ -35,6 +34,7 @@ import io.spine.code.proto.FieldContext;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.validate.ComparableNumber;
 
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.BoundType.CLOSED;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
@@ -82,8 +82,8 @@ public abstract class RangedConstraint<@ImmutableTypeParameter T> extends FieldC
     }
 
     private static void checkInteger(ComparableNumber number, FieldDeclaration field) {
-        Preconditions.checkState(number.isInteger(),
-                                 "An integer bound expected for field `%s`, but got `%s`.", field, number);
+        checkState(number.isInteger(),
+                   "An integer bound expected for field `%s`, but got `%s`.", field, number);
     }
 
     public final Range<ComparableNumber> range() {
