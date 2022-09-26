@@ -30,7 +30,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorSet.parseFrom
 import com.google.protobuf.ExtensionRegistry
 import com.google.protobuf.InvalidProtocolBufferException
 import io.spine.option.OptionsProvider
-import io.spine.util.Exceptions
+import io.spine.util.Exceptions.illegalArgumentWithCauseOf
 import java.io.IOException
 import java.io.InputStream
 import java.util.*
@@ -52,7 +52,7 @@ public object FileDescriptorSetReader {
     public fun parse(bytes: ByteArray): FileDescriptorSet = try {
         parseFrom(bytes, registry())
     } catch (e: InvalidProtocolBufferException) {
-        throw Exceptions.illegalArgumentWithCauseOf(e)
+        throw illegalArgumentWithCauseOf(e)
     }
 
     /** Attempts to parse a descriptor set from the given byte array. */
@@ -69,6 +69,6 @@ public object FileDescriptorSetReader {
     public fun parse(stream: InputStream): FileDescriptorSet = try {
         parseFrom(stream, registry())
     } catch (e: IOException) {
-        throw Exceptions.illegalArgumentWithCauseOf(e)
+        throw illegalArgumentWithCauseOf(e)
     }
 }
