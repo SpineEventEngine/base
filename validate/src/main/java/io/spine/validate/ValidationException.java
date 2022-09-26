@@ -35,7 +35,8 @@ import java.util.List;
 /**
  * An exception that is thrown if a {@code Message} does not pass the validation.
  */
-public class ValidationException extends RuntimeException implements ErrorWithMessage<ValidationError> {
+public class ValidationException
+        extends RuntimeException implements ErrorWithMessage<ValidationError> {
 
     private static final long serialVersionUID = 0L;
 
@@ -44,9 +45,19 @@ public class ValidationException extends RuntimeException implements ErrorWithMe
      */
     private final ImmutableList<ConstraintViolation> constraintViolations;
 
+    /**
+     * Creates a new instance with the given violations.
+     */
     public ValidationException(Iterable<ConstraintViolation> violations) {
         super();
         this.constraintViolations = ImmutableList.copyOf(violations);
+    }
+
+    /**
+     * Creates a new instance with the given violation.
+     */
+    public ValidationException(ConstraintViolation violation) {
+        this(ImmutableList.of(violation));
     }
 
     @SuppressWarnings("unused" /* part of public API of the exception. */)

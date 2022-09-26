@@ -56,7 +56,7 @@ class ValidationExceptionTest {
     @DisplayName("convert `ValidationException` into an error")
     void validation() {
         var violation = ConstraintViolation.newBuilder().build();
-        var exception = new ValidationException(ImmutableList.of(violation));
+        var exception = new ValidationException(violation);
         var error = fromThrowable(exception);
         assertThat(AnyPacker.unpack(error.getDetails()))
                 .isEqualTo(exception.asMessage());
