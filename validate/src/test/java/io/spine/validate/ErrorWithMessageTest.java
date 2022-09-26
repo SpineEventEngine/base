@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName(VALIDATION_SHOULD
           + "propagate proper error message if custom message set and required")
-class ErrorMessageTest extends ValidationOfConstraintTest {
+class ErrorWithMessageTest extends ValidationOfConstraintTest {
 
     @Test
     @DisplayName("Message field is NOT set")

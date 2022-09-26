@@ -35,10 +35,10 @@ import com.google.protobuf.Message;
  * @param <M>
  *         the type of the error message provided by the exception
  */
-public interface ErrorMessage<M extends Message> {
+public interface ErrorWithMessage<M extends Message> {
 
     /**
      * Converts an exception into a corresponding Protobuf message instance.
      */
-    M toMessage();
+    M asMessage();
 }
