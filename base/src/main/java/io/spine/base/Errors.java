@@ -94,7 +94,7 @@ public final class Errors {
      * <p>The {@code Error.stacktrace} is populated by dumping the stacktrace of
      * the {@code Throwable} into a string.
      *
-     * <p>If the {@code Throwable} implements {@link ErrorMessage},
+     * <p>If the {@code Throwable} implements {@link ErrorWithMessage},
      * the {@code error} field is populated with the message produced by the throwable.
      *
      * @param throwable
@@ -111,9 +111,9 @@ public final class Errors {
                 .setType(type)
                 .setMessage(message)
                 .setStacktrace(stacktrace);
-        if (throwable instanceof ErrorMessage) {
-            var validationException = (ErrorMessage<?>) throwable;
-            result.setError(AnyPacker.pack(validationException.toMessage()));
+        if (throwable instanceof ErrorWithMessage) {
+            var validationException = (ErrorWithMessage<?>) throwable;
+            result.setError(AnyPacker.pack(validationException.asMessage()));
         }
         return result;
     }
