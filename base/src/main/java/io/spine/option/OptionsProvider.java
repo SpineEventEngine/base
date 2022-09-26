@@ -40,8 +40,8 @@ public interface OptionsProvider {
      * the file with the extensions.
      *
      * <p>Example:
-     * <pre>{@code
-     * @Override
+     * <pre> {@code
+     * {@literal @}Override
      * public void registerIn(ExtensionRegistry registry) {
      *     MyOptionsProto.registerAllExtensions(registry)
      * }
