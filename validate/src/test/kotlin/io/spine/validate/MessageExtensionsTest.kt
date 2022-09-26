@@ -49,7 +49,7 @@ internal class MessageExtensionsTest {
 
         @Test
         fun `throwing 'ValidationException' if not`() {
-            assertThrows<io.spine.validate.ValidationException> {
+            assertThrows<ValidationException> {
                 Meal.getDefaultInstance().checkValid()
             }
         }
