@@ -62,7 +62,7 @@ public final class ServiceType extends Type<ServiceDescriptor, ServiceDescriptor
     }
 
     /**
-     * Collects all service types declared in the passed file.
+     * Collects all service types declared in the given file.
      */
     public static TypeSet allFrom(FileDescriptor file) {
         checkNotNull(file);
