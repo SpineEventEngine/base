@@ -34,7 +34,7 @@ import com.google.protobuf.ExtensionRegistry;
  */
 @SuppressWarnings("unused") // loaded by AutoService.
 @AutoService(OptionsProvider.class)
-public class BaseOptionsProvider implements OptionsProvider {
+public final class BaseOptionsProvider implements OptionsProvider {
 
     public BaseOptionsProvider() {
     }
