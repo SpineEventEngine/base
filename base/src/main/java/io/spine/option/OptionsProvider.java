@@ -23,46 +23,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-syntax = "proto3";
 
-package spine.base;
+package io.spine.option;
 
-import "spine/options.proto";
+import com.google.protobuf.ExtensionRegistry;
 
-option (type_url_prefix) = "type.spine.io";
-option java_multiple_files = true;
-option java_outer_classname = "ErrorProto";
-option java_package = "io.spine.base";
+import java.util.ServiceLoader;
 
-import "google/protobuf/struct.proto";
-import "google/protobuf/any.proto";
+/**
+ * A service provider interface for custom Protobuf options.
+ */
+public interface OptionsProvider {
 
-// Information on a technical error occurred in the system.
-message Error {
+    /**
+     * Creates an {@link ExtensionRegistry} performing the registration for all
+     * {@code OptionsProvider}s discovered by the service loading mechanism in
+     * the current classpath.
+     */
+    static ExtensionRegistry registryWithAllOptions() {
+        var registry = ExtensionRegistry.newInstance();
+        var loader = ServiceLoader.load(OptionsProvider.class);
+        for (var provider : loader) {
+            provider.registerIn(registry);
+        }
+        return registry;
+    }
 
-    // The type of the error.
-    //
-    // It can be an exception from Java, C# (or another language) or a Proto enum name.
-    //
-    string type = 1;
-
-    // An integer code resulting from a native code call, or a number from a Proto enum value.
-    int32 code = 2;
-
-    reserved "validation_error";
-    reserved 3; // It used to be the index of the deprecated `validation_error` field.
-
-    // The message of the error wrapped into `Any`, if available.
-    google.protobuf.Any details = 4;
-    
-    reserved 5 to 9;
-
-    // A developer-readable diagnostics message on the error.
-    string message = 10;
-
-    // Additional information on the error.
-    map<string, google.protobuf.Value> attributes = 11;
-
-    // A stacktrace of an exception (if available).
-    string stacktrace = 12;
+    /**
+     * Registers custom options in the given registry.
+     *
+     * <p>See the {@code registerAllExtensions(..)} method in the outer Java class generated from
+     * the file with the extensions.
+     *
+     * <p>Example:
+     * <pre> {@code
+     * {@literal @}Override
+     * public void registerIn(ExtensionRegistry registry) {
+     *     MyOptionsProto.registerAllExtensions(registry)
+     * }
+     * }</pre>
+     */
+    void registerIn(ExtensionRegistry registry);
 }

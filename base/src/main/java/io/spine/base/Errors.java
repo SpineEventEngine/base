@@ -26,7 +26,7 @@
 
 package io.spine.base;
 
-import io.spine.validate.ValidationException;
+import io.spine.protobuf.AnyPacker;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.nullToEmpty;
@@ -94,8 +94,8 @@ public final class Errors {
      * <p>The {@code Error.stacktrace} is populated by dumping the stacktrace of
      * the {@code Throwable} into a string.
      *
-     * <p>If the {@code Throwable} is a {@link ValidationException},
-     * the {@code Error.validation_error} is populated from the validation exception.
+     * <p>If the {@code Throwable} implements {@link ErrorWithMessage},
+     * the {@code error} field is populated with the message produced by the throwable.
      *
      * @param throwable
      *         the {@code Throwable} to convert
@@ -111,9 +111,9 @@ public final class Errors {
                 .setType(type)
                 .setMessage(message)
                 .setStacktrace(stacktrace);
-        if (throwable instanceof ValidationException) {
-            var validationException = (ValidationException) throwable;
-            result.setValidationError(validationException.asValidationError());
+        if (throwable instanceof ErrorWithMessage) {
+            var validationException = (ErrorWithMessage<?>) throwable;
+            result.setDetails(AnyPacker.pack(validationException.asMessage()));
         }
         return result;
     }

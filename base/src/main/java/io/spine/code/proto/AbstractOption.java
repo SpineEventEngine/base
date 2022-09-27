@@ -69,7 +69,7 @@ public abstract class AbstractOption<@ImmutableTypeParameter T,
     protected abstract E optionsFrom(K object);
 
     /** Returns extension that represents this option. */
-    protected GeneratedExtension<E, T> extension() {
+    public GeneratedExtension<E, T> extension() {
         return extension;
     }
 

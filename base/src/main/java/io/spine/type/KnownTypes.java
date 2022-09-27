@@ -27,7 +27,6 @@
 package io.spine.type;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Any;
@@ -38,7 +37,6 @@ import io.spine.code.java.ClassName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.security.InvocationGuard;
-import io.spine.validate.ExternalConstraints;
 
 import java.io.Serializable;
 import java.util.List;
@@ -117,11 +115,6 @@ public class KnownTypes implements Serializable {
         return typeSet.allTypes();
     }
 
-    @SuppressWarnings("MethodOnlyUsedFromInnerClass")
-    private ImmutableSet<MessageType> messageTypes() {
-        return typeSet.messageTypes();
-    }
-
     /**
      * Loads known types from the classpath.
      */
@@ -184,9 +177,9 @@ public class KnownTypes implements Serializable {
      */
     public Set<TypeUrl> allFromPackage(String packageName) {
         var result = allUrls().stream()
-                                       .filter(url -> url.toTypeName()
-                                                         .belongsTo(packageName))
-                                       .collect(toSet());
+                .filter(url -> url.toTypeName()
+                                  .belongsTo(packageName))
+                .collect(toSet());
         return result;
     }
 
@@ -281,9 +274,6 @@ public class KnownTypes implements Serializable {
         /**
          * Extends the known types with some more types.
          *
-         * <p>Triggers external constraints
-         * {@link ExternalConstraints#updateFrom(ImmutableSet) update}.
-         *
          * <p>This method should never be called in a client code. The sole purpose of extending
          * the known types is for running compile-time checks on the user types.
          *
@@ -298,7 +288,6 @@ public class KnownTypes implements Serializable {
             try {
                 var extended = instance.extendWith(moreKnownTypes);
                 instance = extended;
-                ExternalConstraints.updateFrom(instance.messageTypes());
             } finally {
                 lock.unlock();
             }

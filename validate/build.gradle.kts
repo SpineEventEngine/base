@@ -23,46 +23,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-syntax = "proto3";
 
-package spine.base;
+import com.google.protobuf.gradle.generateProtoTasks
+import com.google.protobuf.gradle.protobuf
+import io.spine.internal.dependency.AutoService
+import io.spine.internal.dependency.Protobuf
+import io.spine.internal.gradle.protobuf.setup
+import io.spine.internal.gradle.publish.excludeGoogleProtoFromArtifacts
 
-import "spine/options.proto";
+dependencies {
+    Protobuf.libs.forEach { api(it) }
+    annotationProcessor(AutoService.processor)
+    compileOnly(AutoService.annotations)
+    implementation(project(":base"))
+    testImplementation(project(":testlib"))
+}
 
-option (type_url_prefix) = "type.spine.io";
-option java_multiple_files = true;
-option java_outer_classname = "ErrorProto";
-option java_package = "io.spine.base";
+val generatedDir by extra("$projectDir/generated")
 
-import "google/protobuf/struct.proto";
-import "google/protobuf/any.proto";
+protobuf {
+    generateProtoTasks {
+        for (task in all()) {
+            task.setup(generatedDir)
+        }
+    }
+}
 
-// Information on a technical error occurred in the system.
-message Error {
-
-    // The type of the error.
-    //
-    // It can be an exception from Java, C# (or another language) or a Proto enum name.
-    //
-    string type = 1;
-
-    // An integer code resulting from a native code call, or a number from a Proto enum value.
-    int32 code = 2;
-
-    reserved "validation_error";
-    reserved 3; // It used to be the index of the deprecated `validation_error` field.
-
-    // The message of the error wrapped into `Any`, if available.
-    google.protobuf.Any details = 4;
-    
-    reserved 5 to 9;
-
-    // A developer-readable diagnostics message on the error.
-    string message = 10;
-
-    // Additional information on the error.
-    map<string, google.protobuf.Value> attributes = 11;
-
-    // A stacktrace of an exception (if available).
-    string stacktrace = 12;
+tasks {
+    excludeGoogleProtoFromArtifacts()
 }

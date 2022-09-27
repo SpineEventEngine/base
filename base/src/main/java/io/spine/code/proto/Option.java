@@ -36,7 +36,7 @@ import java.util.Optional;
  * A Protobuf option.
  *
  * @param <T>
- *         the type of a value held by this option
+ *         the type of the value held by this option
  * @param <K>
  *         the type of object which holds the option such as "field", "message", or "file"
  * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#custom_options">Protobuf
