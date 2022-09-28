@@ -28,21 +28,49 @@ package io.spine.protobuf
 
 import com.google.common.truth.Truth.assertThat
 import com.google.protobuf.EnumValue
+import io.spine.type.KnownTypes
 import io.spine.type.TypeName
 import org.junit.jupiter.api.Test
 
-internal class TypeAttractorTest {
+internal class GoogleTypesTest {
 
     /**
      * Verifies that `EnumValue` protobuf type is known for the production JVM code.
+     *
+     * `io.spine.protobuf.EnumConverter` deals with `com.google.protobuf.EnumValue`,
+     * but `google.protobuf.EnumValue` type is not used in our proto code.
+     *
+     * This test ensures the type is available via descriptors stored in resources.
      *
      * Since this module depends on `base` on the `implementation` level,
      * tests in this module see `base` as if it is used as a library.
      */
     @Test
-    fun `make 'EnumValue' known to production code`() {
+    fun `make sure 'EnumValue' is known to production code`() {
         val type = TypeName.of("google.protobuf.EnumValue")
         val cls = type.toJavaClass()
         assertThat(cls).isEqualTo(EnumValue::class.java)
+    }
+
+    @Test
+    fun `all files from the Protobuf library are included`() {
+        val protobufFiles = KnownTypes.instance().files()
+            .filter { f -> f.name.startsWith("google/protobuf/") }
+            .map { d -> d.name }
+
+        assertThat(protobufFiles).containsAtLeastElementsIn(listOf(
+            "google/protobuf/compiler/plugin.proto",
+            "google/protobuf/any.proto",
+            "google/protobuf/api.proto",
+            "google/protobuf/descriptor.proto",
+            "google/protobuf/duration.proto",
+            "google/protobuf/empty.proto",
+            "google/protobuf/field_mask.proto",
+            "google/protobuf/source_context.proto",
+            "google/protobuf/struct.proto",
+            "google/protobuf/timestamp.proto",
+            "google/protobuf/type.proto",
+            "google/protobuf/wrappers.proto"
+        ))
     }
 }
