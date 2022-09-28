@@ -28,7 +28,7 @@ package io.spine.environment;
 
 /**
  * Abstract base for custom environment types.
- **
+ *
  * <p>{@code Environment} allows to {@link Environment#register(Class) register custom types}.
  * In this case the environment detection functionality iterates over all known types, starting
  * with those registered by the framework user:
