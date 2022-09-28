@@ -26,10 +26,13 @@
 
 package io.spine.type;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Any;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
 import com.google.protobuf.TypeRegistry;
 import io.spine.annotation.Internal;
@@ -122,6 +125,17 @@ public class KnownTypes implements Serializable {
         var protoDefinitions = FileSet.load();
         var types = TypeSet.from(protoDefinitions);
         return types;
+    }
+
+    /**
+     * Obtains the list of file descriptors containing known types.
+     */
+    @VisibleForTesting
+    public ImmutableList<FileDescriptor> files() {
+        var knownFiles = types().stream()
+                .map(Type::file)
+                .collect(toImmutableList());
+        return knownFiles;
     }
 
     /**
