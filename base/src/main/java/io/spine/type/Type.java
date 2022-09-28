@@ -31,8 +31,8 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
@@ -90,7 +90,7 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
     /**
      * Obtains a file in which the type is declared.
      */
-    public Descriptors.FileDescriptor file() {
+    public FileDescriptor file() {
         return this.descriptor.getFile();
     }
 
