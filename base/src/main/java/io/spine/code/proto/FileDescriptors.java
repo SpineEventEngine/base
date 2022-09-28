@@ -37,14 +37,13 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Sets.newHashSet;
 import static com.google.common.collect.Streams.stream;
 import static io.spine.io.IoPreconditions.checkExists;
 import static io.spine.util.Exceptions.newIllegalStateException;
+import static io.spine.util.Predicates2.distinctBy;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -138,31 +137,6 @@ public final class FileDescriptors {
                 .filter(distinctBy(FileDescriptorProto::getName))
                 .collect(toSet());
         return files;
-    }
-
-    /**
-     * Retrieves a {@link Predicate} on a given type {@code T}.
-     *
-     * <p>The predicate is satisfied (returns {@code true}) iff the result of applying the given
-     * {@code selector} function to the predicate argument is not seen before by this function.
-     * Therefore, the predicate is stateful and should not be used in parallel streams.
-     *
-     * @param selector
-     *         the key selector function; takes the predicate parameter as an argument and
-     *         returns the property to distinct by
-     * @param <T>
-     *         the predicate type
-     * @param <K>
-     *         the type of the key
-     * @return a predicate on {@code T}
-     */
-    private static <T, K> Predicate<T> distinctBy(Function<T, K> selector) {
-        Set<? super K> seen = newHashSet();
-        return element -> {
-            var key = selector.apply(element);
-            var newKey = seen.add(key);
-            return newKey;
-        };
     }
 
     /**

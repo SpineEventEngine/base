@@ -34,6 +34,21 @@ import org.junit.jupiter.api.Test
 
 internal class GoogleTypesTest {
 
+    private val protoFiles = listOf(
+        "google/protobuf/compiler/plugin.proto",
+        "google/protobuf/any.proto",
+        "google/protobuf/api.proto",
+        "google/protobuf/descriptor.proto",
+        "google/protobuf/duration.proto",
+        "google/protobuf/empty.proto",
+        "google/protobuf/field_mask.proto",
+        "google/protobuf/source_context.proto",
+        "google/protobuf/struct.proto",
+        "google/protobuf/timestamp.proto",
+        "google/protobuf/type.proto",
+        "google/protobuf/wrappers.proto"
+    )
+
     /**
      * Verifies that `EnumValue` protobuf type is known for the production JVM code.
      *
@@ -58,19 +73,6 @@ internal class GoogleTypesTest {
             .filter { f -> f.name.startsWith("google/protobuf/") }
             .map { d -> d.name }
 
-        assertThat(protobufFiles).containsAtLeastElementsIn(listOf(
-            "google/protobuf/compiler/plugin.proto",
-            "google/protobuf/any.proto",
-            "google/protobuf/api.proto",
-            "google/protobuf/descriptor.proto",
-            "google/protobuf/duration.proto",
-            "google/protobuf/empty.proto",
-            "google/protobuf/field_mask.proto",
-            "google/protobuf/source_context.proto",
-            "google/protobuf/struct.proto",
-            "google/protobuf/timestamp.proto",
-            "google/protobuf/type.proto",
-            "google/protobuf/wrappers.proto"
-        ))
+        assertThat(protobufFiles).containsAtLeastElementsIn(protoFiles)
     }
 }
