@@ -31,10 +31,12 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Utilities for working with predicates.
  */
-public class Predicates2 {
+public final class Predicates2 {
 
     /**
      * Prevents instantiation of this utility class.
@@ -60,6 +62,7 @@ public class Predicates2 {
      * @return a predicate on {@code T}
      */
     public static <T, K> Predicate<T> distinctBy(Function<T, K> selector) {
+        checkNotNull(selector);
         return new DistinctBy<>(selector);
     }
 
