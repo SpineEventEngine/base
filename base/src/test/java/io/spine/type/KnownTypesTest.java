@@ -183,4 +183,24 @@ class KnownTypesTest {
         assertTrue(anyIndex < timestampIndex);
         assertTrue(durationIndex < timestampIndex);
     }
+
+    @Test
+    @DisplayName("provide alphabetically sorted list of file names")
+    void fileNames() {
+        var files = knownTypes.fileNames();
+        assertThat(files).containsAtLeast(
+                "google/protobuf/any.proto",
+                "google/protobuf/type.proto"
+        );
+    }
+
+    @Test
+    @DisplayName("provide alphabetically sorted list of type names")
+    void typeNames() {
+        var names = knownTypes.typeNames();
+        assertThat(names).containsAtLeast(
+            "google.protobuf.Any",
+            "spine.base.Error"
+        );
+    }
 }

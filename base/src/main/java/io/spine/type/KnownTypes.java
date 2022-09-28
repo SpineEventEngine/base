@@ -50,7 +50,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.util.Predicates2.distinctBy;
 import static java.lang.System.lineSeparator;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -129,13 +131,42 @@ public class KnownTypes implements Serializable {
 
     /**
      * Obtains the list of file descriptors containing known types.
+     *
+     * <p>The returned list is sorted by file names.
      */
     @VisibleForTesting
     public ImmutableList<FileDescriptor> files() {
         var knownFiles = types().stream()
                 .map(Type::file)
+                .filter(distinctBy(FileDescriptor::getFullName))
+                .sorted(comparing(FileDescriptor::getFullName))
                 .collect(toImmutableList());
         return knownFiles;
+    }
+
+    /**
+     * Obtains the list of names of the files that provided the known types.
+     */
+    @VisibleForTesting
+    public ImmutableList<String> fileNames() {
+        var fileNames = files().stream()
+                .map(FileDescriptor::getName)
+                .sorted()
+                .collect(toImmutableList());
+        return fileNames;
+    }
+
+    /**
+     * Obtains the alphabetically sorted list of names of known types.
+     */
+    @VisibleForTesting
+    public ImmutableList<String> typeNames() {
+        var typeNames = types().stream()
+                .map(Type::name)
+                .map(TypeName::value)
+                .sorted()
+                .collect(toImmutableList());
+        return typeNames;
     }
 
     /**

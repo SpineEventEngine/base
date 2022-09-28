@@ -239,9 +239,9 @@ public final class FileSet {
      */
     public FileSet filter(Predicate<FileDescriptor> predicate) {
         Collection<FileDescriptor> filteredFiles = files.values()
-                                                        .stream()
-                                                        .filter(predicate)
-                                                        .collect(toList());
+                .stream()
+                .filter(predicate)
+                .collect(toList());
         var newFileSet = newInstance();
         for (var file : filteredFiles) {
             newFileSet.add(file);
