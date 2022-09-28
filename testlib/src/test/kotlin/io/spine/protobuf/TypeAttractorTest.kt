@@ -24,22 +24,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
- *
- * This version file adheres to the contract of the
- * [publishing application](https://github.com/SpineEventEngine/publishing).
- *
- * When changing the version declarations or adding new ones, make sure to change
- * the publishing application accordingly.
- */
+package io.spine.protobuf
 
-/** The version of this library. */
-val base = "2.0.0-SNAPSHOT.100"
+import com.google.common.truth.Truth.assertThat
+import com.google.protobuf.EnumValue
+import io.spine.type.TypeName
+import org.junit.jupiter.api.Test
 
-val spineVersion: String by extra(base)
-val spineBaseVersion: String by extra(base) // Used by `filter-internal-javadoc.gradle`.
-val versionToPublish: String by extra(base)
+internal class TypeAttractorTest {
+
+    /**
+     * Verifies that `EnumValue` protobuf type is known for the production JVM code.
+     *
+     * Since this module depends on `base` on the `implementation` level,
+     * tests in this module see `base` as if it is used as a library.
+     */
+    @Test
+    fun `make 'EnumValue' known to production code`() {
+        val type = TypeName.of("google.protobuf.EnumValue")
+        val cls = type.toJavaClass()
+        assertThat(cls).isEqualTo(EnumValue::class.java)
+    }
+}

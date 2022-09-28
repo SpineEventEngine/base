@@ -296,7 +296,7 @@ public final class Environment implements Logging {
     /**
      * Sets the current environment type to the specified one. Overrides the current value.
      *
-     * If the supplied type was not {@linkplain #register(Class) registered} previously,
+     * <p>If the supplied type was not {@linkplain #register(Class) registered} previously,
      * it is registered.
      */
     public void setTo(Class<? extends EnvironmentType> type) {
