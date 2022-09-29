@@ -24,38 +24,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.environment;
+package io.spine.environment.given;
 
-/**
- * An environment type that mimics production but receives less traffic and is suitable for testing
- * out new features.
- *
- * <p>This implementations relies on a static {@code boolean} flag for detection.
- */
-final class Staging extends CustomEnvironmentType {
+import com.google.errorprone.annotations.Immutable;
+import io.spine.environment.CustomEnvironmentType;
 
-    private static boolean enabled = false;
+@Immutable
+@SuppressWarnings("AccessOfSystemProperties")
+public final class Staging extends CustomEnvironmentType {
 
-    Staging() {
-        super();
-    }
+    private static final String STAGING_ENV_TYPE_KEY =
+            "io.spine.base.EnvironmentTest.is_staging";
 
     @Override
-    protected boolean enabled() {
-        return enabled;
+    public boolean enabled() {
+        return String.valueOf(true)
+                     .equalsIgnoreCase(System.getProperty(STAGING_ENV_TYPE_KEY));
     }
 
-    /**
-     * Brings the underlying system into the staging environment.
-     */
-    static void enable() {
-        enabled = true;
+    public static void set() {
+        System.setProperty(STAGING_ENV_TYPE_KEY, String.valueOf(true));
     }
 
-    /**
-     * Brings the underlying system out of the staging environment.
-     */
-    static void disable() {
-        enabled = false;
+    public static void reset() {
+        System.clearProperty(STAGING_ENV_TYPE_KEY);
     }
 }
+

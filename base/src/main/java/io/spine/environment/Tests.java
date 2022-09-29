@@ -66,7 +66,7 @@ public final class Tests extends StandardEnvironmentType {
     /**
      * Obtains the singleton instance.
      */
-    static Tests type() {
+    public static Tests type() {
         return INSTANCE;
     }
 
@@ -90,7 +90,7 @@ public final class Tests extends StandardEnvironmentType {
      * @see #knownTestingFrameworks()
      */
     @Override
-    protected boolean enabled() {
+    public boolean enabled() {
         var property = new TestsProperty();
         if (property.isSet()) {
             return property.value();

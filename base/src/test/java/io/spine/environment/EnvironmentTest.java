@@ -26,9 +26,13 @@
 
 package io.spine.environment;
 
-import com.google.errorprone.annotations.Immutable;
-import io.spine.base.given.AppEngine;
-import io.spine.base.given.AppEngineStandard;
+import io.spine.environment.given.AppEngine;
+import io.spine.environment.given.AppEngineStandard;
+import io.spine.environment.given.IntegrationTests;
+import io.spine.environment.given.Local;
+import io.spine.environment.given.Staging;
+import io.spine.environment.given.ThirdPartyService;
+import io.spine.environment.given.Travis;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -255,42 +259,33 @@ class EnvironmentTest {
         assertThat(envCached.get()).isTrue();
     }
 
-    @Immutable
-    static final class Local extends CustomEnvironmentType {
+    @Test
+    @DisplayName("implementing custom `Tests`-like types")
+    void integrationTests() {
+        var service = new ThirdPartyService();
+        environment.register(IntegrationTests.class);
 
-        @Override
-        public boolean enabled() {
-            // `LOCAL` is the default custom env type. It should be used as a fallback.
-            return true;
-        }
-    }
+        // We're under tests but service is not injected.
+        assertThat(environment.is(IntegrationTests.class))
+                .isFalse();
 
-    @Immutable
-    static final class Staging extends CustomEnvironmentType {
+        IntegrationTests.injectService(service);
+        environment.autoDetect();
 
-        static final String STAGING_ENV_TYPE_KEY = "io.spine.base.EnvironmentTest.is_staging";
+        // Service is injected but is not started.
+        assertThat(environment.is(IntegrationTests.class))
+                .isFalse();
 
-        @Override
-        public boolean enabled() {
-            return String.valueOf(true)
-                         .equalsIgnoreCase(System.getProperty(STAGING_ENV_TYPE_KEY));
-        }
+        service.start();
+        environment.autoDetect();
+        
+        assertThat(environment.is(IntegrationTests.class))
+                .isTrue();
 
-        static void set() {
-            System.setProperty(STAGING_ENV_TYPE_KEY, String.valueOf(true));
-        }
+        service.stop();
+        environment.autoDetect();
 
-        static void reset() {
-            System.clearProperty(STAGING_ENV_TYPE_KEY);
-        }
-    }
-
-    @Immutable
-    static final class Travis extends CustomEnvironmentType {
-
-        @Override
-        public boolean enabled() {
-            return false;
-        }
+        assertThat(environment.is(IntegrationTests.class))
+                .isFalse();
     }
 }

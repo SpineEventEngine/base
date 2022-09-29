@@ -180,11 +180,16 @@ public final class Environment implements Logging {
                     .add(type)
                     .addAll(currentlyKnown)
                     .build();
-            // Give the new type a chance to become the current when queried
-            // from `firstEnabled()`.
-            setCurrentType(null);
+            autoDetect();
         }
         return this;
+    }
+
+    /**
+     * Give custom types a chance to be detected as their environment changes.
+     */
+    public void autoDetect() {
+        setCurrentType(null);
     }
 
     /**
