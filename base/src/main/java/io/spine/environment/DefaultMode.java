@@ -42,7 +42,7 @@ public final class DefaultMode extends StandardEnvironmentType {
     /**
      * Obtains the singleton instance.
      */
-    static DefaultMode type() {
+    public static DefaultMode type() {
         return INSTANCE;
     }
 
