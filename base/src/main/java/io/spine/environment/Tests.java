@@ -44,7 +44,7 @@ public final class Tests extends StandardEnvironmentType {
 
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in another context. */)
     private static final ImmutableList<String> KNOWN_TESTING_FRAMEWORKS =
-            ImmutableList.of("org.junit", "org.testng", "io.spine.testing");
+            ImmutableList.of("org.junit", "org.testng", "io.spine.testing", "io.kotest");
 
     /**
      * The names of the packages that when discovered in a stacktrace would tell that
