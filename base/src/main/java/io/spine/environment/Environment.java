@@ -75,7 +75,10 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * </ul>
  *
  * <p>The framework users may define their custom settings depending on the current environment
- * type. Please see {@link CustomEnvironmentType} for details.
+ * type and then {@linkplain #register(Class) register} them for further detection. Custom types
+ * are {@linkplain CustomEnvironmentType#enabled() evaluated} in the order reverse to registration.
+ * That is, last registered type would be checked first and so on.
+ * Please see {@link CustomEnvironmentType} for details.
  *
  * <h3>When environment changes</h3>
  *
