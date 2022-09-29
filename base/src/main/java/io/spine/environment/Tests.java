@@ -35,7 +35,7 @@ import com.google.errorprone.annotations.Immutable;
  *
  * <p>Detected by checking stack trace for mentions of the known testing frameworks.
  *
- * <p>This option is mutually exclusive with {@link Production}, i.e. one of them is always enabled.
+ * <p>This option is mutually exclusive with {@link DefaultMode}, i.e. one of them is always enabled.
  */
 @Immutable
 public final class Tests extends StandardEnvironmentType {

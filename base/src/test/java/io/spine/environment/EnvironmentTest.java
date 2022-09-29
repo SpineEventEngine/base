@@ -121,7 +121,7 @@ class EnvironmentTest {
         void environmentVarUnknownValue() {
             System.setProperty(TestsProperty.KEY, "neitherTrueNor1");
 
-            assertThat(environment.is(Production.class)).isTrue();
+            assertThat(environment.is(DefaultMode.class)).isTrue();
         }
     }
 
@@ -136,9 +136,9 @@ class EnvironmentTest {
     @Test
     @DisplayName("turn production mode on")
     void turnProductionOn() {
-        environment.setTo(Production.class);
+        environment.setTo(DefaultMode.class);
 
-        assertThat(environment.is(Production.class)).isTrue();
+        assertThat(environment.is(DefaultMode.class)).isTrue();
     }
 
     @Test

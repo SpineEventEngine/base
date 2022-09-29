@@ -29,7 +29,7 @@ package io.spine.environment;
 /**
  * A type of environment.
  *
- * <p>Some examples may be {@code STAGING} or {@code LOCAL} environments.
+ * <p>Some examples may be {@code Staging} or {@code Local} environments.
  *
  * @implNote Not an {@code interface} to limit the access level of {@link #enabled()}
  * @see Environment

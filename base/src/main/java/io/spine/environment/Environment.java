@@ -71,7 +71,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *     <li><em>{@link Tests}</em> is detected if the current call stack has a reference to
  *     a {@linkplain Tests#knownTestingFrameworks() unit testing framework}.
 
- *     <li><em>{@link Production}</em> is set in all other cases.
+ *     <li><em>{@link DefaultMode}</em> is set in all other cases.
  * </ul>
  *
  * <p>The framework users may define their custom settings depending on the current environment
@@ -88,7 +88,8 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * updated by one of the following approaches:
  * <ul>
  *     <li>Setting a new environment type, directly by calling {@link #setTo(Class)}.
- *     <li>Calling the {@link #autoDetect()} method. This would drop the currently selected type.
+ *     <li>Calling the {@link #reset()} method (which would drop the currently selected type)
+ *     and re-registering environment types.
  * </ul>
  * <pre>
  *
@@ -102,22 +103,23 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *     // `is(AwsLambda.class)` is `true`.
  *     assertThat(environment.is(AwsLambda.class)).isTrue();
  *
- *     environment.autoDetect();
+ *     environment.reset();
+ *     environment.register(AwsLambda.class);
  *
- *     // When `autoDetect()` is called, the stored value is cleared.
+ *     // When `reset()` is called, the stored value is cleared.
  *     assertThat(environment.is(AwsLambda.class)).isFalse();
  * </pre>
  *
  * @see EnvironmentType
  * @see CustomEnvironmentType
  * @see Tests
- * @see Production
+ * @see DefaultMode
  */
 @SPI
 public final class Environment implements Logging {
 
     private static final ImmutableList<StandardEnvironmentType> STANDARD_TYPES =
-            ImmutableList.of(Tests.type(), Production.type());
+            ImmutableList.of(Tests.type(), DefaultMode.type());
 
     private static final Environment INSTANCE = new Environment();
 
@@ -170,7 +172,7 @@ public final class Environment implements Logging {
      *         a user-defined environment type
      * @return this instance of {@code Environment}
      * @see Tests
-     * @see Production
+     * @see DefaultMode
      */
     @CanIgnoreReturnValue
     private Environment register(EnvironmentType type) {
@@ -192,7 +194,8 @@ public final class Environment implements Logging {
      * <p>Unlike {@link #reset()} this method keeps custom types, but clears
      * the currently detected one.
      */
-    public void autoDetect() {
+    @VisibleForTesting
+    void autoDetect() {
         setCurrentType(null);
     }
 
@@ -232,7 +235,7 @@ public final class Environment implements Logging {
      *
      * <p>If custom environment types have been {@linkplain #register(Class) registered},
      * the method goes through them in the latest-registered to earliest-registered order.
-     * Then, checks {@link Tests} and {@link Production}.
+     * Then, checks {@link Tests} and {@link DefaultMode}.
      *
      * <p>Please note that this method follows assigment compatibility:
      * <pre>
@@ -349,7 +352,7 @@ public final class Environment implements Logging {
      */
     @VisibleForTesting
     public void reset() {
-        setCurrentType(null);
+        autoDetect();
         this.knownTypes = standardOnly();
         TestsProperty.clear();
     }

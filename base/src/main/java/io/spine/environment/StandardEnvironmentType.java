@@ -30,7 +30,7 @@ package io.spine.environment;
  * Abstract base for standard environment types.
  *
  * @see Tests
- * @see Production
+ * @see DefaultMode
  */
 abstract class StandardEnvironmentType extends EnvironmentType {
 }
