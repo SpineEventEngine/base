@@ -46,20 +46,13 @@ public final class Tests extends StandardEnvironmentType {
     private static final ImmutableList<String> KNOWN_TESTING_FRAMEWORKS =
             ImmutableList.of("org.junit",
                              "org.testng",
-                             "org.spekframework",
+                             "org.spekframework", // v2
                              "io.spine.testing",
                              "io.kotest");
 
     /**
      * The names of the packages that when discovered in a stacktrace would tell that
      * the code is executed under tests.
-     *
-     * <p>The returned package names are:
-     * <ol>
-     *     <li>"org.junit"
-     *     <li>"org.testng"
-     *     <li>"io.spine.testing"
-     * </ol>
      *
      * @see #enabled()
      */
