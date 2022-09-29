@@ -33,10 +33,8 @@ import io.spine.annotation.SPI;
 import io.spine.logging.Logging;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.Optional;
 import java.util.function.Consumer;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.reflect.Invokables.callParameterlessCtor;
 import static io.spine.string.Diags.backtick;
