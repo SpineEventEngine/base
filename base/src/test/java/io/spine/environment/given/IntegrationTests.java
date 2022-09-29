@@ -35,7 +35,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * A stub implementation of a custom testing environment type
  * that depends on an external service.
  */
-public final class IntegrationTests extends CustomEnvironmentType {
+public final class IntegrationTests extends CustomEnvironmentType<IntegrationTests> {
 
     private static ThirdPartyService service = null;
 
@@ -48,5 +48,10 @@ public final class IntegrationTests extends CustomEnvironmentType {
         var testsEnabled = Tests.type().enabled();
         var serviceStarted = service != null && service.isStarted();
         return testsEnabled && serviceStarted;
+    }
+
+    @Override
+    protected IntegrationTests self() {
+        return this;
     }
 }

@@ -33,5 +33,5 @@ import io.spine.environment.CustomEnvironmentType;
  *
  * <p>Leaves the implementation of {@link #enabled()} to subclasses.
  */
-public abstract class AppEngine extends CustomEnvironmentType {
+public abstract class AppEngine<T extends AppEngine<T>> extends CustomEnvironmentType<T> {
 }

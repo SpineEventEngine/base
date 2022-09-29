@@ -26,6 +26,10 @@
 
 package io.spine.environment;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import java.util.function.Consumer;
+
 /**
  * A type of environment.
  *
@@ -33,8 +37,13 @@ package io.spine.environment;
  *
  * @implNote Not an {@code interface} to limit the access level of {@link #enabled()}
  * @see Environment
+ *
+ * @param <T>
+ *        the type of the environment for the covariance
  */
-public abstract class EnvironmentType {
+public abstract class EnvironmentType<T extends EnvironmentType<T>> {
+
+    private @Nullable Consumer<T> callback = null;
 
     /**
      * Returns {@code true} if the underlying system is currently in this environment type.
@@ -44,6 +53,28 @@ public abstract class EnvironmentType {
      * knowledge to determine the current environment.
      */
     protected abstract boolean enabled();
+
+    /**
+     * Installs the callback to be called when this environment type is
+     * {@linkplain #enabled() detected.}
+     */
+    final void onDetected(@Nullable Consumer<T> callback) {
+        this.callback = callback;
+    }
+
+    /**
+     * Calls the callback defined in {@link #onDetected(Consumer)}.
+     */
+    final void callback() {
+        if (callback != null) {
+            callback.accept(self());
+        }
+    }
+
+    /**
+     * Returns this type instance.
+     */
+    protected abstract T self();
 
     /**
      * Returns the {@code hashCode()} of the class.

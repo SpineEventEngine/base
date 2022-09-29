@@ -28,7 +28,6 @@ package io.spine.environment;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
-import com.google.errorprone.annotations.Immutable;
 
 /**
  * Testing environment.
@@ -37,8 +36,7 @@ import com.google.errorprone.annotations.Immutable;
  *
  * <p>This option is mutually exclusive with {@link DefaultMode}, i.e. one of them is always enabled.
  */
-@Immutable
-public final class Tests extends StandardEnvironmentType {
+public final class Tests extends StandardEnvironmentType<Tests> {
 
     private static final Tests INSTANCE = new Tests();
 
@@ -97,5 +95,10 @@ public final class Tests extends StandardEnvironmentType {
         var result = knownTestingFrameworks().stream()
                 .anyMatch(stacktrace::contains);
         return result;
+    }
+
+    @Override
+    protected Tests self() {
+        return this;
     }
 }

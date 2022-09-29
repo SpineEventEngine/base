@@ -29,9 +29,8 @@ package io.spine.environment.given;
 import com.google.errorprone.annotations.Immutable;
 import io.spine.environment.CustomEnvironmentType;
 
-@Immutable
 @SuppressWarnings("AccessOfSystemProperties")
-public final class Staging extends CustomEnvironmentType {
+public final class Staging extends CustomEnvironmentType<Staging> {
 
     private static final String STAGING_ENV_TYPE_KEY =
             "io.spine.base.EnvironmentTest.is_staging";
@@ -40,6 +39,11 @@ public final class Staging extends CustomEnvironmentType {
     public boolean enabled() {
         return String.valueOf(true)
                      .equalsIgnoreCase(System.getProperty(STAGING_ENV_TYPE_KEY));
+    }
+
+    @Override
+    protected Staging self() {
+        return this;
     }
 
     public static void set() {

@@ -68,7 +68,8 @@ package io.spine.environment;
  * If two or more environment types {@linkplain EnvironmentType#enabled() consider themselves
  * enabled} at the same time, the behaviour of {@link Environment#is(Class)} is undefined.
  */
-public abstract class CustomEnvironmentType extends EnvironmentType {
+public abstract class CustomEnvironmentType<T extends CustomEnvironmentType<T>>
+        extends EnvironmentType<T> {
 
     /**
      * Custom environment types must have a public no-arg constructor.

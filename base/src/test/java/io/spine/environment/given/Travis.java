@@ -26,14 +26,17 @@
 
 package io.spine.environment.given;
 
-import com.google.errorprone.annotations.Immutable;
 import io.spine.environment.CustomEnvironmentType;
 
-@Immutable
-public final class Travis extends CustomEnvironmentType {
+public final class Travis extends CustomEnvironmentType<Travis> {
 
     @Override
     public boolean enabled() {
         return false;
+    }
+
+    @Override
+    protected Travis self() {
+        return this;
     }
 }

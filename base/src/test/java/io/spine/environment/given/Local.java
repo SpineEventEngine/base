@@ -26,15 +26,18 @@
 
 package io.spine.environment.given;
 
-import com.google.errorprone.annotations.Immutable;
 import io.spine.environment.CustomEnvironmentType;
 
-@Immutable
-public final class Local extends CustomEnvironmentType {
+public final class Local extends CustomEnvironmentType<Local> {
 
     @Override
     public boolean enabled() {
         // `LOCAL` is the default custom env type. It should be used as a fallback.
         return true;
+    }
+
+    @Override
+    protected Local self() {
+        return this;
     }
 }

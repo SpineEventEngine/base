@@ -26,23 +26,20 @@
 
 package io.spine.environment;
 
-import com.google.errorprone.annotations.Immutable;
-
 /**
  * A non-testing environment.
  *
  * <p>If the system is not in one of the {@link CustomEnvironmentType}s, and
  * not in the {@link Tests} environment, it is this environment type.
  */
-@Immutable
-public final class DefaultMode extends StandardEnvironmentType {
+public final class DefaultMode extends StandardEnvironmentType<DefaultMode> {
 
     private static final DefaultMode INSTANCE = new DefaultMode();
 
     /**
      * Obtains the singleton instance.
      */
-    public static DefaultMode type() {
+    static DefaultMode type() {
         return INSTANCE;
     }
 
@@ -55,5 +52,10 @@ public final class DefaultMode extends StandardEnvironmentType {
     protected boolean enabled() {
         var tests = Tests.type().enabled();
         return !tests;
+    }
+
+    @Override
+    protected DefaultMode self() {
+        return this;
     }
 }

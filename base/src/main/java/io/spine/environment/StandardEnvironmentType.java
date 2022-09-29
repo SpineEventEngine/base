@@ -32,5 +32,6 @@ package io.spine.environment;
  * @see Tests
  * @see DefaultMode
  */
-abstract class StandardEnvironmentType extends EnvironmentType {
+abstract class StandardEnvironmentType<T extends StandardEnvironmentType<T>>
+        extends EnvironmentType<T> {
 }

@@ -288,4 +288,38 @@ class EnvironmentTest {
         assertThat(environment.is(IntegrationTests.class))
                 .isFalse();
     }
+
+
+    @Nested
+    @DisplayName("allow configuring callbacks")
+    class Callbacks {
+
+        private boolean called;
+
+        @BeforeEach
+        void clearFlag() {
+            called = false;
+        }
+
+        @Test
+        @DisplayName("called by `Environment`")
+        void called() {
+            environment.whenDetected(
+                    Tests.class,
+                    type -> called = true
+            );
+            assertThat(environment.is(Tests.class)).isTrue();
+            assertThat(called).isTrue();
+        }
+
+        @Test
+        @DisplayName("not called when cleared")
+        void notCalled() {
+            environment.whenDetected(Tests.class, type -> called = true);
+            environment.whenDetected(Tests.class, null);
+
+            assertThat(environment.is(Tests.class)).isTrue();
+            assertThat(called).isFalse();
+        }
+    }
 }
