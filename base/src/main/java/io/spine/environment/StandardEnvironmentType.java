@@ -29,9 +29,12 @@ package io.spine.environment;
 /**
  * Abstract base for standard environment types.
  *
+ * @param <T>
+ *         the type of the environment for type covariance
  * @see Tests
  * @see DefaultMode
  */
 abstract class StandardEnvironmentType<T extends StandardEnvironmentType<T>>
         extends EnvironmentType<T> {
+
 }

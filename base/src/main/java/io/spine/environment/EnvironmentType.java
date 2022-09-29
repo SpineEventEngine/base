@@ -35,11 +35,10 @@ import java.util.function.Consumer;
  *
  * <p>Some examples may be {@code Staging} or {@code Local} environments.
  *
+ * @param <T>
+ *         the type of the environment for the covariance
  * @implNote Not an {@code interface} to limit the access level of {@link #enabled()}
  * @see Environment
- *
- * @param <T>
- *        the type of the environment for the covariance
  */
 public abstract class EnvironmentType<T extends EnvironmentType<T>> {
 
