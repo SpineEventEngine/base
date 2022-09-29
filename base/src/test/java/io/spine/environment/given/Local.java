@@ -24,37 +24,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.given;
+package io.spine.environment.given;
 
-/**
- * Determines whether the system is running under Google App Engine Standard environment.
- */
-@SuppressWarnings("AccessOfSystemProperties")
-public class AppEngineStandard extends AppEngine {
+import io.spine.environment.CustomEnvironmentType;
 
-    private static final String ENV_KEY = "io.spine.base.test.is_appengine";
+public final class Local extends CustomEnvironmentType<Local> {
 
     @Override
-    protected boolean enabled() {
-        var propertyValue = System.getProperty(ENV_KEY);
-        return activeValue().equalsIgnoreCase(propertyValue);
+    public boolean enabled() {
+        // `LOCAL` is the default custom env type. It should be used as a fallback.
+        return true;
     }
 
-    /**
-     * Enables the App Engine Standard environment.
-     */
-    public static void enable() {
-        System.setProperty(ENV_KEY, activeValue());
-    }
-
-    /**
-     * Disables teh App Engine Standard environment.
-     */
-    public static void clear() {
-        System.clearProperty(ENV_KEY);
-    }
-
-    private static String activeValue() {
-        return String.valueOf(true);
+    @Override
+    protected Local self() {
+        return this;
     }
 }

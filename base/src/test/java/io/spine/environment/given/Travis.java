@@ -24,17 +24,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.environment;
+package io.spine.environment.given;
 
-/**
- * Abstract base for standard environment types.
- *
- * @param <T>
- *         the type of the environment for type covariance
- * @see Tests
- * @see DefaultMode
- */
-abstract class StandardEnvironmentType<T extends StandardEnvironmentType<T>>
-        extends EnvironmentType<T> {
+import io.spine.environment.CustomEnvironmentType;
 
+public final class Travis extends CustomEnvironmentType<Travis> {
+
+    @Override
+    public boolean enabled() {
+        return false;
+    }
+
+    @Override
+    protected Travis self() {
+        return this;
+    }
 }

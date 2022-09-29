@@ -26,11 +26,10 @@
 
 package io.spine.base.given;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Any;
 import io.spine.base.EntityState;
 import io.spine.testing.StubMessage;
-
-import com.google.errorprone.annotations.Immutable;
 
 @Immutable
 public final class FakeEntityState extends StubMessage implements EntityState<Any> {

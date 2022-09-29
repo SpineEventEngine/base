@@ -24,40 +24,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.environment;
+package io.spine.environment.given;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.environment.CustomEnvironmentType;
 
-import static com.google.common.truth.Truth.assertThat;
+@SuppressWarnings("AccessOfSystemProperties")
+public final class Staging extends CustomEnvironmentType<Staging> {
 
-@DisplayName("`Environment` should")
-class CustomEnvironmentTest {
+    private static final String STAGING_ENV_TYPE_KEY =
+            "io.spine.base.EnvironmentTest.is_staging";
 
-    private static final Environment environment = Environment.instance();
-
-    @BeforeEach
-    void reset() {
-        environment.reset();
+    @Override
+    public boolean enabled() {
+        return String.valueOf(true)
+                     .equalsIgnoreCase(System.getProperty(STAGING_ENV_TYPE_KEY));
     }
 
-    @Test
-    @DisplayName("allow a custom type")
-    void allowCustomType() {
-        environment.register(Staging.class);
-
-        Staging.enable();
-        assertThat(environment.is(Staging.class)).isTrue();
+    @Override
+    protected Staging self() {
+        return this;
     }
 
-    @Test
-    @DisplayName("fallback to the default type")
-    void fallbackToCustomType() {
-        environment.register(Staging.class);
+    public static void set() {
+        System.setProperty(STAGING_ENV_TYPE_KEY, String.valueOf(true));
+    }
 
-        Staging.disable();
-
-        assertThat(environment.is(Tests.class)).isTrue();
+    public static void reset() {
+        System.clearProperty(STAGING_ENV_TYPE_KEY);
     }
 }
+

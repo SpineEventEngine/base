@@ -24,17 +24,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.environment;
+package io.spine.environment.given;
+
+import io.spine.environment.CustomEnvironmentType;
+import io.spine.environment.Tests;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Abstract base for standard environment types.
- *
- * @param <T>
- *         the type of the environment for type covariance
- * @see Tests
- * @see DefaultMode
+ * A stub implementation of a custom testing environment type
+ * that depends on an external service.
  */
-abstract class StandardEnvironmentType<T extends StandardEnvironmentType<T>>
-        extends EnvironmentType<T> {
+public final class IntegrationTests extends CustomEnvironmentType<IntegrationTests> {
 
+    private static ThirdPartyService service = null;
+
+    public static void injectService(ThirdPartyService s) {
+        service = checkNotNull(s);
+    }
+
+    @Override
+    protected boolean enabled() {
+        var testsEnabled = Tests.type().enabled();
+        var serviceStarted = service != null && service.isStarted();
+        return testsEnabled && serviceStarted;
+    }
+
+    @Override
+    protected IntegrationTests self() {
+        return this;
+    }
 }

@@ -24,14 +24,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.given;
-
-import io.spine.environment.CustomEnvironmentType;
+package io.spine.environment.given;
 
 /**
- * An environment that denotes that the system is running under Google App Engine.
- *
- * <p>Leaves the implementation of {@link #enabled()} to subclasses.
+ * A stub object simulating a third-party service used in {@link IntegrationTests}.
  */
-public abstract class AppEngine extends CustomEnvironmentType {
+public final class ThirdPartyService {
+
+    private boolean started = false;
+
+    public void start() {
+        this.started = true;
+    }
+
+    public boolean isStarted() {
+        return started;
+    }
+
+    public void stop() {
+        this.started = false;
+    }
 }

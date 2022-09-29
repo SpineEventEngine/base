@@ -24,14 +24,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.given;
+package io.spine.environment.given;
 
 /**
- * AWS Lambda environment is enabled if a specific env variable is set.
+ * Determines whether the system is running under Google App Engine Standard environment.
  */
-public final class AwsLambda extends VariableControlledEnvironment {
+@SuppressWarnings("AccessOfSystemProperties")
+public class AppEngineStandard extends AppEngine<AppEngineStandard> {
 
-    public AwsLambda() {
-        super("AWS_LAMBDA_FUNCTION_NAME");
+    private static final String ENV_KEY = "io.spine.base.test.is_appengine";
+
+    @Override
+    protected boolean enabled() {
+        var propertyValue = System.getProperty(ENV_KEY);
+        return activeValue().equalsIgnoreCase(propertyValue);
+    }
+
+    @Override
+    protected AppEngineStandard self() {
+        return this;
+    }
+
+    /**
+     * Enables the App Engine Standard environment.
+     */
+    public static void enable() {
+        System.setProperty(ENV_KEY, activeValue());
+    }
+
+    /**
+     * Disables teh App Engine Standard environment.
+     */
+    public static void clear() {
+        System.clearProperty(ENV_KEY);
+    }
+
+    private static String activeValue() {
+        return String.valueOf(true);
     }
 }

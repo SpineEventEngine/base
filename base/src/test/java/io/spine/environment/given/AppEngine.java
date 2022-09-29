@@ -24,38 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.environment;
+package io.spine.environment.given;
+
+import io.spine.environment.CustomEnvironmentType;
 
 /**
- * An environment type that mimics production but receives less traffic and is suitable for testing
- * out new features.
+ * An environment that denotes that the system is running under Google App Engine.
  *
- * <p>This implementations relies on a static {@code boolean} flag for detection.
+ * <p>Leaves the implementation of {@link #enabled()} to subclasses.
  */
-final class Staging extends CustomEnvironmentType {
-
-    private static boolean enabled = false;
-
-    Staging() {
-        super();
-    }
-
-    @Override
-    protected boolean enabled() {
-        return enabled;
-    }
-
-    /**
-     * Brings the underlying system into the staging environment.
-     */
-    static void enable() {
-        enabled = true;
-    }
-
-    /**
-     * Brings the underlying system out of the staging environment.
-     */
-    static void disable() {
-        enabled = false;
-    }
+public abstract class AppEngine<T extends AppEngine<T>> extends CustomEnvironmentType<T> {
 }

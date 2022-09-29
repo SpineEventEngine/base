@@ -33,9 +33,12 @@ import io.spine.annotation.SPI;
 import io.spine.logging.Logging;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.function.Consumer;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.reflect.Invokables.callParameterlessCtor;
 import static io.spine.string.Diags.backtick;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -71,11 +74,14 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *     <li><em>{@link Tests}</em> is detected if the current call stack has a reference to
  *     a {@linkplain Tests#knownTestingFrameworks() unit testing framework}.
 
- *     <li><em>{@link Production}</em> is set in all other cases.
+ *     <li><em>{@link DefaultMode}</em> is set in all other cases.
  * </ul>
  *
  * <p>The framework users may define their custom settings depending on the current environment
- * type. Please see {@link CustomEnvironmentType} for details.
+ * type and then {@linkplain #register(Class) register} them for further detection. Custom types
+ * are {@linkplain CustomEnvironmentType#enabled() evaluated} in the order reverse to registration.
+ * That is, last registered type would be checked first and so on.
+ * Please see {@link CustomEnvironmentType} for details.
  *
  * <h3>When environment changes</h3>
  *
@@ -88,7 +94,8 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * updated by one of the following approaches:
  * <ul>
  *     <li>Setting a new environment type, directly by calling {@link #setTo(Class)}.
- *     <li>Calling the {@link #reset()} method. This would drop the currently selected type.
+ *     <li>Calling the {@link #reset()} method (which would drop the currently selected type)
+ *     and re-registering environment types.
  * </ul>
  * <pre>
  *
@@ -98,26 +105,27 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  *     System.clearProperty(AwsLambda.AWS_ENV_VARIABLE);
  *
- *     // Even though `AwsLambda` is not active, we have cached the value, and
+ *     // Even though `AwsLambda` is not active, we have remembered the value, and
  *     // `is(AwsLambda.class)` is `true`.
  *     assertThat(environment.is(AwsLambda.class)).isTrue();
  *
  *     environment.reset();
+ *     environment.register(AwsLambda.class);
  *
- *     // When `reset` explicitly, cached value is erased.
+ *     // When `reset()` is called, the stored value is cleared.
  *     assertThat(environment.is(AwsLambda.class)).isFalse();
  * </pre>
  *
  * @see EnvironmentType
  * @see CustomEnvironmentType
  * @see Tests
- * @see Production
+ * @see DefaultMode
  */
 @SPI
 public final class Environment implements Logging {
 
-    private static final ImmutableList<StandardEnvironmentType> STANDARD_TYPES =
-            ImmutableList.of(Tests.type(), Production.type());
+    private static final ImmutableList<StandardEnvironmentType<?>> STANDARD_TYPES =
+            ImmutableList.of(Tests.type(), DefaultMode.type());
 
     private static final Environment INSTANCE = new Environment();
 
@@ -128,7 +136,7 @@ public final class Environment implements Logging {
      *
      * @see #register(EnvironmentType)
      */
-    private ImmutableList<EnvironmentType> knownTypes;
+    private ImmutableList<EnvironmentType<?>> knownTypes;
 
     /**
      * The type the environment is in.
@@ -139,7 +147,7 @@ public final class Environment implements Logging {
      * @implNote This field is explicitly initialized to avoid the "non-initialized" warning
      *         when queried for the first time.
      */
-    private @Nullable Class<? extends EnvironmentType> currentType = null;
+    private @Nullable Class<? extends EnvironmentType<?>> currentType = null;
 
     /**
      * Creates a new instance with only {@linkplain #STANDARD_TYPES base known types}.
@@ -148,7 +156,7 @@ public final class Environment implements Logging {
         this.knownTypes = standardOnly();
     }
 
-    private static ImmutableList<EnvironmentType> standardOnly() {
+    private static ImmutableList<EnvironmentType<?>> standardOnly() {
         return ImmutableList.copyOf(STANDARD_TYPES);
     }
 
@@ -170,21 +178,58 @@ public final class Environment implements Logging {
      *         a user-defined environment type
      * @return this instance of {@code Environment}
      * @see Tests
-     * @see Production
+     * @see DefaultMode
      */
     @CanIgnoreReturnValue
-    private Environment register(EnvironmentType type) {
+    private Environment register(EnvironmentType<?> type) {
         if (!knownTypes.contains(type)) {
             var currentlyKnown = knownTypes;
-            knownTypes = ImmutableList.<EnvironmentType>builder()
+            knownTypes = ImmutableList.<EnvironmentType<?>>builder()
                     .add(type)
                     .addAll(currentlyKnown)
                     .build();
-            // Give the new type a chance to become the current when queried
-            // from `firstEnabled()`.
-            setCurrentType(null);
+            autoDetect();
         }
         return this;
+    }
+
+    /**
+     * Give custom environment types a chance to be detected as the current one
+     * in response to the changes of their surroundings.
+     *
+     * <p>Unlike {@link #reset()} this method keeps custom types, but clears
+     * the currently detected one.
+     */
+    @VisibleForTesting
+    void autoDetect() {
+        setCurrentType(null);
+    }
+
+    /**
+     * Configures a callback to be called when corresponding environment type is
+     * {@linkplain EnvironmentType#enabled() detected}.
+     *
+     * @param cls
+     *         the class of the environment type, which must be
+     *         {@linkplain #register(Class) registered} prior making this call
+     * @param callback
+     *         the callback to be called or {@code null} to clear previously configure callback
+     * @param <T>
+     *         the type of the environment
+     */
+    public <T extends EnvironmentType<T>>
+    void whenDetected(Class<T> cls, @Nullable Consumer<T> callback) {
+        var found = knownTypes.stream()
+                .filter(t -> t.getClass().equals(cls))
+                .findFirst()
+                .orElseThrow(() -> newIllegalArgumentException(
+                        "The environment type `%s` was not registered." +
+                                " Please call `register(%s)`.",
+                        cls.getCanonicalName(), cls.getCanonicalName()
+                ));
+        @SuppressWarnings("unchecked")
+        var foundType = (T) found;
+        foundType.onDetected(callback);
     }
 
     /**
@@ -199,8 +244,8 @@ public final class Environment implements Logging {
      * @return this instance of {@code Environment}
      */
     @CanIgnoreReturnValue
-    public Environment register(Class<? extends CustomEnvironmentType> type) {
-        EnvironmentType newType = callParameterlessCtor(type);
+    public Environment register(Class<? extends CustomEnvironmentType<?>> type) {
+        EnvironmentType<?> newType = callParameterlessCtor(type);
         return register(newType);
     }
 
@@ -223,7 +268,7 @@ public final class Environment implements Logging {
      *
      * <p>If custom environment types have been {@linkplain #register(Class) registered},
      * the method goes through them in the latest-registered to earliest-registered order.
-     * Then, checks {@link Tests} and {@link Production}.
+     * Then, checks {@link Tests} and {@link DefaultMode}.
      *
      * <p>Please note that this method follows assigment compatibility:
      * <pre>
@@ -245,6 +290,7 @@ public final class Environment implements Logging {
      *
      * @return whether the current environment type matches the specified one
      */
+    @SuppressWarnings("rawtypes") // to avoid ugly casts at call sites.
     public boolean is(Class<? extends EnvironmentType> type) {
         var current = type();
         var result = type.isAssignableFrom(current);
@@ -260,25 +306,32 @@ public final class Environment implements Logging {
      *
      * @see #register(Class)
      */
-    public Class<? extends EnvironmentType> type() {
-        Class<? extends EnvironmentType> result;
+    public Class<? extends EnvironmentType<?>> type() {
         if (currentType == null) {
+            EnvironmentType<?> result;
             result = firstEnabled();
-            setCurrentType(result);
+            var cls = classOf(result);
+            setCurrentType(cls);
+            result.callback();
+            return cls;
         } else {
-            result = currentType;
+            return currentType;
         }
-        return result;
     }
 
-    private Class<? extends EnvironmentType> firstEnabled() {
+    @SuppressWarnings("unchecked")
+    private static Class<? extends EnvironmentType<?>> classOf(EnvironmentType<?> result) {
+        return (Class<? extends EnvironmentType<?>>) result.getClass();
+    }
+
+    private EnvironmentType<?> firstEnabled() {
         var result = knownTypes.stream()
                 .filter(EnvironmentType::enabled)
                 .findFirst()
                 .orElseThrow(() -> newIllegalStateException(
                         "`Environment` could not find an active environment type."
                 ));
-        return result.getClass();
+        return result;
     }
 
     /**
@@ -299,19 +352,19 @@ public final class Environment implements Logging {
      * <p>If the supplied type was not {@linkplain #register(Class) registered} previously,
      * it is registered.
      */
-    public void setTo(Class<? extends EnvironmentType> type) {
+    public void setTo(Class<? extends EnvironmentType<?>> type) {
         checkNotNull(type);
         if (CustomEnvironmentType.class.isAssignableFrom(type)) {
             @SuppressWarnings("unchecked") // checked one line above
             var customType =
-                    (Class<? extends CustomEnvironmentType>) type;
+                    (Class<? extends CustomEnvironmentType<?>>) type;
             register(customType);
         }
         setCurrentType(type);
     }
 
-    private void setCurrentType(@Nullable Class<? extends EnvironmentType> newCurrent) {
-        @Nullable Class<? extends EnvironmentType> previous = this.currentType;
+    private void setCurrentType(@Nullable Class<? extends EnvironmentType<?>> newCurrent) {
+        @Nullable Class<? extends EnvironmentType<?>> previous = this.currentType;
         this.currentType = newCurrent;
         @SuppressWarnings("FloggerSplitLogStatement")
                 // See: https://github.com/SpineEventEngine/base/issues/612
@@ -340,7 +393,7 @@ public final class Environment implements Logging {
      */
     @VisibleForTesting
     public void reset() {
-        setCurrentType(null);
+        autoDetect();
         this.knownTypes = standardOnly();
         TestsProperty.clear();
     }
