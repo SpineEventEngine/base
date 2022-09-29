@@ -40,7 +40,7 @@ package io.spine.environment;
  *     static {
  *         Environment.instance()
  *                    .register(Staging.class)
- *                    .register(LoadTesting().class);
+ *                    .register(LoadTesting.class);
  *     }
  *
  *     private final ConnectionPool pool;
