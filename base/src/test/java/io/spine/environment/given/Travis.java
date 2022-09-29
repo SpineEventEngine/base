@@ -24,14 +24,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.given;
+package io.spine.environment.given;
 
-/**
- * AWS Lambda environment is enabled if a specific env variable is set.
- */
-public final class AwsLambda extends VariableControlledEnvironment {
+import com.google.errorprone.annotations.Immutable;
+import io.spine.environment.CustomEnvironmentType;
 
-    public AwsLambda() {
-        super("AWS_LAMBDA_FUNCTION_NAME");
+@Immutable
+public final class Travis extends CustomEnvironmentType {
+
+    @Override
+    public boolean enabled() {
+        return false;
     }
 }

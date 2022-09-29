@@ -24,40 +24,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.environment;
+package io.spine.environment.given;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+/**
+ * A stub object simulating a third-party service used in {@link IntegrationTests}.
+ */
+public final class ThirdPartyService {
 
-import static com.google.common.truth.Truth.assertThat;
+    private boolean started = false;
 
-@DisplayName("`Environment` should")
-class CustomEnvironmentTest {
-
-    private static final Environment environment = Environment.instance();
-
-    @BeforeEach
-    void reset() {
-        environment.reset();
+    public void start() {
+        this.started = true;
     }
 
-    @Test
-    @DisplayName("allow a custom type")
-    void allowCustomType() {
-        environment.register(Staging.class);
-
-        Staging.enable();
-        assertThat(environment.is(Staging.class)).isTrue();
+    public boolean isStarted() {
+        return started;
     }
 
-    @Test
-    @DisplayName("fallback to the default type")
-    void fallbackToCustomType() {
-        environment.register(Staging.class);
-
-        Staging.disable();
-
-        assertThat(environment.is(Tests.class)).isTrue();
+    public void stop() {
+        this.started = false;
     }
 }
