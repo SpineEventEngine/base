@@ -88,7 +88,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * updated by one of the following approaches:
  * <ul>
  *     <li>Setting a new environment type, directly by calling {@link #setTo(Class)}.
- *     <li>Calling the {@link #reset()} method. This would drop the currently selected type.
+ *     <li>Calling the {@link #autoDetect()} method. This would drop the currently selected type.
  * </ul>
  * <pre>
  *
@@ -98,13 +98,13 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  *     System.clearProperty(AwsLambda.AWS_ENV_VARIABLE);
  *
- *     // Even though `AwsLambda` is not active, we have cached the value, and
+ *     // Even though `AwsLambda` is not active, we have remembered the value, and
  *     // `is(AwsLambda.class)` is `true`.
  *     assertThat(environment.is(AwsLambda.class)).isTrue();
  *
- *     environment.reset();
+ *     environment.autoDetect();
  *
- *     // When `reset` explicitly, cached value is erased.
+ *     // When `autoDetect()` is called, the stored value is cleared.
  *     assertThat(environment.is(AwsLambda.class)).isFalse();
  * </pre>
  *
@@ -186,7 +186,11 @@ public final class Environment implements Logging {
     }
 
     /**
-     * Give custom types a chance to be detected as their environment changes.
+     * Give custom environment types a chance to be detected as the current one
+     * in response to the changes of their surroundings.
+     *
+     * <p>Unlike {@link #reset()} this method keeps custom types, but clears
+     * the currently detected one.
      */
     public void autoDetect() {
         setCurrentType(null);
