@@ -50,7 +50,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.google.protobuf</groupId>
     <artifactId>protobuf-kotlin</artifactId>
-    <version>3.21.6</version>
+    <version>3.21.7</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
