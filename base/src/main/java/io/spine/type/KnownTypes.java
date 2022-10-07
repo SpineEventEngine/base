@@ -27,7 +27,6 @@
 package io.spine.type;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.Immutable;
@@ -50,6 +49,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.util.Lines.joiner;
 import static io.spine.util.Predicates2.distinctBy;
 import static java.lang.System.lineSeparator;
 import static java.util.Comparator.comparing;
@@ -81,8 +81,6 @@ import static java.util.stream.Collectors.toSet;
 public class KnownTypes implements Serializable {
 
     private static final long serialVersionUID = 0L;
-
-    private static final Joiner NEW_LINE_JOINER = Joiner.on(lineSeparator());
 
     @SuppressWarnings("TransientFieldNotInitialized") // Instance is substituted on deserialization.
     private final transient TypeSet typeSet;
@@ -268,7 +266,7 @@ public class KnownTypes implements Serializable {
         var result = new StringBuilder(KnownTypes.class.getSimpleName());
         result.append(':')
               .append(lineSeparator());
-        NEW_LINE_JOINER.appendTo(result, allUrlList());
+        joiner().appendTo(result, allUrlList());
         return result.toString();
     }
 
@@ -276,7 +274,7 @@ public class KnownTypes implements Serializable {
      * Prints alphabetically sorted URLs of the known types, having each type on a separate line.
      */
     public String printAllTypes() {
-        return NEW_LINE_JOINER.join(allUrlList());
+        return joiner().join(allUrlList());
     }
 
     /**
