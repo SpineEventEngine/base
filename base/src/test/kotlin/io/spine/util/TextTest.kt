@@ -25,32 +25,48 @@
  */
 package io.spine.util
 
+import com.google.common.testing.NullPointerTester
 import com.google.common.truth.Truth.assertThat
-import io.spine.testing.UtilityClassTest
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
-internal class LinesTest: UtilityClassTest<Lines>(Lines::class.java) {
+internal class TextTest {
 
     private val nl = System.lineSeparator()
 
     @Test
+    fun `handle nulls passed to static methods`() {
+        NullPointerTester().testAllPublicStaticMethods(Text::class.java)
+    }
+
+    @Test
     fun `split text into lines`() {
-        val text = "uno${nl}dos${nl}tres"
-        val split = Lines.split(text)
-        assertThat(split).containsExactly("uno", "dos", "tres")
+        val str = "uno${nl}dos${nl}tres"
+        val text = Text(str)
+        assertThat(text.lines()).containsExactly("uno", "dos", "tres")
     }
 
     @Test
     fun `join 'Iterable'`() {
         val iterable = listOf("bir", "iki", "üç")
-        val text = Lines.join(iterable)
-        assertThat(text).isEqualTo("bir${nl}iki${nl}üç")
+        val text = Text(iterable)
+        assertThat(text.toString()).isEqualTo("bir${nl}iki${nl}üç")
     }
 
     @Test
     fun `join an array`() {
         val array = arrayOf("one", "two", "three")
-        val text = Lines.join(array)
-        assertThat(text).isEqualTo("one${nl}two${nl}three")
+        val text = Text(array)
+        assertThat(text.toString()).isEqualTo("one${nl}two${nl}three")
+    }
+
+    @Test
+    fun `find substring`() {
+        val text = Text.of("abra", "ka", "dabra")
+
+        assertThrows<IllegalArgumentException> { text.contains("abra${nl}ka") }
+
+        assertThat(text.contains("abra")).isTrue()
+        assertThat(text.contains("kada")).isFalse()
     }
 }

@@ -49,7 +49,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.util.Lines.joiner;
+import static io.spine.util.Text.joiner;
 import static io.spine.util.Predicates2.distinctBy;
 import static java.lang.System.lineSeparator;
 import static java.util.Comparator.comparing;
