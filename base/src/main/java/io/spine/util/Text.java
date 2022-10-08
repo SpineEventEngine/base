@@ -73,7 +73,7 @@ public final class Text implements Iterable<String> {
     private static void checkNoSeparators(Iterable<String> lines) {
         lines.forEach(l -> {
             if (containsSeparator(l)) {
-                throw newIllegalArgumentException("The line contains line separator: `%s`", l);
+                throw newIllegalArgumentException("The line contains line separator: `%s`.", l);
             }
         });
     }
