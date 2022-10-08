@@ -69,4 +69,10 @@ internal class TextTest {
         assertThat(text.contains("abra")).isTrue()
         assertThat(text.contains("kada")).isFalse()
     }
+
+    @Test
+    fun `must not accept lines with separators`() {
+        assertThrows<IllegalArgumentException> {  Text.of("un", "${nl}o") }
+        assertThrows<IllegalArgumentException> {  Text(listOf("dos", "tres${nl}")) }
+    }
 }

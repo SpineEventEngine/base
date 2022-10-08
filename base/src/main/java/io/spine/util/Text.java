@@ -37,6 +37,7 @@ import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static java.lang.System.lineSeparator;
 
 /**
@@ -65,7 +66,16 @@ public final class Text implements Iterable<String> {
      */
     public Text(Iterable<String> lines) {
         checkNotNull(lines);
+        checkNoSeparators(lines);
         this.lines = ImmutableList.copyOf(lines);
+    }
+
+    private static void checkNoSeparators(Iterable<String> lines) {
+        lines.forEach(l -> {
+            if (containsSeparator(l)) {
+                throw newIllegalArgumentException("The line contains line separator: `%s`", l);
+            }
+        });
     }
 
     /**
@@ -123,9 +133,13 @@ public final class Text implements Iterable<String> {
      *          line separator}
      */
     public boolean contains(String s) {
-        checkArgument(!s.contains(lineSeparator()));
+        checkArgument(!containsSeparator(s));
         var result = lines.stream().anyMatch(line -> line.contains(s));
         return result;
+    }
+
+    private static boolean containsSeparator(String s) {
+        return s.contains(lineSeparator());
     }
 
     /**
