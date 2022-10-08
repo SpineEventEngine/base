@@ -45,6 +45,9 @@ import static java.lang.System.lineSeparator;
 @Immutable
 public final class Text implements Iterable<String> {
 
+    private static final Splitter SPLITTER = Splitter.on(lineSeparator());
+    private static final Joiner JOINER = Joiner.on(lineSeparator());
+
     private final ImmutableList<String> lines;
 
     /**
@@ -191,13 +194,13 @@ public final class Text implements Iterable<String> {
      * line separator}.
      */
     public static Joiner joiner() {
-        return Joiner.on(lineSeparator());
+        return JOINER;
     }
 
     /**
      * Obtains the {@link Splitter} on {@link System#lineSeparator()}.
      */
     public static Splitter splitter() {
-        return Splitter.on(lineSeparator());
+        return SPLITTER;
     }
 }
