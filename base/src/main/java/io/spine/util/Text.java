@@ -53,6 +53,7 @@ public final class Text implements Iterable<String> {
     private static final Joiner JOINER = Joiner.on(lineSeparator());
 
     private final ImmutableList<String> lines;
+    private final String value;
 
     /**
      * Creates a new instance with the given lines.
@@ -68,6 +69,7 @@ public final class Text implements Iterable<String> {
         checkNotNull(lines);
         checkNoSeparators(lines);
         this.lines = ImmutableList.copyOf(lines);
+        this.value = join(lines);
     }
 
     private static void checkNoSeparators(Iterable<String> lines) {
@@ -122,6 +124,17 @@ public final class Text implements Iterable<String> {
     }
 
     /**
+     * Obtains the text as joined lines.
+     *
+     * <p>This method always returns same object, so repeated calls have no performance effect.
+     *
+     * @see #toString()
+     */
+    public String value() {
+        return value;
+    }
+
+    /**
      * Tells if the given string is contained by any of the text lines.
      *
      * @param s
@@ -148,7 +161,7 @@ public final class Text implements Iterable<String> {
      */
     @Override
     public String toString() {
-        return join(lines);
+        return value;
     }
 
     @Override
@@ -165,12 +178,12 @@ public final class Text implements Iterable<String> {
             return false;
         }
         var strings = (Text) o;
-        return Objects.equals(lines, strings.lines);
+        return Objects.equals(value, strings.value);
     }
 
     @Override
     public int hashCode() {
-        return lines.hashCode();
+        return value.hashCode();
     }
 
     /**
