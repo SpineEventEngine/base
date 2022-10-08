@@ -23,11 +23,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.base
+package io.spine.util
 
 import com.google.common.truth.Truth.assertThat
 import io.spine.testing.UtilityClassTest
-import io.spine.util.Lines
 import org.junit.jupiter.api.Test
 
 internal class LinesTest: UtilityClassTest<Lines>(Lines::class.java) {
