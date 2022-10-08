@@ -75,4 +75,12 @@ internal class TextTest {
         assertThrows<IllegalArgumentException> {  Text.of("un", "${nl}o") }
         assertThrows<IllegalArgumentException> {  Text(listOf("dos", "tres${nl}")) }
     }
+
+    @Test
+    fun `always return the same value`() {
+        val text = Text.of("donna", "be", "la", "mare")
+
+        val value = text.value()
+        assertThat(value).isSameInstanceAs(text.value())
+    }
 }
