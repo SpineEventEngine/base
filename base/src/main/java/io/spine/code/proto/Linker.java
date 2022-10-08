@@ -204,7 +204,6 @@ final class Linker {
     }
 
     @Override
-    @SuppressWarnings("DuplicateStringLiteralInspection") // field names
     public String toString() {
         return MoreObjects.toStringHelper(this)
                           .add("input", namesForDisplay(input))
