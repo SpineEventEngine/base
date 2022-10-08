@@ -41,6 +41,9 @@ import static java.lang.System.lineSeparator;
 
 /**
  * A text with lines separated by {@link System#lineSeparator()}.
+ *
+ * @apiNote Even though this class provides static utilities for splitting and merging
+ *         lines, please prefer using instance methods of this class.
  */
 @Immutable
 public final class Text implements Iterable<String> {
@@ -155,10 +158,6 @@ public final class Text implements Iterable<String> {
     public int hashCode() {
         return lines.hashCode();
     }
-
-    /*
-     * Static utilities. Please prefer instance methods of {@code Text}.
-     */
 
     /**
      * Splits the passed text separated with {@linkplain System#lineSeparator()
