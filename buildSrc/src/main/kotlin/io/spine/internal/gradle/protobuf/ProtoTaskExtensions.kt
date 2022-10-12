@@ -28,6 +28,7 @@ package io.spine.internal.gradle.protobuf
 
 import com.google.protobuf.gradle.GenerateProtoTask
 import java.io.File
+import java.lang.System.lineSeparator
 import org.gradle.api.Task
 import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.kotlin.dsl.get
@@ -92,6 +93,7 @@ fun GenerateProtoTask.setup(generatedDir: String) {
     doLast {
         deleteComGoogle(generatedDir, ssn, "java")
         deleteComGoogle(generatedDir, ssn, "kotlin")
+        suppressDeprecationsInKotlin(generatedDir, ssn)
     }
 
     /**
@@ -132,7 +134,37 @@ private fun Task.deleteComGoogle(generatedDir: String, ssn: String, language: St
 /**
  * Obtains the name of the task `processResource` task for the given source set name.
  */
-fun processResourceTaskName(sourceSetName: String): String {
+private fun processResourceTaskName(sourceSetName: String): String {
     val infix = if (sourceSetName == "main") "" else sourceSetName.capitalized()
     return "process${infix}Resources"
+}
+
+private const val SUPPRESS_DEPRECATION = "@file:Suppress(\"DEPRECATION\")"
+
+/**
+ * This file adds [SUPPRESS_DEPRECATION] to the top of a Kotlin file generated
+ * by Protobuf compiler.
+ */
+private fun suppressDeprecationsInKotlin(generatedDir: String, ssn: String) {
+    val kotlinDir = File("${generatedDir}/${ssn}/kotlin")
+
+    kotlinDir.walk().iterator().forEachRemaining {
+        val file = it
+        if (!file.name.endsWith(".kt")) {
+            return@forEachRemaining
+        }
+        val lines = file.readLines()
+        if (lines.isEmpty()) {
+            return@forEachRemaining
+        }
+        if (lines[0] == SUPPRESS_DEPRECATION) {
+            return@forEachRemaining
+        }
+        val withSuppression = mutableListOf<String>()
+        withSuppression.add("// Added by `ProtoTaskExtensions.kt`")
+        withSuppression.add(SUPPRESS_DEPRECATION + lineSeparator())
+        withSuppression.addAll(lines)
+        val text = withSuppression.joinToString(lineSeparator())
+        file.writeText(text)
+    }
 }
