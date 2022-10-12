@@ -206,11 +206,13 @@ subprojects {
 
     val generatedDir by extra("$projectDir/generated")
     val generatedJavaDir by extra("$generatedDir/main/java")
+    val generatedKotlinDir by extra("$generatedDir/main/kotlin")
     val generatedTestJavaDir by extra("$generatedDir/test/java")
+    val generatedTestKotlinDir by extra("$generatedDir/test/kotlin")
 
     sourceSets {
         main {
-            java.srcDir(generatedJavaDir)
+            java.srcDir(generatedKotlinDir)
             resources.srcDirs(
                 "$generatedDir/main/resources",
                 "$buildDir/descriptors/main"
@@ -236,7 +238,11 @@ subprojects {
     idea {
         module {
             generatedSourceDirs.add(project.file(generatedJavaDir))
-            testSourceDirs.add(project.file(generatedTestJavaDir))
+            generatedSourceDirs.add(project.file(generatedKotlinDir))
+            testSources.from(
+                project.file(generatedTestJavaDir),
+                project.file(generatedTestKotlinDir)
+            )
             isDownloadJavadoc = true
             isDownloadSources = true
         }
@@ -261,6 +267,8 @@ subprojects {
             dependsOn("${project.path}:updateGitHubPages")
         }
     }
+
+    project.configureTaskDependencies()
 }
 
 JacocoConfig.applyTo(project)
