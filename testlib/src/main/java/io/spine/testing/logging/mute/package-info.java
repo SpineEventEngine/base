@@ -34,7 +34,7 @@
  *
  * <p>To use the extension, add the following dependency to the Gradle project:
  * <pre>
- * testImplementation "io.spine.tools:spine-testlib:$spineBaseVersion"
+ * testImplementation "io.spine.tools:spine-testlib:$version"
  * </pre>
  *
  * <p>Then, the extension can be used as follows:
