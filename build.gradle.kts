@@ -151,7 +151,7 @@ subprojects {
     val javaVersion = JavaVersion.VERSION_11.toString()
     kotlin {
         applyJvmToolchain(javaVersion)
-        explicitApiWarning()
+        explicitApi()
     }
 
     tasks {
