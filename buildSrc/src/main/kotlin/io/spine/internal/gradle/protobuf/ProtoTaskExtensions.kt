@@ -28,6 +28,7 @@ package io.spine.internal.gradle.protobuf
 
 import com.google.protobuf.gradle.GenerateProtoTask
 import java.io.File
+import org.gradle.api.Task
 import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.kotlin.dsl.get
 
@@ -75,6 +76,8 @@ import org.gradle.kotlin.dsl.get
 @Suppress("unused")
 fun GenerateProtoTask.setup(generatedDir: String) {
 
+    builtins.create("kotlin")
+
     /**
      * Generate descriptor set files.
      */
@@ -86,27 +89,9 @@ fun GenerateProtoTask.setup(generatedDir: String) {
         includeSourceInfo = true
     }
 
-    /**
-     * Remove the code generated for Google Protobuf library types.
-     *
-     * Java code for the `com.google` package was generated because we wanted
-     * to have descriptors for all the types, including those from Google Protobuf library.
-     * We want all the descriptors so that they are included into the resources used by
-     * the `io.spine.type.KnownTypes` class.
-     *
-     * Now, as we have the descriptors _and_ excessive Java code, we delete it to avoid
-     * classes that duplicate those coming from Protobuf library JARs.
-     */
     doLast {
-        val comPackage = File("${generatedDir}/${ssn}/java/com")
-        val googlePackage = comPackage.resolve("google")
-
-        project.delete(googlePackage)
-
-        // We don't need an empty `com` package.
-        if (comPackage.exists() && comPackage.list()?.isEmpty() == true) {
-            project.delete(comPackage)
-        }
+        deleteComGoogle(generatedDir, ssn, "java")
+        deleteComGoogle(generatedDir, ssn, "kotlin")
     }
 
     /**
@@ -119,6 +104,29 @@ fun GenerateProtoTask.setup(generatedDir: String) {
      */
     val processResources = processResourceTaskName(ssn)
     project.tasks[processResources].dependsOn(this)
+}
+
+/**
+ * Remove the code generated for Google Protobuf library types.
+ *
+ * Java code for the `com.google` package was generated because we wanted
+ * to have descriptors for all the types, including those from Google Protobuf library.
+ * We want all the descriptors so that they are included into the resources used by
+ * the `io.spine.type.KnownTypes` class.
+ *
+ * Now, as we have the descriptors _and_ excessive Java or Kotlin code, we delete it to avoid
+ * classes that duplicate those coming from Protobuf library JARs.
+ */
+private fun Task.deleteComGoogle(generatedDir: String, ssn: String, language: String) {
+    val comPackage = File("${generatedDir}/${ssn}/$language/com")
+    val googlePackage = comPackage.resolve("google")
+
+    project.delete(googlePackage)
+
+    // We don't need an empty `com` package.
+    if (comPackage.exists() && comPackage.list()?.isEmpty() == true) {
+        project.delete(comPackage)
+    }
 }
 
 /**
