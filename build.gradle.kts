@@ -267,6 +267,8 @@ subprojects {
             dependsOn("${project.path}:updateGitHubPages")
         }
     }
+
+    project.configureTaskDependencies()
 }
 
 JacocoConfig.applyTo(project)
