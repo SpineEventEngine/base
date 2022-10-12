@@ -1,6 +1,6 @@
 
 
-# Dependencies of `io.spine:spine-base:2.0.0-SNAPSHOT.112`
+# Dependencies of `io.spine:spine-base:2.0.0-SNAPSHOT.113`
 
 ## Runtime
 1.  **Group** : com.google.code.findbugs. **Name** : jsr305. **Version** : 3.0.2.
@@ -233,10 +233,6 @@
      * **Project URL:** [http://commons.apache.org/collections/](http://commons.apache.org/collections/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : commons-io. **Name** : commons-io. **Version** : 2.6.
-     * **Project URL:** [http://commons.apache.org/proper/commons-io/](http://commons.apache.org/proper/commons-io/)
-     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-
 1.  **Group** : info.picocli. **Name** : picocli. **Version** : 4.6.3.
      * **Project URL:** [http://picocli.info](http://picocli.info)
      * **License:** [The Apache Software License, version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -262,10 +258,10 @@
      * **Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
      * **License:** [Mozilla Public License Version 2.0](http://www.mozilla.org/MPL/2.0/)
 
-1.  **Group** : net.sourceforge.pmd. **Name** : pmd-core. **Version** : 6.44.0.
+1.  **Group** : net.sourceforge.pmd. **Name** : pmd-core. **Version** : 6.50.0.
      * **License:** [BSD-style](http://pmd.sourceforge.net/license.html)
 
-1.  **Group** : net.sourceforge.pmd. **Name** : pmd-java. **Version** : 6.44.0.
+1.  **Group** : net.sourceforge.pmd. **Name** : pmd-java. **Version** : 6.50.0.
      * **License:** [BSD-style](http://pmd.sourceforge.net/license.html)
 
 1.  **Group** : net.sourceforge.saxon. **Name** : saxon. **Version** : 9.1.0.8.
@@ -484,7 +480,7 @@
      * **License:** [BSD-3-Clause](https://asm.ow2.io/license.html)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.ow2.asm. **Name** : asm. **Version** : 9.2.
+1.  **Group** : org.ow2.asm. **Name** : asm. **Version** : 9.3.
      * **Project URL:** [http://asm.ow2.io/](http://asm.ow2.io/)
      * **License:** [BSD-3-Clause](https://asm.ow2.io/license.html)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -520,12 +516,12 @@
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Sat Oct 08 12:22:37 TRT 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Oct 12 15:56:04 TRT 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.tools:spine-testlib:2.0.0-SNAPSHOT.112`
+# Dependencies of `io.spine.tools:spine-testlib:2.0.0-SNAPSHOT.113`
 
 ## Runtime
 1.  **Group** : com.google.auto.value. **Name** : auto-value-annotations. **Version** : 1.9.
@@ -806,10 +802,6 @@ This report was generated on **Sat Oct 08 12:22:37 TRT 2022** using [Gradle-Lice
      * **Project URL:** [http://commons.apache.org/collections/](http://commons.apache.org/collections/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : commons-io. **Name** : commons-io. **Version** : 2.6.
-     * **Project URL:** [http://commons.apache.org/proper/commons-io/](http://commons.apache.org/proper/commons-io/)
-     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-
 1.  **Group** : info.picocli. **Name** : picocli. **Version** : 4.6.3.
      * **Project URL:** [http://picocli.info](http://picocli.info)
      * **License:** [The Apache Software License, version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -835,10 +827,10 @@ This report was generated on **Sat Oct 08 12:22:37 TRT 2022** using [Gradle-Lice
      * **Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
      * **License:** [Mozilla Public License Version 2.0](http://www.mozilla.org/MPL/2.0/)
 
-1.  **Group** : net.sourceforge.pmd. **Name** : pmd-core. **Version** : 6.44.0.
+1.  **Group** : net.sourceforge.pmd. **Name** : pmd-core. **Version** : 6.50.0.
      * **License:** [BSD-style](http://pmd.sourceforge.net/license.html)
 
-1.  **Group** : net.sourceforge.pmd. **Name** : pmd-java. **Version** : 6.44.0.
+1.  **Group** : net.sourceforge.pmd. **Name** : pmd-java. **Version** : 6.50.0.
      * **License:** [BSD-style](http://pmd.sourceforge.net/license.html)
 
 1.  **Group** : net.sourceforge.saxon. **Name** : saxon. **Version** : 9.1.0.8.
@@ -1057,7 +1049,7 @@ This report was generated on **Sat Oct 08 12:22:37 TRT 2022** using [Gradle-Lice
      * **License:** [BSD-3-Clause](https://asm.ow2.io/license.html)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.ow2.asm. **Name** : asm. **Version** : 9.2.
+1.  **Group** : org.ow2.asm. **Name** : asm. **Version** : 9.3.
      * **Project URL:** [http://asm.ow2.io/](http://asm.ow2.io/)
      * **License:** [BSD-3-Clause](https://asm.ow2.io/license.html)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -1093,4 +1085,4 @@ This report was generated on **Sat Oct 08 12:22:37 TRT 2022** using [Gradle-Lice
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Sat Oct 08 12:22:37 TRT 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Oct 12 15:56:05 TRT 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
