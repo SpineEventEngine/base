@@ -41,6 +41,7 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
 /**
  * Utilities for checking preconditions.
  */
+@SuppressWarnings("OverloadedVarargsMethod") // for user convenience.
 public final class Preconditions2 {
 
     /** Prevents instantiation of this utility class. */
@@ -120,8 +121,10 @@ public final class Preconditions2 {
     /**
      * Ensures that the passed value is positive.
      *
-     * @param value the value to check
-     * @throws IllegalArgumentException if the value is negative or zero
+     * @param value
+     *         the value to check
+     * @throws IllegalArgumentException
+     *         if the value is negative or zero
      */
     @CanIgnoreReturnValue
     public static long checkPositive(long value) {
@@ -148,6 +151,44 @@ public final class Preconditions2 {
                                      @Nullable String errorMessageTemplate,
                                      @Nullable Object @Nullable ... errorMessageArgs) {
         checkArgument(value > 0L, errorMessageTemplate, errorMessageArgs);
+        return value;
+    }
+
+    /**
+     * Ensures that the passed value is positive or zero.
+     *
+     * @param value
+     *         the value to check
+     * @throws IllegalArgumentException
+     *         if the value is negative
+     */
+    @CanIgnoreReturnValue
+    public static long checkNonNegative(long value) {
+        if (value < 0) {
+            throw newIllegalArgumentException(
+                    "A positive value or zero expected. Encountered: %d.", value
+            );
+        }
+        return value;
+    }
+
+    /**
+     * Ensures that the passed value is positive or zero.
+     *
+     * @param value
+     *         the value to check
+     * @param errorMessageTemplate
+     *         the exception message template to use if the check fails
+     * @param errorMessageArgs
+     *         the arguments to be substituted into the message template
+     * @throws IllegalArgumentException
+     *         if the value is negative
+     */
+    @CanIgnoreReturnValue
+    public static long checkNonNegative(long value,
+                                        @Nullable String errorMessageTemplate,
+                                        @Nullable Object @Nullable ... errorMessageArgs) {
+        checkArgument(value >= 0L, errorMessageTemplate, errorMessageArgs);
         return value;
     }
 
@@ -300,7 +341,7 @@ public final class Preconditions2 {
      * @param highBound
      *         the higher bound
      */
-    public static void checkBounds(int value, String paramName, int lowBound, int highBound) {
+    public static void checkBounds(long value, String paramName, long lowBound, long highBound) {
         checkNotNull(paramName);
         if (!isBetween(value, lowBound, highBound)) {
             throw newIllegalArgumentException(
@@ -309,7 +350,7 @@ public final class Preconditions2 {
         }
     }
 
-    private static boolean isBetween(int value, int lowBound, int highBound) {
+    private static boolean isBetween(long value, long lowBound, long highBound) {
         return lowBound <= value && value <= highBound;
     }
 }

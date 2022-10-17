@@ -23,188 +23,222 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.util
 
-package io.spine.util;
-
-import com.google.protobuf.Message;
-import com.google.protobuf.StringValue;
-import io.spine.testing.TestValues;
-import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
-import static com.google.common.truth.Truth.assertThat;
-import static io.spine.testing.Assertions.assertIllegalArgument;
-import static io.spine.testing.Assertions.assertIllegalState;
-import static io.spine.testing.Assertions.assertNpe;
-import static io.spine.testing.TestValues.newUuidValue;
-import static io.spine.testing.TestValues.randomString;
-import static io.spine.util.Preconditions2.checkBounds;
-import static io.spine.util.Preconditions2.checkNotDefaultArg;
-import static io.spine.util.Preconditions2.checkNotDefaultState;
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
-import static io.spine.util.Preconditions2.checkPositive;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import com.google.common.truth.Truth.assertThat
+import com.google.protobuf.Message
+import com.google.protobuf.StringValue
+import io.spine.testing.Assertions.assertIllegalArgument
+import io.spine.testing.Assertions.assertIllegalState
+import io.spine.testing.Assertions.assertNpe
+import io.spine.testing.TestValues.longRandom
+import io.spine.testing.TestValues.newUuidValue
+import io.spine.testing.TestValues.randomString
+import io.spine.testing.UtilityClassTest
+import io.spine.util.Preconditions2.checkBounds
+import io.spine.util.Preconditions2.checkNonNegative
+import io.spine.util.Preconditions2.checkNotDefaultArg
+import io.spine.util.Preconditions2.checkNotDefaultState
+import io.spine.util.Preconditions2.checkNotEmptyOrBlank
+import io.spine.util.Preconditions2.checkPositive
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
+import org.junit.jupiter.api.assertThrows
 
 @DisplayName("`Preconditions2` utility class should")
-class Preconditions2Test extends UtilityClassTest<Preconditions2> {
+internal class Preconditions2Test : UtilityClassTest<Preconditions2>(Preconditions2::class.java) {
 
-    Preconditions2Test() {
-        super(Preconditions2.class);
-    }
+    /**
+     * Abstract base for test suite of a precondition function.
+     */
+    sealed class TestSuite<T>(
+        val consumer: (T) -> Unit,
+        val consumerWithMessage: (T, String, params: Array<Any>) -> Unit
+    ) {
 
-    @Nested
-    @DisplayName("Check that a `String` is")
-    class StringArg {
-
-        private void assertThrowsOn(String arg) {
-            assertIllegalArgument(() -> checkNotEmptyOrBlank(arg));
-        }
-
-        private void assertThrowsWithMessage(String arg, String errorMessage) {
-            var exception = assertIllegalArgument(() -> checkNotEmptyOrBlank(arg, errorMessage));
-            assertThat(exception).hasMessageThat()
-                                 .contains(errorMessage);
-        }
-
-        @Test
-        @DisplayName("null")
-        void nullStr() {
-            assertNpe(() -> checkNotEmptyOrBlank(null));
-
-            var errorTemplateBase = randomString();
-            var errorArg = new String[]{randomString(), randomString()};
-            var errorTemplate = errorTemplateBase + "%s %s";
-
-            var exception = assertThrows(
-                    NullPointerException.class,
-                    () -> checkNotEmptyOrBlank(null, errorTemplate, errorArg[0], errorArg[1])
-            );
-
-            var assertExceptionMessage = assertThat(exception).hasMessageThat();
-            assertExceptionMessage.contains(errorTemplateBase);
-            assertExceptionMessage.contains(errorArg[0]);
-            assertExceptionMessage.contains(errorArg[1]);
-        }
-
-        @Test
-        @DisplayName("empty")
-        void emptyString() {
-            assertThrowsOn("");
-            assertThrowsWithMessage("", randomString());
-        }
-
-        @Test
-        @DisplayName("blank")
-        void blankString() {
-            assertThrowsOn(" ");
-            assertThrowsWithMessage(" ", randomString());
-
-            assertThrowsOn("  ");
-            assertThrowsWithMessage("  ", randomString());
-
-            assertThrowsOn("   ");
-            assertThrowsWithMessage("   ", randomString());
-        }
-    }
-
-    @Nested
-    @DisplayName("check that a value is positive")
-    class PositiveValue {
-
-        private void assertThrowsOn(long value) {
-            var exception =
-                    assertThrows(IllegalArgumentException.class,
-                                 () -> checkPositive(value));
+        /**
+         * Asserts that the given [consumer] throws [IllegalArgumentException].
+         */
+        protected fun assertThrowsOn(value: T) {
+            val exception = assertThrows<IllegalArgumentException> {
+                consumer(value)
+            }
             assertThat(exception)
-                    .hasMessageThat()
-                    .contains(String.valueOf(value));
+                .hasMessageThat()
+                .contains(value.toString())
         }
 
-        private void assertThrowsWithMessage(long value, String errorMessage) {
-            var exception =
-                    assertThrows(IllegalArgumentException.class,
-                                 () -> checkPositive(value, errorMessage));
+        /**
+         * Asserts that the given [consumer] throws [IllegalArgumentException]
+         * and the exception message contains the given [errorMessage].
+         */
+        protected fun assertThrowsWithMessage(arg: T, errorMessage: String) {
+            val exception = assertThrows<IllegalArgumentException> {
+                consumerWithMessage(arg, errorMessage, arrayOf(arg as Any))
+            }
             assertThat(exception).hasMessageThat()
-                                 .contains(errorMessage);
+                .contains(errorMessage)
+        }
+    }
+
+    @Nested
+    internal inner class `check that a 'String' is` :
+        TestSuite<String>(Preconditions2::checkNotEmptyOrBlank, { arg, fmt, params ->
+            checkNotEmptyOrBlank(arg, fmt, params)
+        }) {
+
+        @Test
+        @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+        fun `a 'null'`() {
+            assertNpe { checkNotEmptyOrBlank(null) }
+            val errorTemplateBase = randomString()
+            val errorArg = arrayOf(randomString(), randomString())
+            val errorTemplate = "$errorTemplateBase%s %s"
+
+            val exception = assertThrows<NullPointerException>{
+                checkNotEmptyOrBlank(null, errorTemplate, errorArg[0], errorArg[1])
+            }
+
+            val assertExceptionMessage = assertThat(exception).hasMessageThat()
+            with(assertExceptionMessage) {
+                contains(errorTemplateBase)
+                contains(errorArg[0])
+                contains(errorArg[1])
+            }
         }
 
         @Test
-        @DisplayName("rejecting zero")
-        void zero() {
-            assertThrowsOn(0);
-            assertThrowsWithMessage(0, randomString());
+        fun empty() {
+            assertThrowsOn("")
+            assertThrowsWithMessage("", randomString())
         }
 
         @Test
-        @DisplayName("rejecting negative values")
-        void negative() {
-            assertThrowsOn(-1);
-            assertThrowsWithMessage(-100, randomString());
+        fun blank() {
+            assertThrowsOn(" ")
+            assertThrowsWithMessage(" ", randomString())
+            assertThrowsOn("  ")
+            assertThrowsWithMessage("  ", randomString())
+            assertThrowsOn("   ")
+            assertThrowsWithMessage("   ", randomString())
+        }
+    }
+
+
+    @Nested
+    internal inner class `check that a value is positive` :
+        TestSuite<Long>(Preconditions2::checkPositive,{ arg, fmt, params ->
+            checkPositive(arg, fmt, params)
+        }) {
+
+        @Test
+        fun `rejecting zero`() {
+            assertThrowsOn(0)
+            assertThrowsWithMessage(0, randomString())
         }
 
         @Test
-        @DisplayName("accepting and returning it")
-        void positive() {
-            var expected = TestValues.longRandom(1, 100_000);
+        fun `rejecting negative values`() {
+            assertThrowsOn(-1)
+            assertThrowsWithMessage(-100, randomString())
+        }
+
+        @Test
+        fun `accepting positive value and returning it`() {
+            val expected = longRandom(1, 100000)
             assertThat(checkPositive(expected))
-                    .isEqualTo(expected);
+                .isEqualTo(expected)
+        }
+    }
+
+    @Nested
+    internal inner class `check that a value is positive or zero` :
+        TestSuite<Long>(Preconditions2::checkNonNegative, { arg, fmt, params ->
+            checkNonNegative(arg, fmt, params)
+        }) {
+
+        @Test
+        fun `accepting zero`() {
+            assertDoesNotThrow { consumer(0) }
+        }
+
+        @Test
+        fun `rejecting negative values`() {
+            assertThrowsOn(-1)
+            assertThrowsWithMessage(-100, randomString())
+        }
+
+        @Test
+        fun `accepting non-negative value and returning it`() {
+            val expected = longRandom(0, 100000)
+            assertThat(checkPositive(expected))
+                .isEqualTo(expected)
         }
     }
 
     @Test
     @DisplayName("throw if checked value out of bounds")
-    void throwExceptionIfCheckedValueOutOfBounds() {
-        assertIllegalArgument(() -> checkBounds(10, "checked value", -5, 9));
+    fun throwExceptionIfCheckedValueOutOfBounds() {
+        assertIllegalArgument { checkBounds(10, "checked value", -5, 9) }
     }
 
     @Nested
     @DisplayName("check that a message is not in the default state")
-    class NotDefaultMessage {
-
-        private final Message defaultValue = StringValue.getDefaultInstance();
-        private String customErrorMessage;
+    internal inner class NotDefaultMessage {
+        private val defaultValue: Message = StringValue.getDefaultInstance()
+        private var customErrorMessage: String? = null
 
         @BeforeEach
-        void createCustomErrorMessage() {
-            customErrorMessage = randomString();
+        fun createCustomErrorMessage() {
+            customErrorMessage = randomString()
         }
 
         @Test
         @DisplayName("throwing `IllegalStateException` for state transition checks")
-        void stateChecking() {
-            assertIllegalState(() -> checkNotDefaultState(defaultValue));
-
-            var exception =
-                    assertThrows(IllegalStateException.class,
-                                 () -> checkNotDefaultState(defaultValue, customErrorMessage));
+        fun stateChecking() {
+            assertIllegalState { checkNotDefaultState(defaultValue) }
+            val exception = assertThrows<IllegalStateException> {
+                checkNotDefaultState(defaultValue, customErrorMessage)
+            }
             assertThat(exception).hasMessageThat()
-                                 .contains(customErrorMessage);
+                .contains(customErrorMessage)
         }
 
         @Test
         @DisplayName("throwing `IllegalArgumentException` for argument checks")
-        void argumentChecking() {
-            assertIllegalArgument(() -> checkNotDefaultArg(defaultValue));
-            var exception =
-                    assertThrows(IllegalArgumentException.class,
-                                 () -> checkNotDefaultArg(defaultValue, customErrorMessage));
+        fun argumentChecking() {
+            assertIllegalArgument { checkNotDefaultArg(defaultValue) }
+            val exception = assertThrows<IllegalArgumentException>{
+                checkNotDefaultArg(defaultValue, customErrorMessage) }
             assertThat(exception)
-                    .hasMessageThat()
-                    .contains(customErrorMessage);
+                .hasMessageThat()
+                .contains(customErrorMessage)
         }
 
         @Test
         @DisplayName("return non-default value on check")
-        void returnValue() {
-            var nonDefault = newUuidValue();
-            assertEquals(nonDefault, checkNotDefaultArg(nonDefault));
-            assertEquals(nonDefault, checkNotDefaultArg(nonDefault, customErrorMessage));
-            assertEquals(nonDefault, checkNotDefaultState(nonDefault));
-            assertEquals(nonDefault, checkNotDefaultState(nonDefault, customErrorMessage));
+        fun returnValue() {
+            val nonDefault = newUuidValue()
+            assertEquals(
+                nonDefault,
+                checkNotDefaultArg(nonDefault)
+            )
+            assertEquals(
+                nonDefault,
+                checkNotDefaultArg(nonDefault, customErrorMessage)
+            )
+            assertEquals(
+                nonDefault,
+                checkNotDefaultState(nonDefault)
+            )
+            assertEquals(
+                nonDefault,
+                checkNotDefaultState(nonDefault, customErrorMessage)
+            )
         }
     }
 }
