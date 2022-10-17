@@ -53,8 +53,8 @@ import io.spine.type.KnownMessage;
  * @param <I>
  *         the type of entity identifiers
  */
-@SuppressWarnings("unused") /* Used in the generated code. */
 @Immutable
 @GeneratedMixin
+@SuppressWarnings("unused") /* The parameter type <I> is meant to be used in the generated code. */
 public interface EntityState<I> extends KnownMessage {
 }
