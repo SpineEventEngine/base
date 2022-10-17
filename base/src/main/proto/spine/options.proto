@@ -254,7 +254,7 @@ extend google.protobuf.FieldOptions {
     //
     // The value of a column field can be updated in two ways:
     //
-    // 1. In the handler methods of the entity, just like any other part of entity state.
+    // 1. In the receptors of the entity, just like any other part of entity state.
     // 2. Using the language-specific tools like `EntityWithColumns` interface in Java.
     //
     // All column fields are considered optional by the framework.

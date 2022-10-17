@@ -237,8 +237,8 @@ subprojects {
 
     idea {
         module {
-            generatedSourceDirs.add(project.file(generatedJavaDir))
-            generatedSourceDirs.add(project.file(generatedKotlinDir))
+            generatedSourceDirs.add(file(generatedJavaDir))
+            generatedSourceDirs.add(file(generatedKotlinDir))
             testSources.from(
                 project.file(generatedTestJavaDir),
                 project.file(generatedTestKotlinDir)
