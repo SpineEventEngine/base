@@ -378,8 +378,10 @@ public final class Field extends ValueHolder<FieldPath> {
                 return null;
             }
             if (iterator.hasNext()) {
-                checkArgument(field.getType() == MESSAGE,
-                              "Field `%s` of the type `%s` is not a message field.");
+                var fieldType = field.getType();
+                checkArgument(fieldType == MESSAGE,
+                              "Field `%s` of the type `%s` is not a message field.",
+                              field, fieldType);
                 current = field.getMessageType();
             }
         }
