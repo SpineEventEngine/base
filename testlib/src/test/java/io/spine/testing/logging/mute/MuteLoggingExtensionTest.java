@@ -35,6 +35,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExecutableInvoker;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstances;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -212,6 +213,11 @@ class MuteLoggingExtensionTest extends SystemOutputTest {
         @Override
         public ExecutionMode getExecutionMode() {
             return ExecutionMode.SAME_THREAD;
+        }
+
+        @Override
+        public ExecutableInvoker getExecutableInvoker() {
+            return null;
         }
     }
 
