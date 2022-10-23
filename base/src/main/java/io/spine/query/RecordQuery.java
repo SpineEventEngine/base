@@ -83,7 +83,7 @@ public final class RecordQuery<I, R extends Message>
     /**
      * Returns the builder on top of which this query has been created.
      */
-    public final RecordQueryBuilder<I, R> toBuilder() {
+    public RecordQueryBuilder<I, R> toBuilder() {
         return builder;
     }
 
@@ -94,7 +94,7 @@ public final class RecordQuery<I, R extends Message>
      * <p>This method only processes the column predicates. Additional identifier conditions,
      * field masks, sorting, or limit are ignored.
      */
-    public final RecordQuery<I, R> and(RecordPredicates<I, R> builder) {
+    public RecordQuery<I, R> and(RecordPredicates<I, R> builder) {
         var result = joinToRootPredicate(builder, AND);
         return result;
     }
@@ -106,12 +106,15 @@ public final class RecordQuery<I, R extends Message>
      * <p>This method only processes the column predicates. Additional identifier conditions,
      * field masks, sorting, or limit are ignored.
      */
-    public final RecordQuery<I, R> either(RecordPredicates<I, R> predicates) {
+    public RecordQuery<I, R> either(RecordPredicates<I, R> predicates) {
         var result = joinToRootPredicate(predicates, OR);
         return result;
     }
 
-    @SuppressWarnings({"ReturnValueIgnored", "ResultOfMethodCallIgnored"}) /* Adjusting builders. */
+    @SuppressWarnings({
+            "ReturnValueIgnored" /* Adjusting builders. */,
+            "Immutable" /* See: https://github.com/SpineEventEngine/base/issues/749 */
+    })
     private RecordQuery<I, R> joinToRootPredicate(RecordPredicates<I, R> predicates,
                                                   LogicalOperator operator) {
         var sourcePredicate = subject().predicate();
