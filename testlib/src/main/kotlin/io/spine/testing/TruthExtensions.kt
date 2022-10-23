@@ -24,30 +24,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.dependency
+package io.spine.testing
 
-// https://junit.org/junit5/
-@Suppress("unused")
-object JUnit {
-    const val version                    = "5.9.1"
-    private const val platformVersion    = "1.9.1"
-    private const val legacyVersion      = "4.13.1"
+import com.google.common.testing.NullPointerTester
 
-    // https://github.com/apiguardian-team/apiguardian
-    private const val apiGuardianVersion = "1.1.2"
-    // https://github.com/junit-pioneer/junit-pioneer
-    private const val pioneerVersion     = "1.7.1"
-
-    const val legacy = "junit:junit:${legacyVersion}"
-    val api = listOf(
-        "org.apiguardian:apiguardian-api:${apiGuardianVersion}",
-        "org.junit.jupiter:junit-jupiter-api:${version}",
-        "org.junit.jupiter:junit-jupiter-params:${version}"
-    )
-    const val bom     = "org.junit:junit-bom:${version}"
-    const val runner  = "org.junit.jupiter:junit-jupiter-engine:${version}"
-    const val pioneer = "org.junit-pioneer:junit-pioneer:${pioneerVersion}"
-    const val platformCommons = "org.junit.platform:junit-platform-commons:${platformVersion}"
-    const val platformLauncher = "org.junit.platform:junit-platform-launcher:${platformVersion}"
-    const val params = "org.junit.jupiter:junit-jupiter-params:${version}"
-}
+/**
+ * Allows to use generic parameter of the function instead of `MyType::class.java` as the first
+ * parameter type.
+ */
+public inline fun <reified T : Any> NullPointerTester.setDefault(value : T) : NullPointerTester =
+    setDefault(T::class.java, value)
