@@ -1,0 +1,116 @@
+/*
+ * Copyright 2022, TeamDev. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package io.spine.testing
+
+import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.ProtoTruth
+import com.google.protobuf.ExtensionRegistry
+import io.spine.type.KnownTypes
+import java.util.*
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+
+@DisplayName("Truth extensions for Kotlin should provide")
+internal class TruthExtensionsSpec {
+
+    @Nested
+    inner class `fun for 'StringSubject' allowing` {
+
+        @Test
+        fun `function block`() {
+            assertThat("   foo  bar") {
+                contains("foo")
+                contains("bar")
+            }
+        }
+
+        @Test
+        fun `nested 'ignoringCase()' calls`() {
+            assertThat("foo bar").ignoringCase() {
+                contains("FOo")
+                contains("BaR")
+                doesNotContain("  ")
+            }
+
+            // And plain Truth syntax works too.
+            assertThat("fiz baz").ignoringCase().contains("BaZ")
+        }
+    }
+
+    @Test
+    fun `fun for 'IterableSubject'`() {
+        assertThat(listOf(1, 2, 3)) {
+            contains(1)
+            contains(3)
+            doesNotContain(4)
+            containsAtLeastElementsIn(listOf(3, 2))
+            containsAtLeastElementsIn(listOf(1, 3)).inOrder()
+        }
+    }
+
+    @Test
+    fun `fun for 'OptionalSubject'`() {
+        assertThat(Optional.of("something")) {
+            isPresent()
+            hasValue("something")
+        }
+    }
+
+    @Test
+    fun `fun for 'ProtoSubject`() {
+        val msg = io.spine.base.error {
+            type = "Big bada boom"
+            code = 42
+        }
+
+        val expected = io.spine.base.error { code = 42 }
+
+        // Standard syntax.
+        ProtoTruth.assertThat(msg)
+            .comparingExpectedFieldsOnly()
+            .isEqualTo(expected)
+
+        // Kotlin, having fun.
+        assertThat(msg) {
+            comparingExpectedFieldsOnly {
+                isEqualTo(io.spine.base.error { code = 42 })
+            }
+        }
+
+        // Given just to show nested call example for `unpackingAnyUsing`.
+        assertThat(msg) {
+            val typeRegistry = KnownTypes.instance().typeRegistry()
+            val extensionRegistry = ExtensionRegistry.newInstance()
+            unpackingAnyUsing(typeRegistry, extensionRegistry) {
+                comparingExpectedFieldsOnly {
+                    isEqualTo(expected)
+                }
+            }
+        }
+    }
+}
