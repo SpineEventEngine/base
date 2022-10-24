@@ -27,6 +27,9 @@
 package io.spine.testing
 
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.extensions.proto.ProtoTruth
+import com.google.protobuf.ExtensionRegistry
+import io.spine.type.KnownTypes
 import java.util.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -75,6 +78,39 @@ internal class TruthExtensionsSpec {
         assertThat(Optional.of("something")) {
             isPresent()
             hasValue("something")
+        }
+    }
+
+    @Test
+    fun `fun for 'ProtoSubject`() {
+        val msg = io.spine.base.error {
+            type = "Big bada boom"
+            code = 42
+        }
+
+        val expected = io.spine.base.error { code = 42 }
+
+        // Standard syntax.
+        ProtoTruth.assertThat(msg)
+            .comparingExpectedFieldsOnly()
+            .isEqualTo(expected)
+
+        // Kotlin, having fun.
+        assertThat(msg) {
+            comparingExpectedFieldsOnly {
+                isEqualTo(io.spine.base.error { code = 42 })
+            }
+        }
+
+        // Given just to show nested call example for `unpackingAnyUsing`.
+        assertThat(msg) {
+            val typeRegistry = KnownTypes.instance().typeRegistry()
+            val extensionRegistry = ExtensionRegistry.newInstance()
+            unpackingAnyUsing(typeRegistry, extensionRegistry) {
+                comparingExpectedFieldsOnly {
+                    isEqualTo(expected)
+                }
+            }
         }
     }
 }
