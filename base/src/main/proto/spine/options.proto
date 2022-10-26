@@ -825,19 +825,25 @@ message EntityOption {
 
     // A type of an entity for state of which the message is defined.
     enum Kind {
+        option allow_alias = true;
+        
         // Reserved for errors.
         KIND_UNKNOWN = 0;
 
         // The message is an aggregate state.
         AGGREGATE = 1;
 
-        // The message is a state of a projection.
+        // The message is a state of a projection (same as "view").
         PROJECTION = 2;
+
+        // The message is a state of a view (same as "projection").
+        VIEW = 2;
 
         // The message is a state of a process manager.
         PROCESS_MANAGER = 3;
 
-        // The message is a state of an entity.
+        // The message is a state of an entity, which is not of the type
+        // defined by other members of this enumeration.
         ENTITY = 4;
     }
 
