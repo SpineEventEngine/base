@@ -32,11 +32,11 @@ import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Truth
 import io.spine.internal.gradle.protobuf.setup
 
+group = "io.spine.tools"
+
 apply {
     plugin("io.gitlab.arturbosch.detekt")
 }
-
-group = "io.spine.tools"
 
 dependencies {
     /*
@@ -50,12 +50,13 @@ dependencies {
     implementation(project(":base"))
 }
 
-val generatedDir by extra("$projectDir/generated")
-
 protobuf {
+    val generatedDir by project.extra("$projectDir/generated")
     generateProtoTasks {
         for (task in all()) {
             task.setup(generatedDir)
         }
     }
 }
+
+

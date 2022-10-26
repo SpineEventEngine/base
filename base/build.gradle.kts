@@ -34,8 +34,8 @@ import io.spine.internal.gradle.publish.IncrementGuard
 import io.spine.internal.gradle.publish.excludeGoogleProtoFromArtifacts
 
 apply {
-    plugin<IncrementGuard>()
     plugin("io.gitlab.arturbosch.detekt")
+    plugin<IncrementGuard>()
 }
 
 dependencies {
@@ -46,9 +46,8 @@ dependencies {
     testImplementation(project(":testlib"))
 }
 
-val generatedDir by extra("$projectDir/generated")
-
 protobuf {
+    val generatedDir by project.extra("$projectDir/generated")
     generateProtoTasks {
         for (task in all()) {
             task.setup(generatedDir)
