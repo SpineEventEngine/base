@@ -33,8 +33,11 @@ import io.spine.internal.gradle.protobuf.setup
 import io.spine.internal.gradle.publish.IncrementGuard
 import io.spine.internal.gradle.publish.excludeGoogleProtoFromArtifacts
 
+plugins {
+    id("io.gitlab.arturbosch.detekt")
+}
+
 apply {
-    plugin("io.gitlab.arturbosch.detekt")
     plugin<IncrementGuard>()
 }
 
@@ -57,4 +60,10 @@ protobuf {
 
 tasks {
     excludeGoogleProtoFromArtifacts()
+}
+
+detekt {
+    buildUponDefaultConfig = true
+    baseline = file("config/quality/detekt-baseline.xml")
+    config = files("config/quality/detekt-config.yml")
 }
