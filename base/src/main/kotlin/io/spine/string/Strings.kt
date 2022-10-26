@@ -67,7 +67,7 @@ public fun Iterable<String>.camelCase(): String =
  *
  * Same as [String.trimIndent] but also removes the trailing whitespace characters.
  */
-internal fun String.trimWhitespace(): String {
+public fun String.trimWhitespace(): String {
     val noIndent = trimIndent()
     val lines = noIndent.lines()
     val trimmedLines = lines.map {
