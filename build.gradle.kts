@@ -69,12 +69,8 @@ plugins {
     kotlin("jvm")
     idea
 
-    io.spine.internal.dependency.Protobuf.GradlePlugin.apply {
-        id(id)
-    }
-    io.spine.internal.dependency.ErrorProne.GradlePlugin.apply {
-        id(id)
-    }
+    with(io.spine.internal.dependency.Protobuf.GradlePlugin) { id(id) }
+    with(io.spine.internal.dependency.ErrorProne.GradlePlugin) { id(id) }
     `force-jacoco`
 }
 
