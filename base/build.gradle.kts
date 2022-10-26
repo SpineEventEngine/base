@@ -33,7 +33,10 @@ import io.spine.internal.gradle.protobuf.setup
 import io.spine.internal.gradle.publish.IncrementGuard
 import io.spine.internal.gradle.publish.excludeGoogleProtoFromArtifacts
 
-apply<IncrementGuard>()
+apply {
+    plugin<IncrementGuard>()
+    plugin("io.gitlab.arturbosch.detekt")
+}
 
 dependencies {
     Protobuf.libs.forEach { protobuf(it) }

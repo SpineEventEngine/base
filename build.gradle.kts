@@ -71,6 +71,7 @@ plugins {
 
     with(io.spine.internal.dependency.Protobuf.GradlePlugin) { id(id) }
     with(io.spine.internal.dependency.ErrorProne.GradlePlugin) { id(id) }
+    id("io.gitlab.arturbosch.detekt") version "1.21.0" apply false
     `force-jacoco`
 }
 

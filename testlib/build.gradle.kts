@@ -32,6 +32,10 @@ import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Truth
 import io.spine.internal.gradle.protobuf.setup
 
+apply {
+    plugin("io.gitlab.arturbosch.detekt")
+}
+
 group = "io.spine.tools"
 
 dependencies {
