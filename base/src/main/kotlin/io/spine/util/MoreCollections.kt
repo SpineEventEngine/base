@@ -48,7 +48,7 @@ public fun <E> Iterable<E>.theOnly(): E = Iterables.getOnlyElement(this)
  *    `["sea", "of", "Moon", "of", "Earth", "of", "Sun"]`;
  *  - `listOf<String>().interlaced("")` -> `[]`.
  */
-internal fun <T> Iterable<T>.interlaced(infix: T): Sequence<T> = sequence {
+public fun <T> Iterable<T>.interlaced(infix: T): Sequence<T> = sequence {
     forEachIndexed { index, element ->
         if (index != 0) {
             yield(infix)
