@@ -56,7 +56,7 @@ abstract class Quoter extends Converter<String, String> {
     }
 
     /**
-     * Prepends quote characters in the passed string with two leading backslashes,
+     * Prepends quote characters in the given string with two leading backslashes,
      * and then wraps the string into quotes.
      */
     abstract String quote(String stringToQuote);
