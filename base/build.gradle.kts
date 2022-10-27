@@ -63,5 +63,5 @@ tasks {
 }
 
 detekt {
-    config.from("config/detekt-config-custom.yml")
+    config.from("config/detekt-custom-config.yml")
 }
