@@ -24,41 +24,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.generateProtoTasks
-import com.google.protobuf.gradle.protobuf
-import io.spine.internal.dependency.Guava
-import io.spine.internal.dependency.JUnit
-import io.spine.internal.dependency.Protobuf
-import io.spine.internal.dependency.Truth
-import io.spine.internal.gradle.protobuf.setup
-
-group = "io.spine.tools"
-
 plugins {
-    id("detekt-code-analysis")
-}
-
-dependencies {
-    /*
-        Expose tools we use as transitive dependencies to simplify dependency
-        management in subprojects.
-    */
-    Protobuf.libs.forEach { api(it) }
-    JUnit.api.forEach { api(it) }
-    Truth.libs.forEach { api(it) }
-    api(Guava.testLib)
-    implementation(project(":base"))
-}
-
-protobuf {
-    val generatedDir by project.extra("$projectDir/generated")
-    generateProtoTasks {
-        for (task in all()) {
-            task.setup(generatedDir)
-        }
-    }
+    id("io.gitlab.arturbosch.detekt")
 }
 
 detekt {
-    baseline = file("config/detekt-baseline.xml")
+    buildUponDefaultConfig = true
+    config = files("${rootDir}/config/quality/detekt-config.yml")
 }

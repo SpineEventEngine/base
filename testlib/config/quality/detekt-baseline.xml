@@ -1,7 +1,0 @@
-<SmellBaseline>
-    <ManuallySuppressedIssues>
-        <ID>TooManyFunctions:TruthExtensions.kt$io.spine.testing.TruthExtensions.kt</ID>
-    </ManuallySuppressedIssues>
-    <CurrentIssues>
-    </CurrentIssues>
-</SmellBaseline>

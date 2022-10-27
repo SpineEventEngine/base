@@ -34,7 +34,7 @@ import io.spine.internal.gradle.publish.IncrementGuard
 import io.spine.internal.gradle.publish.excludeGoogleProtoFromArtifacts
 
 plugins {
-    id("io.gitlab.arturbosch.detekt")
+    id("detekt-code-analysis")
 }
 
 apply {
@@ -63,7 +63,5 @@ tasks {
 }
 
 detekt {
-    buildUponDefaultConfig = true
-    baseline = file("config/quality/detekt-baseline.xml")
-    config = files("config/quality/detekt-config.yml")
+    config.from("config/detekt-custom-config.yml")
 }
