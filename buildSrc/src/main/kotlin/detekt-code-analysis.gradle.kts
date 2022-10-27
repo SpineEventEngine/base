@@ -24,44 +24,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.generateProtoTasks
-import com.google.protobuf.gradle.protobuf
-import io.spine.internal.dependency.AutoService
-import io.spine.internal.dependency.Kotlin
-import io.spine.internal.dependency.Protobuf
-import io.spine.internal.gradle.protobuf.setup
-import io.spine.internal.gradle.publish.IncrementGuard
-import io.spine.internal.gradle.publish.excludeGoogleProtoFromArtifacts
-
 plugins {
-    id("detekt-code-analysis")
-}
-
-apply {
-    plugin<IncrementGuard>()
-}
-
-dependencies {
-    Protobuf.libs.forEach { protobuf(it) }
-    annotationProcessor(AutoService.processor)
-    compileOnly(AutoService.annotations)
-    implementation(Kotlin.reflect)
-    testImplementation(project(":testlib"))
-}
-
-protobuf {
-    val generatedDir by project.extra("$projectDir/generated")
-    generateProtoTasks {
-        for (task in all()) {
-            task.setup(generatedDir)
-        }
-    }
-}
-
-tasks {
-    excludeGoogleProtoFromArtifacts()
+    id("io.gitlab.arturbosch.detekt")
 }
 
 detekt {
-    config.from("config/detekt-config-custom.yml")
+    buildUponDefaultConfig = true
+    config = files("${rootDir}/config/quality/detekt-config.yml")
 }

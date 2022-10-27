@@ -35,7 +35,7 @@ import io.spine.internal.gradle.protobuf.setup
 group = "io.spine.tools"
 
 plugins {
-    id("io.gitlab.arturbosch.detekt")
+    id("detekt-code-analysis")
 }
 
 dependencies {
@@ -60,7 +60,5 @@ protobuf {
 }
 
 detekt {
-    buildUponDefaultConfig = true
-    baseline = file("config/quality/detekt-baseline.xml")
-    config = files("config/quality/detekt-config.yml")
+    baseline = file("config/detekt-baseline.xml")
 }

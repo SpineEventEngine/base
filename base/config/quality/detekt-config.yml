@@ -1,9 +1,0 @@
-naming:
-  ClassNaming:
-    excludes:
-      - "**/*Test.kt" # Allows ticks-named nested test suites.
-      - "**/*Spec.kt" # Allows ticks-named nested spec suites.
-  MatchingDeclarationName:
-    excludes:
-      - "**/*Test.kt" # Allows ticks-named top-level test suites.
-      - "**/*Spec.kt" # Allows ticks-named top-level spec suites.
