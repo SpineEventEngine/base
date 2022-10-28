@@ -62,7 +62,7 @@ public final class Project {
     public Project withMavenRepositories() {
         RepositoryHandler repositories = project.getRepositories();
         repositories.mavenLocal();
-        repositories.jcenter();
+        repositories.mavenCentral();
         return this;
     }
 
