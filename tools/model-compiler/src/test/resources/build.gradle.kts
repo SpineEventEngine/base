@@ -38,7 +38,7 @@ buildscript {
 
     repositories {
         mavenLocal()
-        jcenter()
+        mavenCentral()
 
         maven { url = java.net.URI(io.spine.gradle.internal.Repos.spine) }
     }
@@ -72,7 +72,7 @@ version = "3.14"
 
 repositories {
     mavenLocal()
-    jcenter()
+    mavenCentral()
 
     maven { url = URI(Repos.spine) }
 }

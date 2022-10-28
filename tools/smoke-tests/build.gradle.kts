@@ -36,7 +36,7 @@ buildscript {
 
     repositories {
         gradlePluginPortal()
-        jcenter()
+        mavenCentral()
         mavenLocal()
     }
 
@@ -73,7 +73,7 @@ allprojects {
 
     repositories {
         mavenLocal()
-        jcenter()
+        mavenCentral()
     }
 }
 

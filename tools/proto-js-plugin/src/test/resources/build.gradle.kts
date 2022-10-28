@@ -41,7 +41,7 @@ apply(from = "$enclosingRootDir/version.gradle.kts")
 
 repositories {
     mavenLocal()
-    jcenter()
+    mavenCentral()
 }
 
 tasks.compileJava { enabled = false }
