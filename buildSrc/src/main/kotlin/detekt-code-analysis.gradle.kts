@@ -24,41 +24,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.generateProtoTasks
-import com.google.protobuf.gradle.protobuf
-import io.spine.internal.dependency.Guava
-import io.spine.internal.dependency.JUnit
-import io.spine.internal.dependency.Protobuf
-import io.spine.internal.dependency.Truth
-import io.spine.internal.gradle.protobuf.setup
-
-group = "io.spine.tools"
+/**
+ * This script-plugin sets up Kotlin code analyzing with Detekt.
+ *
+ * After applying, Detekt is configured to use `${rootDir}/config/quality/detekt-config.yml` file.
+ * Projects can append their own config files to override some parts of the default one or drop
+ * it at all in a favor of their own one.
+ *
+ * An example of appending a custom config file to the default one:
+ *
+ * ```
+ * detekt {
+ *     config.from("config/detekt-custom-config.yml")
+ * }
+ * ```
+ *
+ * To totally substitute it, just overwrite the corresponding property:
+ *
+ * ```
+ * detekt {
+ *     config = files("config/detekt-custom-config.yml")
+ * }
+ * ```
+ *
+ * Also, it's possible to suppress Detekt findings using [baseline](https://detekt.dev/docs/introduction/baseline/)
+ * file instead of suppressions in source code.
+ *
+ * An example of passing a baseline file:
+ *
+ * ```
+ * detekt {
+ *     baseline = file("config/detekt-baseline.yml")
+ * }
+ * ```
+ */
 
 plugins {
-    id("detekt-code-analysis")
-}
-
-dependencies {
-    /*
-        Expose tools we use as transitive dependencies to simplify dependency
-        management in subprojects.
-    */
-    Protobuf.libs.forEach { api(it) }
-    JUnit.api.forEach { api(it) }
-    Truth.libs.forEach { api(it) }
-    api(Guava.testLib)
-    implementation(project(":base"))
-}
-
-protobuf {
-    val generatedDir by project.extra("$projectDir/generated")
-    generateProtoTasks {
-        for (task in all()) {
-            task.setup(generatedDir)
-        }
-    }
+    id("io.gitlab.arturbosch.detekt")
 }
 
 detekt {
-    baseline = file("config/detekt-baseline.xml")
+    buildUponDefaultConfig = true
+    config = files("${rootDir}/config/quality/detekt-config.yml")
 }

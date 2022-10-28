@@ -33,7 +33,13 @@ import io.spine.internal.gradle.protobuf.setup
 import io.spine.internal.gradle.publish.IncrementGuard
 import io.spine.internal.gradle.publish.excludeGoogleProtoFromArtifacts
 
-apply<IncrementGuard>()
+plugins {
+    id("detekt-code-analysis")
+}
+
+apply {
+    plugin<IncrementGuard>()
+}
 
 dependencies {
     Protobuf.libs.forEach { protobuf(it) }
@@ -43,9 +49,8 @@ dependencies {
     testImplementation(project(":testlib"))
 }
 
-val generatedDir by extra("$projectDir/generated")
-
 protobuf {
+    val generatedDir by project.extra("$projectDir/generated")
     generateProtoTasks {
         for (task in all()) {
             task.setup(generatedDir)

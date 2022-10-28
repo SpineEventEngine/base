@@ -60,7 +60,7 @@ public object FileDescriptorSetReader {
     public fun tryParse(bytes: ByteArray): Optional<FileDescriptorSet> = try {
         val result = parseFrom(bytes, registry())
         Optional.of(result)
-    } catch (e: InvalidProtocolBufferException) {
+    } catch (ignored: InvalidProtocolBufferException) {
         Optional.empty()
     }
 

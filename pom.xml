@@ -10,7 +10,7 @@ all modules and does not describe the project structure per-subproject.
  -->
 <groupId>io.spine</groupId>
 <artifactId>spine-base</artifactId>
-<version>2.0.0-SNAPSHOT.118</version>
+<version>2.0.0-SNAPSHOT.120</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -168,6 +168,11 @@ all modules and does not describe the project structure per-subproject.
     <groupId>com.puppycrawl.tools</groupId>
     <artifactId>checkstyle</artifactId>
     <version>10.3.4</version>
+  </dependency>
+  <dependency>
+    <groupId>io.gitlab.arturbosch.detekt</groupId>
+    <artifactId>detekt-cli</artifactId>
+    <version>1.21.0</version>
   </dependency>
   <dependency>
     <groupId>io.spine.tools</groupId>
