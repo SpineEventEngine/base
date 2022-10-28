@@ -24,6 +24,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * This script-plugin sets up Kotlin code analyzing with Detekt.
+ *
+ * After applying, Detekt is configured to use `${rootDir}/config/quality/detekt-config.yml` file.
+ * Projects can append their own config files to override some parts of the default one or drop
+ * it at all in a favor of their own one.
+ *
+ * An example of appending a custom config file to the default one:
+ *
+ * ```
+ * detekt {
+ *     config.from("config/detekt-custom-config.yml")
+ * }
+ * ```
+ *
+ * To totally substitute it, just overwrite the corresponding property:
+ *
+ * ```
+ * detekt {
+ *     config = files("config/detekt-custom-config.yml")
+ * }
+ * ```
+ *
+ * Also, it's possible to suppress Detekt findings using [baseline](https://detekt.dev/docs/introduction/baseline/)
+ * file instead of suppressions in source code.
+ *
+ * An example of passing a baseline file:
+ *
+ * ```
+ * detekt {
+ *     baseline = file("config/detekt-baseline.yml")
+ * }
+ * ```
+ */
+
 plugins {
     id("io.gitlab.arturbosch.detekt")
 }
