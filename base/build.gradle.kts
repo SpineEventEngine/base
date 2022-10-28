@@ -61,7 +61,3 @@ protobuf {
 tasks {
     excludeGoogleProtoFromArtifacts()
 }
-
-detekt {
-    config.from("config/detekt-custom-config.yml")
-}
