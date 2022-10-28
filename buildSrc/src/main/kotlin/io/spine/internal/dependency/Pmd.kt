@@ -26,6 +26,7 @@
 
 package io.spine.internal.dependency
 
+// https://pmd.github.io/
 object Pmd {
     const val version = "6.50.0"
 }
