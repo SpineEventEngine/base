@@ -24,40 +24,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.environment;
+package io.spine.environment.given;
 
-import io.spine.base.CustomEnvironmentType;
+import io.spine.environment.CustomEnvironmentType;
 
-/**
- * An environment type that mimics production but receives less traffic and is suitable for testing
- * out new features.
- *
- * <p>This implementations relies on a static {@code boolean} flag for detection.
- */
-final class Staging extends CustomEnvironmentType {
+public final class Local extends CustomEnvironmentType<Local> {
 
-    private static boolean enabled = false;
-
-    Staging() {
-        super();
+    @Override
+    public boolean enabled() {
+        // `LOCAL` is the default custom env type. It should be used as a fallback.
+        return true;
     }
 
     @Override
-    protected boolean enabled() {
-        return enabled;
-    }
-
-    /**
-     * Brings the underlying system into the staging environment.
-     */
-    static void enable() {
-        enabled = true;
-    }
-
-    /**
-     * Brings the underlying system out of the staging environment.
-     */
-    static void disable() {
-        enabled = false;
+    protected Local self() {
+        return this;
     }
 }

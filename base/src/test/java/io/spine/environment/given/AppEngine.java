@@ -24,36 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.environment.given;
 
-import com.google.errorprone.annotations.Immutable;
+import io.spine.environment.CustomEnvironmentType;
 
 /**
- * A non-testing environment.
+ * An environment that denotes that the system is running under Google App Engine.
  *
- * <p>If the system is not in the {@link Tests} environment, it is in the production environment.
+ * <p>Leaves the implementation of {@link #enabled()} to subclasses.
  */
-@Immutable
-public final class Production extends StandardEnvironmentType {
-
-    private static final Production INSTANCE = new Production();
-
-    /**
-     * Obtains the singleton instance.
-     */
-    static Production type() {
-        return INSTANCE;
-    }
-
-    /** Prevents direct instantiation. */
-    private Production() {
-        super();
-    }
-
-    @Override
-    protected boolean enabled() {
-        boolean tests = Tests.type()
-                             .enabled();
-        return !tests;
-    }
+public abstract class AppEngine<T extends AppEngine<T>> extends CustomEnvironmentType<T> {
 }

@@ -24,14 +24,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.given;
+package io.spine.environment.given;
 
-import io.spine.base.CustomEnvironmentType;
+import io.spine.environment.CustomEnvironmentType;
+import io.spine.environment.Tests;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * An environment that denotes that the system is running under Google App Engine.
- *
- * <p>Leaves the implementation of {@link #enabled()} to subclasses.
+ * A stub implementation of a custom testing environment type
+ * that depends on an external service.
  */
-public abstract class AppEngine extends CustomEnvironmentType {
+public final class IntegrationTests extends CustomEnvironmentType<IntegrationTests> {
+
+    private static ThirdPartyService service = null;
+
+    public static void injectService(ThirdPartyService s) {
+        service = checkNotNull(s);
+    }
+
+    @Override
+    protected boolean enabled() {
+        boolean testsEnabled = Tests.type().enabled();
+        boolean serviceStarted = service != null && service.isStarted();
+        return testsEnabled && serviceStarted;
+    }
+
+    @Override
+    protected IntegrationTests self() {
+        return this;
+    }
 }

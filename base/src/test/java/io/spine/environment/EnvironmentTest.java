@@ -24,11 +24,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.environment;
 
-import com.google.errorprone.annotations.Immutable;
-import io.spine.base.given.AppEngine;
-import io.spine.base.given.AppEngineStandard;
+import io.spine.environment.given.AppEngine;
+import io.spine.environment.given.AppEngineStandard;
+import io.spine.environment.given.IntegrationTests;
+import io.spine.environment.given.Local;
+import io.spine.environment.given.Staging;
+import io.spine.environment.given.ThirdPartyService;
+import io.spine.environment.given.Travis;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -40,10 +44,10 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.base.TestsProperty.TESTS_VALUES;
+import static io.spine.environment.TestsProperty.TESTS_VALUES;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@DisplayName("Environment should")
+@DisplayName("`Environment` should")
 @SuppressWarnings("AccessOfSystemProperties")
 class EnvironmentTest {
 
@@ -117,7 +121,7 @@ class EnvironmentTest {
         void environmentVarUnknownValue() {
             System.setProperty(TestsProperty.KEY, "neitherTrueNor1");
 
-            assertThat(environment.is(Production.class)).isTrue();
+            assertThat(environment.is(DefaultMode.class)).isTrue();
         }
     }
 
@@ -132,9 +136,9 @@ class EnvironmentTest {
     @Test
     @DisplayName("turn production mode on")
     void turnProductionOn() {
-        environment.setTo(Production.class);
+        environment.setTo(DefaultMode.class);
 
-        assertThat(environment.is(Production.class)).isTrue();
+        assertThat(environment.is(DefaultMode.class)).isTrue();
     }
 
     @Test
@@ -255,42 +259,67 @@ class EnvironmentTest {
         assertThat(envCached.get()).isTrue();
     }
 
-    @Immutable
-    static final class Local extends CustomEnvironmentType {
+    @Test
+    @DisplayName("implementing custom `Tests`-like types")
+    void integrationTests() {
+        ThirdPartyService service = new ThirdPartyService();
+        environment.register(IntegrationTests.class);
 
-        @Override
-        public boolean enabled() {
-            // `LOCAL` is the default custom env type. It should be used as a fallback.
-            return true;
-        }
+        // We're under tests but service is not injected.
+        assertThat(environment.is(IntegrationTests.class))
+                .isFalse();
+
+        IntegrationTests.injectService(service);
+        environment.autoDetect();
+
+        // Service is injected but is not started.
+        assertThat(environment.is(IntegrationTests.class))
+                .isFalse();
+
+        service.start();
+        environment.autoDetect();
+
+        assertThat(environment.is(IntegrationTests.class))
+                .isTrue();
+
+        service.stop();
+        environment.autoDetect();
+
+        assertThat(environment.is(IntegrationTests.class))
+                .isFalse();
     }
 
-    @Immutable
-    static final class Staging extends CustomEnvironmentType {
 
-        static final String STAGING_ENV_TYPE_KEY = "io.spine.base.EnvironmentTest.is_staging";
+    @Nested
+    @DisplayName("allow configuring callbacks")
+    class Callbacks {
 
-        @Override
-        public boolean enabled() {
-            return String.valueOf(true)
-                         .equalsIgnoreCase(System.getProperty(STAGING_ENV_TYPE_KEY));
+        private boolean called;
+
+        @BeforeEach
+        void clearFlag() {
+            called = false;
         }
 
-        static void set() {
-            System.setProperty(STAGING_ENV_TYPE_KEY, String.valueOf(true));
+        @Test
+        @DisplayName("called by `Environment`")
+        void called() {
+            environment.whenDetected(
+                    Tests.class,
+                    type -> called = true
+            );
+            assertThat(environment.is(Tests.class)).isTrue();
+            assertThat(called).isTrue();
         }
 
-        static void reset() {
-            System.clearProperty(STAGING_ENV_TYPE_KEY);
-        }
-    }
+        @Test
+        @DisplayName("not called when cleared")
+        void notCalled() {
+            environment.whenDetected(Tests.class, type -> called = true);
+            environment.whenDetected(Tests.class, null);
 
-    @Immutable
-    static final class Travis extends CustomEnvironmentType {
-
-        @Override
-        public boolean enabled() {
-            return false;
+            assertThat(environment.is(Tests.class)).isTrue();
+            assertThat(called).isFalse();
         }
     }
 }

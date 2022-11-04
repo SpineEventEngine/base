@@ -24,31 +24,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.given;
-
-import io.spine.base.EnvironmentType;
-
 /**
- * An environment {@linkplain #enabled() that is enabled} based on the value of an env variable
- * specified to the constructor.
+ * Provides classes and interfaces for checking the environment in which the code is executed.
  */
-@SuppressWarnings("AbstractClassWithoutAbstractMethods")
-public abstract class VariableControlledEnvironment extends EnvironmentType {
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.environment;
 
-    private final String envVariable;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    VariableControlledEnvironment(String variable) {
-        this.envVariable = variable;
-    }
-
-    @SuppressWarnings("unused" /* invoked via reflection. */)
-    VariableControlledEnvironment() {
-        this.envVariable = "";
-    }
-
-    @SuppressWarnings("AccessOfSystemProperties")
-    @Override
-    public final boolean enabled() {
-        return System.getProperty(envVariable) != null;
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

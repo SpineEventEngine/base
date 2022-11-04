@@ -24,13 +24,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.environment;
 
 /**
- * Abstract base for standard environment types.
+ * A non-testing environment.
  *
- * @see Tests
- * @see Production
+ * <p>If the system is not in one of the {@link CustomEnvironmentType}s, and
+ * not in the {@link Tests} environment, it is this environment type.
  */
-abstract class StandardEnvironmentType extends EnvironmentType {
+public final class DefaultMode extends StandardEnvironmentType<DefaultMode> {
+
+    private static final DefaultMode INSTANCE = new DefaultMode();
+
+    /**
+     * Obtains the singleton instance.
+     */
+    static DefaultMode type() {
+        return INSTANCE;
+    }
+
+    /** Prevents direct instantiation. */
+    private DefaultMode() {
+        super();
+    }
+
+    @Override
+    protected boolean enabled() {
+        boolean tests = Tests.type().enabled();
+        return !tests;
+    }
+
+    @Override
+    protected DefaultMode self() {
+        return this;
+    }
 }

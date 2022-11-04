@@ -24,38 +24,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.environment;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
-import com.google.errorprone.annotations.Immutable;
 
 /**
  * Testing environment.
  *
  * <p>Detected by checking stack trace for mentions of the known testing frameworks.
  *
- * <p>This option is mutually exclusive with {@link Production}, i.e. one of them is always enabled.
+ * <p>This option is mutually exclusive with {@link DefaultMode}, i.e. one of them is always enabled.
  */
-@Immutable
-public final class Tests extends StandardEnvironmentType {
+public final class Tests extends StandardEnvironmentType<Tests> {
 
     private static final Tests INSTANCE = new Tests();
 
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in another context. */)
     private static final ImmutableList<String> KNOWN_TESTING_FRAMEWORKS =
-            ImmutableList.of("org.junit", "org.testng", "io.spine.testing");
+            ImmutableList.of("org.junit",
+                             "org.testng",
+                             "org.spekframework", // v2
+                             "io.spine.testing",
+                             "io.kotest");
 
     /**
      * The names of the packages that when discovered in a stacktrace would tell that
      * the code is executed under tests.
-     *
-     * <p>The returned package names are:
-     * <ol>
-     *     <li>"org.junit"
-     *     <li>"org.testng"
-     *     <li>"io.spine.testing"
-     * </ol>
      *
      * @see #enabled()
      */
@@ -66,7 +61,7 @@ public final class Tests extends StandardEnvironmentType {
     /**
      * Obtains the singleton instance.
      */
-    static Tests type() {
+    public static Tests type() {
         return INSTANCE;
     }
 
@@ -90,16 +85,20 @@ public final class Tests extends StandardEnvironmentType {
      * @see #knownTestingFrameworks()
      */
     @Override
-    protected boolean enabled() {
+    public boolean enabled() {
         TestsProperty property = new TestsProperty();
         if (property.isSet()) {
             return property.value();
         }
 
         String stacktrace = Throwables.getStackTraceAsString(new RuntimeException(""));
-        boolean result =
-                knownTestingFrameworks().stream()
-                                        .anyMatch(stacktrace::contains);
+        boolean result = knownTestingFrameworks().stream()
+                                                 .anyMatch(stacktrace::contains);
         return result;
+    }
+
+    @Override
+    protected Tests self() {
+        return this;
     }
 }
