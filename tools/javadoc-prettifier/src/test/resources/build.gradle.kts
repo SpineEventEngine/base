@@ -32,7 +32,7 @@ buildscript {
 
     repositories {
         mavenLocal()
-        jcenter()
+        mavenCentral()
     }
 
     val spineVersion: String by extra
