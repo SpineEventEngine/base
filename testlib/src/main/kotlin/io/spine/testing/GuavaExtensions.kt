@@ -24,4 +24,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.121")
+package io.spine.testing
+
+import com.google.common.testing.NullPointerTester
+
+/**
+ * Creates [NullPointerTester] and runs the [block] on it.
+ */
+public fun nullPointerTester(block: NullPointerTester.() -> NullPointerTester): NullPointerTester {
+    val tester = NullPointerTester()
+    tester.block()
+    return tester
+}
+
+/**
+ * Allows to use generic parameter of the function instead of `MyType::class.java` as the first
+ * parameter type.
+ */
+public inline fun <reified T : Any> NullPointerTester.setDefault(value: T): NullPointerTester =
+    setDefault(T::class.java, value)
+
