@@ -26,7 +26,6 @@
 
 package io.spine.testing
 
-import com.google.common.testing.NullPointerTester
 import com.google.common.truth.IterableSubject
 import com.google.common.truth.OptionalSubject
 import com.google.common.truth.StringSubject
@@ -58,13 +57,6 @@ import java.util.*
  */
 @Suppress("unused") // is used for KDoc on this file.
 private const val ABOUT = ""
-
-/**
- * Allows to use generic parameter of the function instead of `MyType::class.java` as the first
- * parameter type.
- */
-public inline fun <reified T : Any> NullPointerTester.setDefault(value: T): NullPointerTester =
-    setDefault(T::class.java, value)
 
 /**
  * Allows to write:
