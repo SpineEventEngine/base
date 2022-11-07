@@ -32,6 +32,10 @@ import io.spine.environment.CustomEnvironmentType;
  * An environment that denotes that the system is running under Google App Engine.
  *
  * <p>Leaves the implementation of {@link #enabled()} to subclasses.
+ *
+ * @param <T>
+ *         the type of particular environment
  */
 public abstract class AppEngine<T extends AppEngine<T>> extends CustomEnvironmentType<T> {
+
 }
