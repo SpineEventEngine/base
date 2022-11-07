@@ -30,9 +30,12 @@ import io.spine.environment.CustomEnvironmentType;
 
 public final class Local extends CustomEnvironmentType<Local> {
 
+    /**
+     * Always returns {@code true}, as {@code Local} is a default custom env type,
+     * and it is configured to be used as a fallback.
+     */
     @Override
     public boolean enabled() {
-        // `LOCAL` is the default custom env type. It should be used as a fallback.
         return true;
     }
 
