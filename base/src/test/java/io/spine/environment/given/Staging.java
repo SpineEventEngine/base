@@ -53,4 +53,3 @@ public final class Staging extends CustomEnvironmentType<Staging> {
         System.clearProperty(STAGING_ENV_TYPE_KEY);
     }
 }
-
