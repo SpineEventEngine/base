@@ -195,7 +195,7 @@ public final class Environment implements Logging {
     }
 
     /**
-     * Give custom environment types a chance to be detected as the current one
+     * Gives custom environment types a chance to be detected as the current one
      * in response to the changes of their surroundings.
      *
      * <p>Unlike {@link #reset()} this method keeps custom types, but clears
