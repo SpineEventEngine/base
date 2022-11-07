@@ -24,13 +24,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.environment.given;
 
 /**
- * Abstract base for standard environment types.
- *
- * @see Tests
- * @see Production
+ * Determines whether the system is running under Google App Engine Standard environment.
  */
-abstract class StandardEnvironmentType extends EnvironmentType {
+@SuppressWarnings("AccessOfSystemProperties")
+public class AppEngineStandard extends AppEngine<AppEngineStandard> {
+
+    private static final String ENV_KEY = "io.spine.base.test.is_appengine";
+
+    @Override
+    protected boolean enabled() {
+        String propertyValue = System.getProperty(ENV_KEY);
+        return activeValue().equalsIgnoreCase(propertyValue);
+    }
+
+    @Override
+    protected AppEngineStandard self() {
+        return this;
+    }
+
+    /**
+     * Enables the App Engine Standard environment.
+     */
+    public static void enable() {
+        System.setProperty(ENV_KEY, activeValue());
+    }
+
+    /**
+     * Disables teh App Engine Standard environment.
+     */
+    public static void clear() {
+        System.clearProperty(ENV_KEY);
+    }
+
+    private static String activeValue() {
+        return String.valueOf(true);
+    }
 }

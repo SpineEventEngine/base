@@ -24,36 +24,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.environment.given;
 
-import com.google.errorprone.annotations.Immutable;
+import io.spine.environment.CustomEnvironmentType;
+import io.spine.environment.Tests;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A non-testing environment.
- *
- * <p>If the system is not in the {@link Tests} environment, it is in the production environment.
+ * A stub implementation of a custom testing environment type
+ * that depends on an external service.
  */
-@Immutable
-public final class Production extends StandardEnvironmentType {
+public final class IntegrationTests extends CustomEnvironmentType<IntegrationTests> {
 
-    private static final Production INSTANCE = new Production();
+    private static ThirdPartyService service = null;
 
-    /**
-     * Obtains the singleton instance.
-     */
-    static Production type() {
-        return INSTANCE;
-    }
-
-    /** Prevents direct instantiation. */
-    private Production() {
-        super();
+    public static void injectService(ThirdPartyService s) {
+        service = checkNotNull(s);
     }
 
     @Override
     protected boolean enabled() {
-        boolean tests = Tests.type()
-                             .enabled();
-        return !tests;
+        boolean testsEnabled = Tests.type().enabled();
+        boolean serviceStarted = service != null && service.isStarted();
+        return testsEnabled && serviceStarted;
+    }
+
+    @Override
+    protected IntegrationTests self() {
+        return this;
     }
 }

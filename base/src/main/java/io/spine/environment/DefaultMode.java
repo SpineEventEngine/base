@@ -24,40 +24,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.environment;
-
-import io.spine.base.CustomEnvironmentType;
+package io.spine.environment;
 
 /**
- * An environment type that mimics production but receives less traffic and is suitable for testing
- * out new features.
+ * A non-testing environment.
  *
- * <p>This implementations relies on a static {@code boolean} flag for detection.
+ * <p>If the system is not in one of the {@link CustomEnvironmentType}s, and
+ * not in the {@link Tests} environment, it is this environment type.
  */
-final class Staging extends CustomEnvironmentType {
+public final class DefaultMode extends StandardEnvironmentType<DefaultMode> {
 
-    private static boolean enabled = false;
+    private static final DefaultMode INSTANCE = new DefaultMode();
 
-    Staging() {
+    /**
+     * Obtains the singleton instance.
+     */
+    static DefaultMode type() {
+        return INSTANCE;
+    }
+
+    /** Prevents direct instantiation. */
+    private DefaultMode() {
         super();
     }
 
     @Override
     protected boolean enabled() {
-        return enabled;
+        boolean tests = Tests.type().enabled();
+        return !tests;
     }
 
-    /**
-     * Brings the underlying system into the staging environment.
-     */
-    static void enable() {
-        enabled = true;
-    }
-
-    /**
-     * Brings the underlying system out of the staging environment.
-     */
-    static void disable() {
-        enabled = false;
+    @Override
+    protected DefaultMode self() {
+        return this;
     }
 }

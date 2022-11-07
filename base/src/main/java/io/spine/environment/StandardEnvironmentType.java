@@ -24,14 +24,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.given;
+package io.spine.environment;
 
 /**
- * AWS Lambda environment is enabled if a specific env variable is set.
+ * Abstract base for standard environment types.
+ *
+ * @param <T>
+ *         the type of the environment for type covariance
+ * @see Tests
+ * @see DefaultMode
  */
-public final class AwsLambda extends VariableControlledEnvironment {
+abstract class StandardEnvironmentType<T extends StandardEnvironmentType<T>>
+        extends EnvironmentType<T> {
 
-    public AwsLambda() {
-        super("AWS_LAMBDA_FUNCTION_NAME");
-    }
 }

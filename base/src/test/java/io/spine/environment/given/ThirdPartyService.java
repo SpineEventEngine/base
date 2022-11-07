@@ -24,15 +24,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.environment.given;
+
 /**
- * This package contains tests for {@link io.spine.base.Environment} with custom
- * {@linkplain io.spine.base.EnvironmentType environment types} using them how they would be used
- * from a client API, i.e. from a package different from {@code io.spine.base}.
+ * A stub object simulating a third-party service used in {@link IntegrationTests}.
  */
-@ParametersAreNonnullByDefault
-@CheckReturnValue
-package io.spine.base.environment;
+public final class ThirdPartyService {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    private boolean started = false;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    public void start() {
+        this.started = true;
+    }
+
+    boolean isStarted() {
+        return started;
+    }
+
+    public void stop() {
+        this.started = false;
+    }
+}

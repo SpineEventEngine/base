@@ -24,26 +24,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
- *
- * This version file adheres to the contract of the
- * [publishing application](https://github.com/SpineEventEngine/publishing).
- *
- * When changing the version declarations or adding new ones, make sure to change
- * the publishing application accordingly.
- */
+package io.spine.environment.given;
 
-/**
- * The version of this library.
- */
-val base = "1.9.0-SNAPSHOT.3"
+import io.spine.environment.CustomEnvironmentType;
 
-project.extra.apply {
-    this["spineVersion"] = base
-    this["spineBaseVersion"] = base // Used by `filter-internal-javadoc.gradle`.
-    this["versionToPublish"] = base
+public final class Travis extends CustomEnvironmentType<Travis> {
+
+    @Override
+    public boolean enabled() {
+        return false;
+    }
+
+    @Override
+    protected Travis self() {
+        return this;
+    }
 }

@@ -24,14 +24,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.given;
+package io.spine.environment.given;
 
-import io.spine.base.CustomEnvironmentType;
+import io.spine.environment.CustomEnvironmentType;
 
 /**
  * An environment that denotes that the system is running under Google App Engine.
  *
  * <p>Leaves the implementation of {@link #enabled()} to subclasses.
+ *
+ * @param <T>
+ *         the type of particular environment
  */
-public abstract class AppEngine extends CustomEnvironmentType {
+public abstract class AppEngine<T extends AppEngine<T>> extends CustomEnvironmentType<T> {
+
 }

@@ -24,42 +24,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.environment;
+package io.spine.environment.given;
 
-import io.spine.base.Environment;
-import io.spine.base.Tests;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import io.spine.environment.CustomEnvironmentType;
 
-import static com.google.common.truth.Truth.assertThat;
+public final class Local extends CustomEnvironmentType<Local> {
 
-@DisplayName("`Environment` should")
-class CustomEnvironmentTest {
-
-    private static final Environment environment = Environment.instance();
-
-    @BeforeEach
-    void reset() {
-        environment.reset();
+    /**
+     * Always returns {@code true}, as {@code Local} is a default custom env type,
+     * and it is configured to be used as a fallback.
+     */
+    @Override
+    public boolean enabled() {
+        return true;
     }
 
-    @Test
-    @DisplayName("allow a custom type")
-    void allowCustomType() {
-        environment.register(Staging.class);
-
-        Staging.enable();
-        assertThat(environment.is(Staging.class)).isTrue();
-    }
-
-    @Test
-    @DisplayName("fallback to the default type")
-    void fallbackToCustomType() {
-        environment.register(Staging.class);
-
-        Staging.disable();
-
-        assertThat(environment.is(Tests.class)).isTrue();
+    @Override
+    protected Local self() {
+        return this;
     }
 }

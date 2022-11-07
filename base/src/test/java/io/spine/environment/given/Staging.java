@@ -24,31 +24,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.given;
+package io.spine.environment.given;
 
-import io.spine.base.EnvironmentType;
+import io.spine.environment.CustomEnvironmentType;
 
-/**
- * An environment {@linkplain #enabled() that is enabled} based on the value of an env variable
- * specified to the constructor.
- */
-@SuppressWarnings("AbstractClassWithoutAbstractMethods")
-public abstract class VariableControlledEnvironment extends EnvironmentType {
+@SuppressWarnings("AccessOfSystemProperties")
+public final class Staging extends CustomEnvironmentType<Staging> {
 
-    private final String envVariable;
+    private static final String STAGING_ENV_TYPE_KEY =
+            "io.spine.base.EnvironmentTest.is_staging";
 
-    VariableControlledEnvironment(String variable) {
-        this.envVariable = variable;
-    }
-
-    @SuppressWarnings("unused" /* invoked via reflection. */)
-    VariableControlledEnvironment() {
-        this.envVariable = "";
-    }
-
-    @SuppressWarnings("AccessOfSystemProperties")
     @Override
-    public final boolean enabled() {
-        return System.getProperty(envVariable) != null;
+    public boolean enabled() {
+        return String.valueOf(true)
+                     .equalsIgnoreCase(System.getProperty(STAGING_ENV_TYPE_KEY));
+    }
+
+    @Override
+    protected Staging self() {
+        return this;
+    }
+
+    public static void set() {
+        System.setProperty(STAGING_ENV_TYPE_KEY, String.valueOf(true));
+    }
+
+    public static void reset() {
+        System.clearProperty(STAGING_ENV_TYPE_KEY);
     }
 }

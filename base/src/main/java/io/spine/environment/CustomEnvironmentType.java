@@ -24,11 +24,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.environment;
 
 /**
  * Abstract base for custom environment types.
- **
+ *
  * <p>{@code Environment} allows to {@link Environment#register(Class) register custom types}.
  * In this case the environment detection functionality iterates over all known types, starting
  * with those registered by the framework user:
@@ -40,7 +40,7 @@ package io.spine.base;
  *     static {
  *         Environment.instance()
  *                    .register(Staging.class)
- *                    .register(LoadTesting().class);
+ *                    .register(LoadTesting.class);
  *     }
  *
  *     private final ConnectionPool pool;
@@ -67,8 +67,12 @@ package io.spine.base;
  * <p><b>When registering custom types, please ensure</b> their mutual exclusivity.
  * If two or more environment types {@linkplain EnvironmentType#enabled() consider themselves
  * enabled} at the same time, the behaviour of {@link Environment#is(Class)} is undefined.
+ *
+ * @param <T>
+ *         the type of the environment for type covariance
  */
-public abstract class CustomEnvironmentType extends EnvironmentType {
+public abstract class CustomEnvironmentType<T extends CustomEnvironmentType<T>>
+        extends EnvironmentType<T> {
 
     /**
      * Custom environment types must have a public no-arg constructor.
