@@ -54,8 +54,12 @@ jobs:
 
       - name: Publish artifacts to Maven
         # Since we're in the `v1`/`1.x-dev` branch already, this means that tests of a PR passed.
-        # So, no need to run the tests again when publishing.
-        run: ./gradlew publish -x test --stacktrace
+        # So, no need to run the tests again when publishing.\
+        #
+        # Also, we don't want to update the GitHub Pages content, as it may be already
+        # updated with the contents of 2.x branch. So this operation should be performed
+        # manually, if really needed.
+        run: ./gradlew publish -x test -x updateGitHubPages --stacktrace
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FORMAL_GIT_HUB_PAGES_AUTHOR: developers@spine.io
