@@ -218,12 +218,12 @@ public final class Assertions {
                     var repeatedFieldValue = (List<?>) message.getField(field);
                     var repeatsAtLeastOnce = repeatedFieldValue.isEmpty();
                     assertFalse(repeatsAtLeastOnce,
-                                format("Field %s wasn't found in the specified message.",
+                                format("Field `%s` wasn't found in the specified message.",
                                        field.getName()));
                 }
             } else {
                 assertEquals(message.hasField(field), maskHasSuchField,
-                             format("Mismatch found between field %s in the " +
+                             format("Mismatch found between field `%s` in the " +
                                             "specified message and the mask.",
                                     field.getName()));
             }
