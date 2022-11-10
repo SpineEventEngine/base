@@ -139,5 +139,3 @@ private class FileExist(
  */
 public inline fun <reified C: Any> hasPrivateParameterlessCtor(): Boolean =
     hasPrivateParameterlessCtor(C::class.java)
-
-
