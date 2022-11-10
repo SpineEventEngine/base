@@ -30,7 +30,8 @@ package io.spine.protobuf
 
 import com.google.protobuf.FieldMask
 import com.google.protobuf.Message
-import com.google.protobuf.util.FieldMaskUtil
+import com.google.protobuf.util.FieldMaskUtil.fromFieldNumbers
+import com.google.protobuf.util.FieldMaskUtil.isValid
 
 /**
  * Constructs a [FieldMask] from the passed field numbers.
@@ -48,16 +49,16 @@ public inline fun <reified T : Message> fromFieldNumbers(vararg fieldNumbers: In
  *          if any of the fields are invalid for the message.
  */
 public inline fun <reified T : Message> fromFieldNumbers(fieldNumbers: Iterable<Int>): FieldMask =
-    FieldMaskUtil.fromFieldNumbers(T::class.java, fieldNumbers)
+    fromFieldNumbers(T::class.java, fieldNumbers)
 
 /**
  * Checks whether paths in a given fields mask are valid.
  */
 public inline fun <reified T : Message> isValid(fieldMask: FieldMask): Boolean =
-    FieldMaskUtil.isValid(T::class.java, fieldMask)
+    isValid(T::class.java, fieldMask)
 
 /**
  * Checks whether a given field path is valid.
  */
 public inline fun <reified T : Message> isValid(path: String): Boolean =
-    FieldMaskUtil.isValid(T::class.java, path)
+    isValid(T::class.java, path)
