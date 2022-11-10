@@ -68,11 +68,16 @@ internal class `Extensions for 'Throwable' should` {
     /**
      * Stub type of [RejectionThrowable] which serves only as a type.
      */
-    private class StubRejectionThrowable: RejectionThrowable(StubRejectionMessage())
+    private class StubRejectionThrowable: RejectionThrowable(StubRejectionMessage()) {
+        companion object {
+            private const val serialVersionUID: Long = 0L
+        }
+    }
 
     /**
      * Stub type of [RejectionMessage] which serves only as a type.
      */
+    @Suppress("TooManyFunctions")
     private class StubRejectionMessage: RejectionMessage {
         override fun getDefaultInstanceForType(): Message = notImplemented()
         override fun isInitialized(): Boolean = notImplemented()
@@ -98,5 +103,9 @@ internal class `Extensions for 'Throwable' should` {
         override fun getRepeatedField(field: FieldDescriptor?, index: Int): Any = notImplemented()
         override fun getUnknownFields(): UnknownFieldSet = notImplemented()
         private fun notImplemented(): Nothing = TODO("Stub type")
+
+        companion object {
+            private const val serialVersionUID: Long = 0L
+        }
     }
 }

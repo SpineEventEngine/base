@@ -193,8 +193,9 @@ subprojects {
         all {
             resolutionStrategy {
                 force(
-                    "org.junit:junit-bom:${JUnit.version}",
-                    "org.jetbrains.dokka:dokka-base:${Dokka.version}"
+                    JUnit.bom,
+                    JUnit.runner,
+                    Dokka.BasePlugin.lib
                 )
             }
         }

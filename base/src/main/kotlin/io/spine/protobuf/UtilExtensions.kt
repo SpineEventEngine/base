@@ -24,42 +24,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.generateProtoTasks
-import com.google.protobuf.gradle.protobuf
-import io.spine.internal.dependency.Guava
-import io.spine.internal.dependency.JUnit
-import io.spine.internal.dependency.Protobuf
-import io.spine.internal.dependency.Truth
-import io.spine.internal.gradle.protobuf.setup
+@file:JvmName("UtilExtensions")
 
-group = "io.spine.tools"
+package io.spine.protobuf
 
-plugins {
-    id("detekt-code-analysis")
-}
+import com.google.protobuf.FieldMask
+import com.google.protobuf.Message
+import com.google.protobuf.util.FieldMaskUtil.fromFieldNumbers
+import com.google.protobuf.util.FieldMaskUtil.isValid
 
-dependencies {
-    /*
-        Expose tools we use as transitive dependencies to simplify dependency
-        management in subprojects.
-    */
-    Protobuf.libs.forEach { api(it) }
-    JUnit.api.forEach { api(it) }
-    Truth.libs.forEach { api(it) }
-    api(Guava.testLib)
-    api(kotlin("test-junit5"))
-    implementation(project(":base"))
-}
+/**
+ * Constructs a [FieldMask] from the passed field numbers.
+ *
+ * @throws IllegalArgumentException
+ *          if any of the fields are invalid for the message.
+ */
+public inline fun <reified T : Message> fromFieldNumbers(vararg fieldNumbers: Int): FieldMask =
+    fromFieldNumbers<T>(fieldNumbers.toList())
 
-protobuf {
-    val generatedDir by project.extra("$projectDir/generated")
-    generateProtoTasks {
-        for (task in all()) {
-            task.setup(generatedDir)
-        }
-    }
-}
+/**
+ * Constructs a [FieldMask] from the passed field numbers.
+ *
+ * @throws IllegalArgumentException
+ *          if any of the fields are invalid for the message.
+ */
+public inline fun <reified T : Message> fromFieldNumbers(fieldNumbers: Iterable<Int>): FieldMask =
+    fromFieldNumbers(T::class.java, fieldNumbers)
 
-detekt {
-    baseline = file("config/detekt-baseline.xml")
-}
+/**
+ * Checks whether paths in a given fields mask are valid.
+ */
+public inline fun <reified T : Message> isValid(fieldMask: FieldMask): Boolean =
+    isValid(T::class.java, fieldMask)
+
+/**
+ * Checks whether a given field path is valid.
+ */
+public inline fun <reified T : Message> isValid(path: String): Boolean =
+    isValid(T::class.java, path)
