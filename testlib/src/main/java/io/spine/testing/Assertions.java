@@ -138,8 +138,7 @@ public final class Assertions {
      * @return {@code true} if the class has private parameter-less constructor,
      *         {@code false} otherwise
      */
-    @VisibleForTesting
-    static boolean hasPrivateParameterlessCtor(Class<?> targetClass) {
+    public static boolean hasPrivateParameterlessCtor(Class<?> targetClass) {
         checkNotNull(targetClass);
         Constructor<?> constructor;
         try {
