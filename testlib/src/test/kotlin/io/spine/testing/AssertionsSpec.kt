@@ -291,9 +291,9 @@ internal class AssertionsSpec private constructor() :
             @Test
             fun `less than the subtraction of the expected value and delta`() {
                 val actualValue: Long = value
-                val expectedValue = actualValue + Companion.DELTA + 1
+                val expectedValue = actualValue + DELTA + 1
                 assertThrows<AssertionError> {
-                    assertInDelta(expectedValue, actualValue, Companion.DELTA)
+                    assertInDelta(expectedValue, actualValue, DELTA)
                 }
             }
         }
