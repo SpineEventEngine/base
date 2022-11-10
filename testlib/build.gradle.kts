@@ -47,6 +47,7 @@ dependencies {
     JUnit.api.forEach { api(it) }
     Truth.libs.forEach { api(it) }
     api(Guava.testLib)
+    api(kotlin("test-junit5"))
     implementation(project(":base"))
 }
 
