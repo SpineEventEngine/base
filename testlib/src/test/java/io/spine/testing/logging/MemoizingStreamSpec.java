@@ -42,7 +42,7 @@ import static java.lang.Byte.MAX_VALUE;
 import static java.lang.Byte.MIN_VALUE;
 
 @DisplayName("`MemoizingStream` should")
-class MemoizingStreamTest {
+class MemoizingStreamSpec {
 
     private static final byte[] EMPTY_BYTES = {};
 

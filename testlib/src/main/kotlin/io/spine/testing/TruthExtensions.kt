@@ -30,6 +30,7 @@ import com.google.common.truth.IterableSubject
 import com.google.common.truth.OptionalSubject
 import com.google.common.truth.StringSubject
 import com.google.common.truth.StringSubject.CaseInsensitiveStringComparison
+import com.google.common.truth.Subject
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth8
 import com.google.common.truth.extensions.proto.FieldScope
@@ -127,6 +128,15 @@ public fun <T> assertThat(optional: Optional<T>, assertions: OptionalSubject.() 
 public fun <T : Message> assertThat(m: T, assertions: ProtoSubject.() -> Unit) {
     ProtoTruth.assertThat(m).run { assertions() }
 }
+
+/**
+ * Allows to write:
+ * ```kotlin
+ * assertThat(object).isInstanceOf<Any>()
+ * ```
+ */
+public inline fun <reified T: Any> Subject.isInstanceOf(): Unit =
+    isInstanceOf(T::class.java)
 
 /**
  * @see [ProtoSubject.ignoringFieldAbsence]

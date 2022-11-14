@@ -26,12 +26,47 @@
 
 package io.spine.testing;
 
+import com.google.protobuf.Any;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-@DisplayName("DisplayNames utility class should")
-class DisplayNamesTest extends UtilityClassTest<DisplayNames> {
+import java.lang.reflect.Constructor;
 
-    DisplayNamesTest() {
-        super(DisplayNames.class);
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+@DisplayName("`ReflectiveBuilder` should")
+class ReflectiveBuilderSpec {
+
+    @Test
+    @DisplayName("have the result class")
+    void resultClass() {
+        var builder = new DummyBuilder().setResultClass(Any.class);
+        assertEquals(Any.class, builder.resultClass());
+    }
+
+    @Test
+    @DisplayName("obtain a constructor")
+    void ctor() {
+        assertNotNull(new DummyBuilder().constructor());
+    }
+
+    private static class DummyBuilder extends ReflectiveBuilder<Any> {
+
+        @Override
+        protected Constructor<Any> constructor() {
+            Constructor<Any> ctor;
+            try {
+                ctor = Any.class.getDeclaredConstructor();
+            } catch (NoSuchMethodException e) {
+                throw new IllegalStateException(e);
+            }
+            return ctor;
+        }
+
+        @Override
+        public Any build() {
+            return Any.getDefaultInstance();
+        }
     }
 }

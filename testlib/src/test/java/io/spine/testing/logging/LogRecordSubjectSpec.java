@@ -42,7 +42,7 @@ import static io.spine.testing.logging.LogRecordSubject.NO_LOG_RECORD;
 import static io.spine.testing.logging.LogRecordSubject.records;
 
 @DisplayName("`LogRecordSubject` should have")
-class LogRecordSubjectTest extends SubjectTest<LogRecordSubject, LogRecord> {
+class LogRecordSubjectSpec extends SubjectTest<LogRecordSubject, LogRecord> {
 
     private LogRecord record;
     private String msg;
@@ -175,7 +175,7 @@ class LogRecordSubjectTest extends SubjectTest<LogRecordSubject, LogRecord> {
 
     @Test
     void hasClassThat() {
-        var className = LogRecordSubjectTest.class.getName();
+        var className = LogRecordSubjectSpec.class.getName();
         record.setSourceClassName(className);
         assertWithSubjectThat(record)
                 .hasClassNameThat()

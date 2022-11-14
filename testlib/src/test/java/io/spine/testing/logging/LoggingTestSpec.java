@@ -37,7 +37,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertIllegalState;
 
 @DisplayName("`LoggerTest` should")
-class LoggingTestTest {
+class LoggingTestSpec {
 
     private LoggingTest test;
     private Level previousLevel;

@@ -49,7 +49,6 @@ import static org.junit.jupiter.api.Assertions.assertSame;
  *
  * @param <S> the type of the singleton
  */
-@SuppressWarnings("UnstableApiUsage") // NPE testing utils from Guava.
 public abstract class SingletonTest<S> extends ClassTest<S> {
 
     private final Supplier<S> accessor;
@@ -77,7 +76,7 @@ public abstract class SingletonTest<S> extends ClassTest<S> {
      * @param subject
      *          the class under the tests
      * @param accessor
-     *          method reference to obtains the singleton
+     *          method reference to obtain the singleton
      */
     protected SingletonTest(Class<S> subject, Supplier<S> accessor) {
         this(subject, PUBLIC, accessor);
