@@ -29,6 +29,8 @@ package io.spine.testing
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.ProtoTruth
 import com.google.protobuf.ExtensionRegistry
+import com.google.protobuf.Timestamp
+import io.spine.base.Time
 import io.spine.type.KnownTypes
 import java.util.*
 import org.junit.jupiter.api.DisplayName
@@ -60,6 +62,11 @@ internal class TruthExtensionsSpec {
             // And plain Truth syntax works too.
             assertThat("fiz baz").ignoringCase().contains("BaZ")
         }
+    }
+
+    @Test
+    fun `fun for checking 'instanceOf'`() {
+        assertThat(Time.currentTime()).isInstanceOf<Timestamp>()
     }
 
     @Test
