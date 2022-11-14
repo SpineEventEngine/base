@@ -24,15 +24,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.testing.logging;
+package io.spine.testing;
 
-import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-@DisplayName("LogTruth should")
-class LogTruthTest extends UtilityClassTest<LogTruth> {
+import static com.google.common.truth.Truth.assertThat;
 
-    LogTruthTest() {
-        super(LogTruth.class);
+class StubMessageSpec {
+
+    @Test
+    @DisplayName("can have derived classes with default constructor")
+    void derivedClass() {
+         var msg = new StubMessage() {
+         };
+
+         assertThat(msg).isNotNull();
     }
 }

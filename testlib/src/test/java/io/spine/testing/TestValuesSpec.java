@@ -24,59 +24,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.testing.logging;
+package io.spine.testing;
 
-import io.spine.testing.TestValues;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+@DisplayName("`TestValues` utility class should")
+class TestValuesSpec extends UtilityClassTest<TestValues> {
 
-@DisplayName("`AssertingHandler` should")
-class AssertingHandlerTest {
-
-    private static final Logger logger = Logger.getLogger(AssertingHandlerTest.class.getName());
-
-    private AssertingHandler handler;
-
-    @BeforeEach
-    void setupHandler() {
-        handler = new AssertingHandler();
-        logger.setUseParentHandlers(false);
-        logger.addHandler(handler);
-        logger.setLevel(Level.INFO);
-    }
-
-    @AfterEach
-    void clearHandler() {
-        logger.removeHandler(handler);
+    TestValuesSpec() {
+        super(TestValues.class);
     }
 
     @Test
-    @DisplayName("assert no logs if nothing logged")
-    void noLogs() {
-        assertDoesNotThrow(handler::isEmpty);
+    @DisplayName("provide `null` reference method")
+    void nullRef() {
+        assertNull(TestValues.nullRef());
     }
 
     @Test
-    @DisplayName("throw `AssertionError` if there were logs")
-    void throwIfLogged() {
-        logger.info("Testing assertion");
-        assertThrows(AssertionError.class, () -> handler.isEmpty());
+    @DisplayName("provide a random non-negative number")
+    void randomNegativeNumber() {
+        assertTrue(TestValues.random(100) >= 0);
     }
 
     @Test
-    @DisplayName("obtain `StringSubject` for the first record")
-    void textAssertion() {
-        var msg = TestValues.randomString();
-        logger.info(msg);
-        handler.textOutput()
-               .contains(msg);
+    @DisplayName("provide a random number in a range")
+    void randomNumber() {
+        var value = TestValues.random(-100, 100);
+        assertTrue(value >= -100);
+        assertTrue(value <= 100);
     }
 }

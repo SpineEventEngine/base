@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`SingletonTest` should")
-class SingletonTestTest {
+class SingletonTestSpec {
 
     private SingletonTest<?> subject;
 
@@ -48,7 +48,7 @@ class SingletonTestTest {
      * A test suite for correctly implemented singleton class.
      */
     private static SingletonTest<SingletonClass> positiveSuite() {
-        return new SingletonTest<SingletonClass>(
+        return new SingletonTest<>(
                 SingletonClass.class, SingletonClass::instance) {
         };
     }
@@ -68,7 +68,7 @@ class SingletonTestTest {
         @Test
         @DisplayName("throwing when not the same")
         void incorrect() {
-            subject = new SingletonTest<EveryTimeNew>(EveryTimeNew.class, EveryTimeNew::instance) {
+            subject = new SingletonTest<>(EveryTimeNew.class, EveryTimeNew::instance) {
             };
 
             assertFails(() -> subject.sameInstance());
@@ -90,7 +90,8 @@ class SingletonTestTest {
         @Test
         @DisplayName("throwing when no constructors are declared")
         void noConstructor() {
-            subject = new SingletonTest<NoConstructor>(NoConstructor.class, NoConstructor::new) {};
+            subject = new SingletonTest<>(NoConstructor.class, NoConstructor::new) {
+            };
 
             assertFails();
         }
@@ -98,7 +99,7 @@ class SingletonTestTest {
         @Test
         @DisplayName("throwing when package-private constructor defined")
         void packagePrivateConstructor() {
-            subject = new SingletonTest<PackagePrivateConstructor>(
+            subject = new SingletonTest<>(
                     PackagePrivateConstructor.class, PackagePrivateConstructor::instance) {
             };
 
@@ -108,7 +109,7 @@ class SingletonTestTest {
         @Test
         @DisplayName("throwing when protected constructor defined")
         void protectedConstructor() {
-            subject = new SingletonTest<ProtectedConstructor>(
+            subject = new SingletonTest<>(
                     ProtectedConstructor.class, ProtectedConstructor::instance) {
             };
 
@@ -116,7 +117,7 @@ class SingletonTestTest {
         }
 
         private void assertFails() {
-            SingletonTestTest.assertFails(() -> subject.ctorCheck());
+            SingletonTestSpec.assertFails(() -> subject.ctorCheck());
         }
     }
 

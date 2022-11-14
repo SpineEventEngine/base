@@ -24,38 +24,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.testing;
+package io.spine.testing.logging;
 
+import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+@DisplayName("`LogTruth` should")
+class LogTruthSpec extends UtilityClassTest<LogTruth> {
 
-@DisplayName("`TestValues` utility class should")
-class TestValuesTest extends UtilityClassTest<TestValues> {
-
-    TestValuesTest() {
-        super(TestValues.class);
-    }
-
-    @Test
-    @DisplayName("provide `null` reference method")
-    void nullRef() {
-        assertNull(TestValues.nullRef());
-    }
-
-    @Test
-    @DisplayName("provide a random non-negative number")
-    void randomNegativeNumber() {
-        assertTrue(TestValues.random(100) >= 0);
-    }
-
-    @Test
-    @DisplayName("provide a random number in a range")
-    void randomNumber() {
-        var value = TestValues.random(-100, 100);
-        assertTrue(value >= -100);
-        assertTrue(value <= 100);
+    LogTruthSpec() {
+        super(LogTruth.class);
     }
 }
