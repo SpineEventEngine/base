@@ -30,18 +30,21 @@ import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.ProtoTruth.assertThat
 import com.google.protobuf.Message
 import com.google.protobuf.StringValue
+import com.google.protobuf.stringValue
 import io.spine.test.protobuf.MessageToPack
+import io.spine.test.protobuf.messageToPack
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-class `'Any' extensions should` {
+@DisplayName("`Any` Kotlin extensions should")
+class AnyExtensionsSpec {
 
     @Test
     fun `unpack Any into a concrete type`() {
-        val msg = MessageToPack
-            .newBuilder()
-            .setValue(StringValue.of("bla bla"))
-            .build()
+        val msg = messageToPack {
+            value = stringValue { value = "bla bla" }
+        }
         val any = AnyPacker.pack(msg)
 
         val unpacked = any.unpack<MessageToPack>()
@@ -51,8 +54,7 @@ class `'Any' extensions should` {
 
     @Test
     fun `unpack Any without a concrete type`() {
-        val msg = MessageToPack
-            .newBuilder()
+        val msg = MessageToPack.newBuilder()
             .setValue(StringValue.of("foo bar"))
             .build()
         val any = AnyPacker.pack(msg)
@@ -67,19 +69,19 @@ class `'Any' extensions should` {
 
     @Test
     fun `fail to unpack Any with an interface`() {
-        val msg = MessageToPack
-            .newBuilder()
+        val msg = MessageToPack.newBuilder()
             .setValue(StringValue.of("la la la"))
             .build()
         val any = AnyPacker.pack(msg)
 
-        assertThrows<IllegalArgumentException> { any.unpack<Message>() }
+        assertThrows<IllegalArgumentException> {
+            any.unpack<Message>()
+        }
     }
 
     @Test
     fun `pack message into Any`() {
-        val msg = MessageToPack
-            .newBuilder()
+        val msg = MessageToPack.newBuilder()
             .setValue(StringValue.of("la la la"))
             .build()
         val any = msg.pack()
