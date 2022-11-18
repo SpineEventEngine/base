@@ -36,7 +36,6 @@ import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
-import io.spine.internal.gradle.applyStandard
 import io.spine.internal.gradle.checkstyle.CheckStyleConfig
 import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.forceVersions
@@ -51,27 +50,26 @@ import io.spine.internal.gradle.publish.spinePublishing
 import io.spine.internal.gradle.report.coverage.JacocoConfig
 import io.spine.internal.gradle.report.license.LicenseReporter
 import io.spine.internal.gradle.report.pom.PomGenerator
+import io.spine.internal.gradle.standardToSpineSdk
 import io.spine.internal.gradle.testing.registerTestTasks
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 @Suppress("RemoveRedundantQualifierName") // Cannot use imported things here.
 buildscript {
-    apply(from = "$rootDir/version.gradle.kts")
-    io.spine.internal.gradle.doApplyStandard(repositories)
+    standardSpineSdkRepositories()
     io.spine.internal.gradle.doForceVersions(configurations)
 }
 
-repositories.applyStandard()
+repositories.standardToSpineSdk()
 
 // Apply some plugins to make type-safe extension accessors available in this script file.
 plugins {
     `java-library`
     kotlin("jvm")
     idea
-
-    id("com.google.protobuf")
-    id("net.ltgt.errorprone")
-    `force-jacoco`
+    protobuf
+    errorprone
+    `gradle-doctor`
 }
 
 apply(from = "$rootDir/version.gradle.kts")
@@ -103,20 +101,17 @@ allprojects {
     group = "io.spine"
     version = rootProject.extra["versionToPublish"]!!
 
-    repositories.applyStandard()
+    repositories.standardToSpineSdk()
 }
 
 subprojects {
     buildscript {
-        apply(from = "$rootDir/version.gradle.kts")
-        repositories.applyStandard()
+        repositories.standardToSpineSdk()
         dependencies {
             classpath(Protobuf.GradlePlugin.lib)
         }
         configurations.forceVersions()
     }
-
-    apply(from = "$rootDir/version.gradle.kts")
 
     // Apply standard plugins.
     apply {

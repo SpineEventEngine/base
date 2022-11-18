@@ -24,47 +24,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.generateProtoTasks
-import com.google.protobuf.gradle.protobuf
-import io.spine.internal.dependency.Guava
-import io.spine.internal.dependency.JUnit
-import io.spine.internal.dependency.Kotest
-import io.spine.internal.dependency.Protobuf
-import io.spine.internal.dependency.Truth
-import io.spine.internal.gradle.protobuf.setup
+import io.spine.internal.gradle.ConfigTester
+import io.spine.internal.gradle.SpineRepos
+import io.spine.internal.gradle.cleanFolder
+import java.nio.file.Path
+import java.nio.file.Paths
 
-group = "io.spine.tools"
+// A reference to `config` to use along with the `ConfigTester`.
+val config: Path = Paths.get("./")
 
-plugins {
-    `detekt-code-analysis`
-}
+// A temp folder to use to check out the sources of other repositories with the `ConfigTester`.
+val tempFolder = File("./tmp")
 
-dependencies {
-    /*
-        Expose tools we use as transitive dependencies to simplify dependency
-        management in subprojects.
-    */
-    (Protobuf.libs
-            + JUnit.api
-            + Truth.libs
-            + Guava.testLib
-            + kotlin("test-junit5")
-            + Kotest.assertions).forEach {
-        api(it)
+// Creates a Gradle task which checks out and builds the selected Spine repositories
+// with the local version of `config` and `config/buildSrc`.
+ConfigTester(config, tasks, tempFolder)
+    .addRepo(SpineRepos.baseTypes)  // Builds `base-types` at `master`.
+    .addRepo(SpineRepos.base)       // Builds `base` at `master`.
+    .addRepo(SpineRepos.coreJava)   // Builds `core-java` at `master`.
+
+    // This is how one builds a specific branch of some repository:
+    // .addRepo(SpineRepos.coreJava, Branch("grpc-concurrency-fixes"))
+
+    // Register the produced task under the selected name to invoke manually upon need.
+    .registerUnder("buildDependants")
+
+// Cleans the temp folder used to check out the sources from Git.
+tasks.register("clean") {
+    doLast {
+        cleanFolder(tempFolder)
     }
-
-    implementation(project(":base"))
-}
-
-// For generating test fixtures.
-protobuf {
-    generateProtoTasks {
-        for (task in all()) {
-            task.setup("$projectDir/generated")
-        }
-    }
-}
-
-detekt {
-    baseline = file("config/detekt-baseline.xml")
 }
