@@ -36,7 +36,7 @@ import io.spine.internal.gradle.protobuf.setup
 group = "io.spine.tools"
 
 plugins {
-    id("detekt-code-analysis")
+    `detekt-code-analysis`
 }
 
 dependencies {
