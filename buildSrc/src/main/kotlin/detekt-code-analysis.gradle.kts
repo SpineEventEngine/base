@@ -24,6 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import io.gitlab.arturbosch.detekt.Detekt
+
 /**
  * This script-plugin sets up Kotlin code analyzing with Detekt.
  *
@@ -58,6 +60,7 @@
  * }
  * ```
  */
+private val about = ""
 
 plugins {
     id("io.gitlab.arturbosch.detekt")
@@ -66,4 +69,16 @@ plugins {
 detekt {
     buildUponDefaultConfig = true
     config = files("${rootDir}/config/quality/detekt-config.yml")
+}
+
+tasks {
+    withType<Detekt>().configureEach {
+        reports {
+            html.required.set(true) // Only HTML report is generated.
+            xml.required.set(false)
+            txt.required.set(false)
+            sarif.required.set(false)
+            md.required.set(false)
+        }
+    }
 }
