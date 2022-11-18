@@ -10,7 +10,7 @@ all modules and does not describe the project structure per-subproject.
  -->
 <groupId>io.spine</groupId>
 <artifactId>spine-base</artifactId>
-<version>2.0.0-SNAPSHOT.132</version>
+<version>2.0.0-SNAPSHOT.140</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -73,7 +73,7 @@ all modules and does not describe the project structure per-subproject.
   </dependency>
   <dependency>
     <groupId>io.kotest</groupId>
-    <artifactId>kotest-assertions-api</artifactId>
+    <artifactId>kotest-assertions-core</artifactId>
     <version>5.5.4</version>
     <scope>compile</scope>
   </dependency>
