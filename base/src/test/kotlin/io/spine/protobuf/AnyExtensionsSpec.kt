@@ -26,17 +26,16 @@
 
 package io.spine.protobuf
 
-import com.google.common.truth.Truth.assertThat
-import com.google.common.truth.extensions.proto.ProtoTruth.assertThat
 import com.google.protobuf.Message
 import com.google.protobuf.stringValue
+import io.kotest.matchers.*
+import io.kotest.matchers.types.instanceOf
 import io.spine.test.protobuf.MessageToPack
 import io.spine.test.protobuf.messageToPack
-import io.spine.testing.isEqualTo
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import io.spine.testing.isInstanceOf
+
 
 @DisplayName("`Any` Kotlin extensions should")
 class AnyExtensionsSpec {
@@ -49,7 +48,8 @@ class AnyExtensionsSpec {
         val any = AnyPacker.pack(msg)
 
         val unpacked = any.unpack<MessageToPack>()
-        assertThat(unpacked).isEqualTo(msg)
+
+        unpacked shouldBe msg
     }
 
     @Test
@@ -61,9 +61,8 @@ class AnyExtensionsSpec {
 
         val unpacked = any.unpackGuessingType()
 
-        val assertUnpacked = assertThat(unpacked)
-        assertUnpacked.isInstanceOf<MessageToPack>()
-        assertUnpacked isEqualTo msg
+        unpacked shouldBe instanceOf<MessageToPack>()
+        unpacked shouldBe msg
     }
 
     @Test
@@ -84,7 +83,8 @@ class AnyExtensionsSpec {
             value = stringValue { value = "pack in fun" }
         }
         val any = msg.pack()
-        assertThat(any.typeUrl) isEqualTo "type.spine.io/spine.test.protobuf.MessageToPack"
-        assertThat(any.unpack<MessageToPack>()) isEqualTo msg
+
+        any.typeUrl shouldBe "type.spine.io/spine.test.protobuf.MessageToPack"
+        any.unpack<MessageToPack>() shouldBe msg
     }
 }

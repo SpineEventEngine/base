@@ -24,47 +24,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.generateProtoTasks
-import com.google.protobuf.gradle.protobuf
-import io.spine.internal.dependency.Guava
-import io.spine.internal.dependency.JUnit
-import io.spine.internal.dependency.Kotest
-import io.spine.internal.dependency.Protobuf
-import io.spine.internal.dependency.Truth
-import io.spine.internal.gradle.protobuf.setup
+package io.spine.internal.dependency
 
-group = "io.spine.tools"
-
-plugins {
-    id("detekt-code-analysis")
-}
-
-dependencies {
-    /*
-        Expose tools we use as transitive dependencies to simplify dependency
-        management in subprojects.
-    */
-    (Protobuf.libs
-            + JUnit.api
-            + Truth.libs
-            + Guava.testLib
-            + kotlin("test-junit5")
-            + Kotest.assertions).forEach {
-        api(it)
-    }
-
-    implementation(project(":base"))
-}
-
-protobuf {
-    val generatedDir by project.extra("$projectDir/generated")
-    generateProtoTasks {
-        for (task in all()) {
-            task.setup(generatedDir)
-        }
-    }
-}
-
-detekt {
-    baseline = file("config/detekt-baseline.xml")
+/**
+ * Testing framework for Kotlin.
+ *
+ * @see <a href="https://kotest.io/">Kotest site</a>
+ */
+object Kotest {
+    const val version = "5.5.4"
+    const val group = "io.kotest"
+    const val assertions = "$group:kotest-assertions-core:$version"
 }
