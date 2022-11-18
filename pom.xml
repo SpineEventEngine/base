@@ -72,6 +72,12 @@ all modules and does not describe the project structure per-subproject.
     <scope>compile</scope>
   </dependency>
   <dependency>
+    <groupId>io.kotest</groupId>
+    <artifactId>kotest-assertions-api</artifactId>
+    <version>5.5.4</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
     <groupId>org.jetbrains.kotlin</groupId>
     <artifactId>kotlin-reflect</artifactId>
     <version>1.7.20</version>

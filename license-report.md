@@ -349,6 +349,11 @@
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1.  **Group** : io.kotest. **Name** : kotest-assertions-api. **Version** : 5.5.4.**No license information found**
+1.  **Group** : io.kotest. **Name** : kotest-assertions-api-jvm. **Version** : 5.5.4.
+     * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
+     * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
+
 1.  **Group** : javax.annotation. **Name** : javax.annotation-api. **Version** : 1.3.2.
      * **Project URL:** [http://jcp.org/en/jsr/detail?id=250](http://jcp.org/en/jsr/detail?id=250)
      * **License:** [CDDL + GPLv2 with classpath exception](https://github.com/javaee/javax.annotation/blob/master/LICENSE)
@@ -671,7 +676,7 @@
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Nov 18 14:15:18 EET 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Fri Nov 18 15:42:19 EET 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -742,6 +747,14 @@ This report was generated on **Fri Nov 18 14:15:18 EET 2022** using [Gradle-Lice
 
 1.  **Group** : com.google.truth.extensions. **Name** : truth-proto-extension. **Version** : 1.1.3.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : io.kotest. **Name** : kotest-assertions-api. **Version** : 5.5.4.
+     * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
+     * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
+
+1.  **Group** : io.kotest. **Name** : kotest-assertions-api-jvm. **Version** : 5.5.4.
+     * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
+     * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
 1.  **Group** : junit. **Name** : junit. **Version** : 4.13.1.
      * **Project URL:** [http://junit.org](http://junit.org)
@@ -1086,6 +1099,14 @@ This report was generated on **Fri Nov 18 14:15:18 EET 2022** using [Gradle-Lice
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1.  **Group** : io.kotest. **Name** : kotest-assertions-api. **Version** : 5.5.4.
+     * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
+     * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
+
+1.  **Group** : io.kotest. **Name** : kotest-assertions-api-jvm. **Version** : 5.5.4.
+     * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
+     * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
+
 1.  **Group** : javax.annotation. **Name** : javax.annotation-api. **Version** : 1.3.2.
      * **Project URL:** [http://jcp.org/en/jsr/detail?id=250](http://jcp.org/en/jsr/detail?id=250)
      * **License:** [CDDL + GPLv2 with classpath exception](https://github.com/javaee/javax.annotation/blob/master/LICENSE)
@@ -1405,4 +1426,4 @@ This report was generated on **Fri Nov 18 14:15:18 EET 2022** using [Gradle-Lice
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Nov 18 14:15:19 EET 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Fri Nov 18 15:42:20 EET 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
