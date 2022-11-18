@@ -33,7 +33,7 @@ import com.google.protobuf.ExtensionRegistry
 import io.spine.code.java.ClassName
 
 /**
- * Obtains a [binary][ClassName.binaryName] name of the outer Java class associated with this file.
+ * A [binary][ClassName.binaryName] name of the outer Java class associated with this file.
  */
 public val FileDescriptor.outerClassName: String
     get() {
@@ -42,7 +42,7 @@ public val FileDescriptor.outerClassName: String
     }
 
 /**
- * Obtains an outer Java class associated with this proto file, if such a class already exists.
+ * An outer Java class associated with this proto file, if such a class already exists.
  * Otherwise, returns `null`.
  */
 public val FileDescriptor.outerClass: Class<*>?
