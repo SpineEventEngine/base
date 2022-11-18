@@ -56,11 +56,11 @@ dependencies {
     implementation(project(":base"))
 }
 
+// For generating test fixtures.
 protobuf {
-    val generatedDir by project.extra("$projectDir/generated")
     generateProtoTasks {
         for (task in all()) {
-            task.setup(generatedDir)
+            task.setup("$projectDir/generated")
         }
     }
 }
