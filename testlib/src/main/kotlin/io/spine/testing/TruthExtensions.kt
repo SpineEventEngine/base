@@ -41,6 +41,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor
 import com.google.protobuf.ExtensionRegistry
 import com.google.protobuf.Message
 import com.google.protobuf.TypeRegistry
+import io.spine.annotation.Experimental
 import java.util.*
 
 /**
@@ -128,6 +129,15 @@ public fun <T> assertThat(optional: Optional<T>, assertions: OptionalSubject.() 
 public fun <T : Message> assertThat(m: T, assertions: ProtoSubject.() -> Unit) {
     ProtoTruth.assertThat(m).run { assertions() }
 }
+
+/**
+ * Asserts that the value of this subject is equal to the given, doing
+ * the same what [isEqualTo] does, but in infix form.
+ *
+ * The infix makes it a bit easier to read and write in Kotlin.
+ */
+@Experimental
+public infix fun <T> Subject.isEqualTo(value: T): Unit = isEqualTo(value)
 
 /**
  * Allows to write:

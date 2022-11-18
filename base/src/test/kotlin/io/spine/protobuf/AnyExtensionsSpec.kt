@@ -29,13 +29,14 @@ package io.spine.protobuf
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.ProtoTruth.assertThat
 import com.google.protobuf.Message
-import com.google.protobuf.StringValue
 import com.google.protobuf.stringValue
 import io.spine.test.protobuf.MessageToPack
 import io.spine.test.protobuf.messageToPack
+import io.spine.testing.isEqualTo
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import io.spine.testing.isInstanceOf
 
 @DisplayName("`Any` Kotlin extensions should")
 class AnyExtensionsSpec {
@@ -48,30 +49,28 @@ class AnyExtensionsSpec {
         val any = AnyPacker.pack(msg)
 
         val unpacked = any.unpack<MessageToPack>()
-        assertThat(unpacked)
-            .isEqualTo(msg)
+        assertThat(unpacked).isEqualTo(msg)
     }
 
     @Test
     fun `unpack Any without a concrete type`() {
-        val msg = MessageToPack.newBuilder()
-            .setValue(StringValue.of("foo bar"))
-            .build()
+        val msg = messageToPack {
+            value = stringValue { value = "foo bar" }
+        }
         val any = AnyPacker.pack(msg)
 
         val unpacked = any.unpackGuessingType()
+
         val assertUnpacked = assertThat(unpacked)
-        assertUnpacked
-            .isInstanceOf(MessageToPack::class.java)
-        assertUnpacked
-            .isEqualTo(msg)
+        assertUnpacked.isInstanceOf<MessageToPack>()
+        assertUnpacked isEqualTo msg
     }
 
     @Test
     fun `fail to unpack Any with an interface`() {
-        val msg = MessageToPack.newBuilder()
-            .setValue(StringValue.of("la la la"))
-            .build()
+        val msg = messageToPack {
+            value = stringValue { value = "la la la" }
+        }
         val any = AnyPacker.pack(msg)
 
         assertThrows<IllegalArgumentException> {
@@ -81,13 +80,11 @@ class AnyExtensionsSpec {
 
     @Test
     fun `pack message into Any`() {
-        val msg = MessageToPack.newBuilder()
-            .setValue(StringValue.of("la la la"))
-            .build()
+        val msg = messageToPack {
+            value = stringValue { value = "pack in fun" }
+        }
         val any = msg.pack()
-        assertThat(any.typeUrl)
-            .isEqualTo("type.spine.io/spine.test.protobuf.MessageToPack")
-        assertThat(any.unpack<MessageToPack>())
-            .isEqualTo(msg)
+        assertThat(any.typeUrl) isEqualTo "type.spine.io/spine.test.protobuf.MessageToPack"
+        assertThat(any.unpack<MessageToPack>()) isEqualTo msg
     }
 }
