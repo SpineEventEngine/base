@@ -27,7 +27,6 @@
 @file:Suppress("RemoveRedundantQualifierName") // Cannot use imports in some places.
 
 import com.google.protobuf.gradle.protobuf
-import com.google.protobuf.gradle.protoc
 import io.spine.internal.dependency.CheckerFramework
 import io.spine.internal.dependency.Dokka
 import io.spine.internal.dependency.ErrorProne

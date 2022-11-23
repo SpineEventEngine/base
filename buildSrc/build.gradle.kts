@@ -90,7 +90,7 @@ val errorPronePluginVersion = "3.0.1"
  * @see <a href="https://github.com/google/protobuf-gradle-plugin/releases">
  *     Protobuf Gradle Plugins Releases</a>
  */
-val protobufPluginVersion = "0.8.19"
+val protobufPluginVersion = "0.9.1"
 
 /**
  * The version of Dokka Gradle Plugins.
@@ -112,6 +112,8 @@ val detektVersion = "1.21.0"
 configurations.all {
     resolutionStrategy {
         force(
+            "com.google.protobuf:protobuf-gradle-plugin:$protobufPluginVersion",
+
             // Force Kotlin lib versions avoiding using those bundled with Gradle.
             "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion",
             "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlinVersion",

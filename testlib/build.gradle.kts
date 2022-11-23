@@ -24,7 +24,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.generateProtoTasks
 import com.google.protobuf.gradle.protobuf
 import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.JUnit
@@ -58,10 +57,8 @@ dependencies {
 
 // For generating test fixtures.
 protobuf {
-    generateProtoTasks {
-        for (task in all()) {
-            task.setup("$projectDir/generated")
-        }
+    generateProtoTasks.all().configureEach {
+        setup("$projectDir/generated")
     }
 }
 
