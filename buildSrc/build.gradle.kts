@@ -80,7 +80,7 @@ val guavaVersion = "31.1-jre"
  * @see <a href="https://github.com/tbroyer/gradle-errorprone-plugin/releases">
  *     Error Prone Gradle Plugin Releases</a>
  */
-val errorProneVersion = "3.0.1"
+val errorPronePluginVersion = "3.0.1"
 
 /**
  * The version of Protobuf Gradle Plugin.
@@ -143,7 +143,7 @@ dependencies {
     implementation("com.google.guava:guava:$guavaVersion")
     api("com.github.jk1:gradle-license-report:$licenseReportVersion")
     implementation("org.ajoberstar.grgit:grgit-core:${grGitVersion}")
-    implementation("net.ltgt.gradle:gradle-errorprone-plugin:${errorProneVersion}")
+    implementation("net.ltgt.gradle:gradle-errorprone-plugin:${errorPronePluginVersion}")
 
     // Add explicit dependency to avoid warning on different Kotlin runtime versions.
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
