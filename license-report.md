@@ -140,7 +140,7 @@
      * **Project URL:** [https://github.com/google/auto/tree/master/service](https://github.com/google/auto/tree/master/service)
      * **License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.auto.value. **Name** : auto-value-annotations. **Version** : 1.9.
+1.  **Group** : com.google.auto.value. **Name** : auto-value-annotations. **Version** : 1.10.1.
      * **Project URL:** [https://github.com/google/auto/tree/master/value](https://github.com/google/auto/tree/master/value)
      * **License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -708,7 +708,7 @@
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Thu Nov 24 16:26:36 EET 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Nov 24 17:04:33 EET 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
@@ -716,7 +716,7 @@ This report was generated on **Thu Nov 24 16:26:36 EET 2022** using [Gradle-Lice
 # Dependencies of `io.spine.tools:spine-testlib:11`
 
 ## Runtime
-1.  **Group** : com.google.auto.value. **Name** : auto-value-annotations. **Version** : 1.9.
+1.  **Group** : com.google.auto.value. **Name** : auto-value-annotations. **Version** : 1.10.1.
      * **Project URL:** [https://github.com/google/auto/tree/master/value](https://github.com/google/auto/tree/master/value)
      * **License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -962,7 +962,7 @@ This report was generated on **Thu Nov 24 16:26:36 EET 2022** using [Gradle-Lice
      * **Project URL:** [https://github.com/google/auto/tree/master/service](https://github.com/google/auto/tree/master/service)
      * **License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.auto.value. **Name** : auto-value-annotations. **Version** : 1.9.
+1.  **Group** : com.google.auto.value. **Name** : auto-value-annotations. **Version** : 1.10.1.
      * **Project URL:** [https://github.com/google/auto/tree/master/value](https://github.com/google/auto/tree/master/value)
      * **License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -1542,4 +1542,4 @@ This report was generated on **Thu Nov 24 16:26:36 EET 2022** using [Gradle-Lice
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Thu Nov 24 16:26:36 EET 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Thu Nov 24 17:04:33 EET 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
