@@ -24,7 +24,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.generateProtoTasks
 import com.google.protobuf.gradle.protobuf
 import io.spine.internal.dependency.AutoService
 import io.spine.internal.dependency.Kotlin
@@ -51,10 +50,8 @@ dependencies {
 
 protobuf {
     val generatedDir by project.extra("$projectDir/generated")
-    generateProtoTasks {
-        for (task in all()) {
-            task.setup(generatedDir)
-        }
+    generateProtoTasks.all().configureEach {
+        setup(generatedDir)
     }
 }
 

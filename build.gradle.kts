@@ -26,8 +26,6 @@
 
 @file:Suppress("RemoveRedundantQualifierName") // Cannot use imports in some places.
 
-import com.google.protobuf.gradle.protobuf
-import com.google.protobuf.gradle.protoc
 import io.spine.internal.dependency.CheckerFramework
 import io.spine.internal.dependency.Dokka
 import io.spine.internal.dependency.ErrorProne
@@ -54,7 +52,6 @@ import io.spine.internal.gradle.standardToSpineSdk
 import io.spine.internal.gradle.testing.registerTestTasks
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-@Suppress("RemoveRedundantQualifierName") // Cannot use imported things here.
 buildscript {
     standardSpineSdkRepositories()
     io.spine.internal.gradle.doForceVersions(configurations)
@@ -72,7 +69,6 @@ plugins {
     `gradle-doctor`
 }
 
-apply(from = "$rootDir/version.gradle.kts")
 
 spinePublishing {
     modules = setOf(
@@ -97,6 +93,7 @@ allprojects {
         plugin("idea")
         plugin("project-report")
     }
+    apply(from = "$rootDir/version.gradle.kts")
 
     group = "io.spine"
     version = rootProject.extra["versionToPublish"]!!
@@ -104,15 +101,34 @@ allprojects {
     repositories.standardToSpineSdk()
 }
 
-subprojects {
-    buildscript {
-        repositories.standardToSpineSdk()
-        dependencies {
-            classpath(Protobuf.GradlePlugin.lib)
-        }
-        configurations.forceVersions()
-    }
+object BuildSettings {
+    private const val JVM_VERSION = 11
+    val javaVersion = JavaLanguageVersion.of(JVM_VERSION)
+}
 
+subprojects {
+    applyPlugins()
+    configureJava(BuildSettings.javaVersion)
+    configureKotlin(BuildSettings.javaVersion)
+    addDependencies()
+    forceConfigurations()
+
+    val generatedDir = "$projectDir/generated"
+    applyGeneratedDir(generatedDir)
+    configureProtobuf(generatedDir)
+    setTaskDependencies(generatedDir)
+    setupTests()
+
+    configureGitHubPages()
+}
+
+JacocoConfig.applyTo(project)
+PomGenerator.applyTo(project)
+LicenseReporter.mergeAllReports(project)
+
+typealias Subproject = Project
+
+fun Subproject.applyPlugins() {
     // Apply standard plugins.
     apply {
         plugin("java-library")
@@ -132,56 +148,62 @@ subprojects {
     CheckStyleConfig.applyTo(project)
     JavadocConfig.applyTo(project)
     LicenseReporter.generateReportIn(project)
+}
 
-    val docletVersion = project.version.toString()
-    updateGitHubPages(docletVersion) {
-        allowInternalJavadoc.set(true)
-        rootFolder.set(rootDir)
-    }
-
-    val javaVersion = JavaVersion.VERSION_11.toString()
-    kotlin {
-        applyJvmToolchain(javaVersion)
-        explicitApi()
+fun Subproject.configureJava(javaVersion: JavaLanguageVersion) {
+    java {
+        toolchain.languageVersion.set(javaVersion)
     }
 
     tasks {
-        withType<KotlinCompile>().configureEach {
-            kotlinOptions.jvmTarget = javaVersion
-            setFreeCompilerArgs()
-        }
         withType<JavaCompile>().configureEach {
             configureJavac()
             configureErrorProne()
         }
     }
+}
 
-    /**
-     * These dependencies are applied to all subprojects and do not have to
-     * be included explicitly.
-     *
-     * We expose production code dependencies as API because they are used
-     * by the framework parts that depend on `base`.
-     */
-    dependencies {
-        errorprone(ErrorProne.core)
-
-        Protobuf.libs.forEach { api(it) }
-        api(Flogger.lib)
-        api(Guava.lib)
-
-        compileOnlyApi(CheckerFramework.annotations)
-        compileOnlyApi(JavaX.annotations)
-        ErrorProne.annotations.forEach { compileOnlyApi(it) }
-
-        testImplementation(Guava.testLib)
-        testImplementation(JUnit.runner)
-        testImplementation(JUnit.pioneer)
-        JUnit.api.forEach { testImplementation(it) }
-
-        runtimeOnly(Flogger.Runtime.systemBackend)
+fun Subproject.configureKotlin(javaVersion: JavaLanguageVersion) {
+    kotlin {
+        applyJvmToolchain(javaVersion.asInt())
+        explicitApi()
     }
 
+    tasks {
+        withType<KotlinCompile>().configureEach {
+            kotlinOptions.jvmTarget = javaVersion.toString()
+            setFreeCompilerArgs()
+        }
+    }
+}
+
+/**
+ * These dependencies are applied to all subprojects and do not have to
+ * be included explicitly.
+ *
+ * We expose production code dependencies as API because they are used
+ * by the framework parts that depend on `base`.
+ */
+fun Subproject.addDependencies() = dependencies {
+    errorprone(ErrorProne.core)
+
+    Protobuf.libs.forEach { api(it) }
+    api(Flogger.lib)
+    api(Guava.lib)
+
+    compileOnlyApi(CheckerFramework.annotations)
+    compileOnlyApi(JavaX.annotations)
+    ErrorProne.annotations.forEach { compileOnlyApi(it) }
+
+    testImplementation(Guava.testLib)
+    testImplementation(JUnit.runner)
+    testImplementation(JUnit.pioneer)
+    JUnit.api.forEach { testImplementation(it) }
+
+    runtimeOnly(Flogger.Runtime.systemBackend)
+}
+
+fun Subproject.forceConfigurations() {
     with(configurations) {
         forceVersions()
         excludeProtobufLite()
@@ -195,12 +217,13 @@ subprojects {
             }
         }
     }
+}
 
-    val generatedDir by extra("$projectDir/generated")
-    val generatedJavaDir by extra("$generatedDir/main/java")
-    val generatedKotlinDir by extra("$generatedDir/main/kotlin")
-    val generatedTestJavaDir by extra("$generatedDir/test/java")
-    val generatedTestKotlinDir by extra("$generatedDir/test/kotlin")
+fun Subproject.applyGeneratedDir(generatedDir: String) {
+    val generatedJavaDir = "$generatedDir/main/java"
+    val generatedKotlinDir = "$generatedDir/main/kotlin"
+    val generatedTestJavaDir = "$generatedDir/test/java"
+    val generatedTestKotlinDir = "$generatedDir/test/kotlin"
 
     sourceSets {
         main {
@@ -219,14 +242,6 @@ subprojects {
         }
     }
 
-    protobuf {
-        configurations.excludeProtobufLite()
-        generatedFilesBaseDir = generatedDir
-        protoc {
-            artifact = Protobuf.compiler
-        }
-    }
-
     idea {
         module {
             generatedSourceDirs.add(file(generatedJavaDir))
@@ -239,7 +254,19 @@ subprojects {
             isDownloadSources = true
         }
     }
+}
 
+fun Subproject.configureProtobuf(generatedDir: String) {
+    protobuf {
+        configurations.excludeProtobufLite()
+        generatedFilesBaseDir = generatedDir
+        protoc {
+            artifact = Protobuf.compiler
+        }
+    }
+}
+
+fun Subproject.setupTests() {
     tasks {
         registerTestTasks()
         test.configure {
@@ -247,7 +274,11 @@ subprojects {
                 includeEngines("junit-jupiter")
             }
         }
+    }
+}
 
+fun Subproject.setTaskDependencies(generatedDir: String) {
+    tasks {
         val cleanGenerated by registering(Delete::class) {
             delete(generatedDir)
         }
@@ -260,9 +291,13 @@ subprojects {
         }
     }
 
-    project.configureTaskDependencies()
+    configureTaskDependencies()
 }
 
-JacocoConfig.applyTo(project)
-PomGenerator.applyTo(project)
-LicenseReporter.mergeAllReports(project)
+fun Subproject.configureGitHubPages() {
+    val docletVersion = project.version.toString()
+    updateGitHubPages(docletVersion) {
+        allowInternalJavadoc.set(true)
+        rootFolder.set(rootDir)
+    }
+}

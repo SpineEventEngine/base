@@ -121,7 +121,6 @@ private fun ResolutionStrategy.forceTransitiveDependencies() {
         Plexus.utils,
         Okio.lib,
         CommonsCli.lib,
-        CheckerFramework.compatQual,
         CommonsLogging.lib,
         Jackson.databind,
         Jackson.core,
