@@ -152,9 +152,7 @@ fun Subproject.applyPlugins() {
 
 fun Subproject.configureJava(javaVersion: JavaLanguageVersion) {
     java {
-        toolchain {
-            version = javaVersion
-        }
+        toolchain.languageVersion.set(javaVersion)
     }
 
     tasks {
