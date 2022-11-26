@@ -227,14 +227,12 @@ fun Subproject.applyGeneratedDir(generatedDir: String) {
 
     sourceSets {
         main {
-            java.srcDir(generatedKotlinDir)
             resources.srcDirs(
                 "$generatedDir/main/resources",
                 "$buildDir/descriptors/main"
             )
         }
         test {
-            java.srcDir(generatedTestJavaDir)
             resources.srcDirs(
                 "$generatedDir/test/resources",
                 "$buildDir/descriptors/test"

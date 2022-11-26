@@ -49,9 +49,8 @@ dependencies {
 }
 
 protobuf {
-    val generatedDir by project.extra("$projectDir/generated")
     generateProtoTasks.all().configureEach {
-        setup(generatedDir)
+        setup("$projectDir/generated")
     }
 }
 
