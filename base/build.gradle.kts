@@ -49,12 +49,30 @@ dependencies {
 }
 
 protobuf {
-    val generatedDir by project.extra("$projectDir/generated")
     generateProtoTasks.all().configureEach {
-        setup(generatedDir)
+        setup("$projectDir/generated")
     }
 }
 
 tasks {
     excludeGoogleProtoFromArtifacts()
+}
+
+/**
+ * Make the `sourcesJar` task accept duplicated input which seems to occur
+ * somewhere inside under Protobuf Kotlin plugin.
+ *
+ * The suspect is Protobuf Kotlin plugin because of the following error message
+ * produced during publishing:
+ * ```
+ * Caused by: org.gradle.api.InvalidUserCodeException: Entry io/spine/base/ListOfAnysKt.kt is
+ * a duplicate but no duplicate handling strategy has been set.
+ * ```
+ */
+project.afterEvaluate {
+    @Suppress("UNUSED_VARIABLE")
+    val sourcesJar by tasks.getting {
+        this as Jar
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    }
 }
