@@ -101,7 +101,7 @@ public final class ClassName extends StringTypeValue {
      * @param packageName
      *         the name of the class package
      * @param simpleClassName
-     *         the simple name of a the class
+     *         the simple name of the class
      * @return a new instance
      */
     public static ClassName of(PackageName packageName, SimpleClassName simpleClassName) {
@@ -296,10 +296,9 @@ public final class ClassName extends StringTypeValue {
      *
      * <p>The result is always {@linkplain #canonicalName() dotted}.
      *
-     * @return this name without the package
+     * @return this class name without the package
      */
     @Internal
-    @SuppressWarnings("unused") /* Part of the public API. */
     public String withoutPackage() {
         return toDotted(afterDot(value()));
     }
@@ -335,10 +334,9 @@ public final class ClassName extends StringTypeValue {
     /**
      * Obtains the simple name of the top level class.
      *
-     * <p>If this class is top level, returns the simple name of this class. If this class is
-     * nested, returns the name of the declaring top level class.
+     * <p>If this class is top level, returns the simple name of this class.
+     * If this class is nested, returns the name of the declaring top level class.
      */
-    @SuppressWarnings("unused") /* Part of the public API. */
     public SimpleClassName topLevelClass() {
         var qualifiedClassName = afterDot(value());
         var delimiterIndex = qualifiedClassName.indexOf(OUTER_CLASS_DELIMITER);

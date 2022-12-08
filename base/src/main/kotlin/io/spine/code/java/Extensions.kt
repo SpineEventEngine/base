@@ -36,3 +36,9 @@ public val Class<*>.className: ClassName
  */
 public val Class<*>.nameOfPackage: PackageName
     get() = PackageName.of(this)
+
+/**
+ * Obtains the simple name of the class.
+ */
+public val Class<*>.simplyNamed: SimpleClassName
+    get() = SimpleClassName.of(this)

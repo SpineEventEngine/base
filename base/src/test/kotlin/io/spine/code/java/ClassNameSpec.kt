@@ -83,4 +83,24 @@ internal class ClassNameSpec {
     fun `obtain an 'OrBuilder' name for message classes`() {
         Timestamp::class.java.className.orBuilder().canonicalName() shouldEndWith OR_BUILDER_SUFFIX
     }
+
+    @Test
+    fun `obtains class name without a package`() {
+        Outer.Inner.Deeper::class.java.className.withoutPackage() shouldBe "Outer.Inner.Deeper"
+    }
+
+    @Test
+    fun `obtain the simple name of the top level class`() {
+        Outer.Inner.Deeper::class.java.className.topLevelClass() shouldBe
+                Outer::class.java.simplyNamed
+    }
+}
+
+/**
+ * Stab classes for testing [ClassName] methods.
+ */
+class Outer {
+    class Inner {
+        class Deeper
+    }
 }
