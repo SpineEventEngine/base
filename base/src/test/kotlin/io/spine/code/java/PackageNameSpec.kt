@@ -23,21 +23,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.code.java
 
-package io.spine.code.java;
-
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import static com.google.common.truth.Truth.assertThat;
+import io.kotest.matchers.shouldBe
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
 @DisplayName("`java.PackageName` should")
-class PackageNameTest {
+internal class PackageNameSpec {
 
     @Test
-    @DisplayName("obtain a nested package")
-    void nesting() {
-        assertThat(PackageName.of("io.spine.code").nested("java"))
-                .isEqualTo(PackageName.of("io.spine.code.java"));
+    fun `obtain a nested package`() {
+        PackageName.of("io.spine.code").nested("java") shouldBe
+                PackageName.of("io.spine.code.java")
+    }
+
+    @Test
+    fun `obtain delimiter char`() {
+        PackageName.delimiterChar() shouldBe '.'
     }
 }
