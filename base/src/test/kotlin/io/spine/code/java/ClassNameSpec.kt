@@ -26,7 +26,10 @@
 package io.spine.code.java
 
 import com.google.protobuf.StringValue
+import com.google.protobuf.Timestamp
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldEndWith
+import io.spine.code.java.SimpleClassName.OR_BUILDER_SUFFIX
 import io.spine.test.type.Uri
 import io.spine.testing.Assertions
 import io.spine.testing.Assertions.assertIllegalArgument
@@ -74,5 +77,10 @@ internal class ClassNameSpec {
     @Test
     fun `obtain a package of a class`() {
         String::class.java.className.packageName() shouldBe String::class.java.nameOfPackage
+    }
+
+    @Test
+    fun `obtain an 'OrBuilder' name for message classes`() {
+        Timestamp::class.java.className.orBuilder().canonicalName() shouldEndWith OR_BUILDER_SUFFIX
     }
 }

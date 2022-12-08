@@ -267,7 +267,6 @@ public final class ClassName extends StringTypeValue {
      *
      * @return {@code MessageOrBuilder} interface FQN
      */
-    @SuppressWarnings("unused") /* Part of the public API. */
     public ClassName orBuilder() {
         return of(value() + OR_BUILDER_SUFFIX);
     }
