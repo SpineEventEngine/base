@@ -23,31 +23,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package io.spine.testing
-
-import com.google.common.testing.NullPointerTester
+package io.spine.code.java
 
 /**
- * Creates [NullPointerTester] and runs the [block] on it.
+ * Obtains the name of this class as instance of [ClassName].
  */
-public fun nullPointerTester(block: NullPointerTester.() -> NullPointerTester): NullPointerTester {
-    val tester = NullPointerTester()
-    tester.block()
-    return tester
-}
+public val Class<*>.className: ClassName
+    get() = ClassName.of(this)
 
 /**
- * Allows to use generic parameter of the function instead of `MyType::class.java` as the first
- * parameter type.
+ * Obtains the package name of this class as [PackageName] instance.
  */
-public inline fun <reified T : Any> NullPointerTester.setDefault(value: T): NullPointerTester =
-    setDefault(T::class.java, value)
-
-
-/**
- * Allows to use generic parameter of the function instead of `MyType::class.java` as the first
- * parameter type.
- */
-public inline fun <reified T : Any> NullPointerTester.testAllPublicStaticMethods(): Unit =
-    testAllPublicStaticMethods(T::class.java)
+public val Class<*>.nameOfPackage: PackageName
+    get() = PackageName.of(this)

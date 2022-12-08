@@ -23,63 +23,56 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.code.java
 
-package io.spine.code.java;
-
-import com.google.common.testing.NullPointerTester;
-import com.google.protobuf.StringValue;
-import io.spine.test.type.Uri;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-
-import static com.google.common.truth.Truth.assertThat;
-import static io.spine.testing.Assertions.assertIllegalArgument;
-import static io.spine.testing.Assertions.assertIllegalState;
-import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import com.google.protobuf.StringValue
+import io.kotest.matchers.shouldBe
+import io.spine.test.type.Uri
+import io.spine.testing.Assertions
+import io.spine.testing.Assertions.assertIllegalArgument
+import io.spine.testing.nullPointerTester
+import io.spine.testing.setDefault
+import io.spine.testing.testAllPublicStaticMethods
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 
 @DisplayName("`ClassName` should")
-class ClassNameTest {
+internal class ClassNameSpec {
 
-    @DisplayName("reject value")
     @ParameterizedTest(name = "\"{0}\"")
-    @ValueSource(strings = {"", "    "})
-    void rejectEmptyAndBlankValues(String value) {
-        assertIllegalArgument(() -> ClassName.of(value));
+    @ValueSource(strings = ["", "    "])
+    fun `reject empty and blank values`(value: String) {
+        assertIllegalArgument { ClassName.of(value) }
     }
 
     @Test
-    @DisplayName(NOT_ACCEPT_NULLS)
-    void passNullToleranceCheck() {
-        var descriptor = StringValue.getDescriptor();
-        new NullPointerTester()
-                .setDefault(SimpleClassName.class, SimpleClassName.ofMessage(descriptor))
-                .setDefault(PackageName.class, PackageName.resolve(descriptor.getFile()
-                                                                             .toProto()))
-                .testAllPublicStaticMethods(ClassName.class);
+    fun `handle nulls gracefully`() {
+        val descriptor = StringValue.getDescriptor()
+        nullPointerTester {
+            setDefault<SimpleClassName>(SimpleClassName.ofMessage(descriptor))
+            setDefault<PackageName>(PackageName.resolve(descriptor.file.toProto()))
+        }.testAllPublicStaticMethods<ClassName>()
     }
 
     @Test
-    @DisplayName("provide binary name and canonical name")
-    void provideBinaryAndCanonical() {
-        var cls = Uri.Protocol.class;
-        var className = ClassName.of(cls);
-        assertThat(className.binaryName()).isEqualTo(cls.getName());
-        assertThat(className.canonicalName()).isEqualTo(cls.getCanonicalName());
+    fun `provide binary name and canonical name`() {
+        val cls = Uri.Protocol::class.java
+        val className = ClassName.of(cls)
+
+        className.binaryName() shouldBe cls.name
+        className.canonicalName() shouldBe cls.canonicalName
     }
 
     @Test
-    @DisplayName("throw ISE when parsing an invalid name")
-    void throwOnInvalid() {
-        var className = ClassName.of("NotQualifiedName");
-        assertIllegalState(className::packageName);
+    fun `throw ISE when parsing an invalid name`() {
+        val className = ClassName.of("NotQualifiedName")
+        Assertions.assertIllegalState { className.packageName() }
     }
 
     @Test
-    @DisplayName("obtain a package of a class")
-    void gettingPackage() {
-        assertThat(ClassName.of(String.class).packageName())
-                .isEqualTo(PackageName.of(String.class));
+    fun `obtain a package of a class`() {
+        String::class.java.className.packageName() shouldBe String::class.java.nameOfPackage
     }
 }

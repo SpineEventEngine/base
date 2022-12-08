@@ -117,7 +117,6 @@ public final class ClassName extends StringTypeValue {
      *         the file from which the outer class is generated
      * @return new instance of {@code ClassName}
      */
-    @SuppressWarnings("unused") /* Part of the public API. */
     public static ClassName outerClass(FileDescriptor file) {
         var packageName = PackageName.resolve(file.toProto());
         var simpleName = SimpleClassName.outerOf(file);
