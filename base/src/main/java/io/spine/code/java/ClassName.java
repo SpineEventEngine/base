@@ -126,8 +126,8 @@ public final class ClassName extends StringTypeValue {
     /**
      * Creates an instance of {@code ClassName} from the given Protobuf message type descriptor.
      *
-     * <p>The resulting class name is the name of the Java class which represents the given Protobuf
-     * type.
+     * <p>The resulting class name is the name of the Java class which represents
+     * the given Protobuf type.
      *
      * @param messageType
      *         the Protobuf message type descriptor
@@ -262,8 +262,8 @@ public final class ClassName extends StringTypeValue {
      * <p>If this class name is {@code com.acme.cms.Customer}, the resulting class name would be
      * {@code com.acme.cms.CustomerOrBuilder}.
      *
-     * <p>If this class name is {@linkplain #canonicalName() dotted}, then the resulting name is
-     * dotted.
+     * <p>If this class name is {@linkplain #canonicalName() dotted}, then the resulting
+     * name is dotted too.
      *
      * @return {@code MessageOrBuilder} interface FQN
      */
