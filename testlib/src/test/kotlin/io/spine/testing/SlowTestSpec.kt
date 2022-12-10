@@ -24,31 +24,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.testing;
+package io.spine.testing
 
-import org.junit.jupiter.api.Tag;
+import io.kotest.matchers.shouldBe
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+@SlowTest
+@DisplayName("`SlowTest` annotation should apply to a")
+class SlowTestSpec {
 
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+    @Test
+    fun `test suite`() {
+        javaClass.isAnnotationPresent(SlowTest::class.java) shouldBe true
+    }
 
-/**
- * Marks tests which are known to be slow and should not normally be run together with
- * the main test suite.
- *
- * <p>Slow tests typically are functional test, which may call network API, perform I/O operations,
- * spawn many threads and wait for execution, etc.
- *
- * <p>This annotation is an alias for {@code Tag("slow")}. Adding the {@code slow} tag on a test
- * case produces the same effect as adding this annotation.
- */
-@Retention(RUNTIME)
-@Target({TYPE, METHOD})
-@Tag(SlowTest.TAG)
-public @interface SlowTest {
-
-    String TAG = "slow";
+    @Test
+    @SlowTest
+    fun method() {
+        javaClass.getMethod("method").isAnnotationPresent(SlowTest::class.java) shouldBe true
+    }
 }
