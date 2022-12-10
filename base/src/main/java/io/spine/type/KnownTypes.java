@@ -323,7 +323,7 @@ public class KnownTypes implements Serializable {
          * @throws java.lang.SecurityException
          *         if called from the client code
          */
-        @SuppressWarnings("unused") /* Part of the public API. */
+        @Internal /* exposed only to `io.spine.tools.type.MoreKnownTypes`. */
         public static void extendWith(TypeSet moreKnownTypes) {
             InvocationGuard.allowOnly("io.spine.tools.type.MoreKnownTypes");
             logger.atFine().log("Adding types `%s` to known types.", moreKnownTypes);
