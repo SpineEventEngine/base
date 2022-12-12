@@ -24,22 +24,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.option;
+package io.spine.option
 
-import com.google.auto.service.AutoService;
-import com.google.protobuf.ExtensionRegistry;
+import io.kotest.matchers.shouldNotBe
+import java.util.*
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
-/**
- * Register options generated for the {@code spine/options.proto} file.
- */
-@AutoService(OptionsProvider.class)
-public final class BaseOptionsProvider implements OptionsProvider {
+@DisplayName("`BaseOptionsProvider` should")
+class BaseOptionsProviderSpec {
 
-    public BaseOptionsProvider() {
-    }
-
-    @Override
-    public void registerIn(ExtensionRegistry registry) {
-        OptionsProto.registerAllExtensions(registry);
+    @Test
+    fun `be loaded as AutoService`() {
+        val loader = ServiceLoader.load(OptionsProvider::class.java)
+        loader.find { it is BaseOptionsProvider } shouldNotBe null
     }
 }
