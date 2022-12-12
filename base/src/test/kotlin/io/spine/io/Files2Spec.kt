@@ -23,71 +23,64 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.io
 
-package io.spine.io;
-
-import io.spine.testing.TestValues;
-import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.file.Path;
-
-import static com.google.common.truth.Truth.assertThat;
-import static io.spine.io.Files2.existsNonEmpty;
-import static java.nio.charset.Charset.defaultCharset;
+import io.kotest.matchers.shouldBe
+import io.spine.io.Files2.existsNonEmpty
+import io.spine.testing.TestValues
+import io.spine.testing.UtilityClassTest
+import java.io.File
+import java.io.PrintWriter
+import java.nio.charset.Charset
+import java.nio.file.Path
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 
 @DisplayName("`Files2` utility class should")
-class Files2Test extends UtilityClassTest<Files2> {
+internal class Files2Spec : UtilityClassTest<Files2>(Files2::class.java) {
 
-    private File testFolder;
-
-    Files2Test() {
-        super(Files2.class);
-    }
+    private var testFolder: File? = null
 
     @BeforeEach
-    void setUp(@TempDir Path testFolderPath) {
-        testFolder = testFolderPath.toFile();
+    fun setUp(@TempDir testFolderPath: Path) {
+        testFolder = testFolderPath.toFile()
     }
 
     @Nested
     @DisplayName("verify that an existing file is not empty")
-    class NonEmptyFile {
+    internal inner class NonEmptyFile {
 
         @Test
-        @DisplayName("returning `false` when existing file is empty")
-        void whenNonEmpty() {
-            var emptyFile = testFolder.toPath().resolve("empty file").toFile();
+        fun `returning 'false' when existing file is empty`() {
+            val emptyFile = testFolder!!.toPath().resolve("empty file").toFile()
 
-            assertThat(existsNonEmpty(emptyFile)).isFalse();
+            existsNonEmpty(emptyFile) shouldBe false
         }
 
         @Test
-        @DisplayName("returning `false` when a file does not exist")
-        void doesNotExist() {
-            var doesNotExist = new File(TestValues.randomString());
+        fun `returning 'false' when a file does not exist`() {
+            val doesNotExist = File(TestValues.randomString())
 
-            assertThat(existsNonEmpty(doesNotExist)).isFalse();
+            existsNonEmpty(doesNotExist) shouldBe false
         }
 
         @Test
-        @DisplayName("returning `true` if the existing file is not empty")
-        void notEmpty() throws IOException {
-            var nonEmptyFile = testFolder.toPath().resolve("non-empty file").toFile();
-            var path = nonEmptyFile.getAbsolutePath();
-            var charsetName = defaultCharset().name();
-            try (var out = new PrintWriter(path, charsetName)) {
-                out.println(TestValues.randomString());
-            }
+        fun `returning 'true' if the existing file is not empty`() {
+            val nonEmptyFile = testFolder!!.toPath().resolve("non-empty file").toFile()
+            val path = nonEmptyFile.absolutePath
+            val charsetName = Charset.defaultCharset().name()
+            PrintWriter(path, charsetName).use { out -> out.println(TestValues.randomString()) }
 
-            assertThat(existsNonEmpty(nonEmptyFile)).isTrue();
+            existsNonEmpty(nonEmptyFile) shouldBe true
         }
+    }
+
+    @Test
+    fun `obtain absolute path`() {
+        val file = Files2.toAbsolute("some/dir/file.txt")
+        file.isAbsolute shouldBe true
     }
 }

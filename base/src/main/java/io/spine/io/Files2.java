@@ -54,7 +54,6 @@ public final class Files2 {
     /**
      * Normalizes and transforms the passed path to an absolute file reference.
      */
-    @SuppressWarnings("unused") /* Part of the public API. */
     public static File toAbsolute(String path) {
         checkNotNull(path);
         var file = new File(path);
