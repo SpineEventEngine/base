@@ -215,6 +215,14 @@ internal class FieldDeclarationSpec {
     }
 
     @Test
+    fun `obtain Java type kind of the field`() {
+        val host = Uri.getDescriptor().findFieldByName("host")
+        val decl = FieldDeclaration(host)
+
+        decl.javaType() shouldBe FieldDescriptor.JavaType.STRING
+    }
+
+    @Test
     fun `obtain field comments`() {
         val host = Uri.getDescriptor().findFieldByName("host")
         val decl = FieldDeclaration(host)

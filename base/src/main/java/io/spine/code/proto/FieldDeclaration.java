@@ -288,7 +288,9 @@ public final class FieldDeclaration {
         return FieldTypes.isMap(field);
     }
 
-    /** Obtains the Java type of the declaration. */
+    /**
+     * Obtains the Java type of the declaration.
+     */
     public JavaType javaType() {
         return field.getJavaType();
     }
@@ -367,8 +369,8 @@ public final class FieldDeclaration {
      * Obtains comments going before the field.
      *
      * @return the leading field comments or {@code Optional.empty()} if there are no comments
+     * @see MessageType#leadingComments(LocationPath)
      */
-    @SuppressWarnings("unused") /* Part of the public API. */
     public Optional<String> leadingComments() {
         var fieldPath = fieldPath();
         return declaringMessage.leadingComments(fieldPath);
