@@ -239,7 +239,6 @@ public final class Durations2 {
     /**
      * Converts the passed value to Java Time value.
      */
-    @SuppressWarnings("unused")
     public static java.time.Duration toJavaTime(Duration value) {
         checkNotNull(value);
         var result =

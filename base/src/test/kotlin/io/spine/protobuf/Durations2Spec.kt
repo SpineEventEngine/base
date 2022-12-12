@@ -41,6 +41,7 @@ import io.spine.protobuf.Durations2.milliseconds
 import io.spine.protobuf.Durations2.minutes
 import io.spine.protobuf.Durations2.nanos
 import io.spine.protobuf.Durations2.seconds
+import io.spine.protobuf.Durations2.toJavaTime
 import io.spine.testing.TestValues
 import io.spine.testing.UtilityClassTest
 import io.spine.testing.setDefault
@@ -69,12 +70,20 @@ internal class Durations2Spec : UtilityClassTest<Durations2>(Durations2::class.j
     }
 
     @Test
-    fun `convert to Java Time and back`() {
+    fun `convert to Java Time type and back via 'converter()'`() {
         val original = randomDuration()
         val converted = converter.reverse().convert(original)
         val back = converter.convert(converted)
 
         back shouldBe original
+    }
+
+    @Test
+    fun `convert to Java Time type`() {
+        val original = randomDuration()
+        val backward = converter.reverse()
+
+        toJavaTime(original) shouldBe backward.convert(original)
     }
 
     @Nested
