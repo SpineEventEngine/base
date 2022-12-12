@@ -51,3 +51,10 @@ public inline fun <reified T : Any> NullPointerTester.setDefault(value: T): Null
  */
 public inline fun <reified T : Any> NullPointerTester.testAllPublicStaticMethods(): Unit =
     testAllPublicStaticMethods(T::class.java)
+
+/**
+ * Allows to use generic parameter of the function instead of `MyType::class.java` as the first
+ * parameter type.
+ */
+public inline fun <reified T : Any> NullPointerTester.testAllPublicConstructors(): Unit =
+    testAllPublicConstructors(T::class.java)
