@@ -47,9 +47,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("`Ensure` utilities class should")
-class EnsureTest extends UtilityClassTest<Ensure> {
+class EnsureSpec extends UtilityClassTest<Ensure> {
 
-    EnsureTest() {
+    EnsureSpec() {
         super(Ensure.class);
     }
 
