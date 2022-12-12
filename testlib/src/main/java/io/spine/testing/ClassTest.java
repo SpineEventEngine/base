@@ -43,7 +43,6 @@ import static io.spine.testing.Assertions.assertTrue;
  * @param <C>
  *         the class under the tests
  */
-@SuppressWarnings("UnstableApiUsage") // NPE testing utils from Guava.
 public abstract class ClassTest<C> {
 
     private final Class<C> subject;
@@ -91,7 +90,6 @@ public abstract class ClassTest<C> {
      *
      * @see #configure(NullPointerTester)
      */
-    @SuppressWarnings("unused") /* Part of the public API. */
     protected final Visibility minimalStaticMethodVisibility() {
         return minimalStaticMethodVisibility;
     }
