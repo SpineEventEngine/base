@@ -37,7 +37,7 @@ import com.google.protobuf.Int64Value
 import com.google.protobuf.StringValue
 import io.kotest.matchers.optional.shouldBePresent
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldStartWith
+import io.kotest.matchers.string.shouldContain
 import io.spine.test.type.Uri
 import io.spine.test.type.Uri.Authorization
 import io.spine.testing.Assertions.assertIllegalState
@@ -229,7 +229,7 @@ internal class FieldDeclarationSpec {
         val decl = FieldDeclaration(host)
 
         decl.leadingComments() shouldBePresent {
-            it shouldStartWith "Domain name"
+            it shouldContain "Domain name."
         }
     }
 }
