@@ -57,6 +57,7 @@ import static io.spine.code.proto.FileDescriptors.sameFiles;
 import static io.spine.option.EntityOption.Kind.KIND_UNKNOWN;
 import static io.spine.option.EntityOption.Kind.UNRECOGNIZED;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+import static java.lang.String.format;
 
 /**
  * A message type as declared in a proto file.
@@ -322,10 +323,10 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * <p>Requires the following Protobuf plugin configuration:
      * <pre> {@code
      * generateProtoTasks {
-     *     all().each { final task ->
+     *     all().configureEach {
      *         // If true, the descriptor set will contain line number information
      *         // and comments. Default is false.
-     *         task.descriptorSetOptions.includeSourceInfo = true
+     *         descriptorSetOptions.includeSourceInfo = true
      *         // ...
      *     }
      * }
@@ -352,11 +353,19 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     public Optional<String> leadingComments(LocationPath locationPath) {
         var file = descriptor().getFile().toProto();
         if (!file.hasSourceCodeInfo()) {
-            _warn().log(
-                    "Unable to obtain proto source code info. " +
-                            "Please configure the Gradle Protobuf plugin as follows:%n" +
-                            "`task.descriptorSetOptions.includeSourceInfo = true`."
-            );
+            var msg = format(
+                    "Unable to obtain proto source code info for the message type `%s`" +
+                            " declared in the file `%s`.%n" +
+                            "Please configure the Gradle Protobuf plugin as follows:" +
+                            "%n%n" +
+                            "protobuf {%n" +
+                            "    generateProtoTasks.all().configureEach {%n" +
+                            "        descriptorSetOptions.includeSourceInfo = true %n" +
+                            "    }%n" +
+                            '}',
+                    name(),
+                    file.getName());
+            _warn().log(msg);
             return Optional.empty();
         }
 
