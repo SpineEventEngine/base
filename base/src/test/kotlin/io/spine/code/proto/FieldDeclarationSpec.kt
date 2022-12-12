@@ -23,205 +23,204 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.code.proto
 
-package io.spine.code.proto;
-
-import com.google.common.testing.EqualsTester;
-import com.google.common.testing.NullPointerTester;
-import com.google.protobuf.Any;
-import com.google.protobuf.ByteString;
-import com.google.protobuf.BytesValue;
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.google.protobuf.Empty;
-import com.google.protobuf.Int32Value;
-import com.google.protobuf.Int64Value;
-import com.google.protobuf.StringValue;
-import io.spine.test.type.Uri;
-import io.spine.test.type.Uri.Protocol;
-import io.spine.type.MessageType;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
-import static com.google.common.truth.Truth.assertThat;
-import static io.spine.test.type.Uri.Authorization.getDescriptor;
-import static io.spine.testing.Assertions.assertIllegalState;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.google.common.testing.EqualsTester
+import com.google.common.testing.NullPointerTester
+import com.google.protobuf.Any
+import com.google.protobuf.ByteString
+import com.google.protobuf.BytesValue
+import com.google.protobuf.Descriptors.FieldDescriptor
+import com.google.protobuf.Empty
+import com.google.protobuf.Int32Value
+import com.google.protobuf.Int64Value
+import com.google.protobuf.StringValue
+import io.kotest.matchers.optional.shouldBePresent
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldStartWith
+import io.spine.test.type.Uri
+import io.spine.test.type.Uri.Authorization
+import io.spine.testing.Assertions.assertIllegalState
+import io.spine.testing.nullPointerTester
+import io.spine.testing.setDefault
+import io.spine.testing.testAllPublicConstructors
+import io.spine.type.MessageType
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
 @DisplayName("`FieldDeclaration` should")
-class FieldDeclarationTest {
-
+internal class FieldDeclarationSpec {
     @Test
-    @DisplayName("not accept `null`s on construction")
-    void notAcceptNullsOnCtor() {
-        var descriptor = Any.getDescriptor();
-        var tester = new NullPointerTester()
-                .setDefault(MessageType.class, new MessageType(descriptor))
-                .setDefault(FieldDescriptor.class, descriptor.getFields()
-                                                             .get(0));
-        tester.testAllPublicConstructors(FieldDeclaration.class);
+    fun `not accept 'null's on construction`() {
+        val descriptor = Any.getDescriptor()
+        nullPointerTester {
+            setDefault(MessageType(descriptor))
+            setDefault<FieldDescriptor>(descriptor.fields[0])
+        }.testAllPublicConstructors<FieldDeclaration>()
     }
 
     @Test
-    @DisplayName("not accept `null`s")
-    void notAcceptNulls() {
-        var descriptor = Any.getDescriptor();
-        var field = descriptor.getFields()
-                              .get(0);
-        new NullPointerTester()
-                .testAllPublicInstanceMethods(new FieldDeclaration(field));
+    fun `handle 'null's in instance methods`() {
+        val descriptor = Any.getDescriptor()
+        val field = descriptor.fields[0]
+        NullPointerTester()
+            .testAllPublicInstanceMethods(FieldDeclaration(field))
     }
 
     @Test
-    @DisplayName("have `equals()` and `hashCode()`")
-    void equalsAndHashCode() {
-        var any = Any.getDescriptor();
-        var typeUrl = any.getFields()
-                         .get(0);
-        var bytes = any.getFields()
-                       .get(1);
-        new EqualsTester()
-                .addEqualityGroup(new FieldDeclaration(typeUrl),
-                                  new FieldDeclaration(typeUrl, new MessageType(any)))
-                .addEqualityGroup(new FieldDeclaration(bytes),
-                                  new FieldDeclaration(bytes, new MessageType(any)))
-                .testEquals();
+    fun `have 'equals()' and 'hashCode()'`() {
+        val any = Any.getDescriptor()
+        val typeUrl = any.fields[0]
+        val bytes = any.fields[1]
+        EqualsTester()
+            .addEqualityGroup(
+                FieldDeclaration(typeUrl),
+                FieldDeclaration(typeUrl, MessageType(any))
+            )
+            .addEqualityGroup(
+                FieldDeclaration(bytes),
+                FieldDeclaration(bytes, MessageType(any))
+            )
+            .testEquals()
     }
 
     @Nested
-    @DisplayName("check default values of")
-    class Defaults {
+    @DisplayName("check default values of type")
+    internal inner class Defaults {
 
         @Test
-        @DisplayName("`int32`")
-        void anInt32() {
-            var int32Field = Int32Value.getDescriptor()
-                                       .getFields()
-                                       .get(0);
-            var declaration = new FieldDeclaration(int32Field);
-            assertTrue(declaration.isDefault(0));
-            assertFalse(declaration.isDefault(""));
-            assertFalse(declaration.isDefault(0.0));
+        fun int32() {
+            val int32Field = Int32Value.getDescriptor().fields[0]
+            val declaration = FieldDeclaration(int32Field)
+
+            declaration.isDefault(0) shouldBe true
+            declaration.isDefault("") shouldBe false
+            declaration.isDefault(0.0) shouldBe false
         }
 
         @Test
         @DisplayName("`string`")
-        void aString() {
-            var stringField = StringValue.getDescriptor()
-                                         .getFields()
-                                         .get(0);
-            var declaration = new FieldDeclaration(stringField);
-            assertTrue(declaration.isDefault(""));
-            assertFalse(declaration.isDefault(0L));
+        fun aString() {
+            val stringField = StringValue.getDescriptor().fields[0]
+            val declaration = FieldDeclaration(stringField)
+
+            declaration.isDefault("") shouldBe true
+            declaration.isDefault(0L) shouldBe false
         }
 
         @Test
         @DisplayName("`Message`")
-        void aMessage() {
-            var messageField = Uri.getDescriptor()
-                                  .findFieldByName("auth");
-            var declaration = new FieldDeclaration(messageField);
-            assertTrue(declaration.isDefault(Uri.Authorization.getDefaultInstance()));
-            assertFalse(declaration.isDefault(0L));
-            assertFalse(declaration.isDefault(Empty.getDefaultInstance()));
+        fun aMessage() {
+            val messageField = Uri.getDescriptor().findFieldByName("auth")
+            val declaration = FieldDeclaration(messageField)
+
+            declaration.isDefault(Authorization.getDefaultInstance()) shouldBe true
+            declaration.isDefault(0L) shouldBe false
+            declaration.isDefault(Empty.getDefaultInstance()) shouldBe false
         }
     }
 
     @Nested
     @DisplayName("obtain Java type name of")
-    class TypeName {
+    internal inner class TypeName {
 
         @Test
-        @DisplayName("`int64`")
-        void int64() {
-            var int64Field = Int64Value.getDescriptor()
-                                       .getFields()
-                                       .get(0);
-            var declaration = new FieldDeclaration(int64Field);
-            var typeName = declaration.javaTypeName();
-            assertThat(typeName).isEqualTo(long.class.getName());
+        fun int64() {
+            val int64Field = Int64Value.getDescriptor().fields[0]
+            val declaration = FieldDeclaration(int64Field)
+            val typeName = declaration.javaTypeName()
+
+            typeName shouldBe Long::class.javaPrimitiveType!!.name
         }
 
         @Test
-        @DisplayName("bytes")
-        void bytes() {
-            var int64Field = BytesValue.getDescriptor()
-                                       .getFields()
-                                       .get(0);
-            var declaration = new FieldDeclaration(int64Field);
-            var typeName = declaration.javaTypeName();
-            assertThat(typeName).isEqualTo(ByteString.class.getCanonicalName());
+        fun bytes() {
+            val int64Field = BytesValue.getDescriptor().fields[0]
+            val declaration = FieldDeclaration(int64Field)
+            val typeName = declaration.javaTypeName()
+
+            typeName shouldBe ByteString::class.java.canonicalName
         }
 
         @Test
         @DisplayName("`Message`")
-        void message() {
-            var messageField = Uri.getDescriptor()
-                                  .findFieldByName("protocol");
-            var declaration = new FieldDeclaration(messageField);
-            var typeName = declaration.javaTypeName();
-            assertThat(typeName).isEqualTo(Protocol.class.getCanonicalName());
+        fun message() {
+            val messageField = Uri.getDescriptor().findFieldByName("protocol")
+            val declaration = FieldDeclaration(messageField)
+            val typeName = declaration.javaTypeName()
+
+            typeName shouldBe Uri.Protocol::class.java.canonicalName
         }
 
         @Test
         @DisplayName("`enum`")
-        void anEnum() {
-            var enumField = Uri.Protocol.getDescriptor()
-                                        .findFieldByName("schema");
-            var declaration = new FieldDeclaration(enumField);
-            var typeName = declaration.javaTypeName();
-            assertThat(typeName).isEqualTo(Uri.Schema.class.getCanonicalName());
+        fun anEnum() {
+            val enumField = Uri.Protocol.getDescriptor().findFieldByName("schema")
+            val declaration = FieldDeclaration(enumField)
+            val typeName = declaration.javaTypeName()
+
+            typeName shouldBe Uri.Schema::class.java.canonicalName
         }
     }
 
     @Test
-    @DisplayName("obtain a name of the getter generated for the field by Protobuf Java")
-    void obtainJavaGetterName() {
-        var field = Uri.Authorization.getDescriptor()
-                                     .findFieldByName("user_name");
-        var declaration = new FieldDeclaration(field);
-        var javaGetterName = declaration.javaGetterName();
-        assertThat(javaGetterName).isEqualTo("getUserName");
+    fun `obtain a name of the getter generated for the field by Protobuf Java`() {
+        val field = Authorization.getDescriptor().findFieldByName("user_name")
+        val declaration = FieldDeclaration(field)
+        val javaGetterName = declaration.javaGetterName()
+
+        javaGetterName shouldBe "getUserName"
     }
 
     @Test
-    @DisplayName("obtain the message type of the field")
-    void obtainMessageType() {
-        var field = Uri.getDescriptor()
-                       .findFieldByName("auth");
-        var declaration = new FieldDeclaration(field);
-        var authorization = new MessageType(Uri.Authorization.getDescriptor());
-        assertThat(declaration.messageType()).isEqualTo(authorization);
+    fun `obtain the message type of the field`() {
+        val field = Uri.getDescriptor().findFieldByName("auth")
+        val declaration = FieldDeclaration(field)
+        val authorization = MessageType(Authorization.getDescriptor())
+
+        declaration.messageType() shouldBe authorization
     }
 
     @Test
-    @DisplayName("throw an `ISE` if the field is of non-message type")
-    void throwOnWrongType() {
-        var field = getDescriptor().findFieldByName("user_name");
-        var declaration = new FieldDeclaration(field);
-        assertIllegalState(declaration::messageType);
+    fun `throw an 'ISE' if the field is of non-message type`() {
+        val field = Authorization.getDescriptor().findFieldByName("user_name")
+        val declaration = FieldDeclaration(field)
+
+        assertIllegalState { declaration.messageType() }
     }
 
     @Test
-    @DisplayName("tell if the field is a singular field of a message type")
-    void checkSingularMessage() {
-        var field = Uri.getDescriptor().findFieldByName("auth");
-        var declaration = new FieldDeclaration(field);
-        assertThat(declaration.isSingularMessage()).isTrue();
+    fun `tell if the field is a singular field of a message type`() {
+        val field = Uri.getDescriptor().findFieldByName("auth")
+        val declaration = FieldDeclaration(field)
+
+        declaration.isSingularMessage shouldBe true
     }
 
     @Test
-    @DisplayName("tell if the field is not a singular field of a message type")
-    void checkNotSingularMessage() {
-        // Check non-singular type.
-        var query = Uri.getDescriptor().findFieldByName("query");
-        var nonSingular = new FieldDeclaration(query);
-        assertThat(nonSingular.isSingularMessage()).isFalse();
+    fun `tell if the field is not a singular message type, if the field is repeated`() {
+        val query = Uri.getDescriptor().findFieldByName("query")
+        val nonSingular = FieldDeclaration(query)
 
-        // Check non-`Message` type.
-        var host = Uri.getDescriptor().findFieldByName("host");
-        var nonMessage = new FieldDeclaration(host);
-        assertThat(nonMessage.isSingularMessage()).isFalse();
+        nonSingular.isSingularMessage shouldBe false
+    }
+
+    @Test
+    fun `tell if the field is not a singular message type, if type is not message`() {
+        val host = Uri.getDescriptor().findFieldByName("host")
+        val nonMessage = FieldDeclaration(host)
+
+        nonMessage.isSingularMessage shouldBe false
+    }
+
+    @Test
+    fun `obtain field comments`() {
+        val host = Uri.getDescriptor().findFieldByName("host")
+        val decl = FieldDeclaration(host)
+
+        decl.leadingComments() shouldBePresent {
+            it shouldStartWith "Domain name"
+        }
     }
 }
