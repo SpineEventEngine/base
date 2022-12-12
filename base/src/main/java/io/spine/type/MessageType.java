@@ -28,6 +28,7 @@ package io.spine.type;
 
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
@@ -344,6 +345,11 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
 
     /**
      * Obtains a leading comments by the {@link LocationPath}.
+     *
+     * <p>This method logs a warning message if the file declaring this message type does not have
+     * {@linkplain DescriptorProtos.FileDescriptorProto#hasSourceCodeInfo() source code info}
+     * produced ty Protobuf compiler. The warning message provides instructions for configuring
+     * the Protobuf Gradle plugin for enabling source code info.
      *
      * @param locationPath
      *         the location path to get leading comments
