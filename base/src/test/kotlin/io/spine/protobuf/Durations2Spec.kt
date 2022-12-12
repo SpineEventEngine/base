@@ -23,316 +23,259 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.string;
+package io.spine.protobuf
 
-import com.google.common.base.Converter;
-import com.google.common.testing.NullPointerTester;
-import com.google.protobuf.Duration;
-import com.google.protobuf.util.Durations;
-import io.spine.protobuf.Durations2;
-import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import com.google.common.testing.NullPointerTester
+import com.google.protobuf.Duration
+import com.google.protobuf.util.Durations
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeSameInstanceAs
+import io.spine.protobuf.Durations2.add
+import io.spine.protobuf.Durations2.hours
+import io.spine.protobuf.Durations2.hoursAndMinutes
+import io.spine.protobuf.Durations2.isGreaterThan
+import io.spine.protobuf.Durations2.isLessThan
+import io.spine.protobuf.Durations2.isPositiveOrZero
+import io.spine.protobuf.Durations2.isZero
+import io.spine.protobuf.Durations2.milliseconds
+import io.spine.protobuf.Durations2.minutes
+import io.spine.protobuf.Durations2.nanos
+import io.spine.protobuf.Durations2.seconds
+import io.spine.testing.TestValues
+import io.spine.testing.UtilityClassTest
+import io.spine.testing.setDefault
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
-import static com.google.common.truth.Truth.assertThat;
-import static com.google.protobuf.util.Durations.isNegative;
-import static com.google.protobuf.util.Durations.toHours;
-import static com.google.protobuf.util.Durations.toMillis;
-import static com.google.protobuf.util.Durations.toMinutes;
-import static com.google.protobuf.util.Durations.toNanos;
-import static com.google.protobuf.util.Durations.toSeconds;
-import static io.spine.protobuf.Durations2.ZERO;
-import static io.spine.protobuf.Durations2.add;
-import static io.spine.protobuf.Durations2.hours;
-import static io.spine.protobuf.Durations2.hoursAndMinutes;
-import static io.spine.protobuf.Durations2.isGreaterThan;
-import static io.spine.protobuf.Durations2.isLessThan;
-import static io.spine.protobuf.Durations2.isPositive;
-import static io.spine.protobuf.Durations2.isPositiveOrZero;
-import static io.spine.protobuf.Durations2.isZero;
-import static io.spine.protobuf.Durations2.milliseconds;
-import static io.spine.protobuf.Durations2.minutes;
-import static io.spine.protobuf.Durations2.nanos;
-import static io.spine.protobuf.Durations2.seconds;
-import static io.spine.testing.TestValues.random;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+@DisplayName("`Durations2` utility class should")
+internal class Durations2Spec : UtilityClassTest<Durations2>(Durations2::class.java) {
 
-@SuppressWarnings({"MagicNumber", "ClassCanBeStatic", "InnerClassMayBeStatic"})
-@DisplayName("`Durations2` should")
-class Durations2Test extends UtilityClassTest<Durations2> {
+    private val converter = Durations2.converter()
 
-    private final Converter<java.time.Duration, Duration> converter = Durations2.converter();
-
-    Durations2Test() {
-        super(Durations2.class);
-    }
-
-    @Override
-    protected void configure(NullPointerTester nullTester) {
-        nullTester.setDefault(Duration.class, Duration.getDefaultInstance());
+    override fun configure(nullTester: NullPointerTester) {
+        nullTester.setDefault(Duration.getDefaultInstance())
     }
 
     @Test
-    @DisplayName("parse a string")
-    void toFromString() {
-        var expected = randomDuration();
-        var str = Durations.toString(expected);
-        var converted = Durations2.parse(str);
-        assertThat(converted).isEqualTo(expected);
-    }
+    fun `parse a string`() {
+        val expected = randomDuration()
+        val str = Durations.toString(expected)
+        val converted = Durations2.parse(str)
 
-    private static Duration randomDuration() {
-        return add(seconds(random(10000)), nanos(random(100_000)));
+        converted shouldBe expected
     }
 
     @Test
-    @DisplayName("convert to Java Time and back")
-    void toFromJavaTime() {
-        var original = randomDuration();
-        var converted = converter.reverse().convert(original);
-        var back = converter.convert(converted);
-        assertThat(back).isEqualTo(original);
-    }
+    fun `convert to Java Time and back`() {
+        val original = randomDuration()
+        val converted = converter.reverse().convert(original)
+        val back = converter.convert(converted)
 
-    @Test
-    @DisplayName("have `ZERO` constant")
-    void zeroConstant() {
-        assertThat(toNanos(ZERO)).isEqualTo(0);
+        back shouldBe original
     }
 
     @Nested
     @DisplayName("provide DSL methods for")
-    class Dsl {
+    internal inner class Dsl {
 
-        private long value;
+        private var value: Long = 0
 
         @BeforeEach
-        void generateValue() {
-            value = random(10_000);
+        fun generateValue() {
+            value = TestValues.random(10000).toLong()
         }
 
         @Test
-        @DisplayName("hours")
-        void forHours() {
-            assertThat(toHours(hours(value)))
-                    .isEqualTo(value);
-        }
-        @Test
-        @DisplayName("minutes")
-        void forMinutes() {
-            assertThat(toMinutes(minutes(value)))
-                    .isEqualTo(value);
+        fun hours() {
+            Durations.toHours(hours(value)) shouldBe value
         }
 
         @Test
-        @DisplayName("for seconds")
-        void forSeconds() {
-            assertThat(toSeconds(seconds(value)))
-                    .isEqualTo(value);
+        fun minutes() {
+            Durations.toMinutes(minutes(value)) shouldBe value
         }
 
         @Test
-        @DisplayName("for milliseconds")
-        void forMillis() {
-            assertThat(toMillis(milliseconds(100500L)))
-                    .isEqualTo(100500L);
+        fun seconds() {
+            Durations.toSeconds(seconds(value)) shouldBe value
         }
 
         @Test
-        @DisplayName("for hours and minutes")
-        void hoursMinutesSeconds() {
-            long hours = 3;
-            long minutes = 25;
-            var secondsTotal = hoursToSeconds(hours) + minutesToSeconds(minutes);
-            var expected = seconds(secondsTotal);
-
-            var actual = hoursAndMinutes(hours, minutes);
-
-            assertEquals(expected, actual);
+        fun milliseconds() {
+            Durations.toMillis(milliseconds(100500L)) shouldBe 100500L
         }
-    }
 
-    private static long minutesToSeconds(long minutes) {
-        return minutes * 60L;
-    }
+        @Test
+        fun `hours and minutes`() {
+            val hours: Long = 3
+            val minutes: Long = 25
+            val secondsTotal = hoursToSeconds(hours) + minutesToSeconds(minutes)
+            val expected = seconds(secondsTotal)
+            val actual = hoursAndMinutes(hours, minutes)
 
-    private static long hoursToSeconds(long hours) {
-        return hours * 60L * 60L;
+            actual shouldBe expected
+        }
     }
 
     @Nested
     @DisplayName("convert a number of hours")
-    class HourConversion {
+    internal inner class HourConversion {
 
-        private void test(long hours) {
-            var expected = seconds(hoursToSeconds(hours));
-            var actual = hours(hours);
-            assertThat(actual).isEqualTo(expected);
+        private fun test(hours: Long) {
+            val expected = seconds(hoursToSeconds(hours))
+            val actual = hours(hours)
+
+            actual shouldBe expected
         }
 
         @Test
-        @DisplayName("zero value")
-        void zero() {
-            test(0);
+        fun `zero value`() {
+            test(0)
         }
 
         @Test
-        @DisplayName("positive value")
-        void positive() {
-            test(36);
+        fun `positive value`() {
+            test(36)
         }
 
         @Test
-        @DisplayName("negative value")
-        void negative() {
-            test(-384);
+        fun `negative value`() {
+            test(-384)
         }
     }
 
     @Nested
     @DisplayName("fail if")
-    class MathError {
+    internal inner class MathError {
 
         @Test
-        @DisplayName("hours value is too big")
-        void onHugeHours() {
-            assertThrows(
-                    ArithmeticException.class,
-                    () -> hours(Long.MAX_VALUE)
-            );
+        fun `hours value is too big`() {
+            assertThrows<ArithmeticException> {
+                hours(Long.MAX_VALUE)
+            }
         }
 
         @Test
-        @DisplayName("minutes value is too big")
-        void onHugeMinutes() {
-            assertThrows(
-                    ArithmeticException.class,
-                    () -> minutes(Long.MAX_VALUE)
-            );
+        fun `minutes value is too big`() {
+            assertThrows<ArithmeticException> {
+                minutes(Long.MAX_VALUE)
+            }
         }
     }
 
     @Nested
     @DisplayName("add")
-    class Add {
+    internal inner class Add {
 
         @Test
         @DisplayName("two `null`s -> `ZERO`")
-        void nullPlusNull() {
-            assertThat(add(null, null)).isEqualTo(ZERO);
+        fun nullPlusNull() {
+            add(null, null) shouldBe Durations.ZERO
         }
 
         @Test
         @DisplayName("`null` returning same instance")
-        void sameWithNull() {
-            var duration = seconds(525);
-            assertThat(add(duration, null))
-                    .isSameInstanceAs(duration);
-            assertThat(add(null, duration))
-                    .isSameInstanceAs(duration);
+        fun sameWithNull() {
+            val duration = seconds(525)
+
+            add(duration, null) shouldBeSameInstanceAs duration
+            add(null, duration) shouldBeSameInstanceAs duration
         }
 
         @Test
-        @DisplayName("positive durations")
-        void positiveDurations() {
-            testAddSeconds(25, 5);
-            testAddSeconds(300, 338);
+        fun `positive durations`() {
+            testAddSeconds(25, 5)
+            testAddSeconds(300, 338)
         }
 
         @Test
-        @DisplayName("negative durations")
-        void negativeDurations() {
-            testAddSeconds(-25, -5);
-            testAddSeconds(-300, -338);
+        fun `negative durations`() {
+            testAddSeconds(-25, -5)
+            testAddSeconds(-300, -338)
         }
 
         @Test
-        @DisplayName("both positive and negative durations")
-        void negativeAndPositive() {
-            testAddSeconds(25, -5);
-            testAddSeconds(-300, 338);
+        fun `both positive and negative durations`() {
+            testAddSeconds(25, -5)
+            testAddSeconds(-300, 338)
         }
 
-        private void testAddSeconds(long seconds1, long seconds2) {
-            var secondsTotal = seconds1 + seconds2;
-            var sumExpected = seconds(secondsTotal);
-            var sumActual = add(seconds(seconds1), seconds(seconds2));
+        private fun testAddSeconds(seconds1: Long, seconds2: Long) {
+            val secondsTotal = seconds1 + seconds2
+            val sumExpected = seconds(secondsTotal)
+            val sumActual = add(seconds(seconds1), seconds(seconds2))
 
-            assertThat(sumActual).isEqualTo(sumExpected);
+            sumActual shouldBe sumExpected
         }
     }
 
     @Nested
     @DisplayName("Obtain from `Duration`")
-    class Obtain {
+    internal inner class Obtain {
 
         @Test
-        void amountOfHours() {
-            assertEquals(10, toHours(hoursAndMinutes(10, 40)));
-            assertEquals(-256, toHours(hoursAndMinutes(-256, -50)));
+        fun `amount of hours`() {
+            Durations.toHours(hoursAndMinutes(10, 40)) shouldBe 10
+
+            Durations.toHours(hoursAndMinutes(-256, -50)) shouldBe -256
         }
     }
 
     @Nested
     @DisplayName("verify if `Duration` is")
-    class Verify {
+    internal inner class Verify {
 
         @Test
-        @DisplayName("positive or zero")
-        void positiveOrZero() {
-            assertTrue(isPositiveOrZero(seconds(360)));
-            assertTrue(isPositiveOrZero(seconds(0)));
-            assertFalse(isPositiveOrZero(seconds(-32)));
+        fun `positive or zero`() {
+            isPositiveOrZero(seconds(360)) shouldBe true
+            isPositiveOrZero(seconds(0)) shouldBe true
+            isPositiveOrZero(seconds(-32)) shouldBe false
         }
 
         @Test
-        @DisplayName("positive")
-        void positive() {
-            assertTrue(isPositive(seconds(360)));
-            assertFalse(isPositive(seconds(0)));
-            assertFalse(isPositive(seconds(-32)));
-        }
-
-        @Test
-        @DisplayName("zero")
-        void zero() {
-            assertTrue(isZero(seconds(0)));
-            assertFalse(isZero(seconds(360)));
-            assertFalse(isZero(seconds(-32)));
-        }
-
-        @Test
-        @DisplayName("negative")
-        void negative() {
-            assertTrue(isNegative(seconds(-32)));
-            assertFalse(isNegative(seconds(360)));
-            assertFalse(isNegative(seconds(0)));
+        fun zero() {
+            isZero(seconds(0)) shouldBe true
+            isZero(seconds(360)) shouldBe false
+            isZero(seconds(-32)) shouldBe false
         }
     }
 
     @Nested
     @DisplayName("tell if `Duration` is")
-    class Compare {
+    internal inner class Compare {
 
         @Test
-        @DisplayName("greater")
-        void greater() {
-            assertTrue(isGreaterThan(seconds(64), seconds(2)));
-            assertFalse(isGreaterThan(seconds(2), seconds(64)));
-            assertFalse(isGreaterThan(seconds(5), seconds(5)));
+        fun greater() {
+            isGreaterThan(seconds(64), seconds(2)) shouldBe true
+            isGreaterThan(seconds(2), seconds(64)) shouldBe false
+            isGreaterThan(seconds(5), seconds(5)) shouldBe false
         }
 
         @Test
-        @DisplayName("less")
-        void less() {
-            assertTrue(isLessThan(seconds(2), seconds(64)));
-            assertFalse(isLessThan(seconds(64), seconds(2)));
-            assertFalse(isLessThan(seconds(5), seconds(5)));
+        fun less() {
+            isLessThan(seconds(2), seconds(64)) shouldBe true
+            isLessThan(seconds(64), seconds(2)) shouldBe false
+            isLessThan(seconds(5), seconds(5)) shouldBe false
+        }
+    }
+
+    companion object {
+        private fun randomDuration(): Duration {
+            return add(
+                seconds(TestValues.random(10000).toLong()),
+                nanos(TestValues.random(100000).toLong())
+            )
+        }
+
+        private fun minutesToSeconds(minutes: Long): Long {
+            return minutes * 60L
+        }
+
+        private fun hoursToSeconds(hours: Long): Long {
+            return hours * 60L * 60L
         }
     }
 }
