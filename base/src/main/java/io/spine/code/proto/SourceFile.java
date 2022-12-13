@@ -51,7 +51,7 @@ public class SourceFile extends AbstractSourceFile implements Logging {
 
     private final FileDescriptor descriptor;
 
-    SourceFile(FileDescriptor descriptor) {
+    protected SourceFile(FileDescriptor descriptor) {
         super(toPath(descriptor));
         this.descriptor = descriptor;
     }
@@ -82,7 +82,7 @@ public class SourceFile extends AbstractSourceFile implements Logging {
      * </ul>
      *
      * @deprecated Source file must not know if it matches a convention for specific types, such as
-     * rejections. Use {@link RejectionsFile} instead.
+     * rejections. Use {@code RejectionsFile} instead.
      */
     @Deprecated
     public boolean isRejections() {
