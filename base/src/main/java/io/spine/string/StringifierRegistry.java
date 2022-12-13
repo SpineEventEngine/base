@@ -26,10 +26,8 @@
 
 package io.spine.string;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.protobuf.Duration;
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Message;
-import com.google.protobuf.Timestamp;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.lang.reflect.Type;
@@ -58,18 +56,19 @@ public final class StringifierRegistry {
 
     private static final StringifierRegistry INSTANCE = new StringifierRegistry();
 
-    private final Map<Type, Stringifier<?>> stringifiers = synchronizedMap(
-            newHashMap(
-                    ImmutableMap.<Type, Stringifier<?>>builder()
-                            .put(Boolean.class, forBoolean())
-                            .put(Integer.class, forInteger())
-                            .put(Long.class, forLong())
-                            .put(String.class, forString())
-                            .put(Timestamp.class, forTimestamp())
-                            .put(Duration.class, forDuration())
-                            .build()
-            )
-    );
+    static {
+        var registrar = new Registrar(ImmutableList.of(
+                forBoolean(),
+                forInteger(),
+                forLong(),
+                forString(),
+                forTimestamp(),
+                forDuration()
+        ));
+        registrar.register();
+    }
+
+    private final Map<Type, Stringifier<?>> stringifiers = synchronizedMap(newHashMap());
 
     /** Prevents external instantiation of this singleton class. */
     private StringifierRegistry() {

@@ -30,7 +30,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.reflect.TypeToken;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -45,16 +44,15 @@ public final class Registrar {
     /**
      * Creates an instance for registering passed stringifiers.
      */
-    public Registrar(List<Stringifier<?>> stringifiers) {
+    public Registrar(Iterable<Stringifier<?>> stringifiers) {
         checkNotNull(stringifiers);
-        checkArgument(stringifiers.size() > 0, "At least one stringifier must be provided.");
         this.stringifiers = ImmutableList.copyOf(stringifiers);
+        checkArgument(this.stringifiers.size() > 0, "At least one stringifier must be provided.");
     }
 
     /**
      * Registers stringifiers.
      */
-    @SuppressWarnings("unused") /* Part of the public API. */
     public void register() {
         var registry = StringifierRegistry.instance();
         stringifiers.forEach((stringifier) -> {
@@ -66,7 +64,7 @@ public final class Registrar {
     /**
      * Obtains the class handled by the passed class of stringifiers.
      */
-    @SuppressWarnings("rawtypes")   /* Avoiding the generics hell. */
+    @SuppressWarnings("rawtypes")   /* Avoiding the generic hell. */
     private static Class<?> getDataClass(Class<? extends Stringifier> stringifierClass) {
         var supertypeToken = TypeToken.of(stringifierClass)
                                       .getSupertype(Stringifier.class);
