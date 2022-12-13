@@ -103,7 +103,7 @@ public final class TypeSet {
     }
 
     /**
-     * Obtains message types declared in the passed file set.
+     * Obtains message types declared in the given file set.
      */
     @SuppressWarnings("unused") /* Part of the public API. */
     public static ImmutableCollection<MessageType> onlyMessages(FileSet fileSet) {
@@ -117,7 +117,7 @@ public final class TypeSet {
     }
 
     /**
-     * Obtains message types declared in the passed file.
+     * Obtains message types declared in the given file descriptor.
      */
     @SuppressWarnings("unused") /* Part of the public API. */
     public static ImmutableCollection<MessageType> onlyMessages(FileDescriptor file) {
@@ -139,9 +139,10 @@ public final class TypeSet {
     /**
      * Obtains a type by its name.
      *
-     * @param name the name of the type to find
-     * @return the type with the given name or {@code Optional.empty()} if there is no such type in
-     *         this set
+     * @param name
+     *         the name of the type to find
+     * @return the type with the given name or {@code Optional.empty()} if there is no
+     *         such type in this set
      * @see #contains(TypeName)
      */
     public Optional<Type<?, ?>> find(TypeName name) {
@@ -166,7 +167,8 @@ public final class TypeSet {
      * {@code contains(TypeName)} returns {@code false}, then {@code find(TypeName)} will return
      * an empty value.
      *
-     * @param typeName the name to look by
+     * @param typeName
+     *         the name to look by
      * @return {@code true} if the set contains a type with the given name, {@code false} otherwise
      * @see #find(TypeName)
      */
