@@ -27,10 +27,13 @@
 package io.spine.string;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.reflect.TypeToken;
 import com.google.protobuf.Message;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
@@ -56,22 +59,21 @@ public final class StringifierRegistry {
 
     private static final StringifierRegistry INSTANCE = new StringifierRegistry();
 
-    static {
-        var registrar = new Registrar(ImmutableList.of(
+    private final Map<Type, Stringifier<?>> stringifiers = synchronizedMap(newHashMap());
+
+    /**
+     * Initializes the registry with the default stringifiers for primitive types,
+     * {@link TimestampStringifier}, and {@link DurationStringifier}.
+     */
+    private StringifierRegistry() {
+        register(
                 forBoolean(),
                 forInteger(),
                 forLong(),
                 forString(),
                 forTimestamp(),
                 forDuration()
-        ));
-        registrar.register();
-    }
-
-    private final Map<Type, Stringifier<?>> stringifiers = synchronizedMap(newHashMap());
-
-    /** Prevents external instantiation of this singleton class. */
-    private StringifierRegistry() {
+        );
     }
 
     /**
@@ -149,6 +151,28 @@ public final class StringifierRegistry {
     }
 
     /**
+     * Registers the given stringifier with the registry.
+     */
+    public void register(Stringifier<?> stringifier) {
+        checkNotNull(stringifier);
+        var dataClass = getDataClass(stringifier.getClass());
+        register(stringifier, dataClass);
+    }
+
+    /**
+     * Registers the given stringifiers with the registry.
+     */
+    public void register(Stringifier<?> first, Stringifier<?>... more) {
+        checkNotNull(first);
+        checkNotNull(more);
+        var list = ImmutableList.<Stringifier<?>>builder()
+                .add(first)
+                .addAll(Arrays.asList(more))
+                .build();
+        list.forEach(this::register);
+    }
+
+    /**
      * Obtains a {@code Stringifier} for the passed type.
      *
      * @param typeOfT
@@ -162,5 +186,18 @@ public final class StringifierRegistry {
         @Nullable Stringifier<?> str = stringifiers.get(typeOfT);
         @Nullable Stringifier<T> result = str != null ? cast(str) : null;
         return Optional.ofNullable(result);
+    }
+
+    /**
+     * Obtains the class handled by the passed class of stringifiers.
+     */
+    @SuppressWarnings("rawtypes")   /* Avoiding the generic hell. */
+    private static Class<?> getDataClass(Class<? extends Stringifier> stringifierClass) {
+        var supertypeToken = TypeToken.of(stringifierClass)
+                                      .getSupertype(Stringifier.class);
+        var genericSupertype = (ParameterizedType) supertypeToken.getType();
+        var typeArguments = genericSupertype.getActualTypeArguments();
+        var typeArgument = typeArguments[0];
+        return (Class<?>) typeArgument;
     }
 }
