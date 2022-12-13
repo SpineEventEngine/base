@@ -23,130 +23,116 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.code.proto
 
-package io.spine.code.proto;
+import com.google.common.testing.NullPointerTester
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.shouldBe
+import io.spine.testing.Assertions.assertIllegalArgument
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.testing.NullPointerTester;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
-import static io.spine.testing.Assertions.assertIllegalArgument;
-import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-@DisplayName("FileName should")
-class FileNameTest {
-
-    /** Concatenation is used for avoiding duplicated string warning. */
-    private static final String REJECTIONS_FILE_SUFFIX = "Rejection" + 's';
+@DisplayName("`FileName` should")
+internal class FileNameSpec {
 
     @Test
-    @DisplayName(NOT_ACCEPT_NULLS)
-    void nullCheck() {
-        new NullPointerTester().testStaticMethods(FileName.class,
-                                                  NullPointerTester.Visibility.PACKAGE);
+    fun `handle 'null's`() {
+        NullPointerTester().testStaticMethods(
+            FileName::class.java,
+            NullPointerTester.Visibility.PACKAGE
+        )
     }
 
     @Test
-    @DisplayName("require standard extension")
-    void requireStandardExtension() {
-        assertIllegalArgument(() -> FileName.of("some_thing"));
+    fun `require standard extension`() {
+        assertIllegalArgument { FileName.of("some_thing") }
     }
 
     @Test
-    @DisplayName("return words")
-    void returnWords() {
-        var words = FileName.of("some_file_name.proto").words();
+    fun `return words`() {
+        val words = FileName.of("some_file_name.proto").words()
 
-        assertEquals(ImmutableList.of("some", "file", "name"), words);
+        words.shouldContainExactly("some", "file", "name")
     }
 
     @Test
-    @DisplayName("calculate outer class name")
-    void calculateOuterClassName() {
-        assertEquals(REJECTIONS_FILE_SUFFIX, FileName.of("rejections.proto")
-                                                     .nameOnlyCamelCase());
-        assertEquals("ManyRejections", FileName.of("many_rejections.proto")
-                                               .nameOnlyCamelCase());
-        assertEquals("ManyMoreRejections", FileName.of("many_more_rejections.proto")
-                                                   .nameOnlyCamelCase());
+    fun `calculate outer class name`() {
+        FileName.of("rejections.proto").nameOnlyCamelCase() shouldBe REJECTIONS_FILE_SUFFIX
+        FileName.of("many_rejections.proto").nameOnlyCamelCase() shouldBe "ManyRejections"
+        FileName.of("many_more_rejections.proto").nameOnlyCamelCase() shouldBe "ManyMoreRejections"
     }
 
     @Nested
     @DisplayName("Calculate outer class name")
-    class OuterClassName {
+    internal inner class OuterClassName {
 
         @Test
-        @DisplayName("one word name")
-        void oneWord() {
-            assertConversion(REJECTIONS_FILE_SUFFIX, "rejections.proto");
+        fun `one word name`() {
+            assertConversion(REJECTIONS_FILE_SUFFIX, "rejections.proto")
         }
 
         @Test
-        @DisplayName("two words")
-        void twoWords() {
-            assertConversion("ManyRejections", "many_rejections.proto");
+        fun `two words`() {
+            assertConversion("ManyRejections", "many_rejections.proto")
         }
 
         @Test
-        @DisplayName("three words")
-        void threeWords() {
-            assertConversion("ManyMoreRejections", "many_more_rejections.proto");
+        fun `three words`() {
+            assertConversion("ManyMoreRejections", "many_more_rejections.proto")
         }
 
-        private void assertConversion(String expected, String fileName) {
-            var calculated = FileName.of(fileName)
-                                     .nameOnlyCamelCase();
-            assertEquals(expected, calculated);
+        private fun assertConversion(expected: String, fileName: String) {
+            val calculated = FileName.of(fileName)
+                .nameOnlyCamelCase()
+            assertEquals(expected, calculated)
         }
     }
 
     @Test
-    @DisplayName("return file name without extension")
-    void nameNoExtension() {
-        assertEquals("package/commands", FileName.of("package/commands.proto")
-                                                 .nameWithoutExtension());
+    fun `return file name without extension`() {
+        FileName.of("package/commands.proto").nameWithoutExtension() shouldBe "package/commands"
     }
 
     @Test
-    @DisplayName("tell commands file kind")
-    void commandsFile() {
-        var commandsFile = FileName.of("my_commands.proto");
+    fun `tell commands file kind`() {
+        val commandsFile = FileName.of("my_commands.proto")
 
-        assertTrue(commandsFile.isCommands());
-        assertFalse(commandsFile.isEvents());
-        assertFalse(commandsFile.isRejections());
+        commandsFile.isCommands shouldBe true
+        commandsFile.isEvents shouldBe false
+        commandsFile.isRejections shouldBe false
     }
 
     @Test
     @DisplayName("tell events file kind")
-    void eventsFile() {
-        var eventsFile = FileName.of("project_events.proto");
+    fun eventsFile() {
+        val eventsFile = FileName.of("project_events.proto")
 
-        assertTrue(eventsFile.isEvents());
-        assertFalse(eventsFile.isCommands());
-        assertFalse(eventsFile.isRejections());
+        eventsFile.isEvents shouldBe true
+        eventsFile.isCommands shouldBe false
+        eventsFile.isRejections shouldBe false
     }
 
     @Test
     @DisplayName("tell rejection file kind")
-    void rejectionsFile() {
-        var rejectionsFile = FileName.of("rejections.proto");
+    fun rejectionsFile() {
+        val rejectionsFile = FileName.of("rejections.proto")
 
-        assertTrue(rejectionsFile.isRejections());
-        assertFalse(rejectionsFile.isCommands());
-        assertFalse(rejectionsFile.isEvents());
+        rejectionsFile.isRejections shouldBe true
+        rejectionsFile.isCommands shouldBe false
+        rejectionsFile.isEvents shouldBe false
     }
 
     @Test
-    @DisplayName("return file name with extension")
-    void returnFileNameWithExtension(){
-        var fileName = FileName.of("io/spine/test/test_protos.proto");
+    fun `return file name with extension`() {
+        val fileName = FileName.of("io/spine/test/test_protos.proto")
 
-        assertEquals("test_protos.proto", fileName.nameWithExtension());
+        fileName.nameWithExtension() shouldBe "test_protos.proto"
+    }
+
+    companion object {
+        /** Concatenation is used for avoiding duplicated string warning.  */
+        private const val REJECTIONS_FILE_SUFFIX = "Rejection" + 's'
     }
 }
