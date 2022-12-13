@@ -23,112 +23,95 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.protobuf;
+package io.spine.protobuf
 
-import com.google.protobuf.Message;
-import com.google.protobuf.StringValue;
-import io.spine.base.Time;
-import io.spine.test.messages.MessageWithStringValue;
-import io.spine.testing.TestValues;
-import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
-import static io.spine.option.EntityOption.Kind.ENTITY;
-import static io.spine.option.EntityOption.Kind.KIND_UNKNOWN;
-import static io.spine.protobuf.AnyPacker.unpack;
-import static io.spine.protobuf.Messages.builderFor;
-import static io.spine.protobuf.Messages.ensureMessage;
-import static io.spine.protobuf.Messages.isDefault;
-import static io.spine.protobuf.Messages.isNotDefault;
-import static io.spine.protobuf.TypeConverter.toAny;
-import static io.spine.protobuf.TypeConverter.toMessage;
-import static io.spine.testing.Assertions.assertIllegalArgument;
-import static io.spine.testing.TestValues.newUuidValue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.google.protobuf.Message
+import com.google.protobuf.StringValue
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.types.shouldBeSameInstanceAs
+import io.spine.base.Time
+import io.spine.option.EntityOption
+import io.spine.protobuf.Messages.builderFor
+import io.spine.protobuf.Messages.ensureMessage
+import io.spine.protobuf.Messages.isDefault
+import io.spine.protobuf.Messages.isNotDefault
+import io.spine.test.messages.MessageWithStringValue
+import io.spine.testing.Assertions.assertIllegalArgument
+import io.spine.testing.TestValues
+import io.spine.testing.UtilityClassTest
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
 @DisplayName("`Messages` utility class should")
-class MessagesTest extends UtilityClassTest<Messages> {
+internal class MessagesSpec : UtilityClassTest<Messages>(Messages::class.java) {
 
-    MessagesTest() {
-        super(Messages.class);
+    @Test
+    fun `return the same 'Any' from 'toAny()'`() {
+        val any = TypeConverter.toAny(javaClass.simpleName)
+
+        AnyPacker.pack(any) shouldBeSameInstanceAs any
     }
 
     @Test
-    @DisplayName("return the same `Any` from `toAny()`")
-    void sameAny() {
-        var any = toAny(getClass().getSimpleName());
-        assertSame(any, AnyPacker.pack(any));
+    fun `pack to 'Any'`() {
+        val timestamp = Time.currentTime()
+
+        AnyPacker.unpack(AnyPacker.pack(timestamp)) shouldBe timestamp
     }
 
     @Test
-    @DisplayName("pack to `Any`")
-    void packToAny() {
-        var timestamp = Time.currentTime();
-        assertEquals(timestamp, unpack(AnyPacker.pack(timestamp)));
+    fun `return builder for the message`() {
+        val messageBuilder = builderFor(MessageWithStringValue::class.java)
+
+        messageBuilder shouldNotBe null
+        messageBuilder.build().javaClass shouldBe MessageWithStringValue::class.java
     }
 
     @Test
-    @DisplayName("return builder for the message")
-    void builderForMessage() {
-        var messageBuilder = builderFor(MessageWithStringValue.class);
-        assertNotNull(messageBuilder);
-        assertEquals(MessageWithStringValue.class,
-                     messageBuilder.build()
-                                   .getClass());
+    fun `throw when try to get builder for a non-generated message`() {
+        assertIllegalArgument {
+            builderFor(Message::class.java)
+        }
     }
 
     @Test
-    @DisplayName("throw when try to get builder for a non-generated message")
-    void failGettingNonGeneratedBuilder() {
-        assertIllegalArgument(() -> builderFor(Message.class));
-    }
+    fun `ensure 'Message'`() {
+        val value = TestValues.newUuidValue()
 
-    @Test
-    @DisplayName("ensure `Message`")
-    void ensureMessageInstance() {
-        var value = TestValues.newUuidValue();
-        assertEquals(value, ensureMessage(AnyPacker.pack(value)));
-        assertSame(value, ensureMessage(value));
+        ensureMessage(AnyPacker.pack(value)) shouldBe value
+        ensureMessage(value) shouldBe value
     }
 
     @Nested
     @DisplayName("verify that")
-    class VerifyThat {
+    internal inner class VerifyThat {
 
         @Test
-        @DisplayName("a message is not in the default state")
-        void messageIsNotInDefaultState() {
-            var msg = toMessage("check_if_message_is_not_in_default_state");
+        fun `a message is not in the default state`() {
+            val msg = TypeConverter.toMessage("check_if_message_is_not_in_default_state")
 
-            assertTrue(isNotDefault(msg));
-            assertFalse(isNotDefault(StringValue.getDefaultInstance()));
+            isNotDefault(msg) shouldBe true
+            isNotDefault(StringValue.getDefaultInstance()) shouldBe false
         }
 
         @Test
-        @DisplayName("a message is in the default state")
-        void messageIsInDefaultState() {
-            Message nonDefault = newUuidValue();
+        fun `a message is in the default state`() {
+            val nonDefault: Message = TestValues.newUuidValue()
 
-            assertTrue(isDefault(StringValue.getDefaultInstance()));
-            assertFalse(isDefault(nonDefault));
+            isDefault(StringValue.getDefaultInstance()) shouldBe true
+            isDefault(nonDefault) shouldBe false
         }
 
         @Test
-        @DisplayName("an enum is not the default instance")
-        void notDefaultEnum() {
-            assertTrue(isNotDefault(ENTITY));
+        fun `an enum is not the default instance`() {
+            isNotDefault(EntityOption.Kind.ENTITY) shouldBe true
         }
 
         @Test
-        @DisplayName("an enum is the default instance")
-        void defaultEnum() {
-            assertTrue(isDefault(KIND_UNKNOWN));
+        fun `an enum is the default instance`() {
+            isDefault(EntityOption.Kind.KIND_UNKNOWN) shouldBe true
         }
     }
 }
