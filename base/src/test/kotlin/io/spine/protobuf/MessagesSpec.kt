@@ -29,6 +29,8 @@ import com.google.protobuf.Message
 import com.google.protobuf.StringValue
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.string.shouldEndWith
+import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.spine.base.Time
 import io.spine.option.EntityOption
@@ -113,5 +115,11 @@ internal class MessagesSpec : UtilityClassTest<Messages>(Messages::class.java) {
         fun `an enum is the default instance`() {
             isDefault(EntityOption.Kind.KIND_UNKNOWN) shouldBe true
         }
+    }
+
+    @Test
+    fun `declare the name for 'newBuilder' method`() {
+        Messages.METHOD_NEW_BUILDER shouldStartWith "new"
+        Messages.METHOD_NEW_BUILDER shouldEndWith "Builder"
     }
 }

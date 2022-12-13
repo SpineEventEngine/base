@@ -44,7 +44,6 @@ import static java.lang.String.format;
 public final class Messages {
 
     /** The name of a message builder factory method. */
-    @SuppressWarnings("unused") /* Part of the public API. */
     public static final String METHOD_NEW_BUILDER = "newBuilder";
 
     /**
