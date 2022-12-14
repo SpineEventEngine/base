@@ -23,50 +23,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package io.spine.io;
-
-import java.io.File;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+package io.spine.code.java
 
 /**
- * Additional utilities for working with files.
+ * Obtains the name of this class as instance of [ClassName].
  */
-public final class Files2 {
+public val Class<*>.className: ClassName
+    get() = ClassName.of(this)
 
-    /** Prevents instantiation of this utility class. */
-    private Files2() {
-    }
+/**
+ * Obtains the package name of this class as [PackageName] instance.
+ */
+public val Class<*>.nameOfPackage: PackageName
+    get() = PackageName.of(this)
 
-    /**
-     * Verifies if a passed file exists and has non-zero size.
-     */
-    public static boolean existsNonEmpty(File file) {
-        checkNotNull(file);
-        if (!file.exists()) {
-            return false;
-        }
-        var nonEmpty = file.length() > 0;
-        return nonEmpty;
-    }
-
-    /**
-     * Normalizes and transforms the passed path to an absolute file reference.
-     */
-    public static File toAbsolute(String path) {
-        checkNotNull(path);
-        var file = new File(path);
-        var normalized = file.toPath().normalize();
-        var result = normalized.toAbsolutePath().toFile();
-        return result;
-    }
-
-    /**
-     * Obtains the value of the {@code System} property for a temporary directory.
-     */
-    @SuppressWarnings("AccessOfSystemProperties")
-    public static String systemTempDir() {
-        return System.getProperty("java.io.tmpdir");
-    }
-}
+/**
+ * Obtains the simple name of the class.
+ */
+public val Class<*>.simplyNamed: SimpleClassName
+    get() = SimpleClassName.of(this)

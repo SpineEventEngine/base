@@ -32,7 +32,6 @@ import com.google.protobuf.ExtensionRegistry;
 /**
  * Register options generated for the {@code spine/options.proto} file.
  */
-@SuppressWarnings("unused") // loaded by AutoService.
 @AutoService(OptionsProvider.class)
 public final class BaseOptionsProvider implements OptionsProvider {
 

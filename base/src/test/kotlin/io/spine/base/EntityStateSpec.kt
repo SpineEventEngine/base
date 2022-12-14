@@ -24,49 +24,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.io;
+package io.spine.base
 
-import java.io.File;
+import io.kotest.matchers.shouldBe
+import io.spine.testing.StubMessage
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-/**
- * Additional utilities for working with files.
- */
-public final class Files2 {
-
-    /** Prevents instantiation of this utility class. */
-    private Files2() {
-    }
+@DisplayName("`EntityState` should")
+class EntityStateSpec {
 
     /**
-     * Verifies if a passed file exists and has non-zero size.
+     * This test simply makes the generic parameter used because the stub class uses it.
+     *
+     * @see <a href="https://github.com/SpineEventEngine/ProtoData/issues/114">Corresponding issue
+     * </a> for mor details.
      */
-    public static boolean existsNonEmpty(File file) {
-        checkNotNull(file);
-        if (!file.exists()) {
-            return false;
-        }
-        var nonEmpty = file.length() > 0;
-        return nonEmpty;
+    @Test
+    fun `generic parameter for ID`() {
+        EntityState::class.java.isAssignableFrom(StubEntityState::class.java) shouldBe true
     }
+}
 
-    /**
-     * Normalizes and transforms the passed path to an absolute file reference.
-     */
-    public static File toAbsolute(String path) {
-        checkNotNull(path);
-        var file = new File(path);
-        var normalized = file.toPath().normalize();
-        var result = normalized.toAbsolutePath().toFile();
-        return result;
-    }
-
-    /**
-     * Obtains the value of the {@code System} property for a temporary directory.
-     */
-    @SuppressWarnings("AccessOfSystemProperties")
-    public static String systemTempDir() {
-        return System.getProperty("java.io.tmpdir");
+class StubEntityState: StubMessage(), EntityState<Long> {
+    companion object {
+        private const val serialVersionUID: Long = 0L
     }
 }

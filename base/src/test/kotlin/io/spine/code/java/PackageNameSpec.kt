@@ -23,18 +23,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.code.java
 
-package io.spine.internal.dependency
+import io.kotest.matchers.shouldBe
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
-// https://github.com/jk1/Gradle-License-Report
-@Suppress("unused")
-object LicenseReport {
-    private const val version = "1.16"
-    const val lib = "com.github.jk1:gradle-license-report:${version}"
+@DisplayName("`java.PackageName` should")
+internal class PackageNameSpec {
 
-    object GradlePlugin {
-        const val version = LicenseReport.version
-        const val id = "com.github.jk1.dependency-license-report"
-        const val lib = LicenseReport.lib
+    @Test
+    fun `obtain a nested package`() {
+        PackageName.of("io.spine.code").nested("java") shouldBe
+                PackageName.of("io.spine.code.java")
+    }
+
+    @Test
+    fun `obtain delimiter char`() {
+        PackageName.delimiterChar() shouldBe '.'
     }
 }

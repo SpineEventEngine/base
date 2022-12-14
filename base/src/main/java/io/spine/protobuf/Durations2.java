@@ -59,7 +59,14 @@ import static java.util.Objects.requireNonNull;
 @SuppressWarnings("UtilityClass")
 public final class Durations2 {
 
+    /**
+     * Zero duration.
+     *
+     * @deprecated please use {@link Durations#ZERO}.
+     */
+    @Deprecated
     public static final Duration ZERO = fromMillis(0L);
+
     static final String PROTOBUF_DURATIONS = "com.google.protobuf.util.Durations";
 
     /** Prevent instantiation of this utility class. */
@@ -134,13 +141,13 @@ public final class Durations2 {
      * @return <ul>
      *             <li>sum of two durations if both of them are {@code non-null}
      *             <li>another {@code non-null} value, if one is {@code null}
-     *             <li>{@link #ZERO} if both values are {@code null}
+     *             <li>{@link Durations#ZERO} if both values are {@code null}
      *         </ul>
      * @see com.google.protobuf.util.Durations#add(Duration, Duration)
      */
     public static Duration add(@Nullable Duration d1, @Nullable Duration d2) {
         if (d1 == null && d2 == null) {
-            return ZERO;
+            return Durations.ZERO;
         }
         if (d1 == null) {
             return d2;
@@ -175,23 +182,20 @@ public final class Durations2 {
     /**
      * Returns {@code true} if the passed value is greater than zero,
      * {@code false} otherwise.
+     *
+     * @deprecated please use {@link Durations#isPositive(Duration)}
      */
+    @Deprecated
     public static boolean isPositive(Duration value) {
         checkNotNull(value);
-        var secondsPositive = value.getSeconds() > 0;
-        var nanosPositive = value.getNanos() > 0;
-        var result = secondsPositive || nanosPositive;
-        return result;
+        return Durations.isPositive(value);
 
     }
 
     /** Returns {@code true} if the passed value is zero, {@code false} otherwise. */
     public static boolean isZero(Duration value) {
         checkNotNull(value);
-        var noSeconds = value.getSeconds() == 0;
-        var noNanos = value.getNanos() == 0;
-        var result = noSeconds && noNanos;
-        return result;
+        return Durations.ZERO.equals(value);
     }
 
     /**
@@ -235,7 +239,6 @@ public final class Durations2 {
     /**
      * Converts the passed value to Java Time value.
      */
-    @SuppressWarnings("unused")
     public static java.time.Duration toJavaTime(Duration value) {
         checkNotNull(value);
         var result =

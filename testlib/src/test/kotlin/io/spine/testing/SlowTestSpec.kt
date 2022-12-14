@@ -24,20 +24,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.java;
+package io.spine.testing
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import io.kotest.matchers.shouldBe
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
-import static com.google.common.truth.Truth.assertThat;
-
-@DisplayName("`java.PackageName` should")
-class PackageNameTest {
+@SlowTest
+@DisplayName("`SlowTest` annotation should apply to a")
+class SlowTestSpec {
 
     @Test
-    @DisplayName("obtain a nested package")
-    void nesting() {
-        assertThat(PackageName.of("io.spine.code").nested("java"))
-                .isEqualTo(PackageName.of("io.spine.code.java"));
+    fun `test suite`() {
+        javaClass.isAnnotationPresent(SlowTest::class.java) shouldBe true
+    }
+
+    @Test
+    @SlowTest
+    fun method() {
+        javaClass.getMethod("method").isAnnotationPresent(SlowTest::class.java) shouldBe true
     }
 }

@@ -24,49 +24,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.io;
+package io.spine.testing
 
-import java.io.File;
+import com.google.common.testing.NullPointerTester.Visibility
+import io.kotest.matchers.shouldBe
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
-import static com.google.common.base.Preconditions.checkNotNull;
+@DisplayName("`ClassTest` should")
+class ClassTestSpec {
 
-/**
- * Additional utilities for working with files.
- */
-public final class Files2 {
+    @Test
+    fun `provide constructor with minimal static method visibility`() {
+        val suite = object : ClassTest<StubTestSubject>(
+            StubTestSubject::class.java,
+            Visibility.PACKAGE
+        ) {}
 
-    /** Prevents instantiation of this utility class. */
-    private Files2() {
+        suite.minimalStaticMethodVisibility() shouldBe Visibility.PACKAGE
     }
 
-    /**
-     * Verifies if a passed file exists and has non-zero size.
-     */
-    public static boolean existsNonEmpty(File file) {
-        checkNotNull(file);
-        if (!file.exists()) {
-            return false;
-        }
-        var nonEmpty = file.length() > 0;
-        return nonEmpty;
-    }
-
-    /**
-     * Normalizes and transforms the passed path to an absolute file reference.
-     */
-    public static File toAbsolute(String path) {
-        checkNotNull(path);
-        var file = new File(path);
-        var normalized = file.toPath().normalize();
-        var result = normalized.toAbsolutePath().toFile();
-        return result;
-    }
-
-    /**
-     * Obtains the value of the {@code System} property for a temporary directory.
-     */
-    @SuppressWarnings("AccessOfSystemProperties")
-    public static String systemTempDir() {
-        return System.getProperty("java.io.tmpdir");
+    @Test
+    fun `assume 'PUBLIC' minimal visibility of static methods`() {
+        val suite = object : ClassTest<StubTestSubject>(StubTestSubject::class.java) {}
+        
+        suite.minimalStaticMethodVisibility() shouldBe Visibility.PUBLIC
     }
 }
+
+class StubTestSubject

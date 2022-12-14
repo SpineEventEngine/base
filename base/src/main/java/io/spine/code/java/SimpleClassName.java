@@ -67,6 +67,15 @@ public final class SimpleClassName extends StringTypeValue {
     }
 
     /**
+     * Obtains the simple name of the given class.
+     */
+    public static SimpleClassName of(Class<?> cls) {
+        checkNotNull(cls);
+        var result = create(cls.getSimpleName());
+        return result;
+    }
+
+    /**
      * Creates an instance with the outer class name for the types declared in the file specified
      * by the passed descriptor.
      *

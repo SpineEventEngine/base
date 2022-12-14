@@ -101,7 +101,7 @@ public final class ClassName extends StringTypeValue {
      * @param packageName
      *         the name of the class package
      * @param simpleClassName
-     *         the simple name of a the class
+     *         the simple name of the class
      * @return a new instance
      */
     public static ClassName of(PackageName packageName, SimpleClassName simpleClassName) {
@@ -117,7 +117,6 @@ public final class ClassName extends StringTypeValue {
      *         the file from which the outer class is generated
      * @return new instance of {@code ClassName}
      */
-    @SuppressWarnings("unused") /* Part of the public API. */
     public static ClassName outerClass(FileDescriptor file) {
         var packageName = PackageName.resolve(file.toProto());
         var simpleName = SimpleClassName.outerOf(file);
@@ -127,8 +126,8 @@ public final class ClassName extends StringTypeValue {
     /**
      * Creates an instance of {@code ClassName} from the given Protobuf message type descriptor.
      *
-     * <p>The resulting class name is the name of the Java class which represents the given Protobuf
-     * type.
+     * <p>The resulting class name is the name of the Java class which represents
+     * the given Protobuf type.
      *
      * @param messageType
      *         the Protobuf message type descriptor
@@ -263,12 +262,11 @@ public final class ClassName extends StringTypeValue {
      * <p>If this class name is {@code com.acme.cms.Customer}, the resulting class name would be
      * {@code com.acme.cms.CustomerOrBuilder}.
      *
-     * <p>If this class name is {@linkplain #canonicalName() dotted}, then the resulting name is
-     * dotted.
+     * <p>If this class name is {@linkplain #canonicalName() dotted}, then the resulting
+     * name is dotted too.
      *
      * @return {@code MessageOrBuilder} interface FQN
      */
-    @SuppressWarnings("unused") /* Part of the public API. */
     public ClassName orBuilder() {
         return of(value() + OR_BUILDER_SUFFIX);
     }
@@ -298,10 +296,9 @@ public final class ClassName extends StringTypeValue {
      *
      * <p>The result is always {@linkplain #canonicalName() dotted}.
      *
-     * @return this name without the package
+     * @return this class name without the package
      */
     @Internal
-    @SuppressWarnings("unused") /* Part of the public API. */
     public String withoutPackage() {
         return toDotted(afterDot(value()));
     }
@@ -337,10 +334,9 @@ public final class ClassName extends StringTypeValue {
     /**
      * Obtains the simple name of the top level class.
      *
-     * <p>If this class is top level, returns the simple name of this class. If this class is
-     * nested, returns the name of the declaring top level class.
+     * <p>If this class is top level, returns the simple name of this class.
+     * If this class is nested, returns the name of the declaring top level class.
      */
-    @SuppressWarnings("unused") /* Part of the public API. */
     public SimpleClassName topLevelClass() {
         var qualifiedClassName = afterDot(value());
         var delimiterIndex = qualifiedClassName.indexOf(OUTER_CLASS_DELIMITER);

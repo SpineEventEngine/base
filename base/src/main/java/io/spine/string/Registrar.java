@@ -27,17 +27,16 @@
 package io.spine.string;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.reflect.TypeToken;
-
-import java.lang.reflect.ParameterizedType;
-import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Registers passed stringifiers at the {@link StringifierRegistry}.
+ *
+ * @deprecated please use {@link StringifierRegistry#register(Stringifier, Stringifier[])}
  */
+@Deprecated
 public final class Registrar {
 
     private final ImmutableList<Stringifier<?>> stringifiers;
@@ -45,34 +44,20 @@ public final class Registrar {
     /**
      * Creates an instance for registering passed stringifiers.
      */
-    public Registrar(List<Stringifier<?>> stringifiers) {
+    public Registrar(Iterable<Stringifier<?>> stringifiers) {
         checkNotNull(stringifiers);
-        checkArgument(stringifiers.size() > 0, "At least one stringifier must be provided.");
         this.stringifiers = ImmutableList.copyOf(stringifiers);
+        checkArgument(this.stringifiers.size() > 0, "At least one stringifier must be provided.");
     }
 
     /**
      * Registers stringifiers.
+     *
+     * @deprecated please use {@link StringifierRegistry#register(Stringifier, Stringifier[])}
      */
-    @SuppressWarnings("unused") /* Part of the public API. */
+    @Deprecated
     public void register() {
         var registry = StringifierRegistry.instance();
-        stringifiers.forEach((stringifier) -> {
-            var dataClass = getDataClass(stringifier.getClass());
-            registry.register(stringifier, dataClass);
-        });
-    }
-
-    /**
-     * Obtains the class handled by the passed class of stringifiers.
-     */
-    @SuppressWarnings("rawtypes")   /* Avoiding the generics hell. */
-    private static Class<?> getDataClass(Class<? extends Stringifier> stringifierClass) {
-        var supertypeToken = TypeToken.of(stringifierClass)
-                                      .getSupertype(Stringifier.class);
-        var genericSupertype = (ParameterizedType) supertypeToken.getType();
-        var typeArguments = genericSupertype.getActualTypeArguments();
-        var typeArgument = typeArguments[0];
-        return (Class<?>) typeArgument;
+        stringifiers.forEach(registry::register);
     }
 }

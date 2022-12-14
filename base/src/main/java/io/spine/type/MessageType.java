@@ -29,6 +29,7 @@ package io.spine.type;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
@@ -57,6 +58,7 @@ import static io.spine.code.proto.FileDescriptors.sameFiles;
 import static io.spine.option.EntityOption.Kind.KIND_UNKNOWN;
 import static io.spine.option.EntityOption.Kind.UNRECOGNIZED;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+import static java.lang.String.format;
 
 /**
  * A message type as declared in a proto file.
@@ -93,7 +95,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     }
 
     /**
-     * Collects all message types, including nested one, declared in the passed file.
+     * Collects all message types, including nested one, declared in the given file.
      */
     public static TypeSet allFrom(FileDescriptor file) {
         checkNotNull(file);
@@ -274,7 +276,6 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * <p>Includes only the immediate declarations. Types declared inside the types declared inside
      * this type are not obtained.
      */
-    @SuppressWarnings("unused") /* Part of the public API. */
     public ImmutableList<Type<?, ?>> nestedDeclarations() {
         var nestedDescriptors = descriptor().getNestedTypes();
         Stream<Type<?, ?>> messageTypes = nestedDescriptors.stream().map(MessageType::new);
@@ -322,10 +323,10 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * <p>Requires the following Protobuf plugin configuration:
      * <pre> {@code
      * generateProtoTasks {
-     *     all().each { final task ->
+     *     all().configureEach {
      *         // If true, the descriptor set will contain line number information
      *         // and comments. Default is false.
-     *         task.descriptorSetOptions.includeSourceInfo = true
+     *         descriptorSetOptions.includeSourceInfo = true
      *         // ...
      *     }
      * }
@@ -335,7 +336,6 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * @see <a href="https://github.com/google/protobuf-gradle-plugin/blob/master/README.md#generate-descriptor-set-files">
      *         Protobuf plugin configuration</a>
      */
-    @SuppressWarnings("unused") /* Part of the public API. */
     public Optional<String> leadingComments() {
         var messagePath = path();
         return leadingComments(messagePath);
@@ -344,19 +344,20 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     /**
      * Obtains a leading comments by the {@link LocationPath}.
      *
+     * <p>This method logs a warning message if the file declaring this message type does not have
+     * {@linkplain FileDescriptorProto#hasSourceCodeInfo() source code info}
+     * produced ty Protobuf compiler. The warning message provides instructions for configuring
+     * the Protobuf Gradle plugin for enabling source code info.
+     *
      * @param locationPath
      *         the location path to get leading comments
      * @return the leading comments or empty {@code Optional} if there are no such comments or
      *         a descriptor was generated without source code information
      */
     public Optional<String> leadingComments(LocationPath locationPath) {
-        var file = descriptor().getFile().toProto();
+        var file = fileDescriptorProto();
         if (!file.hasSourceCodeInfo()) {
-            _warn().log(
-                    "Unable to obtain proto source code info. " +
-                            "Please configure the Gradle Protobuf plugin as follows:%n" +
-                            "`task.descriptorSetOptions.includeSourceInfo = true`."
-            );
+            warnNoSourceCodeInfoIn(file);
             return Optional.empty();
         }
 
@@ -364,6 +365,35 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
         return location.hasLeadingComments()
                ? Optional.of(location.getLeadingComments())
                : Optional.empty();
+    }
+
+    /**
+     * Obtain file descriptor via {@link KnownTypes} because it loads descriptor set file,
+     * which may contain source code information.
+     *
+     * <p>Descriptors available in the generated code -- obtained via
+     * {@code descriptor().getFile().toProto()} -- do not provide source code info.
+     */
+    private FileDescriptorProto fileDescriptorProto() {
+        return name().messageDescriptor()
+                     .getFile()
+                     .toProto();
+    }
+
+    private void warnNoSourceCodeInfoIn(FileDescriptorProto file) {
+        var msg = format(
+                "Unable to obtain proto source code info for the message type `%s`" +
+                        " declared in the file `%s`.%n" +
+                        "Please configure the Gradle Protobuf plugin as follows:" +
+                        "%n%n" +
+                        "protobuf {%n" +
+                        "    generateProtoTasks.all().configureEach {%n" +
+                        "        descriptorSetOptions.includeSourceInfo = true %n" +
+                        "    }%n" +
+                        '}',
+                name(),
+                file.getName());
+        _warn().log(msg);
     }
 
     /**
@@ -391,7 +421,6 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * @return {@code true} if this type is marked with an option with the given name,
      *         {@code false} otherwise
      */
-    @SuppressWarnings("unused") /* Part of the public API. */
     public boolean hasOption(String optionName) {
         checkNotEmptyOrBlank(optionName,"Option name must not be null empty.");
         var options = descriptor().getOptions();

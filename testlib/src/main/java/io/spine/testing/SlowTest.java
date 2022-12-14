@@ -36,8 +36,8 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Marks tests which are known to be slow and should not normally be run together with the main test
- * suite.
+ * Marks tests which are known to be slow and should not normally be run together with
+ * the main test suite.
  *
  * <p>Slow tests typically are functional test, which may call network API, perform I/O operations,
  * spawn many threads and wait for execution, etc.
@@ -48,7 +48,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Target({TYPE, METHOD})
 @Tag(SlowTest.TAG)
-@SuppressWarnings("unused") // The annotation should be handled by the JUnit runner.
 public @interface SlowTest {
 
     String TAG = "slow";

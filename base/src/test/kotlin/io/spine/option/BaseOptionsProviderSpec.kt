@@ -24,13 +24,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.gradle.github.pages
+package io.spine.option
 
-/**
- * Names of branches involved when updating documentation.
- */
-object Branch {
+import io.kotest.matchers.shouldNotBe
+import java.util.*
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
-    /** The branch to use when pushing the updates to the documentation. */
-    const val ghPages = "gh-pages"
+@DisplayName("`BaseOptionsProvider` should")
+class BaseOptionsProviderSpec {
+
+    @Test
+    fun `be loaded as AutoService`() {
+        val loader = ServiceLoader.load(OptionsProvider::class.java)
+        loader.find { it is BaseOptionsProvider } shouldNotBe null
+    }
 }

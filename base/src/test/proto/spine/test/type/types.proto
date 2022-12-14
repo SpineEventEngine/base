@@ -196,7 +196,7 @@ enum Language {
     ny = 30;
     // Chinese
     zh = 31;
-    // Church Slavic, Old Slavonic, Church Slavonic, Old Bulgarian, Old Church Slavonic
+    // Church Slavic, Old Slavonic, Church Slavonic, Old Bulgarian, Old Church Slavonic
     cu = 32;
     // Chuvash
     cv = 33;
@@ -278,7 +278,7 @@ enum Language {
     ig = 69;
     // Indonesian
     id = 70;
-    // Interlingua (International Auxiliary Language Association)
+    // Interlingua (International Auxiliary Language Association)
     ia = 71;
     // Interlingue, Occidental
     ie = 72;
@@ -462,7 +462,7 @@ enum Language {
     bo = 161;
     // Tigrinya
     ti = 162;
-    // Tonga (Tonga Islands)
+    // Tonga (Tonga Islands)
     to = 163;
     // Tsonga
     ts = 164;

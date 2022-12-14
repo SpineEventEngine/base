@@ -97,7 +97,6 @@ public final class PackageName extends StringTypeValue {
     /**
      * Obtains Java package delimiter as a single {@code char}.
      */
-    @SuppressWarnings("unused") /* Part of the public API. */
     public static char delimiterChar() {
         return DELIMITER_CHAR;
     }
