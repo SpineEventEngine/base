@@ -23,50 +23,71 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.code.proto
 
-package io.spine.code.proto;
-
-import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
-import io.spine.type.TypeName;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import static com.google.common.truth.Truth.assertThat;
+import com.google.protobuf.Any
+import com.google.protobuf.DescriptorProtos.FileDescriptorSet
+import com.google.protobuf.Duration
+import io.kotest.matchers.collections.containOnly
+import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.collections.shouldNotBeEmpty
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
+import io.spine.type.MessageType
+import io.spine.type.TypeName
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
 @DisplayName("`TypeSet` should")
-class TypeSetTest {
-
-    private static final FileSet fileSet = FileSet.load();
+internal class TypeSetTest {
 
     @Test
-    @DisplayName("obtain messages and enums from a file")
-    void fromFile() {
-        @SuppressWarnings("OptionalGetWithoutIsPresent") /* The file is present in resources. */
-        var file = fileSet.tryFind(FileName.of("google/protobuf/descriptor.proto")).get();
-        var typeSet = TypeSet.from(file);
-        assertNotEmpty(typeSet);
-        assertThat(typeSet.contains(TypeName.from(FileDescriptorSet.getDescriptor())))
-                .isTrue();
+    fun `obtain messages and enums from a file`() {
+        val fileName = FileName.of("google/protobuf/descriptor.proto")
+        /* The file is present in resources. */
+        val file = fileSet.tryFind(fileName).get()
+        val typeSet = TypeSet.from(file)
+
+        assertNotEmpty(typeSet)
+        val expectedTypeName = TypeName.from(FileDescriptorSet.getDescriptor())
+        typeSet.contains(expectedTypeName) shouldBe true
     }
 
     @Test
     @DisplayName("obtain message and enums")
-    void fromSet() {
-        var typeSet = TypeSet.from(fileSet);
-        assertNotEmpty(typeSet);
+    fun fromSet() {
+        val typeSet = TypeSet.from(fileSet)
+        assertNotEmpty(typeSet)
+
         // We have a number of test service declarations for testing annotations.
-        assertThat(typeSet.serviceTypes())
-                .isNotEmpty();
+        typeSet.serviceTypes().shouldNotBeEmpty()
     }
 
-    void assertNotEmpty(TypeSet typeSet) {
-        assertThat(typeSet.isEmpty())
-                .isFalse();
-        assertThat(typeSet.allTypes())
-                .isNotEmpty();
-        assertThat(typeSet.messageTypes())
-                .isNotEmpty();
-        assertThat(typeSet.enumTypes())
-                .isNotEmpty();
+    @Test
+    fun `obtain message types from a 'TypeSet'`() {
+        val messageTypes = TypeSet.onlyMessages(fileSet)
+
+        messageTypes shouldContain MessageType.of(Any.getDefaultInstance())
+        messageTypes shouldContain MessageType.of(Duration.getDefaultInstance())
+    }
+
+    @Test
+    fun `obtain message types from a file descriptor`() {
+        val fileName = FileName.of("google/protobuf/any.proto")
+        val file = fileSet.tryFind(fileName).get()
+        val messageTypes = TypeSet.onlyMessages(file)
+
+        messageTypes should containOnly(MessageType.of(Any.getDefaultInstance()))
+    }
+
+    private fun assertNotEmpty(typeSet: TypeSet) {
+        typeSet.isEmpty shouldBe false
+        typeSet.allTypes().shouldNotBeEmpty()
+        typeSet.messageTypes().shouldNotBeEmpty()
+        typeSet.enumTypes().shouldNotBeEmpty()
+    }
+
+    companion object {
+        private val fileSet = FileSet.load()
     }
 }

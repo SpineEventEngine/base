@@ -95,7 +95,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     }
 
     /**
-     * Collects all message types, including nested one, declared in the passed file.
+     * Collects all message types, including nested one, declared in the given file.
      */
     public static TypeSet allFrom(FileDescriptor file) {
         checkNotNull(file);

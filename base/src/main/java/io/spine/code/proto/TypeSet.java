@@ -82,7 +82,7 @@ public final class TypeSet {
     }
 
     /**
-     * Obtains message and enum types declared in the passed file.
+     * Obtains message and enum types declared in the given file.
      */
     public static TypeSet from(FileDescriptor file) {
         var messages = MessageType.allFrom(file);
@@ -92,7 +92,7 @@ public final class TypeSet {
     }
 
     /**
-     * Obtains message and enum types declared in the files represented by the passed set.
+     * Obtains message and enum types declared in the files represented by the given set.
      */
     public static TypeSet from(FileSet fileSet) {
         var result = new TypeSet();
@@ -105,7 +105,6 @@ public final class TypeSet {
     /**
      * Obtains message types declared in the given file set.
      */
-    @SuppressWarnings("unused") /* Part of the public API. */
     public static ImmutableCollection<MessageType> onlyMessages(FileSet fileSet) {
         checkNotNull(fileSet);
         var result = new TypeSet();
@@ -119,7 +118,6 @@ public final class TypeSet {
     /**
      * Obtains message types declared in the given file descriptor.
      */
-    @SuppressWarnings("unused") /* Part of the public API. */
     public static ImmutableCollection<MessageType> onlyMessages(FileDescriptor file) {
         var typeSet = MessageType.allFrom(file);
         return typeSet.messageTypes.values();
