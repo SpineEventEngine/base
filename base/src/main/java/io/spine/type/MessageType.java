@@ -421,7 +421,6 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * @return {@code true} if this type is marked with an option with the given name,
      *         {@code false} otherwise
      */
-    @SuppressWarnings("unused") /* Part of the public API. */
     public boolean hasOption(String optionName) {
         checkNotEmptyOrBlank(optionName,"Option name must not be null empty.");
         var options = descriptor().getOptions();

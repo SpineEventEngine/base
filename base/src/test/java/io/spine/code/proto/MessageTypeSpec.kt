@@ -46,6 +46,7 @@ import io.spine.test.code.proto.event.MttProjectStarted
 import io.spine.test.code.proto.rejections.TestRejections
 import io.spine.test.code.proto.uuid.MttEntityState
 import io.spine.test.code.proto.uuid.MttUuidMessage
+import io.spine.test.type.PersonName
 import io.spine.test.type.Uri
 import io.spine.test.type.Url
 import io.spine.type.EnumType
@@ -218,6 +219,11 @@ internal class MessageTypeSpec {
         description shouldBePresent {
             it shouldContain "A URL in a structured form."
         }
+    }
+
+    @Test
+    fun `tell if an option is applied to the type`() {
+        MessageType(PersonName.getDescriptor()).hasOption("required_field") shouldBe true
     }
 
     @Test
