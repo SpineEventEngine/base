@@ -227,6 +227,11 @@ internal class MessageTypeSpec {
     }
 
     @Test
+    fun `tell it supports builders`() {
+        MessageType(Uri.getDescriptor()).supportsBuilders() shouldBe true
+    }
+
+    @Test
     fun `support equality and hashing`() {
         EqualsTester()
             .addEqualityGroup(type(Url.getDescriptor()), type(Url.getDescriptor()))

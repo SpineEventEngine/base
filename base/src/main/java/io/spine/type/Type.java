@@ -171,7 +171,6 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
      *         {@link com.google.protobuf.Message.Builder} and
      *         {@link com.google.protobuf.MessageOrBuilder}
      */
-    @SuppressWarnings("unused") /* Part of the public API. */
     public final boolean supportsBuilders() {
         return supportsBuilders;
     }
