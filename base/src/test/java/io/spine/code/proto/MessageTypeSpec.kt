@@ -32,9 +32,12 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto
 import com.google.protobuf.Descriptors.Descriptor
 import com.google.protobuf.Timestamp
+import com.google.protobuf.value
 import io.kotest.matchers.collections.containExactly
+import io.kotest.matchers.optional.shouldBePresent
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import io.spine.option.EntityOption
 import io.spine.option.GoesOption
 import io.spine.option.MinOption
@@ -205,6 +208,16 @@ internal class MessageTypeSpec {
             MessageType(Uri.QueryParameter.getDescriptor()),
             EnumType.create(Uri.Schema.getDescriptor())
         )
+    }
+
+    @Test
+    fun `obtain type description`() {
+        val uriType = MessageType(Uri.getDescriptor())
+        val description = uriType.leadingComments()
+
+        description shouldBePresent {
+            it shouldContain "A URL in a structured form."
+        }
     }
 
     @Test

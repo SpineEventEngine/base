@@ -276,7 +276,6 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * <p>Includes only the immediate declarations. Types declared inside the types declared inside
      * this type are not obtained.
      */
-    @SuppressWarnings("unused") /* Part of the public API. */
     public ImmutableList<Type<?, ?>> nestedDeclarations() {
         var nestedDescriptors = descriptor().getNestedTypes();
         Stream<Type<?, ?>> messageTypes = nestedDescriptors.stream().map(MessageType::new);
@@ -337,7 +336,6 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
      * @see <a href="https://github.com/google/protobuf-gradle-plugin/blob/master/README.md#generate-descriptor-set-files">
      *         Protobuf plugin configuration</a>
      */
-    @SuppressWarnings("unused") /* Part of the public API. */
     public Optional<String> leadingComments() {
         var messagePath = path();
         return leadingComments(messagePath);
