@@ -23,119 +23,103 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.io
 
-package io.spine.io;
-
-import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import static com.google.common.truth.Truth.assertThat;
-import static io.spine.io.Ensure.ensureDirectory;
-import static io.spine.io.Ensure.ensureFile;
-import static io.spine.testing.TestValues.randomString;
-import static java.nio.file.Files.isDirectory;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import io.kotest.matchers.shouldBe
+import io.spine.io.Ensure.ensureDirectory
+import io.spine.io.Ensure.ensureFile
+import io.spine.testing.TestValues
+import io.spine.testing.UtilityClassTest
+import java.io.File
+import java.nio.file.Path
+import java.nio.file.Paths
+import kotlin.io.path.isDirectory
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.io.TempDir
 
 @DisplayName("`Ensure` utilities class should")
-class EnsureSpec extends UtilityClassTest<Ensure> {
-
-    EnsureSpec() {
-        super(Ensure.class);
-    }
-
+internal class EnsureSpec : UtilityClassTest<Ensure>(Ensure::class.java) {
 
     @Nested
     @DisplayName("handle files via")
-    class OnFiles {
+    internal inner class OnFiles {
 
-        private File file;
+        private lateinit var file: File
 
         @BeforeEach
-        void createFile(@TempDir Path tempDir) {
-            var testFolder = tempDir.toFile();
-
-            var fileName = "ensure/exists/file" + randomString() + ".txt";
-            file = new File(testFolder.getAbsolutePath(), fileName);
+        fun createFile(@TempDir tempDir: Path) {
+            val testFolder = tempDir.toFile()
+            val fileName = "ensure/exists/file" + TestValues.randomString() + ".txt"
+            file = File(testFolder.absolutePath, fileName)
         }
 
         @Test
-        @DisplayName("`File` argument")
-        void fileArg() {
-            ensureFile(file);
-
-            // Check that the file was created.
-            assertTrue(file.exists());
-            assertFalse(isDirectory(file.toPath()));
+        fun `'File' argument`() {
+            ensureFile(file)
+            file.exists() shouldBe true
+            file.isDirectory shouldBe false
         }
 
         @Test
-        @DisplayName("`Path` argument")
-        void pathArg() {
-            var path = file.toPath();
-            Object returnedValue = ensureFile(path);
+        fun `'Path' argument`() {
+            val path = file.toPath()
+            val returnedValue: Any = ensureFile(path)
 
-            assertThat(file.exists())
-                    .isTrue();
-            assertThat(returnedValue)
-                    .isEqualTo(path);
+            file.exists() shouldBe true
+            returnedValue shouldBe path
         }
     }
 
     @Nested
     @DisplayName("handle a directory creation")
-    class OnDirectories {
+    internal inner class OnDirectories {
 
-        private Path tempDir;
+        private lateinit var tempDir: Path
 
         @BeforeEach
-        void createTempDir(@TempDir Path tempDir) {
-            this.tempDir = tempDir;
+        fun createTempDir(@TempDir tempDir: Path) {
+            this.tempDir = tempDir
         }
 
         @Test
-        @DisplayName("if it does not exist")
-        void notExisting() {
-            var subDir = Paths.get("sub-1-" + randomString(), "sub-2-" + randomString());
-            var newDir = tempDir.resolve(subDir);
+        fun `if it does not exist`() {
+            val subDir = Paths.get(
+                "sub-1-" + TestValues.randomString(),
+                "sub-2-" + TestValues.randomString()
+            )
+            val newDir = tempDir.resolve(subDir)
 
             // See that the directory does not exist.
-            assertFalse(newDir.toFile().exists());
+            newDir.toFile().exists() shouldBe false
 
-            ensureDirectory(newDir);
+            ensureDirectory(newDir)
 
-            assertTrue(isDirectory(newDir));
+            newDir.isDirectory() shouldBe true
         }
 
         @Test
         @DisplayName("if it exists")
-        void existing() {
-            var existingDir = tempDir.resolve(randomString());
-            ensureDirectory(existingDir);
+        fun existing() {
+            val existingDir = tempDir.resolve(TestValues.randomString())
+            ensureDirectory(existingDir)
 
             // Now as we know that the directory exists, let's try it again.
-            ensureDirectory(existingDir);
-
-            assertTrue(isDirectory(existingDir));
+            ensureDirectory(existingDir)
+            existingDir.isDirectory() shouldBe true
         }
 
         @Test
-        @DisplayName("rejecting existing file")
-        void rejectFile() {
-            var filePath = tempDir.resolve("file" + randomString());
-            var file = filePath.toFile();
-            ensureFile(file);
-
-            assertThrows(IllegalStateException.class, () -> ensureDirectory(filePath));
+        fun `rejecting existing file`() {
+            val filePath = tempDir.resolve("file" + TestValues.randomString())
+            val file = filePath.toFile()
+            ensureFile(file)
+            assertThrows<IllegalStateException> {
+                ensureDirectory(filePath)
+            }
         }
     }
 }
