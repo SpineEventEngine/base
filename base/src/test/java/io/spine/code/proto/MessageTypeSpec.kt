@@ -23,232 +23,185 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.code.proto
 
-package io.spine.code.proto;
-
-import com.google.common.testing.EqualsTester;
-import com.google.common.truth.IterableSubject;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Timestamp;
-import io.spine.option.EntityOption;
-import io.spine.option.GoesOption;
-import io.spine.option.MinOption;
-import io.spine.test.code.proto.command.MttStartProject;
-import io.spine.test.code.proto.event.MttProjectStarted;
-import io.spine.test.code.proto.rejections.TestRejections;
-import io.spine.test.code.proto.uuid.MttEntityState;
-import io.spine.test.code.proto.uuid.MttUuidMessage;
-import io.spine.test.type.Uri;
-import io.spine.test.type.Url;
-import io.spine.type.MessageType;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
-import java.util.function.Predicate;
-
-import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.google.common.testing.EqualsTester
+import com.google.common.truth.IterableSubject
+import com.google.common.truth.Truth.assertThat
+import com.google.errorprone.annotations.CanIgnoreReturnValue
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto
+import com.google.protobuf.Descriptors.Descriptor
+import com.google.protobuf.Timestamp
+import io.kotest.matchers.shouldBe
+import io.spine.option.EntityOption
+import io.spine.option.GoesOption
+import io.spine.option.MinOption
+import io.spine.test.code.proto.command.MttStartProject
+import io.spine.test.code.proto.event.MttProjectStarted
+import io.spine.test.code.proto.rejections.TestRejections
+import io.spine.test.code.proto.uuid.MttEntityState
+import io.spine.test.code.proto.uuid.MttUuidMessage
+import io.spine.test.type.Uri
+import io.spine.test.type.Url
+import io.spine.type.MessageType
+import java.util.function.Predicate
+import java.util.function.Predicate.not
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
 @DisplayName("`MessageType` should")
-final class MessageTypeTest {
-
-    /**
-     * Negates the passed predicate.
-     *
-     * @apiNote Provided for brevity of tests, avoiding avoiding using {@code
-     *         Predicates.not()}
-     *         from Guava, util similar method is provided by Java 11.
-     */
-    static <T> Predicate<T> not(Predicate<T> yes) {
-        return yes.negate();
-    }
+internal class MessageTypeSpec {
 
     @Nested
-    @DisplayName("tell if message")
-    final class Tell {
+    @DisplayName("tell if a type")
+    internal inner class Tell {
 
         /**
-         * Tests a certain boolean method of {@code MessageType} created on the passed descriptor.
+         * Tests a certain boolean method of `MessageType` created on the passed descriptor.
          */
-        void assertQuality(Predicate<MessageType> method, Descriptor descriptor) {
-            var type = new MessageType(descriptor);
-            var result = method.test(type);
-            assertTrue(result);
+        infix fun Descriptor.shouldPass(predicate: Predicate<MessageType>) {
+            val type = MessageType(this)
+            val result = predicate.test(type)
+            result shouldBe true
         }
 
         @Nested
-        @DisplayName("is")
-        final class Is {
+        internal inner class Is {
 
             @Test
-            @DisplayName("nested")
-            void nested() {
-                assertQuality(MessageType::isNested, Uri.Protocol.getDescriptor());
-                assertQuality(not(MessageType::isNested), Url.getDescriptor());
+            fun nested() {
+                Uri.Protocol.getDescriptor() shouldPass { it.isNested }
+                Url.getDescriptor() shouldPass not { it.isNested }
             }
 
             @Test
-            @DisplayName("top-level")
-            void topLevel() {
-                assertQuality(MessageType::isTopLevel, Url.getDescriptor());
-                assertQuality(not(MessageType::isTopLevel), Uri.Protocol.getDescriptor());
+            fun `top level`() {
+                Url.getDescriptor() shouldPass { it.isTopLevel }
+                Uri.Protocol.getDescriptor()  shouldPass not { it.isTopLevel }
             }
 
             @Test
-            @DisplayName("a rejection")
-            void rejection() {
-                assertQuality(MessageType::isRejection,
-                              TestRejections.MttSampleRejection.getDescriptor()
-                );
+            fun `a rejection`() {
+                TestRejections.MttSampleRejection.getDescriptor() shouldPass { it.isRejection }
             }
 
             @Test
-            @DisplayName("a command")
-            void command() {
-                assertQuality(MessageType::isCommand,
-                              MttStartProject.getDescriptor()
-                );
+            fun `a command`() {
+                MttStartProject.getDescriptor() shouldPass { it.isCommand }
             }
 
             @Test
-            @DisplayName("an event")
-            void event() {
-                assertQuality(MessageType::isEvent,
-                              MttProjectStarted.getDescriptor()
-                );
+            fun `an event`() {
+                MttProjectStarted.getDescriptor() shouldPass { it.isEvent }
             }
 
             @Test
-            @DisplayName("a UUID value")
-            void uuid() {
-                assertQuality(MessageType::isUuidValue, MttUuidMessage.getDescriptor());
+            fun `a UUID value`() {
+                MttUuidMessage.getDescriptor() shouldPass { it.isUuidValue }
             }
 
             @Test
-            @DisplayName("an entity state")
-            void entityState() {
-                assertQuality(MessageType::isEntityState, MttEntityState.getDescriptor());
+            fun `an entity state`() {
+                MttEntityState.getDescriptor() shouldPass { it.isEntityState }
             }
 
+            /**
+             * This test suite takes nested types of corresponding signals to
+             * verify that they are not seen as signals of the kind of the enclosing types.
+             */
             @Nested
             @DisplayName("not")
-            @SuppressWarnings("InnerClassTooDeeplyNested")
-            class NotA {
+            internal inner class NotA {
 
                 @Test
-                @DisplayName("a rejection")
-                void rejection() {
-                    assertQuality(not(MessageType::isRejection),
-                                  TestRejections.MttSampleRejection.Details.getDescriptor()
-                    );
+                fun `a rejection`() {
+                    TestRejections.MttSampleRejection.Details.getDescriptor() shouldPass
+                        not { it.isRejection }
                 }
 
                 @Test
-                @DisplayName("a command")
-                void command() {
-                    assertQuality(not(MessageType::isCommand),
-                                  MttStartProject.Details.getDescriptor()
-                    );
+                fun `a command`() {
+                    MttStartProject.Details.getDescriptor() shouldPass not { it.isCommand }
                 }
 
                 @Test
-                @DisplayName("an event")
-                void event() {
-                    assertQuality(not(MessageType::isEvent),
-                                  MttProjectStarted.Details.getDescriptor()
-                    );
+                fun `an event`() {
+                    MttProjectStarted.Details.getDescriptor() shouldPass not { it.isEvent }
                 }
 
                 @Test
-                @DisplayName("a UUID value")
-                void uuid() {
-                    assertQuality(not(MessageType::isUuidValue), MttProjectStarted.getDescriptor());
+                fun `a UUID value`() {
+                    MttProjectStarted.getDescriptor() shouldPass not { it.isUuidValue }
                 }
 
                 @Test
-                @DisplayName("an entity state")
-                void entityState() {
-                    assertQuality(not(MessageType::isEntityState), MttStartProject.getDescriptor());
+                fun `an entity state`() {
+                    MttStartProject.getDescriptor() shouldPass not { it.isEntityState }
                 }
             }
 
             @Nested
             @DisplayName("a non-Google or a Spine options type")
-            @SuppressWarnings("InnerClassTooDeeplyNested")
-            final class Custom {
+            internal inner class Custom {
 
                 @Test
-                @DisplayName("positively for a custom type")
-                void custom() {
-                    assertQuality(MessageType::isCustom, Url.getDescriptor());
+                fun `positively for a custom type`() {
+                    Url.getDescriptor() shouldPass { it.isCustom }
                 }
 
                 @Test
-                @DisplayName("negatively for Google type")
-                void google() {
-                    assertNotCustom(Timestamp.getDescriptor());
+                fun `negatively for Google type`() {
+                    Timestamp.getDescriptor() shouldPass not { it.isCustom }
                 }
 
                 @Test
-                @DisplayName("negatively for Spine options type")
-                void options() {
-                    assertNotCustom(GoesOption.getDescriptor());
-                    assertNotCustom(EntityOption.getDescriptor());
-                    assertNotCustom(MinOption.getDescriptor());
-                }
-
-                void assertNotCustom(Descriptor descriptor) {
-                    assertQuality(not(MessageType::isCustom), descriptor);
+                fun `negatively for Spine options type`() {
+                    GoesOption.getDescriptor() shouldPass not { it.isCustom }
+                    EntityOption.getDescriptor() shouldPass not { it.isCustom }
+                    MinOption.getDescriptor() shouldPass not { it.isCustom }
                 }
             }
         }
-
     }
 
     @Nested
-    @DisplayName("obtain path for")
-    final class Path {
-
-        @Test
-        @DisplayName("top-level message")
-        void topLevel() {
-            assertPath(Url.getDescriptor());
-        }
+    @DisplayName("obtain a path for")
+    internal inner class Path {
 
         @CanIgnoreReturnValue
-        private IterableSubject assertPath(Descriptor descriptor) {
-            var type = new MessageType(descriptor);
-            var path = type.path();
-
-            var assertPath = assertThat(path.toList());
-            assertPath.contains(FileDescriptorProto.MESSAGE_TYPE_FIELD_NUMBER);
-            assertPath.contains(descriptor.getIndex());
-
-            return assertPath;
+        private fun assertPath(descriptor: Descriptor): IterableSubject {
+            val type = MessageType(descriptor)
+            val path = type.path()
+            val assertPath = assertThat(path.toList())
+            assertPath.contains(FileDescriptorProto.MESSAGE_TYPE_FIELD_NUMBER)
+            assertPath.contains(descriptor.index)
+            return assertPath
         }
 
         @Test
-        @DisplayName("second-level message")
-        void secondLevel() {
-            var assertPath = assertPath(Uri.Protocol.getDescriptor());
-            assertPath.contains(Uri.getDescriptor()
-                                   .getIndex());
+        fun `top-level message`() {
+            assertPath(Url.getDescriptor())
+        }
+
+        @Test
+        fun `second-level message`() {
+            val assertPath = assertPath(Uri.Protocol.getDescriptor())
+            assertPath.contains(Uri.getDescriptor().index)
         }
     }
 
     @Test
-    @DisplayName("support equality and hashing")
-    void equalityAndHasing() {
-        new EqualsTester()
-                .addEqualityGroup(type(Url.getDescriptor()), type(Url.getDescriptor()))
-                .addEqualityGroup(type(Timestamp.getDescriptor()))
-                .testEquals();
+    fun `support equality and hashing`() {
+        EqualsTester()
+            .addEqualityGroup(type(Url.getDescriptor()), type(Url.getDescriptor()))
+            .addEqualityGroup(type(Timestamp.getDescriptor()))
+            .testEquals()
     }
 
-    private static MessageType type(Descriptor descriptor) {
-        return new MessageType(descriptor);
+    companion object {
+        private fun type(descriptor: Descriptor): MessageType {
+            return MessageType(descriptor)
+        }
     }
 }
