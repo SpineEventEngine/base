@@ -32,6 +32,8 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto
 import com.google.protobuf.Descriptors.Descriptor
 import com.google.protobuf.Timestamp
+import io.kotest.matchers.collections.containExactly
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.spine.option.EntityOption
 import io.spine.option.GoesOption
@@ -43,6 +45,7 @@ import io.spine.test.code.proto.uuid.MttEntityState
 import io.spine.test.code.proto.uuid.MttUuidMessage
 import io.spine.test.type.Uri
 import io.spine.test.type.Url
+import io.spine.type.EnumType
 import io.spine.type.MessageType
 import java.util.function.Predicate
 import java.util.function.Predicate.not
@@ -189,6 +192,19 @@ internal class MessageTypeSpec {
             val assertPath = assertPath(Uri.Protocol.getDescriptor())
             assertPath.contains(Uri.getDescriptor().index)
         }
+    }
+
+    @Test
+    fun `obtain nested type declarations`() {
+        val uriType = MessageType.of(Uri.getDefaultInstance())
+        val nestedType = uriType.nestedDeclarations()
+
+        nestedType should containExactly(
+            MessageType(Uri.Protocol.getDescriptor()),
+            MessageType(Uri.Authorization.getDescriptor()),
+            MessageType(Uri.QueryParameter.getDescriptor()),
+            EnumType.create(Uri.Schema.getDescriptor())
+        )
     }
 
     @Test
