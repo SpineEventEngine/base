@@ -137,8 +137,8 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
      * Obtains package for the corresponding Java type.
      */
     public PackageName javaPackage() {
-        var fileDescr = descriptor.getFile().toProto();
-        var result = PackageName.resolve(fileDescr);
+        var file = descriptor.getFile().toProto();
+        var result = PackageName.resolve(file);
         return result;
     }
 
@@ -165,7 +165,7 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
     public abstract Optional<Type<Descriptor, DescriptorProto>> containingType();
 
     /**
-     * Defines whether or not the Java class generated from this type has a builder.
+     * Defines whether the Java class generated from this type has a builder.
      *
      * @return {@code true} if the generated Java class has corresponding
      *         {@link com.google.protobuf.Message.Builder} and
@@ -184,7 +184,7 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
     }
 
     /**
-     * Returns a fully-qualified name of the proto type.
+     * Returns a fully-qualified name of the Protobuf type.
      */
     @Override
     public String toString() {
