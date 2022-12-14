@@ -23,84 +23,76 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.io
 
-package io.spine.io;
-
-import com.google.common.collect.ImmutableList;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
-import java.nio.file.Paths;
-
-import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth.assertWithMessage;
+import com.google.common.collect.ImmutableList
+import com.google.common.truth.Truth.assertWithMessage
+import io.kotest.matchers.shouldBe
+import io.spine.io.Glob.Companion.extension
+import io.spine.io.Glob.Companion.extensionLowerAndUpper
+import java.nio.file.Paths
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
 @DisplayName("`Glob` Java API should expose")
-class GlobSpec {
-
-    /** The test subject. */
-    private Glob glob;
+internal class GlobSpec {
+    
+    /** The test subject.  */
+    private var glob: Glob? = null
 
     @Test
-    @DisplayName("`any` pattern")
-    void anyPattern() {
-        assertThat(Glob.any.matches(Paths.get(".")))
-                .isTrue();
+    fun `'any' pattern`() {
+        Glob.any.matches(Paths.get(".")) shouldBe true
     }
 
     @Nested
     @DisplayName("`extensions()` method with")
-    class ExtensionsMethod {
+    internal inner class ExtensionsMethod {
 
         @Test
-        @DisplayName("`vararg` parameter")
-        void varArg() {
-            glob = Glob.extension(".bar", ".b");
-            assertMatches("f.bar");
-            assertMatches("baz.b");
+        fun `'vararg' parameter`() {
+            glob = extension(".bar", ".b")
+            assertMatches("f.bar")
+            assertMatches("baz.b")
         }
 
         @Test
-        @DisplayName("`Iterable` parameter")
-        void iterableArg() {
-            glob = Glob.extension(ImmutableList.of("cc", "h", "hpp", "cpp"));
-            assertMatches("format.cc");
-            assertMatches("sprintf.h");
+        fun `'Iterable' parameter`() {
+            glob = extension(ImmutableList.of("cc", "h", "hpp", "cpp"))
+            assertMatches("format.cc")
+            assertMatches("sprintf.h")
         }
     }
 
     @Nested
     @DisplayName("`extensionLowerAndUpper()` method with")
-    class ExtensionLowerAndUpperMethod {
+    internal inner class ExtensionLowerAndUpperMethod {
 
         @Test
-        @DisplayName("`vararg` parameter")
-        void varArg() {
-            glob = Glob.extensionLowerAndUpper("high", "LOW");
-            assertMatches("1.high");
-            assertMatches("2.HIGH");
-            assertMatches("3.low");
-            assertMatches("4.LOW");
+        fun `'vararg' parameter`() {
+            glob = extensionLowerAndUpper("high", "LOW")
+            assertMatches("1.high")
+            assertMatches("2.HIGH")
+            assertMatches("3.low")
+            assertMatches("4.LOW")
         }
 
         @Test
-        @DisplayName("`Iterable` parameter")
-        void iterableParam() {
-            glob = Glob.extensionLowerAndUpper(".snake", "CASE");
-            assertMatches("1.snake");
-            assertMatches("2.SNAKE");
-            assertMatches("3.case");
-            assertMatches("4.CASE");
+        fun `'Iterable' parameter`() {
+            glob = extensionLowerAndUpper(".snake", "CASE")
+            assertMatches("1.snake")
+            assertMatches("2.SNAKE")
+            assertMatches("3.case")
+            assertMatches("4.CASE")
         }
     }
 
-    private void assertMatches(String fileName) {
-        var p = Paths.get(fileName);
-        var matches = glob.matches(p);
+    private fun assertMatches(fileName: String) {
+        val p = Paths.get(fileName)
+        val matches = glob!!.matches(p)
         assertWithMessage(
-                "The file `%s` should match the pattern `%s`.", fileName, glob.getPattern()
-        ).that(matches)
-         .isTrue();
+            "The file `%s` should match the pattern `%s`.", fileName, glob!!.pattern
+        ).that(matches).isTrue()
     }
 }
