@@ -26,14 +26,16 @@
 
 package io.spine.io
 
-import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
+import io.kotest.matchers.shouldBe
 import java.nio.file.Paths
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-class `'Glob' should` {
+@DisplayName("`Glob` should")
+class GlobSpec {
 
     @Test
     fun `prohibit empty pattern`() {
@@ -62,7 +64,8 @@ class `'Glob' should` {
             val g = Glob.extension(extension)
             val p = Paths.get(path)
             val matches = g.matches(p)
-            assertThat(matches).isTrue()
+
+            matches shouldBe true
         }
     }
 
@@ -102,6 +105,7 @@ class `'Glob' should` {
     fun `create pattern matching files without extensions`() {
         val noExtensions = Glob.extension()
         val p = Paths.get("my_file.")
-        assertThat(noExtensions.matches(p)).isTrue()
+
+        noExtensions.matches(p) shouldBe true
     }
 }

@@ -37,7 +37,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 @DisplayName("`Glob` Java API should expose")
-class GlobSpec {
+class GlobJavaApiSpec {
 
     /** The test subject. */
     private Glob glob;
