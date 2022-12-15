@@ -23,76 +23,89 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package io.spine.io
 
-import com.google.common.collect.ImmutableList
 import com.google.common.truth.Truth.assertWithMessage
 import io.kotest.matchers.shouldBe
-import io.spine.io.Glob.Companion.extension
-import io.spine.io.Glob.Companion.extensionLowerAndUpper
 import java.nio.file.Paths
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
-@DisplayName("`Glob` Java API should expose")
-internal class GlobSpec {
-    
-    /** The test subject.  */
-    private var glob: Glob? = null
+@DisplayName("`Glob` should")
+class GlobSpec {
 
     @Test
-    fun `'any' pattern`() {
-        Glob.any.matches(Paths.get(".")) shouldBe true
+    fun `prohibit empty pattern`() {
+        assertThrows<IllegalArgumentException> { Glob("") }
     }
 
     @Nested
-    @DisplayName("`extensions()` method with")
-    internal inner class ExtensionsMethod {
+    inner class `create instances by extension which` {
 
         @Test
-        fun `'vararg' parameter`() {
-            glob = extension(".bar", ".b")
-            assertMatches("f.bar")
-            assertMatches("baz.b")
+        fun `is empty`() {
+            assertExtensionMatches("", "some/where/file.")
         }
 
         @Test
-        fun `'Iterable' parameter`() {
-            glob = extension(ImmutableList.of("cc", "h", "hpp", "cpp"))
-            assertMatches("format.cc")
-            assertMatches("sprintf.h")
-        }
-    }
-
-    @Nested
-    @DisplayName("`extensionLowerAndUpper()` method with")
-    internal inner class ExtensionLowerAndUpperMethod {
-
-        @Test
-        fun `'vararg' parameter`() {
-            glob = extensionLowerAndUpper("high", "LOW")
-            assertMatches("1.high")
-            assertMatches("2.HIGH")
-            assertMatches("3.low")
-            assertMatches("4.LOW")
+        fun `has leading dot`() {
+            assertExtensionMatches(".foo", "1/2/3/file.foo")
         }
 
         @Test
-        fun `'Iterable' parameter`() {
-            glob = extensionLowerAndUpper(".snake", "CASE")
-            assertMatches("1.snake")
-            assertMatches("2.SNAKE")
-            assertMatches("3.case")
-            assertMatches("4.CASE")
+        fun `is just text`() {
+            assertExtensionMatches("bar", "4/5/file.bar")
+        }
+
+        private fun assertExtensionMatches(extension: String, path: String) {
+            val g = Glob.extension(extension)
+            val p = Paths.get(path)
+            val matches = g.matches(p)
+
+            matches shouldBe true
         }
     }
 
-    private fun assertMatches(fileName: String) {
-        val p = Paths.get(fileName)
-        val matches = glob!!.matches(p)
-        assertWithMessage(
-            "The file `%s` should match the pattern `%s`.", fileName, glob!!.pattern
-        ).that(matches).isTrue()
+    @Test
+    fun `allow both lowercase and uppercase values`() {
+        val g = Glob.extensionLowerAndUpper("hey", "jude", "mIx")
+
+        fun assertMatches(file: String) {
+            val p = Paths.get(file)
+            assertWithMessage("The file `%s` should match the pattern `%s`.", file, g.pattern)
+                .that(g.matches(p))
+                .isTrue()
+        }
+        
+        fun assertDoesNotMatch(file: String) {
+            val p = Paths.get(file)
+            assertWithMessage("The file `%s` should NOT match the pattern `%s`.", file, g.pattern)
+                .that(g.matches(p))
+                .isFalse()
+        }
+
+        assertMatches("1.hey")
+        assertMatches("2.HEY")
+        assertMatches("3.jude")
+        assertMatches("4.JUDE")
+        assertMatches("5.mix")
+        assertMatches("6.MIX")
+
+        assertDoesNotMatch("hey")
+        assertDoesNotMatch("jude.")
+        assertDoesNotMatch("mix")
+        assertDoesNotMatch("mIx")
+        assertDoesNotMatch("miX")
+    }
+
+    @Test
+    fun `create pattern matching files without extensions`() {
+        val noExtensions = Glob.extension()
+        val p = Paths.get("my_file.")
+
+        noExtensions.matches(p) shouldBe true
     }
 }
