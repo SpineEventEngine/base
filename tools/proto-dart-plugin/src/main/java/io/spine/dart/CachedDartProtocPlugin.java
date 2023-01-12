@@ -62,8 +62,10 @@ public final class CachedDartProtocPlugin {
             Path pathToExecutable = PubCache.bin().resolve(SCRIPT_FILE_NAME);
             checkState(exists(pathToExecutable),
                        "Protoc plugin for Dart code generation is not installed. " +
+                               "Tried to locate it at `%s`. " +
                                "`protoc_plugin` should be activated globally. " +
                                "See %s for installation guide.",
+                       pathToExecutable.toAbsolutePath(),
                        DOC_LINK);
             resolved = pathToExecutable.toAbsolutePath()
                                        .normalize();
