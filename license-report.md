@@ -1,6 +1,6 @@
 
 
-# Dependencies of `io.spine:spine-base:2.0.0-SNAPSHOT.145`
+# Dependencies of `io.spine:spine-base:2.0.0-SNAPSHOT.146`
 
 ## Runtime
 1.  **Group** : com.google.code.findbugs. **Name** : jsr305. **Version** : 3.0.2.
@@ -37,15 +37,15 @@
      * **Project URL:** [https://github.com/google/j2objc/](https://github.com/google/j2objc/)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-java. **Version** : 3.21.11.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-java. **Version** : 3.21.12.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-java-util. **Version** : 3.21.11.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-java-util. **Version** : 3.21.12.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-kotlin. **Version** : 3.21.11.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-kotlin. **Version** : 3.21.12.
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
 1.  **Group** : org.checkerframework. **Name** : checker-compat-qual. **Version** : 2.5.3.
@@ -197,18 +197,18 @@
      * **Project URL:** [https://github.com/google/j2objc/](https://github.com/google/j2objc/)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-java. **Version** : 3.21.11.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-java. **Version** : 3.21.12.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-java-util. **Version** : 3.21.11.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-java-util. **Version** : 3.21.12.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-kotlin. **Version** : 3.21.11.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-kotlin. **Version** : 3.21.12.
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 3.21.11.
+1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 3.21.12.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -625,32 +625,32 @@
      * **Project URL:** [https://jsoup.org/](https://jsoup.org/)
      * **License:** [The MIT License](https://jsoup.org/license)
 
-1.  **Group** : org.junit. **Name** : junit-bom. **Version** : 5.9.1.**No license information found**
-1.  **Group** : org.junit-pioneer. **Name** : junit-pioneer. **Version** : 1.7.1.
+1.  **Group** : org.junit. **Name** : junit-bom. **Version** : 5.9.2.**No license information found**
+1.  **Group** : org.junit-pioneer. **Name** : junit-pioneer. **Version** : 1.9.1.
      * **Project URL:** [https://junit-pioneer.org/](https://junit-pioneer.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-api. **Version** : 5.9.1.
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-api. **Version** : 5.9.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-engine. **Version** : 5.9.1.
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-engine. **Version** : 5.9.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-params. **Version** : 5.9.1.
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-params. **Version** : 5.9.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-commons. **Version** : 1.9.1.
+1.  **Group** : org.junit.platform. **Name** : junit-platform-commons. **Version** : 1.9.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-engine. **Version** : 1.9.1.
+1.  **Group** : org.junit.platform. **Name** : junit-platform-engine. **Version** : 1.9.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-launcher. **Version** : 1.9.1.
+1.  **Group** : org.junit.platform. **Name** : junit-platform-launcher. **Version** : 1.9.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
@@ -708,12 +708,12 @@
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Thu Dec 15 17:59:52 CET 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Jan 18 21:26:01 WET 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.tools:spine-testlib:2.0.0-SNAPSHOT.145`
+# Dependencies of `io.spine.tools:spine-testlib:2.0.0-SNAPSHOT.146`
 
 ## Runtime
 1.  **Group** : com.google.auto.value. **Name** : auto-value-annotations. **Version** : 1.10.1.
@@ -757,15 +757,15 @@ This report was generated on **Thu Dec 15 17:59:52 CET 2022** using [Gradle-Lice
      * **Project URL:** [https://github.com/google/j2objc/](https://github.com/google/j2objc/)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-java. **Version** : 3.21.11.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-java. **Version** : 3.21.12.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-java-util. **Version** : 3.21.11.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-java-util. **Version** : 3.21.12.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-kotlin. **Version** : 3.21.11.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-kotlin. **Version** : 3.21.12.
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
 1.  **Group** : com.google.truth. **Name** : truth. **Version** : 1.1.3.
@@ -877,24 +877,24 @@ This report was generated on **Thu Dec 15 17:59:52 CET 2022** using [Gradle-Lice
      * **Project URL:** [https://github.com/Kotlin/kotlinx.coroutines](https://github.com/Kotlin/kotlinx.coroutines)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.junit. **Name** : junit-bom. **Version** : 5.9.1.**No license information found**
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-api. **Version** : 5.9.1.
+1.  **Group** : org.junit. **Name** : junit-bom. **Version** : 5.9.2.**No license information found**
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-api. **Version** : 5.9.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-engine. **Version** : 5.9.1.
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-engine. **Version** : 5.9.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-params. **Version** : 5.9.1.
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-params. **Version** : 5.9.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-commons. **Version** : 1.9.1.
+1.  **Group** : org.junit.platform. **Name** : junit-platform-commons. **Version** : 1.9.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-engine. **Version** : 1.9.1.
+1.  **Group** : org.junit.platform. **Name** : junit-platform-engine. **Version** : 1.9.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
@@ -1019,18 +1019,18 @@ This report was generated on **Thu Dec 15 17:59:52 CET 2022** using [Gradle-Lice
      * **Project URL:** [https://github.com/google/j2objc/](https://github.com/google/j2objc/)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-java. **Version** : 3.21.11.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-java. **Version** : 3.21.12.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-java-util. **Version** : 3.21.11.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-java-util. **Version** : 3.21.12.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-kotlin. **Version** : 3.21.11.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-kotlin. **Version** : 3.21.12.
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 3.21.11.
+1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 3.21.12.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -1459,32 +1459,32 @@ This report was generated on **Thu Dec 15 17:59:52 CET 2022** using [Gradle-Lice
      * **Project URL:** [https://jsoup.org/](https://jsoup.org/)
      * **License:** [The MIT License](https://jsoup.org/license)
 
-1.  **Group** : org.junit. **Name** : junit-bom. **Version** : 5.9.1.**No license information found**
-1.  **Group** : org.junit-pioneer. **Name** : junit-pioneer. **Version** : 1.7.1.
+1.  **Group** : org.junit. **Name** : junit-bom. **Version** : 5.9.2.**No license information found**
+1.  **Group** : org.junit-pioneer. **Name** : junit-pioneer. **Version** : 1.9.1.
      * **Project URL:** [https://junit-pioneer.org/](https://junit-pioneer.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-api. **Version** : 5.9.1.
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-api. **Version** : 5.9.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-engine. **Version** : 5.9.1.
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-engine. **Version** : 5.9.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-params. **Version** : 5.9.1.
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-params. **Version** : 5.9.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-commons. **Version** : 1.9.1.
+1.  **Group** : org.junit.platform. **Name** : junit-platform-commons. **Version** : 1.9.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-engine. **Version** : 1.9.1.
+1.  **Group** : org.junit.platform. **Name** : junit-platform-engine. **Version** : 1.9.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-launcher. **Version** : 1.9.1.
+1.  **Group** : org.junit.platform. **Name** : junit-platform-launcher. **Version** : 1.9.2.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
@@ -1542,4 +1542,4 @@ This report was generated on **Thu Dec 15 17:59:52 CET 2022** using [Gradle-Lice
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Thu Dec 15 17:59:52 CET 2022** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Wed Jan 18 21:26:02 WET 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
