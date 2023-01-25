@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,161 +23,159 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.protobuf;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.util.concurrent.UncheckedExecutionException;
-import com.google.protobuf.Any;
-import com.google.protobuf.Message;
-import com.google.protobuf.MessageLite;
-import com.google.protobuf.ProtocolMessageEnum;
-import io.spine.annotation.Internal;
+@file:JvmName("Messages")
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.format;
+package io.spine.protobuf
+
+import com.google.common.cache.CacheBuilder
+import com.google.common.cache.CacheLoader
+import com.google.common.util.concurrent.UncheckedExecutionException
+import com.google.errorprone.annotations.CanIgnoreReturnValue
+import com.google.protobuf.Any
+import com.google.protobuf.Message
+import io.spine.annotation.Internal
+import io.spine.type.TypeName
+import io.spine.type.UnpublishedLanguageException
+
+/** The name of a message builder factory method.  */
+public const val METHOD_NEW_BUILDER: String = "newBuilder"
 
 /**
- * Utility class for working with {@link Message} objects.
+ * The cache of the default instances per [Message] class.
+ *
+ * Creates and caches objects in a lazy mode.
  */
-public final class Messages {
+private val defaultInstances = CacheBuilder.newBuilder()
+    .maximumSize(1000.toLong())
+    .build(MessageCacheLoader())
 
-    /** The name of a message builder factory method. */
-    public static final String METHOD_NEW_BUILDER = "newBuilder";
+/**
+ * Obtains the default instance of the passed message class.
+ *
+ * @param [M] the type of the message.
+ * @return default instance of the class.
+ */
+public fun <M : Message> Class<M>.defaultInstance(): M {
+    @Suppress("UNCHECKED_CAST")
+    return defaultInstances.getUnchecked(this) as M
+}
 
-    /**
-     * The cache of the default instances per {@link Message} class.
-     *
-     * <p>Creates and caches objects in a lazy mode.
-     */
-    private static final
-    LoadingCache<Class<? extends Message>, Message> defaultInstances = loadingCache(1_000);
+/**
+ * Returns the builder for the passed message class.
+ */
+@Internal
+public fun <M : Message> builderFor(cls: Class<M>): Message.Builder {
+    return try {
+        val message = cls.defaultInstance()
+        message.toBuilder()
+    } catch (e: UncheckedExecutionException) {
+        throw IllegalArgumentException(
+            "Class `${cls.canonicalName}` must be a generated proto message.", e
+        )
+    }
+}
 
-    /** Prevent instantiation of this utility class. */
-    private Messages() {
+/**
+ * Ensures that the passed instance of `Message` is not an instance
+ * of [com.google.protobuf.Any], and unwraps the message if `Any` is passed.
+ */
+public fun Message.ensureMessage(): Message =
+    if (this is Any) {
+        AnyPacker.unpack(this)
+    } else {
+        this
     }
 
-    /**
-     * Obtains the default instance of the passed message class.
-     *
-     * @param messageClass the class for which to obtain the default instance
-     * @param <M> the type of the message
-     * @return default instance of the class
-     */
-    public static <M extends Message> M defaultInstance(Class<M> messageClass) {
-        checkNotNull(messageClass);
-        @SuppressWarnings("unchecked")  // Ensured by the `MessageCacheLoader` implementation.
-        var result = (M) defaultInstances.getUnchecked(messageClass);
-        return result;
-    }
+/**
+ * Verifies if the passed message object is its default state and is not `null`.
+ *
+ * @return `true` if the message is in the default state, `false` otherwise.
+ */
+public fun Message.isDefault(): Boolean = (defaultInstanceForType == this)
 
-    /**
-     * Returns the builder for the passed message class.
-     */
-    @Internal
-    public static Message.Builder builderFor(Class<? extends Message> cls) {
-        checkNotNull(cls);
-        try {
-            var message = defaultInstance(cls);
-            var builder = message.toBuilder();
-            return builder;
-        } catch (UncheckedExecutionException e) {
-            var errMsg = format("Class `%s` must be a generated proto message.",
-                                cls.getCanonicalName());
-            throw new IllegalArgumentException(errMsg, e);
-        }
-    }
+/**
+ * Verifies if the passed message object is not its default state and is not `null`.
+ *
+ * @return `true` if the message is not in the default state, `false` otherwise.
+ */
+public fun Message.isNotDefault(): Boolean = !isDefault()
 
-    /**
-     * Ensures that the passed instance of {@code Message} is not an {@code Any},
-     * and unwraps the message if {@code Any} is passed.
-     */
-    public static Message ensureMessage(Message msgOrAny) {
-        checkNotNull(msgOrAny);
-        Message commandMessage;
-        if (msgOrAny instanceof Any) {
-            var any = (Any) msgOrAny;
-            commandMessage = AnyPacker.unpack(any);
-        } else {
-            commandMessage = msgOrAny;
-        }
-        return commandMessage;
-    }
+/**
+ * The loader of the cache of default instances per [Message] class.
+ *
+ * Loads a default instance of `Message` for the given type passed.
+ */
+private class MessageCacheLoader : CacheLoader<Class<out Message>, Message>() {
 
-    private static LoadingCache<Class<? extends Message>, Message> loadingCache(int size) {
-        return CacheBuilder.newBuilder()
-                           .maximumSize(size)
-                           .build(new MessageCacheLoader());
+    override fun load(messageClass: Class<out Message>): Message {
+        // It is safe to use the `Internal` utility class from Protobuf since it relies on
+        // the fact that the generated class has the `getDefaultInstance()` static method.
+        return com.google.protobuf.Internal.getDefaultInstance(messageClass)!!
     }
+}
 
-    /**
-     * Verifies if the passed message object is its default state and is not {@code null}.
-     *
-     * @param object
-     *         the message to inspect
-     * @return {@code true} if the message is in the default state, {@code false} otherwise
-     */
-    public static boolean isDefault(Message object) {
-        checkNotNull(object);
-        var result = object.getDefaultInstanceForType()
-                           .equals(object);
-        return result;
+/**
+ * Tells if this message type is internal to a bounded context.
+ */
+public fun <T : Message> T.isInternal(): Boolean =
+    this::class.java.isInternal()
+
+/**
+ * Tells if this class of messages is internal to a bounded context.
+ */
+public fun <T : Message> Class<T>.isInternal(): Boolean =
+    isAnnotationPresent(Internal::class.java)
+
+/**
+ * Obtains the name of this message type.
+ */
+public val <T : Message> T.typeName: TypeName
+    get() = TypeName.of(this)
+
+/**
+ * Verifies that the given message instance is annotated with
+ * [io.spine.annotation.Internal] and if so, returns it.
+ *
+ * @throws IllegalArgumentException
+ *          if the message is not internal.
+ */
+@CanIgnoreReturnValue
+public fun requireInternal(msg: Message): Message {
+    require(msg.isInternal()) {
+        "The message class `${msg::class.java.canonicalName}` is not" +
+                " annotated as `${Internal::class.java.canonicalName}`."
     }
+    return msg
+}
 
-    /**
-     * Verifies if the passed message object is not its default state and is not {@code null}.
-     *
-     * @param object
-     *         the message to inspect
-     * @return {@code true} if the message is not in the default state, {@code false} otherwise
-     */
-    public static boolean isNotDefault(Message object) {
-        checkNotNull(object);
-        var result = !isDefault(object);
-        return result;
+/**
+ * Verifies if the given message is not internal to a bounded context,
+ * returning it if so.
+ *
+ * @throws UnpublishedLanguageException
+ *          if the given message is internal.
+ */
+@CanIgnoreReturnValue
+public fun requirePublished(msg: Message): Message {
+    if (msg.isInternal()) {
+        throw UnpublishedLanguageException(msg)
     }
+    return msg
+}
 
-    /**
-     * Verifies if the passed Protobuf enum element is the enum's default state.
-     *
-     * @param messageEnum
-     *         the enum element to inspect
-     * @return {@code true} if the passed enum is default, {@code false} otherwise
-     */
-    public static boolean isDefault(ProtocolMessageEnum messageEnum) {
-        checkNotNull(messageEnum);
-        return messageEnum.getNumber() == 0;
+/**
+ * Verifies if the given class of messages is a part of published language
+ * of a bounded context, returning it if so.
+ *
+ * @throws UnpublishedLanguageException
+ *          if the message class is internal to the bounded context.
+ */
+@CanIgnoreReturnValue
+public fun <T : Message> requirePublished(clazz: Class<T>): Class<T> {
+    if (clazz.isInternal()) {
+        val msg = clazz.defaultInstance()
+        throw UnpublishedLanguageException(msg)
     }
-
-    /**
-     * Verifies if the passed Protobuf enum element is NOT the enum's default state.
-     *
-     * @param messageEnum
-     *         the enum element to inspect
-     * @return {@code false} if the passed enum is default, {@code true} otherwise
-     */
-    public static boolean isNotDefault(ProtocolMessageEnum messageEnum) {
-        checkNotNull(messageEnum);
-        return !isDefault(messageEnum);
-    }
-
-    /**
-     * The loader of the cache of default instances per {@link Message} class.
-     *
-     * <p>Loads an default instance of {@code Message} for the given type passed.
-     *
-     * <p>The {@link MessageLite} is used as a super type of the loaded objects to comply
-     * with {@linkplain com.google.protobuf.Internal Protobuf Internal} tool API.
-     */
-    private static final class MessageCacheLoader
-            extends CacheLoader<Class<? extends Message>, Message> {
-
-        @Override
-        public Message load(Class<? extends Message> messageClass) {
-            // It is safe to use the `Internal` utility class from Protobuf since it relies on the
-            // the fact that the generated class has the `getDefaultInstance()` static method.
-            return com.google.protobuf.Internal.getDefaultInstance(messageClass);
-        }
-    }
+    return clazz
 }

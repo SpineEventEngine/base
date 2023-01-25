@@ -34,20 +34,15 @@ import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.spine.base.Time
 import io.spine.option.EntityOption
-import io.spine.protobuf.Messages.builderFor
-import io.spine.protobuf.Messages.ensureMessage
-import io.spine.protobuf.Messages.isDefault
-import io.spine.protobuf.Messages.isNotDefault
 import io.spine.test.messages.MessageWithStringValue
 import io.spine.testing.Assertions.assertIllegalArgument
 import io.spine.testing.TestValues
-import io.spine.testing.UtilityClassTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-@DisplayName("`Messages` utility class should")
-internal class MessagesSpec : UtilityClassTest<Messages>(Messages::class.java) {
+@DisplayName("Extensions for `Message`-related types should")
+internal class MessageExtsSpec {
 
     @Test
     fun `return the same 'Any' from 'toAny()'`() {
@@ -82,8 +77,8 @@ internal class MessagesSpec : UtilityClassTest<Messages>(Messages::class.java) {
     fun `ensure 'Message'`() {
         val value = TestValues.newUuidValue()
 
-        ensureMessage(AnyPacker.pack(value)) shouldBe value
-        ensureMessage(value) shouldBe value
+        AnyPacker.pack(value).ensureMessage() shouldBe value
+        value.ensureMessage() shouldBe value
     }
 
     @Nested
@@ -94,32 +89,32 @@ internal class MessagesSpec : UtilityClassTest<Messages>(Messages::class.java) {
         fun `a message is not in the default state`() {
             val msg = TypeConverter.toMessage("check_if_message_is_not_in_default_state")
 
-            isNotDefault(msg) shouldBe true
-            isNotDefault(StringValue.getDefaultInstance()) shouldBe false
+            msg.isNotDefault() shouldBe true
+            StringValue.getDefaultInstance().isNotDefault() shouldBe false
         }
 
         @Test
         fun `a message is in the default state`() {
             val nonDefault: Message = TestValues.newUuidValue()
 
-            isDefault(StringValue.getDefaultInstance()) shouldBe true
-            isDefault(nonDefault) shouldBe false
+            StringValue.getDefaultInstance().isDefault() shouldBe true
+            nonDefault.isDefault() shouldBe false
         }
 
         @Test
         fun `an enum is not the default instance`() {
-            isNotDefault(EntityOption.Kind.ENTITY) shouldBe true
+            EntityOption.Kind.ENTITY.isNotDefault() shouldBe true
         }
 
         @Test
         fun `an enum is the default instance`() {
-            isDefault(EntityOption.Kind.KIND_UNKNOWN) shouldBe true
+            EntityOption.Kind.KIND_UNKNOWN.isDefault() shouldBe true
         }
     }
 
     @Test
     fun `declare the name for 'newBuilder' method`() {
-        Messages.METHOD_NEW_BUILDER shouldStartWith "new"
-        Messages.METHOD_NEW_BUILDER shouldEndWith "Builder"
+        METHOD_NEW_BUILDER shouldStartWith "new"
+        METHOD_NEW_BUILDER shouldEndWith "Builder"
     }
 }
