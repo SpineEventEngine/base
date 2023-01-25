@@ -111,10 +111,4 @@ internal class MessageExtsSpec {
             EntityOption.Kind.KIND_UNKNOWN.isDefault() shouldBe true
         }
     }
-
-    @Test
-    fun `declare the name for 'newBuilder' method`() {
-        METHOD_NEW_BUILDER shouldStartWith "new"
-        METHOD_NEW_BUILDER shouldEndWith "Builder"
-    }
 }

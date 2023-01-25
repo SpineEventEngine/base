@@ -36,9 +36,6 @@ import com.google.protobuf.Message
 import io.spine.annotation.Internal
 import io.spine.type.TypeName
 
-/** The name of a message builder factory method.  */
-public const val METHOD_NEW_BUILDER: String = "newBuilder"
-
 /**
  * The cache of the default instances per [Message] class.
  *
