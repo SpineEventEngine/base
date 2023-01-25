@@ -34,18 +34,18 @@ import com.google.common.util.concurrent.UncheckedExecutionException
 import com.google.protobuf.Any
 import com.google.protobuf.Message
 import io.spine.annotation.Internal
-import io.spine.type.TypeName
 
 /**
  * Obtains the default instance of the passed message class.
  *
- * @param [M] the type of the message.
- * @return default instance of the class.
+ * @param M the type of the message.
+ * @return default instance of this message class.
  */
-public fun <M : Message> Class<M>.defaultInstance(): M {
-    @Suppress("UNCHECKED_CAST")
-    return defaultInstances.getUnchecked(this) as M
-}
+public val <M : Message> Class<M>.defaultInstance: M
+    get() {
+        @Suppress("UNCHECKED_CAST")
+        return defaultInstances.getUnchecked(this) as M
+    }
 
 /**
  * The cache of the default instances per [Message] class.
@@ -75,8 +75,7 @@ private class MessageCacheLoader : CacheLoader<Class<out Message>, Message>() {
 @Internal
 public fun <M : Message> builderFor(cls: Class<M>): Message.Builder {
     return try {
-        val message = cls.defaultInstance()
-        message.toBuilder()
+        cls.defaultInstance.toBuilder()
     } catch (e: UncheckedExecutionException) {
         throw IllegalArgumentException(
             "Class `${cls.canonicalName}` must be a generated proto message.", e
@@ -108,21 +107,3 @@ public fun Message.isDefault(): Boolean = (defaultInstanceForType == this)
  * @return `true` if the message is not in the default state, `false` otherwise.
  */
 public fun Message.isNotDefault(): Boolean = !isDefault()
-
-/**
- * Obtains the name of this message type.
- */
-public val <T : Message> T.typeName: TypeName
-    get() = TypeName.of(this)
-
-/**
- * Tells if this message type is internal to a bounded context.
- */
-public fun <T : Message> T.isInternal(): Boolean =
-    this::class.java.isInternal()
-
-/**
- * Tells if this class of messages is internal to a bounded context.
- */
-public fun <T : Message> Class<T>.isInternal(): Boolean =
-    isAnnotationPresent(Internal::class.java)

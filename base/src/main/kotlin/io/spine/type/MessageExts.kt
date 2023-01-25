@@ -24,59 +24,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@file:JvmName("PubPreconditions")
-
 package io.spine.type
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue
 import com.google.protobuf.Message
 import io.spine.annotation.Internal
 import io.spine.protobuf.defaultInstance
 
 /**
- * Verifies that the given message instance is annotated with
- * [io.spine.annotation.Internal] and if so, returns it.
- *
- * @throws IllegalArgumentException
- *          if the message is not internal.
+ * Obtains the name of this message type.
  */
-@CanIgnoreReturnValue
-public fun requireInternal(msg: Message): Message {
-    require(msg.isInternal()) {
-        "The message class `${msg::class.java.canonicalName}` is not" +
-                " annotated as `${Internal::class.java.canonicalName}`."
+public val <T : Message> T.typeName: TypeName
+    get() = TypeName.of(this)
+
+/**
+ * Tells if this message type is internal to a bounded context.
+ */
+public fun <T : Message> T.isInternal(): Boolean {
+    if (javaClass.isAnnotationPresent(Internal::class.java)) {
+        return true
     }
-    return msg
+    val descriptor = descriptorForType
+    val fromDescriptor = descriptor.isInternal()
+    val fromFileDescriptor = descriptor.file.allTypesAreInternal()
+    return fromDescriptor || fromFileDescriptor
 }
 
 /**
- * Verifies if the given message is not internal to a bounded context,
- * returning it if so.
- *
- * @throws UnpublishedLanguageException
- *          if the given message is internal.
+ * Tells if this class of messages is internal to a bounded context.
  */
-@CanIgnoreReturnValue
-public fun requirePublished(msg: Message): Message {
-    if (msg.isInternal()) {
-        throw UnpublishedLanguageException(msg)
-    }
-    return msg
-}
-
-/**
- * Verifies if the given class of messages is a part of published language
- * of a bounded context, returning it if so.
- *
- * @throws UnpublishedLanguageException
- *          if the message class is internal to the bounded context.
- */
-@CanIgnoreReturnValue
-public fun <M : Message> requirePublished(cls: Class<M>): Class<M> {
-    if (cls.isInternal()) {
-        throw UnpublishedLanguageException(cls.defaultInstance)
-    }
-    return cls
-}
-
-
+public fun <M : Message> Class<M>.isInternal(): Boolean = defaultInstance.isInternal()
