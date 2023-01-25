@@ -48,7 +48,15 @@ public abstract class ValueHolder<T extends Serializable> implements Serializabl
     }
 
     /** Returns the stored value. */
-    protected T value() {
+    public final T value() {
+        return this.value;
+    }
+
+    /**
+     * The same as {@link #value()} but using JavaBean convention for compatibility
+     * with Kotlin property syntax.
+     */
+    public final T getValue() {
         return this.value;
     }
 
