@@ -47,11 +47,6 @@ public abstract class ClassTypeValue<T> extends ValueHolder<Class<? extends T>> 
         super(value);
     }
 
-    @Override
-    public Class<? extends T> value() {
-        return super.value();
-    }
-
     /**
      * Returns {@linkplain Class#getName() the name} of the enclosed class value.
      *
