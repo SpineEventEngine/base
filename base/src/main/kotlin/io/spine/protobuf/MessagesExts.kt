@@ -31,12 +31,10 @@ package io.spine.protobuf
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import com.google.common.util.concurrent.UncheckedExecutionException
-import com.google.errorprone.annotations.CanIgnoreReturnValue
 import com.google.protobuf.Any
 import com.google.protobuf.Message
 import io.spine.annotation.Internal
 import io.spine.type.TypeName
-import io.spine.type.UnpublishedLanguageException
 
 /** The name of a message builder factory method.  */
 public const val METHOD_NEW_BUILDER: String = "newBuilder"
@@ -132,50 +130,3 @@ public fun <T : Message> Class<T>.isInternal(): Boolean =
  */
 public val <T : Message> T.typeName: TypeName
     get() = TypeName.of(this)
-
-/**
- * Verifies that the given message instance is annotated with
- * [io.spine.annotation.Internal] and if so, returns it.
- *
- * @throws IllegalArgumentException
- *          if the message is not internal.
- */
-@CanIgnoreReturnValue
-public fun requireInternal(msg: Message): Message {
-    require(msg.isInternal()) {
-        "The message class `${msg::class.java.canonicalName}` is not" +
-                " annotated as `${Internal::class.java.canonicalName}`."
-    }
-    return msg
-}
-
-/**
- * Verifies if the given message is not internal to a bounded context,
- * returning it if so.
- *
- * @throws UnpublishedLanguageException
- *          if the given message is internal.
- */
-@CanIgnoreReturnValue
-public fun requirePublished(msg: Message): Message {
-    if (msg.isInternal()) {
-        throw UnpublishedLanguageException(msg)
-    }
-    return msg
-}
-
-/**
- * Verifies if the given class of messages is a part of published language
- * of a bounded context, returning it if so.
- *
- * @throws UnpublishedLanguageException
- *          if the message class is internal to the bounded context.
- */
-@CanIgnoreReturnValue
-public fun <T : Message> requirePublished(clazz: Class<T>): Class<T> {
-    if (clazz.isInternal()) {
-        val msg = clazz.defaultInstance()
-        throw UnpublishedLanguageException(msg)
-    }
-    return clazz
-}
