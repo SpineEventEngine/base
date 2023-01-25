@@ -116,7 +116,7 @@ public final class AnyPacker {
         checkNotNull(any);
         checkNotNull(cls);
 
-        var defaultInstance = Messages.defaultInstance(cls);
+        var defaultInstance = Messages.getDefaultInstance(cls);
         var expectedTypeUrl = TypeUrl.of(defaultInstance);
         checkType(any, expectedTypeUrl);
         try {
@@ -163,7 +163,7 @@ public final class AnyPacker {
     public static <T extends Message> Function<@Nullable Any, @Nullable T>
     unpackFunc(Class<T> type) {
         checkNotNull(type);
-        var defaultInstance = Messages.defaultInstance(type);
+        var defaultInstance = Messages.getDefaultInstance(type);
         @SuppressWarnings("unchecked")
         var parser = (Parser<T>) defaultInstance.getParserForType();
         var expectedTypeUrl = TypeUrl.of(defaultInstance);
