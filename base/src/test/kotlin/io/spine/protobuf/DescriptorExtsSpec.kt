@@ -24,41 +24,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@file:JvmName("UtilExtensions")
-
 package io.spine.protobuf
 
-import com.google.protobuf.FieldMask
-import com.google.protobuf.Message
-import com.google.protobuf.util.FieldMaskUtil.fromFieldNumbers
-import com.google.protobuf.util.FieldMaskUtil.isValid
+import com.google.protobuf.Descriptors.FileDescriptor
+import com.google.protobuf.ExtensionRegistry
+import com.google.protobuf.Timestamp
+import com.google.protobuf.TimestampProto
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldEndWith
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.TestInstance.Lifecycle
 
-/**
- * Constructs a [FieldMask] from the passed field numbers.
- *
- * @throws IllegalArgumentException
- *          if any of the fields are invalid for the message.
- */
-public inline fun <reified T : Message> fromFieldNumbers(vararg fieldNumbers: Int): FieldMask =
-    fromFieldNumbers<T>(fieldNumbers.toList())
+@TestInstance(Lifecycle.PER_CLASS)
+@DisplayName("`DescriptorExtensions` should")
+internal class DescriptorExtsSpec {
 
-/**
- * Constructs a [FieldMask] from the passed field numbers.
- *
- * @throws IllegalArgumentException
- *          if any of the fields are invalid for the message.
- */
-public inline fun <reified T : Message> fromFieldNumbers(fieldNumbers: Iterable<Int>): FieldMask =
-    fromFieldNumbers(T::class.java, fieldNumbers)
+    private val fileDescriptor: FileDescriptor = Timestamp.getDescriptor().file
 
-/**
- * Checks whether paths in a given fields mask are valid.
- */
-public inline fun <reified T : Message> isValid(fieldMask: FieldMask): Boolean =
-    isValid(T::class.java, fieldMask)
+    @Test
+    fun `provide outer class name for a file`() {
+        fileDescriptor.outerClassName shouldEndWith "TimestampProto"
+    }
 
-/**
- * Checks whether a given field path is valid.
- */
-public inline fun <reified T : Message> isValid(path: String): Boolean =
-    isValid(T::class.java, path)
+    @Test
+    fun `provide outer class`() {
+        fileDescriptor.outerClass shouldBe TimestampProto::class.java
+    }
+
+    @Test
+    fun `register extensions with a registry`() {
+        val registry = ExtensionRegistry.newInstance()
+        assertDoesNotThrow {
+            fileDescriptor.registerAllExtensions(registry)
+        }
+    }
+}
