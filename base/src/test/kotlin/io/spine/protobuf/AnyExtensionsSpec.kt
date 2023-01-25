@@ -28,7 +28,7 @@ package io.spine.protobuf
 
 import com.google.protobuf.Message
 import com.google.protobuf.stringValue
-import io.kotest.matchers.*
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.instanceOf
 import io.spine.test.protobuf.MessageToPack
 import io.spine.test.protobuf.messageToPack

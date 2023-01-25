@@ -32,11 +32,11 @@ import com.google.protobuf.Timestamp
 import com.google.protobuf.TimestampProto
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldEndWith
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle
+import org.junit.jupiter.api.assertDoesNotThrow
 
 @TestInstance(Lifecycle.PER_CLASS)
 @DisplayName("`DescriptorExtensions` should")
