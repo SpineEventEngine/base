@@ -37,6 +37,17 @@ import io.spine.annotation.Internal
 import io.spine.type.TypeName
 
 /**
+ * Obtains the default instance of the passed message class.
+ *
+ * @param [M] the type of the message.
+ * @return default instance of the class.
+ */
+public fun <M : Message> Class<M>.defaultInstance(): M {
+    @Suppress("UNCHECKED_CAST")
+    return defaultInstances.getUnchecked(this) as M
+}
+
+/**
  * The cache of the default instances per [Message] class.
  *
  * Creates and caches objects in a lazy mode.
@@ -46,14 +57,16 @@ private val defaultInstances = CacheBuilder.newBuilder()
     .build(MessageCacheLoader())
 
 /**
- * Obtains the default instance of the passed message class.
+ * The loader of the cache of default instances per [Message] class.
  *
- * @param [M] the type of the message.
- * @return default instance of the class.
+ * Loads a default instance of `Message` for the given type passed.
  */
-public fun <M : Message> Class<M>.defaultInstance(): M {
-    @Suppress("UNCHECKED_CAST")
-    return defaultInstances.getUnchecked(this) as M
+private class MessageCacheLoader : CacheLoader<Class<out Message>, Message>() {
+    override fun load(messageClass: Class<out Message>): Message {
+        // It is safe to use the `Internal` utility class from Protobuf since it relies on
+        // the fact that the generated class has the `getDefaultInstance()` static method.
+        return com.google.protobuf.Internal.getDefaultInstance(messageClass)!!
+    }
 }
 
 /**
@@ -97,18 +110,10 @@ public fun Message.isDefault(): Boolean = (defaultInstanceForType == this)
 public fun Message.isNotDefault(): Boolean = !isDefault()
 
 /**
- * The loader of the cache of default instances per [Message] class.
- *
- * Loads a default instance of `Message` for the given type passed.
+ * Obtains the name of this message type.
  */
-private class MessageCacheLoader : CacheLoader<Class<out Message>, Message>() {
-
-    override fun load(messageClass: Class<out Message>): Message {
-        // It is safe to use the `Internal` utility class from Protobuf since it relies on
-        // the fact that the generated class has the `getDefaultInstance()` static method.
-        return com.google.protobuf.Internal.getDefaultInstance(messageClass)!!
-    }
-}
+public val <T : Message> T.typeName: TypeName
+    get() = TypeName.of(this)
 
 /**
  * Tells if this message type is internal to a bounded context.
@@ -121,9 +126,3 @@ public fun <T : Message> T.isInternal(): Boolean =
  */
 public fun <T : Message> Class<T>.isInternal(): Boolean =
     isAnnotationPresent(Internal::class.java)
-
-/**
- * Obtains the name of this message type.
- */
-public val <T : Message> T.typeName: TypeName
-    get() = TypeName.of(this)
