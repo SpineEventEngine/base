@@ -1,0 +1,21 @@
+
+package spine.given.type;
+
+import "spine/options.proto";
+import "google/protobuf/wrappers.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package="io.spine.given.type";
+option java_multiple_files = true;
+
+message ExplBetaType {
+    option (beta_type) = true;
+}
+
+message ExplInternalType {
+    option (internal_type) = true;
+}
+
+message ExplSpiType {
+    option (SPI_type) = true;
+}
