@@ -29,8 +29,6 @@ import com.google.protobuf.Message
 import com.google.protobuf.StringValue
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import io.kotest.matchers.types.shouldBeSameInstanceAs
-import io.spine.base.Time
 import io.spine.option.EntityOption
 import io.spine.test.messages.MessageWithStringValue
 import io.spine.testing.Assertions.assertIllegalArgument
@@ -41,20 +39,6 @@ import org.junit.jupiter.api.Test
 
 @DisplayName("Extensions for `Message`-related types should")
 internal class MessageExtsSpec {
-
-    @Test
-    fun `return the same 'Any' from 'toAny()'`() {
-        val any = TypeConverter.toAny(javaClass.simpleName)
-
-        AnyPacker.pack(any) shouldBeSameInstanceAs any
-    }
-
-    @Test
-    fun `pack to 'Any'`() {
-        val timestamp = Time.currentTime()
-
-        AnyPacker.unpack(AnyPacker.pack(timestamp)) shouldBe timestamp
-    }
 
     @Test
     fun `return builder for the message`() {
@@ -72,11 +56,11 @@ internal class MessageExtsSpec {
     }
 
     @Test
-    fun `ensure 'Message'`() {
+    fun `ensure 'Message' is unpacked`() {
         val value = TestValues.newUuidValue()
 
-        AnyPacker.pack(value).ensureMessage() shouldBe value
-        value.ensureMessage() shouldBe value
+        AnyPacker.pack(value).ensureUnpacked() shouldBe value
+        value.ensureUnpacked() shouldBe value
     }
 
     @Nested

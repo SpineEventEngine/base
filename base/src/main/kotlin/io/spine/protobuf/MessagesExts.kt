@@ -75,7 +75,7 @@ public fun <M : Message> builderFor(cls: Class<M>): Message.Builder {
  * Ensures that the passed instance of `Message` is not an instance
  * of [com.google.protobuf.Any], and unwraps the message if `Any` is passed.
  */
-public fun Message.ensureMessage(): Message =
+public fun Message.ensureUnpacked(): Message =
     if (this is Any) {
         AnyPacker.unpack(this)
     } else {
