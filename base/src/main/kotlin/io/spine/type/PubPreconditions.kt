@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@file:JvmName("TypePreconditions")
+@file:JvmName("PubPreconditions")
 
 package io.spine.type
 

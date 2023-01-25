@@ -29,7 +29,7 @@ package io.spine.type;
 import com.google.protobuf.Message;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.type.TypePreconditions.requireInternal;
+import static io.spine.type.PubPreconditions.requireInternal;
 import static java.lang.String.format;
 
 /**

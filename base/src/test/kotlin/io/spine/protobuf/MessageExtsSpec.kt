@@ -29,8 +29,6 @@ import com.google.protobuf.Message
 import com.google.protobuf.StringValue
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import io.kotest.matchers.string.shouldEndWith
-import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.spine.base.Time
 import io.spine.option.EntityOption
