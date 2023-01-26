@@ -26,15 +26,26 @@
 
 package io.spine.type
 
-import com.google.protobuf.Descriptors.ServiceDescriptor
-import io.spine.type.ApiOption.spi
-import kotlin.jvm.optionals.getOrNull
+import io.kotest.matchers.shouldBe
+import io.spine.given.type.ExplicitNonSpiService
+import io.spine.given.type.ExplicitSpiService
+import io.spine.given.type.ImplicitSpiService
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-/**
- * Tells if the type represented by this [ServiceDescriptor] is marked as `spi_type`.
- * If the option value is not set in the type, returns `null`.
- */
-public fun ServiceDescriptor.isSpi(): Boolean? = optionValueOrNull(spi())
+@DisplayName("`ServiceDescriptor` extensions in `io.spine.type` should")
+internal class ServiceDescriptorExtsSpec {
 
-private fun ServiceDescriptor.optionValueOrNull(opt: ApiOption): Boolean? =
-    opt.findIn(this).getOrNull()
+    @Nested
+    @DisplayName("tell if a service is")
+    inner class SpiAnnotations {
+
+        @Test
+        fun `explicitly annotated SPI`() {
+            ExplicitSpiService.getDescriptor().isSpi() shouldBe true
+            ExplicitNonSpiService.getDescriptor().isSpi() shouldBe false
+            ImplicitSpiService.getDescriptor().isSpi() shouldBe null
+        }
+    }
+}
