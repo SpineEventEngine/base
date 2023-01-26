@@ -100,9 +100,9 @@ public final class ApiOption {
     private enum The {
 
         BETA(new ApiOption(betaAll, betaType, null, beta)),
-        SPI(new ApiOption(sPIAll, sPIType, sPIService, null)),
         EXPERIMENTAL(new ApiOption(experimentalAll, experimentalType, null, experimental)),
-        INTERNAL(new ApiOption(internalAll, internalType, null, internal));
+        INTERNAL(new ApiOption(internalAll, internalType, null, internal)),
+        SPI(new ApiOption(sPIAll, sPIType, sPIService, null));
 
         @SuppressWarnings({"NonSerializableFieldInSerializableClass", "PMD.SingularField"})
         // This private enum should not be serialized.
@@ -121,13 +121,6 @@ public final class ApiOption {
     }
 
     /**
-     * Obtains an option which marks beta service provider interface elements.
-     */
-    public static ApiOption spi() {
-        return The.SPI.option;
-    }
-
-    /**
      * Obtains an option which marks experimental API.
      */
     public static ApiOption experimental() {
@@ -139,6 +132,13 @@ public final class ApiOption {
      */
     public static ApiOption internal() {
         return The.INTERNAL.option;
+    }
+
+    /**
+     * Obtains an option which marks beta service provider interface elements.
+     */
+    public static ApiOption spi() {
+        return The.SPI.option;
     }
 
     /**
