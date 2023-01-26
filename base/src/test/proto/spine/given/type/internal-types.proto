@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2015, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,19 +34,26 @@ option (type_url_prefix) = "type.spine.io";
 option java_package="io.spine.given.type";
 option java_multiple_files = true;
 
+// See https://protobuf.dev/reference/java/java-generated/#service
+option java_generic_services = true;
+
 // Marks all types in this file as `internal_type`.
 option (internal_all) = true;
 
-message InternalImplicitlyType {
+message ImplicitInternalType {
     string value = 1;
 }
 
-service InternalImplicitlyService {
+service ImplicitInternalService {
     rpc Get(google.protobuf.StringValue) returns (google.protobuf.StringValue);
 }
 
-enum InternalImplicitlyEnum {
+enum ImplicitInternalEnum {
     IIE_RESERVED = 0;
     IIE_ONE = 1;
     IIE_TWO = 2;
+}
+
+message ExplicitNonInternalType {
+    option (internal_type) = false;
 }

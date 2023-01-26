@@ -1,5 +1,5 @@
 /*
- * Copyright 2015, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,35 +23,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package spine.given.type;
 
-import "spine/options.proto";
-import "google/protobuf/wrappers.proto";
+package io.spine.protobuf
 
-option (type_url_prefix) = "type.spine.io";
-option java_package="io.spine.given.type";
-option java_multiple_files = true;
+import com.google.protobuf.Descriptors.Descriptor
+import com.google.protobuf.Descriptors.FieldDescriptor
 
-// See https://protobuf.dev/reference/java/java-generated/#service
-option java_generic_services = true;
+/**
+ * Obtains a descriptor of the field with the given [name] or `null` if there is no such field.
+ */
+public fun Descriptor.field(name: String): FieldDescriptor? = findFieldByName(name)
 
-message ExplicitBetaType {
-    option (beta_type) = true;
-}
-
-message ExplicitInternalType {
-    option (internal_type) = true;
-}
-
-message ExplicitSpiType {
-    option (SPI_type) = true;
-}
-
-service ExplicitSpiService {
-    option (SPI_service) = true;
-    rpc Get(google.protobuf.StringValue) returns (google.protobuf.StringValue);
-}
-
-message ExplicitExperimentalType {
-    option (experimental_type) = true;
-}
+/**
+ * Obtains a descriptor of the field with the given [number] or `null` if there is no such field.
+ */
+public fun Descriptor.field(number: Int): FieldDescriptor? = findFieldByNumber(number)

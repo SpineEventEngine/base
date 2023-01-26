@@ -1,5 +1,5 @@
 /*
- * Copyright 2015, TeamDev. All rights reserved.
+ * Copyright 2022, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+syntax = "proto3";
+
 package spine.given.type;
 
 import "spine/options.proto";
@@ -32,26 +34,17 @@ option (type_url_prefix) = "type.spine.io";
 option java_package="io.spine.given.type";
 option java_multiple_files = true;
 
-// See https://protobuf.dev/reference/java/java-generated/#service
-option java_generic_services = true;
+// A bunch of fields with different API level options and without options.
+message Filderation {
+    string beta_field = 1 [(beta) = true];
+    string non_beta = 2;
+    string explicit_non_beta = 3 [(beta) = false];
 
-message ExplicitBetaType {
-    option (beta_type) = true;
-}
+    int32 experimental_field = 4 [(experimental) = true];
+    int32 non_experimental = 5;
+    int32 explicit_non_experimental = 6 [(experimental) = false];
 
-message ExplicitInternalType {
-    option (internal_type) = true;
-}
-
-message ExplicitSpiType {
-    option (SPI_type) = true;
-}
-
-service ExplicitSpiService {
-    option (SPI_service) = true;
-    rpc Get(google.protobuf.StringValue) returns (google.protobuf.StringValue);
-}
-
-message ExplicitExperimentalType {
-    option (experimental_type) = true;
+    bool internal_field = 7 [(internal) = true];
+    bool non_internal = 8;
+    bool explicit_non_internal = 9 [(internal) = false];
 }

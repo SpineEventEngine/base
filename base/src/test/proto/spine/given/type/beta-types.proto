@@ -37,20 +37,20 @@ option java_multiple_files = true;
 // Marks all types in this file as `beta_type`.
 option (beta_all) = true;
 
-message BetaImplicitlyType {
+message ImplicitBetaType {
     string value = 1;
 }
 
-service BetaImplicitlyService {
+service ImplicitBetaService {
     rpc Get(google.protobuf.StringValue) returns (google.protobuf.StringValue);
 }
 
-enum BetaImplicitlyEnum {
+enum ImplicitBetaEnum {
     BIE_RESERVED = 0;
     BIE_ONE = 1;
     BIE_TWO = 2;
 }
 
-message NonBetaExplicitlyType {
+message ExplicitNonBetaType {
     option (beta_type) = false;
 }

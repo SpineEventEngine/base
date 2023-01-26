@@ -92,31 +92,53 @@ public final class ApiOption {
     }
 
     /**
+     * Enumeration of available API options.
+     *
+     * @implNote This private enum gathers option instances in the form which is more
+     *         compact than a bunch of private static fields.
+     */
+    private enum The {
+
+        BETA(new ApiOption(betaAll, betaType, null, beta)),
+        SPI(new ApiOption(sPIAll, sPIType, sPIService, null)),
+        EXPERIMENTAL(new ApiOption(experimentalAll, experimentalType, null, experimental)),
+        INTERNAL(new ApiOption(internalAll, internalType, null, internal));
+
+        @SuppressWarnings({"NonSerializableFieldInSerializableClass", "PMD.SingularField"})
+        // This private enum should not be serialized.
+        private final ApiOption option;
+
+        The(ApiOption option) {
+            this.option = option;
+        }
+    }
+
+    /**
      * Obtains an option which marks beta API.
      */
     public static ApiOption beta() {
-        return KnownOption.BETA.option;
+        return The.BETA.option;
     }
 
     /**
      * Obtains an option which marks beta service provider interface elements.
      */
     public static ApiOption spi() {
-        return KnownOption.SPI.option;
+        return The.SPI.option;
     }
 
     /**
      * Obtains an option which marks experimental API.
      */
     public static ApiOption experimental() {
-        return KnownOption.EXPERIMENTAL.option;
+        return The.EXPERIMENTAL.option;
     }
 
     /**
      * Obtains an option which marks internal API.
      */
     public static ApiOption internal() {
-        return KnownOption.INTERNAL.option;
+        return The.INTERNAL.option;
     }
 
     /**
@@ -206,24 +228,5 @@ public final class ApiOption {
     public String toString() {
         return messageOption.getDescriptor()
                             .getName();
-    }
-
-    /**
-     * Enumeration of well known API options.
-     */
-    private enum KnownOption {
-
-        BETA(new ApiOption(betaAll, betaType, null, beta)),
-        SPI(new ApiOption(sPIAll, sPIType, sPIService, null)),
-        EXPERIMENTAL(new ApiOption(experimentalAll, experimentalType, null, experimental)),
-        INTERNAL(new ApiOption(internalAll, internalType, null, internal));
-
-        @SuppressWarnings({"NonSerializableFieldInSerializableClass", "PMD.SingularField"})
-        // This private enum should not be serialized.
-        private final ApiOption option;
-
-        KnownOption(ApiOption option) {
-            this.option = option;
-        }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,35 +23,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package spine.given.type;
 
-import "spine/options.proto";
-import "google/protobuf/wrappers.proto";
+package io.spine.type
 
-option (type_url_prefix) = "type.spine.io";
-option java_package="io.spine.given.type";
-option java_multiple_files = true;
+import io.kotest.matchers.shouldBe
+import io.spine.annotation.Internal
+import io.spine.given.type.ExplicitInternalType
+import io.spine.testing.StubMessage
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
-// See https://protobuf.dev/reference/java/java-generated/#service
-option java_generic_services = true;
+@DisplayName("Extensions for `Message` in `io.spine.type` package should")
+internal class MessageExtsSpec {
 
-message ExplicitBetaType {
-    option (beta_type) = true;
+    @Test
+    fun `provide type name of a message`() {
+        ExplicitInternalType.getDefaultInstance().typeName.value shouldBe
+                "spine.given.type.ExplicitInternalType"
+    }
+
+    @Nested
+    @DisplayName("tell if a message is internal")
+    inner class InternalMessage {
+
+        @Test
+        fun `by class annotation`() {
+            StubInternalMessage().isInternal() shouldBe true
+        }
+    }
 }
 
-message ExplicitInternalType {
-    option (internal_type) = true;
-}
-
-message ExplicitSpiType {
-    option (SPI_type) = true;
-}
-
-service ExplicitSpiService {
-    option (SPI_service) = true;
-    rpc Get(google.protobuf.StringValue) returns (google.protobuf.StringValue);
-}
-
-message ExplicitExperimentalType {
-    option (experimental_type) = true;
-}
+@Internal
+private class StubInternalMessage: StubMessage()

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2015, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,16 +37,20 @@ option java_multiple_files = true;
 // Marks all types in this file as `experimental_type`.
 option (experimental_all) = true;
 
-message ExpImplicitType {
+message ImplicitExperimentalType {
     string value = 1;
 }
 
-service ExpImplicitService {
+service ImplicitExperimentalService {
     rpc Get(google.protobuf.StringValue) returns (google.protobuf.StringValue);
 }
 
-enum ExpImplicitEnum {
+enum ImplicitExperimentalEnum {
     EIE_RESERVED = 0;
     EIE_ONE = 1;
     EIE_TWO = 2;
+}
+
+message ExplicitNonExperimentalType {
+    option (experimental_type) = false;
 }
