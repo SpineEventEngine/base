@@ -40,6 +40,12 @@ import kotlin.jvm.optionals.getOrDefault
 public fun Descriptor.isBeta(): Boolean = optionValueOrFalse(beta())
 
 /**
+ * Tells if the type represented by this [Descriptor] is marked as `experimental_type`.
+ * If the option value is not set in the type, assumes `false`.
+ */
+public fun Descriptor.isExperimental(): Boolean = optionValueOrFalse(experimental())
+
+/**
  * Tells if the type represented by this [Descriptor] is marked as `internal_type`.
  * If the option value is not set in the type, assumes `false`.
  */
@@ -50,12 +56,6 @@ public fun Descriptor.isInternal(): Boolean = optionValueOrFalse(internal())
  * If the option value is not set in the type, assumes `false`.
  */
 public fun Descriptor.isSpi(): Boolean = optionValueOrFalse(spi())
-
-/**
- * Tells if the type represented by this [Descriptor] is marked as `experimental_type`.
- * If the option value is not set in the type, assumes `false`.
- */
-public fun Descriptor.isExperimental(): Boolean = optionValueOrFalse(experimental())
 
 private fun Descriptor.optionValueOrFalse(opt: ApiOption): Boolean =
     opt.findIn(this).getOrDefault(false)
