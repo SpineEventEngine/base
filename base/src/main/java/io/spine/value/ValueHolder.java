@@ -47,14 +47,17 @@ public abstract class ValueHolder<T extends Serializable> implements Serializabl
         this.value = checkNotNull(value);
     }
 
-    /** Returns the stored value. */
-    public final T value() {
-        return this.value;
+    /**
+     * Returns the stored value.
+     *
+     * <p>Overriding methods may perform additional type conversion, if needed.
+     */
+    public T value() {
+        return getValue();
     }
 
     /**
-     * The same as {@link #value()} but using JavaBean convention for compatibility
-     * with Kotlin property syntax.
+     * Obtains the value passed to the folder during construction.
      */
     public final T getValue() {
         return this.value;
