@@ -97,7 +97,11 @@ class ApiOptionSpec {
                 it shouldBe true
             }
 
-            beta.findIn(ImplicitBetaType.getDescriptor()) shouldBe empty()
+            val implicitBeta = ImplicitBetaType.getDescriptor()
+            beta.findIn(implicitBeta) shouldBe empty()
+            beta.findIn(implicitBeta.file) shouldBePresent {
+                it shouldBe true
+            }
 
             beta.findIn(ExplicitNonBetaType.getDescriptor()) shouldBePresent {
                 it shouldBe false
@@ -122,7 +126,11 @@ class ApiOptionSpec {
                 it shouldBe true
             }
 
-            spi.findIn(ImplicitSpiType.getDescriptor()) shouldBe empty()
+            val implicitSpi = ImplicitSpiType.getDescriptor()
+            spi.findIn(implicitSpi) shouldBe empty()
+            spi.findIn(implicitSpi.file) shouldBePresent {
+                it shouldBe true
+            }
 
             spi.findIn(ExplicitNonSpiType.getDescriptor()) shouldBePresent {
                 it shouldBe false
@@ -141,7 +149,11 @@ class ApiOptionSpec {
                 it shouldBe true
             }
 
-            experimental.findIn(ImplicitExperimentalType.getDescriptor()) shouldBe empty()
+            val implicitExperimental = ImplicitExperimentalType.getDescriptor()
+            experimental.findIn(implicitExperimental) shouldBe empty()
+            experimental.findIn(implicitExperimental.file) shouldBePresent {
+                it shouldBe true
+            }
 
             val d = Filderation.getDescriptor()
 
@@ -176,5 +188,10 @@ class ApiOptionSpec {
                 it shouldBe false
             }
         }
+    }
+
+    @Test
+    fun `obtain string form as the name of the message option field`() {
+        ApiOption.beta().toString() shouldBe "beta_type"
     }
 }
