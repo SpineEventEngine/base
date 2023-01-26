@@ -49,16 +49,34 @@ internal class PubPreconditionsSpec {
             requireInternal(msg)
         }
 
-        assertThrowsOn(ExplicitNonInternalType.getDefaultInstance())
-        assertThrowsOn(Timestamp.getDefaultInstance())
-
         fun assertDoesNotThrow(msg: Message) = assertDoesNotThrow {
             requireInternal(msg)
         }
 
+        assertThrowsOn(ExplicitNonInternalType.getDefaultInstance())
+        assertThrowsOn(Timestamp.getDefaultInstance())
+
         assertDoesNotThrow(ExplicitInternalType.getDefaultInstance())
         assertDoesNotThrow(ImplicitInternalType.getDefaultInstance())
         assertDoesNotThrow(StubInternalMsg())
+    }
+
+    @Test
+    fun `require a type to be published`() {
+
+        fun assertThrowsOn(msg: Message) = assertThrows<UnpublishedLanguageException> {
+            requirePublished(msg)
+        }
+
+        fun assertDoesNotThrow(msg: Message) = assertDoesNotThrow {
+            requirePublished(msg)
+        }
+
+        assertThrowsOn(ExplicitInternalType.getDefaultInstance())
+        assertThrowsOn(ImplicitInternalType.getDefaultInstance())
+
+        assertDoesNotThrow(ExplicitNonInternalType.getDefaultInstance())
+        assertDoesNotThrow(Timestamp.getDefaultInstance())
     }
 }
 
