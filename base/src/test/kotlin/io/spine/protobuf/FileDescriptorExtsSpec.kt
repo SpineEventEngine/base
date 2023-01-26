@@ -39,8 +39,8 @@ import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.junit.jupiter.api.assertDoesNotThrow
 
 @TestInstance(Lifecycle.PER_CLASS)
-@DisplayName("`DescriptorExtensions` should")
-internal class DescriptorExtsSpec {
+@DisplayName("`FileDescriptor` extensions for should")
+internal class FileDescriptorExtsSpec {
 
     private val fileDescriptor: FileDescriptor = Timestamp.getDescriptor().file
 
