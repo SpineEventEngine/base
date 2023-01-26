@@ -36,25 +36,25 @@ import kotlin.jvm.optionals.getOrDefault
  * Tells if the type represented by this [ServiceDescriptor] is marked as `beta`.
  * If the option value is not set in the type, assumes `false`.
  */
-public fun ServiceDescriptor.isBeta(): Boolean = optionValueOrFalse(ApiOption.beta())
+public fun ServiceDescriptor.isBeta(): Boolean = optionValueOrNull(ApiOption.beta())
 
 /**
  * Tells if the type represented by this [ServiceDescriptor] is marked as `internal_type`.
  * If the option value is not set in the type, assumes `false`.
  */
-public fun ServiceDescriptor.isInternal(): Boolean = optionValueOrFalse(internal())
+public fun ServiceDescriptor.isInternal(): Boolean = optionValueOrNull(internal())
 
 /**
  * Tells if the type represented by this [ServiceDescriptor] is marked as `spi_type`.
  * If the option value is not set in the type, assumes `false`.
  */
-public fun ServiceDescriptor.isSpi(): Boolean = optionValueOrFalse(spi())
+public fun ServiceDescriptor.isSpi(): Boolean = optionValueOrNull(spi())
 
 /**
  * Tells if the type represented by this [ServiceDescriptor] is marked as `experimental_type`.
  * If the option value is not set in the type, assumes `false`.
  */
-public fun ServiceDescriptor.isExperimental(): Boolean = optionValueOrFalse(experimental())
+public fun ServiceDescriptor.isExperimental(): Boolean = optionValueOrNull(experimental())
 
-private fun ServiceDescriptor.optionValueOrFalse(opt: ApiOption): Boolean =
+private fun ServiceDescriptor.optionValueOrNull(opt: ApiOption): Boolean =
     opt.findIn(this).getOrDefault(false)

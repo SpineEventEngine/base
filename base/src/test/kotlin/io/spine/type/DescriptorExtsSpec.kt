@@ -54,28 +54,28 @@ internal class DescriptorExtsSpec {
         fun beta() {
             ExplicitBetaType.getDescriptor().isBeta() shouldBe true
             ExplicitNonBetaType.getDescriptor().isBeta() shouldBe false
-            ImplicitBetaType.getDescriptor().isBeta() shouldBe false
+            ImplicitBetaType.getDescriptor().isBeta() shouldBe null
         }
 
         @Test
         fun experimental() {
             ExplicitExperimentalType.getDescriptor().isExperimental() shouldBe true
             ExplicitNonExperimentalType.getDescriptor().isExperimental() shouldBe false
-            ImplicitExperimentalType.getDescriptor().isExperimental() shouldBe false
+            ImplicitExperimentalType.getDescriptor().isExperimental() shouldBe null
         }
 
         @Test
         fun internal() {
             ExplicitInternalType.getDescriptor().isInternal() shouldBe true
-            ImplicitInternalType.getDescriptor().isInternal() shouldBe false
             ExplicitNonInternalType.getDescriptor().isInternal() shouldBe false
+            ImplicitInternalType.getDescriptor().isInternal() shouldBe null
         }
 
         @Test
         fun spi() {
             ExplicitSpiType.getDescriptor().isSpi() shouldBe true
-            ImplicitSpiType.getDescriptor().isSpi() shouldBe false
             ExplicitNonSpiType.getDescriptor().isSpi() shouldBe false
+            ImplicitSpiType.getDescriptor().isSpi() shouldBe null
         }
     }
 }

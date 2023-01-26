@@ -39,14 +39,19 @@ public val <T : Message> T.typeName: TypeName
 /**
  * Tells if this message type is internal to a bounded context.
  */
+@Suppress("ReturnCount") // We may want to be able to set breakpoints in this method.
 public fun <T : Message> T.isInternal(): Boolean {
     if (javaClass.isAnnotationPresent(Internal::class.java)) {
         return true
     }
     val descriptor = descriptorForType
-    val fromDescriptor = descriptor.isInternal()
-    val fromFileDescriptor = descriptor.file.allTypesAreInternal()
-    return fromDescriptor || fromFileDescriptor
+    descriptor.isInternal()?.let {
+        return it
+    }
+    descriptor.file.allTypesAreInternal()?.let {
+        return it
+    }
+    return false
 }
 
 /**

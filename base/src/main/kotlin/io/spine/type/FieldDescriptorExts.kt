@@ -31,31 +31,31 @@ import io.spine.type.ApiOption.beta
 import io.spine.type.ApiOption.experimental
 import io.spine.type.ApiOption.internal
 import io.spine.type.ApiOption.spi
-import kotlin.jvm.optionals.getOrDefault
+import kotlin.jvm.optionals.getOrNull
 
 /**
  * Obtains the value of the `internal_all` option, if the option is present in the file.
  * If the option is not present, assumes `false`.
  */
-public fun FieldDescriptor.allTypesAreBeta(): Boolean = optionValueOrFalse(beta())
+public fun FieldDescriptor.allTypesAreBeta(): Boolean? = optionValueOrNull(beta())
 
 /**
  * Obtains the value of the `internal_all` option, if the option is present in the file.
  * If the option is not present, assumes `false`.
  */
-public fun FieldDescriptor.allTypesAreInternal(): Boolean = optionValueOrFalse(internal())
+public fun FieldDescriptor.allTypesAreInternal(): Boolean? = optionValueOrNull(internal())
 
 /**
  * Obtains the value of the `spi_all` option, if the option is present in the file.
  * If the option is not present, assumes `false`.
  */
-public fun FieldDescriptor.allTypesAreSpi(): Boolean = optionValueOrFalse(spi())
+public fun FieldDescriptor.allTypesAreSpi(): Boolean? = optionValueOrNull(spi())
 
 /**
  * Obtains the value of the `experimental_all` option, if the option is present in the file.
  * If the option is not present, assumes `false`.
  */
-public fun FieldDescriptor.allTypesAreExperimental(): Boolean = optionValueOrFalse(experimental())
+public fun FieldDescriptor.allTypesAreExperimental(): Boolean? = optionValueOrNull(experimental())
 
-private fun FieldDescriptor.optionValueOrFalse(opt: ApiOption): Boolean =
-    opt.findIn(this).getOrDefault(false)
+private fun FieldDescriptor.optionValueOrNull(opt: ApiOption): Boolean? =
+    opt.findIn(this).getOrNull()

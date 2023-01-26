@@ -44,7 +44,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 @DisplayName("`FileDescriptor` extensions from `io.spine.type` should")
-internal class FileDescriptorsExtsSpec {
+internal class FileDescriptorExtsSpec {
 
     @Nested
     @DisplayName("tell if all types in a file are")
@@ -53,34 +53,34 @@ internal class FileDescriptorsExtsSpec {
         @Test
         fun beta() {
             ImplicitBetaType.getDescriptor().file.allTypesAreBeta() shouldBe true
-            ExplicitBetaType.getDescriptor().file.allTypesAreBeta() shouldBe false
             // The file itself is non-beta, but it's declared in the file with `beta_all`.
             ExplicitNonBetaType.getDescriptor().file.allTypesAreBeta() shouldBe true
+            ExplicitBetaType.getDescriptor().file.allTypesAreBeta() shouldBe null
         }
 
         @Test
         fun internal() {
             ImplicitInternalType.getDescriptor().file.allTypesAreInternal() shouldBe true
-            ExplicitInternalType.getDescriptor().file.allTypesAreInternal() shouldBe false
             // The file itself is non-internal, but it's declared in the file with `internal_all`.
             ExplicitNonInternalType.getDescriptor().file.allTypesAreInternal() shouldBe true
+            ExplicitInternalType.getDescriptor().file.allTypesAreInternal() shouldBe null
         }
 
         @Test
         fun spi() {
             ImplicitSpiType.getDescriptor().file.allTypesAreSpi() shouldBe true
-            ExplicitSpiType.getDescriptor().file.allTypesAreSpi() shouldBe false
             // The file itself is non-SPI, but it's declared in the file with `SPI_all`.
             ExplicitNonSpiType.getDescriptor().file.allTypesAreSpi() shouldBe true
+            ExplicitSpiType.getDescriptor().file.allTypesAreSpi() shouldBe null
         }
 
         @Test
         fun experimental() {
             ImplicitExperimentalType.getDescriptor().file.allTypesAreExperimental() shouldBe true
-            ExplicitExperimentalType.getDescriptor().file.allTypesAreExperimental() shouldBe false
             // The file itself is non-experimental, but it's declared in the file
             // with `experimental_all`.
             ExplicitNonExperimentalType.getDescriptor().file.allTypesAreExperimental() shouldBe true
+            ExplicitExperimentalType.getDescriptor().file.allTypesAreExperimental() shouldBe null
         }
     }
 }

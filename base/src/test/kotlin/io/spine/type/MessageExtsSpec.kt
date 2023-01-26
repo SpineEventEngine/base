@@ -26,9 +26,11 @@
 
 package io.spine.type
 
+import com.google.protobuf.StringValue
 import io.kotest.matchers.shouldBe
 import io.spine.annotation.Internal
 import io.spine.given.type.ExplicitInternalType
+import io.spine.given.type.ImplicitInternalType
 import io.spine.testing.StubMessage
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -51,6 +53,23 @@ internal class MessageExtsSpec {
         fun `by class annotation`() {
             StubInternalMessage().isInternal() shouldBe true
         }
+
+        @Test
+        fun `by explicit type option, if class is not annotated`() {
+            ExplicitInternalType.getDefaultInstance().isInternal() shouldBe true
+        }
+
+        @Test
+        fun `by taking the 'internal_all' option from the declaring file`() {
+            ImplicitInternalType.getDefaultInstance().isInternal() shouldBe true
+        }
+    }
+
+    @Test
+    fun `tell if a message class is internal`() {
+        ExplicitInternalType::class.java.isInternal() shouldBe true
+        ImplicitInternalType::class.java.isInternal() shouldBe true
+        StringValue::class.java.isInternal() shouldBe false
     }
 }
 

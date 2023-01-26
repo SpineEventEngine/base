@@ -26,36 +26,41 @@
 
 package io.spine.type
 
-import com.google.protobuf.Descriptors.Descriptor
-import io.spine.type.ApiOption.beta
-import io.spine.type.ApiOption.experimental
-import io.spine.type.ApiOption.internal
-import io.spine.type.ApiOption.spi
-import kotlin.jvm.optionals.getOrNull
+import com.google.protobuf.Message
+import com.google.protobuf.Timestamp
+import io.spine.annotation.Internal
+import io.spine.given.type.ExplicitInternalType
+import io.spine.given.type.ExplicitNonInternalType
+import io.spine.given.type.ImplicitInternalType
+import io.spine.testing.StubMessage
+import java.lang.IllegalArgumentException
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
+import org.junit.jupiter.api.assertThrows
 
-/**
- * Tells if the type represented by this [Descriptor] is marked as `beta`.
- * If the option value is not set in the type, returns `null`.
- */
-public fun Descriptor.isBeta(): Boolean? = optionValueOrNull(beta())
+@DisplayName("`PubPreconditions` should")
+internal class PubPreconditionsSpec {
 
-/**
- * Tells if the type represented by this [Descriptor] is marked as `experimental_type`.
- * If the option value is not set in the type, returns `null`.
- */
-public fun Descriptor.isExperimental(): Boolean? = optionValueOrNull(experimental())
+    @Test
+    fun `require a type to be internal`() {
 
-/**
- * Tells if the type represented by this [Descriptor] is marked as `internal_type`.
- * If the option value is not set in the type, returns `null`.
- */
-public fun Descriptor.isInternal(): Boolean? = optionValueOrNull(internal())
+        fun assertThrowsOn(msg: Message) = assertThrows<IllegalArgumentException> {
+            requireInternal(msg)
+        }
 
-/**
- * Tells if the type represented by this [Descriptor] is marked as `spi_type`.
- * If the option value is not set in the type, returns `null`.
- */
-public fun Descriptor.isSpi(): Boolean? = optionValueOrNull(spi())
+        assertThrowsOn(ExplicitNonInternalType.getDefaultInstance())
+        assertThrowsOn(Timestamp.getDefaultInstance())
 
-private fun Descriptor.optionValueOrNull(opt: ApiOption): Boolean? =
-    opt.findIn(this).getOrNull()
+        fun assertDoesNotThrow(msg: Message) = assertDoesNotThrow {
+            requireInternal(msg)
+        }
+
+        assertDoesNotThrow(ExplicitInternalType.getDefaultInstance())
+        assertDoesNotThrow(ImplicitInternalType.getDefaultInstance())
+        assertDoesNotThrow(StubInternalMsg())
+    }
+}
+
+@Internal
+private class StubInternalMsg: StubMessage()
