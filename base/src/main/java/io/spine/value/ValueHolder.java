@@ -57,7 +57,7 @@ public abstract class ValueHolder<T extends Serializable> implements Serializabl
     }
 
     /**
-     * Obtains the value passed to the folder during construction.
+     * Obtains the value passed to the holder during construction.
      */
     public final T getValue() {
         return this.value;
