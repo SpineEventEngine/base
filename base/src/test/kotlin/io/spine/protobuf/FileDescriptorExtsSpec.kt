@@ -24,4 +24,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.150")
+package io.spine.protobuf
+
+import com.google.protobuf.Descriptors.FileDescriptor
+import com.google.protobuf.ExtensionRegistry
+import com.google.protobuf.Timestamp
+import com.google.protobuf.TimestampProto
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldEndWith
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.TestInstance.Lifecycle
+import org.junit.jupiter.api.assertDoesNotThrow
+
+@TestInstance(Lifecycle.PER_CLASS)
+@DisplayName("`FileDescriptor` extensions for should")
+internal class FileDescriptorExtsSpec {
+
+    private val fileDescriptor: FileDescriptor = Timestamp.getDescriptor().file
+
+    @Test
+    fun `provide outer class name for a file`() {
+        fileDescriptor.outerClassName shouldEndWith "TimestampProto"
+    }
+
+    @Test
+    fun `provide outer class`() {
+        fileDescriptor.outerClass shouldBe TimestampProto::class.java
+    }
+
+    @Test
+    fun `register extensions with a registry`() {
+        val registry = ExtensionRegistry.newInstance()
+        assertDoesNotThrow {
+            fileDescriptor.registerAllExtensions(registry)
+        }
+    }
+}

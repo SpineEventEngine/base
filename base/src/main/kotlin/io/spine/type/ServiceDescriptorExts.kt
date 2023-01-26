@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,4 +24,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.150")
+package io.spine.type
+
+import com.google.protobuf.Descriptors.ServiceDescriptor
+import io.spine.type.ApiOption.spi
+import kotlin.jvm.optionals.getOrNull
+
+/**
+ * Tells if the type represented by this [ServiceDescriptor] is marked as `spi_type`.
+ * If the option value is not set in the type, returns `null`.
+ */
+public fun ServiceDescriptor.isSpi(): Boolean? = optionValueOrNull(spi())
+
+private fun ServiceDescriptor.optionValueOrNull(opt: ApiOption): Boolean? =
+    opt.findIn(this).getOrNull()

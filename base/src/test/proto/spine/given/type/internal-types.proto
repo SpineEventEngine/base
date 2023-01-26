@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2015, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,5 +23,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+syntax = "proto3";
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.150")
+package spine.given.type;
+
+import "spine/options.proto";
+import "google/protobuf/wrappers.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package="io.spine.given.type";
+option java_multiple_files = true;
+
+// See https://protobuf.dev/reference/java/java-generated/#service
+option java_generic_services = true;
+
+// Marks all types in this file as `internal_type`.
+option (internal_all) = true;
+
+message ImplicitInternalType {
+    string value = 1;
+}
+
+service ImplicitInternalService {
+    rpc Get(google.protobuf.StringValue) returns (google.protobuf.StringValue);
+}
+
+enum ImplicitInternalEnum {
+    IIE_RESERVED = 0;
+    IIE_ONE = 1;
+    IIE_TWO = 2;
+}
+
+message ExplicitNonInternalType {
+    option (internal_type) = false;
+}

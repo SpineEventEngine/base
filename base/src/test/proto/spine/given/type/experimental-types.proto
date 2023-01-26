@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2015, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,5 +23,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+syntax = "proto3";
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.150")
+package spine.given.type;
+
+import "spine/options.proto";
+import "google/protobuf/wrappers.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package="io.spine.given.type";
+option java_multiple_files = true;
+
+// Marks all types in this file as `experimental_type`.
+option (experimental_all) = true;
+
+message ImplicitExperimentalType {
+    string value = 1;
+}
+
+service ImplicitExperimentalService {
+    rpc Get(google.protobuf.StringValue) returns (google.protobuf.StringValue);
+}
+
+enum ImplicitExperimentalEnum {
+    EIE_RESERVED = 0;
+    EIE_ONE = 1;
+    EIE_TWO = 2;
+}
+
+message ExplicitNonExperimentalType {
+    option (experimental_type) = false;
+}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,41 +24,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@file:JvmName("UtilExtensions")
-
 package io.spine.protobuf
 
-import com.google.protobuf.FieldMask
-import com.google.protobuf.Message
-import com.google.protobuf.util.FieldMaskUtil.fromFieldNumbers
-import com.google.protobuf.util.FieldMaskUtil.isValid
+import com.google.protobuf.Descriptors.Descriptor
+import com.google.protobuf.Descriptors.FieldDescriptor
 
 /**
- * Constructs a [FieldMask] from the passed field numbers.
- *
- * @throws IllegalArgumentException
- *          if any of the fields are invalid for the message.
+ * Obtains a descriptor of the field with the given [name] or `null` if there is no such field.
  */
-public inline fun <reified T : Message> fromFieldNumbers(vararg fieldNumbers: Int): FieldMask =
-    fromFieldNumbers<T>(fieldNumbers.toList())
+public fun Descriptor.field(name: String): FieldDescriptor? = findFieldByName(name)
 
 /**
- * Constructs a [FieldMask] from the passed field numbers.
- *
- * @throws IllegalArgumentException
- *          if any of the fields are invalid for the message.
+ * Obtains a descriptor of the field with the given [number] or `null` if there is no such field.
  */
-public inline fun <reified T : Message> fromFieldNumbers(fieldNumbers: Iterable<Int>): FieldMask =
-    fromFieldNumbers(T::class.java, fieldNumbers)
-
-/**
- * Checks whether paths in a given fields mask are valid.
- */
-public inline fun <reified T : Message> isValid(fieldMask: FieldMask): Boolean =
-    isValid(T::class.java, fieldMask)
-
-/**
- * Checks whether a given field path is valid.
- */
-public inline fun <reified T : Message> isValid(path: String): Boolean =
-    isValid(T::class.java, path)
+public fun Descriptor.field(number: Int): FieldDescriptor? = findFieldByNumber(number)

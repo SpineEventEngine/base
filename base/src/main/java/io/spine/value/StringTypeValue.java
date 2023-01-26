@@ -43,11 +43,6 @@ public abstract class StringTypeValue extends ValueHolder<String> {
         super(value);
     }
 
-    @Override
-    public String value() {
-        return super.value();
-    }
-
     /**
      * Returns {@code true} the length of the {@link #value() value} is zero,
      * {@code false} otherwise.

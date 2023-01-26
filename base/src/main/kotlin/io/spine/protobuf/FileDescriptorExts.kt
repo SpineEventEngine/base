@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@file:JvmName("DescriptorExtensions")
+@file:JvmName("FileDescriptors")
 
 package io.spine.protobuf
 

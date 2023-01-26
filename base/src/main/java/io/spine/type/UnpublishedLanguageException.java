@@ -29,7 +29,7 @@ package io.spine.type;
 import com.google.protobuf.Message;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.type.MessageExtensions.requireInternal;
+import static io.spine.type.PubPreconditions.requireInternal;
 import static java.lang.String.format;
 
 /**
@@ -47,8 +47,17 @@ public class UnpublishedLanguageException extends RuntimeException {
     private static final long serialVersionUID = 0L;
 
     /**
-     * Creates an exception referencing the proto type of the passed
-     * message instance annotated as {@link io.spine.annotation.Internal Internal}.
+     * Creates an exception referencing the given type name.
+     *
+     * @param type
+     *         the name of the type to be used in the message of the exception
+     */
+    public UnpublishedLanguageException(TypeName type) {
+        super(formatMsg(type));
+    }
+
+    /**
+     * Creates an exception with the name of the type of the given message.
      *
      * @param msg
      *         the message to report
@@ -57,16 +66,6 @@ public class UnpublishedLanguageException extends RuntimeException {
      */
     public UnpublishedLanguageException(Message msg) {
         this(TypeName.of(requireInternal(msg)));
-    }
-
-    /**
-     * Creates an exception referencing the given type name.
-     *
-     * @param type
-     *         the name of the type to be used in the message of the exception
-     */
-    public UnpublishedLanguageException(TypeName type) {
-        super(formatMsg(type));
     }
 
     private static String formatMsg(TypeName type) {

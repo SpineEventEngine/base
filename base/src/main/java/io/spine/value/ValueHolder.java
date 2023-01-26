@@ -47,8 +47,19 @@ public abstract class ValueHolder<T extends Serializable> implements Serializabl
         this.value = checkNotNull(value);
     }
 
-    /** Returns the stored value. */
-    protected T value() {
+    /**
+     * Returns the stored value.
+     *
+     * <p>Overriding methods may perform additional type conversion, if needed.
+     */
+    public T value() {
+        return getValue();
+    }
+
+    /**
+     * Obtains the value passed to the holder during construction.
+     */
+    public final T getValue() {
         return this.value;
     }
 

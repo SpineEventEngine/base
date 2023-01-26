@@ -33,9 +33,8 @@ import com.google.protobuf.Int64Value;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import io.spine.protobuf.AnyPacker;
+import io.spine.protobuf.Messages;
 import io.spine.protobuf.TypeConverter;
-
-import static io.spine.protobuf.Messages.defaultInstance;
 
 /**
  * Supported types of identifiers.
@@ -182,7 +181,7 @@ enum IdType {
         @Override
         <I> I defaultValue(Class<I> idClass) {
             var msgClass = (Class<? extends Message>) idClass;
-            var result = defaultInstance(msgClass);
+            var result = Messages.getDefaultInstance(msgClass);
             return (I) result;
         }
 

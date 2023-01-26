@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,4 +24,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.150")
+package io.spine.protobuf
+
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeSameInstanceAs
+import io.spine.base.Time
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+
+@DisplayName("`AnyPacker` should")
+class AnyPackerSpec {
+
+    @Test
+    fun `return the same 'Any' from 'pack()'`() {
+        val any = TypeConverter.toAny(javaClass.simpleName)
+
+        AnyPacker.pack(any) shouldBeSameInstanceAs any
+    }
+
+    @Test
+    fun `pack to 'Any'`() {
+        val timestamp = Time.currentTime()
+
+        AnyPacker.unpack(AnyPacker.pack(timestamp)) shouldBe timestamp
+    }
+}

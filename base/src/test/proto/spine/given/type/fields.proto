@@ -23,5 +23,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+syntax = "proto3";
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.150")
+package spine.given.type;
+
+import "spine/options.proto";
+import "google/protobuf/wrappers.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package="io.spine.given.type";
+option java_multiple_files = true;
+
+// A bunch of fields with different API level options and without options.
+message Filderation {
+    string beta_field = 1 [(beta) = true];
+    string non_beta = 2;
+    string explicit_non_beta = 3 [(beta) = false];
+
+    int32 experimental_field = 4 [(experimental) = true];
+    int32 non_experimental = 5;
+    int32 explicit_non_experimental = 6 [(experimental) = false];
+
+    bool internal_field = 7 [(internal) = true];
+    bool non_internal = 8;
+    bool explicit_non_internal = 9 [(internal) = false];
+}

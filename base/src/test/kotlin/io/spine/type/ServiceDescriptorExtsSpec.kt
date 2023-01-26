@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,4 +24,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.150")
+package io.spine.type
+
+import io.kotest.matchers.shouldBe
+import io.spine.given.type.ExplicitNonSpiService
+import io.spine.given.type.ExplicitSpiService
+import io.spine.given.type.ImplicitSpiService
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+
+@DisplayName("`ServiceDescriptor` extensions in `io.spine.type` should")
+internal class ServiceDescriptorExtsSpec {
+
+    @Nested
+    @DisplayName("tell if a service is")
+    inner class SpiAnnotations {
+
+        @Test
+        fun `explicitly annotated SPI`() {
+            ExplicitSpiService.getDescriptor().isSpi() shouldBe true
+            ExplicitNonSpiService.getDescriptor().isSpi() shouldBe false
+            ImplicitSpiService.getDescriptor().isSpi() shouldBe null
+        }
+    }
+}

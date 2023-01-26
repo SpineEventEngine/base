@@ -23,5 +23,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+syntax = "proto3";
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.150")
+package spine.given.type;
+
+import "spine/options.proto";
+import "google/protobuf/wrappers.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package="io.spine.given.type";
+option java_multiple_files = true;
+
+// Marks all types in this file as `beta_type`.
+option (beta_all) = true;
+
+message ImplicitBetaType {
+    string value = 1;
+}
+
+service ImplicitBetaService {
+    rpc Get(google.protobuf.StringValue) returns (google.protobuf.StringValue);
+}
+
+enum ImplicitBetaEnum {
+    BIE_RESERVED = 0;
+    BIE_ONE = 1;
+    BIE_TWO = 2;
+}
+
+message ExplicitNonBetaType {
+    option (beta_type) = false;
+}

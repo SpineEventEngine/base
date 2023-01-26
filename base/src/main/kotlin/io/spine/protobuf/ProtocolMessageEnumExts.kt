@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,4 +24,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.150")
+@file:JvmName("ProtocolMessageEnums")
+
+package io.spine.protobuf
+
+import com.google.protobuf.ProtocolMessageEnum
+
+/**
+ * Verifies if the passed Protobuf enum element is the enum's default state.
+ *
+ * @return `true` if the passed enum is default, `false` otherwise
+ */
+public fun ProtocolMessageEnum.isDefault(): Boolean = number == 0
+
+/**
+ * Verifies if the passed Protobuf enum element is NOT the enum's default state.
+ *
+ * @return `false` if the passed enum is default, `true` otherwise
+ */
+public fun ProtocolMessageEnum.isNotDefault(): Boolean = !isDefault()
+
+
