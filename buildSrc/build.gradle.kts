@@ -117,8 +117,6 @@ configurations.all {
             // Force Kotlin lib versions avoiding using those bundled with Gradle.
             "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion",
             "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlinVersion",
-            "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion",
-            "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion",
             "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
         )
     }

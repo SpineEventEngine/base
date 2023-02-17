@@ -41,6 +41,11 @@ object Kotlin {
 
     const val stdLib       = "${group}:kotlin-stdlib:${version}"
     const val stdLibCommon = "${group}:kotlin-stdlib-common:${version}"
+
+    @Deprecated("Please use `stdLib` instead.")
+    const val stdLibJdk7   = "${group}:kotlin-stdlib-jdk7:${version}"
+
+    @Deprecated("Please use `stdLib` instead.")
     const val stdLibJdk8   = "${group}:kotlin-stdlib-jdk8:${version}"
 
     const val reflect    = "${group}:kotlin-reflect:${version}"
