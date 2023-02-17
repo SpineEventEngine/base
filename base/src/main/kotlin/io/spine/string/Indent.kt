@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,33 +24,53 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.dependency
+package io.spine.string
 
-// https://github.com/JetBrains/kotlin
-// https://github.com/Kotlin
-@Suppress("unused")
-object Kotlin {
+/**
+ * An increment of an indentation to be used for formatting texts.
+ */
+public data class Indent(
 
     /**
-     * When changing the version, also change the version used in the `buildSrc/build.gradle.kts`.
+     * A positive number of space characters to be used for the indentation increment.
      */
-    @Suppress("MemberVisibilityCanBePrivate") // used directly from outside
-    const val version = "1.8.0"
+    public val size: Int = DEFAULT_SIZE
+) {
 
-    private const val group = "org.jetbrains.kotlin"
+    init {
+        require(size > 0) { "The `size` must be positive, but was $size."}
+    }
 
-    const val stdLib       = "${group}:kotlin-stdlib:${version}"
-    const val stdLibCommon = "${group}:kotlin-stdlib-common:${version}"
+    /**
+     * The value of the indentation increment.
+     */
+    public val value: String = " ".repeat(size)
 
-    @Deprecated("Please use `stdLib` instead.")
-    const val stdLibJdk7   = "${group}:kotlin-stdlib-jdk7:${version}"
+    /**
+     * Obtains the value of this indentation.
+     */
+    override fun toString(): String = value
 
-    @Deprecated("Please use `stdLib` instead.")
-    const val stdLibJdk8   = "${group}:kotlin-stdlib-jdk8:${version}"
+    public companion object {
 
-    const val reflect    = "${group}:kotlin-reflect:${version}"
-    const val testJUnit5 = "${group}:kotlin-test-junit5:$version"
-
-    const val gradlePluginApi = "${group}:kotlin-gradle-plugin-api:$version"
-    const val gradlePluginLib = "${group}:kotlin-gradle-plugin:${version}"
+        /**
+         * The default indentation, which is primarily used in the generated Java code.
+         */
+        public const val DEFAULT_SIZE: Int = 4
+    }
 }
+
+/**
+ * Repeats this indentation [n] times.
+ *
+ * @throws [IllegalArgumentException] when [n] < 0.
+ */
+public fun Indent.repeat(n: Int): String {
+    require(size >= 0) { "Count `n` must be non-negative, but was $size."}
+    return value.repeat(n)
+}
+
+/**
+ * Same as [repeat].
+ */
+public fun Indent.atLevel(l: Int): String = repeat(l)

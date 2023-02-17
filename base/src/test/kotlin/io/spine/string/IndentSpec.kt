@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,33 +24,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.dependency
+package io.spine.string
 
-// https://github.com/JetBrains/kotlin
-// https://github.com/Kotlin
-@Suppress("unused")
-object Kotlin {
+import io.kotest.matchers.shouldBe
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
-    /**
-     * When changing the version, also change the version used in the `buildSrc/build.gradle.kts`.
-     */
-    @Suppress("MemberVisibilityCanBePrivate") // used directly from outside
-    const val version = "1.8.0"
+@DisplayName("`Indent` should")
+internal class IndentSpec {
 
-    private const val group = "org.jetbrains.kotlin"
+    @Test
+    fun `have default size`() {
+        Indent().value.length shouldBe Indent.DEFAULT_SIZE
+    }
 
-    const val stdLib       = "${group}:kotlin-stdlib:${version}"
-    const val stdLibCommon = "${group}:kotlin-stdlib-common:${version}"
+    @Test
+    fun `return its value in 'toString'`() {
+        val indent = Indent(1)
+        indent.toString() shouldBe indent.value
+    }
 
-    @Deprecated("Please use `stdLib` instead.")
-    const val stdLibJdk7   = "${group}:kotlin-stdlib-jdk7:${version}"
-
-    @Deprecated("Please use `stdLib` instead.")
-    const val stdLibJdk8   = "${group}:kotlin-stdlib-jdk8:${version}"
-
-    const val reflect    = "${group}:kotlin-reflect:${version}"
-    const val testJUnit5 = "${group}:kotlin-test-junit5:$version"
-
-    const val gradlePluginApi = "${group}:kotlin-gradle-plugin-api:$version"
-    const val gradlePluginLib = "${group}:kotlin-gradle-plugin:${version}"
+    @Test
+    fun `obtain indentation at given level`() {
+        Indent(2).atLevel(2) shouldBe " ".repeat(4)
+    }
 }

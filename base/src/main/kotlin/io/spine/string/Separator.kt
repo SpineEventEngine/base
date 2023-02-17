@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,33 +24,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.dependency
+package io.spine.string
 
-// https://github.com/JetBrains/kotlin
-// https://github.com/Kotlin
-@Suppress("unused")
-object Kotlin {
+/**
+ * Constants for line separators.
+ */
+public object Separator {
 
     /**
-     * When changing the version, also change the version used in the `buildSrc/build.gradle.kts`.
+     * The line separator used by Unix-like systems (including Linux and macOS).
+     *
+     * This line separator is used by Kotlin string utilities in
+     * [String.trimIndent] and [String.replaceIndent].
      */
-    @Suppress("MemberVisibilityCanBePrivate") // used directly from outside
-    const val version = "1.8.0"
+    public const val LF: String = "\n"
 
-    private const val group = "org.jetbrains.kotlin"
+    /**
+     * The line separator used by the Classic Mac OS.
+     */
+    public const val CR: String = "\r"
 
-    const val stdLib       = "${group}:kotlin-stdlib:${version}"
-    const val stdLibCommon = "${group}:kotlin-stdlib-common:${version}"
+    /**
+     * Windows line separator.
+     */
+    public const val CRLF: String = "\r\n"
 
-    @Deprecated("Please use `stdLib` instead.")
-    const val stdLibJdk7   = "${group}:kotlin-stdlib-jdk7:${version}"
-
-    @Deprecated("Please use `stdLib` instead.")
-    const val stdLibJdk8   = "${group}:kotlin-stdlib-jdk8:${version}"
-
-    const val reflect    = "${group}:kotlin-reflect:${version}"
-    const val testJUnit5 = "${group}:kotlin-test-junit5:$version"
-
-    const val gradlePluginApi = "${group}:kotlin-gradle-plugin-api:$version"
-    const val gradlePluginLib = "${group}:kotlin-gradle-plugin:${version}"
+    /**
+     * The line separator used by the current operating system.
+     *
+     * Same as [System.lineSeparator].
+     */
+    public val NL: String = System.lineSeparator()
 }
