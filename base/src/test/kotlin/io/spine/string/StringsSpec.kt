@@ -26,7 +26,9 @@
 
 package io.spine.string
 
-import com.google.common.truth.Truth.assertThat
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldStartWith
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -38,15 +40,13 @@ class StringsSpec {
     @ParameterizedTest
     @CsvSource("aaa,Aaa", "field_name,Field_name", "TypeName,TypeName", "_uri,_uri")
     fun `produce a title case string`(initial: String, expected: String) {
-        assertThat(initial.titleCase())
-            .isEqualTo(expected)
+        initial.titleCase() shouldBe expected
     }
 
     @ParameterizedTest
     @CsvSource("aaa,Aaa", "field_name,FieldName", "TypeName,TypeName", "___u_ri____,URi")
     fun `produce a camel case string`(initial: String, expected: String) {
-        assertThat(initial.camelCase())
-            .isEqualTo(expected)
+        initial.camelCase() shouldBe expected
     }
 
     @Test
@@ -55,13 +55,36 @@ class StringsSpec {
             line one   
              line two 
         """
-        assertThat(value.trimIndent().lines()[0].last())
-            .isEqualTo(' ')
+        // Check that we have space char at the end after `trimIndent()`.
+        value.trimIndent().lines()[0].last() shouldBe ' '
+
         val trimmed = value.trimWhitespace()
-        assertThat(trimmed.lines()[0].last())
-            .isEqualTo('e')
-        assertThat(trimmed).isEqualTo(
-            "line one" + System.lineSeparator() + " line two"
-        )
+
+        trimmed.lines()[0].last() shouldBe 'e' // as in "one".
+
+        trimmed shouldBe "line one" + System.lineSeparator() + " line two"
+    }
+
+    @Test
+    fun `trim indent preserving system line separators`() {
+        val value = """
+            line 1
+            line 2
+        """.ti()
+
+        value shouldContain Separator.NL
+    }
+
+    @Test
+    fun `prepend indentation preserving system line separator`() {
+        val lines = """
+          a
+           b
+            c
+        """.trimIndent() // This splits lines with "\n"
+           .pi()         // This applies `Separator.NL` prepending with default indentation.
+
+        lines shouldStartWith "    a"
+        lines shouldContain Separator.NL
     }
 }

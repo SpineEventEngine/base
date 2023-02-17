@@ -28,6 +28,8 @@
 
 package io.spine.string
 
+import io.spine.string.Indent.Companion.DEFAULT_SIZE
+
 /**
  * Obtains the same string but with the first capital letter.
  *
@@ -38,7 +40,7 @@ public fun String.titleCase(): String =
     replaceFirstChar { it.titlecase() }
 
 /**
- * Obtains the same string but in camel case instead of snake case.
+ * Obtains the same string but in `CamelCase` instead of `snake_case`.
  *
  * The string will start with the first capital letter if possible.
  *
@@ -52,7 +54,7 @@ public fun String.camelCase(): String =
     split("_").camelCase()
 
 /**
- * Joins these strings into a camel case string.
+ * Joins these strings into a `CamelCase` string.
  *
  * The string will start with the first capital letter if possible.
  *
@@ -65,7 +67,9 @@ public fun Iterable<String>.camelCase(): String =
 /**
  * Trims the common indent from all the lines, as well as the trailing whitespace.
  *
- * Same as [String.trimIndent] but also removes the trailing whitespace characters.
+ * This method is similar to [String.trimIndent], but unlike it:
+ *    1) preserves system line separators;
+ *    2) also removes the trailing whitespace characters.
  */
 public fun String.trimWhitespace(): String {
     val noIndent = trimIndent()
@@ -73,5 +77,22 @@ public fun String.trimWhitespace(): String {
     val trimmedLines = lines.map {
         it.trimEnd()
     }
-    return trimmedLines.joinToString(System.lineSeparator())
+    return trimmedLines.joinToString(Separator.NL)
 }
+
+/**
+ * Replaces [Separator.LF] used by Kotlin string utilities for splitting by lines,
+ * with [Separator.NL] so that we don't have issues when writing generated texts under Windows.
+ */
+private fun String.fixLineEndings(): String = replace(Separator.LF, Separator.NL)
+
+/**
+ * Trims indentation similarly to [String.trimIndent] but preserving system line separators.
+ */
+public fun String.ti(): String = trimIndent().fixLineEndings()
+
+/**
+ *  Prepends indentation similarly to [String.prependIndent] but preserving system line separators.
+ */
+public fun String.pi(indent: String = Indent(DEFAULT_SIZE).value): String =
+    prependIndent(indent).fixLineEndings()
