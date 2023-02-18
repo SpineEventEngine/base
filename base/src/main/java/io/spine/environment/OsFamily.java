@@ -31,6 +31,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.Arrays;
 import java.util.Locale;
 
+import static com.google.common.base.Preconditions.checkState;
+import static java.util.Objects.requireNonNull;
+
 /**
  * Detects current operating system properties.
  *
@@ -53,7 +56,7 @@ public enum OsFamily {
             if (macOS.isCurrent()) {
                 return false;
             }
-            var separatorMatches = ":".equals(PATH_SEP);
+            var separatorMatches = PATH_SEP.equals(":");
             var darwinOrX = OS_NAME.endsWith("x") || OS_NAME.contains(DARWIN);
             var notVms = !OS_NAME.contains("openvms");
             return separatorMatches && notVms && darwinOrX;
@@ -118,8 +121,11 @@ public enum OsFamily {
      *
      * <p>Added for brevity of the code.
      */
+    @NonNull
     @SuppressWarnings("AccessOfSystemProperties") // to get current OS props.
     private static String prop(String name) {
-        return System.getProperty(name);
+        var property = System.getProperty(name);
+        checkState(property != null, "Unable to obtain the system property `%s`", name);
+        return requireNonNull(property);
     }
 }
