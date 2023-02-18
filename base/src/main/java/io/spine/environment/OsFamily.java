@@ -56,7 +56,7 @@ public enum OsFamily {
             if (macOS.isCurrent()) {
                 return false;
             }
-            var separatorMatches = PATH_SEP.equals(":");
+            var separatorMatches = ":".equals(PATH_SEP);
             var darwinOrX = OS_NAME.endsWith("x") || OS_NAME.contains(DARWIN);
             var notVms = !OS_NAME.contains("openvms");
             return separatorMatches && notVms && darwinOrX;
