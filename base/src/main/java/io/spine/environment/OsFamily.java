@@ -60,6 +60,17 @@ public enum OsFamily {
         }
     };
 
+    private static final String OS_NAME = prop("os.name").toLowerCase(Locale.ENGLISH);
+    private static final String PATH_SEP = prop("path.separator");
+
+    /**
+     * OpenJDK is reported to call macOS "Darwin".
+     *
+     * @see <a href="https://issues.apache.org/bugzilla/show_bug.cgi?id=44889">Bug 1</a>
+     * @see <a href="https://issues.apache.org/jira/browse/HADOOP-3318">Bug 2</a>
+     */
+    private static final String DARWIN = "darwin";
+
     /**
      * Obtains the family of the current operating system.
      */
@@ -73,17 +84,6 @@ public enum OsFamily {
                 );
         return current;
     }
-
-    private static final String OS_NAME = prop("os.name").toLowerCase(Locale.ENGLISH);
-    private static final String PATH_SEP = prop("path.separator");
-
-    /**
-     * OpenJDK is reported to call macOS "Darwin".
-     *
-     * @see <a href="https://issues.apache.org/bugzilla/show_bug.cgi?id=44889">Bug 1</a>
-     * @see <a href="https://issues.apache.org/jira/browse/HADOOP-3318">Bug 2</a>
-     */
-    private static final String DARWIN = "darwin";
 
     /**
      * Obtains the value of the system property with the given name.
