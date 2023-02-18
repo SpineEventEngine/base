@@ -72,10 +72,15 @@ public enum OsFamily {
     private static final String DARWIN = "darwin";
 
     /**
+     * A lower-cased name of the OS family.
+     */
+    private final String signature;
+
+    /**
      * Obtains the family of the current operating system.
      */
     @NonNull
-    public static OsFamily current() {
+    public static OsFamily detect() {
         var current = Arrays.stream(values())
                 .filter(OsFamily::isCurrent)
                 .findFirst()
@@ -84,21 +89,6 @@ public enum OsFamily {
                 );
         return current;
     }
-
-    /**
-     * Obtains the value of the system property with the given name.
-     *
-     * <p>Added for brevity of the code.
-     */
-    @SuppressWarnings("AccessOfSystemProperties") // to get current OS props.
-    private static String prop(String name) {
-        return System.getProperty(name);
-    }
-
-    /**
-     * A lower-cased name of the OS family.
-     */
-    private final String signature;
 
     /**
      * Creates an instance with the signature taken as a lower-cased enum item name.
@@ -121,5 +111,15 @@ public enum OsFamily {
     public boolean isCurrent() {
         var result = OS_NAME.contains(signature);
         return result;
+    }
+
+    /**
+     * Obtains the value of the system property with the given name.
+     *
+     * <p>Added for brevity of the code.
+     */
+    @SuppressWarnings("AccessOfSystemProperties") // to get current OS props.
+    private static String prop(String name) {
+        return System.getProperty(name);
     }
 }

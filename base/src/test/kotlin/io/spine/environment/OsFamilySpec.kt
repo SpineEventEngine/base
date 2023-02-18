@@ -40,13 +40,13 @@ internal class OsFamilySpec {
     @Test
     fun `detect current OS`() {
         assertDoesNotThrow {
-            OsFamily.current()
+            OsFamily.detect()
         }
     }
 
     @Test
     fun `tell if it is not current`() {
-        when (OsFamily.current()) {
+        when (OsFamily.detect()) {
             Windows -> macOS.isCurrent shouldBe false
             macOS -> Unix.isCurrent shouldBe false
             Unix -> macOS.isCurrent shouldBe false
