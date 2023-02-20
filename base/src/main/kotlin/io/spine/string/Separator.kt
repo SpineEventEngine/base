@@ -57,7 +57,14 @@ public enum class Separator(public val value: String) {
     public companion object {
 
         /**
-         * The shortcut for [System.lineSeparator].
+         * Obtains the system line separator.
+         */
+        @JvmStatic
+        public val system: Separator = findMatching(nl())!!
+
+        /**
+         * The shortcut for [System.lineSeparator]. Provided for brevity of the code
+         * working with line separators.
          */
         @JvmStatic
         public fun nl(): String = System.lineSeparator()
@@ -65,39 +72,15 @@ public enum class Separator(public val value: String) {
         /**
          * Obtains line separators that are not used by the current operating system.
          */
+        @JvmStatic
         public fun nonSystem(): Iterable<Separator> =
             values().filter { !it.isSystem() }
 
         /**
          * Finds a separator which value is equal to the given string.
          */
+        @JvmStatic
         internal fun findMatching(str: String): Separator? =
             values().find { str == it.value }
     }
-}
-
-/**
- * Tells if this char sequence contains the given separator.
- */
-public fun CharSequence.contains(s: Separator): Boolean =
-    contains(s.value)
-
-/**
- * Obtains all line separators found it this char sequence.
- */
-public fun CharSequence.findLineSeparators(): List<Separator> {
-    val allSeparators = Regex("\\R")
-    val separators = allSeparators.findAll(this)
-    val matchingSeparators = separators.mapNotNull {
-        Separator.findMatching(it.value)
-    }
-    return matchingSeparators.toList()
-}
-
-/**
- * Tells if this char sequence contain at least one non-system line separator.
- */
-public fun CharSequence.containsNonSystemLineSeparator(): Boolean {
-    val found = findLineSeparators().any { !it.isSystem() }
-    return found
 }
