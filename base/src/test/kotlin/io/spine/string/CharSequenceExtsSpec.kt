@@ -28,7 +28,6 @@ package io.spine.string
 
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.shouldBe
-import io.spine.string.Separator.Companion.nl
 import java.util.stream.Stream
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
