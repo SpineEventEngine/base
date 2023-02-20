@@ -29,7 +29,7 @@ package io.spine.string
 /**
  * Constants for line separators.
  */
-public object Separator {
+public enum class Separator(public val value: String) {
 
     /**
      * The line separator used by Unix-like systems (including Linux and macOS).
@@ -37,22 +37,67 @@ public object Separator {
      * This line separator is used by Kotlin string utilities in
      * [String.trimIndent] and [String.replaceIndent].
      */
-    public const val LF: String = "\n"
+    LF("\n"),
 
     /**
      * The line separator used by the Classic Mac OS.
      */
-    public const val CR: String = "\r"
+    CR("\r"),
 
     /**
      * Windows line separator.
      */
-    public const val CRLF: String = "\r\n"
+    CRLF("\r\n");
 
     /**
-     * The line separator used by the current operating system.
-     *
-     * Same as [System.lineSeparator].
+     * Tells if this separator is used by the current operating system.
      */
-    public val NL: String = System.lineSeparator()
+    public fun isSystem(): Boolean = value == nl()
+
+    public companion object {
+
+        /**
+         * The shortcut for [System.lineSeparator].
+         */
+        @JvmStatic
+        public fun nl(): String = System.lineSeparator()
+
+        /**
+         * Obtains line separators that are not used by the current operating system.
+         */
+        public fun nonSystem(): Iterable<Separator> =
+            values().filter { !it.isSystem() }
+
+        /**
+         * Finds a separator which value is equal to the given string.
+         */
+        internal fun findMatching(str: String): Separator? =
+            values().find { str == it.value }
+    }
+}
+
+/**
+ * Tells if this char sequence contains the given separator.
+ */
+public fun CharSequence.contains(s: Separator): Boolean =
+    contains(s.value)
+
+/**
+ * Obtains all line separators found it this char sequence.
+ */
+public fun CharSequence.findLineSeparators(): List<Separator> {
+    val allSeparators = Regex("\\R")
+    val separators = allSeparators.findAll(this)
+    val matchingSeparators = separators.mapNotNull {
+        Separator.findMatching(it.value)
+    }
+    return matchingSeparators.toList()
+}
+
+/**
+ * Tells if this char sequence contain at least one non-system line separator.
+ */
+public fun CharSequence.containsNonSystemLineSeparator(): Boolean {
+    val found = findLineSeparators().any { !it.isSystem() }
+    return found
 }

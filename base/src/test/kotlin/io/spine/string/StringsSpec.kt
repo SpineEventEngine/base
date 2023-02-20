@@ -72,7 +72,7 @@ class StringsSpec {
             line 2
         """.ti()
 
-        value shouldContain Separator.NL
+        value shouldContain Separator.nl()
     }
 
     @Test
@@ -85,6 +85,6 @@ class StringsSpec {
            .pi()         // This applies `Separator.NL` prepending with default indentation.
 
         lines shouldStartWith "    a"
-        lines shouldContain Separator.NL
+        lines shouldContain Separator.nl()
     }
 }
