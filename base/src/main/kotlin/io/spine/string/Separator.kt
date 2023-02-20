@@ -29,7 +29,19 @@ package io.spine.string
 /**
  * Constants for line separators.
  */
-public enum class Separator(public val value: String) {
+public enum class Separator(
+
+    /**
+     * The value used in the text to separate lines.
+     */
+    public val value: String,
+
+    /**
+     * The representation of [value] to be used for debugging multi-line strings terminated.
+     * by [system line separator][nl].
+     */
+     debugOutput: String
+) {
 
     /**
      * The line separator used by Unix-like systems (including Linux and macOS).
@@ -37,17 +49,24 @@ public enum class Separator(public val value: String) {
      * This line separator is used by Kotlin string utilities in
      * [String.trimIndent] and [String.replaceIndent].
      */
-    LF("\n"),
+    LF("\n", "\\n"),
 
     /**
      * The line separator used by the Classic Mac OS.
      */
-    CR("\r"),
+    CR("\r", "\\r"),
 
     /**
      * Windows line separator.
      */
-    CRLF("\r\n");
+    CRLF("\r\n", "\\r\\n");
+
+    internal val debugVersion: String
+
+    init {
+        require(debugOutput.isNotBlank())
+        debugVersion = debugOutput + System.lineSeparator()
+    }
 
     /**
      * Tells if this separator is used by the current operating system.

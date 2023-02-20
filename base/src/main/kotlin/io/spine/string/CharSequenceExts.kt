@@ -60,3 +60,34 @@ public fun CharSequence.containsNonSystemLineSeparator(): Boolean {
     val found = findLineSeparators().values.any { !it.isSystem() }
     return found
 }
+
+/**
+ * Finds all the line separators in this sequence and replaces them with escaped replacements
+ * like "\r" or "\n" followed by the system line separator so that the separators are
+ * become visible in logging or other diagnostic output.
+ */
+public fun CharSequence.revealLineSeparators(): String {
+    val separators = findLineSeparators()
+    val s = toString()
+    if (separators.isEmpty()) {
+        return s
+    }
+    return buildString {
+        var prevEntry: Map.Entry<IntRange, Separator>? = null
+        separators.forEach { entry ->
+            val range = entry.key
+            val separator = entry.value
+            if (prevEntry == null) {
+                append(s.substring(0, range.first))
+            } else {
+                append(s.substring(prevEntry!!.key.last + 1, range.first))
+            }
+            append(separator.debugVersion)
+            prevEntry = entry
+        }
+        val lastSeparatorEnd = prevEntry!!.key.last + 1
+        if (lastSeparatorEnd < s.length) {
+            append(s.substring(lastSeparatorEnd))
+        }
+    }
+}

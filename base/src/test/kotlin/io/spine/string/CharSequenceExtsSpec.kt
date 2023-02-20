@@ -28,6 +28,7 @@ package io.spine.string
 
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.shouldBe
+import io.spine.string.Separator.Companion.nl
 import java.util.stream.Stream
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -62,13 +63,18 @@ class CharSequenceExtsSpec {
     }
 
     @Test
-    fun `tell if a sequence contains a  'Separator'`() {
+    fun `tell if a sequence contains a 'Separator'`() {
         Separator.values().forEach {
             " ${it.value} ".contains(it) shouldBe true
             // `Separator` does not override `toString()` to return its `value`, so...
             " $it ".contains(it) shouldBe false
         }
+    }
 
+    @ParameterizedTest
+    @MethodSource("revealingSeparators")
+    fun `reveal line separators in char sequence`(input: CharSequence, expected: String) {
+        input.revealLineSeparators() shouldBe expected
     }
 
     companion object {
@@ -91,6 +97,25 @@ class CharSequenceExtsSpec {
             }
             builder.add(arguments(" ${Separator.system.value} ", false))
             return builder.build()
+        }
+
+        @JvmStatic
+        fun revealingSeparators(): Stream<Arguments> {
+            val nl = Separator.nl()
+            return Stream.of(
+                arguments("\r", "\\r$nl"),
+                arguments(" \r ", " \\r$nl "),
+
+                arguments("\r\r", "\\r$nl\\r$nl"),
+
+                arguments("\r\n", "\\r\\n$nl"),
+                arguments("\r\n ", "\\r\\n$nl "),
+
+                arguments("\r \n", "\\r$nl \\n$nl"),
+                arguments("\r \n ", "\\r$nl \\n$nl "),
+
+                arguments("1\r 2\n 3\r\n", "1\\r$nl 2\\n$nl 3\\r\\n$nl")
+            )
         }
     }
 }
