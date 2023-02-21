@@ -28,6 +28,7 @@ package io.spine.string
 
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeSameInstanceAs
 import java.util.stream.Stream
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -80,6 +81,13 @@ class CharSequenceExtsSpec {
     @MethodSource("revealingSeparators")
     fun `reveal line separators in a char sequence`(input: CharSequence, expected: String) {
         input.revealLineSeparators() shouldBe expected
+    }
+
+    @Test
+    fun `return same instance if there are no separators`() {
+        val noSeparators = "no separators"
+        noSeparators.escapeLineSeparators() shouldBeSameInstanceAs noSeparators
+        noSeparators.revealLineSeparators() shouldBeSameInstanceAs noSeparators
     }
 
     companion object {
