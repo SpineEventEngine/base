@@ -50,7 +50,7 @@ public fun CharSequence.findLineSeparators(): Map<IntRange, Separator> {
 }
 
 /**
- * Tells if this char sequence contains at least line separator.
+ * Tells if this char sequence contains at least one line separator.
  */
 public fun CharSequence.containsLineSeparators(): Boolean =
     !findLineSeparators().values.isEmpty()
