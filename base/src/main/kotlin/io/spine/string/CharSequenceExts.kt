@@ -76,9 +76,9 @@ public fun CharSequence.escapeLineSeparators(): String {
 }
 
 /**
- * Finds all the line separators in this sequence and replaces them with escaped replacements
- * like "\r" or "\n" followed by the system line separator, so that the separators are
- * become visible in logging or other diagnostic output.
+ * Finds all the line separators in this sequence and replaces them with escaped
+ * replacements\ like "\r" or "\n" followed by the system line separator, so that
+ * the separators become visible in logging or other diagnostic output.
  *
  * @see CharSequence.escapeLineSeparators
  */
