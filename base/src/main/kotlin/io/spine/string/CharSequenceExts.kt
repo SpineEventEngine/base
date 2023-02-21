@@ -63,10 +63,37 @@ public fun CharSequence.containsNonSystemLineSeparator(): Boolean {
 
 /**
  * Finds all the line separators in this sequence and replaces them with escaped replacements
- * like "\r" or "\n" followed by the system line separator so that the separators are
+ * like "\r" or "\n", so that the separators are become visible in logging or other
+ * diagnostic output.
+ *
+ * @see CharSequence.revealLineSeparators
+ */
+public fun CharSequence.escapeLineSeparators(): String {
+    val replacementFn: (s: Separator) -> String = Separator::escaped
+    return doReplace(replacementFn)
+}
+
+/**
+ * Finds all the line separators in this sequence and replaces them with escaped replacements
+ * like "\r" or "\n" followed by the system line separator, so that the separators are
  * become visible in logging or other diagnostic output.
+ *
+ * @see CharSequence.escapeLineSeparators
  */
 public fun CharSequence.revealLineSeparators(): String {
+    val replacementFn: (s: Separator) -> String = { it.escaped + Separator.nl() }
+    return doReplace(replacementFn)
+}
+
+/**
+ * Replaces line separators in this sequence taking the replacement test as the result
+ * of the given function on a [Separator].
+ *
+ * If there are no separators in this sequence, returns [this]. Otherwise, the sequence is
+ * copied in the chunks from separator to separator, replacing the separators with the values
+ * obtained from [replacementFn].
+ */
+private fun CharSequence.doReplace(replacementFn: (s: Separator) -> String): String {
     val separators = findLineSeparators()
     val s = toString()
     if (separators.isEmpty()) {
@@ -82,7 +109,8 @@ public fun CharSequence.revealLineSeparators(): String {
             } else {
                 append(s.substring(prevEntry!!.key.last + 1, range.first))
             }
-            append(separator.debugVersion)
+            val replacement = replacementFn.invoke(separator)
+            append(replacement)
             prevEntry = entry
         }
         val lastSeparatorEnd = prevEntry!!.key.last + 1

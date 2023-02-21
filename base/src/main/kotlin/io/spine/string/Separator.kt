@@ -40,7 +40,7 @@ public enum class Separator(
      * The representation of [value] to be used for debugging multi-line strings terminated.
      * by [system line separator][nl].
      */
-     debugOutput: String
+     public val escaped: String
 ) {
 
     /**
@@ -61,11 +61,8 @@ public enum class Separator(
      */
     CRLF("\r\n", "\\r\\n");
 
-    internal val debugVersion: String
-
     init {
-        require(debugOutput.isNotBlank())
-        debugVersion = debugOutput + System.lineSeparator()
+        require(escaped.isNotBlank())
     }
 
     /**

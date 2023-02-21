@@ -71,8 +71,14 @@ class CharSequenceExtsSpec {
     }
 
     @ParameterizedTest
+    @MethodSource("escapingSeparators")
+    fun `escape line separators in a char sequence`(input: CharSequence, expected: String) {
+        input.escapeLineSeparators() shouldBe expected
+    }
+
+    @ParameterizedTest
     @MethodSource("revealingSeparators")
-    fun `reveal line separators in char sequence`(input: CharSequence, expected: String) {
+    fun `reveal line separators in a char sequence`(input: CharSequence, expected: String) {
         input.revealLineSeparators() shouldBe expected
     }
 
@@ -96,6 +102,24 @@ class CharSequenceExtsSpec {
             }
             builder.add(arguments(" ${Separator.system.value} ", false))
             return builder.build()
+        }
+
+        @JvmStatic
+        fun escapingSeparators(): Stream<Arguments> {
+            return Stream.of(
+                arguments("\r", "\\r"),
+                arguments(" \r ", " \\r "),
+
+                arguments("\r\r", "\\r\\r"),
+
+                arguments("\r\n", "\\r\\n"),
+                arguments("\r\n ", "\\r\\n "),
+
+                arguments("\r \n", "\\r \\n"),
+                arguments("\r \n ", "\\r \\n "),
+
+                arguments("1\r 2\n 3\r\n", "1\\r 2\\n 3\\r\\n")
+            )
         }
 
         @JvmStatic
