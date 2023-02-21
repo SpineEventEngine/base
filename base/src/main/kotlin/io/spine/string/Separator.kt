@@ -29,7 +29,19 @@ package io.spine.string
 /**
  * Constants for line separators.
  */
-public object Separator {
+public enum class Separator(
+
+    /**
+     * The value used in the text to separate lines.
+     */
+    public val value: String,
+
+    /**
+     * The representation of [value] to be used for debugging multi-line strings terminated.
+     * by [system line separator][nl].
+     */
+     public val escaped: String
+) {
 
     /**
      * The line separator used by Unix-like systems (including Linux and macOS).
@@ -37,22 +49,54 @@ public object Separator {
      * This line separator is used by Kotlin string utilities in
      * [String.trimIndent] and [String.replaceIndent].
      */
-    public const val LF: String = "\n"
+    LF("\n", "\\n"),
 
     /**
      * The line separator used by the Classic Mac OS.
      */
-    public const val CR: String = "\r"
+    CR("\r", "\\r"),
 
     /**
      * Windows line separator.
      */
-    public const val CRLF: String = "\r\n"
+    CRLF("\r\n", "\\r\\n");
+
+    init {
+        require(escaped.isNotBlank())
+    }
 
     /**
-     * The line separator used by the current operating system.
-     *
-     * Same as [System.lineSeparator].
+     * Tells if this separator is used by the current operating system.
      */
-    public val NL: String = System.lineSeparator()
+    public fun isSystem(): Boolean = value == nl()
+
+    public companion object {
+
+        /**
+         * Obtains the system line separator.
+         */
+        @JvmStatic
+        public val system: Separator = findMatching(nl())!!
+
+        /**
+         * The shortcut for [System.lineSeparator]. Provided for brevity of the code
+         * working with line separators.
+         */
+        @JvmStatic
+        public fun nl(): String = System.lineSeparator()
+
+        /**
+         * Obtains line separators that are not used by the current operating system.
+         */
+        @JvmStatic
+        public fun nonSystem(): Iterable<Separator> =
+            values().filter { !it.isSystem() }
+
+        /**
+         * Finds a separator which value is equal to the given string.
+         */
+        @JvmStatic
+        internal fun findMatching(str: String): Separator? =
+            values().find { str == it.value }
+    }
 }

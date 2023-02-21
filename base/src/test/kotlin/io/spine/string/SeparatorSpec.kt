@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,4 +24,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.153")
+package io.spine.string
+
+import io.kotest.matchers.collections.shouldNotContain
+import io.kotest.matchers.shouldBe
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+
+@DisplayName("`Separator` should")
+internal class SeparatorSpec {
+
+    @Test
+    fun `provide shortcut for system line separator`() {
+        Separator.nl() shouldBe System.lineSeparator()
+    }
+
+    @Test
+    fun `provide instance of 'Separator' which is system`() {
+        Separator.system.value shouldBe System.lineSeparator()
+    }
+
+    @Test
+    fun `obtain non-system line separators`() {
+        Separator.nonSystem() shouldNotContain Separator.system
+    }
+}

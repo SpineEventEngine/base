@@ -77,14 +77,14 @@ public fun String.trimWhitespace(): String {
     val trimmedLines = lines.map {
         it.trimEnd()
     }
-    return trimmedLines.joinToString(Separator.NL)
+    return trimmedLines.joinToString(Separator.nl())
 }
 
 /**
  * Replaces [Separator.LF] used by Kotlin string utilities for splitting by lines,
- * with [Separator.NL] so that we don't have issues when writing generated texts under Windows.
+ * with [Separator.nl] so that we don't have issues when writing generated texts under Windows.
  */
-private fun String.fixLineEndings(): String = replace(Separator.LF, Separator.NL)
+private fun String.fixLineEndings(): String = replace(Separator.LF.value, Separator.nl())
 
 /**
  * Trims indentation similarly to [String.trimIndent] but preserving system line separators.
