@@ -206,7 +206,7 @@ public final class ApiOption {
      * 
      * <p>If the option does not exist, returns {@code Optional.empty()}.
      */
-    private static <T extends ExtendableMessage<?>> 
+    private static <T extends ExtendableMessage<T>>
     Optional<Boolean> find(ExtendableMessage<T> options, GeneratedExtension<T, Boolean> option) {
         if (!options.hasExtension(option)) {
             return Optional.empty();
