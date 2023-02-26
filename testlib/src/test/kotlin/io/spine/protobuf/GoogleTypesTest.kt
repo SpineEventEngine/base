@@ -36,7 +36,26 @@ import org.junit.jupiter.api.Test
 internal class GoogleTypesTest {
 
     private val protoFiles = listOf(
-        "google/protobuf/compiler/plugin.proto",
+        /*
+
+         Starting from v3.22.0 Google Protobuf for Java (`protobuf-java-3.22.0.jar`) no longer
+         contains the `plugin.proto`. The file is still present in the Protobuf source code tree
+         under `protobuf/src/google/protobuf/compiler/` directory, but it does not seem to
+         present in artifacts produced for Java.
+
+         The references to `plugin.proto` are present in build files for C++. So, it could be an
+         omission in the v3.22 build, or Protobuf authors may see that this rarely used proto file
+         can be included in the source code tree for code generators written in other languages.
+         We still want the latest version of the Protobuf library and the `protoc` compiler.
+         So, using `plugin.proto` as a source file copy under `tool-base` is a backup option for us.
+
+         Please uncomment the below line if the file appears back in the Protobuf distribution
+         archive for Java.
+
+         "google/protobuf/compiler/plugin.proto",
+
+        */
+
         "google/protobuf/any.proto",
         "google/protobuf/api.proto",
         "google/protobuf/descriptor.proto",
