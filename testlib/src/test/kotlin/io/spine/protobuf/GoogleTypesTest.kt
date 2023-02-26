@@ -28,6 +28,7 @@ package io.spine.protobuf
 
 import com.google.common.truth.Truth.assertThat
 import com.google.protobuf.EnumValue
+import io.kotest.matchers.shouldBe
 import io.spine.type.KnownTypes
 import io.spine.type.TypeName
 import org.junit.jupiter.api.Test
@@ -64,15 +65,17 @@ internal class GoogleTypesTest {
     fun `make sure 'EnumValue' is known to production code`() {
         val type = TypeName.of("google.protobuf.EnumValue")
         val cls = type.toJavaClass()
-        assertThat(cls).isEqualTo(EnumValue::class.java)
+
+        cls shouldBe EnumValue::class.java
     }
 
     @Test
     fun `all files from the Protobuf library are included`() {
         val protobufFiles = KnownTypes.instance().files()
             .filter { f -> f.name.startsWith("google/protobuf/") }
-            .map { d -> d.name }
+            .map { it.name }
 
+        // Use Truth assertion because it prints missing items if the assertion fails.
         assertThat(protobufFiles).containsAtLeastElementsIn(protoFiles)
     }
 }
