@@ -32,7 +32,7 @@ package io.spine.internal.dependency
  * @see <a href="https://kotest.io/">Kotest site</a>
  */
 object Kotest {
-    const val version = "5.5.4"
+    const val version = "5.5.5"
     const val group = "io.kotest"
     const val assertions = "$group:kotest-assertions-core:$version"
 }
