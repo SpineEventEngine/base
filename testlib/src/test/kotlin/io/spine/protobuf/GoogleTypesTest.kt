@@ -40,7 +40,7 @@ internal class GoogleTypesTest {
 
          Starting from v3.22.0 Google Protobuf for Java (`protobuf-java-3.22.0.jar`) no longer
          contains the `plugin.proto`. The file is still present in the Protobuf source code tree
-         under `protobuf/src/google/protobuf/compiler/` directory, but it does not seem to
+         under `protobuf/src/google/protobuf/compiler/` directory, but it does not seem to be
          present in artifacts produced for Java.
 
          The references to `plugin.proto` are present in build files for C++. So, it could be an
