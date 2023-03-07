@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,99 +23,64 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.type
 
-package io.spine.json;
+import com.google.protobuf.Message
+import com.google.protobuf.StringValue
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+import io.spine.base.Identifier
+import io.spine.json.given.Node
+import io.spine.json.given.WrappedString
+import io.spine.testing.Assertions.assertNpe
+import io.spine.testing.TestValues
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
-import com.google.common.collect.Lists;
-import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.StringValue;
-import io.spine.json.given.Node;
-import io.spine.json.given.WrappedString;
-import io.spine.testing.UtilityClassTest;
-import io.spine.type.KnownTypes;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+@DisplayName("`Json` Kotlin extensions for Protobuf should")
+internal class JsonSpec {
 
-import java.util.List;
-
-import static io.spine.base.Identifier.newUuid;
-import static io.spine.json.Json.fromJson;
-import static io.spine.json.Json.toCompactJson;
-import static io.spine.json.Json.toJson;
-import static io.spine.testing.Assertions.assertNpe;
-import static io.spine.testing.TestValues.nullRef;
-import static java.lang.String.format;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-@DisplayName("`Json` utility class should")
-class JsonTest extends UtilityClassTest<Json> {
-
-    JsonTest() {
-        super(Json.class);
+    @Test
+    fun `not allow null message`() {
+        assertNpe { TestValues.nullRef<Message>().toJson() }
     }
 
     @Test
-    @DisplayName("build JsonFormat registry for known types")
-    void knownTypes() {
-        var typeRegistry = Json.typeRegistry();
-
-        List<Descriptor> found = Lists.newLinkedList();
-        for (var typeUrl : KnownTypes.instance().allUrls()) {
-            var descriptor = typeRegistry.find(typeUrl.toTypeName()
-                                                      .value());
-            if (descriptor != null) {
-                found.add(descriptor);
-            }
-        }
-
-        assertFalse(found.isEmpty());
+    fun `print to JSON`() {
+        val value = StringValue.of("print_to_json")
+        value.toJson() shouldNotBe ""
     }
 
     @Test
-    @DisplayName("not allow null message")
-    void rejectNulls() {
-        assertNpe(() -> toJson(nullRef()));
+    fun `print to compact JSON`() {
+        val idValue = Identifier.newUuid()
+        val node = Node.newBuilder()
+            .setName(idValue)
+            .setRight(Node.getDefaultInstance())
+            .build()
+        val result = node.toCompactJson()
+
+        result shouldNotBe ""
+        result.contains(System.lineSeparator()) shouldBe false
     }
 
     @Test
-    @DisplayName("print to JSON")
-    void print() {
-        var value = StringValue.of("print_to_json");
-        assertFalse(toJson(value).isEmpty());
+    fun `parse from JSON`() {
+        val idValue = Identifier.newUuid()
+        val jsonMessage = String.format("{\"value\": \"%s\"}", idValue)
+        val parsedValue = WrappedString::class.java.fromJson(jsonMessage)
+
+        parsedValue shouldNotBe null
+        parsedValue.value shouldBe idValue
     }
 
     @Test
-    @DisplayName("print to compact JSON")
-    void printCompact() {
-        var idValue = newUuid();
-        var node = Node.newBuilder()
-                .setName(idValue)
-                .setRight(Node.getDefaultInstance())
-                .build();
-        var result = toCompactJson(node);
-        assertFalse(result.isEmpty());
-        assertFalse(result.contains(System.lineSeparator()));
-    }
-
-    @Test
-    @DisplayName("parse from JSON")
-    void parse() {
-        var idValue = newUuid();
-        var jsonMessage = format("{\"value\": \"%s\"}", idValue);
-        var parsedValue = fromJson(jsonMessage, WrappedString.class);
-        assertNotNull(parsedValue);
-        assertEquals(idValue, parsedValue.getValue());
-    }
-
-    @Test
-    @DisplayName("parse from JSON with unknown values")
-    void parseUnknown() {
-        var idValue = newUuid();
-        var jsonMessage = format("{\"value\": \"%s\", \"newField\": \"newValue\"}", idValue);
-        var parsedValue = fromJson(jsonMessage, WrappedString.class);
-        assertNotNull(parsedValue);
-        assertEquals(idValue, parsedValue.getValue());
+    fun `parse from JSON with unknown values`() {
+        val idValue = Identifier.newUuid()
+        val jsonMessage = String.format("{\"value\": \"%s\", \"newField\": \"newValue\"}", idValue)
+        val parsedValue = WrappedString::class.java.fromJson(jsonMessage)
+        
+        parsedValue shouldNotBe null
+        parsedValue.value shouldBe idValue
     }
 }

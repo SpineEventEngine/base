@@ -86,7 +86,7 @@ internal class FileNameSpec {
         private fun assertConversion(expected: String, fileName: String) {
             val calculated = FileName.of(fileName)
                 .nameOnlyCamelCase()
-            assertEquals(expected, calculated)
+            calculated shouldBe expected
         }
     }
 
