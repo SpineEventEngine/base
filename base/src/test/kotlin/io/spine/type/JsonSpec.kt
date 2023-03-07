@@ -34,6 +34,7 @@ import io.spine.json.given.Node
 import io.spine.json.given.WrappedString
 import io.spine.testing.Assertions.assertNpe
 import io.spine.testing.TestValues
+import java.util.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -67,7 +68,7 @@ internal class JsonSpec {
     @Test
     fun `parse from JSON`() {
         val idValue = Identifier.newUuid()
-        val jsonMessage = String.format("{\"value\": \"%s\"}", idValue)
+        val jsonMessage = String.format(Locale.ROOT, "{\"value\": \"%s\"}", idValue)
         val parsedValue = WrappedString::class.java.fromJson(jsonMessage)
 
         parsedValue shouldNotBe null
@@ -77,7 +78,8 @@ internal class JsonSpec {
     @Test
     fun `parse from JSON with unknown values`() {
         val idValue = Identifier.newUuid()
-        val jsonMessage = String.format("{\"value\": \"%s\", \"newField\": \"newValue\"}", idValue)
+        val jsonMessage =
+            String.format(Locale.ROOT, "{\"value\": \"%s\", \"newField\": \"newValue\"}", idValue)
         val parsedValue = WrappedString::class.java.fromJson(jsonMessage)
         
         parsedValue shouldNotBe null
