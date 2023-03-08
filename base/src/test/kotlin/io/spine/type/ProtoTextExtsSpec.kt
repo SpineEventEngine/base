@@ -29,6 +29,7 @@ package io.spine.type
 import com.google.protobuf.Timestamp
 import com.google.protobuf.stringValue
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldEndWith
 import io.kotest.matchers.string.shouldStartWith
@@ -90,6 +91,7 @@ internal class ProtoTextExtsSpec {
 
         private lateinit var msg: MapOfAnys
         private lateinit var textOut: String
+        private lateinit var lines: List<String>
 
         @BeforeEach
         fun createMessage() {
@@ -100,6 +102,7 @@ internal class ProtoTextExtsSpec {
                 })
             }
             textOut = msg.printToStringWithName()
+            lines = textOut.lines()
         }
 
         @Test
@@ -109,18 +112,22 @@ internal class ProtoTextExtsSpec {
 
         @Test
         fun `have type name ended with curly brace`() {
-            textOut.lines()[0] shouldEndWith " {"
+            lines[0] shouldEndWith " {"
         }
 
         @Test
-        fun `is indented in teh fields block`() {
-            textOut.lines()[1] shouldStartWith Indent.defaultProtoTextIndent.value
+        fun `is indented in the fields block`() {
+            val expectedIndent = Indent.defaultProtoTextIndent.value
+
+            lines[1] shouldStartWith expectedIndent
+            lines[2] shouldStartWith expectedIndent
+
+            lines[1][expectedIndent.length] shouldNotBe " "
+            lines[2][expectedIndent.length] shouldNotBe " "
         }
 
         @Test
         fun `close with curly brace`() {
-            val lines = textOut.lines()
-            
             lines[lines.size - 2] shouldBe "}"
             lines.last() shouldBe ""
         }

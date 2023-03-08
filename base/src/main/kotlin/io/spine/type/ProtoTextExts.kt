@@ -47,7 +47,6 @@ import io.spine.string.pi
 private const val ABOUT = ""
 
 private object TextOutput {
-
     val printer: Printer by lazy {
         val typeRegistry = KnownTypes.instance().typeRegistry()
         TextFormat.printer()
@@ -92,11 +91,11 @@ public fun MessageOrBuilder.printToString(): String =
 public fun MessageOrBuilder.printToStringWithName(): String {
     val typeName = descriptorForType.fullName
     val indent = Indent.defaultProtoTextIndent.value
-    val fields = printToString().pi(indent)
+    val fieldsBlock = printToString().pi(indent)
     val nl = Separator.nl()
     return buildString {
         append("$typeName {$nl")
-        append(fields)
+        append(fieldsBlock)
         append("$nl}$nl")
     }
 }
