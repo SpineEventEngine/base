@@ -42,7 +42,7 @@ import io.spine.util.Exceptions.newIllegalArgumentException
 /**
  * Utilities for working with JSON representation of Protobuf [Message] types.
  *
- * Both [parsing][Message.toJson] and [printing][Class.fromJson] functions assume
+ * Both [parsing][Class.fromJson] and [printing][Message.toJson] functions assume
  * the presence of the custom Protobuf message types relying on [KnownTypes] for this.
  *
  * The parsing functionality follows the default Protobuf strategy for
