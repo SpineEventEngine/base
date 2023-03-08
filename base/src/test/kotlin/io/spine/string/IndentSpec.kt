@@ -27,6 +27,7 @@
 package io.spine.string
 
 import io.kotest.matchers.shouldBe
+import io.spine.string.Indent.Companion.DEFAULT_JAVA_INDENT_SIZE
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -35,7 +36,7 @@ internal class IndentSpec {
 
     @Test
     fun `have default size`() {
-        Indent().value.length shouldBe Indent.DEFAULT_SIZE
+        Indent().value.length shouldBe DEFAULT_JAVA_INDENT_SIZE
     }
 
     @Test
