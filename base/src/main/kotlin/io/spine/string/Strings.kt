@@ -28,8 +28,6 @@
 
 package io.spine.string
 
-import io.spine.string.Indent.Companion.DEFAULT_SIZE
-
 /**
  * Obtains the same string but with the first capital letter.
  *
