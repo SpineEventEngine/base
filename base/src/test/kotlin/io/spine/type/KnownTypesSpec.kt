@@ -89,10 +89,12 @@ internal class KnownTypesSpec {
 
         if (notFound.isNotEmpty()) {
             fail {
+                val nl = Separator.nl()
+                val indent = "  "
                 val notFoundLines = notFound.map { t -> t.toString() }
-                    .sorted().joinToString(Separator.nl()).pi("  ")
+                    .sorted().joinToString(nl).pi(indent)
                 val foundLines = found.map { d -> d.fullName }
-                    .sorted().joinToString(Separator.nl()).pi("  ")
+                    .sorted().joinToString(nl).pi(indent)
 
                 "Unable to find descriptors for some types using the `TypeRegistry`.\n" +
                 "Known message types: ${messageTypes.size}, not found descriptors:" +
