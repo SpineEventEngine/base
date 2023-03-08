@@ -57,14 +57,15 @@ private const val ABOUT = ""
 /**
  * Holds lazily evaluated properties related to generating and parsing JSON.
  */
-private object JsonObjects {
+private object JsonOutput {
 
     private val typeRegistry: TypeRegistry by lazy {
         KnownTypes.instance().typeRegistry()
     }
 
     val printer: Printer by lazy {
-        JsonFormat.printer().usingTypeRegistry(typeRegistry)
+        JsonFormat.printer()
+            .usingTypeRegistry(typeRegistry)
     }
 
     val compactPrinter: Printer by lazy {
@@ -72,7 +73,9 @@ private object JsonObjects {
     }
 
     val parser: Parser by lazy {
-        JsonFormat.parser().ignoringUnknownFields().usingTypeRegistry(typeRegistry)
+        JsonFormat.parser()
+            .ignoringUnknownFields()
+            .usingTypeRegistry(typeRegistry)
     }
 }
 
@@ -84,7 +87,7 @@ private object JsonObjects {
  * @see [toCompactJson]
  */
 @JvmOverloads
-public fun MessageOrBuilder.toJson(printer: Printer = JsonObjects.printer): String {
+public fun MessageOrBuilder.toJson(printer: Printer = JsonOutput.printer): String {
     val result: String?
     try {
         result = printer.print(this)
@@ -104,7 +107,7 @@ public fun MessageOrBuilder.toJson(printer: Printer = JsonObjects.printer): Stri
  * @see [toJson]
  */
 public fun MessageOrBuilder.toCompactJson(): String =
-    toJson(JsonObjects.compactPrinter)
+    toJson(JsonOutput.compactPrinter)
 
 /**
  * Parses a message of the type [T] from the given [json] representation.
@@ -115,7 +118,7 @@ public fun MessageOrBuilder.toCompactJson(): String =
 public fun <T: Message> Class<T>.fromJson(json: String): T {
     try {
         val messageBuilder = builderFor(this)
-        JsonObjects.parser.merge(json, messageBuilder)
+        JsonOutput.parser.merge(json, messageBuilder)
         @Suppress("UNCHECKED_CAST") // The type is ensured by `builderFor()`.
         val result = messageBuilder.build() as T
         return result
