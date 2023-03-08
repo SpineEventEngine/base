@@ -57,7 +57,7 @@ public data class Indent(
          * The default indentation, which is primarily used in the generated Java code.
          */
         @Deprecated(
-            message = "Please use `DEFAULT_JAVA_INDENT_SIZE`",
+            message = "Please use `DEFAULT_JAVA_INDENT_SIZE`.",
             replaceWith = ReplaceWith("DEFAULT_JAVA_INDENT_SIZE")
         )
         public const val DEFAULT_SIZE: Int = 4
