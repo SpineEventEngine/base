@@ -50,7 +50,7 @@ internal class ProtoTextExtsSpec {
 
     @Nested
     @DisplayName("print short debug string of")
-    inner class DebugStr {
+    inner class DebugStrOutput {
 
         private lateinit var msg: Timestamp
         private lateinit var debugStr: String
