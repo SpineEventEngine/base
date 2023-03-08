@@ -49,4 +49,9 @@ internal class IndentSpec {
     fun `obtain indentation at given level`() {
         Indent(2).atLevel(2) shouldBe " ".repeat(4)
     }
+
+    @Test
+    fun `provide instance for default indentation in Java`() {
+        Indent.defaultJavaIndent.toString() shouldBe " ".repeat(DEFAULT_JAVA_INDENT_SIZE)
+    }
 }
