@@ -47,8 +47,11 @@ message ListOfAnys {
 
 // A map of values packed into `google.protobuf.Any`.
 //
-// Unlike any other map/dictionary/structure in any target language, this message can itself be
-// packed into `Any`.
+// Unlike a `map` natively supported by Protobuf, this data structure can
+// contain keys of `Any` message type.
+//
+// Unlike any other map/dictionary/structure in any target language, this message
+// can itself be packed into `Any`.
 //
 message MapOfAnys {
 
