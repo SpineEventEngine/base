@@ -94,5 +94,5 @@ public fun String.ti(): String = trimIndent().fixLineEndings()
 /**
  *  Prepends indentation similarly to [String.prependIndent] but preserving system line separators.
  */
-public fun String.pi(indent: String = Indent(DEFAULT_SIZE).value): String =
+public fun String.pi(indent: String = Indent.defaultJavaIndent.value): String =
     prependIndent(indent).fixLineEndings()

@@ -34,7 +34,7 @@ public data class Indent(
     /**
      * A positive number of space characters to be used for the indentation increment.
      */
-    public val size: Int = DEFAULT_SIZE
+    public val size: Int = DEFAULT_JAVA_INDENT_SIZE
 ) {
 
     init {
@@ -56,7 +56,41 @@ public data class Indent(
         /**
          * The default indentation, which is primarily used in the generated Java code.
          */
+        @Deprecated(
+            message = "Please use `DEFAULT_JAVA_INDENT_SIZE`",
+            replaceWith = ReplaceWith("DEFAULT_JAVA_INDENT_SIZE")
+        )
         public const val DEFAULT_SIZE: Int = 4
+
+        /**
+         * The default size of indentation used in the Java code.
+         */
+        public const val DEFAULT_JAVA_INDENT_SIZE: Int = 4
+
+        /**
+         * The default size of indentation used in the Proto Text output.
+         *
+         * @see <a href="https://protobuf.dev/reference/protobuf/textformat-spec/">Protobuf
+         * Text Format Language Specification</a>
+         */
+        public const val DEFAULT_PROTO_TEXT_INDENT_SIZE: Int = 2
+
+        /**
+         * Default indent for Java code.
+         */
+        public val defaultJavaIndent: Indent by lazy {
+            Indent(DEFAULT_JAVA_INDENT_SIZE)
+        }
+
+        /**
+         * Default indent for Proto Text output.
+         *
+         * @see <a href="https://protobuf.dev/reference/protobuf/textformat-spec/">Protobuf
+         * Text Format Language Specification</a>
+         */
+        public val defaultProtoTextIndent: Indent by lazy {
+            Indent(DEFAULT_PROTO_TEXT_INDENT_SIZE)
+        }
     }
 }
 
