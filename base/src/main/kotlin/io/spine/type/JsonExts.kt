@@ -31,6 +31,7 @@ package io.spine.type
 import com.google.common.base.Throwables
 import com.google.protobuf.InvalidProtocolBufferException
 import com.google.protobuf.Message
+import com.google.protobuf.MessageOrBuilder
 import com.google.protobuf.TypeRegistry
 import com.google.protobuf.util.JsonFormat
 import com.google.protobuf.util.JsonFormat.Parser
@@ -71,19 +72,19 @@ private object JsonObjects {
     }
 
     val parser: Parser by lazy {
-        JsonFormat.parser().ignoringUnknownFields().usingTypeRegistry(typeRegistry);
+        JsonFormat.parser().ignoringUnknownFields().usingTypeRegistry(typeRegistry)
     }
 }
 
 /**
- * Converts this message to JSON using the given [printer].
+ * Converts this message or builder to JSON using the given [printer].
  *
  * The default instance of the [Printer] produces multi-line output.
  *
  * @see [toCompactJson]
  */
 @JvmOverloads
-public fun Message.toJson(printer: Printer = JsonObjects.printer): String {
+public fun MessageOrBuilder.toJson(printer: Printer = JsonObjects.printer): String {
     val result: String?
     try {
         result = printer.print(this)
@@ -102,7 +103,7 @@ public fun Message.toJson(printer: Printer = JsonObjects.printer): String {
  *
  * @see [toJson]
  */
-public fun Message.toCompactJson(): String =
+public fun MessageOrBuilder.toCompactJson(): String =
     toJson(JsonObjects.compactPrinter)
 
 /**
