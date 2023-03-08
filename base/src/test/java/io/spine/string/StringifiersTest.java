@@ -33,7 +33,6 @@ import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.Durations;
 import com.google.protobuf.util.Timestamps;
 import io.spine.base.Time;
-import io.spine.json.Json;
 import io.spine.test.string.STask;
 import io.spine.test.string.STaskId;
 import io.spine.testing.UtilityClassTest;
@@ -121,7 +120,7 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
                     .setStatus(DONE)
                     .build();
 
-            var expected = Json.toCompactJson(message);
+            var expected = io.spine.type.Json.toCompactJson(message);
             checkStringifies(message, expected);
         }
 

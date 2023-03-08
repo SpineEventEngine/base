@@ -33,7 +33,7 @@ import io.spine.internal.gradle.publish.IncrementGuard
 import io.spine.internal.gradle.publish.excludeGoogleProtoFromArtifacts
 
 plugins {
-    id("detekt-code-analysis")
+    `detekt-code-analysis`
 }
 
 apply {

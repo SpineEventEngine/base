@@ -39,6 +39,7 @@ import io.spine.code.java.ClassName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
 import io.spine.security.InvocationGuard;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.io.Serializable;
 import java.util.List;
@@ -49,8 +50,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static io.spine.util.Text.joiner;
 import static io.spine.util.Predicates2.distinctBy;
+import static io.spine.util.Text.joiner;
 import static java.lang.System.lineSeparator;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
@@ -84,6 +85,13 @@ public class KnownTypes implements Serializable {
 
     @SuppressWarnings("TransientFieldNotInitialized") // Instance is substituted on deserialization.
     private final transient TypeSet typeSet;
+
+    @SuppressWarnings({
+            "NonFinalFieldInImmutable" /* This is a cached result of `typeRegistry()` method. */,
+            "Immutable" /* Caching this value does not mutate the real state of `KnownTypes.  */
+    })
+    @MonotonicNonNull
+    private transient TypeRegistry typeRegistry;
 
     /**
      * Retrieves the singleton instance of {@code KnownTypes}.
@@ -207,8 +215,11 @@ public class KnownTypes implements Serializable {
      *
      * <p>The resulting registry contains all the known Protobuf message types.
      */
-    public TypeRegistry typeRegistry() {
-        return typeSet.toTypeRegistry();
+    public synchronized TypeRegistry typeRegistry() {
+        if (typeRegistry == null) {
+            typeRegistry = typeSet.toTypeRegistry();
+        }
+        return typeRegistry;
     }
 
     /**

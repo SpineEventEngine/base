@@ -27,7 +27,7 @@
 package io.spine.string;
 
 import com.google.protobuf.Message;
-import io.spine.json.Json;
+import io.spine.type.Json;
 
 /**
  * The default {@code Stringifier} for {@code Message} classes.
@@ -86,6 +86,6 @@ final class DefaultMessageStringifier<T extends Message> extends Stringifier<T> 
 
     @Override
     protected T fromString(String s) {
-        return Json.fromJson(s, messageClass);
+        return Json.fromJson(messageClass, s);
     }
 }

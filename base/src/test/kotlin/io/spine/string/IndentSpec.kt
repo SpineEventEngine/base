@@ -27,6 +27,7 @@
 package io.spine.string
 
 import io.kotest.matchers.shouldBe
+import io.spine.string.Indent.Companion.DEFAULT_JAVA_INDENT_SIZE
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -35,7 +36,7 @@ internal class IndentSpec {
 
     @Test
     fun `have default size`() {
-        Indent().value.length shouldBe Indent.DEFAULT_SIZE
+        Indent().value.length shouldBe DEFAULT_JAVA_INDENT_SIZE
     }
 
     @Test
@@ -47,5 +48,10 @@ internal class IndentSpec {
     @Test
     fun `obtain indentation at given level`() {
         Indent(2).atLevel(2) shouldBe " ".repeat(4)
+    }
+
+    @Test
+    fun `provide instance for default indentation in Java`() {
+        Indent.defaultJavaIndent.toString() shouldBe " ".repeat(DEFAULT_JAVA_INDENT_SIZE)
     }
 }

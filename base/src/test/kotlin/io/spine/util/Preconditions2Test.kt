@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ package io.spine.util
 import com.google.common.truth.Truth.assertThat
 import com.google.protobuf.Message
 import com.google.protobuf.StringValue
+import io.kotest.matchers.shouldBe
 import io.spine.testing.Assertions.assertIllegalArgument
 import io.spine.testing.Assertions.assertIllegalState
 import io.spine.testing.Assertions.assertNpe
@@ -41,7 +42,6 @@ import io.spine.util.Preconditions2.checkNotDefaultArg
 import io.spine.util.Preconditions2.checkNotDefaultState
 import io.spine.util.Preconditions2.checkNotEmptyOrBlank
 import io.spine.util.Preconditions2.checkPositive
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -181,8 +181,7 @@ internal class Preconditions2Test : UtilityClassTest<Preconditions2>(Preconditio
     }
 
     @Test
-    @DisplayName("throw if checked value out of bounds")
-    fun throwExceptionIfCheckedValueOutOfBounds() {
+    fun `throw if checked value out of bounds`() {
         assertIllegalArgument { checkBounds(10, "checked value", -5, 9) }
     }
 
@@ -198,8 +197,7 @@ internal class Preconditions2Test : UtilityClassTest<Preconditions2>(Preconditio
         }
 
         @Test
-        @DisplayName("throwing `IllegalStateException` for state transition checks")
-        fun stateChecking() {
+        fun `throwing 'IllegalStateException' for state transition checks`() {
             assertIllegalState { checkNotDefaultState(defaultValue) }
             val exception = assertThrows<IllegalStateException> {
                 checkNotDefaultState(defaultValue, customErrorMessage)
@@ -209,8 +207,7 @@ internal class Preconditions2Test : UtilityClassTest<Preconditions2>(Preconditio
         }
 
         @Test
-        @DisplayName("throwing `IllegalArgumentException` for argument checks")
-        fun argumentChecking() {
+        fun `throwing 'IllegalArgumentException' for argument checks`() {
             assertIllegalArgument { checkNotDefaultArg(defaultValue) }
             val exception = assertThrows<IllegalArgumentException>{
                 checkNotDefaultArg(defaultValue, customErrorMessage) }
@@ -220,25 +217,12 @@ internal class Preconditions2Test : UtilityClassTest<Preconditions2>(Preconditio
         }
 
         @Test
-        @DisplayName("return non-default value on check")
-        fun returnValue() {
+        fun `return non-default value on check`() {
             val nonDefault = newUuidValue()
-            assertEquals(
-                nonDefault,
-                checkNotDefaultArg(nonDefault)
-            )
-            assertEquals(
-                nonDefault,
-                checkNotDefaultArg(nonDefault, customErrorMessage)
-            )
-            assertEquals(
-                nonDefault,
-                checkNotDefaultState(nonDefault)
-            )
-            assertEquals(
-                nonDefault,
-                checkNotDefaultState(nonDefault, customErrorMessage)
-            )
+            checkNotDefaultArg(nonDefault) shouldBe nonDefault
+            checkNotDefaultArg(nonDefault, customErrorMessage) shouldBe nonDefault
+            checkNotDefaultState(nonDefault) shouldBe nonDefault
+            checkNotDefaultState(nonDefault, customErrorMessage) shouldBe nonDefault
         }
     }
 }

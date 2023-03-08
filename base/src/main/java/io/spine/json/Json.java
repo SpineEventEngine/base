@@ -26,51 +26,16 @@
 
 package io.spine.json;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.errorprone.annotations.InlineMe;
 import com.google.protobuf.Message;
-import com.google.protobuf.TypeRegistry;
-import io.spine.type.KnownTypes;
-import io.spine.type.UnknownTypeException;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.base.Throwables.getRootCause;
-import static com.google.protobuf.util.JsonFormat.Parser;
-import static com.google.protobuf.util.JsonFormat.Printer;
-import static com.google.protobuf.util.JsonFormat.parser;
-import static com.google.protobuf.util.JsonFormat.printer;
-import static io.spine.protobuf.Messages.builderFor;
-import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * Utilities for working with JSON.
  *
- * <p>Both {@linkplain #toJson(Message) parsing} and {@linkplain #fromJson(String, Class) printing}
- * functionality acknowledges presence of the custom Protobuf message types relying on
- * the {@link KnownTypes} for this.
- *
- * <p>The parsing functionality follows the default Protobuf ignorance strategy for unknown fields,
- * i.e. the unknown fields are {@linkplain Parser#ignoringUnknownFields() ignored} when a JSON
- * string is parsed.
- *
- * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#unknowns">
- *         Protobuf Unknown Fields</a>
+ * @deprecated please use {@link io.spine.type.Json}
  */
+@Deprecated
 public final class Json {
-
-    /** The type registry for all Proto types known in this class path. */
-    private static final TypeRegistry typeRegistry = KnownTypes.instance().typeRegistry();
-
-    /** The printer for JSON output which knows about the types. */
-    private static final Printer printer = printer().usingTypeRegistry(typeRegistry);
-
-    /** The compact version of the printer. */
-    private static final Printer compactPrinter = printer.omittingInsignificantWhitespace();
-
-    /** The parser which knows about all types. */
-    private static final Parser parser =
-            parser().ignoringUnknownFields().usingTypeRegistry(typeRegistry);
 
     /** Prevents instantiation of this utility class. */
     private Json() {
@@ -82,11 +47,12 @@ public final class Json {
      * @param message
      *         the message object
      * @return JSON string
+     * @deprecated please use {@link io.spine.type.Json#toJson(Message)}
      */
+    @Deprecated
+    @InlineMe(replacement = "io.spine.type.Json.toJson(message)")
     public static String toJson(Message message) {
-        checkNotNull(message);
-        var result = toJson(message, printer);
-        return result;
+        return io.spine.type.Json.toJson(message);
     }
 
     /**
@@ -97,45 +63,22 @@ public final class Json {
      * @param message
      *         the {@code Message} object
      * @return the converted message to JSON
+     * @deprecated please use {@link io.spine.type.Json#toCompactJson(Message)}
      */
+    @Deprecated
+    @InlineMe(replacement = "io.spine.type.Json.toCompactJson(message)")
     public static String toCompactJson(Message message) {
-        checkNotNull(message);
-        var result = toJson(message, compactPrinter);
-        return result;
+        return io.spine.type.Json.toCompactJson(message);
     }
 
-    private static String toJson(Message message, Printer printer) {
-        String result;
-        try {
-            result = printer.print(message);
-        } catch (InvalidProtocolBufferException e) {
-            var rootCause = getRootCause(e);
-            throw new UnknownTypeException(rootCause);
-        }
-        checkState(result != null);
-        return result;
-    }
-
-    @SuppressWarnings("unchecked") // It is OK as the builder is obtained by the specified class.
+    /**
+     * Parses a message from the given JSON string.
+     *
+     * @deprecated please use {@link io.spine.type.Json#fromJson(Class, String)}.
+     */
+    @Deprecated
+    @InlineMe(replacement = "io.spine.type.Json.fromJson(messageClass, json)")
     public static <T extends Message> T fromJson(String json, Class<T> messageClass) {
-        checkNotNull(json);
-        checkNotNull(messageClass);
-        try {
-            var messageBuilder = builderFor(messageClass);
-            parser.merge(json, messageBuilder);
-            var result = (T) messageBuilder.build();
-            return result;
-        } catch (InvalidProtocolBufferException e) {
-            throw newIllegalArgumentException(
-                    e,
-                    "The JSON text (`%s`) cannot be parsed to an instance of the class `%s`.",
-                    json, messageClass.getName()
-            );
-        }
-    }
-
-    @VisibleForTesting
-    static TypeRegistry typeRegistry() {
-        return typeRegistry;
+        return io.spine.type.Json.fromJson(messageClass, json);
     }
 }

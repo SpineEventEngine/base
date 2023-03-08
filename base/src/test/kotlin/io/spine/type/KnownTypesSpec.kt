@@ -26,6 +26,7 @@
 package io.spine.type
 
 import com.google.protobuf.Any
+import com.google.protobuf.Descriptors.Descriptor
 import com.google.protobuf.Duration
 import com.google.protobuf.Empty
 import com.google.protobuf.Message
@@ -44,6 +45,8 @@ import io.spine.code.java.ClassName
 import io.spine.code.proto.TypeSet
 import io.spine.option.EntityOption
 import io.spine.option.IfMissingOption
+import io.spine.string.Separator
+import io.spine.string.pi
 import io.spine.test.types.KnownTask
 import io.spine.test.types.KnownTaskId
 import io.spine.test.types.KnownTaskName
@@ -52,6 +55,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.fail
 
 /**
  * Tests [io.spine.type.KnownTypes].
@@ -64,6 +68,43 @@ internal class KnownTypesSpec {
     @Test
     fun `obtain type URLs of known proto types`() {
         knownTypes.allUrls().isEmpty() shouldBe false
+    }
+
+    @Test
+    fun `build 'TypeRegistry' for known types`() {
+        val typeRegistry = knownTypes.typeRegistry()
+        val found: MutableList<Descriptor> = mutableListOf()
+        val notFound: MutableList<MessageType> = mutableListOf()
+        val messageTypes = knownTypes.asTypeSet().messageTypes()
+        for (messageType in messageTypes) {
+            val descriptor = typeRegistry.find(
+                messageType.name().value
+            )
+            if (descriptor != null) {
+                found.add(descriptor)
+            } else {
+                notFound.add(messageType)
+            }
+        }
+
+        if (notFound.isNotEmpty()) {
+            fail {
+                val nl = Separator.nl()
+                val indent = "  "
+                val notFoundLines = notFound.map { t -> t.toString() }
+                    .sorted().joinToString(nl).pi(indent)
+                val foundLines = found.map { d -> d.fullName }
+                    .sorted().joinToString(nl).pi(indent)
+
+                "Unable to find descriptors for some types using the `TypeRegistry`.\n" +
+                "Known message types: ${messageTypes.size}, not found descriptors:" +
+                        " ${notFound.size}.\n" +
+                "Message types missing in the `TypeRegistry`(${notFound.size}):" +
+                        "\n$notFoundLines\n\n" +
+                "Full names of found message type descriptors (${found.size}):\n${foundLines}\n"
+            }
+        }
+        found.isEmpty() shouldBe false
     }
 
     @Nested
