@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -115,7 +115,7 @@ subprojects {
 
     val generatedDir = "$projectDir/generated"
     applyGeneratedDir(generatedDir)
-    configureProtobuf(generatedDir)
+    configureProtobuf()
     setTaskDependencies(generatedDir)
     setupTests()
 
@@ -254,10 +254,9 @@ fun Subproject.applyGeneratedDir(generatedDir: String) {
     }
 }
 
-fun Subproject.configureProtobuf(generatedDir: String) {
+fun Subproject.configureProtobuf() {
     protobuf {
         configurations.excludeProtobufLite()
-        generatedFilesBaseDir = generatedDir
         protoc {
             artifact = Protobuf.compiler
         }
