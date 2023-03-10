@@ -86,10 +86,19 @@ private val Project.generatedDir: String
 @Suppress("unused")
 fun GenerateProtoTask.setup() {
     builtins.maybeCreate("kotlin")
+    setupDescriptorSetFileCreation()
+    doLast {
+        copyGeneratedFiles()
+    }
+    excludeProtocOutput()
+    setupKotlinCompile()
+    dependOnProcessResourcesTask()
+}
 
-    /**
-     * Generate descriptor set files.
-     */
+/**
+ * Tell `protoc` to generate descriptor set files under the project build dir.
+ */
+private fun GenerateProtoTask.setupDescriptorSetFileCreation() {
     val ssn = sourceSet.name
     generateDescriptorSet = true
     with(descriptorSetOptions) {
@@ -97,43 +106,6 @@ fun GenerateProtoTask.setup() {
         includeImports = true
         includeSourceInfo = true
     }
-
-    doLast {
-        copyGeneratedFiles()
-    }
-
-    excludeProtocOutput()
-
-    // Make sure Kotlin compilation explicitly depends on this `GenerateProtoTask` to avoid racing.
-    val kotlinCompile = project.kotlinCompileFor(sourceSet)
-    kotlinCompile?.dependsOn(this)
-
-    dependOnProcessResourcesTask()
-}
-
-private fun GenerateProtoTask.excludeProtocOutput() {
-    val protocOutputDir = File(outputBaseDir)
-    val generatedDir = project.generatedDir
-    val ssn = sourceSet.name
-    val java: SourceDirectorySet = sourceSet.java
-
-    // The predicate to filter out files from `build/generated/source/proto` directory.
-    val belongsToProtocOutput: (File) -> Boolean = { file -> file.residesIn(protocOutputDir) }
-
-    // Exclude files placed into `outputBaseDir` from the Java source set to avoid code duplication.
-    val newSourceDirectories = java.sourceDirectories
-        .filter { !belongsToProtocOutput(it) }
-        .toSet()
-
-    java.setSrcDirs(listOf<String>())
-    java.srcDirs(newSourceDirectories)
-
-    // Add copied files to the Java source set.
-    val ssnJava = File("$generatedDir/$ssn/java/")
-    val ssnKotlin = File("$generatedDir/$ssn/kotlin/")
-
-    java.srcDir(ssnJava)
-    java.srcDir(ssnKotlin)
 }
 
 /**
@@ -176,6 +148,42 @@ private fun Task.deleteComGoogle(generatedDir: String, language: String) {
 }
 
 /**
+ * Exclude [GenerateProtoTask.outputBaseDir] from Java source set directories to avoid
+ * duplicated source code files.
+ */
+private fun GenerateProtoTask.excludeProtocOutput() {
+    val protocOutputDir = File(outputBaseDir)
+    val generatedDir = project.generatedDir
+    val ssn = sourceSet.name
+    val java: SourceDirectorySet = sourceSet.java
+
+    // The predicate to filter out files from `build/generated/source/proto` directory.
+    val belongsToProtocOutput: (File) -> Boolean = { file -> file.residesIn(protocOutputDir) }
+
+    val newSourceDirectories = java.sourceDirectories
+        .filter { !belongsToProtocOutput(it) }
+        .toSet()
+
+    java.setSrcDirs(listOf<String>())
+    java.srcDirs(newSourceDirectories)
+
+    // Add copied files to the Java source set.
+    val ssnJava = File("$generatedDir/$ssn/java/")
+    val ssnKotlin = File("$generatedDir/$ssn/kotlin/")
+
+    java.srcDir(ssnJava)
+    java.srcDir(ssnKotlin)
+}
+
+/**
+ * Make sure Kotlin compilation explicitly depends on this `GenerateProtoTask` to avoid racing.
+ */
+private fun GenerateProtoTask.setupKotlinCompile() {
+    val kotlinCompile = project.kotlinCompileFor(sourceSet)
+    kotlinCompile?.dependsOn(this)
+}
+
+/**
  * Make the tasks `processResources` depend on `generateProto` tasks explicitly so that:
  *  1) Descriptor set files get into resources, avoiding the racing conditions
  *     during the build.
@@ -204,7 +212,7 @@ private fun processResourceTaskName(sourceSetName: String): String {
  * `compileKotlin` if the source set name is `"main"`. If the task does not fit this described
  * pattern, this method will not find it.
  */
-internal fun Project.kotlinCompileFor(sourceSet: SourceSet): KotlinCompile<*>? {
+private fun Project.kotlinCompileFor(sourceSet: SourceSet): KotlinCompile<*>? {
     val taskName = sourceSet.getCompileTaskName("Kotlin")
     return tasks.findByName(taskName) as KotlinCompile<*>?
 }
