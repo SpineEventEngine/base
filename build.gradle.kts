@@ -113,9 +113,9 @@ subprojects {
     addDependencies()
     forceConfigurations()
 
-    val generatedDir = "$projectDir/generated"
     applyGeneratedDir()
     configureProtobuf()
+    val generatedDir = "$projectDir/generated"
     setTaskDependencies(generatedDir)
     setupTests()
 
