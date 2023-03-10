@@ -37,7 +37,7 @@ import org.gradle.kotlin.dsl.get
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 
 private val Project.generatedDir: String
-    get() = "${project.projectDir}/generated"
+    get() = "${projectDir}/generated"
 
 /**
  * Configures protobuf code generation task for the code which cannot use Spine Model Compiler
@@ -45,7 +45,7 @@ private val Project.generatedDir: String
  *
  * The task configuration consists of the following steps:
  *
- * 1. Adding `"kotlin"` to the list of involved `protoc` plugins.
+ * 1. Adding `"kotlin"` to the list of involved `protoc` builtins.
  *
  * 2. Generation of descriptor set file is turned on for each source set.
  *    These files are placed under the `build/descriptors` directory.
@@ -53,9 +53,7 @@ private val Project.generatedDir: String
  * 3. Removing source code generated for `com.google` package for both Java and Kotlin.
  *    This is done at the final steps of the code generation.
  *
- * 4. Adding suppression of deprecation warnings in the generated Kotlin code.
- *
- * 5. Making `processResource` tasks depend on corresponding `generateProto` tasks.
+ * 4. Making `processResource` tasks depend on corresponding `generateProto` tasks.
  *    If the source set of the configured task isn't `main`, appropriate infix for
  *    the task names is used.
  *
@@ -71,7 +69,7 @@ private val Project.generatedDir: String
  * ```
  * Using the same code under `subprojects` in a root build file does not seem to work because
  * test descriptor set files are not copied to resources. Performing this configuration from
- * subprojects solves the issue.
+ * a module build script solves the issue.
  *
  * IMPORTANT: In addition to calling `setup`, a submodule must contain a descriptor set reference
  * file (`desc.ref`) files placed under `resources`. The descriptor reference file must contain
