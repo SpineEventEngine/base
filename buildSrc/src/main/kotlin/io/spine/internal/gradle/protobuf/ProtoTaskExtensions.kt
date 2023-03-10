@@ -28,9 +28,16 @@ package io.spine.internal.gradle.protobuf
 
 import com.google.protobuf.gradle.GenerateProtoTask
 import java.io.File
+import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.file.SourceDirectorySet
+import org.gradle.api.tasks.SourceSet
 import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.kotlin.dsl.get
+import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
+
+private val Project.generatedDir: String
+    get() = "${project.projectDir}/generated"
 
 /**
  * Configures protobuf code generation task for the code which cannot use Spine Model Compiler
@@ -54,11 +61,10 @@ import org.gradle.kotlin.dsl.get
  *
  * The usage of this extension in a <em>module build file</em> would be:
  * ```
- *  val generatedDir by extra("$projectDir/generated")
  *  protobuf {
  *      generateProtoTasks {
  *         for (task in all()) {
- *            task.setup(generatedDir)
+ *            task.setup()
  *         }
  *     }
  * }
@@ -93,20 +99,58 @@ fun GenerateProtoTask.setup() {
     }
 
     doLast {
-        deleteComGoogle(outputBaseDir, "java")
-        deleteComGoogle(outputBaseDir, "kotlin")
+        copyGeneratedFiles()
     }
 
-    /**
-     * Make the tasks `processResources` depend on `generateProto` tasks explicitly so that:
-     *  1) descriptor set files get into resources, avoiding the racing conditions
-     *     during the build.
-     *  2) we don't have the warning "Execution optimizations have been disabled..." issued
-     *     by Gradle during the build because Protobuf Gradle Plugin does not set
-     *     dependencies between `generateProto` and `processResources` tasks.
-     */
-    val processResources = processResourceTaskName(ssn)
-    project.tasks[processResources].dependsOn(this)
+    excludeProtocOutput()
+
+    // Make sure Kotlin compilation explicitly depends on this `GenerateProtoTask` to avoid racing.
+    val kotlinCompile = project.kotlinCompileFor(sourceSet)
+    kotlinCompile?.dependsOn(this)
+
+    dependOnProcessResourcesTask()
+}
+
+private fun GenerateProtoTask.excludeProtocOutput() {
+    val protocOutputDir = File(outputBaseDir)
+    val generatedDir = project.generatedDir
+    val ssn = sourceSet.name
+    val java: SourceDirectorySet = sourceSet.java
+
+    // The predicate to filter out files from `build/generated/source/proto` directory.
+    val belongsToProtocOutput: (File) -> Boolean = { file -> file.residesIn(protocOutputDir) }
+
+    // Exclude files placed into `outputBaseDir` from the Java source set to avoid code duplication.
+    val newSourceDirectories = java.sourceDirectories
+        .filter { !belongsToProtocOutput(it) }
+        .toSet()
+
+    java.setSrcDirs(listOf<String>())
+    java.srcDirs(newSourceDirectories)
+
+    // Add copied files to the Java source set.
+    val ssnJava = File("$generatedDir/$ssn/java/")
+    val ssnKotlin = File("$generatedDir/$ssn/kotlin/")
+
+    java.srcDir(ssnJava)
+    java.srcDir(ssnKotlin)
+}
+
+/**
+ * Copies files from the [outputBaseDir][GenerateProtoTask.outputBaseDir] into
+ * a subdirectory of [generatedDir][Project.generatedDir] for
+ * the current [sourceSet][GenerateProtoTask.sourceSet].
+ *
+ * Also removes sources belonging to the `com.google` package in the target directory.
+ */
+private fun GenerateProtoTask.copyGeneratedFiles() {
+    val generatedDir = project.generatedDir
+    project.copy {
+        from(outputBaseDir)
+        into("$generatedDir/${sourceSet.name}")
+    }
+    deleteComGoogle(generatedDir, "java")
+    deleteComGoogle(generatedDir, "kotlin")
 }
 
 /**
@@ -132,9 +176,38 @@ private fun Task.deleteComGoogle(generatedDir: String, language: String) {
 }
 
 /**
+ * Make the tasks `processResources` depend on `generateProto` tasks explicitly so that:
+ *  1) Descriptor set files get into resources, avoiding the racing conditions
+ *     during the build.
+ *
+ *  2) We don't have the warning "Execution optimizations have been disabled..." issued
+ *     by Gradle during the build because Protobuf Gradle Plugin does not set
+ *     dependencies between `generateProto` and `processResources` tasks.
+ */
+private fun GenerateProtoTask.dependOnProcessResourcesTask() {
+    val processResources = processResourceTaskName(sourceSet.name)
+    project.tasks[processResources].dependsOn(this)
+}
+
+/**
  * Obtains the name of the task `processResource` task for the given source set name.
  */
 private fun processResourceTaskName(sourceSetName: String): String {
     val infix = if (sourceSetName == "main") "" else sourceSetName.capitalized()
     return "process${infix}Resources"
 }
+
+/**
+ * Attempts to obtain the Kotlin compilation Gradle task for the given source set.
+ *
+ * Typically, the task is named by a pattern: `compile<SourceSet name>Kotlin`, or just
+ * `compileKotlin` if the source set name is `"main"`. If the task does not fit this described
+ * pattern, this method will not find it.
+ */
+internal fun Project.kotlinCompileFor(sourceSet: SourceSet): KotlinCompile<*>? {
+    val taskName = sourceSet.getCompileTaskName("Kotlin")
+    return tasks.findByName(taskName) as KotlinCompile<*>?
+}
+
+private fun File.residesIn(directory: File): Boolean =
+    canonicalFile.startsWith(directory.absolutePath)
