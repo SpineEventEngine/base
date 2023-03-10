@@ -114,7 +114,7 @@ subprojects {
     forceConfigurations()
 
     val generatedDir = "$projectDir/generated"
-    applyGeneratedDir(generatedDir)
+    applyGeneratedDir()
     configureProtobuf()
     setTaskDependencies(generatedDir)
     setupTests()
@@ -219,22 +219,15 @@ fun Subproject.forceConfigurations() {
     }
 }
 
-fun Subproject.applyGeneratedDir(generatedDir: String) {
-    val generatedJavaDir = "$generatedDir/main/java"
-    val generatedKotlinDir = "$generatedDir/main/kotlin"
-    val generatedTestJavaDir = "$generatedDir/test/java"
-    val generatedTestKotlinDir = "$generatedDir/test/kotlin"
-
+fun Subproject.applyGeneratedDir() {
     sourceSets {
         main {
             resources.srcDirs(
-                "$generatedDir/main/resources",
                 "$buildDir/descriptors/main"
             )
         }
         test {
             resources.srcDirs(
-                "$generatedDir/test/resources",
                 "$buildDir/descriptors/test"
             )
         }
@@ -242,12 +235,6 @@ fun Subproject.applyGeneratedDir(generatedDir: String) {
 
     idea {
         module {
-            generatedSourceDirs.add(file(generatedJavaDir))
-            generatedSourceDirs.add(file(generatedKotlinDir))
-            testSources.from(
-                project.file(generatedTestJavaDir),
-                project.file(generatedTestKotlinDir)
-            )
             isDownloadJavadoc = true
             isDownloadSources = true
         }
