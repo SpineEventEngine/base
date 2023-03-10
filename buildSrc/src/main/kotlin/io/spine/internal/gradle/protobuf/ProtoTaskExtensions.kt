@@ -29,15 +29,30 @@ package io.spine.internal.gradle.protobuf
 import com.google.protobuf.gradle.GenerateProtoTask
 import java.io.File
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.tasks.SourceSet
 import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.kotlin.dsl.get
+import org.gradle.plugins.ide.idea.GenerateIdeaModule
+import org.gradle.plugins.ide.idea.model.IdeaModel
+import org.gradle.plugins.ide.idea.model.IdeaModule
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 
+/**
+ * Obtains the name of the `generated` directory under the project root directory
+ */
 private val Project.generatedDir: String
     get() = "${projectDir}/generated"
+
+/**
+ * Obtains the `generated` directory for the source set of the task.
+ *
+ * If [language] is specified returns the subdirectory for this language.
+ */
+private fun GenerateProtoTask.generatedDir(language: String = ""): File {
+    val path = "${project.generatedDir}/${sourceSet.name}/$language"
+    return File(path)
+}
 
 /**
  * Configures protobuf code generation task for the code which cannot use Spine Model Compiler
@@ -91,6 +106,7 @@ fun GenerateProtoTask.setup() {
     excludeProtocOutput()
     setupKotlinCompile()
     dependOnProcessResourcesTask()
+    configureIdeaDirs()
 }
 
 /**
@@ -114,13 +130,12 @@ private fun GenerateProtoTask.setupDescriptorSetFileCreation() {
  * Also removes sources belonging to the `com.google` package in the target directory.
  */
 private fun GenerateProtoTask.copyGeneratedFiles() {
-    val generatedDir = project.generatedDir
     project.copy {
         from(outputBaseDir)
-        into("$generatedDir/${sourceSet.name}")
+        into(generatedDir())
     }
-    deleteComGoogle(generatedDir, "java")
-    deleteComGoogle(generatedDir, "kotlin")
+    deleteComGoogle("java")
+    deleteComGoogle("kotlin")
 }
 
 /**
@@ -134,9 +149,10 @@ private fun GenerateProtoTask.copyGeneratedFiles() {
  * Now, as we have the descriptors _and_ excessive Java or Kotlin code, we delete it to avoid
  * classes that duplicate those coming from Protobuf library JARs.
  */
-private fun Task.deleteComGoogle(generatedDir: String, language: String) {
-    val comDirectory = File("${generatedDir}/$language/com")
+private fun GenerateProtoTask.deleteComGoogle(language: String) {
+    val comDirectory = generatedDir(language).resolve("com")
     val googlePackage = comDirectory.resolve("google")
+
     project.delete(googlePackage)
 
     // If the `com` directory becomes empty, delete it too.
@@ -150,27 +166,19 @@ private fun Task.deleteComGoogle(generatedDir: String, language: String) {
  * duplicated source code files.
  */
 private fun GenerateProtoTask.excludeProtocOutput() {
-    val protocOutputDir = File(outputBaseDir)
-    val generatedDir = project.generatedDir
-    val ssn = sourceSet.name
+    val protocOutputDir = File(outputBaseDir).parentFile
     val java: SourceDirectorySet = sourceSet.java
 
-    // The predicate to filter out files from `build/generated/source/proto` directory.
-    val belongsToProtocOutput: (File) -> Boolean = { file -> file.residesIn(protocOutputDir) }
-
+    // Filter out directories belonging to `build/generated/source/proto`.
     val newSourceDirectories = java.sourceDirectories
-        .filter { !belongsToProtocOutput(it) }
+        .filter { !it.residesIn(protocOutputDir) }
         .toSet()
-
     java.setSrcDirs(listOf<String>())
     java.srcDirs(newSourceDirectories)
 
     // Add copied files to the Java source set.
-    val ssnJava = File("$generatedDir/$ssn/java/")
-    val ssnKotlin = File("$generatedDir/$ssn/kotlin/")
-
-    java.srcDir(ssnJava)
-    java.srcDir(ssnKotlin)
+    java.srcDir(generatedDir("java"))
+    java.srcDir(generatedDir("kotlin"))
 }
 
 /**
@@ -217,3 +225,58 @@ private fun Project.kotlinCompileFor(sourceSet: SourceSet): KotlinCompile<*>? {
 
 private fun File.residesIn(directory: File): Boolean =
     canonicalFile.startsWith(directory.absolutePath)
+
+private fun GenerateProtoTask.configureIdeaDirs() = project.plugins.withId("idea") {
+    val module = project.extensions.findByType(IdeaModel::class.java)!!.module
+
+    // Make IDEA forget about sources under `outputBaseDir`.
+    val protocOutputDir = File(outputBaseDir).parentFile
+    module.generatedSourceDirs.removeIf { dir ->
+        dir.residesIn(protocOutputDir)
+    }
+
+    module.sourceDirs.removeIf { dir ->
+        dir.residesIn(protocOutputDir)
+    }
+
+    val javaDir = generatedDir("java")
+    val kotlinDir = generatedDir("kotlin")
+
+    // As advised by `Utils.groovy` from Protobuf Gradle plugin:
+    // This is required because the IntelliJ IDEA plugin does not allow adding source directories
+    // that do not exist. The IntelliJ IDEA config files should be valid from the start even if
+    // a user runs './gradlew idea' before running './gradlew generateProto'.
+    project.tasks.withType(GenerateIdeaModule::class.java).forEach {
+        it.doFirst {
+            javaDir.mkdirs()
+            kotlinDir.mkdirs()
+        }
+    }
+
+    if (isTest) {
+        module.testSources.run {
+            from(javaDir)
+            from(kotlinDir)
+        }
+    } else {
+        module.sourceDirs.run {
+            add(javaDir)
+            add(kotlinDir)
+        }
+    }
+
+    module.generatedSourceDirs.run {
+        add(javaDir)
+        add(kotlinDir)
+    }
+}
+
+@Suppress("unused")
+private fun IdeaModule.printSourceDirectories() {
+    println("**** [IDEA] Source directories:")
+    sourceDirs.forEach { println(it) }
+    println()
+    println("**** [IDEA] Generated source directories:")
+    generatedSourceDirs.forEach { println(it) }
+    println()
+}
