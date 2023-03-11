@@ -204,7 +204,7 @@ private fun GenerateProtoTask.dependOnProcessResourcesTask() {
 }
 
 /**
- * Obtains the name of the task `processResource` task for the given source set name.
+ * Obtains the name of the `processResource` task for the given source set name.
  */
 private fun processResourceTaskName(sourceSetName: String): String {
     val infix = if (sourceSetName == "main") "" else sourceSetName.capitalized()
