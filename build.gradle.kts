@@ -110,8 +110,6 @@ subprojects {
     addDependencies()
     forceConfigurations()
 
-    applyGeneratedDir()
-    configureProtobuf()
     val generatedDir = "$projectDir/generated"
     setTaskDependencies(generatedDir)
     setupTests()
@@ -205,37 +203,6 @@ fun Subproject.forceConfigurations() {
                     Dokka.BasePlugin.lib
                 )
             }
-        }
-    }
-}
-
-fun Subproject.applyGeneratedDir() {
-    sourceSets {
-        main {
-            resources.srcDirs(
-                "$buildDir/descriptors/main"
-            )
-        }
-        test {
-            resources.srcDirs(
-                "$buildDir/descriptors/test"
-            )
-        }
-    }
-
-    idea {
-        module {
-            isDownloadJavadoc = true
-            isDownloadSources = true
-        }
-    }
-}
-
-fun Subproject.configureProtobuf() {
-    protobuf {
-        configurations.excludeProtobufLite()
-        protoc {
-            artifact = Protobuf.compiler
         }
     }
 }
