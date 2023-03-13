@@ -39,7 +39,7 @@ import org.gradle.plugins.ide.idea.model.IdeaModule
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 
 /**
- * Obtains the name of the `generated` directory under the project root directory
+ * Obtains the name of the `generated` directory under the project root directory.
  */
 private val Project.generatedDir: String
     get() = "${projectDir}/generated"
