@@ -47,7 +47,8 @@ public final class Json {
      * @param message
      *         the message object
      * @return JSON string
-     * @deprecated please use {@link io.spine.type.Json#toJson(Message)}
+     * @deprecated
+     *  Please use {@link io.spine.type.Json#toJson(com.google.protobuf.MessageOrBuilder)}.
      */
     @Deprecated
     @InlineMe(replacement = "io.spine.type.Json.toJson(message)")
@@ -63,7 +64,8 @@ public final class Json {
      * @param message
      *         the {@code Message} object
      * @return the converted message to JSON
-     * @deprecated please use {@link io.spine.type.Json#toCompactJson(Message)}
+     * @deprecated
+     *  Please use {@link io.spine.type.Json#toCompactJson(com.google.protobuf.MessageOrBuilder)}.
      */
     @Deprecated
     @InlineMe(replacement = "io.spine.type.Json.toCompactJson(message)")

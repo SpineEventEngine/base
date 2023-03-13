@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -113,9 +113,9 @@ subprojects {
     addDependencies()
     forceConfigurations()
 
+    applyGeneratedDir()
+    configureProtobuf()
     val generatedDir = "$projectDir/generated"
-    applyGeneratedDir(generatedDir)
-    configureProtobuf(generatedDir)
     setTaskDependencies(generatedDir)
     setupTests()
 
@@ -219,22 +219,15 @@ fun Subproject.forceConfigurations() {
     }
 }
 
-fun Subproject.applyGeneratedDir(generatedDir: String) {
-    val generatedJavaDir = "$generatedDir/main/java"
-    val generatedKotlinDir = "$generatedDir/main/kotlin"
-    val generatedTestJavaDir = "$generatedDir/test/java"
-    val generatedTestKotlinDir = "$generatedDir/test/kotlin"
-
+fun Subproject.applyGeneratedDir() {
     sourceSets {
         main {
             resources.srcDirs(
-                "$generatedDir/main/resources",
                 "$buildDir/descriptors/main"
             )
         }
         test {
             resources.srcDirs(
-                "$generatedDir/test/resources",
                 "$buildDir/descriptors/test"
             )
         }
@@ -242,22 +235,15 @@ fun Subproject.applyGeneratedDir(generatedDir: String) {
 
     idea {
         module {
-            generatedSourceDirs.add(file(generatedJavaDir))
-            generatedSourceDirs.add(file(generatedKotlinDir))
-            testSources.from(
-                project.file(generatedTestJavaDir),
-                project.file(generatedTestKotlinDir)
-            )
             isDownloadJavadoc = true
             isDownloadSources = true
         }
     }
 }
 
-fun Subproject.configureProtobuf(generatedDir: String) {
+fun Subproject.configureProtobuf() {
     protobuf {
         configurations.excludeProtobufLite()
-        generatedFilesBaseDir = generatedDir
         protoc {
             artifact = Protobuf.compiler
         }

@@ -10,7 +10,7 @@ all modules and does not describe the project structure per-subproject.
  -->
 <groupId>io.spine</groupId>
 <artifactId>spine-base</artifactId>
-<version>2.0.0-SNAPSHOT.163</version>
+<version>2.0.0-SNAPSHOT.164</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -200,7 +200,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd-java</artifactId>
-    <version>6.51.0</version>
+    <version>6.55.0</version>
   </dependency>
   <dependency>
     <groupId>org.checkerframework</groupId>
