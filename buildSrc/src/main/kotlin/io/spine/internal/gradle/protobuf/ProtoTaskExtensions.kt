@@ -271,6 +271,12 @@ private fun GenerateProtoTask.configureIdeaDirs() = project.plugins.withId("idea
     }
 }
 
+/**
+ * Prints diagnostic output of `sourceDirs` and `generatedSourceDirs` of an [IdeaModule].
+ *
+ * The warning `"unused"` is suppressed because this function is not used in
+ * the production mode.
+ */
 @Suppress("unused")
 private fun IdeaModule.printSourceDirectories() {
     println("**** [IDEA] Source directories:")
