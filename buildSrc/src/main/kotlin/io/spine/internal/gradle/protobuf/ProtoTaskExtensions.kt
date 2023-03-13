@@ -39,7 +39,7 @@ import org.gradle.plugins.ide.idea.model.IdeaModule
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 
 /**
- * Obtains the name of the `generated` directory under the project root directory
+ * Obtains the name of the `generated` directory under the project root directory.
  */
 private val Project.generatedDir: String
     get() = "${projectDir}/generated"
@@ -271,6 +271,12 @@ private fun GenerateProtoTask.configureIdeaDirs() = project.plugins.withId("idea
     }
 }
 
+/**
+ * Prints diagnostic output of `sourceDirs` and `generatedSourceDirs` of an [IdeaModule].
+ *
+ * The warning `"unused"` is suppressed because this function is not used in
+ * the production mode.
+ */
 @Suppress("unused")
 private fun IdeaModule.printSourceDirectories() {
     println("**** [IDEA] Source directories:")
