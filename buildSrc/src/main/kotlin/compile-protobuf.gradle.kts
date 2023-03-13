@@ -24,17 +24,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.gradle.report.license.LicenseReporter
+import com.google.protobuf.gradle.protobuf
+import io.spine.internal.dependency.Protobuf
+import io.spine.internal.gradle.excludeProtobufLite
+import io.spine.internal.gradle.protobuf.setup
 
 plugins {
-    kotlin
-    jacoco
-    `project-report`
-    `detekt-code-analysis`
+    id("java-library")
+    id("com.google.protobuf")
 }
 
-LicenseReporter.generateReportIn(project)
 
-kotlin {
-    // TODO: Implement
+// For generating test fixtures. See `src/test/proto`.
+protobuf {
+    configurations.excludeProtobufLite()
+    protoc {
+        artifact = Protobuf.compiler
+    }
+    generateProtoTasks.all().configureEach {
+        setup()
+    }
 }

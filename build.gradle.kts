@@ -26,31 +26,12 @@
 
 @file:Suppress("RemoveRedundantQualifierName") // Cannot use imports in some places.
 
-import io.spine.internal.dependency.CheckerFramework
-import io.spine.internal.dependency.Dokka
-import io.spine.internal.dependency.ErrorProne
-import io.spine.internal.dependency.Flogger
-import io.spine.internal.dependency.Guava
-import io.spine.internal.dependency.JUnit
-import io.spine.internal.dependency.JavaX
-import io.spine.internal.dependency.Protobuf
-import io.spine.internal.gradle.checkstyle.CheckStyleConfig
-import io.spine.internal.gradle.excludeProtobufLite
-import io.spine.internal.gradle.forceVersions
-import io.spine.internal.gradle.github.pages.updateGitHubPages
-import io.spine.internal.gradle.javac.configureErrorProne
-import io.spine.internal.gradle.javac.configureJavac
-import io.spine.internal.gradle.javadoc.JavadocConfig
-import io.spine.internal.gradle.kotlin.applyJvmToolchain
-import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
 import io.spine.internal.gradle.publish.PublishingRepos
 import io.spine.internal.gradle.publish.spinePublishing
 import io.spine.internal.gradle.report.coverage.JacocoConfig
 import io.spine.internal.gradle.report.license.LicenseReporter
 import io.spine.internal.gradle.report.pom.PomGenerator
 import io.spine.internal.gradle.standardToSpineSdk
-import io.spine.internal.gradle.testing.registerTestTasks
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     standardSpineSdkRepositories()
@@ -61,12 +42,8 @@ repositories.standardToSpineSdk()
 
 // Apply some plugins to make type-safe extension accessors available in this script file.
 plugins {
-    `java-library`
-    kotlin("jvm")
     idea
-    protobuf
     jacoco
-    errorprone
     `gradle-doctor`
     `project-report`
 }
@@ -91,154 +68,11 @@ spinePublishing {
 
 allprojects {
     apply(from = "$rootDir/version.gradle.kts")
-
     group = "io.spine"
     version = rootProject.extra["versionToPublish"]!!
-
     repositories.standardToSpineSdk()
 }
 
-object BuildSettings {
-    private const val JVM_VERSION = 11
-    val javaVersion = JavaLanguageVersion.of(JVM_VERSION)
-}
-
-subprojects {
-    applyPlugins()
-    configureJava(BuildSettings.javaVersion)
-    configureKotlin(BuildSettings.javaVersion)
-    addDependencies()
-    forceConfigurations()
-
-    val generatedDir = "$projectDir/generated"
-    setTaskDependencies(generatedDir)
-    setupTests()
-
-    configureGitHubPages()
-}
-
 JacocoConfig.applyTo(project)
-PomGenerator.applyTo(project)
 LicenseReporter.mergeAllReports(project)
-
-typealias Subproject = Project
-
-fun Subproject.applyPlugins() {
-    // Apply standard plugins.
-    apply {
-        plugin("idea")
-        plugin("java-library")
-        plugin("kotlin")
-        plugin("net.ltgt.errorprone")
-        plugin("maven-publish")
-    }
-
-    CheckStyleConfig.applyTo(project)
-    JavadocConfig.applyTo(project)
-    LicenseReporter.generateReportIn(project)
-}
-
-fun Subproject.configureJava(javaVersion: JavaLanguageVersion) {
-    java {
-        toolchain.languageVersion.set(javaVersion)
-    }
-
-    tasks {
-        withType<JavaCompile>().configureEach {
-            configureJavac()
-            configureErrorProne()
-        }
-    }
-}
-
-fun Subproject.configureKotlin(javaVersion: JavaLanguageVersion) {
-    kotlin {
-        applyJvmToolchain(javaVersion.asInt())
-        explicitApi()
-    }
-
-    tasks {
-        withType<KotlinCompile>().configureEach {
-            kotlinOptions.jvmTarget = javaVersion.toString()
-            setFreeCompilerArgs()
-        }
-    }
-}
-
-/**
- * These dependencies are applied to all subprojects and do not have to
- * be included explicitly.
- *
- * We expose production code dependencies as API because they are used
- * by the framework parts that depend on `base`.
- */
-fun Subproject.addDependencies() = dependencies {
-    errorprone(ErrorProne.core)
-
-    Protobuf.libs.forEach { api(it) }
-    api(Flogger.lib)
-    api(Guava.lib)
-
-    compileOnlyApi(CheckerFramework.annotations)
-    compileOnlyApi(JavaX.annotations)
-    ErrorProne.annotations.forEach { compileOnlyApi(it) }
-
-    testImplementation(Guava.testLib)
-    testImplementation(JUnit.runner)
-    testImplementation(JUnit.pioneer)
-    JUnit.api.forEach { testImplementation(it) }
-
-    runtimeOnly(Flogger.Runtime.systemBackend)
-}
-
-fun Subproject.forceConfigurations() {
-    with(configurations) {
-        forceVersions()
-        excludeProtobufLite()
-        all {
-            resolutionStrategy {
-                force(
-                    JUnit.bom,
-                    JUnit.runner,
-                    Dokka.BasePlugin.lib
-                )
-            }
-        }
-    }
-}
-
-fun Subproject.setupTests() {
-    tasks {
-        registerTestTasks()
-        test.configure {
-            useJUnitPlatform {
-                includeEngines("junit-jupiter")
-            }
-        }
-    }
-}
-
-fun Subproject.setTaskDependencies(generatedDir: String) {
-    tasks {
-        val cleanGenerated by registering(Delete::class) {
-            delete(generatedDir)
-        }
-        clean.configure {
-            dependsOn(cleanGenerated)
-        }
-
-        named("publish") {
-            dependsOn("${project.path}:updateGitHubPages")
-        }
-    }
-
-    configureTaskDependencies()
-}
-
-fun Subproject.configureGitHubPages() {
-    val docletVersion = project.version.toString()
-    updateGitHubPages(docletVersion) {
-        allowInternalJavadoc.set(true)
-        rootFolder.set(rootDir)
-    }
-}
+PomGenerator.applyTo(project)
