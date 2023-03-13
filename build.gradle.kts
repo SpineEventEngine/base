@@ -65,13 +65,15 @@ plugins {
     kotlin("jvm")
     idea
     protobuf
+    jacoco
     errorprone
     `gradle-doctor`
+    `project-report`
 }
-
 
 spinePublishing {
     modules = setOf(
+        "logging",
         "base",
         "testlib"
     )
@@ -88,11 +90,6 @@ spinePublishing {
 }
 
 allprojects {
-    apply {
-        plugin("jacoco")
-        plugin("idea")
-        plugin("project-report")
-    }
     apply(from = "$rootDir/version.gradle.kts")
 
     group = "io.spine"
@@ -115,7 +112,6 @@ subprojects {
 
     val generatedDir = "$projectDir/generated"
     applyGeneratedDir(generatedDir)
-    configureProtobuf(generatedDir)
     setTaskDependencies(generatedDir)
     setupTests()
 
@@ -131,18 +127,11 @@ typealias Subproject = Project
 fun Subproject.applyPlugins() {
     // Apply standard plugins.
     apply {
+        plugin("idea")
         plugin("java-library")
         plugin("kotlin")
-        plugin("com.google.protobuf")
         plugin("net.ltgt.errorprone")
-        plugin("pmd")
         plugin("maven-publish")
-    }
-
-    // Apply custom Kotlin script plugins.
-    apply {
-        plugin("pmd-settings")
-        plugin("dokka-for-java")
     }
 
     CheckStyleConfig.applyTo(project)
@@ -250,16 +239,6 @@ fun Subproject.applyGeneratedDir(generatedDir: String) {
             )
             isDownloadJavadoc = true
             isDownloadSources = true
-        }
-    }
-}
-
-fun Subproject.configureProtobuf(generatedDir: String) {
-    protobuf {
-        configurations.excludeProtobufLite()
-        generatedFilesBaseDir = generatedDir
-        protoc {
-            artifact = Protobuf.compiler
         }
     }
 }

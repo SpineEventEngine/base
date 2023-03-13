@@ -29,11 +29,15 @@ import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.Kotest
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Truth
+import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.protobuf.setup
 
 group = "io.spine.tools"
 
 plugins {
+    protobuf
+    errorprone
+    `pmd-settings`
     `detekt-code-analysis`
 }
 
@@ -56,6 +60,10 @@ dependencies {
 
 // For generating test fixtures.
 protobuf {
+    configurations.excludeProtobufLite()
+    protoc {
+        artifact = Protobuf.compiler
+    }
     generateProtoTasks.all().configureEach {
         setup("$projectDir/generated")
     }

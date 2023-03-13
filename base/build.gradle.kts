@@ -28,12 +28,20 @@ import com.google.protobuf.gradle.protobuf
 import io.spine.internal.dependency.AutoService
 import io.spine.internal.dependency.Kotlin
 import io.spine.internal.dependency.Protobuf
+import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.protobuf.setup
 import io.spine.internal.gradle.publish.IncrementGuard
 import io.spine.internal.gradle.publish.excludeGoogleProtoFromArtifacts
 
 plugins {
+    protobuf
+    idea
+    errorprone
+    `pmd-settings`
     `detekt-code-analysis`
+    jacoco
+    `project-report`
+    `dokka-for-java`
 }
 
 apply {
@@ -58,6 +66,10 @@ dependencies {
 }
 
 protobuf {
+    configurations.excludeProtobufLite()
+    protoc {
+            artifact = Protobuf.compiler
+        }
     generateProtoTasks.all().configureEach {
         setup("$projectDir/generated")
     }
