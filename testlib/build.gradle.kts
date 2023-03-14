@@ -24,6 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import io.spine.internal.dependency.CheckerFramework
+import io.spine.internal.dependency.Flogger
 import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.Kotest
@@ -56,6 +58,9 @@ dependencies {
             + Kotest.assertions).forEach {
         api(it)
     }
+    implementation(Flogger.lib)
+    compileOnly(CheckerFramework.annotations)
 
     implementation(project(":base"))
+    testImplementation(project(":logging"))
 }

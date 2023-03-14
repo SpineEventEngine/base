@@ -24,12 +24,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:Suppress("UNUSED_VARIABLE") // ... used for getting named objects.
+
+import io.spine.internal.dependency.Flogger
+import io.spine.internal.dependency.Guava
 import io.spine.internal.gradle.report.license.LicenseReporter
 
 plugins {
     kotlin("multiplatform")
     idea
-//    jacoco
+    jacoco
     `project-report`
     `detekt-code-analysis`
 }
@@ -37,6 +41,29 @@ plugins {
 LicenseReporter.generateReportIn(project)
 
 kotlin {
-    jvm()
-    // TODO: Implement
+    jvm {
+        withJava()
+    }
+
+    sourceSets {
+        val jvmMain by getting {
+            dependencies {
+                api(Flogger.lib)
+                implementation(Guava.lib)
+            }
+        }
+        val jvmTest by getting {
+            dependencies {
+//                (Truth.libs
+//                        + JUnit.api
+//                        + Guava.testLib
+//                        + kotlin("test-junit5")
+//                        + Kotest.assertions)
+//                    .forEach {
+//                        implementation(it)
+//                    }
+                implementation(project(":testlib"))
+            }
+        }
+    }
 }

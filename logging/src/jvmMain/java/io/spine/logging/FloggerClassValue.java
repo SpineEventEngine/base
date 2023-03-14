@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+import static com.google.common.base.Throwables.getRootCause;
 
 /**
  * Obtains {@link FluentLogger} instance for a passed class and associates the value with the class.
@@ -53,23 +53,26 @@ final class FloggerClassValue extends ClassValue<FluentLogger> {
         return INSTANCE.get(cls);
     }
 
-    /** Prevent instantiation from outside. */
+    /**
+     * Creates an instance obtaining {@link #constructor} via Reflection.
+     */
     private FloggerClassValue() {
         super();
         this.constructor = ctor();
     }
 
     private static Constructor<FluentLogger> ctor() {
+        var loggerClass = FluentLogger.class;
         var loggerBackendClass = LoggerBackend.class;
         try {
-            var constructor = FluentLogger.class.getDeclaredConstructor(loggerBackendClass);
+            var constructor = loggerClass.getDeclaredConstructor(loggerBackendClass);
             constructor.setAccessible(true);
             return constructor;
         } catch (NoSuchMethodException e) {
             logger.atSevere()
                   .withCause(e)
                   .log("Unable to find constructor `%s(%s)`.",
-                       FluentLogger.class.getName(), loggerBackendClass.getName());
+                       loggerClass.getName(), loggerBackendClass.getName());
             throw illegalStateWithCauseOf(e);
         }
     }
@@ -87,5 +90,10 @@ final class FloggerClassValue extends ClassValue<FluentLogger> {
                   .log("Unable to create logger.");
             throw illegalStateWithCauseOf(e);
         }
+    }
+
+    private static IllegalStateException illegalStateWithCauseOf(Throwable throwable) {
+        var rootCause = getRootCause(throwable);
+        throw new IllegalStateException(rootCause);
     }
 }

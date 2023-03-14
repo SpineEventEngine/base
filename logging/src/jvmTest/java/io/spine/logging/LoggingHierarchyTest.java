@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,6 +69,6 @@ class LoggingHierarchyTest {
         // See: https://github.com/SpineEventEngine/base/issues/612
         var context = (LogContext<?, ?>) logger.atSevere();
         assertThat(context.getLoggerName())
-                .isEqualTo(cls.getName());
+             .isEqualTo(cls.getName());
     }
 }

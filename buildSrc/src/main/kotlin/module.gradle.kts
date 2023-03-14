@@ -96,7 +96,6 @@ fun Module.addDependencies() = dependencies {
     errorprone(ErrorProne.core)
 
     Protobuf.libs.forEach { api(it) }
-    api(Flogger.lib)
     api(Guava.lib)
 
     compileOnlyApi(CheckerFramework.annotations)

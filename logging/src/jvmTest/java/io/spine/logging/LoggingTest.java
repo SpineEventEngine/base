@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import com.google.common.flogger.FluentLogger;
 import com.google.common.flogger.LogContext;
 import com.google.common.flogger.backend.LogData;
 import io.spine.logging.given.LoggingObject;
+import io.spine.testing.logging.LogTruth;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -118,9 +119,9 @@ class LoggingTest {
             @SuppressWarnings("FloggerSplitLogStatement")
             // See: https://github.com/SpineEventEngine/base/issues/612
             var api = method.get();
-            assertThat(api)
+            LogTruth.assertThat(api)
                     .isInstanceOf(LogContext.class);
-            assertThat(((LogData) api).getLevel())
+            LogTruth.assertThat(((LogData) api).getLevel())
                     .isEqualTo(expectedLevel);
         }
     }
