@@ -25,7 +25,6 @@
  */
 
 import io.spine.internal.gradle.report.license.LicenseReporter
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.jvm
 
 plugins {
     kotlin("multiplatform")

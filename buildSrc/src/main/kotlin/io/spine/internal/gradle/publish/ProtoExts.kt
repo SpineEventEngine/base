@@ -33,7 +33,6 @@ import org.gradle.api.Task
 import org.gradle.api.file.FileTreeElement
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.tasks.bundling.Jar
-import org.gradle.kotlin.dsl.get
 
 /**
  * Tells whether there are any Proto sources in "main" source set.

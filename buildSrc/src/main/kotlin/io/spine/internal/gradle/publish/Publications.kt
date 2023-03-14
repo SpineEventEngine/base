@@ -34,7 +34,6 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.create
-import org.gradle.kotlin.dsl.get
 
 /**
  * Abstract base for handlers of publications in a project
