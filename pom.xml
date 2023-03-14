@@ -24,12 +24,6 @@ all modules and does not describe the project structure per-subproject.
 
 <dependencies>
   <dependency>
-    <groupId>com.google.flogger</groupId>
-    <artifactId>flogger</artifactId>
-    <version>0.7.4</version>
-    <scope>compile</scope>
-  </dependency>
-  <dependency>
     <groupId>com.google.guava</groupId>
     <artifactId>guava</artifactId>
     <version>31.1-jre</version>
@@ -38,19 +32,19 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.google.protobuf</groupId>
     <artifactId>protobuf-java</artifactId>
-    <version>3.22.0</version>
+    <version>3.22.2</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
     <groupId>com.google.protobuf</groupId>
     <artifactId>protobuf-java-util</artifactId>
-    <version>3.22.0</version>
+    <version>3.22.2</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
     <groupId>com.google.protobuf</groupId>
     <artifactId>protobuf-kotlin</artifactId>
-    <version>3.22.0</version>
+    <version>3.22.2</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -172,9 +166,14 @@ all modules and does not describe the project structure per-subproject.
     <version>9+181-r4173-1</version>
   </dependency>
   <dependency>
+    <groupId>com.google.flogger</groupId>
+    <artifactId>flogger</artifactId>
+    <version>0.7.4</version>
+  </dependency>
+  <dependency>
     <groupId>com.google.protobuf</groupId>
     <artifactId>protoc</artifactId>
-    <version>3.22.0</version>
+    <version>3.22.2</version>
   </dependency>
   <dependency>
     <groupId>com.puppycrawl.tools</groupId>
