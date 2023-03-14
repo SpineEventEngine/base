@@ -163,7 +163,10 @@ private fun MavenPublication.specifyArtifacts(project: Project, jars: Set<TaskPr
        It is NOT defined as another `Jar` task intentionally. Doing that will leave the
        publication without correct ".pom" and ".module" metadata files generated.
     */
-    from(project.components["java"])
+    val javaComponent = project.components.findByName("java")
+    javaComponent?.let {
+        from(it)
+    }
 
     /* Other artifacts are represented by `Jar` tasks. Those artifacts don't bring any other
        metadata in comparison with `Component` (such as dependencies notation).

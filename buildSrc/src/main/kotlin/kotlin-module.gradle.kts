@@ -24,38 +24,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.dependency.Guava
-import io.spine.internal.dependency.JUnit
-import io.spine.internal.dependency.Kotest
-import io.spine.internal.dependency.Protobuf
-import io.spine.internal.dependency.Truth
-
-group = "io.spine.tools"
+import io.spine.internal.gradle.kotlin.applyJvmToolchain
+import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
+import org.gradle.jvm.toolchain.JavaLanguageVersion
+import org.gradle.kotlin.dsl.invoke
+import org.gradle.kotlin.dsl.kotlin
+import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("module")
-    id("compile-protobuf")
-    id("kotlin-module")
+    kotlin("jvm")
 }
 
-// Suppress `TooManyFunctions` for `TruthExtensions.kt` file.
-detekt {
-    baseline = file("config/detekt-baseline.xml")
+kotlin {
+    applyJvmToolchain(BuildSettings.javaVersion.asInt())
+    explicitApi()
 }
 
-dependencies {
-    /*
-        Expose tools we use as transitive dependencies to simplify dependency
-        management in subprojects.
-    */
-    (Protobuf.libs
-            + JUnit.api
-            + Truth.libs
-            + Guava.testLib
-            + kotlin("test-junit5")
-            + Kotest.assertions).forEach {
-        api(it)
+tasks {
+    withType<KotlinCompile>().configureEach {
+        kotlinOptions.jvmTarget = BuildSettings.javaVersion.toString()
+        setFreeCompilerArgs()
     }
-
-    implementation(project(":base"))
 }

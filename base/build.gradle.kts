@@ -33,6 +33,7 @@ import io.spine.internal.gradle.publish.excludeGoogleProtoFromArtifacts
 plugins {
     id("module")
     id("compile-protobuf")
+    id("kotlin-module")
 }
 
 apply<IncrementGuard>()

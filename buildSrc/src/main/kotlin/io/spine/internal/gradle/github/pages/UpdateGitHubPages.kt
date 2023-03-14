@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -205,7 +205,9 @@ class UpdateGitHubPages : Plugin<Project> {
     private fun TaskContainer.composeDokkaInputs(): List<Any> {
         val inputs = mutableListOf<Any>()
 
-        inputs.add(dokkaHtmlTask())
+        dokkaHtmlTask()?.let {
+            inputs.add(it)
+        }
         inputs.addAll(includedInputs)
 
         return inputs

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,18 @@
 
 package io.spine.internal.gradle.dokka
 
+import io.spine.internal.gradle.publish.getOrCreate
 import java.io.File
+import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
+import org.gradle.api.tasks.TaskContainer
+import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.dokka.gradle.GradleDokkaSourceSetBuilder
+
+/**
+ * Finds the `dokkaHtml` Gradle task.
+ */
+fun TaskContainer.dokkaHtmlTask(): DokkaTask? = this.findByName("dokkaHtml") as DokkaTask?
 
 /**
  * Returns only Java source roots out of all present in the source set.
@@ -44,4 +53,20 @@ internal fun GradleDokkaSourceSetBuilder.onlyJavaSources(): FileCollection {
 
 private fun File.isJavaSourceDirectory(): Boolean {
     return isDirectory && name == "java"
+}
+
+/**
+ * Locates or creates `dokkaJar` task in this [Project].
+ *
+ * The output of this task is a `jar` archive. The archive contains the Dokka output, generated upon
+ * Java sources from `main` source set. Requires Dokka to be configured in the target project by
+ * applying `dokka-for-java` plugin.
+ */
+internal fun Project.dokkaJar() = tasks.getOrCreate("dokkaJar") {
+    archiveClassifier.set("dokka")
+    from(files("$buildDir/docs/dokka"))
+
+    tasks.dokkaHtmlTask()?.let{ dokkaTask ->
+        this@getOrCreate.dependsOn(dokkaTask)
+    }
 }

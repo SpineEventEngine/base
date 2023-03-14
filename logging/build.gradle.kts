@@ -25,10 +25,12 @@
  */
 
 import io.spine.internal.gradle.report.license.LicenseReporter
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.jvm
 
 plugins {
-    kotlin
-    jacoco
+    kotlin("multiplatform")
+    idea
+//    jacoco
     `project-report`
     `detekt-code-analysis`
 }
@@ -36,5 +38,6 @@ plugins {
 LicenseReporter.generateReportIn(project)
 
 kotlin {
+    jvm()
     // TODO: Implement
 }

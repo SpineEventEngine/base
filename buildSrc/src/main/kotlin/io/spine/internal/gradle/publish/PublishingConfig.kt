@@ -28,9 +28,11 @@ package io.spine.internal.gradle.publish
 
 import io.spine.internal.gradle.Repository
 import org.gradle.api.Project
+import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.apply
+import io.spine.internal.gradle.dokka.dokkaJar
 
 /**
  * Information, required to set up publishing of a project using `maven-publish` plugin.
@@ -147,11 +149,16 @@ private fun Project.registerArtifacts(
     includeDokkaJar: Boolean = false
 ): Set<TaskProvider<Jar>> {
 
-    val artifacts = mutableSetOf(
-        sourcesJar(),
-        javadocJar(),
-    )
+    val artifacts = mutableSetOf<TaskProvider<Jar>>()
 
+    val java = project.extensions.findByType(JavaPluginExtension::class.java)
+    java?.run {
+//        artifacts.add(sourcesJar())
+//        artifacts.add(javadocJar())
+//        withSourcesJar()
+//        withJavadocJar()
+    }
+    
     // We don't want to have an empty "proto.jar" when a project doesn't have any Proto files.
     if (hasProto() && includeProtoJar) {
         artifacts.add(protoJar())
@@ -163,7 +170,7 @@ private fun Project.registerArtifacts(
         artifacts.add(testJar())
     }
 
-    if(includeDokkaJar) {
+    if (includeDokkaJar) {
         artifacts.add(dokkaJar())
     }
 
