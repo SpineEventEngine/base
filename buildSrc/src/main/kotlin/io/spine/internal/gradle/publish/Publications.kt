@@ -131,9 +131,15 @@ internal class MavenJavaPublication(
      * Creates a new "mavenJava" [MavenPublication] in the given project.
      */
     override fun handlePublications(project: Project) {
-        project.publications.create<MavenPublication>("mavenJava") {
-            assignMavenCoordinates(project)
-            specifyArtifacts(project, jars)
+        val publications = project.publications
+        val kotlinMultiplatform = publications.findByName("kotlinMultiplatform")
+        if (kotlinMultiplatform == null) {
+            publications.create<MavenPublication>("mavenJava") {
+                assignMavenCoordinates(project)
+                specifyArtifacts(project, jars)
+            }
+        } else {
+            (kotlinMultiplatform as MavenPublication).assignMavenCoordinates(project)
         }
     }
 }
