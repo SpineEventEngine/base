@@ -153,10 +153,8 @@ private fun Project.registerArtifacts(
 
     val java = project.extensions.findByType(JavaPluginExtension::class.java)
     java?.run {
-//        artifacts.add(sourcesJar())
-//        artifacts.add(javadocJar())
-//        withSourcesJar()
-//        withJavadocJar()
+        withSourcesJar()
+        withJavadocJar()
     }
     
     // We don't want to have an empty "proto.jar" when a project doesn't have any Proto files.
