@@ -28,6 +28,8 @@
 
 import io.spine.internal.dependency.Flogger
 import io.spine.internal.dependency.Guava
+import io.spine.internal.gradle.checkstyle.CheckStyleConfig
+import io.spine.internal.gradle.javadoc.JavadocConfig
 import io.spine.internal.gradle.report.license.LicenseReporter
 
 plugins {
@@ -37,8 +39,8 @@ plugins {
     `project-report`
     `detekt-code-analysis`
 }
-
 LicenseReporter.generateReportIn(project)
+CheckStyleConfig.applyTo(project)
 
 kotlin {
     jvm {
@@ -59,3 +61,8 @@ kotlin {
         }
     }
 }
+
+// Apply Javadoc configuration here (and not right after the `plugins` block)
+// because the `javadoc` task is added when the `kotlin` block `withJava` is applied.
+JavadocConfig.applyTo(project)
+
