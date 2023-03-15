@@ -54,14 +54,6 @@ kotlin {
         }
         val jvmTest by getting {
             dependencies {
-//                (Truth.libs
-//                        + JUnit.api
-//                        + Guava.testLib
-//                        + kotlin("test-junit5")
-//                        + Kotest.assertions)
-//                    .forEach {
-//                        implementation(it)
-//                    }
                 implementation(project(":testlib"))
             }
         }
