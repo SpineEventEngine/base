@@ -30,7 +30,9 @@ import io.spine.internal.dependency.Flogger
 import io.spine.internal.dependency.Guava
 import io.spine.internal.gradle.checkstyle.CheckStyleConfig
 import io.spine.internal.gradle.javadoc.JavadocConfig
+import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
 import io.spine.internal.gradle.report.license.LicenseReporter
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("multiplatform")
@@ -59,6 +61,17 @@ kotlin {
                 implementation(project(":testlib"))
             }
         }
+    }
+}
+
+kotlin {
+    explicitApi()
+}
+
+tasks {
+    withType<KotlinCompile>().configureEach {
+        kotlinOptions.jvmTarget = BuildSettings.javaVersion.toString()
+        setFreeCompilerArgs()
     }
 }
 

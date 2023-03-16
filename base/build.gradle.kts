@@ -31,9 +31,9 @@ import io.spine.internal.gradle.publish.IncrementGuard
 import io.spine.internal.gradle.publish.excludeGoogleProtoFromArtifacts
 
 plugins {
-    id("module")
-    id("compile-protobuf")
-    id("kotlin-module")
+    module
+    `compile-protobuf`
+    `kotlin-jvm-module`
 }
 
 apply<IncrementGuard>()
