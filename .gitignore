@@ -1,5 +1,6 @@
 # IntelliJ IDEA modules and interim config files.
 *.iml
+.idea/artifacts/**
 **/.idea/libraries
 **/.idea/shelf
 **/.idea/*.xml
@@ -37,9 +38,6 @@ gradle-app.setting
 
 # Spine internal directory for storing intermediate artifacts
 **/.spine/**
-
-# Spine model compiler auto-generated resources
-/tools/model-compiler/src/main/resources/spine-protoc.gradle
 
 # Prevent accidental adding of credential files
 credentials.tar
