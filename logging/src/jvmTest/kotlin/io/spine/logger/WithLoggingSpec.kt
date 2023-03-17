@@ -24,30 +24,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.logging;
+package io.spine.logger
 
-import com.google.common.flogger.FluentLogger;
+import io.spine.logger.jvm.WithLogging
+import io.spine.logging.Logging
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
-/**
- * Obtains {@link FluentLogger} instance for a passed class and associates the value with the class.
- */
-final class FloggerClassValue extends ClassValue<FluentLogger> {
+@DisplayName("`WithLogging` interface should")
+internal class WithLoggingSpec {
 
-    private static final FloggerClassValue INSTANCE = new FloggerClassValue();
+    @Test
+    fun `provide the same value of logger associated with a class`() {
 
-    /**
-     * Obtains the logger instance for the passed class.
-     */
-    static FluentLogger loggerOf(Class<?> cls) {
-        return INSTANCE.get(cls);
     }
+}
 
-    private FloggerClassValue() {
-        super();
-    }
+private class LoggingConsumer: WithLogging {
 
-    @Override
-    protected FluentLogger computeValue(Class<?> ignored) {
-        return FluentLogger.forEnclosingClass();
+    fun doSomething() {
+        logger.atInfo().log { "Our INFO." }
+        logger.atError().log { "Our ERROR." }
     }
+}
+
+private class ImplementingLogging: Logging {
+
+    fun showLogging() {
+        _info().log("Here comes info from `$javaClass`.")
+    }
+}
+
+fun main() {
+    LoggingConsumer().doSomething()
+//    ImplementingLogging().showLogging()
 }

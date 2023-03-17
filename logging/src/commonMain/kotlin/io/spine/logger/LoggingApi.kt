@@ -24,30 +24,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.logging;
+package io.spine.logger
 
-import com.google.common.flogger.FluentLogger;
+public interface LoggingApi<API: LoggingApi<API>> {
 
-/**
- * Obtains {@link FluentLogger} instance for a passed class and associates the value with the class.
- */
-final class FloggerClassValue extends ClassValue<FluentLogger> {
+    public fun withCause(cause: Throwable): API
 
-    private static final FloggerClassValue INSTANCE = new FloggerClassValue();
+    public fun isEnabled(): Boolean
 
-    /**
-     * Obtains the logger instance for the passed class.
-     */
-    static FluentLogger loggerOf(Class<?> cls) {
-        return INSTANCE.get(cls);
-    }
+    public fun log()
 
-    private FloggerClassValue() {
-        super();
-    }
-
-    @Override
-    protected FluentLogger computeValue(Class<?> ignored) {
-        return FluentLogger.forEnclosingClass();
-    }
+    public fun log(message: () -> String)
 }

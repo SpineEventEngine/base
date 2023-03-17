@@ -24,30 +24,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.logging;
+package io.spine.logger.jvm
 
-import com.google.common.flogger.FluentLogger;
+import com.google.common.flogger.FluentLogger
+import io.spine.logger.LoggerHolder
 
-/**
- * Obtains {@link FluentLogger} instance for a passed class and associates the value with the class.
- */
-final class FloggerClassValue extends ClassValue<FluentLogger> {
+public interface WithLogging: LoggerHolder<Logger.Api> {
 
-    private static final FloggerClassValue INSTANCE = new FloggerClassValue();
+    override val logger: Logger
+        get() {
+            return LoggerClassValue.get(javaClass)
+        }
+}
 
-    /**
-     * Obtains the logger instance for the passed class.
-     */
-    static FluentLogger loggerOf(Class<?> cls) {
-        return INSTANCE.get(cls);
-    }
+private object LoggerClassValue: ClassValue<Logger>() {
 
-    private FloggerClassValue() {
-        super();
-    }
-
-    @Override
-    protected FluentLogger computeValue(Class<?> ignored) {
-        return FluentLogger.forEnclosingClass();
+    override fun computeValue(type: Class<*>?): Logger {
+        val impl = FluentLogger.forEnclosingClass()
+        return Logger(impl)
     }
 }

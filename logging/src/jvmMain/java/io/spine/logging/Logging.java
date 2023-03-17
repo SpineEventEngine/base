@@ -31,6 +31,7 @@ import com.google.common.flogger.FluentLogger;
 import java.util.logging.Level;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.flogger.LogSites.callerOf;
 
 /**
  * Utility interface for objects that require logging output.
@@ -80,7 +81,7 @@ public interface Logging {
 
     /** A convenience method for {@link FluentLogger#atSevere()}. */
     default FluentLogger.Api _severe() {
-        return logger().atSevere();
+        return injectLogSite(logger().atSevere());
     }
 
     /** Same as {@link #_severe()}. */
@@ -90,22 +91,22 @@ public interface Logging {
 
     /** A convenience method for {@link FluentLogger#atWarning()}. */
     default FluentLogger.Api _warn() {
-        return logger().atWarning();
+        return injectLogSite(logger().atWarning());
     }
 
     /** A convenience method for {@link FluentLogger#atInfo()}. */
     default FluentLogger.Api _info() {
-        return logger().atInfo();
+        return injectLogSite(logger().atInfo());
     }
 
     /** A convenience method for {@link FluentLogger#atConfig()}. */
     default FluentLogger.Api _config() {
-        return logger().atConfig();
+        return injectLogSite(logger().atConfig());
     }
 
     /** A convenience method for {@link FluentLogger#atFine()}. */
     default FluentLogger.Api _fine() {
-        return logger().atFine();
+        return injectLogSite(logger().atFine());
     }
 
     /** Sames as {@link #_fine()}. */
@@ -115,16 +116,30 @@ public interface Logging {
 
     /** A convenience method for {@link FluentLogger#atFiner()}. */
     default FluentLogger.Api _finer() {
-        return logger().atFiner();
+        return injectLogSite(logger().atFiner());
     }
 
     /** A convenience method for {@link FluentLogger#atFine()}. */
     default FluentLogger.Api _finest() {
-        return logger().atFinest();
+        return injectLogSite(logger().atFinest());
     }
 
     /** Same as {@link #_finest()}. */
     default FluentLogger.Api _trace() {
         return _finest();
+    }
+
+    /**
+     * Injects the call site to the instance of the passed logging API, if it is enabled.
+     * If the API is not enabled, the passed instance is returned.
+     *
+     * <p>The call site is at the class implementing the {@code Logging} interface.
+     */
+    private static FluentLogger.Api injectLogSite(FluentLogger.Api api) {
+        if (api.isEnabled()) {
+            return api.withInjectedLogSite(callerOf(Logging.class));
+        } else {
+            return api;
+        }
     }
 }

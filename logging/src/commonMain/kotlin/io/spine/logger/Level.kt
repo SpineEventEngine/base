@@ -24,30 +24,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.logging;
+package io.spine.logger
 
-import com.google.common.flogger.FluentLogger;
+public data class Level(
+    val name: String,
+    val value: Int) {
 
-/**
- * Obtains {@link FluentLogger} instance for a passed class and associates the value with the class.
- */
-final class FloggerClassValue extends ClassValue<FluentLogger> {
-
-    private static final FloggerClassValue INSTANCE = new FloggerClassValue();
-
-    /**
-     * Obtains the logger instance for the passed class.
-     */
-    static FluentLogger loggerOf(Class<?> cls) {
-        return INSTANCE.get(cls);
-    }
-
-    private FloggerClassValue() {
-        super();
-    }
-
-    @Override
-    protected FluentLogger computeValue(Class<?> ignored) {
-        return FluentLogger.forEnclosingClass();
+    // Level `value`s repeat those from `java.util.logging.Level`
+    // Names use the words more popular among logging frameworks and implementations.
+    public companion object {
+        public val OFF: Level = Level("OFF", Int.MAX_VALUE)
+        public val ERROR: Level = Level("ERROR", 1000)
+        public val WARNING: Level = Level("WARNING", 900)
+        public val INFO: Level = Level("INFO", 800)
+        public val DEBUG: Level = Level("DEBUG", 500)
     }
 }
