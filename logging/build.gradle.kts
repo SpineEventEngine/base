@@ -53,6 +53,7 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 api(Flogger.lib)
+                runtimeOnly(Flogger.Runtime.systemBackend)
                 implementation(Guava.lib)
             }
         }
