@@ -65,8 +65,6 @@ class LoggingHierarchyTest {
     }
 
     private static void assertLogger(FluentLogger logger, Class<?> cls) {
-        @SuppressWarnings("FloggerSplitLogStatement")
-        // See: https://github.com/SpineEventEngine/base/issues/612
         var context = (LogContext<?, ?>) logger.atSevere();
         assertThat(context.getLoggerName())
              .isEqualTo(cls.getName());
