@@ -26,12 +26,17 @@
 
 package io.spine.logging
 
-public interface Logger<API: LoggingApi<API>> {
+import kotlin.reflect.KClass
 
-    public fun at(level: Level): API
+/**
+ * A factory for [Logger] instances.
+ */
+public expect object LoggerFactory {
 
-    public fun atDebug(): API = at(Level.DEBUG)
-    public fun atInfo(): API = at(Level.INFO)
-    public fun atWarning(): API = at(Level.WARNING)
-    public fun atError(): API = at(Level.ERROR)
+    /**
+     * Obtains the logger for the given class.
+     *
+     * Implementation should provide the same logger instance for the same class.
+     */
+    public fun getLogger(cls: KClass<*>): Logger<*>
 }

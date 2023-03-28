@@ -26,12 +26,16 @@
 
 package io.spine.logging
 
-public interface Logger<API: LoggingApi<API>> {
+import io.kotest.matchers.types.shouldBeSameInstanceAs
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
-    public fun at(level: Level): API
+@DisplayName("`LoggerFactory` should")
+class LoggerFactorySpec {
 
-    public fun atDebug(): API = at(Level.DEBUG)
-    public fun atInfo(): API = at(Level.INFO)
-    public fun atWarning(): API = at(Level.WARNING)
-    public fun atError(): API = at(Level.ERROR)
+    @Test
+    fun `provide the same instance of 'Logger' for the same class`() {
+        LoggerFactory.getLogger(this::class) shouldBeSameInstanceAs
+                LoggerFactory.getLogger(this::class)
+    }
 }
