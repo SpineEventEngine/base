@@ -34,6 +34,7 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.the
 
 /**
  * Abstract base for handlers of publications in a project
@@ -63,8 +64,9 @@ internal sealed class PublicationHandler(
      * them to this publication.
      */
     protected fun MavenPublication.assignMavenCoordinates(project: Project) {
+        val spinePublishing = project.rootProject.the<SpinePublishing>()
         groupId = project.group.toString()
-        artifactId = this@PublicationHandler.artifactId
+        artifactId = spinePublishing.artifactPrefix + artifactId
         version = project.version.toString()
     }
 
@@ -139,7 +141,11 @@ internal class MavenJavaPublication(
                 specifyArtifacts(project, jars)
             }
         } else {
-            (kotlinMultiplatform as MavenPublication).assignMavenCoordinates(project)
+            publications.forEach { publication ->
+                if (publication is MavenPublication) {
+                    publication.assignMavenCoordinates(project)
+                }
+            }
         }
     }
 }

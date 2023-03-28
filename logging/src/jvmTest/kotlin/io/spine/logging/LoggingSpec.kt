@@ -24,15 +24,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.logger
+package io.spine.logging
 
-public interface LoggingApi<API: LoggingApi<API>> {
+import io.kotest.matchers.types.shouldBeSameInstanceAs
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
-    public fun withCause(cause: Throwable): API
+@DisplayName("`Logging` interface should")
+internal class LoggingSpec {
 
-    public fun isEnabled(): Boolean
+    @Test
+    fun `provide the same logger instance`() {
+        val im = ImplementsLogging()
 
-    public fun log()
+        im.logger() shouldBeSameInstanceAs im.logger()
+    }
+}
 
-    public fun log(message: () -> String)
+private class ImplementsLogging: Logging {
+
+    fun showLogging() {
+        _info().log("Here comes info from `$javaClass`.")
+    }
+}
+
+fun main() {
+    ImplementsLogging().showLogging()
 }

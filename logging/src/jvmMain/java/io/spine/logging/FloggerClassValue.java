@@ -27,13 +27,24 @@
 package io.spine.logging;
 
 import com.google.common.flogger.FluentLogger;
+import com.google.common.flogger.backend.LoggerBackend;
+import com.google.common.flogger.backend.Platform;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Throwables.getRootCause;
 
 /**
  * Obtains {@link FluentLogger} instance for a passed class and associates the value with the class.
  */
 final class FloggerClassValue extends ClassValue<FluentLogger> {
-
+    
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
     private static final FloggerClassValue INSTANCE = new FloggerClassValue();
+
+    private final Constructor<FluentLogger> constructor;
 
     /**
      * Obtains the logger instance for the passed class.
@@ -42,12 +53,47 @@ final class FloggerClassValue extends ClassValue<FluentLogger> {
         return INSTANCE.get(cls);
     }
 
+    /**
+     * Creates an instance obtaining {@link #constructor} via Reflection.
+     */
     private FloggerClassValue() {
         super();
+        this.constructor = ctor();
+    }
+
+    private static Constructor<FluentLogger> ctor() {
+        var loggerClass = FluentLogger.class;
+        var loggerBackendClass = LoggerBackend.class;
+        try {
+            var constructor = loggerClass.getDeclaredConstructor(loggerBackendClass);
+            constructor.setAccessible(true);
+            return constructor;
+        } catch (NoSuchMethodException e) {
+            logger.atSevere()
+                  .withCause(e)
+                  .log("Unable to find constructor `%s(%s)`.",
+                       loggerClass.getName(), loggerBackendClass.getName());
+            throw illegalStateWithCauseOf(e);
+        }
     }
 
     @Override
-    protected FluentLogger computeValue(Class<?> ignored) {
-        return FluentLogger.forEnclosingClass();
+    protected FluentLogger computeValue(Class<?> type) {
+        checkNotNull(type);
+        var backend = Platform.getBackend(type.getName());
+        try {
+            var logger = constructor.newInstance(backend);
+            return logger;
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            logger.atSevere()
+                  .withCause(e)
+                  .log("Unable to create logger.");
+            throw illegalStateWithCauseOf(e);
+        }
+    }
+
+    private static IllegalStateException illegalStateWithCauseOf(Throwable throwable) {
+        var rootCause = getRootCause(throwable);
+        throw new IllegalStateException(rootCause);
     }
 }

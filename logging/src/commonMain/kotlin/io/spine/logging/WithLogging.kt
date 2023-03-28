@@ -24,19 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.logger
+package io.spine.logging
 
-public data class Level(
-    val name: String,
-    val value: Int) {
+public interface WithLogging {
 
-    // Level `value`s repeat those from `java.util.logging.Level`
-    // Names use the words more popular among logging frameworks and implementations.
-    public companion object {
-        public val OFF: Level = Level("OFF", Int.MAX_VALUE)
-        public val ERROR: Level = Level("ERROR", 1000)
-        public val WARNING: Level = Level("WARNING", 900)
-        public val INFO: Level = Level("INFO", 800)
-        public val DEBUG: Level = Level("DEBUG", 500)
-    }
+    public interface Api: LoggingApi<Api>
+
+    public val logger: Logger<*>
+        get() {
+            return LoggerFactory.getLogger(this::class)
+        }
 }

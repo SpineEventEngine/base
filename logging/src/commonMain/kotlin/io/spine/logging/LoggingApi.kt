@@ -24,38 +24,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.logger
+package io.spine.logging
 
-import io.spine.logger.jvm.WithLogging
-import io.spine.logging.Logging
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
+public interface LoggingApi<API: LoggingApi<API>> {
 
-@DisplayName("`WithLogging` interface should")
-internal class WithLoggingSpec {
+    public fun withCause(cause: Throwable): API
 
-    @Test
-    fun `provide the same value of logger associated with a class`() {
+    public fun isEnabled(): Boolean
 
-    }
-}
+    public fun log()
 
-private class LoggingConsumer: WithLogging {
-
-    fun doSomething() {
-        logger.atInfo().log { "Our INFO." }
-        logger.atError().log { "Our ERROR." }
-    }
-}
-
-private class ImplementingLogging: Logging {
-
-    fun showLogging() {
-        _info().log("Here comes info from `$javaClass`.")
-    }
-}
-
-fun main() {
-    LoggingConsumer().doSomething()
-//    ImplementingLogging().showLogging()
+    public fun log(message: () -> String)
 }

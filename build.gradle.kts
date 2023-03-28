@@ -50,9 +50,11 @@ plugins {
 
 spinePublishing {
     modules = setOf(
-        "logging",
         "base",
         "testlib"
+    )
+    modulesWithCustomPublishing = setOf (
+        "logging",
     )
     destinations = with(PublishingRepos) {
         setOf(

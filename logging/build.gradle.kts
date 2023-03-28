@@ -28,10 +28,12 @@
 
 import io.spine.internal.dependency.Flogger
 import io.spine.internal.dependency.Guava
+import io.spine.internal.dependency.Kotest
 import io.spine.internal.gradle.checkstyle.CheckStyleConfig
 import io.spine.internal.gradle.javadoc.JavadocConfig
 import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
 import io.spine.internal.gradle.report.license.LicenseReporter
+import io.spine.internal.gradle.testing.registerTestTasks
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -45,11 +47,23 @@ LicenseReporter.generateReportIn(project)
 CheckStyleConfig.applyTo(project)
 
 kotlin {
+    explicitApi()
+
     jvm {
         withJava()
+        compilations.all {
+            kotlinOptions.jvmTarget = BuildSettings.javaVersion.toString()
+        }
     }
 
     sourceSets {
+        val commonMain by getting
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(Kotest.assertions)
+            }
+        }
         val jvmMain by getting {
             dependencies {
                 api(Flogger.lib)
@@ -65,15 +79,15 @@ kotlin {
     }
 }
 
-kotlin {
-    explicitApi()
-}
-
 tasks {
     withType<KotlinCompile>().configureEach {
-        kotlinOptions.jvmTarget = BuildSettings.javaVersion.toString()
         setFreeCompilerArgs()
     }
+    registerTestTasks()
+}
+
+val jvmTest: Task by tasks.getting {
+    (this as Test).useJUnitPlatform()
 }
 
 // Apply Javadoc configuration here (and not right after the `plugins` block)

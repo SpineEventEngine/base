@@ -24,9 +24,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.logger
+package io.spine.logging
 
-public interface LoggerHolder<API: LoggingApi<API>> {
+import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.types.shouldBeSameInstanceAs
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
-    public val logger: Logger<API>
+@DisplayName("`WithLogging` interface should")
+internal class WithLoggingSpec {
+
+    @Test
+    fun `provide the same logger associated with a class`() {
+        val lc = LoggingConsumer()
+
+        lc.logger shouldNotBe null
+        lc.logger shouldBeSameInstanceAs lc.logger
+    }
 }
+
+private class LoggingConsumer: WithLogging

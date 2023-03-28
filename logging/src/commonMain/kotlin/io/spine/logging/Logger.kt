@@ -24,23 +24,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.logger.jvm
+package io.spine.logging
 
-import com.google.common.flogger.FluentLogger
-import io.spine.logger.LoggerHolder
+import kotlin.reflect.KClass
 
-public interface WithLogging: LoggerHolder<Logger.Api> {
+public interface Logger<API: LoggingApi<API>> {
 
-    override val logger: Logger
-        get() {
-            return LoggerClassValue.get(javaClass)
-        }
+    public fun at(level: Level): API
+
+    public fun atDebug(): API = at(Level.DEBUG)
+    public fun atInfo(): API = at(Level.INFO)
+    public fun atWarning(): API = at(Level.WARNING)
+    public fun atError(): API = at(Level.ERROR)
 }
 
-private object LoggerClassValue: ClassValue<Logger>() {
+public expect object LoggerFactory {
 
-    override fun computeValue(type: Class<*>?): Logger {
-        val impl = FluentLogger.forEnclosingClass()
-        return Logger(impl)
-    }
+    /**
+     * Obtains the logger for the given class.
+     *
+     * Implementation should provide the same logger instance for the same class.
+     */
+    public fun getLogger(cls: KClass<*>): Logger<*>
 }

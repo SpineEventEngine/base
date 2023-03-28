@@ -54,7 +54,6 @@ dependencies {
             + JUnit.api
             + Truth.libs
             + Guava.testLib
-            + kotlin("test-junit5")
             + Kotest.assertions).forEach {
         api(it)
     }

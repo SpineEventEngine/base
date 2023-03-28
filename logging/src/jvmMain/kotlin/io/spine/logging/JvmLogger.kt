@@ -24,24 +24,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.logger.jvm
+package io.spine.logging
 
-import com.google.common.flogger.LogSites.callerOf
-import io.spine.logger.Level
-import io.spine.logger.LoggingApi
-import com.google.common.flogger.FluentLogger as FLogger
-import io.spine.logger.Logger as LLogger
+import com.google.common.flogger.FluentLogger
+import com.google.common.flogger.LogSites
+import io.spine.logging.WithLogging.Api
+import kotlin.reflect.KClass
 import java.util.logging.Level as JLevel
 
-public class Logger(private val impl: FLogger): LLogger<Logger.Api> {
+public actual object LoggerFactory: ClassValue<JvmLogger>() {
 
-    public interface Api: LoggingApi<Api>
+    public actual fun getLogger(cls: KClass<*>): Logger<*> {
+        return get(cls.java)
+    }
+
+    override fun computeValue(type: Class<*>?): JvmLogger {
+        return forEnclosingClass()
+    }
+
+    private fun forEnclosingClass(): JvmLogger {
+        val impl = FluentLogger.forEnclosingClass()
+        return JvmLogger(impl)
+    }
+}
+
+public class JvmLogger(private val impl: FluentLogger): Logger<Api> {
 
     override fun at(level: Level): Api {
         var floggerApi = impl.at(level.toJavaLogging())
         if (floggerApi.isEnabled) {
             floggerApi = floggerApi.withInjectedLogSite(
-                callerOf(io.spine.logger.Logger::class.java)
+                LogSites.callerOf(Logger::class.java)
             )
         }
         val implApi = Impl(floggerApi)
@@ -51,10 +64,10 @@ public class Logger(private val impl: FLogger): LLogger<Logger.Api> {
 
 private fun Level.toJavaLogging(): JLevel {
     val result = when (this) {
-        Level.DEBUG -> JLevel.FINE
-        Level.INFO -> JLevel.INFO
-        Level.WARNING -> JLevel.WARNING
-        Level.ERROR -> JLevel.SEVERE
+        Level.DEBUG -> java.util.logging.Level.FINE
+        Level.INFO -> java.util.logging.Level.INFO
+        Level.WARNING -> java.util.logging.Level.WARNING
+        Level.ERROR -> java.util.logging.Level.SEVERE
         else -> {
             error("The level `${this}` cannot be matched to Java counterpart.")
         }
@@ -62,9 +75,9 @@ private fun Level.toJavaLogging(): JLevel {
     return result
 }
 
-private class Impl(private val floggerApi: FLogger.Api): Logger.Api {
+private class Impl(private val floggerApi: FluentLogger.Api): Api {
 
-    override fun withCause(cause: Throwable): Logger.Api {
+    override fun withCause(cause: Throwable): Api {
         floggerApi.withCause(cause)
         return this
     }
