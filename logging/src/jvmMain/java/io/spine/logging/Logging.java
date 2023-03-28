@@ -69,14 +69,14 @@ public interface Logging {
      */
     static FluentLogger loggerFor(Class<?> cls) {
         checkNotNull(cls);
-        return FloggerClassValue.loggerOf(cls);
+        return LoggerFactory.getFluentLogger(cls);
     }
 
     /**
      * Obtains {@code FluentLogger} instance for this class.
      */
     default FluentLogger logger() {
-        return FloggerClassValue.loggerOf(getClass());
+        return loggerFor(getClass());
     }
 
     /** A convenience method for {@link FluentLogger#atSevere()}. */
