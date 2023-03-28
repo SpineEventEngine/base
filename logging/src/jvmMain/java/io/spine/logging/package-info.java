@@ -25,7 +25,7 @@
  */
 
 /**
- * This package provides utilities for logging based on SLF4J.
+ * This package provides JVM implementation of Spine Logging API.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
