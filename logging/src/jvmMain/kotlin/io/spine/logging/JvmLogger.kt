@@ -29,26 +29,9 @@ package io.spine.logging
 import com.google.common.flogger.FluentLogger
 import com.google.common.flogger.LogSites
 import io.spine.logging.WithLogging.Api
-import kotlin.reflect.KClass
 import java.util.logging.Level as JLevel
 
-public actual object LoggerFactory: ClassValue<JvmLogger>() {
-
-    public actual fun getLogger(cls: KClass<*>): Logger<*> {
-        return get(cls.java)
-    }
-
-    override fun computeValue(type: Class<*>?): JvmLogger {
-        return forEnclosingClass()
-    }
-
-    private fun forEnclosingClass(): JvmLogger {
-        val impl = FluentLogger.forEnclosingClass()
-        return JvmLogger(impl)
-    }
-}
-
-public class JvmLogger(private val impl: FluentLogger): Logger<Api> {
+public class JvmLogger(internal val impl: FluentLogger): Logger<Api> {
 
     override fun at(level: Level): Api {
         var floggerApi = impl.at(level.toJavaLogging())
@@ -62,21 +45,7 @@ public class JvmLogger(private val impl: FluentLogger): Logger<Api> {
     }
 }
 
-private fun Level.toJavaLogging(): JLevel {
-    val result = when (this) {
-        Level.DEBUG -> java.util.logging.Level.FINE
-        Level.INFO -> java.util.logging.Level.INFO
-        Level.WARNING -> java.util.logging.Level.WARNING
-        Level.ERROR -> java.util.logging.Level.SEVERE
-        else -> {
-            error("The level `${this}` cannot be matched to Java counterpart.")
-        }
-    }
-    return result
-}
-
 private class Impl(private val floggerApi: FluentLogger.Api): Api {
-
     override fun withCause(cause: Throwable): Api {
         floggerApi.withCause(cause)
         return this
@@ -91,4 +60,17 @@ private class Impl(private val floggerApi: FluentLogger.Api): Api {
             floggerApi.log(message.invoke())
         }
     }
+}
+
+private fun Level.toJavaLogging(): JLevel {
+    val result = when (this) {
+        Level.DEBUG -> java.util.logging.Level.FINE
+        Level.INFO -> java.util.logging.Level.INFO
+        Level.WARNING -> java.util.logging.Level.WARNING
+        Level.ERROR -> java.util.logging.Level.SEVERE
+        else -> {
+            error("The level `${this}` cannot be matched to Java counterpart.")
+        }
+    }
+    return result
 }
