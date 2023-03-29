@@ -41,7 +41,6 @@ import org.gradle.kotlin.dsl.the
  * with [spinePublishing] settings declared.
  */
 internal sealed class PublicationHandler(
-    private val artifactId: String,
     private val destinations: Set<Repository>
 ) {
 
@@ -114,8 +113,6 @@ internal sealed class PublicationHandler(
  * metadata files are published. Other artifacts are specified through the
  * [constructor parameter][jars]. Please, take a look on [specifyArtifacts] for additional info.
  *
- * @param artifactId
- *         a name that a project is known by.
  * @param jars
  *         list of artifacts to be published along with the compilation output.
  * @param destinations
@@ -124,10 +121,9 @@ internal sealed class PublicationHandler(
  *       Maven Publish Plugin | Publications</a>
  */
 internal class StandardMavenJavaPublication(
-    artifactId: String,
     private val jars: Set<TaskProvider<Jar>>,
     destinations: Set<Repository>,
-) : PublicationHandler(artifactId, destinations) {
+) : PublicationHandler(destinations) {
 
     /**
      * Creates a new "mavenJava" [MavenPublication] in the given project.
@@ -194,8 +190,8 @@ private fun MavenPublication.specifyArtifacts(project: Project, jars: Set<TaskPr
  * publication, and custom ones. In order to have both standard and custom publications,
  * please specify custom artifact IDs or classifiers for each custom publication.
  */
-internal class CustomPublications(artifactId: String, destinations: Set<Repository>) :
-    PublicationHandler(artifactId, destinations) {
+internal class CustomPublications(destinations: Set<Repository>) :
+    PublicationHandler(destinations) {
 
     override fun handlePublications(project: Project) {
         project.publications.forEach {

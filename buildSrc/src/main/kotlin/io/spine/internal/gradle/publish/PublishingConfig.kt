@@ -37,8 +37,6 @@ import io.spine.internal.gradle.dokka.dokkaJar
 /**
  * Information, required to set up publishing of a project using `maven-publish` plugin.
  *
- * @param artifactId
- *         a name that a project is known by.
  * @param destinations
  *         set of repositories, to which the resulting artifacts will be sent.
  * @param includeProtoJar
@@ -52,7 +50,6 @@ import io.spine.internal.gradle.dokka.dokkaJar
  *         should not be applied.
  */
 internal class PublishingConfig private constructor(
-    val artifactId: String,
     val destinations: Set<Repository>,
     val customPublishing: Boolean,
     val includeTestJar: Boolean,
@@ -64,19 +61,19 @@ internal class PublishingConfig private constructor(
      * specified under [SpinePublishing.modules].
      */
     constructor(
-        artifactId: String,
         destinations: Set<Repository>,
         includeProtoJar: Boolean = true,
         includeTestJar: Boolean = false,
         includeDokkaJar: Boolean = false
-    ) : this(artifactId, destinations, false, includeTestJar, includeDokkaJar, includeProtoJar)
+    ) : this(destinations, customPublishing = false,
+        includeTestJar, includeDokkaJar, includeProtoJar)
 
     /**
      * Creates an instance for publishing a module specified
      * under [SpinePublishing.modulesWithCustomPublishing].
      */
-    constructor(artifactId: String, destinations: Set<Repository>) :
-            this(artifactId, destinations, customPublishing = true,
+    constructor(destinations: Set<Repository>) :
+            this(destinations, customPublishing = true,
                 includeTestJar = false, includeDokkaJar = false, includeProtoJar = false)
 }
 /**
@@ -108,7 +105,6 @@ private fun PublishingConfig.handlePublication(project: Project) {
 private fun PublishingConfig.handleCustomPublications(project: Project) {
     project.logger.info("The project `${project.name}` is set to provide custom publishing.")
     val publications = CustomPublications(
-        artifactId = artifactId,
         destinations = destinations
     )
     publications.registerIn(project)
@@ -117,7 +113,6 @@ private fun PublishingConfig.handleCustomPublications(project: Project) {
 private fun PublishingConfig.createStandardPublication(project: Project) {
     val artifacts = project.registerArtifacts(includeProtoJar, includeTestJar, includeDokkaJar)
     val publication = StandardMavenJavaPublication(
-        artifactId = artifactId,
         jars = artifacts,
         destinations = destinations
     )

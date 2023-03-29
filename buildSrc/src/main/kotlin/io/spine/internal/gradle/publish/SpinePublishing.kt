@@ -350,15 +350,11 @@ open class SpinePublishing(private val project: Project) {
         includeTestJar: Boolean,
         includeDokkaJar: Boolean
     ) {
-        val artifactId = artifactId(project)
         val customPublishing = modulesWithCustomPublishing.contains(project.name)
         val publishingConfig = if (customPublishing) {
-            PublishingConfig(artifactId, destinations)
+            PublishingConfig(destinations)
         } else {
-            PublishingConfig(
-                artifactId, destinations,
-                includeProtoJar, includeTestJar, includeDokkaJar
-            )
+            PublishingConfig(destinations, includeProtoJar, includeTestJar, includeDokkaJar)
         }
         project.afterEvaluate {
             publishingConfig.apply(project)
