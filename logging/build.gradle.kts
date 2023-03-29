@@ -79,6 +79,10 @@ kotlin {
     }
 }
 
+java {
+    withJavadocJar()
+}
+
 tasks {
     withType<KotlinCompile>().configureEach {
         setFreeCompilerArgs()
