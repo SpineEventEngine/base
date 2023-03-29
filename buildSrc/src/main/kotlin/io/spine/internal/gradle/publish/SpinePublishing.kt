@@ -296,13 +296,13 @@ open class SpinePublishing(private val project: Project) {
 
         val protoJarExclusions = protoJar.exclusions
         val testJarInclusions = testJar.inclusions
-        val publishedProjects = publishedProjects()
+        val projectsToPublish = projectsToPublish()
 
-        publishedProjects.forEach { project ->
+        projectsToPublish.forEach { project ->
             val name = project.name
             val includeProtoJar = (protoJarExclusions.contains(name) || protoJar.disabled).not()
             val includeTestJar = (testJarInclusions.contains(name) || testJar.enabled)
-            setUpPublishing(project, includeProtoJar, includeTestJar, dokkaJar.enabled)
+            project.setUpPublishing(includeProtoJar, includeTestJar, dokkaJar.enabled)
         }
     }
 
@@ -318,7 +318,7 @@ open class SpinePublishing(private val project: Project) {
      *
      * @see modules
      */
-    private fun publishedProjects() = modules.union(modulesWithCustomPublishing)
+    private fun projectsToPublish() = modules.union(modulesWithCustomPublishing)
         .map { name -> project.project(name) }
         .ifEmpty { setOf(project) }
 
@@ -344,19 +344,18 @@ open class SpinePublishing(private val project: Project) {
      * `project.afterEvaluate` in order to guarantee that a module will be configured by the time
      * we configure publishing for it.
      */
-    private fun setUpPublishing(
-        project: Project,
+    private fun Project.setUpPublishing(
         includeProtoJar: Boolean,
         includeTestJar: Boolean,
         includeDokkaJar: Boolean
     ) {
-        val customPublishing = modulesWithCustomPublishing.contains(project.name)
+        val customPublishing = modulesWithCustomPublishing.contains(name)
         val publishingConfig = if (customPublishing) {
             PublishingConfig(destinations)
         } else {
             PublishingConfig(destinations, includeProtoJar, includeTestJar, includeDokkaJar)
         }
-        project.afterEvaluate {
+        afterEvaluate {
             publishingConfig.apply(project)
         }
     }

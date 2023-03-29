@@ -104,18 +104,13 @@ private fun PublishingConfig.handlePublication(project: Project) {
 
 private fun PublishingConfig.handleCustomPublications(project: Project) {
     project.logger.info("The project `${project.name}` is set to provide custom publishing.")
-    val publications = CustomPublications(
-        destinations = destinations
-    )
+    val publications = CustomPublications(destinations)
     publications.registerIn(project)
 }
 
 private fun PublishingConfig.createStandardPublication(project: Project) {
     val artifacts = project.registerArtifacts(includeProtoJar, includeTestJar, includeDokkaJar)
-    val publication = StandardMavenJavaPublication(
-        jars = artifacts,
-        destinations = destinations
-    )
+    val publication = StandardMavenJavaPublication(jars = artifacts, destinations)
     publication.registerIn(project)
 }
 
