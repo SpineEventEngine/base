@@ -123,7 +123,7 @@ internal sealed class PublicationHandler(
  * @see <a href="https://docs.gradle.org/current/userguide/publishing_maven.html#publishing_maven:publications">
  *       Maven Publish Plugin | Publications</a>
  */
-internal class MavenJavaPublication(
+internal class StandardMavenJavaPublication(
     artifactId: String,
     private val jars: Set<TaskProvider<Jar>>,
     destinations: Set<Repository>,
@@ -134,18 +134,9 @@ internal class MavenJavaPublication(
      */
     override fun handlePublications(project: Project) {
         val publications = project.publications
-        val kotlinMultiplatform = publications.findByName("kotlinMultiplatform")
-        if (kotlinMultiplatform == null) {
-            publications.create<MavenPublication>("mavenJava") {
-                assignMavenCoordinates(project)
-                specifyArtifacts(project, jars)
-            }
-        } else {
-            publications.forEach { publication ->
-                if (publication is MavenPublication) {
-                    publication.assignMavenCoordinates(project)
-                }
-            }
+        publications.create<MavenPublication>("mavenJava") {
+            assignMavenCoordinates(project)
+            specifyArtifacts(project, jars)
         }
     }
 }
@@ -191,7 +182,7 @@ private fun MavenPublication.specifyArtifacts(project: Project, jars: Set<TaskPr
  * A handler for custom publications, which are declared under the [publications]
  * section of a module.
  *
- * Such publications should be treated differently than [MavenJavaPublication],
+ * Such publications should be treated differently than [StandardMavenJavaPublication],
  * which is <em>created</em> for a module. Instead, since the publications are already declared,
  * this class only [assigns maven coordinates][assignMavenCoordinates].
  *

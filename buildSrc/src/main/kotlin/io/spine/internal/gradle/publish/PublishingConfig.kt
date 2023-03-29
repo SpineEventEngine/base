@@ -85,7 +85,7 @@ internal class PublishingConfig private constructor(
  * This method does the following:
  *
  *  1. Applies `maven-publish` plugin to the project.
- *  2. Registers [MavenJavaPublication] in Gradle's
+ *  2. Registers [StandardMavenJavaPublication] in Gradle's
  *     [PublicationContainer][org.gradle.api.publish.PublicationContainer].
  *  4. Configures "publish" task.
  *
@@ -116,7 +116,7 @@ private fun PublishingConfig.handleCustomPublications(project: Project) {
 
 private fun PublishingConfig.createStandardPublication(project: Project) {
     val artifacts = project.registerArtifacts(includeProtoJar, includeTestJar, includeDokkaJar)
-    val publication = MavenJavaPublication(
+    val publication = StandardMavenJavaPublication(
         artifactId = artifactId,
         jars = artifacts,
         destinations = destinations

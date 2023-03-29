@@ -76,7 +76,7 @@ import org.gradle.kotlin.dsl.getByType
  * `spinePublishing` extension within `subprojectA` itself would lead to an exception.
  *
  * In Gradle, in order to publish something somewhere one should create a publication. In each
- * of published modules, the extension will create a [publication][MavenJavaPublication]
+ * of published modules, the extension will create a [publication][StandardMavenJavaPublication]
  * named "mavenJava". All artifacts, published by this extension belong to this publication.
  *
  * By default, along with the compilation output of "main" source set, the extension publishes
