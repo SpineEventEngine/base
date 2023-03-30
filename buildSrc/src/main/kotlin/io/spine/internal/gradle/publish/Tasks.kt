@@ -85,14 +85,16 @@ private fun Project.bindToRootPublish() {
  * Use this task accessor when it is not guaranteed that the task is present
  * in this [TaskContainer].
  */
-private fun TaskContainer.getOrCreatePublishTask() =
+private fun TaskContainer.getOrCreatePublishTask(): TaskProvider<Task> =
     if (names.contains(PUBLISH)) {
         named(PUBLISH)
     } else {
         register(PUBLISH)
     }
 
-private fun TaskContainer.registerCheckCredentialsTask(destinations: Set<Repository>) =
+private fun TaskContainer.registerCheckCredentialsTask(
+    destinations: Set<Repository>
+): TaskProvider<Task> =
     register("checkCredentials") {
         doLast {
             destinations.forEach { it.ensureCredentials(project) }
