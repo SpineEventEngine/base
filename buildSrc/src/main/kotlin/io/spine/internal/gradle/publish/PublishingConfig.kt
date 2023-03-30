@@ -110,7 +110,7 @@ private fun Project.registerArtifacts(jarFlags: JarFlags): Set<TaskProvider<Jar>
 
     val tasks = mutableSetOf<TaskProvider<Jar>>()
 
-    val java = project.extensions.findByType(JavaPluginExtension::class.java)
+    val java = extensions.findByType(JavaPluginExtension::class.java)
     java?.run {
         withSourcesJar()
         withJavadocJar()
