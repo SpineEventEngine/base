@@ -31,6 +31,8 @@ import java.io.File
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.TaskContainer
+import org.gradle.api.tasks.TaskProvider
+import org.gradle.api.tasks.bundling.Jar
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.dokka.gradle.GradleDokkaSourceSetBuilder
 
@@ -62,7 +64,7 @@ private fun File.isJavaSourceDirectory(): Boolean {
  * Java sources from `main` source set. Requires Dokka to be configured in the target project by
  * applying `dokka-for-java` plugin.
  */
-internal fun Project.dokkaJar() = tasks.getOrCreate("dokkaJar") {
+internal fun Project.dokkaJar(): TaskProvider<Jar> = tasks.getOrCreate("dokkaJar") {
     archiveClassifier.set("dokka")
     from(files("$buildDir/docs/dokka"))
 
