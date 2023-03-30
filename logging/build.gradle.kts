@@ -83,6 +83,25 @@ java {
     withJavadocJar()
 }
 
+/*
+private val Project.publishingExtension: PublishingExtension
+    get() = extensions.getByType()
+
+private val Project.publications: PublicationContainer
+    get() = publishingExtension.publications
+
+project.afterEvaluate {
+    val mavenPublication = project.publications.forEach { publication ->
+        if (publication is MavenPublication) {
+            publication.artifacts.forEach { artifact ->
+                println("*** Publication (after plugin applied)" +
+                        " `${publication.name}` artifact: `${artifact.file}`.")
+            }
+        }
+    }
+}
+*/
+
 tasks {
     withType<KotlinCompile>().configureEach {
         setFreeCompilerArgs()
