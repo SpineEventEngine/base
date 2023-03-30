@@ -33,6 +33,7 @@ import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
+import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.the
 
@@ -45,12 +46,11 @@ internal sealed class PublicationHandler(
     private val destinations: Set<Repository>
 ) {
 
-    /**
-     * Registers this publication in the associated project.
-     */
-    fun registerAtProject() {
+    fun apply() {
+        project.apply(plugin = "maven-publish")
         handlePublications()
         registerDestinations()
+        project.configurePublishTask(destinations)
     }
 
     /**
@@ -58,17 +58,6 @@ internal sealed class PublicationHandler(
      * or creates new ones.
      */
     abstract fun handlePublications()
-
-    /**
-     * Takes a group name and a version from the given [project] and assigns
-     * them to this publication.
-     */
-    protected fun MavenPublication.assignMavenCoordinates() {
-        val spinePublishing = project.rootProject.the<SpinePublishing>()
-        groupId = project.group.toString()
-        artifactId = spinePublishing.artifactPrefix + artifactId
-        version = project.version.toString()
-    }
 
     /**
      * Goes through the [destinations] and registers each as a repository for publishing
@@ -79,6 +68,17 @@ internal sealed class PublicationHandler(
         destinations.forEach { destination ->
             repositories.register(project, destination)
         }
+    }
+
+    /**
+     * Takes a group name and a version from the given [project] and assigns
+     * them to this publication.
+     */
+    protected fun MavenPublication.assignMavenCoordinates() {
+        val spinePublishing = project.rootProject.the<SpinePublishing>()
+        groupId = project.group.toString()
+        artifactId = spinePublishing.artifactPrefix + artifactId
+        version = project.version.toString()
     }
 }
 
@@ -112,10 +112,10 @@ private fun RepositoryHandler.register(project: Project, repository: Repository)
  *
  * By default, only a jar with the compilation output of `main` source set and its
  * metadata files are published. Other artifacts are specified through the
- * [constructor parameter][jars]. Please, take a look on [specifyArtifacts] for additional info.
+ * [constructor parameter][jarFlags]. Please, take a look on [specifyArtifacts] for additional info.
  *
- * @param jars
- *         list of artifacts to be published along with the compilation output.
+ * @param jarFlags
+ *         flags for additional JARs published along with the compilation output.
  * @param destinations
  *         Maven repositories to which the produced artifacts will be sent.
  * @see <a href="https://docs.gradle.org/current/userguide/publishing_maven.html#publishing_maven:publications">
@@ -123,7 +123,7 @@ private fun RepositoryHandler.register(project: Project, repository: Repository)
  */
 internal class StandardJavaPublicationHandler(
     project: Project,
-    private val jars: Set<TaskProvider<Jar>>,
+    private val jarFlags: JarFlags,
     destinations: Set<Repository>,
 ) : PublicationHandler(project, destinations) {
 
@@ -131,6 +131,7 @@ internal class StandardJavaPublicationHandler(
      * Creates a new "mavenJava" [MavenPublication] in the given project.
      */
     override fun handlePublications() {
+        val jars = project.registerArtifacts(jarFlags)
         val publications = project.publications
         publications.create<MavenPublication>("mavenJava") {
             assignMavenCoordinates()
@@ -146,7 +147,7 @@ internal class StandardJavaPublicationHandler(
  *
  *  1. Jar archives. For example: compilation output, sources, javadoc, etc.
  *  2. Maven metadata file that has ".pom" extension.
- *  3. Gradle metadata file that has ".module" extension.
+ *  3. Gradle's metadata file that has ".module" extension.
  *
  *  Metadata files contain information about a publication itself, its artifacts and their
  *  dependencies. Presence of ".pom" file is mandatory for publication to be consumed by

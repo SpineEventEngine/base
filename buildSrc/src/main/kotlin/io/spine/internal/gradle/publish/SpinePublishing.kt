@@ -320,34 +320,34 @@ open class SpinePublishing(private val project: Project) {
     /**
      * Sets up `maven-publish` plugin for the given project.
      *
-     * Firstly, an instance of [PublishingConfig] is assembled for the project.
-     * Then, this config is applied.
+     * Firstly, an instance of [PublicationHandler] is created for the project depending
+     * on the nature of the publication process configured.
+     * Then, this the handler is scheduled to apply on [Project.afterEvaluate].
      *
-     * This method utilizes `project.afterEvaluate` closure. General rule of thumb is to avoid using
-     * of this closure, as it configures a project when its configuration is considered completed.
+     * General rule of thumb is to avoid using [Project.afterEvaluate] of this closure,
+     * as it configures a project when its configuration is considered completed.
      * Which is quite counter-intuitive.
      *
-     * The root cause why it is used here is a possibility to configure publishing of multiple
-     * modules from a root project. When this possibility is employed, in fact, we configure
-     * publishing for a module, build file of which has not been even evaluated by that time.
-     * That leads to an unexpected behavior.
+     * We selected to use [Project.afterEvaluate] so that we can configure publishing of multiple
+     * modules from a root project. When we do this, we configure publishing for a module,
+     * build file of which has not been even evaluated yet.
      *
      * The simplest example here is specifying of `version` and `group` for Maven coordinates.
      * Let's suppose, they are declared in a module's build file. It is a common practice.
      * But publishing of the module is configured from a root project's build file. By the time,
      * when we need to specify them, we just don't know them. As a result, we have to use
-     * `project.afterEvaluate` in order to guarantee that a module will be configured by the time
+     * [Project.afterEvaluate] in order to guarantee that a module will be configured by the time
      * we configure publishing for it.
      */
     private fun Project.setUpPublishing(jarFlags: JarFlags) {
         val customPublishing = modulesWithCustomPublishing.contains(name)
-        val publishingConfig = if (customPublishing) {
-            PublishingConfig(destinations, true, jarFlags)
+        val handler = if (customPublishing) {
+            CustomPublicationHandler(project, destinations)
         } else {
-            PublishingConfig(destinations, false, jarFlags)
+            StandardJavaPublicationHandler(project, jarFlags, destinations)
         }
         afterEvaluate {
-            publishingConfig.apply(project)
+            handler.apply()
         }
     }
 
