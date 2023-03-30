@@ -109,14 +109,14 @@ import org.gradle.kotlin.dsl.getByType
  *
  * @see [registerArtifacts]
  */
-fun Project.spinePublishing(setup: SpinePublishing.() -> Unit) {
+fun Project.spinePublishing(block: SpinePublishing.() -> Unit) {
     apply<MavenPublishPlugin>()
     val name = SpinePublishing::class.java.simpleName
     val extension = with(extensions) {
         findByType<SpinePublishing>() ?: create(name, project)
     }
     extension.run {
-        setup()
+        block()
         configured()
     }
 }
