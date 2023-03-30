@@ -218,7 +218,7 @@ open class SpinePublishing(private val project: Project) {
      * implementation("io.spine:spine-client:$version@proto")
      * ```
      */
-    fun protoJar(configuration: ProtoJar.() -> Unit)  = protoJar.run(configuration)
+    fun protoJar(block: ProtoJar.() -> Unit) = protoJar.run(block)
 
     /**
      * Allows enabling publishing of [testJar] artifact, containing compilation output
@@ -250,19 +250,18 @@ open class SpinePublishing(private val project: Project) {
      * }
      * ```
      *
-     * The resulting artifact is available under "test" classifier. I.e., in Gradle 7+, one could
-     * depend on it like this:
+     * The resulting artifact is available under "test" classifier. For example,
+     * in Gradle 7+, one could depend on it like this:
      *
      * ```
      * implementation("io.spine:spine-client:$version@test")
      * ```
      */
-    fun testJar(configuration: TestJar.() -> Unit)  = testJar.run(configuration)
-
+    fun testJar(block: TestJar.() -> Unit)  = testJar.run(block)
 
     /**
-     * Configures publishing of [dokkaJar] artifact, containing Dokka-generated documentation. By
-     * default, publishing of the artifact is disabled.
+     * Configures publishing of [dokkaJar] artifact, containing Dokka-generated documentation.
+     * By default, publishing of the artifact is disabled.
      *
      * Remember that the Dokka Gradle plugin should be applied to publish this artifact as it is
      * produced by the `dokkaHtml` task. It can be done by using the
@@ -281,7 +280,7 @@ open class SpinePublishing(private val project: Project) {
      *
      * The resulting artifact is available under "dokka" classifier.
      */
-    fun dokkaJar(configuration: DokkaJar.() -> Unit)  = dokkaJar.run(configuration)
+    fun dokkaJar(block: DokkaJar.() -> Unit) = dokkaJar.run(block)
 
     /**
      * Called to notify the extension that its configuration is completed.
@@ -294,15 +293,10 @@ open class SpinePublishing(private val project: Project) {
         ensureTestJarInclusionsArePublished()
         ensuresModulesNotDuplicated()
 
-        val protoJarExclusions = protoJar.exclusions
-        val testJarInclusions = testJar.inclusions
         val projectsToPublish = projectsToPublish()
-
         projectsToPublish.forEach { project ->
-            val name = project.name
-            val includeProtoJar = (protoJarExclusions.contains(name) || protoJar.disabled).not()
-            val includeTestJar = (testJarInclusions.contains(name) || testJar.enabled)
-            project.setUpPublishing(includeProtoJar, includeTestJar, dokkaJar.enabled)
+            val jarFlags = JarFlags.create(project.name, protoJar, testJar, dokkaJar)
+            project.setUpPublishing(jarFlags)
         }
     }
 
@@ -318,9 +312,10 @@ open class SpinePublishing(private val project: Project) {
      *
      * @see modules
      */
-    private fun projectsToPublish() = modules.union(modulesWithCustomPublishing)
-        .map { name -> project.project(name) }
-        .ifEmpty { setOf(project) }
+    private fun projectsToPublish(): Collection<Project> =
+        modules.union(modulesWithCustomPublishing)
+            .map { name -> project.project(name) }
+            .ifEmpty { setOf(project) }
 
     /**
      * Sets up `maven-publish` plugin for the given project.
@@ -344,16 +339,12 @@ open class SpinePublishing(private val project: Project) {
      * `project.afterEvaluate` in order to guarantee that a module will be configured by the time
      * we configure publishing for it.
      */
-    private fun Project.setUpPublishing(
-        includeProtoJar: Boolean,
-        includeTestJar: Boolean,
-        includeDokkaJar: Boolean
-    ) {
+    private fun Project.setUpPublishing(jarFlags: JarFlags) {
         val customPublishing = modulesWithCustomPublishing.contains(name)
         val publishingConfig = if (customPublishing) {
-            PublishingConfig(destinations)
+            PublishingConfig(destinations, true, jarFlags)
         } else {
-            PublishingConfig(destinations, includeProtoJar, includeTestJar, includeDokkaJar)
+            PublishingConfig(destinations, false, jarFlags)
         }
         afterEvaluate {
             publishingConfig.apply(project)

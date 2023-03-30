@@ -27,55 +27,28 @@
 package io.spine.internal.gradle.publish
 
 import io.spine.internal.gradle.Repository
+import io.spine.internal.gradle.dokka.dokkaJar
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.apply
-import io.spine.internal.gradle.dokka.dokkaJar
 
 /**
  * Information, required to set up publishing of a project using `maven-publish` plugin.
  *
  * @param destinations
  *         set of repositories, to which the resulting artifacts will be sent.
- * @param includeProtoJar
- *         tells whether [protoJar] artifact should be published.
- * @param includeTestJar
- *         tells whether [testJar] artifact should be published.
- * @param includeDokkaJar
- *         tells whether [dokkaJar] artifact should be published.
  * @param customPublishing
  *         tells whether subproject declares own publishing and standard one
  *         should not be applied.
  */
-internal class PublishingConfig private constructor(
+internal class PublishingConfig(
     val destinations: Set<Repository>,
     val customPublishing: Boolean,
-    val includeTestJar: Boolean,
-    val includeDokkaJar: Boolean,
-    val includeProtoJar: Boolean
-) {
-    /**
-     * Creates an instance for standard publishing of a project module,
-     * specified under [SpinePublishing.modules].
-     */
-    constructor(
-        destinations: Set<Repository>,
-        includeProtoJar: Boolean = true,
-        includeTestJar: Boolean = false,
-        includeDokkaJar: Boolean = false
-    ) : this(destinations, customPublishing = false,
-        includeTestJar, includeDokkaJar, includeProtoJar)
+    val jarFlags: JarFlags,
+)
 
-    /**
-     * Creates an instance for publishing a module specified
-     * under [SpinePublishing.modulesWithCustomPublishing].
-     */
-    constructor(destinations: Set<Repository>) :
-            this(destinations, customPublishing = true,
-                includeTestJar = false, includeDokkaJar = false, includeProtoJar = false)
-}
 /**
  * Applies this configuration to the given project.
  *
@@ -103,7 +76,7 @@ private fun PublishingConfig.handlePublication(project: Project) {
 }
 
 private fun PublishingConfig.createStandardPublication(project: Project) {
-    val jarTasks = project.registerArtifacts(includeProtoJar, includeTestJar, includeDokkaJar)
+    val jarTasks = project.registerArtifacts(jarFlags)
     val publication = StandardJavaPublicationHandler(project, jars = jarTasks, destinations)
     publication.registerAtProject()
 }
@@ -133,11 +106,7 @@ private fun PublishingConfig.handleCustomPublication(project: Project) {
  *
  * @return the list of the registered tasks.
  */
-private fun Project.registerArtifacts(
-    includeProtoJar: Boolean = true,
-    includeTestJar: Boolean = false,
-    includeDokkaJar: Boolean = false
-): Set<TaskProvider<Jar>> {
+private fun Project.registerArtifacts(jarFlags: JarFlags): Set<TaskProvider<Jar>> {
 
     val tasks = mutableSetOf<TaskProvider<Jar>>()
 
@@ -148,17 +117,17 @@ private fun Project.registerArtifacts(
     }
     
     // We don't want to have an empty "proto.jar" when a project doesn't have any Proto files.
-    if (hasProto() && includeProtoJar) {
+    if (hasProto() && jarFlags.publishProtoJar) {
         tasks.add(protoJar())
     }
 
     // Here, we don't have the corresponding `hasTests()` check, since this artifact is disabled
     // by default. And turning it on means "We have tests and need them to be published."
-    if (includeTestJar) {
+    if (jarFlags.publishTestJar) {
         tasks.add(testJar())
     }
 
-    if (includeDokkaJar) {
+    if (jarFlags.publishDokkaJar) {
         tasks.add(dokkaJar())
     }
 
