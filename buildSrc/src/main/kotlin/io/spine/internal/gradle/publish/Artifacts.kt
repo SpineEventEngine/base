@@ -62,7 +62,7 @@ fun TaskContainer.excludeGoogleProtoFromArtifacts() {
  * Java and Kotlin sources are default to `main` source set since it is created by `java` plugin.
  * For Proto sources to be included – [special treatment][protoSources] is needed.
  */
-internal fun Project.sourcesJar() = tasks.getOrCreate("sourcesJar") {
+internal fun Project.sourcesJar(): TaskProvider<Jar> = tasks.getOrCreate("sourcesJar") {
     dependOnGenerateProto()
     archiveClassifier.set("sources")
     from(sourceSets["main"].allSource) // Puts Java and Kotlin sources.
@@ -75,7 +75,7 @@ internal fun Project.sourcesJar() = tasks.getOrCreate("sourcesJar") {
  * The output of this task is a `jar` archive. The archive contains only
  * [Proto sources][protoSources] from `main` source set.
  */
-internal fun Project.protoJar() = tasks.getOrCreate("protoJar") {
+internal fun Project.protoJar(): TaskProvider<Jar> = tasks.getOrCreate("protoJar") {
     dependOnGenerateProto()
     archiveClassifier.set("proto")
     from(protoSources())
@@ -87,7 +87,7 @@ internal fun Project.protoJar() = tasks.getOrCreate("protoJar") {
  * The output of this task is a `jar` archive. The archive contains compilation output
  * of `test` source set.
  */
-internal fun Project.testJar() = tasks.getOrCreate("testJar") {
+internal fun Project.testJar(): TaskProvider<Jar> = tasks.getOrCreate("testJar") {
     archiveClassifier.set("test")
     from(sourceSets["test"].output)
 }
@@ -99,7 +99,7 @@ internal fun Project.testJar() = tasks.getOrCreate("testJar") {
  * generated upon Java sources from `main` source set. If javadoc for Kotlin is also needed,
  * apply Dokka plugin. It tunes `javadoc` task to generate docs upon Kotlin sources as well.
  */
-internal fun Project.javadocJar() = tasks.getOrCreate("javadocJar") {
+internal fun Project.javadocJar(): TaskProvider<Jar> = tasks.getOrCreate("javadocJar") {
     archiveClassifier.set("javadoc")
     from(files("$buildDir/docs/javadoc"))
     dependsOn("javadoc")
