@@ -41,28 +41,29 @@ import org.gradle.kotlin.dsl.the
  * with [spinePublishing] settings declared.
  */
 internal sealed class PublicationHandler(
+    protected val project: Project,
     private val destinations: Set<Repository>
 ) {
 
     /**
-     * Registers this publication in the given project.
+     * Registers this publication in the associated project.
      */
-    fun registerIn(project: Project) {
-        handlePublications(project)
-        registerDestinations(project)
+    fun registerAtProject() {
+        handlePublications()
+        registerDestinations()
     }
 
     /**
      * Either handles publications already declared in the given project,
      * or creates new ones.
      */
-    abstract fun handlePublications(project: Project)
+    abstract fun handlePublications()
 
     /**
      * Takes a group name and a version from the given [project] and assigns
      * them to this publication.
      */
-    protected fun MavenPublication.assignMavenCoordinates(project: Project) {
+    protected fun MavenPublication.assignMavenCoordinates() {
         val spinePublishing = project.rootProject.the<SpinePublishing>()
         groupId = project.group.toString()
         artifactId = spinePublishing.artifactPrefix + artifactId
@@ -73,27 +74,27 @@ internal sealed class PublicationHandler(
      * Goes through the [destinations] and registers each as a repository for publishing
      * in the given Gradle project.
      */
-    private fun registerDestinations(project: Project) {
-        val gradleRepositories = project.publishingExtension.repositories
+    private fun registerDestinations() {
+        val repositories = project.publishingExtension.repositories
         destinations.forEach { destination ->
-            gradleRepositories.register(project, destination)
+            repositories.register(project, destination)
         }
     }
+}
 
-    /**
-     * Adds a Maven repository to the project specifying credentials, if they are
-     * [available][Repository.credentials] from the root project.
-     */
-    private fun RepositoryHandler.register(project: Project, repository: Repository) {
-        val isSnapshot = project.version.toString().isSnapshot()
-        val target = if (isSnapshot) repository.snapshots else repository.releases
-        val credentials = repository.credentials(project.rootProject)
-        maven {
-            url = project.uri(target)
-            credentials {
-                username = credentials?.username
-                password = credentials?.password
-            }
+/**
+ * Adds a Maven repository to the project specifying credentials, if they are
+ * [available][Repository.credentials] from the root project.
+ */
+private fun RepositoryHandler.register(project: Project, repository: Repository) {
+    val isSnapshot = project.version.toString().isSnapshot()
+    val target = if (isSnapshot) repository.snapshots else repository.releases
+    val credentials = repository.credentials(project.rootProject)
+    maven {
+        url = project.uri(target)
+        credentials {
+            username = credentials?.username
+            password = credentials?.password
         }
     }
 }
@@ -120,18 +121,19 @@ internal sealed class PublicationHandler(
  * @see <a href="https://docs.gradle.org/current/userguide/publishing_maven.html#publishing_maven:publications">
  *       Maven Publish Plugin | Publications</a>
  */
-internal class StandardMavenJavaPublication(
+internal class StandardJavaPublicationHandler(
+    project: Project,
     private val jars: Set<TaskProvider<Jar>>,
     destinations: Set<Repository>,
-) : PublicationHandler(destinations) {
+) : PublicationHandler(project, destinations) {
 
     /**
      * Creates a new "mavenJava" [MavenPublication] in the given project.
      */
-    override fun handlePublications(project: Project) {
+    override fun handlePublications() {
         val publications = project.publications
         publications.create<MavenPublication>("mavenJava") {
-            assignMavenCoordinates(project)
+            assignMavenCoordinates()
             specifyArtifacts(project, jars)
         }
     }
@@ -178,7 +180,7 @@ private fun MavenPublication.specifyArtifacts(project: Project, jars: Set<TaskPr
  * A handler for custom publications, which are declared under the [publications]
  * section of a module.
  *
- * Such publications should be treated differently than [StandardMavenJavaPublication],
+ * Such publications should be treated differently than [StandardJavaPublicationHandler],
  * which is <em>created</em> for a module. Instead, since the publications are already declared,
  * this class only [assigns maven coordinates][assignMavenCoordinates].
  *
@@ -190,13 +192,17 @@ private fun MavenPublication.specifyArtifacts(project: Project, jars: Set<TaskPr
  * publication, and custom ones. In order to have both standard and custom publications,
  * please specify custom artifact IDs or classifiers for each custom publication.
  */
-internal class CustomPublications(destinations: Set<Repository>) :
-    PublicationHandler(destinations) {
+internal class CustomPublicationHandler(project: Project, destinations: Set<Repository>) :
+    PublicationHandler(project, destinations) {
 
-    override fun handlePublications(project: Project) {
+    override fun handlePublications() {
         project.publications.forEach {
-            val publication = it as MavenPublication
-            publication.assignMavenCoordinates(project)
+            (it as MavenPublication).run {
+                assignMavenCoordinates()
+                artifacts.forEach { artifact ->
+                    println("*** Custom publication `${name}` artifact: `${artifact.file}`.")
+                }
+            }
         }
     }
 }

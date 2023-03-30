@@ -82,7 +82,7 @@ internal class PublishingConfig private constructor(
  * This method does the following:
  *
  *  1. Applies `maven-publish` plugin to the project.
- *  2. Registers [StandardMavenJavaPublication] in Gradle's
+ *  2. Registers [StandardJavaPublicationHandler] in Gradle's
  *     [PublicationContainer][org.gradle.api.publish.PublicationContainer].
  *  4. Configures "publish" task.
  *
@@ -96,22 +96,22 @@ internal fun PublishingConfig.apply(project: Project) = with(project) {
 
 private fun PublishingConfig.handlePublication(project: Project) {
     if (customPublishing) {
-        handleCustomPublications(project)
+        handleCustomPublication(project)
     } else {
         createStandardPublication(project)
     }
 }
 
-private fun PublishingConfig.handleCustomPublications(project: Project) {
-    project.logger.info("The project `${project.name}` is set to provide custom publishing.")
-    val publications = CustomPublications(destinations)
-    publications.registerIn(project)
+private fun PublishingConfig.createStandardPublication(project: Project) {
+    val jarTasks = project.registerArtifacts(includeProtoJar, includeTestJar, includeDokkaJar)
+    val publication = StandardJavaPublicationHandler(project, jars = jarTasks, destinations)
+    publication.registerAtProject()
 }
 
-private fun PublishingConfig.createStandardPublication(project: Project) {
-    val artifacts = project.registerArtifacts(includeProtoJar, includeTestJar, includeDokkaJar)
-    val publication = StandardMavenJavaPublication(jars = artifacts, destinations)
-    publication.registerIn(project)
+private fun PublishingConfig.handleCustomPublication(project: Project) {
+    project.logger.info("The project `${project.name}` is set to provide custom publishing.")
+    val publications = CustomPublicationHandler(project, destinations)
+    publications.registerAtProject()
 }
 
 /**
@@ -139,7 +139,7 @@ private fun Project.registerArtifacts(
     includeDokkaJar: Boolean = false
 ): Set<TaskProvider<Jar>> {
 
-    val artifacts = mutableSetOf<TaskProvider<Jar>>()
+    val tasks = mutableSetOf<TaskProvider<Jar>>()
 
     val java = project.extensions.findByType(JavaPluginExtension::class.java)
     java?.run {
@@ -149,18 +149,18 @@ private fun Project.registerArtifacts(
     
     // We don't want to have an empty "proto.jar" when a project doesn't have any Proto files.
     if (hasProto() && includeProtoJar) {
-        artifacts.add(protoJar())
+        tasks.add(protoJar())
     }
 
     // Here, we don't have the corresponding `hasTests()` check, since this artifact is disabled
     // by default. And turning it on means "We have tests and need them to be published."
     if (includeTestJar) {
-        artifacts.add(testJar())
+        tasks.add(testJar())
     }
 
     if (includeDokkaJar) {
-        artifacts.add(dokkaJar())
+        tasks.add(dokkaJar())
     }
 
-    return artifacts
+    return tasks
 }
