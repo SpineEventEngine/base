@@ -113,8 +113,8 @@ internal data class JarFlags(
 ) {
     internal companion object {
         /**
-         * Creates the instance of [JarFlags] for the project with the given name
-         * taking the setup parameters from the given JAR DSL elements.
+         * Creates an instance of [JarFlags] for the project with the given name,
+         * taking the setup parameters from JAR DSL elements.
          */
         fun create(
             projectName: String,
