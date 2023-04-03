@@ -28,13 +28,10 @@ package io.spine.internal.gradle.publish
 
 import io.spine.internal.gradle.Repository
 import org.gradle.api.Project
-import org.gradle.api.publish.PublicationContainer
-import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.findByType
-import org.gradle.kotlin.dsl.getByType
 
 /**
  * Configures [SpinePublishing] extension.
