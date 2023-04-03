@@ -39,6 +39,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
    `maven-publish`
     kotlin("multiplatform")
+    `dokka-for-kotlin`
     idea
     jacoco
     `project-report`
@@ -80,10 +81,6 @@ kotlin {
     }
 }
 
-java {
-    withJavadocJar()
-}
-
 tasks {
     withType<KotlinCompile>().configureEach {
         setFreeCompilerArgs()
@@ -99,35 +96,31 @@ val jvmTest: Task by tasks.getting {
 // because the `javadoc` task is added when the `kotlin` block `withJava` is applied.
 JavadocConfig.applyTo(project)
 
-val javadocJar by tasks.getting(Jar::class) {
-    archiveClassifier.set("javadoc")
-}
+publishing {
 
-//publishing {
-//
-//    // Configure all publications
-//    publications.withType<MavenPublication> {
-//
-//        // Stub javadoc.jar artifact
-////        artifact(javadocJar)
-//
-//    }
-//}
+    // Configure all publications
+    publications.withType<MavenPublication> {
 
-/*
+        artifact(project.dokkaJar())
 
-private val Project.publishingExtension: PublishingExtension
-    get() = extensions.getByType()
-
-private val Project.publications: PublicationContainer
-    get() = publishingExtension.publications
-
-val mavenPublication = project.publications.forEach { publication ->
-    if (publication is MavenPublication) {
-        publication.artifacts.forEach { artifact ->
-            println("*** Publication (after plugin applied)" +
-                    " `${publication.name}` artifact: `${artifact.file}`.")
-        }
     }
 }
-*/
+
+/**
+ * Configure Jacoco task with custom input from this KMM project.
+ */
+val jacocoTestReport: JacocoReport by tasks.getting(JacocoReport::class) {
+
+    val classFiles = File("${buildDir}/classes/kotlin/jvm/")
+        .walkBottomUp()
+        .toSet()
+    classDirectories.setFrom(classFiles)
+
+    val coverageSourceDirs = arrayOf(
+        "src/commonMain",
+        "src/jvmMain"
+    )
+    sourceDirectories.setFrom(files(coverageSourceDirs))
+
+    executionData.setFrom(files("${buildDir}/jacoco/jvmTest.exec"))
+}

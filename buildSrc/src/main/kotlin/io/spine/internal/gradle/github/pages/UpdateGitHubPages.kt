@@ -26,7 +26,7 @@
 
 package io.spine.internal.gradle.github.pages
 
-import io.spine.internal.gradle.dokka.dokkaHtmlTask
+import dokkaHtmlTask
 import io.spine.internal.gradle.fs.LazyTempPath
 import io.spine.internal.gradle.github.pages.TaskName.copyDokka
 import io.spine.internal.gradle.github.pages.TaskName.copyJavadoc

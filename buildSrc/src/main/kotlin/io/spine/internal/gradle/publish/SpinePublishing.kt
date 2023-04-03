@@ -104,7 +104,7 @@ import org.gradle.kotlin.dsl.findByType
  * Additionally, [testJar] artifact can be published. This artifact contains compilation output
  * of "test" source set. Use [SpinePublishing.testJar] to enable its publishing.
  *
- * @see [registerArtifacts]
+ * @see [artifacts]
  */
 fun Project.spinePublishing(block: SpinePublishing.() -> Unit) {
     apply<MavenPublishPlugin>()

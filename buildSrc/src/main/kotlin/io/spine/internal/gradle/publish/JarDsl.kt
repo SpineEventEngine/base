@@ -34,7 +34,7 @@ package io.spine.internal.gradle.publish
  *
  * Take a look at the [SpinePublishing.dokkaJar] for a usage example.
  *
- * @see [registerArtifacts]
+ * @see [artifacts]
  */
 class DokkaJar {
     /**
@@ -51,7 +51,7 @@ class DokkaJar {
  *
  * Take a look on [SpinePublishing.testJar] for a usage example.
 
- * @see [registerArtifacts]
+ * @see [artifacts]
  */
 class TestJar {
 
@@ -75,7 +75,7 @@ class TestJar {
  *
  * Take a look on [SpinePublishing.protoJar] for a usage example.
  *
- * @see [registerArtifacts]
+ * @see [artifacts]
  */
 class ProtoJar {
 

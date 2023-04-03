@@ -50,15 +50,15 @@ internal sealed class PublicationHandler(
     private val destinations: Set<Repository>
 ) {
 
-    fun apply() {
-        if (!project.hasCustomPublishing) {
-            project.apply(plugin = MAVEN_PUBLISH)
+    fun apply() = with(project) {
+        if (!hasCustomPublishing) {
+            apply(plugin = MAVEN_PUBLISH)
         }
 
-        project.pluginManager.withPlugin(MAVEN_PUBLISH) {
+        pluginManager.withPlugin(MAVEN_PUBLISH) {
             handlePublications()
             registerDestinations()
-            project.configurePublishTask(destinations)
+            configurePublishTask(destinations)
         }
     }
 
@@ -139,7 +139,7 @@ internal class StandardJavaPublicationHandler(
      * Creates a new "mavenJava" [MavenPublication] in the given project.
      */
     override fun handlePublications() {
-        val jars = project.registerArtifacts(jarFlags)
+        val jars = project.artifacts(jarFlags)
         val publications = project.publications
         publications.create<MavenPublication>("mavenJava") {
             assignMavenCoordinates()
@@ -206,12 +206,7 @@ internal class CustomPublicationHandler(project: Project, destinations: Set<Repo
 
     override fun handlePublications() {
         project.publications.forEach {
-            (it as MavenPublication).run {
-                assignMavenCoordinates()
-                artifacts.forEach { artifact ->
-                    println("*** Custom publication `${name}` artifact: `${artifact.file}`.")
-                }
-            }
+            (it as MavenPublication).assignMavenCoordinates()
         }
     }
 }

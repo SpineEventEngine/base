@@ -75,6 +75,12 @@ allprojects {
     repositories.standardToSpineSdk()
 }
 
-JacocoConfig.applyTo(project)
-LicenseReporter.mergeAllReports(project)
-PomGenerator.applyTo(project)
+/**
+ * Delay gathering of all the reports until modules are initialized.
+ */
+gradle.projectsEvaluated {
+    JacocoConfig.applyTo(project)
+    LicenseReporter.mergeAllReports(project)
+    PomGenerator.applyTo(project)
+}
+

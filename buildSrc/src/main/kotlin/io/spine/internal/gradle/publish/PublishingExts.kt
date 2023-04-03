@@ -26,8 +26,8 @@
 
 package io.spine.internal.gradle.publish
 
+import dokkaJar
 import io.spine.internal.gradle.Repository
-import io.spine.internal.gradle.dokka.dokkaJar
 import io.spine.internal.gradle.sourceSets
 import java.util.*
 import org.gradle.api.InvalidUserDataException
@@ -226,7 +226,7 @@ internal fun TaskContainer.getOrCreate(name: String, init: Jar.() -> Unit): Task
     }
 
 /**
- * Registers [Jar] tasks, output of which is used as Maven artifacts.
+ * Obtains as a set of [Jar] tasks, output of which is used as Maven artifacts.
  *
  * By default, only a jar with java compilation output is included into publication. This method
  * registers tasks which produce additional artifacts.
@@ -244,8 +244,7 @@ internal fun TaskContainer.getOrCreate(name: String, init: Jar.() -> Unit): Task
  *
  * @return the list of the registered tasks.
  */
-internal fun Project.registerArtifacts(jarFlags: JarFlags): Set<TaskProvider<Jar>> {
-
+internal fun Project.artifacts(jarFlags: JarFlags): Set<TaskProvider<Jar>> {
     val tasks = mutableSetOf<TaskProvider<Jar>>()
 
     val java = extensions.findByType(JavaPluginExtension::class.java)
