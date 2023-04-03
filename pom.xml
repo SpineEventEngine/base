@@ -213,22 +213,22 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>org.jetbrains.dokka</groupId>
     <artifactId>dokka-analysis</artifactId>
-    <version>1.7.20</version>
+    <version>1.8.10</version>
   </dependency>
   <dependency>
     <groupId>org.jetbrains.dokka</groupId>
     <artifactId>dokka-base</artifactId>
-    <version>1.7.20</version>
+    <version>1.8.10</version>
   </dependency>
   <dependency>
     <groupId>org.jetbrains.dokka</groupId>
     <artifactId>dokka-core</artifactId>
-    <version>1.7.20</version>
+    <version>1.8.10</version>
   </dependency>
   <dependency>
     <groupId>org.jetbrains.dokka</groupId>
     <artifactId>kotlin-as-java-plugin</artifactId>
-    <version>1.7.20</version>
+    <version>1.8.10</version>
   </dependency>
   <dependency>
     <groupId>org.jetbrains.kotlin</groupId>
