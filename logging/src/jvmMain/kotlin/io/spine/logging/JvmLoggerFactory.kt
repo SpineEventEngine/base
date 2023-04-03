@@ -75,6 +75,7 @@ public actual object LoggerFactory: ClassValue<JvmLogger>() {
         }
     }
 
+    @Suppress("TooGenericExceptionCaught") // Several exception types could be thrown.
     private fun createFluentLogger(cls: Class<*>): FluentLogger {
         val backend = Platform.getBackend(cls.name)
         return try {
