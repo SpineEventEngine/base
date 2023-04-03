@@ -1,5 +1,5 @@
 /*
- * Copyright 2023, TeamDev. All rights reserved.
+ * Copyright 2022, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,17 +26,126 @@
 
 package io.spine.internal.gradle.publish
 
+import io.spine.internal.gradle.Repository
 import io.spine.internal.gradle.dokka.dokkaJar
 import io.spine.internal.gradle.sourceSets
+import java.util.*
+import org.gradle.api.InvalidUserDataException
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.api.publish.PublicationContainer
+import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.register
+import org.gradle.kotlin.dsl.the
 import org.gradle.kotlin.dsl.withType
+
+/**
+ * Obtains [PublishingExtension] of this project.
+ */
+internal val Project.publishingExtension: PublishingExtension
+    get() = extensions.getByType()
+
+/**
+ * Obtains [PublicationContainer] of this project.
+ */
+internal val Project.publications: PublicationContainer
+    get() = publishingExtension.publications
+
+/**
+ * Obtains [SpinePublishing] extension from the root project.
+ */
+internal val Project.spinePublishing: SpinePublishing
+    get() = this.rootProject.the<SpinePublishing>()
+
+/**
+ * Tells if this project has custom publishing.
+ */
+internal val Project.hasCustomPublishing: Boolean
+    get() = spinePublishing.modulesWithCustomPublishing.contains(name)
+
+private const val PUBLISH_TASK = "publish"
+
+/**
+ * Locates `publish` task in this [TaskContainer].
+ *
+ * This task publishes all defined publications to all defined repositories. To achieve that,
+ * the task depends on all `publish`*PubName*`PublicationTo`*RepoName*`Repository` tasks.
+ *
+ * Please note, task execution would not copy publications to the local Maven cache.
+ *
+ * @see <a href="https://docs.gradle.org/current/userguide/publishing_maven.html#publishing_maven:tasks">
+ *     Tasks | Maven Publish Plugin</a>
+ */
+internal val TaskContainer.publish: TaskProvider<Task>
+    get() = named(PUBLISH_TASK)
+
+/**
+ * Sets dependencies for `publish` task in this [Project].
+ *
+ * This method performs the following:
+ *
+ *  1. When this [Project] is not a root, makes `publish` task in a root project
+ *     depend on a local `publish`.
+ *  2. Makes local `publish` task verify that credentials are present for each
+ *     of destination repositories.
+ */
+internal fun Project.configurePublishTask(destinations: Set<Repository>) {
+    attachCredentialsVerification(destinations)
+    bindToRootPublish()
+}
+
+private fun Project.attachCredentialsVerification(destinations: Set<Repository>) {
+    val checkCredentials = tasks.registerCheckCredentialsTask(destinations)
+    val localPublish = tasks.publish
+    localPublish.configure { dependsOn(checkCredentials) }
+}
+
+private fun Project.bindToRootPublish() {
+    if (project == rootProject) {
+        return
+    }
+
+    val localPublish = tasks.publish
+    val rootPublish = rootProject.tasks.getOrCreatePublishTask()
+    rootPublish.configure { dependsOn(localPublish) }
+}
+
+/**
+ * Use this task accessor when it is not guaranteed that the task is present
+ * in this [TaskContainer].
+ */
+private fun TaskContainer.getOrCreatePublishTask(): TaskProvider<Task> =
+    if (names.contains(PUBLISH_TASK)) {
+        named(PUBLISH_TASK)
+    } else {
+        register(PUBLISH_TASK)
+    }
+
+private fun TaskContainer.registerCheckCredentialsTask(
+    destinations: Set<Repository>
+): TaskProvider<Task> =
+    register("checkCredentials") {
+        doLast {
+            destinations.forEach { it.ensureCredentials(project) }
+        }
+    }
+
+private fun Repository.ensureCredentials(project: Project) {
+    val credentials = credentials(project)
+    if (Objects.isNull(credentials)) {
+        throw InvalidUserDataException(
+            "No valid credentials for repository `${this}`. Please make sure " +
+                    "to pass username/password or a valid `.properties` file."
+        )
+    }
+}
 
 /**
  * Excludes Google `.proto` sources from all artifacts.

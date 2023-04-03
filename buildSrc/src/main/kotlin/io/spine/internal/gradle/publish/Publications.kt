@@ -35,7 +35,11 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.create
-import org.gradle.kotlin.dsl.the
+
+/**
+ * The name of the Maven Publishing Gradle plugin.
+ */
+private const val MAVEN_PUBLISH = "maven-publish"
 
 /**
  * Abstract base for handlers of publications in a project
@@ -47,10 +51,15 @@ internal sealed class PublicationHandler(
 ) {
 
     fun apply() {
-        project.apply(plugin = "maven-publish")
-        handlePublications()
-        registerDestinations()
-        project.configurePublishTask(destinations)
+        if (!project.hasCustomPublishing) {
+            project.apply(plugin = MAVEN_PUBLISH)
+        }
+
+        project.pluginManager.withPlugin(MAVEN_PUBLISH) {
+            handlePublications()
+            registerDestinations()
+            project.configurePublishTask(destinations)
+        }
     }
 
     /**
@@ -75,9 +84,8 @@ internal sealed class PublicationHandler(
      * them to this publication.
      */
     protected fun MavenPublication.assignMavenCoordinates() {
-        val spinePublishing = project.rootProject.the<SpinePublishing>()
         groupId = project.group.toString()
-        artifactId = spinePublishing.artifactPrefix + artifactId
+        artifactId = project.spinePublishing.artifactPrefix + artifactId
         version = project.version.toString()
     }
 }

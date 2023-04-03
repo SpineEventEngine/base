@@ -37,6 +37,7 @@ import io.spine.internal.gradle.testing.registerTestTasks
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+   `maven-publish`
     kotlin("multiplatform")
     idea
     jacoco
@@ -83,25 +84,6 @@ java {
     withJavadocJar()
 }
 
-/*
-private val Project.publishingExtension: PublishingExtension
-    get() = extensions.getByType()
-
-private val Project.publications: PublicationContainer
-    get() = publishingExtension.publications
-
-project.afterEvaluate {
-    val mavenPublication = project.publications.forEach { publication ->
-        if (publication is MavenPublication) {
-            publication.artifacts.forEach { artifact ->
-                println("*** Publication (after plugin applied)" +
-                        " `${publication.name}` artifact: `${artifact.file}`.")
-            }
-        }
-    }
-}
-*/
-
 tasks {
     withType<KotlinCompile>().configureEach {
         setFreeCompilerArgs()
@@ -117,3 +99,35 @@ val jvmTest: Task by tasks.getting {
 // because the `javadoc` task is added when the `kotlin` block `withJava` is applied.
 JavadocConfig.applyTo(project)
 
+val javadocJar by tasks.getting(Jar::class) {
+    archiveClassifier.set("javadoc")
+}
+
+//publishing {
+//
+//    // Configure all publications
+//    publications.withType<MavenPublication> {
+//
+//        // Stub javadoc.jar artifact
+////        artifact(javadocJar)
+//
+//    }
+//}
+
+/*
+
+private val Project.publishingExtension: PublishingExtension
+    get() = extensions.getByType()
+
+private val Project.publications: PublicationContainer
+    get() = publishingExtension.publications
+
+val mavenPublication = project.publications.forEach { publication ->
+    if (publication is MavenPublication) {
+        publication.artifacts.forEach { artifact ->
+            println("*** Publication (after plugin applied)" +
+                    " `${publication.name}` artifact: `${artifact.file}`.")
+        }
+    }
+}
+*/

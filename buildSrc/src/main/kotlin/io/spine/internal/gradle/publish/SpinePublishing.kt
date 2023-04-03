@@ -414,15 +414,3 @@ open class SpinePublishing(private val project: Project) {
         }
     }
 }
-
-/**
- * Obtains [PublishingExtension] of this project.
- */
-internal val Project.publishingExtension: PublishingExtension
-    get() = extensions.getByType()
-
-/**
- * Obtains [PublicationContainer] of this project.
- */
-internal val Project.publications: PublicationContainer
-    get() = publishingExtension.publications

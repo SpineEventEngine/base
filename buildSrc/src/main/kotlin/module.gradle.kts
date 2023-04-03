@@ -32,6 +32,7 @@ import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
+import io.spine.internal.gradle.publish.publish
 import io.spine.internal.gradle.checkstyle.CheckStyleConfig
 import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.forceVersions
@@ -51,7 +52,6 @@ plugins {
     id("detekt-code-analysis")
     id("project-report")
     id("dokka-for-java")
-    id("maven-publish")
 }
 
 LicenseReporter.generateReportIn(project)
@@ -146,8 +146,10 @@ fun Module.setTaskDependencies(generatedDir: String) {
             dependsOn(cleanGenerated)
         }
 
-        named("publish") {
-            dependsOn("${project.path}:updateGitHubPages")
+        project.afterEvaluate {
+            publish {
+                dependsOn("${project.path}:updateGitHubPages")
+            }
         }
     }
 
