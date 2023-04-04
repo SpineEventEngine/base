@@ -129,11 +129,6 @@ fun DokkaTask.configureForKotlin() {
  */
 fun DokkaTask.configureForJava() {
     configureFor("java")
-    dokkaSourceSets.configureEach {
-        sourceRoots.setFrom(
-            onlyJavaSources()
-        )
-    }
 }
 
 /**
