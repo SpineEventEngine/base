@@ -32,6 +32,7 @@ import io.spine.internal.dependency.Kotest
 import io.spine.internal.gradle.checkstyle.CheckStyleConfig
 import io.spine.internal.gradle.javadoc.JavadocConfig
 import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
+import io.spine.internal.gradle.publish.javadocJar
 import io.spine.internal.gradle.report.license.LicenseReporter
 import io.spine.internal.gradle.testing.registerTestTasks
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -97,12 +98,9 @@ val jvmTest: Task by tasks.getting {
 JavadocConfig.applyTo(project)
 
 publishing {
-
-    // Configure all publications
     publications.withType<MavenPublication> {
-
         artifact(project.dokkaJar())
-
+        artifact(project.javadocJar())
     }
 }
 

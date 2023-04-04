@@ -35,6 +35,7 @@ import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
+import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.kotlin.dsl.DependencyHandlerScope
 import org.jetbrains.dokka.DokkaConfiguration
 import org.jetbrains.dokka.base.DokkaBase
@@ -67,7 +68,15 @@ fun DependencyHandlerScope.useDokkaWithSpineExtensions() {
 private fun DependencyHandler.dokkaPlugin(dependencyNotation: Any): Dependency? =
     add("dokkaPlugin", dependencyNotation)
 
-fun DokkaTask.configureForKotlin() {
+private fun Project.dokkaOutput(language: String): File =
+    buildDir.resolve("docs/dokka${language.capitalized()}")
+
+private fun Project.dokkaConfigFile(file: String): File {
+    val dokkaConfDir = project.rootDir.resolve("buildSrc/src/main/resources/dokka")
+    return dokkaConfDir.resolve(file)
+}
+
+private fun DokkaTask.configureFor(language: String) {
     dokkaSourceSets.configureEach {
         /**
          * Configures links to the external Java documentation.
@@ -85,12 +94,7 @@ fun DokkaTask.configureForKotlin() {
         )
     }
 
-    val buildDir = project.buildDir
-    val rootDir = project.rootDir
-
-    outputDirectory.set(buildDir.resolve("docs/dokka"))
-
-    val dokkaConfDir = rootDir.resolve("buildSrc/src/main/resources/dokka")
+    outputDirectory.set(project.dokkaOutput(language))
 
     /**
      * Dokka Base plugin allows to set a few properties to customize the output:
@@ -106,19 +110,25 @@ fun DokkaTask.configureForKotlin() {
      *  Dokka modifying frontend assets</a>
      */
     pluginConfiguration<DokkaBase, DokkaBaseConfiguration> {
-        customStyleSheets =
-            listOf(project.file("${dokkaConfDir.resolve("styles/custom-styles.css")}"))
-        customAssets = listOf(project.file("${dokkaConfDir.resolve("assets/logo-icon.svg")}"))
+        customStyleSheets = listOf(project.dokkaConfigFile("styles/custom-styles.css"))
+        customAssets = listOf(project.dokkaConfigFile("assets/logo-icon.svg"))
         separateInheritedMembers = true
         footerMessage = "Copyright ${LocalDate.now().year}, TeamDev"
     }
 }
 
 /**
+ * Configures this [DokkaTask] to accept only Kotlin files.
+ */
+fun DokkaTask.configureForKotlin() {
+    configureFor("kotlin")
+}
+
+/**
  * Configures this [DokkaTask] to accept only Java files.
  */
 fun DokkaTask.configureForJava() {
-    configureForKotlin()
+    configureFor("java")
     dokkaSourceSets.configureEach {
         sourceRoots.setFrom(
             onlyJavaSources()
@@ -156,7 +166,7 @@ private fun File.isJavaSourceDirectory(): Boolean {
  */
 fun Project.dokkaJar(): TaskProvider<Jar> = tasks.getOrCreate("dokkaJar") {
     archiveClassifier.set("dokka")
-    from(files("$buildDir/docs/dokka"))
+    from(files(dokkaOutput("kotlin")))
 
     tasks.dokkaHtmlTask()?.let{ dokkaTask ->
         this@getOrCreate.dependsOn(dokkaTask)

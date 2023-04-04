@@ -210,7 +210,7 @@ internal fun Project.testJar(): TaskProvider<Jar> = tasks.getOrCreate("testJar")
  * generated upon Java sources from `main` source set. If javadoc for Kotlin is also needed,
  * apply Dokka plugin. It tunes `javadoc` task to generate docs upon Kotlin sources as well.
  */
-internal fun Project.javadocJar(): TaskProvider<Jar> = tasks.getOrCreate("javadocJar") {
+fun Project.javadocJar(): TaskProvider<Jar> = tasks.getOrCreate("javadocJar") {
     archiveClassifier.set("javadoc")
     from(files("$buildDir/docs/javadoc"))
     dependsOn("javadoc")
