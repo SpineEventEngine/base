@@ -47,7 +47,7 @@ plugins {
  * Please do not apply this script plugin in the `plugins {}` block because `jacocoTestReport`
  * task is not yet available at this stage.
  */
-private val ABOUT = ""
+private val about = ""
 
 /**
  * Configure Jacoco task with custom input from this KMM project.
