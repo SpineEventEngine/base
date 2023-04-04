@@ -177,6 +177,7 @@ internal fun Project.sourcesJar(): TaskProvider<Jar> = tasks.getOrCreate("source
     archiveClassifier.set("sources")
     from(sourceSets["main"].allSource) // Puts Java and Kotlin sources.
     from(protoSources()) // Puts Proto sources.
+    exclude("desc.ref", "*.desc") // Exclude descriptor files and the descriptor reference.
 }
 
 /**
