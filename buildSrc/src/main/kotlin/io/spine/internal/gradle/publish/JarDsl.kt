@@ -28,7 +28,7 @@ package io.spine.internal.gradle.publish
 
 /**
  * A DSL element of [SpinePublishing] extension which configures publishing of
- * [dokkaJar][io.spine.internal.gradle.dokka.dokkaJar] artifact.
+ * [dokkaKotlinJar] artifact.
  *
  * This artifact contains Dokka-generated documentation. By default, it is not published.
  *
@@ -40,7 +40,20 @@ class DokkaJar {
     /**
      * Enables publishing `JAR`s with Dokka-generated documentation for all published modules.
      */
+    @Deprecated("Please use `kotlin` and `java` flags instead.")
     var enabled = false
+
+    /**
+     * Controls whether [dokkaKotlinJar] artifact should be published.
+     * The default value is `true`.
+     */
+    val kotlin = true
+
+    /**
+     * Controls whether [dokkaJavaJar] artifact should be published.
+     * The default value is `false`.
+     */
+    val java = false
 }
 
 /**
@@ -96,6 +109,20 @@ class ProtoJar {
 internal data class JarFlags(
 
     /**
+     * Tells whether [sourcesJar] artifact should be published.
+     *
+     * Default value is `true`.
+     */
+    val sourcesJar: Boolean = true,
+
+    /**
+     * Tells whether [javadocJar] artifact should be published.
+     *
+     * Default value is `true`.
+     */
+    val javadocJar: Boolean = true,
+    
+    /**
      * Tells whether [protoJar] artifact should be published.
      */
     val publishProtoJar: Boolean,
@@ -106,10 +133,14 @@ internal data class JarFlags(
     val publishTestJar: Boolean,
 
     /**
-     * Tells whether [dokkaJar][io.spine.internal.gradle.dokka.dokkaJar] artifact
-     * should be published.
+     * Tells whether [dokkaKotlinJar] artifact should be published.
      */
-    val publishDokkaJar: Boolean
+    val publishDokkaKotlinJar: Boolean,
+
+    /**
+     * Tells whether [dokkaJavaJar] artifact should be published.
+     */
+    val publishDokkaJavaJar: Boolean
 ) {
     internal companion object {
         /**
@@ -124,7 +155,12 @@ internal data class JarFlags(
         ): JarFlags {
             val addProtoJar = (protoJar.exclusions.contains(projectName) || protoJar.disabled).not()
             val addTestJar = testJar.inclusions.contains(projectName) || testJar.enabled
-            return JarFlags(addProtoJar, addTestJar, dokkaJar.enabled)
+            return JarFlags(
+                sourcesJar = true,
+                javadocJar = true,
+                addProtoJar, addTestJar,
+                dokkaJar.kotlin, dokkaJar.java
+            )
         }
     }
 }

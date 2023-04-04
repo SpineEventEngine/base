@@ -98,7 +98,7 @@ JavadocConfig.applyTo(project)
 
 publishing {
     publications.withType<MavenPublication> {
-        artifact(project.dokkaJar())
+        artifact(project.dokkaKotlinJar())
         artifact(project.javadocJar())
     }
 }

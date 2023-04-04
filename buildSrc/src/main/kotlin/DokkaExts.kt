@@ -153,15 +153,31 @@ private fun File.isJavaSourceDirectory(): Boolean {
 }
 
 /**
- * Locates or creates `dokkaJar` task in this [Project].
+ * Locates or creates `dokkaKotlinJar` task in this [Project].
  *
  * The output of this task is a `jar` archive. The archive contains the Dokka output, generated upon
- * Java sources from `main` source set. Requires Dokka to be configured in the target project by
- * applying `dokka-for-java` plugin.
+ * Kotlin sources from `main` source set. Requires Dokka to be configured in the target project by
+ * applying `dokka-for-kotlin` plugin.
  */
-fun Project.dokkaJar(): TaskProvider<Jar> = tasks.getOrCreate("dokkaJar") {
+fun Project.dokkaKotlinJar(): TaskProvider<Jar> = tasks.getOrCreate("dokkaKotlinJar") {
     archiveClassifier.set("dokka")
     from(files(dokkaOutput("kotlin")))
+
+    tasks.dokkaHtmlTask()?.let{ dokkaTask ->
+        this@getOrCreate.dependsOn(dokkaTask)
+    }
+}
+
+/**
+ * Locates or creates `dokkaKotlinJar` task in this [Project].
+ *
+ * The output of this task is a `jar` archive. The archive contains the Dokka output, generated upon
+ * Kotlin sources from `main` source set. Requires Dokka to be configured in the target project by
+ * applying `dokka-for-kotlin` plugin.
+ */
+fun Project.dokkaJavaJar(): TaskProvider<Jar> = tasks.getOrCreate("dokkaJavaJar") {
+    archiveClassifier.set("dokka-java")
+    from(files(dokkaOutput("java")))
 
     tasks.dokkaHtmlTask()?.let{ dokkaTask ->
         this@getOrCreate.dependsOn(dokkaTask)
