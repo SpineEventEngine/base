@@ -34,6 +34,9 @@ import java.lang.Exception
 import java.lang.reflect.Constructor
 import kotlin.reflect.KClass
 
+/**
+ * Obtains a [JvmLogger] for a given class.
+ */
 public actual object LoggerFactory: ClassValue<JvmLogger>() {
 
     private val logger = FluentLogger.forEnclosingClass()
@@ -49,6 +52,11 @@ public actual object LoggerFactory: ClassValue<JvmLogger>() {
         return createForClass(cls)
     }
 
+    /**
+     * Obtains an instance of [FluentLogger] for the given class.
+     *
+     * The same instance is returned for the same class.
+     */
     @JvmStatic
     @JvmName("getFluentLogger")
     internal fun getFluentLogger(cls: Class<*>): FluentLogger {
@@ -81,7 +89,8 @@ public actual object LoggerFactory: ClassValue<JvmLogger>() {
         return try {
             constructor.newInstance(backend)
         } catch (e: Exception) {
-            logger.atSevere().withCause(e).log("Unable to create logger.")
+            logger.atSevere().withCause(e)
+                .log("Unable to create a logger for the class `${cls.name}`.")
             throw illegalStateWithCauseOf(e)
         }
     }
