@@ -42,7 +42,6 @@ plugins {
     kotlin("multiplatform")
     `dokka-for-kotlin`
     idea
-    jacoco
     `project-report`
     `detekt-code-analysis`
 }
@@ -104,21 +103,4 @@ publishing {
     }
 }
 
-/**
- * Configure Jacoco task with custom input from this KMM project.
- */
-val jacocoTestReport: JacocoReport by tasks.getting(JacocoReport::class) {
-
-    val classFiles = File("${buildDir}/classes/kotlin/jvm/")
-        .walkBottomUp()
-        .toSet()
-    classDirectories.setFrom(classFiles)
-
-    val coverageSourceDirs = arrayOf(
-        "src/commonMain",
-        "src/jvmMain"
-    )
-    sourceDirectories.setFrom(files(coverageSourceDirs))
-
-    executionData.setFrom(files("${buildDir}/jacoco/jvmTest.exec"))
-}
+apply(plugin="jacoco-kmm-jvm")
