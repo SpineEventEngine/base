@@ -98,8 +98,11 @@ JavadocConfig.applyTo(project)
 
 publishing {
     publications.withType<MavenPublication> {
-        artifact(project.dokkaKotlinJar())
-        artifact(project.javadocJar())
+        if (name.contains("jvm", true)) {
+            artifact(project.javadocJar())
+        } else {
+            artifact(project.dokkaKotlinJar())
+        }
     }
 }
 
