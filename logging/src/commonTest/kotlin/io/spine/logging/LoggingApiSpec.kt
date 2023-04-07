@@ -26,41 +26,20 @@
 
 package io.spine.logging
 
-import kotlin.reflect.KClass
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeSameInstanceAs
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
-public abstract class Logger<API: LoggingApi<API>>(
-    protected val cls: KClass<*>
-) {
+@DisplayName("`LoggingApi` should")
+class LoggingApiSpec {
 
-    public fun at(level: Level): API {
-        val apiImpl = createApi(level)
-        return if (apiImpl.isEnabled()) {
-            val loggingDomain = LoggingDomain.get(cls)
-            WithLoggingDomain(loggingDomain, apiImpl).api
-        } else {
-            apiImpl
-        }
-    }
-
-    protected abstract fun createApi(level: Level): API
-
-    public fun atDebug(): API = at(Level.DEBUG)
-    public fun atInfo(): API = at(Level.INFO)
-    public fun atWarning(): API = at(Level.WARNING)
-    public fun atError(): API = at(Level.ERROR)
-}
-
-private class WithLoggingDomain<API: LoggingApi<API>>(
-    private val loggingDomain: LoggingDomain,
-    private val impl: API
-): LoggingApi<API> by impl {
-
-    @Suppress("UNCHECKED_CAST")
-    val api: API = this as API
-
-    override fun log(message: () -> String) {
-        impl.log {
-            "${loggingDomain.prefix}${message()}"
-        }
+    @Test
+    fun `provide no-op implementation class`() {
+        val noOp = LoggingApi.NoOp<LeafApi>()
+        noOp.isEnabled() shouldBe false
+        noOp.withCause(Throwable("stub instance")) shouldBeSameInstanceAs noOp
     }
 }
+
+private interface LeafApi: LoggingApi<LeafApi>

@@ -28,39 +28,38 @@ package io.spine.logging
 
 import kotlin.reflect.KClass
 
-public abstract class Logger<API: LoggingApi<API>>(
-    protected val cls: KClass<*>
-) {
+public data class LoggingDomain(val name: String) {
 
-    public fun at(level: Level): API {
-        val apiImpl = createApi(level)
-        return if (apiImpl.isEnabled()) {
-            val loggingDomain = LoggingDomain.get(cls)
-            WithLoggingDomain(loggingDomain, apiImpl).api
-        } else {
-            apiImpl
-        }
+    public val prefix: String by lazy {
+        if (name.isEmpty()) "" else "[$name] "
     }
 
-    protected abstract fun createApi(level: Level): API
+    public companion object {
 
-    public fun atDebug(): API = at(Level.DEBUG)
-    public fun atInfo(): API = at(Level.INFO)
-    public fun atWarning(): API = at(Level.WARNING)
-    public fun atError(): API = at(Level.ERROR)
-}
+        private val noOp: LoggingDomain = LoggingDomain("")
 
-private class WithLoggingDomain<API: LoggingApi<API>>(
-    private val loggingDomain: LoggingDomain,
-    private val impl: API
-): LoggingApi<API> by impl {
+        /**
+         * Maps a package name to the associated [LoggingDomain].
+         */
+        private val entries: MutableMap<String, LoggingDomain> =
+            mutableMapOf<String, LoggingDomain>().toSortedMap(compareByDescending { it })
 
-    @Suppress("UNCHECKED_CAST")
-    val api: API = this as API
+        @JvmStatic
+        public fun put(packageName: String, domain: LoggingDomain): LoggingDomain? =
+            entries.put(packageName, domain)
 
-    override fun log(message: () -> String) {
-        impl.log {
-            "${loggingDomain.prefix}${message()}"
+        @JvmStatic
+        public fun get(cls: KClass<*>): LoggingDomain {
+            val packageName = cls.packageName ?: return noOp
+            val found = entries.keys.firstOrNull { packageName.startsWith(it) }
+            return if (found != null) {
+                entries[found]!!
+            } else {
+                noOp
+            }
         }
     }
 }
+
+private val KClass<*>.packageName: String?
+    get() = qualifiedName?.substringBeforeLast('.')

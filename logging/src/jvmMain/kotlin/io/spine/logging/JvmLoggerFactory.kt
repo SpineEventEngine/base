@@ -65,7 +65,7 @@ public actual object LoggerFactory: ClassValue<JvmLogger>() {
 
     private fun createForClass(cls: Class<*>): JvmLogger {
         val impl = createFluentLogger(cls)
-        return JvmLogger(impl)
+        return JvmLogger(cls.kotlin, impl)
     }
 
     private fun ctor(): Constructor<FluentLogger> {
