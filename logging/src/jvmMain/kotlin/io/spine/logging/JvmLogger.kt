@@ -31,11 +31,17 @@ import com.google.common.flogger.LogSites
 import kotlin.reflect.KClass
 import java.util.logging.Level as JLevel
 
+/**
+ * Implements [Logger] using [FluentLogger] as the underlying implementation.
+ */
 public class JvmLogger(
     cls: KClass<*>,
     internal val impl: FluentLogger
 ) : Logger<JvmLogger.Api>(cls) {
 
+    /**
+     * The non-wildcard logging API for the [JvmLogger].
+     */
     public interface Api: LoggingApi<Api>
 
     override fun createApi(level: Level): Api {
@@ -46,6 +52,9 @@ public class JvmLogger(
     }
 }
 
+/**
+ * Implements [LoggingApi] wrapping [FluentLogger.Api].
+ */
 private class Impl(private val floggerApi: FluentLogger.Api): JvmLogger.Api {
     override fun withCause(cause: Throwable): JvmLogger.Api {
         floggerApi.withCause(cause)
@@ -63,6 +72,9 @@ private class Impl(private val floggerApi: FluentLogger.Api): JvmLogger.Api {
     }
 }
 
+/**
+ * Maps [Level] values to its Java logging counterparts.
+ */
 private fun Level.toJavaLogging(): JLevel {
     val result = when (this) {
         Level.DEBUG -> JLevel.FINE
