@@ -26,12 +26,22 @@
 
 package io.spine.logging
 
+/**
+ * Level of logging in an application.
+ *
+ * Implemented as data class rather than enum to allow for custom logging level values.
+ */
 public data class Level(
     val name: String,
-    val value: Int) {
+    val value: Int
+) {
 
-    // Level `value`s repeat those from `java.util.logging.Level`
-    // Names use the words more popular among logging frameworks and implementations.
+    /**
+     * Popular logging levels.
+     *
+     * Name properties use the words more popular among logging frameworks and implementations.
+     * Level values repeat those from `java.util.logging.Level` for easier compatibility.
+     */
     public companion object {
         public val OFF: Level = Level("OFF", Int.MAX_VALUE)
         public val ERROR: Level = Level("ERROR", 1000)
