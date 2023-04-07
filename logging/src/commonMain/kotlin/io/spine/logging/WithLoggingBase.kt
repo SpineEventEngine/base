@@ -35,10 +35,9 @@ package io.spine.logging
  * ```kotlin
  * public interface MyLoggingApi: LoggingApi<MyLoggingApi>
  * public interface WithLogging: WithLoggingBase<MyLoggingApi>
- *
  * ```
  */
-public interface WithLoggingBase<API: LoggingApi<API>> {
+public interface WithLoggingBase<API : LoggingApi<API>> {
 
     public val logger: Logger<API>
         get() {
