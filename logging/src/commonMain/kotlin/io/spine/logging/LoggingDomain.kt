@@ -30,12 +30,24 @@ import kotlin.reflect.KClass
 
 public data class LoggingDomain(val name: String) {
 
+    /**
+     * Obtains the string to be prepended before logging statements for the classes
+     * [belonging][get] to this `LoggingDomain`.
+     *
+     * If the logging domain is not defined for a class, logging statements for it
+     * will not be prefixed. Otherwise, the prefix would be the name of the logging domain
+     * in square brackets followed by a space.
+     */
     public val prefix: String by lazy {
         if (name.isEmpty()) "" else "[$name] "
     }
 
     public companion object {
 
+        /**
+         * A no-op instance of `LoggingDomain` returned for classes belonging to packages
+         * without an associated logging domain.
+         */
         private val noOp: LoggingDomain = LoggingDomain("")
 
         /**
@@ -48,6 +60,10 @@ public data class LoggingDomain(val name: String) {
         public fun put(packageName: String, domain: LoggingDomain): LoggingDomain? =
             entries.put(packageName, domain)
 
+        /**
+         * Obtains a logging domain for the class. If a domain is not specifically set, a no-op
+         * instance with an empty name will be returned.
+         */
         @JvmStatic
         public fun get(cls: KClass<*>): LoggingDomain {
             val packageName = cls.packageName ?: return noOp
@@ -61,5 +77,8 @@ public data class LoggingDomain(val name: String) {
     }
 }
 
+/**
+ * Obtains a name of a package of this Kotlin class.
+ */
 private val KClass<*>.packageName: String?
     get() = qualifiedName?.substringBeforeLast('.')
