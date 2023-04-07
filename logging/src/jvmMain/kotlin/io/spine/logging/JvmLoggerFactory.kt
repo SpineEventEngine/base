@@ -34,19 +34,21 @@ import java.lang.Exception
 import java.lang.reflect.Constructor
 import kotlin.reflect.KClass
 
+private val logger = FluentLogger.forEnclosingClass()
+
 /**
  * Obtains a [JvmLogger] for a given class.
  */
 public actual object LoggerFactory: ClassValue<JvmLogger>() {
 
-    private val logger = FluentLogger.forEnclosingClass()
     private val constructor: Constructor<FluentLogger> = ctor()
 
     @JvmStatic
     @JvmName("getLogger")
-    @Suppress("UNCHECKED_CAST")
     public actual fun <API: LoggingApi<API>> getLogger(cls: KClass<*>): Logger<API> {
-        return get(cls.java) as Logger<API>
+        @Suppress("UNCHECKED_CAST") // Safe as `JvmLogger.Api`
+        val result = get(cls.java) as Logger<API>
+        return result
     }
 
     override fun computeValue(cls: Class<*>): JvmLogger {
@@ -69,21 +71,6 @@ public actual object LoggerFactory: ClassValue<JvmLogger>() {
         return JvmLogger(cls.kotlin, impl)
     }
 
-    private fun ctor(): Constructor<FluentLogger> {
-        val loggerClass = FluentLogger::class.java
-        val loggerBackendClass = LoggerBackend::class.java
-        return try {
-            val constructor = loggerClass.getDeclaredConstructor(loggerBackendClass)
-            constructor.isAccessible = true
-            constructor
-        } catch (e: NoSuchMethodException) {
-            logger.atSevere().withCause(e).log(
-                "Unable to find constructor `${loggerClass.name}(${loggerBackendClass.name})`."
-            )
-            throw illegalStateWithCauseOf(e)
-        }
-    }
-
     @Suppress("TooGenericExceptionCaught") // Several exception types could be thrown.
     private fun createFluentLogger(cls: Class<*>): FluentLogger {
         val backend = Platform.getBackend(cls.name)
@@ -94,6 +81,21 @@ public actual object LoggerFactory: ClassValue<JvmLogger>() {
                 .log("Unable to create a logger for the class `${cls.name}`.")
             throw illegalStateWithCauseOf(e)
         }
+    }
+}
+
+private fun ctor(): Constructor<FluentLogger> {
+    val loggerClass = FluentLogger::class.java
+    val loggerBackendClass = LoggerBackend::class.java
+    return try {
+        val constructor = loggerClass.getDeclaredConstructor(loggerBackendClass)
+        constructor.isAccessible = true
+        constructor
+    } catch (e: NoSuchMethodException) {
+        logger.atSevere().withCause(e).log(
+            "Unable to find constructor `${loggerClass.name}(${loggerBackendClass.name})`."
+        )
+        throw illegalStateWithCauseOf(e)
     }
 }
 
