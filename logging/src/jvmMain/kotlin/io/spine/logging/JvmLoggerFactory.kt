@@ -44,8 +44,9 @@ public actual object LoggerFactory: ClassValue<JvmLogger>() {
 
     @JvmStatic
     @JvmName("getLogger")
-    public actual fun getLogger(cls: KClass<*>): Logger<*> {
-        return get(cls.java)
+    @Suppress("UNCHECKED_CAST")
+    public actual fun <API: LoggingApi<API>> getLogger(cls: KClass<*>): Logger<API> {
+        return get(cls.java) as Logger<API>
     }
 
     override fun computeValue(cls: Class<*>): JvmLogger {

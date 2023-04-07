@@ -26,17 +26,21 @@
 
 package io.spine.logging
 
-import kotlin.reflect.KClass
+import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.types.shouldBeSameInstanceAs
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
-/**
- * A factory for [Logger] instances.
- */
-public expect object LoggerFactory {
+@DisplayName("`WithLogging` interface should")
+internal class WithLoggingBaseSpec {
 
-    /**
-     * Obtains the logger for the given class.
-     *
-     * Implementation should provide the same logger instance for the same class.
-     */
-    public fun <API: LoggingApi<API>>  getLogger(cls: KClass<*>): Logger<API>
+    @Test
+    fun `provide the same logger associated with a class`() {
+        val lc = LoggingConsumer()
+
+        lc.logger shouldNotBe null
+        lc.logger shouldBeSameInstanceAs lc.logger
+    }
 }
+
+private class LoggingConsumer: WithLoggingBase<JvmLogger.Api>

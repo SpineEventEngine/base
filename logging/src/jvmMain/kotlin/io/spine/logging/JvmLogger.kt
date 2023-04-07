@@ -28,14 +28,15 @@ package io.spine.logging
 
 import com.google.common.flogger.FluentLogger
 import com.google.common.flogger.LogSites
-import io.spine.logging.WithLogging.Api
 import kotlin.reflect.KClass
 import java.util.logging.Level as JLevel
 
 public class JvmLogger(
     cls: KClass<*>,
     internal val impl: FluentLogger
-) : Logger<Api>(cls) {
+) : Logger<JvmLogger.Api>(cls) {
+
+    public interface Api: LoggingApi<Api>
 
     override fun createApi(level: Level): Api {
         val implApi = impl.at(level.toJavaLogging()).withInjectedLogSite(
@@ -45,8 +46,8 @@ public class JvmLogger(
     }
 }
 
-private class Impl(private val floggerApi: FluentLogger.Api): Api {
-    override fun withCause(cause: Throwable): Api {
+private class Impl(private val floggerApi: FluentLogger.Api): JvmLogger.Api {
+    override fun withCause(cause: Throwable): JvmLogger.Api {
         floggerApi.withCause(cause)
         return this
     }

@@ -26,11 +26,21 @@
 
 package io.spine.logging
 
-public interface WithLogging {
+/**
+ * Base interface for utility interfaces providing `Logger` as a property.
+ *
+ * Usages of this interface are likely to provide non-generic extension of this interface
+ * providing actual type parameter for the [LoggingApi]:
+ *
+ * ```kotlin
+ * public interface MyLoggingApi: LoggingApi<MyLoggingApi>
+ * public interface WithLogging: WithLoggingBase<MyLoggingApi>
+ *
+ * ```
+ */
+public interface WithLoggingBase<API: LoggingApi<API>> {
 
-    public interface Api: LoggingApi<Api>
-
-    public val logger: Logger<*>
+    public val logger: Logger<API>
         get() {
             return LoggerFactory.getLogger(this::class)
         }
