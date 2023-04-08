@@ -26,29 +26,20 @@
 
 package io.spine.logging
 
+import io.spine.logging.LoggingDomain.Companion.get
 import kotlin.reflect.KClass
 
-public data class LoggingDomain(val name: String) {
-
-    /**
-     * Obtains the string to be prepended before logging statements for the classes
-     * [belonging][get] to this `LoggingDomain`.
-     *
-     * If the logging domain is not defined for a class, logging statements for it
-     * will not be prefixed. Otherwise, the prefix would be the name of the logging domain
-     * in square brackets followed by a space.
-     */
-    public val prefix: String by lazy {
-        if (name.isEmpty()) "" else "[$name] "
-    }
+@Target(AnnotationTarget.FILE, AnnotationTarget.CLASS)
+@Retention
+public annotation class LoggingDomain(public val name: String) {
 
     public companion object {
 
         /**
-         * A no-op instance of `LoggingDomain` returned for classes belonging to packages
-         * without an associated logging domain.
+         * A no-op instance of `LoggingDomain` returned for classes belonging to
+         * classes or files without an associated logging domain.
          */
-        private val noOp: LoggingDomain = LoggingDomain("")
+        internal val noOp: LoggingDomain = LoggingDomain("")
 
         /**
          * Maps a package name to the associated [LoggingDomain].
@@ -76,6 +67,17 @@ public data class LoggingDomain(val name: String) {
         }
     }
 }
+
+/**
+ * Obtains the string to be prepended before logging statements for the classes
+ * [belonging][get] to this `LoggingDomain`.
+ *
+ * If the logging domain is not defined for a class, logging statements for it
+ * will not be prefixed. Otherwise, the prefix would be the name of the logging domain
+ * in square brackets followed by a space.
+ */
+public val LoggingDomain.messagePrefix: String
+    get() = if (name.isEmpty()) "" else "[$name] "
 
 /**
  * Obtains a name of a package of this Kotlin class.

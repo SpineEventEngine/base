@@ -27,7 +27,6 @@
 package io.spine.logging
 
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.types.shouldBeSameInstanceAs
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -36,18 +35,11 @@ class LoggingDomainSpec {
 
     @Test
     fun `have empty prefix for empty name`() {
-        LoggingDomain("").prefix shouldBe ""
+        LoggingDomain("").messagePrefix shouldBe ""
     }
 
     @Test
     fun `have prefix with the name in square brackets followed by space`() {
-        LoggingDomain("Hello").prefix shouldBe "[Hello] "
-    }
-
-    @Test
-    fun `should provide same prefix each time`() {
-        val domain = LoggingDomain("SameSame")
-
-        domain.prefix shouldBeSameInstanceAs domain.prefix
+        LoggingDomain("Hello").messagePrefix shouldBe "[Hello] "
     }
 }

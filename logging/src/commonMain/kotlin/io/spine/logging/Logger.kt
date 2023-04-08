@@ -32,14 +32,20 @@ public abstract class Logger<API: LoggingApi<API>>(
     protected val cls: KClass<*>
 ) {
 
+    /**
+     * Creates an [API] for the given level of logging.
+     */
     public fun at(level: Level): API {
-        val apiImpl = createApi(level)
-        return if (apiImpl.isEnabled()) {
-            val loggingDomain = LoggingDomain.get(cls)
-            WithLoggingDomain(loggingDomain, apiImpl).api
-        } else {
-            apiImpl
+        val api = createApi(level)
+        if (!api.isEnabled()) {
+            return api
         }
+        val loggingDomain = LoggingDomain.get(cls)
+        if (loggingDomain === LoggingDomain.noOp) {
+            return api
+        }
+        @Suppress("UNCHECKED_CAST") // Safe to cast since delegates to the same interface.
+        return WithLoggingDomain(loggingDomain, api) as API
     }
 
     protected abstract fun createApi(level: Level): API
@@ -50,17 +56,16 @@ public abstract class Logger<API: LoggingApi<API>>(
     public fun atError(): API = at(Level.ERROR)
 }
 
+/**
+ * Wraps given [API] to prepend [LoggingDomain.messagePrefix] to
+ * the [messages][log] of the [delegate].
+ */
 private class WithLoggingDomain<API: LoggingApi<API>>(
     private val loggingDomain: LoggingDomain,
-    private val impl: API
-): LoggingApi<API> by impl {
+    private val delegate: API
+): LoggingApi<API> by delegate {
 
-    @Suppress("UNCHECKED_CAST")
-    val api: API = this as API
-
-    override fun log(message: () -> String) {
-        impl.log {
-            "${loggingDomain.prefix}${message()}"
-        }
+    override fun log(message: () -> String) = delegate.log {
+        "${loggingDomain.messagePrefix}${message()}"
     }
 }
