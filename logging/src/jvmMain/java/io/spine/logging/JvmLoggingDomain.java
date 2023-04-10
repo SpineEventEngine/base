@@ -24,23 +24,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.logging
+package io.spine.logging;
 
-/**
- * Base interface for utility interfaces providing `Logger` as a property.
- *
- * Usages of this interface are likely to provide non-generic extension of this interface
- * providing actual type parameter for the [LoggingApi]:
- *
- * ```kotlin
- * public interface MyLoggingApi: LoggingApi<MyLoggingApi>
- * public interface WithLogging: WithLoggingBase<MyLoggingApi>
- * ```
- */
-public interface WithLoggingBase<API : LoggingApi<API>> {
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-    public val logger: Logger<API>
-        get() {
-            return LoggingFactory.loggerFor(this::class)
-        }
+import static java.lang.annotation.ElementType.PACKAGE;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+@Target({PACKAGE, TYPE})
+@Retention(RUNTIME)
+public @interface JvmLoggingDomain {
+    String value();
 }
+

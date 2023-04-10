@@ -26,21 +26,24 @@
 
 package io.spine.logging
 
-/**
- * Base interface for utility interfaces providing `Logger` as a property.
- *
- * Usages of this interface are likely to provide non-generic extension of this interface
- * providing actual type parameter for the [LoggingApi]:
- *
- * ```kotlin
- * public interface MyLoggingApi: LoggingApi<MyLoggingApi>
- * public interface WithLogging: WithLoggingBase<MyLoggingApi>
- * ```
- */
-public interface WithLoggingBase<API : LoggingApi<API>> {
+import kotlin.reflect.KClass
 
-    public val logger: Logger<API>
-        get() {
-            return LoggingFactory.loggerFor(this::class)
-        }
+/**
+ * A factory for [Logger] instances.
+ */
+public expect object LoggingFactory {
+
+    /**
+     * Obtains the logger for the given class.
+     *
+     * Implementation should provide the same logger instance for the same class.
+     */
+    public fun <API: LoggingApi<API>> loggerFor(cls: KClass<*>): Logger<API>
+
+    /**
+     * Obtains a logging domain for the given class.
+     *
+     * If the domain is not specified, returns [LoggingDomain.noOp].
+     */
+    public fun loggingDomainOf(cls: KClass<*>): LoggingDomain
 }

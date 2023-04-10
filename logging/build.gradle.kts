@@ -29,6 +29,7 @@
 import io.spine.internal.dependency.Flogger
 import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.Kotest
+import io.spine.internal.dependency.Kotlin
 import io.spine.internal.gradle.checkstyle.CheckStyleConfig
 import io.spine.internal.gradle.javadoc.JavadocConfig
 import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
@@ -59,7 +60,11 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting
+        val commonMain by getting {
+            dependencies{
+                implementation(Kotlin.reflect)
+            }
+        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))

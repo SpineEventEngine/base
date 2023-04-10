@@ -35,7 +35,7 @@ class LoggerFactorySpec {
 
     @Test
     fun `provide the same instance of 'Logger' for the same class`() {
-        LoggerFactory.getLogger(this::class) shouldBeSameInstanceAs
-                LoggerFactory.getLogger(this::class)
+        LoggingFactory.loggerFor(this::class) shouldBeSameInstanceAs
+                LoggingFactory.loggerFor(this::class)
     }
 }

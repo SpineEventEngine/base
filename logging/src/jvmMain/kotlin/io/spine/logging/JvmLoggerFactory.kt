@@ -30,7 +30,6 @@ import com.google.common.base.Throwables
 import com.google.common.flogger.FluentLogger
 import com.google.common.flogger.backend.LoggerBackend
 import com.google.common.flogger.backend.Platform
-import java.lang.Exception
 import java.lang.reflect.Constructor
 import kotlin.reflect.KClass
 
@@ -39,13 +38,13 @@ private val logger = FluentLogger.forEnclosingClass()
 /**
  * Obtains a [JvmLogger] for a given class.
  */
-public actual object LoggerFactory: ClassValue<JvmLogger>() {
+public actual object LoggingFactory: ClassValue<JvmLogger>() {
 
     private val constructor: Constructor<FluentLogger> = ctor()
 
     @JvmStatic
-    @JvmName("getLogger")
-    public actual fun <API: LoggingApi<API>> getLogger(cls: KClass<*>): Logger<API> {
+    @JvmName("getLogger") // Set the name explicitly to avoid synthetic `$logging` suffix.
+    public actual fun <API: LoggingApi<API>> loggerFor(cls: KClass<*>): Logger<API> {
         @Suppress("UNCHECKED_CAST") // Safe as `JvmLogger.Api`
         val result = get(cls.java) as Logger<API>
         return result
@@ -55,13 +54,17 @@ public actual object LoggerFactory: ClassValue<JvmLogger>() {
         return createForClass(cls)
     }
 
+    public actual fun loggingDomainOf(cls: KClass<*>): LoggingDomain {
+        return LoggingDomainClassValue.get(cls)
+    }
+
     /**
      * Obtains an instance of [FluentLogger] for the given class.
      *
      * The same instance is returned for the same class.
      */
     @JvmStatic
-    @JvmName("getFluentLogger")
+    @JvmName("getFluentLogger") // Set the name explicitly to avoid synthetic `$logging` suffix.
     internal fun getFluentLogger(cls: Class<*>): FluentLogger {
         return get(cls).impl
     }

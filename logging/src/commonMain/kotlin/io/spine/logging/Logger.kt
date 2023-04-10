@@ -26,12 +26,12 @@
 
 package io.spine.logging
 
+import io.spine.logging.LoggingFactory.loggingDomainOf
 import kotlin.reflect.KClass
 
 public abstract class Logger<API: LoggingApi<API>>(
     protected val cls: KClass<*>
 ) {
-
     /**
      * Creates an [API] for the given level of logging.
      */
@@ -40,7 +40,7 @@ public abstract class Logger<API: LoggingApi<API>>(
         if (!api.isEnabled()) {
             return api
         }
-        val loggingDomain = LoggingDomain.get(cls)
+        val loggingDomain = loggingDomainOf(cls)
         if (loggingDomain === LoggingDomain.noOp) {
             return api
         }

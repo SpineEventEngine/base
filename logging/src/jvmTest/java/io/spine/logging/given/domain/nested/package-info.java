@@ -24,19 +24,4 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.logging
-
-import kotlin.reflect.KClass
-
-/**
- * A factory for [Logger] instances.
- */
-public expect object LoggerFactory {
-
-    /**
-     * Obtains the logger for the given class.
-     *
-     * Implementation should provide the same logger instance for the same class.
-     */
-    public fun <API: LoggingApi<API>>  getLogger(cls: KClass<*>): Logger<API>
-}
+package io.spine.logging.given.domain.nested;

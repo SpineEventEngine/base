@@ -24,23 +24,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.logging
+package io.spine.logging.given.domain;
 
-/**
- * Base interface for utility interfaces providing `Logger` as a property.
- *
- * Usages of this interface are likely to provide non-generic extension of this interface
- * providing actual type parameter for the [LoggingApi]:
- *
- * ```kotlin
- * public interface MyLoggingApi: LoggingApi<MyLoggingApi>
- * public interface WithLogging: WithLoggingBase<MyLoggingApi>
- * ```
- */
-public interface WithLoggingBase<API : LoggingApi<API>> {
+import io.spine.logging.JvmLoggingDomain;
 
-    public val logger: Logger<API>
-        get() {
-            return LoggingFactory.loggerFor(this::class)
-        }
+@SuppressWarnings("EmptyClass")
+@JvmLoggingDomain("OnClass")
+public class AnnotatedClass {
 }

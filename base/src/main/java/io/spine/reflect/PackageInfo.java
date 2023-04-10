@@ -84,7 +84,7 @@ public final class PackageInfo implements Comparable<PackageInfo> {
      *
      * <p>Tries to obtain the annotation if it presents directly in this package.
      * If not, tries to obtain the annotation from the packages in which this package
-     * is nested, staring from inner most.
+     * is nested, staring from innermost.
      *
      * <p>If none of the packages has the required annotation, returns {@link Optional#empty()}.
      *

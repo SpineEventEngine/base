@@ -69,7 +69,7 @@ public interface Logging {
      */
     static FluentLogger loggerFor(Class<?> cls) {
         checkNotNull(cls);
-        return LoggerFactory.getFluentLogger(cls);
+        return LoggingFactory.getFluentLogger(cls);
     }
 
     /**
