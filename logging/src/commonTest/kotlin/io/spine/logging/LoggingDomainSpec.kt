@@ -27,7 +27,6 @@
 package io.spine.logging
 
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.types.shouldBeSameInstanceAs
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -43,17 +42,4 @@ internal class LoggingDomainSpec {
     fun `have prefix with the name in square brackets followed by space`() {
         LoggingDomain("Hello").messagePrefix shouldBe "[Hello] "
     }
-
-    @Test
-    fun `give no-op instance for non-annotated classes`() {
-        LoggingDomain.of(String::class) shouldBeSameInstanceAs LoggingDomain.noOp
-    }
-
-    @Test
-    fun `obtain the domain from an annotated class`() {
-        LoggingDomain.of(ClassWithLoggingDomain::class).name shouldBe "Annota"
-    }
 }
-
-@LoggingDomain(name = "Annota")
-private class ClassWithLoggingDomain: WithLogging

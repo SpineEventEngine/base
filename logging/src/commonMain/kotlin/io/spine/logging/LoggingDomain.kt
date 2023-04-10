@@ -26,35 +26,25 @@
 
 package io.spine.logging
 
-import kotlin.reflect.KClass
-import kotlin.reflect.full.findAnnotation
+import kotlin.annotation.AnnotationTarget.CLASS
 
-@Target(AnnotationTarget.CLASS)
+@Target(CLASS)
 @Retention
 public annotation class LoggingDomain(public val name: String) {
 
     public companion object {
 
         /**
-         * A no-op instance of `LoggingDomain` returned for classes belonging to
-         * classes or files without an associated logging domain.
+         * A no-op instance of `LoggingDomain` returned for classes
+         * without an associated logging domain.
          */
         public val noOp: LoggingDomain = LoggingDomain("")
-
-        /**
-         * Obtains a logging domain for the class. If a domain is not specifically set, a no-op
-         * instance with an empty name will be returned.
-         */
-        public fun of(cls: KClass<*>): LoggingDomain {
-            val domain = cls.findAnnotation<LoggingDomain>()
-            return domain ?: noOp
-        }
     }
 }
 
 /**
  * Obtains the string to be prepended before logging statements for the classes
- * [belonging][LoggingDomain.of] to this `LoggingDomain`.
+ * [belonging][LoggingFactory.loggingDomainOf] to this `LoggingDomain`.
  *
  * If the logging domain is not defined for a class, logging statements for it
  * will not be prefixed. Otherwise, the prefix would be the name of the logging domain
