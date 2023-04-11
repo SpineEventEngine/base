@@ -91,6 +91,4 @@ private inline fun <reified T: Annotation> KClass<*>.findWithNesting(): T? {
 /**
  * Converts this [JvmLoggingDomain] instance to [LoggingDomain] instance.
  */
-private fun JvmLoggingDomain.toLoggingDomain(): LoggingDomain {
-    return LoggingDomain(value)
-}
+private fun JvmLoggingDomain.toLoggingDomain(): LoggingDomain = LoggingDomain(value)
