@@ -23,114 +23,84 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.reflect
 
-package io.spine.reflect;
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.optional.shouldBePresent
+import io.kotest.matchers.shouldBe
+import io.spine.reflect.J2Kt.findKotlinMethod
+import io.spine.reflect.given.MethodHolder
+import io.spine.reflect.given.ObjMethodHolder
+import kotlin.reflect.KParameter
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
-import com.google.common.truth.Truth;
-import com.google.common.truth.Truth8;
-import io.spine.reflect.given.MethodHolder;
-import io.spine.reflect.given.ObjMethodHolder;
-import kotlin.reflect.KParameter.Kind;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@SuppressWarnings("OptionalGetWithoutIsPresent")
-@DisplayName("``J2Kt`` should")
-class J2KtTest {
+@DisplayName("`J2Kt` should")
+internal class J2KtSpec {
 
     @Test
-    @DisplayName("find a static method in a class")
-    void findStatic() throws NoSuchMethodException {
-        var name = "staticMethod";
-        var method = MethodHolder.class.getDeclaredMethod(name, int.class);
-        var found = J2Kt.findKotlinMethod(method);
-        Truth8.assertThat(found)
-              .isPresent();
-        var ktMethod = found.get();
-        assertThat(ktMethod.getName())
-             .isEqualTo(name);
-        var params = ktMethod.getParameters();
-        assertThat(params)
-             .hasSize(2);
-        assertThat(params.get(0).getKind())
-             .isEqualTo(Kind.INSTANCE);
-        assertThat(params.get(1).getKind())
-             .isEqualTo(Kind.VALUE);
+    fun `find a static method in a class`() {
+        val name = "staticMethod"
+        val method = MethodHolder::class.java.getDeclaredMethod(name, Int::class.java)
+        findKotlinMethod(method) shouldBePresent {
+            val ktMethod = it
+            ktMethod.name shouldBe name
+            val params: List<KParameter?> = ktMethod.parameters
+            params shouldHaveSize 2
+            params[0]!!.kind shouldBe KParameter.Kind.INSTANCE
+            params[1]!!.kind shouldBe KParameter.Kind.VALUE
+        }
     }
 
     @Test
-    @DisplayName("find a instance method a single argument in a class")
-    void findInstance() throws NoSuchMethodException {
-        var name = "instanceMethod";
-        var method = MethodHolder.class.getDeclaredMethod(name, String.class);
-        var found = J2Kt.findKotlinMethod(method);
-        Truth8.assertThat(found)
-              .isPresent();
-        var ktMethod = found.get();
-        assertThat(ktMethod.getName())
-             .isEqualTo(name);
-        var params = ktMethod.getParameters();
-        assertThat(params)
-             .hasSize(2);
-        assertThat(params.get(0).getKind())
-             .isEqualTo(Kind.INSTANCE);
-        assertThat(params.get(1).getKind())
-             .isEqualTo(Kind.VALUE);
+    fun `find a instance method a single argument in a class`() {
+        val name = "instanceMethod"
+        val method = MethodHolder::class.java.getDeclaredMethod(name, String::class.java)
+        findKotlinMethod(method) shouldBePresent {
+            val ktMethod = it
+            ktMethod.name shouldBe name
+            val params = ktMethod.parameters
+            params shouldHaveSize 2
+            params[0].kind shouldBe KParameter.Kind.INSTANCE
+            params[1].kind shouldBe KParameter.Kind.VALUE
+        }
     }
 
     @Test
-    @DisplayName("find a instance method with no arguments in a class")
-    void findInstanceNoArg() throws NoSuchMethodException {
-        var name = "noParamMethod";
-        var method = MethodHolder.class.getDeclaredMethod(name);
-        var found = J2Kt.findKotlinMethod(method);
-        Truth8.assertThat(found)
-              .isPresent();
-        var ktMethod = found.get();
-        assertThat(ktMethod.getName())
-             .isEqualTo(name);
-        var params = ktMethod.getParameters();
-        assertThat(params)
-             .hasSize(1);
-        assertThat(params.get(0).getKind())
-             .isEqualTo(Kind.INSTANCE);
+    fun `find a instance method with no arguments in a class`() {
+        val name = "noParamMethod"
+        val method = MethodHolder::class.java.getDeclaredMethod(name)
+        findKotlinMethod(method) shouldBePresent {
+            val ktMethod = it
+            ktMethod.name shouldBe name
+            val params = ktMethod.parameters
+            params shouldHaveSize 1
+            params[0].kind shouldBe KParameter.Kind.INSTANCE
+        }
     }
 
     @Test
-    @DisplayName("find a static method in an object")
-    void findStaticInObj() throws NoSuchMethodException {
-        var name = "staticObjMethod";
-        var method = ObjMethodHolder.class.getDeclaredMethod(name);
-        var found = J2Kt.findKotlinMethod(method);
-        Truth8.assertThat(found)
-              .isPresent();
-        var ktMethod = found.get();
-        assertThat(ktMethod.getName())
-             .isEqualTo(name);
-        var params = ktMethod.getParameters();
-        assertThat(params)
-             .hasSize(1);
-        assertThat(params.get(0).getKind())
-             .isEqualTo(Kind.INSTANCE);
+    fun `find a static method in an object`() {
+        val name = "staticObjMethod"
+        val method = ObjMethodHolder::class.java.getDeclaredMethod(name)
+        findKotlinMethod(method) shouldBePresent {
+            val ktMethod = it
+            ktMethod.name shouldBe name
+            val params: List<KParameter> = ktMethod.parameters
+            params shouldHaveSize 1
+            params[0].kind shouldBe KParameter.Kind.INSTANCE
+        }
     }
 
     @Test
-    @DisplayName("find a instance method in an object")
-    void findInstanceInObj() throws NoSuchMethodException {
-        var name = "instanceObjMethod";
-        var method = ObjMethodHolder.class.getDeclaredMethod(name);
-        var found = J2Kt.findKotlinMethod(method);
-        Truth8.assertThat(found)
-              .isPresent();
-        var ktMethod = found.get();
-        assertThat(ktMethod.getName())
-             .isEqualTo(name);
-        var params = ktMethod.getParameters();
-        assertThat(params)
-             .hasSize(1);
-        assertThat(params.get(0).getKind())
-             .isEqualTo(Kind.INSTANCE);
+    fun `find a instance method in an object`() {
+        val name = "instanceObjMethod"
+        val method = ObjMethodHolder::class.java.getDeclaredMethod(name)
+        findKotlinMethod(method) shouldBePresent {
+            val ktMethod = it
+            val params  = ktMethod.parameters
+            params shouldHaveSize 1
+            params[0].kind
+        }
     }
 }
