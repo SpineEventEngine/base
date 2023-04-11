@@ -27,8 +27,23 @@
 package io.spine.logging
 
 import io.spine.logging.LoggingDomain.Companion.noOp
+import io.spine.reflect.findAnnotation
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
+
+/**
+ * A lazily evaluated list of packages containing [JvmLoggingDomain] annotation.
+ *
+ * The list is alphabetically sorted in the reverse order.
+ */
+private val annotatedPackages: List<Package> by lazy {
+    val allPackages = Package.getPackages()
+    val annotated = allPackages.filter { it.findAnnotation<JvmLoggingDomain>() != null }
+        .sortedBy { it.name }
+        .reversed()
+        .toList()
+    annotated
+}
 
 /**
  * Obtains a [LoggingDomain] for a Java- or Kotlin class.
@@ -47,9 +62,12 @@ internal object LoggingDomainClassValue: ClassValue<LoggingDomain>() {
             }
         }
 
-        val currentPackage = javaClass.`package`
-        val jvmDomain = JvmPackage(currentPackage).findAnnotation(JvmLoggingDomain::class.java)
-        return jvmDomain?.toLoggingDomain() ?: noOp
+        val classPackage = javaClass.`package`
+        val annotatedPackage = annotatedPackages.firstOrNull {
+            classPackage.name.startsWith(it.name)
+        }
+        val annotation = annotatedPackage?.findAnnotation<JvmLoggingDomain>()
+        return annotation?.toLoggingDomain() ?: noOp
     }
 }
 
