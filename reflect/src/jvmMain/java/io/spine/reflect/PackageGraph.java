@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -279,10 +279,10 @@ public final class PackageGraph implements Graph<PackageInfo> {
          *
          * <p>A package is accepted if its name:
          * <ol>
-         *     <li>Starts from one of the names added to {@linkplain #include(String)
-         *     inclusions}.
-         *     <li>Does <em>not</em> start from all the names added to {@linkplain #exclude(String)
-         *     exclusions}.
+         *     <li>Starts from one of the names added to
+         *     {@linkplain #include(String) inclusions}.
+         *     <li>Does <em>not</em> start from all the names added to
+         *     {@linkplain #exclude(String) exclusions}.
          * </ol>
          */
         @Override
