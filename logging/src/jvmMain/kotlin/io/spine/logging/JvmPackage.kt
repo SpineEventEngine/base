@@ -65,14 +65,12 @@ internal class JvmPackage(val value: Package) : Comparable<JvmPackage> {
  * If none of the packages has the required annotation, returns null.
  */
 internal fun <A : Annotation?> JvmPackage.findAnnotation(annotationClass: Class<A>): A? {
-    val direct = directAnnotation(annotationClass)
-    if (direct != null) {
-        return direct
+    directAnnotation(annotationClass)?.let {
+        return it
     }
     for (parent in parents()) {
-        val ofParent = parent.directAnnotation(annotationClass)
-        if (ofParent != null) {
-            return ofParent
+        parent.directAnnotation(annotationClass)?.let {
+            return it
         }
     }
     return null

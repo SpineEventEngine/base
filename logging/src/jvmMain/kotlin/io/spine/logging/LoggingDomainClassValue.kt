@@ -38,13 +38,13 @@ internal object LoggingDomainClassValue: ClassValue<LoggingDomain>() {
     internal fun get(cls: KClass<*>) = get(cls.java)
 
     override fun computeValue(javaClass: Class<*>): LoggingDomain {
-        val domain = javaClass.kotlin.findWithNesting<LoggingDomain>()
-        if (domain != null) {
-            return domain
-        }
-        val jvmLoggingDomain = javaClass.kotlin.findWithNesting<JvmLoggingDomain>()
-        if (jvmLoggingDomain != null) {
-            return jvmLoggingDomain.toLoggingDomain()
+        with(javaClass.kotlin) {
+            findWithNesting<LoggingDomain>()?.let {
+                return it
+            }
+            findWithNesting<JvmLoggingDomain>()?.let {
+                return it.toLoggingDomain()
+            }
         }
 
         val currentPackage = javaClass.`package`
@@ -57,16 +57,13 @@ internal object LoggingDomainClassValue: ClassValue<LoggingDomain>() {
  * Attempts to find the annotation of type [T] in this [KClass] or enclosing classes.
  */
 private inline fun <reified T: Annotation> KClass<*>.findWithNesting(): T? {
-    var found: T? = findAnnotation<T>()
-    if (found != null) {
-        return found
+    findAnnotation<T>()?.let {
+        return it
     }
-    // Find annotation in enclosing classes, if any.
     var enclosingClass = java.enclosingClass
     while (enclosingClass != null) {
-        found = enclosingClass.kotlin.findAnnotation<T>()
-        if (found != null) {
-            return found
+        enclosingClass.kotlin.findAnnotation<T>()?.let {
+            return it
         }
         enclosingClass = enclosingClass.enclosingClass
     }
