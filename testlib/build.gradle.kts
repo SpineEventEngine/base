@@ -48,7 +48,7 @@ detekt {
 dependencies {
     /*
         Expose tools we use as transitive dependencies to simplify dependency
-        management in subprojects.
+        management in projects that use Spine Testlib.
     */
     (Protobuf.libs
             + JUnit.api
