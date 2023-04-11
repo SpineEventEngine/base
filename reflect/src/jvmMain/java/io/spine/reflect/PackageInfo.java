@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,14 +88,15 @@ public final class PackageInfo implements Comparable<PackageInfo> {
      *
      * <p>If none of the packages has the required annotation, returns {@link Optional#empty()}.
      *
-     * @param annotationClass the class of the annotations
-     * @param <A> the type of the annotation to query
+     * @param annotationClass
+     *         the class of the annotations
+     * @param <A>
+     *         the type of the annotation to query
      * @return annotation or {@link Optional#empty()} if not found
      */
     public <A extends Annotation> Optional<A> findAnnotation(Class<A> annotationClass) {
         checkNotNull(annotationClass);
-
-        var result = getAnnotation(annotationClass);
+        var result = directAnnotation(annotationClass);
         if (result.isPresent()) {
             return result;
         }
@@ -103,7 +104,7 @@ public final class PackageInfo implements Comparable<PackageInfo> {
         List<PackageInfo> goingUp = new ArrayList<>(parents());
         goingUp.sort(reverseOrder());
         for (var parent : goingUp) {
-            var ofParent = parent.getAnnotation(annotationClass);
+            var ofParent = parent.directAnnotation(annotationClass);
             if (ofParent.isPresent()) {
                 return ofParent;
             }
@@ -115,15 +116,28 @@ public final class PackageInfo implements Comparable<PackageInfo> {
      * Obtains an annotation of the specified type if it's <em>directly</em>
      * present in the package.
      *
-     * @param annotationClass the class of the annotations
-     * @param <A> the type of the annotation to query
+     * @param annotationClass
+     *         the class of the annotations
+     * @param <A>
+     *         the type of the annotation to query
      * @return the annotation or {@link Optional#empty()} if not found
      * @see #findAnnotation(Class)
      */
-    public <A extends Annotation> Optional<A> getAnnotation(Class<A> annotationClass) {
+    public <A extends Annotation> Optional<A> directAnnotation(Class<A> annotationClass) {
+        checkNotNull(annotationClass);
         var annotation = value.getAnnotation(annotationClass);
         var result = Optional.ofNullable(annotation);
         return result;
+    }
+
+    /**
+     * Obtains an annotation of the specified type if it's <em>directly</em>
+     * present in the package.
+     * @deprecated please use {@link #directAnnotation(Class)} instead.
+     */
+    @Deprecated(forRemoval = true)
+    public <A extends Annotation> Optional<A> getAnnotation(Class<A> annotationClass) {
+        return directAnnotation(annotationClass);
     }
 
     /**
@@ -153,7 +167,9 @@ public final class PackageInfo implements Comparable<PackageInfo> {
         return value;
     }
 
-    /** Returns {@code true} if the enclosed package value is equal to the passed instance. */
+    /**
+     * Returns {@code true} if the enclosed package value is equal to the passed instance.
+     */
     boolean isAbout(Package p) {
         checkNotNull(p);
         var result = value.equals(p);
@@ -191,8 +207,8 @@ public final class PackageInfo implements Comparable<PackageInfo> {
 
     @Override
     public int compareTo(PackageInfo o) {
-        return value.getName()
-                    .compareTo(o.getValue()
-                                .getName());
+        var thisName = value.getName();
+        var otherName = o.getValue().getName();
+        return thisName.compareTo(otherName);
     }
 }
