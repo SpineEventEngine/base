@@ -34,8 +34,6 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.testing.Assertions.assertHasPrivateParameterlessCtor;
 import static io.spine.testing.DisplayNames.HAVE_PARAMETERLESS_CTOR;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("PackageGraph.Filter should")
 class PackageGraphFilterTest {

@@ -43,17 +43,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.reflect.Invokables.asHandle;
-import static io.spine.reflect.Invokables.callParameterlessCtor;
-import static io.spine.reflect.Invokables.setAccessibleAndInvoke;
 import static io.spine.reflect.given.ConstructorsTestEnv.Animal;
-import static io.spine.reflect.given.ConstructorsTestEnv.Animal.MISSING;
 import static io.spine.reflect.given.ConstructorsTestEnv.Cat;
 import static io.spine.reflect.given.ConstructorsTestEnv.ClassWithDefaultCtor;
 import static io.spine.reflect.given.ConstructorsTestEnv.ClassWithPrivateCtor;
 import static io.spine.reflect.given.ConstructorsTestEnv.NoParameterlessConstructors;
 import static io.spine.reflect.given.ConstructorsTestEnv.ThrowingConstructor;
-import static io.spine.reflect.given.MethodsTestEnv.ClassWithPrivateMethod.METHOD_RESULT;
 import static io.spine.testing.Assertions.assertIllegalArgument;
 import static io.spine.testing.Assertions.assertIllegalState;
 

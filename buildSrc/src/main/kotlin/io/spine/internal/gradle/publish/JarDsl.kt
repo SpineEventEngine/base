@@ -40,6 +40,7 @@ class DokkaJar {
     /**
      * Enables publishing `JAR`s with Dokka-generated documentation for all published modules.
      */
+    @Suppress("unused")
     @Deprecated("Please use `kotlin` and `java` flags instead.")
     var enabled = false
 

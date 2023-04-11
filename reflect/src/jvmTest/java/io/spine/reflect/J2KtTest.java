@@ -35,8 +35,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth8.assertThat;
 
+@SuppressWarnings("OptionalGetWithoutIsPresent")
 @DisplayName("``J2Kt`` should")
 class J2KtTest {
 
@@ -49,14 +49,14 @@ class J2KtTest {
         Truth8.assertThat(found)
               .isPresent();
         var ktMethod = found.get();
-        Truth.assertThat(ktMethod.getName())
+        assertThat(ktMethod.getName())
              .isEqualTo(name);
         var params = ktMethod.getParameters();
-        Truth.assertThat(params)
+        assertThat(params)
              .hasSize(2);
-        Truth.assertThat(params.get(0).getKind())
+        assertThat(params.get(0).getKind())
              .isEqualTo(Kind.INSTANCE);
-        Truth.assertThat(params.get(1).getKind())
+        assertThat(params.get(1).getKind())
              .isEqualTo(Kind.VALUE);
     }
 
@@ -69,14 +69,14 @@ class J2KtTest {
         Truth8.assertThat(found)
               .isPresent();
         var ktMethod = found.get();
-        Truth.assertThat(ktMethod.getName())
+        assertThat(ktMethod.getName())
              .isEqualTo(name);
         var params = ktMethod.getParameters();
-        Truth.assertThat(params)
+        assertThat(params)
              .hasSize(2);
-        Truth.assertThat(params.get(0).getKind())
+        assertThat(params.get(0).getKind())
              .isEqualTo(Kind.INSTANCE);
-        Truth.assertThat(params.get(1).getKind())
+        assertThat(params.get(1).getKind())
              .isEqualTo(Kind.VALUE);
     }
 
@@ -89,12 +89,12 @@ class J2KtTest {
         Truth8.assertThat(found)
               .isPresent();
         var ktMethod = found.get();
-        Truth.assertThat(ktMethod.getName())
+        assertThat(ktMethod.getName())
              .isEqualTo(name);
         var params = ktMethod.getParameters();
-        Truth.assertThat(params)
+        assertThat(params)
              .hasSize(1);
-        Truth.assertThat(params.get(0).getKind())
+        assertThat(params.get(0).getKind())
              .isEqualTo(Kind.INSTANCE);
     }
 
@@ -107,12 +107,12 @@ class J2KtTest {
         Truth8.assertThat(found)
               .isPresent();
         var ktMethod = found.get();
-        Truth.assertThat(ktMethod.getName())
+        assertThat(ktMethod.getName())
              .isEqualTo(name);
         var params = ktMethod.getParameters();
-        Truth.assertThat(params)
+        assertThat(params)
              .hasSize(1);
-        Truth.assertThat(params.get(0).getKind())
+        assertThat(params.get(0).getKind())
              .isEqualTo(Kind.INSTANCE);
     }
 
@@ -125,12 +125,12 @@ class J2KtTest {
         Truth8.assertThat(found)
               .isPresent();
         var ktMethod = found.get();
-        Truth.assertThat(ktMethod.getName())
+        assertThat(ktMethod.getName())
              .isEqualTo(name);
         var params = ktMethod.getParameters();
-        Truth.assertThat(params)
+        assertThat(params)
              .hasSize(1);
-        Truth.assertThat(params.get(0).getKind())
+        assertThat(params.get(0).getKind())
              .isEqualTo(Kind.INSTANCE);
     }
 }

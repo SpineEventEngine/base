@@ -36,9 +36,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.locks.Lock;
 import java.util.function.Predicate;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 @DisplayName("`IsDirectParent` predicate should")
 class IsDirectParentTest {
 

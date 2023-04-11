@@ -25,7 +25,6 @@
  */
 package io.spine.io
 
-import com.google.common.truth.Truth.assertThat
 import io.kotest.matchers.shouldBe
 import io.spine.io.Copy.copyContent
 import io.spine.io.Copy.copyDir

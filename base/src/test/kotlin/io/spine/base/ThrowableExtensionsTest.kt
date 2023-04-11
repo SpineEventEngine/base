@@ -26,7 +26,6 @@
 
 package io.spine.base
 
-import com.google.common.truth.Truth.assertThat
 import com.google.protobuf.ByteString
 import com.google.protobuf.CodedOutputStream
 import com.google.protobuf.Descriptors.Descriptor

@@ -29,7 +29,6 @@ package io.spine.reflect;
 import com.google.common.graph.ElementOrder;
 import com.google.common.graph.EndpointPair;
 import com.google.common.testing.NullPointerTester;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -109,11 +108,11 @@ class PackageGraphTest {
         }
 
         private void assertContainsPackageOf(PackageGraph graph, Class<?> cls) {
-            Assertions.assertTrue(graph.contains(cls.getPackage()));
+            assertTrue(graph.contains(cls.getPackage()));
         }
 
         private void assertNotContainsPackageOf(PackageGraph graph, Class<?> cls) {
-            Assertions.assertFalse(graph.contains(cls.getPackage()));
+            assertFalse(graph.contains(cls.getPackage()));
         }
     }
 
@@ -124,26 +123,26 @@ class PackageGraphTest {
         @Test
         @DisplayName("returning edges")
         void edges() {
-            Assertions.assertFalse(graph.edges()
+            assertFalse(graph.edges()
                                         .isEmpty());
         }
 
         @Test
         @DisplayName("be directed")
         void directed() {
-            Assertions.assertTrue(graph.isDirected());
+            assertTrue(graph.isDirected());
         }
 
         @Test
         @DisplayName("not allowing self loops")
         void selfLoops() {
-            Assertions.assertFalse(graph.allowsSelfLoops());
+            assertFalse(graph.allowsSelfLoops());
         }
 
         @Test
         @DisplayName("having natural node order")
         void naturalOrder() {
-            Assertions.assertEquals(ElementOrder.<PackageInfo>natural(), graph.nodeOrder());
+            assertEquals(ElementOrder.<PackageInfo>natural(), graph.nodeOrder());
         }
 
         @Test
@@ -169,7 +168,7 @@ class PackageGraphTest {
         void successors() {
             var successors = graph.successors(javaUtilConcurrent);
 
-            Assertions.assertEquals(1, successors.size());
+            assertEquals(1, successors.size());
             assertContainsPackageOf(successors, Collection.class);
         }
 
@@ -230,22 +229,22 @@ class PackageGraphTest {
             @Test
             @DisplayName("connected")
             void connected() {
-                Assertions.assertTrue(graph.hasEdgeConnecting(javaUtilConcurrent, javaUtil));
+                assertTrue(graph.hasEdgeConnecting(javaUtilConcurrent, javaUtil));
             }
 
             @Test
             @DisplayName("directed")
             void directed() {
-                Assertions.assertFalse(graph.hasEdgeConnecting(javaUtil, javaUtilConcurrent));
+                assertFalse(graph.hasEdgeConnecting(javaUtil, javaUtilConcurrent));
             }
 
             @Test
             @DisplayName("not connected")
             void notConnected() {
                 // Indirect connection.
-                Assertions.assertFalse(graph.hasEdgeConnecting(PackageInfo.of(Lock.class), javaUtil));
+                assertFalse(graph.hasEdgeConnecting(PackageInfo.of(Lock.class), javaUtil));
                 // Another branch.
-                Assertions.assertFalse(graph.hasEdgeConnecting(javaLang, javaUtil));
+                assertFalse(graph.hasEdgeConnecting(javaLang, javaUtil));
             }
         }
     }
