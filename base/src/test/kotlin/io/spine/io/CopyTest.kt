@@ -26,6 +26,7 @@
 package io.spine.io
 
 import com.google.common.truth.Truth.assertThat
+import io.kotest.matchers.shouldBe
 import io.spine.io.Copy.copyContent
 import io.spine.io.Copy.copyDir
 import java.nio.file.Files.createDirectory
@@ -193,9 +194,8 @@ class `Copy utilities should` {
 
         assertExists(path)
         val file = path.toFile()
-        assertThat(file.isFile).isTrue()
+        file.isFile shouldBe true
 
-        assertThat(file.length())
-            .isEqualTo(expectedSize)
+        file.length() shouldBe expectedSize
     }
 }
