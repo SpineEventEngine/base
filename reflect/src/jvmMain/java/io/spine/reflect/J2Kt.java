@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@
 package io.spine.reflect;
 
 import com.google.common.base.Splitter;
-import io.spine.annotation.Internal;
 import kotlin.Metadata;
 import kotlin.jvm.internal.Reflection;
 import kotlin.reflect.KCallable;
@@ -48,7 +47,6 @@ import static java.util.stream.Collectors.toList;
 /**
  * A utility for integrating Java and Kotlin reflection API.
  */
-@Internal
 public final class J2Kt {
 
     /**

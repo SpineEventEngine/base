@@ -93,4 +93,17 @@ internal class MessageExtsSpec {
             EntityOption.Kind.KIND_UNKNOWN.isDefault() shouldBe true
         }
     }
+
+    @Test
+    fun `tell if this 'Type' is a message class`() {
+        StringValue::class.java.isMessageClass() shouldBe true
+        TaskStatus::class.java.isMessageClass() shouldBe false
+    }
 }
+
+@Suppress("unused")
+private enum class TaskStatus {
+    OPEN,
+    DONE
+}
+

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,6 @@ package io.spine.reflect;
 import com.google.common.collect.ImmutableList;
 import com.google.common.reflect.TypeParameter;
 import com.google.common.reflect.TypeToken;
-import com.google.protobuf.Message;
 
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -113,16 +112,21 @@ public final class Types {
     /**
      * Checks that the type is a {@code Class} of the {@code Message}.
      *
-     * @param type
-     *         the type to check
-     * @return {@code true} if the type is message class, {@code false} otherwise
+     * @deprecated Please use {@code Type.isMessageClass()} Kotlin extension function
+     *         and its Java analogue {@code isMessageClass(Type type)}.
      */
+    @Deprecated(forRemoval = true)
     public static boolean isMessageClass(Type type) {
         checkNotNull(type);
         if (type instanceof Class) {
             var cls = (Class<?>) type;
-            var isMessage = Message.class.isAssignableFrom(cls);
-            return isMessage;
+            try {
+                var messageClass = Class.forName("com.google.protobuf.Message");
+                var isMessage = messageClass.isAssignableFrom(cls);
+                return isMessage;
+            } catch (ClassNotFoundException e) {
+                return false;
+            }
         }
         return false;
     }

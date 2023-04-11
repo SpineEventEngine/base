@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,11 +28,13 @@ package io.spine.reflect;
 
 import com.google.common.reflect.TypeToken;
 import com.google.common.testing.NullPointerTester;
+import com.google.common.truth.Truth;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import io.spine.reflect.given.TypesTestEnv.ListOfMessages;
 import io.spine.reflect.given.TypesTestEnv.TaskStatus;
 import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -41,13 +43,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.google.common.truth.Truth.assertThat;
-import static io.spine.reflect.Types.argumentIn;
-import static io.spine.reflect.Types.isEnumClass;
-import static io.spine.reflect.Types.isMessageClass;
-import static io.spine.reflect.Types.listTypeOf;
-import static io.spine.reflect.Types.mapTypeOf;
-import static io.spine.reflect.Types.resolveArguments;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings({"SerializableNonStaticInnerClassWithoutSerialVersionUID",
@@ -62,7 +57,7 @@ class TypesTest extends UtilityClassTest<Types> {
     @Test
     @DisplayName("create a map type")
     void createMapType() {
-        var type = mapTypeOf(String.class, Integer.class);
+        var type = Types.mapTypeOf(String.class, Integer.class);
         var expectedType = new TypeToken<Map<String, Integer>>(){}.getType();
         assertEquals(expectedType, type);
     }
@@ -70,7 +65,7 @@ class TypesTest extends UtilityClassTest<Types> {
     @Test
     @DisplayName("create a list type")
     void createListType() {
-        var type = listTypeOf(String.class);
+        var type = Types.listTypeOf(String.class);
         var expectedType = new TypeToken<List<String>>(){}.getType();
         assertEquals(expectedType, type);
     }
@@ -78,35 +73,26 @@ class TypesTest extends UtilityClassTest<Types> {
     @Test
     @DisplayName("tell if the type is an enum class")
     void tellIfIsEnumClass() {
-        assertThat(isEnumClass(TaskStatus.class))
-                .isTrue();
-        assertThat(isEnumClass(Message.class))
-                .isFalse();
-    }
-
-    @Test
-    @DisplayName("tell if the type is a message class")
-    void tellIfIsMessageClass() {
-        assertThat(isMessageClass(StringValue.class))
-                .isTrue();
-        assertThat(isMessageClass(TaskStatus.class))
-                .isFalse();
+        Truth.assertThat(Types.isEnumClass(TaskStatus.class))
+             .isTrue();
+        Truth.assertThat(Types.isEnumClass(Message.class))
+             .isFalse();
     }
 
     @Test
     @DisplayName("resolve params of a generic type")
     void resolveTypeParams() {
         var type = new TypeToken<Function<String, StringValue>>() {}.getType();
-        var types = resolveArguments(type);
-        assertThat(types).containsExactly(String.class, StringValue.class);
+        var types = Types.resolveArguments(type);
+        Truth.assertThat(types).containsExactly(String.class, StringValue.class);
     }
 
     @Test
     @DisplayName("return an empty list when resolving params of a non-parameterized type")
     void resolveRawTypeParams() {
         var type = new TypeToken<String>() {}.getType();
-        var types = resolveArguments(type);
-        assertThat(types).isEmpty();
+        var types = Types.resolveArguments(type);
+        Truth.assertThat(types).isEmpty();
     }
 
     @Nested
@@ -116,7 +102,7 @@ class TypesTest extends UtilityClassTest<Types> {
         @Test
         @DisplayName("from the inheritance chain")
         void getTypeArgument() {
-            var argument = argumentIn(ListOfMessages.class, Iterable.class, 0);
+            var argument = Types.argumentIn(ListOfMessages.class, Iterable.class, 0);
             assertEquals(argument, Message.class);
         }
 
@@ -124,15 +110,15 @@ class TypesTest extends UtilityClassTest<Types> {
         @DisplayName("assuming generic superclass")
         void assumingGenericSuperclass() {
             var val = new Parametrized<Long, String>() {};
-            assertEquals(Long.class, Types.argumentIn(val.getClass(), Base.class, 0));
-            assertEquals(String.class, Types.argumentIn(val.getClass(), Base.class, 1));
+            Assertions.assertEquals(Long.class, Types.argumentIn(val.getClass(), Base.class, 0));
+            Assertions.assertEquals(String.class, Types.argumentIn(val.getClass(), Base.class, 1));
         }
 
         @Test
         @DisplayName("obtain generic argument via superclass")
         void viaSuperclass() {
-            assertEquals(String.class, Types.argumentIn(Leaf.class, Base.class, 0));
-            assertEquals(Float.class, Types.argumentIn(Leaf.class, Base.class, 1));
+            Assertions.assertEquals(String.class, Types.argumentIn(Leaf.class, Base.class, 0));
+            Assertions.assertEquals(Float.class, Types.argumentIn(Leaf.class, Base.class, 1));
         }
     }
 

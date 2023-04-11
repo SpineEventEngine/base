@@ -35,6 +35,7 @@ import com.google.protobuf.Descriptors.OneofDescriptor
 import com.google.protobuf.Message
 import com.google.protobuf.Parser
 import com.google.protobuf.UnknownFieldSet
+import io.kotest.matchers.shouldBe
 import java.io.OutputStream
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -55,13 +56,13 @@ internal class `Extensions for 'Throwable' should` {
         @Test
         fun `if true`() {
             throwable.initCause(StubRejectionThrowable())
-            assertThat(throwable.causedByRejection()).isTrue()
+            throwable.causedByRejection() shouldBe true
         }
 
         @Test
         fun `if false`() {
             throwable.initCause(RuntimeException())
-            assertThat(throwable.causedByRejection()).isFalse()
+            throwable.causedByRejection() shouldBe false
         }
     }
 

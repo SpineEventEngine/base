@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,12 +33,11 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.Locale;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.util.Exceptions.newIllegalArgumentException;
-import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 import static java.lang.invoke.MethodHandles.publicLookup;
 
@@ -92,7 +91,7 @@ public final class Invokables {
      *         if the specified class does not have a parameterless
      *         constructors. Note that nested classes fall under this case
      */
-
+    @SuppressWarnings("UnstableApiUsage") // `Invokable` from Guava.
     public static <C> C callParameterlessCtor(Class<C> type) {
         checkNotNull(type);
         var ctor = ensureParameterlessCtor(type);
@@ -156,7 +155,7 @@ public final class Invokables {
         }
 
         throw newIllegalArgumentException("No parameterless ctor found in class `%s`.",
-                                          type.getSimpleName());
+                                                     type.getSimpleName());
     }
 
     /**
@@ -214,5 +213,23 @@ public final class Invokables {
     private interface ReflectiveFunction<T, R> {
 
         R apply(T t) throws ReflectiveOperationException;
+    }
+
+    @CanIgnoreReturnValue
+    private static IllegalStateException
+    newIllegalStateException(Throwable cause, String format, Object... args) {
+        var errMsg = formatMessage(format, args);
+        throw new IllegalStateException(errMsg, cause);
+    }
+
+    @CanIgnoreReturnValue
+    private static IllegalArgumentException
+    newIllegalArgumentException(String format, Object... args) {
+        var errMsg = formatMessage(format, args);
+        throw new IllegalArgumentException(errMsg);
+    }
+
+    private static String formatMessage(String format, Object[] args) {
+        return format(Locale.ROOT, format, args);
     }
 }

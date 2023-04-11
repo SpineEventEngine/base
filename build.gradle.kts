@@ -54,6 +54,7 @@ spinePublishing {
         "testlib"
     )
     modulesWithCustomPublishing = setOf (
+        "reflect",
         "logging",
     )
     destinations = with(PublishingRepos) {
@@ -64,7 +65,7 @@ spinePublishing {
         )
     }
     dokkaJar {
-        enabled = true
+        java = true
     }
 }
 

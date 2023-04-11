@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@
 package io.spine.reflect;
 
 import com.google.common.graph.Graph;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,19 +52,19 @@ class PackageGraphFilterTest {
     @Test
     @DisplayName("accept included packages")
     void inclusion() {
-        assertTrue(filter.test(getClass().getPackage()));
+        Assertions.assertTrue(filter.test(getClass().getPackage()));
     }
 
     @Test
     @DisplayName("reject excluded packages")
     void exclusion() {
-        assertFalse(filter.test(String.class.getPackage()));
+        Assertions.assertFalse(filter.test(String.class.getPackage()));
     }
 
     @Test
     @DisplayName("accept by default")
     void acceptances() {
-        assertTrue(filter.test(Graph.class.getPackage()));
+        Assertions.assertTrue(filter.test(Graph.class.getPackage()));
     }
 
     @Test

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import given.reflect.root.branch1.bar.LastVisitor;
 import given.reflect.root.branch1.foo.sub1.Sub1Class;
 import given.reflect.root.branch1.foo.sub2.Sub2Class;
 import given.reflect.root.branch2.lorem.ipsum.Sub3Class;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -39,11 +40,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("`PackageInfo` should")
 class PackageInfoTest {
@@ -54,9 +52,9 @@ class PackageInfoTest {
     @Test
     @DisplayName("return package name in `toString()`")
     void stringify() {
-        assertEquals(javaUtil.getValue()
-                             .getName(),
-                     javaUtil.toString());
+        Assertions.assertEquals(javaUtil.getValue()
+                                        .getName(),
+                                javaUtil.toString());
     }
 
     @Test
@@ -80,8 +78,8 @@ class PackageInfoTest {
 
             var packageInfo = PackageInfo.of(pkg);
             var optional = packageInfo.findAnnotation(ValueAnnotation.class);
-            assertTrue(optional.isPresent());
-            assertEquals(annotation, optional.get());
+            Assertions.assertTrue(optional.isPresent());
+            Assertions.assertEquals(annotation, optional.get());
         }
 
         @Test
@@ -103,7 +101,7 @@ class PackageInfoTest {
         private void assertFound(Package pkg) {
             var packageInfo = PackageInfo.of(pkg);
             var optional = packageInfo.findAnnotation(ValueAnnotation.class);
-            assertTrue(optional.isPresent());
+            Assertions.assertTrue(optional.isPresent());
         }
 
         private ValueAnnotation assertAnnotated(Package pkg) {
@@ -120,9 +118,9 @@ class PackageInfoTest {
     void notFound() {
         var pkg = LastVisitor.class.getPackage();
         assertNotAnnotated(pkg);
-        assertFalse(PackageInfo.of(pkg)
-                               .findAnnotation(ValueAnnotation.class)
-                               .isPresent());
+        Assertions.assertFalse(PackageInfo.of(pkg)
+                                          .findAnnotation(ValueAnnotation.class)
+                                          .isPresent());
     }
 
     private static void assertNotAnnotated(Package pkg) {

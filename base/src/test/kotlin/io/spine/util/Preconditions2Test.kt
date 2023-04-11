@@ -150,8 +150,7 @@ internal class Preconditions2Test : UtilityClassTest<Preconditions2>(Preconditio
         @Test
         fun `accepting positive value and returning it`() {
             val expected = longRandom(1, 100000)
-            assertThat(checkPositive(expected))
-                .isEqualTo(expected)
+            checkPositive(expected) shouldBe expected
         }
     }
 
@@ -175,8 +174,7 @@ internal class Preconditions2Test : UtilityClassTest<Preconditions2>(Preconditio
         @Test
         fun `accepting non-negative value and returning it`() {
             val expected = longRandom(0, 100000)
-            assertThat(checkPositive(expected))
-                .isEqualTo(expected)
+            checkPositive(expected) shouldBe expected
         }
     }
 

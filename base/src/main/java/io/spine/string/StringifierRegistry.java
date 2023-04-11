@@ -39,8 +39,8 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
+import static io.spine.protobuf.Messages.isMessageClass;
 import static io.spine.reflect.Types.isEnumClass;
-import static io.spine.reflect.Types.isMessageClass;
 import static io.spine.string.Stringifiers.forBoolean;
 import static io.spine.string.Stringifiers.forDuration;
 import static io.spine.string.Stringifiers.forInteger;

@@ -47,13 +47,13 @@ class DokkaJar {
      * Controls whether [dokkaKotlinJar] artifact should be published.
      * The default value is `true`.
      */
-    val kotlin = true
+    var kotlin = true
 
     /**
      * Controls whether [dokkaJavaJar] artifact should be published.
      * The default value is `false`.
      */
-    val java = false
+    var java = false
 }
 
 /**

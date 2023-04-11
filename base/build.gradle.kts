@@ -41,6 +41,8 @@ apply<IncrementGuard>()
 dependencies {
     annotationProcessor(AutoService.processor)
     compileOnly(AutoService.annotations)
+
+    api(project(":reflect"))
     implementation(project(":logging"))
 
     /* Have `protobuf` dependency instead of `api` or `implementation` so that proto

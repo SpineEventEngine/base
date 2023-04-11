@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ package io.spine.reflect;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.common.truth.BooleanSubject;
+import com.google.common.truth.Truth;
 import io.spine.reflect.given.ConstructorsTestEnv;
 import io.spine.reflect.given.MethodsTestEnv.ClassWithPrivateMethod;
 import io.spine.testing.UtilityClassTest;
@@ -90,9 +91,9 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         @Test
         @DisplayName("set accessible and invoke successfully")
         void allowToSetAccessibleAndInvoke() {
-            var result = setAccessibleAndInvoke(privateMethod, target);
+            var result = Invokables.setAccessibleAndInvoke(privateMethod, target);
 
-            assertThat(result).isEqualTo(METHOD_RESULT);
+            Truth.assertThat(result).isEqualTo(ClassWithPrivateMethod.METHOD_RESULT);
         }
 
         @SuppressWarnings("CheckReturnValue") // Called to throw exception.
@@ -101,7 +102,7 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         void throwOnInvalidTarget() {
             var wrongTarget = new Object();
 
-            assertIllegalState(() -> setAccessibleAndInvoke(privateMethod, wrongTarget));
+            assertIllegalState(() -> Invokables.setAccessibleAndInvoke(privateMethod, wrongTarget));
         }
 
         @SuppressWarnings("CheckReturnValue") // Called to throw exception.
@@ -110,45 +111,45 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         void throwOnInvocationError() throws NoSuchMethodException {
             var method = ClassWithPrivateMethod.class.getDeclaredMethod("throwingMethod");
 
-            assertIllegalState(() -> setAccessibleAndInvoke(method, target));
+            assertIllegalState(() -> Invokables.setAccessibleAndInvoke(method, target));
         }
 
         @Test
         @DisplayName("convert a visible method to a handle")
         void convertToHandle() throws Throwable {
             var method = ClassWithPrivateMethod.class.getMethod("publicMethod");
-            var handle = asHandle(method);
-            assertThat(handle).isNotNull();
+            var handle = Invokables.asHandle(method);
+            Truth.assertThat(handle).isNotNull();
 
             var invocationResult = handle.bindTo(new ClassWithPrivateMethod())
                                          .invoke();
-            assertThat(invocationResult)
-                    .isEqualTo(METHOD_RESULT);
+            Truth.assertThat(invocationResult)
+                 .isEqualTo(ClassWithPrivateMethod.METHOD_RESULT);
         }
 
         @Test
         @DisplayName("convert an invisible method to a handle")
         void convertInvisibleToHandle() throws Throwable {
-            var handle = asHandle(privateMethod);
-            assertThat(handle).isNotNull();
+            var handle = Invokables.asHandle(privateMethod);
+            Truth.assertThat(handle).isNotNull();
             assertAccessible(target).isFalse();
 
             var invocationResult = handle.invoke(new ClassWithPrivateMethod());
-            assertThat(invocationResult)
-                    .isEqualTo(METHOD_RESULT);
+            Truth.assertThat(invocationResult)
+                 .isEqualTo(ClassWithPrivateMethod.METHOD_RESULT);
         }
 
         @Test
         @DisplayName("convert an accessible method to a handle")
         void convertAccessibleToHandle() throws Throwable {
             privateMethod.setAccessible(true);
-            var handle = asHandle(privateMethod);
+            var handle = Invokables.asHandle(privateMethod);
             assertAccessible(target).isTrue();
-            assertThat(handle).isNotNull();
+            Truth.assertThat(handle).isNotNull();
 
             var invocationResult = handle.invoke(target);
-            assertThat(invocationResult)
-                    .isEqualTo(METHOD_RESULT);
+            Truth.assertThat(invocationResult)
+                 .isEqualTo(ClassWithPrivateMethod.METHOD_RESULT);
         }
 
         @NonNull
@@ -164,47 +165,47 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         @Test
         @DisplayName("instantiate a class using a parameterless constructor")
         void instantiate() {
-            var cat = callParameterlessCtor(Cat.class);
-            assertThat(cat.greet()).contains(MISSING);
+            var cat = Invokables.callParameterlessCtor(Cat.class);
+            Truth.assertThat(cat.greet()).contains(Animal.MISSING);
         }
 
         @Test
         @DisplayName("fail to instantiate an abstract class")
         void notInstantiateAbstractClass() {
-            assertIllegalState(() -> callParameterlessCtor(Animal.class));
+            assertIllegalState(() -> Invokables.callParameterlessCtor(Animal.class));
         }
 
         @Test
         @DisplayName("instantiate using a default ctor")
         void defaultCtor() {
-            var instance = callParameterlessCtor(ClassWithDefaultCtor.class);
-            assertThat(instance.instantiated()).isTrue();
+            var instance = Invokables.callParameterlessCtor(ClassWithDefaultCtor.class);
+            Truth.assertThat(instance.instantiated()).isTrue();
         }
 
         @Test
         @DisplayName("throw if there was an exception during class instantiation")
         void throwIfThrows() {
-            assertIllegalState(() -> callParameterlessCtor(ThrowingConstructor.class));
+            assertIllegalState(() -> Invokables.callParameterlessCtor(ThrowingConstructor.class));
         }
 
         @Test
         @DisplayName("fail to instantiate a nested class")
         void notInstantiateNested() {
-            assertIllegalArgument(() -> callParameterlessCtor(ConstructorsTestEnv.Chicken.class));
+            assertIllegalArgument(() -> Invokables.callParameterlessCtor(ConstructorsTestEnv.Chicken.class));
         }
 
         @Test
         @DisplayName("instantiate a private class")
         void instantiatePrivate() {
-            var instance = callParameterlessCtor(
+            var instance = Invokables.callParameterlessCtor(
                     ClassWithPrivateCtor.class);
-            assertThat(instance.instantiated()).isTrue();
+            Truth.assertThat(instance.instantiated()).isTrue();
         }
 
         @Test
         @DisplayName("fail to instantiate a class without a parameterless ctor")
         void noParameterlessCtor() {
-            assertIllegalArgument(() -> callParameterlessCtor(NoParameterlessConstructors.class));
+            assertIllegalArgument(() -> Invokables.callParameterlessCtor(NoParameterlessConstructors.class));
         }
 
         @Nested
@@ -221,8 +222,8 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
                 ctor = ClassWithPrivateCtor.class.getDeclaredConstructor();
                 assertConstructorAccessible().isFalse();
 
-                var instance = callParameterlessCtor(privateCtorClass);
-                assertThat(instance.instantiated()).isTrue();
+                var instance = Invokables.callParameterlessCtor(privateCtorClass);
+                Truth.assertThat(instance.instantiated()).isTrue();
 
                 assertConstructorAccessible().isFalse();
             }
@@ -236,7 +237,7 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
 
                 assertConstructorAccessible().isFalse();
 
-                assertIllegalState(() -> callParameterlessCtor(throwingConstructorClass));
+                assertIllegalState(() -> Invokables.callParameterlessCtor(throwingConstructorClass));
 
                 assertConstructorAccessible().isFalse();
             }

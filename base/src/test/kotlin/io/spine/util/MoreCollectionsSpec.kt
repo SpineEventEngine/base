@@ -26,7 +26,7 @@
 
 package io.spine.util
 
-import com.google.common.truth.Truth.assertThat
+import io.kotest.matchers.shouldBe
 import java.util.stream.Stream
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -42,8 +42,7 @@ class MoreCollectionsSpec {
     @Test
     fun `obtain the only element of a collection`() {
         val list = listOf(42)
-        assertThat(list.theOnly())
-            .isEqualTo(42)
+        list.theOnly() shouldBe 42
     }
 
     @Test
@@ -61,8 +60,7 @@ class MoreCollectionsSpec {
     @ParameterizedTest
     @MethodSource("interlaceCollections")
     fun `interlace a collection`(elements: List<Any>, separator: Any, expected: List<Any>) {
-        assertThat(elements.interlaced(separator).toList())
-            .isEqualTo(expected)
+        elements.interlaced(separator).toList() shouldBe expected
     }
 
     companion object {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,9 +38,9 @@ class GenericTypeIndexTest {
     @DisplayName("allow obtaining generic arguments via enums")
     void obtainGenericsViaEnums() {
         assertThat(Pair.GenericParam.FIRST.argumentIn(Tango.class))
-                .isEqualTo(Float.class);
+             .isEqualTo(Float.class);
         assertThat(Pair.GenericParam.SECOND.argumentIn(Tango.class))
-                .isEqualTo(Double.class);
+             .isEqualTo(Double.class);
     }
 
     @SuppressWarnings({"EmptyClass", "unused"})

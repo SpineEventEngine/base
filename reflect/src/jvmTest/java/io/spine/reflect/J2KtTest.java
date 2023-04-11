@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@
 
 package io.spine.reflect;
 
+import com.google.common.truth.Truth;
+import com.google.common.truth.Truth8;
 import io.spine.reflect.given.MethodHolder;
 import io.spine.reflect.given.ObjMethodHolder;
 import kotlin.reflect.KParameter.Kind;
@@ -44,18 +46,18 @@ class J2KtTest {
         var name = "staticMethod";
         var method = MethodHolder.class.getDeclaredMethod(name, int.class);
         var found = J2Kt.findKotlinMethod(method);
-        assertThat(found)
-                .isPresent();
+        Truth8.assertThat(found)
+              .isPresent();
         var ktMethod = found.get();
-        assertThat(ktMethod.getName())
-                .isEqualTo(name);
+        Truth.assertThat(ktMethod.getName())
+             .isEqualTo(name);
         var params = ktMethod.getParameters();
-        assertThat(params)
-                .hasSize(2);
-        assertThat(params.get(0).getKind())
-                .isEqualTo(Kind.INSTANCE);
-        assertThat(params.get(1).getKind())
-                .isEqualTo(Kind.VALUE);
+        Truth.assertThat(params)
+             .hasSize(2);
+        Truth.assertThat(params.get(0).getKind())
+             .isEqualTo(Kind.INSTANCE);
+        Truth.assertThat(params.get(1).getKind())
+             .isEqualTo(Kind.VALUE);
     }
 
     @Test
@@ -64,18 +66,18 @@ class J2KtTest {
         var name = "instanceMethod";
         var method = MethodHolder.class.getDeclaredMethod(name, String.class);
         var found = J2Kt.findKotlinMethod(method);
-        assertThat(found)
-                .isPresent();
+        Truth8.assertThat(found)
+              .isPresent();
         var ktMethod = found.get();
-        assertThat(ktMethod.getName())
-                .isEqualTo(name);
+        Truth.assertThat(ktMethod.getName())
+             .isEqualTo(name);
         var params = ktMethod.getParameters();
-        assertThat(params)
-                .hasSize(2);
-        assertThat(params.get(0).getKind())
-                .isEqualTo(Kind.INSTANCE);
-        assertThat(params.get(1).getKind())
-                .isEqualTo(Kind.VALUE);
+        Truth.assertThat(params)
+             .hasSize(2);
+        Truth.assertThat(params.get(0).getKind())
+             .isEqualTo(Kind.INSTANCE);
+        Truth.assertThat(params.get(1).getKind())
+             .isEqualTo(Kind.VALUE);
     }
 
     @Test
@@ -84,16 +86,16 @@ class J2KtTest {
         var name = "noParamMethod";
         var method = MethodHolder.class.getDeclaredMethod(name);
         var found = J2Kt.findKotlinMethod(method);
-        assertThat(found)
-                .isPresent();
+        Truth8.assertThat(found)
+              .isPresent();
         var ktMethod = found.get();
-        assertThat(ktMethod.getName())
-                .isEqualTo(name);
+        Truth.assertThat(ktMethod.getName())
+             .isEqualTo(name);
         var params = ktMethod.getParameters();
-        assertThat(params)
-                .hasSize(1);
-        assertThat(params.get(0).getKind())
-                .isEqualTo(Kind.INSTANCE);
+        Truth.assertThat(params)
+             .hasSize(1);
+        Truth.assertThat(params.get(0).getKind())
+             .isEqualTo(Kind.INSTANCE);
     }
 
     @Test
@@ -102,16 +104,16 @@ class J2KtTest {
         var name = "staticObjMethod";
         var method = ObjMethodHolder.class.getDeclaredMethod(name);
         var found = J2Kt.findKotlinMethod(method);
-        assertThat(found)
-                .isPresent();
+        Truth8.assertThat(found)
+              .isPresent();
         var ktMethod = found.get();
-        assertThat(ktMethod.getName())
-                .isEqualTo(name);
+        Truth.assertThat(ktMethod.getName())
+             .isEqualTo(name);
         var params = ktMethod.getParameters();
-        assertThat(params)
-                .hasSize(1);
-        assertThat(params.get(0).getKind())
-                .isEqualTo(Kind.INSTANCE);
+        Truth.assertThat(params)
+             .hasSize(1);
+        Truth.assertThat(params.get(0).getKind())
+             .isEqualTo(Kind.INSTANCE);
     }
 
     @Test
@@ -120,15 +122,15 @@ class J2KtTest {
         var name = "instanceObjMethod";
         var method = ObjMethodHolder.class.getDeclaredMethod(name);
         var found = J2Kt.findKotlinMethod(method);
-        assertThat(found)
-                .isPresent();
+        Truth8.assertThat(found)
+              .isPresent();
         var ktMethod = found.get();
-        assertThat(ktMethod.getName())
-                .isEqualTo(name);
+        Truth.assertThat(ktMethod.getName())
+             .isEqualTo(name);
         var params = ktMethod.getParameters();
-        assertThat(params)
-                .hasSize(1);
-        assertThat(params.get(0).getKind())
-                .isEqualTo(Kind.INSTANCE);
+        Truth.assertThat(params)
+             .hasSize(1);
+        Truth.assertThat(params.get(0).getKind())
+             .isEqualTo(Kind.INSTANCE);
     }
 }

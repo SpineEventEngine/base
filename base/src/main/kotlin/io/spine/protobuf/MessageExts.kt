@@ -34,6 +34,7 @@ import com.google.common.util.concurrent.UncheckedExecutionException
 import com.google.protobuf.Any
 import com.google.protobuf.Message
 import io.spine.annotation.Internal
+import java.lang.reflect.Type
 
 /**
  * Obtains the default instance of the passed message class.
@@ -107,3 +108,14 @@ public fun Message.isDefault(): Boolean = (defaultInstanceForType == this)
  * @return `true` if the message is not in the default state, `false` otherwise.
  */
 public fun Message.isNotDefault(): Boolean = !isDefault()
+
+/**
+ * Tells if this type is class of [Message].
+ */
+public fun Type.isMessageClass(): Boolean {
+    return if (this is Class<*>) {
+        Message::class.java.isAssignableFrom(this)
+    } else {
+        false
+    }
+}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@
 
 package io.spine.reflect;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -42,13 +43,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class IsDirectParentTest {
 
     private static void assertDirectParent(Package parentCandidate, Package child) {
-        assertTrue(IsDirectParent.of(child)
-                                 .test(parentCandidate));
+        Assertions.assertTrue(IsDirectParent.of(child)
+                                            .test(parentCandidate));
     }
 
     private static void assertNotDirectParent(Package parentCandidate, Package child) {
-        assertFalse(IsDirectParent.of(child)
-                                 .test(parentCandidate));
+        Assertions.assertFalse(IsDirectParent.of(child)
+                                             .test(parentCandidate));
     }
 
     @Test

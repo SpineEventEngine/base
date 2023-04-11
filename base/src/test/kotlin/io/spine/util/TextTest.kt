@@ -27,6 +27,7 @@ package io.spine.util
 
 import com.google.common.testing.NullPointerTester
 import com.google.common.truth.Truth.assertThat
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -50,14 +51,14 @@ internal class TextTest {
     fun `join 'Iterable'`() {
         val iterable = listOf("bir", "iki", "üç")
         val text = Text(iterable)
-        assertThat(text.toString()).isEqualTo("bir${nl}iki${nl}üç")
+        text.toString() shouldBe "bir${nl}iki${nl}üç"
     }
 
     @Test
     fun `join an array`() {
         val array = arrayOf("one", "two", "three")
         val text = Text(array)
-        assertThat(text.toString()).isEqualTo("one${nl}two${nl}three")
+        text.toString() shouldBe "one${nl}two${nl}three"
     }
 
     @Test
@@ -66,8 +67,8 @@ internal class TextTest {
 
         assertThrows<IllegalArgumentException> { text.contains("abra${nl}ka") }
 
-        assertThat(text.contains("abra")).isTrue()
-        assertThat(text.contains("kada")).isFalse()
+        text.contains("abra") shouldBe true
+        text.contains("kada") shouldBe false
     }
 
     @Test
