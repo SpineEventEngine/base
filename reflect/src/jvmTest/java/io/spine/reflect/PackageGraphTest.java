@@ -123,8 +123,7 @@ class PackageGraphTest {
         @Test
         @DisplayName("returning edges")
         void edges() {
-            assertFalse(graph.edges()
-                                        .isEmpty());
+            assertFalse(graph.edges().isEmpty());
         }
 
         @Test

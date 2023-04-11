@@ -27,13 +27,14 @@
 package io.spine.reflect;
 
 import com.google.common.graph.Graph;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.testing.Assertions.assertHasPrivateParameterlessCtor;
 import static io.spine.testing.DisplayNames.HAVE_PARAMETERLESS_CTOR;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("PackageGraph.Filter should")
 class PackageGraphFilterTest {
@@ -50,19 +51,19 @@ class PackageGraphFilterTest {
     @Test
     @DisplayName("accept included packages")
     void inclusion() {
-        Assertions.assertTrue(filter.test(getClass().getPackage()));
+        assertTrue(filter.test(getClass().getPackage()));
     }
 
     @Test
     @DisplayName("reject excluded packages")
     void exclusion() {
-        Assertions.assertFalse(filter.test(String.class.getPackage()));
+        assertFalse(filter.test(String.class.getPackage()));
     }
 
     @Test
     @DisplayName("accept by default")
     void acceptances() {
-        Assertions.assertTrue(filter.test(Graph.class.getPackage()));
+        assertTrue(filter.test(Graph.class.getPackage()));
     }
 
     @Test
