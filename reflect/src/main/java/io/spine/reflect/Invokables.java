@@ -28,6 +28,7 @@ package io.spine.reflect;
 
 import com.google.common.reflect.Invokable;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -115,8 +116,10 @@ public final class Invokables {
      * @throws IllegalStateException
      *         if the target is not of the type that declares the given method or
      *         if an exception is thrown during the method invocation
+     * @return the result of method invocation
      */
-    public static Object setAccessibleAndInvoke(Method method, Object target) {
+    @CanIgnoreReturnValue
+    public static @Nullable Object setAccessibleAndInvoke(Method method, Object target) {
         checkNotNull(method);
         checkNotNull(target);
 
@@ -185,7 +188,7 @@ public final class Invokables {
      *         by {@code fn}, or other error occurs during the reflective operation execution
      */
     /* catching any runtimes does not hurt here. */
-    private static <T, R>
+    private static <T, @Nullable R>
     R invokePreservingAccessibility(T reflectiveObject,
                                     Function<T, Invokable<?, ?>> makeInvokable,
                                     ReflectiveFunction<T, R> fn,
