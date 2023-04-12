@@ -28,13 +28,11 @@ package io.spine.reflect;
 
 import com.google.common.reflect.TypeToken;
 import com.google.common.testing.NullPointerTester;
-import com.google.common.truth.Truth;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import io.spine.reflect.given.TypesTestEnv.ListOfMessages;
 import io.spine.reflect.given.TypesTestEnv.TaskStatus;
 import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -43,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings({"SerializableNonStaticInnerClassWithoutSerialVersionUID",
@@ -73,9 +72,9 @@ class TypesTest extends UtilityClassTest<Types> {
     @Test
     @DisplayName("tell if the type is an enum class")
     void tellIfIsEnumClass() {
-        Truth.assertThat(Types.isEnumClass(TaskStatus.class))
+        assertThat(Types.isEnumClass(TaskStatus.class))
              .isTrue();
-        Truth.assertThat(Types.isEnumClass(Message.class))
+        assertThat(Types.isEnumClass(Message.class))
              .isFalse();
     }
 
@@ -84,7 +83,7 @@ class TypesTest extends UtilityClassTest<Types> {
     void resolveTypeParams() {
         var type = new TypeToken<Function<String, StringValue>>() {}.getType();
         var types = Types.resolveArguments(type);
-        Truth.assertThat(types).containsExactly(String.class, StringValue.class);
+        assertThat(types).containsExactly(String.class, StringValue.class);
     }
 
     @Test
@@ -92,7 +91,7 @@ class TypesTest extends UtilityClassTest<Types> {
     void resolveRawTypeParams() {
         var type = new TypeToken<String>() {}.getType();
         var types = Types.resolveArguments(type);
-        Truth.assertThat(types).isEmpty();
+        assertThat(types).isEmpty();
     }
 
     @Nested
@@ -110,18 +109,17 @@ class TypesTest extends UtilityClassTest<Types> {
         @DisplayName("assuming generic superclass")
         void assumingGenericSuperclass() {
             var val = new Parametrized<Long, String>() {};
-            Assertions.assertEquals(Long.class, Types.argumentIn(val.getClass(), Base.class, 0));
-            Assertions.assertEquals(String.class, Types.argumentIn(val.getClass(), Base.class, 1));
+            assertEquals(Long.class, Types.argumentIn(val.getClass(), Base.class, 0));
+            assertEquals(String.class, Types.argumentIn(val.getClass(), Base.class, 1));
         }
 
         @Test
         @DisplayName("obtain generic argument via superclass")
         void viaSuperclass() {
-            Assertions.assertEquals(String.class, Types.argumentIn(Leaf.class, Base.class, 0));
-            Assertions.assertEquals(Float.class, Types.argumentIn(Leaf.class, Base.class, 1));
+            assertEquals(String.class, Types.argumentIn(Leaf.class, Base.class, 0));
+            assertEquals(Float.class, Types.argumentIn(Leaf.class, Base.class, 1));
         }
     }
-
 
     @SuppressWarnings({"EmptyClass", "unused"})
     private static class Base<T, K> {}
