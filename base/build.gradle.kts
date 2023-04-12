@@ -25,7 +25,6 @@
  */
 
 import io.spine.internal.dependency.AutoService
-import io.spine.internal.dependency.Kotlin
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.gradle.publish.IncrementGuard
 import io.spine.internal.gradle.publish.excludeGoogleProtoFromArtifacts
@@ -42,7 +41,6 @@ dependencies {
     annotationProcessor(AutoService.processor)
     compileOnly(AutoService.annotations)
 
-    api(project(":reflect"))
     implementation(project(":logging"))
 
     /* Have `protobuf` dependency instead of `api` or `implementation` so that proto
@@ -56,7 +54,6 @@ dependencies {
         protobuf(it)
     }
 
-    implementation(Kotlin.reflect)
     testImplementation(project(":testlib"))
 }
 
