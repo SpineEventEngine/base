@@ -1,7 +1,7 @@
 # Spine Testlib
 
 This module provides utilities for testing in Spine SDK subprojects. 
-These utilities may also be useful for the users of the Spine SDK.
+These utilities may also be handy for the users of the Spine SDK.
 
 Spine Testlib relies on the following libraries:
   * [Google Protobuf](https://github.com/protocolbuffers/protobuf)
