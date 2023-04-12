@@ -54,7 +54,7 @@ spinePublishing {
         "base",
         "testlib"
     )
-    modulesWithCustomPublishing = setOf (
+    modulesWithCustomPublishing = setOf(
         "logging",
     )
     destinations = with(PublishingRepos) {
