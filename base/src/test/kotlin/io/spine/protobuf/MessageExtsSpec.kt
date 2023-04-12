@@ -106,4 +106,3 @@ private enum class TaskStatus {
     OPEN,
     DONE
 }
-
