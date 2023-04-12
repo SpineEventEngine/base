@@ -36,17 +36,18 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.locks.Lock;
 import java.util.function.Predicate;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @DisplayName("`IsDirectParent` predicate should")
 class IsDirectParentTest {
 
     private static void assertDirectParent(Package parentCandidate, Package child) {
-        Assertions.assertTrue(IsDirectParent.of(child)
-                                            .test(parentCandidate));
+        assertTrue(IsDirectParent.of(child).test(parentCandidate));
     }
 
     private static void assertNotDirectParent(Package parentCandidate, Package child) {
-        Assertions.assertFalse(IsDirectParent.of(child)
-                                             .test(parentCandidate));
+        assertFalse(IsDirectParent.of(child).test(parentCandidate));
     }
 
     @Test
