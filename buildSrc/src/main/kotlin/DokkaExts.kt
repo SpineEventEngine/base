@@ -55,8 +55,8 @@ fun DependencyHandlerScope.useDokkaForKotlinAsJava() {
 }
 
 /**
- * To exclude pieces of code annotated with `@Internal` from the documentation a
- * custom plugin is added to the Dokka's classpath.
+ * To exclude pieces of code annotated with `@Internal` from the documentation
+ * a custom plugin is added to the Dokka's classpath.
  *
  * @see <a href="https://github.com/SpineEventEngine/dokka-tools/tree/master/dokka-extensions">
  *     Custom Dokka Plugins</a>
