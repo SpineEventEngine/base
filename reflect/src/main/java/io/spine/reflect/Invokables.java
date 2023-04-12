@@ -107,7 +107,7 @@ public final class Invokables {
     }
 
     /**
-     * Invokes the given argumentless method on the target ignoring the accessibility restrictions.
+     * Invokes the given no-arg method on the target ignoring the accessibility restrictions.
      *
      * <p>The target must be of the type that declares the given method, otherwise an
      * {@link IllegalStateException} is thrown.
@@ -153,9 +153,10 @@ public final class Invokables {
                 return ctor;
             }
         }
-
-        throw newIllegalArgumentException("No parameterless ctor found in class `%s`.",
-                                                     type.getSimpleName());
+        throw newIllegalArgumentException(
+                "No parameterless ctor found in class `%s`.",
+                type.getSimpleName()
+        );
     }
 
     /**
@@ -184,10 +185,11 @@ public final class Invokables {
      *         by {@code fn}, or other error occurs during the reflective operation execution
      */
     /* catching any runtimes does not hurt here. */
-    private static <T, R> R invokePreservingAccessibility(T reflectiveObject,
-                                                          Function<T, Invokable<?, ?>> makeInvokable,
-                                                          ReflectiveFunction<T, R> fn,
-                                                          Supplier<String> onError) {
+    private static <T, R>
+    R invokePreservingAccessibility(T reflectiveObject,
+                                    Function<T, Invokable<?, ?>> makeInvokable,
+                                    ReflectiveFunction<T, R> fn,
+                                    Supplier<String> onError) {
         var invokable = makeInvokable.apply(reflectiveObject);
         var accessible = invokable.isAccessible();
         try {

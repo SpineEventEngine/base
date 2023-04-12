@@ -43,6 +43,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.reflect.Invokables.setAccessibleAndInvoke;
 import static io.spine.reflect.given.ConstructorsTestEnv.Animal;
 import static io.spine.reflect.given.ConstructorsTestEnv.Cat;
 import static io.spine.reflect.given.ConstructorsTestEnv.ClassWithDefaultCtor;
@@ -86,7 +87,7 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         @Test
         @DisplayName("set accessible and invoke successfully")
         void allowToSetAccessibleAndInvoke() {
-            var result = Invokables.setAccessibleAndInvoke(privateMethod, target);
+            var result = setAccessibleAndInvoke(privateMethod, target);
 
             Truth.assertThat(result).isEqualTo(ClassWithPrivateMethod.METHOD_RESULT);
         }
@@ -97,7 +98,7 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         void throwOnInvalidTarget() {
             var wrongTarget = new Object();
 
-            assertIllegalState(() -> Invokables.setAccessibleAndInvoke(privateMethod, wrongTarget));
+            assertIllegalState(() -> setAccessibleAndInvoke(privateMethod, wrongTarget));
         }
 
         @SuppressWarnings("CheckReturnValue") // Called to throw exception.
@@ -106,7 +107,7 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         void throwOnInvocationError() throws NoSuchMethodException {
             var method = ClassWithPrivateMethod.class.getDeclaredMethod("throwingMethod");
 
-            assertIllegalState(() -> Invokables.setAccessibleAndInvoke(method, target));
+            assertIllegalState(() -> setAccessibleAndInvoke(method, target));
         }
 
         @Test
