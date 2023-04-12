@@ -24,29 +24,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.reflect
 
-import io.spine.internal.dependency.Kotlin
-import io.spine.internal.gradle.checkstyle.CheckStyleConfig
-import io.spine.internal.gradle.javadoc.JavadocConfig
-import io.spine.internal.gradle.report.license.LicenseReporter
+/**
+ * A collection of packages annotated using the annotation of the type [T].
+ */
+public class AnnotatedPackages<T: Annotation>(
+    /**
+     * The class of annotation [T] applied to the packages in this collection.
+     */
+    public val annotationClass: Class<T>
+) {
 
-plugins {
-    module
-   `maven-publish`
-    `kotlin-jvm-module`
-    `dokka-for-kotlin`
-    idea
-    `project-report`
-    `detekt-code-analysis`
+    /**
+     * A list of packages annotated with [annotationClass] listed in reverse
+     * alphabetical order of the package names.
+     */
+    public val packages: List<Package>
+
+    init {
+        val allPackages = Package.getPackages()
+        packages = allPackages.filter { it.findAnnotation(annotationClass) != null }
+            .sortedBy { it.name }
+            .reversed()
+            .toList()
+    }
+
+    /**
+     * Tells if the annotated packages has the given package directly or as a sub-package
+     * of one in the collection.
+     */
+    public fun findWithNesting(p: Package): T? {
+        val found = packages.firstOrNull {
+            p.name.startsWith(it.name)
+        }
+        return found?.findAnnotation(annotationClass)
+    }
 }
-LicenseReporter.generateReportIn(project)
-CheckStyleConfig.applyTo(project)
 
-dependencies {
-    api(Kotlin.reflect)
-    testImplementation(project(":testlib"))
+private fun <T: Annotation> Package.findAnnotation(cls: Class<in T>): T? {
+    @Suppress("UNCHECKED_CAST")
+    return annotations.firstOrNull { cls.isInstance(it) } as T?
 }
-
-// Apply Javadoc configuration here (and not right after the `plugins` block)
-// because the `javadoc` task is added when the `kotlin` block `withJava` is applied.
-JavadocConfig.applyTo(project)

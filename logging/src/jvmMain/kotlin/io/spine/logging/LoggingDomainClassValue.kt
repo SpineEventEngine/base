@@ -27,7 +27,7 @@
 package io.spine.logging
 
 import io.spine.logging.LoggingDomain.Companion.noOp
-import io.spine.reflect.findAnnotation
+import io.spine.reflect.AnnotatedPackages
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 
@@ -36,17 +36,21 @@ import kotlin.reflect.full.findAnnotation
  *
  * The list is alphabetically sorted in the reverse order.
  */
-private val annotatedPackages: List<Package> by lazy {
-    val allPackages = Package.getPackages()
-    val annotated = allPackages.filter { it.findAnnotation<JvmLoggingDomain>() != null }
-        .sortedBy { it.name }
-        .reversed()
-        .toList()
-    annotated
+private val annotatedPackages: AnnotatedPackages<JvmLoggingDomain> by lazy {
+    AnnotatedPackages(JvmLoggingDomain::class.java)
 }
 
 /**
- * Obtains a [LoggingDomain] for a Java- or Kotlin class.
+ * Obtains a [LoggingDomain] for a Java or Kotlin class.
+ *
+ * The annotation is looked as:
+ *   1. An annotation of the type [LoggingDomain] of the given class or
+ *      an annotation of enclosing classes from innermost to outermost.
+ *   2. The same as 1. but for [JvmLoggingDomain] annotation.
+ *   3. As a package annotation (of the type [JvmLoggingDomain]) for the package
+ *      of the given class, or "parent" packages from innermost to outermost.
+ *
+ * When [JvmLoggingDomain] is found it is converted to [LoggingDomain] instance.
  */
 internal object LoggingDomainClassValue: ClassValue<LoggingDomain>() {
 
@@ -63,10 +67,7 @@ internal object LoggingDomainClassValue: ClassValue<LoggingDomain>() {
         }
 
         val classPackage = javaClass.`package`
-        val annotatedPackage = annotatedPackages.firstOrNull {
-            classPackage.name.startsWith(it.name)
-        }
-        val annotation = annotatedPackage?.findAnnotation<JvmLoggingDomain>()
+        val annotation = annotatedPackages.findWithNesting(classPackage)
         return annotation?.toLoggingDomain() ?: noOp
     }
 }

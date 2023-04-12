@@ -27,6 +27,7 @@
 package io.spine.reflect;
 
 import com.google.errorprone.annotations.Immutable;
+import com.google.errorprone.annotations.InlineMe;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -136,6 +137,7 @@ public final class PackageInfo implements Comparable<PackageInfo> {
      * @deprecated please use {@link #directAnnotation(Class)} instead.
      */
     @Deprecated(forRemoval = true)
+    @InlineMe(replacement = "this.directAnnotation(annotationClass)")
     public <A extends Annotation> Optional<A> getAnnotation(Class<A> annotationClass) {
         return directAnnotation(annotationClass);
     }
