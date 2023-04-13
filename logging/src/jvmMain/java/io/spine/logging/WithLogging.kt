@@ -27,6 +27,6 @@
 package io.spine.logging
 
 /**
- * Actual interface with provides [logger] with [JvmLogger.Api].
+ * Actual interface which provides [logger] with [JvmLogger.Api].
  */
 public interface WithLogging: WithLoggingBase<JvmLogger.Api>
