@@ -34,6 +34,8 @@ pluginManagement {
 rootProject.name = "spine-base"
 
 include(
+    "reflect",
+    "logging",
     "base",
     "testlib",
 )

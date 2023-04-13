@@ -26,7 +26,6 @@
 
 package io.spine.base
 
-import com.google.common.truth.Truth.assertThat
 import com.google.protobuf.ByteString
 import com.google.protobuf.CodedOutputStream
 import com.google.protobuf.Descriptors.Descriptor
@@ -35,6 +34,7 @@ import com.google.protobuf.Descriptors.OneofDescriptor
 import com.google.protobuf.Message
 import com.google.protobuf.Parser
 import com.google.protobuf.UnknownFieldSet
+import io.kotest.matchers.shouldBe
 import java.io.OutputStream
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -55,13 +55,13 @@ internal class `Extensions for 'Throwable' should` {
         @Test
         fun `if true`() {
             throwable.initCause(StubRejectionThrowable())
-            assertThat(throwable.causedByRejection()).isTrue()
+            throwable.causedByRejection() shouldBe true
         }
 
         @Test
         fun `if false`() {
             throwable.initCause(RuntimeException())
-            assertThat(throwable.causedByRejection()).isFalse()
+            throwable.causedByRejection() shouldBe false
         }
     }
 

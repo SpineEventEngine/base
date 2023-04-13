@@ -1,10 +1,22 @@
-# Spine test library
+# Spine Testlib
 
-This module stores utilities for testing the Spine framework.
+This module provides utilities for testing in Spine SDK subprojects. 
+These utilities may also be handy for the users of the Spine SDK.
 
-The utilities include common base classes for tests like 
-[utility class test](src/main/java/io/spine/testing/UtilityClassTest.java), custom 
-[assert statements](src/main/java/io/spine/testing/Verify.java), common test 
-[display names](src/main/java/io/spine/testing/DisplayNames.java) and others.
+Spine Testlib relies on the following libraries:
+  * [Google Protobuf](https://github.com/protocolbuffers/protobuf)
+  * [Guava Testlib](https://github.com/google/guava/tree/master/guava-testlib)
+  * [JUnit 5](https://junit.org/junit5/)
+  * [Google Truth](https://github.com/google/truth) and its Java 8 and Protobuf extensions.
 
-Most testing utilities rely on [JUnit 5](https://junit.org/junit5/) API for their work.
+Dependencies on these libraries are exposed using the API scope to simplify dependency
+management in user projects. Please see [build.gradle.kts] for details.
+
+## Gradle dependency
+To use Spine Testlib in your Gradle project:
+
+```kotlin
+dependencies {
+    testImplementation("io.spine.tools:spine-testlib:${version}")
+}
+```

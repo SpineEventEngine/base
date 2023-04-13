@@ -24,17 +24,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import io.spine.internal.dependency.CheckerFramework
+import io.spine.internal.dependency.Flogger
 import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.Kotest
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Truth
-import io.spine.internal.gradle.protobuf.setup
 
 group = "io.spine.tools"
 
 plugins {
-    `detekt-code-analysis`
+    `java-module`
+    `kotlin-jvm-module`
+    `compile-protobuf`
 }
 
 // Suppress `TooManyFunctions` for `TruthExtensions.kt` file.
@@ -45,23 +48,18 @@ detekt {
 dependencies {
     /*
         Expose tools we use as transitive dependencies to simplify dependency
-        management in subprojects.
+        management in projects that use Spine Testlib.
     */
     (Protobuf.libs
             + JUnit.api
             + Truth.libs
             + Guava.testLib
-            + kotlin("test-junit5")
             + Kotest.assertions).forEach {
         api(it)
     }
+    implementation(Flogger.lib)
+    compileOnly(CheckerFramework.annotations)
 
     implementation(project(":base"))
-}
-
-// For generating test fixtures. See `src/test/proto`.
-protobuf {
-    generateProtoTasks.all().configureEach {
-        setup()
-    }
+    testImplementation(project(":logging"))
 }

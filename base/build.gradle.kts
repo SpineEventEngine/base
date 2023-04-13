@@ -24,23 +24,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.protobuf.gradle.protobuf
 import io.spine.internal.dependency.AutoService
-import io.spine.internal.dependency.Kotlin
 import io.spine.internal.dependency.Protobuf
-import io.spine.internal.gradle.protobuf.setup
 import io.spine.internal.gradle.publish.IncrementGuard
 import io.spine.internal.gradle.publish.excludeGoogleProtoFromArtifacts
 
 plugins {
-    `detekt-code-analysis`
+    `java-module`
+    `compile-protobuf`
+    `kotlin-jvm-module`
 }
 
-apply {
-    plugin<IncrementGuard>()
-}
+apply<IncrementGuard>()
 
 dependencies {
+    annotationProcessor(AutoService.processor)
+    compileOnly(AutoService.annotations)
+
+    implementation(project(":logging"))
+
     /* Have `protobuf` dependency instead of `api` or `implementation` so that proto
        files from the library are included into the compilation. We need this because we
        build our descriptor set files using those standard proto files too.
@@ -51,16 +53,8 @@ dependencies {
     Protobuf.libs.forEach {
         protobuf(it)
     }
-    annotationProcessor(AutoService.processor)
-    compileOnly(AutoService.annotations)
-    implementation(Kotlin.reflect)
-    testImplementation(project(":testlib"))
-}
 
-protobuf {
-    generateProtoTasks.all().configureEach {
-        setup()
-    }
+    testImplementation(project(":testlib"))
 }
 
 tasks {

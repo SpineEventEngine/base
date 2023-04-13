@@ -30,6 +30,7 @@ import com.google.protobuf.Any
 import com.google.protobuf.FieldMask
 import com.google.protobuf.Timestamp
 import com.google.protobuf.timestamp
+import io.kotest.matchers.shouldBe
 import io.spine.protobuf.fromFieldNumbers
 import io.spine.testing.Assertions.assertInDelta
 import io.spine.testing.Assertions.assertMatchesMask
@@ -45,8 +46,6 @@ import io.spine.testing.given.AssertionsTestEnv.ClassWithPrivateCtor
 import io.spine.testing.given.AssertionsTestEnv.ClassWithPublicCtor
 import java.time.Instant
 import java.util.*
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -68,23 +67,23 @@ internal class AssertionsSpec private constructor() :
     internal inner class `check private parameterless constructor` {
 
         @Test
-        fun `returning false if it's public`() = assertFalse {
-            hasPrivateParameterlessCtor<ClassWithPublicCtor>()
+        fun `returning false if it's public`() {
+            hasPrivateParameterlessCtor<ClassWithPublicCtor>() shouldBe false
         }
 
         @Test
-        fun `return false if no parameterless ctor found`() = assertFalse {
-            hasPrivateParameterlessCtor<ClassWithCtorWithArgs>()
+        fun `return false if no parameterless ctor found`() {
+            hasPrivateParameterlessCtor<ClassWithCtorWithArgs>() shouldBe false
         }
 
         @Test
-        fun `accepting private parameterless ctor`() = assertTrue {
-            hasPrivateParameterlessCtor<ClassWithPrivateCtor>()
+        fun `accepting private parameterless ctor`() {
+            hasPrivateParameterlessCtor<ClassWithPrivateCtor>() shouldBe true
         }
 
         @Test
-        fun `ignore exceptions thrown by the called constructor`() = assertTrue {
-            hasPrivateParameterlessCtor<ClassThrowingExceptionInConstructor>()
+        fun `ignore exceptions thrown by the called constructor`() {
+            hasPrivateParameterlessCtor<ClassThrowingExceptionInConstructor>() shouldBe true
         }
     }
 

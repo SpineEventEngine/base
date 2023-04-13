@@ -33,7 +33,6 @@ import org.gradle.api.Task
 import org.gradle.api.file.FileTreeElement
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.tasks.bundling.Jar
-import org.gradle.kotlin.dsl.get
 
 /**
  * Tells whether there are any Proto sources in "main" source set.
@@ -45,15 +44,26 @@ internal fun Project.hasProto(): Boolean {
 }
 
 /**
- * Locates Proto sources in "main" source set.
+ * Locates directories with proto sources under the "main" source sets.
  *
- * "main" source set is added by `java` plugin. Special treatment for Proto sources is needed,
- * because they are not Java-related, and, thus, not included in `sourceSets["main"].allSource`.
+ * Special treatment for Proto sources is needed, because they are not Java-related, and,
+ * thus, not included in `sourceSets["main"].allSource`.
  */
 internal fun Project.protoSources(): Set<File> {
-    val mainSourceSet = sourceSets["main"]
-    val protoSourceDirs = mainSourceSet.extensions.findByName("proto") as SourceDirectorySet?
-    return protoSourceDirs?.srcDirs ?: emptySet()
+    val mainSourceSets = sourceSets.filter {
+        ss -> ss.name.endsWith("main", ignoreCase = true)
+    }
+
+    val protoExtensions = mainSourceSets.mapNotNull {
+        it.extensions.findByName("proto") as SourceDirectorySet?
+    }
+
+    val protoDirs = mutableSetOf<File>()
+    protoExtensions.forEach {
+        protoDirs.addAll(it.srcDirs)
+    }
+
+    return protoDirs
 }
 
 /**

@@ -28,11 +28,11 @@
 
 package io.spine.testing
 
+import io.kotest.assertions.withClue
+import io.kotest.matchers.shouldBe
 import io.spine.testing.Assertions.hasPrivateParameterlessCtor
 import java.io.File
 import java.nio.file.Path
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 /**
  * This file extends assertions provided in Java class [Assertions]
@@ -126,10 +126,8 @@ private class FileExist(
     }
 
     fun check() {
-        if (not) {
-            assertFalse(message()) { file().exists() }
-        } else {
-            assertTrue(message()) { file().exists() }
+        withClue(message()) {
+            file().exists() shouldBe !not
         }
     }
 }

@@ -39,8 +39,7 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.reflect.Types.isEnumClass;
-import static io.spine.reflect.Types.isMessageClass;
+import static io.spine.protobuf.Messages.isMessageClass;
 import static io.spine.string.Stringifiers.forBoolean;
 import static io.spine.string.Stringifiers.forDuration;
 import static io.spine.string.Stringifiers.forInteger;
@@ -199,5 +198,14 @@ public final class StringifierRegistry {
         var typeArguments = genericSupertype.getActualTypeArguments();
         var typeArgument = typeArguments[0];
         return (Class<?>) typeArgument;
+    }
+
+    private static boolean isEnumClass(Type type) {
+        if (type instanceof Class) {
+            var cls = (Class<?>) type;
+            var isEnum = cls.isEnum();
+            return isEnum;
+        }
+        return false;
     }
 }

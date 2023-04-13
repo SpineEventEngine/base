@@ -28,6 +28,9 @@ package io.spine.io
 import com.google.common.io.CharStreams
 import com.google.common.testing.NullPointerTester
 import com.google.common.truth.Truth.assertThat
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.spine.testing.Assertions.assertIllegalState
 import io.spine.testing.TestValues
 import java.io.InputStream
@@ -61,20 +64,16 @@ class ResourceTest {
     fun `throw ISE if queried for a non-existing file`() {
         val name = TestValues.randomString()
         val file = Resource.file(name, classLoader)
-        assertThat(file.exists()).isFalse()
+        file.exists() shouldBe false
         assertIllegalState { file.locate() }
     }
 
     @Test
     fun `identify a file under the resources directory`() {
-        assertThat(resource)
-            .isNotNull()
-        assertThat(resource.exists())
-            .isTrue()
-        assertThat(resource.locate())
-            .isNotNull()
-        assertThat(resource.locateAll())
-            .hasSize(1)
+        resource shouldNotBe null
+        resource.exists() shouldBe true
+        resource.locate() shouldNotBe null
+        resource.locateAll() shouldHaveSize 1
         resource.open().use { stream -> assertNotEmpty(stream) }
     }
 
