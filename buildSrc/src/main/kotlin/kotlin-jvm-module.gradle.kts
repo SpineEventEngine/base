@@ -29,8 +29,10 @@ import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    id("java-module")
     kotlin("jvm")
     id("detekt-code-analysis")
+    id("dokka-for-kotlin")
 }
 
 kotlin {
