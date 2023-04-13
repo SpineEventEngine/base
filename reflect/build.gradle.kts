@@ -31,13 +31,12 @@ import io.spine.internal.gradle.javadoc.JavadocConfig
 import io.spine.internal.gradle.report.license.LicenseReporter
 
 plugins {
-    module
-   `maven-publish`
+    `java-module`
     `kotlin-jvm-module`
+    `maven-publish`
     `dokka-for-kotlin`
     idea
     `project-report`
-    `detekt-code-analysis`
 }
 LicenseReporter.generateReportIn(project)
 CheckStyleConfig.applyTo(project)

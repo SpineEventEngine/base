@@ -30,6 +30,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm")
+    id("detekt-code-analysis")
 }
 
 kotlin {

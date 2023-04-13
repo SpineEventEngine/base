@@ -35,9 +35,9 @@ import io.spine.internal.dependency.Truth
 group = "io.spine.tools"
 
 plugins {
-    module
-    `compile-protobuf`
+    `java-module`
     `kotlin-jvm-module`
+    `compile-protobuf`
 }
 
 // Suppress `TooManyFunctions` for `TruthExtensions.kt` file.

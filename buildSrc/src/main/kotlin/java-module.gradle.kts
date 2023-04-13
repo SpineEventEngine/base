@@ -49,7 +49,6 @@ plugins {
     jacoco
     id("net.ltgt.errorprone")
     id("pmd-settings")
-    id("detekt-code-analysis")
     id("project-report")
     id("dokka-for-java")
 }
