@@ -89,7 +89,7 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         void allowToSetAccessibleAndInvoke() {
             var result = setAccessibleAndInvoke(privateMethod, target);
 
-            Truth.assertThat(result).isEqualTo(ClassWithPrivateMethod.METHOD_RESULT);
+            assertThat(result).isEqualTo(ClassWithPrivateMethod.METHOD_RESULT);
         }
 
         @SuppressWarnings("CheckReturnValue") // Called to throw exception.
@@ -115,11 +115,11 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         void convertToHandle() throws Throwable {
             var method = ClassWithPrivateMethod.class.getMethod("publicMethod");
             var handle = Invokables.asHandle(method);
-            Truth.assertThat(handle).isNotNull();
+            assertThat(handle).isNotNull();
 
             var invocationResult = handle.bindTo(new ClassWithPrivateMethod())
                                          .invoke();
-            Truth.assertThat(invocationResult)
+            assertThat(invocationResult)
                  .isEqualTo(ClassWithPrivateMethod.METHOD_RESULT);
         }
 
@@ -127,11 +127,11 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         @DisplayName("convert an invisible method to a handle")
         void convertInvisibleToHandle() throws Throwable {
             var handle = Invokables.asHandle(privateMethod);
-            Truth.assertThat(handle).isNotNull();
+            assertThat(handle).isNotNull();
             assertAccessible(target).isFalse();
 
             var invocationResult = handle.invoke(new ClassWithPrivateMethod());
-            Truth.assertThat(invocationResult)
+            assertThat(invocationResult)
                  .isEqualTo(ClassWithPrivateMethod.METHOD_RESULT);
         }
 
@@ -141,10 +141,10 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
             privateMethod.setAccessible(true);
             var handle = Invokables.asHandle(privateMethod);
             assertAccessible(target).isTrue();
-            Truth.assertThat(handle).isNotNull();
+            assertThat(handle).isNotNull();
 
             var invocationResult = handle.invoke(target);
-            Truth.assertThat(invocationResult)
+            assertThat(invocationResult)
                  .isEqualTo(ClassWithPrivateMethod.METHOD_RESULT);
         }
 
@@ -162,7 +162,7 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         @DisplayName("instantiate a class using a parameterless constructor")
         void instantiate() {
             var cat = Invokables.callParameterlessCtor(Cat.class);
-            Truth.assertThat(cat.greet()).contains(Animal.MISSING);
+            assertThat(cat.greet()).contains(Animal.MISSING);
         }
 
         @Test
@@ -175,7 +175,7 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         @DisplayName("instantiate using a default ctor")
         void defaultCtor() {
             var instance = Invokables.callParameterlessCtor(ClassWithDefaultCtor.class);
-            Truth.assertThat(instance.instantiated()).isTrue();
+            assertThat(instance.instantiated()).isTrue();
         }
 
         @Test
@@ -195,7 +195,7 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         void instantiatePrivate() {
             var instance = Invokables.callParameterlessCtor(
                     ClassWithPrivateCtor.class);
-            Truth.assertThat(instance.instantiated()).isTrue();
+            assertThat(instance.instantiated()).isTrue();
         }
 
         @Test
@@ -219,7 +219,7 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
                 assertConstructorAccessible().isFalse();
 
                 var instance = Invokables.callParameterlessCtor(privateCtorClass);
-                Truth.assertThat(instance.instantiated()).isTrue();
+                assertThat(instance.instantiated()).isTrue();
 
                 assertConstructorAccessible().isFalse();
             }
