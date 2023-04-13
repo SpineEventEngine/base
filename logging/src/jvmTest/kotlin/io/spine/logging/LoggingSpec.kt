@@ -56,7 +56,7 @@ internal class LoggingSpec {
     }
 
     @Test
-    fun `obtain same 'FluentLogger' Instance`() {
+    fun `obtain same 'FluentLogger' instance`() {
         val obj: Logging = LoggingObject()
         val logger = obj.logger()
 
