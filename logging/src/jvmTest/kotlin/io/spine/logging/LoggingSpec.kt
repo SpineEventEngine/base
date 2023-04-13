@@ -51,7 +51,7 @@ internal class LoggingSpec {
     }
 
     @Test
-    fun `assume 'SEVER' for errors`() {
+    fun `assume 'SEVERE' for errors`() {
         Logging.errorLevel() shouldBe Level.SEVERE
     }
 
