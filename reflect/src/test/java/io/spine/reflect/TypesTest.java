@@ -43,6 +43,7 @@ import java.util.function.Function;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.reflect.Types.argumentIn;
+import static io.spine.reflect.Types.isEnumClass;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings({"SerializableNonStaticInnerClassWithoutSerialVersionUID",
@@ -73,10 +74,8 @@ class TypesTest extends UtilityClassTest<Types> {
     @Test
     @DisplayName("tell if the type is an enum class")
     void tellIfIsEnumClass() {
-        assertThat(Types.isEnumClass(TaskStatus.class))
-             .isTrue();
-        assertThat(Types.isEnumClass(Message.class))
-             .isFalse();
+        assertThat(isEnumClass(TaskStatus.class)).isTrue();
+        assertThat(isEnumClass(Message.class)).isFalse();
     }
 
     @Test
