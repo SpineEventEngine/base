@@ -28,7 +28,6 @@ package io.spine.reflect;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.common.truth.BooleanSubject;
-import com.google.common.truth.Truth;
 import io.spine.reflect.given.ConstructorsTestEnv;
 import io.spine.reflect.given.MethodsTestEnv.ClassWithPrivateMethod;
 import io.spine.testing.UtilityClassTest;
