@@ -42,6 +42,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.reflect.Types.argumentIn;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings({"SerializableNonStaticInnerClassWithoutSerialVersionUID",
@@ -101,7 +102,7 @@ class TypesTest extends UtilityClassTest<Types> {
         @Test
         @DisplayName("from the inheritance chain")
         void getTypeArgument() {
-            var argument = Types.argumentIn(ListOfMessages.class, Iterable.class, 0);
+            var argument = argumentIn(ListOfMessages.class, Iterable.class, 0);
             assertEquals(argument, Message.class);
         }
 
@@ -109,15 +110,15 @@ class TypesTest extends UtilityClassTest<Types> {
         @DisplayName("assuming generic superclass")
         void assumingGenericSuperclass() {
             var val = new Parametrized<Long, String>() {};
-            assertEquals(Long.class, Types.argumentIn(val.getClass(), Base.class, 0));
-            assertEquals(String.class, Types.argumentIn(val.getClass(), Base.class, 1));
+            assertEquals(Long.class, argumentIn(val.getClass(), Base.class, 0));
+            assertEquals(String.class, argumentIn(val.getClass(), Base.class, 1));
         }
 
         @Test
         @DisplayName("obtain generic argument via superclass")
         void viaSuperclass() {
-            assertEquals(String.class, Types.argumentIn(Leaf.class, Base.class, 0));
-            assertEquals(Float.class, Types.argumentIn(Leaf.class, Base.class, 1));
+            assertEquals(String.class, argumentIn(Leaf.class, Base.class, 0));
+            assertEquals(Float.class, argumentIn(Leaf.class, Base.class, 1));
         }
     }
 
