@@ -42,6 +42,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.reflect.Invokables.asHandle;
 import static io.spine.reflect.Invokables.setAccessibleAndInvoke;
 import static io.spine.reflect.given.ConstructorsTestEnv.Animal;
 import static io.spine.reflect.given.ConstructorsTestEnv.Cat;
@@ -113,7 +114,7 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         @DisplayName("convert a visible method to a handle")
         void convertToHandle() throws Throwable {
             var method = ClassWithPrivateMethod.class.getMethod("publicMethod");
-            var handle = Invokables.asHandle(method);
+            var handle = asHandle(method);
             assertThat(handle).isNotNull();
 
             var invocationResult = handle.bindTo(new ClassWithPrivateMethod())
@@ -125,7 +126,7 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         @Test
         @DisplayName("convert an invisible method to a handle")
         void convertInvisibleToHandle() throws Throwable {
-            var handle = Invokables.asHandle(privateMethod);
+            var handle = asHandle(privateMethod);
             assertThat(handle).isNotNull();
             assertAccessible(target).isFalse();
 
@@ -138,7 +139,7 @@ class InvokablesTest extends UtilityClassTest<Invokables> {
         @DisplayName("convert an accessible method to a handle")
         void convertAccessibleToHandle() throws Throwable {
             privateMethod.setAccessible(true);
-            var handle = Invokables.asHandle(privateMethod);
+            var handle = asHandle(privateMethod);
             assertAccessible(target).isTrue();
             assertThat(handle).isNotNull();
 
