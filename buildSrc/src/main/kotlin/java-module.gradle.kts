@@ -162,4 +162,3 @@ fun Module.configureGitHubPages() {
         rootFolder.set(rootDir)
     }
 }
-
