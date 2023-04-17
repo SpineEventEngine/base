@@ -33,11 +33,7 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.function.Executable
 
 /**
- * Asserts that running the passed executable causes `io.spine.type.UnknownTypeException`.
- *
- * @implNote The exception class belongs to the `io.spine.base:spine-base` artifact.
- * In order to avoid the dependency on `spine-base` from `spine-testlib`
- * We obtain the class of the exception via its name.
+ * Asserts that running the passed executable causes [UnknownTypeException].
  */
 @CanIgnoreReturnValue
 internal fun assertUnknownType(e: Executable): UnknownTypeException {
