@@ -98,31 +98,10 @@ public final class Testing {
         fail("This method should never be called.");
     }
 
-    /**
-     * Throws {@code IllegalStateException} with the formatted string and the cause.
-     *
-     * @param cause
-     *         the cause of the exception
-     * @param format
-     *         the format string
-     * @param args
-     *         formatting parameters
-     * @return nothing ever, always throws an exception. The return type is given for convenience.
-     * @throws IllegalStateException
-     *         always
-     */
-    @CanIgnoreReturnValue
-    public static IllegalStateException
+    private static IllegalStateException
     newIllegalStateException(Throwable cause, String format, Object... args) {
-        checkNotNull(cause);
-        var errMsg = formatMessage(format, args);
+        var errMsg = format(Locale.ROOT, format, args);
         throw new IllegalStateException(errMsg, cause);
-    }
-
-    private static String formatMessage(String format, Object[] args) {
-        checkNotNull(format);
-        checkNotNull(args);
-        return format(Locale.ROOT, format, args);
     }
 
     /**

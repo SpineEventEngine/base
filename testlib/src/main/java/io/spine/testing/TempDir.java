@@ -32,8 +32,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileAttribute;
+import java.util.Locale;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 
 /**
  * Utilities for creating temporary directories.
@@ -96,7 +98,7 @@ public final class TempDir {
             var directory = Files.createTempDirectory(baseDir, prefix, attrs);
             return directory.toFile();
         } catch (IOException e) {
-            throw Testing.newIllegalStateException(
+            throw newIllegalStateException(
                     e, "Unable to create temp dir under `%s` (prefix: `%s`).", baseDir, prefix
             );
         }
@@ -126,4 +128,11 @@ public final class TempDir {
         var prefix = testSuite.getSimpleName();
         return withPrefix(prefix, attrs);
     }
+
+    private static IllegalStateException
+    newIllegalStateException(Throwable cause, String format, Object... args) {
+        var errMsg = format(Locale.ROOT, format, args);
+        throw new IllegalStateException(errMsg, cause);
+    }
+
 }

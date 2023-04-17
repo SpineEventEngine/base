@@ -28,16 +28,17 @@ package io.spine.testing.logging.mute;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
-import io.spine.testing.Testing;
 import io.spine.testing.logging.MemoizingStream;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Locale;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
+import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -163,7 +164,7 @@ final class MutingLoggerTap {
         try {
             stream.flush();
         } catch (IOException e) {
-            throw Testing.newIllegalStateException(e, "Error flushing `%s`.", stream);
+            throw newIllegalStateException(e, "Error flushing `%s`.", stream);
         }
         return stream.size();
     }
@@ -182,5 +183,11 @@ final class MutingLoggerTap {
 
     private Logger logger() {
         return Logger.getLogger(loggerName);
+    }
+
+    private static IllegalStateException
+    newIllegalStateException(Throwable cause, String format, Object... args) {
+        var errMsg = format(Locale.ROOT, format, args);
+        throw new IllegalStateException(errMsg, cause);
     }
 }
