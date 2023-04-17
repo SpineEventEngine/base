@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,7 @@
 
 package io.spine.testing;
 
-import io.spine.code.java.PackageName;
-import io.spine.io.Files2;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,13 +34,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileAttribute;
+import java.util.Locale;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.io.Delete.deleteRecursivelyOnShutdownHook;
-import static io.spine.io.Ensure.ensureDirectory;
-import static io.spine.io.Files2.systemTempDir;
-import static io.spine.util.Exceptions.newIllegalStateException;
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+import static java.lang.String.format;
 
 /**
  * Utilities for creating temporary directories.
@@ -60,7 +57,7 @@ public final class TempDir {
 
     static {
         baseDir = createBaseDir();
-        deleteRecursivelyOnShutdownHook(baseDir);
+        Testing.deleteRecursivelyOnShutdownHook(baseDir);
     }
 
     /** Prevents direct instantiation. */
@@ -69,13 +66,13 @@ public final class TempDir {
 
     /**
      * Creates a directory named after the package of this class under a directory
-     * specified by the {@link Files2#systemTempDir()}.
+     * specified by the {@link Testing#systemTempDir()}.
      */
     private static Path createBaseDir() {
-        var tmpDir = systemTempDir();
-        var packageName = PackageName.of(TempDir.class);
-        var baseDir = Paths.get(tmpDir, packageName.toString());
-        return ensureDirectory(baseDir);
+        var tmpDir = Testing.systemTempDir();
+        var packageName = TempDir.class.getPackageName();
+        var baseDir = Paths.get(tmpDir, packageName);
+        return Testing.ensureDirectory(baseDir);
     }
 
     /**
@@ -111,6 +108,19 @@ public final class TempDir {
     }
 
     /**
+     * Ensures that the passed string is not {@code null}, empty or blank string.
+     */
+    @CanIgnoreReturnValue
+    private static String checkNotEmptyOrBlank(String str) {
+        checkNotNull(str);
+        checkArgument(
+                !str.trim().isEmpty(),
+                "Non-empty and non-blank string expected. Encountered: \"%s\".", str
+        );
+        return str;
+    }
+
+    /**
      * Creates a temporary directory for the passed test suite class.
      *
      * <p>The parent directory for the created is obtained from the system property
@@ -133,5 +143,11 @@ public final class TempDir {
         checkNotNull(testSuite);
         var prefix = testSuite.getSimpleName();
         return withPrefix(prefix, attrs);
+    }
+
+    private static IllegalStateException
+    newIllegalStateException(Throwable cause, String format, Object... args) {
+        var errMsg = format(Locale.ROOT, format, args);
+        throw new IllegalStateException(errMsg, cause);
     }
 }

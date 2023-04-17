@@ -50,7 +50,6 @@ import io.spine.string.pi
 import io.spine.test.types.KnownTask
 import io.spine.test.types.KnownTaskId
 import io.spine.test.types.KnownTaskName
-import io.spine.testing.Assertions.assertUnknownType
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test

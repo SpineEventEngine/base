@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,10 +34,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Locale;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
-import static io.spine.util.Exceptions.newIllegalStateException;
+import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -182,5 +183,11 @@ final class MutingLoggerTap {
 
     private Logger logger() {
         return Logger.getLogger(loggerName);
+    }
+
+    private static IllegalStateException
+    newIllegalStateException(Throwable cause, String format, Object... args) {
+        var errMsg = format(Locale.ROOT, format, args);
+        throw new IllegalStateException(errMsg, cause);
     }
 }

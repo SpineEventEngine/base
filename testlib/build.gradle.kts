@@ -59,7 +59,4 @@ dependencies {
     }
     implementation(Flogger.lib)
     compileOnly(CheckerFramework.annotations)
-
-    implementation(project(":base"))
-    testImplementation(project(":logging"))
 }

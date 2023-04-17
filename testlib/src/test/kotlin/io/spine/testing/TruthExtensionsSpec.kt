@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,8 @@ import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.ProtoTruth
 import com.google.protobuf.ExtensionRegistry
 import com.google.protobuf.Timestamp
-import io.spine.base.Time
-import io.spine.type.KnownTypes
+import com.google.protobuf.TypeRegistry
+import com.google.protobuf.timestamp
 import java.util.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -66,7 +66,9 @@ internal class TruthExtensionsSpec {
 
     @Test
     fun `fun for checking 'instanceOf'`() {
-        assertThat(Time.currentTime()).isInstanceOf<Timestamp>()
+        assertThat(Timestamp.getDefaultInstance()) {
+            isInstanceOf<Timestamp>()
+        }
     }
 
     @Test
@@ -90,12 +92,14 @@ internal class TruthExtensionsSpec {
 
     @Test
     fun `fun for 'ProtoSubject`() {
-        val msg = io.spine.base.error {
-            type = "Big bada boom"
-            code = 42
+        val msg = prescription {
+            prescribedOn = timestamp {
+                seconds = System.currentTimeMillis() / 1000
+            }
+            prescribedDrug.add("Big bada boom")
         }
 
-        val expected = io.spine.base.error { code = 42 }
+        val expected = prescription { prescribedDrug.add("Big bada boom") }
 
         // Standard syntax.
         ProtoTruth.assertThat(msg)
@@ -105,13 +109,13 @@ internal class TruthExtensionsSpec {
         // Kotlin, having fun.
         assertThat(msg) {
             comparingExpectedFieldsOnly {
-                isEqualTo(io.spine.base.error { code = 42 })
+                isEqualTo(expected)
             }
         }
 
         // Given just to show nested call example for `unpackingAnyUsing`.
         assertThat(msg) {
-            val typeRegistry = KnownTypes.instance().typeRegistry()
+            val typeRegistry = TypeRegistry.newBuilder().build()
             val extensionRegistry = ExtensionRegistry.newInstance()
             unpackingAnyUsing(typeRegistry, extensionRegistry) {
                 comparingExpectedFieldsOnly {

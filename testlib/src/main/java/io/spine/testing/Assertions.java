@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Message;
-import io.spine.type.UnknownTypeException;
 import org.junit.jupiter.api.function.Executable;
 
 import java.lang.reflect.Constructor;
@@ -74,15 +73,6 @@ public final class Assertions {
     public static IllegalStateException assertIllegalState(Executable e) {
         checkNotNull(e);
         return assertThrows(IllegalStateException.class, e);
-    }
-
-    /**
-     * Asserts that running the passed executable causes {@link UnknownTypeException}.
-     */
-    @CanIgnoreReturnValue
-    public static UnknownTypeException assertUnknownType(Executable e) {
-        checkNotNull(e);
-        return assertThrows(UnknownTypeException.class, e);
     }
 
     /**

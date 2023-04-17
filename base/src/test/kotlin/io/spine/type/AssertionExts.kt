@@ -24,41 +24,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.testing
+@file:JvmName("Assertions")
 
-import com.google.common.truth.Truth.assertThat
-import java.io.File
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
+package io.spine.type
 
-class `'TempDir' should` {
+import com.google.errorprone.annotations.CanIgnoreReturnValue
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.function.Executable
 
-    companion object {
-        const val prefix = "TempDirTest"
-        val tempDir: File = TempDir.withPrefix(prefix)
-    }
-
-    @Nested
-    inner class `be created under the directory ` {
-
-        @Test
-        fun `from the 'System' property 'java-dot-io-dot-tmpdir'`() {
-            assertThat(tempDir.toString())
-                .contains(Testing.systemTempDir())
-        }
-
-        @Test
-        fun `named after the package of 'TempDir' class`() {
-            assertThat(tempDir.toString())
-                .contains(TempDir::class.java.packageName)
-        }
-    }
-
-    @Test
-    fun `create an instance serving a test suite class`() {
-        val thisClass = javaClass
-        val tempDir = TempDir.forClass(thisClass)
-        assertThat(tempDir.toString())
-            .contains(thisClass.simpleName)
-    }
+/**
+ * Asserts that running the passed executable causes [UnknownTypeException].
+ */
+@CanIgnoreReturnValue
+internal fun assertUnknownType(e: Executable): UnknownTypeException {
+    return assertThrows(UnknownTypeException::class.java, e)
 }
