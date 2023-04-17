@@ -35,7 +35,6 @@ import java.lang.reflect.Constructor;
 import java.nio.file.Path;
 import java.util.Locale;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static java.lang.String.format;
