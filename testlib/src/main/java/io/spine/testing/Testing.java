@@ -101,16 +101,19 @@ public final class Testing {
     /**
      * Throws {@code IllegalStateException} with the formatted string and the cause.
      *
-     * @param cause the cause of the exception
-     * @param format the format string
-     * @param args formatting parameters
+     * @param cause
+     *         the cause of the exception
+     * @param format
+     *         the format string
+     * @param args
+     *         formatting parameters
      * @return nothing ever, always throws an exception. The return type is given for convenience.
-     * @throws IllegalStateException always
+     * @throws IllegalStateException
+     *         always
      */
     @CanIgnoreReturnValue
-    public static IllegalStateException newIllegalStateException(Throwable cause,
-                                                                 String format,
-                                                                 Object... args) {
+    public static IllegalStateException
+    newIllegalStateException(Throwable cause, String format, Object... args) {
         checkNotNull(cause);
         var errMsg = formatMessage(format, args);
         throw new IllegalStateException(errMsg, cause);
