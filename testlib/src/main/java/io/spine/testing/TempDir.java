@@ -26,6 +26,8 @@
 
 package io.spine.testing;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -34,6 +36,7 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.FileAttribute;
 import java.util.Locale;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
@@ -93,7 +96,7 @@ public final class TempDir {
      */
     public static File withPrefix(String prefix, FileAttribute<?>... attrs) {
         checkNotNull(prefix);
-        Testing.checkNotEmptyOrBlank(prefix);
+        checkNotEmptyOrBlank(prefix);
         try {
             var directory = Files.createTempDirectory(baseDir, prefix, attrs);
             return directory.toFile();
@@ -102,6 +105,19 @@ public final class TempDir {
                     e, "Unable to create temp dir under `%s` (prefix: `%s`).", baseDir, prefix
             );
         }
+    }
+
+    /**
+     * Ensures that the passed string is not {@code null}, empty or blank string.
+     */
+    @CanIgnoreReturnValue
+    private static String checkNotEmptyOrBlank(String str) {
+        checkNotNull(str);
+        checkArgument(
+                !str.trim().isEmpty(),
+                "Non-empty and non-blank string expected. Encountered: \"%s\".", str
+        );
+        return str;
     }
 
     /**

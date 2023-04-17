@@ -105,32 +105,6 @@ public final class Testing {
     }
 
     /**
-     * Ensures that the passed string is not {@code null}, empty or blank string.
-     *
-     * @param str
-     *         the string to check
-     * @return the passed string
-     * @throws IllegalArgumentException
-     *         if the string is empty or blank
-     * @throws NullPointerException
-     *         if the passed string is {@code null}
-     */
-    @CanIgnoreReturnValue
-    static String checkNotEmptyOrBlank(String str) {
-        checkNotNull(str);
-        checkArgument(
-                isNotEmpty(str),
-                "Non-empty and non-blank string expected. Encountered: \"%s\".", str
-        );
-        return str;
-    }
-
-    private static boolean isNotEmpty(String str) {
-        return !str.trim()
-                   .isEmpty();
-    }
-
-    /**
      * Obtains the value of the {@code System} property for a temporary directory.
      */
     @SuppressWarnings("AccessOfSystemProperties")
