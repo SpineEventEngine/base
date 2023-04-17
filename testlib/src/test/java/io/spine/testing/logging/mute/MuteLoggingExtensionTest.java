@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@
 package io.spine.testing.logging.mute;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import io.spine.logging.Logging;
 import io.spine.testing.TestValues;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.junit.jupiter.api.BeforeEach;
@@ -221,21 +221,21 @@ class MuteLoggingExtensionTest extends SystemOutputTest {
         }
     }
 
-    private static final class LoggingStub implements Logging {
+    private static final class LoggingStub {
+
+        private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
         @CanIgnoreReturnValue
-        @SuppressWarnings("FloggerLogString")
         String logWarning() {
             var warningMessage = "Warning: " + TestValues.randomString();
-            _warn().log(warningMessage);
+            logger.atWarning().log(warningMessage);
             return warningMessage;
         }
 
         @CanIgnoreReturnValue
-        @SuppressWarnings("FloggerLogString")
         String logError() {
             var errorMessage = "Error: " + TestValues.randomString();
-            _error().log(errorMessage);
+            logger.atSevere().log(errorMessage);
             return errorMessage;
         }
     }
