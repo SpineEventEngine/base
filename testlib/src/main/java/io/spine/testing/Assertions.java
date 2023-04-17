@@ -76,26 +76,6 @@ public final class Assertions {
     }
 
     /**
-     * Asserts that running the passed executable causes {@code io.spine.type.UnknownTypeException}.
-     *
-     * @implNote The exception class belongs to the {@code io.spine.base:spine-base} artifact.
-     *           In order to avoid the dependency on {@code spine-base} from {@code spine-testlib}
-     *           We obtain the class of the exception via its name.
-     */
-    @CanIgnoreReturnValue
-    public static Throwable assertUnknownType(Executable e) {
-        checkNotNull(e);
-        try {
-            @SuppressWarnings("unchecked")
-            var exceptionClass = (Class<? extends Throwable>)
-                    Class.forName("io.spine.type.UnknownTypeException");
-            return assertThrows(exceptionClass, e);
-        } catch (ClassNotFoundException cnf) {
-            throw new IllegalStateException(cnf);
-        }
-    }
-
-    /**
      * Asserts that running the passed executable cases {@link NullPointerException}.
      */
     @CanIgnoreReturnValue
