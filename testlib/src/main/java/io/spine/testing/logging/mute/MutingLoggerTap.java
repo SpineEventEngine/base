@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ package io.spine.testing.logging.mute;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import io.spine.testing.Testing;
 import io.spine.testing.logging.MemoizingStream;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -37,7 +38,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
-import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -163,7 +163,7 @@ final class MutingLoggerTap {
         try {
             stream.flush();
         } catch (IOException e) {
-            throw newIllegalStateException(e, "Error flushing `%s`.", stream);
+            throw Testing.newIllegalStateException(e, "Error flushing `%s`.", stream);
         }
         return stream.size();
     }

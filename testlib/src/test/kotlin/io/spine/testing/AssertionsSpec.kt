@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,10 +28,11 @@ package io.spine.testing
 import com.google.common.testing.NullPointerTester
 import com.google.protobuf.Any
 import com.google.protobuf.FieldMask
+import com.google.protobuf.Message
 import com.google.protobuf.Timestamp
 import com.google.protobuf.timestamp
+import com.google.protobuf.util.FieldMaskUtil
 import io.kotest.matchers.shouldBe
-import io.spine.protobuf.fromFieldNumbers
 import io.spine.testing.Assertions.assertInDelta
 import io.spine.testing.Assertions.assertMatchesMask
 import io.spine.testing.HospitalPolicy.ACCEPTED_CONDITION_FIELD_NUMBER
@@ -303,3 +304,21 @@ internal class AssertionsSpec private constructor() :
         private const val value: Long = 100
     }
 }
+
+/**
+ * Constructs a [FieldMask] from the passed field numbers.
+ *
+ * @throws IllegalArgumentException
+ *          if any of the fields are invalid for the message.
+ */
+private inline fun <reified T : Message> fromFieldNumbers(vararg fieldNumbers: Int): FieldMask =
+    fromFieldNumbers<T>(fieldNumbers.toList())
+
+/**
+ * Constructs a [FieldMask] from the passed field numbers.
+ *
+ * @throws IllegalArgumentException
+ *          if any of the fields are invalid for the message.
+ */
+private inline fun <reified T : Message> fromFieldNumbers(fieldNumbers: Iterable<Int>): FieldMask =
+    FieldMaskUtil.fromFieldNumbers(T::class.java, fieldNumbers)

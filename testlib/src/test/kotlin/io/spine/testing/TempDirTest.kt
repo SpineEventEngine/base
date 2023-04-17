@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,6 @@
 package io.spine.testing
 
 import com.google.common.truth.Truth.assertThat
-import io.spine.code.java.PackageName
-import io.spine.io.Files2
 import java.io.File
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -46,13 +44,13 @@ class `'TempDir' should` {
         @Test
         fun `from the 'System' property 'java-dot-io-dot-tmpdir'`() {
             assertThat(tempDir.toString())
-                .contains(Files2.systemTempDir())
+                .contains(Testing.systemTempDir())
         }
 
         @Test
         fun `named after the package of 'TempDir' class`() {
             assertThat(tempDir.toString())
-                .contains(PackageName.of(TempDir::class.java).toString())
+                .contains(TempDir::class.java.packageName)
         }
     }
 

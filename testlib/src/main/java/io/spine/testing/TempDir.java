@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,6 @@
 
 package io.spine.testing;
 
-import io.spine.code.java.PackageName;
-import io.spine.io.Files2;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -37,11 +34,6 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.FileAttribute;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.io.Delete.deleteRecursivelyOnShutdownHook;
-import static io.spine.io.Ensure.ensureDirectory;
-import static io.spine.io.Files2.systemTempDir;
-import static io.spine.util.Exceptions.newIllegalStateException;
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * Utilities for creating temporary directories.
@@ -60,7 +52,7 @@ public final class TempDir {
 
     static {
         baseDir = createBaseDir();
-        deleteRecursivelyOnShutdownHook(baseDir);
+        Testing.deleteRecursivelyOnShutdownHook(baseDir);
     }
 
     /** Prevents direct instantiation. */
@@ -69,13 +61,13 @@ public final class TempDir {
 
     /**
      * Creates a directory named after the package of this class under a directory
-     * specified by the {@link Files2#systemTempDir()}.
+     * specified by the {@link Testing#systemTempDir()}.
      */
     private static Path createBaseDir() {
-        var tmpDir = systemTempDir();
-        var packageName = PackageName.of(TempDir.class);
-        var baseDir = Paths.get(tmpDir, packageName.toString());
-        return ensureDirectory(baseDir);
+        var tmpDir = Testing.systemTempDir();
+        var packageName = TempDir.class.getPackageName();
+        var baseDir = Paths.get(tmpDir, packageName);
+        return Testing.ensureDirectory(baseDir);
     }
 
     /**
@@ -99,12 +91,12 @@ public final class TempDir {
      */
     public static File withPrefix(String prefix, FileAttribute<?>... attrs) {
         checkNotNull(prefix);
-        checkNotEmptyOrBlank(prefix);
+        Testing.checkNotEmptyOrBlank(prefix);
         try {
             var directory = Files.createTempDirectory(baseDir, prefix, attrs);
             return directory.toFile();
         } catch (IOException e) {
-            throw newIllegalStateException(
+            throw Testing.newIllegalStateException(
                     e, "Unable to create temp dir under `%s` (prefix: `%s`).", baseDir, prefix
             );
         }
