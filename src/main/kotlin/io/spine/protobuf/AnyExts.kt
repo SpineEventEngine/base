@@ -39,8 +39,10 @@ public inline fun <reified T : Message> AnyProto.unpack(): T {
     val cls = T::class
     if (!cls.isFinal) {
         throw IllegalArgumentException(
-            "Message type must be a concrete message, not a general interface. " +
-                    "Use `unpackGuessingType()` if concrete message type is not available.")
+            "Message type for the `unpack` call must be a concrete message, with a `final` class." +
+                    " `${cls.qualifiedName}` is not `final`." +
+                    " Please use `unpackGuessingType()` if concrete message type is not available."
+        )
     }
     return AnyPacker.unpack(this, cls.java)
 }
