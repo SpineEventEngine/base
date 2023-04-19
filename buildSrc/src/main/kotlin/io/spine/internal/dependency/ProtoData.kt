@@ -24,10 +24,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.reflect
+package io.spine.internal.dependency
 
 /**
- * Obtains an annotation of a type [T] of this [Package], if available. Otherwise returns `null`.
+ * Dependencies on ProtoData modules.
+ *
+ * See [`SpineEventEngine/ProtoData`](https://github.com/SpineEventEngine/ProtoData/).
  */
-public inline fun <reified T : Annotation> Package.findAnnotation(): T? =
-    annotations.firstOrNull { it is T } as T?
+@Suppress("unused")
+object ProtoData {
+    const val version = "0.8.0"
+    const val group = "io.spine.protodata"
+    const val compiler = "$group:protodata-compiler:$version"
+
+    const val codegenJava = "io.spine.protodata:protodata-codegen-java:$version"
+
+    const val pluginId = "io.spine.protodata"
+    const val pluginLib = "${Spine.group}:protodata:$version"
+}

@@ -24,9 +24,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.logging
+package io.spine.internal.dependency
 
 /**
- * Actual interface which provides [logger] with [JvmLogger.Api].
+ * Dependencies on Spine Validation SDK.
+ *
+ * See [`SpineEventEngine/validation`](https://github.com/SpineEventEngine/validation/).
  */
-public interface WithLogging: WithLoggingBase<JvmLogger.Api>
+object Validation {
+    const val version = "2.0.0-SNAPSHOT.81"
+    const val group = "io.spine.validation"
+    const val runtime = "$group:spine-validation-java-runtime:$version"
+    const val java = "$group:spine-validation-java:$version"
+    const val model = "$group:spine-validation-model:$version"
+    const val config = "$group:spine-validation-configuration:$version"
+}
