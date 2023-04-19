@@ -27,7 +27,6 @@
 package io.spine.base;
 
 import com.google.protobuf.Any;
-import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.base.given.MessageFileEventsProto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

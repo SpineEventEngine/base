@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.base
 
 import com.google.common.truth.Truth.assertThat
 import io.spine.base.IdType.MESSAGE

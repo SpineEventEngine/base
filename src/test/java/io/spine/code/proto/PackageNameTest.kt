@@ -23,65 +23,64 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.code.proto
 
-package io.spine.code.proto;
-
-import com.google.common.testing.NullPointerTester;
-import com.google.common.truth.BooleanSubject;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
-import static com.google.common.truth.Truth.assertThat;
+import com.google.common.testing.NullPointerTester
+import com.google.common.truth.BooleanSubject
+import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
 @DisplayName("`proto.PackageName` should")
-class PackageNameTest {
-
+internal class PackageNameTest {
     @Test
-    void handleNullArgs() {
-        new NullPointerTester().testAllPublicStaticMethods(PackageName.class);
+    fun handleNullArgs() {
+        NullPointerTester().testAllPublicStaticMethods(PackageName::class.java)
     }
 
     @Test
-    @DisplayName("create a new instance by value")
-    void newInstance() {
-        var packageName = "some.pack.age";
-        assertThat(PackageName.of(packageName)
-                              .value()).isEqualTo(packageName);
+    fun `provide separator character`() {
+        PackageName.delimiter() shouldNotBe ""
+    }
+
+    @Test
+    fun `create a new instance by value`() {
+        val packageName = "some.pack.age"
+        PackageName.of(packageName).value() shouldBe packageName
     }
 
     @Nested
     @DisplayName("verify if the package is inner to a parent package")
-    class SubPackage {
+    internal inner class SubPackage {
 
         @Test
-        @DisplayName("if immediately nested")
-        void nested() {
-            assertIsInner("spine.code.proto", "spine.code");
-        }
-
-        @Test
-        @DisplayName("if nested deeper")
-        void deepNesting() {
-            assertIsInner("spine.code.proto.ref", "spine");
+        fun `if immediately nested`() {
+            assertIsInner("spine.code.proto", "spine.code")
         }
 
         @Test
-        @DisplayName("returning `false` if not")
-        void notInner() {
-            assertInner("spine.code.proto", "spine.code.java")
-                    .isFalse();
+        fun `if nested deeper`() {
+            assertIsInner("spine.code.proto.ref", "spine")
         }
 
-        void assertIsInner(String inner, String outer) {
-            var assertInner = assertInner(inner, outer);
-            assertInner.isTrue();
+        @Test
+        fun `returning 'false' if not`() {
+            assertInner("spine.code.proto", "spine.code.java").isFalse()
         }
 
-        private BooleanSubject assertInner(String inner, String outer) {
-            var innerPackage = PackageName.of(inner);
-            var outerPackage = PackageName.of(outer);
-            return assertThat(innerPackage.isInnerOf(outerPackage));
+        private fun assertIsInner(inner: String, outer: String) {
+            val assertInner = assertInner(inner, outer)
+            assertInner.isTrue()
+        }
+
+        private fun assertInner(inner: String, outer: String): BooleanSubject {
+            val innerPackage = PackageName.of(inner)
+            val outerPackage = PackageName.of(outer)
+            return assertThat(innerPackage.isInnerOf(outerPackage))
         }
     }
 }

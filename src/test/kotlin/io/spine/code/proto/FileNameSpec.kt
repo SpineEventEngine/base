@@ -29,7 +29,6 @@ import com.google.common.testing.NullPointerTester
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.spine.testing.Assertions.assertIllegalArgument
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test

@@ -26,7 +26,6 @@
 
 package io.spine.environment.given;
 
-import com.google.errorprone.annotations.Immutable;
 import io.spine.environment.CustomEnvironmentType;
 
 @SuppressWarnings("AccessOfSystemProperties")
