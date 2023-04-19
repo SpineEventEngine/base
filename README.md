@@ -2,17 +2,21 @@
 [![codecov][codecov-badge]][codecov] &nbsp;
 [![license][license-badge]][license]
 
-# Spine Event Engine Base
+# Spine Base
 
-This repository contains the foundation of the Spine framework which includes the following modules:
+This repository contains common data types and utilities used by the Spine SDK subprojects (e.g. 
+[core-java][core-java]).
 
-* **[`base`](base)** — the framework base data types and utilities for working with them.
-* **[`testlib`](testlib)** - utilities for testing.
+## Adding to a Gradle project
 
-These components are used by [core-java](https://github.com/SpineEventEngine/core-java) and other
-Spine libraries. 
+Spine Base is not supposed to be used directly in end user project. But if you need to, 
+here's how you add it to your Gradle project:
 
-They are not supposed to be used directly by the end user project.
+```kotlin
+dependencies {
+    implementation("io.spine:spine-base:$version")
+}
+```
 
 ## Java Support
 
@@ -27,3 +31,4 @@ Prior versions, including all `1.x` versions were assembled with Java 8.
 [codecov-badge]: https://codecov.io/gh/SpineEventEngine/base/branch/master/graph/badge.svg
 [license-badge]: https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat
 [license]: http://www.apache.org/licenses/LICENSE-2.0
+[core-java]: https://github.com/SpineEventEngine/core-java 

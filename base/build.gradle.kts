@@ -26,6 +26,7 @@
 
 import io.spine.internal.dependency.AutoService
 import io.spine.internal.dependency.Protobuf
+import io.spine.internal.dependency.Spine
 import io.spine.internal.gradle.publish.IncrementGuard
 import io.spine.internal.gradle.publish.excludeGoogleProtoFromArtifacts
 
@@ -41,7 +42,7 @@ dependencies {
     annotationProcessor(AutoService.processor)
     compileOnly(AutoService.annotations)
 
-    implementation(project(":logging"))
+    implementation(Spine.logging)
 
     /* Have `protobuf` dependency instead of `api` or `implementation` so that proto
        files from the library are included into the compilation. We need this because we
@@ -54,7 +55,7 @@ dependencies {
         protobuf(it)
     }
 
-    testImplementation(project(":testlib"))
+    testImplementation(Spine.testlib)
 }
 
 tasks {

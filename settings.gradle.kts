@@ -31,11 +31,5 @@ pluginManagement {
     }
 }
 
-rootProject.name = "spine-base"
-
-include(
-    "reflect",
-    "logging",
-    "base",
-    "testlib",
-)
+// Do not add prefix `spine-` for this single-module project. It will be added automatically.
+rootProject.name = "base"
