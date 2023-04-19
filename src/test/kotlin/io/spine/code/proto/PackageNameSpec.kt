@@ -27,7 +27,6 @@ package io.spine.code.proto
 
 import com.google.common.testing.NullPointerTester
 import com.google.common.truth.BooleanSubject
-import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -36,7 +35,8 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 @DisplayName("`proto.PackageName` should")
-internal class PackageNameTest {
+internal class PackageNameSpec {
+
     @Test
     fun handleNullArgs() {
         NullPointerTester().testAllPublicStaticMethods(PackageName::class.java)
