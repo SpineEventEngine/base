@@ -28,9 +28,9 @@
 
 import io.spine.internal.dependency.ErrorProne
 import io.spine.internal.dependency.GradleDoctor
+import io.spine.internal.dependency.ProtoData
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Spine
-import io.spine.internal.dependency.ProtoData
 import io.spine.internal.gradle.standardToSpineSdk
 import org.gradle.api.Project
 import org.gradle.api.Task

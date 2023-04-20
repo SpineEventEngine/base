@@ -55,6 +55,7 @@ object Spine {
 
         /** The version of [Spine.testlib]. */
         const val testlib = "2.0.0-SNAPSHOT.183"
+
         /**
          * The version of `core-java`.
          * @see [Spine.CoreJava.client]
@@ -116,14 +117,10 @@ object Spine {
         const val pluginLib = "$toolsGroup:spine-mc-java-plugins:${version}:all"
     }
 
-    /**
-     *  Does not allow re-definition via a project property.
-     *  Please change [ArtifactVersion.javadocTools].
-     */
     const val javadocTools = "$toolsGroup::${ArtifactVersion.javadocTools}"
 
     @Deprecated("Please use `validation.runtime`", replaceWith = ReplaceWith("validation.runtime"))
-    val validate = "$group:spine-validate:${ArtifactVersion.base}"
+    const val validate = "$group:spine-validate:${ArtifactVersion.base}"
 
     @Deprecated("Please use `Validation` instead.")
     val validation = Validation
