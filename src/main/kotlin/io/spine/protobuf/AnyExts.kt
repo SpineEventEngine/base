@@ -24,12 +24,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        mavenCentral()
+package io.spine.protobuf
+
+import com.google.protobuf.Message
+import com.google.protobuf.Any as AnyProto
+
+/**
+ * Unpacks this `Any` into the given message type.
+ *
+ * @param T the concrete type of the message stored in the `Any`.
+ * @see unpackGuessingType
+ */
+public inline fun <reified T : Message> AnyProto.unpack(): T {
+    val cls = T::class
+    if (!cls.isFinal) {
+        throw IllegalArgumentException(
+            "Message type for the `unpack` call must be a concrete message, with a `final` class." +
+                    " `${cls.qualifiedName}` is not `final`." +
+                    " Please use `unpackGuessingType()` if concrete message type is not available."
+        )
     }
+    return AnyPacker.unpack(this, cls.java)
 }
 
-// Do not add prefix `spine-` for this single-module project. It will be added automatically.
-rootProject.name = "base"
+/**
+ * Unpacks this `Any`.
+ *
+ * The concrete type of the message is looked up among the known types by
+ * the value of the `Any.type_url` field.
+ */
+public fun AnyProto.unpackGuessingType(): Message =
+    AnyPacker.unpack(this)
+
+/**
+ * Packs this message into an `Any`.
+ */
+public fun Message.pack(): AnyProto =
+    AnyPacker.pack(this)

@@ -24,12 +24,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        mavenCentral()
+package io.spine.base
+
+import com.google.common.truth.Truth.assertThat
+import io.spine.base.IdType.MESSAGE
+import io.spine.base.IdType.STRING
+import org.junit.jupiter.api.Test
+
+class `'IdType' should` {
+
+    @Test
+    fun `pass 'Message' instance in conversion as is`() {
+        val wrapped = STRING.toMessage(Identifier.newUuid())
+
+        assertThat(MESSAGE.toMessage(wrapped))
+            .isSameInstanceAs(wrapped)
+        assertThat(MESSAGE.fromMessage(wrapped))
+            .isSameInstanceAs(wrapped)
     }
 }
-
-// Do not add prefix `spine-` for this single-module project. It will be added automatically.
-rootProject.name = "base"

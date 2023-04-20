@@ -32,7 +32,6 @@ import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
-import io.spine.internal.gradle.publish.publish
 import io.spine.internal.gradle.checkstyle.CheckStyleConfig
 import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.forceVersions
@@ -40,7 +39,9 @@ import io.spine.internal.gradle.github.pages.updateGitHubPages
 import io.spine.internal.gradle.javac.configureErrorProne
 import io.spine.internal.gradle.javac.configureJavac
 import io.spine.internal.gradle.javadoc.JavadocConfig
+import io.spine.internal.gradle.publish.publish
 import io.spine.internal.gradle.report.license.LicenseReporter
+import io.spine.internal.gradle.testing.configureLogging
 import io.spine.internal.gradle.testing.registerTestTasks
 
 plugins {
@@ -132,6 +133,7 @@ fun Module.setupTests() {
             useJUnitPlatform {
                 includeEngines("junit-jupiter")
             }
+            configureLogging()
         }
     }
 }
@@ -151,7 +153,6 @@ fun Module.setTaskDependencies(generatedDir: String) {
             }
         }
     }
-
     configureTaskDependencies()
 }
 

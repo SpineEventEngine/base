@@ -24,12 +24,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        mavenCentral()
+package io.spine.environment.given;
+
+import io.spine.environment.CustomEnvironmentType;
+
+@SuppressWarnings("AccessOfSystemProperties")
+public final class Staging extends CustomEnvironmentType<Staging> {
+
+    private static final String STAGING_ENV_TYPE_KEY =
+            "io.spine.base.EnvironmentTest.is_staging";
+
+    @Override
+    public boolean enabled() {
+        return String.valueOf(true)
+                     .equalsIgnoreCase(System.getProperty(STAGING_ENV_TYPE_KEY));
+    }
+
+    @Override
+    protected Staging self() {
+        return this;
+    }
+
+    public static void set() {
+        System.setProperty(STAGING_ENV_TYPE_KEY, String.valueOf(true));
+    }
+
+    public static void reset() {
+        System.clearProperty(STAGING_ENV_TYPE_KEY);
     }
 }
 
-// Do not add prefix `spine-` for this single-module project. It will be added automatically.
-rootProject.name = "base"

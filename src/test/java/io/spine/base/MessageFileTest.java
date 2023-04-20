@@ -24,12 +24,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        mavenCentral()
+package io.spine.base;
+
+import com.google.protobuf.Any;
+import io.spine.base.given.MessageFileEventsProto;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@DisplayName("`MessageFile` should")
+class MessageFileTest {
+
+    @Nested
+    @DisplayName("test a file descriptor")
+    class ProvidePredicate {
+
+        @Test
+        @DisplayName("accepting the file with matching suffix")
+        void acceptingEligibleFile() {
+            var descriptor = MessageFileEventsProto.getDescriptor();
+            assertTrue(MessageFile.EVENTS.test(descriptor.toProto()));
+        }
+
+        @Test
+        @DisplayName("rejecting the file with non-matching suffix")
+        void rejectingNonEligibleFile() {
+            var descriptor = Any.getDescriptor().getFile();
+            assertFalse(MessageFile.EVENTS.test(descriptor.toProto()));
+        }
     }
 }
-
-// Do not add prefix `spine-` for this single-module project. It will be added automatically.
-rootProject.name = "base"
