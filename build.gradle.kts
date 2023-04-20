@@ -102,4 +102,3 @@ tasks {
 
 LicenseReporter.mergeAllReports(project)
 PomGenerator.applyTo(project)
-
