@@ -40,7 +40,7 @@
 /**
  * The version of this library.
  */
-val base = "1.9.0-SNAPSHOT.5"
+val base = "1.9.0-SNAPSHOT.6"
 
 project.extra.apply {
     this["spineVersion"] = base
