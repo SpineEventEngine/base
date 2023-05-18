@@ -65,8 +65,8 @@ class SpineProtocTest {
                     "In a project which does not have descriptor set file the directory should not be created."
     )
     @Test
-    @DisplayName("create spine directory")
-    void create_spine_directory() {
+    @DisplayName("create Spine directory")
+    void createSpineDirectory() {
         project.executeTask(build);
         File spineDirPath = DefaultJavaProject.at(projectDir)
                                               .tempArtifacts();
