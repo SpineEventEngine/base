@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,8 +62,10 @@ public final class CachedDartProtocPlugin {
             Path pathToExecutable = PubCache.bin().resolve(SCRIPT_FILE_NAME);
             checkState(exists(pathToExecutable),
                        "Protoc plugin for Dart code generation is not installed. " +
+                               "Tried to locate it at `%s`. " +
                                "`protoc_plugin` should be activated globally. " +
                                "See %s for installation guide.",
+                       pathToExecutable.toAbsolutePath(),
                        DOC_LINK);
             resolved = pathToExecutable.toAbsolutePath()
                                        .normalize();
