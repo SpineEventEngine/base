@@ -1,4 +1,3 @@
-[![Build Status][travis-badge]][travis] &nbsp; 
 [![codecov][codecov-badge]][codecov] &nbsp;
 [![license][license-badge]][license]
 
@@ -50,8 +49,6 @@ included build directories.
 It is always recommended running `./pull` instead of `./config/pull`.
 
 
-[travis]: https://travis-ci.com/SpineEventEngine/base
-[travis-badge]: https://travis-ci.com/SpineEventEngine/base.svg?branch=master
 [codecov]: https://codecov.io/gh/SpineEventEngine/base
 [codecov-badge]: https://codecov.io/gh/SpineEventEngine/base/branch/master/graph/badge.svg
 [license-badge]: https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat
