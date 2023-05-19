@@ -35,7 +35,10 @@ import org.gradle.api.artifacts.DependencySet;
 import org.gradle.api.artifacts.ResolvedConfiguration;
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency;
 
+import java.util.concurrent.TimeUnit;
+
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 import static io.spine.tools.gradle.Artifact.SPINE_TOOLS_GROUP;
 import static io.spine.tools.gradle.ConfigurationName.annotationProcessor;
 
@@ -93,6 +96,11 @@ public final class DependencyConfigurer implements Logging {
     private boolean isDependencyResolvable(String version) {
         Configuration configCopy = configuration.copy();
         dependOnErrorProneChecks(version, configCopy);
+
+        // Attempt to wait for some time in order to avoid any Gradle FS sync issues,
+        // that occur from time to time.
+        sleepUninterruptibly(1, TimeUnit.SECONDS);
+
         ResolvedConfiguration resolved = configCopy.getResolvedConfiguration();
         boolean isResolvable = !resolved.hasError();
         return isResolvable;

@@ -47,8 +47,8 @@ import static io.spine.tools.gradle.compiler.given.Project.newProject;
  * A test for the {@link DependencyConfigurer} part of the Spine Error Prone Checks plugin.
  *
  * @implNote This test configures the project with real dependencies and repositories which leads
- *         to a slow test execution. In future, it should be removed in favor of proper integration
- *         tests for the `spine-errorprone-checks` plugin.
+ *         to a slow test execution. In the future, it should be removed
+ *         in favor of proper integration tests for the `spine-errorprone-checks` plugin.
  */
 @SlowTest
 @DisplayName("DependencyConfigurer should")
@@ -62,7 +62,7 @@ class DependencyConfigurerTest {
     }
 
     @Test
-    @DisplayName("add spine check dependency to annotation processor config")
+    @DisplayName("add Spine check dependency to annotation processor config")
     void addSpineCheckDependencyToAnnotationProcessorConfig() {
         Project project = newProject()
                 .withMavenRepositories()
@@ -74,7 +74,7 @@ class DependencyConfigurerTest {
     }
 
     @Test
-    @DisplayName("not add spine check dependency if it is not resolvable")
+    @DisplayName("not add Spine check dependency if it is not resolvable")
     void notAddSpineCheckDependencyIfItIsNotResolvable() {
         Project project = newProject()
                 .get();
