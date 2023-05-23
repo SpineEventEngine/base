@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>LogRecordSubject</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+<link href="../../../images/logo-icon.svg">
+<link href="../../../styles/custom-styles.css" rel="Stylesheet">
+</head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+            <a href="../../../index.html">
+                    <span>testlib</span>
+            </a>
+    </div>
+    <div>
+1.9.0    </div>
+    <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":testlib:dokkaHtml/main">jvm</button>
+        </div>
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="testlib::io.spine.testing.logging/LogRecordSubject///PointingToDeclaration//311866568">
+  <div class="breadcrumbs"><a href="../../../index.html">testlib</a><span class="delimiter">/</span><a href="../index.html">io.spine.testing.logging</a><span class="delimiter">/</span><span class="current">LogRecordSubject</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Log</span><wbr></wbr><span>Record</span><wbr></wbr><span><span>Subject</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">public </span><span class="token keyword">class </span><a href="index.html">LogRecordSubject</a></div><p class="paragraph">Propositions for <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.logging/java/util/logging/LogRecord.html">LogRecord</a> subjects.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1655526422%2FFunctions%2F311866568" anchor-label="hasClassNameThat" id="1655526422%2FFunctions%2F311866568" data-filterable-set=":testlib:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="has-class-name-that.html"><span>has</span><wbr></wbr><span>Class</span><wbr></wbr><span>Name</span><wbr></wbr><span><span>That</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1655526422%2FFunctions%2F311866568"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword"></span>StringSubject <a href="has-class-name-that.html"><span class="token function">hasClassNameThat</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief ">Obtains a subject for asserting the source class name associated with the log record.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1499630123%2FFunctions%2F311866568" anchor-label="hasLevelThat" id="-1499630123%2FFunctions%2F311866568" data-filterable-set=":testlib:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="has-level-that.html"><span>has</span><wbr></wbr><span>Level</span><wbr></wbr><span><span>That</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1499630123%2FFunctions%2F311866568"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword"></span>Subject <a href="has-level-that.html"><span class="token function">hasLevelThat</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief ">Obtains a subject for the logging level.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="128036722%2FFunctions%2F311866568" anchor-label="hasMessageThat" id="128036722%2FFunctions%2F311866568" data-filterable-set=":testlib:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="has-message-that.html"><span>has</span><wbr></wbr><span>Message</span><wbr></wbr><span><span>That</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="128036722%2FFunctions%2F311866568"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword"></span>StringSubject <a href="has-message-that.html"><span class="token function">hasMessageThat</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief ">Returns a <code class="lang-kotlin">StringSubject</code> to make assertions about the log record message.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1292174553%2FFunctions%2F311866568" anchor-label="hasMethodNameThat" id="-1292174553%2FFunctions%2F311866568" data-filterable-set=":testlib:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="has-method-name-that.html"><span>has</span><wbr></wbr><span>Method</span><wbr></wbr><span>Name</span><wbr></wbr><span><span>That</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1292174553%2FFunctions%2F311866568"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword"></span>StringSubject <a href="has-method-name-that.html"><span class="token function">hasMethodNameThat</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief ">Obtains a subject for asserting the source method name associated with the log record.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-472140535%2FFunctions%2F311866568" anchor-label="hasParametersThat" id="-472140535%2FFunctions%2F311866568" data-filterable-set=":testlib:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="has-parameters-that.html"><span>has</span><wbr></wbr><span>Parameters</span><wbr></wbr><span><span>That</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-472140535%2FFunctions%2F311866568"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword"></span>ObjectArraySubject <a href="has-parameters-that.html"><span class="token function">hasParametersThat</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief ">Obtains a subject for the logging event arguments.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1713612825%2FFunctions%2F311866568" anchor-label="hasThrowableThat" id="1713612825%2FFunctions%2F311866568" data-filterable-set=":testlib:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="has-throwable-that.html"><span>has</span><wbr></wbr><span>Throwable</span><wbr></wbr><span><span>That</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1713612825%2FFunctions%2F311866568"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword"></span>ThrowableSubject <a href="has-throwable-that.html"><span class="token function">hasThrowableThat</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief ">Obtains a subject for asserting <code class="lang-kotlin">Throwable</code> associated with the log record.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1189154773%2FFunctions%2F311866568" anchor-label="isDebug" id="-1189154773%2FFunctions%2F311866568" data-filterable-set=":testlib:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-debug.html"><span>is</span><wbr></wbr><span><span>Debug</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1189154773%2FFunctions%2F311866568"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword"></span>void <a href="is-debug.html"><span class="token function">isDebug</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief ">Asserts that the level of the record is <code class="lang-kotlin">Level.FINE</code>.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1671767530%2FFunctions%2F311866568" anchor-label="isError" id="-1671767530%2FFunctions%2F311866568" data-filterable-set=":testlib:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-error.html"><span>is</span><wbr></wbr><span><span>Error</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1671767530%2FFunctions%2F311866568"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword"></span>void <a href="is-error.html"><span class="token function">isError</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief ">Asserts that the level of the record is <code class="lang-kotlin">Level.SEVERE</code>.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>Copyright 2023, TeamDev</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+</body>
+</html>

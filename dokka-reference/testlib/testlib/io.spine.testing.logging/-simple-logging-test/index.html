@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>SimpleLoggingTest</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+<link href="../../../images/logo-icon.svg">
+<link href="../../../styles/custom-styles.css" rel="Stylesheet">
+</head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+            <a href="../../../index.html">
+                    <span>testlib</span>
+            </a>
+    </div>
+    <div>
+1.9.0    </div>
+    <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":testlib:dokkaHtml/main">jvm</button>
+        </div>
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="testlib::io.spine.testing.logging/SimpleLoggingTest///PointingToDeclaration//311866568">
+  <div class="breadcrumbs"><a href="../../../index.html">testlib</a><span class="delimiter">/</span><a href="../index.html">io.spine.testing.logging</a><span class="delimiter">/</span><span class="current">SimpleLoggingTest</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Simple</span><wbr></wbr><span>Logging</span><wbr></wbr><span><span>Test</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">public </span><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="index.html">SimpleLoggingTest</a><span class="token keyword"> extends </span><a href="../-logging-test/index.html">LoggingTest</a></div><p class="paragraph">Abstract base for logging tests that can setup and clean the logging fixture via annotated methods.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="50523558%2FConstructors%2F311866568" anchor-label="SimpleLoggingTest" id="50523558%2FConstructors%2F311866568" data-filterable-set=":testlib:dokkaHtml/main"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-simple-logging-test.html"><span>Simple</span><wbr></wbr><span>Logging</span><wbr></wbr><span><span>Test</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="50523558%2FConstructors%2F311866568"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword"></span>void <a href="-simple-logging-test.html"><span class="token function">SimpleLoggingTest</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html">Class</a><span class="token operator">&lt;</span><span class="token keyword">? extends </span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html">Object</a><span class="token operator">&gt;</span> loggingClass<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword"></span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.logging/java/util/logging/Level.html">Level</a> level</span></span><span class="token punctuation">)</span></div><div class="brief ">Creates new test suite.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Inherited functions</h2>
+        <div class="table"><a data-name="1342802622%2FFunctions%2F311866568" anchor-label="assertLog" id="1342802622%2FFunctions%2F311866568" data-filterable-set=":testlib:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-logging-test/assert-log.html"><span>assert</span><wbr></wbr><span><span>Log</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1342802622%2FFunctions%2F311866568"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword">final </span><span class="token keyword"></span><a href="../-logging-assertions/index.html">LoggingAssertions</a> <a href="../-logging-test/assert-log.html"><span class="token function">assertLog</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief ">Obtains the instance of <code class="lang-kotlin">AssertingHandler</code> of this test.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-650157599%2FFunctions%2F311866568" anchor-label="interceptLogging" id="-650157599%2FFunctions%2F311866568" data-filterable-set=":testlib:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-logging-test/intercept-logging.html"><span>intercept</span><wbr></wbr><span><span>Logging</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-650157599%2FFunctions%2F311866568"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword">final </span><span class="token keyword"></span>void <a href="../-logging-test/intercept-logging.html"><span class="token function">interceptLogging</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief ">Redirects logging to a custom handler which would accumulate the log output.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2012323944%2FFunctions%2F311866568" anchor-label="level" id="-2012323944%2FFunctions%2F311866568" data-filterable-set=":testlib:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-logging-test/level.html"><span><span>level</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2012323944%2FFunctions%2F311866568"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword">final </span><span class="token keyword"></span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.logging/java/util/logging/Level.html">Level</a> <a href="../-logging-test/level.html"><span class="token function">level</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief ">Obtains the level of logging assigned for the tests.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="760165573%2FFunctions%2F311866568" anchor-label="loggingClass" id="760165573%2FFunctions%2F311866568" data-filterable-set=":testlib:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-logging-test/logging-class.html"><span>logging</span><wbr></wbr><span><span>Class</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="760165573%2FFunctions%2F311866568"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword">final </span><span class="token keyword"></span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html">Class</a><span class="token operator">&lt;</span><span class="token keyword">? extends </span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html">Object</a><span class="token operator">&gt;</span> <a href="../-logging-test/logging-class.html"><span class="token function">loggingClass</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief ">Obtains the class which logging operations are tested.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-951644817%2FFunctions%2F311866568" anchor-label="previousLevel" id="-951644817%2FFunctions%2F311866568" data-filterable-set=":testlib:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-logging-test/previous-level.html"><span>previous</span><wbr></wbr><span><span>Level</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-951644817%2FFunctions%2F311866568"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword">final </span><span class="token keyword"></span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.logging/java/util/logging/Level.html">Level</a> <a href="../-logging-test/previous-level.html"><span class="token function">previousLevel</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief ">Obtains the level of the logging set for the logging class before the tests.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1598545901%2FFunctions%2F311866568" anchor-label="restoreLogging" id="1598545901%2FFunctions%2F311866568" data-filterable-set=":testlib:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-logging-test/restore-logging.html"><span>restore</span><wbr></wbr><span><span>Logging</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1598545901%2FFunctions%2F311866568"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword">final </span><span class="token keyword"></span>void <a href="../-logging-test/restore-logging.html"><span class="token function">restoreLogging</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief ">Removes the handler assigned in <a href="../-logging-test/intercept-logging.html">interceptLogging</a> and restores the value of the flag for using <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.logging/java/util/logging/Logger.html#getUseParentHandlers()">parent handlers</a>.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>Copyright 2023, TeamDev</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+</body>
+</html>

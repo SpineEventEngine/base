@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>SubjectTest</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+<link href="../../../images/logo-icon.svg">
+<link href="../../../styles/custom-styles.css" rel="Stylesheet">
+</head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+            <a href="../../../index.html">
+                    <span>testlib</span>
+            </a>
+    </div>
+    <div>
+1.9.0    </div>
+    <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":testlib:dokkaHtml/main">jvm</button>
+        </div>
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="testlib::io.spine.testing/SubjectTest///PointingToDeclaration//311866568">
+  <div class="breadcrumbs"><a href="../../../index.html">testlib</a><span class="delimiter">/</span><a href="../index.html">io.spine.testing</a><span class="delimiter">/</span><span class="current">SubjectTest</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Subject</span><wbr></wbr><span><span>Test</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">public </span><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="index.html">SubjectTest</a><span class="token operator">&lt;</span>S<span class="token keyword"> extends </span>Subject<span class="token punctuation">, </span>T<span class="token operator">&gt;</span></div><p class="paragraph">An abstract base for custom Subject test suites.</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>&lt;S&gt;</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the type of the <code class="lang-kotlin">Subject</code></p></div></div></div></div><div class="table-row" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>&lt;T&gt;</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the target type tested by the <code class="lang-kotlin">Subject</code></p></div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="-406386558%2FConstructors%2F311866568" anchor-label="SubjectTest" id="-406386558%2FConstructors%2F311866568" data-filterable-set=":testlib:dokkaHtml/main"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-subject-test.html"><span>Subject</span><wbr></wbr><span><span>Test</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-406386558%2FConstructors%2F311866568"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword"></span>void <a href="-subject-test.html"><span class="token function">SubjectTest</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="1126127221%2FProperties%2F311866568" anchor-label="BUT_WAS" id="1126127221%2FProperties%2F311866568" data-filterable-set=":testlib:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1126127221%2FProperties%2F311866568"><span><span>BUT_WAS</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1126127221%2FProperties%2F311866568"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword">final </span><span class="token keyword">static </span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html">String</a> <a href="index.html#1126127221%2FProperties%2F311866568">BUT_WAS</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1459783714%2FProperties%2F311866568" anchor-label="EXPECTED" id="1459783714%2FProperties%2F311866568" data-filterable-set=":testlib:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1459783714%2FProperties%2F311866568"><span><span>EXPECTED</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1459783714%2FProperties%2F311866568"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword">final </span><span class="token keyword">static </span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html">String</a> <a href="index.html#1459783714%2FProperties%2F311866568">EXPECTED</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2043507994%2FProperties%2F311866568" anchor-label="EXPECTED_NOT_TO_BE" id="-2043507994%2FProperties%2F311866568" data-filterable-set=":testlib:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-2043507994%2FProperties%2F311866568"><span><span>EXPECTED_NOT_TO_BE</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2043507994%2FProperties%2F311866568"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword">final </span><span class="token keyword">static </span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html">String</a> <a href="index.html#-2043507994%2FProperties%2F311866568">EXPECTED_NOT_TO_BE</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="503615155%2FProperties%2F311866568" anchor-label="NULL" id="503615155%2FProperties%2F311866568" data-filterable-set=":testlib:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#503615155%2FProperties%2F311866568"><span><span>NULL</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="503615155%2FProperties%2F311866568"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword">final </span><span class="token keyword">static </span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html">String</a> <a href="index.html#503615155%2FProperties%2F311866568">NULL</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="2099242453%2FFunctions%2F311866568" anchor-label="assertWithSubjectThat" id="2099242453%2FFunctions%2F311866568" data-filterable-set=":testlib:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="assert-with-subject-that.html"><span>assert</span><wbr></wbr><span>With</span><wbr></wbr><span>Subject</span><wbr></wbr><span><span>That</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2099242453%2FFunctions%2F311866568"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword"></span><a href="index.html">S</a> <a href="assert-with-subject-that.html"><span class="token function">assertWithSubjectThat</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="index.html">T</a> actual</span></span><span class="token punctuation">)</span></div><div class="brief ">Creates a subject under the test with the passed actual value.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1094381030%2FFunctions%2F311866568" anchor-label="expectFailure" id="-1094381030%2FFunctions%2F311866568" data-filterable-set=":testlib:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="expect-failure.html"><span>expect</span><wbr></wbr><span><span>Failure</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1094381030%2FFunctions%2F311866568"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword"></span><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/AssertionError.html">AssertionError</a> <a href="expect-failure.html"><span class="token function">expectFailure</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span>SimpleSubjectBuilderCallback&lt;S, T&gt; assertionCallback</span></span><span class="token punctuation">)</span></div><div class="brief ">Creates an <code class="lang-kotlin">AssertionError</code> caused by the passed callback.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1471822214%2FFunctions%2F311866568" anchor-label="expectSomeFailure" id="1471822214%2FFunctions%2F311866568" data-filterable-set=":testlib:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="expect-some-failure.html"><span>expect</span><wbr></wbr><span>Some</span><wbr></wbr><span><span>Failure</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1471822214%2FFunctions%2F311866568"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword"></span>void <a href="expect-some-failure.html"><span class="token function">expectSomeFailure</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span>SimpleSubjectBuilderCallback&lt;S, T&gt; assertionCallback</span></span><span class="token punctuation">)</span></div><div class="brief ">Expects that the passed callback causes <code class="lang-kotlin">AssertionError</code> and ignores it.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1361523300%2FFunctions%2F311866568" anchor-label="subjectFactory" id="-1361523300%2FFunctions%2F311866568" data-filterable-set=":testlib:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":testlib:dokkaHtml/main" data-filterable-set=":testlib:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="subject-factory.html"><span>subject</span><wbr></wbr><span><span>Factory</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1361523300%2FFunctions%2F311866568"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":testlib:dokkaHtml/main"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword">abstract </span><span class="token keyword"></span>Factory&lt;S, T&gt; <a href="subject-factory.html"><span class="token function">subjectFactory</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>Copyright 2023, TeamDev</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+</body>
+</html>
