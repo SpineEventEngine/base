@@ -25,7 +25,6 @@
  */
 
 import io.spine.internal.dependency.Protobuf
-import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.protobuf.setup
 
 plugins {

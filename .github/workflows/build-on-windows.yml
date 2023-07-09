@@ -4,6 +4,7 @@ on: pull_request
 
 jobs:
   build:
+    name: Build under Windows
     runs-on: windows-latest
 
     steps:

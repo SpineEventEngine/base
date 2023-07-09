@@ -10,7 +10,7 @@ all modules and does not describe the project structure per-subproject.
  -->
 <groupId>io.spine</groupId>
 <artifactId>base</artifactId>
-<version>2.0.0-SNAPSHOT.180</version>
+<version>2.0.0-SNAPSHOT.181</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -50,7 +50,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine</groupId>
     <artifactId>spine-logging</artifactId>
-    <version>2.0.0-SNAPSHOT.182</version>
+    <version>2.0.0-SNAPSHOT.186</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -78,6 +78,24 @@ all modules and does not describe the project structure per-subproject.
     <scope>test</scope>
   </dependency>
   <dependency>
+    <groupId>io.kotest</groupId>
+    <artifactId>kotest-framework-datatest</artifactId>
+    <version>5.6.1</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>io.kotest</groupId>
+    <artifactId>kotest-framework-engine</artifactId>
+    <version>5.6.1</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>io.kotest</groupId>
+    <artifactId>kotest-runner-junit5-jvm</artifactId>
+    <version>5.6.1</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
     <groupId>io.spine.tools</groupId>
     <artifactId>spine-testlib</artifactId>
     <version>2.0.0-SNAPSHOT.183</version>
@@ -92,25 +110,25 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>org.junit-pioneer</groupId>
     <artifactId>junit-pioneer</artifactId>
-    <version>1.9.1</version>
+    <version>2.0.1</version>
     <scope>test</scope>
   </dependency>
   <dependency>
     <groupId>org.junit.jupiter</groupId>
     <artifactId>junit-jupiter-api</artifactId>
-    <version>5.9.2</version>
+    <version>5.9.3</version>
     <scope>test</scope>
   </dependency>
   <dependency>
     <groupId>org.junit.jupiter</groupId>
     <artifactId>junit-jupiter-engine</artifactId>
-    <version>5.9.2</version>
+    <version>5.9.3</version>
     <scope>test</scope>
   </dependency>
   <dependency>
     <groupId>org.junit.jupiter</groupId>
     <artifactId>junit-jupiter-params</artifactId>
-    <version>5.9.2</version>
+    <version>5.9.3</version>
     <scope>test</scope>
   </dependency>
   <dependency>
@@ -128,18 +146,18 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.google.errorprone</groupId>
     <artifactId>error_prone_annotations</artifactId>
-    <version>2.16</version>
+    <version>2.18.0</version>
     <scope>provided</scope>
   </dependency>
   <dependency>
     <groupId>com.google.errorprone</groupId>
     <artifactId>error_prone_core</artifactId>
-    <version>2.16</version>
+    <version>2.18.0</version>
   </dependency>
   <dependency>
     <groupId>com.google.errorprone</groupId>
     <artifactId>error_prone_type_annotations</artifactId>
-    <version>2.16</version>
+    <version>2.18.0</version>
     <scope>provided</scope>
   </dependency>
   <dependency>
@@ -207,6 +225,21 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>org.jetbrains.dokka</groupId>
     <artifactId>dokka-core</artifactId>
+    <version>1.8.10</version>
+  </dependency>
+  <dependency>
+    <groupId>org.jetbrains.dokka</groupId>
+    <artifactId>gfm-plugin</artifactId>
+    <version>1.8.10</version>
+  </dependency>
+  <dependency>
+    <groupId>org.jetbrains.dokka</groupId>
+    <artifactId>javadoc-plugin</artifactId>
+    <version>1.8.10</version>
+  </dependency>
+  <dependency>
+    <groupId>org.jetbrains.dokka</groupId>
+    <artifactId>jekyll-plugin</artifactId>
     <version>1.8.10</version>
   </dependency>
   <dependency>

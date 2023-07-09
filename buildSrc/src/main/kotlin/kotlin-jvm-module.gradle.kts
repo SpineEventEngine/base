@@ -24,6 +24,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import io.spine.internal.dependency.Kotest
+import io.spine.internal.dependency.Spine
+import io.spine.internal.dependency.JUnit
 import io.spine.internal.gradle.kotlin.applyJvmToolchain
 import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -31,6 +34,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("java-module")
     kotlin("jvm")
+    id("io.kotest")
+    id("org.jetbrains.kotlinx.kover")
     id("detekt-code-analysis")
     id("dokka-for-kotlin")
 }
@@ -40,9 +45,29 @@ kotlin {
     explicitApi()
 }
 
+dependencies {
+    testImplementation(Spine.testlib)
+    testImplementation(Kotest.frameworkEngine)
+    testImplementation(Kotest.datatest)
+    testImplementation(Kotest.runnerJUnit5Jvm)
+    testImplementation(JUnit.runner)
+}
+
 tasks {
     withType<KotlinCompile>().configureEach {
         kotlinOptions.jvmTarget = BuildSettings.javaVersion.toString()
         setFreeCompilerArgs()
+    }
+}
+
+kover {
+    useJacocoTool()
+}
+
+koverReport {
+    defaults {
+        xml {
+            onCheck = true
+        }
     }
 }
