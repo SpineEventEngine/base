@@ -51,7 +51,6 @@ plugins {
     `compile-protobuf`
     `kotlin-jvm-module`
     idea
-    //jacoco
     `gradle-doctor`
     `project-report`
 }
