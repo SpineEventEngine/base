@@ -40,7 +40,7 @@ import io.spine.internal.gradle.standardToSpineSdk
 
 buildscript {
     standardSpineSdkRepositories()
-    io.spine.internal.gradle.doForceVersions(configurations)
+    doForceVersions(configurations)
 }
 
 repositories.standardToSpineSdk()
@@ -51,7 +51,7 @@ plugins {
     `compile-protobuf`
     `kotlin-jvm-module`
     idea
-    jacoco
+    //jacoco
     `gradle-doctor`
     `project-report`
 }
