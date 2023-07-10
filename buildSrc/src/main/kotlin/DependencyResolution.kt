@@ -131,7 +131,8 @@ private fun ResolutionStrategy.forceTransitiveDependencies() {
         Jackson.dataformatYaml,
         Jackson.moduleKotlin,
         Jackson.bom,
-        Jackson.annotations
+        Jackson.annotations,
+        Kotlin.jetbrainsAnnotations
     )
 }
 
