@@ -73,6 +73,7 @@ apply(from = "$rootDir/version.gradle.kts")
 group = "io.spine"
 version = rootProject.extra["versionToPublish"]!!
 repositories.standardToSpineSdk()
+configurations.forceVersions()
 
 dependencies {
     annotationProcessor(AutoService.processor)
