@@ -54,7 +54,7 @@ object Spine {
         const val logging = "2.0.0-SNAPSHOT.191"
 
         /** The version of [Spine.testlib]. */
-        const val testlib = "2.0.0-SNAPSHOT.183"
+        const val testlib = "2.0.0-SNAPSHOT.184"
 
         /**
          * The version of `core-java`.
