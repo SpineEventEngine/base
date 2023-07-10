@@ -107,7 +107,7 @@ val dokkaVersion = "1.8.10"
  *
  * @see <a href="https://github.com/detekt/detekt/releases">Detekt Releases</a>
  */
-val detektVersion = "1.22.0"
+val detektVersion = "1.23.0"
 
 /**
  * @see [io.spine.internal.dependency.Kotest]
