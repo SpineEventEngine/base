@@ -47,7 +47,6 @@ repositories.standardToSpineSdk()
 
 // Apply some plugins to make type-safe extension accessors available in this script file.
 plugins {
-    `java-module`
     `compile-protobuf`
     `kotlin-jvm-module`
     idea
