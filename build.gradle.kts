@@ -40,7 +40,7 @@ import io.spine.internal.gradle.standardToSpineSdk
 
 buildscript {
     standardSpineSdkRepositories()
-    io.spine.internal.gradle.doForceVersions(configurations)
+    doForceVersions(configurations)
 }
 
 repositories.standardToSpineSdk()
@@ -51,7 +51,6 @@ plugins {
     `compile-protobuf`
     `kotlin-jvm-module`
     idea
-    jacoco
     `gradle-doctor`
     `project-report`
 }
@@ -74,6 +73,7 @@ apply(from = "$rootDir/version.gradle.kts")
 group = "io.spine"
 version = rootProject.extra["versionToPublish"]!!
 repositories.standardToSpineSdk()
+configurations.forceVersions()
 
 dependencies {
     annotationProcessor(AutoService.processor)

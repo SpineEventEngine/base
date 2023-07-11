@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@ val grGitVersion = "4.1.1"
  * Please check that this value matches one defined in
  *  [io.spine.internal.dependency.Kotlin.version].
  */
-val kotlinVersion = "1.8.10"
+val kotlinVersion = "1.8.22"
 
 /**
  * The version of Guava used in `buildSrc`.
@@ -90,7 +90,7 @@ val errorPronePluginVersion = "3.0.1"
  * @see <a href="https://github.com/google/protobuf-gradle-plugin/releases">
  *     Protobuf Gradle Plugins Releases</a>
  */
-val protobufPluginVersion = "0.9.2"
+val protobufPluginVersion = "0.9.3"
 
 /**
  * The version of Dokka Gradle Plugins.
@@ -107,7 +107,17 @@ val dokkaVersion = "1.8.10"
  *
  * @see <a href="https://github.com/detekt/detekt/releases">Detekt Releases</a>
  */
-val detektVersion = "1.22.0"
+val detektVersion = "1.23.0"
+
+/**
+ * @see [io.spine.internal.dependency.Kotest]
+ */
+val kotestJvmPluginVersion = "0.4.10"
+
+/**
+ * @see [io.spine.internal.dependency.Kover]
+ */
+val koverVersion = "0.7.2"
 
 configurations.all {
     resolutionStrategy {
@@ -156,4 +166,7 @@ dependencies {
 
     // https://github.com/srikanth-lingala/zip4j
     implementation("net.lingala.zip4j:zip4j:2.10.0")
+
+    implementation("io.kotest:kotest-gradle-plugin:$kotestJvmPluginVersion")
+    implementation("org.jetbrains.kotlinx:kover-gradle-plugin:$koverVersion")
 }

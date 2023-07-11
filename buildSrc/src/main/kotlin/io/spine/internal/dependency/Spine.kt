@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,13 +48,13 @@ object Spine {
         const val base = "2.0.0-SNAPSHOT.180"
 
         /** The version of [Spine.reflect]. */
-        const val reflect = "2.0.0-SNAPSHOT.181"
+        const val reflect = "2.0.0-SNAPSHOT.182"
 
         /** The version of [Spine.logging]. */
-        const val logging = "2.0.0-SNAPSHOT.182"
+        const val logging = "2.0.0-SNAPSHOT.191"
 
         /** The version of [Spine.testlib]. */
-        const val testlib = "2.0.0-SNAPSHOT.183"
+        const val testlib = "2.0.0-SNAPSHOT.184"
 
         /**
          * The version of `core-java`.
@@ -64,25 +64,25 @@ object Spine {
         const val core = "2.0.0-SNAPSHOT.141"
 
         /** The version of [Spine.modelCompiler]. */
-        const val mc = "2.0.0-SNAPSHOT.130"
+        const val mc = "2.0.0-SNAPSHOT.132"
 
         /** The version of [McJava]. */
-        const val mcJava = "2.0.0-SNAPSHOT.132"
+        const val mcJava = "2.0.0-SNAPSHOT.147"
 
         /** The version of [Spine.baseTypes]. */
-        const val baseTypes = "2.0.0-SNAPSHOT.120"
+        const val baseTypes = "2.0.0-SNAPSHOT.121"
 
         /** The version of [Spine.time]. */
-        const val time = "2.0.0-SNAPSHOT.121"
+        const val time = "2.0.0-SNAPSHOT.131"
 
         /** The version of [Spine.change]. */
         const val change = "2.0.0-SNAPSHOT.118"
 
         /** The version of [Spine.text]. */
-        const val text = "2.0.0-SNAPSHOT.3"
+        const val text = "2.0.0-SNAPSHOT.5"
 
         /** The version of [Spine.toolBase]. */
-        const val toolBase = "2.0.0-SNAPSHOT.156"
+        const val toolBase = "2.0.0-SNAPSHOT.171"
 
         /** The version of [Spine.validation]. */
         @Deprecated("Please use `Validation.version` instead.")
@@ -98,6 +98,8 @@ object Spine {
 
     const val base = "$group:spine-base:${ArtifactVersion.base}"
     const val logging = "$group:spine-logging:${ArtifactVersion.logging}"
+    const val loggingContext = "$group:spine-logging-context:${ArtifactVersion.logging}"
+    const val loggingBackend = "$group:spine-logging-backend:${ArtifactVersion.logging}"
     const val reflect = "$group:spine-reflect:${ArtifactVersion.reflect}"
     const val baseTypes = "$group:spine-base-types:${ArtifactVersion.baseTypes}"
     const val time = "$group:spine-time:${ArtifactVersion.time}"
