@@ -80,7 +80,7 @@ val guavaVersion = "32.1.1-jre"
  * @see <a href="https://github.com/tbroyer/gradle-errorprone-plugin/releases">
  *     Error Prone Gradle Plugin Releases</a>
  */
-val errorPronePluginVersion = "3.0.1"
+val errorPronePluginVersion = "3.1.0"
 
 /**
  * The version of Protobuf Gradle Plugin.
