@@ -117,7 +117,7 @@ val kotestJvmPluginVersion = "0.4.10"
 /**
  * @see [io.spine.internal.dependency.Kover]
  */
-val koverVersion = "0.7.0-Beta"
+val koverVersion = "0.7.2"
 
 configurations.all {
     resolutionStrategy {
