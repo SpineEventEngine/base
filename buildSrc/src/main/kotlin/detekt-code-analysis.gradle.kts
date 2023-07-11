@@ -60,6 +60,7 @@ import io.gitlab.arturbosch.detekt.Detekt
  * }
  * ```
  */
+@Suppress("unused")
 private val about = ""
 
 plugins {
@@ -68,7 +69,7 @@ plugins {
 
 detekt {
     buildUponDefaultConfig = true
-    config = files("${rootDir}/config/quality/detekt-config.yml")
+    config.from(files("${rootDir}/config/quality/detekt-config.yml"))
 }
 
 tasks {

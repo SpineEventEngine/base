@@ -47,6 +47,7 @@ plugins {
  * Please do not apply this script plugin in the `plugins {}` block because `jacocoTestReport`
  * task is not yet available at this stage.
  */
+@Suppress("unused")
 private val about = ""
 
 /**
