@@ -24,50 +24,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.dependency.Kotest
-import io.spine.internal.dependency.Spine
-import io.spine.internal.dependency.JUnit
-import io.spine.internal.gradle.kotlin.applyJvmToolchain
-import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.io.File
+import org.gradle.kotlin.dsl.getValue
+import org.gradle.kotlin.dsl.getting
+import org.gradle.kotlin.dsl.jacoco
+import org.gradle.testing.jacoco.tasks.JacocoReport
 
 plugins {
-    id("java-module")
-    kotlin("jvm")
-    id("io.kotest")
-    id("org.jetbrains.kotlinx.kover")
-    id("detekt-code-analysis")
-    id("dokka-for-kotlin")
+    jacoco
 }
 
-kotlin {
-    applyJvmToolchain(BuildSettings.javaVersion.asInt())
-    explicitApi()
-}
+/**
+ * Configures [JacocoReport] task to run in a Kotlin Multiplatform project for
+ * `commonMain` and `jvmMain` source sets.
+ *
+ * This script plugin must be applied using the following construct at the end of
+ * a `build.gradle.kts` file of a module:
+ *
+ * ```kotlin
+ * apply(plugin="jacoco-kotlin-jvm")
+ * ```
+ * Please do not apply this script plugin in the `plugins {}` block because `jacocoTestReport`
+ * task is not yet available at this stage.
+ */
+@Suppress("unused")
+private val about = ""
 
-dependencies {
-    testImplementation(Spine.testlib)
-    testImplementation(Kotest.frameworkEngine)
-    testImplementation(Kotest.datatest)
-    testImplementation(Kotest.runnerJUnit5Jvm)
-    testImplementation(JUnit.runner)
-}
+/**
+ * Configure Jacoco task with custom input from this Kotlin Multiplatform project.
+ */
+val jacocoTestReport: JacocoReport by tasks.getting(JacocoReport::class) {
 
-tasks {
-    withType<KotlinCompile>().configureEach {
-        kotlinOptions.jvmTarget = BuildSettings.javaVersion.toString()
-        setFreeCompilerArgs()
-    }
-}
+    val classFiles = File("${buildDir}/classes/kotlin/jvm/")
+        .walkBottomUp()
+        .toSet()
+    classDirectories.setFrom(classFiles)
 
-kover {
-    useJacoco()
-}
+    val coverageSourceDirs = arrayOf(
+        "src/commonMain",
+        "src/jvmMain"
+    )
+    sourceDirectories.setFrom(files(coverageSourceDirs))
 
-koverReport {
-    defaults {
-        xml {
-            onCheck = true
-        }
-    }
+    executionData.setFrom(files("${buildDir}/jacoco/jvmTest.exec"))
 }

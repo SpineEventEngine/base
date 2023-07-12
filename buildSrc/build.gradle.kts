@@ -70,7 +70,7 @@ val kotlinVersion = "1.8.22"
  * Always use the same version as the one specified in [io.spine.internal.dependency.Guava].
  * Otherwise, when testing Gradle plugins, clashes may occur.
  */
-val guavaVersion = "31.1-jre"
+val guavaVersion = "32.1.1-jre"
 
 /**
  * The version of ErrorProne Gradle plugin.
@@ -80,7 +80,7 @@ val guavaVersion = "31.1-jre"
  * @see <a href="https://github.com/tbroyer/gradle-errorprone-plugin/releases">
  *     Error Prone Gradle Plugin Releases</a>
  */
-val errorPronePluginVersion = "3.0.1"
+val errorPronePluginVersion = "3.1.0"
 
 /**
  * The version of Protobuf Gradle Plugin.
