@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@
 
 package io.spine.internal.gradle.publish
 
+import dokkaJavaJar
+import dokkaKotlinJar
 import io.spine.internal.gradle.Repository
 import org.gradle.api.Project
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
@@ -318,10 +320,14 @@ open class SpinePublishing(private val project: Project) {
      *
      * @see modules
      */
-    private fun projectsToPublish(): Collection<Project> =
-        modules.union(modulesWithCustomPublishing)
+    private fun projectsToPublish(): Collection<Project> {
+        if (project.subprojects.isEmpty()) {
+            return setOf(project)
+        }
+        return modules.union(modulesWithCustomPublishing)
             .map { name -> project.project(name) }
             .ifEmpty { setOf(project) }
+    }
 
     /**
      * Sets up `maven-publish` plugin for the given project.

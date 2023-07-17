@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,8 @@
 
 import io.spine.internal.dependency.ErrorProne
 import io.spine.internal.dependency.GradleDoctor
+import io.spine.internal.dependency.Kotest
+import io.spine.internal.dependency.Kover
 import io.spine.internal.dependency.ProtoData
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Spine
@@ -117,6 +119,14 @@ val PluginDependenciesSpec.protobuf: PluginDependencySpec
 
 val PluginDependenciesSpec.`gradle-doctor`: PluginDependencySpec
     get() = id(GradleDoctor.pluginId).version(GradleDoctor.version)
+
+val PluginDependenciesSpec.kotest: PluginDependencySpec
+    get() = Kotest.MultiplatformGradlePlugin.let {
+        return id(it.id).version(it.version)
+    }
+
+val PluginDependenciesSpec.kover: PluginDependencySpec
+    get() = id(Kover.id).version(Kover.version)
 
 /**
  * Configures the dependencies between third-party Gradle tasks
