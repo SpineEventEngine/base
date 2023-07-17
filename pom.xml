@@ -10,7 +10,7 @@ all modules and does not describe the project structure per-subproject.
  -->
 <groupId>io.spine</groupId>
 <artifactId>base</artifactId>
-<version>2.0.0-SNAPSHOT.182</version>
+<version>2.0.0-SNAPSHOT.183</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -50,7 +50,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine</groupId>
     <artifactId>spine-logging</artifactId>
-    <version>2.0.0-SNAPSHOT.191</version>
+    <version>2.0.0-SNAPSHOT.186</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -80,19 +80,19 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.kotest</groupId>
     <artifactId>kotest-framework-datatest</artifactId>
-    <version>5.6.2</version>
+    <version>5.6.1</version>
     <scope>test</scope>
   </dependency>
   <dependency>
     <groupId>io.kotest</groupId>
     <artifactId>kotest-framework-engine</artifactId>
-    <version>5.6.2</version>
+    <version>5.6.1</version>
     <scope>test</scope>
   </dependency>
   <dependency>
     <groupId>io.kotest</groupId>
     <artifactId>kotest-runner-junit5-jvm</artifactId>
-    <version>5.6.2</version>
+    <version>5.6.1</version>
     <scope>test</scope>
   </dependency>
   <dependency>
