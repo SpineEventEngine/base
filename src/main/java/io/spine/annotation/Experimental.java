@@ -38,9 +38,9 @@ import java.lang.annotation.Target;
  *
  * <p>Here are the usage guidelines for this annotation:
  * <ol>
- * <li>use only on public API. Internal interfaces should not use it.</li>
- * <li>should be added only to new APIs. Adding it to an existing API is considered API-breaking.</li>
- * <li>removing this annotation from an API gives it a stable status.</li>
+ *   <li>use only on public API. Internal interfaces should not use it.
+ *   <li>should be added only to new APIs. Adding it to an existing API is considered API-breaking.
+ *   <li>removing this annotation from an API gives it a stable status.
  * </ol>
  */
 @Retention(RetentionPolicy.SOURCE)

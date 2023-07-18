@@ -54,6 +54,7 @@ import org.gradle.api.tasks.TaskProvider
  * }
  * ```
  */
+@Suppress("unused")
 fun JsTasks.licenseReport()  {
     npmLicenseReport().also {
         generateLicenseReport.configure {

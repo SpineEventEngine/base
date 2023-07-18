@@ -71,6 +71,7 @@ val TaskContainer.integrationTest: TaskProvider<Exec>
  * }
  * ```
  */
+@Suppress("unused")
 fun DartTasks.integrationTest() =
     register(integrationTestName) {
 

@@ -24,15 +24,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.dependency
+package io.spine.annotation
+
+import io.kotest.matchers.shouldBe
+import java.lang.annotation.RetentionPolicy.RUNTIME
+import java.lang.annotation.RetentionPolicy.SOURCE
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
 /**
- * A JSON parser in Kotlin
- *
- * [Klaxon](https://github.com/cbeust/klaxon)
+ * This test suite tests `RetentionPolicy` of the annotations in
+ * the `io.spine.annotation` package.
  */
-@Suppress("unused")
-object Klaxon {
-    private const val version = "5.6"
-    const val lib = "com.beust:klaxon:${version}"
+@DisplayName("`io.spine.annotation` package should")
+internal class AnnotationsSpec {
+
+    @Test
+    fun `have 'Beta' annotation`() {
+        Beta::class.java.retention() shouldBe SOURCE
+    }
+
+    @Test
+    fun `have 'Experimental' annotation`() {
+        Experimental::class.java.retention() shouldBe SOURCE
+    }
+
+    @Test
+    fun `have 'GeneratedMixin' annotation`() {
+        GeneratedMixin::class.java.retention() shouldBe SOURCE
+    }
+
+    @Test
+    fun `have 'Internal' annotation`() {
+        Internal::class.java.retention() shouldBe RUNTIME
+    }
+
+    @Test
+    fun `have 'SPI' annotation`() {
+        SPI::class.java.retention() shouldBe SOURCE
+    }
 }
+
+private fun <T: Annotation> Class<in T>.retention() =
+    getAnnotation(java.lang.annotation.Retention::class.java).value
+

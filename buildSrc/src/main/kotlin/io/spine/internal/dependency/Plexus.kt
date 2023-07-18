@@ -28,7 +28,7 @@ package io.spine.internal.dependency
 
 /**
  * Plexus Utils is a transitive dependency which we don't use directly.
- * We `force` it in [DependencyResolution.forceConfiguration].
+ * We `force` it in [forceVersions] (see `DependencyResolution.kt`).
  *
  * [Plexus Utils](https://codehaus-plexus.github.io/plexus-utils/)
  */

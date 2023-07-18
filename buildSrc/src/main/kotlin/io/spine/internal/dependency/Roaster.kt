@@ -27,17 +27,10 @@
 package io.spine.internal.dependency
 
 // https://github.com/forge/roaster
-@Suppress("unused")
+@Suppress("unused", "ConstPropertyName")
 object Roaster {
 
-    /**
-     * Do not advance this version further because it would break compatibility with Java 8
-     * projects. Starting from the following version Roaster has a shaded version of Eclipse JFace
-     * built with Java 11.
-     *
-     * Please see [this issue][https://github.com/SpineEventEngine/config/issues/220] for details.
-     */
-    private const val version = "2.24.0.Final"
+    private const val version = "2.28.0.Final"
 
     const val api = "org.jboss.forge.roaster:roaster-api:${version}"
     const val jdt = "org.jboss.forge.roaster:roaster-jdt:${version}"

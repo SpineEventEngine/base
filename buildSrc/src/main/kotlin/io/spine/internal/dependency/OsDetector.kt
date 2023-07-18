@@ -26,6 +26,7 @@
 
 package io.spine.internal.dependency
 
+@Suppress("unused")
 object OsDetector {
     // https://github.com/google/osdetector-gradle-plugin
     const val version = "1.7.0"

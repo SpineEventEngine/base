@@ -31,9 +31,9 @@ package io.spine.internal.dependency
  *
  * See [`SpineEventEngine/ProtoData`](https://github.com/SpineEventEngine/ProtoData/).
  */
-@Suppress("unused")
+@Suppress("unused", "ConstPropertyName")
 object ProtoData {
-    const val version = "0.8.0"
+    const val version = "0.9.4"
     const val group = "io.spine.protodata"
     const val compiler = "$group:protodata-compiler:$version"
 
