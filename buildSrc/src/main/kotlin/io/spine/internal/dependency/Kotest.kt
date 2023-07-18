@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@file:Suppress("unused")
+@file:Suppress("unused", "ConstPropertyName")
 
 package io.spine.internal.dependency
 
@@ -45,7 +45,7 @@ object Kotest {
 
     // https://plugins.gradle.org/plugin/io.kotest.multiplatform
     object MultiplatformGradlePlugin {
-        const val version = "5.6.2"
+        const val version = Kotest.version
         const val id = "io.kotest.multiplatform"
         const val classpath = "$group:kotest-framework-multiplatform-plugin-gradle:$version"
     }
