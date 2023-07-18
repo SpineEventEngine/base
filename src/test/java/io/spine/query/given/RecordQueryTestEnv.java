@@ -26,6 +26,7 @@
 
 package io.spine.query.given;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
 import io.spine.query.Either;
@@ -93,7 +94,8 @@ public final class RecordQueryTestEnv {
     @SuppressWarnings("unchecked")
     public static RecordPredicates<ManufacturerId, Manufacturer>
     disjunctivePredicates(Either<RecordQueryBuilder<ManufacturerId, Manufacturer>>... items) {
-        return (builder) -> builder.either(items);
+        var parameters = ImmutableList.copyOf(items);
+        return (builder) -> builder.either(parameters);
     }
 
     public static RecordQueryBuilder<ManufacturerId, Manufacturer> conjunctiveBuilder() {

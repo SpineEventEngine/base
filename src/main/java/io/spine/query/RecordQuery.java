@@ -111,20 +111,17 @@ public final class RecordQuery<I, R extends Message>
         return result;
     }
 
-    @SuppressWarnings({
-            "ReturnValueIgnored" /* Adjusting builders. */,
-            "Immutable" /* See: https://github.com/SpineEventEngine/base/issues/749 */
-    })
+    @SuppressWarnings("ReturnValueIgnored" /* Adjusting builders. */)
     private RecordQuery<I, R> joinToRootPredicate(RecordPredicates<I, R> predicates,
                                                   LogicalOperator operator) {
         var sourcePredicate = subject().predicate();
         var originBuilder = toBuilder();
-        if(sourcePredicate.operator() == operator.counterpart()) {
+        if (sourcePredicate.operator() == operator.counterpart()) {
             QueryPredicate.Builder<R> newRoot = QueryPredicate.newBuilder(operator);
             newRoot.addPredicate(sourcePredicate);
             originBuilder.replacePredicate(newRoot);
         }
-        if(operator == AND) {
+        if (operator == AND) {
             predicates.apply(originBuilder);
         } else {
             originBuilder.either(predicates::apply);
