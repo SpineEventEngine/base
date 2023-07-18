@@ -24,25 +24,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.gradle.kotlin.applyJvmToolchain
-import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+package io.spine.internal.dependency
 
-plugins {
-    id("java-module")
-    kotlin("jvm")
-    id("detekt-code-analysis")
-    id("dokka-for-kotlin")
-}
-
-kotlin {
-    applyJvmToolchain(BuildSettings.javaVersion.asInt())
-    explicitApi()
-}
-
-tasks {
-    withType<KotlinCompile>().configureEach {
-        kotlinOptions.jvmTarget = BuildSettings.javaVersion.toString()
-        setFreeCompilerArgs()
-    }
+// https://github.com/Kotlin/kotlinx-kover
+@Suppress("unused")
+object Kover {
+    const val version = "0.7.2"
+    const val id = "org.jetbrains.kotlinx.kover"
+    const val classpath = "org.jetbrains.kotlinx:kover-gradle-plugin:$version"
 }

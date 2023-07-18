@@ -24,6 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import BuildSettings.javaVersion
 import io.spine.internal.dependency.CheckerFramework
 import io.spine.internal.dependency.Dokka
 import io.spine.internal.dependency.ErrorProne
@@ -31,27 +32,46 @@ import io.spine.internal.dependency.Flogger
 import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.JavaX
+import io.spine.internal.dependency.Kotest
 import io.spine.internal.dependency.Protobuf
+import io.spine.internal.dependency.Spine
 import io.spine.internal.gradle.checkstyle.CheckStyleConfig
-import io.spine.internal.gradle.excludeProtobufLite
-import io.spine.internal.gradle.forceVersions
 import io.spine.internal.gradle.github.pages.updateGitHubPages
 import io.spine.internal.gradle.javac.configureErrorProne
 import io.spine.internal.gradle.javac.configureJavac
 import io.spine.internal.gradle.javadoc.JavadocConfig
-import io.spine.internal.gradle.publish.publish
+import io.spine.internal.gradle.kotlin.applyJvmToolchain
+import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
 import io.spine.internal.gradle.report.license.LicenseReporter
 import io.spine.internal.gradle.testing.configureLogging
 import io.spine.internal.gradle.testing.registerTestTasks
+import org.gradle.api.Project
+import org.gradle.api.tasks.Delete
+import org.gradle.api.tasks.compile.JavaCompile
+import org.gradle.jvm.toolchain.JavaLanguageVersion
+import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.getValue
+import org.gradle.kotlin.dsl.idea
+import org.gradle.kotlin.dsl.invoke
+import org.gradle.kotlin.dsl.`java-library`
+import org.gradle.kotlin.dsl.kotlin
+import org.gradle.kotlin.dsl.provideDelegate
+import org.gradle.kotlin.dsl.registering
+import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     `java-library`
     idea
-    jacoco
     id("net.ltgt.errorprone")
     id("pmd-settings")
     id("project-report")
     id("dokka-for-java")
+    kotlin("jvm")
+    id("io.kotest")
+    id("org.jetbrains.kotlinx.kover")
+    id("detekt-code-analysis")
+    id("dokka-for-kotlin")
 }
 
 LicenseReporter.generateReportIn(project)
@@ -59,7 +79,8 @@ JavadocConfig.applyTo(project)
 CheckStyleConfig.applyTo(project)
 
 project.run {
-    configureJava(BuildSettings.javaVersion)
+    configureJava(javaVersion)
+    configureKotlin(javaVersion)
     addDependencies()
     forceConfigurations()
 
@@ -85,6 +106,32 @@ fun Module.configureJava(javaVersion: JavaLanguageVersion) {
     }
 }
 
+fun Module.configureKotlin(javaVersion: JavaLanguageVersion) {
+    kotlin {
+        applyJvmToolchain(javaVersion.asInt())
+        explicitApi()
+    }
+
+    tasks {
+        withType<KotlinCompile>().configureEach {
+            kotlinOptions.jvmTarget = javaVersion.toString()
+            setFreeCompilerArgs()
+        }
+    }
+
+    kover {
+        useJacoco()
+    }
+
+    koverReport {
+        defaults {
+            xml {
+                onCheck = true
+            }
+        }
+    }
+}
+
 /**
  * These dependencies are applied to all subprojects and do not have to
  * be included explicitly.
@@ -106,6 +153,12 @@ fun Module.addDependencies() = dependencies {
     testImplementation(JUnit.runner)
     testImplementation(JUnit.pioneer)
     JUnit.api.forEach { testImplementation(it) }
+
+    testImplementation(Spine.testlib)
+    testImplementation(Kotest.frameworkEngine)
+    testImplementation(Kotest.datatest)
+    testImplementation(Kotest.runnerJUnit5Jvm)
+    testImplementation(JUnit.runner)
 
     runtimeOnly(Flogger.Runtime.systemBackend)
 }
@@ -148,9 +201,8 @@ fun Module.setTaskDependencies(generatedDir: String) {
         }
 
         project.afterEvaluate {
-            publish {
-                dependsOn("${project.path}:updateGitHubPages")
-            }
+            val publish = tasks.findByName("publish")
+            publish?.dependsOn("${project.path}:updateGitHubPages")
         }
     }
     configureTaskDependencies()

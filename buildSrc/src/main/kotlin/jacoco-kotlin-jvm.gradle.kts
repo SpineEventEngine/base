@@ -35,22 +35,23 @@ plugins {
 }
 
 /**
- * Configures [JacocoReport] task to run in a Kotlin KMM project for `commonMain` and `jvmMain`
- * source sets.
+ * Configures [JacocoReport] task to run in a Kotlin Multiplatform project for
+ * `commonMain` and `jvmMain` source sets.
  *
  * This script plugin must be applied using the following construct at the end of
  * a `build.gradle.kts` file of a module:
  *
  * ```kotlin
- * apply(plugin="jacoco-kmm-jvm")
+ * apply(plugin="jacoco-kotlin-jvm")
  * ```
  * Please do not apply this script plugin in the `plugins {}` block because `jacocoTestReport`
  * task is not yet available at this stage.
  */
+@Suppress("unused")
 private val about = ""
 
 /**
- * Configure Jacoco task with custom input from this KMM project.
+ * Configure Jacoco task with custom input from this Kotlin Multiplatform project.
  */
 val jacocoTestReport: JacocoReport by tasks.getting(JacocoReport::class) {
 
