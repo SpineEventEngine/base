@@ -26,6 +26,7 @@
 
 package io.spine.query;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Message;
 
 import java.util.function.UnaryOperator;
@@ -39,7 +40,7 @@ import java.util.function.UnaryOperator;
  * @param <R>
  *         the type of queried records
  */
+@Immutable
 public interface RecordPredicates<I, R extends Message>
         extends UnaryOperator<RecordQueryBuilder<I, R>> {
-
 }

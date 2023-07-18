@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@file:Suppress("unused")
+@file:Suppress("unused", "ConstPropertyName")
 
 package io.spine.internal.dependency
 
