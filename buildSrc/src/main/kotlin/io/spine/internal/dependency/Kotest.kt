@@ -33,6 +33,7 @@ package io.spine.internal.dependency
  *
  * @see <a href="https://kotest.io/">Kotest site</a>
  */
+@Suppress("ConstPropertyName")
 object Kotest {
     const val version = "5.6.2"
     const val group = "io.kotest"

@@ -24,24 +24,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.dependency
+package io.spine.annotation
+
+import io.kotest.matchers.shouldBe
+import java.lang.annotation.RetentionPolicy.RUNTIME
+import java.lang.annotation.RetentionPolicy.SOURCE
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
 /**
- * Spine used to log with SLF4J. Now we use Flogger. Whenever a choice comes up, we recommend to
- * use the latter.
- *
- * The primary purpose of having this dependency object is working in combination with
- * [Flogger.Runtime.slf4JBackend].
- *
- * Some third-party libraries may clash with different versions of the library.
- * Thus, we specify this version and force it via [forceVersions].
- * Please see `DependencyResolution.kt` for details.
+ * This test suite tests `RetentionPolicy` of the annotations in
+ * the `io.spine.annotation` package.
  */
-@Suppress("unused")
-object Slf4J {
-    private const val version = "2.0.7"
-    const val lib = "org.slf4j:slf4j-api:${version}"
-    const val jdk14 = "org.slf4j:slf4j-jdk14:${version}"
-    const val reload4j = "org.slf4j:slf4j-reload4j:${version}"
-    const val simple = "org.slf4j:slf4j-simple:${version}"
+@DisplayName("`io.spine.annotation` package should")
+internal class AnnotationsSpec {
+
+    @Test
+    fun `have 'Beta' annotation`() {
+        Beta::class.java.retention() shouldBe SOURCE
+    }
+
+    @Test
+    fun `have 'Experimental' annotation`() {
+        Experimental::class.java.retention() shouldBe SOURCE
+    }
+
+    @Test
+    fun `have 'GeneratedMixin' annotation`() {
+        GeneratedMixin::class.java.retention() shouldBe SOURCE
+    }
+
+    @Test
+    fun `have 'Internal' annotation`() {
+        Internal::class.java.retention() shouldBe RUNTIME
+    }
+
+    @Test
+    fun `have 'SPI' annotation`() {
+        SPI::class.java.retention() shouldBe SOURCE
+    }
 }
+
+private fun <T: Annotation> Class<in T>.retention() =
+    getAnnotation(java.lang.annotation.Retention::class.java).value
+
