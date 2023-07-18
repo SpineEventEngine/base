@@ -27,13 +27,16 @@
 package io.spine.annotation
 
 import io.kotest.matchers.shouldBe
+import java.lang.annotation.RetentionPolicy.RUNTIME
 import java.lang.annotation.RetentionPolicy.SOURCE
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 /**
- * The mere purpose of this test suite is making sure that
- * the annotations (which are not used in the production code) are present in tests.
+ * This test suite tests `RetentionPolicy` of the annotations in
+ * the `io.spine.annotation` package.
  */
+@DisplayName("`io.spine.annotation` package should")
 internal class AnnotationsTest {
 
     @Test
@@ -44,6 +47,21 @@ internal class AnnotationsTest {
     @Test
     fun `have 'Experimental' annotation`() {
         Experimental::class.java.retention() shouldBe SOURCE
+    }
+
+    @Test
+    fun `have 'GeneratedMixin' annotation`() {
+        GeneratedMixin::class.java.retention() shouldBe SOURCE
+    }
+
+    @Test
+    fun `have 'Internal' annotation`() {
+        Internal::class.java.retention() shouldBe RUNTIME
+    }
+
+    @Test
+    fun `have 'SPI' annotation`() {
+        SPI::class.java.retention() shouldBe SOURCE
     }
 }
 
