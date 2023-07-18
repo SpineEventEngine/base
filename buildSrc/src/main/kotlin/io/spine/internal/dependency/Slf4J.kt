@@ -33,9 +33,8 @@ package io.spine.internal.dependency
  * The primary purpose of having this dependency object is working in combination with
  * [Flogger.Runtime.slf4JBackend].
  *
- * Some third-party libraries may clash with different versions of the library.
- * Thus, we specify this version and force it via [forceVersions].
- * Please see `DependencyResolution.kt` for details.
+ * Some third-party libraries may clash with different versions of the library. Thus, we specify
+ * this version and force it via [io.spine.internal.gradle.forceVersions].
  */
 @Suppress("unused")
 object Slf4J {

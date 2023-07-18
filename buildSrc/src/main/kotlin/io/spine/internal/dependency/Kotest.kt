@@ -34,7 +34,7 @@ package io.spine.internal.dependency
  * @see <a href="https://kotest.io/">Kotest site</a>
  */
 object Kotest {
-    const val version = "5.6.1"
+    const val version = "5.6.2"
     const val group = "io.kotest"
     const val assertions = "$group:kotest-assertions-core:$version"
     const val runnerJUnit5 = "$group:kotest-runner-junit5:$version"
@@ -45,7 +45,7 @@ object Kotest {
 
     // https://plugins.gradle.org/plugin/io.kotest.multiplatform
     object MultiplatformGradlePlugin {
-        const val version = "5.6.1"
+        const val version = "5.6.2"
         const val id = "io.kotest.multiplatform"
         const val classpath = "$group:kotest-framework-multiplatform-plugin-gradle:$version"
     }

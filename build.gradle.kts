@@ -40,18 +40,16 @@ import io.spine.internal.gradle.standardToSpineSdk
 
 buildscript {
     standardSpineSdkRepositories()
-    io.spine.internal.gradle.doForceVersions(configurations)
+    doForceVersions(configurations)
 }
 
 repositories.standardToSpineSdk()
 
 // Apply some plugins to make type-safe extension accessors available in this script file.
 plugins {
-    `java-module`
     `compile-protobuf`
-    `kotlin-jvm-module`
+    `jvm-module`
     idea
-    jacoco
     `gradle-doctor`
     `project-report`
 }
@@ -74,6 +72,7 @@ apply(from = "$rootDir/version.gradle.kts")
 group = "io.spine"
 version = rootProject.extra["versionToPublish"]!!
 repositories.standardToSpineSdk()
+configurations.forceVersions()
 
 dependencies {
     annotationProcessor(AutoService.processor)
