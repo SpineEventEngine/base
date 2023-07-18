@@ -37,7 +37,7 @@ import org.junit.jupiter.api.Test
  * the `io.spine.annotation` package.
  */
 @DisplayName("`io.spine.annotation` package should")
-internal class AnnotationsTest {
+internal class AnnotationsSpec {
 
     @Test
     fun `have 'Beta' annotation`() {
