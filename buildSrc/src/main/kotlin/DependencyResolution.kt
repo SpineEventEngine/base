@@ -25,6 +25,7 @@
  */
 
 import io.spine.internal.dependency.AnimalSniffer
+import io.spine.internal.dependency.Asm
 import io.spine.internal.dependency.AutoCommon
 import io.spine.internal.dependency.AutoService
 import io.spine.internal.dependency.AutoValue
@@ -116,6 +117,7 @@ private fun ResolutionStrategy.forceTestDependencies() {
  */
 private fun ResolutionStrategy.forceTransitiveDependencies() {
     force(
+        Asm.lib,
         AutoValue.annotations,
         Gson.lib,
         J2ObjC.annotations,

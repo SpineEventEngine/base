@@ -26,19 +26,9 @@
 
 package io.spine.internal.dependency
 
-/**
- * Dependencies on ProtoData modules.
- *
- * See [`SpineEventEngine/ProtoData`](https://github.com/SpineEventEngine/ProtoData/).
- */
-@Suppress("unused", "ConstPropertyName")
-object ProtoData {
-    const val version = "0.9.6"
-    const val group = "io.spine.protodata"
-    const val compiler = "$group:protodata-compiler:$version"
-
-    const val codegenJava = "io.spine.protodata:protodata-codegen-java:$version"
-
-    const val pluginId = "io.spine.protodata"
-    const val pluginLib = "${Spine.group}:protodata:$version"
+// https://asm.ow2.io/
+@Suppress("unused")
+object Asm {
+    private const val version = "9.2"
+    const val lib = "org.ow2.asm:asm:$version"
 }

@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@file:Suppress("unused", "ConstPropertyName")
+@file:Suppress("unused")
 
 package io.spine.internal.dependency
 
@@ -33,9 +33,8 @@ package io.spine.internal.dependency
  *
  * @see <a href="https://kotest.io/">Kotest site</a>
  */
-@Suppress("ConstPropertyName")
 object Kotest {
-    const val version = "5.6.2"
+    const val version = "5.6.1"
     const val group = "io.kotest"
     const val assertions = "$group:kotest-assertions-core:$version"
     const val runnerJUnit5 = "$group:kotest-runner-junit5:$version"
@@ -46,7 +45,7 @@ object Kotest {
 
     // https://plugins.gradle.org/plugin/io.kotest.multiplatform
     object MultiplatformGradlePlugin {
-        const val version = Kotest.version
+        const val version = "5.6.1"
         const val id = "io.kotest.multiplatform"
         const val classpath = "$group:kotest-framework-multiplatform-plugin-gradle:$version"
     }
