@@ -10,7 +10,7 @@ all modules and does not describe the project structure per-subproject.
  -->
 <groupId>io.spine</groupId>
 <artifactId>base</artifactId>
-<version>2.0.0-SNAPSHOT.184</version>
+<version>2.0.0-SNAPSHOT.185</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -50,7 +50,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine</groupId>
     <artifactId>spine-logging</artifactId>
-    <version>2.0.0-SNAPSHOT.191</version>
+    <version>2.0.0-SNAPSHOT.197</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -66,9 +66,9 @@ all modules and does not describe the project structure per-subproject.
     <scope>compile</scope>
   </dependency>
   <dependency>
-    <groupId>com.google.flogger</groupId>
-    <artifactId>flogger-system-backend</artifactId>
-    <version>0.7.4</version>
+    <groupId>io.spine</groupId>
+    <artifactId>spine-logging-backend</artifactId>
+    <version>2.0.0-SNAPSHOT.197</version>
     <scope>runtime</scope>
   </dependency>
   <dependency>
