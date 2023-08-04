@@ -93,6 +93,7 @@ dependencies {
     }
 
     testImplementation(Spine.testlib)
+    testImplementation(Spine.Logging.smokeTest)
 }
 
 tasks {
