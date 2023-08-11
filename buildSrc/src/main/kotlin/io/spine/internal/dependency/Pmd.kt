@@ -31,6 +31,7 @@ package io.spine.internal.dependency
 // https://github.com/pmd/pmd/releases
 @Suppress("unused", "ConstPropertyName")
 object Pmd {
+
     /**
      * This is the last version in the 6.x series.
      *
