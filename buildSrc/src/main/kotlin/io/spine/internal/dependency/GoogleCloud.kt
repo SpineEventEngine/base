@@ -26,7 +26,7 @@
 
 package io.spine.internal.dependency
 
-@Suppress("unused")
+@Suppress("unused", "ConstPropertyName")
 object GoogleCloud {
 
     // https://github.com/googleapis/java-core

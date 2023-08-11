@@ -32,8 +32,10 @@ package io.spine.internal.dependency
  * When changing the version, also change the version used in the `build.gradle.kts`. We need
  * to synchronize the version used in `buildSrc` and in Spine modules. Otherwise, when testing
  * Gradle plugins, errors may occur due to version clashes.
+ *
+ * @see <a href="https://github.com/google/guava">Guava at GitHub</a>.
  */
-// https://github.com/google/guava
+@Suppress("unused", "ConstPropertyName")
 object Guava {
     private const val version = "32.1.1-jre"
     const val lib     = "com.google.guava:guava:${version}"

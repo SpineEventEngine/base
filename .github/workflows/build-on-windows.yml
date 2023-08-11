@@ -18,6 +18,9 @@ jobs:
           distribution: zulu
           cache: gradle
 
+      - name: Configure Pagefile
+        uses: al-cheb/configure-pagefile-action@v1.2
+
       - name: Build project and run tests
         shell: cmd
         # For the reason on `--no-daemon` see https://github.com/actions/cache/issues/454

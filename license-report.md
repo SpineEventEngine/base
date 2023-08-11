@@ -11,10 +11,12 @@
      * **Project URL:** [https://github.com/google/gson/gson](https://github.com/google/gson/gson)
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.errorprone. **Name** : error_prone_annotations. **Version** : 2.18.0.
+1.  **Group** : com.google.errorprone. **Name** : error_prone_annotations. **Version** : 2.20.0.
+     * **Project URL:** [https://errorprone.info/error_prone_annotations](https://errorprone.info/error_prone_annotations)
      * **License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.errorprone. **Name** : error_prone_type_annotations. **Version** : 2.18.0.
+1.  **Group** : com.google.errorprone. **Name** : error_prone_type_annotations. **Version** : 2.20.0.
+     * **Project URL:** [https://errorprone.info/error_prone_type_annotations](https://errorprone.info/error_prone_type_annotations)
      * **License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : com.google.guava. **Name** : failureaccess. **Version** : 1.0.1.
@@ -41,8 +43,8 @@
 1.  **Group** : com.google.protobuf. **Name** : protobuf-kotlin. **Version** : 3.23.4.
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : org.checkerframework. **Name** : checker-qual. **Version** : 3.27.0.
-     * **Project URL:** [https://checkerframework.org](https://checkerframework.org)
+1.  **Group** : org.checkerframework. **Name** : checker-qual. **Version** : 3.36.0.
+     * **Project URL:** [https://checkerframework.org/](https://checkerframework.org/)
      * **License:** [The MIT License](http://opensource.org/licenses/MIT)
 
 1.  **Group** : org.jetbrains. **Name** : annotations. **Version** : 23.0.0.
@@ -75,6 +77,10 @@
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 ## Compile, tests, and tooling
+1.  **Group** : aopalliance. **Name** : aopalliance. **Version** : 1.0.
+     * **Project URL:** [http://aopalliance.sourceforge.net](http://aopalliance.sourceforge.net)
+     * **License:** Public Domain
+
 1.  **Group** : com.beust. **Name** : jcommander. **Version** : 1.48.
      * **Project URL:** [http://beust.com/jcommander](http://beust.com/jcommander)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -83,32 +89,32 @@
      * **Project URL:** [https://jcommander.org](https://jcommander.org)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.fasterxml.jackson. **Name** : jackson-bom. **Version** : 2.13.4.**No license information found**
-1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-annotations. **Version** : 2.13.4.
-     * **Project URL:** [http://github.com/FasterXML/jackson](http://github.com/FasterXML/jackson)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+1.  **Group** : com.fasterxml.jackson. **Name** : jackson-bom. **Version** : 2.15.2.**No license information found**
+1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-annotations. **Version** : 2.15.2.
+     * **Project URL:** [https://github.com/FasterXML/jackson](https://github.com/FasterXML/jackson)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-core. **Version** : 2.13.4.
+1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-core. **Version** : 2.15.2.
      * **Project URL:** [https://github.com/FasterXML/jackson-core](https://github.com/FasterXML/jackson-core)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-databind. **Version** : 2.13.4.2.
-     * **Project URL:** [http://github.com/FasterXML/jackson](http://github.com/FasterXML/jackson)
+1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-databind. **Version** : 2.15.2.
+     * **Project URL:** [https://github.com/FasterXML/jackson](https://github.com/FasterXML/jackson)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.fasterxml.jackson.dataformat. **Name** : jackson-dataformat-xml. **Version** : 2.13.4.
+1.  **Group** : com.fasterxml.jackson.dataformat. **Name** : jackson-dataformat-xml. **Version** : 2.15.2.
      * **Project URL:** [https://github.com/FasterXML/jackson-dataformat-xml](https://github.com/FasterXML/jackson-dataformat-xml)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.fasterxml.jackson.module. **Name** : jackson-module-kotlin. **Version** : 2.13.4.
+1.  **Group** : com.fasterxml.jackson.module. **Name** : jackson-module-kotlin. **Version** : 2.15.2.
      * **Project URL:** [https://github.com/FasterXML/jackson-module-kotlin](https://github.com/FasterXML/jackson-module-kotlin)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.fasterxml.woodstox. **Name** : woodstox-core. **Version** : 6.3.1.
+1.  **Group** : com.fasterxml.woodstox. **Name** : woodstox-core. **Version** : 6.5.1.
      * **Project URL:** [https://github.com/FasterXML/woodstox](https://github.com/FasterXML/woodstox)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -153,19 +159,24 @@
      * **Project URL:** [https://github.com/google/gson/gson](https://github.com/google/gson/gson)
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.errorprone. **Name** : error_prone_annotation. **Version** : 2.18.0.
+1.  **Group** : com.google.errorprone. **Name** : error_prone_annotation. **Version** : 2.20.0.
+     * **Project URL:** [https://errorprone.info/error_prone_annotation](https://errorprone.info/error_prone_annotation)
      * **License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.errorprone. **Name** : error_prone_annotations. **Version** : 2.18.0.
+1.  **Group** : com.google.errorprone. **Name** : error_prone_annotations. **Version** : 2.20.0.
+     * **Project URL:** [https://errorprone.info/error_prone_annotations](https://errorprone.info/error_prone_annotations)
      * **License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.errorprone. **Name** : error_prone_check_api. **Version** : 2.18.0.
+1.  **Group** : com.google.errorprone. **Name** : error_prone_check_api. **Version** : 2.20.0.
+     * **Project URL:** [https://errorprone.info/error_prone_check_api](https://errorprone.info/error_prone_check_api)
      * **License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.errorprone. **Name** : error_prone_core. **Version** : 2.18.0.
+1.  **Group** : com.google.errorprone. **Name** : error_prone_core. **Version** : 2.20.0.
+     * **Project URL:** [https://errorprone.info/error_prone_core](https://errorprone.info/error_prone_core)
      * **License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.errorprone. **Name** : error_prone_type_annotations. **Version** : 2.18.0.
+1.  **Group** : com.google.errorprone. **Name** : error_prone_type_annotations. **Version** : 2.20.0.
+     * **Project URL:** [https://errorprone.info/error_prone_type_annotations](https://errorprone.info/error_prone_type_annotations)
      * **License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : com.google.errorprone. **Name** : javac. **Version** : 9+181-r4173-1.
@@ -192,6 +203,10 @@
 1.  **Group** : com.google.guava. **Name** : guava-testlib. **Version** : 32.1.1-jre.
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1.  **Group** : com.google.inject. **Name** : guice. **Version** : 5.1.0.
+     * **Project URL:** [https://github.com/google/guice](https://github.com/google/guice)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1.  **Group** : com.google.j2objc. **Name** : j2objc-annotations. **Version** : 1.3.
      * **Project URL:** [https://github.com/google/j2objc/](https://github.com/google/j2objc/)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -212,16 +227,16 @@
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.truth. **Name** : truth. **Version** : 1.1.3.
+1.  **Group** : com.google.truth. **Name** : truth. **Version** : 1.1.5.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.truth.extensions. **Name** : truth-java8-extension. **Version** : 1.1.3.
+1.  **Group** : com.google.truth.extensions. **Name** : truth-java8-extension. **Version** : 1.1.5.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.truth.extensions. **Name** : truth-liteproto-extension. **Version** : 1.1.3.
+1.  **Group** : com.google.truth.extensions. **Name** : truth-liteproto-extension. **Version** : 1.1.5.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.truth.extensions. **Name** : truth-proto-extension. **Version** : 1.1.3.
+1.  **Group** : com.google.truth.extensions. **Name** : truth-proto-extension. **Version** : 1.1.5.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : com.puppycrawl.tools. **Name** : checkstyle. **Version** : 10.3.4.
@@ -261,9 +276,9 @@
      * **Project URL:** [https://detekt.github.io/detekt](https://detekt.github.io/detekt)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.github.java-diff-utils. **Name** : java-diff-utils. **Version** : 4.0.
-     * **Project URL:** [https://github.com/java-diff-utils/java-diff-utils](https://github.com/java-diff-utils/java-diff-utils)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+1.  **Group** : io.github.eisop. **Name** : dataflow-errorprone. **Version** : 3.34.0-eisop1.
+     * **Project URL:** [https://eisop.github.io/](https://eisop.github.io/)
+     * **License:** [GNU General Public License, version 2 (GPL2), with the classpath exception](http://www.gnu.org/software/classpath/license.html)
 
 1.  **Group** : io.github.java-diff-utils. **Name** : java-diff-utils. **Version** : 4.12.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -491,28 +506,26 @@
      * **License:** [GNU General Public License, version 2 (GPL2), with the classpath exception](http://www.gnu.org/software/classpath/license.html)
      * **License:** [The MIT License](http://opensource.org/licenses/MIT)
 
-1.  **Group** : org.checkerframework. **Name** : checker-qual. **Version** : 3.27.0.
-     * **Project URL:** [https://checkerframework.org](https://checkerframework.org)
+1.  **Group** : org.checkerframework. **Name** : checker-qual. **Version** : 3.36.0.
+     * **Project URL:** [https://checkerframework.org/](https://checkerframework.org/)
      * **License:** [The MIT License](http://opensource.org/licenses/MIT)
-
-1.  **Group** : org.checkerframework. **Name** : dataflow-errorprone. **Version** : 3.27.0.
-     * **Project URL:** [https://checkerframework.org](https://checkerframework.org)
-     * **License:** [GNU General Public License, version 2 (GPL2), with the classpath exception](http://www.gnu.org/software/classpath/license.html)
 
 1.  **Group** : org.codehaus.woodstox. **Name** : stax2-api. **Version** : 4.2.1.
      * **Project URL:** [http://github.com/FasterXML/stax2-api](http://github.com/FasterXML/stax2-api)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The BSD License](http://www.opensource.org/licenses/bsd-license.php)
 
-1.  **Group** : org.eclipse.jgit. **Name** : org.eclipse.jgit. **Version** : 4.4.1.201607150455-r.
-     * **License:** Eclipse Distribution License (New BSD License)
-
 1.  **Group** : org.freemarker. **Name** : freemarker. **Version** : 2.3.31.
      * **Project URL:** [https://freemarker.apache.org/](https://freemarker.apache.org/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.hamcrest. **Name** : hamcrest-core. **Version** : 1.3.
-     * **License:** [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
+1.  **Group** : org.hamcrest. **Name** : hamcrest. **Version** : 2.2.
+     * **Project URL:** [http://hamcrest.org/JavaHamcrest/](http://hamcrest.org/JavaHamcrest/)
+     * **License:** [BSD License 3](http://opensource.org/licenses/BSD-3-Clause)
+
+1.  **Group** : org.hamcrest. **Name** : hamcrest-core. **Version** : 2.2.
+     * **Project URL:** [http://hamcrest.org/JavaHamcrest/](http://hamcrest.org/JavaHamcrest/)
+     * **License:** [BSD License 3](http://opensource.org/licenses/BSD-3-Clause)
 
 1.  **Group** : org.jacoco. **Name** : org.jacoco.agent. **Version** : 0.8.10.
      * **License:** [Eclipse Public License 2.0](https://www.eclipse.org/legal/epl-2.0/)
@@ -696,42 +709,42 @@
      * **Project URL:** [https://jsoup.org/](https://jsoup.org/)
      * **License:** [The MIT License](https://jsoup.org/license)
 
-1.  **Group** : org.junit. **Name** : junit-bom. **Version** : 5.9.3.**No license information found**
+1.  **Group** : org.junit. **Name** : junit-bom. **Version** : 5.10.0.**No license information found**
 1.  **Group** : org.junit-pioneer. **Name** : junit-pioneer. **Version** : 2.0.1.
      * **Project URL:** [https://junit-pioneer.org/](https://junit-pioneer.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-api. **Version** : 5.9.3.
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-api. **Version** : 5.10.0.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-engine. **Version** : 5.9.3.
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-engine. **Version** : 5.10.0.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-params. **Version** : 5.9.3.
+1.  **Group** : org.junit.jupiter. **Name** : junit-jupiter-params. **Version** : 5.10.0.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-commons. **Version** : 1.9.3.
+1.  **Group** : org.junit.platform. **Name** : junit-platform-commons. **Version** : 1.10.0.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-engine. **Version** : 1.9.3.
+1.  **Group** : org.junit.platform. **Name** : junit-platform-engine. **Version** : 1.10.0.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-launcher. **Version** : 1.9.3.
+1.  **Group** : org.junit.platform. **Name** : junit-platform-launcher. **Version** : 1.10.0.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.junit.platform. **Name** : junit-platform-suite-api. **Version** : 1.9.3.
+1.  **Group** : org.junit.platform. **Name** : junit-platform-suite-api. **Version** : 1.10.0.
      * **Project URL:** [https://junit.org/junit5/](https://junit.org/junit5/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
-1.  **Group** : org.opentest4j. **Name** : opentest4j. **Version** : 1.2.0.
+1.  **Group** : org.opentest4j. **Name** : opentest4j. **Version** : 1.3.0.
      * **Project URL:** [https://github.com/ota4j-team/opentest4j](https://github.com/ota4j-team/opentest4j)
-     * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.ow2.asm. **Name** : asm. **Version** : 9.2.
      * **Project URL:** [http://asm.ow2.io/](http://asm.ow2.io/)
@@ -768,4 +781,4 @@
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Thu Aug 03 18:06:53 EEST 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
+This report was generated on **Fri Aug 11 16:30:43 WEST 2023** using [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).

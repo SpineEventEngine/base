@@ -28,7 +28,6 @@ import BuildSettings.javaVersion
 import io.spine.internal.dependency.CheckerFramework
 import io.spine.internal.dependency.Dokka
 import io.spine.internal.dependency.ErrorProne
-import io.spine.internal.dependency.Flogger
 import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.JavaX

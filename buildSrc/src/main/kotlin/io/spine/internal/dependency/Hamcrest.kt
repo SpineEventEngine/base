@@ -27,18 +27,14 @@
 package io.spine.internal.dependency
 
 /**
- * Dependencies on ProtoData modules.
+ * The dependency on the Hamcrest, which is transitive for us.
  *
- * See [`SpineEventEngine/ProtoData`](https://github.com/SpineEventEngine/ProtoData/).
+ * If you need assertions in Java, please use Google [Truth] instead.
+ * For Kotlin, please use [Kotest].
  */
 @Suppress("unused", "ConstPropertyName")
-object ProtoData {
-    const val version = "0.9.9"
-    const val group = "io.spine.protodata"
-    const val compiler = "$group:protodata-compiler:$version"
-
-    const val codegenJava = "io.spine.protodata:protodata-codegen-java:$version"
-
-    const val pluginId = "io.spine.protodata"
-    const val pluginLib = "${Spine.group}:protodata:$version"
+object Hamcrest {
+    // https://github.com/hamcrest/JavaHamcrest/releases
+    private const val version = "2.2"
+    const val core = "org.hamcrest:hamcrest-core:${version}"
 }

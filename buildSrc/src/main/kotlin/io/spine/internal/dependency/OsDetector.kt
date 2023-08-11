@@ -26,10 +26,10 @@
 
 package io.spine.internal.dependency
 
-@Suppress("unused")
+@Suppress("unused", "ConstPropertyName")
 object OsDetector {
     // https://github.com/google/osdetector-gradle-plugin
-    const val version = "1.7.0"
+    const val version = "1.7.3"
     const val id = "com.google.osdetector"
     const val lib = "com.google.gradle:osdetector-gradle-plugin:${version}"
     const val classpath = lib

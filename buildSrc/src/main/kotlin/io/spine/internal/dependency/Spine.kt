@@ -45,7 +45,7 @@ object Spine {
          *
          * @see <a href="https://github.com/SpineEventEngine/base">spine-base</a>
          */
-        const val base = "2.0.0-SNAPSHOT.184"
+        const val base = "2.0.0-SNAPSHOT.186"
 
         /**
          * The version of [Spine.reflect].
@@ -75,7 +75,7 @@ object Spine {
          * @see [Spine.CoreJava.server]
          * @see <a href="https://github.com/SpineEventEngine/core-java">core-java</a>
          */
-        const val core = "2.0.0-SNAPSHOT.150"
+        const val core = "2.0.0-SNAPSHOT.153"
 
         /**
          * The version of [Spine.modelCompiler].
@@ -89,21 +89,21 @@ object Spine {
          *
          * @see <a href="https://github.com/SpineEventEngine/mc-java">spine-mc-java</a>
          */
-        const val mcJava = "2.0.0-SNAPSHOT.163"
+        const val mcJava = "2.0.0-SNAPSHOT.166"
 
         /**
          * The version of [Spine.baseTypes].
          *
          * @see <a href="https://github.com/SpineEventEngine/base-types">spine-base-types</a>
          */
-        const val baseTypes = "2.0.0-SNAPSHOT.123"
+        const val baseTypes = "2.0.0-SNAPSHOT.124"
 
         /**
          * The version of [Spine.time].
          *
          * @see <a href="https://github.com/SpineEventEngine/time">spine-time</a>
          */
-        const val time = "2.0.0-SNAPSHOT.131"
+        const val time = "2.0.0-SNAPSHOT.133"
 
         /**
          * The version of [Spine.change].
@@ -178,7 +178,9 @@ object Spine {
         const val pluginLib = "$toolsGroup:spine-mc-java-plugins:${version}:all"
     }
 
+    @Deprecated("Please use `javadocFilter` instead.", ReplaceWith("javadocFilter"))
     const val javadocTools = "$toolsGroup::${ArtifactVersion.javadocTools}"
+    const val javadocFilter = "$toolsGroup:spine-javadoc-filter:${ArtifactVersion.javadocTools}"
 
     const val client = CoreJava.client // Added for brevity.
     const val server = CoreJava.server // Added for brevity.
@@ -189,9 +191,10 @@ object Spine {
      * See [`SpineEventEngine/core-java`](https://github.com/SpineEventEngine/core-java/).
      */
     object CoreJava {
-        const val core = "$group:spine-core:${ArtifactVersion.core}"
-        const val client = "$group:spine-client:${ArtifactVersion.core}"
-        const val server = "$group:spine-server:${ArtifactVersion.core}"
-        const val testUtilServer = "$toolsGroup:spine-testutil-server:${ArtifactVersion.core}"
+        const val version = ArtifactVersion.core
+        const val core = "$group:spine-core:$version"
+        const val client = "$group:spine-client:$version"
+        const val server = "$group:spine-server:$version"
+        const val testUtilServer = "$toolsGroup:spine-testutil-server:$version"
     }
 }

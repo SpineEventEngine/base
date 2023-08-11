@@ -37,7 +37,7 @@ package io.spine.internal.dependency
  * Thus, we specify this version and force it via [forceVersions].
  * Please see `DependencyResolution.kt` for details.
  */
-@Suppress("unused")
+@Suppress("unused", "ConstPropertyName")
 object Slf4J {
     private const val version = "2.0.7"
     const val lib = "org.slf4j:slf4j-api:${version}"

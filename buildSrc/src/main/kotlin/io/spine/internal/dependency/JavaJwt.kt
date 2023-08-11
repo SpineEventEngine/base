@@ -31,8 +31,16 @@ package io.spine.internal.dependency
  *
  * [Java JWT](https://github.com/auth0/java-jwt)
  */
-@Suppress("unused")
+@Suppress("unused", "ConstPropertyName")
 object JavaJwt {
-    private const val version = "3.19.1"
+
+    /**
+     * The last version in the v3.x.x series.
+     *
+     * There's a v4.x.x series (e.g. https://github.com/auth0/java-jwt/releases/tag/4.4.0), but
+     * it introduces breaking changes. Consider upgrading to it when we're ready to migrate.
+     */
+    private const val version = "3.19.4"
+
     const val lib = "com.auth0:java-jwt:${version}"
 }

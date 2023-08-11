@@ -29,7 +29,7 @@ package io.spine.internal.dependency
 /**
  * Google implementations of [HTTP client](https://github.com/googleapis/google-http-java-client).
  */
-@Suppress("unused")
+@Suppress("unused", "ConstPropertyName")
 object HttpClient {
     // https://github.com/googleapis/google-http-java-client
     const val version  = "1.41.5"

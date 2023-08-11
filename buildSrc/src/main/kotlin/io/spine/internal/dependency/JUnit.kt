@@ -27,15 +27,16 @@
 package io.spine.internal.dependency
 
 // https://junit.org/junit5/
-@Suppress("unused")
+@Suppress("unused", "ConstPropertyName")
 object JUnit {
-    const val version                    = "5.9.3"
-    private const val legacyVersion      = "4.13.1"
+    const val version = "5.10.0"
+    private const val legacyVersion = "4.13.1"
 
     // https://github.com/apiguardian-team/apiguardian
     private const val apiGuardianVersion = "1.1.2"
+
     // https://github.com/junit-pioneer/junit-pioneer
-    private const val pioneerVersion     = "2.0.1"
+    private const val pioneerVersion = "2.0.1"
 
     const val legacy = "junit:junit:${legacyVersion}"
 
@@ -44,22 +45,16 @@ object JUnit {
         "org.junit.jupiter:junit-jupiter-api:${version}",
         "org.junit.jupiter:junit-jupiter-params:${version}"
     )
-    const val bom     = "org.junit:junit-bom:${version}"
+    const val bom = "org.junit:junit-bom:${version}"
 
-    const val runner  = "org.junit.jupiter:junit-jupiter-engine:${version}"
-    const val params  = "org.junit.jupiter:junit-jupiter-params:${version}"
+    const val runner = "org.junit.jupiter:junit-jupiter-engine:${version}"
+    const val params = "org.junit.jupiter:junit-jupiter-params:${version}"
 
     const val pioneer = "org.junit-pioneer:junit-pioneer:${pioneerVersion}"
 
-    @Deprecated("Please use `Platform.commons`.")
-    const val platformCommons = "${Platform.group}:junit-platform-commons:${Platform.version}"
-
-    @Deprecated("Please use `Platform.launcher`.")
-    const val platformLauncher = "${Platform.group}:junit-platform-launcher:${Platform.version}"
-
     object Platform {
         // https://junit.org/junit5/
-        const val version = "1.9.3"
+        const val version = "1.10.0"
         internal const val group = "org.junit.platform"
         const val commons = "$group:junit-platform-commons:$version"
         const val launcher = "$group:junit-platform-launcher:$version"

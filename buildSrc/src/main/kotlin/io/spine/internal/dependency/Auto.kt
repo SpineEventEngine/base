@@ -24,6 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:Suppress("unused", "ConstPropertyName")
+
 package io.spine.internal.dependency
 
 // https://github.com/google/auto

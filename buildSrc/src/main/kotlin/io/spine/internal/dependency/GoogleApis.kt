@@ -29,7 +29,7 @@ package io.spine.internal.dependency
 /**
  * Provides dependencies on [GoogleApis projects](https://github.com/googleapis/).
  */
-@Suppress("unused")
+@Suppress("unused", "ConstPropertyName")
 object GoogleApis {
 
     // https://github.com/googleapis/google-api-java-client

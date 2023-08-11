@@ -31,6 +31,7 @@ package io.spine.internal.dependency
  *
  * See [plugin site](https://runningcode.github.io/gradle-doctor) for features and usage.
  */
+@Suppress("unused", "ConstPropertyName")
 object GradleDoctor {
     const val version = "0.8.1"
     const val pluginId = "com.osacky.doctor"

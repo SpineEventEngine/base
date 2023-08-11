@@ -26,7 +26,7 @@
 
 package io.spine.internal.dependency
 
-@Suppress("unused")
+@Suppress("unused", "ConstPropertyName")
 object ApacheHttp {
 
     // https://hc.apache.org/downloads.cgi
