@@ -31,8 +31,8 @@ package io.spine.internal.dependency
  *
  * [AssertK](https://github.com/willowtreeapps/assertk)
  */
-@Suppress("unused")
+@Suppress("unused", "ConstPropertyName")
 object AssertK {
-    private const val version = "0.25"
+    private const val version = "0.26.1"
     const val libJvm = "com.willowtreeapps.assertk:assertk-jvm:${version}"
 }

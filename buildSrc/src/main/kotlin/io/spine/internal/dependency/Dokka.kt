@@ -27,7 +27,7 @@
 package io.spine.internal.dependency
 
 // https://github.com/Kotlin/dokka
-@Suppress("unused")
+@Suppress("unused", "ConstPropertyName")
 object Dokka {
     private const val group = "org.jetbrains.dokka"
 

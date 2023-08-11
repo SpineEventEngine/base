@@ -28,7 +28,7 @@ package io.spine.internal.dependency
 
 // https://github.com/JetBrains/kotlin
 // https://github.com/Kotlin
-@Suppress("unused")
+@Suppress("unused", "ConstPropertyName")
 object Kotlin {
 
     /**

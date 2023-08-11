@@ -38,14 +38,18 @@ import io.spine.internal.dependency.FindBugs
 import io.spine.internal.dependency.Flogger
 import io.spine.internal.dependency.Gson
 import io.spine.internal.dependency.Guava
+import io.spine.internal.dependency.Hamcrest
 import io.spine.internal.dependency.J2ObjC
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.Jackson
+import io.spine.internal.dependency.JavaDiffUtils
 import io.spine.internal.dependency.Kotest
 import io.spine.internal.dependency.Kotlin
 import io.spine.internal.dependency.Okio
+import io.spine.internal.dependency.OpenTest4J
 import io.spine.internal.dependency.Plexus
 import io.spine.internal.dependency.Protobuf
+import io.spine.internal.dependency.Slf4J
 import io.spine.internal.dependency.Truth
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.artifacts.Configuration
@@ -85,17 +89,17 @@ private fun ResolutionStrategy.forceProductionDependencies() {
         Dokka.BasePlugin.lib,
         ErrorProne.annotations,
         ErrorProne.core,
-        Guava.lib,
         FindBugs.annotations,
-        Flogger.lib,
         Flogger.Runtime.systemBackend,
+        Flogger.lib,
+        Guava.lib,
         Kotlin.reflect,
         Kotlin.stdLib,
         Kotlin.stdLibCommon,
         Kotlin.stdLibJdk8,
-        Protobuf.libs,
         Protobuf.GradlePlugin.lib,
-        io.spine.internal.dependency.Slf4J.lib
+        Protobuf.libs,
+        Slf4J.lib
     )
 }
 
@@ -119,22 +123,26 @@ private fun ResolutionStrategy.forceTransitiveDependencies() {
     force(
         Asm.lib,
         AutoValue.annotations,
-        Gson.lib,
-        J2ObjC.annotations,
-        Plexus.utils,
-        Okio.lib,
         CommonsCli.lib,
         CommonsLogging.lib,
+        Gson.lib,
+        Hamcrest.core,
+        J2ObjC.annotations,
         JUnit.Platform.engine,
         JUnit.Platform.suiteApi,
-        Jackson.databind,
+        JUnit.runner,
+        Jackson.annotations,
+        Jackson.bom,
         Jackson.core,
+        Jackson.databind,
         Jackson.dataformatXml,
         Jackson.dataformatYaml,
         Jackson.moduleKotlin,
-        Jackson.bom,
-        Jackson.annotations,
-        Kotlin.jetbrainsAnnotations
+        JavaDiffUtils.lib,
+        Kotlin.jetbrainsAnnotations,
+        Okio.lib,
+        OpenTest4J.lib,
+        Plexus.utils,
     )
 }
 

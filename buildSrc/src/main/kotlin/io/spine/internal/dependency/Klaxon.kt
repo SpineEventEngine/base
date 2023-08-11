@@ -27,11 +27,11 @@
 package io.spine.internal.dependency
 
 /**
- * A JSON parser in Kotlin
+ * A JSON parser in Kotlin.
  *
  * [Klaxon](https://github.com/cbeust/klaxon)
  */
-@Suppress("unused")
+@Suppress("unused", "ConstPropertyName")
 object Klaxon {
     private const val version = "5.6"
     const val lib = "com.beust:klaxon:${version}"

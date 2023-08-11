@@ -27,18 +27,16 @@
 package io.spine.internal.dependency
 
 /**
- * Dependencies on ProtoData modules.
+ * The dependency on the `java-diff-utils` library, which is transitive for us at the time
+ * of writing.
  *
- * See [`SpineEventEngine/ProtoData`](https://github.com/SpineEventEngine/ProtoData/).
+ * It might become our dependency as a part of
+ * the [Spine Text](https://github.com/SpineEventEngine/text) library.
  */
 @Suppress("unused", "ConstPropertyName")
-object ProtoData {
-    const val version = "0.9.9"
-    const val group = "io.spine.protodata"
-    const val compiler = "$group:protodata-compiler:$version"
+object JavaDiffUtils {
 
-    const val codegenJava = "io.spine.protodata:protodata-codegen-java:$version"
-
-    const val pluginId = "io.spine.protodata"
-    const val pluginLib = "${Spine.group}:protodata:$version"
+    // https://github.com/java-diff-utils/java-diff-utils/releases
+    private const val version = "4.12"
+    const val lib = "io.github.java-diff-utils:java-diff-utils:${version}"
 }

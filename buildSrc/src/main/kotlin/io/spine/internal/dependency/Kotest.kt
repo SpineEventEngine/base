@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@file:Suppress("unused", "ConstPropertyName")
+@file:Suppress("unused")
 
 package io.spine.internal.dependency
 
@@ -33,6 +33,7 @@ package io.spine.internal.dependency
  *
  * @see <a href="https://kotest.io/">Kotest site</a>
  */
+@Suppress("unused", "ConstPropertyName")
 object Kotest {
     const val version = "5.6.2"
     const val group = "io.kotest"

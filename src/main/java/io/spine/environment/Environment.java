@@ -30,7 +30,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.annotation.SPI;
-import io.spine.logging.Logging;
+import io.spine.logging.WithLogging;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.function.Consumer;
@@ -40,6 +40,7 @@ import static io.spine.reflect.Invokables.callParameterlessCtor;
 import static io.spine.string.Diags.backtick;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
+import static java.lang.String.format;
 
 /**
  * Provides information about the environment (current platform used, etc.).
@@ -122,7 +123,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * @see DefaultMode
  */
 @SPI
-public final class Environment implements Logging {
+public final class Environment implements WithLogging {
 
     private static final ImmutableList<StandardEnvironmentType<?>> STANDARD_TYPES =
             ImmutableList.of(Tests.type(), DefaultMode.type());
@@ -366,21 +367,21 @@ public final class Environment implements Logging {
     private void setCurrentType(@Nullable Class<? extends EnvironmentType<?>> newCurrent) {
         @Nullable Class<? extends EnvironmentType<?>> previous = this.currentType;
         this.currentType = newCurrent;
-        @SuppressWarnings("FloggerSplitLogStatement")
-                // See: https://github.com/SpineEventEngine/base/issues/612
-        var debug = _debug();
         if (previous == null) {
             if (newCurrent != null) {
-                debug.log("`Environment` set to `%s`.", newCurrent.getName());
+                logger().atDebug().log(() -> format(
+                        "`Environment` set to `%s`.", newCurrent.getName()));
             }
         } else {
             if (previous.equals(newCurrent)) {
-                debug.log("`Environment` stays `%s`.", newCurrent.getName());
+                logger().atDebug().log(() -> format(
+                        "`Environment` stays `%s`.", newCurrent.getName()));
             } else {
                 var newType = newCurrent != null
                               ? backtick(newCurrent.getName())
                               : "undefined";
-                debug.log("`Environment` turned from `%s` to %s.", previous.getName(), newType);
+                logger().atDebug().log(() -> format(
+                        "`Environment` turned from `%s` to %s.", previous.getName(), newType));
             }
         }
     }

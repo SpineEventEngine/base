@@ -27,10 +27,10 @@
 package io.spine.internal.dependency
 
 // https://cloud.google.com/java/docs/reference
-@Suppress("unused")
+@Suppress("unused", "ConstPropertyName")
 object AppEngine {
     private const val version = "1.9.82"
-    const val sdk          = "com.google.appengine:appengine-api-1.0-sdk:${version}"
+    const val sdk = "com.google.appengine:appengine-api-1.0-sdk:${version}"
 
     object GradlePlugin {
         private const val version = "2.2.0"

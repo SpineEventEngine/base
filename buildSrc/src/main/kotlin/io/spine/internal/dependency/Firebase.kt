@@ -27,7 +27,7 @@
 package io.spine.internal.dependency
 
 // https://firebase.google.com/docs/admin/setup#java
-@Suppress("unused")
+@Suppress("unused", "ConstPropertyName")
 object Firebase {
     private const val adminVersion = "8.1.0"
     const val admin = "com.google.firebase:firebase-admin:${adminVersion}"

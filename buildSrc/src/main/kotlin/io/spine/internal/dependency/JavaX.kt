@@ -26,7 +26,7 @@
 
 package io.spine.internal.dependency
 
-@Suppress("unused")
+@Suppress("unused", "ConstPropertyName")
 object JavaX {
     // This artifact which used to be a part of J2EE moved under Eclipse EE4J project.
     // https://github.com/eclipse-ee4j/common-annotations-api
