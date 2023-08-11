@@ -40,7 +40,7 @@ import io.spine.code.proto.FieldName;
 import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.LocationPath;
 import io.spine.code.proto.TypeSet;
-import io.spine.logging.Logging;
+import io.spine.logging.WithLogging;
 import io.spine.option.OptionsProto;
 
 import java.util.Deque;
@@ -65,7 +65,7 @@ import static java.lang.String.format;
  */
 @Immutable
 @SuppressWarnings("ClassWithTooManyMethods")
-public class MessageType extends Type<Descriptor, DescriptorProto> implements Logging {
+public class MessageType extends Type<Descriptor, DescriptorProto> implements WithLogging {
 
     private final ImmutableList<FieldDeclaration> fields;
 
@@ -381,7 +381,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
     }
 
     private void warnNoSourceCodeInfoIn(FileDescriptorProto file) {
-        var msg = format(
+        logger().atWarning().log(() -> format(
                 "Unable to obtain proto source code info for the message type `%s`" +
                         " declared in the file `%s`.%n" +
                         "Please configure the Gradle Protobuf plugin as follows:" +
@@ -392,8 +392,8 @@ public class MessageType extends Type<Descriptor, DescriptorProto> implements Lo
                         "    }%n" +
                         '}',
                 name(),
-                file.getName());
-        _warn().log(msg);
+                file.getName())
+        );
     }
 
     /**
