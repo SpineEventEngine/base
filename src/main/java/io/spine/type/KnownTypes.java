@@ -28,7 +28,6 @@ package io.spine.type;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
-import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.FileDescriptor;
@@ -38,6 +37,8 @@ import io.spine.annotation.Internal;
 import io.spine.code.java.ClassName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
+import io.spine.logging.Logger;
+import io.spine.logging.LoggingFactory;
 import io.spine.security.InvocationGuard;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
@@ -52,9 +53,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.util.Predicates2.distinctBy;
 import static io.spine.util.Text.joiner;
+import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
+import static kotlin.jvm.JvmClassMappingKt.getKotlinClass;
 
 /**
  * All Protobuf types known to the application.
@@ -308,7 +311,8 @@ public class KnownTypes implements Serializable {
     @Internal
     public static final class Holder {
 
-        private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+        private static final Logger<?> logger =
+                LoggingFactory.getLogger(getKotlinClass(Holder.class));
 
         /** The lock to synchronize the write access to the {@code KnownTypes} instance. */
         private static final Lock lock = new ReentrantLock(false);
@@ -337,7 +341,7 @@ public class KnownTypes implements Serializable {
         @Internal /* exposed only to `io.spine.tools.type.MoreKnownTypes`. */
         public static void extendWith(TypeSet moreKnownTypes) {
             InvocationGuard.allowOnly("io.spine.tools.type.MoreKnownTypes");
-            logger.atFine().log("Adding types `%s` to known types.", moreKnownTypes);
+            logger.atDebug().log(() -> format("Adding types `%s` to known types.", moreKnownTypes));
             lock.lock();
             try {
                 var extended = instance.extendWith(moreKnownTypes);

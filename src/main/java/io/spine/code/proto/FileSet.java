@@ -29,11 +29,13 @@ package io.spine.code.proto;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.flogger.FluentLogger;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.logging.Level;
+import io.spine.logging.Logger;
+import io.spine.logging.LoggingFactory;
 import io.spine.type.KnownTypes;
 import io.spine.type.MessageType;
 import io.spine.type.Type;
@@ -50,21 +52,22 @@ import java.util.function.Predicate;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
-import static com.google.common.flogger.LazyArgs.lazy;
 import static io.spine.code.proto.Linker.link;
 import static io.spine.io.IoPreconditions.checkExists;
-import static java.util.logging.Level.FINE;
+import static java.lang.String.format;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
+import static kotlin.jvm.JvmClassMappingKt.getKotlinClass;
 
 /**
  * A set of proto files represented by their {@linkplain FileDescriptor descriptors}.
  */
 public final class FileSet {
 
-    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+    private static final Logger<?> logger = LoggingFactory.getLogger(getKotlinClass(FileSet.class));
+
     private static final FileDescriptor[] EMPTY = {};
 
     /**
@@ -133,8 +136,8 @@ public final class FileSet {
     private static void onUnknownFiles(Set<FileName> knownFiles,
                                        Set<FileName> requestedFiles,
                                        File descriptorSetFile) {
-        var detailLevel = FINE;
-        logger.atWarning().log(
+        var detailLevel = Level.Companion.getDEBUG();
+        logger.atWarning().log(() -> format(
                 "Some files are unknown. " +
                 "%s files are present in classpath but %s files are discovered in `%s`.%n" +
                 "This means that they may be empty or that they are missing from the classpath. " +
@@ -143,12 +146,15 @@ public final class FileSet {
                 requestedFiles.size(),
                 descriptorSetFile,
                 detailLevel
-        );
+        ));
         logger.at(detailLevel)
-              .log("Could not find files: %s.", lazy(() -> requestedFiles.stream()
-                      .filter(fileName -> !knownFiles.contains(fileName))
-                      .map(FileName::toString)
-                      .collect(joining(", "))));
+              .log(() -> {
+                  var files = requestedFiles.stream()
+                          .filter(fileName -> !knownFiles.contains(fileName))
+                          .map(FileName::toString)
+                          .collect(joining(", "));
+                  return format("Could not find files: %s.", files);
+              });
     }
 
     /**

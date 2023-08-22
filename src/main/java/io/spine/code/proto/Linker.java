@@ -30,10 +30,11 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.google.common.flogger.FluentLogger;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.DescriptorValidationException;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.logging.Logger;
+import io.spine.logging.LoggingFactory;
 
 import java.util.Collection;
 import java.util.List;
@@ -41,16 +42,19 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.Descriptors.FileDescriptor.buildFrom;
 import static io.spine.util.Exceptions.newIllegalStateException;
+import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+import static kotlin.jvm.JvmClassMappingKt.getKotlinClass;
 
 /**
  * Builds a set of {@link FileDescriptor}s from a list of {@link FileDescriptorProto}.
  */
 final class Linker {
 
-    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+    private static final Logger<?> logger = LoggingFactory.getLogger(getKotlinClass(Linker.class));
+
     private static final FileDescriptor[] NO_DEPENDENCIES = {};
 
     private final List<FileDescriptorProto> input;
@@ -71,16 +75,13 @@ final class Linker {
 
     static FileSet link(Collection<FileDescriptorProto> files) {
         var linker = new Linker(files);
-        @SuppressWarnings("FloggerSplitLogStatement")
-            // See: https://github.com/SpineEventEngine/base/issues/612
-        var debug = logger.atFine();
-        debug.log("Trying to link %d files.", files.size());
+        logger.atDebug().log(() -> format("Trying to link %d files.", files.size()));
         try {
             linker.resolve();
         } catch (DescriptorValidationException e) {
             throw newIllegalStateException(e, "Unable to link descriptor set files.");
         }
-        debug.log("Linking complete. %s", linker);
+        logger.atDebug().log(() -> format("Linking complete. %s", linker));
         var result = linker.resolved()
                            .union(linker.partiallyResolved())
                            .union(linker.unresolved());
